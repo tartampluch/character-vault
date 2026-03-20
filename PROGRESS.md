@@ -71,7 +71,7 @@ _Goal: Establish the overarching container for characters. A Campaign groups cha
 
 _Goal: Build the character selection screen (Your Adventurers) based on the current active campaign, respecting visibility rules._
 
-- [ ] **7.1 Visibility Logic (The Filter):** In `GameEngine` or a dedicated `VaultStore`, create a `$derived` array called `visibleCharacters`.
+- [x] **7.1 Visibility Logic (The Filter):** In `GameEngine` or a dedicated `VaultStore`, create a `$derived` array called `visibleCharacters`.
     - _Rule:_ Filter characters by `activeCampaignId`.
     - _Rule:_ If `isGameMaster` is true, return all characters, NPCs, and monsters in the campaign.
     - _Rule:_ If `isGameMaster` is false, return ONLY characters where `ownerId === currentUserId`, plus any `LinkedEntity` belonging to those characters.

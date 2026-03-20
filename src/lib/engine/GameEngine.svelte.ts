@@ -46,6 +46,7 @@ import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { storageManager, debounce } from './StorageManager';
+import { sessionContext } from './SessionContext.svelte';
 
 // =============================================================================
 // CONSTANTS
@@ -232,6 +233,110 @@ export class GameEngine {
 
   /** Set when a storage error occurs. Displayed as a UI notification. */
   lastError = $state<string | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // VAULT STATE & VISIBILITY
+  // ---------------------------------------------------------------------------
+
+  /**
+   * All characters loaded for the current campaign vault.
+   *
+   * ARCHITECTURE: In Phase 4.1 scope, this is populated from localStorage via
+   * `storageManager.loadAllCharacters()` and filtered by `activeCampaignId`.
+   * In Phase 14.6, replaced by API calls.
+   *
+   * The Vault page (Phase 7.3) reads `visibleCharacters` (the filtered $derived),
+   * not this raw array directly.
+   */
+  allVaultCharacters = $state<Character[]>([]);
+
+  /**
+   * DAG: Filtered character list based on session visibility rules.
+   *
+   * VISIBILITY RULES (ARCHITECTURE.md Phase 7.1):
+   *   1. Filter by `activeCampaignId` — only show characters from the active campaign.
+   *   2. If `isGameMaster === true` → return ALL characters (players, NPCs, monsters).
+   *   3. If `isGameMaster === false` → return ONLY:
+   *      a. Characters where `ownerId === currentUserId`
+   *      b. Any LinkedEntity characters belonging to those characters.
+   *
+   * Why $derived (not $state)?
+   *   Because the result re-computes automatically when `allVaultCharacters`,
+   *   `sessionContext.activeCampaignId`, `sessionContext.isGameMaster`, or
+   *   `sessionContext.currentUserId` changes. The Vault page never needs to
+   *   manually re-filter — it just reads `engine.visibleCharacters`.
+   */
+  visibleCharacters: Character[] = $derived.by(() => {
+    const campaignId = sessionContext.activeCampaignId;
+    const isGM = sessionContext.isGameMaster;
+    const userId = sessionContext.currentUserId;
+
+    // Step 1: Filter by campaign.
+    // Characters with no campaignId (legacy data) are excluded from campaign views.
+    const inCampaign = campaignId
+      ? this.allVaultCharacters.filter(c => c.campaignId === campaignId)
+      : this.allVaultCharacters;
+
+    // Step 2: Apply role-based visibility.
+    if (isGM) {
+      // GM sees ALL characters in the campaign (players, NPCs, summons, etc.)
+      return inCampaign;
+    }
+
+    // Player: sees only their own characters + their LinkedEntities
+    const ownCharacters = inCampaign.filter(c => c.ownerId === userId);
+
+    // Collect LinkedEntity character IDs from own characters
+    // A player can also see the characters linked to THEIR characters
+    // (e.g., their own Animal Companion, Familiar).
+    // NOTE: LinkedEntity characters within ANOTHER player's character are NOT visible.
+    const linkedEntityIds = new Set<string>();
+    for (const char of ownCharacters) {
+      for (const linked of char.linkedEntities) {
+        linkedEntityIds.add(linked.characterData.id);
+      }
+    }
+
+    // Include own characters + their linked entities (not other players' linked entities)
+    return inCampaign.filter(
+      c => c.ownerId === userId || linkedEntityIds.has(c.id)
+    );
+  });
+
+  /**
+   * Loads all characters for the active campaign into the vault.
+   * Called when entering the Character Vault page.
+   *
+   * In Phase 4.1 (localStorage): loads all characters and filters in-memory.
+   * In Phase 14.6 (PHP API): replaced by `GET /api/characters?campaignId=X`.
+   */
+  loadVaultCharacters(): void {
+    this.allVaultCharacters = storageManager.loadAllCharacters();
+  }
+
+  /**
+   * Adds a character to the vault's in-memory list and persists it.
+   * Called when creating a new character from the Vault page (Phase 7.4).
+   *
+   * @param char - The character to add.
+   */
+  addCharacterToVault(char: Character): void {
+    storageManager.saveCharacter(char);
+    this.allVaultCharacters.push(char);
+  }
+
+  /**
+   * Removes a character from the vault (used for deletion, Phase 7.4).
+   *
+   * @param characterId - The character ID to remove.
+   */
+  removeCharacterFromVault(characterId: ID): void {
+    storageManager.deleteCharacter(characterId);
+    const index = this.allVaultCharacters.findIndex(c => c.id === characterId);
+    if (index !== -1) {
+      this.allVaultCharacters.splice(index, 1);
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // AUTO-SAVE $effect — Connect character and settings changes to StorageManager
