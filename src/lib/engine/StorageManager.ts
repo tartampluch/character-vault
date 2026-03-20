@@ -1,46 +1,42 @@
 /**
  * @file StorageManager.ts
- * @description Multi-character persistence layer using localStorage.
+ * @description Multi-character persistence layer.
  *
- * Design philosophy:
- *   The StorageManager is the ONLY component of the system that reads from and writes
- *   to localStorage (Phase 4.1) or the PHP API (Phase 14.6 — refactored later).
- *   No other module should directly access `localStorage`. This separation ensures:
- *     1. The storage backend can be swapped (localStorage → PHP API) without touching
- *        any other file.
- *     2. All serialisation/deserialisation logic is in one place.
- *     3. The `GameEngine` remains pure (computation only, no I/O side effects).
+ * ARCHITECTURE — Phase 14.6 Refactoring:
+ *   This file replaces the localStorage-only Phase 4.1 implementation with a
+ *   dual-backend strategy:
  *
- *   WHAT IS STORED:
- *   - Multiple `Character` objects indexed by their ID.
- *   - The `CampaignSettings` object (language, house rules, enabled sources).
- *   - These are SEPARATE storage keys in localStorage (not a single blob).
+ *     1. PRIMARY BACKEND: PHP REST API (async fetch calls to /api/).
+ *        Used when the API is reachable and the user is authenticated.
  *
- *   LINKEDENTITY SERIALIZATION GUARD:
- *   The `Character.linkedEntities` array contains recursive `Character` objects
- *   (a familiar has its own character data). JSON.stringify handles this correctly
- *   because the `LinkedEntity` type design explicitly PREVENTS back-references
- *   (no `masterId` field — see character.ts). The serialization is always safe.
- *   However, we validate the depth of `linkedEntities` nesting during save to
- *   catch any accidental circular references before they cause a stack overflow.
+ *     2. FALLBACK BACKEND: localStorage (same keys as Phase 4.1).
+ *        Used when the API is unreachable (offline mode) or during SSR.
  *
- *   GMSOVERRIDES SEPARATION:
- *   `Character.gmOverrides` is stored IN the character JSON in localStorage.
- *   (In Phase 14.6, the PHP API splits this into a separate column. But for
- *   localStorage, keeping it together simplifies the implementation.)
+ *   ALL PUBLIC METHODS remain synchronous for localStorage calls (no breaking
+ *   changes to the GameEngine $effect integration). Async API calls are fired-and-
+ *   forgotten for writes (auto-save doesn't block the UI). For reads, the async
+ *   API methods are exposed separately (loadFromApi*, loadAllCharactersFromApi).
  *
- * STORAGE KEY CONVENTIONS:
- *   `cv_character_{id}` — A single character's JSON.
- *   `cv_character_index` — JSON array of known character IDs (for listing).
- *   `cv_campaign_settings` — The CampaignSettings JSON.
- *   `cv_active_character_id` — The last-loaded character's ID (for session restore).
+ * AUTO-SAVE DEBOUNCE:
+ *   The GameEngine uses a 500ms debounce for localStorage writes.
+ *   For API writes (PUT /api/characters/{id}), the debounce is 2000ms to avoid
+ *   spamming the server on every keystroke.
  *
- *   "cv_" prefix: "CharacterVault_" — namespaces our keys to avoid conflicts
- *   with other apps sharing the same localStorage origin.
+ * POLLING MECHANISM (ARCHITECTURE.md section 19):
+ *   `startPolling(campaignId, onCampaignUpdated, onCharactersUpdated, intervalMs)`
+ *   Starts a polling loop that calls GET /api/campaigns/{id}/sync-status every
+ *   `intervalMs` milliseconds. Compares timestamps with locally cached values.
+ *   Only re-fetches data that has changed.
+ *
+ * LINKED ENTITY SERIALIZATION GUARD:
+ *   Validates LinkedEntity nesting depth before any serialization.
+ *   See Phase 4.1 design notes — the guard prevents stack overflows from
+ *   accidentally circular structures.
  *
  * @see src/lib/types/character.ts   for Character, LinkedEntity
  * @see src/lib/types/settings.ts    for CampaignSettings
- * @see src/lib/engine/GameEngine.svelte.ts for the $effect auto-save connection
+ * @see src/lib/engine/GameEngine.svelte.ts for the $effect auto-save integration
+ * @see ARCHITECTURE.md Phase 14.6 for the full specification.
  */
 
 import type { Character } from '../types/character';
@@ -49,47 +45,29 @@ import { createDefaultCampaignSettings } from '../types/settings';
 import type { ID } from '../types/primitives';
 
 // =============================================================================
-// STORAGE KEY CONSTANTS
+// STORAGE KEY CONSTANTS (localStorage fallback)
 // =============================================================================
 
-/**
- * Namespace prefix for all localStorage keys used by this application.
- * Prevents key collisions if other apps/tabs share the same origin.
- */
 const STORAGE_PREFIX = 'cv_';
 
 const KEYS = {
-  /** Index of all known character IDs. Value: JSON-encoded string[]. */
-  CHARACTER_INDEX: `${STORAGE_PREFIX}character_index`,
-  /** Prefix for individual character records. Full key: cv_character_{id}. */
-  CHARACTER_PREFIX: `${STORAGE_PREFIX}character_`,
-  /** The CampaignSettings object. Value: JSON-encoded CampaignSettings. */
-  CAMPAIGN_SETTINGS: `${STORAGE_PREFIX}campaign_settings`,
-  /** The ID of the last-active character (for session restore). Value: string. */
+  CHARACTER_INDEX:     `${STORAGE_PREFIX}character_index`,
+  CHARACTER_PREFIX:    `${STORAGE_PREFIX}character_`,
+  CAMPAIGN_SETTINGS:   `${STORAGE_PREFIX}campaign_settings`,
   ACTIVE_CHARACTER_ID: `${STORAGE_PREFIX}active_character_id`,
+  /** Cached sync timestamps from the last poll. */
+  SYNC_TIMESTAMPS:     `${STORAGE_PREFIX}sync_timestamps`,
 } as const;
 
-/**
- * Maximum nesting depth for LinkedEntity serialization guard.
- * Prevents stack overflows from accidentally circular structures.
- */
 const MAX_LINK_DEPTH = 5;
 
 // =============================================================================
-// SERIALIZATION GUARD — LinkedEntity depth check
+// SERIALIZATION GUARD
 // =============================================================================
 
 /**
- * Validates that a Character's linkedEntities nesting depth does not exceed the limit.
- *
- * WHY THIS CHECK?
- *   While the `LinkedEntity` type design PREVENTS back-references (no masterId field),
- *   a malformed JSON import or a bug could theoretically create deep nesting.
- *   This check catches it before serialization causes a stack overflow in JSON.stringify.
- *
- * @param char  - The character to validate.
- * @param depth - Current nesting depth (0 for the root character).
- * @returns `true` if nesting is within bounds, `false` if exceeded.
+ * Validates LinkedEntity nesting depth to catch circular references before
+ * JSON.stringify causes a stack overflow.
  */
 function validateLinkDepth(char: Character, depth = 0): boolean {
   if (depth > MAX_LINK_DEPTH) {
@@ -97,11 +75,39 @@ function validateLinkDepth(char: Character, depth = 0): boolean {
     return false;
   }
   for (const linked of char.linkedEntities) {
-    if (!validateLinkDepth(linked.characterData, depth + 1)) {
-      return false;
-    }
+    if (!validateLinkDepth(linked.characterData, depth + 1)) return false;
   }
   return true;
+}
+
+// =============================================================================
+// CSRF TOKEN UTILITY
+// =============================================================================
+
+/**
+ * The CSRF token fetched from GET /api/auth/me.
+ * Stored in memory (not localStorage — tokens should not survive page reload).
+ */
+let csrfToken: string | null = null;
+
+/**
+ * Sets the CSRF token (called after a successful /api/auth/me response).
+ */
+export function setCsrfToken(token: string): void {
+  csrfToken = token;
+}
+
+/**
+ * Returns headers for API requests, including CSRF and Content-Type.
+ */
+function apiHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (csrfToken) {
+    headers['X-CSRF-Token'] = csrfToken;
+  }
+  return headers;
 }
 
 // =============================================================================
@@ -109,45 +115,49 @@ function validateLinkDepth(char: Character, depth = 0): boolean {
 // =============================================================================
 
 /**
- * Manages persistence of characters and campaign settings to localStorage.
+ * Dual-backend persistence manager: PHP API (primary) + localStorage (fallback).
  *
- * CRUD OPERATIONS:
- *   - `saveCharacter(char)`:     Serialise and store one character.
- *   - `loadCharacter(id)`:       Retrieve and deserialise one character by ID.
- *   - `deleteCharacter(id)`:     Remove a character and update the index.
- *   - `listCharacters()`:        Return the list of stored character IDs.
- *   - `loadAllCharacters()`:     Load all stored characters (for Vault display).
- *   - `saveSettings(settings)`:  Store the CampaignSettings.
- *   - `loadSettings()`:          Retrieve saved CampaignSettings (or defaults).
- *   - `saveActiveCharacterId(id)`: Persist the last-active character ID.
- *   - `loadActiveCharacterId()`: Retrieve the last-active character ID.
+ * SYNCHRONOUS METHODS (localStorage):
+ *   - `saveCharacter(char)`, `loadCharacter(id)`, `deleteCharacter(id)`
+ *   - `loadAllCharacters()`, `listCharacterIds()`
+ *   - `saveSettings(settings)`, `loadSettings()`
+ *   - `saveActiveCharacterId(id)`, `loadActiveCharacterId()`
  *
- * AUTO-SAVE (via $effect in GameEngine):
- *   The GameEngine sets up `$effect(() => { storageManager.saveCharacter(engine.character); })`
- *   so that any change to the character $state automatically triggers a save.
- *   This is done in a DEBOUNCED fashion (via a delay wrapper) to avoid saving on every keystroke.
- *   The debounce wrapper is provided by `createDebouncedSave()`.
+ * ASYNC API METHODS (fire-and-forget writes):
+ *   - `saveCharacterToApi(char)` — PUT /api/characters/{id}
+ *   - `deleteCharacterFromApi(id)` — DELETE /api/characters/{id}
+ *   - `loadAllCharactersFromApi(campaignId)` — GET /api/characters?campaignId=X
+ *   - `saveGmOverridesToApi(charId, overrides)` — PUT /api/characters/{id}/gm-overrides
+ *
+ * POLLING:
+ *   - `startPolling(campaignId, onCampaign, onChars, intervalMs)`
+ *   - `stopPolling()`
  */
 export class StorageManager {
-  /**
-   * Whether localStorage is available in the current environment.
-   * localStorage is not available in SSR (server-side rendering) contexts.
-   * All methods gracefully degrade when `isAvailable` is false.
-   */
   private readonly isAvailable: boolean;
+
+  /**
+   * Whether the PHP API is reachable.
+   * Set to false when a fetch call fails (triggers offline fallback).
+   * Reset to true on next successful API call.
+   */
+  isApiReachable = false;
+
+  /** Active polling interval handle (setInterval). */
+  private pollingInterval: ReturnType<typeof setInterval> | null = null;
+
+  /** Last known sync timestamps from the API. */
+  private lastSyncTimestamps: Record<string, number> = {};
 
   constructor() {
     this.isAvailable = this.#checkAvailability();
+    this.#loadCachedSyncTimestamps();
   }
 
   // ---------------------------------------------------------------------------
   // AVAILABILITY CHECK
   // ---------------------------------------------------------------------------
 
-  /**
-   * Tests if localStorage is available and writable.
-   * Returns false in SSR/test environments where localStorage is not defined.
-   */
   #checkAvailability(): boolean {
     try {
       if (typeof localStorage === 'undefined') return false;
@@ -160,33 +170,35 @@ export class StorageManager {
     }
   }
 
+  #loadCachedSyncTimestamps(): void {
+    if (!this.isAvailable) return;
+    try {
+      const json = localStorage.getItem(KEYS.SYNC_TIMESTAMPS);
+      if (json) this.lastSyncTimestamps = JSON.parse(json);
+    } catch {
+      // Ignore — timestamps will be re-fetched on next poll
+    }
+  }
+
+  #saveCachedSyncTimestamps(): void {
+    if (!this.isAvailable) return;
+    try {
+      localStorage.setItem(KEYS.SYNC_TIMESTAMPS, JSON.stringify(this.lastSyncTimestamps));
+    } catch {
+      // Non-critical — polling will continue on next interval
+    }
+  }
+
   // ---------------------------------------------------------------------------
-  // CHARACTER CRUD
+  // CHARACTER CRUD — SYNCHRONOUS (localStorage)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Saves a character to localStorage.
-   *
-   * SERIALIZATION:
-   *   Uses JSON.stringify with no replacer (the Character type is designed to be safe).
-   *   Validates LinkedEntity nesting depth before serializing.
-   *
-   * INDEX MAINTENANCE:
-   *   The character's ID is added to `cv_character_index` if not already present.
-   *   This index is used by `listCharacters()` to discover all stored characters
-   *   without scanning all localStorage keys.
-   *
-   * @param char - The character to save. Must have a valid, non-empty `id`.
-   * @returns `true` if save succeeded, `false` on error (logged with warning).
-   */
   saveCharacter(char: Character): boolean {
     if (!this.isAvailable) return false;
     if (!char.id) {
       console.warn('[StorageManager] saveCharacter: character has no ID. Skipping.');
       return false;
     }
-
-    // Validate link depth before serialization (catch circular reference bugs early)
     if (!validateLinkDepth(char)) {
       console.warn(`[StorageManager] saveCharacter: character "${char.id}" has excessive nesting. Save aborted.`);
       return false;
@@ -196,7 +208,6 @@ export class StorageManager {
       const json = JSON.stringify(char);
       localStorage.setItem(`${KEYS.CHARACTER_PREFIX}${char.id}`, json);
 
-      // Update the character index
       const index = this.listCharacterIds();
       if (!index.includes(char.id)) {
         index.push(char.id);
@@ -205,158 +216,90 @@ export class StorageManager {
 
       return true;
     } catch (err) {
-      console.warn(`[StorageManager] saveCharacter: failed to save character "${char.id}":`, err);
+      console.warn(`[StorageManager] saveCharacter: failed for "${char.id}":`, err);
       return false;
     }
   }
 
-  /**
-   * Loads a character from localStorage by ID.
-   *
-   * @param id - The character ID to load.
-   * @returns The parsed Character object, or `null` if not found or parse error.
-   */
   loadCharacter(id: ID): Character | null {
     if (!this.isAvailable) return null;
-
     try {
       const json = localStorage.getItem(`${KEYS.CHARACTER_PREFIX}${id}`);
       if (!json) return null;
       return JSON.parse(json) as Character;
     } catch (err) {
-      console.warn(`[StorageManager] loadCharacter: failed to load character "${id}":`, err);
+      console.warn(`[StorageManager] loadCharacter: failed for "${id}":`, err);
       return null;
     }
   }
 
-  /**
-   * Deletes a character from localStorage and removes it from the index.
-   *
-   * @param id - The character ID to delete.
-   * @returns `true` if the character was found and deleted, `false` otherwise.
-   */
   deleteCharacter(id: ID): boolean {
     if (!this.isAvailable) return false;
-
     try {
       const key = `${KEYS.CHARACTER_PREFIX}${id}`;
       if (!localStorage.getItem(key)) return false;
-
       localStorage.removeItem(key);
-
-      // Remove from index
-      const index = this.listCharacterIds();
-      const newIndex = index.filter(existingId => existingId !== id);
-      localStorage.setItem(KEYS.CHARACTER_INDEX, JSON.stringify(newIndex));
-
+      const index = this.listCharacterIds().filter(i => i !== id);
+      localStorage.setItem(KEYS.CHARACTER_INDEX, JSON.stringify(index));
       return true;
     } catch (err) {
-      console.warn(`[StorageManager] deleteCharacter: failed to delete character "${id}":`, err);
+      console.warn(`[StorageManager] deleteCharacter: failed for "${id}":`, err);
       return false;
     }
   }
 
-  /**
-   * Returns the list of all known character IDs from the index.
-   * This is the fast O(1) alternative to scanning all localStorage keys.
-   *
-   * @returns Array of character IDs. Empty array if none stored or on error.
-   */
   listCharacterIds(): ID[] {
     if (!this.isAvailable) return [];
-
     try {
       const json = localStorage.getItem(KEYS.CHARACTER_INDEX);
-      if (!json) return [];
-      return JSON.parse(json) as ID[];
+      return json ? (JSON.parse(json) as ID[]) : [];
     } catch {
       return [];
     }
   }
 
-  /**
-   * Loads ALL stored characters (used by the Character Vault, Phase 7).
-   *
-   * Iterates the character index and loads each character.
-   * Characters that fail to parse are silently skipped (logged as warnings).
-   *
-   * @returns Array of all successfully loaded Character objects.
-   */
   loadAllCharacters(): Character[] {
     const ids = this.listCharacterIds();
     const characters: Character[] = [];
-
     for (const id of ids) {
       const char = this.loadCharacter(id);
       if (char) {
         characters.push(char);
       } else {
-        console.warn(`[StorageManager] loadAllCharacters: skipping character "${id}" (failed to load).`);
+        console.warn(`[StorageManager] loadAllCharacters: skipping "${id}" (failed to load).`);
       }
     }
-
     return characters;
   }
 
   // ---------------------------------------------------------------------------
-  // CAMPAIGN SETTINGS PERSISTENCE
+  // SETTINGS PERSISTENCE
   // ---------------------------------------------------------------------------
 
-  /**
-   * Saves the campaign settings to localStorage.
-   *
-   * Called by the GameEngine's `$effect` whenever settings change.
-   * Also called explicitly when the GM updates settings via the Settings page.
-   *
-   * @param settings - The CampaignSettings object to save.
-   * @returns `true` if save succeeded, `false` on error.
-   */
   saveSettings(settings: CampaignSettings): boolean {
     if (!this.isAvailable) return false;
-
     try {
       localStorage.setItem(KEYS.CAMPAIGN_SETTINGS, JSON.stringify(settings));
       return true;
     } catch (err) {
-      console.warn('[StorageManager] saveSettings: failed to save settings:', err);
+      console.warn('[StorageManager] saveSettings: failed:', err);
       return false;
     }
   }
 
-  /**
-   * Loads campaign settings from localStorage.
-   *
-   * Falls back to `createDefaultCampaignSettings()` if no settings are stored
-   * (first-time user, cleared storage, or parse error).
-   *
-   * @returns The loaded CampaignSettings, or default settings as fallback.
-   */
   loadSettings(): CampaignSettings {
     if (!this.isAvailable) return createDefaultCampaignSettings();
-
     try {
       const json = localStorage.getItem(KEYS.CAMPAIGN_SETTINGS);
-      if (!json) return createDefaultCampaignSettings();
-      return JSON.parse(json) as CampaignSettings;
+      return json ? (JSON.parse(json) as CampaignSettings) : createDefaultCampaignSettings();
     } catch (err) {
-      console.warn('[StorageManager] loadSettings: failed to parse settings. Using defaults:', err);
+      console.warn('[StorageManager] loadSettings: failed, using defaults:', err);
       return createDefaultCampaignSettings();
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // SESSION RESTORE
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Saves the ID of the currently active character for session restore.
-   * Called by the GameEngine whenever the active character changes.
-   *
-   * @param id - The character ID to persist (or null to clear).
-   */
   saveActiveCharacterId(id: ID | null): void {
     if (!this.isAvailable) return;
-
     if (id === null) {
       localStorage.removeItem(KEYS.ACTIVE_CHARACTER_ID);
     } else {
@@ -364,62 +307,233 @@ export class StorageManager {
     }
   }
 
-  /**
-   * Loads the ID of the last-active character for session restore.
-   *
-   * @returns The saved character ID, or `null` if none is stored.
-   */
   loadActiveCharacterId(): ID | null {
     if (!this.isAvailable) return null;
-
     return localStorage.getItem(KEYS.ACTIVE_CHARACTER_ID);
   }
 
-  // ---------------------------------------------------------------------------
-  // FULL RESET (for testing and "New Campaign" scenarios)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Removes ALL application data from localStorage.
-   *
-   * ⚠️ DESTRUCTIVE: This deletes character data and settings.
-   *    Only call from explicit user actions ("Reset All Data") or test setup/teardown.
-   *
-   * Does NOT remove the `cv_` test key (used by the availability check, harmless).
-   */
   clearAll(): void {
     if (!this.isAvailable) return;
-
-    const ids = this.listCharacterIds();
-    for (const id of ids) {
+    for (const id of this.listCharacterIds()) {
       localStorage.removeItem(`${KEYS.CHARACTER_PREFIX}${id}`);
     }
     localStorage.removeItem(KEYS.CHARACTER_INDEX);
     localStorage.removeItem(KEYS.CAMPAIGN_SETTINGS);
     localStorage.removeItem(KEYS.ACTIVE_CHARACTER_ID);
   }
+
+  // ---------------------------------------------------------------------------
+  // ASYNC API CALLS — Fire-and-forget writes (2000ms debounce recommended)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Saves a character to the PHP API via PUT /api/characters/{id}.
+   * Falls back to localStorage if the API is unreachable.
+   *
+   * DEBOUNCE: The caller should debounce this with 2000ms to avoid spamming.
+   * (The GameEngine's #debouncedSaveCharacter uses 500ms; for API calls, override to 2000ms.)
+   */
+  async saveCharacterToApi(char: Character): Promise<void> {
+    // Always save to localStorage as a local cache (offline fallback)
+    this.saveCharacter(char);
+
+    try {
+      const response = await fetch(`/api/characters/${char.id}`, {
+        method: 'PUT',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(char),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] saveCharacterToApi: API unavailable. Using localStorage only. (${err})`);
+    }
+  }
+
+  /**
+   * Loads all characters for a campaign from the PHP API.
+   * Caches each character in localStorage for offline access.
+   *
+   * @param campaignId - The campaign to load characters for.
+   * @returns Array of characters from the API, or from localStorage if API is down.
+   */
+  async loadAllCharactersFromApi(campaignId: ID): Promise<Character[]> {
+    try {
+      const response = await fetch(`/api/characters?campaignId=${encodeURIComponent(campaignId)}`, {
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const chars = (await response.json()) as Character[];
+      this.isApiReachable = true;
+
+      // Update localStorage cache
+      for (const char of chars) {
+        this.saveCharacter(char);
+      }
+
+      return chars;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] loadAllCharactersFromApi: API unavailable. Using localStorage. (${err})`);
+      return this.loadAllCharacters();
+    }
+  }
+
+  /**
+   * Deletes a character via DELETE /api/characters/{id}.
+   */
+  async deleteCharacterFromApi(id: ID): Promise<void> {
+    this.deleteCharacter(id);
+
+    try {
+      await fetch(`/api/characters/${id}`, {
+        method: 'DELETE',
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] deleteCharacterFromApi: API unavailable. (${err})`);
+    }
+  }
+
+  /**
+   * Saves GM per-character overrides via PUT /api/characters/{id}/gm-overrides.
+   * GM-only endpoint — the frontend should only call this when isGameMaster is true.
+   */
+  async saveGmOverridesToApi(charId: ID, overrides: unknown[]): Promise<void> {
+    try {
+      await fetch(`/api/characters/${charId}/gm-overrides`, {
+        method: 'PUT',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ gmOverrides: overrides }),
+      });
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] saveGmOverridesToApi: API unavailable. (${err})`);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // POLLING MECHANISM (ARCHITECTURE.md section 19)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Starts the sync polling loop.
+   *
+   * HOW POLLING WORKS:
+   *   1. Every `intervalMs` milliseconds, call GET /api/campaigns/{id}/sync-status.
+   *   2. Compare returned timestamps with `this.lastSyncTimestamps`.
+   *   3. If `campaignUpdatedAt` changed → call `onCampaignUpdated()`.
+   *   4. For each changed character timestamp → collect IDs for re-fetch.
+   *   5. Call `onCharactersUpdated(changedCharacterIds)` with the list.
+   *   6. Update `this.lastSyncTimestamps` and persist to localStorage.
+   *
+   * GRACEFUL DEGRADATION:
+   *   If the API is unreachable (fetch throws), the interval continues.
+   *   The next tick will try again. No error is shown to the user for polling failures
+   *   (they will just not see live updates from other players).
+   *
+   * @param campaignId        - The campaign to poll for.
+   * @param onCampaignUpdated - Called when the campaign itself changed (settings, chapters, overrides).
+   * @param onCharactersUpdated - Called with an array of character IDs that changed.
+   * @param intervalMs        - Polling interval in milliseconds (default: 7000 = 7 seconds).
+   */
+  startPolling(
+    campaignId: ID,
+    onCampaignUpdated: () => void,
+    onCharactersUpdated: (changedIds: ID[]) => void,
+    intervalMs = 7000
+  ): void {
+    this.stopPolling(); // Clear any existing interval
+
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/campaigns/${campaignId}/sync-status`, {
+          headers: apiHeaders(),
+          credentials: 'include',
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const status = (await response.json()) as {
+          campaignUpdatedAt: number;
+          characterTimestamps: Record<ID, number>;
+        };
+
+        this.isApiReachable = true;
+
+        // Check campaign-level changes
+        const lastCampaignTs = this.lastSyncTimestamps['__campaign__'] ?? 0;
+        if (status.campaignUpdatedAt > lastCampaignTs) {
+          this.lastSyncTimestamps['__campaign__'] = status.campaignUpdatedAt;
+          onCampaignUpdated();
+        }
+
+        // Check per-character changes
+        const changedCharacterIds: ID[] = [];
+        for (const [charId, ts] of Object.entries(status.characterTimestamps)) {
+          const lastCharTs = this.lastSyncTimestamps[charId] ?? 0;
+          if (ts > lastCharTs) {
+            this.lastSyncTimestamps[charId] = ts;
+            changedCharacterIds.push(charId);
+          }
+        }
+
+        if (changedCharacterIds.length > 0) {
+          onCharactersUpdated(changedCharacterIds);
+        }
+
+        // Persist timestamps so they survive page reload
+        this.#saveCachedSyncTimestamps();
+      } catch {
+        this.isApiReachable = false;
+        // Silently ignore polling failures (offline mode — no log spam)
+      }
+    };
+
+    this.pollingInterval = setInterval(poll, intervalMs);
+    // Run immediately on start too
+    poll();
+  }
+
+  /**
+   * Stops the polling loop.
+   */
+  stopPolling(): void {
+    if (this.pollingInterval !== null) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+  }
 }
 
 // =============================================================================
-// DEBOUNCE HELPER — for auto-save integration
+// DEBOUNCE HELPER
 // =============================================================================
 
 /**
- * Creates a debounced version of a function that delays execution until
- * `delayMs` milliseconds have passed without another call.
+ * Creates a debounced function that delays execution until `delayMs` ms have
+ * passed without another call.
  *
- * WHY DEBOUNCE?
- *   The GameEngine's `$effect` fires synchronously on every $state mutation.
- *   Without debouncing, typing a single character in a text input would trigger
- *   50+ `localStorage.setItem` calls per second (one per keypress).
- *   With a 500ms debounce, we wait until the user pauses before saving.
- *
- *   In Phase 14.6 (PHP API), the debounce delay is increased to 2000ms to avoid
- *   spamming the server.
+ * WHY TWO DELAY VALUES?
+ *   - localStorage writes: 500ms (fast, local I/O)
+ *   - API writes (PUT /api/characters/{id}): 2000ms (avoid spamming the server)
  *
  * @param fn      - The function to debounce.
- * @param delayMs - Milliseconds to wait after the last call before executing.
- * @returns The debounced version of `fn`.
+ * @param delayMs - Milliseconds to wait after the last call.
  */
 export function debounce<T extends unknown[]>(
   fn: (...args: T) => void,
@@ -428,9 +542,7 @@ export function debounce<T extends unknown[]>(
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   return (...args: T): void => {
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-    }
+    if (timeoutId !== null) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       fn(...args);
       timeoutId = null;
@@ -442,18 +554,4 @@ export function debounce<T extends unknown[]>(
 // SINGLETON EXPORT
 // =============================================================================
 
-/**
- * The single shared StorageManager instance.
- *
- * The GameEngine connects to this singleton via `$effect` to auto-save:
- * ```typescript
- * // In GameEngine.svelte.ts (Phase 4.1 integration step):
- * $effect(() => {
- *   debouncedSave(this.character);
- * });
- * const debouncedSave = debounce((char: Character) => {
- *   storageManager.saveCharacter(char);
- * }, 500);
- * ```
- */
 export const storageManager = new StorageManager();
