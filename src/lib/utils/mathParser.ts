@@ -186,6 +186,14 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
     return context.characterLevel;
   }
 
+  // Handle @constant.<id> → context.constants[id]
+  // ARCHITECTURE.md section 4.3: `@constant.<id>` resolves named constants.
+  // The context field is `constants` (plural) but the path prefix is `constant` (singular).
+  if (parts[0] === 'constant' && parts.length >= 2) {
+    const constantId = parts.slice(1).join('.');  // Rejoin in case constant ID has dots
+    return context.constants?.[constantId] ?? 0;
+  }
+
   // Walk the context object tree following the dot-path
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = context;

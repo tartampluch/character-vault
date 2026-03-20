@@ -1,5 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 /**
  * @file vite.config.ts
@@ -53,6 +53,28 @@ const PHP_API_URL = process.env['PHP_API_URL'] || 'http://localhost:8080';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+
+	test: {
+		/**
+		 * Vitest configuration for unit tests.
+		 *
+		 * TEST LOCATION:
+		 *   - src/tests/*.test.ts — frontend engine + utility tests
+		 *
+		 * ENVIRONMENT:
+		 *   - 'node' for pure TypeScript utilities (mathParser, diceEngine, etc.)
+		 *   - Svelte components would need 'jsdom', but we're testing pure functions here.
+		 *
+		 * ALIASES:
+		 *   The $lib alias must be configured so tests can import from src/lib/...
+		 */
+		environment: 'node',
+		globals: true,
+		include: ['src/tests/**/*.test.ts'],
+		alias: {
+			'$lib': new URL('./src/lib', import.meta.url).pathname,
+		},
+	},
 
 	server: {
 		proxy: {

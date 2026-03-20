@@ -267,7 +267,7 @@ _Goal: Ensure the PHP API is secure, handles data correctly, and respects the SQ
 
 _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathematical parser, stacking rules, logic trees, and DAG resolve complex D&D 3.5 scenarios perfectly using raw JSON strings as inputs._
 
-- [ ] **17.1 Math & Placeholder Tests:** Create `src/tests/mathParser.test.ts`.
+- [x] **17.1 Math & Placeholder Tests:** Create `src/tests/mathParser.test.ts`.
     - Provide a mock `characterContext` object.
     - Assert that `evaluateFormula("floor(@attributes.stat_str.totalValue / 2)", context)` correctly extracts the variable and applies the math.
     - Assert complex order of operations: `"(10 + 2) * 1.5"`.
