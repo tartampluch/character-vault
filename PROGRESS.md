@@ -163,14 +163,14 @@ _Goal: Build the Magic, Psionics, and Special Abilities interface. This tab mana
 - [x] **12.1 Magic Resources & Limits:** In `GameEngine`, derive the spellcasting/manifesting limits.
     - Calculate `Caster Level` and `Manifester Level` pipelines based on active classes.
     - Calculate available `Spell Slots` (per level) or `Power Points` (PP) max by reading the class JSON formulas and the relevant key ability modifier (e.g., INT for Wizards, WIS for Clerics).
-- [ ] **12.2 Spells/Powers Catalog (The Grimoire):** Create `src/lib/components/magic/Grimoire.svelte`.
+- [x] **12.2 Spells/Powers Catalog (The Grimoire):** Create `src/lib/components/magic/Grimoire.svelte`.
     - Build an interface allowing the player to "Learn" or "Add" spells to their spellbook.
     - _Filter Logic:_ Fetch `MagicFeature` items from `DataLoader`. Filter them so the UI only shows spells/powers corresponding to the character's active `spellLists` (e.g., if Cleric level 3, only show Cleric spells up to level 2).
-- [ ] **12.3 Preparation & Casting Panel:** Create `src/lib/components/magic/CastingPanel.svelte`.
+- [x] **12.3 Preparation & Casting Panel:** Create `src/lib/components/magic/CastingPanel.svelte`.
     - _Layout:_ Group known spells by Level (0 to 9).
     - _Interaction:_ Add a "Prepare" counter (for Vancian magic like Wizards/Clerics) or a "Cast/Manifest" button (for Sorcerers/Psions).
     - _Breakdown UI:_ Clicking a spell opens a modal displaying its School, Components, Range, Duration, and a "Dice Roll" button for damage/healing. Calculate the Spell Save DC dynamically (`10 + Spell Level + Key Ability Mod`).
-- [ ] **12.4 Special & Domain Abilities Panel:** Create `src/lib/components/magic/SpecialAbilities.svelte`.
+- [x] **12.4 Special & Domain Abilities Panel:** Create `src/lib/components/magic/SpecialAbilities.svelte`.
     - Filter the character's `activeFeatures` for abilities categorized as `class_feature` or `domain` that have an `activation` type (e.g., "Standard Action", "3/Day").
     - Display these as distinct cards. Tie their daily uses to localized `ResourcePool`s so the player can tick off uses (e.g., Turn Undead uses per day).
 
