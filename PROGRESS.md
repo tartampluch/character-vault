@@ -130,9 +130,9 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 - [x] **10.4 Weapons & Attacks Panel:** Create `src/lib/components/combat/Attacks.svelte`.
     - Create dropdowns for Main Hand, Off Hand, and Ranged Weapon. These dropdowns must read from the character's `Inventory` (filtering for `ItemFeature` with weapon tags) plus a default "Unarmed" option.
     - _Requirement:_ Dynamically calculate and display the Total Attack Bonus and Damage Bonus based on the selected weapon (factoring in Weapon Enhancement, STR/DEX modifiers, BAB, and Size). Include "Dice Roll" buttons that pass the weapon's damage dice to the `DiceEngine`.
-- [ ] **10.5 Movement Speeds Panel:** Create `src/lib/components/combat/MovementSpeeds.svelte`. Display Land, Burrow, Climb, Fly, and Swim speed pipelines. Explicitly show the "Armor Penalty Effect" and "Load Penalty Effect" pipelines so the player understands why their speed is reduced.
-- [ ] **10.6 Energy & Special Resistances:** Create `src/lib/components/combat/Resistances.svelte`. Display pipelines for Fire, Cold, Acid, Electricity, Sonic, Spell Resistance (SR), Power Resistance (PR), and Fortification. Allow user-inputted "Misc Modifiers".
-- [ ] **10.7 Damage Reduction (DR) Builder:** Create `src/lib/components/combat/DamageReduction.svelte`.
+- [x] **10.5 Movement Speeds Panel:** Create `src/lib/components/combat/MovementSpeeds.svelte`. Display Land, Burrow, Climb, Fly, and Swim speed pipelines. Explicitly show the "Armor Penalty Effect" and "Load Penalty Effect" pipelines so the player understands why their speed is reduced.
+- [x] **10.6 Energy & Special Resistances:** Create `src/lib/components/combat/Resistances.svelte`. Display pipelines for Fire, Cold, Acid, Electricity, Sonic, Spell Resistance (SR), Power Resistance (PR), and Fortification. Allow user-inputted "Misc Modifiers".
+- [x] **10.7 Damage Reduction (DR) Builder:** Create `src/lib/components/combat/DamageReduction.svelte`.
     - Implement the UI to construct a DR rule (Value, Rule: Bypassed/Excepted, Type: Adamantine/Magic/Slashing).
     - _Requirement:_ When "Add Damage Reduction" is clicked, it should generate a custom `ActiveFeatureInstance` (category: condition/trait) containing the DR modifier and push it to the `GameEngine`. Display the list of active DRs with a delete button.
 
