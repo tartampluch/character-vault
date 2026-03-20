@@ -54,9 +54,9 @@
 ### Phase 5: Test UI (Validation)
 
 - [x] **5.1 Mock Data:** Create `static/rules/test_mock.json` (Race, Class with `levelProgression`, Item, Condition, and an Orc Enemy). Create a second file `static/rules/test_override.json` to test `merge: "partial"` and `merge: "replace"` overrides.
-- [ ] **5.2 Settings & Character Sheet Component:** Create `src/routes/+page.svelte`. Add a toggle for "Exploding 20s" and display Total Strength and Total AC.
-- [ ] **5.3 Graph & Context Testing:** Add a button "Attack the Orc" to trigger the Dice Engine. Prove the "+2 vs Orcs" situational modifier applies ONLY to the roll. Prove that turning on "Exploding 20s" properly rerolls and adds consecutive 20s.
-- [ ] **5.4 Merge Engine Testing:** Prove that enabling `test_override.json` as a rule source correctly merges/replaces Features, including `-prefix` deletions.
+- [x] **5.2 Settings & Character Sheet Component:** Create `src/routes/+page.svelte`. Add a toggle for "Exploding 20s" and display Total Strength and Total AC.
+- [x] **5.3 Graph & Context Testing:** Add a button "Attack the Orc" to trigger the Dice Engine. Prove the "+2 vs Orcs" situational modifier applies ONLY to the roll. Prove that turning on "Exploding 20s" properly rerolls and adds consecutive 20s.
+- [x] **5.4 Merge Engine Testing:** Prove that enabling `test_override.json` as a rule source correctly merges/replaces Features, including `-prefix` deletions.
 
 ### Phase 6: Campaign Management & User Context
 
