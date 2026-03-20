@@ -283,7 +283,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - Mock the RNG to force specific dice rolls.
     - _Context Test:_ Pass a situational context `["orc"]`. Assert a modifier with `situationalContext: "orc"` is added to the `RollResult`, but one with `"goblin"` is ignored.
     - _Exploding Dice Test:_ Mock a `CampaignSettings` with `explodingTwenties: true`. Force the RNG to roll `20, 20, 5`. Assert the `naturalTotal` is `45` and `numberOfExplosions` is `2`.
-- [ ] **17.5 DAG Integration Test (The Infinite Loop Check):** Create `src/tests/dagResolution.test.ts`.
+- [x] **17.5 DAG Integration Test (The Infinite Loop Check):** Create `src/tests/dagResolution.test.ts`.
     - _The Scenario:_ Provide a JSON `Feature` of a "Belt of Constitution +2".
     - Assert that injecting this feature into the `GameEngine` updates the `stat_con` pipeline (Phase 2), which _automatically_ cascades to update the Fortitude save (Phase 3) and increases the `resources.hp.maxPipelineId` (Phase 4).
     - _Loop Test:_ Inject a malicious custom feature that grants +1 CON based on Max HP. Assert the engine resolves it safely or throws a handled circular dependency error without crashing the test runner.
