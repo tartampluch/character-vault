@@ -279,7 +279,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
 - [x] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`.
     - Pass an array of `Modifier` objects: `+2 enhancement`, `+4 enhancement`, `+1 dodge`, `+1 dodge`, `+2 deflection`.
     - Assert the total is exactly `+8` (Takes the highest enhancement (4) + stacks both dodges (2) + deflection (2)).
-- [ ] **17.4 Dice Engine Tests:** Create `src/tests/diceEngine.test.ts`.
+- [x] **17.4 Dice Engine Tests:** Create `src/tests/diceEngine.test.ts`.
     - Mock the RNG to force specific dice rolls.
     - _Context Test:_ Pass a situational context `["orc"]`. Assert a modifier with `situationalContext: "orc"` is added to the `RollResult`, but one with `"goblin"` is ignored.
     - _Exploding Dice Test:_ Mock a `CampaignSettings` with `explodingTwenties: true`. Force the RNG to roll `20, 20, 5`. Assert the `naturalTotal` is `45` and `numberOfExplosions` is `2`.
