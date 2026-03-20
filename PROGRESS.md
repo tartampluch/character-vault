@@ -287,7 +287,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - _The Scenario:_ Provide a JSON `Feature` of a "Belt of Constitution +2".
     - Assert that injecting this feature into the `GameEngine` updates the `stat_con` pipeline (Phase 2), which _automatically_ cascades to update the Fortitude save (Phase 3) and increases the `resources.hp.maxPipelineId` (Phase 4).
     - _Loop Test:_ Inject a malicious custom feature that grants +1 CON based on Max HP. Assert the engine resolves it safely or throws a handled circular dependency error without crashing the test runner.
-- [ ] **17.6 Multiclass & Level Progression Tests:** Create `src/tests/multiclass.test.ts`.
+- [x] **17.6 Multiclass & Level Progression Tests:** Create `src/tests/multiclass.test.ts`.
     - _The Scenario:_ Provide a mock character with `classLevels: { "class_fighter": 5, "class_wizard": 3 }`.
     - Assert that `character_level` resolves to 8.
     - Assert that Fighter's BAB progression (full) contributes +5 and Wizard's (half) contributes +1, for a total BAB of +6.
