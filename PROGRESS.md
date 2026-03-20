@@ -143,7 +143,7 @@ _Goal: Build the Feats management interface. This involves tracking available fe
 - [x] **11.1 Feat Capacity Pipeline:** In `GameEngine`, establish a specific pipeline/resource to calculate `Feat Slots`.
     - _Base logic:_ `1 + floor(character_level / 3)`.
     - _Bonus logic:_ Add bonus slots granted by other features (e.g., Human bonus feat, Fighter bonus feats). Calculate "Feats Left" by subtracting the number of manually selected feats from this total.
-- [ ] **11.2 Feats Tab Layout & Lists:** Create `src/lib/components/feats/FeatsTab.svelte`.
+- [x] **11.2 Feats Tab Layout & Lists:** Create `src/lib/components/feats/FeatsTab.svelte`.
     - Render the header showing "Feats Available" and "Feats Left" dynamically.
     - Create a `Granted Feats` section: Loop through `activeFeatures` to find features automatically granted by a parent feature (like Class or Race). Display them as read-only (no delete button). Show the source tag (e.g., "Druid" or "Gnome").
     - Create a `Selected Feats` section: List the feats manually chosen by the player, with a "Delete" button to free up the slot.
