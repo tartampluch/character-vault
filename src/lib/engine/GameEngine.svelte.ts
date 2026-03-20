@@ -44,6 +44,7 @@ import { dataLoader } from './DataLoader';
 import { checkCondition } from '../utils/logicEvaluator';
 import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
+import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 
 // =============================================================================
 // CONSTANTS
@@ -338,6 +339,161 @@ export class GameEngine {
       equippedWeaponTags: [], // Populated in Phase 3 when weapon slot is resolved
       selection: {}, // Populated per-instance by the conditionNode evaluator
       constants: {},  // Populated by DataLoader config tables (Phase 4.2)
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // DAG PHASE 1 — Base & Size Modifiers
+  // ---------------------------------------------------------------------------
+  //
+  // Phase 1 computes size modifiers from the flat modifier list (Phase 0).
+  // Size affects AC (to-hit and AC), Grapple, and various other derived stats.
+  // This phase is kept separate from Phase 2 so that size modifiers are "frozen"
+  // before the main attribute computation reads them.
+  //
+  // Currently: computes the net size modifier for AC and attack rolls from
+  // modifiers targeting "stat_size" pipeline.
+
+  /**
+   * DAG Phase 1: Resolved size pipeline.
+   *
+   * Reads all modifiers targeting "stat_size" from phase0_flatModifiers,
+   * applies stacking rules, and returns the resolved pipeline.
+   *
+   * Size values in D&D 3.5 (applied as modifiers to the base 0):
+   *   Fine: +8, Diminutive: +4, Tiny: +2, Small: +1, Medium: 0,
+   *   Large: -1, Huge: -2, Gargantuan: -4, Colossal: -8
+   *
+   * The engine stores these as literal numeric modifiers from Race features.
+   * (Zero hardcoding: there's no enum for size — just modifier values in JSON.)
+   */
+  phase1_sizePipeline: StatisticPipeline = $derived.by(() => {
+    const base = this.character.attributes['stat_size'];
+    if (!base) return { id: 'stat_size', label: { en: 'Size', fr: 'Taille' }, baseValue: 0, activeModifiers: [], situationalModifiers: [], totalBonus: 0, totalValue: 0, derivedModifier: 0 };
+
+    // Collect all modifiers targeting stat_size
+    const sizeMods = this.phase0_flatModifiers
+      .filter(e => e.modifier.targetId === 'stat_size' && !e.modifier.situationalContext)
+      .map(e => e.modifier);
+
+    const situationalSizeMods = this.phase0_flatModifiers
+      .filter(e => e.modifier.targetId === 'stat_size' && e.modifier.situationalContext)
+      .map(e => e.modifier);
+
+    const stacking = applyStackingRules(sizeMods, base.baseValue);
+    const derivedMod = computeDerivedModifier(stacking.totalValue);
+
+    return {
+      ...base,
+      activeModifiers: stacking.appliedModifiers,
+      situationalModifiers: situationalSizeMods,
+      totalBonus: stacking.totalBonus,
+      totalValue: stacking.totalValue,
+      derivedModifier: derivedMod,
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // DAG PHASE 2 — Main Attributes (6 Ability Scores)
+  // ---------------------------------------------------------------------------
+  //
+  // This is the most critical DAG phase. The 6 main ability scores are computed
+  // here using the flat modifier list from Phase 0. Their `derivedModifier` values
+  // (the "+4" for STR 18) are computed and stored here for use by Phase 3 (combat
+  // stats that depend on CON for HP, DEX for AC, etc.).
+  //
+  // DESIGN: We compute a computed attributes record indexed by pipelineId.
+  // Each attribute's pipeline is resolved independently in a loop.
+  //
+  // INFINITE LOOP PROTECTION:
+  //   If a modifier's value is a formula referencing another attribute's derivedModifier
+  //   (e.g., Monk WIS-to-AC), this is handled by Phase 0 using the PRELIMINARY context.
+  //   The Monk AC bonus is a combatStats modifier, not an attribute modifier, so it
+  //   doesn't create a Phase 2 dependency cycle. True attribute→attribute cycles are
+  //   detected by the MAX_RESOLUTION_DEPTH guard in #collectModifiersFromInstance.
+
+  /**
+   * DAG Phase 2: Resolved attribute pipelines for ALL character attributes.
+   *
+   * Returns a Record mapping attribute pipelineId → resolved StatisticPipeline.
+   *
+   * KEY OUTPUT: Each pipeline has a computed `derivedModifier` (the D&D 3.5 mod).
+   *   These values are frozen after Phase 2 and read by Phase 3 for:
+   *     - DEX modifier → Initiative and AC
+   *     - CON modifier → Max HP (per level) and Fortitude save
+   *     - STR modifier → Grapple check
+   *     - WIS modifier → Will save and (for Monk) AC bonus
+   *     - INT modifier → Skill points available
+   *
+   * MAIN ABILITY SCORE IDs: stat_str, stat_dex, stat_con, stat_int, stat_wis, stat_cha
+   * Also processes any other attribute pipelines (stat_size, custom homebrew stats).
+   */
+  phase2_attributes: Record<ID, StatisticPipeline> = $derived.by(() => {
+    const result: Record<ID, StatisticPipeline> = {};
+    const flatMods = this.phase0_flatModifiers;
+
+    for (const [pipelineId, basePipeline] of Object.entries(this.character.attributes)) {
+      // Collect modifiers targeting this attribute pipeline
+      const activeMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      const situationalMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      // Apply stacking rules to compute totalBonus and totalValue
+      const stacking = applyStackingRules(activeMods, basePipeline.baseValue);
+
+      // Compute the D&D 3.5 ability modifier: floor((totalValue - 10) / 2)
+      // This is meaningful only for the 6 main ability scores (STR/DEX/CON/INT/WIS/CHA).
+      // For other pipelines (stat_size, stat_caster_level), derivedModifier is still computed
+      // but effectively unused (it just returns 0 for non-ability-score-like values).
+      const derivedMod = computeDerivedModifier(stacking.totalValue);
+
+      result[pipelineId] = {
+        ...basePipeline,
+        activeModifiers: stacking.appliedModifiers,
+        situationalModifiers: situationalMods,
+        totalBonus: stacking.totalBonus,
+        totalValue: stacking.totalValue,
+        derivedModifier: derivedMod,
+      };
+    }
+
+    return result;
+  });
+
+  /**
+   * DAG Phase 2b: Updated CharacterContext with Phase 2 attribute values.
+   *
+   * This "upgraded" context includes the fully resolved attribute totalValues and
+   * derivedModifiers from Phase 2. It is used by Phase 3 formulas that reference
+   * ability scores (e.g., "CON derivedModifier × characterLevel" for Max HP,
+   * "WIS derivedModifier" for Will save base, etc.).
+   *
+   * WHY A SECOND CONTEXT?
+   *   The Phase 0 context used BASE values (pre-modifier) for formula resolution.
+   *   Now that attributes are fully resolved, Phase 3 formulas can read accurate values.
+   *   Without this upgrade, CON-based formulas in HP modifiers would use stale base values.
+   */
+  phase2_context: CharacterContext = $derived.by(() => {
+    // Start from the Phase 0 context snapshot
+    const base = this.phase0_context;
+
+    // Upgrade the attributes section with Phase 2 resolved values
+    const upgradedAttributes: CharacterContext['attributes'] = {};
+    for (const [id, pipeline] of Object.entries(this.phase2_attributes)) {
+      upgradedAttributes[id] = {
+        baseValue: pipeline.baseValue,
+        totalValue: pipeline.totalValue,
+        derivedModifier: pipeline.derivedModifier,
+      };
+    }
+
+    return {
+      ...base,
+      attributes: upgradedAttributes,
     };
   });
 

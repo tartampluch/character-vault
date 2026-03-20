@@ -43,7 +43,7 @@
 
 - [x] **3.1 Store Skeleton:** Create `src/lib/engine/GameEngine.svelte.ts` (Initialize global state, including `CampaignSettings` and active `Character`).
 - [x] **3.2 Flattening & Filtering:** Create Step 0 `$derived` (Flat list of valid modifiers after checking prerequisites, forbidden tags, `classLevel` gating from `levelProgression`, and applying the full Data Override resolution chain including `gmOverrides`).
-- [ ] **3.3 DAG - Base Attributes:** Create Step 1 & 2 `$derived` (Calculate 6 main stats and their `derivedModifier`, isolating situational modifiers).
+- [x] **3.3 DAG - Base Attributes:** Create Step 1 & 2 `$derived` (Calculate 6 main stats and their `derivedModifier`, isolating situational modifiers).
 - [ ] **3.4 DAG - Combat Stats & Skills:** Create Step 3 & 4 `$derived` (Calculate AC, BAB, Saves, Max HP, and Skills using results from previous derivations to prevent infinite loops).
 
 ### Phase 4: Persistence & I/O
