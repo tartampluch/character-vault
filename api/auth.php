@@ -215,7 +215,10 @@ function handleLogin(): void
     }
 
     // Regenerate session ID to prevent session fixation attacks.
-    session_regenerate_id(true);
+    // In CLI mode (PHPUnit), session regeneration is skipped (no HTTP session in CLI).
+    if (PHP_SAPI !== 'cli') {
+        session_regenerate_id(true);
+    }
 
     // Store minimal user info in session (avoid storing sensitive data).
     $_SESSION['user_id']        = $user['id'];

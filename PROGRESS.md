@@ -259,7 +259,7 @@ _Goal: Ensure the PHP API is secure, handles data correctly, and respects the SQ
     - Test `POST`: Ensure the JSON is correctly saved to the DB.
     - Test `GET`: Ensure the retrieved JSON exactly matches the stored data without corruption or encoding issues.
 - [x] **16.3 Visibility & Authorization Tests:** Create `tests/VisibilityTest.php`. Mock a session where `isGameMaster = false`. Attempt to fetch a character belonging to another `ownerId`. Assert that the API returns a `403 Forbidden` or filters the character out of the list.
-- [ ] **16.4 Authentication Tests:** Create `tests/AuthTest.php`. Test login with valid/invalid credentials. Test that protected endpoints reject unauthenticated requests with `401`. Test that session persists across requests.
+- [x] **16.4 Authentication Tests:** Create `tests/AuthTest.php`. Test login with valid/invalid credentials. Test that protected endpoints reject unauthenticated requests with `401`. Test that session persists across requests.
 - [ ] **16.5 GM Override Visibility Tests:** Create `tests/GmOverrideTest.php`. Test that a player fetching their own character receives the merged result (with GM overrides applied invisibly). Test that a GM fetching the same character receives both the base data and the raw `gmOverrides` separately.
 - [ ] **16.6 Sync Timestamp Tests:** Create `tests/SyncTest.php`. Test that modifying a character updates its `updated_at`. Test that `GET /api/campaigns/{id}/sync-status` returns correct timestamps. Test that modifying GM overrides also updates the character's `updated_at`.
 
