@@ -169,10 +169,6 @@ abstract class TestCase extends PHPUnitTestCase
      */
     protected function callController(callable $controllerAction): array
     {
-        // Save current HTTP response code state
-        $previousCode = http_response_code();
-
-        // Capture output
         ob_start();
         try {
             $controllerAction();
@@ -189,5 +185,37 @@ abstract class TestCase extends PHPUnitTestCase
         http_response_code(200);
 
         return ['status' => $status, 'body' => $body];
+    }
+
+    /**
+     * Calls a controller action with a custom JSON request body.
+     *
+     * Uses the TestPhpInputStream stream wrapper to mock php://input.
+     * Always restores the original php stream wrapper in a finally block.
+     *
+     * @param callable $action    - The controller method to call.
+     * @param string   $jsonBody  - The JSON body to inject as php://input.
+     * @return array ['status' => int, 'body' => array]
+     */
+    protected function callControllerWithInput(callable $action, string $jsonBody): array
+    {
+        // Register our mock stream wrapper to intercept php://input reads
+        stream_wrapper_unregister('php');
+        stream_register_wrapper('php', TestPhpInputStream::class);
+        TestPhpInputStream::$inputData = $jsonBody;
+
+        ob_start();
+        try {
+            $action();
+        } finally {
+            // IMPORTANT: always restore php stream wrapper, even if test fails
+            stream_wrapper_restore('php');
+        }
+        $output = ob_get_clean();
+
+        $status = http_response_code();
+        http_response_code(200);
+
+        return ['status' => $status, 'body' => json_decode($output, true) ?? []];
     }
 }

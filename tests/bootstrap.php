@@ -9,7 +9,8 @@
  * RESPONSIBILITIES:
  *   1. Load Composer autoloader (for PHPUnit itself).
  *   2. Load the API source files that tests will exercise.
- *   3. The APP_TESTING environment variable is set in phpunit.xml
+ *   3. Load shared test utilities (TestPhpInputStream, TestCase base class).
+ *   4. The APP_TESTING environment variable is set in phpunit.xml
  *      (env name="APP_TESTING" value="1"), so Database::getInstance()
  *      will use sqlite::memory: automatically.
  *
@@ -35,3 +36,7 @@ require_once __DIR__ . '/../api/middleware.php';
 require_once __DIR__ . '/../api/controllers/CampaignController.php';
 require_once __DIR__ . '/../api/controllers/CharacterController.php';
 require_once __DIR__ . '/../api/controllers/RulesController.php';
+
+// 3. Shared test utilities
+require_once __DIR__ . '/TestCase.php';
+require_once __DIR__ . '/TestPhpInputStream.php';
