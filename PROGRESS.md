@@ -126,7 +126,7 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 - [x] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
     - Read from three distinct pipelines: `combatStats.ac_normal`, `combatStats.ac_touch`, and `combatStats.ac_flat_footed`.
     - _Requirement:_ Include the `ModifierBreakdownModal` (from Phase 9) on the "i" icons so the user can see exactly why their Touch AC ignores Armor/Shield modifiers. Bind the "Temporary Modifier" input to a generic untyped modifier applied to all three AC pipelines.
-- [ ] **10.3 Core Combat Stats:** Create `src/lib/components/combat/CoreCombat.svelte`. Display Base Attack Bonus (BAB), Initiative, and Grapple Modifier pipelines. Include the "Dice Roll" and "Breakdown" buttons for Initiative and Grapple.
+- [x] **10.3 Core Combat Stats:** Create `src/lib/components/combat/CoreCombat.svelte`. Display Base Attack Bonus (BAB), Initiative, and Grapple Modifier pipelines. Include the "Dice Roll" and "Breakdown" buttons for Initiative and Grapple.
 - [ ] **10.4 Weapons & Attacks Panel:** Create `src/lib/components/combat/Attacks.svelte`.
     - Create dropdowns for Main Hand, Off Hand, and Ranged Weapon. These dropdowns must read from the character's `Inventory` (filtering for `ItemFeature` with weapon tags) plus a default "Unarmed" option.
     - _Requirement:_ Dynamically calculate and display the Total Attack Bonus and Damage Bonus based on the selected weapon (factoring in Weapon Enhancement, STR/DEX modifiers, BAB, and Size). Include "Dice Roll" buttons that pass the weapon's damage dice to the `DiceEngine`.
