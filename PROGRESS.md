@@ -160,7 +160,7 @@ _Goal: Build the Feats management interface. This involves tracking available fe
 
 _Goal: Build the Magic, Psionics, and Special Abilities interface. This tab manages Spellbooks, Power Points, Domain Powers, and daily casting limits using the `MagicFeature` and `ResourcePool` models._
 
-- [ ] **12.1 Magic Resources & Limits:** In `GameEngine`, derive the spellcasting/manifesting limits.
+- [x] **12.1 Magic Resources & Limits:** In `GameEngine`, derive the spellcasting/manifesting limits.
     - Calculate `Caster Level` and `Manifester Level` pipelines based on active classes.
     - Calculate available `Spell Slots` (per level) or `Power Points` (PP) max by reading the class JSON formulas and the relevant key ability modifier (e.g., INT for Wizards, WIS for Clerics).
 - [ ] **12.2 Spells/Powers Catalog (The Grimoire):** Create `src/lib/components/magic/Grimoire.svelte`.

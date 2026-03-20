@@ -1066,6 +1066,46 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // MAGIC RESOURCES — Phase 12.1
+  // ---------------------------------------------------------------------------
+  //
+  // Caster Level and Manifester Level are derived from class levelProgression modifiers
+  // that target "stat_caster_level" and "stat_manifester_level" pipelines.
+  //
+  // These pipelines are automatically resolved by phase2_attributes because those
+  // pipeline IDs are initialized in createEmptyCharacter().
+
+  /**
+   * Caster Level: reads from phase2_attributes["stat_caster_level"].totalValue.
+   * Governed by class-granted "base" modifiers on the caster_level pipeline.
+   */
+  phase_casterLevel: number = $derived(
+    this.phase2_attributes['stat_caster_level']?.totalValue ?? 0
+  );
+
+  /**
+   * Manifester Level: reads from phase2_attributes["stat_manifester_level"].totalValue.
+   * Used for psionic power point calculations and augmentation caps.
+   */
+  phase_manifesterLevel: number = $derived(
+    this.phase2_attributes['stat_manifester_level']?.totalValue ?? 0
+  );
+
+  /**
+   * All resource pools related to spell slots and power points.
+   * Filtered from character.resources by key prefix "resources.spell_slots_" or "resources.power_points".
+   * Used by the Spells/Powers tab to render casting resources.
+   */
+  phase_magicResources = $derived.by(() => {
+    return Object.entries(this.character.resources)
+      .filter(([key]) =>
+        key.startsWith('resources.spell_slots') ||
+        key.startsWith('resources.power_points')
+      )
+      .map(([, pool]) => pool);
+  });
+
+  // ---------------------------------------------------------------------------
   // FEAT SLOTS — Phase 11.1
   // ---------------------------------------------------------------------------
   //
