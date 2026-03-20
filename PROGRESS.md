@@ -63,8 +63,8 @@
 _Goal: Establish the overarching container for characters. A Campaign groups characters, tracks story progression via Acts/Chapters, and handles Game Master (GM) vs Player visibility._
 
 - [x] **6.1 User Context & Roles:** Create `src/lib/engine/SessionContext.svelte.ts` to mock a user session. It must include `currentUserId`, `isGameMaster` (boolean), and `activeCampaignId`. Design it so it can later be replaced by a real PHP-backed auth session.
-- [ ] **6.2 Character Model Updates:** Update `src/lib/types/character.ts` to include meta-data for the UI: `campaignId`, `ownerId` (to link to the user), `isNPC` (boolean), `posterUrl`, `playerRealName`, and `customSubtitle`.
-- [ ] **6.3 Campaign Hub UI:** Create `src/routes/campaigns/+page.svelte`. Display a grid of available campaigns using their `posterUrl` and `bannerUrl`. Add a "Create Campaign" button (visible only if GM).
+- [x] **6.2 Character Model Updates:** Update `src/lib/types/character.ts` to include meta-data for the UI: `campaignId`, `ownerId` (to link to the user), `isNPC` (boolean), `posterUrl`, `playerRealName`, and `customSubtitle`.
+- [x] **6.3 Campaign Hub UI:** Create `src/routes/campaigns/+page.svelte`. Display a grid of available campaigns using their `posterUrl` and `bannerUrl`. Add a "Create Campaign" button (visible only if GM).
 - [ ] **6.4 Campaign Details & Acts UI:** Create `src/routes/campaigns/[id]/+page.svelte`. Display the campaign banner and summary. Render the list of Chapters/Acts. If `isGameMaster` is true, allow checking/unchecking the `isCompleted` status of chapters.
 
 ### Phase 7: The Character Vault
