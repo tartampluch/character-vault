@@ -105,7 +105,7 @@ _Goal: Build the complete interactive Abilities, Saving Throws, and Skills inter
 - [x] **9.2 Breakdown & Dice Roll Modals (Shared UI):**
     - Create `src/lib/components/ui/ModifierBreakdownModal.svelte`. It reads a pipeline's `activeModifiers` and displays the math (Base + Modifiers = Final).
     - Create `src/lib/components/ui/DiceRollModal.svelte`. It takes a target pipeline (e.g., Strength, Jump), calls the `DiceEngine.parseAndRoll()` function, and displays the `RollResult` (Natural Roll + Total Bonus = Final Result, highlighting Critical Failures/Successes).
-- [ ] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. Display the 6 main stats (STR to CHA). Show the Final Modifier (`derivedModifier`), Base Score (editable), and Temporary Modifier. Add the "i" button (opens Breakdown) and the "Dice" button (opens Roll Modal) for each stat.
+- [x] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. Display the 6 main stats (STR to CHA). Show the Final Modifier (`derivedModifier`), Base Score (editable), and Temporary Modifier. Add the "i" button (opens Breakdown) and the "Dice" button (opens Roll Modal) for each stat.
 - [ ] **9.4 Stat Generation Wizards (Point Buy & Roll):**
     - Create `PointBuyModal.svelte`. Implement the 3.5 point buy math. Read `recommendedAttributes` from the character's active Class feature to color-code (green/orange/red) the stats. Restrict spending based on `CampaignSettings.statGeneration.pointBuyBudget`.
     - Create `RollStatsModal.svelte`. Implement the 4d6 drop lowest logic. Automatically reroll 1s if `CampaignSettings.statGeneration.rerollOnes` is true. Allow assigning the 6 rolled values to the desired attributes.
