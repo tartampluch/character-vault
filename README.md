@@ -1,42 +1,112 @@
-# sv
+# Character Vault — D&D 3.5 Virtual Tabletop Engine
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A data-driven D&D 3.5 character sheet and campaign management application built with **Svelte 5**, **TypeScript**, and **PHP/SQLite**.
 
-## Creating a project
+## Architecture
 
-If you're seeing this, you've probably already done this step. Congrats!
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full system specification.
+See [`ANNEXES.md`](ANNEXES.md) for JSON rule file examples and configuration tables.
+See [`PROGRESS.md`](PROGRESS.md) for the development checklist and final review report.
+
+## Prerequisites
+
+- **Node.js** 18+ and npm
+- **PHP** 8.1+ (for the backend API)
+- **Composer** (for PHPUnit tests)
+
+## Setup
 
 ```sh
-# create a new project
-npx sv create my-app
-```
+# Install frontend dependencies
+npm install
 
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.12.8 create --template minimal --types ts --no-install .
+# Install PHP test dependencies
+composer install
 ```
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Start both the frontend dev server and the PHP API:
 
 ```sh
+# Terminal 1: SvelteKit dev server (port 5173)
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Terminal 2: PHP built-in server (port 8080)
+php -S localhost:8080 -t api api/index.php
 ```
 
-## Building
+The Vite proxy configuration in [`vite.config.ts`](vite.config.ts) forwards `/api` requests to the PHP server automatically.
 
-To create a production version of your app:
+## Database Setup
+
+Run the migration script to create the SQLite database:
+
+```sh
+php api/migrate.php
+```
+
+This creates the `users`, `campaigns`, and `characters` tables.
+
+## Running Tests
+
+### Frontend Tests (Vitest)
+
+```sh
+# Run all Vitest unit tests
+npm test
+
+# Run tests in watch mode
+npm run test -- --watch
+
+# Run a specific test file
+npm test -- src/tests/diceEngine.test.ts
+```
+
+Test suites (7 files, 219+ test cases):
+- [`mathParser.test.ts`](src/tests/mathParser.test.ts) — Formula evaluation, `@`-path resolution, pipe operators
+- [`logicEvaluator.test.ts`](src/tests/logicEvaluator.test.ts) — Logic tree evaluation (AND/OR/NOT/CONDITION)
+- [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) — D&D 3.5 modifier stacking rules
+- [`diceEngine.test.ts`](src/tests/diceEngine.test.ts) — Dice rolling, situational bonuses, exploding 20s
+- [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) — DAG cascade, forbidden tags, formula-as-value
+- [`multiclass.test.ts`](src/tests/multiclass.test.ts) — Multiclass BAB/saves, level-gated features
+- [`mergeEngine.test.ts`](src/tests/mergeEngine.test.ts) — Data override merge engine (replace/partial/-prefix)
+
+### Backend Tests (PHPUnit)
+
+```sh
+# Run all PHPUnit tests
+./vendor/bin/phpunit
+
+# Run a specific test file
+./vendor/bin/phpunit tests/AuthTest.php
+```
+
+Test suites (6 files):
+- [`AuthTest.php`](tests/AuthTest.php) — Login/logout, session persistence, wrong credentials
+- [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) — Character CRUD, JSON persistence
+- [`VisibilityTest.php`](tests/VisibilityTest.php) — Role-based access control (GM vs player)
+- [`GmOverrideTest.php`](tests/GmOverrideTest.php) — GM override visibility (merged vs raw)
+- [`SyncTest.php`](tests/SyncTest.php) — Timestamp-based sync mechanism
+- [`TestCase.php`](tests/TestCase.php) — Base test utilities with in-memory SQLite
+
+## Building
 
 ```sh
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+npm run preview
+```
+
+## Production Deployment
+
+For production, configure your web server (Apache/nginx) to:
+- Route `/api/*` requests to PHP
+- Route all other requests to the SvelteKit build output
+- Store the SQLite database file outside the web root
+
+See [`api/config.php`](api/config.php) for environment configuration options.

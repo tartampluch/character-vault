@@ -38,8 +38,9 @@
  *   CRITICAL HIT / FUMBLE DETECTION:
  *     Only triggered for d20 rolls (attack rolls, saving throws, skill checks in some variants).
  *     - `isCriticalThreat`: true when the natural d20 roll equals or exceeds the weapon's
- *       crit range (tracked by the combat system, not this engine). The engine only checks
- *       for natural 20 as the default — the caller/UI handles crit range thresholds.
+ *       crit range. The engine accepts an optional `critRange` parameter (e.g., "19-20",
+ *       "18-20") and parses it to determine the minimum threat threshold. Defaults to "20"
+ *       (only natural 20 is a threat) when `critRange` is not provided.
  *     - `isAutomaticHit`:  natural 20 on d20 is an automatic hit regardless of AC.
  *     - `isAutomaticMiss`: natural 1 on d20 is an automatic miss regardless of bonuses.
  *     For non-d20 rolls (damage, saves with flat modifiers), these are always false.
@@ -339,6 +340,11 @@ function defaultRng(faces: number): number {
  * @param context     - Roll context: target tags and action type for situational matching.
  * @param settings    - Campaign settings (explodingTwenties, etc.).
  * @param rng         - Optional injectable RNG for testing. Default: Math.random-based.
+ * @param critRange   - Optional weapon critical threat range string (e.g., "19-20", "18-20").
+ *                      If provided, the engine parses it and uses it to determine `isCriticalThreat`.
+ *                      If absent, defaults to "20" (natural 20 only, standard D&D 3.5 behavior).
+ *                      This enables weapons like longswords (19-20) and scimitars (18-20) to
+ *                      correctly flag critical threats without caller-side workarounds.
  * @returns A fully structured `RollResult`.
  */
 export function parseAndRoll(
@@ -346,7 +352,8 @@ export function parseAndRoll(
   pipeline: StatisticPipeline,
   context: RollContext,
   settings: CampaignSettings,
-  rng: (faces: number) => number = defaultRng
+  rng: (faces: number) => number = defaultRng,
+  critRange: string = '20'
 ): RollResult {
   const groups = parseDiceExpression(formula);
 
@@ -438,11 +445,26 @@ export function parseAndRoll(
   const finalTotal = naturalTotal + staticBonus + situationalBonusApplied;
 
   // --- Step 5: Detect crits and fumbles (d20 only) ---
-  // Natural 20: automatic hit and critical threat.
-  // Natural 1:  automatic miss (fumble).
+  // Parse the critRange string to determine the minimum roll for a critical threat.
+  // Default critRange is "20" (only natural 20). Weapons like longswords use "19-20",
+  // scimitars/keen weapons use "18-20". Format: "MIN-MAX" or just "MAX" (= MIN).
+  // ARCHITECTURE.md section 17: isCriticalThreat is true when the natural d20 roll
+  // equals or exceeds the weapon's critical threat range minimum.
+  let critMin = 20; // Default: only natural 20 is a threat
+  if (critRange.includes('-')) {
+    const rangeParts = critRange.split('-');
+    critMin = parseInt(rangeParts[0], 10) || 20;
+  } else {
+    critMin = parseInt(critRange, 10) || 20;
+  }
+
+  // Natural 20: always an automatic hit AND critical threat.
+  // Natural [critMin..19]: critical threat but NOT automatic hit (per RAW only 20 auto-hits).
+  // Natural 1: automatic miss (fumble).
   // For exploding 20s: the FIRST die result determines the crit/fumble status.
-  const isCriticalThreat = isD20Roll && (firstD20Roll === 20 || (firstD20Roll === 0 && naturalTotal >= 20));
-  const isAutomaticHit = isCriticalThreat;
+  const effectiveFirstRoll = firstD20Roll > 0 ? firstD20Roll : (isD20Roll ? naturalTotal : 0);
+  const isCriticalThreat = isD20Roll && effectiveFirstRoll >= critMin;
+  const isAutomaticHit = isD20Roll && effectiveFirstRoll >= 20;
   const isAutomaticMiss = isD20Roll && firstD20Roll === 1;
 
   return {

@@ -33,8 +33,10 @@
       value > 0:  "+N <TargetId>" in green
       value < 0:  "N <TargetId>" in red
       value == 0: "0 <TargetId>" in neutral
-    The `targetId` is shown as-is (e.g., "stat_str" → displayed as "stat_str").
-    Future Phase 9 work will add full pipeline labelling to show "Strength" instead.
+    The `targetId` is resolved to a human-readable label using the engine's pipeline
+    data. For attributes like "stat_str", the label is fetched from the engine's
+    phase2_attributes or from the config_attribute_definitions config table.
+    If no label is found, the raw targetId is displayed as a fallback.
 
   PREREQUISITE DISPLAY:
     Reads `feature.prerequisitesNode` and evaluates it using `evaluateLogicNode()`.
@@ -133,6 +135,31 @@
   // KEYBOARD HANDLER
   // ============================================================
 
+  /**
+   * Resolves a pipeline targetId (e.g., "stat_str", "combatStats.bab") to a readable label.
+   * Looks up the pipeline in the engine's resolved attributes, combat stats, saves, and skills.
+   * Falls back to the raw targetId if no label is found.
+   */
+  function resolvePipelineLabel(targetId: string): string {
+    // Strip the "attributes." prefix if present (normalise convention)
+    const normalised = targetId.startsWith('attributes.') ? targetId.slice('attributes.'.length) : targetId;
+
+    // Check engine's phase2_attributes (e.g., "stat_str" → "Strength")
+    const attrPipeline = engine.phase2_attributes[normalised];
+    if (attrPipeline?.label) return engine.t(attrPipeline.label);
+
+    // Check engine's phase3_combatStats (e.g., "combatStats.bab" → "Base Attack Bonus")
+    const combatPipeline = engine.phase3_combatStats[targetId];
+    if (combatPipeline?.label) return engine.t(combatPipeline.label);
+
+    // Check engine's phase4_skills (e.g., "skill_climb" → "Climb")
+    const skillPipeline = engine.phase4_skills[targetId];
+    if (skillPipeline?.label) return engine.t(skillPipeline.label);
+
+    // Fallback: return the raw targetId as-is
+    return targetId;
+  }
+
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       onclose();
@@ -230,7 +257,7 @@
                       {mod.value}
                     {/if}
                   </span>
-                  <span class="mod-target">{mod.targetId}</span>
+                  <span class="mod-target">{resolvePipelineLabel(mod.targetId)}</span>
                   <span class="mod-type">({mod.type})</span>
                   {#if mod.situationalContext}
                     <span class="mod-situational">vs. {mod.situationalContext}</span>

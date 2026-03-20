@@ -705,7 +705,13 @@ export class GameEngine {
       characterLevel: this.phase0_characterLevel,
       classLevels: { ...char.classLevels },
       activeTags: tags,
-      equippedWeaponTags: [], // Populated in Phase 3 when weapon slot is resolved
+      // KNOWN LIMITATION: equippedWeaponTags is empty in Phase 0 context.
+      // Conditional modifiers referencing @equippedWeaponTags (e.g., Weapon Focus)
+      // will see an empty array during Phase 0 formula resolution. These modifiers
+      // are correctly evaluated at ROLL TIME by the Dice Engine (which provides the
+      // weapon tags via RollContext). Content creators should use conditionNode with
+      // @equippedWeaponTags only for roll-time checks, not for sheet-time modifiers.
+      equippedWeaponTags: [],
       selection: {}, // Populated per-instance by the conditionNode evaluator
       constants: {},  // Populated by DataLoader config tables (Phase 4.2)
     };
@@ -1334,13 +1340,45 @@ export class GameEngine {
         // Found a declared casting ability in the active tags
         castingAbilityMod = this.phase2_attributes[foundAbilityId].derivedModifier;
       } else {
-        // FALLBACK: no declared casting ability — use max(WIS, INT, CHA)
-        // This handles characters who are spellcasters but whose class JSON hasn't yet
-        // declared its casting ability tag. It always produces the highest DC.
-        const wis = this.phase2_attributes['stat_wis']?.derivedModifier ?? 0;
-        const int_ = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
-        const cha = this.phase2_attributes['stat_cha']?.derivedModifier ?? 0;
-        castingAbilityMod = Math.max(wis, int_, cha);
+        // FALLBACK: no declared casting ability tag found in active Features.
+        // Use max(WIS, INT, CHA) — the three D&D 3.5 casting ability scores.
+        //
+        // WHY THIS FALLBACK EXISTS:
+        //   Class Features SHOULD declare their casting ability via a tag like
+        //   "caster_ability_stat_int" (Wizard), "caster_ability_stat_wis" (Cleric),
+        //   or "caster_ability_stat_cha" (Sorcerer). When this tag is present, the
+        //   primary code path above resolves the correct ability automatically.
+        //
+        //   This fallback only triggers when NONE of the active Features have a
+        //   "caster_ability_*" tag. Using max(WIS, INT, CHA) is a safe conservative
+        //   approach: it always produces the highest possible DC (benefits the caster).
+        //   It is never harmful (no player would want a LOWER DC).
+        //
+        // TO ELIMINATE THIS FALLBACK:
+        //   Ensure all spellcaster class Features include a tag like:
+        //     "caster_ability_stat_wis" (divine), "caster_ability_stat_int" (arcane),
+        //     or "caster_ability_stat_cha" (spontaneous arcane/psionic).
+        //   See the FeatureChoice documentation in ARCHITECTURE.md section 5.
+        //
+        // DATA-DRIVEN CASTING ABILITY IDS (read from config if available):
+        const castingAbilityTable = dataLoader.getConfigTable('config_attribute_definitions');
+        const castingAbilityIds: string[] = [];
+        if (castingAbilityTable?.data && Array.isArray(castingAbilityTable.data)) {
+          // Filter to mental stats (INT, WIS, CHA) — the only valid casting abilities in D&D 3.5
+          for (const row of castingAbilityTable.data as Array<Record<string, unknown>>) {
+            const id = row['id'] as string | undefined;
+            if (id && (id === 'stat_wis' || id === 'stat_int' || id === 'stat_cha')) {
+              castingAbilityIds.push(id);
+            }
+          }
+        }
+        // If config table not available, use hardcoded fallback (bootstrap state)
+        if (castingAbilityIds.length === 0) {
+          castingAbilityIds.push('stat_wis', 'stat_int', 'stat_cha');
+        }
+        castingAbilityMod = Math.max(
+          ...castingAbilityIds.map(id => this.phase2_attributes[id]?.derivedModifier ?? 0)
+        );
       }
     }
 
