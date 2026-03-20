@@ -37,7 +37,7 @@
 - [x] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts` (Evaluate formulas, replace `@` placeholders, and handle `|distance` / `|weight` pipes).
 - [x] **2.3 Logic Evaluator:** Create `src/lib/utils/logicEvaluator.ts` (Recursive evaluation of `LogicNode`).
 - [x] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts` (Ignore stacking for identical modifier types unless exceptions apply).
-- [ ] **2.5 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings)`. It MUST accept `CampaignSettings` to handle "Exploding 20s" (recursive reroll and add) and "Reroll 1s" (for stat generation). Return a strict `RollResult` type handling crits, fumbles, explosions count, and applying situational buffs.
+- [x] **2.5 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings)`. It MUST accept `CampaignSettings` to handle "Exploding 20s" (recursive reroll and add) and "Reroll 1s" (for stat generation). Return a strict `RollResult` type handling crits, fumbles, explosions count, and applying situational buffs.
 
 ### Phase 3: Svelte 5 Reactive Engine (The DAG)
 
