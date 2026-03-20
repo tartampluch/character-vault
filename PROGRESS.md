@@ -236,13 +236,13 @@ _Goal: Build the GM-exclusive interfaces for managing rule sources, global overr
     - The content is a JSON array of Feature-like objects (any category). Each entry must have a `category` field to identify what it overrides.
     - This override layer is applied **after** all rule source files in the DataLoader resolution chain.
     - Save to `Campaign.gmGlobalOverrides` on the backend.
-- [ ] **15.3 GM Entity Dashboard:** Create `src/routes/campaigns/[id]/gm-dashboard/+page.svelte` (GM-only).
+- [x] **15.3 GM Entity Dashboard:** Create `src/routes/campaigns/[id]/gm-dashboard/+page.svelte` (GM-only).
     - Display a list of all characters, NPCs, and monsters in the campaign.
     - Clicking an entity shows a **read-only summary** of their character sheet (key stats, active effects, current HP, etc.).
     - Below the summary, display a JSON text area for **per-character GM overrides** (`gmOverrides`).
     - This override is stored on the `Character` model and applied **last** in the resolution chain (after global overrides).
     - Include the same JSON validator as in 15.2.
-- [ ] **15.4 Override Resolution Chain Documentation:** Ensure the DataLoader and GameEngine implement the following strict resolution order:
+- [x] **15.4 Override Resolution Chain Documentation:** Ensure the DataLoader and GameEngine implement the following strict resolution order:
     1. Base rule source files (in `enabledRuleSources` order, last wins)
     2. `Campaign.gmGlobalOverrides` (applied after all files)
     3. `Character.gmOverrides` (applied last, per-character)
