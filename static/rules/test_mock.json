@@ -1,0 +1,567 @@
+[
+  {
+    "_comment": "=================================================================",
+    "_comment2": "TEST MOCK DATA - Phase 5.1",
+    "_comment3": "This file contains minimal test fixtures for validating the engine.",
+    "_comment4": "It covers: Race (Human), Class (Fighter with levelProgression),",
+    "_comment5": "Item (Longsword), Condition (Raging), Orc Enemy (for situational test).",
+    "_comment6": "ALL entities have ruleSource: 'test_mock' — enable this source in",
+    "_comment7": "CampaignSettings.enabledRuleSources to use these fixtures.",
+    "_comment8": "================================================================="
+  },
+
+  {
+    "_comment": "--- RACE: Human (for testing racial modifiers and bonus feat slot) ---"
+  },
+  {
+    "id": "race_human",
+    "category": "race",
+    "ruleSource": "test_mock",
+    "label": { "en": "Human", "fr": "Humain" },
+    "description": {
+      "en": "Humans are the most adaptable of the common races. They gain a bonus feat and extra skill points.",
+      "fr": "Les humains sont les plus adaptables des races courantes. Ils gagnent un don supplémentaire et des points de compétence supplémentaires."
+    },
+    "tags": ["race", "humanoid", "medium", "race_human"],
+    "grantedModifiers": [
+      {
+        "id": "human_bonus_feat_slot",
+        "sourceId": "race_human",
+        "sourceName": { "en": "Human Adaptability", "fr": "Adaptabilité humaine" },
+        "targetId": "attributes.bonus_feat_slots",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "human_bonus_skill_per_level",
+        "sourceId": "race_human",
+        "sourceName": { "en": "Human Versatility", "fr": "Polyvalence humaine" },
+        "targetId": "attributes.bonus_skill_points_per_level",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "human_speed",
+        "sourceId": "race_human",
+        "sourceName": { "en": "Human", "fr": "Humain" },
+        "targetId": "combatStats.speed_land",
+        "value": 30,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [],
+    "choices": []
+  },
+
+  {
+    "_comment": "--- CLASS: Fighter (3 levels - demonstrates levelProgression, BAB/saves, bonus feats) ---"
+  },
+  {
+    "id": "class_fighter",
+    "category": "class",
+    "ruleSource": "test_mock",
+    "label": { "en": "Fighter", "fr": "Guerrier" },
+    "description": {
+      "en": "A master of martial combat, skilled with a variety of weapons and armor. Fighters gain bonus feats at 1st, 2nd, and every even level thereafter.",
+      "fr": "Un maître du combat martial, versé dans une grande variété d'armes et d'armures. Les guerriers gagnent des dons supplémentaires au niveau 1, 2 et tous les niveaux pairs suivants."
+    },
+    "tags": ["class", "base_class", "martial", "class_fighter"],
+    "grantedModifiers": [
+      {
+        "id": "fighter_hit_die",
+        "sourceId": "class_fighter",
+        "sourceName": { "en": "Fighter", "fr": "Guerrier" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 10,
+        "type": "base"
+      },
+      {
+        "id": "fighter_skill_points",
+        "sourceId": "class_fighter",
+        "sourceName": { "en": "Fighter", "fr": "Guerrier" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial",
+      "proficiency_all_armor",
+      "proficiency_all_shields"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con", "stat_dex"],
+    "classSkills": [
+      "skill_climb", "skill_handle_animal", "skill_intimidate",
+      "skill_jump", "skill_ride", "skill_swim"
+    ],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat"],
+        "grantedModifiers": [
+          {
+            "id": "fighter_1_bab",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
+            "targetId": "combatStats.bab",
+            "value": 1,
+            "type": "base"
+          },
+          {
+            "id": "fighter_1_fort",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
+            "targetId": "saves.fort",
+            "value": 2,
+            "type": "base"
+          },
+          {
+            "id": "fighter_1_ref",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
+            "targetId": "saves.ref",
+            "value": 0,
+            "type": "base"
+          },
+          {
+            "id": "fighter_1_will",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
+            "targetId": "saves.will",
+            "value": 0,
+            "type": "base"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat"],
+        "grantedModifiers": [
+          {
+            "id": "fighter_2_bab",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 2", "fr": "Guerrier 2" },
+            "targetId": "combatStats.bab",
+            "value": 1,
+            "type": "base"
+          },
+          {
+            "id": "fighter_2_fort",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 2", "fr": "Guerrier 2" },
+            "targetId": "saves.fort",
+            "value": 1,
+            "type": "base"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          {
+            "id": "fighter_3_bab",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 3", "fr": "Guerrier 3" },
+            "targetId": "combatStats.bab",
+            "value": 1,
+            "type": "base"
+          },
+          {
+            "id": "fighter_3_ref",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 3", "fr": "Guerrier 3" },
+            "targetId": "saves.ref",
+            "value": 1,
+            "type": "base"
+          },
+          {
+            "id": "fighter_3_will",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 3", "fr": "Guerrier 3" },
+            "targetId": "saves.will",
+            "value": 1,
+            "type": "base"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "_comment": "--- CLASS FEATURE: Fighter Bonus Feat slot ---"
+  },
+  {
+    "id": "class_feature_fighter_bonus_feat",
+    "category": "class_feature",
+    "ruleSource": "test_mock",
+    "label": { "en": "Fighter Bonus Feat", "fr": "Don supplémentaire du guerrier" },
+    "description": {
+      "en": "At 1st level, and at every even-numbered fighter level after, a fighter gains a bonus feat. These bonus feats must be drawn from the list of feats designated as fighter bonus feats.",
+      "fr": "Au niveau 1, et à chaque niveau pair suivant, le guerrier gagne un don supplémentaire. Ces dons doivent être choisis parmi la liste des dons réservés aux guerriers."
+    },
+    "tags": ["class_feature", "fighter", "fighter_bonus_feat_slot"],
+    "grantedModifiers": [
+      {
+        "id": "fighter_bonus_feat_slot_mod",
+        "sourceId": "class_feature_fighter_bonus_feat",
+        "sourceName": { "en": "Fighter Bonus Feat", "fr": "Don supplémentaire du guerrier" },
+        "targetId": "attributes.bonus_feat_slots",
+        "value": 1,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- ITEM: Longsword (for attack/damage testing) ---"
+  },
+  {
+    "id": "item_longsword",
+    "category": "item",
+    "ruleSource": "test_mock",
+    "label": { "en": "Longsword", "fr": "Épée longue" },
+    "description": {
+      "en": "A martial one-handed slashing weapon used widely by fighters and warriors. Damage: 1d8, crit 19-20/×2.",
+      "fr": "Une arme martiale d'une main tranchante largement utilisée par les guerriers. Dégâts : 1d8, critique 19-20/×2."
+    },
+    "tags": ["item", "weapon", "martial", "melee", "slashing", "one_handed"],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 15,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": ["slashing"],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+
+  {
+    "_comment": "--- ITEM: Breastplate (armor to test AC + ACP) ---"
+  },
+  {
+    "id": "item_breastplate",
+    "category": "item",
+    "ruleSource": "test_mock",
+    "label": { "en": "Breastplate", "fr": "Plastron" },
+    "description": {
+      "en": "A solid piece of armor covering the chest. AC +5, Max Dex +3, check penalty -4. Not full-body metal, but still counts as metal armor.",
+      "fr": "Une pièce d'armure couvrant la poitrine. CA +5, Dex max +3, malus de -4 aux tests. Pas une armure métallique complète, mais toujours considérée comme armure métallique."
+    },
+    "tags": ["item", "armor", "medium_armor", "metal_armor", "wearing_armor"],
+    "equipmentSlot": "body",
+    "weightLbs": 30,
+    "costGp": 200,
+    "hardness": 10,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "breastplate_ac_bonus",
+        "sourceId": "item_breastplate",
+        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "armor"
+      },
+      {
+        "id": "breastplate_acp",
+        "sourceId": "item_breastplate",
+        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -4,
+        "type": "base"
+      },
+      {
+        "id": "breastplate_max_dex",
+        "sourceId": "item_breastplate",
+        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "targetId": "combatStats.max_dex_bonus",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 5,
+      "maxDex": 3,
+      "armorCheckPenalty": -4,
+      "arcaneSpellFailure": 25
+    }
+  },
+
+  {
+    "_comment": "--- CONDITION: Raging (Barbarian Rage condition for testing conditional modifiers) ---"
+  },
+  {
+    "id": "condition_raging",
+    "category": "condition",
+    "ruleSource": "test_mock",
+    "label": { "en": "Raging", "fr": "En rage" },
+    "description": {
+      "en": "The character is in a state of Barbarian Rage. Gains +4 STR, +4 CON, +2 Will, -2 AC. Cannot use skills or abilities that require patience.",
+      "fr": "Le personnage est en état de Rage barbare. Gagne +4 FOR, +4 CON, +2 Volonté, -2 CA. Ne peut pas utiliser les compétences ou capacités nécessitant de la patience."
+    },
+    "tags": ["condition", "rage", "raging"],
+    "grantedModifiers": [
+      {
+        "id": "rage_str_bonus",
+        "sourceId": "condition_raging",
+        "sourceName": { "en": "Rage", "fr": "Rage" },
+        "targetId": "stat_str",
+        "value": 4,
+        "type": "morale"
+      },
+      {
+        "id": "rage_con_bonus",
+        "sourceId": "condition_raging",
+        "sourceName": { "en": "Rage", "fr": "Rage" },
+        "targetId": "stat_con",
+        "value": 4,
+        "type": "morale"
+      },
+      {
+        "id": "rage_will_bonus",
+        "sourceId": "condition_raging",
+        "sourceName": { "en": "Rage", "fr": "Rage" },
+        "targetId": "saves.will",
+        "value": 2,
+        "type": "morale"
+      },
+      {
+        "id": "rage_ac_penalty",
+        "sourceId": "condition_raging",
+        "sourceName": { "en": "Rage", "fr": "Rage" },
+        "targetId": "combatStats.ac_normal",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- RACE: Orc (used as the enemy for situational modifier testing) ---",
+    "_comment2": "The +2 vs Orcs situational bonus is on the FEAT below, NOT on the orc race.",
+    "_comment3": "The orc's 'orc' tag in @activeTags is what the Dice Engine matches against."
+  },
+  {
+    "id": "race_orc",
+    "category": "race",
+    "ruleSource": "test_mock",
+    "label": { "en": "Orc", "fr": "Orque" },
+    "description": {
+      "en": "A powerful humanoid race with greenskin and great physical strength. Light sensitive.",
+      "fr": "Une race d'humanoïdes puissants à peau verte et d'une grande force physique. Sensibles à la lumière."
+    },
+    "tags": ["race", "humanoid", "medium", "race_orc", "orc"],
+    "grantedModifiers": [
+      {
+        "id": "orc_str_bonus",
+        "sourceId": "race_orc",
+        "sourceName": { "en": "Orc", "fr": "Orque" },
+        "targetId": "stat_str",
+        "value": 4,
+        "type": "racial"
+      },
+      {
+        "id": "orc_int_penalty",
+        "sourceId": "race_orc",
+        "sourceName": { "en": "Orc", "fr": "Orque" },
+        "targetId": "stat_int",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "orc_wis_penalty",
+        "sourceId": "race_orc",
+        "sourceName": { "en": "Orc", "fr": "Orque" },
+        "targetId": "stat_wis",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "orc_cha_penalty",
+        "sourceId": "race_orc",
+        "sourceName": { "en": "Orc", "fr": "Orque" },
+        "targetId": "stat_cha",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "orc_light_sensitivity",
+        "sourceId": "race_orc",
+        "sourceName": { "en": "Light Sensitivity", "fr": "Sensibilité à la lumière" },
+        "targetId": "combatStats.attack_bonus",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "in_bright_light"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- FEAT: Favoured Enemy (Orcs) - KEY SITUATIONAL MODIFIER TEST ---",
+    "_comment2": "This feat demonstrates the +2 vs Orcs mechanism.",
+    "_comment3": "The modifier has situationalContext: 'orc' so it ONLY applies at roll time",
+    "_comment4": "when the RollContext.targetTags includes 'orc'. It does NOT appear",
+    "_comment5": "in the character sheet's static total."
+  },
+  {
+    "id": "feat_favoured_enemy_orc",
+    "category": "feat",
+    "ruleSource": "test_mock",
+    "label": { "en": "Favoured Enemy: Orc", "fr": "Ennemi favori : Orque" },
+    "description": {
+      "en": "You have studied a specific type of enemy well and are adept at finding and attacking such creatures. You gain a +2 bonus to attack and damage rolls against Orcs.",
+      "fr": "Vous avez étudié un type d'ennemi spécifique et êtes expert pour trouver et attaquer ces créatures. Vous gagnez un bonus de +2 aux jets d'attaque et de dégâts contre les Orques."
+    },
+    "tags": ["feat", "ranger", "favoured_enemy", "feat_favoured_enemy_orc"],
+    "grantedModifiers": [
+      {
+        "id": "fe_orc_attack_bonus",
+        "sourceId": "feat_favoured_enemy_orc",
+        "sourceName": { "en": "Favoured Enemy: Orc", "fr": "Ennemi favori : Orque" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "orc"
+      },
+      {
+        "id": "fe_orc_damage_bonus",
+        "sourceId": "feat_favoured_enemy_orc",
+        "sourceName": { "en": "Favoured Enemy: Orc", "fr": "Ennemi favori : Orque" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "orc"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- FEAT: Power Attack (for prerequisite chain testing) ---"
+  },
+  {
+    "id": "feat_power_attack",
+    "category": "feat",
+    "ruleSource": "test_mock",
+    "label": { "en": "Power Attack", "fr": "Attaque en puissance" },
+    "description": {
+      "en": "You can make exceptionally powerful attacks at the cost of accuracy. Requires STR 13. On attack, trade attack bonus for equal damage bonus.",
+      "fr": "Vous pouvez effectuer des attaques exceptionnellement puissantes au détriment de la précision. Nécessite FOR 13. À l'attaque, échangez le bonus d'attaque contre un bonus de dégâts égal."
+    },
+    "tags": ["feat", "general", "fighter_bonus_feat", "feat_power_attack"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- FEAT: Cleave (requires Power Attack - tests prerequisite chain) ---"
+  },
+  {
+    "id": "feat_cleave",
+    "category": "feat",
+    "ruleSource": "test_mock",
+    "label": { "en": "Cleave", "fr": "Fendre" },
+    "description": {
+      "en": "If you deal a creature enough damage to make it drop, you get an immediate extra melee attack against another creature within reach.",
+      "fr": "Si vous infligez suffisamment de dégâts à une créature pour la faire tomber, vous obtenez une attaque de corps à corps supplémentaire immédiate contre une autre créature à portée."
+    },
+    "tags": ["feat", "general", "fighter_bonus_feat", "feat_cleave"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires the Power Attack feat"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- BELT OF STRENGTH +2 (for DAG cascade testing: STR → Fort saves → Max HP) ---"
+  },
+  {
+    "id": "item_belt_of_strength_2",
+    "category": "item",
+    "ruleSource": "test_mock",
+    "label": { "en": "Belt of Giant Strength +2", "fr": "Ceinturon de Force de géant +2" },
+    "description": {
+      "en": "This wide belt grants a +2 enhancement bonus to Strength. Used to verify the DAG cascade: equipping this belt updates STR → affects attack bonus, grapple, and any STR-based formulas.",
+      "fr": "Cette large ceinture accorde un bonus d'altération de +2 à la Force. Utilisé pour vérifier la cascade du DAG : équiper cette ceinture met à jour la FOR → affecte le bonus d'attaque, la lutte et toutes les formules basées sur la FOR."
+    },
+    "tags": ["item", "wondrous_item", "magic_item", "belt"],
+    "equipmentSlot": "waist",
+    "weightLbs": 1,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "belt_str_2",
+        "sourceId": "item_belt_of_strength_2",
+        "sourceName": { "en": "Belt of Giant Strength +2", "fr": "Ceinturon de Force de géant +2" },
+        "targetId": "stat_str",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- BELT OF CONSTITUTION +2 (for Phase 17.5 infinite loop DAG test) ---"
+  },
+  {
+    "id": "item_belt_of_constitution_2",
+    "category": "item",
+    "ruleSource": "test_mock",
+    "label": { "en": "Belt of Endurance +2", "fr": "Ceinturon d'Endurance +2" },
+    "description": {
+      "en": "Grants +2 enhancement to Constitution. When equipped, CON changes → HP Max changes via DAG cascade. Tests Phase 17.5 cascade: Belt → stat_con pipeline → saves.fort (CON-based) → combatStats.max_hp (CON mod × level).",
+      "fr": "Accorde +2 d'altération à la Constitution. Quand équipé, la CON change → PV max change via la cascade du DAG. Teste la cascade Phase 17.5 : Ceinture → pipeline stat_con → jets de Vigueur (basés CON) → PV max (modificateur CON × niveau)."
+    },
+    "tags": ["item", "wondrous_item", "magic_item", "belt"],
+    "equipmentSlot": "waist",
+    "weightLbs": 1,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "belt_con_2",
+        "sourceId": "item_belt_of_constitution_2",
+        "sourceName": { "en": "Belt of Endurance +2", "fr": "Ceinturon d'Endurance +2" },
+        "targetId": "stat_con",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  }
+]

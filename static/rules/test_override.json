@@ -1,0 +1,152 @@
+[
+  {
+    "_comment": "=================================================================",
+    "_comment2": "TEST OVERRIDE DATA - Phase 5.1",
+    "_comment3": "This file tests the Merge Engine. It contains:",
+    "_comment4": "  1. A 'replace' override for race_human: completely replaces the",
+    "_comment5": "     test_mock version (removes bonus feat, adds +2 INT instead).",
+    "_comment6": "  2. A 'partial' override for class_fighter: adds a new level 4",
+    "_comment7": "     progression entry + a new tag, WITHOUT touching levels 1-3.",
+    "_comment8": "  3. A 'partial' override for feat_cleave: removes the STR prerequisite",
+    "_comment9": "     (using -prefix convention) and adds the 'homebrew' tag.",
+    "_comment10": "All entities have ruleSource: 'test_override'.",
+    "_comment11": "To test: enable BOTH 'test_mock' AND 'test_override' in enabledRuleSources.",
+    "_comment12": "test_override should be listed AFTER test_mock (higher priority).",
+    "_comment13": "================================================================="
+  },
+
+  {
+    "_comment": "=== TEST 1: REPLACE merge ===",
+    "_comment2": "This completely REPLACES race_human from test_mock.",
+    "_comment3": "Expected result: race_human has NO bonus feat slot, but has +2 INT bonus.",
+    "_comment4": "This proves 'replace' semantics: ALL original data is discarded."
+  },
+  {
+    "id": "race_human",
+    "category": "race",
+    "ruleSource": "test_override",
+    "merge": "replace",
+    "label": { "en": "Human (Override)", "fr": "Humain (Remplacement)" },
+    "description": {
+      "en": "A REPLACED Human race for override testing. This version grants +2 INT instead of a bonus feat. The original bonus feat and skill point bonus are completely removed (replace semantics).",
+      "fr": "Une race Humaine REMPLACÉE pour les tests d'override. Cette version accorde +2 INT au lieu d'un don supplémentaire."
+    },
+    "tags": ["race", "humanoid", "medium", "race_human", "test_override"],
+    "grantedModifiers": [
+      {
+        "id": "human_override_int_bonus",
+        "sourceId": "race_human",
+        "sourceName": { "en": "Human Override", "fr": "Humain Remplacement" },
+        "targetId": "stat_int",
+        "value": 2,
+        "type": "racial"
+      }
+    ],
+    "grantedFeatures": [],
+    "choices": []
+  },
+
+  {
+    "_comment": "=== TEST 2: PARTIAL merge on class_fighter ===",
+    "_comment2": "This PARTIALLY merges into class_fighter from test_mock.",
+    "_comment3": "Expected results:",
+    "_comment4": "  - Levels 1, 2, 3 are PRESERVED from test_mock (untouched).",
+    "_comment5": "  - A NEW level 4 entry is ADDED to the levelProgression.",
+    "_comment6": "  - The tag 'homebrew_variant' is APPENDED to the tags array.",
+    "_comment7": "  - Nothing else changes (partial merge preserves existing data)."
+  },
+  {
+    "id": "class_fighter",
+    "category": "class",
+    "ruleSource": "test_override",
+    "merge": "partial",
+    "label": {},
+    "description": {},
+    "tags": ["homebrew_variant"],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "levelProgression": [
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat"],
+        "grantedModifiers": [
+          {
+            "id": "fighter_4_bab",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 4", "fr": "Guerrier 4" },
+            "targetId": "combatStats.bab",
+            "value": 1,
+            "type": "base"
+          },
+          {
+            "id": "fighter_4_fort",
+            "sourceId": "class_fighter",
+            "sourceName": { "en": "Fighter 4", "fr": "Guerrier 4" },
+            "targetId": "saves.fort",
+            "value": 1,
+            "type": "base"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "_comment": "=== TEST 3: PARTIAL merge on feat_cleave with -prefix deletion ===",
+    "_comment2": "This PARTIALLY merges into feat_cleave.",
+    "_comment3": "Expected results:",
+    "_comment4": "  - The 'homebrew' tag is ADDED to the tags array.",
+    "_comment5": "  - The existing prerequisite 'feat_power_attack' conditionNode is REPLACED",
+    "_comment6": "    (prerequisitesNode is always fully replaced in partial merge).",
+    "_comment7": "  - The 'fighter_bonus_feat' tag is REMOVED via -prefix deletion.",
+    "_comment8": "This shows -prefix deletion on arrays."
+  },
+  {
+    "id": "feat_cleave",
+    "category": "feat",
+    "ruleSource": "test_override",
+    "merge": "partial",
+    "label": {},
+    "description": {},
+    "tags": ["homebrew", "-fighter_bonus_feat"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+ (Homebrew: Power Attack prerequisite removed)"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "_comment": "=== TEST 4: NEW entity from test_override source ===",
+    "_comment2": "This is a brand new feat that only exists in the test_override source.",
+    "_comment3": "It should only be available when test_override is in enabledRuleSources.",
+    "_comment4": "It demonstrates that entities from an override source layer are NEW content,",
+    "_comment5": "not just modifications of existing content."
+  },
+  {
+    "id": "feat_homebrew_toughness_plus",
+    "category": "feat",
+    "ruleSource": "test_override",
+    "label": { "en": "Toughness Plus (Homebrew)", "fr": "Robustesse améliorée (Homebrew)" },
+    "description": {
+      "en": "A homebrew improved version of Toughness. Grants +5 HP instead of the standard +3. This feat only exists when the test_override rule source is enabled.",
+      "fr": "Une version améliorée homebrew de Robustesse. Accorde +5 PV au lieu des +3 standard. Ce don n'existe que lorsque la source de règles test_override est activée."
+    },
+    "tags": ["feat", "general", "feat_homebrew_toughness_plus", "homebrew"],
+    "grantedModifiers": [
+      {
+        "id": "toughness_plus_hp",
+        "sourceId": "feat_homebrew_toughness_plus",
+        "sourceName": { "en": "Toughness Plus", "fr": "Robustesse améliorée" },
+        "targetId": "combatStats.max_hp",
+        "value": 5,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  }
+]
