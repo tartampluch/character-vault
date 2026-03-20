@@ -292,7 +292,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - Assert that `character_level` resolves to 8.
     - Assert that Fighter's BAB progression (full) contributes +5 and Wizard's (half) contributes +1, for a total BAB of +6.
     - Assert that level-gated features (e.g., Fighter Bonus Feat at level 2 and 4) are correctly granted, while level 6 Fighter Bonus Feat is not (since Fighter level is only 5).
-- [ ] **17.7 Merge Engine Tests:** Create `src/tests/mergeEngine.test.ts`.
+- [x] **17.7 Merge Engine Tests:** Create `src/tests/mergeEngine.test.ts`.
     - _Replace Test:_ Load a base Feature, then load an override with `merge: "replace"`. Assert the original is fully replaced.
     - _Partial Merge Test:_ Load a base Feature, then load a partial with `merge: "partial"` adding new tags, a new `levelProgression` entry, and a new modifier. Assert they are appended correctly while existing data is preserved.
     - _Deletion Test:_ Load a partial with `"-feat_wild_shape"` in `grantedFeatures`. Assert that `feat_wild_shape` is removed from the merged result.
