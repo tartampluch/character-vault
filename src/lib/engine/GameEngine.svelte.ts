@@ -230,6 +230,23 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     return fallback;
   };
 
+  // Default fallback labels for standard attribute pipelines.
+  // These are used ONLY when the `config_attribute_definitions` config table
+  // has not been loaded yet (engine bootstrap) or is unavailable.
+  // At runtime, `getAttrLabel()` above attempts to load from the data-driven
+  // config table first, falling back to these constants.
+  const DEFAULT_LABELS: Record<string, LocalizedString> = {
+    'stat_str':              { en: 'Strength',         fr: 'Force' },
+    'stat_dex':              { en: 'Dexterity',        fr: 'Dextérité' },
+    'stat_con':              { en: 'Constitution',     fr: 'Constitution' },
+    'stat_int':              { en: 'Intelligence',     fr: 'Intelligence' },
+    'stat_wis':              { en: 'Wisdom',           fr: 'Sagesse' },
+    'stat_cha':              { en: 'Charisma',         fr: 'Charisme' },
+    'stat_size':             { en: 'Size',             fr: 'Taille' },
+    'stat_caster_level':     { en: 'Caster Level',     fr: 'Niveau de lanceur' },
+    'stat_manifester_level': { en: 'Manifester Level', fr: 'Niveau de manifesteur' },
+  };
+
   return {
     id,
     name,
@@ -241,15 +258,15 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     // @see ARCHITECTURE.md section 9, Phase 3: Max HP = sum(hitDieResults) + CON_mod × level
     hitDieResults: {},
     attributes: {
-      'stat_str':             makePipeline('stat_str',             getAttrLabel('stat_str',             { en: 'Strength',         fr: 'Force' }),          10),
-      'stat_dex':             makePipeline('stat_dex',             getAttrLabel('stat_dex',             { en: 'Dexterity',        fr: 'Dextérité' }),       10),
-      'stat_con':             makePipeline('stat_con',             getAttrLabel('stat_con',             { en: 'Constitution',     fr: 'Constitution' }),    10),
-      'stat_int':             makePipeline('stat_int',             getAttrLabel('stat_int',             { en: 'Intelligence',     fr: 'Intelligence' }),    10),
-      'stat_wis':             makePipeline('stat_wis',             getAttrLabel('stat_wis',             { en: 'Wisdom',           fr: 'Sagesse' }),         10),
-      'stat_cha':             makePipeline('stat_cha',             getAttrLabel('stat_cha',             { en: 'Charisma',         fr: 'Charisme' }),        10),
-      'stat_size':            makePipeline('stat_size',            getAttrLabel('stat_size',            { en: 'Size',             fr: 'Taille' }),           0),
-      'stat_caster_level':    makePipeline('stat_caster_level',    getAttrLabel('stat_caster_level',    { en: 'Caster Level',     fr: 'Niveau de lanceur' }), 0),
-      'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',{ en: 'Manifester Level', fr: 'Niveau de manifesteur' }), 0),
+      'stat_str':             makePipeline('stat_str',             getAttrLabel('stat_str',             DEFAULT_LABELS['stat_str']),              10),
+      'stat_dex':             makePipeline('stat_dex',             getAttrLabel('stat_dex',             DEFAULT_LABELS['stat_dex']),              10),
+      'stat_con':             makePipeline('stat_con',             getAttrLabel('stat_con',             DEFAULT_LABELS['stat_con']),              10),
+      'stat_int':             makePipeline('stat_int',             getAttrLabel('stat_int',             DEFAULT_LABELS['stat_int']),              10),
+      'stat_wis':             makePipeline('stat_wis',             getAttrLabel('stat_wis',             DEFAULT_LABELS['stat_wis']),              10),
+      'stat_cha':             makePipeline('stat_cha',             getAttrLabel('stat_cha',             DEFAULT_LABELS['stat_cha']),              10),
+      'stat_size':            makePipeline('stat_size',            getAttrLabel('stat_size',            DEFAULT_LABELS['stat_size']),              0),
+      'stat_caster_level':    makePipeline('stat_caster_level',    getAttrLabel('stat_caster_level',    DEFAULT_LABELS['stat_caster_level']),      0),
+      'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',DEFAULT_LABELS['stat_manifester_level']),  0),
     },
     combatStats: {
       'combatStats.ac_normal': makePipeline('combatStats.ac_normal', { en: 'Armor Class', fr: "Classe d'armure" }, 10),
@@ -1466,7 +1483,7 @@ export class GameEngine {
       'slots.shoulders': 1,
       'slots.arms': 1,
       'slots.hands': 1,
-      'slots.ring': 2,        // Humans wear 2 rings by default
+      'slots.ring': 2,        // D&D 3.5 standard humanoid body: 2 ring slots by default
       'slots.feet': 1,
       'slots.main_hand': 1,
       'slots.off_hand': 1,

@@ -6,7 +6,8 @@ A data-driven D&D 3.5 character sheet and campaign management application built 
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full system specification.
 See [`ANNEXES.md`](ANNEXES.md) for JSON rule file examples and configuration tables.
-See [`PROGRESS.md`](PROGRESS.md) for the development checklist and final review report.
+See [`PROGRESS.md`](PROGRESS.md) for the development checklist.
+See [`FINAL_REVIEW.md`](FINAL_REVIEW.md) for the final review.
 
 ## Prerequisites
 

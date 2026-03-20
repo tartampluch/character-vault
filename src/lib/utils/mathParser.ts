@@ -194,15 +194,17 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
     return context.constants?.[constantId] ?? 0;
   }
 
-  // Walk the context object tree following the dot-path
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let current: any = context;
+  // Walk the context object tree following the dot-path.
+  // Using `Record<string, unknown>` deliberately: the path walker needs to traverse
+  // an arbitrarily-nested object whose shape varies per resolution context.
+  // Each segment indexes into the current level, descending until the leaf value.
+  let current: unknown = context as Record<string, unknown>;
   for (const part of parts) {
     if (current === null || current === undefined) {
       console.warn(`[MathParser] Path resolution failed at segment "${part}" in "@${cleanPath}". Returning 0.`);
       return 0;
     }
-    current = current[part];
+    current = (current as Record<string, unknown>)[part];
   }
 
   if (current === undefined) {
