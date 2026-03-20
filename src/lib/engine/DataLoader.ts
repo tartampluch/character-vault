@@ -2,22 +2,47 @@
  * @file DataLoader.ts
  * @description Rule source loader and Merge Engine for JSON feature data.
  *
- * STUB (Phase 3.2 use): This file provides the DataLoader interface and a minimal
- * in-memory cache so that the GameEngine can compile and reference it.
- * The full implementation (fetch from static/rules/, merge engine, config tables)
- * is built in Phase 4.2. This stub returns empty/null results so the engine
- * compiles and runs without crashing, with the DAG gracefully handling missing data.
+ * Design philosophy:
+ *   The DataLoader is the bridge between the JSON rule files in `static/rules/`
+ *   and the GameEngine's feature cache. It has three responsibilities:
  *
- * Full implementation details: @see ARCHITECTURE.md sections 18 (Data Override Engine).
+ *   1. LOADING: Fetch JSON files from `static/rules/` (via SvelteKit's asset serving
+ *      in development, or via a PHP API endpoint in production). Files are loaded
+ *      in ALPHABETICAL ORDER by path — this determines override priority (last wins).
  *
- * @see Phase 4.2 for the complete implementation including:
- *   - Alphabetical file loading from static/rules/
- *   - Merge Engine (replace/partial merge with -prefix deletion)
- *   - Config table loading (XP thresholds, carrying capacity, skill definitions)
- *   - enabledRuleSources filtering
+ *   2. MERGING: Apply the Merge Engine to handle `merge: "partial"` entities.
+ *      Full specification: ARCHITECTURE.md section 18.
+ *
+ *   3. FILTERING: After loading, filter entities by `CampaignSettings.enabledRuleSources`.
+ *      Only features and config tables whose `ruleSource` matches an enabled source ID
+ *      are retained in the cache.
+ *
+ * FILE DISCOVERY:
+ *   In development (SvelteKit), we use a rules manifest file (`static/rules/manifest.json`)
+ *   that lists all available rule files in sorted order. This manifest is generated at
+ *   build time (or manually maintained during development).
+ *
+ *   Alternative: The PHP backend provides `GET /api/rules/list` in production.
+ *   The DataLoader detects which mode to use based on the environment.
+ *
+ * MERGE ENGINE:
+ *   When a Feature with the same `id` as an existing Feature is encountered:
+ *   - `merge: "replace"` (or absent): Full overwrite. New entity replaces old.
+ *   - `merge: "partial"`:
+ *     - Arrays: appended. Items prefixed with "-" are removed from existing.
+ *     - Scalars: overwritten only if defined in the new entity.
+ *     - `levelProgression`: merged by level (same level replaces that entry).
+ *     - `choices`: merged by choiceId (same choiceId replaces).
+ *     - `prerequisitesNode`: fully replaced if present.
+ *
+ * CONFIG TABLE HANDLING:
+ *   Entities with a `tableId` field (instead of `id` + `category`) are stored
+ *   in the config table cache. They always use "replace" semantics (no partial merge).
+ *
+ * @see ARCHITECTURE.md section 18 for data override engine specification.
  */
 
-import type { Feature } from '../types/feature';
+import type { Feature, MergeStrategy, LevelProgressionEntry, FeatureChoice } from '../types/feature';
 import type { ID } from '../types/primitives';
 
 // =============================================================================
@@ -28,21 +53,197 @@ import type { ID } from '../types/primitives';
  * A named lookup table from a JSON rules file.
  * Examples: XP thresholds per level, carrying capacity by STR score,
  *           point buy costs, size modifiers, skill synergy table.
- *
- * `tableId` is the unique identifier referenced by the engine.
- * `data` is an array of arbitrary data rows (typed by the consuming code).
- *
- * @example XP threshold table:
- * ```json
- * { "tableId": "config_xp_thresholds", "ruleSource": "srd_core",
- *   "data": [{"level": 1, "xpRequired": 0}, {"level": 2, "xpRequired": 1000}, ...] }
- * ```
  */
 export interface ConfigTable {
   tableId: ID;
   ruleSource: ID;
   description?: string;
   data: Record<string, unknown>[];
+}
+
+// =============================================================================
+// RAW JSON ENTITY — The raw parsed JSON before type narrowing
+// =============================================================================
+
+/**
+ * Represents any entity parsed from a JSON rules file before being categorised.
+ * The `tableId` field distinguishes config tables from feature entities.
+ */
+interface RawEntity {
+  // Feature fields
+  id?: ID;
+  category?: string;
+  ruleSource?: ID;
+  merge?: MergeStrategy;
+  tags?: string[];
+  grantedFeatures?: ID[];
+  grantedModifiers?: unknown[];
+  levelProgression?: LevelProgressionEntry[];
+  choices?: FeatureChoice[];
+  forbiddenTags?: string[];
+  recommendedAttributes?: ID[];
+  classSkills?: ID[];
+  // Config table fields
+  tableId?: string;
+  data?: Record<string, unknown>[];
+  // Any other fields (spread for flexible merging)
+  [key: string]: unknown;
+}
+
+// =============================================================================
+// MERGE ENGINE — Implementation
+// =============================================================================
+
+/**
+ * Merges a partial Feature update into an existing Feature.
+ *
+ * PARTIAL MERGE RULES (D&D 3.5 Data Override System):
+ *   Arrays (tags, grantedFeatures, grantedModifiers, forbiddenTags, etc.):
+ *     - New items are APPENDED.
+ *     - Items prefixed with "-" are REMOVED.
+ *     Example: tags: ["race_dragon", "-race_humanoid"] → appends race_dragon, removes race_humanoid.
+ *
+ *   `levelProgression`:
+ *     - Merged by level. Same level number → entry is REPLACED. New levels are ADDED.
+ *
+ *   `choices`:
+ *     - Merged by choiceId. Same choiceId → choice is REPLACED. New choiceIds are ADDED.
+ *     - Choices prefixed with "-" in the choiceId are REMOVED.
+ *
+ *   Scalars (label, description, school, range, etc.):
+ *     - Only overwritten if defined in the partial entity.
+ *
+ *   `id`, `category`:
+ *     - NOT modifiable. Ignored if present in a partial override.
+ *
+ *   `prerequisitesNode`:
+ *     - Fully replaced if present in the partial (too complex to merge).
+ *
+ * @param existing - The base entity already in the cache.
+ * @param partial  - The new partial entity to merge into the existing one.
+ * @returns The merged entity.
+ */
+function mergePartial(existing: RawEntity, partial: RawEntity): RawEntity {
+  // Start with a shallow copy of the existing entity
+  const result: RawEntity = { ...existing };
+
+  for (const [key, partialValue] of Object.entries(partial)) {
+    // Skip non-modifiable fields
+    if (key === 'id' || key === 'category') continue;
+
+    // Skip undefined/null values in the partial
+    if (partialValue === undefined || partialValue === null) continue;
+
+    // --- Special handling for levelProgression ---
+    if (key === 'levelProgression' && Array.isArray(partialValue) && Array.isArray(existing.levelProgression)) {
+      result.levelProgression = mergeLevelProgression(existing.levelProgression, partialValue);
+      continue;
+    }
+
+    // --- Special handling for choices ---
+    if (key === 'choices' && Array.isArray(partialValue) && Array.isArray(existing.choices)) {
+      result.choices = mergeChoices(existing.choices as FeatureChoice[], partialValue as FeatureChoice[]);
+      continue;
+    }
+
+    // --- Special handling for arrays with -prefix deletion ---
+    if (Array.isArray(partialValue) && Array.isArray(existing[key])) {
+      const existingArray = existing[key] as unknown[];
+      result[key] = mergeArray(existingArray, partialValue);
+      continue;
+    }
+
+    // --- Scalar fields: overwrite with partial value ---
+    result[key] = partialValue;
+  }
+
+  return result;
+}
+
+/**
+ * Merges two arrays with the -prefix deletion convention.
+ * Items prefixed with "-" are removed from the existing array.
+ * New items (not prefixed with "-") are appended.
+ *
+ * @param existing   - The existing array in the base entity.
+ * @param partialArr - The new array from the partial entity.
+ * @returns The merged array.
+ */
+function mergeArray(existing: unknown[], partialArr: unknown[]): unknown[] {
+  // Start with existing items
+  let result = [...existing];
+
+  for (const item of partialArr) {
+    if (typeof item === 'string' && item.startsWith('-')) {
+      // Remove the item (strip the "-" prefix to get the actual value)
+      const targetValue = item.slice(1);
+      result = result.filter(existingItem => existingItem !== targetValue);
+    } else {
+      // Append the new item (only if not already present)
+      if (!result.includes(item)) {
+        result.push(item);
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Merges level progression tables by level number.
+ * Entries with the same level number from the partial REPLACE the existing entry.
+ * New levels are ADDED.
+ *
+ * @param existing      - Existing levelProgression entries.
+ * @param partialLevels - New levelProgression entries from the partial.
+ * @returns Merged levelProgression array.
+ */
+function mergeLevelProgression(
+  existing: LevelProgressionEntry[],
+  partialLevels: LevelProgressionEntry[]
+): LevelProgressionEntry[] {
+  // Build a map from level → entry for fast lookup
+  const levelMap = new Map<number, LevelProgressionEntry>(
+    existing.map(entry => [entry.level, entry])
+  );
+
+  // Apply partial levels (same level = replace, new level = add)
+  for (const partialEntry of partialLevels) {
+    levelMap.set(partialEntry.level, partialEntry);
+  }
+
+  // Convert map back to sorted array
+  return Array.from(levelMap.values()).sort((a, b) => a.level - b.level);
+}
+
+/**
+ * Merges feature choices by choiceId.
+ * Choices with the same choiceId from the partial REPLACE the existing choice.
+ * Choices with a "-" prefix in choiceId are REMOVED.
+ * New choiceIds are ADDED.
+ *
+ * @param existing       - Existing FeatureChoice entries.
+ * @param partialChoices - New FeatureChoice entries from the partial.
+ * @returns Merged choices array.
+ */
+function mergeChoices(existing: FeatureChoice[], partialChoices: FeatureChoice[]): FeatureChoice[] {
+  // Build a map from choiceId → choice for fast lookup
+  const choiceMap = new Map<string, FeatureChoice>(
+    existing.map(choice => [choice.choiceId, choice])
+  );
+
+  for (const partialChoice of partialChoices) {
+    if (partialChoice.choiceId.startsWith('-')) {
+      // Remove the choice with the matching ID
+      const targetId = partialChoice.choiceId.slice(1);
+      choiceMap.delete(targetId);
+    } else {
+      // Replace or add the choice
+      choiceMap.set(partialChoice.choiceId, partialChoice);
+    }
+  }
+
+  return Array.from(choiceMap.values());
 }
 
 // =============================================================================
@@ -57,48 +258,228 @@ export interface ConfigTable {
  *   4. Caching features and config tables in memory for fast access.
  *   5. Providing a lookup API for the GameEngine (getFeature, getConfigTable, etc.).
  *
- * PHASE 3.2 STUB:
- *   This stub has an empty in-memory cache and no loading logic.
- *   The GameEngine's DAG phases call getFeature() and receive `undefined`,
- *   which the engine handles gracefully (skipping unavailable features).
- *   Once Phase 4.2 fills in the loading logic, everything starts working.
+ * LOADING ORDER:
+ *   Files are loaded in ALPHABETICAL ORDER of their path (case-insensitive).
+ *   The manifest file (`static/rules/manifest.json`) lists files in this order.
+ *   Within a file, entities are processed in array order.
+ *   Later entities (from later files) override earlier ones (for `merge: "replace"`).
+ *
+ * GM OVERRIDES INTEGRATION:
+ *   After all files are loaded, `applyGmOverrides()` processes the campaign's
+ *   GM global override text (a JSON array of Feature/ConfigTable objects).
+ *   These are applied last (highest priority in the resolution chain).
  */
 export class DataLoader {
   /**
    * In-memory feature cache. Key: feature ID, Value: merged Feature object.
-   * Populated by `loadRuleSources()` in Phase 4.2.
    */
   private featureCache = new Map<ID, Feature>();
 
   /**
    * In-memory config table cache. Key: tableId, Value: ConfigTable object.
-   * Populated by `loadRuleSources()` in Phase 4.2.
    */
   private configTableCache = new Map<string, ConfigTable>();
 
   /**
    * Whether the DataLoader has completed its initial load.
-   * `false` during startup; `true` once all rule sources are loaded.
    */
   isLoaded = false;
 
   /**
+   * List of enabled rule source IDs (set during loadRuleSources()).
+   * Used for filtering after loading.
+   */
+  private enabledRuleSources: ID[] = [];
+
+  // ---------------------------------------------------------------------------
+  // LOADING API
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Loads all rule source files from static/rules/ and populates the caches.
+   *
+   * PROCESS:
+   *   1. Fetch the manifest JSON from `/rules/manifest.json`.
+   *      The manifest lists all rule file paths in alphabetical order.
+   *      If no manifest, fall back to an empty list (graceful degradation).
+   *   2. Fetch each file listed in the manifest.
+   *   3. Parse each file as a JSON array of entities.
+   *   4. Process each entity through the Merge Engine.
+   *   5. After all files, apply `enabledRuleSources` filter.
+   *
+   * @param enabledSources - The list of source IDs to enable (from CampaignSettings).
+   * @param gmGlobalOverrides - Optional GM global override JSON string (Layer 2 of chain).
+   */
+  async loadRuleSources(
+    enabledSources: ID[],
+    gmGlobalOverrides?: string
+  ): Promise<void> {
+    this.clearCache();
+    this.enabledRuleSources = enabledSources;
+
+    // Step 1: Fetch the manifest
+    let filePaths: string[] = [];
+    try {
+      const manifestResponse = await fetch('/rules/manifest.json');
+      if (manifestResponse.ok) {
+        filePaths = await manifestResponse.json() as string[];
+      } else {
+        console.warn('[DataLoader] Could not fetch /rules/manifest.json. No rule sources loaded.');
+      }
+    } catch (err) {
+      console.warn('[DataLoader] Failed to fetch manifest:', err);
+    }
+
+    // Step 2-4: Load and process each file in order
+    for (const filePath of filePaths) {
+      await this.#loadRuleFile(filePath);
+    }
+
+    // Step 5: Apply GM global overrides (Layer 2: after all source files)
+    if (gmGlobalOverrides) {
+      this.#applyGmOverrides(gmGlobalOverrides);
+    }
+
+    // Step 6: Filter out features from non-enabled sources
+    this.#filterByEnabledSources();
+
+    this.isLoaded = true;
+  }
+
+  /**
+   * Fetches and processes a single rules JSON file.
+   *
+   * @param filePath - The path relative to the static/public directory (e.g., "/rules/00_srd_core/races.json").
+   */
+  async #loadRuleFile(filePath: string): Promise<void> {
+    try {
+      const response = await fetch(filePath);
+      if (!response.ok) {
+        console.warn(`[DataLoader] Failed to fetch rule file: ${filePath} (${response.status})`);
+        return;
+      }
+
+      const entities = await response.json() as RawEntity[];
+
+      if (!Array.isArray(entities)) {
+        console.warn(`[DataLoader] Rule file ${filePath} does not contain a JSON array. Skipping.`);
+        return;
+      }
+
+      for (const entity of entities) {
+        this.#processEntity(entity);
+      }
+    } catch (err) {
+      console.warn(`[DataLoader] Error loading rule file ${filePath}:`, err);
+    }
+  }
+
+  /**
+   * Processes a single raw entity into the appropriate cache.
+   * Determines whether it's a Feature or a ConfigTable, then applies merge rules.
+   */
+  #processEntity(entity: RawEntity): void {
+    // --- Config Table (identified by tableId) ---
+    if (entity.tableId) {
+      const configTable: ConfigTable = {
+        tableId: entity.tableId,
+        ruleSource: entity.ruleSource ?? 'unknown',
+        description: entity.description as string | undefined,
+        data: (entity.data ?? []) as Record<string, unknown>[],
+      };
+      // Config tables always use "replace" semantics
+      this.configTableCache.set(entity.tableId, configTable);
+      return;
+    }
+
+    // --- Feature (identified by id + category) ---
+    if (!entity.id || !entity.category) {
+      console.warn('[DataLoader] Entity missing `id` or `category`. Skipping:', entity);
+      return;
+    }
+
+    const existing = this.featureCache.get(entity.id);
+
+    if (!existing || !entity.merge || entity.merge === 'replace') {
+      // REPLACE (default): new entity completely replaces existing
+      this.featureCache.set(entity.id, entity as unknown as Feature);
+    } else if (entity.merge === 'partial') {
+      // PARTIAL: merge with existing entity
+      const merged = mergePartial(existing as unknown as RawEntity, entity);
+      this.featureCache.set(entity.id, merged as unknown as Feature);
+    }
+  }
+
+  /**
+   * Applies GM global override text (Layer 2 of the resolution chain).
+   * Parses the JSON string and processes each entity through the merge engine.
+   * Applied AFTER all source files, giving overrides the highest priority.
+   *
+   * @param gmOverridesJson - Raw JSON string from Campaign.gmGlobalOverrides.
+   */
+  #applyGmOverrides(gmOverridesJson: string): void {
+    let entities: RawEntity[];
+    try {
+      entities = JSON.parse(gmOverridesJson) as RawEntity[];
+      if (!Array.isArray(entities)) {
+        console.warn('[DataLoader] GM global overrides is not a JSON array. Ignoring.');
+        return;
+      }
+    } catch (err) {
+      console.warn('[DataLoader] Failed to parse GM global overrides JSON:', err);
+      return;
+    }
+
+    // Process each override entity through the same pipeline as regular entities
+    for (const entity of entities) {
+      this.#processEntity(entity);
+    }
+  }
+
+  /**
+   * Filters the feature cache to remove features from non-enabled rule sources.
+   * Called after all files and GM overrides are loaded.
+   *
+   * LOGIC:
+   *   A feature is retained if its `ruleSource` is in `enabledRuleSources`.
+   *   If `enabledRuleSources` is empty, ALL features are retained (permissive default).
+   *
+   * NOTE: Config tables respect the same filter.
+   */
+  #filterByEnabledSources(): void {
+    if (this.enabledRuleSources.length === 0) return; // Empty = no filtering
+
+    // Filter features
+    for (const [id, feature] of this.featureCache) {
+      if (!this.enabledRuleSources.includes(feature.ruleSource)) {
+        this.featureCache.delete(id);
+      }
+    }
+
+    // Filter config tables
+    for (const [tableId, table] of this.configTableCache) {
+      if (!this.enabledRuleSources.includes(table.ruleSource)) {
+        this.configTableCache.delete(tableId);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // READ API
+  // ---------------------------------------------------------------------------
+
+  /**
    * Retrieves a Feature by its ID from the in-memory cache.
    *
-   * Returns `undefined` if the feature is not in the cache (not yet loaded,
-   * or from a disabled rule source). The GameEngine handles `undefined` gracefully
-   * by skipping that feature during DAG evaluation.
-   *
-   * @param id - The feature ID to look up (e.g., "race_elf", "feat_power_attack").
-   * @returns The merged Feature object, or `undefined` if not found.
+   * @param id - The feature ID (e.g., "race_elf", "feat_power_attack").
+   * @returns The Feature object, or `undefined` if not found.
    */
   getFeature(id: ID): Feature | undefined {
     return this.featureCache.get(id);
   }
 
   /**
-   * Retrieves all features in the cache (for catalog views, feat lists, etc.).
-   * Returns the values of the entire feature cache as an array.
+   * Retrieves all features in the cache.
    *
    * @returns Array of all loaded Feature objects.
    */
@@ -107,15 +488,15 @@ export class DataLoader {
   }
 
   /**
-   * Retrieves features matching a simple tag or category query.
-   * Used by the FeatureChoice `optionsQuery` resolver.
+   * Retrieves features matching a simple declarative query.
    *
    * Supported query formats:
-   *   - "tag:<tag_name>"            : Features with this tag.
-   *   - "category:<category_name>"  : Features of this category.
-   *   - "tag:<t1>+tag:<t2>"         : Features with ALL listed tags.
+   *   - `"tag:<tag_name>"`            : Features with this tag in their `tags` array.
+   *   - `"category:<category_name>"` : Features of this category.
+   *   - `"tag:<t1>+tag:<t2>"`         : Intersection (must have ALL listed tags).
+   *   - `"category:<cat>+tag:<tag>"` : Features of category AND with tag.
    *
-   * @param query - The optionsQuery string from FeatureChoice.
+   * @param query - The query string from `FeatureChoice.optionsQuery`.
    * @returns Array of matching Feature objects.
    */
   queryFeatures(query: string): Feature[] {
@@ -132,7 +513,6 @@ export class DataLoader {
           const category = condition.slice(9);
           return feature.category === category;
         }
-        // Unknown query format: fail silently
         console.warn(`[DataLoader] Unknown query format: "${condition}"`);
         return false;
       });
@@ -141,7 +521,6 @@ export class DataLoader {
 
   /**
    * Retrieves a configuration lookup table by its tableId.
-   * Returns `undefined` if the table is not loaded.
    *
    * @param tableId - The config table identifier (e.g., "config_xp_thresholds").
    * @returns The ConfigTable, or `undefined` if not found.
@@ -151,8 +530,36 @@ export class DataLoader {
   }
 
   /**
+   * Looks up a specific value from a config table using a key field.
+   *
+   * Convenience method for common lookups like XP thresholds:
+   *   getConfigValue("config_xp_thresholds", "level", 5, "xpRequired") → 10000
+   *
+   * @param tableId    - The config table ID.
+   * @param keyField   - The field to match against (e.g., "level").
+   * @param keyValue   - The value to match (e.g., 5).
+   * @param valueField - The field to return from the matching row.
+   * @returns The matching value, or `undefined` if not found.
+   */
+  getConfigValue(
+    tableId: string,
+    keyField: string,
+    keyValue: unknown,
+    valueField: string
+  ): unknown {
+    const table = this.configTableCache.get(tableId);
+    if (!table) return undefined;
+    const row = table.data.find(r => r[keyField] === keyValue);
+    return row?.[valueField];
+  }
+
+  // ---------------------------------------------------------------------------
+  // DIRECT CACHE ACCESS (for tests and the GM override integration)
+  // ---------------------------------------------------------------------------
+
+  /**
    * Directly adds a feature to the cache.
-   * Used by tests (Phase 17) and by the full Phase 4.2 loader implementation.
+   * Used by tests (Phase 17) and by GM per-character override integration.
    *
    * @param feature - The Feature to add/update in the cache.
    */
@@ -162,7 +569,7 @@ export class DataLoader {
 
   /**
    * Directly adds a config table to the cache.
-   * Used by tests (Phase 17) and by the full Phase 4.2 loader implementation.
+   * Used by tests (Phase 17).
    *
    * @param table - The ConfigTable to add/update in the cache.
    */
@@ -185,10 +592,8 @@ export class DataLoader {
 // =============================================================================
 
 /**
- * The single shared DataLoader instance.
- * The GameEngine and all UI components use this to look up feature data.
+ * The single shared DataLoader instance used by the GameEngine and all UI components.
  *
- * In tests, create a fresh instance instead of using this singleton to avoid
- * cross-test pollution: `const loader = new DataLoader();`
+ * In tests, create a fresh instance: `const loader = new DataLoader();`
  */
 export const dataLoader = new DataLoader();

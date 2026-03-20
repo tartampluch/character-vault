@@ -49,7 +49,7 @@
 ### Phase 4: Persistence & I/O
 
 - [x] **4.1 Multi-Character & Settings Storage:** Create `src/lib/engine/StorageManager.ts`. Implement logic to store multiple characters AND the `CampaignSettings` in `localStorage` (CRUD operations). Connect this to the `GameEngine` via `$effect`. Implement `LinkedEntity` serialization guard (no back-references).
-- [ ] **4.2 Data Dictionary (Data Loader & Merge Engine):** Create `src/lib/engine/DataLoader.ts`. Fetch JSON rules from `static/rules/`, cache them in memory, and respect `CampaignSettings.enabledRuleSources` ordering. Implement the **Merge Engine**: process the `merge` field on each JSON entity (`"replace"` by default, `"partial"` for additive/subtractive merge with `-prefix` convention for deletions).
+- [x] **4.2 Data Dictionary (Data Loader & Merge Engine):** Create `src/lib/engine/DataLoader.ts`. Fetch JSON rules from `static/rules/`, cache them in memory, and respect `CampaignSettings.enabledRuleSources` ordering. Implement the **Merge Engine**: process the `merge` field on each JSON entity (`"replace"` by default, `"partial"` for additive/subtractive merge with `-prefix` convention for deletions).
 
 ### Phase 5: Test UI (Validation)
 
