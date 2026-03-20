@@ -1,0 +1,51 @@
+# =============================================================================
+# docker-compose.yml — Character Vault build pipeline
+#
+# USAGE:
+#   # Build the image and export the artefact to ./dist-pkg/
+#   docker compose run --rm builder
+#
+#   # Force a full rebuild (no cache)
+#   docker compose build --no-cache && docker compose run --rm builder
+#
+#   # Override the app version tag
+#   APP_VERSION=v1.2.3 docker compose run --rm builder
+#
+# OUTPUT:
+#   ./dist-pkg/character-vault-<APP_VERSION>.tar.gz
+#
+# ENVIRONMENT VARIABLES (all optional):
+#   APP_VERSION    Version tag embedded in the package name (default: dev)
+#   NODE_VERSION   Node.js base image tag used in the Dockerfile (default: 22-alpine)
+#   PHP_VERSION    PHP base image tag used in the Dockerfile (default: 8.3-cli-alpine)
+#   OUTPUT_DIR     Host directory that receives the artefact (default: ./dist-pkg)
+# =============================================================================
+
+name: character-vault-build
+
+services:
+  builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Target the final artifact stage
+      target: artifact
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+        NODE_VERSION: ${NODE_VERSION:-22-alpine}
+        PHP_VERSION: ${PHP_VERSION:-8.3-cli-alpine}
+      # Enable BuildKit inline cache for faster subsequent builds
+      cache_from:
+        - type=local,src=/tmp/.buildx-cache
+      cache_to:
+        - type=local,dest=/tmp/.buildx-cache-new,mode=max
+    # Mount the host output directory to /out inside the container;
+    # the CMD in the Dockerfile copies the tarball there.
+    volumes:
+      - type: bind
+        source: ${OUTPUT_DIR:-./dist-pkg}
+        target: /out
+    # Do not restart — this is a one-shot build job
+    restart: "no"
+    # Show the build output in the terminal
+    tty: false

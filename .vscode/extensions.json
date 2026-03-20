@@ -1,3 +1,19 @@
 {
-	"recommendations": ["svelte.svelte-vscode"]
+	"recommendations": [
+		// Frontend — Svelte
+		"svelte.svelte-vscode",
+
+		// Frontend — Chrome / Edge debugger
+		"ms-edgetools.vscode-edge-devtools",
+
+		// Backend — PHP language support
+		"bmewburn.vscode-intelephense-client",
+
+		// Backend — PHP Xdebug debug adapter
+		"xdebug.php-debug",
+
+		// Code quality
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode"
+	]
 }
