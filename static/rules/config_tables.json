@@ -1,0 +1,424 @@
+[
+  {
+    "_comment": "=================================================================",
+    "_comment2": "CONFIGURATION DATA TABLES — Annex B (B.1 through B.13) plus",
+    "_comment3": "supplementary tables for localized attribute/save/pipeline labels.",
+    "_comment4": "These tables are required by the engine for calculations that",
+    "_comment5": "cannot be derived from simple formulas. They are loaded by the",
+    "_comment6": "DataLoader and accessed via getConfigTable(tableId).",
+    "_comment7": "ruleSource: 'srd_core' — enable this source to load these tables.",
+    "_comment8": "================================================================="
+  },
+
+  {
+    "tableId": "config_attribute_definitions",
+    "ruleSource": "srd_core",
+    "description": "Localized labels for the 6 main ability score pipelines and standard attribute pipelines. Used by createEmptyCharacter() to initialize pipeline labels without hardcoding strings. Homebrew content can override or add entries by providing a partial replacement with the same tableId.",
+    "data": [
+      { "id": "stat_str",             "label": { "en": "Strength",         "fr": "Force" },          "abbr": { "en": "STR", "fr": "FOR" } },
+      { "id": "stat_dex",             "label": { "en": "Dexterity",        "fr": "Dextérité" },       "abbr": { "en": "DEX", "fr": "DEX" } },
+      { "id": "stat_con",             "label": { "en": "Constitution",     "fr": "Constitution" },    "abbr": { "en": "CON", "fr": "CON" } },
+      { "id": "stat_int",             "label": { "en": "Intelligence",     "fr": "Intelligence" },    "abbr": { "en": "INT", "fr": "INT" } },
+      { "id": "stat_wis",             "label": { "en": "Wisdom",           "fr": "Sagesse" },         "abbr": { "en": "WIS", "fr": "SAG" } },
+      { "id": "stat_cha",             "label": { "en": "Charisma",         "fr": "Charisme" },        "abbr": { "en": "CHA", "fr": "CHA" } },
+      { "id": "stat_size",            "label": { "en": "Size",             "fr": "Taille" },          "abbr": { "en": "SZ",  "fr": "TL"  } },
+      { "id": "stat_caster_level",    "label": { "en": "Caster Level",     "fr": "Niveau de lanceur" }, "abbr": { "en": "CL",  "fr": "NL"  } },
+      { "id": "stat_manifester_level","label": { "en": "Manifester Level", "fr": "Niveau de manifesteur" }, "abbr": { "en": "ML", "fr": "NM" } }
+    ]
+  },
+
+  {
+    "tableId": "config_save_definitions",
+    "ruleSource": "srd_core",
+    "description": "Localized labels for saving throw pipelines and their key ability score associations. Used by GameEngine.savingThrowConfig to map each save to its governing ability. Stored here to allow homebrew systems (e.g., alternate saves) to override this via the DataLoader.",
+    "data": [
+      {
+        "pipelineId": "saves.fort",
+        "label": { "en": "Fortitude", "fr": "Vigueur" },
+        "keyAbilityId": "stat_con",
+        "keyAbilityAbbr": { "en": "CON", "fr": "CON" },
+        "accentColor": "#f87171"
+      },
+      {
+        "pipelineId": "saves.ref",
+        "label": { "en": "Reflex", "fr": "Réflexes" },
+        "keyAbilityId": "stat_dex",
+        "keyAbilityAbbr": { "en": "DEX", "fr": "DEX" },
+        "accentColor": "#93c5fd"
+      },
+      {
+        "pipelineId": "saves.will",
+        "label": { "en": "Will", "fr": "Volonté" },
+        "keyAbilityId": "stat_wis",
+        "keyAbilityAbbr": { "en": "WIS", "fr": "SAG" },
+        "accentColor": "#c4b5fd"
+      }
+    ]
+  },
+
+
+  {
+    "tableId": "config_xp_thresholds",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 experience point thresholds. Index = character level, value = minimum XP required to reach that level. Used by HealthAndXP.svelte to render the XP progress bar. Non-formulaic: differences between levels are not constant.",
+    "data": [
+      { "level": 1,  "xpRequired": 0 },
+      { "level": 2,  "xpRequired": 1000 },
+      { "level": 3,  "xpRequired": 3000 },
+      { "level": 4,  "xpRequired": 6000 },
+      { "level": 5,  "xpRequired": 10000 },
+      { "level": 6,  "xpRequired": 15000 },
+      { "level": 7,  "xpRequired": 21000 },
+      { "level": 8,  "xpRequired": 28000 },
+      { "level": 9,  "xpRequired": 36000 },
+      { "level": 10, "xpRequired": 45000 },
+      { "level": 11, "xpRequired": 55000 },
+      { "level": 12, "xpRequired": 66000 },
+      { "level": 13, "xpRequired": 78000 },
+      { "level": 14, "xpRequired": 91000 },
+      { "level": 15, "xpRequired": 105000 },
+      { "level": 16, "xpRequired": 120000 },
+      { "level": 17, "xpRequired": 136000 },
+      { "level": 18, "xpRequired": 153000 },
+      { "level": 19, "xpRequired": 171000 },
+      { "level": 20, "xpRequired": 190000 }
+    ]
+  },
+
+  {
+    "tableId": "config_carrying_capacity",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 carrying capacity thresholds in pounds, indexed by Strength score. Used by Encumbrance.svelte to determine Light/Medium/Heavy load brackets. For STR > 29, use extrapolation rule: every +10 STR multiplies capacity x4.",
+    "extrapolation": {
+      "description": "For Strength scores of 30 and above: every +10 Strength multiplies carrying capacity by x4. Example: STR 30 = STR 20 values x4. STR 40 = STR 20 values x16.",
+      "multiplierPer10": 4
+    },
+    "data": [
+      { "strength": 1,  "lightLoad": 3,    "mediumLoad": 6,    "heavyLoad": 10 },
+      { "strength": 2,  "lightLoad": 6,    "mediumLoad": 13,   "heavyLoad": 20 },
+      { "strength": 3,  "lightLoad": 10,   "mediumLoad": 20,   "heavyLoad": 30 },
+      { "strength": 4,  "lightLoad": 13,   "mediumLoad": 26,   "heavyLoad": 40 },
+      { "strength": 5,  "lightLoad": 16,   "mediumLoad": 33,   "heavyLoad": 50 },
+      { "strength": 6,  "lightLoad": 20,   "mediumLoad": 40,   "heavyLoad": 60 },
+      { "strength": 7,  "lightLoad": 23,   "mediumLoad": 46,   "heavyLoad": 70 },
+      { "strength": 8,  "lightLoad": 26,   "mediumLoad": 53,   "heavyLoad": 80 },
+      { "strength": 9,  "lightLoad": 30,   "mediumLoad": 60,   "heavyLoad": 90 },
+      { "strength": 10, "lightLoad": 33,   "mediumLoad": 66,   "heavyLoad": 100 },
+      { "strength": 11, "lightLoad": 38,   "mediumLoad": 76,   "heavyLoad": 115 },
+      { "strength": 12, "lightLoad": 43,   "mediumLoad": 86,   "heavyLoad": 130 },
+      { "strength": 13, "lightLoad": 50,   "mediumLoad": 100,  "heavyLoad": 150 },
+      { "strength": 14, "lightLoad": 58,   "mediumLoad": 116,  "heavyLoad": 175 },
+      { "strength": 15, "lightLoad": 66,   "mediumLoad": 133,  "heavyLoad": 200 },
+      { "strength": 16, "lightLoad": 76,   "mediumLoad": 153,  "heavyLoad": 230 },
+      { "strength": 17, "lightLoad": 86,   "mediumLoad": 173,  "heavyLoad": 260 },
+      { "strength": 18, "lightLoad": 100,  "mediumLoad": 200,  "heavyLoad": 300 },
+      { "strength": 19, "lightLoad": 116,  "mediumLoad": 233,  "heavyLoad": 350 },
+      { "strength": 20, "lightLoad": 133,  "mediumLoad": 266,  "heavyLoad": 400 },
+      { "strength": 21, "lightLoad": 153,  "mediumLoad": 306,  "heavyLoad": 460 },
+      { "strength": 22, "lightLoad": 173,  "mediumLoad": 346,  "heavyLoad": 520 },
+      { "strength": 23, "lightLoad": 200,  "mediumLoad": 400,  "heavyLoad": 600 },
+      { "strength": 24, "lightLoad": 233,  "mediumLoad": 466,  "heavyLoad": 700 },
+      { "strength": 25, "lightLoad": 266,  "mediumLoad": 533,  "heavyLoad": 800 },
+      { "strength": 26, "lightLoad": 306,  "mediumLoad": 613,  "heavyLoad": 920 },
+      { "strength": 27, "lightLoad": 346,  "mediumLoad": 693,  "heavyLoad": 1040 },
+      { "strength": 28, "lightLoad": 400,  "mediumLoad": 800,  "heavyLoad": 1200 },
+      { "strength": 29, "lightLoad": 466,  "mediumLoad": 933,  "heavyLoad": 1400 }
+    ]
+  },
+
+  {
+    "tableId": "config_point_buy_costs",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 point buy cost table. Each entry maps an ability score to the cumulative point cost from base 8. Scores below 8 grant points back. Used by PointBuyModal.svelte. Non-linear curve: scores 15+ cost significantly more to discourage extreme min-maxing.",
+    "constraints": {
+      "minimumScore": 7,
+      "maximumScore": 18,
+      "defaultScore": 8,
+      "description": "No ability score below 7 or above 18 during point buy. Default starting score is 8 (cost 0). Common budgets: Low Fantasy=15, Standard=25, High Fantasy=32, Epic=45."
+    },
+    "data": [
+      { "score": 7,  "cost": -4 },
+      { "score": 8,  "cost": 0 },
+      { "score": 9,  "cost": 1 },
+      { "score": 10, "cost": 2 },
+      { "score": 11, "cost": 3 },
+      { "score": 12, "cost": 4 },
+      { "score": 13, "cost": 5 },
+      { "score": 14, "cost": 6 },
+      { "score": 15, "cost": 8 },
+      { "score": 16, "cost": 10 },
+      { "score": 17, "cost": 13 },
+      { "score": 18, "cost": 16 }
+    ]
+  },
+
+  {
+    "tableId": "config_ability_modifiers",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 ability score to modifier mapping. Formula: floor((score - 10) / 2). Provided for reference and UI display — the engine computes derivedModifier using the formula directly. Useful for documentation and for displaying modifier tables in the UI.",
+    "data": [
+      { "score": 1,  "modifier": -5 },
+      { "score": 2,  "modifier": -4 },
+      { "score": 3,  "modifier": -4 },
+      { "score": 4,  "modifier": -3 },
+      { "score": 5,  "modifier": -3 },
+      { "score": 6,  "modifier": -2 },
+      { "score": 7,  "modifier": -2 },
+      { "score": 8,  "modifier": -1 },
+      { "score": 9,  "modifier": -1 },
+      { "score": 10, "modifier": 0 },
+      { "score": 11, "modifier": 0 },
+      { "score": 12, "modifier": 1 },
+      { "score": 13, "modifier": 1 },
+      { "score": 14, "modifier": 2 },
+      { "score": 15, "modifier": 2 },
+      { "score": 16, "modifier": 3 },
+      { "score": 17, "modifier": 3 },
+      { "score": 18, "modifier": 4 },
+      { "score": 19, "modifier": 4 },
+      { "score": 20, "modifier": 5 }
+    ],
+    "note": "For scores above 20, continue using the formula: floor((score - 10) / 2). The table extends infinitely."
+  },
+
+  {
+    "tableId": "config_armor_speed_reduction",
+    "ruleSource": "srd_core",
+    "description": "Speed reduction when wearing medium or heavy armor, indexed by base land speed. Dwarves and characters with special features (e.g., Barbarian Fast Movement for medium armor) may override these reductions via their Feature modifiers. For speeds not listed: formula floor(baseSpeed * 2 / 3 / 5) * 5.",
+    "data": [
+      { "baseSpeed": 20,  "armoredSpeed": 15 },
+      { "baseSpeed": 30,  "armoredSpeed": 20 },
+      { "baseSpeed": 40,  "armoredSpeed": 30 },
+      { "baseSpeed": 50,  "armoredSpeed": 35 },
+      { "baseSpeed": 60,  "armoredSpeed": 40 },
+      { "baseSpeed": 70,  "armoredSpeed": 50 },
+      { "baseSpeed": 80,  "armoredSpeed": 55 },
+      { "baseSpeed": 90,  "armoredSpeed": 60 },
+      { "baseSpeed": 100, "armoredSpeed": 70 }
+    ],
+    "note": "Dwarves are an exception: their speed is not reduced by medium or heavy armor. This exception is handled by the Dwarf race Feature granting immunity to the armored speed reduction condition."
+  },
+
+  {
+    "tableId": "config_skill_synergies",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 skill synergy bonuses. When a character has 5 or more ranks in the source skill, they receive a +2 synergy bonus to the target skill. Synergy type always stacks. Used by GameEngine DAG Phase 4 to auto-generate synergy modifiers.",
+    "requiredRanks": 5,
+    "bonusValue": 2,
+    "bonusType": "synergy",
+    "data": [
+      { "sourceSkill": "skill_bluff",              "targetSkill": "skill_diplomacy" },
+      { "sourceSkill": "skill_bluff",              "targetSkill": "skill_intimidate" },
+      { "sourceSkill": "skill_bluff",              "targetSkill": "skill_sleight_of_hand" },
+      { "sourceSkill": "skill_bluff",              "targetSkill": "skill_disguise",          "condition": "acting_in_character" },
+      { "sourceSkill": "skill_concentration",      "targetSkill": "skill_autohypnosis" },
+      { "sourceSkill": "skill_craft",              "targetSkill": "skill_appraise",          "condition": "related_items" },
+      { "sourceSkill": "skill_decipher_script",    "targetSkill": "skill_use_magic_device",  "condition": "scrolls" },
+      { "sourceSkill": "skill_escape_artist",      "targetSkill": "skill_use_rope",          "condition": "bindings" },
+      { "sourceSkill": "skill_handle_animal",      "targetSkill": "skill_ride" },
+      { "sourceSkill": "skill_handle_animal",      "targetSkill": "skill_wild_empathy" },
+      { "sourceSkill": "skill_jump",               "targetSkill": "skill_tumble" },
+      { "sourceSkill": "skill_knowledge_arcana",   "targetSkill": "skill_spellcraft" },
+      { "sourceSkill": "skill_knowledge_architecture", "targetSkill": "skill_search",        "condition": "secret_doors" },
+      { "sourceSkill": "skill_knowledge_dungeoneering", "targetSkill": "skill_survival",     "condition": "underground" },
+      { "sourceSkill": "skill_knowledge_geography", "targetSkill": "skill_survival",          "condition": "lost_or_natural_hazards" },
+      { "sourceSkill": "skill_knowledge_history",   "targetSkill": "skill_bardic_knowledge" },
+      { "sourceSkill": "skill_knowledge_local",     "targetSkill": "skill_gather_information" },
+      { "sourceSkill": "skill_knowledge_nature",    "targetSkill": "skill_survival",          "condition": "aboveground_natural" },
+      { "sourceSkill": "skill_knowledge_nobility",  "targetSkill": "skill_diplomacy" },
+      { "sourceSkill": "skill_knowledge_planes",    "targetSkill": "skill_survival",          "condition": "other_planes" },
+      { "sourceSkill": "skill_knowledge_religion",  "targetSkill": "skill_turn_undead" },
+      { "sourceSkill": "skill_search",              "targetSkill": "skill_survival",          "condition": "following_tracks" },
+      { "sourceSkill": "skill_sense_motive",        "targetSkill": "skill_diplomacy" },
+      { "sourceSkill": "skill_spellcraft",          "targetSkill": "skill_use_magic_device",  "condition": "scrolls" },
+      { "sourceSkill": "skill_survival",            "targetSkill": "skill_knowledge_nature" },
+      { "sourceSkill": "skill_tumble",              "targetSkill": "skill_balance" },
+      { "sourceSkill": "skill_tumble",              "targetSkill": "skill_jump" },
+      { "sourceSkill": "skill_use_magic_device",    "targetSkill": "skill_spellcraft",        "condition": "decipher_scrolls" },
+      { "sourceSkill": "skill_use_rope",            "targetSkill": "skill_climb",             "condition": "rope_climbing" },
+      { "sourceSkill": "skill_use_rope",            "targetSkill": "skill_escape_artist",     "condition": "rope_bindings" }
+    ]
+  },
+
+  {
+    "tableId": "config_standard_array",
+    "ruleSource": "srd_core",
+    "description": "The standard array of ability scores for D&D 3.5. Used by RollStatsModal.svelte when CampaignSettings.statGeneration.method is 'standard_array'. The player assigns each value to one ability score.",
+    "data": [15, 14, 13, 12, 10, 8]
+  },
+
+  {
+    "tableId": "config_size_categories",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 size categories with their associated modifiers. Used by DAG Phase 1 to apply size-based modifiers to AC, attack, grapple, Hide, and carrying capacity.",
+    "data": [
+      {
+        "id": "size_fine",
+        "label": { "en": "Fine", "fr": "Infime" },
+        "sizeModifierAC": 8,
+        "sizeModifierAttack": 8,
+        "sizeModifierGrapple": -16,
+        "sizeModifierHide": 16,
+        "carryingCapacityMultiplier": 0.125,
+        "spaceReachFt": { "space": 0.5, "reach": 0 }
+      },
+      {
+        "id": "size_diminutive",
+        "label": { "en": "Diminutive", "fr": "Minuscule" },
+        "sizeModifierAC": 4,
+        "sizeModifierAttack": 4,
+        "sizeModifierGrapple": -12,
+        "sizeModifierHide": 12,
+        "carryingCapacityMultiplier": 0.25,
+        "spaceReachFt": { "space": 1, "reach": 0 }
+      },
+      {
+        "id": "size_tiny",
+        "label": { "en": "Tiny", "fr": "Tres petit" },
+        "sizeModifierAC": 2,
+        "sizeModifierAttack": 2,
+        "sizeModifierGrapple": -8,
+        "sizeModifierHide": 8,
+        "carryingCapacityMultiplier": 0.5,
+        "spaceReachFt": { "space": 2.5, "reach": 0 }
+      },
+      {
+        "id": "size_small",
+        "label": { "en": "Small", "fr": "Petit" },
+        "sizeModifierAC": 1,
+        "sizeModifierAttack": 1,
+        "sizeModifierGrapple": -4,
+        "sizeModifierHide": 4,
+        "carryingCapacityMultiplier": 0.75,
+        "spaceReachFt": { "space": 5, "reach": 5 }
+      },
+      {
+        "id": "size_medium",
+        "label": { "en": "Medium", "fr": "Moyen" },
+        "sizeModifierAC": 0,
+        "sizeModifierAttack": 0,
+        "sizeModifierGrapple": 0,
+        "sizeModifierHide": 0,
+        "carryingCapacityMultiplier": 1,
+        "spaceReachFt": { "space": 5, "reach": 5 }
+      },
+      {
+        "id": "size_large",
+        "label": { "en": "Large", "fr": "Grand" },
+        "sizeModifierAC": -1,
+        "sizeModifierAttack": -1,
+        "sizeModifierGrapple": 4,
+        "sizeModifierHide": -4,
+        "carryingCapacityMultiplier": 2,
+        "spaceReachFt": { "space": 10, "reach": 10 }
+      },
+      {
+        "id": "size_huge",
+        "label": { "en": "Huge", "fr": "Tres grand" },
+        "sizeModifierAC": -2,
+        "sizeModifierAttack": -2,
+        "sizeModifierGrapple": 8,
+        "sizeModifierHide": -8,
+        "carryingCapacityMultiplier": 4,
+        "spaceReachFt": { "space": 15, "reach": 15 }
+      },
+      {
+        "id": "size_gargantuan",
+        "label": { "en": "Gargantuan", "fr": "Gargantuesque" },
+        "sizeModifierAC": -4,
+        "sizeModifierAttack": -4,
+        "sizeModifierGrapple": 12,
+        "sizeModifierHide": -12,
+        "carryingCapacityMultiplier": 8,
+        "spaceReachFt": { "space": 20, "reach": 20 }
+      },
+      {
+        "id": "size_colossal",
+        "label": { "en": "Colossal", "fr": "Colossal" },
+        "sizeModifierAC": -8,
+        "sizeModifierAttack": -8,
+        "sizeModifierGrapple": 16,
+        "sizeModifierHide": -16,
+        "carryingCapacityMultiplier": 16,
+        "spaceReachFt": { "space": 30, "reach": 30 }
+      }
+    ]
+  },
+
+  {
+    "tableId": "config_multiclass_penalty",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 multiclass XP penalty rules. A character with multiple classes takes a -20% XP penalty for each class that is more than 1 level apart from their highest-level class. The favored class and prestige classes are exempt.",
+    "data": {
+      "xpPenaltyPerOffendingClass": -20,
+      "maxLevelDifference": 1,
+      "exemptions": ["prestige_class", "favored_class"]
+    }
+  },
+
+  {
+    "tableId": "config_bonus_spells_per_day",
+    "ruleSource": "srd_core",
+    "description": "Bonus spells per day based on the relevant ability modifier. Used by the Spells tab (Phase 12.1) to calculate bonus spell slots. Index 0 = cantrips (always 0 bonus). Index 1 = spell level 1, etc.",
+    "note": "For modifiers above 10, the pattern continues: each +4 to the modifier grants one additional bonus spell of each level. Minimum ability score to cast spell level N is 10 + N.",
+    "data": [
+      { "modifier": 1,  "bonusBySpellLevel": [0, 1, 0, 0, 0, 0, 0, 0, 0, 0] },
+      { "modifier": 2,  "bonusBySpellLevel": [0, 1, 1, 0, 0, 0, 0, 0, 0, 0] },
+      { "modifier": 3,  "bonusBySpellLevel": [0, 1, 1, 1, 0, 0, 0, 0, 0, 0] },
+      { "modifier": 4,  "bonusBySpellLevel": [0, 1, 1, 1, 1, 0, 0, 0, 0, 0] },
+      { "modifier": 5,  "bonusBySpellLevel": [0, 2, 1, 1, 1, 1, 0, 0, 0, 0] },
+      { "modifier": 6,  "bonusBySpellLevel": [0, 2, 2, 1, 1, 1, 1, 0, 0, 0] },
+      { "modifier": 7,  "bonusBySpellLevel": [0, 2, 2, 2, 1, 1, 1, 1, 0, 0] },
+      { "modifier": 8,  "bonusBySpellLevel": [0, 2, 2, 2, 2, 1, 1, 1, 1, 0] },
+      { "modifier": 9,  "bonusBySpellLevel": [0, 3, 2, 2, 2, 2, 1, 1, 1, 1] },
+      { "modifier": 10, "bonusBySpellLevel": [0, 3, 3, 2, 2, 2, 2, 1, 1, 1] }
+    ]
+  },
+
+  {
+    "tableId": "config_two_weapon_fighting",
+    "ruleSource": "srd_core",
+    "description": "D&D 3.5 two-weapon fighting penalty table. Used by the Weapons & Attacks panel (Phase 10.4) to calculate attack penalties when fighting with two weapons.",
+    "data": {
+      "normal": {
+        "primaryHandPenalty": -6,
+        "offHandPenalty": -10
+      },
+      "offHandLight": {
+        "primaryHandPenalty": -4,
+        "offHandPenalty": -8
+      },
+      "twoWeaponFighting": {
+        "description": "The Two-Weapon Fighting feat reduces penalties by 2 for both hands.",
+        "reduction": 2
+      }
+    }
+  },
+
+  {
+    "tableId": "config_encumbrance_effects",
+    "ruleSource": "srd_core",
+    "description": "Penalties applied by Medium and Heavy load conditions. Used by the encumbrance system when auto-injecting condition_medium_load or condition_heavy_load features. 'speedReduction: reduced' means use the armor speed reduction table (config_armor_speed_reduction).",
+    "data": {
+      "medium_load": {
+        "maxDexBonus": 3,
+        "armorCheckPenalty": -3,
+        "speedReduction": "reduced",
+        "runMultiplier": 4,
+        "description": "Medium load: Max Dex +3, check penalty -3, reduced speed (see armor speed table), run x4."
+      },
+      "heavy_load": {
+        "maxDexBonus": 1,
+        "armorCheckPenalty": -6,
+        "speedReduction": "reduced",
+        "runMultiplier": 3,
+        "description": "Heavy load: Max Dex +1, check penalty -6, reduced speed (see armor speed table), run x3."
+      },
+      "overloaded": {
+        "maxDexBonus": 0,
+        "speedReduction": 5,
+        "description": "Over heavy load limit: Max Dex +0, speed reduced to 5 ft, no running."
+      }
+    }
+  }
+]

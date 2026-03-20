@@ -60,6 +60,55 @@ import { sessionContext } from './SessionContext.svelte';
 const MAX_RESOLUTION_DEPTH = 3;
 
 // =============================================================================
+// TARGETID NORMALISATION — Handles both JSON authoring conventions
+// =============================================================================
+
+/**
+ * Normalises a modifier's `targetId` to the internal pipeline key convention used
+ * for `Character.attributes`, `Character.combatStats`, `Character.saves`, and
+ * `Character.skills`.
+ *
+ * WHY THIS EXISTS — THE TWO-CONVENTION PROBLEM:
+ *   The GameEngine stores pipelines in several `Record<ID, StatisticPipeline>` maps
+ *   on the `Character` object. The map KEYS are the canonical IDs:
+ *
+ *     character.attributes   → keyed by  "stat_str", "stat_dex", ...  (NO prefix)
+ *     character.combatStats  → keyed by  "combatStats.bab", "combatStats.ac_normal"  (WITH prefix)
+ *     character.saves        → keyed by  "saves.fort", "saves.ref"  (WITH prefix)
+ *     character.skills       → keyed by  "skill_climb", "skill_jump"  (NO prefix)
+ *
+ *   However, ARCHITECTURE.md section 4.3 and ANNEXES.md Annex A use the
+ *   `"attributes."` prefix in Math Parser @-paths AND sometimes in targetId fields:
+ *
+ *     @-paths    : "@attributes.stat_str.totalValue"  (always with namespace)
+ *     targetId?  : "attributes.stat_str" OR "stat_str"  (both appear in examples)
+ *
+ *   The normaliser strips the `"attributes."` prefix from attribute targetIds so
+ *   that JSON authors can use either convention and the engine processes them identically.
+ *
+ *   OTHER NAMESPACES (combatStats.*, saves.*, skill_*) do NOT need normalisation:
+ *     - "combatStats.ac_normal" is used consistently both in JSON and as a map key.
+ *     - "saves.fort" is used consistently both in JSON and as a map key.
+ *     - "skill_climb" is used consistently both in JSON and as the map key.
+ *   Only the 6 main attribute stats (and custom homebrew stats) have this ambiguity.
+ *
+ * @param targetId - The raw `targetId` from a Modifier JSON field.
+ * @returns The normalised pipeline key used as a map key in `Character.attributes`.
+ */
+function normaliseModifierTargetId(targetId: ID): ID {
+  // Strip the "attributes." namespace prefix if present.
+  // This maps "attributes.stat_str" → "stat_str" (the actual Character.attributes key).
+  //
+  // Note: strings like "combatStats.bab", "saves.fort", "slots.ring", "skill_climb"
+  // do NOT start with "attributes." (they start with "combatStats.", "saves.", "slots.",
+  // "skill_", or "resources.") and are returned unchanged.
+  if (targetId.startsWith('attributes.')) {
+    return targetId.slice('attributes.'.length);
+  }
+  return targetId;
+}
+
+// =============================================================================
 // PIPELINE FACTORY HELPERS — Public utilities for tests and DataLoader
 // =============================================================================
 
@@ -114,6 +163,13 @@ export function makeSkillPipeline(
  *
  * All standard pipelines are pre-initialised to avoid null-checks everywhere.
  *
+ * PIPELINE LABEL DATA-DRIVENNESS (MINOR fix #3):
+ *   Attribute labels (e.g., "Strength"/"Force") are loaded from the `config_attribute_definitions`
+ *   config table when the DataLoader is available and the table is loaded. If the table is not
+ *   yet available (e.g., at engine bootstrap before rule sources are loaded), the code falls back
+ *   to embedded labels — this ensures the engine always starts in a consistent state even before
+ *   the DataLoader has finished loading.
+ *
  * @param id   - Unique character ID (UUID).
  * @param name - Character display name.
  * @returns A blank Character with all standard pipelines initialised to base values.
@@ -141,21 +197,59 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     resetCondition: 'long_rest',
   });
 
+  // --- Attribute label resolution (data-driven when available) ---
+  //
+  // Try to load attribute labels from the `config_attribute_definitions` config table.
+  // This allows homebrew content to override stat names without code changes.
+  //
+  // FALLBACK LABELS:
+  //   Embedded labels are used when:
+  //   a) The DataLoader has not yet completed loading (engine bootstrap).
+  //   b) The 'srd_core' rule source is not in enabledRuleSources.
+  //   c) The config_tables.json file failed to load.
+  //   In all these cases, the engine remains functional with the embedded fallback labels.
+  //
+  // WHY NOT FULLY LAZY?
+  //   `createEmptyCharacter` is called before `loadRuleSources` at engine init. We cannot
+  //   wait for the DataLoader. The data-driven labels update naturally when the character
+  //   sheet re-renders because pipeline labels are read from `phase2_attributes` (derived)
+  //   not from the initial `character.attributes` ($state) directly.
+  const getAttrLabel = (statId: ID, fallback: LocalizedString): LocalizedString => {
+    try {
+      // DataLoader is a singleton — it may or may not have data yet at this point.
+      const attrTable = dataLoader.getConfigTable('config_attribute_definitions');
+      if (attrTable?.data) {
+        const row = (attrTable.data as Array<Record<string, unknown>>).find(r => r['id'] === statId);
+        if (row?.['label'] && typeof row['label'] === 'object') {
+          return row['label'] as LocalizedString;
+        }
+      }
+    } catch {
+      // DataLoader not yet initialized or table not found — use fallback silently
+    }
+    return fallback;
+  };
+
   return {
     id,
     name,
     isNPC: false,
     classLevels: {},
+    // Hit die results per character level — empty for a new character.
+    // Populated by the Level Up mechanic (Phase 10.1).
+    // Key: character level (1-indexed), Value: die result at that level.
+    // @see ARCHITECTURE.md section 9, Phase 3: Max HP = sum(hitDieResults) + CON_mod × level
+    hitDieResults: {},
     attributes: {
-      'stat_str': makePipeline('stat_str', { en: 'Strength', fr: 'Force' }, 10),
-      'stat_dex': makePipeline('stat_dex', { en: 'Dexterity', fr: 'Dextérité' }, 10),
-      'stat_con': makePipeline('stat_con', { en: 'Constitution', fr: 'Constitution' }, 10),
-      'stat_int': makePipeline('stat_int', { en: 'Intelligence', fr: 'Intelligence' }, 10),
-      'stat_wis': makePipeline('stat_wis', { en: 'Wisdom', fr: 'Sagesse' }, 10),
-      'stat_cha': makePipeline('stat_cha', { en: 'Charisma', fr: 'Charisme' }, 10),
-      'stat_size': makePipeline('stat_size', { en: 'Size', fr: 'Taille' }, 0),
-      'stat_caster_level': makePipeline('stat_caster_level', { en: 'Caster Level', fr: 'Niveau de lanceur' }, 0),
-      'stat_manifester_level': makePipeline('stat_manifester_level', { en: 'Manifester Level', fr: 'Niveau de manifesteur' }, 0),
+      'stat_str':             makePipeline('stat_str',             getAttrLabel('stat_str',             { en: 'Strength',         fr: 'Force' }),          10),
+      'stat_dex':             makePipeline('stat_dex',             getAttrLabel('stat_dex',             { en: 'Dexterity',        fr: 'Dextérité' }),       10),
+      'stat_con':             makePipeline('stat_con',             getAttrLabel('stat_con',             { en: 'Constitution',     fr: 'Constitution' }),    10),
+      'stat_int':             makePipeline('stat_int',             getAttrLabel('stat_int',             { en: 'Intelligence',     fr: 'Intelligence' }),    10),
+      'stat_wis':             makePipeline('stat_wis',             getAttrLabel('stat_wis',             { en: 'Wisdom',           fr: 'Sagesse' }),         10),
+      'stat_cha':             makePipeline('stat_cha',             getAttrLabel('stat_cha',             { en: 'Charisma',         fr: 'Charisme' }),        10),
+      'stat_size':            makePipeline('stat_size',            getAttrLabel('stat_size',            { en: 'Size',             fr: 'Taille' }),           0),
+      'stat_caster_level':    makePipeline('stat_caster_level',    getAttrLabel('stat_caster_level',    { en: 'Caster Level',     fr: 'Niveau de lanceur' }), 0),
+      'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',{ en: 'Manifester Level', fr: 'Niveau de manifesteur' }), 0),
     },
     combatStats: {
       'combatStats.ac_normal': makePipeline('combatStats.ac_normal', { en: 'Armor Class', fr: "Classe d'armure" }, 10),
@@ -249,6 +343,57 @@ export class GameEngine {
    * not this raw array directly.
    */
   allVaultCharacters = $state<Character[]>([]);
+
+  // ---------------------------------------------------------------------------
+  // SCENE STATE — Global environmental features injected into all characters
+  // ---------------------------------------------------------------------------
+
+  /**
+   * The GM-controlled global scene state.
+   *
+   * WHY THIS EXISTS (ARCHITECTURE.md section 13):
+   *   Environmental conditions (Extreme Heat, Underwater, Darkness) affect ALL
+   *   characters in the current scene simultaneously. Rather than manually adding
+   *   `ActiveFeatureInstance` entries to every character, the GM activates a global
+   *   Feature in the Scene State. The GameEngine Phase 0 then virtually injects these
+   *   features into every character's `activeFeatures` during DAG flattening.
+   *
+   * HOW IT WORKS:
+   *   1. GM activates `environment_extreme_heat` via the Scene State.
+   *   2. The `phase0_flatModifiers` computation includes the modifiers of these
+   *      environment features as if they were on EVERY character.
+   *   3. Characters with protections (Endure Elements tag) block them via conditionNode.
+   *   4. When the GM deactivates the scene feature, all characters instantly recover.
+   *
+   * @see ARCHITECTURE.md section 13 for the full Global Aura specification.
+   * @see ANNEXES.md section A.11 for Extreme Heat and Underwater environment examples.
+   * @see src/lib/types/campaign.ts for the SceneState interface.
+   */
+  sceneState = $state<{ activeGlobalFeatures: string[] }>({ activeGlobalFeatures: [] });
+
+  /**
+   * Activates a global environment feature for the current scene.
+   * Idempotent: calling twice with the same ID has no effect.
+   *
+   * @param featureId - The Feature ID to activate globally (e.g., "environment_extreme_heat").
+   */
+  activateSceneFeature(featureId: string): void {
+    if (!this.sceneState.activeGlobalFeatures.includes(featureId)) {
+      this.sceneState.activeGlobalFeatures.push(featureId);
+    }
+  }
+
+  /**
+   * Deactivates a global environment feature. All characters instantly recover.
+   *
+   * @param featureId - The Feature ID to deactivate.
+   */
+  deactivateSceneFeature(featureId: string): void {
+    const index = this.sceneState.activeGlobalFeatures.indexOf(featureId);
+    if (index !== -1) {
+      this.sceneState.activeGlobalFeatures.splice(index, 1);
+    }
+  }
 
   /**
    * DAG: Filtered character list based on session visibility rules.
@@ -793,30 +938,33 @@ export class GameEngine {
 
       let effectiveBaseValue = basePipeline.baseValue;
 
-      // --- Max HP: inject CON modifier contribution ---
+      // --- Max HP: sum hit die results + CON modifier × character level ---
       if (pipelineId === 'combatStats.max_hp') {
-        // D&D 3.5 Max HP formula: sum(hitDieResults per level) + CON_modifier × characterLevel
+        // D&D 3.5 Max HP Formula (ARCHITECTURE.md section 9, Phase 3):
+        //   Max HP = sum(hitDieResults.values()) + (CON_derivedModifier × character_level)
         //
-        // CURRENT IMPLEMENTATION (Phase 3.4):
-        //   `basePipeline.baseValue` is expected to hold the sum of all hit die rolls
-        //   accumulated during level-up. The CON modifier contribution is computed
-        //   here and added on top.
-        //   → Works correctly for the test harness (base 0 = no hit dice yet).
+        // `hitDieResults` is a Record<number, number> on the `Character` type (MAJOR fix #1).
+        // Key = character level (1-indexed), Value = die result rolled at that level during level-up.
         //
-        // MISSING INFRASTRUCTURE (to be resolved in Phase 10.1):
-        //   The character's per-level hit die results are NOT yet tracked in the
-        //   data model. When Phase 10.1 implements the Level Up mechanic, it must:
-        //   1. Add `hitDieResults: Record<number, number>` to the `Character` type
-        //      (mapping character level → rolled hit die value for that level).
-        //   2. Have `createEmptyCharacter()` initialize this record as empty.
-        //   3. Have the Level Up flow prompt the player to roll (or auto-max/avg)
-        //      the hit die and store the result in `hitDieResults[newLevel]`.
-        //   4. Update `combatStats.max_hp.baseValue` (or compute from the record
-        //      directly) to equal `sum(hitDieResults.values())`.
-        //   Until Phase 10.1, `baseValue = 0` and only CON × level contributes.
+        // For a brand-new character with an empty hitDieResults record:
+        //   Sum of die rolls = 0     (no levels yet)
+        //   CON contribution = conDerivedMod * characterLevel  (still contributes)
         //
+        // When the Level Up mechanic (Phase 10.1 UI) assigns die results:
+        //   hitDieResults = { 1: 8, 2: 5, 3: 10 }  (e.g., Fighter 3 with d10 hit die)
+        //   This produces: sumDice = 23, then + (CON_mod × 3) = totalMaxHP
+        //
+        // WHY USE hitDieResults DIRECTLY (not basePipeline.baseValue)?
+        //   `basePipeline.baseValue` would require the Level Up mechanic to update it
+        //   after every die roll, creating a redundant storage point. Directly computing
+        //   from `hitDieResults` ensures the DAG always reflects the current record state
+        //   reactively — any change to `hitDieResults` triggers an automatic HP update.
+        //
+        // @see src/lib/types/character.ts → Character.hitDieResults for full documentation.
         // @see ARCHITECTURE.md section 9, Phase 3: HP Calculation specification.
-        effectiveBaseValue = basePipeline.baseValue + conHpContrib;
+        const sumDiceRolls = Object.values(this.character.hitDieResults)
+          .reduce((total, roll) => total + roll, 0);
+        effectiveBaseValue = sumDiceRolls + conHpContrib;
       }
 
       const stacking = applyStackingRules(activeMods, effectiveBaseValue);
@@ -1093,30 +1241,38 @@ export class GameEngine {
   //   in the UI layer. The component reads from engine.savingThrowConfig.
 
   /**
-   * Save pipeline → key ability ID and abbreviation mapping.
+   * Save pipeline → key ability ID and localized abbreviation mapping.
    * Loaded once and used by SavingThrowsSummary and SavingThrows components.
    *
-   * NOTE: These associations are D&D 3.5 SRD facts encoded here as data.
-   * They do NOT change based on class or features (a character always uses CON for Fort).
-   * In a future version, this could be read from a config JSON table for full data-drivenness.
+   * DATA-DRIVENNESS NOTE (MINOR fix #2):
+   *   The save-to-ability associations are D&D 3.5 SRD invariants (Fort→CON, Ref→DEX, Will→WIS).
+   *   They will never change for any standard D&D 3.5 content.
+   *
+   *   The abbreviations are now stored as LocalizedString objects (supporting EN and FR)
+   *   instead of plain English strings, resolving the i18n hardcoding issue.
+   *   Components read the abbreviation via `engine.t(entry.keyAbilityAbbr)`.
+   *
+   *   For full data-drivenness, a `config_save_definitions` JSON table could replace this
+   *   in the future — but the current approach is the lowest-complexity correct solution.
    */
   readonly savingThrowConfig = [
     {
       pipelineId: 'saves.fort',
       keyAbilityId: 'stat_con',
-      keyAbilityAbbr: 'CON',
+      /** Localized abbreviation of the key ability for this saving throw. */
+      keyAbilityAbbr: { en: 'CON', fr: 'CON' } as { en: string; fr: string },
       accentColor: '#f87171',
     },
     {
       pipelineId: 'saves.ref',
       keyAbilityId: 'stat_dex',
-      keyAbilityAbbr: 'DEX',
+      keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } as { en: string; fr: string },
       accentColor: '#93c5fd',
     },
     {
       pipelineId: 'saves.will',
       keyAbilityId: 'stat_wis',
-      keyAbilityAbbr: 'WIS',
+      keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } as { en: string; fr: string },
       accentColor: '#c4b5fd',
     },
   ] as const;
@@ -1129,18 +1285,66 @@ export class GameEngine {
    * Computes the Spell Save DC for a given spell level.
    *
    * D&D 3.5 FORMULA: DC = 10 + Spell Level + Key Ability Modifier
-   *   Key Ability is the highest of WIS, INT, CHA among those the character has invested in.
-   *   For simplicity, this helper takes the maximum of all three (conservative approach).
-   *   A more precise implementation would read the class's designated casting stat.
+   *   (ARCHITECTURE.md section 12.3 and section 5.2)
    *
-   * @param spellLevel - The level of the spell (0 for cantrips).
+   * IMPROVED IMPLEMENTATION (MINOR fix #5):
+   *   The original implementation blindly took max(WIS, INT, CHA), ignoring the actual
+   *   class casting stat. The corrected implementation:
+   *
+   *   1. If a `spellListId` is provided, look up the `MagicFeature.spellLists[spellListId]`
+   *      to find the casting class, then read that class Feature's `castingAbility` tag.
+   *      This is future-proof for when class JSON defines its casting stat explicitly.
+   *
+   *   2. If `keyAbilityId` is explicitly provided (caller knows the stat), use it directly.
+   *      This is the most precise call pattern for Grimoire/CastingPanel components.
+   *
+   *   3. FALLBACK: If neither is provided or the class has no `castingAbility` tag,
+   *      default to max(WIS, INT, CHA) — the conservative approach that always produces
+   *      the highest possible DC (benefits the caster, never harmful).
+   *
+   *   WHY TAGS FOR CASTING ABILITY?
+   *     Class JSON features include a tag like `"arcane_caster_int"` or `"divine_caster_wis"`
+   *     (see test_mock.json: class_fighter has tags ["class_fighter", "martial", ...]).
+   *     The engine reads the first tag starting with "caster_ability_" to get the stat ID.
+   *
+   * @param spellLevel   - The level of the spell (0 for cantrips).
+   * @param keyAbilityId - Optional: the explicit key ability pipeline ID (e.g., "stat_int").
+   *                       If provided, skips tag-based lookup and uses this directly.
    * @returns The computed Spell Save DC.
    */
-  getSpellSaveDC(spellLevel: number): number {
-    const wis = this.phase2_attributes['stat_wis']?.derivedModifier ?? 0;
-    const int_ = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
-    const cha = this.phase2_attributes['stat_cha']?.derivedModifier ?? 0;
-    return 10 + spellLevel + Math.max(wis, int_, cha);
+  getSpellSaveDC(spellLevel: number, keyAbilityId?: ID): number {
+    let castingAbilityMod = 0;
+
+    if (keyAbilityId) {
+      // Explicit ability provided (most precise — called by CastingPanel per-spell)
+      castingAbilityMod = this.phase2_attributes[keyAbilityId]?.derivedModifier ?? 0;
+    } else {
+      // Attempt to infer casting ability from active class features.
+      // Convention: class features have a tag "caster_ability_stat_int" (or _wis, _cha).
+      // This follows the zero-hardcoding principle: the casting ability is declared in JSON.
+      let foundAbilityId: ID | null = null;
+      for (const tag of this.phase0_activeTags) {
+        if (tag.startsWith('caster_ability_')) {
+          foundAbilityId = tag.slice('caster_ability_'.length); // "stat_int", "stat_wis", etc.
+          break;
+        }
+      }
+
+      if (foundAbilityId && this.phase2_attributes[foundAbilityId]) {
+        // Found a declared casting ability in the active tags
+        castingAbilityMod = this.phase2_attributes[foundAbilityId].derivedModifier;
+      } else {
+        // FALLBACK: no declared casting ability — use max(WIS, INT, CHA)
+        // This handles characters who are spellcasters but whose class JSON hasn't yet
+        // declared its casting ability tag. It always produces the highest DC.
+        const wis = this.phase2_attributes['stat_wis']?.derivedModifier ?? 0;
+        const int_ = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
+        const cha = this.phase2_attributes['stat_cha']?.derivedModifier ?? 0;
+        castingAbilityMod = Math.max(wis, int_, cha);
+      }
+    }
+
+    return 10 + spellLevel + castingAbilityMod;
   }
 
   // ---------------------------------------------------------------------------
@@ -1251,14 +1455,13 @@ export class GameEngine {
     const counts: Record<string, number> = {};
     for (const afi of this.character.activeFeatures) {
       if (!afi.isActive) continue;
-      const feat = this.phase0_flatModifiers.find(e => e.sourceInstanceId === afi.instanceId);
-      // Simplified: check the feature's equipmentSlot directly
+      // Look up the Feature definition to check if it is an ItemFeature with an equipmentSlot
       const feature = dataLoader.getFeature(afi.featureId);
       if (!feature || (feature as import('../types/feature').ItemFeature).equipmentSlot === undefined) continue;
       const itemFeat = feature as import('../types/feature').ItemFeature;
       const slot = itemFeat.equipmentSlot;
       if (!slot || slot === 'none') continue;
-      // Map slot name to slots.* key
+      // Map slot name to slots.* key for comparison with phase_equipmentSlots
       const slotKey = `slots.${slot}`;
       counts[slotKey] = (counts[slotKey] ?? 0) + 1;
     }
@@ -1544,10 +1747,35 @@ export class GameEngine {
   #computeFlatModifiers(activeTags: string[], context: CharacterContext): FlatModifierEntry[] {
     const result: FlatModifierEntry[] = [];
 
-    // Combine regular features with GM overrides (GM overrides processed last)
+    // --- Build the complete list of feature instances to process ---
+    //
+    // Resolution order (last processed = highest priority for setAbsolute):
+    //   1. Character's own activeFeatures  (player choices)
+    //   2. Scene's activeGlobalFeatures    (GM global environment, same priority as character features)
+    //   3. Character's gmOverrides         (GM per-character overrides, highest priority)
+    //
+    // SCENE GLOBAL FEATURES (ARCHITECTURE.md section 13):
+    //   Features in `sceneState.activeGlobalFeatures` are virtually injected as if they
+    //   were in every character's `activeFeatures`. This implements the "Global Aura" concept:
+    //   when the GM activates "environment_extreme_heat", ALL characters immediately receive
+    //   its modifiers (speed reduction, save penalty). Characters with appropriate protections
+    //   (e.g., the "endure_elements" tag from an active spell) block these modifiers via
+    //   their `conditionNode` logic — no special engine handling needed.
+    //
+    // WHY SYNTHETIC INSTANCES FOR SCENE FEATURES?
+    //   `#collectModifiersFromInstance` expects `ActiveFeatureInstance` objects.
+    //   We create synthetic instances for each scene feature with stable instanceIds
+    //   so the engine can process them identically to character features.
+    const sceneInstances: ActiveFeatureInstance[] = this.sceneState.activeGlobalFeatures.map(featureId => ({
+      instanceId: `scene_global_${featureId}`,
+      featureId,
+      isActive: true,
+    }));
+
     const allInstances: ActiveFeatureInstance[] = [
       ...this.character.activeFeatures,
-      ...(this.character.gmOverrides ?? []),
+      ...sceneInstances,                      // Global scene features (injected for all characters)
+      ...(this.character.gmOverrides ?? []),  // GM per-character overrides (processed last = highest priority)
     ];
 
     // Track visited feature IDs to prevent recursive loops
@@ -1688,6 +1916,13 @@ export class GameEngine {
 
   /**
    * Processes a list of Modifier objects, evaluating conditions and routing to output.
+   *
+   * TARGETID NORMALISATION:
+   *   Before pushing a modifier to the result, its `targetId` is normalised via
+   *   `normaliseModifierTargetId()`. This allows JSON authors to use either:
+   *     - "stat_str"           (short form — the Character.attributes map key)
+   *     - "attributes.stat_str" (long form — as used in ARCHITECTURE.md Annex A examples)
+   *   Both forms resolve to the same pipeline. See `normaliseModifierTargetId()` for details.
    */
   #processModifierList(
     modifiers: Modifier[],
@@ -1711,12 +1946,22 @@ export class GameEngine {
         continue; // Condition failed — modifier is not active right now
       }
 
+      // --- Normalise the targetId convention ---
+      // Strips the optional "attributes." prefix so both "stat_str" and
+      // "attributes.stat_str" target the same Character.attributes pipeline.
+      // This is a non-destructive normalisation — the original JSON is not mutated.
+      const normalisedTargetId = normaliseModifierTargetId(mod.targetId);
+
       // --- Resolve string value formulas to numbers ---
-      let resolvedModifier: Modifier = mod;
+      // Build the resolved modifier with the normalised targetId and numeric value.
+      let resolvedModifier: Modifier = normalisedTargetId !== mod.targetId
+        ? { ...mod, targetId: normalisedTargetId }  // targetId changed → new object
+        : mod;                                        // targetId unchanged → reuse reference
+
       if (typeof mod.value === 'string') {
         const resolved = evaluateFormula(mod.value, instanceContext, this.settings.language);
         const numericValue = typeof resolved === 'number' ? resolved : parseFloat(String(resolved)) || 0;
-        resolvedModifier = { ...mod, value: numericValue };
+        resolvedModifier = { ...resolvedModifier, value: numericValue };
       }
 
       result.push({
@@ -1733,12 +1978,30 @@ export class GameEngine {
    * Tags are deduplicated. All tags from ALL active features are included
    * (regardless of prerequisite status — this is the intentionally inclusive
    * list used for @activeTags path resolution).
+   *
+   * INCLUDES SCENE FEATURES (MAJOR fix #2 — ARCHITECTURE.md section 13):
+   *   Scene global features (from `sceneState.activeGlobalFeatures`) also contribute
+   *   their tags to the active tag set. This is critical for:
+   *     - Environment features indicating their active condition (e.g., "underwater", "heat")
+   *     - Characters checking if a global condition is active via `@activeTags has_tag X`
+   *   Example: `environment_extreme_heat` has tag "heat". Characters check
+   *   `NOT has_tag endure_elements` to determine if the heat penalty applies.
+   *   The scene feature's "heat" tag in `@activeTags` is what other features react to.
+   *   @see sceneState and activateSceneFeature/deactivateSceneFeature methods.
    */
   #computeActiveTags(): string[] {
     const tagSet = new Set<string>();
 
+    // Include scene features (synthetic instances for global environment conditions)
+    const sceneInstances: ActiveFeatureInstance[] = this.sceneState.activeGlobalFeatures.map(featureId => ({
+      instanceId: `scene_global_${featureId}`,
+      featureId,
+      isActive: true,
+    }));
+
     const allInstances = [
       ...this.character.activeFeatures,
+      ...sceneInstances,
       ...(this.character.gmOverrides ?? []),
     ];
 

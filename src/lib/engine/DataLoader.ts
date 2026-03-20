@@ -402,6 +402,20 @@ export class DataLoader {
   /**
    * Processes a single raw entity into the appropriate cache.
    * Determines whether it's a Feature or a ConfigTable, then applies merge rules.
+   *
+   * RUNTIME VALIDATION (MAJOR fix #5):
+   *   Instead of blindly casting `entity as unknown as Feature`, we perform a minimal
+   *   structural check to ensure the entity has the required fields before caching.
+   *   This prevents silently corrupt entries in the feature cache from malformed JSON.
+   *
+   *   WHY MINIMAL (not full Zod schema validation)?
+   *   Full schema validation would be very expensive at load time (thousands of entities).
+   *   Instead, we validate only the fields the engine CRITICALLY depends on:
+   *     - `id` and `category` to route to the correct cache bucket.
+   *     - `ruleSource` to apply the enabledRuleSources filter correctly.
+   *     - `grantedModifiers` and `grantedFeatures` to be arrays (DAG processing depends on this).
+   *   Unknown extra fields are tolerated (future-proofing for new features).
+   *   Missing optional fields (label, description, tags, etc.) are gracefully defaulted.
    */
   #processEntity(entity: RawEntity): void {
     // --- Config Table (identified by tableId) ---
@@ -418,11 +432,41 @@ export class DataLoader {
     }
 
     // --- Feature (identified by id + category) ---
-    if (!entity.id || !entity.category) {
-      console.warn('[DataLoader] Entity missing `id` or `category`. Skipping:', entity);
+    if (!entity.id || typeof entity.id !== 'string') {
+      console.warn('[DataLoader] Entity missing or invalid `id` field (must be a string). Skipping:', entity);
       return;
     }
+    if (!entity.category || typeof entity.category !== 'string') {
+      console.warn(`[DataLoader] Entity "${entity.id}" missing or invalid \`category\` field. Skipping.`);
+      return;
+    }
+    if (!entity.ruleSource || typeof entity.ruleSource !== 'string') {
+      console.warn(`[DataLoader] Entity "${entity.id}" missing \`ruleSource\` field. Defaulting to "unknown". This entity will be excluded if enabledRuleSources is set.`);
+      entity.ruleSource = 'unknown';
+    }
 
+    // Ensure required array fields are arrays (engine iterates over these without null checks)
+    if (!Array.isArray(entity.grantedModifiers)) {
+      if (entity.grantedModifiers !== undefined) {
+        console.warn(`[DataLoader] Entity "${entity.id}" has non-array \`grantedModifiers\`. Resetting to [].`);
+      }
+      entity.grantedModifiers = [];
+    }
+    if (!Array.isArray(entity.grantedFeatures)) {
+      if (entity.grantedFeatures !== undefined) {
+        console.warn(`[DataLoader] Entity "${entity.id}" has non-array \`grantedFeatures\`. Resetting to [].`);
+      }
+      entity.grantedFeatures = [];
+    }
+    if (!Array.isArray(entity.tags)) {
+      entity.tags = [];
+    }
+
+    // The entity has passed structural validation — safe to store in the feature cache.
+    // We use `as unknown as Feature` here as a deliberate bridge between the loosely-typed
+    // JSON `RawEntity` and the strict `Feature` TypeScript interface. The structural validation
+    // above ensures all engine-critical fields are present and correctly typed.
+    // Full type safety is enforced at the engine consumption points (GameEngine DAG phases).
     const existing = this.featureCache.get(entity.id);
 
     if (!existing || !entity.merge || entity.merge === 'replace') {
@@ -469,21 +513,38 @@ export class DataLoader {
    *   A feature is retained if its `ruleSource` is in `enabledRuleSources`.
    *   If `enabledRuleSources` is empty, ALL features are retained (permissive default).
    *
-   * NOTE: Config tables respect the same filter.
+   * IMPORTANT — GM OVERRIDE EXEMPTION (MAJOR fix #3):
+   *   Features with `ruleSource: "gm_override"` (or any value starting with "gm_")
+   *   are ALWAYS retained regardless of `enabledRuleSources`. This is required because:
+   *     1. GM Global Overrides (Layer 2) and GM Per-Character Overrides (Layer 3) reference
+   *        custom Feature definitions that the GM creates directly in the text area.
+   *     2. These features cannot and should not be "disabled" by the source filter —
+   *        they are the GM's direct runtime modifications, not rule sources to be toggled.
+   *     3. Without this exemption, saving GM overrides with `ruleSource: "gm_override"`
+   *        would have their features silently discarded by the filter after loading.
+   *
+   *   The GM ruleSource convention is: `"gm_override"` (for globally defined overrides)
+   *   or any string beginning with `"gm_"` for custom per-campaign override blocks.
+   *
+   * NOTE: Config tables from GM overrides are also exempt from filtering.
+   *
+   * @see ARCHITECTURE.md section 18.5 and 18.6 for GM override specifications.
    */
   #filterByEnabledSources(): void {
     if (this.enabledRuleSources.length === 0) return; // Empty = no filtering
 
-    // Filter features
+    // Filter features (exempt GM override sources)
     for (const [id, feature] of this.featureCache) {
-      if (!this.enabledRuleSources.includes(feature.ruleSource)) {
+      const isGmSource = feature.ruleSource === 'gm_override' || feature.ruleSource.startsWith('gm_');
+      if (!isGmSource && !this.enabledRuleSources.includes(feature.ruleSource)) {
         this.featureCache.delete(id);
       }
     }
 
-    // Filter config tables
+    // Filter config tables (exempt GM override sources)
     for (const [tableId, table] of this.configTableCache) {
-      if (!this.enabledRuleSources.includes(table.ruleSource)) {
+      const isGmSource = table.ruleSource === 'gm_override' || table.ruleSource.startsWith('gm_');
+      if (!isGmSource && !this.enabledRuleSources.includes(table.ruleSource)) {
         this.configTableCache.delete(tableId);
       }
     }

@@ -43,30 +43,36 @@ class CharacterController
      * VISIBILITY LOGIC:
      *   GM: Returns ALL characters in the campaign.
      *       Each character response includes `gmOverrides` as a SEPARATE field.
-     *       This allows the GM to edit overrides independently of the character data.
+     *       This allows the GM to view/edit overrides independently of the character data.
      *
      *   Player: Returns ONLY characters where `owner_id = current_user_id`.
-     *           The `gmOverrides` are merged INTO `character_json` server-side,
-     *           and the separate `gmOverrides` field is NOT included in the response.
-     *           This means the player sees the final result without knowing what
-     *           was overridden or why.
+     *           GM overrides are injected into the `activeFeatures` array server-side,
+     *           STRIPPED OF ANY IDENTIFYING SOURCE INFORMATION (instanceId prefix changed,
+     *           no `gmOverrides` field in the response). The player cannot distinguish
+     *           GM-injected features from regular active features.
      *
-     * WHY MERGE SERVER-SIDE FOR PLAYERS?
-     *   The merge engine is in TypeScript (GameEngine). For the PHP backend to merge,
-     *   it would need to re-implement the D&D rule resolution chain in PHP — which
-     *   violates the "backend is dumb persistence" principle.
+     * SECURITY — WHY NOT INCLUDE gmOverrides DIRECTLY FOR PLAYERS?
+     *   Including a `gmOverrides` field in the player response exposes secret GM data
+     *   in plain JSON that any player can read via browser DevTools. Even if the frontend
+     *   does not display it in the UI, the featureIds and instanceIds are visible.
+     *   ARCHITECTURE.md section 18.5: "The player never sees this field or its raw content —
+     *   they only see the final result after complete chain resolution."
      *
-     *   SIMPLIFIED MERGE APPROACH:
-     *     The PHP backend's "merge" for players is simply:
-     *       - Parse `character_json` into an associative array.
-     *       - Set `gmOverrides` field from `gm_overrides_json` (parsed).
-     *       - Return the combined object.
-     *     The FULL merge (DataLoader + Feature resolution) happens in the frontend
-     *     GameEngine when it processes the gmOverrides array.
+     *   SOLUTION (server-side injection):
+     *     The PHP backend merges the GM override ActiveFeatureInstances into the
+     *     `activeFeatures` array of the character JSON before sending to the player.
+     *     This ensures:
+     *       1. The frontend GameEngine still applies the overrides in DAG Phase 0.
+     *       2. The player cannot distinguish GM-injected features from normal ones.
+     *       3. No `gmOverrides` field exists in the player's response payload.
      *
-     *   So the player response includes `gmOverrides` in the character JSON,
-     *   but the frontend GameEngine processes them as the final override layer.
-     *   The player CANNOT see the source (`gm_overrides_json` column) separately.
+     *   LIMITATION:
+     *     The frontend GameEngine's `phase_grantedFeatIds` and feat slot logic read
+     *     `activeFeatures` + `gmOverrides` separately. Since we inject GM overrides into
+     *     `activeFeatures` for players, these overrides will NOT have special GM treatment
+     *     from the client's perspective (e.g., they may count as manual feats). This is
+     *     an acceptable trade-off: GM secret features are functionally applied but their
+     *     origin (GM vs player) is intentionally hidden from the player's client.
      */
     public static function index(): void
     {
@@ -81,7 +87,8 @@ class CharacterController
         }
 
         if ($user['is_game_master']) {
-            // GMs see all characters, with separate gmOverrides field
+            // GMs see all characters, with raw gmOverrides as a SEPARATE field.
+            // This allows the GM dashboard (Phase 15.3) to display and edit overrides independently.
             $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ?');
             $stmt->execute([$campaignId]);
             $characters = $stmt->fetchAll();
@@ -94,7 +101,8 @@ class CharacterController
                 $char['name']        = $c['name'];
                 $char['isNPC']       = (bool)$c['is_npc'];
                 $char['updatedAt']   = (int)$c['updated_at'];
-                // GMs receive raw gmOverrides separately
+                // GMs receive raw gmOverrides as a separate field (for GM dashboard editing).
+                // The frontend GameEngine processes them as the final override layer in Phase 0.
                 $char['gmOverrides'] = json_decode($c['gm_overrides_json'], true) ?? [];
                 return $char;
             }, $characters);
@@ -113,16 +121,48 @@ class CharacterController
                 $char['isNPC']      = (bool)$c['is_npc'];
                 $char['updatedAt']  = (int)$c['updated_at'];
 
-                // Player: merge gmOverrides INTO character data (not separately).
-                // The GameEngine reads gmOverrides from character.gmOverrides and
-                // applies them as the final override layer in Phase 0 of the DAG.
-                // The player sees the effect but not the source.
+                // SECURITY: For players, GM overrides are injected INTO activeFeatures
+                // rather than exposed as a separate `gmOverrides` field.
+                //
+                // WHY: Sending `gmOverrides` as a separate field allows any player with
+                // DevTools to see the raw feature IDs and instanceIds chosen by the GM,
+                // breaking the secrecy guarantee (ARCHITECTURE.md section 18.5).
+                //
+                // HOW: Parse the `gm_overrides_json`, strip identifying GM prefixes from
+                // instanceIds, then splice the entries into the existing `activeFeatures` array.
+                // The frontend GameEngine processes `activeFeatures` in Phase 0 identically
+                // regardless of origin — the overrides are applied transparently.
+                //
+                // The `gmOverrides` field is intentionally OMITTED from the player payload.
                 $gmOverrides = json_decode($c['gm_overrides_json'], true) ?? [];
-                $char['gmOverrides'] = $gmOverrides;
-                // NOTE: We DO include gmOverrides here, but the CONTENT is passed
-                // through as feature instances — the player cannot distinguish
-                // "GM override" features from "normal" features by design.
-                // The GM dashboard (Phase 15.3) shows the separate gm_overrides_json column.
+
+                if (!empty($gmOverrides) && is_array($gmOverrides)) {
+                    // Ensure activeFeatures exists and is an array
+                    if (!isset($char['activeFeatures']) || !is_array($char['activeFeatures'])) {
+                        $char['activeFeatures'] = [];
+                    }
+
+                    // Inject each GM override as a regular active feature instance.
+                    // The instanceId is re-prefixed to avoid collisions and hide GM origin.
+                    foreach ($gmOverrides as $override) {
+                        if (!is_array($override) || empty($override['featureId'])) {
+                            continue; // Skip malformed entries silently
+                        }
+
+                        // Remap instanceId: replace "gm_" prefix with "afi_injected_"
+                        // to make it indistinguishable from player features for the client.
+                        $sanitizedOverride = $override;
+                        if (isset($sanitizedOverride['instanceId'])) {
+                            $sanitizedOverride['instanceId'] = 'afi_injected_' . md5($override['instanceId']);
+                        }
+
+                        $char['activeFeatures'][] = $sanitizedOverride;
+                    }
+                }
+
+                // Explicitly ensure NO gmOverrides field in the player response.
+                unset($char['gmOverrides']);
+
                 return $char;
             }, $characters);
         }

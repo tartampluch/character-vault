@@ -316,6 +316,37 @@ export interface Character {
   classLevels: Record<ID, number>;
 
   // ---------------------------------------------------------------------------
+  // Hit Die Results — Per-level HP rolls (stored, not recomputed)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * The result of the hit die roll for EACH character level.
+   *
+   * KEY: The character level at which the die was rolled (1-indexed).
+   * VALUE: The numeric result of the hit die roll for that level.
+   *
+   * D&D 3.5 Max HP FORMULA (ARCHITECTURE.md section 9, Phase 3):
+   *   Max HP = sum(hitDieResults.values()) + (CON_derivedModifier × character_level)
+   *
+   * Rolling strategy (Campaign Settings dependent):
+   *   - Roll / Reroll: Player rolls the class's hit die during level-up (stored here).
+   *   - Max HP (house rule): All dice set to the maximum face value.
+   *   - Fixed / Average: All dice set to (faces / 2) + 1 (e.g., d10 → 6).
+   *
+   * This record is populated by the Level Up mechanic (Phase 10.1 UI).
+   * For a brand-new character, it is empty and Max HP = CON_modifier × level.
+   * For a Fighter 5 with CON 14 (mod +2) who rolled [7, 4, 8, 5, 10]:
+   *   Max HP = (7+4+8+5+10) + (2 × 5) = 34 + 10 = 44
+   *
+   * STORED in save files (irreversible player choice — once a die is rolled and
+   * accepted, it cannot be re-rolled without a GM override).
+   * NOT recalculated at runtime — each value is set once at level-up.
+   *
+   * @example { 1: 8, 2: 5, 3: 10, 4: 3, 5: 7 } (Fighter 5, d10 hit die)
+   */
+  hitDieResults: Record<number, number>;
+
+  // ---------------------------------------------------------------------------
   // Pipeline containers (saved state for base values only)
   // ---------------------------------------------------------------------------
 

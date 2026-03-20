@@ -1,4 +1,5 @@
 [
+  "/rules/config_tables.json",
   "/rules/test_mock.json",
   "/rules/test_override.json"
 ]

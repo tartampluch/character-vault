@@ -188,9 +188,24 @@ export interface Modifier {
    * Convention: use the same string as a tag that would appear in `@targetTags`.
    * Examples: "orc", "goblinoid", "attack_of_opportunity", "flanking", "evil"
    *
-   * IMPORTANT: A modifier cannot have BOTH `situationalContext` AND `conditionNode`.
-   *   - Use `conditionNode` for conditions evaluated at sheet time (static character state).
-   *   - Use `situationalContext` for conditions evaluated at roll time (target's tags).
+   * DUAL-GATING (BOTH conditionNode AND situationalContext may coexist):
+   *   A modifier CAN have BOTH fields simultaneously. The engine handles this in two stages:
+   *
+   *   Stage 1 (SHEET TIME — `conditionNode` evaluation in Phase 0):
+   *     The `conditionNode` is evaluated against the character's current state.
+   *     If it FAILS: the modifier is completely ignored (not even added to situationalModifiers).
+   *     If it PASSES: proceed to Stage 2.
+   *
+   *   Stage 2 (ROLL TIME — `situationalContext` matching):
+   *     Because `situationalContext` is present, the modifier goes to `situationalModifiers`
+   *     (not `activeModifiers`). It is only applied when the roll context includes the tag.
+   *
+   *   CANONICAL EXAMPLE — Barbarian Indomitable Will (ANNEXES.md section A.1.1):
+   *     "+4 Will save vs Enchantment spells while Raging"
+   *     - `conditionNode`: must have tag "rage" (sheet-time gating — only while raging)
+   *     - `situationalContext`: "vs_enchantment" (roll-time gating — only vs enchantment)
+   *     Both conditions must be met: the Barbarian must be RAGING and the roll must be
+   *     AGAINST AN ENCHANTMENT for the +4 bonus to apply.
    */
   situationalContext?: string;
 }

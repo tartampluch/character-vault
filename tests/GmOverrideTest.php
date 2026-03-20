@@ -4,11 +4,21 @@
  * @description PHPUnit tests for GM override visibility rules.
  *
  * TESTS:
- *   - Player fetching their own character receives gmOverrides merged in (cannot see raw column).
- *   - GM fetching the same character receives both base data and raw gmOverrides separately.
+ *   - Player fetching their own character does NOT receive a separate `gmOverrides` field.
+ *     Instead, GM overrides are injected into `activeFeatures` with anonymised instanceIds.
+ *     This prevents players from seeing raw GM override data via DevTools (CRITICAL fix #1).
+ *   - GM fetching the same character receives BOTH base character data AND raw gmOverrides separately.
  *   - GM can save per-character overrides via PUT /characters/{id}/gm-overrides.
  *   - Player cannot save GM overrides (403).
  *   - Saving GM overrides updates the character's updated_at timestamp.
+ *
+ * SECURITY DESIGN (CRITICAL fix #1 — CharacterController.php):
+ *   Previously, the player response contained a `gmOverrides` field in clear JSON,
+ *   allowing any player with DevTools to see the raw override featureIds and instanceIds.
+ *   The fix injects GM override instances into `activeFeatures` (with anonymised instanceIds)
+ *   so the frontend GameEngine still processes them, but the player cannot distinguish
+ *   GM-injected features from regular active features.
+ *   ARCHITECTURE.md section 18.5: "The player never sees this field or its raw content."
  *
  * @see api/controllers/CharacterController.php
  * @see ARCHITECTURE.md Phase 16.5
@@ -65,15 +75,21 @@ class GmOverrideTest extends TestCase
     // ============================================================
 
     /**
-     * Player fetching their character receives the data WITH gmOverrides embedded.
-     * CHECKPOINTS.md: "Test that a player fetching their own character receives
-     * the merged result (with GM overrides applied invisibly)."
+     * Player fetching their character does NOT receive a separate gmOverrides field.
      *
-     * The key: the player receives gmOverrides as a field in the character object
-     * (so the GameEngine can process them), but the PLAYER cannot see the raw
-     * gm_overrides_json column separately (which would reveal the GM's intent).
+     * SECURITY SPECIFICATION (CRITICAL fix #1):
+     *   The player response must NOT contain a `gmOverrides` key because exposing
+     *   that field in the JSON payload allows any player to read the GM's secret override
+     *   featureIds and instanceIds via browser DevTools.
+     *
+     * Instead, GM overrides are injected into `activeFeatures` with anonymised instanceIds
+     * (prefixed "afi_injected_" + MD5 hash). This allows the frontend GameEngine to process
+     * them in Phase 0 of the DAG without revealing their origin.
+     *
+     * CHECKPOINTS.md Phase 16.5: "Test that a player fetching their own character receives
+     * the merged result (with GM overrides applied invisibly)."
      */
-    public function testPlayerReceivesGmOverridesEmbeddedInCharacter(): void
+    public function testPlayerDoesNotReceiveSeparateGmOverridesField(): void
     {
         $this->simulateLogin(self::PLAYER_ID);
 
@@ -85,12 +101,57 @@ class GmOverrideTest extends TestCase
 
         $char = $response['body'][0];
 
-        // The player's response INCLUDES gmOverrides (so GameEngine can use them)
-        $this->assertArrayHasKey('gmOverrides', $char,
-            'Player response must include gmOverrides for the GameEngine to process');
-        $this->assertCount(2, $char['gmOverrides'],
-            'Both GM override instances should be included');
-        $this->assertEquals('gm_curse_001', $char['gmOverrides'][0]['instanceId']);
+        // SECURITY ASSERTION: No separate gmOverrides field in the player response.
+        // This prevents DevTools-based inspection of GM secrets.
+        $this->assertArrayNotHasKey('gmOverrides', $char,
+            'SECURITY: Player response must NOT contain a gmOverrides field to prevent DevTools inspection.');
+    }
+
+    /**
+     * Player response has GM overrides injected into activeFeatures (not as a separate field).
+     *
+     * The injected instances use anonymised instanceIds ("afi_injected_" + MD5 hash)
+     * so the player cannot identify them as GM-originated features.
+     */
+    public function testPlayerReceivesGmOverridesInjectedIntoActiveFeatures(): void
+    {
+        $this->simulateLogin(self::PLAYER_ID);
+
+        $_GET = ['campaignId' => self::CAMP_ID];
+        $response = $this->callController(fn() => CharacterController::index());
+
+        $this->assertEquals(200, $response['status']);
+        $char = $response['body'][0];
+
+        // The character should have activeFeatures containing the injected GM override instances.
+        $this->assertArrayHasKey('activeFeatures', $char,
+            'Player response must have activeFeatures array');
+        $this->assertIsArray($char['activeFeatures'],
+            'activeFeatures must be an array');
+
+        // Injected overrides have "afi_injected_" prefix
+        $injectedFeatures = array_filter(
+            $char['activeFeatures'],
+            fn($f) => isset($f['instanceId']) && str_starts_with($f['instanceId'], 'afi_injected_')
+        );
+        $this->assertCount(2, $injectedFeatures,
+            'Both GM override instances should be injected into activeFeatures');
+
+        // The featureIds must still be correct (for the GameEngine to load the features)
+        $featureIds = array_map(fn($f) => $f['featureId'], array_values($injectedFeatures));
+        $this->assertContains('gm_custom_curse_weakness', $featureIds,
+            'Injected instances must reference the correct featureIds');
+        $this->assertContains('gm_custom_darkvision', $featureIds,
+            'Injected instances must reference the correct featureIds');
+
+        // The original GM instanceIds must NOT be visible (they are hashed)
+        $instanceIds = array_map(fn($f) => $f['instanceId'], array_values($injectedFeatures));
+        foreach ($instanceIds as $iid) {
+            $this->assertStringNotContainsString('gm_curse_001', $iid,
+                'Original GM instanceId must not be visible in player response');
+            $this->assertStringNotContainsString('gm_darkvision_001', $iid,
+                'Original GM instanceId must not be visible in player response');
+        }
     }
 
     // ============================================================
