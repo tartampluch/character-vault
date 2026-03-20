@@ -45,6 +45,7 @@ import { checkCondition } from '../utils/logicEvaluator';
 import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
+import { storageManager, debounce } from './StorageManager';
 
 // =============================================================================
 // CONSTANTS
@@ -202,6 +203,61 @@ export class GameEngine {
 
   /** Set when a storage error occurs. Displayed as a UI notification. */
   lastError = $state<string | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // AUTO-SAVE $effect — Connect character and settings changes to StorageManager
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Debounced save function for the character.
+   * Waits 500ms after the last change before writing to localStorage.
+   * Prevents excessive writes during rapid user interactions (typing, sliders).
+   *
+   * In Phase 14.6, this delay is increased to 2000ms for the PHP API backend.
+   */
+  readonly #debouncedSaveCharacter = debounce((char: Character) => {
+    storageManager.saveCharacter(char);
+  }, 500);
+
+  /**
+   * Auto-save $effect: saves the character whenever it changes.
+   *
+   * Svelte 5's `$effect` tracks all reactive dependencies read inside it.
+   * Reading `this.character` makes the effect reactive to ANY change in the character,
+   * including nested mutations (attribute baseValue, skill ranks, activeFeatures, etc.).
+   *
+   * Uses the debounced save to avoid overwhelming localStorage.
+   */
+  readonly #autoSaveCharacterEffect = $effect.root(() => {
+    $effect(() => {
+      // Reading this.character makes this effect reactive to all character changes
+      const char = this.character;
+      // Tracking activeCharacterId prevents saving the default blank character on init
+      if (char.id !== 'default' && this.activeCharacterId) {
+        this.#debouncedSaveCharacter(char);
+      }
+    });
+  });
+
+  /**
+   * Auto-save $effect: saves settings whenever they change.
+   * Settings changes are rare (language toggle, house rule toggle, etc.) —
+   * no debounce needed, save immediately.
+   */
+  readonly #autoSaveSettingsEffect = $effect.root(() => {
+    $effect(() => {
+      storageManager.saveSettings(this.settings);
+    });
+  });
+
+  /**
+   * Auto-save $effect: persists the active character ID for session restore.
+   */
+  readonly #autoSaveActiveIdEffect = $effect.root(() => {
+    $effect(() => {
+      storageManager.saveActiveCharacterId(this.activeCharacterId);
+    });
+  });
 
   // ---------------------------------------------------------------------------
   // DAG PHASE 0 — Feature Flattening & Modifier Extraction
