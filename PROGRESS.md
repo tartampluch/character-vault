@@ -110,7 +110,7 @@ _Goal: Build the complete interactive Abilities, Saving Throws, and Skills inter
     - Create `PointBuyModal.svelte`. Implement the 3.5 point buy math. Read `recommendedAttributes` from the character's active Class feature to color-code (green/orange/red) the stats. Restrict spending based on `CampaignSettings.statGeneration.pointBuyBudget`.
     - Create `RollStatsModal.svelte`. Implement the 4d6 drop lowest logic. Automatically reroll 1s if `CampaignSettings.statGeneration.rerollOnes` is true. Allow assigning the 6 rolled values to the desired attributes.
 - [x] **9.5 Saving Throws Panel:** Create `src/lib/components/abilities/SavingThrows.svelte`. Display Fortitude, Reflex, and Will. For each, display the Final Modifier, the related Ability Modifier block (color-coded, e.g., CON for Fortitude), Misc Modifiers, and an editable Temporary Modifier input. Include Breakdown and Dice Roll buttons.
-- [ ] **9.6 Skills Matrix Panel:** Create `src/lib/components/abilities/SkillsMatrix.svelte`.
+- [x] **9.6 Skills Matrix Panel:** Create `src/lib/components/abilities/SkillsMatrix.svelte`.
     - Create the header calculating "Skill Points Available" vs "Skill Points Spent".
     - Render the table of skills. For each skill: show a checkbox for "Class Skill" (read-only, derived from active classes), Skill Name, Total Bonus, Key Ability label, User Misc input, Ranks input, Cost per rank (1 or 2), and Max allowed ranks (Level + 3, or half for cross-class).
     - _Requirement:_ Typing in the "Ranks" input must directly update the `ranks` property of the specific `SkillPipeline` in the `GameEngine`.
