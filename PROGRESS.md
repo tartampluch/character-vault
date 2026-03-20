@@ -179,16 +179,16 @@ _Goal: Build the Magic, Psionics, and Special Abilities interface. This tab mana
 _Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equipment slot limits dynamically based on the engine's pipelines, and calculate weight penalties accurately._
 
 - [x] **13.1 Equipment Slot Pipelines:** In `GameEngine`, establish base pipelines for body slots (e.g., `slots.head`, `slots.ring`, `slots.body`, `slots.main_hand`). Set default base values (e.g., `slots.ring` = 2, `slots.head` = 1). This ensures exotic races can simply apply modifiers to these pipelines to gain extra slots.
-- [ ] **13.2 Inventory Sections & Layout:** Create `src/lib/components/inventory/InventoryTab.svelte`. Divide the layout into three distinct visual containers:
+- [x] **13.2 Inventory Sections & Layout:** Create `src/lib/components/inventory/InventoryTab.svelte`. Divide the layout into three distinct visual containers:
     1. **Equipped / Readied:** Items actively worn or held.
     2. **Backpack / Carried:** Items on the character's person but not granting active stats (contributes to weight).
     3. **Storage / Stashed:** Items kept in a wagon, mount, or home (does not contribute to weight).
-- [ ] **13.3 Equip & Slot Enforcement Logic:** Create the item interaction logic.
+- [x] **13.3 Equip & Slot Enforcement Logic:** Create the item interaction logic.
     - When a user clicks "Equip" on an item in the Backpack, the UI must check the item's `equipmentSlot` tag (e.g., "ring").
     - It then checks the `slots.ring` pipeline. If the number of currently equipped rings equals the max allowed, the UI blocks the action and shows a warning ("Ring slots full. Unequip an item first.").
     - _Action:_ If successful, toggle the `isActive` boolean on the `ActiveFeatureInstance`. The `GameEngine` will automatically inject its modifiers (like Armor AC or Sword Damage) into the DAG.
     - _Two-Handed Weapons:_ If `equipmentSlot` is `two_hands`, the engine must check that both `slots.main_hand` and `slots.off_hand` are free, and occupy both when equipped.
-- [ ] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`.
+- [x] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`.
     - _Weight Calculation:_ Create a `$derived` that sums the `weightLbs` of all items in the "Equipped" and "Backpack" categories.
     - _Encumbrance Tiers:_ Compare total weight against the character's Strength carrying capacity (thresholds loaded from a configuration JSON lookup table, not hardcoded). If the load is Medium or Heavy, automatically dispatch a situational `condition_encumbered` feature to the engine to apply speed and armor check penalties.
     - _Wealth:_ Add simple input fields for CP, SP, GP, PP, and calculate their total weight (standard rule: 50 coins = 1 lb).
