@@ -157,6 +157,29 @@ class CharacterController
             return;
         }
 
+        $db = Database::getInstance();
+
+        // Validate that the campaignId exists and belongs to a campaign the user has access to
+        if ($campaignId) {
+            $campStmt = $db->prepare('SELECT id, owner_id FROM campaigns WHERE id = ?');
+            $campStmt->execute([$campaignId]);
+            $camp = $campStmt->fetch();
+
+            if (!$camp) {
+                http_response_code(404);
+                echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$campaignId}' not found."]);
+                return;
+            }
+
+            // Non-GMs can only add characters to campaigns they own
+            // (GMs can add to any campaign)
+            if (!$user['is_game_master'] && $camp['owner_id'] !== $user['id']) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Forbidden', 'message' => 'You cannot add characters to a campaign you do not own.']);
+                return;
+            }
+        }
+
         // Build the initial character JSON
         $characterData = $body;
         $characterData['id']        = $id;
@@ -165,7 +188,6 @@ class CharacterController
         $characterData['isNPC']     = $isNPC;
         unset($characterData['gmOverrides']); // never include gmOverrides in character_json
 
-        $db = Database::getInstance();
         $stmt = $db->prepare('INSERT INTO characters (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$id, $campaignId, $user['id'], $name, $isNPC ? 1 : 0, json_encode($characterData), '[]', $now]);
 

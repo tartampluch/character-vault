@@ -336,8 +336,8 @@
     {/if}
 
     <!-- AVAILABLE (DISABLED) SOURCES -->
-    {@const disabledSources = availableSources.filter(s => !enabledSources.includes(s.path))}
-    {#if disabledSources.length > 0}
+    {#if availableSources.filter(s => !enabledSources.includes(s.path)).length > 0}
+      {@const disabledSources = availableSources.filter(s => !enabledSources.includes(s.path))}
       <div class="sources-section">
         <h3 class="subsection-title">⭕ Available Sources (not loaded)</h3>
         <div class="sources-list">

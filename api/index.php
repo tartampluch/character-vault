@@ -89,6 +89,9 @@ try {
         handleLogin();
 
     } elseif ($path === '/auth/logout' && $method === 'POST') {
+        // CSRF protection on logout prevents cross-site logout attacks
+        // (an attacker forcing a player to log out during a game session)
+        verifyCsrfToken();
         handleLogout();
 
     } elseif ($path === '/auth/me' && $method === 'GET') {

@@ -343,15 +343,25 @@ export class GameEngine {
   // ---------------------------------------------------------------------------
 
   /**
-   * Debounced save function for the character.
-   * Waits 500ms after the last change before writing to localStorage.
-   * Prevents excessive writes during rapid user interactions (typing, sliders).
-   *
-   * In Phase 14.6, this delay is increased to 2000ms for the PHP API backend.
+   * Debounced save to localStorage (500ms — fast local I/O).
+   * Saves immediately to local storage for low-latency offline access.
    */
-  readonly #debouncedSaveCharacter = debounce((char: Character) => {
+  readonly #debouncedSaveLocalCharacter = debounce((char: Character) => {
     storageManager.saveCharacter(char);
   }, 500);
+
+  /**
+   * Debounced save to PHP API (2000ms — avoids spamming the server).
+   * Phase 14.6: fires a PUT /api/characters/{id} request after the user stops typing.
+   * The API call itself is async (fire-and-forget from the component's perspective).
+   * On API failure, the localStorage save (above) ensures data is not lost.
+   */
+  readonly #debouncedSaveApiCharacter = debounce((char: Character) => {
+    // Fire-and-forget: the async method handles its own error handling + localStorage fallback
+    storageManager.saveCharacterToApi(char).catch(() => {
+      // Already handled inside saveCharacterToApi — silently ignore here
+    });
+  }, 2000);
 
   /**
    * Auto-save $effect: saves the character whenever it changes.
@@ -368,7 +378,11 @@ export class GameEngine {
       const char = this.character;
       // Tracking activeCharacterId prevents saving the default blank character on init
       if (char.id !== 'default' && this.activeCharacterId) {
-        this.#debouncedSaveCharacter(char);
+        // Dual-backend auto-save (Phase 14.6):
+        //   1. localStorage (500ms debounce) — fast, always-available local cache
+        //   2. PHP API (2000ms debounce) — server sync, fails gracefully if unreachable
+        this.#debouncedSaveLocalCharacter(char);
+        this.#debouncedSaveApiCharacter(char);
       }
     });
   });

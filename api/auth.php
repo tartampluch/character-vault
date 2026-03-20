@@ -45,6 +45,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/middleware.php';
 
 // ============================================================
 // SESSION BOOTSTRAP
@@ -279,12 +280,18 @@ function handleMe(): void
 {
     $user = requireAuth(); // Exits with 401 if not authenticated
 
+    // Generate/retrieve CSRF token and include it in the response.
+    // The SvelteKit frontend stores this in memory and sends it as
+    // X-CSRF-Token header on all state-changing requests (POST/PUT/DELETE).
+    $csrfToken = getCsrfToken();
+
     http_response_code(200);
     echo json_encode([
         'id'             => $user['id'],
         'username'       => $user['username'],
         'display_name'   => $user['display_name'],
         'is_game_master' => $user['is_game_master'],
+        'csrfToken'      => $csrfToken,
     ]);
 }
 
