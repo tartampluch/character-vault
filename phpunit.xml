@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  @file phpunit.xml
+  @description PHPUnit configuration for the Character Vault PHP backend tests.
+
+  TEST ENVIRONMENT:
+    All tests use an in-memory SQLite database (sqlite::memory:) via the APP_TESTING
+    environment variable. This ensures:
+      - No test file is created on the filesystem.
+      - Each test class starts with a clean, empty database (via Database::reset()).
+      - Tests can run in parallel without interfering with each other.
+
+  DATABASE SETUP:
+    Each test class should call Database::reset() in setUp() to clear the singleton,
+    then call migrate(Database::getInstance()) to create the schema in memory.
+
+  @see api/Database.php for the singleton + reset() method.
+  @see api/migrate.php for the migrate() function.
+  @see ARCHITECTURE.md Phase 16.1 for the specification.
+-->
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    failOnWarning="true"
+    failOnRisky="false"
+    stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="Character Vault API Tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">api</directory>
+        </include>
+        <exclude>
+            <file>api/index.php</file>
+        </exclude>
+    </source>
+
+    <php>
+        <!--
+            APP_TESTING=1: Tells Database.php to use sqlite::memory: instead of a file.
+            This is the key switch that makes all tests use a clean in-memory DB.
+        -->
+        <env name="APP_TESTING" value="1"/>
+        <env name="APP_ENV" value="test"/>
+    </php>
+</phpunit>
