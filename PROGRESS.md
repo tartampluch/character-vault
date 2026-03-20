@@ -75,7 +75,7 @@ _Goal: Build the character selection screen (Your Adventurers) based on the curr
     - _Rule:_ Filter characters by `activeCampaignId`.
     - _Rule:_ If `isGameMaster` is true, return all characters, NPCs, and monsters in the campaign.
     - _Rule:_ If `isGameMaster` is false, return ONLY characters where `ownerId === currentUserId`, plus any `LinkedEntity` belonging to those characters.
-- [ ] **7.2 Character Card Component:** Create `src/lib/components/vault/CharacterCard.svelte`. It must accept a `Character` object as a prop.
+- [x] **7.2 Character Card Component:** Create `src/lib/components/vault/CharacterCard.svelte`. It must accept a `Character` object as a prop.
     - _Layout:_ Display the `posterUrl` at the top (fallback to a placeholder 300x200 if undefined). Display the Character Name.
     - _Subtitle Logic:_ If `customSubtitle` exists, display it. Otherwise, if `isNPC`, display the Race label. If it's a Player Character, display `playerRealName`.
     - _Level Badge:_ Display the Overall Effective Level (sum of all class levels from `classLevels`).
