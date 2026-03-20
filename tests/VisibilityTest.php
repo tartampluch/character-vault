@@ -208,4 +208,75 @@ class VisibilityTest extends TestCase
         $this->assertEquals('Unauthorized', $response['body']['error']);
     }
 
+    // ============================================================
+    // INDIVIDUAL CHARACTER ACCESS (MINOR fix #1)
+    // Confirms index() filtering is the sole visibility boundary.
+    // ============================================================
+
+    /**
+     * A non-GM accessing a different campaign where they have no characters
+     * receives an empty list (not a 403, but truly empty).
+     *
+     * This verifies the filter applies correctly even when:
+     * - The campaignId EXISTS and is valid
+     * - The player has characters in a DIFFERENT campaign
+     *
+     * CHECKPOINTS.md section 16.3 note: there is no GET /api/characters/{id}
+     * endpoint in the current implementation. The only read endpoint is
+     * GET /api/characters?campaignId=X (index). This test confirms the index
+     * filtering is comprehensive and cannot be bypassed with a valid campaignId.
+     */
+    public function testPlayerGetsEmptyListForCampaignWhereTheyHaveNoCharacters(): void
+    {
+        // Create a second campaign
+        $this->createCampaign('camp_other_001', self::GM_ID, 'Other Campaign');
+
+        // Create a character in the OTHER campaign (not belonging to PLAYER1)
+        $this->createCharacter('char_other_camp', 'camp_other_001', self::GM_ID, 'GM Hero in other campaign');
+
+        // PLAYER1 accesses the OTHER campaign (where they have no characters)
+        $this->simulateLogin(self::PLAYER1_ID);
+        $_GET = ['campaignId' => 'camp_other_001'];
+        $response = $this->callController(fn() => CharacterController::index());
+
+        // Should succeed (200) but return an EMPTY array
+        // (not 403 — the campaign exists and the player is authenticated)
+        $this->assertEquals(200, $response['status']);
+        $this->assertCount(0, $response['body'],
+            'Player should see empty list for a campaign where they have no characters');
+    }
+
+    /**
+     * Cross-campaign isolation: Player's character from Campaign A
+     * must NOT appear when querying Campaign B.
+     *
+     * This verifies that the campaignId filter prevents cross-campaign leakage.
+     */
+    public function testCampaignIdFilterPreventsCharacterLeakageBetweenCampaigns(): void
+    {
+        // Create a second campaign with a character for PLAYER1
+        $this->createCampaign('camp_second_001', self::GM_ID, 'Second Campaign');
+        $this->createCharacter('char_player1_in_camp2', 'camp_second_001', self::PLAYER1_ID, 'Player1 in Camp2');
+
+        // PLAYER1 queries the FIRST campaign (should only see their char from camp1)
+        $this->simulateLogin(self::PLAYER1_ID);
+        $_GET = ['campaignId' => self::CAMP_ID];
+        $response1 = $this->callController(fn() => CharacterController::index());
+
+        // Only CHAR1_ID (in camp1) should appear, NOT char_player1_in_camp2 (in camp2)
+        $ids1 = array_column($response1['body'], 'id');
+        $this->assertContains(self::CHAR1_ID, $ids1, 'Own character in camp1 should appear');
+        $this->assertNotContains('char_player1_in_camp2', $ids1,
+            'Character from camp2 must not appear when querying camp1');
+
+        // PLAYER1 queries the SECOND campaign
+        $_GET = ['campaignId' => 'camp_second_001'];
+        $response2 = $this->callController(fn() => CharacterController::index());
+
+        $ids2 = array_column($response2['body'], 'id');
+        $this->assertContains('char_player1_in_camp2', $ids2, 'Own character in camp2 should appear');
+        $this->assertNotContains(self::CHAR1_ID, $ids2,
+            'Character from camp1 must not appear when querying camp2');
+    }
+
 }

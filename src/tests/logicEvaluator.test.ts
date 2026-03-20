@@ -470,6 +470,189 @@ describe('Deeply nested AND > OR > NOT > CONDITION tree (Example B from ARCHITEC
 });
 
 // ============================================================
+// ADDITIONAL OPERATORS (MINOR fix #4)
+// Tests for ==, <=, !=, includes, not_includes
+// (ARCHITECTURE.md section 3 — all 8 LogicOperator values)
+// ============================================================
+
+describe('CONDITION — == (equality) operator', () => {
+  /**
+   * The "==" operator checks strict equality.
+   * Useful for comparing exact values like alignment or size category.
+   */
+  it('passes when characterLevel == 8', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@characterLevel',
+        operator: '==',
+        value: 8,
+        errorMessage: 'Requires exactly character level 8',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('fails when characterLevel == 5 (character is level 8)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@characterLevel',
+        operator: '==',
+        value: 5,
+        errorMessage: 'Requires exactly character level 5',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Requires exactly character level 5');
+  });
+});
+
+describe('CONDITION — != (not equal) operator', () => {
+  /**
+   * The "!=" operator checks strict inequality.
+   * Useful for "not alignment_evil" checks.
+   */
+  it('passes when characterLevel != 5 (character is level 8)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@characterLevel',
+        operator: '!=',
+        value: 5,
+        errorMessage: 'Must not be character level 5',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('fails when characterLevel != 8 (character IS level 8)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@characterLevel',
+        operator: '!=',
+        value: 8,
+        errorMessage: 'Must not be character level 8',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Must not be character level 8');
+  });
+});
+
+describe('CONDITION — <= (less than or equal) operator', () => {
+  /**
+   * The "<=" operator checks upper bounds.
+   * Useful for "maximum level" restrictions (e.g., prestige class entry requires BAB <= X).
+   */
+  it('passes when STR <= 14 (STR is 14)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@attributes.stat_str.totalValue',
+        operator: '<=',
+        value: 14,
+        errorMessage: 'Requires Strength 14 or lower',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('fails when STR <= 10 (STR is 14)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@attributes.stat_str.totalValue',
+        operator: '<=',
+        value: 10,
+        errorMessage: 'Requires Strength 10 or lower',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Requires Strength 10 or lower');
+  });
+});
+
+describe('CONDITION — includes operator', () => {
+  /**
+   * The "includes" operator checks if a value is IN an array.
+   * Functionally identical to has_tag but named for non-tag arrays.
+   * Example: checking if "longsword" is in equippedWeaponTags.
+   */
+  it('passes when "longsword" is in equippedWeaponTags (via includes)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@equippedWeaponTags',
+        operator: 'includes',
+        value: 'longsword',
+        errorMessage: 'Requires a longsword to be equipped',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('fails when "shortsword" is NOT in equippedWeaponTags (via includes)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@equippedWeaponTags',
+        operator: 'includes',
+        value: 'shortsword',
+        errorMessage: 'Requires a shortsword to be equipped',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Requires a shortsword to be equipped');
+  });
+});
+
+describe('CONDITION — not_includes operator', () => {
+  /**
+   * The "not_includes" operator checks if a value is NOT IN an array.
+   * Functionally identical to missing_tag but named for non-tag arrays.
+   * Example: checking that a forbidden weapon type is not equipped.
+   */
+  it('passes when "greataxe" is NOT in equippedWeaponTags (via not_includes)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@equippedWeaponTags',
+        operator: 'not_includes',
+        value: 'greataxe',
+        errorMessage: 'Must not equip a greataxe',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('fails when "longsword" IS in equippedWeaponTags (not_includes check)', () => {
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@equippedWeaponTags',
+        operator: 'not_includes',
+        value: 'longsword',
+        errorMessage: 'Must not equip a longsword',
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Must not equip a longsword');
+  });
+});
+
+// ============================================================
 // NULL / UNDEFINED NODE
 // ============================================================
 

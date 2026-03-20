@@ -313,6 +313,72 @@ describe('evaluateFormula — @selection paths', () => {
 });
 
 // ============================================================
+// @master.classLevels PATH TESTS (MINOR fix #3)
+// (ARCHITECTURE.md section 4.3 — LinkedEntity companion formulas)
+// ============================================================
+
+describe('evaluateFormula — @master.classLevels paths (LinkedEntity companion formulas)', () => {
+  /**
+   * ARCHITECTURE.md section 4.3:
+   *   "@master.classLevels.<classId>" — The master character's class level.
+   *   Used by LinkedEntity formulas (familiar, animal companion, mount, summon)
+   *   to scale the companion's abilities based on the master's class level.
+   *
+   *   Example: An Animal Companion's Hit Dice formula might be:
+   *     "floor(@master.classLevels.class_druid / 2)"
+   *   so a Druid 8 would grant a 4 HD companion.
+   *
+   * IMPLEMENTATION NOTE:
+   *   The CharacterContext for a LinkedEntity includes a "master" sub-context
+   *   OR, in the current implementation, the @master.classLevels path is resolved
+   *   by walking the context object. If the context has a "master" property with
+   *   classLevels, the path resolves to the master's class level.
+   *
+   *   Current implementation: The mathParser resolves nested paths by splitting on "."
+   *   and walking the object tree. A context with { master: { classLevels: {...} } }
+   *   would support @master.classLevels.class_druid.
+   */
+  it('resolves @master.classLevels.class_druid when master context is present', () => {
+    // Simulate a CharacterContext for a Druid's Animal Companion
+    // The context has a "master" field with the master's class levels
+    const companionContext = {
+      ...mockContext,
+      // The 'constants' field can carry master data in the current implementation
+      // (the master context is injected as nested properties)
+      master: {
+        classLevels: {
+          'class_druid': 8,
+        },
+      },
+    } as unknown as CharacterContext;
+
+    // The formula "@master.classLevels.class_druid" should resolve to 8
+    const result = evaluateFormula('@master.classLevels.class_druid', companionContext, 'en');
+    expect(result).toBe(8);
+  });
+
+  it('Animal Companion HD formula: floor(@master.classLevels.class_druid / 2) at Druid 8 = 4', () => {
+    // A Druid 8 has an Animal Companion with floor(8/2) = 4 HD.
+    const companionContext = {
+      ...mockContext,
+      master: {
+        classLevels: { 'class_druid': 8 },
+      },
+    } as unknown as CharacterContext;
+
+    const result = evaluateFormula('floor(@master.classLevels.class_druid / 2)', companionContext, 'en');
+    expect(result).toBe(4); // floor(8/2) = 4 HD
+  });
+
+  it('returns 0 for @master.classLevels when no master context provided', () => {
+    // When a character is not a LinkedEntity, no "master" is present.
+    // The formula should safely return 0 (not crash).
+    const result = evaluateFormula('@master.classLevels.class_druid', mockContext, 'en');
+    expect(result).toBe(0); // No master → safely returns 0
+  });
+});
+
+// ============================================================
 // @constant PATH TESTS
 // ============================================================
 

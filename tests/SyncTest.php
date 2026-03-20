@@ -44,42 +44,66 @@ class SyncTest extends TestCase
     /**
      * Modifying a character via PUT /api/characters/{id} updates its updated_at.
      * CHECKPOINTS.md Phase 16.6: "Test that modifying a character updates its updated_at."
+     *
+     * IMPROVED APPROACH (MINOR fix #2 — removes sleep(1) flakiness):
+     *   Instead of using sleep(1) to guarantee a different timestamp, we inject a
+     *   known past timestamp directly into the database before the test. Then we
+     *   verify the updated_at is GREATER THAN the injected past value. This removes
+     *   all real-time dependency and makes the test deterministic regardless of
+     *   system clock resolution or execution speed.
      */
     public function testModifyingCharacterUpdatesTimestamp(): void
     {
         $pdo = Database::getInstance();
+
+        // Inject a timestamp from the past (100 seconds ago) to guarantee
+        // any real time() call will be strictly greater.
+        $pastTimestamp = time() - 100;
+        $pdo->prepare('UPDATE characters SET updated_at = ? WHERE id = ?')
+            ->execute([$pastTimestamp, self::CHAR1_ID]);
+
+        // Verify the injection worked
         $stmt = $pdo->prepare('SELECT updated_at FROM characters WHERE id = ?');
         $stmt->execute([self::CHAR1_ID]);
         $originalTs = (int)$stmt->fetchColumn();
+        $this->assertEquals($pastTimestamp, $originalTs, 'Test setup: timestamp was injected correctly');
 
-        sleep(1);
-
+        // Perform the update
         $this->simulateLogin(self::PLAYER_ID);
         $this->callControllerWithInput(
             fn() => CharacterController::update(self::CHAR1_ID),
             json_encode(['id' => self::CHAR1_ID, 'name' => 'Hero1 Updated', 'activeFeatures' => []])
         );
 
+        // The new timestamp should be greater (by at least 100 seconds due to our injection)
         $stmt->execute([self::CHAR1_ID]);
         $newTs = (int)$stmt->fetchColumn();
 
         $this->assertGreaterThan($originalTs, $newTs,
-            'Character updated_at should increase after a PUT update');
+            'Character updated_at should increase after a PUT update (no sleep needed)');
     }
 
     /**
      * Modifying GM overrides also updates the character's updated_at.
      * CHECKPOINTS.md Phase 16.6: "Test that modifying GM overrides also updates the character's updated_at."
+     *
+     * IMPROVED APPROACH (MINOR fix #2 — removes sleep(1) flakiness):
+     *   Same technique: inject a past timestamp before the action.
      */
     public function testModifyingGmOverridesUpdatesCharacterTimestamp(): void
     {
         $pdo = Database::getInstance();
+
+        // Inject a timestamp from the past (100 seconds ago)
+        $pastTimestamp = time() - 100;
+        $pdo->prepare('UPDATE characters SET updated_at = ? WHERE id = ?')
+            ->execute([$pastTimestamp, self::CHAR1_ID]);
+
         $stmt = $pdo->prepare('SELECT updated_at FROM characters WHERE id = ?');
         $stmt->execute([self::CHAR1_ID]);
         $originalTs = (int)$stmt->fetchColumn();
 
-        sleep(1);
-
+        // Perform the GM override save
         $this->simulateLogin(self::GM_ID, true);
         $this->callControllerWithInput(
             fn() => CharacterController::updateGmOverrides(self::CHAR1_ID),
@@ -157,24 +181,33 @@ class SyncTest extends TestCase
 
     /**
      * Campaign updated_at changes when campaign settings are updated.
+     *
+     * IMPROVED APPROACH (MINOR fix #2 — removes sleep(1) flakiness):
+     *   Directly inject a past timestamp into the campaign before the test.
      */
     public function testCampaignTimestampUpdatesOnCampaignChange(): void
     {
+        $pdo = Database::getInstance();
+
+        // Inject a past timestamp for the campaign
+        $pastTimestamp = time() - 100;
+        $pdo->prepare('UPDATE campaigns SET updated_at = ? WHERE id = ?')
+            ->execute([$pastTimestamp, self::CAMP_ID]);
+
         $this->simulateLogin(self::GM_ID, true);
 
-        // Get initial timestamp
+        // Get the initial (past) timestamp via sync-status
         $response1 = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
         $ts1 = $response1['body']['campaignUpdatedAt'];
+        $this->assertEquals($pastTimestamp, $ts1, 'Test setup: injected past timestamp is reflected');
 
-        sleep(1);
-
-        // Update the campaign
+        // Update the campaign (controller uses time() internally)
         $this->callControllerWithInput(
             fn() => CampaignController::update(self::CAMP_ID),
             json_encode(['title' => 'Updated Campaign Title'])
         );
 
-        // Check timestamp increased
+        // The new timestamp should be greater (no sleep needed)
         $response2 = $this->callController(fn() => CampaignController::syncStatus(self::CAMP_ID));
         $ts2 = $response2['body']['campaignUpdatedAt'];
 

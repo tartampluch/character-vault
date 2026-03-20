@@ -181,17 +181,25 @@ class GmOverrideTest extends TestCase
      * Saving GM overrides updates the character's updated_at timestamp.
      * This ensures the polling mechanism detects the change.
      * CHECKPOINTS.md Phase 16.5: "Modifying GM overrides also updates the character's updated_at."
+     *
+     * IMPROVED APPROACH (MINOR fix #2 — removes sleep(1) flakiness):
+     *   Injects a known past timestamp (-100 seconds) into the DB before the test.
+     *   Any real time() call in the controller will be strictly greater, making
+     *   the test deterministic regardless of system clock speed or resolution.
      */
     public function testSavingGmOverridesUpdatesTimestamp(): void
     {
-        // Get the original timestamp
         $pdo = Database::getInstance();
+
+        // Inject a timestamp 100 seconds in the past to guarantee a detectable difference
+        $pastTimestamp = time() - 100;
+        $pdo->prepare('UPDATE characters SET updated_at = ? WHERE id = ?')
+            ->execute([$pastTimestamp, self::CHAR_ID]);
+
         $stmt = $pdo->prepare('SELECT updated_at FROM characters WHERE id = ?');
         $stmt->execute([self::CHAR_ID]);
         $originalTs = (int)$stmt->fetchColumn();
-
-        // Wait 1 second to ensure a different timestamp
-        sleep(1);
+        $this->assertEquals($pastTimestamp, $originalTs, 'Test setup: past timestamp injected correctly');
 
         $this->simulateLogin(self::GM_ID, true);
 
@@ -200,7 +208,7 @@ class GmOverrideTest extends TestCase
             json_encode(['gmOverrides' => [['instanceId' => 'gm_new', 'featureId' => 'gm_test', 'isActive' => true]]])
         );
 
-        // Check updated_at changed
+        // Check updated_at changed (will be at least 100 seconds greater than the injected value)
         $stmt->execute([self::CHAR_ID]);
         $newTs = (int)$stmt->fetchColumn();
 

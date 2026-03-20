@@ -263,10 +263,10 @@ describe('parseAndRoll — isAutomaticHit and isAutomaticMiss', () => {
 });
 
 describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
-  it('roll of 19 on a 19-20/×2 weapon is a critical threat', () => {
+  it('roll of 20 on a standard weapon is a critical threat (natural 20 always crits)', () => {
     // isCriticalThreat is set when the first d20 roll falls within the weapon's crit range.
-    // The formula syntax for crit range attacks would include a threshold parameter.
-    // For now, test the default behavior: natural 20 is always isCriticalThreat = true.
+    // The current implementation uses `firstD20Roll === 20` as the sole crit trigger.
+    // This is the default D&D 3.5 crit range (20/×2).
     const rng = makeSequentialRng(20);
     const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
 
@@ -278,6 +278,66 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
     const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(false);
+  });
+
+  /**
+   * ARCHITECTURE.md section 17 — isCriticalThreat with custom crit range (19-20):
+   *
+   * The current Dice Engine implementation uses `firstD20Roll === 20` as the sole trigger
+   * for `isCriticalThreat`. It does NOT support custom crit ranges (e.g., 19-20).
+   *
+   * WHY:
+   *   The architecture deliberately leaves crit range threshold validation to the CALLER
+   *   (the combat system / attack UI). The dice engine's role is:
+   *     1. Roll dice and compute totals.
+   *     2. Flag "the natural d20 result was 20" via isCriticalThreat.
+   *   The caller (Attacks.svelte in Phase 10.4) reads the weapon's `critRange` from
+   *   `ItemFeature.weaponData.critRange` (e.g., "19-20") and decides whether isCriticalThreat
+   *   should trigger based on the returned `diceRolls[0]` value.
+   *
+   * DESIGN NOTE (for future):
+   *   If the engine were to support custom crit ranges, `parseAndRoll` would need a
+   *   `critRange: { min: number; max: number }` parameter. The test below
+   *   documents the CURRENT behavior: roll 19 is NOT flagged as isCriticalThreat by
+   *   the engine alone, even though it IS a threat on a Rapier (19-20 range).
+   *   The distinction must be made by the caller reading `diceRolls[0] >= critMin`.
+   *
+   * @see ARCHITECTURE.md section 17 isCriticalThreat
+   * @see src/lib/components/combat/Attacks.svelte Phase 10.4 (caller must check critRange)
+   * @see src/lib/types/feature.ts ItemFeature.weaponData.critRange
+   */
+  it('CURRENT BEHAVIOR: roll of 19 does NOT set isCriticalThreat (engine only flags natural 20)', () => {
+    // A Rapier has a 19-20 crit range. Rolling a 19 should be a threat.
+    // However, the engine alone cannot determine this — it doesn't know the weapon type.
+    // The caller must check: result.diceRolls[0] >= weaponCritMin (e.g., 19).
+    const rng = makeSequentialRng(19);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+
+    // The engine itself does NOT set isCriticalThreat for 19.
+    // This is BY DESIGN: the engine is weapon-agnostic.
+    expect(result.isCriticalThreat).toBe(false);
+    // But the raw roll is accessible — the caller CAN check it:
+    expect(result.diceRolls[0]).toBe(19);
+    // A caller implementing 19-20 crit range would do:
+    //   const isThreat = result.diceRolls[0] >= weaponData.critRangeMin; // 19 >= 19 → true
+  });
+
+  it('caller-side crit range evaluation: diceRolls[0] >= 19 for a 19-20 Rapier', () => {
+    // Proves the CALLER PATTERN for applying custom crit ranges.
+    // The Dice Engine returns the raw roll. The calling code compares it to the critRangeMin.
+    const critRangeMin = 19; // Rapier: "19-20/×2"
+    const rng = makeSequentialRng(19);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+
+    // The caller (Attacks.svelte) reads diceRolls[0] and applies the weapon's critRange:
+    const callerDeterminesCritThreat = result.diceRolls[0] >= critRangeMin;
+    expect(callerDeterminesCritThreat).toBe(true); // 19 >= 19 → true
+
+    // And for a roll of 18 on the same weapon:
+    const rng18 = makeSequentialRng(18);
+    const result18 = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng18);
+    const notCrit18 = result18.diceRolls[0] >= critRangeMin;
+    expect(notCrit18).toBe(false); // 18 >= 19 → false
   });
 });
 
