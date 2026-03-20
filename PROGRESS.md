@@ -123,7 +123,7 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 - [x] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`.
     - **Health:** Bind to the `resources.hp` pool. Create the visual HP bar (Current, Temporary, Nonlethal). Implement the "Heal" and "Damage" buttons that open a small prompt to add/subtract from `currentValue` and `temporaryValue` correctly (damage depletes temp HP first). Display the base HP and CON modifier breakdown.
     - **Experience:** Create the XP progress bar. XP thresholds per level are defined in the configuration JSON lookup table (not hardcoded). Add the "Level Up" button.
-- [ ] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
+- [x] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
     - Read from three distinct pipelines: `combatStats.ac_normal`, `combatStats.ac_touch`, and `combatStats.ac_flat_footed`.
     - _Requirement:_ Include the `ModifierBreakdownModal` (from Phase 9) on the "i" icons so the user can see exactly why their Touch AC ignores Armor/Shield modifiers. Bind the "Temporary Modifier" input to a generic untyped modifier applied to all three AC pipelines.
 - [ ] **10.3 Core Combat Stats:** Create `src/lib/components/combat/CoreCombat.svelte`. Display Base Attack Bonus (BAB), Initiative, and Grapple Modifier pipelines. Include the "Dice Roll" and "Breakdown" buttons for Initiative and Grapple.
