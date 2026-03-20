@@ -226,12 +226,12 @@ _Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. T
 
 _Goal: Build the GM-exclusive interfaces for managing rule sources, global overrides, and per-character secret overrides._
 
-- [ ] **15.1 Rule Source Manager UI:** Create `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only).
+- [x] **15.1 Rule Source Manager UI:** Create `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only).
     - Display the list of available JSON rule source files (read from a manifest or directory listing).
     - Allow the GM to **enable/disable** sources and **reorder** them via drag-and-drop (order determines override priority: last wins).
     - Display a summary of what each source provides (number of Features, classes, items, etc.).
     - Save the ordered list to `CampaignSettings.enabledRuleSources`.
-- [ ] **15.2 Global Override Text Area:** On the same settings page, add a large JSON text area for `gmGlobalOverrides`.
+- [x] **15.2 Global Override Text Area:** On the same settings page, add a large JSON text area for `gmGlobalOverrides`.
     - Include a JSON validator with clear error messages (red highlight on the offending line).
     - The content is a JSON array of Feature-like objects (any category). Each entry must have a `category` field to identify what it overrides.
     - This override layer is applied **after** all rule source files in the DataLoader resolution chain.
