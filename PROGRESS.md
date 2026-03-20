@@ -29,7 +29,7 @@
 - [x] **1.1 Primitives & i18n:** Create `src/lib/types/primitives.ts` (ID, ModifierType, LogicOperator) and `src/lib/types/i18n.ts` (LocalizedString, I18N_CONFIG).
 - [x] **1.2 Logic & Math Engine:** Create `src/lib/types/logic.ts` (Recursive LogicNode) and `src/lib/types/pipeline.ts` (Modifier with `situationalContext`, StatisticPipeline with computed `derivedModifier`, separating active/situational, SkillPipeline, ResourcePool).
 - [x] **1.3 Unified Feature Model:** Create `src/lib/types/feature.ts` (Feature with `levelProgression`, ItemFeature with `two_hands` slot, MagicFeature, FeatureChoice, AugmentationRule). Ensure every JSON entity carries a `ruleSource` field and an optional `merge` field for the Data Override system.
-- [ ] **1.4 Global State & Campaign Settings:** Create `src/lib/types/character.ts` (ActiveFeatureInstance, LinkedEntity with serialization guard, Character with `classLevels` record and `gmOverrides` array) and `src/lib/types/settings.ts` (CampaignSettings with language, point buy budget, reroll 1s, exploding 20s rules, and `enabledRuleSources`). Create `src/lib/types/campaign.ts` (Campaign, Chapter, SceneState).
+- [x] **1.4 Global State & Campaign Settings:** Create `src/lib/types/character.ts` (ActiveFeatureInstance, LinkedEntity with serialization guard, Character with `classLevels` record and `gmOverrides` array) and `src/lib/types/settings.ts` (CampaignSettings with language, point buy budget, reroll 1s, exploding 20s rules, and `enabledRuleSources`). Create `src/lib/types/campaign.ts` (Campaign, Chapter, SceneState).
 
 ### Phase 2: Pure Functions & Dice Engine (The Brain)
 
