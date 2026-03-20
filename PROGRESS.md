@@ -276,7 +276,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - Construct a JSON string of a deeply nested `LogicNode` (e.g., an `AND` node requiring `BAB >= 8`, `tag: weapon_focus`, and a `NOT` node forbidding `tag: heavy_armor`).
     - Assert it returns `true` when the mock context meets all conditions.
     - Assert it returns `false` (and the correct `errorMessage`) when a specific condition fails.
-- [ ] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`.
+- [x] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`.
     - Pass an array of `Modifier` objects: `+2 enhancement`, `+4 enhancement`, `+1 dodge`, `+1 dodge`, `+2 deflection`.
     - Assert the total is exactly `+8` (Takes the highest enhancement (4) + stacks both dodges (2) + deflection (2)).
 - [ ] **17.4 Dice Engine Tests:** Create `src/tests/diceEngine.test.ts`.
