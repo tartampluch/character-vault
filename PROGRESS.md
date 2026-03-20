@@ -95,7 +95,7 @@ _Goal: Build the fundamental character sheet summary interface. These components
 - [x] **8.5 Ability Scores Summary:** Create `src/lib/components/core/AbilityScoresSummary.svelte`. Display a compact read-only view of the 6 main stats showing `totalValue` and `derivedModifier`. Include a link/button to navigate to the full Abilities tab (Phase 9).
 - [x] **8.6 Saving Throws Summary:** Create `src/lib/components/core/SavingThrowsSummary.svelte`. Display Fortitude, Reflex, and Will total modifiers in a compact read-only format.
 - [x] **8.7 Skills Summary:** Create `src/lib/components/core/SkillsSummary.svelte`. Display a condensed skills list (skill name + total bonus). No editing capability — link to Phase 9 for full editing.
-- [ ] **8.8 Languages & Lore Component:** Create `src/lib/components/core/LoreAndLanguages.svelte`. Bind text areas for Personal Story, Appearance (Height, Weight, etc.). Implement the Language selection system: calculate available languages (INT mod + Speak Language ranks), display automatically granted languages (from Race/Class features), and provide a dropdown to add new languages until the limit is reached.
+- [x] **8.8 Languages & Lore Component:** Create `src/lib/components/core/LoreAndLanguages.svelte`. Bind text areas for Personal Story, Appearance (Height, Weight, etc.). Implement the Language selection system: calculate available languages (INT mod + Speak Language ranks), display automatically granted languages (from Race/Class features), and provide a dropdown to add new languages until the limit is reached.
 
 ### Phase 9: UI Construction - "Abilities & Skills" Tab (Full Interactive Editor)
 
