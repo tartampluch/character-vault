@@ -272,7 +272,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - Assert that `evaluateFormula("floor(@attributes.stat_str.totalValue / 2)", context)` correctly extracts the variable and applies the math.
     - Assert complex order of operations: `"(10 + 2) * 1.5"`.
     - Assert pipe resolution: `"@attributes.speed_land.totalValue|distance"` correctly calls the formatter.
-- [ ] **17.2 Logic Node (Prerequisite) Tests:** Create `src/tests/logicEvaluator.test.ts`.
+- [x] **17.2 Logic Node (Prerequisite) Tests:** Create `src/tests/logicEvaluator.test.ts`.
     - Construct a JSON string of a deeply nested `LogicNode` (e.g., an `AND` node requiring `BAB >= 8`, `tag: weapon_focus`, and a `NOT` node forbidding `tag: heavy_armor`).
     - Assert it returns `true` when the mock context meets all conditions.
     - Assert it returns `false` (and the correct `errorMessage`) when a specific condition fails.
