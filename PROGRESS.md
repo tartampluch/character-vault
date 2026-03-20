@@ -254,7 +254,7 @@ _Goal: Build the GM-exclusive interfaces for managing rule sources, global overr
 _Goal: Ensure the PHP API is secure, handles data correctly, and respects the SQLite database._
 
 - [x] **16.1 PHPUnit & Memory DB Setup:** Install PHPUnit. Create a `phpunit.xml` configuring the test environment. Ensure the `Database.php` class connects to `sqlite::memory:` during tests so no actual files are created or corrupted.
-- [ ] **16.2 Character Persistence Tests:** Create `tests/CharacterControllerTest.php`.
+- [x] **16.2 Character Persistence Tests:** Create `tests/CharacterControllerTest.php`.
     - Create a mock JSON string representing a complex character state (with nested arrays of `activeFeatures` and `classLevels`).
     - Test `POST`: Ensure the JSON is correctly saved to the DB.
     - Test `GET`: Ensure the retrieved JSON exactly matches the stored data without corruption or encoding issues.

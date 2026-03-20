@@ -64,6 +64,16 @@ require_once __DIR__ . '/middleware.php';
  */
 function initSession(): void
 {
+    // In CLI mode (PHPUnit tests), PHP sessions are not available.
+    // Tests mock the session by setting $_SESSION directly.
+    // We skip session_start() in CLI to avoid "headers already sent" warnings.
+    if (PHP_SAPI === 'cli') {
+        if (!isset($_SESSION)) {
+            $_SESSION = [];
+        }
+        return;
+    }
+
     if (session_status() === PHP_SESSION_NONE) {
         session_set_cookie_params([
             'lifetime' => 0,             // Session cookie (expires when browser closes)
