@@ -197,7 +197,7 @@ _Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equ
 
 _Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. The backend will serve as a REST API to persist Campaigns, Users, and Character states. Designed for cheap shared hosting (e.g., OVH shared hosting)._
 
-- [ ] **14.1 Database Configuration & PDO Setup:** Create the backend folder structure (`/api`). Create `api/config.php` containing DB path for SQLite and an environment mode toggle (`production` / `development`). Create a singleton `api/Database.php` wrapper using PDO with SQLite as the sole driver. Ensure it supports falling back to an in-memory SQLite DB (`sqlite::memory:`) if a test environment variable is detected.
+- [x] **14.1 Database Configuration & PDO Setup:** Create the backend folder structure (`/api`). Create `api/config.php` containing DB path for SQLite and an environment mode toggle (`production` / `development`). Create a singleton `api/Database.php` wrapper using PDO with SQLite as the sole driver. Ensure it supports falling back to an in-memory SQLite DB (`sqlite::memory:`) if a test environment variable is detected.
 - [ ] **14.2 Authentication System:** Create `api/auth.php`. Implement a simple session-based authentication using PHP sessions:
     - `POST /api/auth/login` (username + password, verified against bcrypt hash in DB).
     - `POST /api/auth/logout` (destroy session).
