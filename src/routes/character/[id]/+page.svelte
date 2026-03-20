@@ -44,6 +44,11 @@
   import { goto } from '$app/navigation';
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
+  import BasicInfo from '$lib/components/core/BasicInfo.svelte';
+  import AbilityScoresSummary from '$lib/components/core/AbilityScoresSummary.svelte';
+  import SavingThrowsSummary from '$lib/components/core/SavingThrowsSummary.svelte';
+  import SkillsSummary from '$lib/components/core/SkillsSummary.svelte';
+  import LoreAndLanguages from '$lib/components/core/LoreAndLanguages.svelte';
 
   // ============================================================
   // TABS DEFINITION
@@ -217,77 +222,13 @@
   >
 
     {#if activeTab === 'core'}
-      <!-- ---- CORE TAB STUB (Phase 8) ---- -->
+      <!-- ---- CORE TAB — Phase 8 Components ---- -->
       <div class="tab-content">
-        <div class="stub-header">
-          <h2>📋 Core Summary</h2>
-          <span class="phase-badge">Phase 8</span>
-        </div>
-
-        <!-- Quick stats preview (using the DAG $derived values) -->
-        <div class="stats-preview">
-          <div class="stat-row">
-            <span class="stat-label">STR</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_str']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_str']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_str']?.derivedModifier ?? 0})</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">DEX</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_dex']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_dex']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_dex']?.derivedModifier ?? 0})</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">CON</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_con']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_con']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_con']?.derivedModifier ?? 0})</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">INT</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_int']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_int']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_int']?.derivedModifier ?? 0})</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">WIS</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_wis']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_wis']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_wis']?.derivedModifier ?? 0})</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">CHA</span>
-            <span class="stat-value">{engine.phase2_attributes['stat_cha']?.totalValue ?? '—'}</span>
-            <span class="stat-mod">({engine.phase2_attributes['stat_cha']?.derivedModifier >= 0 ? '+' : ''}{engine.phase2_attributes['stat_cha']?.derivedModifier ?? 0})</span>
-          </div>
-        </div>
-
-        <div class="combat-preview">
-          <div class="combat-item">
-            <span class="combat-label">AC</span>
-            <span class="combat-value">{engine.phase3_combatStats['combatStats.ac_normal']?.totalValue ?? 10}</span>
-          </div>
-          <div class="combat-item">
-            <span class="combat-label">BAB</span>
-            <span class="combat-value">+{engine.phase3_combatStats['combatStats.bab']?.totalValue ?? 0}</span>
-          </div>
-          <div class="combat-item">
-            <span class="combat-label">Fort</span>
-            <span class="combat-value">+{engine.phase3_combatStats['saves.fort']?.totalValue ?? 0}</span>
-          </div>
-          <div class="combat-item">
-            <span class="combat-label">Ref</span>
-            <span class="combat-value">+{engine.phase3_combatStats['saves.ref']?.totalValue ?? 0}</span>
-          </div>
-          <div class="combat-item">
-            <span class="combat-label">Will</span>
-            <span class="combat-value">+{engine.phase3_combatStats['saves.will']?.totalValue ?? 0}</span>
-          </div>
-          <div class="combat-item">
-            <span class="combat-label">Max HP</span>
-            <span class="combat-value">{engine.phase3_maxHp}</span>
-          </div>
-        </div>
-
-        <p class="stub-note">
-          Detailed panels (Race/Class selectors, Active Features, Languages) will be built in Phase 8.2–8.8.
-        </p>
+        <BasicInfo />
+        <AbilityScoresSummary />
+        <SavingThrowsSummary />
+        <SkillsSummary />
+        <LoreAndLanguages />
       </div>
 
     {:else if activeTab === 'abilities'}

@@ -61,14 +61,12 @@
       }
     }
 
-    // Fallback: simplified SRD formula (approximate for common Strength ranges)
-    // From ANNEXES B.2: each +1 STR above 10 adds ~15% to capacity
-    const baseLight = Math.floor(strTotal * 3.3);
-    return {
-      light: baseLight,
-      medium: baseLight * 2,
-      heavy: baseLight * 3,
-    };
+    // Fallback: if config_carrying_capacity is not loaded, display a warning value.
+    // Capacity shown as 0 to avoid displaying incorrect limits.
+    // Load the config_carrying_capacity table from the DataLoader to get real values.
+    // IMPORTANT: no D&D formulas are hardcoded here — the table is the only source.
+    console.warn('[Encumbrance] config_carrying_capacity not loaded. Enable a rule source with this table.');
+    return { light: 0, medium: 0, heavy: 0 };
   });
 
   const loadTier = $derived.by(() => {

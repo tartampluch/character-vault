@@ -1066,6 +1066,116 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // SAVING THROW CONFIG — Phase 9.5
+  // ---------------------------------------------------------------------------
+  //
+  // Maps each save pipeline ID to its governing ability score.
+  // This relationship is defined in the SRD rules data (via the save Feature's
+  // grantedModifiers) but for UI display, the component needs the mapping to
+  // show which ability score contributes to which save.
+  //
+  // ARCHITECTURE NOTE:
+  //   Moving this out of the Svelte component avoids hardcoded D&D knowledge
+  //   in the UI layer. The component reads from engine.savingThrowConfig.
+
+  /**
+   * Save pipeline → key ability ID and abbreviation mapping.
+   * Loaded once and used by SavingThrowsSummary and SavingThrows components.
+   *
+   * NOTE: These associations are D&D 3.5 SRD facts encoded here as data.
+   * They do NOT change based on class or features (a character always uses CON for Fort).
+   * In a future version, this could be read from a config JSON table for full data-drivenness.
+   */
+  readonly savingThrowConfig = [
+    {
+      pipelineId: 'saves.fort',
+      keyAbilityId: 'stat_con',
+      keyAbilityAbbr: 'CON',
+      accentColor: '#f87171',
+    },
+    {
+      pipelineId: 'saves.ref',
+      keyAbilityId: 'stat_dex',
+      keyAbilityAbbr: 'DEX',
+      accentColor: '#93c5fd',
+    },
+    {
+      pipelineId: 'saves.will',
+      keyAbilityId: 'stat_wis',
+      keyAbilityAbbr: 'WIS',
+      accentColor: '#c4b5fd',
+    },
+  ] as const;
+
+  // ---------------------------------------------------------------------------
+  // MAGIC HELPERS — Phase 12 (Spell Save DC)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Computes the Spell Save DC for a given spell level.
+   *
+   * D&D 3.5 FORMULA: DC = 10 + Spell Level + Key Ability Modifier
+   *   Key Ability is the highest of WIS, INT, CHA among those the character has invested in.
+   *   For simplicity, this helper takes the maximum of all three (conservative approach).
+   *   A more precise implementation would read the class's designated casting stat.
+   *
+   * @param spellLevel - The level of the spell (0 for cantrips).
+   * @returns The computed Spell Save DC.
+   */
+  getSpellSaveDC(spellLevel: number): number {
+    const wis = this.phase2_attributes['stat_wis']?.derivedModifier ?? 0;
+    const int_ = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
+    const cha = this.phase2_attributes['stat_cha']?.derivedModifier ?? 0;
+    return 10 + spellLevel + Math.max(wis, int_, cha);
+  }
+
+  // ---------------------------------------------------------------------------
+  // WEAPON ATTACK & DAMAGE HELPERS — Phase 10.4
+  // ---------------------------------------------------------------------------
+  //
+  // These helpers compute the total attack and damage bonuses for a given weapon.
+  // They must live in the GameEngine (not in Svelte components) to avoid placing
+  // D&D rule logic in the UI layer (ARCHITECTURE.md Critical Coding Guidelines #5).
+  //
+  // Called by Attacks.svelte when the player selects a weapon.
+
+  /**
+   * Computes the total attack bonus for a weapon.
+   * Formula: BAB + ability modifier (STR for melee, DEX for ranged) + enhancement.
+   *
+   * @param enhancement  - Weapon's enhancement bonus.
+   * @param isRanged     - If true, uses DEX modifier; else uses STR modifier.
+   * @returns The computed attack bonus as a number.
+   */
+  getWeaponAttackBonus(enhancement: number, isRanged: boolean): number {
+    const bab = this.phase3_combatStats['combatStats.bab']?.totalValue ?? 0;
+    const strMod = this.phase2_attributes['stat_str']?.derivedModifier ?? 0;
+    const dexMod = this.phase2_attributes['stat_dex']?.derivedModifier ?? 0;
+    const abilityMod = isRanged ? dexMod : strMod;
+    return bab + abilityMod + enhancement;
+  }
+
+  /**
+   * Computes the damage bonus for a weapon.
+   * Formula: STR modifier (×1.5 for two-handed weapons) + enhancement.
+   *
+   * D&D 3.5 RULE:
+   *   One-handed/Light weapons add STR modifier to damage.
+   *   Two-handed weapons add 1.5× STR modifier (rounded down).
+   *   Ranged weapons add STR modifier only if strength >= 12 (bows with mighty quality).
+   *   For simplicity, ranged weapons use 0 STR (handled by the weapon enhancement alone).
+   *
+   * @param enhancement   - Weapon's enhancement bonus.
+   * @param isTwoHanded   - If true, uses 1.5× STR modifier.
+   * @returns The computed damage bonus as a number.
+   */
+  getWeaponDamageBonus(enhancement: number, isTwoHanded: boolean): number {
+    const strMod = this.phase2_attributes['stat_str']?.derivedModifier ?? 0;
+    const baseDamageMod = isTwoHanded ? Math.floor(strMod * 1.5) : strMod;
+    return baseDamageMod + enhancement;
+  }
+
+  // ---------------------------------------------------------------------------
   // EQUIPMENT SLOTS — Phase 13.1
   // ---------------------------------------------------------------------------
   //

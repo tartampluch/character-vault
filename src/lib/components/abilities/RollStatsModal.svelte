@@ -22,6 +22,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { dataLoader } from '$lib/engine/DataLoader';
   import { rollAllAbilityScores } from '$lib/utils/diceEngine';
   import { formatModifier } from '$lib/utils/formatters';
 
@@ -82,14 +83,11 @@
     MAIN_ABILITY_IDS.every(id => assignments[id] >= 0)
   );
 
-  // Recommended attributes
+  // Recommended attributes (synchronous DataLoader lookup — no async needed)
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
       if (!afi.isActive) continue;
-      const feat = (await 0, (() => {
-        const { dataLoader } = { dataLoader: { getFeature: (id: string) => undefined as undefined } };
-        return dataLoader.getFeature(afi.featureId);
-      })());
+      const feat = dataLoader.getFeature(afi.featureId);
       if (feat?.category === 'class' && feat.recommendedAttributes?.length) {
         return feat.recommendedAttributes as string[];
       }

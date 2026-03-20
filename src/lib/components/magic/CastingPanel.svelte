@@ -49,13 +49,12 @@
 
   const sortedLevels = $derived(Object.keys(spellsByLevel).map(Number).sort((a,b) => a-b));
 
-  /** Spell Save DC: 10 + spell level + key ability mod (WIS/INT/CHA — simplified: use highest). */
+  /**
+   * Spell Save DC delegated to the GameEngine (no game logic in components).
+   * GameEngine.getSpellSaveDC() implements D&D 3.5 formula: 10 + spell level + ability mod.
+   */
   function getSpellDC(spellLevel: number): number {
-    const wis = engine.phase2_attributes['stat_wis']?.derivedModifier ?? 0;
-    const int_ = engine.phase2_attributes['stat_int']?.derivedModifier ?? 0;
-    const cha = engine.phase2_attributes['stat_cha']?.derivedModifier ?? 0;
-    const keyMod = Math.max(wis, int_, cha);
-    return 10 + spellLevel + keyMod;
+    return engine.getSpellSaveDC(spellLevel);
   }
 
   /** Minimal pipeline for spell damage rolls. */

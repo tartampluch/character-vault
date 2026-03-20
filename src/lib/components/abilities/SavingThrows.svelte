@@ -31,29 +31,11 @@
   import type { ID } from '$lib/types/primitives';
 
   /**
-   * Save configuration — data-driven, no hardcoded D&D names in logic.
-   * Each save maps to its pipeline ID and governing ability score ID.
+   * Saving throw configuration read from engine.savingThrowConfig.
+   * The D&D 3.5 save→ability mapping (CON → Fort, DEX → Ref, WIS → Will)
+   * is centralised in the GameEngine, not hardcoded here.
    */
-  const SAVES = [
-    {
-      pipelineId: 'saves.fort',
-      keyAbilityId: 'stat_con',
-      keyAbilityAbbr: 'CON',
-      accentColor: '#f87171',
-    },
-    {
-      pipelineId: 'saves.ref',
-      keyAbilityId: 'stat_dex',
-      keyAbilityAbbr: 'DEX',
-      accentColor: '#93c5fd',
-    },
-    {
-      pipelineId: 'saves.will',
-      keyAbilityId: 'stat_wis',
-      keyAbilityAbbr: 'WIS',
-      accentColor: '#c4b5fd',
-    },
-  ] as const;
+  const SAVES = engine.savingThrowConfig;
 
   // ============================================================
   // MODAL STATE

@@ -103,7 +103,8 @@
         }
       }
 
-      return 'NPC';
+      // Fallback localised label when race feature is not in cache
+      return engine.t({ en: 'NPC', fr: 'PNJ' });
     }
 
     // Priority 3: Player's real name for PCs

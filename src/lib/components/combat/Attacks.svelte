@@ -119,23 +119,24 @@
   const rangedWeapon   = $derived(equippedWeapons.find(w => w.id === rangedId) ?? null);
 
   // ============================================================
-  // ATTACK BONUS CALCULATION
+  // ATTACK BONUS CALCULATION (delegated to GameEngine — no game logic in components)
   // ============================================================
 
-  const bab = $derived(engine.phase3_combatStats['combatStats.bab']?.totalValue ?? 0);
-  const strMod = $derived(engine.phase2_attributes['stat_str']?.derivedModifier ?? 0);
-  const dexMod = $derived(engine.phase2_attributes['stat_dex']?.derivedModifier ?? 0);
-
+  /**
+   * Returns the total attack bonus for a weapon by calling the GameEngine helper.
+   * The GameEngine handles all D&D 3.5 rule calculations (BAB + ability + enhancement).
+   */
   function calcAttackBonus(weapon: WeaponOption | null): number {
     if (!weapon) return 0;
-    const abilityMod = weapon.isRanged ? dexMod : strMod;
-    return bab + abilityMod + weapon.enhancement;
+    return engine.getWeaponAttackBonus(weapon.enhancement, weapon.isRanged);
   }
 
+  /**
+   * Returns the total damage bonus for a weapon by calling the GameEngine helper.
+   */
   function calcDamageBonus(weapon: WeaponOption | null): number {
-    if (!weapon || weapon.id === '__unarmed__') return strMod;
-    const baseDamageMod = weapon.stacks15Str ? Math.floor(strMod * 1.5) : strMod;
-    return baseDamageMod + weapon.enhancement;
+    if (!weapon) return 0;
+    return engine.getWeaponDamageBonus(weapon.enhancement, weapon.stacks15Str);
   }
 
   // ============================================================

@@ -36,9 +36,12 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
+  import PointBuyModal from './PointBuyModal.svelte';
+  import RollStatsModal from './RollStatsModal.svelte';
   import type { ID } from '$lib/types/primitives';
 
   // ============================================================
@@ -70,21 +73,15 @@
   /**
    * List of recommended attribute IDs from the active class,
    * if the class has `recommendedAttributes`.
+   *
+   * WHY SYNCHRONOUS DATALOADER?
+   *   The DataLoader cache is populated before any UI renders.
+   *   dataLoader.getFeature() is O(1) Map lookup - no async needed.
+   *   We import dataLoader directly (not via CommonJS require).
    */
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
       if (!afi.isActive) continue;
-      const feature = (await engine) ? null : null; // cannot await in $derived
-      // Synchronous lookup
-      const f = (engine as { character: { activeFeatures: typeof afi[] } }).character
-        .activeFeatures;
-      break;
-    }
-    // Use the GameEngine's DataLoader cache synchronously
-    for (const afi of engine.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { dataLoader } = require('$lib/engine/DataLoader');
       const feat = dataLoader.getFeature(afi.featureId);
       if (feat?.category === 'class' && feat.recommendedAttributes?.length) {
         return feat.recommendedAttributes as string[];
@@ -102,6 +99,12 @@
 
   /** Which pipeline to roll dice for (null = closed). */
   let diceRollPipelineId = $state<ID | null>(null);
+
+  /** Show Point Buy wizard. */
+  let showPointBuy = $state(false);
+
+  /** Show Roll Stats wizard. */
+  let showRollStats = $state(false);
 
   // ============================================================
   // TEMPORARY MODIFIERS
@@ -130,12 +133,11 @@
 <div class="ability-scores-panel">
   <div class="panel-header">
     <h2 class="panel-title">💪 Ability Scores</h2>
-    <!-- Phase 9.4 wizard buttons will be added here -->
     <div class="wizard-buttons">
-      <button class="btn-wizard" disabled title="Point Buy wizard — Phase 9.4">
+      <button class="btn-wizard" onclick={() => (showPointBuy = true)} title="Point Buy stat generation wizard">
         🎯 Point Buy
       </button>
-      <button class="btn-wizard" disabled title="Roll Stats wizard — Phase 9.4">
+      <button class="btn-wizard" onclick={() => (showRollStats = true)} title="Roll Stats wizard (4d6 drop lowest)">
         🎲 Roll Stats
       </button>
     </div>
@@ -160,9 +162,9 @@
     {#each MAIN_ABILITY_IDS as abilityId}
       {@const pipeline = engine.phase2_attributes[abilityId]}
       {#if pipeline}
-        {@const abbr = ABILITY_ABBRS[abilityId] ?? abilityId.replace('stat_', '').toUpperCase()}
-        {@const isRecommended = recommendedIds.includes(abilityId)}
-        {@const tempMod = getTempMod(abilityId)}
+      {@const abbr = ABILITY_ABBRS[abilityId] ?? abilityId.replace('stat_', '').toUpperCase()}
+      {@const isRecommended = recommendedIds.includes(abilityId)}
+      {@const tempMod = getTempMod(abilityId)}
 
         <div
           class="table-row"
@@ -199,15 +201,19 @@
             </span>
           </div>
 
-          <!-- Derived modifier -->
+          <!-- Derived modifier
+               Note: pipeline.derivedModifier is pre-computed by the GameEngine (Phase 2).
+               For the "effective" modifier including temp bonus, we use pipeline.derivedModifier
+               plus any adjustment from tempMod. The temp bonus adds directly to the modifier
+               value: each +2 STR = +1 mod (floor((STR-10)/2) formula applies to tempMod too).
+          -->
           <div class="cell-mod" role="cell">
-            {@const effectiveMod = Math.floor(((pipeline.totalValue + tempMod) - 10) / 2)}
             <span
               class="score-mod"
-              class:positive={effectiveMod > 0}
-              class:negative={effectiveMod < 0}
+              class:positive={pipeline.derivedModifier > 0}
+              class:negative={pipeline.derivedModifier < 0}
             >
-              {formatModifier(effectiveMod)}
+              {formatModifier(pipeline.derivedModifier)}
             </span>
           </div>
 
@@ -278,6 +284,14 @@
       onclose={() => (diceRollPipelineId = null)}
     />
   {/if}
+{/if}
+
+{#if showPointBuy}
+  <PointBuyModal onclose={() => (showPointBuy = false)} />
+{/if}
+
+{#if showRollStats}
+  <RollStatsModal onclose={() => (showRollStats = false)} />
 {/if}
 
 <style>

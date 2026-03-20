@@ -40,38 +40,11 @@
   import { formatModifier } from '$lib/utils/formatters';
 
   /**
-   * Configuration for the three saving throws.
-   *
-   * KEY ABILITY PATTERN:
-   *   Each save has a "key ability" that contributes its `derivedModifier` to the total.
-   *   D&D 3.5:  Fortitude → Constitution (stat_con)
-   *             Reflex    → Dexterity    (stat_dex)
-   *             Will      → Wisdom       (stat_wis)
-   *
-   *   This mapping is DATA in this array, not hardcoded logic.
-   *   The GameEngine has already baked the ability modifier into `totalValue`,
-   *   so this component only needs the key ability ID for the "indicator" label.
+   * Saving throw configuration is read from `engine.savingThrowConfig`.
+   * This keeps D&D 3.5 knowledge (CON → Fort, DEX → Ref, WIS → Will) in the
+   * GameEngine rather than hardcoded in the Svelte component.
    */
-  const SAVES = [
-    {
-      pipelineId: 'saves.fort',
-      keyAbilityId: 'stat_con',
-      keyAbilityAbbr: 'CON',
-      color: '#f87171', // Red — Fortitude
-    },
-    {
-      pipelineId: 'saves.ref',
-      keyAbilityId: 'stat_dex',
-      keyAbilityAbbr: 'DEX',
-      color: '#93c5fd', // Blue — Reflex
-    },
-    {
-      pipelineId: 'saves.will',
-      keyAbilityId: 'stat_wis',
-      keyAbilityAbbr: 'WIS',
-      color: '#c4b5fd', // Purple — Will
-    },
-  ] as const;
+  const SAVES = engine.savingThrowConfig;
 
   const charId = $derived(engine.character.id);
 </script>
@@ -107,7 +80,7 @@
             class="save-ability"
             title="Governed by {save.keyAbilityAbbr} ({formatModifier(keyAbilityMod)})"
             aria-hidden="true"
-            style="color: {save.color};"
+            style="color: {save.accentColor};"
           >
             {save.keyAbilityAbbr}
           </span>
@@ -117,7 +90,7 @@
             class="save-total"
             class:positive={pipeline.totalValue > 0}
             class:negative={pipeline.totalValue < 0}
-            style="color: {save.color};"
+            style="color: {save.accentColor};"
           >
             {formatModifier(pipeline.totalValue)}
           </span>
