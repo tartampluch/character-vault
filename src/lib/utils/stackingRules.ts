@@ -66,11 +66,27 @@ import type { Modifier } from '../types/pipeline';
  * classes, and their total defines the character's BAB. They MUST all sum.
  */
 export const ALWAYS_STACKING_TYPES = new Set([
-  'dodge',        // SRD explicit exception
+  'dodge',        // SRD explicit exception (PHB p.21: "Dodge bonuses stack with each other")
   'circumstance', // SRD explicit exception (both bonuses and penalties stack)
   'synergy',      // Skill synergy (each +2 from a different skill must stack)
   'untyped',      // No declared type: always stacks
-  'base',         // BAB and save base increments from levelProgression
+
+  // WHY "base" is in ALWAYS_STACKING_TYPES:
+  //   This is NOT a standard D&D 3.5 modifier type per the SRD — it is a convention
+  //   used exclusively for BAB and saving throw INCREMENTS in `levelProgression` entries.
+  //
+  //   The engine stores BAB/save progression as INCREMENTS per level (not cumulative totals)
+  //   to make multiclassing trivially additive:
+  //     Fighter 5 (BAB +1/level) + Wizard 3 (BAB +0,+1,+0) = sum of all increments = +6
+  //
+  //   If "base" were non-stacking, the engine would only keep the HIGHEST base increment
+  //   per level, completely breaking the multiclass progression system.
+  //   Since `base` type modifiers from different class-level instances MUST all sum,
+  //   it belongs in the always-stacking set.
+  //
+  //   @see ARCHITECTURE.md section 5.4 for the full multiclassing BAB/save resolution spec.
+  //   @see ANNEXES.md section A.7 for the Soulknife class example (mixed full/part BAB).
+  'base',
 ]);
 
 // =============================================================================

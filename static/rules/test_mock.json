@@ -7,7 +7,23 @@
     "_comment5": "Item (Longsword), Condition (Raging), Orc Enemy (for situational test).",
     "_comment6": "ALL entities have ruleSource: 'test_mock' — enable this source in",
     "_comment7": "CampaignSettings.enabledRuleSources to use these fixtures.",
-    "_comment8": "================================================================="
+    "_comment8": "=================================================================",
+    "_comment9": "TARGETID CONVENTION FOR MODIFIERS:",
+    "_comment10": "The `targetId` in a Modifier must match the KEY used in the Character's",
+    "_comment11": "pipeline records. Per GameEngine.svelte.ts createEmptyCharacter():",
+    "_comment12": "  - Main attributes:  'stat_str', 'stat_dex', 'stat_con', etc.",
+    "_comment13": "    (stored in Character.attributes — key prefix is the pipeline ID itself)",
+    "_comment14": "  - Combat stats:     'combatStats.ac_normal', 'combatStats.bab', etc.",
+    "_comment15": "    (stored in Character.combatStats — key includes the namespace prefix)",
+    "_comment16": "  - Saving throws:    'saves.fort', 'saves.ref', 'saves.will'",
+    "_comment17": "    (stored in Character.saves — key includes the namespace prefix)",
+    "_comment18": "  - Skills:           'skill_climb', 'skill_jump', etc.",
+    "_comment19": "    (stored in Character.skills — key is the skill ID without namespace)",
+    "_comment20": "NOTE: ARCHITECTURE.md section 4.3 shows paths like '@attributes.stat_str'",
+    "_comment21": "(with the 'attributes.' prefix) for Math Parser @-paths. However, the",
+    "_comment22": "modifier targetId uses the Character record KEY directly (e.g., 'stat_str').",
+    "_comment23": "The GameEngine's DAG phases use the key directly when iterating records.",
+    "_comment24": "================================================================="
   },
 
   {

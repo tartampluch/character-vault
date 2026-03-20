@@ -491,7 +491,12 @@ export function evaluateFormula(
 ): number | string {
   // --- Regex to find all @-path tokens, optionally followed by a |pipe ---
   // Matches: @word.word.word|pipe  OR  @word.word.word
-  const AT_PATH_REGEX = /@([\w.]+)(?:\|([\w]+))?/g;
+  // Character class [\w.\-] supports:
+  //   \w  → a-z, A-Z, 0-9, underscore (handles snake_case IDs like "stat_str", "class_fighter")
+  //   \.  → dot separator (handles "attributes.stat_str.totalValue")
+  //   \-  → hyphen (handles kebab-case IDs like "class-dragon-disciple", "@constant.darkvision-range")
+  // Per ARCHITECTURE.md section 2: ID = string (kebab-case format). Both conventions appear in JSON.
+  const AT_PATH_REGEX = /@([\w.\-]+)(?:\|([\w\-]+))?/g;
 
   let result = formula;
   let lastPipeResult: string | null = null;

@@ -298,14 +298,20 @@ export class DataLoader {
   /**
    * Loads all rule source files from static/rules/ and populates the caches.
    *
+   * FILE DISCOVERY STRATEGY (two-tier fallback):
+   *   1. PRIMARY: GET /rules — SvelteKit server endpoint that recursively scans
+   *      `static/rules/` in alphabetical order. Implements the "drop a JSON file =
+   *      auto-discovered" Open Content Ecosystem promise (ARCHITECTURE.md section 18.1).
+   *   2. FALLBACK: GET /rules/manifest.json — Manually maintained manifest.
+   *      Used for static builds, edge deployments, or PHP production (Phase 14).
+   *
    * PROCESS:
-   *   1. Fetch the manifest JSON from `/rules/manifest.json`.
-   *      The manifest lists all rule file paths in alphabetical order.
-   *      If no manifest, fall back to an empty list (graceful degradation).
-   *   2. Fetch each file listed in the manifest.
+   *   1. Discover file paths via the server endpoint or manifest fallback.
+   *   2. Fetch each file in discovered order (alphabetical = loading priority).
    *   3. Parse each file as a JSON array of entities.
-   *   4. Process each entity through the Merge Engine.
-   *   5. After all files, apply `enabledRuleSources` filter.
+   *   4. Process each entity through the Merge Engine (replace/partial).
+   *   5. Apply GM global overrides (Layer 2: higher priority than all source files).
+   *   6. Filter out features from non-enabled sources.
    *
    * @param enabledSources - The list of source IDs to enable (from CampaignSettings).
    * @param gmGlobalOverrides - Optional GM global override JSON string (Layer 2 of chain).
@@ -317,17 +323,36 @@ export class DataLoader {
     this.clearCache();
     this.enabledRuleSources = enabledSources;
 
-    // Step 1: Fetch the manifest
+    // Step 1: Discover rule source files (two-tier: server API → manifest fallback)
     let filePaths: string[] = [];
     try {
-      const manifestResponse = await fetch('/rules/manifest.json');
-      if (manifestResponse.ok) {
-        filePaths = await manifestResponse.json() as string[];
+      // PRIMARY: SvelteKit server endpoint (GET /rules) scans static/rules/ recursively.
+      // Returns a JSON array of sorted URL paths.
+      const discoveryResponse = await fetch('/rules');
+      if (discoveryResponse.ok) {
+        const contentType = discoveryResponse.headers.get('content-type') ?? '';
+        if (contentType.includes('application/json')) {
+          filePaths = await discoveryResponse.json() as string[];
+        } else {
+          // SvelteKit returned an HTML page (not our API) — fall through to manifest
+          throw new Error('Discovery endpoint returned non-JSON');
+        }
       } else {
-        console.warn('[DataLoader] Could not fetch /rules/manifest.json. No rule sources loaded.');
+        throw new Error(`Discovery endpoint returned HTTP ${discoveryResponse.status}`);
       }
-    } catch (err) {
-      console.warn('[DataLoader] Failed to fetch manifest:', err);
+    } catch (discoveryErr) {
+      // FALLBACK: static manifest.json file
+      console.info('[DataLoader] Auto-discovery endpoint unavailable, using manifest.json:', discoveryErr);
+      try {
+        const manifestResponse = await fetch('/rules/manifest.json');
+        if (manifestResponse.ok) {
+          filePaths = await manifestResponse.json() as string[];
+        } else {
+          console.warn('[DataLoader] manifest.json not available either. No rule sources loaded.');
+        }
+      } catch (manifestErr) {
+        console.warn('[DataLoader] Failed to load manifest.json:', manifestErr);
+      }
     }
 
     // Step 2-4: Load and process each file in order

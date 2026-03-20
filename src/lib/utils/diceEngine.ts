@@ -354,7 +354,21 @@ export function parseAndRoll(
   let naturalTotal = 0;
   let numberOfExplosions = 0;
   let isD20Roll = false;
-  let firstD20Roll = 0; // Track the first d20 result for crit/fumble detection
+  // -- firstD20Roll: tracks the first individual d20 roll for crit/fumble detection.
+  //
+  // WHY INITIALIZED TO 0?
+  //   0 is used as a sentinel value meaning "no d20 has been rolled yet".
+  //   After the loop, if isD20Roll is true but firstD20Roll is still 0, the condition
+  //   `firstD20Roll === 0 && naturalTotal >= 20` handles this edge case.
+  //
+  // EDGE CASE: Formula with numeric constant BEFORE a d20 group (e.g., "5 + 1d20").
+  //   Constants are added to `naturalTotal` first (group.count === 0 branch),
+  //   then the d20 group is processed. `firstD20Roll` is only set on the FIRST d20
+  //   die roll (`i === 0 && diceRolls.length === 1`). This check ensures we capture
+  //   only the first d20 result, NOT any subsequent die type results.
+  //   In practice, formulas like "5 + 1d20" are uncommon — the convention is
+  //   "1d20" (raw) + static bonus via pipeline.totalBonus. Low-risk in real usage.
+  let firstD20Roll = 0;
 
   // --- Step 1: Roll all dice groups ---
   for (const group of groups) {

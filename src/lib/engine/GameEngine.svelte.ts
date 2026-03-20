@@ -59,6 +59,52 @@ import { storageManager, debounce } from './StorageManager';
 const MAX_RESOLUTION_DEPTH = 3;
 
 // =============================================================================
+// PIPELINE FACTORY HELPERS — Public utilities for tests and DataLoader
+// =============================================================================
+
+/**
+ * Creates a blank `SkillPipeline` with default values.
+ *
+ * EXPORTED UTILITY:
+ *   Used by:
+ *   - Phase 4.2 (DataLoader): When populating `Character.skills` from the
+ *     `config_skill_definitions` config table, the DataLoader creates fresh
+ *     SkillPipeline entries for each defined skill.
+ *   - Phase 17 (Tests): Test helpers call this to build mock skill pipelines
+ *     without importing the full character factory.
+ *
+ * @param pipelineId             - Unique skill pipeline ID (e.g., "skill_climb").
+ * @param label                  - Localised display name.
+ * @param keyAbility             - The governing ability score ID (e.g., "stat_str").
+ * @param appliesArmorCheckPenalty - Whether armour check penalty affects this skill.
+ * @param canBeUsedUntrained     - Whether the skill can be used without any ranks.
+ * @returns A blank SkillPipeline ready for injection into `Character.skills`.
+ */
+export function makeSkillPipeline(
+  pipelineId: ID,
+  label: LocalizedString,
+  keyAbility: ID,
+  appliesArmorCheckPenalty = false,
+  canBeUsedUntrained = true
+): SkillPipeline {
+  return {
+    id: pipelineId,
+    label,
+    baseValue: 0,
+    keyAbility,
+    ranks: 0,
+    isClassSkill: false,
+    appliesArmorCheckPenalty,
+    canBeUsedUntrained,
+    activeModifiers: [],
+    situationalModifiers: [],
+    totalBonus: 0,
+    totalValue: 0,
+    derivedModifier: 0,
+  };
+}
+
+// =============================================================================
 // EMPTY CHARACTER FACTORY
 // =============================================================================
 
@@ -81,23 +127,6 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     situationalModifiers: [],
     totalBonus: 0,
     totalValue: baseValue,
-    derivedModifier: 0,
-  });
-
-  // Helper to create a blank SkillPipeline
-  const makeSkillPipeline = (pipelineId: ID, label: LocalizedString, keyAbility: ID): SkillPipeline => ({
-    id: pipelineId,
-    label,
-    baseValue: 0,
-    keyAbility,
-    ranks: 0,
-    isClassSkill: false,
-    appliesArmorCheckPenalty: false,
-    canBeUsedUntrained: true,
-    activeModifiers: [],
-    situationalModifiers: [],
-    totalBonus: 0,
-    totalValue: 0,
     derivedModifier: 0,
   });
 
@@ -309,8 +338,28 @@ export class GameEngine {
    *   the highest priority in conflict resolution (they are processed after regular
    *   activeFeatures, so their modifiers are added after — and for setAbsolute,
    *   the last one wins).
+   *
+   * WHY $derived.by() WITH EXPLICIT DEPENDENCY READS?
+   *   Svelte 5 tracks reactive dependencies by recording which $state/$derived values
+   *   are READ during the execution of a $derived computation. When a private method
+   *   (like #computeFlatModifiers) is called from a $derived property and the method
+   *   internally reads `this.phase0_context` (another $derived), Svelte 5 may not
+   *   correctly register the dependency chain if the method is called from a simple
+   *   `$derived(this.#method())` expression.
+   *
+   *   By using `$derived.by(() => { ... })` and EXPLICITLY reading `this.phase0_activeTags`
+   *   and `this.phase0_context` BEFORE calling the helper, we guarantee that Svelte 5's
+   *   reactivity system correctly registers both as dependencies of this derived value.
+   *   This prevents stale data bugs where `phase0_flatModifiers` fails to re-evaluate
+   *   when `phase0_activeTags` or `phase0_context` changes.
    */
-  phase0_flatModifiers: FlatModifierEntry[] = $derived(this.#computeFlatModifiers());
+  phase0_flatModifiers: FlatModifierEntry[] = $derived.by(() => {
+    // IMPORTANT: Explicitly read both upstream $derived values before passing them
+    // to the helper. This ensures Svelte 5 correctly tracks them as dependencies.
+    const activeTags = this.phase0_activeTags;
+    const context = this.phase0_context;
+    return this.#computeFlatModifiers(activeTags, context);
+  });
 
   /**
    * DAG Phase 0b: All active tags from all active features (flat string array).
@@ -627,10 +676,27 @@ export class GameEngine {
 
       // --- Max HP: inject CON modifier contribution ---
       if (pipelineId === 'combatStats.max_hp') {
-        // CON modifier × character level is the constitution contribution to Max HP.
-        // This is treated as an untyped bonus on top of the rolled/fixed hit die sum.
-        // We add it directly to the base value for this computation so it participates
-        // in the stacking resolution but always applies (no stacking competition with itself).
+        // D&D 3.5 Max HP formula: sum(hitDieResults per level) + CON_modifier × characterLevel
+        //
+        // CURRENT IMPLEMENTATION (Phase 3.4):
+        //   `basePipeline.baseValue` is expected to hold the sum of all hit die rolls
+        //   accumulated during level-up. The CON modifier contribution is computed
+        //   here and added on top.
+        //   → Works correctly for the test harness (base 0 = no hit dice yet).
+        //
+        // MISSING INFRASTRUCTURE (to be resolved in Phase 10.1):
+        //   The character's per-level hit die results are NOT yet tracked in the
+        //   data model. When Phase 10.1 implements the Level Up mechanic, it must:
+        //   1. Add `hitDieResults: Record<number, number>` to the `Character` type
+        //      (mapping character level → rolled hit die value for that level).
+        //   2. Have `createEmptyCharacter()` initialize this record as empty.
+        //   3. Have the Level Up flow prompt the player to roll (or auto-max/avg)
+        //      the hit die and store the result in `hitDieResults[newLevel]`.
+        //   4. Update `combatStats.max_hp.baseValue` (or compute from the record
+        //      directly) to equal `sum(hitDieResults.values())`.
+        //   Until Phase 10.1, `baseValue = 0` and only CON × level contributes.
+        //
+        // @see ARCHITECTURE.md section 9, Phase 3: HP Calculation specification.
         effectiveBaseValue = basePipeline.baseValue + conHpContrib;
       }
 
@@ -781,10 +847,72 @@ export class GameEngine {
     const flatMods = this.phase0_flatModifiers;
     const attributes = this.phase2_attributes;
     const classSkillSet = this.phase4_classSkillSet;
-    const characterLevel = this.phase0_characterLevel;
 
     // The armor check penalty is stored as a negative number on its pipeline
     const armorCheckPenalty = this.phase3_combatStats['combatStats.armor_check_penalty']?.totalValue ?? 0;
+
+    // --- SYNERGY MODIFIERS (ARCHITECTURE.md section 9, Phase 4 & ANNEXES.md B.6) ---
+    //
+    // Auto-generate synergy modifiers from the config_skill_synergies config table.
+    // Per the SRD: if a character has 5 or more ranks in a "source skill", they gain
+    // a +2 synergy bonus to a "target skill". These bonuses stack (type: "synergy").
+    //
+    // WHY AUTO-GENERATED?
+    //   Synergy bonuses could be manually authored in Feature JSON, but there are 30+
+    //   synergy pairs in the SRD (Annex B.6). Manually authoring each one on every
+    //   class/race Feature would be redundant. Auto-generation from the config table
+    //   is cleaner, data-driven, and requires zero Feature JSON changes.
+    //
+    // HOW IT WORKS:
+    //   1. Load the `config_skill_synergies` table from the DataLoader.
+    //   2. For each synergy pair {sourceSkill, targetSkill}:
+    //      a. Check if character has >= 5 ranks in sourceSkill.
+    //      b. If yes, add a synergy Modifier to the targetSkill's modifier list.
+    //   3. Synergy modifiers participate in stacking resolution (type "synergy" always stacks).
+    //
+    // SITUATIONAL SYNERGIES:
+    //   Some synergy pairs have a `condition` field (e.g., "Bluff → Disguise when acting").
+    //   These are treated as situational modifiers (added to situationalModifiers, not active).
+    const synergyTable = dataLoader.getConfigTable('config_skill_synergies');
+    const synergyMods = new Map<string, import('../types/pipeline').Modifier[]>(); // target → mods
+
+    // Access top-level metadata fields via unknown cast for safe type widening.
+    // ConfigTable stores typed `data: Record<string, unknown>[]` but its own metadata
+    // fields (requiredRanks, bonusValue, bonusType) are in the raw JSON and thus accessed
+    // via the broader unknown cast to avoid TypeScript's index signature requirement.
+    const synergyTableAny = synergyTable as unknown as Record<string, unknown>;
+    if (synergyTable?.data && Array.isArray(synergyTable.data)) {
+      const requiredRanks = typeof synergyTableAny['requiredRanks'] === 'number' ? synergyTableAny['requiredRanks'] as number : 5;
+      const bonusValue = typeof synergyTableAny['bonusValue'] === 'number' ? synergyTableAny['bonusValue'] as number : 2;
+      const bonusType = (typeof synergyTableAny['bonusType'] === 'string' ? synergyTableAny['bonusType'] as string : 'synergy') as import('../types/primitives').ModifierType;
+
+      for (const row of synergyTable.data as Array<Record<string, unknown>>) {
+        const sourceSkill = row['sourceSkill'] as string;
+        const targetSkill = row['targetSkill'] as string;
+        const conditionStr = row['condition'] as string | undefined;
+
+        // Check if character has sufficient ranks in the source skill
+        const sourceRanks = this.character.skills[sourceSkill]?.ranks ?? 0;
+        if (sourceRanks >= requiredRanks) {
+          // Build the synergy modifier
+          const synergyMod: import('../types/pipeline').Modifier = {
+            id: `synergy_${sourceSkill}_to_${targetSkill}`,
+            sourceId: sourceSkill,
+            sourceName: { en: `Synergy (${sourceSkill})`, fr: `Synergie (${sourceSkill})` },
+            targetId: targetSkill,
+            value: bonusValue,
+            type: bonusType,
+            // If the synergy has a condition string, it's situational
+            situationalContext: conditionStr ? `synergy_${conditionStr}` : undefined,
+          };
+
+          if (!synergyMods.has(targetSkill)) {
+            synergyMods.set(targetSkill, []);
+          }
+          synergyMods.get(targetSkill)!.push(synergyMod);
+        }
+      }
+    }
 
     for (const [skillId, baseSkill] of Object.entries(this.character.skills)) {
       const isClassSkill = classSkillSet.has(skillId);
@@ -792,20 +920,29 @@ export class GameEngine {
       // Get the key ability modifier for this skill
       const keyAbilityMod = attributes[baseSkill.keyAbility]?.derivedModifier ?? 0;
 
-      // Collect all misc modifiers targeting this skill pipeline
-      const activeMods = flatMods
+      // Collect all misc modifiers targeting this skill pipeline from features
+      const featureActiveMods = flatMods
         .filter(e => e.modifier.targetId === skillId && !e.modifier.situationalContext)
         .map(e => e.modifier);
 
-      const situationalMods = flatMods
+      const featureSituationalMods = flatMods
         .filter(e => e.modifier.targetId === skillId && e.modifier.situationalContext)
         .map(e => e.modifier);
 
-      // Apply stacking rules to misc modifiers (base for skills is the ability modifier)
-      // For skills: baseValue is effectively 0 (ranks + ability modifier are handled separately)
-      const stacking = applyStackingRules(activeMods, 0);
+      // Add auto-generated synergy modifiers
+      const skillSynergyMods = synergyMods.get(skillId) ?? [];
+      const activeSynergyMods = skillSynergyMods.filter(m => !m.situationalContext);
+      const situationalSynergyMods = skillSynergyMods.filter(m => m.situationalContext);
 
-      // Total = ranks + keyAbilityModifier + miscBonuses + armorCheckPenalty
+      // Combine feature mods with synergy mods for stacking resolution
+      const allActiveMods = [...featureActiveMods, ...activeSynergyMods];
+      const allSituationalMods = [...featureSituationalMods, ...situationalSynergyMods];
+
+      // Apply stacking rules to all active modifiers combined
+      // (synergy type always stacks with other synergy bonuses)
+      const stacking = applyStackingRules(allActiveMods, 0);
+
+      // Total = ranks + keyAbilityModifier + miscBonuses (incl. synergies) + armorCheckPenalty
       const totalValue = baseSkill.ranks + keyAbilityMod + stacking.totalBonus
         + (baseSkill.appliesArmorCheckPenalty ? armorCheckPenalty : 0);
 
@@ -813,8 +950,8 @@ export class GameEngine {
         ...baseSkill,
         isClassSkill,
         activeModifiers: stacking.appliedModifiers,
-        situationalModifiers: situationalMods,
-        totalBonus: stacking.totalBonus, // Misc bonuses only (not ranks + ability)
+        situationalModifiers: allSituationalMods,
+        totalBonus: stacking.totalBonus, // Misc bonuses + synergies (not ranks + ability)
         totalValue,
         derivedModifier: 0, // Skills don't have a derivedModifier in D&D 3.5 sense
       };
@@ -958,21 +1095,27 @@ export class GameEngine {
   /**
    * Builds the flat list of all valid active modifiers from all active features.
    *
+   * RECEIVES explicit parameters (activeTags and context) instead of reading
+   * $derived values internally. This ensures Svelte 5's reactivity graph correctly
+   * registers the upstream $derived dependencies (phase0_activeTags, phase0_context)
+   * on the $derived property that calls this method.
+   *
+   * @param activeTags - Pre-computed active tags (from phase0_activeTags).
+   * @param context    - Pre-computed character context snapshot (from phase0_context).
+   *
    * ALGORITHM:
    *   1. Collect all instances: character.activeFeatures + character.gmOverrides.
    *   2. For each isActive instance:
    *      a. Look up the Feature from the DataLoader.
    *      b. Skip if Feature not found (logs warning; graceful degradation).
    *      c. Check forbiddenTags: if any forbidden tag is in activeTags, skip this feature.
-   *      d. Check prerequisitesNode: skip if prerequisites not met.
-   *         (Uses Phase 0 context — preliminary, not fully derived yet.)
-   *      e. Collect modifiers from grantedModifiers (base feature modifiers).
-   *      f. For class features: collect modifiers from levelProgression entries
+   *      d. Collect modifiers from grantedModifiers (base feature modifiers).
+   *      e. For class features: collect modifiers from levelProgression entries
    *         where entry.level <= classLevels[featureId].
-   *      g. Recursively collect from grantedFeatures (up to MAX_RESOLUTION_DEPTH).
-   *      h. For each collected modifier:
+   *      f. Recursively collect from grantedFeatures (up to MAX_RESOLUTION_DEPTH).
+   *      g. For each collected modifier:
+   *         - Evaluate conditionNode (if present) using the provided context.
    *         - Resolve string `value` formulas to numbers.
-   *         - Evaluate conditionNode (if present).
    *         - Route to active or situational list based on situationalContext presence.
    *
    * GM OVERRIDE MERGE:
@@ -980,10 +1123,8 @@ export class GameEngine {
    *   are processed last. For setAbsolute-type modifiers, last wins. This ensures
    *   GM overrides always take precedence over player features.
    */
-  #computeFlatModifiers(): FlatModifierEntry[] {
+  #computeFlatModifiers(activeTags: string[], context: CharacterContext): FlatModifierEntry[] {
     const result: FlatModifierEntry[] = [];
-    const activeTags = this.#computeActiveTags();
-    const context = this.phase0_context;
 
     // Combine regular features with GM overrides (GM overrides processed last)
     const allInstances: ActiveFeatureInstance[] = [
