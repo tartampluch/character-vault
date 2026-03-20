@@ -120,7 +120,7 @@ _Goal: Build the complete interactive Abilities, Saving Throws, and Skills inter
 
 _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense (Attacks), Movement, and Defenses. Rely entirely on the DAG pipelines calculated in Phase 3._
 
-- [ ] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`.
+- [x] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`.
     - **Health:** Bind to the `resources.hp` pool. Create the visual HP bar (Current, Temporary, Nonlethal). Implement the "Heal" and "Damage" buttons that open a small prompt to add/subtract from `currentValue` and `temporaryValue` correctly (damage depletes temp HP first). Display the base HP and CON modifier breakdown.
     - **Experience:** Create the XP progress bar. XP thresholds per level are defined in the configuration JSON lookup table (not hardcoded). Add the "Level Up" button.
 - [ ] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
