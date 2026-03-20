@@ -140,7 +140,7 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 
 _Goal: Build the Feats management interface. This involves tracking available feat slots, distinguishing between automatically granted features and player-selected feats, and building a catalog modal that rigorously enforces D&D 3.5 prerequisites using the Logic Engine._
 
-- [ ] **11.1 Feat Capacity Pipeline:** In `GameEngine`, establish a specific pipeline/resource to calculate `Feat Slots`.
+- [x] **11.1 Feat Capacity Pipeline:** In `GameEngine`, establish a specific pipeline/resource to calculate `Feat Slots`.
     - _Base logic:_ `1 + floor(character_level / 3)`.
     - _Bonus logic:_ Add bonus slots granted by other features (e.g., Human bonus feat, Fighter bonus feats). Calculate "Feats Left" by subtracting the number of manually selected feats from this total.
 - [ ] **11.2 Feats Tab Layout & Lists:** Create `src/lib/components/feats/FeatsTab.svelte`.

@@ -1066,6 +1066,79 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // FEAT SLOTS — Phase 11.1
+  // ---------------------------------------------------------------------------
+  //
+  // D&D 3.5 FEAT SLOT FORMULA:
+  //   Base:  1 + floor(characterLevel / 3)   (1 at level 1, 2 at level 3, etc.)
+  //   Bonus: Sum of modifiers targeting "attributes.bonus_feat_slots"
+  //          (Human +1, Fighter bonus feats, etc.)
+  //
+  // FEAT SLOTS CONSUMED:
+  //   = number of activeFeatures with category "feat" that are NOT in
+  //     phase_grantedFeatIds (i.e., manually selected, not auto-granted).
+
+  /**
+   * Total available feat slots.
+   * Formula: 1 + floor(characterLevel / 3) + bonus slots from features.
+   */
+  phase_featSlotsTotal: number = $derived.by(() => {
+    const baseSlots = 1 + Math.floor(this.phase0_characterLevel / 3);
+    const bonusSlots = this.phase0_flatModifiers
+      .filter(e => e.modifier.targetId === 'attributes.bonus_feat_slots' && !e.modifier.situationalContext)
+      .reduce((sum, e) => sum + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
+    return baseSlots + bonusSlots;
+  });
+
+  /**
+   * Set of feat Feature IDs that were GRANTED automatically by Race/Class.
+   * These feats do NOT consume a player feat slot.
+   */
+  phase_grantedFeatIds: ReadonlySet<string> = $derived.by(() => {
+    const grantedIds = new Set<string>();
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (!feature) continue;
+      for (const id of (feature.grantedFeatures ?? [])) {
+        if (id && !id.startsWith('-')) grantedIds.add(id);
+      }
+      if (feature.category === 'class' && feature.levelProgression) {
+        const classLevel = this.character.classLevels[feature.id] ?? 0;
+        for (const entry of feature.levelProgression) {
+          if (entry.level <= classLevel) {
+            for (const id of entry.grantedFeatures) {
+              if (id && !id.startsWith('-')) grantedIds.add(id);
+            }
+          }
+        }
+      }
+    }
+    return grantedIds;
+  });
+
+  /**
+   * Number of manually selected feats (consume a slot).
+   * Feats in phase_grantedFeatIds are excluded.
+   */
+  phase_manualFeatCount: number = $derived.by(() => {
+    const grantedIds = this.phase_grantedFeatIds;
+    let count = 0;
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (feature?.category !== 'feat') continue;
+      if (!grantedIds.has(afi.featureId)) count++;
+    }
+    return count;
+  });
+
+  /** Remaining feat slots (total − manual count). */
+  phase_featSlotsRemaining: number = $derived(
+    this.phase_featSlotsTotal - this.phase_manualFeatCount
+  );
+
+  // ---------------------------------------------------------------------------
   // LANGUAGE SHORTCUT & HELPERS
   // ---------------------------------------------------------------------------
 
