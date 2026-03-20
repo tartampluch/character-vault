@@ -101,8 +101,8 @@ _Goal: Build the fundamental character sheet summary interface. These components
 
 _Goal: Build the complete interactive Abilities, Saving Throws, and Skills interfaces. These are the full editors with calculation breakdowns, dice rolling modals, and stat generation logic._
 
-- [ ] **9.1 Data Model Extensions:** Update `src/lib/types/feature.ts`. Add `recommendedAttributes?: ID[]` to the `Feature` interface (used by the Point Buy UI to highlight class-preferred stats). Ensure the `SkillPipeline` and `Feature` logic correctly handles "Synergy" modifiers triggered by skill ranks.
-- [ ] **9.2 Breakdown & Dice Roll Modals (Shared UI):**
+- [x] **9.1 Data Model Extensions:** Update `src/lib/types/feature.ts`. Add `recommendedAttributes?: ID[]` to the `Feature` interface (used by the Point Buy UI to highlight class-preferred stats). Ensure the `SkillPipeline` and `Feature` logic correctly handles "Synergy" modifiers triggered by skill ranks.
+- [x] **9.2 Breakdown & Dice Roll Modals (Shared UI):**
     - Create `src/lib/components/ui/ModifierBreakdownModal.svelte`. It reads a pipeline's `activeModifiers` and displays the math (Base + Modifiers = Final).
     - Create `src/lib/components/ui/DiceRollModal.svelte`. It takes a target pipeline (e.g., Strength, Jump), calls the `DiceEngine.parseAndRoll()` function, and displays the `RollResult` (Natural Roll + Total Bonus = Final Result, highlighting Critical Failures/Successes).
 - [ ] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. Display the 6 main stats (STR to CHA). Show the Final Modifier (`derivedModifier`), Base Score (editable), and Temporary Modifier. Add the "i" button (opens Breakdown) and the "Dice" button (opens Roll Modal) for each stat.
