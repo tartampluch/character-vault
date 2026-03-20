@@ -1,0 +1,155 @@
+<?php
+/**
+ * @file api/index.php
+ * @description Main entry point and URL router for the Character Vault PHP API.
+ *
+ * ROUTING TABLE:
+ *   Auth:
+ *     POST   /api/auth/login       → handleLogin()     (auth.php)
+ *     POST   /api/auth/logout      → handleLogout()    (auth.php)
+ *     GET    /api/auth/me          → handleMe()        (auth.php)
+ *
+ *   Campaigns:
+ *     GET    /api/campaigns             → CampaignController::index()
+ *     POST   /api/campaigns             → CampaignController::create()
+ *     GET    /api/campaigns/{id}        → CampaignController::show($id)
+ *     PUT    /api/campaigns/{id}        → CampaignController::update($id)
+ *     GET    /api/campaigns/{id}/sync-status → CampaignController::syncStatus($id)
+ *
+ *   Characters:
+ *     GET    /api/characters?campaignId=X → CharacterController::index()
+ *     POST   /api/characters              → CharacterController::create()
+ *     PUT    /api/characters/{id}         → CharacterController::update($id)
+ *     PUT    /api/characters/{id}/gm-overrides → CharacterController::updateGmOverrides($id)
+ *     DELETE /api/characters/{id}         → CharacterController::delete($id)
+ *
+ *   Rules:
+ *     GET    /api/rules/list        → RulesController::list()  (returns available source files)
+ *
+ * MIDDLEWARE CALL ORDER:
+ *   1. applyCorsHeaders()     — CORS (must be first to handle OPTIONS preflight)
+ *   2. checkRateLimit()       — Global rate limiting
+ *   3. initSession()          — Start PHP session
+ *   4. route()                — Dispatch to the correct handler
+ *     Inside route handlers:
+ *       5. requireAuth()      — 401 if not authenticated (for protected endpoints)
+ *       6. verifyCsrfToken()  — 403 if CSRF token missing (for POST/PUT/DELETE)
+ *       7. Controller logic   — Business logic with ownership/GM verification
+ *
+ * @see api/auth.php            for auth handlers and requireAuth()
+ * @see api/middleware.php      for CORS, CSRF, and rate limiting
+ * @see api/controllers/        for campaign and character controllers
+ * @see ARCHITECTURE.md Phase 14.5 for the full specification.
+ */
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/middleware.php';
+require_once __DIR__ . '/controllers/CampaignController.php';
+require_once __DIR__ . '/controllers/CharacterController.php';
+require_once __DIR__ . '/controllers/RulesController.php';
+
+// ============================================================
+// GLOBAL MIDDLEWARE
+// ============================================================
+
+// 1. CORS (must be before any output)
+applyCorsHeaders();
+
+// 2. Global rate limiting (60 requests per 60 seconds per IP)
+checkRateLimit('global', 60, 60);
+
+// 3. Set JSON content type for all responses
+header('Content-Type: application/json');
+
+// 4. Initialize session
+initSession();
+
+// ============================================================
+// ROUTER
+// ============================================================
+
+$method = $_SERVER['REQUEST_METHOD'];
+$uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Strip the /api prefix from the URI for matching
+$path = preg_replace('#^/api#', '', $uri);
+$path = rtrim($path, '/') ?: '/';
+
+// Parse path segments
+$segments = array_values(array_filter(explode('/', $path)));
+
+// Route matching
+try {
+    if ($path === '/auth/login' && $method === 'POST') {
+        checkLoginRateLimit(); // Stricter limit for login
+        handleLogin();
+
+    } elseif ($path === '/auth/logout' && $method === 'POST') {
+        handleLogout();
+
+    } elseif ($path === '/auth/me' && $method === 'GET') {
+        handleMe();
+
+    } elseif ($path === '/campaigns' && $method === 'GET') {
+        CampaignController::index();
+
+    } elseif ($path === '/campaigns' && $method === 'POST') {
+        verifyCsrfToken();
+        CampaignController::create();
+
+    } elseif (preg_match('#^/campaigns/([^/]+)$#', $path, $m) && $method === 'GET') {
+        CampaignController::show($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)$#', $path, $m) && $method === 'PUT') {
+        verifyCsrfToken();
+        CampaignController::update($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/sync-status$#', $path, $m) && $method === 'GET') {
+        CampaignController::syncStatus($m[1]);
+
+    } elseif ($path === '/characters' && $method === 'GET') {
+        CharacterController::index();
+
+    } elseif ($path === '/characters' && $method === 'POST') {
+        verifyCsrfToken();
+        CharacterController::create();
+
+    } elseif (preg_match('#^/characters/([^/]+)$#', $path, $m) && $method === 'PUT') {
+        verifyCsrfToken();
+        CharacterController::update($m[1]);
+
+    } elseif (preg_match('#^/characters/([^/]+)/gm-overrides$#', $path, $m) && $method === 'PUT') {
+        verifyCsrfToken();
+        CharacterController::updateGmOverrides($m[1]);
+
+    } elseif (preg_match('#^/characters/([^/]+)$#', $path, $m) && $method === 'DELETE') {
+        verifyCsrfToken();
+        CharacterController::delete($m[1]);
+
+    } elseif ($path === '/rules/list' && $method === 'GET') {
+        RulesController::list();
+
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'NotFound', 'message' => "Endpoint {$method} {$path} not found."]);
+    }
+} catch (\PDOException $e) {
+    // Database error — log it but don't expose internals to the client
+    error_log('[CharacterVault API] PDOException: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'error'   => 'DatabaseError',
+        'message' => APP_ENV === 'development' ? $e->getMessage() : 'An internal database error occurred.',
+    ]);
+} catch (\Exception $e) {
+    error_log('[CharacterVault API] Exception: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'error'   => 'ServerError',
+        'message' => APP_ENV === 'development' ? $e->getMessage() : 'An internal server error occurred.',
+    ]);
+}

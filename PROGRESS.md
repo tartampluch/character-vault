@@ -209,7 +209,7 @@ _Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. T
     - Add rate limiting (simple in-memory or file-based counter) to prevent abuse.
 - [x] **14.4 Database Schema & Migrations:** Create a setup script `api/migrate.php` to generate the tables: `users` (id, username, password_hash, display_name, is_game_master), `campaigns` (id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at), and `characters` (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at).
     - _Crucial:_ The `characters` table stores the core ECS state (the `activeFeatures` array, `classLevels`, base attribute scores, temporary modifiers, and `resources` like current HP) as a single `character_json` TEXT field. The `gm_overrides_json` field stores the GM's per-character overrides separately. The backend does _not_ process D&D rules; it just persists the GameEngine's state.
-- [ ] **14.5 REST API Endpoints:** Create basic RESTful controllers returning JSON payloads:
+- [x] **14.5 REST API Endpoints:** Create basic RESTful controllers returning JSON payloads:
     - `GET /api/campaigns` & `POST /api/campaigns`
     - `GET /api/campaigns/{id}` (includes chapters; if GM, includes `gmGlobalOverrides`)
     - `PUT /api/campaigns/{id}` (update campaign settings, sources, GM overrides; updates `updated_at`)
