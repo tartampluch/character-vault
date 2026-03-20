@@ -33,7 +33,7 @@
 
 ### Phase 2: Pure Functions & Dice Engine (The Brain)
 
-- [ ] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (Localization and unit conversion based on CampaignSettings).
+- [x] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (Localization and unit conversion based on CampaignSettings).
 - [ ] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts` (Evaluate formulas, replace `@` placeholders, and handle `|distance` / `|weight` pipes).
 - [ ] **2.3 Logic Evaluator:** Create `src/lib/utils/logicEvaluator.ts` (Recursive evaluation of `LogicNode`).
 - [ ] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts` (Ignore stacking for identical modifier types unless exceptions apply).
