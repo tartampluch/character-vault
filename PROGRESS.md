@@ -79,8 +79,8 @@ _Goal: Build the character selection screen (Your Adventurers) based on the curr
     - _Layout:_ Display the `posterUrl` at the top (fallback to a placeholder 300x200 if undefined). Display the Character Name.
     - _Subtitle Logic:_ If `customSubtitle` exists, display it. Otherwise, if `isNPC`, display the Race label. If it's a Player Character, display `playerRealName`.
     - _Level Badge:_ Display the Overall Effective Level (sum of all class levels from `classLevels`).
-- [ ] **7.3 Character Vault Page:** Create `src/routes/campaigns/[id]/vault/+page.svelte`. Implement the layout from the design mockup. Display the `visibleCharacters` array using the `CharacterCard` component in a responsive grid.
-- [ ] **7.4 Empty State & Creation Actions:** Inside the Vault Page, implement the empty state ("No adventurers yet!"). Add the "Create New Character" button. If `isGameMaster` is true, also add an "Add NPC/Monster" button. Both should initialize a blank/mock Character in the `StorageManager` and navigate to the Phase 8 (Core Tab) editor.
+- [x] **7.3 Character Vault Page:** Create `src/routes/campaigns/[id]/vault/+page.svelte`. Implement the layout from the design mockup. Display the `visibleCharacters` array using the `CharacterCard` component in a responsive grid.
+- [x] **7.4 Empty State & Creation Actions:** Inside the Vault Page, implement the empty state ("No adventurers yet!"). Add the "Create New Character" button. If `isGameMaster` is true, also add an "Add NPC/Monster" button. Both should initialize a blank/mock Character in the `StorageManager` and navigate to the Phase 8 (Core Tab) editor.
 
 ### Phase 8: UI Construction - "Core" Tab (Summary View)
 
