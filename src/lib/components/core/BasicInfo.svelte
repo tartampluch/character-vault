@@ -1,6 +1,7 @@
 <!--
   @file src/lib/components/core/BasicInfo.svelte
   @description Basic Information panel for the Core tab of the character sheet.
+  (Phase 8.3: Race/Class/Deity/Alignment selectors + Phase 8.4: FeatureChoice sub-selections)
 
   PURPOSE:
     Provides dropdown selectors for the character's fundamental choices:
@@ -8,35 +9,26 @@
       - Class (category: "class")
       - Deity (category: "deity")
       - Alignment (category: "alignment" — loaded from config or predefined)
-      - Size (category: "size" or direct pipeline modifier)
 
-    When the player selects a Race or Class:
-      1. Any previously active feature of that category is REMOVED from the engine.
-      2. The new feature is added as an `ActiveFeatureInstance` via `engine.addFeature()`.
-      3. For Classes: a `classLevels` entry is initialised to 1 (if not already present).
-      4. The engine's DAG re-evaluates automatically (Svelte 5 reactivity).
+    Phase 8.4 — FeatureChoice sub-selections:
+      When the active Class (or Race/Deity) feature has a `choices` array
+      (e.g., Cleric Domains, Weapon Focus weapon type), additional dropdowns
+      are dynamically rendered below the main selectors.
+      The player's selection is stored in `ActiveFeatureInstance.selections`
+      as a `Record<choiceId, string[]>`. This is the data read by the engine
+      when evaluating conditional modifiers that reference `@selection.<choiceId>`.
 
-    MODIFIER BADGES:
-    For each feature in the dropdown options, we show key modifier badges:
-      "+2 DEX", "-2 CON", "+30 ft Speed"
-    This gives the player context when choosing. Badges come from `grantedModifiers`
-    of the Feature's definition.
-
-  ARCHITECTURE:
+  ARCHITECTURE NOTES:
     - Reads: `engine.character.activeFeatures`, `engine.phase0_activeTags`
     - Reads: `dataLoader.queryFeatures()` for dropdown populations
     - Writes: `engine.addFeature()`, `engine.removeFeature()`,
-              direct mutation of `engine.character.classLevels`
+              direct mutation of `engine.character.classLevels`,
+              direct mutation of `activeFeatureInstance.selections[choiceId]`
     - No D&D rules computed here — only feature lookup and engine dispatching.
 
-  PHASE 8.4 INTEGRATION:
-    `FeatureChoice` handling (Cleric domain selectors, Weapon Focus weapon picker)
-    is added to this component in Phase 8.4. For now, we provide the structural
-    foundation and a placeholder for choices rendering.
-
   @see src/lib/engine/GameEngine.svelte.ts for the feature mutation methods.
-  @see src/lib/engine/DataLoader.ts for the feature catalog queries.
-  @see ARCHITECTURE.md Phase 8.3 for the specification.
+  @see src/lib/types/feature.ts for FeatureChoice type definition.
+  @see ARCHITECTURE.md Phase 8.4 for the FeatureChoice specification.
 -->
 
 <script lang="ts">
@@ -296,6 +288,80 @@
   }
 
   // ============================================================
+  // PHASE 8.4: FEATURE CHOICE SUB-SELECTIONS
+  // ============================================================
+
+  /**
+   * Finds the `ActiveFeatureInstance` for the currently active class (or race/deity).
+   * We need the INSTANCE (not just the Feature) to read and write `selections`.
+   */
+  function getActiveCategoryInstance(category: string) {
+    return engine.character.activeFeatures.find(afi => {
+      if (!afi.isActive) return false;
+      const feature = dataLoader.getFeature(afi.featureId);
+      return feature?.category === category;
+    });
+  }
+
+  /**
+   * Returns the `choices` array for the active class feature.
+   * These are the FeatureChoice prompts that need sub-selector dropdowns.
+   *
+   * Example: Cleric has two domain choices; Weapon Focus has a weapon type choice.
+   * The engine shows these choices dynamically — there are no hardcoded references
+   * to specific class names like "Cleric" or "Wizard."
+   */
+  const activeClassChoices = $derived.by(() => {
+    if (!activeClass?.choices?.length) return [];
+    return activeClass.choices;
+  });
+
+  /**
+   * The current selections for the active class instance.
+   * Key: `choice.choiceId`, Value: array of selected Feature IDs (strings).
+   */
+  const activeClassSelections = $derived.by(() => {
+    const instance = getActiveCategoryInstance('class');
+    return instance?.selections ?? {};
+  });
+
+  /**
+   * Handles a FeatureChoice selection change for the active class.
+   *
+   * How it works:
+   *   1. Find the active class `ActiveFeatureInstance` by category.
+   *   2. Ensure `instance.selections` exists (lazy-initialise on first choice).
+   *   3. Set `selections[choiceId] = [selectedFeatureId]` (always maxSelections=1 for now;
+   *      multi-select support can be added when needed).
+   *
+   * The `selections` mutation causes `engine.phase0_context` to read the new selection
+   * in subsequent condition evaluations (e.g., Weapon Focus conditional modifier
+   * checks `@selection.weapon_choice` against the equipped weapon's tags).
+   *
+   * @param choiceId  - The FeatureChoice.choiceId being set.
+   * @param featureId - The selected option's Feature ID, or "" to clear.
+   */
+  function handleChoiceChange(choiceId: string, featureId: string) {
+    const instance = getActiveCategoryInstance('class');
+    if (!instance) return;
+
+    // Lazy-initialise selections record
+    if (!instance.selections) {
+      instance.selections = {};
+    }
+
+    if (featureId) {
+      instance.selections[choiceId] = [featureId];
+    } else {
+      delete instance.selections[choiceId];
+    }
+
+    // Force Svelte 5 to detect the mutation by reassigning the reference
+    // (Svelte 5's deep reactivity should pick this up, but explicit re-emission is safer)
+    engine.character.activeFeatures = [...engine.character.activeFeatures];
+  }
+
+  // ============================================================
   // FEATURE MODAL STATE
   // ============================================================
 
@@ -476,11 +542,86 @@
   </div><!-- /selectors-grid -->
 
   <!-- ========================================================= -->
-  <!-- PHASE 8.4 PLACEHOLDER: FeatureChoice Sub-selections -->
-  <!-- Dynamic domains, weapon choices, etc. will appear here.  -->
-  <!-- ========================================================= -->
-  <!-- [Phase 8.4 will inject FeatureChoice dropdowns here based on
-       the active Class feature's `choices` array] -->
+  <!-- PHASE 8.4: FEATURE CHOICE SUB-SELECTIONS (dynamic) -->
+  <!--
+    These dropdowns appear ONLY when the active class (or other feature)
+    has a `choices` array. They are derived directly from the Feature JSON —
+    no hardcoded class names are needed.
+
+    Examples:
+      - Cleric:  Two domain dropdowns appear (domain_choice_1, domain_choice_2).
+      - Weapon Focus: One weapon type dropdown appears (weapon_choice).
+      - Dromite:  Energy type dropdown appears (chitin_energy_type).
+
+    HOW OPTIONSQUERY IS RESOLVED:
+      The `choice.optionsQuery` string (e.g., "tag:domain", "tag:weapon")
+      is passed to `dataLoader.queryFeatures(optionsQuery)` which returns
+      all matching Feature objects from the cache. The player selects from
+      this filtered list. If the cache is empty or no matches, the dropdown
+      shows "No options available."
+  -->
+  {#if activeClassChoices.length > 0}
+    <div class="choices-section">
+      <h3 class="choices-title">
+        {engine.t(activeClass?.label ?? {})} — Choices
+      </h3>
+      <div class="choices-grid">
+        {#each activeClassChoices as choice}
+          {@const options = dataLoader.queryFeatures(choice.optionsQuery)}
+          {@const currentSelection = activeClassSelections[choice.choiceId]?.[0] ?? ''}
+
+          <div class="choice-group">
+            <label
+              for="choice-{choice.choiceId}"
+              class="choice-label"
+            >
+              {engine.t(choice.label)}
+              {#if choice.maxSelections > 1}
+                <span class="choice-max-hint">(up to {choice.maxSelections})</span>
+              {/if}
+            </label>
+
+            <div class="select-wrapper">
+              <select
+                id="choice-{choice.choiceId}"
+                class="selector"
+                value={currentSelection}
+                onchange={(e) => handleChoiceChange(choice.choiceId, (e.target as HTMLSelectElement).value)}
+                aria-label="{engine.t(choice.label)}"
+              >
+                <option value="">— Select —</option>
+                {#each options as option}
+                  <option value={option.id}>
+                    {engine.t(option.label)}
+                    {#if getModifierBadges(option).length}
+                      ({getModifierBadges(option).join(', ')})
+                    {/if}
+                  </option>
+                {/each}
+              </select>
+            </div>
+
+            {#if options.length === 0}
+              <p class="no-options-hint">
+                No options matching <code>{choice.optionsQuery}</code>.
+                Enable a rule source with this content.
+              </p>
+            {/if}
+
+            <!-- Show selected feature's modal on info button -->
+            {#if currentSelection}
+              <button
+                class="info-btn choice-info-btn"
+                onclick={() => (modalFeatureId = currentSelection)}
+                aria-label="Show selected option details"
+                title="Show details for selected option"
+              >ℹ</button>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
 
 </div>
 
@@ -663,5 +804,54 @@
     color: #4a4a6a;
     font-style: italic;
     margin: 0.2rem 0 0;
+  }
+
+  /* ========================= FEATURE CHOICES (Phase 8.4) ========================= */
+  .choices-section {
+    margin-top: 1.25rem;
+    border-top: 1px solid #21262d;
+    padding-top: 1rem;
+  }
+
+  .choices-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    color: #7c3aed;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .choices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .choice-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    position: relative;
+  }
+
+  .choice-label {
+    font-size: 0.78rem;
+    color: #9090c0;
+    font-weight: 500;
+  }
+
+  .choice-max-hint {
+    font-size: 0.68rem;
+    color: #6080a0;
+    margin-left: 0.2rem;
+  }
+
+  .choice-info-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.7rem;
   }
 </style>
