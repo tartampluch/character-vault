@@ -178,7 +178,7 @@ _Goal: Build the Magic, Psionics, and Special Abilities interface. This tab mana
 
 _Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equipment slot limits dynamically based on the engine's pipelines, and calculate weight penalties accurately._
 
-- [ ] **13.1 Equipment Slot Pipelines:** In `GameEngine`, establish base pipelines for body slots (e.g., `slots.head`, `slots.ring`, `slots.body`, `slots.main_hand`). Set default base values (e.g., `slots.ring` = 2, `slots.head` = 1). This ensures exotic races can simply apply modifiers to these pipelines to gain extra slots.
+- [x] **13.1 Equipment Slot Pipelines:** In `GameEngine`, establish base pipelines for body slots (e.g., `slots.head`, `slots.ring`, `slots.body`, `slots.main_hand`). Set default base values (e.g., `slots.ring` = 2, `slots.head` = 1). This ensures exotic races can simply apply modifiers to these pipelines to gain extra slots.
 - [ ] **13.2 Inventory Sections & Layout:** Create `src/lib/components/inventory/InventoryTab.svelte`. Divide the layout into three distinct visual containers:
     1. **Equipped / Readied:** Items actively worn or held.
     2. **Backpack / Carried:** Items on the character's person but not granting active stats (contributes to weight).

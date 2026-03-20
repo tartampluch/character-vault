@@ -1066,6 +1066,82 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // EQUIPMENT SLOTS — Phase 13.1
+  // ---------------------------------------------------------------------------
+  //
+  // Equipment slots define how many items of each type the character can equip.
+  // Default values follow the standard humanoid body (SRD):
+  //   head: 1, eyes: 1, neck: 1, torso: 1, body: 1, waist: 1, shoulders: 1
+  //   arms: 1 (pair), hands: 1 (pair), ring: 2, feet: 1, main_hand: 1, off_hand: 1
+  //
+  // EXTENSIBILITY:
+  //   Exotic races or feats can modify these values by granting modifiers that
+  //   target "slots.<slot_name>" pipelines (e.g., granting +2 ring slots).
+  //   The engine auto-creates these pipelines from modifiers, so no hardcoding is needed.
+  //
+  // These values are NOT part of the standard `character.combatStats` or `attributes`
+  // records. They are stored as a separate computed record for the Inventory UI.
+
+  /**
+   * Resolved equipment slot maximums.
+   * Values start at the defaults below and can be modified by Feature modifiers.
+   *
+   * Used by the Inventory tab (Phase 13.3) to enforce item slot limits.
+   */
+  phase_equipmentSlots: Record<string, number> = $derived.by(() => {
+    // Default slot counts for a standard humanoid body
+    const defaults: Record<string, number> = {
+      'slots.head': 1,
+      'slots.eyes': 1,
+      'slots.neck': 1,
+      'slots.torso': 1,
+      'slots.body': 1,
+      'slots.waist': 1,
+      'slots.shoulders': 1,
+      'slots.arms': 1,
+      'slots.hands': 1,
+      'slots.ring': 2,        // Humans wear 2 rings by default
+      'slots.feet': 1,
+      'slots.main_hand': 1,
+      'slots.off_hand': 1,
+    };
+
+    // Apply modifiers from active features targeting "slots.*" pipelines
+    const result = { ...defaults };
+    for (const entry of this.phase0_flatModifiers) {
+      const { modifier } = entry;
+      if (!modifier.targetId.startsWith('slots.') || modifier.situationalContext) continue;
+      const slot = modifier.targetId;
+      const val = typeof modifier.value === 'number' ? modifier.value : 0;
+      result[slot] = (result[slot] ?? 0) + val;
+    }
+
+    return result;
+  });
+
+  /**
+   * The current count of equipped items per slot.
+   * Used by Phase 13.3 to check if a slot is full before equipping.
+   */
+  phase_equippedSlotCounts: Record<string, number> = $derived.by(() => {
+    const counts: Record<string, number> = {};
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feat = this.phase0_flatModifiers.find(e => e.sourceInstanceId === afi.instanceId);
+      // Simplified: check the feature's equipmentSlot directly
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (!feature || (feature as import('../types/feature').ItemFeature).equipmentSlot === undefined) continue;
+      const itemFeat = feature as import('../types/feature').ItemFeature;
+      const slot = itemFeat.equipmentSlot;
+      if (!slot || slot === 'none') continue;
+      // Map slot name to slots.* key
+      const slotKey = `slots.${slot}`;
+      counts[slotKey] = (counts[slotKey] ?? 0) + 1;
+    }
+    return counts;
+  });
+
+  // ---------------------------------------------------------------------------
   // MAGIC RESOURCES — Phase 12.1
   // ---------------------------------------------------------------------------
   //
