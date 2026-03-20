@@ -147,11 +147,11 @@ _Goal: Build the Feats management interface. This involves tracking available fe
     - Render the header showing "Feats Available" and "Feats Left" dynamically.
     - Create a `Granted Feats` section: Loop through `activeFeatures` to find features automatically granted by a parent feature (like Class or Race). Display them as read-only (no delete button). Show the source tag (e.g., "Druid" or "Gnome").
     - Create a `Selected Feats` section: List the feats manually chosen by the player, with a "Delete" button to free up the slot.
-- [ ] **11.3 Feat Catalog Modal (Search & Filter):** Create `src/lib/components/feats/FeatSelectionModal.svelte`.
+- [x] **11.3 Feat Catalog Modal (Search & Filter):** Create `src/lib/components/feats/FeatSelectionModal.svelte`.
     - Fetch all features with `category: "feat"` from the `DataLoader`.
     - Implement a text search bar (filtering by title and description).
     - Implement visual tags (e.g., reading the `tags` array to display badges like "Fighter Bonus Feat" or "Metamagic").
-- [ ] **11.4 Prerequisite Evaluation UI:** Inside the `FeatSelectionModal`, implement the logic constraint UI.
+- [x] **11.4 Prerequisite Evaluation UI:** Inside the `FeatSelectionModal`, implement the logic constraint UI.
     - For each feat in the list, run its `prerequisitesNode` through the `logicEvaluator`.
     - If the evaluation fails, disable the "Select" button/row for that feat.
     - _Requirement:_ Extract the specific `errorMessage` from the failing `LogicNode`s (e.g., "Dexterity 19", "BAB +11") and display them in red. Met prerequisites should be displayed in a neutral/green color.

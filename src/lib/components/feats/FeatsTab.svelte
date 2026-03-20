@@ -15,6 +15,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
+  import FeatSelectionModal from './FeatSelectionModal.svelte';
   import type { ID } from '$lib/types/primitives';
 
   // ============================================================
@@ -176,12 +177,8 @@
     {/if}
   </section>
 
-  <!-- Phase 11.3 Add Feat stub (FeatSelectionModal replaces this in 11.3) -->
   {#if showAddModal}
-    <div class="modal-stub" role="dialog" aria-modal="true">
-      <p>Feat catalog (Phase 11.3 — FeatSelectionModal) will appear here.</p>
-      <button onclick={() => (showAddModal = false)}>Close</button>
-    </div>
+    <FeatSelectionModal onclose={() => (showAddModal = false)} />
   {/if}
 
 </div>
@@ -320,17 +317,4 @@
   .delete-btn { color: #f87171; }
   .delete-btn:hover { background: #1c0000; border-color: #dc2626; }
 
-  /* ========================= STUB MODAL ========================= */
-  .modal-stub {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    z-index: 1000;
-    color: #c4b5fd;
-  }
 </style>
