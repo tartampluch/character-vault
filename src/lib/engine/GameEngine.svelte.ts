@@ -498,6 +498,276 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // DAG PHASE 3 — Combat Statistics & Saving Throws
+  // ---------------------------------------------------------------------------
+  //
+  // This phase computes all combat-related derived values. It is CRITICAL that
+  // this phase ONLY reads from phase2_attributes (never directly from character.attributes),
+  // because Phase 2 may have modified attribute values (e.g., from a Belt of Constitution).
+  //
+  // COMBAT STATISTICS COMPUTED HERE:
+  //   - AC (normal, touch, flat-footed): DEX modifier applied to AC, armor/shield type routing
+  //   - BAB (Base Attack Bonus): accumulated from class levelProgression "base" type modifiers
+  //   - Initiative: DEX modifier + any feat modifiers
+  //   - Grapple: BAB + STR modifier + size modifier
+  //   - Saving Throws (Fort/Ref/Will): class base + ability modifier + misc bonuses
+  //   - Max HP: sum of hit dice results + CON modifier × character level
+  //   - Movement speeds: land, burrow, climb, fly, swim
+  //   - Armor Check Penalty: from equipped armor
+  //   - Resistances: SR, PR, Energy Resistances (targetId convention: "combatStats.*")
+  //
+  // AC TYPE ROUTING:
+  //   D&D 3.5 Touch AC ignores armor, shield, and natural_armor bonuses.
+  //   Flat-footed AC ignores bonus types that require conscious reaction (DEX, dodge).
+  //   The engine handles this by filtering modifier types per AC pipeline:
+  //     combatStats.ac_normal:      all active modifier types
+  //     combatStats.ac_touch:       exclude armor, shield, natural_armor
+  //     combatStats.ac_flat_footed: exclude dodge, dex (DEX modifier is a separate untyped mod)
+  //   The DEX modifier to AC is injected as a modifier from the SRD core rules JSON
+  //   (with type "untyped" or filtered by conditionNode). For this computation phase,
+  //   we apply the GENERAL rule: filter by targetId as declared in the modifier itself.
+
+  /**
+   * DAG Phase 3: Resolved combat stat and saving throw pipelines.
+   *
+   * Returns a Record mapping combatStats and saves pipelineId → resolved StatisticPipeline.
+   *
+   * READS FROM:
+   *   - phase0_flatModifiers (modifier data)
+   *   - phase2_attributes (ability derivedModifiers — CON for Fort save, DEX for AC, etc.)
+   *   - phase0_characterLevel (for HP formula: CON mod × character level)
+   *
+   * WRITES TO:
+   *   This $derived updates the character sheet data used by the combat UI components.
+   *   The character.$state pipelines are NOT mutated; this returns a computed snapshot.
+   *   Phase 4 (skills) reads the armor_check_penalty from the output of this phase.
+   */
+  phase3_combatStats: Record<ID, StatisticPipeline> = $derived.by(() => {
+    const result: Record<ID, StatisticPipeline> = {};
+    const flatMods = this.phase0_flatModifiers;
+    const attributes = this.phase2_attributes;
+    const characterLevel = this.phase0_characterLevel;
+
+    // --- Max HP Special Calculation ---
+    // D&D 3.5 formula: sum(hitDieResults per level) + CON_modifier × characterLevel
+    // Since hit die results per level are stored in the character's resource pool
+    // (rolled or set at level-up), we compute the CON contribution here and add
+    // it to the base pipeline (which holds the sum of hit die rolls).
+    // CON modifier × character level is added as a runtime bonus.
+    const conDerivedMod = attributes['stat_con']?.derivedModifier ?? 0;
+    const conHpContrib = conDerivedMod * characterLevel;
+
+    // Process each combat stat pipeline
+    for (const [pipelineId, basePipeline] of Object.entries(this.character.combatStats)) {
+      const activeMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      const situationalMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      let effectiveBaseValue = basePipeline.baseValue;
+
+      // --- Max HP: inject CON modifier contribution ---
+      if (pipelineId === 'combatStats.max_hp') {
+        // CON modifier × character level is the constitution contribution to Max HP.
+        // This is treated as an untyped bonus on top of the rolled/fixed hit die sum.
+        // We add it directly to the base value for this computation so it participates
+        // in the stacking resolution but always applies (no stacking competition with itself).
+        effectiveBaseValue = basePipeline.baseValue + conHpContrib;
+      }
+
+      const stacking = applyStackingRules(activeMods, effectiveBaseValue);
+      // Combat stats don't have a "derivedModifier" in the ability score sense (always 0)
+      result[pipelineId] = {
+        ...basePipeline,
+        activeModifiers: stacking.appliedModifiers,
+        situationalModifiers: situationalMods,
+        totalBonus: stacking.totalBonus,
+        totalValue: stacking.totalValue,
+        derivedModifier: 0, // Combat stats have no derived modifier
+      };
+    }
+
+    // Process each saving throw pipeline
+    for (const [pipelineId, basePipeline] of Object.entries(this.character.saves)) {
+      const activeMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      const situationalMods = flatMods
+        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      const stacking = applyStackingRules(activeMods, basePipeline.baseValue);
+      result[pipelineId] = {
+        ...basePipeline,
+        activeModifiers: stacking.appliedModifiers,
+        situationalModifiers: situationalMods,
+        totalBonus: stacking.totalBonus,
+        totalValue: stacking.totalValue,
+        derivedModifier: 0,
+      };
+    }
+
+    return result;
+  });
+
+  /**
+   * DAG Phase 3b: Max HP from the resolved max_hp combat stat pipeline.
+   *
+   * Convenience accessor. The HP resource pool reads this for the effective max.
+   */
+  phase3_maxHp: number = $derived(
+    this.phase3_combatStats['combatStats.max_hp']?.totalValue ?? 0
+  );
+
+  /**
+   * DAG Phase 3c: Updated CharacterContext with Phase 3 combat stat values.
+   * Used by Phase 4 (skills) formulas that reference combat stats (e.g., synergy bonuses).
+   */
+  phase3_context: CharacterContext = $derived.by(() => {
+    const base = this.phase2_context;
+
+    const combatStats: CharacterContext['combatStats'] = {};
+    for (const [id, stat] of Object.entries(this.phase3_combatStats)) {
+      combatStats[id] = { totalValue: stat.totalValue };
+    }
+
+    const saves: CharacterContext['saves'] = {};
+    for (const [id, save] of Object.entries(this.phase3_combatStats)) {
+      if (id.startsWith('saves.')) {
+        saves[id] = { totalValue: save.totalValue };
+      }
+    }
+
+    return {
+      ...base,
+      combatStats,
+      saves,
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // DAG PHASE 4 — Skills & Abilities
+  // ---------------------------------------------------------------------------
+  //
+  // Skills depend on:
+  //   - Phase 2 attributes (ability score derivedModifiers as skill key ability)
+  //   - Phase 3 armor check penalty (negative modifier for physical skills)
+  //   - phase0_activeTags (for isClassSkill determination — active class features' classSkills)
+  //   - character.skills[*].ranks (player-invested skill points)
+  //
+  // SKILL TOTAL FORMULA (D&D 3.5):
+  //   Total = ranks + keyAbilityModifier + miscBonuses + armorCheckPenalty (if applicable)
+  //
+  // CLASS SKILL DETERMINATION:
+  //   Collect classSkills arrays from ALL active Features (not just class features —
+  //   domains and racial features can also grant class skills).
+  //   Union all classSkills arrays. A skill is a class skill if its ID appears in this union.
+  //
+  // RANK COSTS & MAX RANKS (used by the SkillsMatrix UI in Phase 9.6):
+  //   Class skill:       1 sp/rank, max = (characterLevel + 3) ranks
+  //   Cross-class skill: 2 sp/rank, max = floor((characterLevel + 3) / 2) ranks
+  //
+  // NOTE: Skills are populated in character.skills from config tables (Phase 4.2).
+  //   Until Phase 4.2, character.skills is empty and this phase produces an empty record.
+
+  /**
+   * DAG Phase 4: Set of all skill IDs that are class skills for this character.
+   *
+   * Built by unioning classSkills arrays from ALL active features (not just classes).
+   * The engine reads Feature.classSkills from the DataLoader for each active feature instance.
+   * A missing feature (DataLoader stub) contributes nothing (graceful empty skip).
+   */
+  phase4_classSkillSet: ReadonlySet<ID> = $derived.by(() => {
+    const classSkillIds = new Set<ID>();
+    const allInstances = [
+      ...this.character.activeFeatures,
+      ...(this.character.gmOverrides ?? []),
+    ];
+
+    for (const instance of allInstances) {
+      if (!instance.isActive) continue;
+      const feature = dataLoader.getFeature(instance.featureId);
+      if (!feature || !feature.classSkills) continue;
+
+      // For class features: only contribute classSkills if the character has at least 1 level
+      if (feature.category === 'class') {
+        const classLevel = this.character.classLevels[feature.id] ?? 0;
+        if (classLevel < 1) continue;
+      }
+
+      for (const skillId of feature.classSkills) {
+        classSkillIds.add(skillId);
+      }
+    }
+
+    return classSkillIds;
+  });
+
+  /**
+   * DAG Phase 4: Resolved skill pipelines.
+   *
+   * Computes the total value for every skill in character.skills.
+   *
+   * TOTAL FORMULA:
+   *   totalValue = ranks + phase2_attributes[keyAbility].derivedModifier
+   *              + sum(active non-situational modifiers)
+   *              + (armorCheckPenalty if appliesArmorCheckPenalty)
+   *
+   * The armor check penalty from phase3_combatStats is read here and injected
+   * as a bonus (negative value) for skills with appliesArmorCheckPenalty === true.
+   */
+  phase4_skills: Record<ID, import('../types/pipeline').SkillPipeline> = $derived.by(() => {
+    const result: Record<ID, import('../types/pipeline').SkillPipeline> = {};
+    const flatMods = this.phase0_flatModifiers;
+    const attributes = this.phase2_attributes;
+    const classSkillSet = this.phase4_classSkillSet;
+    const characterLevel = this.phase0_characterLevel;
+
+    // The armor check penalty is stored as a negative number on its pipeline
+    const armorCheckPenalty = this.phase3_combatStats['combatStats.armor_check_penalty']?.totalValue ?? 0;
+
+    for (const [skillId, baseSkill] of Object.entries(this.character.skills)) {
+      const isClassSkill = classSkillSet.has(skillId);
+
+      // Get the key ability modifier for this skill
+      const keyAbilityMod = attributes[baseSkill.keyAbility]?.derivedModifier ?? 0;
+
+      // Collect all misc modifiers targeting this skill pipeline
+      const activeMods = flatMods
+        .filter(e => e.modifier.targetId === skillId && !e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      const situationalMods = flatMods
+        .filter(e => e.modifier.targetId === skillId && e.modifier.situationalContext)
+        .map(e => e.modifier);
+
+      // Apply stacking rules to misc modifiers (base for skills is the ability modifier)
+      // For skills: baseValue is effectively 0 (ranks + ability modifier are handled separately)
+      const stacking = applyStackingRules(activeMods, 0);
+
+      // Total = ranks + keyAbilityModifier + miscBonuses + armorCheckPenalty
+      const totalValue = baseSkill.ranks + keyAbilityMod + stacking.totalBonus
+        + (baseSkill.appliesArmorCheckPenalty ? armorCheckPenalty : 0);
+
+      result[skillId] = {
+        ...baseSkill,
+        isClassSkill,
+        activeModifiers: stacking.appliedModifiers,
+        situationalModifiers: situationalMods,
+        totalBonus: stacking.totalBonus, // Misc bonuses only (not ranks + ability)
+        totalValue,
+        derivedModifier: 0, // Skills don't have a derivedModifier in D&D 3.5 sense
+      };
+    }
+
+    return result;
+  });
+
+  // ---------------------------------------------------------------------------
   // LANGUAGE SHORTCUT & HELPERS
   // ---------------------------------------------------------------------------
 
