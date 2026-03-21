@@ -964,9 +964,9 @@ Key mechanics:
 
 ### C-04j — Base Class: Sorcerer (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04j** — Convert Sorcerer (structure only — features in C-05j)
+- [x] **C-04j** — Convert Sorcerer (structure only — features in C-05j)
 
-**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcerer.html`
+**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
 **Output:** Append one entry to `01_d20srd_core_classes.json`.
 
@@ -982,9 +982,9 @@ Capture:
 
 ### C-05j — Base Class Features: Sorcerer (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05j** — Convert Sorcerer class features
+- [x] **C-05j** — Convert Sorcerer class features
 
-**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcerer.html`
+**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
 **Output:** Append Sorcerer feature entries to `02_d20srd_core_class_features.json`.
 
@@ -1001,9 +1001,9 @@ Key mechanics:
 
 ### C-04k — Base Class: Wizard (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04k** — Convert Wizard (structure only — features in C-05k)
+- [x] **C-04k** — Convert Wizard (structure only — features in C-05k)
 
-**Source file:** `d20srd/www.d20srd.org/srd/classes/wizard.html`
+**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
 **Output:** Append one entry to `01_d20srd_core_classes.json`. This is the final (11th) entry — run full-file validation after writing.
 
@@ -1022,7 +1022,7 @@ Capture:
 
 - [ ] **C-05k** — Convert Wizard class features
 
-**Source file:** `d20srd/www.d20srd.org/srd/classes/wizard.html`
+**Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
 **Output:** Append Wizard feature entries to `02_d20srd_core_class_features.json`. This is the final (11th) class — run full-file validation after writing.
 

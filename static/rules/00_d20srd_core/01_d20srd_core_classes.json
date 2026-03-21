@@ -2412,5 +2412,501 @@
         ]
       }
     ]
+  },
+  {
+    "id": "class_sorcerer",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sorcerer", "fr": "Ensorceleur" },
+    "description": {
+      "en": "An arcane spellcaster who draws on inherent magical power, casting spontaneously without preparation.",
+      "fr": "Un lanceur de sorts arcanique qui puise dans sa magie innée, lançant ses sorts spontanément sans préparation."
+    },
+    "tags": ["class", "base_class", "class_sorcerer", "arcane_caster", "spontaneous_caster", "spellcaster"],
+    "grantedModifiers": [
+      {
+        "id": "sorcerer_hit_die",
+        "sourceId": "class_sorcerer",
+        "sourceName": { "en": "Sorcerer", "fr": "Ensorceleur" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 4,
+        "type": "base"
+      },
+      {
+        "id": "sorcerer_skill_points",
+        "sourceId": "class_sorcerer",
+        "sourceName": { "en": "Sorcerer", "fr": "Ensorceleur" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": ["proficiency_weapons_simple"],
+    "classSkills": [
+      "skill_bluff",
+      "skill_concentration",
+      "skill_craft",
+      "skill_knowledge_arcana",
+      "skill_profession",
+      "skill_spellcraft"
+    ],
+    "recommendedAttributes": ["stat_cha", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_sorcerer_spellcasting",
+          "class_feature_sorcerer_familiar"
+        ],
+        "grantedModifiers": [
+          { "id": "sorc_1_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 1",  "fr": "Ensorceleur 1"  }, "targetId": "combatStats.bab",                "value": 0, "type": "base" },
+          { "id": "sorc_1_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 1",  "fr": "Ensorceleur 1"  }, "targetId": "saves.will",                    "value": 2, "type": "base" },
+          { "id": "sorc_1_slots_0", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 1",  "fr": "Ensorceleur 1"  }, "targetId": "resources.spell_slots_sorcerer_0", "value": 5, "type": "base" },
+          { "id": "sorc_1_slots_1", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 1",  "fr": "Ensorceleur 1"  }, "targetId": "resources.spell_slots_sorcerer_1", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_2_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 2",  "fr": "Ensorceleur 2"  }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_2_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 2",  "fr": "Ensorceleur 2"  }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_2_slots_0", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 2",  "fr": "Ensorceleur 2"  }, "targetId": "resources.spell_slots_sorcerer_0", "value": 1, "type": "base" },
+          { "id": "sorc_2_slots_1", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 2",  "fr": "Ensorceleur 2"  }, "targetId": "resources.spell_slots_sorcerer_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_3_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 3",  "fr": "Ensorceleur 3"  }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_3_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 3",  "fr": "Ensorceleur 3"  }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_3_slots_1", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 3",  "fr": "Ensorceleur 3"  }, "targetId": "resources.spell_slots_sorcerer_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_4_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 4",  "fr": "Ensorceleur 4"  }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_4_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 4",  "fr": "Ensorceleur 4"  }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_4_slots_1", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 4",  "fr": "Ensorceleur 4"  }, "targetId": "resources.spell_slots_sorcerer_1", "value": 1, "type": "base" },
+          { "id": "sorc_4_slots_2", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 4",  "fr": "Ensorceleur 4"  }, "targetId": "resources.spell_slots_sorcerer_2", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_5_slots_2", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 5",  "fr": "Ensorceleur 5"  }, "targetId": "resources.spell_slots_sorcerer_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_6_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_6_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_6_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_6_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_6_slots_2", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "resources.spell_slots_sorcerer_2", "value": 1, "type": "base" },
+          { "id": "sorc_6_slots_3", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 6",  "fr": "Ensorceleur 6"  }, "targetId": "resources.spell_slots_sorcerer_3", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_7_slots_2", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 7",  "fr": "Ensorceleur 7"  }, "targetId": "resources.spell_slots_sorcerer_2", "value": 1, "type": "base" },
+          { "id": "sorc_7_slots_3", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 7",  "fr": "Ensorceleur 7"  }, "targetId": "resources.spell_slots_sorcerer_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_8_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 8",  "fr": "Ensorceleur 8"  }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_8_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 8",  "fr": "Ensorceleur 8"  }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_8_slots_3", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 8",  "fr": "Ensorceleur 8"  }, "targetId": "resources.spell_slots_sorcerer_3", "value": 1, "type": "base" },
+          { "id": "sorc_8_slots_4", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 8",  "fr": "Ensorceleur 8"  }, "targetId": "resources.spell_slots_sorcerer_4", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_9_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 9",  "fr": "Ensorceleur 9"  }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_9_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 9",  "fr": "Ensorceleur 9"  }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_9_slots_3", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 9",  "fr": "Ensorceleur 9"  }, "targetId": "resources.spell_slots_sorcerer_3", "value": 1, "type": "base" },
+          { "id": "sorc_9_slots_4", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 9",  "fr": "Ensorceleur 9"  }, "targetId": "resources.spell_slots_sorcerer_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_10_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 10", "fr": "Ensorceleur 10" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_10_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 10", "fr": "Ensorceleur 10" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_10_slots_4", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 10", "fr": "Ensorceleur 10" }, "targetId": "resources.spell_slots_sorcerer_4", "value": 1, "type": "base" },
+          { "id": "sorc_10_slots_5", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 10", "fr": "Ensorceleur 10" }, "targetId": "resources.spell_slots_sorcerer_5", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_11_slots_4", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 11", "fr": "Ensorceleur 11" }, "targetId": "resources.spell_slots_sorcerer_4", "value": 1, "type": "base" },
+          { "id": "sorc_11_slots_5", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 11", "fr": "Ensorceleur 11" }, "targetId": "resources.spell_slots_sorcerer_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_12_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_12_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_12_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_12_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_12_slots_5", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "resources.spell_slots_sorcerer_5", "value": 1, "type": "base" },
+          { "id": "sorc_12_slots_6", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 12", "fr": "Ensorceleur 12" }, "targetId": "resources.spell_slots_sorcerer_6", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_13_slots_5", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 13", "fr": "Ensorceleur 13" }, "targetId": "resources.spell_slots_sorcerer_5", "value": 1, "type": "base" },
+          { "id": "sorc_13_slots_6", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 13", "fr": "Ensorceleur 13" }, "targetId": "resources.spell_slots_sorcerer_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_14_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 14", "fr": "Ensorceleur 14" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_14_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 14", "fr": "Ensorceleur 14" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_14_slots_6", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 14", "fr": "Ensorceleur 14" }, "targetId": "resources.spell_slots_sorcerer_6", "value": 1, "type": "base" },
+          { "id": "sorc_14_slots_7", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 14", "fr": "Ensorceleur 14" }, "targetId": "resources.spell_slots_sorcerer_7", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_15_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 15", "fr": "Ensorceleur 15" }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_15_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 15", "fr": "Ensorceleur 15" }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_15_slots_6", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 15", "fr": "Ensorceleur 15" }, "targetId": "resources.spell_slots_sorcerer_6", "value": 1, "type": "base" },
+          { "id": "sorc_15_slots_7", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 15", "fr": "Ensorceleur 15" }, "targetId": "resources.spell_slots_sorcerer_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_16_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 16", "fr": "Ensorceleur 16" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_16_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 16", "fr": "Ensorceleur 16" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_16_slots_7", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 16", "fr": "Ensorceleur 16" }, "targetId": "resources.spell_slots_sorcerer_7", "value": 1, "type": "base" },
+          { "id": "sorc_16_slots_8", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 16", "fr": "Ensorceleur 16" }, "targetId": "resources.spell_slots_sorcerer_8", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_17_slots_7", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 17", "fr": "Ensorceleur 17" }, "targetId": "resources.spell_slots_sorcerer_7", "value": 1, "type": "base" },
+          { "id": "sorc_17_slots_8", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 17", "fr": "Ensorceleur 17" }, "targetId": "resources.spell_slots_sorcerer_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_18_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_18_fort",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "saves.fortitude",               "value": 1, "type": "base" },
+          { "id": "sorc_18_ref",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "saves.reflex",                  "value": 1, "type": "base" },
+          { "id": "sorc_18_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_18_slots_8", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "resources.spell_slots_sorcerer_8", "value": 1, "type": "base" },
+          { "id": "sorc_18_slots_9", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 18", "fr": "Ensorceleur 18" }, "targetId": "resources.spell_slots_sorcerer_9", "value": 3, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_19_slots_8", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 19", "fr": "Ensorceleur 19" }, "targetId": "resources.spell_slots_sorcerer_8", "value": 1, "type": "base" },
+          { "id": "sorc_19_slots_9", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 19", "fr": "Ensorceleur 19" }, "targetId": "resources.spell_slots_sorcerer_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "sorc_20_bab",     "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 20", "fr": "Ensorceleur 20" }, "targetId": "combatStats.bab",                "value": 1, "type": "base" },
+          { "id": "sorc_20_will",    "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 20", "fr": "Ensorceleur 20" }, "targetId": "saves.will",                    "value": 1, "type": "base" },
+          { "id": "sorc_20_slots_9", "sourceId": "class_sorcerer", "sourceName": { "en": "Sorcerer 20", "fr": "Ensorceleur 20" }, "targetId": "resources.spell_slots_sorcerer_9", "value": 2, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_wizard",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wizard", "fr": "Magicien" },
+    "description": {
+      "en": "An arcane spellcaster of supreme intellect who prepares spells from a spellbook and can specialize in a school of magic.",
+      "fr": "Un lanceur de sorts arcanique d'une intelligence suprême qui prépare ses sorts depuis un grimoire et peut se spécialiser dans une école de magie."
+    },
+    "tags": ["class", "base_class", "class_wizard", "arcane_caster", "prepared_caster", "spellcaster"],
+    "grantedModifiers": [
+      {
+        "id": "wizard_hit_die",
+        "sourceId": "class_wizard",
+        "sourceName": { "en": "Wizard", "fr": "Magicien" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 4,
+        "type": "base"
+      },
+      {
+        "id": "wizard_skill_points",
+        "sourceId": "class_wizard",
+        "sourceName": { "en": "Wizard", "fr": "Magicien" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_weapons_simple",
+      "proficiency_club",
+      "proficiency_dagger",
+      "proficiency_heavy_crossbow",
+      "proficiency_light_crossbow",
+      "proficiency_quarterstaff"
+    ],
+    "classSkills": [
+      "skill_concentration",
+      "skill_craft",
+      "skill_decipher_script",
+      "skill_knowledge_arcana",
+      "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering",
+      "skill_knowledge_geography",
+      "skill_knowledge_history",
+      "skill_knowledge_local",
+      "skill_knowledge_nature",
+      "skill_knowledge_nobility",
+      "skill_knowledge_planes",
+      "skill_knowledge_religion",
+      "skill_profession",
+      "skill_spellcraft"
+    ],
+    "choices": [
+      {
+        "choiceId": "arcane_school",
+        "label": { "en": "Arcane School (optional)", "fr": "École arcanique (optionnel)" },
+        "optionsQuery": "tag:arcane_school",
+        "maxSelections": 1
+      }
+    ],
+    "recommendedAttributes": ["stat_int", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_wizard_spellcasting",
+          "class_feature_wizard_familiar",
+          "class_feature_wizard_scribe_scroll"
+        ],
+        "grantedModifiers": [
+          { "id": "wiz_1_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 1",  "fr": "Magicien 1"  }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "wiz_1_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 1",  "fr": "Magicien 1"  }, "targetId": "saves.will",                   "value": 2, "type": "base" },
+          { "id": "wiz_1_slots_0", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 1",  "fr": "Magicien 1"  }, "targetId": "resources.spell_slots_wizard_0", "value": 3, "type": "base" },
+          { "id": "wiz_1_slots_1", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 1",  "fr": "Magicien 1"  }, "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_2_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 2",  "fr": "Magicien 2"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_2_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 2",  "fr": "Magicien 2"  }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_2_slots_0", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 2",  "fr": "Magicien 2"  }, "targetId": "resources.spell_slots_wizard_0", "value": 1, "type": "base" },
+          { "id": "wiz_2_slots_1", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 2",  "fr": "Magicien 2"  }, "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_3_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 3",  "fr": "Magicien 3"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_3_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 3",  "fr": "Magicien 3"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_3_slots_2", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 3",  "fr": "Magicien 3"  }, "targetId": "resources.spell_slots_wizard_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_4_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 4",  "fr": "Magicien 4"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_4_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 4",  "fr": "Magicien 4"  }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_4_slots_1", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 4",  "fr": "Magicien 4"  }, "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" },
+          { "id": "wiz_4_slots_2", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 4",  "fr": "Magicien 4"  }, "targetId": "resources.spell_slots_wizard_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_wizard_bonus_feat_1"],
+        "grantedModifiers": [
+          { "id": "wiz_5_slots_3", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 5",  "fr": "Magicien 5"  }, "targetId": "resources.spell_slots_wizard_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_6_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_6_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_6_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_6_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_6_slots_2", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "resources.spell_slots_wizard_2", "value": 1, "type": "base" },
+          { "id": "wiz_6_slots_3", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 6",  "fr": "Magicien 6"  }, "targetId": "resources.spell_slots_wizard_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_7_slots_1", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 7",  "fr": "Magicien 7"  }, "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" },
+          { "id": "wiz_7_slots_4", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 7",  "fr": "Magicien 7"  }, "targetId": "resources.spell_slots_wizard_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_8_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 8",  "fr": "Magicien 8"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_8_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 8",  "fr": "Magicien 8"  }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_8_slots_3", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 8",  "fr": "Magicien 8"  }, "targetId": "resources.spell_slots_wizard_3", "value": 1, "type": "base" },
+          { "id": "wiz_8_slots_4", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 8",  "fr": "Magicien 8"  }, "targetId": "resources.spell_slots_wizard_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_9_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 9",  "fr": "Magicien 9"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_9_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 9",  "fr": "Magicien 9"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_9_slots_2", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 9",  "fr": "Magicien 9"  }, "targetId": "resources.spell_slots_wizard_2", "value": 1, "type": "base" },
+          { "id": "wiz_9_slots_5", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 9",  "fr": "Magicien 9"  }, "targetId": "resources.spell_slots_wizard_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_wizard_bonus_feat_2"],
+        "grantedModifiers": [
+          { "id": "wiz_10_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 10", "fr": "Magicien 10" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_10_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 10", "fr": "Magicien 10" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_10_slots_4", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 10", "fr": "Magicien 10" }, "targetId": "resources.spell_slots_wizard_4", "value": 1, "type": "base" },
+          { "id": "wiz_10_slots_5", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 10", "fr": "Magicien 10" }, "targetId": "resources.spell_slots_wizard_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_11_slots_3", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 11", "fr": "Magicien 11" }, "targetId": "resources.spell_slots_wizard_3", "value": 1, "type": "base" },
+          { "id": "wiz_11_slots_6", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 11", "fr": "Magicien 11" }, "targetId": "resources.spell_slots_wizard_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_12_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_12_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_12_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_12_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_12_slots_5", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "resources.spell_slots_wizard_5", "value": 1, "type": "base" },
+          { "id": "wiz_12_slots_6", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 12", "fr": "Magicien 12" }, "targetId": "resources.spell_slots_wizard_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_13_slots_4", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 13", "fr": "Magicien 13" }, "targetId": "resources.spell_slots_wizard_4", "value": 1, "type": "base" },
+          { "id": "wiz_13_slots_7", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 13", "fr": "Magicien 13" }, "targetId": "resources.spell_slots_wizard_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_14_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 14", "fr": "Magicien 14" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_14_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 14", "fr": "Magicien 14" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_14_slots_6", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 14", "fr": "Magicien 14" }, "targetId": "resources.spell_slots_wizard_6", "value": 1, "type": "base" },
+          { "id": "wiz_14_slots_7", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 14", "fr": "Magicien 14" }, "targetId": "resources.spell_slots_wizard_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": ["class_feature_wizard_bonus_feat_3"],
+        "grantedModifiers": [
+          { "id": "wiz_15_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 15", "fr": "Magicien 15" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_15_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 15", "fr": "Magicien 15" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_15_slots_5", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 15", "fr": "Magicien 15" }, "targetId": "resources.spell_slots_wizard_5", "value": 1, "type": "base" },
+          { "id": "wiz_15_slots_8", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 15", "fr": "Magicien 15" }, "targetId": "resources.spell_slots_wizard_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_16_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 16", "fr": "Magicien 16" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_16_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 16", "fr": "Magicien 16" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_16_slots_7", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 16", "fr": "Magicien 16" }, "targetId": "resources.spell_slots_wizard_7", "value": 1, "type": "base" },
+          { "id": "wiz_16_slots_8", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 16", "fr": "Magicien 16" }, "targetId": "resources.spell_slots_wizard_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_17_slots_6", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 17", "fr": "Magicien 17" }, "targetId": "resources.spell_slots_wizard_6", "value": 1, "type": "base" },
+          { "id": "wiz_17_slots_9", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 17", "fr": "Magicien 17" }, "targetId": "resources.spell_slots_wizard_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_18_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_18_fort",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "wiz_18_ref",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "wiz_18_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_18_slots_8", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "resources.spell_slots_wizard_8", "value": 1, "type": "base" },
+          { "id": "wiz_18_slots_9", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 18", "fr": "Magicien 18" }, "targetId": "resources.spell_slots_wizard_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "wiz_19_slots_7", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 19", "fr": "Magicien 19" }, "targetId": "resources.spell_slots_wizard_7", "value": 1, "type": "base" },
+          { "id": "wiz_19_slots_9", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 19", "fr": "Magicien 19" }, "targetId": "resources.spell_slots_wizard_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": ["class_feature_wizard_bonus_feat_4"],
+        "grantedModifiers": [
+          { "id": "wiz_20_bab",     "sourceId": "class_wizard", "sourceName": { "en": "Wizard 20", "fr": "Magicien 20" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "wiz_20_will",    "sourceId": "class_wizard", "sourceName": { "en": "Wizard 20", "fr": "Magicien 20" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "wiz_20_slots_8", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 20", "fr": "Magicien 20" }, "targetId": "resources.spell_slots_wizard_8", "value": 1, "type": "base" },
+          { "id": "wiz_20_slots_9", "sourceId": "class_wizard", "sourceName": { "en": "Wizard 20", "fr": "Magicien 20" }, "targetId": "resources.spell_slots_wizard_9", "value": 1, "type": "base" }
+        ]
+      }
+    ]
   }
 ]

@@ -705,6 +705,42 @@
   },
 
   {
+    "id": "class_feature_sorcerer_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Spellcasting (Sorcerer)", "fr": "Incantation arcanique (Ensorceleur)" },
+    "description": {
+      "en": "A sorcerer casts arcane spells drawn from the sorcerer/wizard spell list (spontaneous caster). He can cast any spell he knows without preparing it. To cast a spell he needs a Charisma score of at least 10 + spell level. Save DCs are 10 + spell level + Charisma modifier. The sorcerer knows a limited number of spells (see spells known table). Every sorcerer spell has verbal and somatic components; armor may cause arcane spell failure. Spell slots per day are tracked in resources.spell_slots_sorcerer_0 through resources.spell_slots_sorcerer_9.",
+      "fr": "Un ensorceleur lance des sorts arcaniques tirés de la liste de sorts ensorceleur/magicien (lanceur spontané). Il peut lancer n'importe quel sort qu'il connaît sans le préparer. Pour lancer un sort, il doit avoir un Charisme d'au moins 10 + le niveau du sort. Les DD sont 10 + niveau du sort + modificateur de Charisme. L'ensorceleur connaît un nombre limité de sorts. Chaque sort d'ensorceleur a des composantes verbales et somatiques ; les armures peuvent provoquer une échec d'incantation arcanique."
+    },
+    "tags": ["class_feature", "sorcerer", "arcane_spellcasting", "spontaneous_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_sorcerer_familiar",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Familiar", "fr": "Familier" },
+    "description": {
+      "en": "A sorcerer can obtain a familiar by performing a ritual costing 100 gp. A familiar is a magical beast that improves the sorcerer's abilities. The familiar uses the sorcerer's base save bonuses if they are better than the familiar's own. If the familiar is killed the sorcerer cannot summon a new one for a year and a day.",
+      "fr": "Un ensorceleur peut obtenir un familier en accomplissant un rituel coûtant 100 po. Un familier est une créature magique qui améliore les capacités de l'ensorceleur. Le familier utilise les jets de sauvegarde de base de l'ensorceleur s'ils sont supérieurs aux siens. Si le familier est tué, l'ensorceleur ne peut pas en invoquer un nouveau pendant un an et un jour."
+    },
+    "tags": ["class_feature", "sorcerer", "familiar"],
+    "choices": [
+      {
+        "choiceId": "sorcerer_familiar_choice",
+        "label": { "en": "Familiar", "fr": "Familier" },
+        "optionsQuery": "tag:familiar_creature",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
     "id": "class_feature_rogue_sneak_attack_1d6",
     "category": "class_feature",
     "ruleSource": "srd_core",
