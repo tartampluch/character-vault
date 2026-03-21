@@ -1,0 +1,478 @@
+/**
+ * @file src/app.css
+ * @description Global styles entry point for Character Vault — also serves as the
+ *              Tailwind CSS v4 configuration file (equivalent to tailwind.config.ts
+ *              in Tailwind v3; v4 uses CSS-based configuration instead).
+ *
+ * FILE STRUCTURE:
+ *   1. Tailwind CSS v4 import — injects all base, component, and utility styles
+ *   2. Dark mode variant — class-based strategy controlled by ThemeManager (Phase 19.2)
+ *   3. @theme inline — semantic color tokens backed by CSS variables (runtime-aware)
+ *   4. :root — light theme CSS variable values
+ *   5. .dark — dark theme overrides applied when <html> carries the 'dark' class
+ *   6. @layer base — global HTML resets, focus rings, scrollbars, motion preferences
+ *   7. @layer components — reusable design system patterns (cards, buttons, inputs, badges)
+ *
+ * WHY @theme inline?
+ *   Standard `@theme` bakes values at build time (static). `@theme inline` defers
+ *   value resolution to runtime by making generated utilities reference CSS custom
+ *   properties directly (e.g. `background-color: var(--theme-surface)`). This is
+ *   mandatory for a dynamic light/dark switcher powered by class toggling: when
+ *   ThemeManager adds/removes `dark` on <html>, the CSS variable values update and
+ *   every utility using those tokens updates with zero JavaScript overhead.
+ *
+ * COLOR PALETTE DECISION (locked in by Phase 19 spec):
+ *   Replace legacy raw purple (#7c3aed) with Tailwind's `indigo` scale as the
+ *   primary accent. Indigo reads as more refined and less saturated at large screen
+ *   sizes, making it a better fit for a tabletop RPG tool used in long sessions.
+ *
+ * SEMANTIC COLOR TOKEN NAMES (CSS variables → Tailwind utilities):
+ *   --color-accent       → bg-accent / text-accent / border-accent
+ *   --color-accent-{n}   → bg-accent-500 / text-accent-500 / etc.
+ *   --color-surface      → bg-surface (primary panel/page background)
+ *   --color-surface-alt  → bg-surface-alt (inputs, alternate rows, sub-panels)
+ *   --color-border       → border-border (default border/divider color)
+ *   --color-text-primary    → text-text-primary    (body text, high contrast)
+ *   --color-text-secondary  → text-text-secondary  (labels, secondary info)
+ *   --color-text-muted      → text-text-muted      (hints, timestamps, metadata)
+ *
+ * RESPONSIVE BREAKPOINTS (Tailwind v4 defaults — match spec requirements exactly):
+ *   sm 640px | md 768px | lg 1024px | xl 1280px | 2xl 1536px
+ *   No custom breakpoint configuration required.
+ *
+ * TAILWIND v4 @apply RULES:
+ *   @apply can only reference built-in utility classes and variant-prefixed utilities.
+ *   It CANNOT reference custom component class names (no `@apply btn` inside
+ *   `.btn-primary`). To share styles across component variants, we use CSS selector
+ *   grouping: `.btn, .btn-primary, .btn-secondary { @apply shared-styles; }`.
+ */
+
+/* =============================================================================
+   1. TAILWIND CSS v4 IMPORT
+   Injects Tailwind's Preflight (CSS reset), default theme variables, and all
+   utility classes generated from the @theme definitions below.
+   ============================================================================= */
+@import "tailwindcss";
+
+/* =============================================================================
+   2. DARK MODE VARIANT — CLASS-BASED STRATEGY
+   Override the default `dark:` variant (which responds to `prefers-color-scheme`)
+   to instead activate when any ancestor element (including <html>) carries the
+   `.dark` CSS class. ThemeManager.svelte.ts (Phase 19.2) manages this class:
+     - 'system' mode: JS reads prefers-color-scheme and adds/removes .dark on <html>
+     - 'light' mode:  removes .dark class from <html>
+     - 'dark' mode:   adds .dark class to <html>
+   The `&:where(.dark, .dark *)` selector means:
+     - Match when the element itself has the `.dark` class, OR
+     - Match when any ancestor has the `.dark` class (covers all descendants of <html>)
+   ============================================================================= */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =============================================================================
+   3. SEMANTIC COLOR TOKENS  (@theme inline — runtime CSS variable references)
+   `@theme inline` defers value resolution to the browser's CSS variable engine
+   at runtime. Generated utilities (bg-surface, text-text-primary, etc.) use
+   `var(--theme-*)` as their color value, so they update automatically when
+   the .dark class is toggled — no JavaScript needed beyond the class change.
+
+   ACCENT SCALE — aliased to Tailwind's built-in indigo palette.
+   Tailwind v4 emits all default palette colors as CSS custom properties
+   (e.g. --color-indigo-600), making `var(--color-indigo-600)` always resolvable.
+   Aliasing through this layer lets us swap the full accent palette by editing
+   only this block; all component files using `accent-*` utilities update free.
+   ============================================================================= */
+@theme inline {
+	/* --- Accent Color Scale (indigo-based, replaces legacy raw purple) --- */
+	/* Utilities: bg-accent-{n}, text-accent-{n}, border-accent-{n}, ring-accent-{n} */
+	--color-accent-50:  var(--color-indigo-50);
+	--color-accent-100: var(--color-indigo-100);
+	--color-accent-200: var(--color-indigo-200);
+	--color-accent-300: var(--color-indigo-300);
+	--color-accent-400: var(--color-indigo-400);
+	--color-accent-500: var(--color-indigo-500);
+	--color-accent-600: var(--color-indigo-600);
+	--color-accent-700: var(--color-indigo-700);
+	--color-accent-800: var(--color-indigo-800);
+	--color-accent-900: var(--color-indigo-900);
+	--color-accent-950: var(--color-indigo-950);
+
+	/**
+	 * Plain `accent` token (no numeric suffix):
+	 *   - Light mode → indigo-600 (dark on white, strong AA contrast)
+	 *   - Dark mode  → indigo-400 (lighter, readable on dark surfaces)
+	 * --theme-accent is overridden in .dark {} below.
+	 * Usage: bg-accent, text-accent, ring-accent, border-accent
+	 */
+	--color-accent: var(--theme-accent);
+
+	/* --- Semantic Surface / Border / Text Tokens --- */
+	/* Writing bg-surface, border-border, text-text-primary across all components
+	   avoids hardcoded color values. Theme switching is a single CSS variable swap. */
+	--color-surface:         var(--theme-surface);
+	--color-surface-alt:     var(--theme-surface-alt);
+	--color-border:          var(--theme-border);
+	--color-text-primary:    var(--theme-text-primary);
+	--color-text-secondary:  var(--theme-text-secondary);
+	--color-text-muted:      var(--theme-text-muted);
+}
+
+/* =============================================================================
+   4. LIGHT THEME  (:root defaults)
+   Concrete CSS custom property values for the light color scheme, consumed by
+   the @theme inline block above. OKLCH is used for perceptually uniform color:
+   neutral grays have chroma ≈ 0, while surface/accent carry a subtle indigo-cool
+   undertone (hue ~264°) to tie the palette together visually.
+   ============================================================================= */
+:root {
+	color-scheme: light;
+
+	/* Accent: indigo-600 — solid contrast on white backgrounds */
+	--theme-accent: var(--color-indigo-600);
+
+	/* Page/panel backgrounds */
+	--theme-surface:     oklch(100% 0 0);             /* #ffffff — primary surface     */
+	--theme-surface-alt: oklch(97.3% 0.003 264);      /* ≈ gray-50 w/ tint — inputs    */
+
+	/* Borders */
+	--theme-border:      oklch(90.4% 0.006 264);      /* ≈ gray-200                    */
+
+	/* Text (descending contrast) */
+	--theme-text-primary:   oklch(9% 0.005 264);      /* near-black — body/headings    */
+	--theme-text-secondary: oklch(32% 0.008 264);     /* ≈ gray-700 — labels           */
+	--theme-text-muted:     oklch(55% 0.010 264);     /* ≈ gray-500 — hints/meta       */
+}
+
+/* =============================================================================
+   5. DARK THEME  (.dark overrides)
+   Applied when ThemeManager sets class="dark" on <html>. Every component using
+   semantic tokens updates automatically — no per-component dark overrides needed
+   for basic structural colors. The indigo tint (hue ~264°) in dark surfaces
+   creates a cohesive RPG atmosphere: deep blue-black, not flat charcoal.
+   ============================================================================= */
+.dark {
+	color-scheme: dark;
+
+	/* Accent: indigo-400 — readable on dark backgrounds */
+	--theme-accent: var(--color-indigo-400);
+
+	/* Deep indigo-tinted surfaces */
+	--theme-surface:     oklch(13% 0.012 264);        /* ≈ slate-950 w/ tint           */
+	--theme-surface-alt: oklch(18% 0.012 264);        /* ≈ slate-900 w/ tint — inputs  */
+
+	/* Subdued but visible borders */
+	--theme-border:      oklch(30% 0.012 264);        /* ≈ slate-700                   */
+
+	/* Light text on dark surfaces */
+	--theme-text-primary:   oklch(97% 0.003 264);     /* near-white                    */
+	--theme-text-secondary: oklch(76% 0.008 264);     /* ≈ slate-300                   */
+	--theme-text-muted:     oklch(56% 0.010 264);     /* ≈ slate-500                   */
+}
+
+/* =============================================================================
+   6. BASE LAYER — Global HTML resets and sensible defaults
+   Rules here have lower specificity than component and utility classes, so they
+   serve only as fallbacks and can always be overridden.
+   ============================================================================= */
+@layer base {
+	/**
+	 * Root defaults: apply semantic surface/text tokens so every page starts with
+	 * the correct background and text color without each route adding these classes.
+	 */
+	html {
+		@apply bg-surface text-text-primary;
+		/* Smooth scroll for in-page anchor navigation */
+		scroll-behavior: smooth;
+	}
+
+	/**
+	 * SCROLLBAR STYLES:
+	 *   Desktop (pointer: fine — mouse): thin scrollbar matching border color.
+	 *   Touch  (pointer: coarse — finger): hidden scrollbar for a cleaner UI;
+	 *   the user can still scroll, scrollbars just don't clutter the canvas.
+	 */
+	@media (pointer: fine) {
+		* {
+			scrollbar-width: thin;
+			scrollbar-color: var(--theme-border) transparent;
+		}
+	}
+	@media (pointer: coarse) {
+		* { scrollbar-width: none; }
+		*::-webkit-scrollbar { display: none; }
+	}
+
+	/**
+	 * FOCUS RING STRATEGY:
+	 *   Keyboard users → visible accent ring via :focus-visible.
+	 *   Mouse users → ring suppressed via :focus:not(:focus-visible) to avoid
+	 *   the visual noise of a ring appearing every time a button is clicked.
+	 *   ring-accent/50 applies the accent color at 50% opacity (color-mix).
+	 *   ring-offset-surface creates the gap in the page background color.
+	 */
+	*:focus-visible {
+		@apply outline-none ring-2 ring-accent/50 ring-offset-2 ring-offset-surface;
+	}
+	*:focus:not(:focus-visible) {
+		@apply outline-none;
+	}
+
+	/**
+	 * REDUCED MOTION:
+	 *   For users with "Reduce Motion" enabled in OS accessibility settings
+	 *   (vestibular disorders, epilepsy), all transitions and animations are
+	 *   collapsed to near-instant. The !important overrides any inline duration
+	 *   set by component animations.
+	 */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
+}
+
+/* =============================================================================
+   7. COMPONENT LAYER — Reusable design system patterns
+   These classes encode frequently-used compound utility combinations into a
+   single semantic class, reducing template noise and ensuring visual consistency.
+
+   TAILWIND v4 CONSTRAINT: `@apply` inside @layer components can only reference
+   built-in utility classes. It cannot reference other component class names
+   (e.g. `@apply btn` inside `.btn-primary` is forbidden). To share a base style
+   across multiple variants, we use CSS SELECTOR GROUPING instead:
+     .btn, .btn-primary, .btn-secondary { @apply shared-utilities; }
+     .btn-primary { @apply variant-specific-utilities; }
+   ============================================================================= */
+@layer components {
+
+	/* -------------------------------------------------------------------------
+	   CARDS / PANELS
+	   The fundamental surface container wrapping all content sections.
+	   Usage: <div class="card"> ... </div>
+	   ------------------------------------------------------------------------- */
+	.card {
+		@apply bg-surface rounded-lg border border-border shadow-sm;
+	}
+
+	/* -------------------------------------------------------------------------
+	   BUTTONS
+	   Shared base styles are applied to ALL button selectors via grouping.
+	   Each variant then adds only its color-specific overrides.
+
+	   Touch target requirement (WCAG 2.1 §2.5.5, Phase 19.13 spec):
+	     On coarse-pointer (touch) devices, all interactive elements must be
+	     at least 44px tall to be reliably tappable.
+	   ------------------------------------------------------------------------- */
+
+	/* Base styles shared across all button variants (selector grouping) */
+	.btn,
+	.btn-primary,
+	.btn-secondary,
+	.btn-danger,
+	.btn-ghost,
+	.btn-icon {
+		@apply inline-flex items-center justify-center gap-1.5
+		       rounded-md px-3 py-2 text-sm font-medium
+		       transition-colors duration-150 cursor-pointer
+		       disabled:opacity-50 disabled:cursor-not-allowed
+		       focus-visible:outline-none;
+	}
+
+	/** Primary — accent fill, white text. Primary call-to-action. */
+	.btn-primary {
+		@apply bg-accent text-white hover:bg-accent-700 active:bg-accent-800;
+	}
+
+	/** Secondary — bordered surface button. Secondary actions. */
+	.btn-secondary {
+		@apply bg-surface-alt border border-border text-text-primary
+		       hover:bg-surface;
+	}
+
+	/** Danger — red fill. Destructive operations (delete, apply damage). */
+	.btn-danger {
+		@apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
+	}
+
+	/** Ghost — invisible until hovered. Tertiary and icon-adjacent actions. */
+	.btn-ghost {
+		@apply text-text-secondary hover:bg-surface-alt hover:text-text-primary;
+	}
+
+	/**
+	 * Icon — square aspect-ratio button (icon only, no text label).
+	 * Override padding to be equal on all sides; aspect-ratio enforces square.
+	 */
+	.btn-icon {
+		@apply p-2;
+		aspect-ratio: 1;
+	}
+
+	/** Touch sizing: coarse-pointer devices need at least 44px tall targets. */
+	@media (pointer: coarse) {
+		.btn,
+		.btn-primary,
+		.btn-secondary,
+		.btn-danger,
+		.btn-ghost {
+			@apply min-h-[44px];
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	   FORM INPUTS
+	   Shared base styles across .input, .select, .textarea via selector grouping.
+	   Each variant then adds its specific override (cursor, resize, min-height).
+	   ------------------------------------------------------------------------- */
+
+	/* Shared base — see TAILWIND v4 CONSTRAINT note above for why we group */
+	.input,
+	.select,
+	.textarea {
+		@apply w-full bg-surface border border-border rounded-md px-3 py-2
+		       text-sm text-text-primary placeholder:text-text-muted
+		       transition-colors duration-150
+		       focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent
+		       disabled:opacity-50 disabled:cursor-not-allowed;
+	}
+
+	/** Select: pointer cursor, otherwise identical to .input */
+	.select {
+		@apply cursor-pointer;
+	}
+
+	/** Textarea: vertically resizable, comfortable minimum height */
+	.textarea {
+		@apply resize-y;
+		min-height: 80px;
+	}
+
+	/** Touch sizing: inputs must be at least 44px tall on touch devices */
+	@media (pointer: coarse) {
+		.input,
+		.select {
+			@apply min-h-[44px];
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	   BADGES / PILLS
+	   Small inline indicators for tags, sources, modifier types, prerequisites.
+	   Shared base via selector grouping; each variant adds color overrides.
+	   Dark mode colors are applied via the `dark:` variant prefix in @apply,
+	   which generates the correct .dark-ancestor selector automatically thanks
+	   to the @custom-variant dark configuration above.
+
+	   Variants:
+	     badge-accent  — selected feature, active filter, current item
+	     badge-green   — met prerequisite, positive modifier, success state
+	     badge-red     — failed prerequisite, error, forbidden
+	     badge-yellow  — warning, partial, situational
+	     badge-gray    — neutral tag, disabled, informational
+	   ------------------------------------------------------------------------- */
+
+	/* Shared base — all badge variants */
+	.badge,
+	.badge-accent,
+	.badge-green,
+	.badge-red,
+	.badge-yellow,
+	.badge-gray {
+		@apply inline-flex items-center gap-1
+		       px-2 py-0.5 rounded-full text-xs font-medium;
+	}
+
+	.badge-accent {
+		@apply bg-accent-100 text-accent-800
+		       dark:bg-accent-900 dark:text-accent-300;
+	}
+
+	.badge-green {
+		@apply bg-green-100 text-green-800
+		       dark:bg-green-900 dark:text-green-300;
+	}
+
+	.badge-red {
+		@apply bg-red-100 text-red-800
+		       dark:bg-red-900 dark:text-red-300;
+	}
+
+	.badge-yellow {
+		@apply bg-yellow-100 text-yellow-800
+		       dark:bg-yellow-900 dark:text-yellow-300;
+	}
+
+	/** badge-gray uses semantic tokens — auto-themes without explicit dark: override */
+	.badge-gray {
+		@apply bg-surface-alt text-text-secondary border border-border;
+	}
+
+	/* -------------------------------------------------------------------------
+	   SECTION HEADERS
+	   Consistent heading pattern used above every content section.
+	   Always: Lucide icon (20px, by convention in the template) + label text
+	   (uppercase, small-caps tracking, muted color) + optional right-aligned actions.
+
+	   Usage:
+	     <div class="section-header">
+	       <SomeIcon size={20} />
+	       <span>Section Title</span>
+	       <div class="ml-auto"><!-- right-aligned actions --></div>
+	     </div>
+	   ------------------------------------------------------------------------- */
+	.section-header {
+		@apply flex items-center gap-2
+		       text-sm font-semibold uppercase tracking-wider text-text-muted;
+	}
+
+	/* -------------------------------------------------------------------------
+	   DATA TABLE WRAPPER
+	   Provides horizontal overflow scrolling for dense tabular data (skills
+	   matrix, feats with many columns, etc.) without affecting page scroll.
+	   The first column can be pinned in templates via `sticky left-0 bg-surface z-10`.
+
+	   Usage: <div class="table-scroll-wrap"><table>...</table></div>
+	   ------------------------------------------------------------------------- */
+	.table-scroll-wrap {
+		@apply w-full overflow-x-auto;
+		/* Thin scrollbar to signal scrollability without consuming layout space */
+		scrollbar-width: thin;
+		scrollbar-color: var(--theme-border) transparent;
+	}
+
+	/* -------------------------------------------------------------------------
+	   STAT BLOCK
+	   Compact, self-contained widget for a single numeric statistic (AC, BAB,
+	   save bonus, ability score). Designed for use in responsive grid layouts.
+	   Sub-elements: .stat-label (uppercase short name), .stat-value (large
+	   number), .stat-modifier (derived bonus, e.g. "+3").
+
+	   Usage:
+	     <div class="stat-block">
+	       <span class="stat-label">STR</span>
+	       <span class="stat-value">18</span>
+	       <span class="stat-modifier">+4</span>
+	     </div>
+	   ------------------------------------------------------------------------- */
+	.stat-block {
+		@apply flex flex-col items-center justify-center
+		       rounded-lg border border-border bg-surface-alt
+		       p-2 gap-0.5;
+	}
+
+	.stat-label {
+		@apply text-xs font-semibold uppercase tracking-wider text-text-muted;
+	}
+
+	.stat-value {
+		@apply text-2xl font-bold text-text-primary leading-none;
+	}
+
+	.stat-modifier {
+		@apply text-sm font-medium text-text-secondary;
+	}
+}
