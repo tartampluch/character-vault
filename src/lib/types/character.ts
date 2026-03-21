@@ -118,6 +118,23 @@ export interface ActiveFeatureInstance {
    * These selections are referenced by conditional modifiers via `@selection.<choiceId>`.
    */
   selections?: Record<ID, string[]>;
+
+  /**
+   * Whether this item is stashed in remote storage (wagon, home, bank vault).
+   *
+   * Architecture §13.2 defines THREE inventory sections:
+   *   1. Equipped (isActive: true)      — contributes modifiers + weight
+   *   2. Backpack (isActive: false, !isStashed) — weight only
+   *   3. Storage  (isStashed: true)     — neither modifiers nor weight
+   *
+   * WHY SEPARATE FROM isActive:
+   *   isActive controls whether modifiers are applied to the DAG.
+   *   isStashed controls whether the item counts toward carried weight.
+   *   A stashed item is always isActive=false, but not all isActive=false items are stashed.
+   *
+   * Default: undefined/false (item is in backpack, not stashed).
+   */
+  isStashed?: boolean;
 }
 
 // =============================================================================

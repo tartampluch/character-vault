@@ -167,7 +167,8 @@
           {#if selectedChar.isNPC}
             <span class="badge-red text-xs">NPC</span>
           {:else}
-            <span class="badge-gray text-xs" style="color: oklch(70% 0.14 220); border-color: oklch(40% 0.10 220)40;">PC</span>
+            <!-- PC badge: sky-blue tint using Tailwind classes instead of inline oklch -->
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full border bg-sky-900/20 text-sky-400 border-sky-700/40">PC</span>
           {/if}
         </div>
 
@@ -201,7 +202,8 @@
 
         <!-- Per-character override editor -->
         <section class="card p-4 flex flex-col gap-3">
-          <div class="section-header text-sm border-b border-border pb-2" style="color: oklch(65% 0.20 28);">
+          <!-- GM Override header in red-orange accent using Tailwind instead of inline oklch -->
+          <div class="section-header text-sm border-b border-border pb-2 text-red-400">
             <IconGMDashboard size={16} aria-hidden="true" />
             <span>Per-Character GM Overrides</span>
           </div>

@@ -60,7 +60,7 @@
                      MovementSpeeds, Resistances, DamageReduction
     - Feats tab:     FeatsTab
     - Magic tab:     CastingPanel, Grimoire, SpecialAbilities
-    - Inventory tab: InventoryTab, Encumbrance
+    - Inventory tab: InventoryTab (which internally includes Encumbrance)
 -->
 
 <script lang="ts">
@@ -100,7 +100,7 @@
 
   // ── Inventory tab components (Phase 13) ───────────────────────────────────
   import InventoryTab          from '$lib/components/inventory/InventoryTab.svelte';
-  import Encumbrance           from '$lib/components/inventory/Encumbrance.svelte';
+  // NOTE: Encumbrance is rendered internally by InventoryTab — do NOT import it separately here.
 
   // ── Lucide icons ───────────────────────────────────────────────────────────
   import {
@@ -280,9 +280,14 @@
        `overflow-x-auto scrollbar-none` — tabs scroll horizontally on narrow
          screens instead of wrapping or overflowing the layout.
   ========================================================================= -->
+  <!--
+    Tab bar: `scroll-snap-type: x mandatory` with `scroll-snap-align: start` on
+    each button allows the user to swipe between tabs on mobile. The bar itself
+    scrolls horizontally so all 6 tabs are reachable on small screens (320px).
+  -->
   <div
     class="shrink-0 flex overflow-x-auto bg-surface border-b border-border"
-    style="scrollbar-width: none;"
+    style="scrollbar-width: none; scroll-snap-type: x mandatory;"
     aria-label="Character sheet sections"
     role="tablist"
   >
@@ -301,7 +306,7 @@
         class="
           flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium
           border-b-2 whitespace-nowrap transition-colors duration-150
-          min-h-[40px]
+          min-h-[40px] snap-start
           {activeTab === tab.key
             ? 'border-accent text-accent bg-accent/5'
             : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-alt'}
@@ -434,13 +439,12 @@
 
     <!-- -----------------------------------------------------------------------
          INVENTORY TAB (Phase 13)
-         InventoryTab (equipped/backpack/storage) + Encumbrance calculator.
+         InventoryTab is self-contained: it renders Equipped, Backpack sections
+         AND internally includes <Encumbrance /> at the bottom. No need to
+         render Encumbrance separately here — doing so would display it twice.
     ----------------------------------------------------------------------- -->
     {:else if activeTab === 'inventory'}
-      <div class="flex flex-col gap-4">
-        <InventoryTab />
-        <Encumbrance />
-      </div>
+      <InventoryTab />
 
     <!-- -----------------------------------------------------------------------
          FALLBACK: Unknown tab key

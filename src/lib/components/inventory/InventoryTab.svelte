@@ -34,9 +34,10 @@
 
   let modalItemId = $state<ID | null>(null);
 
-  // Collapsible section state — both open by default
+  // Collapsible section state — Equipped and Carried open by default, Storage closed
   let equippedOpen = $state(true);
   let carriedOpen  = $state(true);
+  let stashedOpen  = $state(false);
 
   const allItems = $derived.by(() =>
     engine.character.activeFeatures
@@ -44,14 +45,16 @@
       .map(afi => ({
         instanceId: afi.instanceId,
         isActive:   afi.isActive,
+        isStashed:  afi.isStashed ?? false,
         customName: afi.customName,
         feature:    dataLoader.getFeature(afi.featureId) as ItemFeature,
       }))
       .filter(item => item.feature !== undefined)
   );
 
-  const equippedItems = $derived(allItems.filter(i => i.isActive));
-  const carriedItems  = $derived(allItems.filter(i => !i.isActive));
+  const equippedItems = $derived(allItems.filter(i =>  i.isActive && !i.feature.tags?.includes('stashed')));
+  const carriedItems  = $derived(allItems.filter(i => !i.isActive && !i.isStashed));
+  const stashedItems  = $derived(allItems.filter(i =>  i.isStashed === true));
 
   function canEquip(itemFeat: ItemFeature): { ok: boolean; reason?: string } {
     const slot = itemFeat.equipmentSlot;
@@ -240,6 +243,90 @@
                     ><IconEquip size={14} aria-hidden="true" /></button>
                   {/if}
 
+                  <button
+                    class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
+                    onclick={() => engine.removeFeature(item.instanceId)}
+                    aria-label="Remove {engine.t(item.feature.label)}"
+                    type="button"
+                  ><IconDelete size={14} aria-hidden="true" /></button>
+                </div>
+              </div>
+            {/each}
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- STORAGE / STASHED — muted header, no weight contribution         -->
+    <!-- ================================================================= -->
+    <div class="border-t border-border">
+      <button
+        class="w-full flex items-center justify-between gap-2 px-4 py-3
+               bg-surface-alt/60 border-b border-border
+               hover:bg-surface-alt transition-colors duration-150"
+        onclick={() => (stashedOpen = !stashedOpen)}
+        aria-expanded={stashedOpen}
+        aria-controls="stashed-list"
+        type="button"
+      >
+        <div class="flex items-center gap-2">
+          <IconTabInventory size={16} class="text-text-muted" aria-hidden="true" />
+          <span class="text-sm font-semibold uppercase tracking-wider text-text-muted">
+            Storage / Stashed
+          </span>
+          <span class="badge-gray text-[10px]">{stashedItems.length}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-text-muted italic">no weight</span>
+          <span class="text-text-muted text-xs">{stashedOpen ? '▲' : '▼'}</span>
+        </div>
+      </button>
+
+      {#if stashedOpen}
+        <div id="stashed-list" class="flex flex-col divide-y divide-border">
+          {#if stashedItems.length === 0}
+            <p class="px-4 py-3 text-sm text-text-muted italic">No items in storage.</p>
+          {:else}
+            {#each stashedItems as item}
+              <div class="flex items-center gap-3 px-4 py-2.5 opacity-60 hover:opacity-80 transition-opacity hover:bg-surface-alt">
+                <!-- Item icon -->
+                <span class="text-text-muted shrink-0" aria-hidden="true">
+                  <Package size={16} />
+                </span>
+
+                <!-- Item info -->
+                <div class="flex-1 flex flex-col gap-0.5 min-w-0">
+                  <span class="text-sm font-medium text-text-primary truncate">
+                    {item.customName ?? engine.t(item.feature.label)}
+                  </span>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
+                      <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
+                    {/if}
+                    <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
+                    <span class="badge-gray text-[10px]">not carried</span>
+                  </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex gap-1 shrink-0">
+                  <button
+                    class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
+                    onclick={() => (modalItemId = item.feature.id)}
+                    aria-label="Details for {engine.t(item.feature.label)}"
+                    type="button"
+                  ><IconInfo size={14} aria-hidden="true" /></button>
+                  <button
+                    class="btn-ghost p-1.5 text-text-muted hover:bg-surface-alt text-xs"
+                    onclick={() => {
+                      const afi = engine.character.activeFeatures.find(a => a.instanceId === item.instanceId);
+                      if (afi) afi.isStashed = false;
+                    }}
+                    aria-label="Move {engine.t(item.feature.label)} to backpack"
+                    title="Move to backpack"
+                    type="button"
+                  ><IconUnequip size={14} aria-hidden="true" /></button>
                   <button
                     class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
                     onclick={() => engine.removeFeature(item.instanceId)}

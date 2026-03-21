@@ -86,6 +86,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
   import { IconClose } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
@@ -345,11 +346,14 @@
     BACKDROP
     Full-screen clickable overlay. `aria-hidden="true"` because the backdrop
     itself carries no semantic meaning — the dialog panel has role="dialog".
+    `transition:fade` fades the backdrop in/out with 200ms duration.
+    `prefers-reduced-motion` is handled globally in app.css (transitions become 0.01ms).
   -->
   <div
     class="modal-backdrop"
     onclick={handleBackdropClick}
     aria-hidden="true"
+    transition:fade={{ duration: 200 }}
   >
     <!--
       MODAL PANEL
@@ -358,9 +362,18 @@
       `tabindex="-1"` makes the panel itself focusable as a fallback when no
       child elements are focusable (rare edge case, e.g. a loading state).
     -->
+    <!--
+      Panel transition:
+        Mobile: slides up from the bottom (fly with positive y).
+        Desktop: fades + scales in from 95% (fly with y=0 + CSS scale via opacity).
+      A single `fly` with y=16 (16px) gives a subtle "lift" on desktop and a
+      visible slide on mobile (where the panel has mt-auto and is at the bottom).
+      Duration 200ms matches the sidebar animation duration.
+    -->
     <div
       bind:this={panelEl}
       class={panelClass}
+      transition:fly={{ y: 16, duration: 200, opacity: 0 }}
       onclick={(e) => e.stopPropagation()}
       onkeydown={handleKeyDown}
       role="dialog"

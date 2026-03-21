@@ -71,9 +71,11 @@
         </div>
       {/if}
 
-      <!-- Gradient overlay with back link + title -->
-      <div class="absolute inset-0 flex flex-col justify-end gap-1 px-5 py-4"
-           style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);">
+      <!-- Gradient overlay with back link + title.
+           Uses Tailwind's from-black/80 to transparent via gradient utilities
+           instead of inline rgba() to stay within the design system. -->
+      <div class="absolute inset-0 flex flex-col justify-end gap-1 px-5 py-4
+                  bg-gradient-to-t from-black/80 via-black/20 to-transparent">
         <a
           href="/campaigns"
           class="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white transition-colors w-fit"

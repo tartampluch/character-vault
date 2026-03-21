@@ -34,6 +34,9 @@
   const totalWeightLbs = $derived.by(() => {
     let total = 0;
     for (const afi of engine.character.activeFeatures) {
+      // Stashed items (in storage) do NOT contribute to carried weight.
+      // Architecture §13.2: "Storage/Stashed — does not contribute to weight."
+      if (afi.isStashed) continue;
       const feat = dataLoader.getFeature(afi.featureId);
       if (!feat || feat.category !== 'item') continue;
       total += (feat as ItemFeature).weightLbs ?? 0;
@@ -97,15 +100,17 @@
   const totalGoldValue = $derived(cp / 100 + sp / 10 + gp + pp * 10);
 
   /**
-   * Coin definitions — colour-coded labels.
-   * Using inline style for coin label colour because these are semantic
-   * fantasy-coin colours not available in the standard Tailwind palette.
+   * Coin definitions — colour-coded labels using Tailwind utility class names.
+   * Using a `colorClass` per coin so Tailwind's static scanner sees all complete
+   * class strings at build time (no dynamic string construction).
+   * PP = slate-200 (platinum shimmer), GP = yellow-400 (gold), SP = slate-400
+   * (silver), CP = amber-600 (copper/bronze).
    */
   const COINS = [
-    { key: 'pp', label: 'PP', color: '#e2e8f0', title: 'Platinum Pieces' },
-    { key: 'gp', label: 'GP', color: '#fbbf24', title: 'Gold Pieces'     },
-    { key: 'sp', label: 'SP', color: '#9ca3af', title: 'Silver Pieces'   },
-    { key: 'cp', label: 'CP', color: '#d97706', title: 'Copper Pieces'   },
+    { key: 'pp', label: 'PP', colorClass: 'text-slate-200  dark:text-slate-300',  title: 'Platinum Pieces' },
+    { key: 'gp', label: 'GP', colorClass: 'text-yellow-400 dark:text-yellow-300', title: 'Gold Pieces'     },
+    { key: 'sp', label: 'SP', colorClass: 'text-slate-400  dark:text-slate-300',  title: 'Silver Pieces'   },
+    { key: 'cp', label: 'CP', colorClass: 'text-amber-600  dark:text-amber-400',  title: 'Copper Pieces'   },
   ] as const;
 
   function getCoin(key: string): number {
@@ -223,8 +228,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <label
             for="coin-{coin.key}"
-            class="text-[10px] font-bold uppercase"
-            style="color: {coin.color};"
+            class="text-[10px] font-bold uppercase {coin.colorClass}"
             title={coin.title}
           >{coin.label}</label>
           <input

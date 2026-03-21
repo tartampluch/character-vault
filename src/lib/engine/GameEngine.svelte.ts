@@ -1284,19 +1284,22 @@ export class GameEngine {
       keyAbilityId: 'stat_con',
       /** Localized abbreviation of the key ability for this saving throw. */
       keyAbilityAbbr: { en: 'CON', fr: 'CON' } as { en: string; fr: string },
-      accentColor: '#f87171',
+      // Fortitude: red-400 equivalent in oklch — perceptually consistent across themes
+      accentColor: 'oklch(65% 0.19 28)',
     },
     {
       pipelineId: 'saves.ref',
       keyAbilityId: 'stat_dex',
       keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } as { en: string; fr: string },
-      accentColor: '#93c5fd',
+      // Reflex: sky-300 equivalent — cool blue for agility
+      accentColor: 'oklch(74% 0.12 230)',
     },
     {
       pipelineId: 'saves.will',
       keyAbilityId: 'stat_wis',
       keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } as { en: string; fr: string },
-      accentColor: '#c4b5fd',
+      // Will: indigo-300 equivalent — aligns with the accent palette
+      accentColor: 'oklch(72% 0.12 280)',
     },
   ] as const;
 
