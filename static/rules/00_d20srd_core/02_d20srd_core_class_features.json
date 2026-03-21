@@ -705,6 +705,1197 @@
   },
 
   {
+    "id": "class_feature_monk_ac_bonus",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "AC Bonus (Wisdom)", "fr": "Bonus CA (Sagesse)" },
+    "description": {
+      "en": "When unarmored and unencumbered, the monk adds her Wisdom bonus (if any) to AC. These bonuses apply against touch attacks and when flat-footed. Lost when immobilized, wearing armor, carrying a shield, or carrying a medium/heavy load. The numeric AC bonus (+1 at 5th, +2 at 10th, etc.) is applied via levelProgression modifiers.",
+      "fr": "Sans armure et sans charge encombrante, le moine ajoute son bonus de Sagesse (le cas échéant) à la CA. Ces bonus s'appliquent contre les attaques de contact et quand pris au dépourvu. Perdu si immobilisé, portant une armure, un bouclier ou une charge intermédiaire/lourde. Le bonus numérique (+1 au niveau 5, +2 au niveau 10, etc.) est appliqué via les modificateurs de progression de niveau."
+    },
+    "tags": ["class_feature", "monk", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "monk_ac_bonus_wis_normal",
+        "sourceId": "class_feature_monk_ac_bonus",
+        "sourceName": { "en": "Monk AC Bonus (Wis)", "fr": "Bonus CA Moine (Sag)" },
+        "targetId": "combatStats.ac_normal",
+        "value": "@attributes.stat_wis.derivedModifier",
+        "type": "wisdom",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "encumbered_medium" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "encumbered_heavy" } }
+          ]
+        }
+      },
+      {
+        "id": "monk_ac_bonus_wis_touch",
+        "sourceId": "class_feature_monk_ac_bonus",
+        "sourceName": { "en": "Monk AC Bonus (Wis)", "fr": "Bonus CA Moine (Sag)" },
+        "targetId": "combatStats.ac_touch",
+        "value": "@attributes.stat_wis.derivedModifier",
+        "type": "wisdom",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "encumbered_medium" } },
+            { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "encumbered_heavy" } }
+          ]
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_unarmed_strike",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Unarmed Strike", "fr": "Attaque à mains nues" },
+    "description": {
+      "en": "At 1st level, a monk gains Improved Unarmed Strike as a bonus feat. A monk may deal lethal or nonlethal damage with unarmed strikes interchangeably with no penalty. Unarmed strikes are treated as both manufactured and natural weapons for spells and effects. The monk applies full Strength bonus to all unarmed strike damage rolls.",
+      "fr": "Au niveau 1, un moine obtient le don Frappe à mains nues améliorée comme don supplémentaire. Un moine peut infliger des dégâts létaux ou non-létaux de manière interchangeable sans pénalité. Les frappes à mains nues sont considérées comme des armes manufacturées et naturelles pour les sorts et effets. Le moine applique son bonus de Force complet à tous les jets de dégâts."
+    },
+    "tags": ["class_feature", "monk", "unarmed"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["feat_improved_unarmed_strike"]
+  },
+
+  {
+    "id": "class_feature_monk_flurry_of_blows",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Flurry of Blows", "fr": "Avalanche de coups" },
+    "description": {
+      "en": "When unarmored, the monk may make one extra attack per round as part of a full attack action, but all attacks that round take a -2 penalty (levels 1-4). At 5th level the penalty lessens to -1; at 9th level it disappears. The monk may only use unarmed strikes or special monk weapons during a flurry. At 11th level (see Greater Flurry), she gains a second extra attack.",
+      "fr": "Sans armure, le moine peut effectuer une attaque supplémentaire par round dans le cadre d'une action d'attaque à outrance, mais toutes les attaques de ce round subissent une pénalité de -2 (niveaux 1-4). Au niveau 5, la pénalité passe à -1 ; au niveau 9, elle disparaît. Le moine ne peut utiliser que des frappes à mains nues ou des armes de moine spéciales. Au niveau 11, il gagne une seconde attaque supplémentaire."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "flurry_of_blows"],
+    "activation": { "actionType": "full_round" },
+    "grantedModifiers": [
+      {
+        "id": "flurry_extra_attack",
+        "sourceId": "class_feature_monk_flurry_of_blows",
+        "sourceName": { "en": "Flurry of Blows", "fr": "Avalanche de coups" },
+        "targetId": "combatStats.extra_attacks",
+        "value": 1,
+        "type": "base",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "flurry_of_blows"
+        }
+      },
+      {
+        "id": "flurry_attack_penalty",
+        "sourceId": "class_feature_monk_flurry_of_blows",
+        "sourceName": { "en": "Flurry of Blows", "fr": "Avalanche de coups" },
+        "targetId": "combatStats.attack_bonus",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "flurry_of_blows"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_bonus_feat_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Monk Bonus Feat (Level 1)", "fr": "Don supplémentaire de moine (niveau 1)" },
+    "description": {
+      "en": "At 1st level, the monk may select either Improved Grapple or Stunning Fist as a bonus feat. No prerequisites are required.",
+      "fr": "Au niveau 1, le moine peut choisir Prise améliorée ou Poing étourdissant comme don supplémentaire. Aucune condition préalable n'est requise."
+    },
+    "tags": ["class_feature", "monk", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "monk_bonus_feat_1",
+        "label": { "en": "Monk Bonus Feat", "fr": "Don supplémentaire de moine" },
+        "optionsQuery": "tag:monk_bonus_feat_l1",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_bonus_feat_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Monk Bonus Feat (Level 2)", "fr": "Don supplémentaire de moine (niveau 2)" },
+    "description": {
+      "en": "At 2nd level, the monk may select either Combat Reflexes or Deflect Arrows as a bonus feat. No prerequisites are required.",
+      "fr": "Au niveau 2, le moine peut choisir Réflexes de combat ou Dévier les flèches comme don supplémentaire. Aucune condition préalable n'est requise."
+    },
+    "tags": ["class_feature", "monk", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "monk_bonus_feat_2",
+        "label": { "en": "Monk Bonus Feat", "fr": "Don supplémentaire de moine" },
+        "optionsQuery": "tag:monk_bonus_feat_l2",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Evasion", "fr": "Esquive totale" },
+    "description": {
+      "en": "At 2nd level, if the monk makes a successful Reflex save against an attack that normally deals half damage on a successful save, she takes no damage instead. Evasion may be used only in light or no armor. A helpless monk does not gain this benefit.",
+      "fr": "Au niveau 2, si le moine réussit un jet de Réflexes contre une attaque infligeant normalement la moitié des dégâts, il ne subit aucun dégât. L'esquive totale ne peut être utilisée qu'en armure légère ou sans armure. Un moine sans défense ne bénéficie pas de cet avantage."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "evasion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_still_mind",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Still Mind", "fr": "Esprit serein" },
+    "description": {
+      "en": "A monk of 3rd level or higher gains a +2 bonus on saving throws against spells and effects from the school of enchantment.",
+      "fr": "Un moine de niveau 3 ou plus obtient un bonus de +2 aux jets de sauvegarde contre les sorts et effets de l'école d'enchantement."
+    },
+    "tags": ["class_feature", "monk", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "still_mind_save_bonus",
+        "sourceId": "class_feature_monk_still_mind",
+        "sourceName": { "en": "Still Mind", "fr": "Esprit serein" },
+        "targetId": "saves.all",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_enchantment"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_ki_strike_magic",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ki Strike (Magic)", "fr": "Frappe ki (magique)" },
+    "description": {
+      "en": "At 4th level, the monk's unarmed attacks are empowered with ki and treated as magic weapons for the purpose of dealing damage to creatures with damage reduction.",
+      "fr": "Au niveau 4, les attaques à mains nues du moine sont renforcées par le ki et considérées comme des armes magiques pour infliger des dégâts aux créatures avec réduction des dégâts."
+    },
+    "tags": ["class_feature", "monk", "supernatural", "ki_strike", "ki_strike_magic", "unarmed_magic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_20",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (20 ft.)", "fr": "Chute lente (6 m)" },
+    "description": {
+      "en": "At 4th level, a monk within arm's reach of a wall can slow her descent, taking damage as if the fall were 20 feet shorter than it actually is.",
+      "fr": "Au niveau 4, un moine à portée d'une paroi peut ralentir sa chute, subissant des dégâts comme si la chute faisait 6 m de moins."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_20_reduction",
+        "sourceId": "class_feature_monk_slow_fall_20",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 20,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_purity_of_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Purity of Body", "fr": "Pureté du corps" },
+    "description": {
+      "en": "At 5th level, a monk gains immunity to all natural diseases (supernatural and magical diseases still affect the monk).",
+      "fr": "Au niveau 5, un moine devient immunisé à toutes les maladies naturelles (les maladies surnaturelles et magiques l'affectent toujours)."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "immunity_natural_disease"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["immunity_natural_disease"]
+  },
+
+  {
+    "id": "class_feature_monk_bonus_feat_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Monk Bonus Feat (Level 6)", "fr": "Don supplémentaire de moine (niveau 6)" },
+    "description": {
+      "en": "At 6th level, the monk may select either Improved Disarm or Improved Trip as a bonus feat. No prerequisites are required.",
+      "fr": "Au niveau 6, le moine peut choisir Désarmement amélioré ou Croc-en-jambe amélioré comme don supplémentaire. Aucune condition préalable n'est requise."
+    },
+    "tags": ["class_feature", "monk", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "monk_bonus_feat_3",
+        "label": { "en": "Monk Bonus Feat", "fr": "Don supplémentaire de moine" },
+        "optionsQuery": "tag:monk_bonus_feat_l6",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_30",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (30 ft.)", "fr": "Chute lente (9 m)" },
+    "description": {
+      "en": "At 6th level, the monk's slow fall distance increases to 30 feet.",
+      "fr": "Au niveau 6, la distance de chute lente du moine passe à 9 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_30_reduction",
+        "sourceId": "class_feature_monk_slow_fall_30",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 30,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_wholeness_of_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wholeness of Body", "fr": "Plénitude du corps" },
+    "description": {
+      "en": "At 7th level, a monk can heal her own wounds as a swift action. She can heal a total number of hit points equal to twice her current monk level per day, spread across multiple uses.",
+      "fr": "Au niveau 7, un moine peut soigner ses propres blessures par une action rapide. Il peut soigner un total de points de vie égal à deux fois son niveau de moine actuel par jour, répartis en plusieurs utilisations."
+    },
+    "tags": ["class_feature", "monk", "supernatural"],
+    "activation": {
+      "actionType": "swift",
+      "resourceCost": { "targetId": "resources.wholeness_of_body_hp", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "wholeness_of_body_pool_max",
+        "sourceId": "class_feature_monk_wholeness_of_body",
+        "sourceName": { "en": "Wholeness of Body", "fr": "Plénitude du corps" },
+        "targetId": "resources.wholeness_of_body_hp.maxValue",
+        "value": "2 * @classLevels.class_monk",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_40",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (40 ft.)", "fr": "Chute lente (12 m)" },
+    "description": {
+      "en": "At 8th level, the monk's slow fall distance increases to 40 feet.",
+      "fr": "Au niveau 8, la distance de chute lente du moine passe à 12 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_40_reduction",
+        "sourceId": "class_feature_monk_slow_fall_40",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 40,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_improved_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Evasion", "fr": "Esquive totale améliorée" },
+    "description": {
+      "en": "At 9th level, the monk's evasion improves. She still takes no damage on a successful Reflex save, but now takes only half damage on a failed save. A helpless monk does not benefit.",
+      "fr": "Au niveau 9, l'esquive totale du moine s'améliore. Il ne subit toujours aucun dégât en cas de jet de Réflexes réussi, mais ne subit que la moitié des dégâts en cas d'échec. Un moine sans défense n'en bénéficie pas."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "improved_evasion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_ki_strike_lawful",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ki Strike (Lawful)", "fr": "Frappe ki (loyale)" },
+    "description": {
+      "en": "At 10th level, the monk's unarmed attacks are also treated as lawful weapons for the purpose of dealing damage to creatures with damage reduction.",
+      "fr": "Au niveau 10, les frappes à mains nues du moine sont également considérées comme des armes loyales pour infliger des dégâts aux créatures avec réduction des dégâts."
+    },
+    "tags": ["class_feature", "monk", "supernatural", "ki_strike", "ki_strike_lawful", "unarmed_lawful"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_50",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (50 ft.)", "fr": "Chute lente (15 m)" },
+    "description": {
+      "en": "At 10th level, the monk's slow fall distance increases to 50 feet.",
+      "fr": "Au niveau 10, la distance de chute lente du moine passe à 15 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_50_reduction",
+        "sourceId": "class_feature_monk_slow_fall_50",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 50,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_diamond_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Diamond Body", "fr": "Corps de diamant" },
+    "description": {
+      "en": "At 11th level, a monk gains immunity to poisons of all kinds.",
+      "fr": "Au niveau 11, un moine devient immunisé à tous les types de poison."
+    },
+    "tags": ["class_feature", "monk", "supernatural", "immunity_poison"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["immunity_poison"]
+  },
+
+  {
+    "id": "class_feature_monk_greater_flurry",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Greater Flurry", "fr": "Grande avalanche de coups" },
+    "description": {
+      "en": "At 11th level, the monk's flurry of blows improves. In addition to the standard extra attack from flurry, she gains a second extra attack at her full base attack bonus.",
+      "fr": "Au niveau 11, l'avalanche de coups du moine s'améliore. En plus de l'attaque supplémentaire standard, elle gagne une seconde attaque supplémentaire à son bonus d'attaque de base complet."
+    },
+    "tags": ["class_feature", "monk", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "greater_flurry_extra_attack",
+        "sourceId": "class_feature_monk_greater_flurry",
+        "sourceName": { "en": "Greater Flurry", "fr": "Grande avalanche de coups" },
+        "targetId": "combatStats.extra_attacks",
+        "value": 1,
+        "type": "base",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "flurry_of_blows"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_abundant_step",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Abundant Step", "fr": "Pas abondant" },
+    "description": {
+      "en": "At 12th level, a monk can slip magically between spaces once per day, as if using the dimension door spell. Her caster level for this effect is half her monk level (rounded down).",
+      "fr": "Au niveau 12, un moine peut se glisser magiquement entre les espaces une fois par jour, comme avec le sort Porte dimensionnelle. Son niveau de lanceur pour cet effet est la moitié de son niveau de moine (arrondi à l'inférieur)."
+    },
+    "tags": ["class_feature", "monk", "supernatural"],
+    "activation": {
+      "actionType": "move",
+      "resourceCost": { "targetId": "resources.abundant_step_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "abundant_step_uses_max",
+        "sourceId": "class_feature_monk_abundant_step",
+        "sourceName": { "en": "Abundant Step", "fr": "Pas abondant" },
+        "targetId": "resources.abundant_step_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_60",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (60 ft.)", "fr": "Chute lente (18 m)" },
+    "description": {
+      "en": "At 12th level, the monk's slow fall distance increases to 60 feet.",
+      "fr": "Au niveau 12, la distance de chute lente du moine passe à 18 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_60_reduction",
+        "sourceId": "class_feature_monk_slow_fall_60",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 60,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_diamond_soul",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Diamond Soul", "fr": "Âme de diamant" },
+    "description": {
+      "en": "At 13th level, a monk gains spell resistance equal to her current monk level + 10. A spellcaster must succeed on a caster level check (1d20 + caster level ≥ SR) to affect the monk with a spell.",
+      "fr": "Au niveau 13, un moine obtient une résistance aux sorts égale à son niveau de moine + 10. Un lanceur de sorts doit réussir un test de niveau de lanceur (1d20 + niveau de lanceur ≥ RS) pour affecter le moine."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "spell_resistance"],
+    "grantedModifiers": [
+      {
+        "id": "diamond_soul_sr",
+        "sourceId": "class_feature_monk_diamond_soul",
+        "sourceName": { "en": "Diamond Soul", "fr": "Âme de diamant" },
+        "targetId": "combatStats.spell_resistance",
+        "value": "10 + @classLevels.class_monk",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_70",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (70 ft.)", "fr": "Chute lente (21 m)" },
+    "description": {
+      "en": "At 14th level, the monk's slow fall distance increases to 70 feet.",
+      "fr": "Au niveau 14, la distance de chute lente du moine passe à 21 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_70_reduction",
+        "sourceId": "class_feature_monk_slow_fall_70",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 70,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_quivering_palm",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Quivering Palm", "fr": "Paume vibrante" },
+    "description": {
+      "en": "At 15th level, the monk can set up fatal vibrations in a creature once per week. She must announce intent before the attack roll. If the attack deals damage, the monk can later will the target to die (free action); the target must make a Fortitude save (DC 10 + ½ monk level + Wis modifier) or die. Cannot affect constructs, oozes, plants, undead, incorporeal creatures, or those immune to critical hits.",
+      "fr": "Au niveau 15, le moine peut créer des vibrations mortelles dans une créature une fois par semaine. Il doit annoncer son intention avant le jet d'attaque. Si l'attaque inflige des dégâts, le moine peut ensuite vouloir que la cible meure (action libre) ; la cible doit réussir un jet de Vigueur (DD 10 + ½ niveau du moine + mod. de Sag) sinon elle meurt. Ne peut pas affecter les créatures artificielles, les vases, les plantes, les morts-vivants, les créatures intangibles ou immunisées aux coups critiques."
+    },
+    "tags": ["class_feature", "monk", "supernatural"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.quivering_palm_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "quivering_palm_uses_max",
+        "sourceId": "class_feature_monk_quivering_palm",
+        "sourceName": { "en": "Quivering Palm", "fr": "Paume vibrante" },
+        "targetId": "resources.quivering_palm_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_ki_strike_adamantine",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ki Strike (Adamantine)", "fr": "Frappe ki (adamantium)" },
+    "description": {
+      "en": "At 16th level, the monk's unarmed attacks are treated as adamantine weapons for the purpose of overcoming damage reduction and bypassing hardness.",
+      "fr": "Au niveau 16, les frappes à mains nues du moine sont considérées comme des armes en adamantium pour contourner la réduction des dégâts et la solidité."
+    },
+    "tags": ["class_feature", "monk", "supernatural", "ki_strike", "ki_strike_adamantine", "unarmed_adamantine"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_80",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (80 ft.)", "fr": "Chute lente (24 m)" },
+    "description": {
+      "en": "At 16th level, the monk's slow fall distance increases to 80 feet.",
+      "fr": "Au niveau 16, la distance de chute lente du moine passe à 24 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_80_reduction",
+        "sourceId": "class_feature_monk_slow_fall_80",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 80,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_timeless_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Timeless Body", "fr": "Corps intemporel" },
+    "description": {
+      "en": "At 17th level, a monk no longer takes ability score penalties for aging and cannot be magically aged. Previously incurred penalties remain. Bonuses still accrue and the monk still dies of old age when her time is up.",
+      "fr": "Au niveau 17, un moine ne subit plus de pénalités aux caractéristiques dues au vieillissement et ne peut pas être vieilli magiquement. Les pénalités déjà subies restent en place. Les bonus continuent de s'accumuler et le moine meurt toujours de vieillesse."
+    },
+    "tags": ["class_feature", "monk", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_tongue_sun_moon",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tongue of the Sun and Moon", "fr": "Langue du soleil et de la lune" },
+    "description": {
+      "en": "A monk of 17th level or higher can speak with any living creature.",
+      "fr": "Un moine de niveau 17 ou plus peut parler avec toute créature vivante."
+    },
+    "tags": ["class_feature", "monk", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_90",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (90 ft.)", "fr": "Chute lente (27 m)" },
+    "description": {
+      "en": "At 18th level, the monk's slow fall distance increases to 90 feet.",
+      "fr": "Au niveau 18, la distance de chute lente du moine passe à 27 m."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_90_reduction",
+        "sourceId": "class_feature_monk_slow_fall_90",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 90,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_empty_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Empty Body", "fr": "Corps vide" },
+    "description": {
+      "en": "At 19th level, a monk gains the ability to assume an ethereal state for 1 round per monk level per day, as if using the etherealness spell. She may go ethereal on multiple occasions as long as total rounds spent ethereal do not exceed her monk level.",
+      "fr": "Au niveau 19, un moine peut entrer dans un état éthéré pendant 1 round par niveau de moine par jour, comme avec le sort Éthéralité. Il peut entrer en état éthéré à plusieurs reprises tant que le total des rounds en état éthéré ne dépasse pas son niveau de moine."
+    },
+    "tags": ["class_feature", "monk", "supernatural"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.empty_body_rounds", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "empty_body_rounds_max",
+        "sourceId": "class_feature_monk_empty_body",
+        "sourceName": { "en": "Empty Body", "fr": "Corps vide" },
+        "targetId": "resources.empty_body_rounds.maxValue",
+        "value": "@classLevels.class_monk",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_perfect_self",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Perfect Self", "fr": "Moi parfait" },
+    "description": {
+      "en": "At 20th level, a monk becomes a magical creature — forevermore treated as an outsider for the purpose of spells and effects. She gains damage reduction 10/magic. Unlike other outsiders, the monk can still be raised from the dead as her previous creature type.",
+      "fr": "Au niveau 20, un moine devient une créature magique — désormais considérée comme un extérieur pour les sorts et effets. Il obtient une réduction des dégâts 10/magique. Contrairement aux autres extérieurs, le moine peut toujours être ramené à la vie comme son type de créature précédent."
+    },
+    "tags": ["class_feature", "monk", "outsider", "perfect_self"],
+    "grantedModifiers": [
+      {
+        "id": "perfect_self_dr",
+        "sourceId": "class_feature_monk_perfect_self",
+        "sourceName": { "en": "Perfect Self", "fr": "Moi parfait" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 10,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_monk_slow_fall_any",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slow Fall (Any Distance)", "fr": "Chute lente (toute distance)" },
+    "description": {
+      "en": "At 20th level, the monk can use a nearby wall to slow her descent and fall any distance without harm.",
+      "fr": "Au niveau 20, le moine peut utiliser une paroi voisine pour ralentir sa descente et tomber de n'importe quelle hauteur sans subir de dégâts."
+    },
+    "tags": ["class_feature", "monk", "extraordinary", "slow_fall"],
+    "grantedModifiers": [
+      {
+        "id": "slow_fall_any_reduction",
+        "sourceId": "class_feature_monk_slow_fall_any",
+        "sourceName": { "en": "Slow Fall", "fr": "Chute lente" },
+        "targetId": "combatStats.slow_fall_distance",
+        "value": 9999,
+        "type": "setAbsolute",
+        "situationalContext": "near_wall"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_animal_companion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Animal Companion", "fr": "Compagnon animal" },
+    "description": {
+      "en": "A druid may begin play with an animal companion. As the druid advances in level, the animal's power increases (bonus HD, natural armor, Str/Dex, bonus tricks, and special abilities). If the companion is lost, a new one can be gained after a 24-hour ceremony.",
+      "fr": "Un druide peut commencer le jeu avec un compagnon animal. Au fur et à mesure que le druide progresse en niveau, la puissance de l'animal augmente (DV supplémentaires, armure naturelle, For/Dex, tours bonus et capacités spéciales). Si le compagnon est perdu, un nouveau peut être obtenu après une cérémonie de 24 heures."
+    },
+    "tags": ["class_feature", "druid", "extraordinary", "animal_companion"],
+    "choices": [
+      {
+        "choiceId": "companion_choice",
+        "label": { "en": "Choose Animal Companion", "fr": "Choisir un compagnon animal" },
+        "optionsQuery": "tag:animal_companion_base",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_nature_sense",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Nature Sense", "fr": "Sens de la nature" },
+    "description": {
+      "en": "A druid gains a +2 bonus on Knowledge (nature) and Survival checks.",
+      "fr": "Un druide obtient un bonus de +2 aux tests de Connaissance (nature) et de Survie."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "druid_nature_sense_knowledge_nature",
+        "sourceId": "class_feature_druid_nature_sense",
+        "sourceName": { "en": "Nature Sense", "fr": "Sens de la nature" },
+        "targetId": "skills.skill_knowledge_nature.bonus",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "druid_nature_sense_survival",
+        "sourceId": "class_feature_druid_nature_sense",
+        "sourceName": { "en": "Nature Sense", "fr": "Sens de la nature" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_empathy",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Empathy", "fr": "Empathie sauvage" },
+    "description": {
+      "en": "A druid can improve the attitude of an animal, functioning like a Diplomacy check. The druid rolls 1d20 and adds her druid level and Charisma modifier. She can also influence magical beasts with Intelligence 1 or 2 at a -4 penalty. Both druid and animal must be within 30 feet and able to study each other; influencing typically takes 1 minute.",
+      "fr": "Un druide peut améliorer l'attitude d'un animal, fonctionnant comme un test de Diplomatie. Le druide lance 1d20 et ajoute son niveau de druide et son modificateur de Charisme. Elle peut aussi influencer des créatures magiques avec une Intelligence de 1 ou 2 avec une pénalité de -4. Le druide et l'animal doivent être à 9 m ou moins et pouvoir s'étudier mutuellement ; l'influence prend généralement 1 minute."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_empathy_bonus",
+        "sourceId": "class_feature_druid_wild_empathy",
+        "sourceName": { "en": "Wild Empathy", "fr": "Empathie sauvage" },
+        "targetId": "attributes.wild_empathy",
+        "value": "@classLevels.class_druid + @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Spellcasting (Druid)", "fr": "Incantation divine (Druide)" },
+    "description": {
+      "en": "A druid casts divine spells drawn from the druid spell list (prepared caster). To cast a spell, the druid needs Wisdom 10 + spell level. Save DCs are 10 + spell level + Wisdom modifier. The druid prepares spells after 1 hour of meditation. She does not have access to domain spells. Spontaneous casting: a druid can lose any prepared spell to cast any summon nature's ally spell of the same level or lower. Spell slots per day are tracked in resources.spell_slots_druid_0 through resources.spell_slots_druid_9.",
+      "fr": "Un druide lance des sorts divins tirés de la liste de sorts du druide (lanceur préparé). Pour lancer un sort, le druide doit avoir une Sagesse d'au moins 10 + le niveau du sort. Les DD des jets de résistance sont 10 + niveau du sort + modificateur de Sagesse. Le druide prépare ses sorts après 1 heure de méditation. Elle n'a pas accès aux sorts de domaine. Incantation spontanée : un druide peut abandonner tout sort préparé pour lancer n'importe quel sort de Convocation des auxiliaires naturels du même niveau ou inférieur."
+    },
+    "tags": ["class_feature", "druid", "divine_spellcasting", "prepared_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_woodland_stride",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Woodland Stride", "fr": "Foulée forestière" },
+    "description": {
+      "en": "Starting at 2nd level, a druid may move through any sort of natural undergrowth (thorns, briars, overgrown areas) at normal speed without taking damage or suffering impairment. Magically manipulated terrain still affects her.",
+      "fr": "À partir du niveau 2, un druide peut se déplacer à travers tout type de sous-bois naturel (épines, ronces, zones envahies) à sa vitesse normale sans subir de dégâts ni d'altération. Les terrains manipulés magiquement l'affectent toujours."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_trackless_step",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trackless Step", "fr": "Pas sans trace" },
+    "description": {
+      "en": "Starting at 3rd level, a druid leaves no trail in natural surroundings and cannot be tracked. She may choose to leave a trail if desired.",
+      "fr": "À partir du niveau 3, un druide ne laisse aucune trace dans les environnements naturels et ne peut pas être pisté. Elle peut choisir de laisser une trace si elle le souhaite."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_resist_natures_lure",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Resist Nature's Lure", "fr": "Résistance à l'attrait de la nature" },
+    "description": {
+      "en": "Starting at 4th level, a druid gains a +4 bonus on saving throws against the spell-like abilities of fey.",
+      "fr": "À partir du niveau 4, un druide obtient un bonus de +4 aux jets de sauvegarde contre les pouvoirs magiques des fées."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "druid_resist_natures_lure_saves",
+        "sourceId": "class_feature_druid_resist_natures_lure",
+        "sourceName": { "en": "Resist Nature's Lure", "fr": "Résistance à l'attrait de la nature" },
+        "targetId": "saves.all",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "vs_fey_spell_like"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_1_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (1/Day)", "fr": "Forme sauvage (1/jour)" },
+    "description": {
+      "en": "At 5th level, a druid can turn herself into any Small or Medium animal and back again once per day. The effect lasts 1 hour per druid level. Changing form is a standard action that does not provoke attacks of opportunity. The druid regains lost hit points as if rested for a night each time she uses wild shape. The form chosen must be an animal the druid is familiar with. HD of new form cannot exceed druid level.",
+      "fr": "Au niveau 5, un druide peut se transformer en n'importe quel animal de taille Petite ou Moyenne et revenir à sa forme normale une fois par jour. L'effet dure 1 heure par niveau de druide. Changer de forme est une action simple qui ne provoque pas d'attaque d'opportunité. Le druide récupère les points de vie perdus comme après une nuit de repos chaque fois qu'elle utilise la forme sauvage. La forme choisie doit être un animal que le druide connaît. Les DV de la nouvelle forme ne peuvent pas dépasser le niveau du druide."
+    },
+    "tags": ["class_feature", "druid", "supernatural", "wild_shape", "wild_shape_small", "wild_shape_medium"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.wild_shape_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_1",
+        "sourceId": "class_feature_druid_wild_shape_1_day",
+        "sourceName": { "en": "Wild Shape", "fr": "Forme sauvage" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_2_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (2/Day)", "fr": "Forme sauvage (2/jour)" },
+    "description": {
+      "en": "At 6th level, the druid can use wild shape twice per day.",
+      "fr": "Au niveau 6, le druide peut utiliser la forme sauvage deux fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_2",
+        "sourceId": "class_feature_druid_wild_shape_2_day",
+        "sourceName": { "en": "Wild Shape 2/Day", "fr": "Forme sauvage 2/jour" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_3_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (3/Day)", "fr": "Forme sauvage (3/jour)" },
+    "description": {
+      "en": "At 7th level, the druid can use wild shape three times per day.",
+      "fr": "Au niveau 7, le druide peut utiliser la forme sauvage trois fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_3",
+        "sourceId": "class_feature_druid_wild_shape_3_day",
+        "sourceName": { "en": "Wild Shape 3/Day", "fr": "Forme sauvage 3/jour" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_large",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (Large)", "fr": "Forme sauvage (Grande)" },
+    "description": {
+      "en": "At 8th level, a druid gains the ability to take the shape of a Large animal in addition to Small and Medium animals.",
+      "fr": "Au niveau 8, un druide acquiert la capacité de prendre la forme d'un animal de Grande taille en plus des animaux de taille Petite et Moyenne."
+    },
+    "tags": ["class_feature", "druid", "wild_shape", "wild_shape_large"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_venom_immunity",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Venom Immunity", "fr": "Immunité aux venins" },
+    "description": {
+      "en": "At 9th level, a druid gains immunity to all poisons.",
+      "fr": "Au niveau 9, un druide devient immunisé à tous les poisons."
+    },
+    "tags": ["class_feature", "druid", "extraordinary", "immunity_poison"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["immunity_poison"]
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_4_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (4/Day)", "fr": "Forme sauvage (4/jour)" },
+    "description": {
+      "en": "At 10th level, the druid can use wild shape four times per day.",
+      "fr": "Au niveau 10, le druide peut utiliser la forme sauvage quatre fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_4",
+        "sourceId": "class_feature_druid_wild_shape_4_day",
+        "sourceName": { "en": "Wild Shape 4/Day", "fr": "Forme sauvage 4/jour" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_tiny",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (Tiny)", "fr": "Forme sauvage (Infime)" },
+    "description": {
+      "en": "At 11th level, a druid gains the ability to take the shape of a Tiny animal in addition to previously available sizes.",
+      "fr": "Au niveau 11, un druide acquiert la capacité de prendre la forme d'un animal de taille Infime en plus des tailles déjà disponibles."
+    },
+    "tags": ["class_feature", "druid", "wild_shape", "wild_shape_tiny"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_plant",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (Plant)", "fr": "Forme sauvage (Plante)" },
+    "description": {
+      "en": "At 12th level, a druid can use wild shape to change into a plant creature, with the same size restrictions as for animal forms (cannot take the form of a plant that isn't a creature).",
+      "fr": "Au niveau 12, un druide peut utiliser la forme sauvage pour se transformer en créature végétale, avec les mêmes restrictions de taille que pour les formes animales (ne peut pas prendre la forme d'une plante qui n'est pas une créature)."
+    },
+    "tags": ["class_feature", "druid", "wild_shape", "wild_shape_plant"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_thousand_faces",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "A Thousand Faces", "fr": "Mille visages" },
+    "description": {
+      "en": "At 13th level, a druid gains the ability to change her appearance at will, as if using the disguise self spell, but only while in her normal form. This is a minor physical alteration, not an illusion.",
+      "fr": "Au niveau 13, un druide acquiert la capacité de changer son apparence à volonté, comme si elle utilisait le sort Déguisement, mais seulement sous sa forme normale. Il s'agit d'une légère altération physique, non d'une illusion."
+    },
+    "tags": ["class_feature", "druid", "supernatural"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_5_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (5/Day)", "fr": "Forme sauvage (5/jour)" },
+    "description": {
+      "en": "At 14th level, the druid can use wild shape five times per day.",
+      "fr": "Au niveau 14, le druide peut utiliser la forme sauvage cinq fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_5",
+        "sourceId": "class_feature_druid_wild_shape_5_day",
+        "sourceName": { "en": "Wild Shape 5/Day", "fr": "Forme sauvage 5/jour" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_timeless_body",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Timeless Body", "fr": "Corps intemporel" },
+    "description": {
+      "en": "After attaining 15th level, a druid no longer takes ability score penalties for aging and cannot be magically aged. Previously incurred penalties remain. Bonuses still accrue and the druid still dies of old age when her time is up.",
+      "fr": "À partir du niveau 15, un druide ne subit plus de pénalités aux caractéristiques dues au vieillissement et ne peut pas être vieilli magiquement. Les pénalités déjà subies restent en place. Les bonus continuent de s'accumuler et le druide meurt toujours de vieillesse le moment venu."
+    },
+    "tags": ["class_feature", "druid", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_huge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (Huge)", "fr": "Forme sauvage (Colossale)" },
+    "description": {
+      "en": "At 15th level, a druid gains the ability to take the shape of a Huge animal in addition to previously available sizes.",
+      "fr": "Au niveau 15, un druide acquiert la capacité de prendre la forme d'un animal de taille Colossale en plus des tailles déjà disponibles."
+    },
+    "tags": ["class_feature", "druid", "wild_shape", "wild_shape_huge"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_elemental_1_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape — Elemental (1/Day)", "fr": "Forme sauvage — Élémentaire (1/jour)" },
+    "description": {
+      "en": "At 16th level, a druid can use wild shape to change into a Small, Medium, or Large elemental (air, earth, fire, or water) once per day, in addition to normal wild shape uses. The druid gains all the elemental's extraordinary, supernatural, and spell-like abilities and feats while in elemental form, but retains her own creature type.",
+      "fr": "Au niveau 16, un druide peut utiliser la forme sauvage pour se transformer en élémentaire Petit, Moyen ou Grand (air, terre, feu ou eau) une fois par jour, en plus des utilisations normales de la forme sauvage. Le druide acquiert toutes les capacités extraordinaires, surnaturelles et similaires aux sorts de l'élémentaire ainsi que ses dons dans cette forme, mais conserve son propre type de créature."
+    },
+    "tags": ["class_feature", "druid", "supernatural", "wild_shape_elemental"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.wild_shape_elemental_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_elemental_uses_max_1",
+        "sourceId": "class_feature_druid_wild_shape_elemental_1_day",
+        "sourceName": { "en": "Wild Shape Elemental", "fr": "Forme sauvage élémentaire" },
+        "targetId": "resources.wild_shape_elemental_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_6_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (6/Day)", "fr": "Forme sauvage (6/jour)" },
+    "description": {
+      "en": "At 18th level, the druid can use wild shape six times per day.",
+      "fr": "Au niveau 18, le druide peut utiliser la forme sauvage six fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_uses_max_6",
+        "sourceId": "class_feature_druid_wild_shape_6_day",
+        "sourceName": { "en": "Wild Shape 6/Day", "fr": "Forme sauvage 6/jour" },
+        "targetId": "resources.wild_shape_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_elemental_2_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape — Elemental (2/Day)", "fr": "Forme sauvage — Élémentaire (2/jour)" },
+    "description": {
+      "en": "At 18th level, the druid can assume elemental form twice per day.",
+      "fr": "Au niveau 18, le druide peut prendre une forme élémentaire deux fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape_elemental"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_elemental_uses_max_2",
+        "sourceId": "class_feature_druid_wild_shape_elemental_2_day",
+        "sourceName": { "en": "Wild Shape Elemental 2/Day", "fr": "Forme sauvage élémentaire 2/jour" },
+        "targetId": "resources.wild_shape_elemental_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_elemental_3_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape — Elemental (3/Day)", "fr": "Forme sauvage — Élémentaire (3/jour)" },
+    "description": {
+      "en": "At 20th level, the druid can assume elemental form three times per day.",
+      "fr": "Au niveau 20, le druide peut prendre une forme élémentaire trois fois par jour."
+    },
+    "tags": ["class_feature", "druid", "wild_shape_elemental"],
+    "grantedModifiers": [
+      {
+        "id": "druid_wild_shape_elemental_uses_max_3",
+        "sourceId": "class_feature_druid_wild_shape_elemental_3_day",
+        "sourceName": { "en": "Wild Shape Elemental 3/Day", "fr": "Forme sauvage élémentaire 3/jour" },
+        "targetId": "resources.wild_shape_elemental_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_druid_wild_shape_huge_elemental",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Shape (Huge Elemental)", "fr": "Forme sauvage (Élémentaire colossal)" },
+    "description": {
+      "en": "At 20th level, a druid may use wild shape to change into a Huge elemental (in addition to Small, Medium, and Large elemental forms already available).",
+      "fr": "Au niveau 20, un druide peut utiliser la forme sauvage pour se transformer en élémentaire Colossal (en plus des formes d'élémentaires Petit, Moyen et Grand déjà disponibles)."
+    },
+    "tags": ["class_feature", "druid", "wild_shape_elemental", "wild_shape_huge_elemental"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
     "id": "class_feature_cleric_turn_undead",
     "category": "class_feature",
     "ruleSource": "srd_core",
@@ -1219,6 +2410,248 @@
         "situationalContext": "vs_charm_or_fear"
       }
     ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 1)", "fr": "Don supplémentaire (niveau 1)" },
+    "description": {
+      "en": "At 1st level, a fighter gets a bonus combat-oriented feat. This feat must be drawn from the list of fighter bonus feats. The fighter must still meet all prerequisites.",
+      "fr": "Au niveau 1, un guerrier obtient un don de combat supplémentaire. Ce don doit être choisi parmi la liste des dons supplémentaires du guerrier. Le guerrier doit toujours satisfaire toutes les conditions préalables."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_1",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 2)", "fr": "Don supplémentaire (niveau 2)" },
+    "description": {
+      "en": "At 2nd level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 2, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_2",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 4)", "fr": "Don supplémentaire (niveau 4)" },
+    "description": {
+      "en": "At 4th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 4, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_3",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 6)", "fr": "Don supplémentaire (niveau 6)" },
+    "description": {
+      "en": "At 6th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 6, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_4",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 8)", "fr": "Don supplémentaire (niveau 8)" },
+    "description": {
+      "en": "At 8th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 8, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_5",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 10)", "fr": "Don supplémentaire (niveau 10)" },
+    "description": {
+      "en": "At 10th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 10, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_6",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_7",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 12)", "fr": "Don supplémentaire (niveau 12)" },
+    "description": {
+      "en": "At 12th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 12, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_7",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_8",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 14)", "fr": "Don supplémentaire (niveau 14)" },
+    "description": {
+      "en": "At 14th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 14, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_8",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_9",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 16)", "fr": "Don supplémentaire (niveau 16)" },
+    "description": {
+      "en": "At 16th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 16, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_9",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_10",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 18)", "fr": "Don supplémentaire (niveau 18)" },
+    "description": {
+      "en": "At 18th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 18, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_10",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_fighter_bonus_feat_11",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat (Level 20)", "fr": "Don supplémentaire (niveau 20)" },
+    "description": {
+      "en": "At 20th level, a fighter gains an additional bonus combat-oriented feat from the fighter bonus feat list.",
+      "fr": "Au niveau 20, un guerrier obtient un don de combat supplémentaire additionnel parmi la liste des dons supplémentaires du guerrier."
+    },
+    "tags": ["class_feature", "fighter", "bonus_feat"],
+    "choices": [
+      {
+        "choiceId": "fighter_bonus_feat_11",
+        "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
     "grantedFeatures": []
   }
 ]

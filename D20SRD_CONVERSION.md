@@ -696,7 +696,7 @@ Key mechanics:
 
 ### C-04d — Base Class: Druid (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04d** — Convert Druid (structure only — features in C-05d)
+- [x] **C-04d** — Convert Druid (structure only — features in C-05d)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/druid.html`
 **Context:** Read `ANNEXES.md` section A.8 only.
@@ -715,7 +715,7 @@ Capture:
 
 ### C-05d — Base Class Features: Druid (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05d** — Convert Druid class features
+- [x] **C-05d** — Convert Druid class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/druid.html`
 **Context:** Read `ANNEXES.md` section A.8 only.
@@ -741,7 +741,7 @@ Key mechanics:
 
 ### C-04e — Base Class: Fighter (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04e** — Convert Fighter (structure only — features in C-05e)
+- [x] **C-04e** — Convert Fighter (structure only — features in C-05e)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/fighter.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -759,7 +759,7 @@ Capture:
 
 ### C-05e — Base Class Features: Fighter (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05e** — Convert Fighter class features
+- [x] **C-05e** — Convert Fighter class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/fighter.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -780,7 +780,7 @@ Each bonus feat choice is a separate feature entity so the engine can track whic
 
 ### C-04f — Base Class: Monk (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04f** — Convert Monk (structure only — features in C-05f)
+- [x] **C-04f** — Convert Monk (structure only — features in C-05f)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/monk.html`
 **Context:** Read `ANNEXES.md` section A.1.3 only.
@@ -799,7 +799,7 @@ Capture:
 
 ### C-05f — Base Class Features: Monk (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05f** — Convert Monk class features
+- [x] **C-05f** — Convert Monk class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/monk.html`
 **Context:** Read `ANNEXES.md` section A.1.3 only.

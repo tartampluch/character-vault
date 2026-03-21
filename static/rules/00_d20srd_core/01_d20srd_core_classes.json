@@ -799,5 +799,854 @@
         ]
       }
     ]
+  },
+  {
+    "id": "class_druid",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Druid", "fr": "Druide" },
+    "description": {
+      "en": "A divine spellcaster who draws power from nature, commands an animal companion, and can take on animal forms.",
+      "fr": "Un lanceur de sorts divin qui puise sa puissance dans la nature, commande un compagnon animal et peut prendre des formes animales."
+    },
+    "tags": ["class", "base_class", "class_druid", "divine_caster", "prepared_caster", "spellcaster"],
+    "forbiddenTags": ["alignment_non_neutral"],
+    "forbiddenEquipmentTags": ["metal_armor", "metal_shield"],
+    "grantedModifiers": [
+      {
+        "id": "druid_hit_die",
+        "sourceId": "class_druid",
+        "sourceName": { "en": "Druid", "fr": "Druide" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base"
+      },
+      {
+        "id": "druid_skill_points",
+        "sourceId": "class_druid",
+        "sourceName": { "en": "Druid", "fr": "Druide" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_club",
+      "proficiency_dagger",
+      "proficiency_dart",
+      "proficiency_quarterstaff",
+      "proficiency_scimitar",
+      "proficiency_sickle",
+      "proficiency_shortspear",
+      "proficiency_sling",
+      "proficiency_spear",
+      "proficiency_armor_light",
+      "proficiency_armor_medium",
+      "proficiency_shields_wooden"
+    ],
+    "classSkills": [
+      "skill_concentration",
+      "skill_craft",
+      "skill_diplomacy",
+      "skill_handle_animal",
+      "skill_heal",
+      "skill_knowledge_nature",
+      "skill_listen",
+      "skill_profession",
+      "skill_ride",
+      "skill_spellcraft",
+      "skill_spot",
+      "skill_survival",
+      "skill_swim"
+    ],
+    "recommendedAttributes": ["stat_wis", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_druid_animal_companion",
+          "class_feature_druid_nature_sense",
+          "class_feature_druid_wild_empathy",
+          "class_feature_druid_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "druid_1_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "druid_1_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "saves.fortitude",             "value": 2, "type": "base" },
+          { "id": "druid_1_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "saves.reflex",                "value": 0, "type": "base" },
+          { "id": "druid_1_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "saves.will",                  "value": 2, "type": "base" },
+          { "id": "druid_1_slots_0", "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "resources.spell_slots_druid_0", "value": 3, "type": "base" },
+          { "id": "druid_1_slots_1", "sourceId": "class_druid", "sourceName": { "en": "Druid 1",  "fr": "Druide 1"  }, "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_druid_woodland_stride"],
+        "grantedModifiers": [
+          { "id": "druid_2_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 2",  "fr": "Druide 2"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_2_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 2",  "fr": "Druide 2"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_2_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 2",  "fr": "Druide 2"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_2_slots_0", "sourceId": "class_druid", "sourceName": { "en": "Druid 2",  "fr": "Druide 2"  }, "targetId": "resources.spell_slots_druid_0", "value": 1, "type": "base" },
+          { "id": "druid_2_slots_1", "sourceId": "class_druid", "sourceName": { "en": "Druid 2",  "fr": "Druide 2"  }, "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_druid_trackless_step"],
+        "grantedModifiers": [
+          { "id": "druid_3_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 3",  "fr": "Druide 3"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_3_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 3",  "fr": "Druide 3"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_3_slots_2", "sourceId": "class_druid", "sourceName": { "en": "Druid 3",  "fr": "Druide 3"  }, "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_druid_resist_natures_lure"],
+        "grantedModifiers": [
+          { "id": "druid_4_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_4_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_4_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_4_slots_0", "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "resources.spell_slots_druid_0", "value": 1, "type": "base" },
+          { "id": "druid_4_slots_1", "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base" },
+          { "id": "druid_4_slots_2", "sourceId": "class_druid", "sourceName": { "en": "Druid 4",  "fr": "Druide 4"  }, "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_druid_wild_shape_1_day"],
+        "grantedModifiers": [
+          { "id": "druid_5_slots_3", "sourceId": "class_druid", "sourceName": { "en": "Druid 5",  "fr": "Druide 5"  }, "targetId": "resources.spell_slots_druid_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_druid_wild_shape_2_day"],
+        "grantedModifiers": [
+          { "id": "druid_6_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_6_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_6_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_6_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_6_slots_2", "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base" },
+          { "id": "druid_6_slots_3", "sourceId": "class_druid", "sourceName": { "en": "Druid 6",  "fr": "Druide 6"  }, "targetId": "resources.spell_slots_druid_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_druid_wild_shape_3_day"],
+        "grantedModifiers": [
+          { "id": "druid_7_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 7",  "fr": "Druide 7"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_7_slots_0", "sourceId": "class_druid", "sourceName": { "en": "Druid 7",  "fr": "Druide 7"  }, "targetId": "resources.spell_slots_druid_0", "value": 1, "type": "base" },
+          { "id": "druid_7_slots_1", "sourceId": "class_druid", "sourceName": { "en": "Druid 7",  "fr": "Druide 7"  }, "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base" },
+          { "id": "druid_7_slots_4", "sourceId": "class_druid", "sourceName": { "en": "Druid 7",  "fr": "Druide 7"  }, "targetId": "resources.spell_slots_druid_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_druid_wild_shape_large"],
+        "grantedModifiers": [
+          { "id": "druid_8_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 8",  "fr": "Druide 8"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_8_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 8",  "fr": "Druide 8"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_8_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 8",  "fr": "Druide 8"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_8_slots_3", "sourceId": "class_druid", "sourceName": { "en": "Druid 8",  "fr": "Druide 8"  }, "targetId": "resources.spell_slots_druid_3", "value": 1, "type": "base" },
+          { "id": "druid_8_slots_4", "sourceId": "class_druid", "sourceName": { "en": "Druid 8",  "fr": "Druide 8"  }, "targetId": "resources.spell_slots_druid_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_druid_venom_immunity"],
+        "grantedModifiers": [
+          { "id": "druid_9_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 9",  "fr": "Druide 9"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_9_slots_2", "sourceId": "class_druid", "sourceName": { "en": "Druid 9",  "fr": "Druide 9"  }, "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base" },
+          { "id": "druid_9_slots_5", "sourceId": "class_druid", "sourceName": { "en": "Druid 9",  "fr": "Druide 9"  }, "targetId": "resources.spell_slots_druid_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_druid_wild_shape_4_day"],
+        "grantedModifiers": [
+          { "id": "druid_10_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 10", "fr": "Druide 10" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_10_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 10", "fr": "Druide 10" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_10_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 10", "fr": "Druide 10" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_10_slots_4", "sourceId": "class_druid", "sourceName": { "en": "Druid 10", "fr": "Druide 10" }, "targetId": "resources.spell_slots_druid_4", "value": 1, "type": "base" },
+          { "id": "druid_10_slots_5", "sourceId": "class_druid", "sourceName": { "en": "Druid 10", "fr": "Druide 10" }, "targetId": "resources.spell_slots_druid_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": ["class_feature_druid_wild_shape_tiny"],
+        "grantedModifiers": [
+          { "id": "druid_11_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 11", "fr": "Druide 11" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_11_slots_1", "sourceId": "class_druid", "sourceName": { "en": "Druid 11", "fr": "Druide 11" }, "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base" },
+          { "id": "druid_11_slots_3", "sourceId": "class_druid", "sourceName": { "en": "Druid 11", "fr": "Druide 11" }, "targetId": "resources.spell_slots_druid_3", "value": 1, "type": "base" },
+          { "id": "druid_11_slots_6", "sourceId": "class_druid", "sourceName": { "en": "Druid 11", "fr": "Druide 11" }, "targetId": "resources.spell_slots_druid_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": ["class_feature_druid_wild_shape_plant"],
+        "grantedModifiers": [
+          { "id": "druid_12_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_12_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_12_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_12_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_12_slots_5", "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "resources.spell_slots_druid_5", "value": 1, "type": "base" },
+          { "id": "druid_12_slots_6", "sourceId": "class_druid", "sourceName": { "en": "Druid 12", "fr": "Druide 12" }, "targetId": "resources.spell_slots_druid_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": ["class_feature_druid_thousand_faces"],
+        "grantedModifiers": [
+          { "id": "druid_13_slots_2", "sourceId": "class_druid", "sourceName": { "en": "Druid 13", "fr": "Druide 13" }, "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base" },
+          { "id": "druid_13_slots_4", "sourceId": "class_druid", "sourceName": { "en": "Druid 13", "fr": "Druide 13" }, "targetId": "resources.spell_slots_druid_4", "value": 1, "type": "base" },
+          { "id": "druid_13_slots_7", "sourceId": "class_druid", "sourceName": { "en": "Druid 13", "fr": "Druide 13" }, "targetId": "resources.spell_slots_druid_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": ["class_feature_druid_wild_shape_5_day"],
+        "grantedModifiers": [
+          { "id": "druid_14_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 14", "fr": "Druide 14" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_14_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 14", "fr": "Druide 14" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_14_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 14", "fr": "Druide 14" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_14_slots_6", "sourceId": "class_druid", "sourceName": { "en": "Druid 14", "fr": "Druide 14" }, "targetId": "resources.spell_slots_druid_6", "value": 1, "type": "base" },
+          { "id": "druid_14_slots_7", "sourceId": "class_druid", "sourceName": { "en": "Druid 14", "fr": "Druide 14" }, "targetId": "resources.spell_slots_druid_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [
+          "class_feature_druid_timeless_body",
+          "class_feature_druid_wild_shape_huge"
+        ],
+        "grantedModifiers": [
+          { "id": "druid_15_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 15", "fr": "Druide 15" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_15_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 15", "fr": "Druide 15" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_15_slots_3", "sourceId": "class_druid", "sourceName": { "en": "Druid 15", "fr": "Druide 15" }, "targetId": "resources.spell_slots_druid_3", "value": 1, "type": "base" },
+          { "id": "druid_15_slots_5", "sourceId": "class_druid", "sourceName": { "en": "Druid 15", "fr": "Druide 15" }, "targetId": "resources.spell_slots_druid_5", "value": 1, "type": "base" },
+          { "id": "druid_15_slots_8", "sourceId": "class_druid", "sourceName": { "en": "Druid 15", "fr": "Druide 15" }, "targetId": "resources.spell_slots_druid_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": ["class_feature_druid_wild_shape_elemental_1_day"],
+        "grantedModifiers": [
+          { "id": "druid_16_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 16", "fr": "Druide 16" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_16_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 16", "fr": "Druide 16" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_16_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 16", "fr": "Druide 16" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_16_slots_7", "sourceId": "class_druid", "sourceName": { "en": "Druid 16", "fr": "Druide 16" }, "targetId": "resources.spell_slots_druid_7", "value": 1, "type": "base" },
+          { "id": "druid_16_slots_8", "sourceId": "class_druid", "sourceName": { "en": "Druid 16", "fr": "Druide 16" }, "targetId": "resources.spell_slots_druid_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "druid_17_slots_4", "sourceId": "class_druid", "sourceName": { "en": "Druid 17", "fr": "Druide 17" }, "targetId": "resources.spell_slots_druid_4", "value": 1, "type": "base" },
+          { "id": "druid_17_slots_6", "sourceId": "class_druid", "sourceName": { "en": "Druid 17", "fr": "Druide 17" }, "targetId": "resources.spell_slots_druid_6", "value": 1, "type": "base" },
+          { "id": "druid_17_slots_9", "sourceId": "class_druid", "sourceName": { "en": "Druid 17", "fr": "Druide 17" }, "targetId": "resources.spell_slots_druid_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [
+          "class_feature_druid_wild_shape_6_day",
+          "class_feature_druid_wild_shape_elemental_2_day"
+        ],
+        "grantedModifiers": [
+          { "id": "druid_18_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_18_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_18_ref",     "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "druid_18_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_18_slots_8", "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "resources.spell_slots_druid_8", "value": 1, "type": "base" },
+          { "id": "druid_18_slots_9", "sourceId": "class_druid", "sourceName": { "en": "Druid 18", "fr": "Druide 18" }, "targetId": "resources.spell_slots_druid_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "druid_19_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 19", "fr": "Druide 19" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_19_slots_5", "sourceId": "class_druid", "sourceName": { "en": "Druid 19", "fr": "Druide 19" }, "targetId": "resources.spell_slots_druid_5", "value": 1, "type": "base" },
+          { "id": "druid_19_slots_7", "sourceId": "class_druid", "sourceName": { "en": "Druid 19", "fr": "Druide 19" }, "targetId": "resources.spell_slots_druid_7", "value": 1, "type": "base" },
+          { "id": "druid_19_slots_9", "sourceId": "class_druid", "sourceName": { "en": "Druid 19", "fr": "Druide 19" }, "targetId": "resources.spell_slots_druid_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [
+          "class_feature_druid_wild_shape_elemental_3_day",
+          "class_feature_druid_wild_shape_huge_elemental"
+        ],
+        "grantedModifiers": [
+          { "id": "druid_20_bab",     "sourceId": "class_druid", "sourceName": { "en": "Druid 20", "fr": "Druide 20" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "druid_20_fort",    "sourceId": "class_druid", "sourceName": { "en": "Druid 20", "fr": "Druide 20" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "druid_20_will",    "sourceId": "class_druid", "sourceName": { "en": "Druid 20", "fr": "Druide 20" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "druid_20_slots_8", "sourceId": "class_druid", "sourceName": { "en": "Druid 20", "fr": "Druide 20" }, "targetId": "resources.spell_slots_druid_8", "value": 1, "type": "base" },
+          { "id": "druid_20_slots_9", "sourceId": "class_druid", "sourceName": { "en": "Druid 20", "fr": "Druide 20" }, "targetId": "resources.spell_slots_druid_9", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_fighter",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fighter", "fr": "Guerrier" },
+    "description": {
+      "en": "A master of martial combat, skilled with a variety of weapons and armor.",
+      "fr": "Un maître du combat martial, habile avec une grande variété d'armes et d'armures."
+    },
+    "tags": ["class", "base_class", "class_fighter", "martial"],
+    "grantedModifiers": [
+      {
+        "id": "fighter_hit_die",
+        "sourceId": "class_fighter",
+        "sourceName": { "en": "Fighter", "fr": "Guerrier" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 10,
+        "type": "base"
+      },
+      {
+        "id": "fighter_skill_points",
+        "sourceId": "class_fighter",
+        "sourceName": { "en": "Fighter", "fr": "Guerrier" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_martial",
+      "proficiency_weapons_simple",
+      "proficiency_armor_all",
+      "proficiency_shields_all",
+      "proficiency_tower_shield"
+    ],
+    "classSkills": [
+      "skill_climb",
+      "skill_craft",
+      "skill_handle_animal",
+      "skill_intimidate",
+      "skill_jump",
+      "skill_ride",
+      "skill_swim"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_1"],
+        "grantedModifiers": [
+          { "id": "fighter_1_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 1",  "fr": "Guerrier 1"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_1_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 1",  "fr": "Guerrier 1"  }, "targetId": "saves.fortitude", "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_2"],
+        "grantedModifiers": [
+          { "id": "fighter_2_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 2",  "fr": "Guerrier 2"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_2_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 2",  "fr": "Guerrier 2"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_3_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 3",  "fr": "Guerrier 3"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_3_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 3",  "fr": "Guerrier 3"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_3_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 3",  "fr": "Guerrier 3"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_3"],
+        "grantedModifiers": [
+          { "id": "fighter_4_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 4",  "fr": "Guerrier 4"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_4_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 4",  "fr": "Guerrier 4"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_5_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 5",  "fr": "Guerrier 5"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_4"],
+        "grantedModifiers": [
+          { "id": "fighter_6_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 6",  "fr": "Guerrier 6"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_6_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 6",  "fr": "Guerrier 6"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "fighter_6_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 6",  "fr": "Guerrier 6"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_6_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 6",  "fr": "Guerrier 6"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_7_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 7",  "fr": "Guerrier 7"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_5"],
+        "grantedModifiers": [
+          { "id": "fighter_8_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 8",  "fr": "Guerrier 8"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_8_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 8",  "fr": "Guerrier 8"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_9_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 9",  "fr": "Guerrier 9"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_9_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 9",  "fr": "Guerrier 9"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_9_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 9",  "fr": "Guerrier 9"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_6"],
+        "grantedModifiers": [
+          { "id": "fighter_10_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 10", "fr": "Guerrier 10" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_10_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 10", "fr": "Guerrier 10" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_11_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 11", "fr": "Guerrier 11" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_7"],
+        "grantedModifiers": [
+          { "id": "fighter_12_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 12", "fr": "Guerrier 12" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_12_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 12", "fr": "Guerrier 12" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "fighter_12_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 12", "fr": "Guerrier 12" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_12_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 12", "fr": "Guerrier 12" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_13_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 13", "fr": "Guerrier 13" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_8"],
+        "grantedModifiers": [
+          { "id": "fighter_14_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 14", "fr": "Guerrier 14" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_14_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 14", "fr": "Guerrier 14" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_15_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 15", "fr": "Guerrier 15" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_15_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 15", "fr": "Guerrier 15" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_15_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 15", "fr": "Guerrier 15" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_9"],
+        "grantedModifiers": [
+          { "id": "fighter_16_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 16", "fr": "Guerrier 16" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_16_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 16", "fr": "Guerrier 16" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_17_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 17", "fr": "Guerrier 17" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_10"],
+        "grantedModifiers": [
+          { "id": "fighter_18_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 18", "fr": "Guerrier 18" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_18_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 18", "fr": "Guerrier 18" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "fighter_18_ref",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 18", "fr": "Guerrier 18" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "fighter_18_will", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 18", "fr": "Guerrier 18" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "fighter_19_bab", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 19", "fr": "Guerrier 19" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": ["class_feature_fighter_bonus_feat_11"],
+        "grantedModifiers": [
+          { "id": "fighter_20_bab",  "sourceId": "class_fighter", "sourceName": { "en": "Fighter 20", "fr": "Guerrier 20" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "fighter_20_fort", "sourceId": "class_fighter", "sourceName": { "en": "Fighter 20", "fr": "Guerrier 20" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_monk",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Monk", "fr": "Moine" },
+    "description": {
+      "en": "A martial artist whose unarmed strikes hit fast and hard — a monk needs no weapons.",
+      "fr": "Un artiste martial dont les frappes à mains nues sont rapides et puissantes — un moine n'a pas besoin d'armes."
+    },
+    "tags": ["class", "base_class", "class_monk"],
+    "forbiddenTags": ["alignment_chaotic", "alignment_neutral_ethical"],
+    "grantedModifiers": [
+      {
+        "id": "monk_hit_die",
+        "sourceId": "class_monk",
+        "sourceName": { "en": "Monk", "fr": "Moine" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base"
+      },
+      {
+        "id": "monk_skill_points",
+        "sourceId": "class_monk",
+        "sourceName": { "en": "Monk", "fr": "Moine" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_weapons_monk",
+      "class_feature_monk_ac_bonus",
+      "class_feature_monk_unarmed_strike"
+    ],
+    "classSkills": [
+      "skill_balance",
+      "skill_climb",
+      "skill_concentration",
+      "skill_craft",
+      "skill_diplomacy",
+      "skill_escape_artist",
+      "skill_hide",
+      "skill_jump",
+      "skill_knowledge_arcana",
+      "skill_knowledge_religion",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_perform",
+      "skill_profession",
+      "skill_sense_motive",
+      "skill_spot",
+      "skill_swim",
+      "skill_tumble"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_dex", "stat_wis"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_monk_flurry_of_blows",
+          "class_feature_monk_bonus_feat_1"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_1_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 1",  "fr": "Moine 1"  }, "targetId": "combatStats.bab",      "value": 0,     "type": "base" },
+          { "id": "monk_1_fort",    "sourceId": "class_monk", "sourceName": { "en": "Monk 1",  "fr": "Moine 1"  }, "targetId": "saves.fortitude",     "value": 2,     "type": "base" },
+          { "id": "monk_1_ref",     "sourceId": "class_monk", "sourceName": { "en": "Monk 1",  "fr": "Moine 1"  }, "targetId": "saves.reflex",        "value": 2,     "type": "base" },
+          { "id": "monk_1_will",    "sourceId": "class_monk", "sourceName": { "en": "Monk 1",  "fr": "Moine 1"  }, "targetId": "saves.will",          "value": 2,     "type": "base" },
+          { "id": "monk_1_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 1",  "fr": "Moine 1"  }, "targetId": "combatStats.unarmed_damage", "value": "1d6", "type": "setAbsolute" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_monk_bonus_feat_2",
+          "class_feature_monk_evasion"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_2_bab",  "sourceId": "class_monk", "sourceName": { "en": "Monk 2",  "fr": "Moine 2"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "monk_2_fort", "sourceId": "class_monk", "sourceName": { "en": "Monk 2",  "fr": "Moine 2"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "monk_2_ref",  "sourceId": "class_monk", "sourceName": { "en": "Monk 2",  "fr": "Moine 2"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "monk_2_will", "sourceId": "class_monk", "sourceName": { "en": "Monk 2",  "fr": "Moine 2"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_monk_still_mind"],
+        "grantedModifiers": [
+          { "id": "monk_3_bab",   "sourceId": "class_monk", "sourceName": { "en": "Monk 3",  "fr": "Moine 3"  }, "targetId": "combatStats.bab",    "value": 1,  "type": "base" },
+          { "id": "monk_3_speed", "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [
+          "class_feature_monk_ki_strike_magic",
+          "class_feature_monk_slow_fall_20"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_4_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 4",  "fr": "Moine 4"  }, "targetId": "combatStats.bab",      "value": 1,     "type": "base" },
+          { "id": "monk_4_fort",    "sourceId": "class_monk", "sourceName": { "en": "Monk 4",  "fr": "Moine 4"  }, "targetId": "saves.fortitude",     "value": 1,     "type": "base" },
+          { "id": "monk_4_ref",     "sourceId": "class_monk", "sourceName": { "en": "Monk 4",  "fr": "Moine 4"  }, "targetId": "saves.reflex",        "value": 1,     "type": "base" },
+          { "id": "monk_4_will",    "sourceId": "class_monk", "sourceName": { "en": "Monk 4",  "fr": "Moine 4"  }, "targetId": "saves.will",          "value": 1,     "type": "base" },
+          { "id": "monk_4_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 4",  "fr": "Moine 4"  }, "targetId": "combatStats.unarmed_damage", "value": "1d8", "type": "setAbsolute" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_monk_purity_of_body"],
+        "grantedModifiers": [
+          {
+            "id": "monk_5_ac_normal",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_normal",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": {
+              "logic": "AND",
+              "nodes": [
+                { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
+                { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } }
+              ]
+            }
+          },
+          {
+            "id": "monk_5_ac_touch",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_touch",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": {
+              "logic": "AND",
+              "nodes": [
+                { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
+                { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [
+          "class_feature_monk_bonus_feat_3",
+          "class_feature_monk_slow_fall_30"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_6_bab",   "sourceId": "class_monk", "sourceName": { "en": "Monk 6",  "fr": "Moine 6"  }, "targetId": "combatStats.bab",    "value": 1,  "type": "base" },
+          { "id": "monk_6_fort",  "sourceId": "class_monk", "sourceName": { "en": "Monk 6",  "fr": "Moine 6"  }, "targetId": "saves.fortitude",   "value": 1,  "type": "base" },
+          { "id": "monk_6_ref",   "sourceId": "class_monk", "sourceName": { "en": "Monk 6",  "fr": "Moine 6"  }, "targetId": "saves.reflex",      "value": 1,  "type": "base" },
+          { "id": "monk_6_will",  "sourceId": "class_monk", "sourceName": { "en": "Monk 6",  "fr": "Moine 6"  }, "targetId": "saves.will",        "value": 1,  "type": "base" },
+          { "id": "monk_6_speed", "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_monk_wholeness_of_body"],
+        "grantedModifiers": [
+          { "id": "monk_7_bab", "sourceId": "class_monk", "sourceName": { "en": "Monk 7",  "fr": "Moine 7"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_monk_slow_fall_40"],
+        "grantedModifiers": [
+          { "id": "monk_8_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 8",  "fr": "Moine 8"  }, "targetId": "combatStats.bab",      "value": 1,      "type": "base" },
+          { "id": "monk_8_fort",    "sourceId": "class_monk", "sourceName": { "en": "Monk 8",  "fr": "Moine 8"  }, "targetId": "saves.fortitude",     "value": 1,      "type": "base" },
+          { "id": "monk_8_ref",     "sourceId": "class_monk", "sourceName": { "en": "Monk 8",  "fr": "Moine 8"  }, "targetId": "saves.reflex",        "value": 1,      "type": "base" },
+          { "id": "monk_8_will",    "sourceId": "class_monk", "sourceName": { "en": "Monk 8",  "fr": "Moine 8"  }, "targetId": "saves.will",          "value": 1,      "type": "base" },
+          { "id": "monk_8_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 8",  "fr": "Moine 8"  }, "targetId": "combatStats.unarmed_damage", "value": "1d10", "type": "setAbsolute" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_monk_improved_evasion"],
+        "grantedModifiers": [
+          { "id": "monk_9_speed", "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [
+          "class_feature_monk_ki_strike_lawful",
+          "class_feature_monk_slow_fall_50"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_10_bab",  "sourceId": "class_monk", "sourceName": { "en": "Monk 10", "fr": "Moine 10" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "monk_10_fort", "sourceId": "class_monk", "sourceName": { "en": "Monk 10", "fr": "Moine 10" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "monk_10_ref",  "sourceId": "class_monk", "sourceName": { "en": "Monk 10", "fr": "Moine 10" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "monk_10_will", "sourceId": "class_monk", "sourceName": { "en": "Monk 10", "fr": "Moine 10" }, "targetId": "saves.will",      "value": 1, "type": "base" },
+          {
+            "id": "monk_10_ac_normal",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_normal",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          },
+          {
+            "id": "monk_10_ac_touch",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_touch",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [
+          "class_feature_monk_diamond_body",
+          "class_feature_monk_greater_flurry"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_11_bab", "sourceId": "class_monk", "sourceName": { "en": "Monk 11", "fr": "Moine 11" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [
+          "class_feature_monk_abundant_step",
+          "class_feature_monk_slow_fall_60"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_12_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 12", "fr": "Moine 12" }, "targetId": "combatStats.bab",      "value": 1,      "type": "base" },
+          { "id": "monk_12_fort",    "sourceId": "class_monk", "sourceName": { "en": "Monk 12", "fr": "Moine 12" }, "targetId": "saves.fortitude",     "value": 1,      "type": "base" },
+          { "id": "monk_12_ref",     "sourceId": "class_monk", "sourceName": { "en": "Monk 12", "fr": "Moine 12" }, "targetId": "saves.reflex",        "value": 1,      "type": "base" },
+          { "id": "monk_12_will",    "sourceId": "class_monk", "sourceName": { "en": "Monk 12", "fr": "Moine 12" }, "targetId": "saves.will",          "value": 1,      "type": "base" },
+          { "id": "monk_12_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 12", "fr": "Moine 12" }, "targetId": "combatStats.unarmed_damage", "value": "2d6", "type": "setAbsolute" },
+          { "id": "monk_12_speed",   "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": ["class_feature_monk_diamond_soul"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 14,
+        "grantedFeatures": ["class_feature_monk_slow_fall_70"],
+        "grantedModifiers": [
+          { "id": "monk_14_bab",  "sourceId": "class_monk", "sourceName": { "en": "Monk 14", "fr": "Moine 14" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "monk_14_fort", "sourceId": "class_monk", "sourceName": { "en": "Monk 14", "fr": "Moine 14" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "monk_14_ref",  "sourceId": "class_monk", "sourceName": { "en": "Monk 14", "fr": "Moine 14" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "monk_14_will", "sourceId": "class_monk", "sourceName": { "en": "Monk 14", "fr": "Moine 14" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": ["class_feature_monk_quivering_palm"],
+        "grantedModifiers": [
+          { "id": "monk_15_bab",   "sourceId": "class_monk", "sourceName": { "en": "Monk 15", "fr": "Moine 15" }, "targetId": "combatStats.bab",    "value": 1,  "type": "base" },
+          { "id": "monk_15_speed", "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" },
+          {
+            "id": "monk_15_ac_normal",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_normal",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          },
+          {
+            "id": "monk_15_ac_touch",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_touch",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [
+          "class_feature_monk_ki_strike_adamantine",
+          "class_feature_monk_slow_fall_80"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_16_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 16", "fr": "Moine 16" }, "targetId": "combatStats.bab",      "value": 1,      "type": "base" },
+          { "id": "monk_16_fort",    "sourceId": "class_monk", "sourceName": { "en": "Monk 16", "fr": "Moine 16" }, "targetId": "saves.fortitude",     "value": 1,      "type": "base" },
+          { "id": "monk_16_ref",     "sourceId": "class_monk", "sourceName": { "en": "Monk 16", "fr": "Moine 16" }, "targetId": "saves.reflex",        "value": 1,      "type": "base" },
+          { "id": "monk_16_will",    "sourceId": "class_monk", "sourceName": { "en": "Monk 16", "fr": "Moine 16" }, "targetId": "saves.will",          "value": 1,      "type": "base" },
+          { "id": "monk_16_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 16", "fr": "Moine 16" }, "targetId": "combatStats.unarmed_damage", "value": "2d8", "type": "setAbsolute" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [
+          "class_feature_monk_timeless_body",
+          "class_feature_monk_tongue_sun_moon"
+        ],
+        "grantedModifiers": []
+      },
+      {
+        "level": 18,
+        "grantedFeatures": ["class_feature_monk_slow_fall_90"],
+        "grantedModifiers": [
+          { "id": "monk_18_bab",   "sourceId": "class_monk", "sourceName": { "en": "Monk 18", "fr": "Moine 18" }, "targetId": "combatStats.bab",    "value": 1,  "type": "base" },
+          { "id": "monk_18_fort",  "sourceId": "class_monk", "sourceName": { "en": "Monk 18", "fr": "Moine 18" }, "targetId": "saves.fortitude",   "value": 1,  "type": "base" },
+          { "id": "monk_18_ref",   "sourceId": "class_monk", "sourceName": { "en": "Monk 18", "fr": "Moine 18" }, "targetId": "saves.reflex",      "value": 1,  "type": "base" },
+          { "id": "monk_18_will",  "sourceId": "class_monk", "sourceName": { "en": "Monk 18", "fr": "Moine 18" }, "targetId": "saves.will",        "value": 1,  "type": "base" },
+          { "id": "monk_18_speed", "sourceId": "class_monk", "sourceName": { "en": "Monk Fast Movement", "fr": "Déplacement rapide Moine" }, "targetId": "attributes.speed_land", "value": 10, "type": "enhancement" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": ["class_feature_monk_empty_body"],
+        "grantedModifiers": [
+          { "id": "monk_19_bab",     "sourceId": "class_monk", "sourceName": { "en": "Monk 19", "fr": "Moine 19" }, "targetId": "combatStats.bab",      "value": 1,       "type": "base" },
+          { "id": "monk_19_unarmed", "sourceId": "class_monk", "sourceName": { "en": "Monk 19", "fr": "Moine 19" }, "targetId": "combatStats.unarmed_damage", "value": "2d10", "type": "setAbsolute" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [
+          "class_feature_monk_perfect_self",
+          "class_feature_monk_slow_fall_any"
+        ],
+        "grantedModifiers": [
+          { "id": "monk_20_bab",  "sourceId": "class_monk", "sourceName": { "en": "Monk 20", "fr": "Moine 20" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "monk_20_fort", "sourceId": "class_monk", "sourceName": { "en": "Monk 20", "fr": "Moine 20" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "monk_20_ref",  "sourceId": "class_monk", "sourceName": { "en": "Monk 20", "fr": "Moine 20" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "monk_20_will", "sourceId": "class_monk", "sourceName": { "en": "Monk 20", "fr": "Moine 20" }, "targetId": "saves.will",      "value": 1, "type": "base" },
+          {
+            "id": "monk_20_ac_normal",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_normal",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          },
+          {
+            "id": "monk_20_ac_touch",
+            "sourceId": "class_monk",
+            "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+            "targetId": "combatStats.ac_touch",
+            "value": 1,
+            "type": "untyped",
+            "conditionNode": { "logic": "AND", "nodes": [ { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } }, { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } } ] }
+          }
+        ]
+      }
+    ]
   }
 ]
