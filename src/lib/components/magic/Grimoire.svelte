@@ -13,6 +13,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import type { MagicFeature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
@@ -75,11 +76,11 @@
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-2">
     <div class="section-header">
       <IconSpells size={20} aria-hidden="true" />
-      <span>Grimoire — Spell Catalog</span>
+      <span>{ui('magic.grimoire.title', engine.settings.language)}</span>
     </div>
     <div class="flex gap-1.5">
-      <span class="badge-accent">CL {engine.phase_casterLevel}</span>
-      <span class="badge-gray">Max Lvl {maxSpellLevel}</span>
+      <span class="badge-accent">{ui('magic.grimoire.cl', engine.settings.language)} {engine.phase_casterLevel}</span>
+      <span class="badge-gray">{ui('magic.grimoire.max_level', engine.settings.language)} {maxSpellLevel}</span>
     </div>
   </div>
 
@@ -91,7 +92,7 @@
     <input
       type="search"
       bind:value={searchQuery}
-      placeholder="Search spells…"
+      placeholder={ui('magic.grimoire.search', engine.settings.language)}
       class="input pl-8 text-sm w-full"
       aria-label="Search spell catalog"
     />
@@ -101,8 +102,8 @@
   {#if availableSpells.length === 0}
     <p class="text-sm text-text-muted italic text-center py-4">
       {activeSpellListIds.size === 0
-        ? 'Select a spellcasting class to see its spell list.'
-        : `Caster level ${engine.phase_casterLevel} — no spells match the current filters.`}
+        ? ui('magic.grimoire.no_class', engine.settings.language)
+        : `${ui('magic.grimoire.cl', engine.settings.language)} ${engine.phase_casterLevel} — ${ui('magic.grimoire.no_match', engine.settings.language)}`}
     </p>
   {:else}
     <div
@@ -122,7 +123,7 @@
           <div class="flex-1 flex flex-col gap-0.5 min-w-0">
             <span class="text-sm font-medium text-text-primary truncate">{engine.t(spell.label)}</span>
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="badge-accent text-[10px]">Lvl {sl}</span>
+              <span class="badge-accent text-[10px]">{ui('magic.grimoire.lvl', engine.settings.language)} {sl}</span>
               <span class="text-[10px] text-text-muted">{spell.school}</span>
               <span class="text-[10px] px-1.5 py-0.5 rounded border {magicTypeBadgeClass(spell.magicType)}">{spell.magicType}</span>
             </div>
@@ -143,13 +144,13 @@
                        : 'bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'}"
               onclick={() => learnSpell(spell.id)}
               disabled={known}
-              aria-label="{known ? 'Already known' : 'Learn ' + engine.t(spell.label)}"
+              aria-label="{known ? ui('magic.grimoire.known', engine.settings.language) : ui('magic.grimoire.learn', engine.settings.language) + ' ' + engine.t(spell.label)}"
               type="button"
             >
               {#if known}
-                <IconChecked size={12} aria-hidden="true" /> Known
+                <IconChecked size={12} aria-hidden="true" /> {ui('magic.grimoire.known', engine.settings.language)}
               {:else}
-                <IconAdd size={12} aria-hidden="true" /> Learn
+                <IconAdd size={12} aria-hidden="true" /> {ui('magic.grimoire.learn', engine.settings.language)}
               {/if}
             </button>
           </div>

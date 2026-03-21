@@ -64,10 +64,21 @@
   }
   function handleDragEnd() { dragSrcIndex = null; }
 
-  let gmOverridesText = $state(campaign?.gmGlobalOverrides ?? '[]');
+  let gmOverridesText = $state('[]');
   let jsonError       = $state('');
   let jsonWarnings    = $state<string[]>([]);
   let isValidJson     = $state(true);
+
+  // Sync the override text from campaign data when campaign loads/changes.
+  // Using $effect avoids the "initial value capture" warning from $derived.
+  let overridesInitialised = false;
+  $effect(() => {
+    const overrides = campaign?.gmGlobalOverrides;
+    if (overrides && !overridesInitialised) {
+      gmOverridesText = overrides;
+      overridesInitialised = true;
+    }
+  });
 
   function validateOverrideJson() {
     jsonError = ''; jsonWarnings = []; isValidJson = true;

@@ -11,6 +11,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
@@ -34,7 +35,7 @@
   <!-- Header -->
   <div class="section-header border-b border-border pb-2">
     <IconSaves size={20} aria-hidden="true" />
-    <span>Saving Throws</span>
+    <span>{ui('saves.title', engine.settings.language)}</span>
   </div>
 
   <!-- 3-card grid -->
@@ -89,7 +90,7 @@
 
             <!-- Base save bonus -->
             <div class="flex flex-col items-center px-2 py-1 rounded border border-border bg-surface min-w-[2.5rem]">
-              <span class="text-[10px] uppercase tracking-wider text-text-muted">Base</span>
+              <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('saves.base', engine.settings.language)}</span>
               <span class="text-sm font-semibold text-text-secondary">
                 {formatModifier(pipeline.totalBonus - abilityMod)}
               </span>
@@ -98,7 +99,7 @@
             <!-- Active modifier count (if any) -->
             {#if pipeline.activeModifiers.length > 0}
               <div class="flex flex-col items-center px-2 py-1 rounded border border-border bg-surface min-w-[2.5rem]">
-                <span class="text-[10px] uppercase tracking-wider text-text-muted">Mods</span>
+                <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('saves.mods', engine.settings.language)}</span>
                 <span class="text-xs text-text-muted">{pipeline.activeModifiers.length}</span>
               </div>
             {/if}
@@ -106,7 +107,7 @@
 
           <!-- Temp modifier row -->
           <div class="flex items-center gap-2">
-            <label for="temp-save-{save.pipelineId}" class="text-xs text-text-muted shrink-0">Temp</label>
+            <label for="temp-save-{save.pipelineId}" class="text-xs text-text-muted shrink-0">{ui('saves.temp', engine.settings.language)}</label>
             <input
               id="temp-save-{save.pipelineId}"
               type="number"
@@ -123,14 +124,14 @@
               class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
               onclick={() => (breakdownSaveId = save.pipelineId)}
               aria-label="Show {engine.t(pipeline.label)} breakdown"
-              title="Show breakdown"
+              title={ui('saves.show_breakdown', engine.settings.language)}
               type="button"
             ><IconInfo size={15} aria-hidden="true" /></button>
             <button
               class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
               onclick={() => (diceRollSaveId = save.pipelineId)}
               aria-label="Roll {engine.t(pipeline.label)} save"
-              title="Roll saving throw"
+              title={ui('saves.roll', engine.settings.language)}
               type="button"
             ><IconDiceRoll size={15} aria-hidden="true" /></button>
           </div>
@@ -164,7 +165,7 @@
     <DiceRollModal
       formula="1d20"
       pipeline={dp}
-      label="{engine.t(dp.label)} Save"
+      label="{engine.t(dp.label)} {ui('saves.save', engine.settings.language)}"
       onclose={() => (diceRollSaveId = null)}
     />
   {/if}

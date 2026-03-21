@@ -15,6 +15,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconAbilities, IconInfo } from '$lib/components/ui/icons';
@@ -37,12 +38,12 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconAbilities size={20} aria-hidden="true" />
-    <span>Special Abilities</span>
+    <span>{ui('magic.abilities.title', engine.settings.language)}</span>
   </div>
 
   {#if specialAbilities.length === 0}
     <p class="text-sm text-text-muted italic">
-      No special abilities found. Class and domain abilities with activation types will appear here.
+      {ui('magic.abilities.empty', engine.settings.language)}
     </p>
   {:else}
     <!-- Responsive card grid -->
@@ -66,7 +67,7 @@
           <!-- Resource cost -->
           {#if feature.activation?.resourceCost}
             <span class="text-xs text-yellow-500 dark:text-yellow-400">
-              Cost: {feature.activation.resourceCost.cost} × {feature.activation.resourceCost.targetId}
+              {ui('magic.abilities.cost', engine.settings.language)} {feature.activation.resourceCost.cost} × {feature.activation.resourceCost.targetId}
             </span>
           {/if}
 
@@ -82,7 +83,7 @@
               class="flex-1 btn-primary text-xs py-1.5"
               aria-label="Use {engine.t(feature.label)}"
               type="button"
-            >Use</button>
+            >{ui('magic.abilities.use', engine.settings.language)}</button>
           </div>
         </div>
       {/each}

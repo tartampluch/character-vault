@@ -13,19 +13,10 @@
   import { formatModifier } from '$lib/utils/formatters';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconTabFeats, IconChecked } from '$lib/components/ui/icons';
+  import { MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
 
   interface Props { onclose: () => void; }
   let { onclose }: Props = $props();
-
-  const MAIN_ABILITY_IDS = [
-    'stat_str', 'stat_dex', 'stat_con',
-    'stat_int', 'stat_wis', 'stat_cha',
-  ] as const;
-
-  const ABILITY_ABBRS: Record<string, string> = {
-    stat_str: 'STR', stat_dex: 'DEX', stat_con: 'CON',
-    stat_int: 'INT', stat_wis: 'WIS', stat_cha: 'CHA',
-  };
 
   const FALLBACK_COSTS: Record<number, number> = {
     7: -4, 8: 0, 9: 1, 10: 2, 11: 3, 12: 4,

@@ -6,6 +6,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { Footprints, Pickaxe, Mountain, Wind, Waves } from 'lucide-svelte';
   import { IconWarning } from '$lib/components/ui/icons';
 
@@ -22,7 +23,7 @@
 
   <div class="section-header border-b border-border pb-2">
     <Footprints size={20} aria-hidden="true" />
-    <span>Movement Speeds</span>
+    <span>{ui('combat.movement.title', engine.settings.language)}</span>
   </div>
 
   <div class="flex flex-wrap gap-2">
@@ -36,7 +37,7 @@
             {engine.formatDistance(pipeline.totalValue)}
           </span>
           {#if pipeline.totalBonus < 0}
-            <span class="flex items-center gap-0.5 text-[10px] text-red-400" title="Penalty from armor or encumbrance">
+            <span class="flex items-center gap-0.5 text-[10px] text-red-400" title={ui('combat.movement.penalty_title', engine.settings.language)}>
               <IconWarning size={10} aria-hidden="true" />
               {engine.formatDistance(pipeline.totalBonus)}
             </span>
@@ -47,7 +48,7 @@
   </div>
 
   <p class="text-xs text-text-muted italic">
-    Armor &amp; encumbrance penalties applied via pipeline modifiers.
+    {ui('combat.movement.penalty_note', engine.settings.language)}
   </p>
 
 </div>

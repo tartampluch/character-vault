@@ -11,6 +11,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
 
   const hpPool        = $derived(engine.character.resources['resources.hp']);
@@ -23,15 +24,15 @@
 
   /* Health status — colour stays inline since it's a runtime computed value */
   const hpStatus = $derived.by(() => {
-    if (!hpPool || maxHp <= 0) return { label: 'Unknown', color: 'oklch(55% 0.010 264)' };
+    if (!hpPool || maxHp <= 0) return { label: ui('combat.hp.unknown', engine.settings.language), color: 'oklch(55% 0.010 264)' };
     if (currentHp <= -(engine.phase2_attributes['stat_con']?.totalValue ?? 10))
-      return { label: 'Dead',        color: 'oklch(30% 0.18 28)' };
-    if (currentHp <= -1) return { label: 'Dying',       color: 'oklch(40% 0.20 28)' };
-    if (currentHp ===  0) return { label: 'Unconscious', color: 'oklch(40% 0.18 28)' };
+      return { label: ui('combat.hp.dead', engine.settings.language),        color: 'oklch(30% 0.18 28)' };
+    if (currentHp <= -1) return { label: ui('combat.hp.dying', engine.settings.language),       color: 'oklch(40% 0.20 28)' };
+    if (currentHp ===  0) return { label: ui('combat.hp.unconscious', engine.settings.language), color: 'oklch(40% 0.18 28)' };
     const frac = currentHp / maxHp;
-    if (frac <= 0.25) return { label: 'Bloodied', color: 'oklch(55% 0.20 28)' };
-    if (frac <= 0.50) return { label: 'Injured',  color: 'oklch(72% 0.17 88)' };
-    return { label: 'Healthy', color: 'oklch(65% 0.17 145)' };
+    if (frac <= 0.25) return { label: ui('combat.hp.bloodied', engine.settings.language), color: 'oklch(55% 0.20 28)' };
+    if (frac <= 0.50) return { label: ui('combat.hp.injured', engine.settings.language),  color: 'oklch(72% 0.17 88)' };
+    return { label: ui('combat.hp.healthy', engine.settings.language), color: 'oklch(65% 0.17 145)' };
   });
 
   const conMod       = $derived(engine.phase2_attributes['stat_con']?.derivedModifier ?? 0);
@@ -96,7 +97,7 @@
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
       <IconHealth size={20} aria-hidden="true" />
-      <span>Hit Points</span>
+      <span>{ui('combat.hp.title', engine.settings.language)}</span>
     </div>
 
     <!-- Status badge + CON contribution -->
@@ -108,14 +109,14 @@
         ● {hpStatus.label}
       </span>
       <span class="text-xs text-text-muted" title="CON modifier × character level">
-        CON contrib: {conHpContrib >= 0 ? '+' : ''}{conHpContrib}
+        {ui('combat.hp.con_contrib', engine.settings.language)} {conHpContrib >= 0 ? '+' : ''}{conHpContrib}
       </span>
     </div>
 
     <!-- HP numbers row -->
     <div class="flex items-end gap-3 flex-wrap">
       <div class="flex flex-col items-center gap-0.5">
-        <span class="text-[10px] uppercase tracking-wider text-text-muted">Current</span>
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.hp.current', engine.settings.language)}</span>
         <input
           type="number"
           class="w-16 text-center text-xl font-bold rounded border border-border bg-surface px-1 py-0.5 text-red-400 focus:outline-none focus:border-red-400"
@@ -126,12 +127,12 @@
       </div>
       <span class="text-xl text-text-muted self-center">/</span>
       <div class="flex flex-col items-center gap-0.5">
-        <span class="text-[10px] uppercase tracking-wider text-text-muted">Max</span>
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.hp.max', engine.settings.language)}</span>
         <span class="text-xl font-bold text-sky-400">{maxHp}</span>
       </div>
       {#if tempHp > 0}
         <div class="flex flex-col items-center gap-0.5">
-          <span class="text-[10px] uppercase tracking-wider text-text-muted">+Temp</span>
+          <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.hp.temp', engine.settings.language)}</span>
           <span class="text-lg font-bold text-green-400">+{tempHp}</span>
         </div>
       {/if}
@@ -181,7 +182,7 @@
           aria-label="Apply healing"
           type="button"
         >
-          <IconHeal size={14} aria-hidden="true" /> Heal
+          <IconHeal size={14} aria-hidden="true" /> {ui('combat.hp.heal', engine.settings.language)}
         </button>
       </div>
 
@@ -203,7 +204,7 @@
           aria-label="Apply damage"
           type="button"
         >
-          <IconDamage size={14} aria-hidden="true" /> Damage
+          <IconDamage size={14} aria-hidden="true" /> {ui('combat.hp.damage', engine.settings.language)}
         </button>
       </div>
 
@@ -225,7 +226,7 @@
           aria-label="Add temporary HP"
           type="button"
         >
-          + Temp
+          {ui('combat.hp.add_temp', engine.settings.language)}
         </button>
       </div>
     </div>
@@ -235,21 +236,21 @@
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
       <IconXP size={20} aria-hidden="true" />
-      <span>Experience</span>
+      <span>{ui('combat.xp.title', engine.settings.language)}</span>
     </div>
 
     <!-- Level + XP numbers -->
     <div class="flex items-center justify-between flex-wrap gap-3">
       <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border border-border bg-surface-alt min-w-[3.5rem]">
-        <span class="text-[10px] uppercase tracking-wider text-text-muted">Level</span>
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.xp.level', engine.settings.language)}</span>
         <span class="text-2xl font-bold text-yellow-500 dark:text-yellow-400 leading-none">
           {engine.phase0_characterLevel}
         </span>
       </div>
       <div class="flex items-center gap-1.5 text-sm flex-wrap">
         <span class="font-bold text-yellow-500 dark:text-yellow-400">{currentXp.toLocaleString()}</span>
-        <span class="text-text-muted">XP /</span>
-        <span class="text-text-secondary">{nextLevelXp.toLocaleString()} XP</span>
+        <span class="text-text-muted">{ui('combat.xp.xp_separator', engine.settings.language)}</span>
+        <span class="text-text-secondary">{nextLevelXp.toLocaleString()} {ui('combat.xp.xp', engine.settings.language)}</span>
       </div>
     </div>
 
@@ -266,7 +267,7 @@
       <div class="progress-bar__fill"></div>
     </div>
     <p class="text-xs text-text-muted">
-      {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} XP to next level ({xpPercent.toFixed(0)}%)
+      {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} {ui('combat.xp.to_next', engine.settings.language)} ({xpPercent.toFixed(0)}%)
     </p>
 
     <!-- Award XP + Level Up -->
@@ -274,13 +275,13 @@
       <input
         type="number"
         bind:value={xpToAdd}
-        placeholder="Add XP…"
+        placeholder={ui('combat.xp.add_placeholder', engine.settings.language)}
         class="input flex-1 min-w-[8rem]"
         aria-label="XP to add"
         onkeydown={(e) => e.key === 'Enter' && addXp()}
       />
       <button class="btn-secondary" onclick={addXp} aria-label="Award XP" type="button">
-        + Award XP
+        {ui('combat.xp.award', engine.settings.language)}
       </button>
       {#if canLevelUp}
         <button
@@ -288,14 +289,14 @@
           aria-label="Level Up"
           type="button"
         >
-          <IconXP size={16} aria-hidden="true" /> Level Up!
+          <IconXP size={16} aria-hidden="true" /> {ui('combat.xp.level_up', engine.settings.language)}
         </button>
       {/if}
     </div>
 
     {#if dataLoader.getConfigTable('config_xp_thresholds') === undefined}
       <p class="text-xs text-text-muted italic">
-        Load <code class="bg-surface-alt px-1 rounded">config_xp_thresholds</code> for accurate XP thresholds.
+        {ui('combat.xp.config_hint', engine.settings.language)}
       </p>
     {/if}
   </section>

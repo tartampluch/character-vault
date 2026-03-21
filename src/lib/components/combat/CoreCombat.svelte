@@ -9,17 +9,18 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconTabCombat, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
-  const CORE_STATS = [
-    { id: 'combatStats.bab',     shortName: 'BAB',        description: 'Base Attack Bonus',                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
-    { id: 'combatStats.init',    shortName: 'Initiative', description: 'Initiative modifier (DEX + misc)',  showDice: true, diceLabel: 'Initiative Roll',   color: 'oklch(78% 0.17 88)'  },
-    { id: 'combatStats.grapple', shortName: 'Grapple',    description: 'Grapple modifier (BAB + STR + size)', showDice: true, diceLabel: 'Grapple Check', color: 'oklch(70% 0.17 300)' },
-  ] as const;
+  const CORE_STATS = $derived([
+    { id: 'combatStats.bab',     shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
+    { id: 'combatStats.init',    shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
+    { id: 'combatStats.grapple', shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
+  ] as const);
 
   let breakdownId = $state<ID | null>(null);
   let diceRollId  = $state<ID | null>(null);
@@ -29,7 +30,7 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconTabCombat size={20} aria-hidden="true" />
-    <span>Core Combat</span>
+    <span>{ui('combat.core.title', engine.settings.language)}</span>
   </div>
 
   <div class="grid grid-cols-3 gap-2">
@@ -56,7 +57,7 @@
               class="btn-ghost p-1 text-accent hover:bg-accent/10"
               onclick={() => (breakdownId = stat.id)}
               aria-label="Show {stat.description} breakdown"
-              title="Breakdown"
+              title={ui('combat.core.breakdown', engine.settings.language)}
               type="button"
             ><IconInfo size={14} aria-hidden="true" /></button>
             {#if stat.showDice}
@@ -64,7 +65,7 @@
                 class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollId = stat.id)}
                 aria-label="Roll dice"
-                title="Roll"
+                title={ui('combat.core.roll', engine.settings.language)}
                 type="button"
               ><IconDiceRoll size={14} aria-hidden="true" /></button>
             {/if}

@@ -27,7 +27,7 @@
 	 *   Icons are 20px per project convention (buttons and nav items).
 	 *   They inherit `currentColor` from the button's text color automatically.
 	 */
-	import { Monitor, Sun, Moon } from 'lucide-svelte';
+	import { IconThemeSystem, IconThemeLight, IconThemeDark } from '$lib/components/ui/icons';
 	import { themeManager } from '$lib/stores/ThemeManager.svelte';
 	import type { ThemePreference } from '$lib/stores/ThemeManager.svelte';
 
@@ -43,22 +43,22 @@
 	 */
 	const STATE_META: Record<
 		ThemePreference,
-		{ label: string; tooltip: string; icon: typeof Monitor }
+		{ label: string; tooltip: string; icon: typeof IconThemeSystem }
 	> = {
 		system: {
 			label: 'System',
 			tooltip: 'Theme: System (follows OS preference). Click for Light.',
-			icon: Monitor
+			icon: IconThemeSystem
 		},
 		light: {
 			label: 'Light',
 			tooltip: 'Theme: Light. Click for Dark.',
-			icon: Sun
+			icon: IconThemeLight
 		},
 		dark: {
 			label: 'Dark',
 			tooltip: 'Theme: Dark. Click for System.',
-			icon: Moon
+			icon: IconThemeDark
 		}
 	};
 

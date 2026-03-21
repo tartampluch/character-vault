@@ -198,7 +198,7 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
   // Using `Record<string, unknown>` deliberately: the path walker needs to traverse
   // an arbitrarily-nested object whose shape varies per resolution context.
   // Each segment indexes into the current level, descending until the leaf value.
-  let current: unknown = context as Record<string, unknown>;
+  let current: unknown = context as unknown as Record<string, unknown>;
   for (const part of parts) {
     if (current === null || current === undefined) {
       console.warn(`[MathParser] Path resolution failed at segment "${part}" in "@${cleanPath}". Returning 0.`);

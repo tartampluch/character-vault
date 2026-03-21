@@ -9,6 +9,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
 
@@ -54,12 +55,12 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconDR size={20} aria-hidden="true" />
-    <span>Damage Reduction</span>
+    <span>{ui('combat.dr.title', engine.settings.language)}</span>
   </div>
 
   <!-- Active DRs list -->
   {#if activeDRs.length === 0}
-    <p class="text-sm text-text-muted italic">No Damage Reduction configured.</p>
+    <p class="text-sm text-text-muted italic">{ui('combat.dr.empty', engine.settings.language)}</p>
   {:else}
     <ul class="flex flex-col gap-1.5">
       {#each activeDRs as dr}
@@ -78,10 +79,10 @@
 
   <!-- Builder form -->
   <div class="flex flex-col gap-2 pt-2 border-t border-border">
-    <span class="text-xs text-text-muted uppercase tracking-wider">Add DR</span>
+    <span class="text-xs text-text-muted uppercase tracking-wider">{ui('combat.dr.add', engine.settings.language)}</span>
     <div class="flex items-center gap-2 flex-wrap">
       <div class="flex items-center gap-1.5">
-        <label for="dr-value-input" class="text-xs text-text-muted shrink-0">Value</label>
+        <label for="dr-value-input" class="text-xs text-text-muted shrink-0">{ui('combat.dr.value', engine.settings.language)}</label>
         <input
           id="dr-value-input"
           type="number" min="1" max="50"
@@ -90,7 +91,7 @@
         />
       </div>
       <div class="flex items-center gap-1.5 flex-1 min-w-[140px]">
-        <label for="dr-bypass-select" class="text-xs text-text-muted shrink-0">Bypassed By</label>
+        <label for="dr-bypass-select" class="text-xs text-text-muted shrink-0">{ui('combat.dr.bypassed_by', engine.settings.language)}</label>
         <select id="dr-bypass-select" bind:value={drBypass} class="select flex-1 text-sm py-1">
           {#each DR_BYPASS_OPTIONS as opt}
             <option value={opt}>{opt}</option>
@@ -103,7 +104,7 @@
       onclick={addDR}
       type="button"
     >
-      <IconAdd size={14} aria-hidden="true" /> Add DR {drValue}/{drBypass}
+      <IconAdd size={14} aria-hidden="true" /> {ui('combat.dr.add', engine.settings.language)} {drValue}/{drBypass}
     </button>
   </div>
 

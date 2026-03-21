@@ -20,6 +20,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Feature } from '$lib/types/feature';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconTabFeats, IconSearch, IconSuccess, IconError, IconLocked, IconChecked } from '$lib/components/ui/icons';
@@ -71,14 +72,14 @@
   }
 </script>
 
-<Modal open={true} onClose={onclose} size="xl" fullscreen={true} title="Feat Catalog">
+<Modal open={true} onClose={onclose} size="xl" fullscreen={true} title={ui('feat_catalog.title', engine.settings.language)}>
   {#snippet children()}
     <div class="flex flex-col gap-3 -mt-2">
 
       <!-- Slots remaining badge -->
       <div class="flex items-center gap-2">
-        <span class="badge-accent">{engine.phase_featSlotsRemaining} slot{engine.phase_featSlotsRemaining !== 1 ? 's' : ''} left</span>
-        <span class="text-xs text-text-muted">{filteredFeats.length} feat{filteredFeats.length !== 1 ? 's' : ''} found</span>
+        <span class="badge-accent">{engine.phase_featSlotsRemaining} {ui('feat_catalog.slots_left', engine.settings.language)}</span>
+        <span class="text-xs text-text-muted">{filteredFeats.length} {ui('feat_catalog.feats_found', engine.settings.language)}</span>
       </div>
 
       <!-- Search + tag filter row (sticky within the scrollable modal body) -->
@@ -90,9 +91,8 @@
           <input
             type="search"
             bind:value={searchQuery}
-            placeholder="Search feats…"
+            placeholder={ui('feat_catalog.search', engine.settings.language)}
             class="input pl-8 text-sm w-full"
-            autofocus
             aria-label="Search feats by name or description"
           />
         </div>
@@ -101,7 +101,7 @@
           class="select text-sm max-w-[140px]"
           aria-label="Filter by tag"
         >
-          <option value="">All tags</option>
+          <option value="">{ui('feat_catalog.all_tags', engine.settings.language)}</option>
           {#each allTags as tag}
             <option value={tag}>{tag}</option>
           {/each}
@@ -111,7 +111,7 @@
       <!-- Empty state -->
       {#if allFeats.length === 0}
         <p class="text-sm text-text-muted italic text-center py-6">
-          Load a rule source with feats to populate this catalog.
+          {ui('feat_catalog.empty', engine.settings.language)}
         </p>
       {/if}
 
@@ -130,7 +130,7 @@
                        ? 'border-l-4 border-l-green-600 border-border hover:border-accent/40 bg-surface-alt'
                        : 'border-l-4 border-l-red-700 border-border opacity-70 bg-surface-alt'}"
             role="listitem"
-            aria-label="{engine.t(feat.label)}: {prereq.passed ? 'prerequisites met' : 'prerequisites not met'}"
+            aria-label="{engine.t(feat.label)}: {prereq.passed ? ui('feat_catalog.prereqs_met', engine.settings.language) : ui('feat_catalog.prereqs_not_met', engine.settings.language)}"
           >
             <!-- Left: name, description, tags, prereqs -->
             <div class="flex-1 flex flex-col gap-1 min-w-0">
@@ -140,7 +140,7 @@
                 <span class="text-sm font-medium text-text-primary">{engine.t(feat.label)}</span>
                 {#if alreadyHave}
                   <span class="badge-green flex items-center gap-1 text-[10px]">
-                    <IconChecked size={10} aria-hidden="true" /> Have
+                    <IconChecked size={10} aria-hidden="true" /> {ui('feat_catalog.have', engine.settings.language)}
                   </span>
                 {/if}
               </div>
@@ -182,7 +182,7 @@
               class="shrink-0 self-start mt-0.5 {canSelect && !alreadyHave ? 'btn-primary' : 'btn-secondary opacity-50 cursor-not-allowed'} px-3 py-1.5 text-xs"
               onclick={() => selectFeat(feat)}
               disabled={!canSelect || alreadyHave}
-              aria-label="{alreadyHave ? 'Already have this feat' : canSelect ? 'Select ' + engine.t(feat.label) : 'Cannot select: prerequisites not met'}"
+              aria-label="{alreadyHave ? ui('feat_catalog.already_have', engine.settings.language) : canSelect ? ui('feat_catalog.select', engine.settings.language) + ' ' + engine.t(feat.label) : ui('feat_catalog.cannot_select', engine.settings.language)}"
               type="button"
             >
               {#if alreadyHave}
@@ -190,7 +190,7 @@
               {:else if !prereq.passed}
                 <IconLocked size={13} aria-hidden="true" />
               {:else}
-                Select
+                {ui('feat_catalog.select', engine.settings.language)}
               {/if}
             </button>
           </div>

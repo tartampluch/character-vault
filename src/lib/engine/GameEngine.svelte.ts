@@ -634,13 +634,38 @@ export class GameEngine {
    *   This prevents stale data bugs where `phase0_flatModifiers` fails to re-evaluate
    *   when `phase0_activeTags` or `phase0_context` changes.
    */
-  phase0_flatModifiers: FlatModifierEntry[] = $derived.by(() => {
+  /**
+   * Internal combined result from Phase 0 flattening.
+   * Contains both the resolved modifier list and the set of disabled instance IDs.
+   */
+  #phase0_result: { modifiers: FlatModifierEntry[]; disabledInstanceIds: Set<ID> } = $derived.by(() => {
     // IMPORTANT: Explicitly read both upstream $derived values before passing them
     // to the helper. This ensures Svelte 5 correctly tracks them as dependencies.
     const activeTags = this.phase0_activeTags;
     const context = this.phase0_context;
     return this.#computeFlatModifiers(activeTags, context);
   });
+
+  /**
+   * DAG Phase 0a: Flat list of all valid modifiers from all active features.
+   */
+  phase0_flatModifiers: FlatModifierEntry[] = $derived(this.#phase0_result.modifiers);
+
+  /**
+   * DAG Phase 0e: Set of feature instance IDs whose `prerequisitesNode` is no longer
+   * satisfied at runtime. These features are still "owned" by the character (they remain
+   * in `activeFeatures`) but their modifiers are suspended — they do NOT contribute
+   * to any pipeline calculation.
+   *
+   * USE CASE (D&D 3.5):
+   *   A character with Two-Weapon Fighting (requires DEX 15) loses Dexterity to a
+   *   curse, dropping below 15. The feat is still displayed on the character sheet
+   *   (grayed out with a warning) but its bonuses are no longer applied. If the
+   *   Dexterity is restored (curse removed), the feat automatically reactivates.
+   *
+   * The UI checks this set to render disabled features with appropriate visual treatment.
+   */
+  phase0_disabledFeatureInstanceIds: ReadonlySet<ID> = $derived(this.#phase0_result.disabledInstanceIds);
 
   /**
    * DAG Phase 0b: All active tags from all active features (flat string array).
@@ -1527,6 +1552,140 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // ENCUMBRANCE AUTO-DISPATCH — Architecture §9 Phase 1 / §13
+  // ---------------------------------------------------------------------------
+  //
+  // D&D 3.5 encumbrance: characters carrying too much weight suffer penalties.
+  // The engine computes total carried weight, looks up the carrying capacity
+  // config table using the resolved STR score, and determines the load tier.
+  //
+  // If Medium or Heavy load is detected, synthetic condition features
+  // ("condition_medium_load" or "condition_heavy_load") are auto-managed in
+  // the character's activeFeatures. These condition features provide tags
+  // (medium_load, heavy_load) that other features' conditionNodes can check
+  // (e.g., Monk AC bonus suppressed when heavy_load, Barbarian Fast Movement
+  // suppressed when heavy_load).
+  //
+  // NOTE ON DAG ORDERING:
+  //   Encumbrance depends on STR (Phase 2) for the carrying capacity lookup.
+  //   Architecture §9 places it in Phase 1, but STR isn't available until Phase 2.
+  //   This implementation computes it after Phase 2 as a reactive $effect that
+  //   adds/removes condition features. The $effect mutation triggers a full
+  //   re-derivation of Phase 0+, so conditionNode checks in Phase 0 will see
+  //   the encumbrance tags on the SECOND pass. Infinite loop protection
+  //   (MAX_RESOLUTION_DEPTH = 3) ensures this stabilizes.
+  //
+  // @see ARCHITECTURE.md section 9, Phase 1: Encumbrance
+  // @see ARCHITECTURE.md section 13: "automatically dispatch a situational
+  //   condition_encumbered feature to the engine"
+
+  /**
+   * Total carried weight in lbs.
+   * Sums `weightLbs` of all active non-stashed ItemFeature instances.
+   * Items in Storage/Stashed (isStashed = true) do NOT count.
+   *
+   * @see ARCHITECTURE.md section 13.2: "Storage/Stashed — does not contribute to weight"
+   */
+  phase2b_totalCarriedWeight: number = $derived.by(() => {
+    let total = 0;
+    for (const afi of this.character.activeFeatures) {
+      // Stashed items (in storage) do NOT contribute to carried weight
+      if (afi.isStashed) continue;
+      const feat = dataLoader.getFeature(afi.featureId);
+      if (!feat || feat.category !== 'item') continue;
+      total += (feat as import('../types/feature').ItemFeature).weightLbs ?? 0;
+    }
+    return total;
+  });
+
+  /**
+   * Current encumbrance tier based on carried weight vs STR-derived carrying capacity.
+   *
+   * Returns 0 (light), 1 (medium), 2 (heavy), or 3 (overloaded).
+   * Returns -1 if the carrying capacity config table is not loaded.
+   *
+   * Uses `config_carrying_capacity` config table (Annex B.2) to look up thresholds
+   * by the character's resolved STR totalValue from Phase 2.
+   */
+  phase2b_encumbranceTier: number = $derived.by(() => {
+    const strTotal = this.phase2_attributes['stat_str']?.totalValue ?? 10;
+    const table = dataLoader.getConfigTable('config_carrying_capacity');
+    if (!table?.data) return -1;
+
+    const rows = table.data as Array<Record<string, unknown>>;
+    const row = rows.find(r => r['strength'] === strTotal);
+    if (!row) return -1;
+
+    const light  = (row['lightLoad']  as number) ?? 0;
+    const medium = (row['mediumLoad'] as number) ?? 0;
+    const heavy  = (row['heavyLoad']  as number) ?? 0;
+
+    const w = this.phase2b_totalCarriedWeight;
+    if (w > heavy)  return 3; // overloaded
+    if (w > medium) return 2; // heavy
+    if (w > light)  return 1; // medium
+    return 0; // light
+  });
+
+  /**
+   * Reactive encumbrance condition manager.
+   *
+   * Watches `phase2b_encumbranceTier` and auto-adds/removes synthetic
+   * condition features in `character.activeFeatures`:
+   *   - tier >= 1: adds "condition_medium_load" (tags: ["medium_load"])
+   *   - tier >= 2: adds "condition_heavy_load"  (tags: ["heavy_load"])
+   *   - tier < 1:  removes both conditions
+   *
+   * These synthetic features are identified by their instanceId prefix
+   * "enc_auto_" so they can be managed without affecting player-added features.
+   *
+   * IMPORTANT: Mutating character.activeFeatures triggers a full DAG
+   * re-derivation. The infinite loop protection (MAX_RESOLUTION_DEPTH = 3)
+   * ensures this converges because encumbrance conditions don't change STR,
+   * so the second pass produces the same tier.
+   */
+  readonly #encumbranceEffect = $effect.root(() => {
+    $effect(() => {
+      const tier = this.phase2b_encumbranceTier;
+      if (tier < 0) return; // config table not loaded, don't touch features
+
+      const features = this.character.activeFeatures;
+      const hasMedium = features.some(f => f.instanceId === 'enc_auto_medium_load');
+      const hasHeavy  = features.some(f => f.instanceId === 'enc_auto_heavy_load');
+
+      const needMedium = tier >= 1;
+      const needHeavy  = tier >= 2;
+
+      // Only mutate if the current state doesn't match the desired state
+      if (hasMedium === needMedium && hasHeavy === needHeavy) return;
+
+      // Build the new feature list
+      // Remove any existing auto-encumbrance entries first
+      const filtered = features.filter(f =>
+        f.instanceId !== 'enc_auto_medium_load' && f.instanceId !== 'enc_auto_heavy_load'
+      );
+
+      if (needMedium) {
+        filtered.push({
+          instanceId: 'enc_auto_medium_load',
+          featureId:  'condition_medium_load',
+          isActive:   true,
+        });
+      }
+      if (needHeavy) {
+        filtered.push({
+          instanceId: 'enc_auto_heavy_load',
+          featureId:  'condition_heavy_load',
+          isActive:   true,
+        });
+      }
+
+      // Replace the array to trigger reactivity
+      this.character.activeFeatures = filtered;
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // MAGIC RESOURCES — Phase 12.1
   // ---------------------------------------------------------------------------
   //
@@ -1802,8 +1961,12 @@ export class GameEngine {
    *   are processed last. For setAbsolute-type modifiers, last wins. This ensures
    *   GM overrides always take precedence over player features.
    */
-  #computeFlatModifiers(activeTags: string[], context: CharacterContext): FlatModifierEntry[] {
+  #computeFlatModifiers(activeTags: string[], context: CharacterContext): { modifiers: FlatModifierEntry[]; disabledInstanceIds: Set<ID> } {
     const result: FlatModifierEntry[] = [];
+    // Track feature instances whose prerequisitesNode is no longer satisfied.
+    // These features are "owned" by the character but their modifiers are suspended.
+    // The UI renders them grayed-out with a warning (e.g., "Dexterity dropped below 15").
+    const disabledInstanceIds = new Set<ID>();
 
     // --- Build the complete list of feature instances to process ---
     //
@@ -1848,22 +2011,24 @@ export class GameEngine {
         context,
         result,
         visitedFeatureIds,
+        disabledInstanceIds,
         0 // initial depth
       );
     }
 
-    return result;
+    return { modifiers: result, disabledInstanceIds };
   }
 
   /**
    * Recursively collects modifiers from a feature instance.
    *
-   * @param instance         - The ActiveFeatureInstance to process.
-   * @param activeTags       - Current character tag set (for forbiddenTags and conditionNode checks).
-   * @param context          - Preliminary character context (for formula resolution).
-   * @param result           - Output array to push FlatModifierEntry objects into.
-   * @param visitedFeatureIds- Set of already-visited feature IDs (cycle prevention).
-   * @param depth            - Current recursion depth (prevent infinite loops).
+   * @param instance            - The ActiveFeatureInstance to process.
+   * @param activeTags          - Current character tag set (for forbiddenTags and conditionNode checks).
+   * @param context             - Preliminary character context (for formula resolution).
+   * @param result              - Output array to push FlatModifierEntry objects into.
+   * @param visitedFeatureIds   - Set of already-visited feature IDs (cycle prevention).
+   * @param disabledInstanceIds - Set to record instances whose prerequisites are no longer met.
+   * @param depth               - Current recursion depth (prevent infinite loops).
    */
   #collectModifiersFromInstance(
     instance: ActiveFeatureInstance,
@@ -1871,11 +2036,14 @@ export class GameEngine {
     context: CharacterContext,
     result: FlatModifierEntry[],
     visitedFeatureIds: Set<ID>,
+    disabledInstanceIds: Set<ID>,
     depth: number
   ): void {
-    // Depth guard: prevent infinite recursion from circular grantedFeatures references
-    if (depth > MAX_RESOLUTION_DEPTH) {
-      console.warn(`[GameEngine] Phase 0: Max resolution depth (${MAX_RESOLUTION_DEPTH}) exceeded for feature "${instance.featureId}". Stopping recursion.`);
+    // Depth guard: prevent infinite recursion from circular grantedFeatures references.
+    // Architecture §9.1 specifies a maximum of 3 re-evaluations. The initial call starts
+    // at depth 0, so depth >= 3 means we've already done 3 recursive expansions.
+    if (depth >= MAX_RESOLUTION_DEPTH) {
+      console.warn(`[GameEngine] Phase 0: Max resolution depth (${MAX_RESOLUTION_DEPTH}) reached for feature "${instance.featureId}". Stopping recursion.`);
       return;
     }
 
@@ -1896,13 +2064,31 @@ export class GameEngine {
       return; // Feature suppressed by a conflicting tag (e.g., Druid + metal_armor)
     }
 
-    // --- Check prerequisitesNode ---
-    // For active features already on the character, we skip prerequisite gating
-    // (the player chose them — we trust it was valid at selection time).
-    // However, for grantedFeatures (granted by a parent feature), we DO check prerequisites
-    // to ensure conditional grants (e.g., level-gated class features) are respected.
-    // For depth > 0 (recursed from a parent), skip prerequisite checks to avoid confusion.
-    // Phase 11.4 (feat catalog UI) handles prerequisite display for player-facing selection.
+    // --- Check prerequisitesNode at RUNTIME ---
+    // D&D 3.5 rule: If a character's stats change (ability drain, level loss, curse)
+    // such that a feat's prerequisites are no longer met, the feat's bonuses are
+    // suspended. The feat is NOT removed — it remains on the character sheet
+    // (displayed grayed-out) and reactivates automatically if prerequisites are met again.
+    //
+    // Example: Two-Weapon Fighting requires DEX 15. If the character's DEX drops
+    // below 15 (due to poison, a curse, etc.), the feat's attack modifiers are
+    // suspended until DEX is restored.
+    //
+    // We only check at depth 0 (player's own features), not for recursively-granted
+    // sub-features (those are governed by their parent's gating).
+    // Race, class, and class_feature categories are exempt — their "prerequisites"
+    // are structural (you chose this race/class), not stat-dependent.
+    if (depth === 0 && feature.prerequisitesNode) {
+      const exemptCategories = new Set(['race', 'class', 'class_feature', 'condition', 'environment', 'monster_type']);
+      if (!exemptCategories.has(feature.category)) {
+        const prereqContext: CharacterContext = { ...context, activeTags };
+        if (!checkCondition(feature.prerequisitesNode, prereqContext)) {
+          // Prerequisites failed — mark this instance as disabled and skip its modifiers.
+          disabledInstanceIds.add(instance.instanceId);
+          return; // Feature's modifiers are suspended (not collected).
+        }
+      }
+    }
 
     // --- Collect base feature modifiers ---
     this.#processModifierList(
@@ -1966,6 +2152,7 @@ export class GameEngine {
           context,
           result,
           new Set(visitedFeatureIds), // Clone set to allow separate branches
+          disabledInstanceIds,
           depth + 1
         );
       }

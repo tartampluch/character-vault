@@ -17,6 +17,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import HorizontalScroll from '$lib/components/ui/HorizontalScroll.svelte';
@@ -86,10 +87,10 @@
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-3">
     <div class="section-header">
       <IconSkills size={20} aria-hidden="true" />
-      <span>Skills Matrix</span>
+      <span>{ui('skills.title', engine.settings.language)}</span>
     </div>
     <div class="flex items-center gap-1.5 text-sm">
-      <span class="text-text-muted text-xs">SP:</span>
+      <span class="text-text-muted text-xs">{ui('skills.sp', engine.settings.language)}</span>
       <span class="{isOverBudget ? 'text-red-500 dark:text-red-400' : 'text-accent'} font-bold">{skillPointsSpent}</span>
       <span class="text-text-muted">/</span>
       <span class="text-green-500 dark:text-green-400 font-bold">{skillPointsAvailable}</span>
@@ -114,8 +115,8 @@
 
   {#if sortedSkills.length === 0}
     <div class="text-center py-6 text-text-muted">
-      <p class="text-sm">No skills loaded.</p>
-      <p class="text-xs italic mt-1">Enable a rule source with skill definitions.</p>
+      <p class="text-sm">{ui('skills.no_skills', engine.settings.language)}</p>
+      <p class="text-xs italic mt-1">{ui('skills.enable_source', engine.settings.language)}</p>
     </div>
   {:else}
 
@@ -128,12 +129,12 @@
         <thead>
           <tr class="data-table-header-row">
             <th class="w-6 text-center" aria-label="Class skill"><IconChecked size={12} /></th>
-            <th class="text-left min-w-[120px]">Skill</th>
-            <th class="text-center">Total</th>
-            <th class="text-center">Ability</th>
-            <th class="text-center">Ranks</th>
-            <th class="text-center">Cost</th>
-            <th class="text-center">Max</th>
+            <th class="text-left min-w-[120px]">{ui('skills.col_skill', engine.settings.language)}</th>
+            <th class="text-center">{ui('skills.col_total', engine.settings.language)}</th>
+            <th class="text-center">{ui('skills.col_ability', engine.settings.language)}</th>
+            <th class="text-center">{ui('skills.col_ranks', engine.settings.language)}</th>
+            <th class="text-center">{ui('skills.col_cost', engine.settings.language)}</th>
+            <th class="text-center">{ui('skills.col_max', engine.settings.language)}</th>
             <th class="w-8 text-center"><IconInfo size={12} /></th>
           </tr>
         </thead>
@@ -152,8 +153,8 @@
               <td class="text-center">
                 <span
                   class="{skill.isClassSkill ? 'text-yellow-400' : 'text-text-muted/30'}"
-                  title={skill.isClassSkill ? 'Class Skill' : 'Cross-class Skill'}
-                  aria-label={skill.isClassSkill ? 'Class Skill' : 'Cross-class'}
+                  title={skill.isClassSkill ? ui('skills.class_skill', engine.settings.language) : ui('skills.cross_class', engine.settings.language)}
+                  aria-label={skill.isClassSkill ? ui('skills.class_skill', engine.settings.language) : ui('skills.cross_class_short', engine.settings.language)}
                 >
                   {#if skill.isClassSkill}<IconChecked size={12} />{:else}<IconUnchecked size={12} />{/if}
                 </span>
@@ -165,7 +166,7 @@
                   {engine.t(skill.label)}
                 </span>
                 {#if !skill.canBeUsedUntrained && skill.ranks === 0}
-                  <span class="badge-yellow ml-1 text-[10px]" aria-label="Requires training">T</span>
+                  <span class="badge-yellow ml-1 text-[10px]" aria-label="Requires training">{ui('skills.training_required', engine.settings.language)}</span>
                 {/if}
               </td>
 
@@ -220,7 +221,7 @@
                   class="btn-ghost p-1 text-accent hover:bg-accent/10 mx-auto"
                   onclick={() => (breakdownSkillId = skill.id)}
                   aria-label="Show {engine.t(skill.label)} breakdown"
-                  title="Show modifier breakdown"
+                  title={ui('abilities.show_breakdown', engine.settings.language)}
                   type="button"
                 ><IconInfo size={14} aria-hidden="true" /></button>
               </td>

@@ -11,6 +11,7 @@
 <script lang="ts">
   import { formatModifier } from '$lib/utils/formatters';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Modifier } from '$lib/types/pipeline';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconStats, IconWarning } from '$lib/components/ui/icons';
@@ -66,13 +67,13 @@
   }
 </script>
 
-<Modal open={true} onClose={onclose} title="{label} — Breakdown" size="md">
+<Modal open={true} onClose={onclose} title="{label} {ui('breakdown.title_suffix', engine.settings.language)}" size="md">
   {#snippet children()}
     <div class="flex flex-col gap-0.5">
 
       <!-- BASE VALUE row -->
       <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-2 py-1.5 rounded hover:bg-surface-alt text-sm">
-        <span class="text-text-secondary truncate">Base value</span>
+        <span class="text-text-secondary truncate">{ui('breakdown.base_value', engine.settings.language)}</span>
         <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt text-text-muted whitespace-nowrap">—</span>
         <span class="font-semibold text-right min-w-[2.5rem] text-text-muted">{formatModifier(baseValue)}</span>
       </div>
@@ -86,7 +87,7 @@
           <span class="font-semibold text-right min-w-[2.5rem] flex items-center justify-end gap-1 {modColor(numVal)}">
             {formatModifier(numVal)}
             {#if mod.conditionNode}
-              <span title="Conditional modifier" aria-label="Conditional">
+              <span title={ui('breakdown.conditional', engine.settings.language)} aria-label={ui('breakdown.conditional', engine.settings.language)}>
                 <IconWarning size={11} aria-hidden="true" />
               </span>
             {/if}
@@ -98,7 +99,7 @@
       {#if suppressedModifiers.length > 0}
         <div class="flex items-center gap-2 my-1 text-[10px] uppercase tracking-wider text-text-muted">
           <div class="flex-1 h-px bg-border"></div>
-          <span>Suppressed (stacking rules)</span>
+          <span>{ui('breakdown.suppressed', engine.settings.language)}</span>
           <div class="flex-1 h-px bg-border"></div>
         </div>
         {#each suppressedModifiers as mod}
@@ -113,14 +114,14 @@
 
       <!-- FORMULA LINE -->
       <div class="flex items-center gap-1.5 flex-wrap pt-2 mt-1 border-t border-border text-sm">
-        <span class="text-text-muted text-xs">Base</span>
+        <span class="text-text-muted text-xs">{ui('breakdown.base', engine.settings.language)}</span>
         <span class="text-text-muted">+</span>
-        <span class="text-text-muted text-xs">Modifiers</span>
+        <span class="text-text-muted text-xs">{ui('breakdown.modifiers', engine.settings.language)}</span>
         <span class="text-text-muted">=</span>
         <span class="text-lg font-bold text-yellow-500 dark:text-yellow-400">{totalValue}</span>
         {#if derivedModifier !== 0}
           <span class="text-xs text-text-muted ml-1">
-            → Mod: <strong class="{modColor(derivedModifier)}">{formatModifier(derivedModifier)}</strong>
+            {ui('breakdown.derived_mod', engine.settings.language)} <strong class="{modColor(derivedModifier)}">{formatModifier(derivedModifier)}</strong>
           </span>
         {/if}
       </div>
@@ -129,7 +130,7 @@
       {#if situationalModifiers.length > 0}
         <div class="flex items-center gap-2 my-1 text-[10px] uppercase tracking-wider text-accent">
           <div class="flex-1 h-px bg-border"></div>
-          <span>Situational (applied at roll time)</span>
+          <span>{ui('breakdown.situational', engine.settings.language)}</span>
           <div class="flex-1 h-px bg-border"></div>
         </div>
         {#each situationalModifiers as mod}
@@ -137,7 +138,7 @@
           <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-2 py-1.5 rounded bg-accent/5 text-sm">
             <span class="text-text-primary truncate">{engine.t(mod.sourceName)}</span>
             <span class="text-[10px] px-1.5 py-0.5 rounded border border-accent/30 text-accent bg-accent/10 whitespace-nowrap">
-              vs. {mod.situationalContext}
+              {ui('breakdown.vs', engine.settings.language)} {mod.situationalContext}
             </span>
             <span class="font-semibold text-right min-w-[2.5rem] {modColor(numVal)}">{formatModifier(numVal)}</span>
           </div>

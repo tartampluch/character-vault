@@ -9,19 +9,20 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { Flame, Snowflake, FlaskConical, Zap, Volume2, Sparkles, BrainCircuit, ShieldAlert } from 'lucide-svelte';
   import { IconResistances } from '$lib/components/ui/icons';
 
-  const RESISTANCES = [
-    { id: 'combatStats.resist_fire',        icon: Flame,        label: 'Fire'        },
-    { id: 'combatStats.resist_cold',        icon: Snowflake,    label: 'Cold'        },
-    { id: 'combatStats.resist_acid',        icon: FlaskConical, label: 'Acid'        },
-    { id: 'combatStats.resist_electricity', icon: Zap,          label: 'Electricity' },
-    { id: 'combatStats.resist_sonic',       icon: Volume2,      label: 'Sonic'       },
-    { id: 'combatStats.spell_resistance',   icon: Sparkles,     label: 'SR'          },
-    { id: 'combatStats.power_resistance',   icon: BrainCircuit, label: 'PR'          },
-    { id: 'combatStats.fortification',      icon: ShieldAlert,  label: 'Fort.'       },
-  ];
+  const RESISTANCES = $derived([
+    { id: 'combatStats.resist_fire',        icon: Flame,        label: ui('combat.resistances.fire', engine.settings.language)        },
+    { id: 'combatStats.resist_cold',        icon: Snowflake,    label: ui('combat.resistances.cold', engine.settings.language)        },
+    { id: 'combatStats.resist_acid',        icon: FlaskConical, label: ui('combat.resistances.acid', engine.settings.language)        },
+    { id: 'combatStats.resist_electricity', icon: Zap,          label: ui('combat.resistances.electricity', engine.settings.language) },
+    { id: 'combatStats.resist_sonic',       icon: Volume2,      label: ui('combat.resistances.sonic', engine.settings.language)       },
+    { id: 'combatStats.spell_resistance',   icon: Sparkles,     label: ui('combat.resistances.sr', engine.settings.language)          },
+    { id: 'combatStats.power_resistance',   icon: BrainCircuit, label: ui('combat.resistances.pr', engine.settings.language)          },
+    { id: 'combatStats.fortification',      icon: ShieldAlert,  label: ui('combat.resistances.fort', engine.settings.language)       },
+  ]);
 
   let miscMods = $state<Record<string, string>>({});
   function getMisc(id: string): number {
@@ -34,7 +35,7 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconResistances size={20} aria-hidden="true" />
-    <span>Resistances</span>
+    <span>{ui('combat.resistances.title', engine.settings.language)}</span>
   </div>
 
   <div class="flex flex-col gap-1">
@@ -63,7 +64,7 @@
           class="input text-center text-xs px-1 py-0.5 text-yellow-500 dark:text-yellow-400"
           value={miscMods[res.id] ?? '0'}
           aria-label="{res.label} misc modifier"
-          title="Misc modifier"
+          title={ui('combat.resistances.misc', engine.settings.language)}
           oninput={(e) => (miscMods[res.id] = (e.target as HTMLInputElement).value)}
         />
       </div>

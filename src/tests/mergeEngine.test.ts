@@ -575,6 +575,51 @@ describe('Merge Engine: partial merge with -prefix deletion', () => {
     const choiceIds = (druid!.choices ?? []).map(c => c.choiceId);
     expect(choiceIds).not.toContain('druid_domain');
   });
+
+  /**
+   * ARCHITECTURE.md section 18.3 — choices:
+   *   "Merge by choiceId: same-ID choice is replaced. New choices are added."
+   *
+   * This test verifies that a partial merge providing a choice with the SAME choiceId
+   * as an existing choice completely REPLACES that choice's properties (label, optionsQuery,
+   * maxSelections), rather than appending a duplicate.
+   */
+  it('Replacement: choices with same choiceId replace the existing choice properties', async () => {
+    const overrideJson = buildOverrideJson([
+      {
+        id: 'class_druid',
+        category: 'class',
+        ruleSource: 'srd_core',
+        merge: 'partial',
+        tags: [],
+        grantedModifiers: [],
+        grantedFeatures: [],
+        choices: [
+          {
+            choiceId: 'druid_domain',
+            label: { en: 'Choose a Nature Domain', fr: 'Choisissez un Domaine de la Nature' },
+            optionsQuery: 'tag:nature_domain',
+            maxSelections: 2,
+          },
+        ],
+      },
+    ]);
+
+    await loader.loadRuleSources([], overrideJson);
+
+    const druid = loader.getFeature('class_druid');
+
+    // The druid_domain choice must still exist (not duplicated)
+    const matchingChoices = (druid!.choices ?? []).filter(c => c.choiceId === 'druid_domain');
+    expect(matchingChoices).toHaveLength(1);
+
+    // Its properties must be fully replaced
+    const choice = matchingChoices[0];
+    expect(choice.label['en']).toBe('Choose a Nature Domain');
+    expect(choice.label['fr']).toBe('Choisissez un Domaine de la Nature');
+    expect(choice.optionsQuery).toBe('tag:nature_domain');
+    expect(choice.maxSelections).toBe(2);
+  });
 });
 
 // ============================================================

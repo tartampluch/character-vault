@@ -12,6 +12,8 @@
 <script lang="ts">
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { goto } from '$app/navigation';
   import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
 
@@ -39,9 +41,9 @@
     <div>
       <h1 class="flex items-center gap-2 text-3xl font-bold text-text-primary">
         <IconCampaign size={28} aria-hidden="true" />
-        Your Campaigns
+        {ui('campaigns.title', engine.settings.language)}
       </h1>
-      <p class="mt-1 text-text-muted text-sm">Choose a campaign to begin, or create a new one.</p>
+      <p class="mt-1 text-text-muted text-sm">{ui('campaigns.subtitle', engine.settings.language)}</p>
     </div>
 
     {#if sessionContext.isGameMaster}
@@ -52,9 +54,9 @@
         type="button"
       >
         {#if showCreateForm}
-          <IconClose size={16} aria-hidden="true" /> Cancel
+          <IconClose size={16} aria-hidden="true" /> {ui('common.cancel', engine.settings.language)}
         {:else}
-          <IconAdd size={16} aria-hidden="true" /> Create Campaign
+          <IconAdd size={16} aria-hidden="true" /> {ui('campaigns.create', engine.settings.language)}
         {/if}
       </button>
     {/if}
@@ -63,14 +65,14 @@
   <!-- ── CREATE FORM (GM only, inline) ────────────────────────────────────── -->
   {#if showCreateForm && sessionContext.isGameMaster}
     <div class="card p-5 flex flex-col gap-4" role="form" aria-label="Create new campaign">
-      <h2 class="text-base font-semibold text-accent">New Campaign</h2>
+      <h2 class="text-base font-semibold text-accent">{ui('campaigns.new_title', engine.settings.language)}</h2>
       <div class="flex flex-col gap-1.5">
-        <label for="campaign-title" class="text-sm text-text-secondary">Campaign Title</label>
+        <label for="campaign-title" class="text-sm text-text-secondary">{ui('campaigns.field_title', engine.settings.language)}</label>
         <input
           id="campaign-title"
           type="text"
           bind:value={newCampaignTitle}
-          placeholder="e.g. Reign of Winter, Curse of Strahd…"
+          placeholder={ui('campaigns.field_title_placeholder', engine.settings.language)}
           maxlength="80"
           class="input max-w-lg"
           onkeydown={(e) => e.key === 'Enter' && handleCreateCampaign()}
@@ -82,8 +84,8 @@
           onclick={handleCreateCampaign}
           disabled={!newCampaignTitle.trim()}
           type="button"
-        >Create Campaign</button>
-        <button class="btn-secondary" onclick={() => (showCreateForm = false)} type="button">Cancel</button>
+        >{ui('campaigns.create', engine.settings.language)}</button>
+        <button class="btn-secondary" onclick={() => (showCreateForm = false)} type="button">{ui('common.cancel', engine.settings.language)}</button>
       </div>
     </div>
   {/if}
@@ -92,12 +94,12 @@
   {#if campaignStore.campaigns.length === 0}
     <div class="flex flex-col items-center gap-3 py-20 text-center text-text-muted">
       <IconCampaign size={64} class="opacity-20" aria-hidden="true" />
-      <h2 class="text-xl font-semibold text-text-secondary">No campaigns yet</h2>
+      <h2 class="text-xl font-semibold text-text-secondary">{ui('campaigns.empty_title', engine.settings.language)}</h2>
       <p class="text-sm max-w-sm">
         {#if sessionContext.isGameMaster}
-          Click <strong class="text-text-primary">"+ Create Campaign"</strong> above to start your first adventure.
+          {ui('campaigns.empty_gm', engine.settings.language)}
         {:else}
-          Your Game Master hasn't created a campaign yet. Check back later!
+          {ui('campaigns.empty_player', engine.settings.language)}
         {/if}
       </p>
     </div>
@@ -135,7 +137,7 @@
             <!-- Hover CTA overlay -->
             <div class="absolute inset-0 flex items-end justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150" aria-hidden="true">
               <span class="text-xs font-medium text-accent bg-surface/80 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                Open →
+                {ui('campaigns.open', engine.settings.language)}
               </span>
             </div>
           </div>
@@ -178,12 +180,12 @@
   <!-- ── DEV TOOLBAR ───────────────────────────────────────────────────────── -->
   {#if import.meta.env.DEV}
     <div class="flex items-center gap-3 flex-wrap mt-4 p-3 rounded-lg border border-dashed border-border text-xs text-text-muted" aria-label="Developer toolbar">
-      <span class="font-bold">Dev:</span>
+      <span class="font-bold">{ui('nav.dev_prefix', engine.settings.language)}</span>
       <span class="{sessionContext.isGameMaster ? 'badge-accent' : 'badge-gray'} flex items-center gap-1">
         {#if sessionContext.isGameMaster}
-          <IconGMDashboard size={11} aria-hidden="true" /> GM
+          <IconGMDashboard size={11} aria-hidden="true" /> {ui('nav.role_gm', engine.settings.language)}
         {:else}
-          <IconCharacter size={11} aria-hidden="true" /> Player
+          <IconCharacter size={11} aria-hidden="true" /> {ui('nav.role_player', engine.settings.language)}
         {/if}
         ({sessionContext.currentUserDisplayName})
       </span>
@@ -192,7 +194,7 @@
         onclick={() => sessionContext.isGameMaster ? sessionContext.switchToPlayer() : sessionContext.switchToGM()}
         type="button"
       >
-        Switch to {sessionContext.isGameMaster ? 'Player' : 'GM'} view
+        {sessionContext.isGameMaster ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
       </button>
     </div>
   {/if}

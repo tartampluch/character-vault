@@ -12,6 +12,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import FeatSelectionModal from './FeatSelectionModal.svelte';
   import type { ID } from '$lib/types/primitives';
@@ -64,15 +65,15 @@
   <div class="flex items-center flex-wrap gap-2 border-b border-border pb-3">
     <div class="section-header flex-1">
       <IconTabFeats size={20} aria-hidden="true" />
-      <span>Feats</span>
+      <span>{ui('feats.title', engine.settings.language)}</span>
     </div>
 
     <!-- Slot budget badges -->
     <div class="flex items-center gap-1.5 text-sm">
-      <span class="text-text-muted text-xs">Available:</span>
+      <span class="text-text-muted text-xs">{ui('feats.available', engine.settings.language)}</span>
       <span class="badge-accent">{engine.phase_featSlotsTotal}</span>
       <span class="text-text-muted">|</span>
-      <span class="text-xs text-text-muted">Remaining:</span>
+      <span class="text-xs text-text-muted">{ui('feats.remaining', engine.settings.language)}</span>
       <span class="{isOverBudget ? 'badge-red' : 'badge-green'}">{engine.phase_featSlotsRemaining}</span>
     </div>
 
@@ -83,7 +84,7 @@
       aria-label="Add a new feat ({engine.phase_featSlotsRemaining} slots remaining)"
       type="button"
     >
-      <IconAdd size={14} aria-hidden="true" /> Add Feat
+      <IconAdd size={14} aria-hidden="true" /> {ui('feats.add', engine.settings.language)}
     </button>
   </div>
 
@@ -93,7 +94,7 @@
       <div class="flex items-center gap-1.5 border-b border-border pb-1">
         <IconLocked size={14} class="text-green-500" aria-hidden="true" />
         <span class="text-xs font-semibold uppercase tracking-wider text-green-600 dark:text-green-400">
-          Granted Feats (automatic)
+          {ui('feats.granted', engine.settings.language)}
         </span>
       </div>
       <div class="flex flex-col gap-1.5">
@@ -105,7 +106,7 @@
                         hover:border-border transition-colors duration-150">
               <div class="flex-1 flex flex-col gap-0.5 min-w-0">
                 <span class="text-sm font-medium text-text-primary truncate">{engine.t(feat.label)}</span>
-                <span class="text-xs text-green-500 dark:text-green-400">from: {getGrantSource(feat.id)}</span>
+                <span class="text-xs text-green-500 dark:text-green-400">{ui('feats.from', engine.settings.language)} {getGrantSource(feat.id)}</span>
               </div>
               <button
                 class="btn-ghost p-1.5 text-accent hover:bg-accent/10 shrink-0"
@@ -124,13 +125,13 @@
   <section class="flex flex-col gap-2">
     <div class="flex items-center gap-1.5 border-b border-border pb-1">
       <IconTabFeats size={14} class="text-accent" aria-hidden="true" />
-      <span class="text-xs font-semibold uppercase tracking-wider text-accent">Selected Feats</span>
+      <span class="text-xs font-semibold uppercase tracking-wider text-accent">{ui('feats.selected', engine.settings.language)}</span>
     </div>
 
     {#if manualFeatInstances.length === 0}
       <p class="text-sm text-text-muted italic">
-        No feats selected yet. Click "+ Add Feat" to choose from the catalog.
-        {engine.phase_featSlotsTotal - grantedFeatInstances.length} slot{engine.phase_featSlotsTotal - grantedFeatInstances.length !== 1 ? 's' : ''} available.
+        {ui('feats.empty', engine.settings.language)}
+        {engine.phase_featSlotsTotal - grantedFeatInstances.length} {ui('feats.slots_available', engine.settings.language)}
       </p>
     {:else}
       <div class="flex flex-col gap-1.5">
@@ -160,7 +161,7 @@
                   class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
                   onclick={() => engine.removeFeature(afi.instanceId)}
                   aria-label="Remove {engine.t(feat.label)}"
-                  title="Remove this feat (frees a slot)"
+                  title={ui('feats.remove_tooltip', engine.settings.language)}
                   type="button"
                 ><IconDelete size={14} aria-hidden="true" /></button>
               </div>

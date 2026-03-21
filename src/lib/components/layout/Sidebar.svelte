@@ -61,6 +61,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
   import {
     IconCampaign,
@@ -90,6 +91,37 @@
   }
 
   let { collapsed, mobileOpen, onCollapse, onClose }: Props = $props();
+
+  // ---------------------------------------------------------------------------
+  // MOBILE VIEWPORT TRACKING (for `inert` attribute)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Tracks whether the viewport is below the `lg` breakpoint (1024px).
+   * Used to conditionally set the `inert` HTML attribute on the sidebar.
+   *
+   * WHY: On mobile, when the drawer is closed, the sidebar is translated
+   * off-screen but technically still in the DOM. Without `inert`, keyboard
+   * users could accidentally Tab into the invisible sidebar. On desktop
+   * (≥1024px), the sidebar is always visible — `inert` must NOT be set.
+   */
+  let isBelowLg = $state(false);
+
+  $effect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(max-width: 1023.98px)');
+    isBelowLg = mql.matches;
+    const handler = (e: MediaQueryListEvent) => { isBelowLg = e.matches; };
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  });
+
+  /**
+   * When true, the `inert` attribute is applied to the sidebar `<aside>` element.
+   * This disables all focus, click, and assistive-technology interaction with the
+   * off-screen sidebar on mobile, improving keyboard accessibility.
+   */
+  const shouldBeInert = $derived(isBelowLg && !mobileOpen);
 
   // ---------------------------------------------------------------------------
   // DERIVED VALUES
@@ -224,6 +256,7 @@
 <aside
   class={asideClass}
   aria-label="Application navigation"
+  inert={shouldBeInert ? true : undefined}
 >
 
   <!-- ==========================================================================
@@ -278,7 +311,7 @@
         CSS width transition by clipping text as the sidebar shrinks.
       -->
       {#if !collapsed}
-        <span class="font-semibold text-base truncate">Character Vault</span>
+        <span class="font-semibold text-base truncate">{ui('app.title', engine.settings.language)}</span>
       {/if}
     </a>
 
@@ -287,8 +320,8 @@
       <button
         class="btn-ghost p-1.5 ml-1 shrink-0"
         onclick={onCollapse}
-        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
+        aria-label={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
         type="button"
       >
         {#if collapsed}
@@ -303,8 +336,8 @@
     <button
       class="lg:hidden btn-ghost p-1.5 ml-1 shrink-0"
       onclick={onClose}
-      title="Close navigation"
-      aria-label="Close navigation"
+      title={ui('nav.close_navigation', engine.settings.language)}
+      aria-label={ui('nav.close_navigation', engine.settings.language)}
       type="button"
     >
       <IconClose size={20} aria-hidden="true" />
@@ -327,10 +360,10 @@
     -->
 
     <!-- 1. CAMPAIGNS — always visible -->
-    <a href="/campaigns" class={navLinkClass('/campaigns')} title="Campaigns">
+    <a href="/campaigns" class={navLinkClass('/campaigns')} title={ui('nav.campaigns', engine.settings.language)}>
       <IconCampaign size={20} class="shrink-0" aria-hidden="true" />
       {#if !collapsed}
-        <span class="truncate">Campaigns</span>
+        <span class="truncate">{ui('nav.campaigns', engine.settings.language)}</span>
       {/if}
     </a>
 
@@ -342,12 +375,12 @@
       <a
         href="/campaigns/{campaignId}/vault"
         class={navLinkClass('/campaigns/' + campaignId + '/vault')}
-        title={activeCampaign ? `Vault — ${activeCampaign.title}` : 'Character Vault'}
+        title={activeCampaign ? `${ui('nav.vault', engine.settings.language)} — ${activeCampaign.title}` : ui('app.title', engine.settings.language)}
       >
         <IconVault size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
           <span class="truncate">
-            Vault
+            {ui('nav.vault', engine.settings.language)}
             {#if activeCampaign}
               <span class="block text-xs text-text-muted font-normal truncate">
                 {activeCampaign.title}
@@ -366,12 +399,12 @@
       <a
         href="/character/{characterId}"
         class={navLinkClass('/character/' + characterId)}
-        title={engine.character.name ?? 'Character Sheet'}
+        title={engine.character.name ?? ui('nav.character_sheet', engine.settings.language)}
       >
         <IconCharacter size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
           <span class="truncate">
-            Character
+            {ui('nav.character', engine.settings.language)}
             <span class="block text-xs text-text-muted font-normal truncate">
               {engine.character.name}
             </span>
@@ -389,7 +422,7 @@
       <div class="pt-2 pb-1">
         {#if !collapsed}
           <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            GM Tools
+            {ui('nav.gm_tools', engine.settings.language)}
           </p>
         {:else}
           <div class="border-t border-border mx-1"></div>
@@ -400,11 +433,11 @@
       <a
         href="/campaigns/{campaignId}/gm-dashboard"
         class={navLinkClass('/campaigns/' + campaignId + '/gm-dashboard')}
-        title="GM Dashboard"
+        title={ui('nav.gm_dashboard', engine.settings.language)}
       >
         <IconGMDashboard size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
-          <span class="truncate">GM Dashboard</span>
+          <span class="truncate">{ui('nav.gm_dashboard', engine.settings.language)}</span>
         {/if}
       </a>
 
@@ -412,11 +445,11 @@
       <a
         href="/campaigns/{campaignId}/settings"
         class={navLinkClass('/campaigns/' + campaignId + '/settings')}
-        title="Campaign Settings"
+        title={ui('nav.campaign_settings', engine.settings.language)}
       >
         <IconSettings size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
-          <span class="truncate">Settings</span>
+          <span class="truncate">{ui('nav.settings', engine.settings.language)}</span>
         {/if}
       </a>
     {/if}
@@ -458,7 +491,7 @@
             ? 'bg-accent-100 text-accent-700 dark:bg-accent-900 dark:text-accent-300'
             : 'bg-surface-alt text-text-secondary border border-border'}
         "
-        title="{sessionContext.currentUserDisplayName} ({isGM ? 'Game Master' : 'Player'})"
+        title="{sessionContext.currentUserDisplayName} ({isGM ? ui('nav.role_gm', engine.settings.language) : ui('nav.role_player', engine.settings.language)})"
         aria-label="Current user: {sessionContext.currentUserDisplayName}"
       >
         {sessionContext.currentUserDisplayName.charAt(0).toUpperCase()}
@@ -470,7 +503,7 @@
             {sessionContext.currentUserDisplayName}
           </p>
           <p class="text-xs text-text-muted">
-            {isGM ? 'Game Master' : 'Player'}
+            {isGM ? ui('nav.role_gm', engine.settings.language) : ui('nav.role_player', engine.settings.language)}
           </p>
         </div>
 
@@ -492,11 +525,11 @@
                 sessionContext.switchToGM();
               }
             }}
-            title={isGM ? 'Switch to Player mode' : 'Switch to GM mode'}
-            aria-label={isGM ? 'Switch to Player mode' : 'Switch to GM mode'}
+            title={isGM ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
+            aria-label={isGM ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
             type="button"
           >
-            {isGM ? '→ Player' : '→ GM'}
+            {isGM ? `→ ${ui('nav.role_player', engine.settings.language)}` : `→ ${ui('nav.role_gm', engine.settings.language)}`}
           </button>
         {/if}
       {/if}

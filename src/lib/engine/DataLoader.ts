@@ -355,6 +355,10 @@ export class DataLoader {
       }
     }
 
+    // Defensive sort: ensure alphabetical order even if the server/manifest doesn't guarantee it.
+    // Architecture §18.1 requires files to be loaded in alphabetical order by full relative path.
+    filePaths.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
     // Step 2-4: Load and process each file in order
     for (const filePath of filePaths) {
       await this.#loadRuleFile(filePath);

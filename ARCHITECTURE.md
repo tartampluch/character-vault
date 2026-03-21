@@ -959,6 +959,10 @@ export interface RollResult {
  * @param settings - The campaign configuration (Exploding 20s, Reroll 1s, etc.).
  * @param rng - (Optional) Injectable random generation function for unit tests.
  *             Default: () => Math.floor(Math.random() * faces) + 1
+ * @param critRange - (Optional) The weapon's critical threat range as a string.
+ *                   Format: "X-20" or "20". Default: "20" (natural 20 only).
+ *                   Examples: "19-20" (keen longsword), "18-20" (improved crit rapier).
+ *                   Parsed to determine `isCriticalThreat` on the RollResult.
  * @returns A structured RollResult object containing all roll details.
  */
 export function parseAndRoll(
@@ -966,7 +970,8 @@ export function parseAndRoll(
     pipeline: StatisticPipeline,
     context: RollContext,
     settings: CampaignSettings,
-    rng?: (faces: number) => number
+    rng?: (faces: number) => number,
+    critRange?: string  // E.g.: "19-20" or "18-20". Default: "20".
 ): RollResult;
 ```
 

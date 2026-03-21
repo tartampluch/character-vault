@@ -29,6 +29,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -193,7 +194,7 @@
   <!-- Section header -->
   <div class="section-header border-b border-border pb-2">
     <IconInfo size={20} aria-hidden="true" />
-    <span>Basic Information</span>
+    <span>{ui('core.basic_info', engine.settings.language)}</span>
   </div>
 
   <!-- ========================================================= -->
@@ -205,13 +206,13 @@
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1.5">
         <label for="race-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted flex-1">
-          Race
+          {ui('core.race', engine.settings.language)}
         </label>
         {#if activeRace}
           <button
             class="btn-ghost p-1 rounded-full"
             onclick={() => (modalFeatureId = activeRace?.id ?? null)}
-            title="Show race details"
+            title={ui('core.show_details', engine.settings.language)}
             aria-label="Show {engine.t(activeRace.label)} details"
             type="button"
           >
@@ -226,7 +227,7 @@
         onchange={handleRaceChange}
         aria-label="Select character race"
       >
-        <option value="">— None —</option>
+        <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each races as race}
           {@const badges = getModifierBadges(race)}
           <option value={race.id}>
@@ -251,13 +252,13 @@
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1.5">
         <label for="class-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted flex-1">
-          Class
+          {ui('core.class', engine.settings.language)}
         </label>
         {#if activeClass}
           <button
             class="btn-ghost p-1 rounded-full"
             onclick={() => (modalFeatureId = activeClass?.id ?? null)}
-            title="Show class details"
+            title={ui('core.show_details', engine.settings.language)}
             aria-label="Show {engine.t(activeClass.label)} details"
             type="button"
           >
@@ -272,7 +273,7 @@
         onchange={handleClassChange}
         aria-label="Select character class"
       >
-        <option value="">— None —</option>
+        <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each classes as cls}
           <option value={cls.id}>{engine.t(cls.label)}</option>
         {/each}
@@ -282,7 +283,7 @@
         {@const classLevel = engine.character.classLevels[activeClass.id] ?? 1}
         <div class="flex items-center gap-2 flex-wrap mt-0.5">
           <label for="class-level-input" class="text-xs text-text-muted flex-1 min-w-0 truncate">
-            Level in {engine.t(activeClass.label)}:
+            {ui('core.level_in', engine.settings.language)} {engine.t(activeClass.label)}:
           </label>
           <input
             id="class-level-input"
@@ -302,7 +303,7 @@
         </div>
         {#if activeClass.recommendedAttributes?.length}
           <div class="flex items-center gap-1 flex-wrap">
-            <span class="text-xs text-text-muted">Recommended:</span>
+            <span class="text-xs text-text-muted">{ui('core.recommended', engine.settings.language)}</span>
             {#each activeClass.recommendedAttributes as attrId}
               <span class="badge-green font-mono">{attrId.replace('stat_', '').toUpperCase()}</span>
             {/each}
@@ -315,13 +316,13 @@
     <div class="flex flex-col gap-1">
       <div class="flex items-center gap-1.5">
         <label for="deity-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted flex-1">
-          Deity
+          {ui('core.deity', engine.settings.language)}
         </label>
         {#if activeDeity}
           <button
             class="btn-ghost p-1 rounded-full"
             onclick={() => (modalFeatureId = activeDeity?.id ?? null)}
-            title="Show deity details"
+            title={ui('core.show_details', engine.settings.language)}
             aria-label="Show {engine.t(activeDeity.label)} details"
             type="button"
           >
@@ -336,14 +337,14 @@
         onchange={handleDeityChange}
         aria-label="Select deity"
       >
-        <option value="">— None —</option>
+        <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each deities as deity}
           <option value={deity.id}>{engine.t(deity.label)}</option>
         {/each}
       </select>
       {#if deities.length === 0}
         <p class="text-xs text-text-muted italic mt-0.5">
-          No deities loaded. Enable a rule source with deity data.
+          {ui('core.no_deities', engine.settings.language)}
         </p>
       {/if}
     </div>
@@ -351,7 +352,7 @@
     <!-- ALIGNMENT -->
     <div class="flex flex-col gap-1">
       <label for="alignment-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
-        Alignment
+        {ui('core.alignment', engine.settings.language)}
       </label>
       <select
         id="alignment-select"
@@ -360,7 +361,7 @@
         onchange={handleAlignmentChange}
         aria-label="Select alignment"
       >
-        <option value="">— None —</option>
+        <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each ALIGNMENTS as alignment}
           <option value={alignment.id}>{engine.t(alignment.label)}</option>
         {/each}
@@ -378,7 +379,7 @@
 
       <!-- Sub-header for the choices block -->
       <p class="text-xs font-semibold uppercase tracking-wider text-accent">
-        {engine.t(activeClass?.label ?? {})} — Choices
+        {engine.t(activeClass?.label ?? {})} — {ui('core.choices', engine.settings.language)}
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -394,7 +395,7 @@
               >
                 {engine.t(choice.label)}
                 {#if choice.maxSelections > 1}
-                  <span class="text-text-muted ml-1">(up to {choice.maxSelections})</span>
+                  <span class="text-text-muted ml-1">({ui('core.up_to', engine.settings.language)} {choice.maxSelections})</span>
                 {/if}
               </label>
               {#if currentSelection}
@@ -417,7 +418,7 @@
               onchange={(e) => handleChoiceChange(choice.choiceId, (e.target as HTMLSelectElement).value)}
               aria-label="{engine.t(choice.label)}"
             >
-              <option value="">— Select —</option>
+              <option value="">{ui('core.select', engine.settings.language)}</option>
               {#each options as option}
                 <option value={option.id}>
                   {engine.t(option.label)}
@@ -430,7 +431,7 @@
 
             {#if options.length === 0}
               <p class="text-xs text-text-muted italic">
-                No options matching <code class="bg-surface-alt px-1 rounded">{choice.optionsQuery}</code>.
+                {ui('core.no_options', engine.settings.language)} <code class="bg-surface-alt px-1 rounded">{choice.optionsQuery}</code>.
               </p>
             {/if}
           </div>

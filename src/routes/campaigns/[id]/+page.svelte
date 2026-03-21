@@ -14,6 +14,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
 
   const campaignId = $derived($page.params.id ?? '');
@@ -43,10 +44,10 @@
   <!-- Not found -->
   <div class="flex flex-col items-center gap-4 py-20 text-center text-text-muted px-6">
     <IconCampaign size={48} class="opacity-20" aria-hidden="true" />
-    <h1 class="text-xl font-bold text-text-secondary">Campaign not found</h1>
-    <p class="text-sm">The campaign with ID <code class="bg-surface-alt px-1.5 py-0.5 rounded text-xs">{campaignId}</code> doesn't exist.</p>
+    <h1 class="text-xl font-bold text-text-secondary">{ui('campaign.not_found', engine.settings.language)}</h1>
+    <p class="text-sm">{ui('campaign.not_found_desc', engine.settings.language)}</p>
     <a href="/campaigns" class="btn-secondary gap-1 mt-2">
-      <IconBack size={14} aria-hidden="true" /> Back to Campaign Hub
+      <IconBack size={14} aria-hidden="true" /> {ui('campaign.back_to_hub', engine.settings.language)}
     </a>
   </div>
 
@@ -81,7 +82,7 @@
           class="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white transition-colors w-fit"
           aria-label="Back to Campaign Hub"
         >
-          <IconBack size={12} aria-hidden="true" /> Campaigns
+          <IconBack size={12} aria-hidden="true" /> {ui('nav.campaigns', engine.settings.language)}
         </a>
         <h1 class="text-2xl font-bold text-white text-shadow-sm">{campaign.title}</h1>
       </div>
@@ -93,14 +94,14 @@
       <!-- Action bar -->
       <div class="flex gap-2 flex-wrap">
         <button class="btn-primary gap-1" onclick={() => goto(`/campaigns/${campaignId}/vault`)} type="button">
-          <IconVault size={16} aria-hidden="true" /> Character Vault
+          <IconVault size={16} aria-hidden="true" /> {ui('campaign.character_vault', engine.settings.language)}
         </button>
         {#if sessionContext.isGameMaster}
           <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/gm-dashboard`)} type="button">
-            <IconGMDashboard size={16} aria-hidden="true" /> GM Dashboard
+            <IconGMDashboard size={16} aria-hidden="true" /> {ui('nav.gm_dashboard', engine.settings.language)}
           </button>
           <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/settings`)} type="button">
-            <IconSettings size={16} aria-hidden="true" /> Settings
+            <IconSettings size={16} aria-hidden="true" /> {ui('nav.settings', engine.settings.language)}
           </button>
         {/if}
       </div>
@@ -114,7 +115,7 @@
       <section aria-label="Campaign chapters">
         <div class="flex items-center gap-4 flex-wrap mb-4">
           <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
-            <IconSpells size={18} aria-hidden="true" /> Chapters &amp; Acts
+            <IconSpells size={18} aria-hidden="true" /> {ui('campaign.chapters_title', engine.settings.language)}
           </h2>
           {#if chapterStats.total > 0}
             <div class="flex items-center gap-2 flex-1 min-w-[160px]">
@@ -136,8 +137,8 @@
         {#if campaign.chapters.length === 0}
           <div class="card p-5 text-sm text-text-muted text-center italic">
             {sessionContext.isGameMaster
-              ? 'No chapters yet. Add chapters via GM Settings.'
-              : 'No chapters have been added to this campaign yet.'}
+              ? ui('campaign.chapters_empty_gm', engine.settings.language)
+              : ui('campaign.chapters_empty_player', engine.settings.language)}
           </div>
         {:else}
           <ol class="flex flex-col gap-2" aria-label="List of chapters">
@@ -178,7 +179,7 @@
                 {#if sessionContext.isGameMaster}
                   <label
                     class="shrink-0 cursor-pointer"
-                    title={chapter.isCompleted ? 'Mark as incomplete' : 'Mark as completed'}
+                    title={chapter.isCompleted ? ui('campaign.mark_incomplete', engine.settings.language) : ui('campaign.mark_completed', engine.settings.language)}
                   >
                     <input
                       type="checkbox"
@@ -194,12 +195,12 @@
                                : 'border-border text-accent hover:bg-accent/10'}"
                       aria-hidden="true"
                     >
-                      {#if chapter.isCompleted}<IconSuccess size={10} aria-hidden="true" /> Completed{:else}Mark done{/if}
+                      {#if chapter.isCompleted}<IconSuccess size={10} aria-hidden="true" /> {ui('campaign.completed', engine.settings.language)}{:else}{ui('campaign.mark_done', engine.settings.language)}{/if}
                     </span>
                   </label>
                 {:else if chapter.isCompleted}
                   <span class="shrink-0 flex items-center gap-1 text-xs text-green-400" aria-hidden="true">
-                    <IconSuccess size={12} aria-hidden="true" /> Done
+                    <IconSuccess size={12} aria-hidden="true" /> {ui('campaign.done', engine.settings.language)}
                   </span>
                 {/if}
               </li>
@@ -212,7 +213,7 @@
       {#if sessionContext.isGameMaster && campaign.enabledRuleSources.length > 0}
         <section class="border-t border-border pt-5" aria-label="Active rule sources">
           <h2 class="flex items-center gap-2 text-sm font-semibold text-accent mb-3">
-            <IconSpells size={16} aria-hidden="true" /> Active Rule Sources
+            <IconSpells size={16} aria-hidden="true" /> {ui('campaign.active_sources', engine.settings.language)}
           </h2>
           <div class="flex flex-wrap gap-2 mb-2">
             {#each campaign.enabledRuleSources as sourceId}
@@ -220,7 +221,7 @@
             {/each}
           </div>
           <p class="text-xs text-text-muted">
-            Manage rule sources in <a href="/campaigns/{campaignId}/settings" class="text-accent hover:underline">GM Settings</a>.
+            {ui('campaign.manage_sources_hint', engine.settings.language)}
           </p>
         </section>
       {/if}

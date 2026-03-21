@@ -257,6 +257,7 @@
     apply scroll-snap behaviour (we can't use Svelte's `class:` directive for
     `scroll-snap-type` because it's not a Tailwind class).
   -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
     bind:this={scrollEl}
     class="overflow-x-auto overflow-y-hidden scroll-smooth"

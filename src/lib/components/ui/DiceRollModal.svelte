@@ -15,6 +15,7 @@
   import { parseAndRoll } from '$lib/utils/diceEngine';
   import { formatModifier } from '$lib/utils/formatters';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import type { RollResult } from '$lib/utils/diceEngine';
   import Modal from '$lib/components/ui/Modal.svelte';
@@ -73,16 +74,16 @@
       {#if pipeline.situationalModifiers.length > 0}
         <div class="flex flex-col gap-1.5">
           <label for="target-tags-input" class="text-xs text-text-muted flex items-center gap-1 flex-wrap">
-            Target Tags
+            {ui('dice.target_tags', engine.settings.language)}
             <span class="text-accent italic">
-              ({pipeline.situationalModifiers.length} situational bonus{pipeline.situationalModifiers.length !== 1 ? 'es' : ''} available)
+              ({pipeline.situationalModifiers.length} {ui('dice.situational_available', engine.settings.language)})
             </span>
           </label>
           <input
             id="target-tags-input"
             type="text"
             bind:value={customTargetTags}
-            placeholder="e.g. orc, evil, undead"
+            placeholder={ui('dice.tags_placeholder', engine.settings.language)}
             class="input text-sm"
             aria-label="Target creature tags for situational bonuses"
           />
@@ -116,7 +117,7 @@
         type="button"
       >
         <IconDiceRoll size={18} aria-hidden="true" />
-        {#if isRolling}Rolling...{:else if lastResult}Roll Again{:else}Roll!{/if}
+        {#if isRolling}{ui('dice.rolling', engine.settings.language)}{:else if lastResult}{ui('dice.roll_again', engine.settings.language)}{:else}{ui('dice.roll', engine.settings.language)}{/if}
       </button>
 
       <!-- Rolling animation -->
@@ -140,18 +141,18 @@
           <div class="flex items-center gap-2 flex-wrap">
             {#if lastResult.isCriticalThreat}
               <span class="badge-yellow flex items-center gap-1">
-                <IconAttacks size={12} aria-hidden="true" /> CRITICAL THREAT!
+                <IconAttacks size={12} aria-hidden="true" /> {ui('dice.critical_threat', engine.settings.language)}
               </span>
             {:else if lastResult.isAutomaticMiss}
               <span class="badge-red flex items-center gap-1">
-                <IconDamage size={12} aria-hidden="true" /> FUMBLE!
+                <IconDamage size={12} aria-hidden="true" /> {ui('dice.fumble', engine.settings.language)}
               </span>
             {:else}
-              <span class="badge-accent">Result</span>
+              <span class="badge-accent">{ui('dice.result', engine.settings.language)}</span>
             {/if}
             {#if lastResult.numberOfExplosions > 0}
               <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-500 text-black flex items-center gap-1">
-                <IconAbilities size={12} aria-hidden="true" /> EXPLOSION ×{lastResult.numberOfExplosions}
+                <IconAbilities size={12} aria-hidden="true" /> {ui('dice.explosion', engine.settings.language)} ×{lastResult.numberOfExplosions}
               </span>
             {/if}
           </div>
@@ -159,22 +160,22 @@
           <!-- Breakdown rows -->
           <div class="flex flex-col gap-1 text-sm">
             <div class="flex justify-between">
-              <span class="text-text-muted">Dice rolls</span>
+              <span class="text-text-muted">{ui('dice.dice_rolls', engine.settings.language)}</span>
               <span class="font-mono text-sky-500 dark:text-sky-400">[{lastResult.diceRolls.join(', ')}]</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-text-muted">Natural total</span>
+              <span class="text-text-muted">{ui('dice.natural_total', engine.settings.language)}</span>
               <span class="font-semibold text-text-primary">{lastResult.naturalTotal}</span>
             </div>
             {#if lastResult.staticBonus !== 0}
               <div class="flex justify-between">
-                <span class="text-text-muted">Static bonus</span>
+                <span class="text-text-muted">{ui('dice.static_bonus', engine.settings.language)}</span>
                 <span class="font-semibold text-accent">{formatModifier(lastResult.staticBonus)}</span>
               </div>
             {/if}
             {#if lastResult.situationalBonusApplied !== 0}
               <div class="flex justify-between bg-accent/5 rounded px-1.5">
-                <span class="text-text-muted">Situational bonus</span>
+                <span class="text-text-muted">{ui('dice.situational_bonus', engine.settings.language)}</span>
                 <span class="font-semibold text-green-500 dark:text-green-400">{formatModifier(lastResult.situationalBonusApplied)}</span>
               </div>
             {/if}
@@ -182,7 +183,7 @@
 
           <!-- Final total -->
           <div class="flex items-center justify-between pt-2 border-t border-border">
-            <span class="text-sm text-text-secondary font-medium">Final Total</span>
+            <span class="text-sm text-text-secondary font-medium">{ui('dice.final_total', engine.settings.language)}</span>
             <span
               class="text-3xl font-bold leading-none
                 {lastResult.isCriticalThreat ? 'text-yellow-500 dark:text-yellow-400'
@@ -199,7 +200,7 @@
       <!-- Exploding 20s indicator -->
       {#if engine.settings.diceRules.explodingTwenties}
         <p class="text-xs text-accent bg-accent/10 border border-accent/30 rounded px-2 py-1 text-center flex items-center justify-center gap-1">
-          <IconAbilities size={13} aria-hidden="true" /> Exploding 20s active
+          <IconAbilities size={13} aria-hidden="true" /> {ui('dice.exploding_active', engine.settings.language)}
         </p>
       {/if}
 

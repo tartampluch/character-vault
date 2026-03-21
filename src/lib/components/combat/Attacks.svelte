@@ -8,6 +8,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
@@ -15,10 +16,10 @@
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import { IconAttacks, IconDiceRoll } from '$lib/components/ui/icons';
 
-  const UNARMED_OPTION = {
-    id: '__unarmed__', name: 'Unarmed', damageDice: '1d3', critRange: '20',
+  const UNARMED_OPTION = $derived({
+    id: '__unarmed__', name: ui('combat.attacks.unarmed', engine.settings.language), damageDice: '1d3', critRange: '20',
     critMultiplier: 2, isRanged: false, enhancement: 0, stacks15Str: false, tags: [],
-  };
+  });
 
   type WeaponOption = {
     id: string; name: string; damageDice: string; critRange: string;
@@ -90,7 +91,7 @@
     const damageBonus = calcDamageBonus(weapon);
     return {
       formula:  isDamage ? weapon.damageDice : '1d20',
-      label:    isDamage ? `${weapon.name} Damage` : `${weapon.name} Attack`,
+      label:    isDamage ? `${weapon.name} ${ui('combat.attacks.damage', engine.settings.language)}` : `${weapon.name} ${ui('combat.attacks.attack', engine.settings.language)}`,
       pipeline: buildWeaponPipeline(attackBonus, damageBonus, isDamage),
     };
   });
@@ -100,13 +101,13 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconAttacks size={20} aria-hidden="true" />
-    <span>Weapons & Attacks</span>
+    <span>{ui('combat.attacks.title', engine.settings.language)}</span>
   </div>
 
   <!-- Main hand weapon slot -->
   <div class="flex flex-col gap-2 p-3 rounded-lg border border-border bg-surface-alt">
 
-    <span class="text-xs text-text-muted uppercase tracking-wider">Main Hand</span>
+    <span class="text-xs text-text-muted uppercase tracking-wider">{ui('combat.attacks.main_hand', engine.settings.language)}</span>
 
     <select
       class="select"
@@ -123,13 +124,13 @@
       <!-- Stat badges -->
       <div class="flex flex-wrap gap-1.5">
         <span class="badge-yellow font-mono">
-          ATK: {formatModifier(calcAttackBonus(mainHandWeapon))}
+          {ui('combat.attacks.atk', engine.settings.language)} {formatModifier(calcAttackBonus(mainHandWeapon))}
         </span>
         <span class="badge-red font-mono">
-          DMG: {mainHandWeapon.damageDice}{calcDamageBonus(mainHandWeapon) !== 0 ? ' ' + formatModifier(calcDamageBonus(mainHandWeapon)) : ''}
+          {ui('combat.attacks.dmg', engine.settings.language)} {mainHandWeapon.damageDice}{calcDamageBonus(mainHandWeapon) !== 0 ? ' ' + formatModifier(calcDamageBonus(mainHandWeapon)) : ''}
         </span>
         <span class="badge-accent font-mono">
-          Crit: {mainHandWeapon.critRange}/×{mainHandWeapon.critMultiplier}
+          {ui('combat.attacks.crit', engine.settings.language)} {mainHandWeapon.critRange}/×{mainHandWeapon.critMultiplier}
         </span>
       </div>
 
@@ -142,7 +143,7 @@
           aria-label="Roll attack"
           type="button"
         >
-          <IconDiceRoll size={14} aria-hidden="true" /> Attack
+          <IconDiceRoll size={14} aria-hidden="true" /> {ui('combat.attacks.attack', engine.settings.language)}
         </button>
         <button
           class="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium
@@ -151,7 +152,7 @@
           aria-label="Roll damage"
           type="button"
         >
-          <IconDiceRoll size={14} aria-hidden="true" /> Damage
+          <IconDiceRoll size={14} aria-hidden="true" /> {ui('combat.attacks.damage', engine.settings.language)}
         </button>
       </div>
     {/if}

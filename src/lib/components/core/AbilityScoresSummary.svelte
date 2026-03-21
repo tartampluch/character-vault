@@ -16,11 +16,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
   import { IconStats } from '$lib/components/ui/icons';
-
-  const MAIN_ABILITY_IDS = [
-    'stat_str', 'stat_dex', 'stat_con',
-    'stat_int', 'stat_wis', 'stat_cha',
-  ] as const;
+  import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
 
   const charId = $derived(engine.character.id);
 </script>

@@ -173,7 +173,7 @@ describe('parseAndRoll — situational modifier context test', () => {
     const result = parseAndRoll(
       '1d20',
       pipeline,
-      { targetTags: ['orc', 'evil'] },
+      { targetTags: ['orc', 'evil'], isAttackOfOpportunity: false },
       defaultSettings,
       rng
     );
@@ -240,14 +240,14 @@ describe('parseAndRoll — Exploding 20s (CampaignSettings.diceRules.explodingTw
 describe('parseAndRoll — isAutomaticHit and isAutomaticMiss', () => {
   it('natural 20 is isAutomaticHit (first d20 roll only)', () => {
     const rng = makeSequentialRng(20);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     expect(result.isAutomaticHit).toBe(true);
   });
 
   it('natural 1 is isAutomaticMiss', () => {
     const rng = makeSequentialRng(1);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     expect(result.isAutomaticMiss).toBe(true);
     expect(result.isAutomaticHit).toBe(false);
@@ -255,7 +255,7 @@ describe('parseAndRoll — isAutomaticHit and isAutomaticMiss', () => {
 
   it('any other roll is neither auto-hit nor auto-miss', () => {
     const rng = makeSequentialRng(15);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     expect(result.isAutomaticHit).toBe(false);
     expect(result.isAutomaticMiss).toBe(false);
@@ -268,14 +268,14 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
     // The current implementation uses `firstD20Roll === 20` as the sole crit trigger.
     // This is the default D&D 3.5 crit range (20/×2).
     const rng = makeSequentialRng(20);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(true);
   });
 
   it('roll of 10 is not a critical threat', () => {
     const rng = makeSequentialRng(10);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(false);
   });
@@ -293,7 +293,7 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
    */
   it('roll of 19 with default critRange "20" does NOT set isCriticalThreat', () => {
     const rng = makeSequentialRng(19);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng);
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng);
 
     // Default critRange is "20" — only natural 20 is a threat
     expect(result.isCriticalThreat).toBe(false);
@@ -303,7 +303,7 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
   it('roll of 19 with critRange "19-20" DOES set isCriticalThreat (Longsword/Rapier)', () => {
     // A Rapier or Longsword has a 19-20 crit range. Rolling a 19 IS a threat.
     const rng = makeSequentialRng(19);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng, '19-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '19-20');
 
     expect(result.isCriticalThreat).toBe(true);
     // But it's NOT an automatic hit — only natural 20 is an auto hit.
@@ -313,7 +313,7 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
   it('roll of 18 with critRange "18-20" DOES set isCriticalThreat (Scimitar/Keen)', () => {
     // A Keen Scimitar has 18-20 crit range.
     const rng = makeSequentialRng(18);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng, '18-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '18-20');
 
     expect(result.isCriticalThreat).toBe(true);
     expect(result.isAutomaticHit).toBe(false);
@@ -321,14 +321,14 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
 
   it('roll of 17 with critRange "18-20" does NOT set isCriticalThreat', () => {
     const rng = makeSequentialRng(17);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng, '18-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '18-20');
 
     expect(result.isCriticalThreat).toBe(false);
   });
 
   it('roll of 20 with critRange "19-20" sets BOTH isCriticalThreat AND isAutomaticHit', () => {
     const rng = makeSequentialRng(20);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [] }, defaultSettings, rng, '19-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '19-20');
 
     expect(result.isCriticalThreat).toBe(true);
     expect(result.isAutomaticHit).toBe(true);
@@ -340,30 +340,84 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
 // ============================================================
 
 describe('rollAllAbilityScores — 4d6 drop lowest', () => {
-  it('returns 6 ability scores', () => {
-    const scores = rollAllAbilityScores(false);
+  it('returns 6 ability scores with deterministic rng', () => {
+    // 6 scores × 4 dice each = 24 rolls needed.
+    // Each set of 4: drops the lowest, sums the top 3.
+    // Set 1: [4, 3, 5, 2] → drop 2 → 4+3+5 = 12
+    // Set 2: [6, 6, 6, 6] → drop 6 → 6+6+6 = 18
+    // Set 3: [1, 1, 1, 1] → drop 1 → 1+1+1 = 3
+    // Set 4: [3, 4, 5, 6] → drop 3 → 4+5+6 = 15
+    // Set 5: [2, 2, 2, 2] → drop 2 → 2+2+2 = 6
+    // Set 6: [5, 4, 3, 6] → drop 3 → 5+4+6 = 15
+    const rng = makeSequentialRng(
+      4, 3, 5, 2,  // Set 1
+      6, 6, 6, 6,  // Set 2
+      1, 1, 1, 1,  // Set 3
+      3, 4, 5, 6,  // Set 4
+      2, 2, 2, 2,  // Set 5
+      5, 4, 3, 6,  // Set 6
+    );
+    const scores = rollAllAbilityScores(false, rng);
     expect(scores).toHaveLength(6);
-    scores.forEach(score => {
-      expect(score).toBeGreaterThanOrEqual(3);   // Minimum possible (1+1+1 after dropping lowest 1)
-      expect(score).toBeLessThanOrEqual(18);     // Maximum (6+6+6)
-    });
+    expect(scores[0]).toBe(12);
+    expect(scores[1]).toBe(18);
+    expect(scores[2]).toBe(3);
+    expect(scores[3]).toBe(15);
+    expect(scores[4]).toBe(6);
+    expect(scores[5]).toBe(15);
   });
 
   it('rerollOnes=false: allows 1s in the final score', () => {
-    // We can't force the RNG here without injectable RNG in rollAllAbilityScores.
-    // Just verify the function runs without error.
-    const scores = rollAllAbilityScores(false);
+    // Force dice with 1s — they should be kept in the final calculation.
+    // Set: [1, 1, 1, 2] → drop 1 → 1+1+2 = 4 (1s are kept)
+    // Repeat for all 6 sets.
+    const rng = makeSequentialRng(
+      1, 1, 1, 2,  // Set 1 → 4
+      1, 1, 1, 1,  // Set 2 → 3
+      3, 3, 3, 3,  // Set 3 → 9
+      6, 5, 4, 3,  // Set 4 → 15
+      2, 1, 1, 1,  // Set 5 → 4
+      4, 4, 4, 4,  // Set 6 → 12
+    );
+    const scores = rollAllAbilityScores(false, rng);
     expect(scores).toHaveLength(6);
+    expect(scores[0]).toBe(4);   // 1+1+2
+    expect(scores[1]).toBe(3);   // 1+1+1
+    expect(scores[2]).toBe(9);   // 3+3+3
+    expect(scores[3]).toBe(15);  // 6+5+4
+    expect(scores[4]).toBe(4);   // 2+1+1
+    expect(scores[5]).toBe(12);  // 4+4+4
   });
 
-  it('rerollOnes=true: rerolls 1s before dropping lowest', () => {
-    // With rerollOnes=true, no die should ever count as 1.
-    // Since we can't inject RNG into rollAllAbilityScores (it uses Math.random internally),
-    // we just verify the function returns valid scores.
-    const scores = rollAllAbilityScores(true);
+  it('rerollOnes=true: rerolls 1s once before dropping lowest', () => {
+    // With rerollOnes=true, each die showing 1 is rerolled ONCE (not recursively).
+    // Implementation: if roll === 1, call rng(6) once more and use the new result
+    // even if it's also 1.
+    //
+    // Set 1: die1=1→reroll=3, die2=2, die3=4, die4=5 → [2,3,4,5] → drop 2 → 3+4+5 = 12
+    // Set 2: die1=1→reroll=1 (kept as 1), die2=6, die3=3, die4=5 → [1,3,5,6] → drop 1 → 3+5+6 = 14
+    // Sets 3-6: no 1s to keep things simple.
+    const rng = makeSequentialRng(
+      1, 3,   // Set 1, die 1: rolls 1 → rerolls once → 3
+      2,      // Set 1, die 2: 2
+      4,      // Set 1, die 3: 4
+      5,      // Set 1, die 4: 5
+      1, 1,   // Set 2, die 1: rolls 1 → rerolls once → 1 (still 1, only one reroll)
+      6,      // Set 2, die 2: 6
+      3,      // Set 2, die 3: 3
+      5,      // Set 2, die 4: 5
+      3, 3, 3, 3, // Set 3: all 3s → 9
+      4, 4, 4, 4, // Set 4: all 4s → 12
+      5, 5, 5, 5, // Set 5: all 5s → 15
+      6, 6, 6, 6, // Set 6: all 6s → 18
+    );
+    const scores = rollAllAbilityScores(true, rng);
     expect(scores).toHaveLength(6);
-    scores.forEach(score => {
-      expect(score).toBeGreaterThanOrEqual(6);   // Min possible: 2+2+2 with no 1s
-    });
+    expect(scores[0]).toBe(12);  // 3+4+5 (drop 2)
+    expect(scores[1]).toBe(14);  // 3+5+6 (drop the 1)
+    expect(scores[2]).toBe(9);   // 3+3+3
+    expect(scores[3]).toBe(12);  // 4+4+4
+    expect(scores[4]).toBe(15);  // 5+5+5
+    expect(scores[5]).toBe(18);  // 6+6+6
   });
 });

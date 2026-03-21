@@ -162,7 +162,7 @@ class RulesController
         if (isset($data[0])) {
             $firstEntity = $data[0];
             return [
-                'ruleSource'  => $firstEntity['ruleSource'] ?? ($firstEntity['tableId'] ? 'config_table' : 'unknown'),
+                'ruleSource'  => $firstEntity['ruleSource'] ?? (($firstEntity['tableId'] ?? null) ? 'config_table' : 'unknown'),
                 'entityCount' => count($data),
                 'description' => '',
             ];

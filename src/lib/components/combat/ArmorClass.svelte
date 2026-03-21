@@ -10,16 +10,17 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconAC, IconInfo } from '$lib/components/ui/icons';
 
-  const AC_PIPELINES = [
-    { id: 'combatStats.ac_normal',      shortName: 'AC',    description: 'Normal Armor Class',                              accentColor: 'oklch(72% 0.14 220)' },
-    { id: 'combatStats.ac_touch',       shortName: 'Touch', description: 'Touch AC (ignores armor/shield/natural armor)',   accentColor: 'oklch(72% 0.17 145)' },
-    { id: 'combatStats.ac_flat_footed', shortName: 'Flat',  description: 'Flat-Footed AC (ignores DEX/dodge)',             accentColor: 'oklch(78% 0.17 88)'  },
-  ] as const;
+  const AC_PIPELINES = $derived([
+    { id: 'combatStats.ac_normal',      shortName: ui('combat.ac.normal', engine.settings.language),    description: ui('combat.ac.normal_desc', engine.settings.language),                              accentColor: 'oklch(72% 0.14 220)' },
+    { id: 'combatStats.ac_touch',       shortName: ui('combat.ac.touch', engine.settings.language), description: ui('combat.ac.touch_desc', engine.settings.language),   accentColor: 'oklch(72% 0.17 145)' },
+    { id: 'combatStats.ac_flat_footed', shortName: ui('combat.ac.flat', engine.settings.language),  description: ui('combat.ac.flat_desc', engine.settings.language),             accentColor: 'oklch(78% 0.17 88)'  },
+  ] as const);
 
   let breakdownAcId = $state<ID | null>(null);
   let tempMod = $state('0');
@@ -32,10 +33,10 @@
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-2">
     <div class="section-header">
       <IconAC size={20} aria-hidden="true" />
-      <span>Armor Class</span>
+      <span>{ui('combat.ac.title', engine.settings.language)}</span>
     </div>
     <div class="flex items-center gap-2">
-      <label for="ac-temp-input" class="text-xs text-text-muted shrink-0">Temp Mod</label>
+      <label for="ac-temp-input" class="text-xs text-text-muted shrink-0">{ui('combat.ac.temp_mod', engine.settings.language)}</label>
       <input
         id="ac-temp-input"
         type="number"
@@ -72,7 +73,7 @@
           <!-- Temp indicator -->
           {#if tempModValue !== 0}
             <span class="text-[10px] text-yellow-500 dark:text-yellow-400">
-              ({formatModifier(tempModValue)} temp)
+              ({formatModifier(tempModValue)} {ui('combat.ac.temp_label', engine.settings.language)})
             </span>
           {/if}
 

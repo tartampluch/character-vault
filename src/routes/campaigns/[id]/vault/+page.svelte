@@ -15,6 +15,7 @@
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
   import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCharacter, IconCampaign, IconBack } from '$lib/components/ui/icons';
 
@@ -60,10 +61,10 @@
   <header class="flex items-start justify-between gap-3 flex-wrap">
     <div class="flex flex-col gap-0.5">
       <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> Campaign
+        <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', engine.settings.language)}
       </a>
       <h1 class="flex items-center gap-2 text-2xl font-bold text-text-primary">
-        <IconVault size={24} aria-hidden="true" /> Your Adventurers
+        <IconVault size={24} aria-hidden="true" /> {ui('vault.title', engine.settings.language)}
       </h1>
       {#if campaign}
         <p class="text-sm text-text-muted">{campaign.title}</p>
@@ -72,11 +73,11 @@
 
     <div class="flex items-center gap-2 flex-wrap">
       <button class="btn-primary gap-1" onclick={createNewCharacter} type="button">
-        <IconAddCharacter size={15} aria-hidden="true" /> Create New Character
+        <IconAddCharacter size={15} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
       </button>
       {#if sessionContext.isGameMaster}
         <button class="btn-secondary gap-1 text-red-400 border-red-800/60 hover:border-red-600" onclick={addNPCMonster} type="button">
-          <IconNPC size={15} aria-hidden="true" /> Add NPC / Monster
+          <IconNPC size={15} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
         </button>
       {/if}
     </div>
@@ -87,12 +88,12 @@
     {#if sessionContext.isGameMaster}
       <span class="badge-accent flex items-center gap-1 w-fit text-xs">
         <IconGMDashboard size={12} aria-hidden="true" />
-        GM View — {engine.visibleCharacters.length} character{engine.visibleCharacters.length !== 1 ? 's' : ''}
+        {ui('vault.gm_view', engine.settings.language)} — {engine.visibleCharacters.length} {ui('vault.characters', engine.settings.language)}
       </span>
     {:else}
       <span class="badge-gray flex items-center gap-1 w-fit text-xs">
         <IconCharacter size={12} aria-hidden="true" />
-        Player View — {engine.visibleCharacters.length} character{engine.visibleCharacters.length !== 1 ? 's' : ''}
+        {ui('vault.player_view', engine.settings.language)} — {engine.visibleCharacters.length} {ui('vault.characters', engine.settings.language)}
       </span>
     {/if}
   </div>
@@ -101,21 +102,21 @@
   {#if engine.visibleCharacters.length === 0}
     <div class="flex flex-col items-center gap-3 py-20 text-center text-text-muted">
       <IconCampaign size={64} class="opacity-20" aria-hidden="true" />
-      <h2 class="text-xl font-semibold text-text-secondary">No adventurers yet!</h2>
+      <h2 class="text-xl font-semibold text-text-secondary">{ui('vault.empty_title', engine.settings.language)}</h2>
       <p class="text-sm max-w-sm leading-relaxed">
         {#if sessionContext.isGameMaster}
-          Create the party's first character or add an NPC to get started.
+          {ui('vault.empty_gm', engine.settings.language)}
         {:else}
-          You don't have any characters in this campaign yet. Click "Create New Character" to begin your journey!
+          {ui('vault.empty_player', engine.settings.language)}
         {/if}
       </p>
       <div class="flex gap-3 flex-wrap justify-center mt-2">
         <button class="btn-primary gap-1 px-5 py-2.5" onclick={createNewCharacter} type="button">
-          <IconAddCharacter size={16} aria-hidden="true" /> Create New Character
+          <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
         </button>
         {#if sessionContext.isGameMaster}
           <button class="btn-secondary gap-1 px-5 py-2.5 text-red-400 border-red-800/60 hover:border-red-600" onclick={addNPCMonster} type="button">
-            <IconNPC size={16} aria-hidden="true" /> Add NPC / Monster
+            <IconNPC size={16} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
           </button>
         {/if}
       </div>

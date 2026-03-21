@@ -514,7 +514,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
 
     expect(acBefore).toBe(2); // WIS 14 → mod +2
     expect(acAfter).toBe(4);  // WIS 18 → mod +4
-    expect(acAfter - acBefore).toBe(2); // Periapt granted +2 bonus to AC via formula-as-value
+    expect(Number(acAfter) - Number(acBefore)).toBe(2); // Periapt granted +2 bonus to AC via formula-as-value
 
     // The AC delta: applying to a pipeline
     const acDelta = applyStackingRules(

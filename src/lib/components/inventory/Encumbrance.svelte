@@ -27,6 +27,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ItemFeature } from '$lib/types/feature';
   import { IconEncumbrance, IconWealth } from '$lib/components/ui/icons';
 
@@ -65,11 +66,11 @@
   const loadTier = $derived.by(() => {
     const w = totalWeightLbs;
     const c = carryingCapacity;
-    if (c.heavy === 0) return { label: 'Unknown',     color: 'oklch(55% 0.010 264)', severity: -1 };
-    if (w > c.heavy)  return { label: 'Overloaded',   color: 'oklch(40% 0.20 28)',   severity: 3 };
-    if (w > c.medium) return { label: 'Heavy Load',   color: 'oklch(55% 0.20 28)',   severity: 2 };
-    if (w > c.light)  return { label: 'Medium Load',  color: 'oklch(72% 0.17 88)',   severity: 1 };
-    return               { label: 'Light Load',   color: 'oklch(65% 0.17 145)',  severity: 0 };
+    if (c.heavy === 0) return { label: ui('inventory.encumbrance.tier_unknown', engine.settings.language),    color: 'oklch(55% 0.010 264)', severity: -1 };
+    if (w > c.heavy)  return { label: ui('inventory.encumbrance.tier_overloaded', engine.settings.language), color: 'oklch(40% 0.20 28)',   severity: 3 };
+    if (w > c.medium) return { label: ui('inventory.encumbrance.tier_heavy', engine.settings.language),      color: 'oklch(55% 0.20 28)',   severity: 2 };
+    if (w > c.light)  return { label: ui('inventory.encumbrance.tier_medium', engine.settings.language),     color: 'oklch(72% 0.17 88)',   severity: 1 };
+    return               { label: ui('inventory.encumbrance.tier_light', engine.settings.language),      color: 'oklch(65% 0.17 145)',  severity: 0 };
   });
 
   // ── Progress bar values ────────────────────────────────────────────────────
@@ -106,12 +107,12 @@
    * PP = slate-200 (platinum shimmer), GP = yellow-400 (gold), SP = slate-400
    * (silver), CP = amber-600 (copper/bronze).
    */
-  const COINS = [
-    { key: 'pp', label: 'PP', colorClass: 'text-slate-200  dark:text-slate-300',  title: 'Platinum Pieces' },
-    { key: 'gp', label: 'GP', colorClass: 'text-yellow-400 dark:text-yellow-300', title: 'Gold Pieces'     },
-    { key: 'sp', label: 'SP', colorClass: 'text-slate-400  dark:text-slate-300',  title: 'Silver Pieces'   },
-    { key: 'cp', label: 'CP', colorClass: 'text-amber-600  dark:text-amber-400',  title: 'Copper Pieces'   },
-  ] as const;
+  const COINS = $derived([
+    { key: 'pp', label: ui('inventory.coins.pp', engine.settings.language), colorClass: 'text-slate-200  dark:text-slate-300',  title: ui('inventory.coins.pp_title', engine.settings.language) },
+    { key: 'gp', label: ui('inventory.coins.gp', engine.settings.language), colorClass: 'text-yellow-400 dark:text-yellow-300', title: ui('inventory.coins.gp_title', engine.settings.language) },
+    { key: 'sp', label: ui('inventory.coins.sp', engine.settings.language), colorClass: 'text-slate-400  dark:text-slate-300',  title: ui('inventory.coins.sp_title', engine.settings.language) },
+    { key: 'cp', label: ui('inventory.coins.cp', engine.settings.language), colorClass: 'text-amber-600  dark:text-amber-400',  title: ui('inventory.coins.cp_title', engine.settings.language) },
+  ]);
 
   function getCoin(key: string): number {
     return key === 'pp' ? pp : key === 'gp' ? gp : key === 'sp' ? sp : cp;
@@ -129,21 +130,21 @@
   <!-- ── Header ──────────────────────────────────────────────────────────── -->
   <div class="section-header border-b border-border pb-2">
     <IconEncumbrance size={20} aria-hidden="true" />
-    <span>Encumbrance &amp; Wealth</span>
+    <span>{ui('inventory.encumbrance.title', engine.settings.language)}</span>
   </div>
 
   <!-- ── Weight summary row ───────────────────────────────────────────────── -->
   <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-sm">
     <span class="font-bold text-sky-500 dark:text-sky-400">{engine.formatWeight(totalWeightLbs)}</span>
-    <span class="text-text-muted text-xs">carried</span>
+    <span class="text-text-muted text-xs">{ui('inventory.encumbrance.carried', engine.settings.language)}</span>
 
     <span class="text-text-muted/40 hidden sm:inline">|</span>
 
     <!-- Tier thresholds -->
     <div class="flex items-center gap-2 text-xs text-text-muted flex-wrap">
-      <span>Light ≤ <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.light)}</strong></span>
-      <span>Medium ≤ <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.medium)}</strong></span>
-      <span>Heavy ≤ <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.heavy)}</strong></span>
+      <span>{ui('inventory.encumbrance.light_lte', engine.settings.language)} <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.light)}</strong></span>
+      <span>{ui('inventory.encumbrance.medium_lte', engine.settings.language)} <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.medium)}</strong></span>
+      <span>{ui('inventory.encumbrance.heavy_lte', engine.settings.language)} <strong class="text-text-secondary">{engine.formatWeight(carryingCapacity.heavy)}</strong></span>
     </div>
   </div>
 
@@ -187,10 +188,10 @@
     <!-- Tier labels beneath the bar -->
     {#if carryingCapacity.heavy > 0}
       <div class="relative h-4 text-[10px] text-text-muted select-none">
-        <span class="absolute left-0">Light</span>
-        <span class="absolute" style="left: {lightPct}%; transform: translateX(-50%);">Medium</span>
-        <span class="absolute" style="left: {mediumPct}%; transform: translateX(-50%);">Heavy</span>
-        <span class="absolute right-0">Max</span>
+        <span class="absolute left-0">{ui('inventory.encumbrance.light', engine.settings.language)}</span>
+        <span class="absolute" style="left: {lightPct}%; transform: translateX(-50%);">{ui('inventory.encumbrance.medium', engine.settings.language)}</span>
+        <span class="absolute" style="left: {mediumPct}%; transform: translateX(-50%);">{ui('inventory.encumbrance.heavy', engine.settings.language)}</span>
+        <span class="absolute right-0">{ui('inventory.encumbrance.max', engine.settings.language)}</span>
       </div>
     {/if}
   </div>
@@ -204,14 +205,14 @@
       ● {loadTier.label}
     </span>
     {#if loadTier.severity > 0}
-      <span class="text-xs text-text-muted italic">— speed reduced, check penalties apply</span>
+      <span class="text-xs text-text-muted italic">{ui('inventory.encumbrance.speed_warning', engine.settings.language)}</span>
     {/if}
   </div>
 
   <!-- Coin weight note -->
   {#if coinWeightLbs > 0}
     <p class="text-xs text-text-muted">
-      Coins add: <strong>{engine.formatWeight(coinWeightLbs)}</strong>
+      {ui('inventory.encumbrance.coin_weight', engine.settings.language)} <strong>{engine.formatWeight(coinWeightLbs)}</strong>
     </p>
   {/if}
 
@@ -219,7 +220,7 @@
   <div class="flex flex-col gap-2 pt-2 border-t border-border">
     <div class="section-header">
       <IconWealth size={16} aria-hidden="true" />
-      <span class="text-xs">Wealth</span>
+      <span class="text-xs">{ui('inventory.encumbrance.wealth', engine.settings.language)}</span>
     </div>
 
     <!-- Coin inputs: 4-column grid + total -->
@@ -245,10 +246,10 @@
 
       <!-- Total GP equivalent -->
       <div class="flex flex-col items-center gap-0.5 ml-2">
-        <span class="text-[10px] font-bold uppercase text-yellow-500 dark:text-yellow-400">Total</span>
+        <span class="text-[10px] font-bold uppercase text-yellow-500 dark:text-yellow-400">{ui('inventory.encumbrance.total', engine.settings.language)}</span>
         <div class="flex items-center justify-center h-9 px-2 rounded-md border border-border bg-surface min-w-[5rem]">
           <span class="text-sm font-bold text-yellow-500 dark:text-yellow-400">
-            {totalGoldValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GP
+            {totalGoldValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {ui('inventory.encumbrance.gp', engine.settings.language)}
           </span>
         </div>
       </div>
@@ -258,7 +259,7 @@
   <!-- Config hint when carrying capacity table is missing -->
   {#if carryingCapacity.heavy === 0}
     <p class="text-xs text-text-muted italic">
-      Load <code class="bg-surface-alt px-1 rounded">config_carrying_capacity</code> for accurate weight limits.
+      {ui('inventory.encumbrance.config_hint', engine.settings.language)}
     </p>
   {/if}
 

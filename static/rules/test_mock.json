@@ -579,5 +579,74 @@
       }
     ],
     "grantedFeatures": []
+  },
+
+  {
+    "_comment": "--- CONDITION: Medium Load (auto-dispatched by GameEngine encumbrance system) ---",
+    "_comment2": "When the character's carried weight exceeds the Light threshold from config_carrying_capacity, the engine auto-injects this condition. The 'medium_load' tag is checked by conditionNodes on features like Monk AC Bonus and Barbarian Fast Movement."
+  },
+  {
+    "id": "condition_medium_load",
+    "category": "condition",
+    "ruleSource": "test_mock",
+    "label": { "en": "Medium Load", "fr": "Charge intermédiaire" },
+    "description": {
+      "en": "You are carrying a medium load. Your maximum Dexterity bonus is +3, you take a -3 armor check penalty, and your speed is reduced.",
+      "fr": "Vous portez une charge intermédiaire. Votre bonus de Dextérité maximal est de +3, vous subissez un malus de -3 aux tests d'armure, et votre vitesse est réduite."
+    },
+    "tags": ["condition", "encumbrance", "medium_load"],
+    "grantedModifiers": [
+      {
+        "id": "medium_load_check_penalty",
+        "sourceId": "condition_medium_load",
+        "sourceName": { "en": "Medium Load", "fr": "Charge intermédiaire" },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -3,
+        "type": "untyped"
+      },
+      {
+        "id": "medium_load_max_dex",
+        "sourceId": "condition_medium_load",
+        "sourceName": { "en": "Medium Load", "fr": "Charge intermédiaire" },
+        "targetId": "combatStats.max_dex_bonus",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "_comment": "--- CONDITION: Heavy Load (auto-dispatched by GameEngine encumbrance system) ---",
+    "_comment2": "When the character's carried weight exceeds the Medium threshold, the engine auto-injects this condition. The 'heavy_load' tag suppresses Monk AC Bonus, Barbarian Fast Movement, and other load-sensitive features."
+  },
+  {
+    "id": "condition_heavy_load",
+    "category": "condition",
+    "ruleSource": "test_mock",
+    "label": { "en": "Heavy Load", "fr": "Charge lourde" },
+    "description": {
+      "en": "You are carrying a heavy load. Your maximum Dexterity bonus is +1, you take a -6 armor check penalty, your speed is reduced, and you can only move up to your speed as a full-round action.",
+      "fr": "Vous portez une charge lourde. Votre bonus de Dextérité maximal est de +1, vous subissez un malus de -6 aux tests d'armure, votre vitesse est réduite, et vous ne pouvez vous déplacer que de votre vitesse comme action complexe."
+    },
+    "tags": ["condition", "encumbrance", "heavy_load"],
+    "grantedModifiers": [
+      {
+        "id": "heavy_load_check_penalty",
+        "sourceId": "condition_heavy_load",
+        "sourceName": { "en": "Heavy Load", "fr": "Charge lourde" },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -6,
+        "type": "untyped"
+      },
+      {
+        "id": "heavy_load_max_dex",
+        "sourceId": "condition_heavy_load",
+        "sourceName": { "en": "Heavy Load", "fr": "Charge lourde" },
+        "targetId": "combatStats.max_dex_bonus",
+        "value": 1,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
   }
 ]

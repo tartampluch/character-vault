@@ -11,6 +11,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
@@ -19,16 +20,7 @@
   import RollStatsModal from './RollStatsModal.svelte';
   import { IconStats, IconTabFeats, IconDiceRoll, IconInfo } from '$lib/components/ui/icons';
   import type { ID } from '$lib/types/primitives';
-
-  const MAIN_ABILITY_IDS = [
-    'stat_str', 'stat_dex', 'stat_con',
-    'stat_int', 'stat_wis', 'stat_cha',
-  ] as const;
-
-  const ABILITY_ABBRS: Record<string, string> = {
-    stat_str: 'STR', stat_dex: 'DEX', stat_con: 'CON',
-    stat_int: 'INT', stat_wis: 'WIS', stat_cha: 'CHA',
-  };
+  import { MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
 
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
@@ -66,24 +58,24 @@
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-3">
     <div class="section-header">
       <IconStats size={20} aria-hidden="true" />
-      <span>Ability Scores</span>
+      <span>{ui('abilities.title', engine.settings.language)}</span>
     </div>
     <div class="flex gap-2">
       <button
         class="btn-secondary text-xs gap-1"
         onclick={() => (showPointBuy = true)}
-        title="Point Buy stat generation wizard"
+        title={ui('abilities.point_buy_tooltip', engine.settings.language)}
         type="button"
       >
-        <IconTabFeats size={14} aria-hidden="true" /> Point Buy
+        <IconTabFeats size={14} aria-hidden="true" /> {ui('abilities.point_buy', engine.settings.language)}
       </button>
       <button
         class="btn-secondary text-xs gap-1"
         onclick={() => (showRollStats = true)}
-        title="Roll Stats wizard (4d6 drop lowest)"
+        title={ui('abilities.roll_stats_tooltip', engine.settings.language)}
         type="button"
       >
-        <IconDiceRoll size={14} aria-hidden="true" /> Roll Stats
+        <IconDiceRoll size={14} aria-hidden="true" /> {ui('abilities.roll_stats', engine.settings.language)}
       </button>
     </div>
   </div>
@@ -116,7 +108,7 @@
             <span class="text-xs font-bold tracking-wider text-text-muted min-w-[2rem]">{abbr}</span>
             <span class="text-sm text-text-primary flex-1 truncate">{engine.t(pipeline.label)}</span>
             {#if isRecommended}
-              <span class="text-green-500" title="Recommended for your class" aria-label="Recommended">
+              <span class="text-green-500" title={ui('abilities.recommended_for', engine.settings.language)} aria-label="Recommended">
                 <IconTabFeats size={12} />
               </span>
             {/if}
@@ -126,7 +118,7 @@
           <div class="grid grid-cols-3 gap-1.5 text-center">
             <!-- Base score input -->
             <div class="flex flex-col gap-0.5">
-              <span class="text-[10px] uppercase tracking-wider text-text-muted">Base</span>
+              <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('abilities.base', engine.settings.language)}</span>
               <input
                 type="number"
                 min="1"
@@ -140,7 +132,7 @@
 
             <!-- Total value (computed) -->
             <div class="flex flex-col gap-0.5">
-              <span class="text-[10px] uppercase tracking-wider text-text-muted">Total</span>
+              <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('abilities.total', engine.settings.language)}</span>
               <div class="flex items-center justify-center h-9 rounded-md bg-surface border border-border">
                 <span class="text-lg font-bold text-sky-500 dark:text-sky-400">
                   {pipeline.totalValue + tempMod}
@@ -150,7 +142,7 @@
 
             <!-- Derived modifier -->
             <div class="flex flex-col gap-0.5">
-              <span class="text-[10px] uppercase tracking-wider text-text-muted">Mod</span>
+              <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('abilities.mod', engine.settings.language)}</span>
               <div class="flex items-center justify-center h-9 rounded-md bg-surface border border-border">
                 <span class="text-base font-semibold
                   {pipeline.derivedModifier > 0 ? 'text-green-500 dark:text-green-400'
@@ -164,7 +156,7 @@
 
           <!-- Row 3: Temp modifier + action buttons -->
           <div class="flex items-center gap-2">
-            <label for="temp-{abilityId}" class="text-xs text-text-muted shrink-0">Temp</label>
+            <label for="temp-{abilityId}" class="text-xs text-text-muted shrink-0">{ui('abilities.temp', engine.settings.language)}</label>
             <input
               id="temp-{abilityId}"
               type="number"
@@ -172,22 +164,22 @@
               class="input flex-1 text-center text-xs px-1 py-1 text-yellow-500 dark:text-yellow-400 min-w-0"
               style="border-color: color-mix(in oklch, var(--color-border) 70%, transparent);"
               aria-label="{engine.t(pipeline.label)} temporary modifier"
-              title="Temporary modifier (buff/curse)"
+               title={ui('abilities.temp_tooltip', engine.settings.language)}
               oninput={(e) => { tempMods[abilityId] = (e.target as HTMLInputElement).value; }}
             />
             <div class="flex gap-1 shrink-0">
               <button
                 class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
                 onclick={() => (breakdownPipelineId = abilityId)}
-                title="Show modifier breakdown"
+                title={ui('abilities.show_breakdown', engine.settings.language)}
                 aria-label="Show {engine.t(pipeline.label)} breakdown"
                 type="button"
               ><IconInfo size={15} aria-hidden="true" /></button>
               <button
                 class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollPipelineId = abilityId)}
-                title="Roll a {engine.t(pipeline.label)} check"
-                aria-label="Roll {engine.t(pipeline.label)} check"
+                title="Roll a {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
+                aria-label="Roll {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
                 type="button"
               ><IconDiceRoll size={15} aria-hidden="true" /></button>
             </div>
@@ -222,7 +214,7 @@
     <DiceRollModal
       formula="1d20"
       pipeline={dp}
-      label="{engine.t(dp.label)} Check"
+      label="{engine.t(dp.label)} {ui('abilities.check', engine.settings.language)}"
       onclose={() => (diceRollPipelineId = null)}
     />
   {/if}

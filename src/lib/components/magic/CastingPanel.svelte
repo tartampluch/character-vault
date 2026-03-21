@@ -12,6 +12,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { MagicFeature } from '$lib/types/feature';
@@ -65,11 +66,11 @@
 
   <div class="section-header border-b border-border pb-2">
     <IconTabMagic size={20} aria-hidden="true" />
-    <span>Spells &amp; Powers</span>
+    <span>{ui('magic.casting.title', engine.settings.language)}</span>
   </div>
 
   {#if knownSpells.length === 0}
-    <p class="text-sm text-text-muted italic">No spells known. Use the Grimoire to learn spells.</p>
+    <p class="text-sm text-text-muted italic">{ui('magic.casting.empty', engine.settings.language)}</p>
   {:else}
     {#each sortedLevels as level}
       <div class="flex flex-col gap-1">
@@ -77,9 +78,9 @@
         <!-- Level header with DC -->
         <div class="flex items-center justify-between px-2 py-1 rounded bg-accent/10 border border-accent/20">
           <span class="text-xs font-semibold uppercase tracking-wider text-accent">
-            {level === 0 ? 'Cantrips (0)' : `Level ${level}`}
+            {level === 0 ? ui('magic.casting.cantrips', engine.settings.language) : `${ui('magic.casting.level', engine.settings.language)} ${level}`}
           </span>
-          <span class="text-[10px] text-text-muted">Save DC: {getSpellDC(level)}</span>
+          <span class="text-[10px] text-text-muted">{ui('magic.casting.save_dc', engine.settings.language)} {getSpellDC(level)}</span>
         </div>
 
         <!-- Spell rows within this level -->
@@ -108,7 +109,7 @@
               class="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20 transition-colors duration-150"
               aria-label="Cast {engine.t(spell.label)}"
               type="button"
-            >Cast</button>
+            >{ui('magic.casting.cast', engine.settings.language)}</button>
           </div>
         {/each}
       </div>
@@ -125,7 +126,7 @@
   <DiceRollModal
     formula={currentDiceSpell.grantedModifiers?.[0]?.targetId.includes('damage') ? '1d6' : '1d20'}
     pipeline={buildSpellPipeline()}
-    label="{engine.t(currentDiceSpell.label)} Damage"
+    label="{engine.t(currentDiceSpell.label)} {ui('magic.casting.damage', engine.settings.language)}"
     onclose={() => (diceSpellId = null)}
   />
 {/if}
