@@ -378,7 +378,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - `LoreAndLanguages.svelte`: Two-column on desktop (story left, languages right), stacked on mobile. Text areas with proper Tailwind styling.
     - _Requirement:_ Remove ALL scoped `<style>` CSS from these components. All styling via Tailwind utility classes only.
 
-- [ ] **19.8 Abilities & Skills Tab Migration:** Migrate all Abilities tab components to Tailwind CSS:
+- [x] **19.8 Abilities & Skills Tab Migration:** Migrate all Abilities tab components to Tailwind CSS:
     - `AbilityScores.svelte`: 6 ability score panels in a responsive grid (3×2 on desktop, 2×3 on tablet, 1 column on mobile). Each panel: stat name with icon, base score (editable input), modifier display (large prominent number), and action buttons (Info `Info` icon, Roll `Dices` icon). The editable fields must be properly sized for touch.
     - `SavingThrows.svelte`: Three save panels with breakdown display, ability modifier block (color-coded), and action buttons. Responsive grid.
     - `SkillsMatrix.svelte`: This is the most critical component for horizontal scrolling.
