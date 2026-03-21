@@ -312,3 +312,127 @@ _Goal: Create a complete, zero-dependency build and deployment pipeline, VS Code
 - [x] **18.8 PHP Binary Resolver:** Create `scripts/php-dev.sh`. Resolution priority: (1) `CHAR_VAULT_PHP` env var override, (2) system PHP with Xdebug when `XDEBUG_MODE` is set, (3) `.build-tools/bin/php` portable binary, (4) system PHP >= 8.1. Print clear warning if Xdebug is requested but not found. Forward all arguments via `exec`.
 - [x] **18.9 Environment Variable Support:** Create `.env.example` documenting all supported variables (`APP_ENV`, `DB_PATH`, `CORS_ORIGIN`) with usage instructions for shared hosting, local development, and Docker. Update `api/config.php` to load `.env` files with priority resolution (process env > .env file > built-in defaults). Update `run.sh` and `run-docker.sh` with `--env-file` option and `.env` loading logic.
 - [x] **18.10 Version Control & Documentation:** Update `.gitignore` to exclude build artifacts (`dist/`, `dist-pkg/`, `.build-tools/`), portable tools, and sensitive files (`.env`, `*.sqlite*`). Rewrite `README.md` with comprehensive sections: project structure, prerequisites, quick start, development setup, testing, VS Code debugging, building & packaging (native + Docker), running locally, environment variables, and production deployment.
+
+### Phase 19: UI Excellence — Tailwind CSS, Theming, Responsive Design & Iconography
+
+_Goal: Elevate the entire UI to professional-grade quality. Replace all hand-written scoped CSS with Tailwind CSS utility classes. Implement a robust light/dark theme system with system preference detection and cookie persistence. Integrate Lucide Icons to replace all emoji placeholders. Build a responsive layout that works seamlessly on desktop (widescreen), tablet (landscape/portrait), and mobile. Ensure the character sheet uses a full-height layout where tabs are always visible and only the content scrolls. Long data lists (skills, feats, spells) must support horizontal scrolling on narrow viewports. All interactive elements must be properly sized for both mouse and touch input. The migration palette shifts from raw purple (#7c3aed) to a more refined indigo/blue-violet accent. The navigation system uses a collapsible sidebar (icons-only on collapsed desktop, drawer on mobile)._
+
+**Design Decisions (locked in):**
+- **CSS Framework:** Tailwind CSS (v4+) with PostCSS
+- **Icon Library:** Lucide Icons via `lucide-svelte` (tree-shakable SVG components)
+- **Accent Color:** Indigo/blue-violet (Tailwind's `indigo` scale as primary, replacing the raw purple)
+- **Theme Strategy:** CSS class-based (`dark` class on `<html>`), Tailwind `darkMode: 'class'`, system preference via `prefers-color-scheme`, user choice persisted in a cookie
+- **Navigation:** Collapsible sidebar (full on desktop, icons-only when collapsed, slide-out drawer on mobile)
+- **Tab Behavior:** Full-viewport-height layout — tabs are always visible, only tab content scrolls internally
+- **Touch Targets:** Minimum 44px on touch devices, adaptive via `@media (pointer: coarse)`
+
+---
+
+- [ ] **19.1 Tailwind CSS & PostCSS Setup:** Install Tailwind CSS (v4), PostCSS, and autoprefixer. Create `src/app.css` with Tailwind directives (`@import "tailwindcss"`). Configure `tailwind.config.ts` (or CSS-based config for v4) with the custom theme: extend the color palette with an `accent` scale mapped to Tailwind's `indigo` (replacing the old purple), define semantic color aliases (`surface`, `surface-alt`, `border`, `text-primary`, `text-secondary`, `text-muted`), configure responsive breakpoints (`sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`, `2xl: 1536px`), and set `darkMode: 'class'`. Update `svelte.config.js` and `vite.config.ts` if necessary for PostCSS integration. Import `src/app.css` in the root `+layout.svelte`. Verify the build still compiles and Tailwind utilities are available.
+    - _Deliverables:_ `tailwind.config.ts` (or equivalent), `postcss.config.js`, `src/app.css`, updated `+layout.svelte`, updated `package.json`.
+
+- [ ] **19.2 Theme Engine & Cookie Persistence:** Create `src/lib/stores/ThemeManager.svelte.ts`. Implement a reactive theme store using Svelte 5 runes with three states: `'system'`, `'light'`, `'dark'`. On initialization, read the user's preference from a `theme` cookie (using `document.cookie` parsing). If no cookie exists, default to `'system'`. When the resolved theme is `'system'`, detect the OS preference via `window.matchMedia('(prefers-color-scheme: dark)')` and listen for changes. Apply the resolved theme by toggling the `dark` class on `document.documentElement`. When the user changes their preference, persist it in a cookie with `path=/`, `max-age=31536000` (1 year), and `SameSite=Lax`. Create a `<ThemeToggle />` component (`src/lib/components/ui/ThemeToggle.svelte`) with three-state cycling: System → Light → Dark → System, using Lucide icons (`Monitor`, `Sun`, `Moon`).
+    - _Requirement:_ The theme must be applied **before** the first paint to prevent flash-of-wrong-theme (FOWT). Use a `<script>` block in `src/app.html` `<head>` that reads the cookie and applies the `dark` class synchronously.
+    - _Requirement:_ Define all theme-aware colors as CSS custom properties in `src/app.css` (e.g., `--color-surface`, `--color-surface-alt`, `--color-border`, `--color-text-primary`, `--color-text-muted`, `--color-accent`), with separate values under `.dark` and default (light). Map these to Tailwind's `theme.extend.colors` so utilities like `bg-surface`, `text-primary`, `border-border` work.
+
+- [ ] **19.3 Lucide Icons Integration & Icon Mapping:** Install `lucide-svelte`. Define an icon mapping convention for the project (documented in a comment block or a small mapping file). Replace ALL emoji characters in the codebase with appropriate Lucide icon components. Apply consistent icon sizing: `16px` inline with text, `20px` in buttons and nav items, `24px` in section headers. Ensure icons inherit the current text color via `currentColor`.
+    - _Icon mapping (minimum):_
+      - **Tabs:** Core → `FileText`, Abilities → `Dumbbell` or `BicepsFlexed`, Combat → `Swords`, Feats → `Star`, Magic → `Sparkles`, Inventory → `Backpack`
+      - **Sections:** Settings → `Settings`, Stats → `BarChart3`, Skills → `GraduationCap`, Saves → `Shield`, Health → `Heart`, XP → `TrendingUp`, AC → `ShieldCheck`, Attacks → `Sword`, Movement → `Footprints`, Resistances → `Flame`, DR → `ShieldAlert`, Spells → `BookOpen`, Abilities → `Zap`, Languages → `Languages`, Lore → `Scroll`
+      - **Actions:** Add → `Plus`, Delete → `Trash2`, Edit → `Pencil`, Info/Breakdown → `Info`, Dice Roll → `Dices`, Search → `Search`, Filter → `Filter`, Equip → `ArrowUpToLine`, Unequip → `ArrowDownToLine`, Heal → `HeartPulse`, Damage → `Skull`
+      - **Navigation:** Campaign → `Map`, Vault → `Users`, Character → `User`, GM Dashboard → `Crown`, Back → `ArrowLeft`, Menu → `Menu`, Close → `X`
+      - **Theme:** System → `Monitor`, Light → `Sun`, Dark → `Moon`
+      - **Status:** Success → `Check`, Error → `AlertCircle`, Warning → `AlertTriangle`, Locked → `Lock`
+    - _Requirement:_ Icons must be used as Svelte components, not as raw SVG strings. This ensures tree-shaking works correctly.
+
+- [ ] **19.4 Global Layout Shell & Sidebar Navigation:** Refactor `src/routes/+layout.svelte` to implement the application shell layout. Create `src/lib/components/layout/AppShell.svelte` as the main wrapper providing:
+    - **Sidebar** (`src/lib/components/layout/Sidebar.svelte`): Rendered on the left side. On desktop (≥1024px): default to expanded (showing icon + label), with a collapse toggle button that shrinks it to icon-only mode (persisted in a cookie). On tablet (768px-1023px): default to icon-only. On mobile (<768px): hidden by default, slides in as an overlay drawer when the hamburger button is tapped, with a semi-transparent backdrop.
+      - _Content:_ App logo/title at the top, navigation links (Campaigns, Vault — contextual to active campaign, Character Sheet — if a character is loaded), a divider, then the Theme Toggle and a user/session indicator at the bottom.
+      - _Active state:_ Current route highlighted with accent background and left border indicator.
+    - **Main content area:** Takes the remaining width. Has a thin top bar on mobile showing the hamburger menu button, the current page title, and breadcrumb navigation (e.g., "Reign of Winter > Vault > Aldric").
+    - _Requirement:_ The sidebar state (expanded/collapsed) must be persisted in a cookie.
+    - _Requirement:_ Use Tailwind `transition-all` with `duration-200` for smooth sidebar expand/collapse and drawer animations.
+
+- [ ] **19.5 Design System: Base Component Classes & Patterns:** Define a set of reusable Tailwind-based component patterns. These are NOT new Svelte components for simple cases — they are documented utility class combinations applied via Tailwind's `@apply` in `src/app.css` or used directly. For complex interactive patterns, create minimal Svelte wrapper components in `src/lib/components/ui/`.
+    - **Cards/Panels:** `.card` class — `bg-surface rounded-lg border border-border shadow-sm` with dark variant. Used for all content sections.
+    - **Section Headers:** Consistent pattern: Lucide icon (20px) + label text (`text-sm font-semibold uppercase tracking-wider text-muted`) + optional action buttons aligned right.
+    - **Buttons:** Primary (`bg-accent text-white hover:bg-accent-600`), Secondary (`bg-surface-alt border border-border hover:bg-surface`), Danger (`bg-red-600`), Ghost (`hover:bg-surface-alt`). All with `rounded-md px-3 py-2 text-sm font-medium transition-colors`. Touch: minimum `h-11` on `pointer: coarse`.
+    - **Inputs:** `bg-surface border border-border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-accent/50 focus:border-accent`. Consistent height matching buttons.
+    - **Badges:** Small pills for tags, modifiers, sources. `px-2 py-0.5 rounded-full text-xs font-medium`. Color variants: accent, green (met prerequisite), red (failed), yellow (warning), gray (neutral).
+    - **Modals:** Create `src/lib/components/ui/Modal.svelte` — a unified modal wrapper. On desktop: centered overlay with backdrop blur, max-width configurable (sm/md/lg/xl/full). On mobile (<768px): slides up from bottom as a sheet, or goes full-screen for complex modals (feat catalog, grimoire). Includes focus trap, Escape to close, backdrop click to close. Smooth enter/exit transitions.
+    - **Horizontal Scroll Container:** Create `src/lib/components/ui/HorizontalScroll.svelte` — a wrapper that enables horizontal scrolling with scroll-snap, fade-out edge shadows (left/right gradients) indicating scrollable content, and optional scroll indicator dots or arrows. Uses `overflow-x: auto`, `scroll-snap-type: x mandatory`, and `scrollbar-width: thin` (or hidden on mobile).
+    - **Data Tables:** Define a pattern for tabular data with `overflow-x: auto` wrapper, sticky first column on mobile, alternating row colors in light theme, subtle hover highlight.
+
+- [ ] **19.6 Character Sheet Full-Height Layout & Tab Redesign:** Refactor `src/routes/character/[id]/+page.svelte` to implement a full-viewport-height layout:
+    - _Structure:_ The character sheet occupies `100vh` minus the sidebar/top-bar height. Inside, the layout is split: a fixed tab navigation bar at the top, and a scrollable content area below that fills the remaining height (`flex-1 overflow-y-auto`).
+    - _Tab bar:_ Horizontal row of tab buttons. Each tab shows a Lucide icon (20px) + label text. On mobile (<768px): labels are hidden, only icons shown (with tooltip on long-press or title attribute). The tab bar has `overflow-x: auto` with scroll-snap for swipe navigation between tabs on mobile. Active tab: bold text + accent underline (2px bottom border) + subtle accent background tint.
+    - _Content area:_ Uses `overflow-y: auto` with smooth scrolling. Padded appropriately (`p-4` on mobile, `p-6` on desktop).
+    - _Requirement:_ The user must NEVER need to scroll the page to reach the tabs. Tabs are always accessible.
+    - _Requirement:_ On desktop wide screens (≥1280px), the content area should intelligently use the horizontal space by arranging panels in a multi-column grid (2 or 3 columns), avoiding excessively long single-column layouts.
+
+- [ ] **19.7 Core Tab Migration:** Migrate all Core tab components to Tailwind CSS and add Lucide icons:
+    - `BasicInfo.svelte`: Redesign the feature selectors (Race, Class, Deity, Alignment, Size) as a clean card with icon-labeled dropdowns. Dynamic badges (e.g., "+2 DEX") use the badge component pattern. Feature choices render as a sub-card with indented styling.
+    - `AbilityScoresSummary.svelte`: Compact 6-stat grid. Each stat as a mini-card with the stat icon, value, and modifier. On desktop: horizontal row. On mobile: 3×2 grid or 2×3 grid.
+    - `SavingThrowsSummary.svelte`: Three inline stat blocks (Fortitude/Reflex/Will) with Shield icons.
+    - `SkillsSummary.svelte`: Condensed list with horizontal scroll on mobile. Use the `HorizontalScroll` container.
+    - `LoreAndLanguages.svelte`: Two-column on desktop (story left, languages right), stacked on mobile. Text areas with proper Tailwind styling.
+    - _Requirement:_ Remove ALL scoped `<style>` CSS from these components. All styling via Tailwind utility classes only.
+
+- [ ] **19.8 Abilities & Skills Tab Migration:** Migrate all Abilities tab components to Tailwind CSS:
+    - `AbilityScores.svelte`: 6 ability score panels in a responsive grid (3×2 on desktop, 2×3 on tablet, 1 column on mobile). Each panel: stat name with icon, base score (editable input), modifier display (large prominent number), and action buttons (Info `Info` icon, Roll `Dices` icon). The editable fields must be properly sized for touch.
+    - `SavingThrows.svelte`: Three save panels with breakdown display, ability modifier block (color-coded), and action buttons. Responsive grid.
+    - `SkillsMatrix.svelte`: This is the most critical component for horizontal scrolling.
+      - _Desktop (≥1024px):_ Full table layout with all columns visible. Alternating row styling.
+      - _Tablet/Mobile (<1024px):_ The skill table becomes a horizontally scrollable container using the `HorizontalScroll` component. The skill name column is **sticky** (pinned left) while the data columns (ranks, bonus, ability, misc, cost, max) scroll horizontally. This prevents a kilometer-long vertical list.
+      - _Header:_ Skill points available/spent displayed as a progress-bar-style indicator.
+    - `PointBuyModal.svelte` and `RollStatsModal.svelte`: Redesign as full-screen sheets on mobile, centered modals on desktop. Touch-friendly increment/decrement buttons (≥44px).
+    - `ModifierBreakdownModal.svelte` and `DiceRollModal.svelte`: Use the unified `Modal` component. Clean math breakdown layout. Dice results with animated roll display (optional, subtle).
+
+- [ ] **19.9 Combat Tab Migration:** Migrate all Combat tab components to Tailwind CSS:
+    - `HealthAndXP.svelte`: HP bar redesigned as a full-width visual bar with gradient colors (green → yellow → red). Touch-friendly Heal (`HeartPulse`) and Damage (`Skull`) buttons. XP progress bar with level indicator. Level Up button prominent with `TrendingUp` icon.
+    - `ArmorClass.svelte`: Three AC values (Normal, Touch, Flat-Footed) displayed as prominent number cards in a row. Each with breakdown icon. Temp modifier input styled consistently.
+    - `CoreCombat.svelte`: BAB, Initiative, Grapple displayed as stat blocks with action buttons. Responsive grid.
+    - `Attacks.svelte`: Weapon selection dropdowns with weapon icon. Attack/damage summary as card. Roll buttons prominent.
+    - `MovementSpeeds.svelte`: Speed values with `Footprints` icon. Penalty indicators with warning styling.
+    - `Resistances.svelte`: Grid of resistance values with element-themed icons (`Flame` for fire, `Snowflake` for cold, etc.).
+    - `DamageReduction.svelte`: DR list as cards with delete action. Builder form as a compact inline form.
+    - _Layout:_ On desktop (≥1280px), arrange in a 2-column grid: left column (Health, AC, Core Combat), right column (Attacks, Movement, Resistances, DR). On mobile: single column stacked.
+
+- [ ] **19.10 Feats & Magic Tabs Migration:** Migrate Feats and Magic tab components to Tailwind CSS:
+    - **Feats Tab:**
+      - `FeatsTab.svelte`: Header with feat counter (available/left) as badge indicators. Granted feats section with `Lock` icon (read-only). Selected feats with `Trash2` delete action. Responsive card grid.
+      - `FeatSelectionModal.svelte`: On mobile: full-screen modal with sticky search bar at top. On desktop: large centered modal. Search input with `Search` icon. Tag badges for feat categories. Prerequisites: `Check` (green) for met, `X` (red) for unmet, with `errorMessage` tooltip. Scrollable feat list.
+    - **Magic Tab:**
+      - `Grimoire.svelte`: Spell catalog with search and filter. Horizontal scroll by spell level on mobile.
+      - `CastingPanel.svelte`: Spells grouped by level in collapsible sections. Prepare counters as touch-friendly stepper buttons. Spell detail modal with school icon and roll button.
+      - `SpecialAbilities.svelte`: Ability cards with activation info and resource tracking (uses/day as tappable pips or stepper).
+
+- [ ] **19.11 Inventory Tab Migration:** Migrate Inventory tab components to Tailwind CSS:
+    - `InventoryTab.svelte`: Three sections (Equipped, Backpack, Storage) as collapsible card groups with distinct visual treatment (Equipped: accent-tinted header, Backpack: neutral, Storage: muted). Each item row: icon (`Package` or weapon/armor icon), name, weight, equip/unequip action button. Slot indicator badges on equipped items.
+    - `Encumbrance.svelte`: Full-width encumbrance bar with three tier markers (Light/Medium/Heavy). Current weight displayed numerically. Wealth section as a compact inline form (CP/SP/GP/PP inputs with coin icons).
+    - _Mobile:_ Item actions accessible via swipe-to-reveal or action menu (tap → action sheet). Equipment slot validation warnings as toast-style notifications.
+
+- [ ] **19.12 Campaign Hub, Vault & GM Tools Migration:** Migrate all non-character-sheet pages to Tailwind CSS:
+    - **Campaign Hub** (`/campaigns`): Campaign cards as large image-topped cards in a responsive grid. "Create Campaign" button with `Plus` icon, visible only for GM.
+    - **Campaign Details** (`/campaigns/[id]`): Banner image full-width. Chapter list with `Check` icons for completion status. GM controls for chapter management.
+    - **Character Vault** (`/campaigns/[id]/vault`): Character cards in responsive grid. Poster image with fallback avatar (Lucide `User` icon). Level badge. Class/race subtitle. Empty state with illustration and CTA buttons.
+    - **GM Settings** (`/campaigns/[id]/settings`): Rule source manager with drag-and-drop reorder (styled list with grip handles `GripVertical` icon). JSON text area with monospace font, line numbers, and syntax error highlighting. Light/dark appropriate code editor styling.
+    - **GM Dashboard** (`/campaigns/[id]/gm-dashboard`): Entity list as a sidebar list on desktop (responsive split view), drawer on mobile. Read-only character summary as stat cards. Per-character override text area.
+    - _Requirement:_ All pages must have smooth theme transitions and consistent card/panel styling.
+
+- [ ] **19.13 Touch Adaptation, Accessibility & Cross-Device Polish:** Ensure the entire UI works flawlessly on touch devices and all screen sizes:
+    - **Touch targets:** Add a global CSS rule: `@media (pointer: coarse)` increases minimum interactive element height to `44px` (buttons, links, inputs, tab buttons, dropdown options, list items). Increase spacing between adjacent interactive elements to prevent mis-taps.
+    - **Focus management:** All interactive elements must have visible focus rings (`ring-2 ring-accent/50 ring-offset-2`) for keyboard navigation. Focus rings hidden for mouse users (`:focus-visible` only).
+    - **Responsive spacing:** Define a Tailwind plugin or utility pattern where padding/gaps increase on `pointer: coarse` (e.g., `gap-2` on desktop, `gap-3` on touch).
+    - **Scrollbar styling:** Thin scrollbars on desktop (via `scrollbar-width: thin`), hidden scrollbars on mobile (via `scrollbar-width: none` or WebKit pseudo-elements).
+    - **Viewport consistency:** Test at: 320px (small phone), 375px (iPhone), 414px (large phone), 768px (tablet portrait), 1024px (tablet landscape), 1280px (laptop), 1536px (desktop), 1920px (widescreen). Ensure no horizontal overflow at any breakpoint.
+    - **Animations:** Use `prefers-reduced-motion: reduce` to disable transitions/animations for users who prefer reduced motion.
+
+- [ ] **19.14 Legacy CSS Cleanup, Performance Audit & Final QA:** Complete the migration by removing all legacy styles and verifying quality:
+    - Remove ALL `<style>` blocks from every `.svelte` component that has been migrated to Tailwind. No scoped CSS should remain except for truly component-specific animation keyframes or pseudo-element hacks that cannot be expressed in Tailwind.
+    - Audit `src/app.css` to ensure the `@apply` directives (if used) are minimal and justified. Prefer direct utility classes in templates.
+    - Run `npx tailwindcss --content` analysis to verify unused styles are purged. Check final CSS bundle size.
+    - Verify that the dark and light themes are visually consistent across ALL pages and components. Check contrast ratios meet WCAG AA (4.5:1 for normal text, 3:1 for large text).
+    - Verify the theme cookie is correctly read before first paint (no flash of wrong theme).
+    - Verify the sidebar cookie persistence works (collapsed state survives page reload).
+    - Smoke-test the complete user flow: landing → campaign hub → vault → character sheet → all 6 tabs → back to vault. Ensure no visual glitches, no broken layouts, no orphaned old styles.

@@ -305,7 +305,7 @@ If no issues are found in a category, write: "✅ [Category]: No issues found."
 
 ---
 
-## Checkpoint Review #6 — After Phase 18 (Tooling, Build Pipeline & Developer Experience)
+## Checkpoint Review #5 — After Phase 18 (Tooling, Build Pipeline & Developer Experience)
 
 ```markdown
 You are a senior DevOps / DX engineer specializing in build pipelines, containerization, IDE integration, and developer tooling for full-stack web projects (Node.js + PHP).
@@ -391,17 +391,120 @@ If no issues are found in a category, write: "✅ [Category]: No issues found."
 
 ---
 
-## Final Review #5 — Complete System Validation
+## Checkpoint Review #6 — After Phase 19 (UI Excellence)
 
 ```markdown
-You are a principal software architect performing a final acceptance review before v1.0 release of a D&D 3.5 Virtual Tabletop application built with Svelte 5, TypeScript, and PHP/SQLite.
+You are a senior UI/UX engineer and front-end architect specializing in Svelte 5, Tailwind CSS, responsive design, accessibility, and design systems.
+
+I have attached the complete ARCHITECTURE.md document, PROMPT.md (Phase 19 spec), and all source files modified during Phase 19 of the project. Phases 1-18 have already been reviewed and are stable. Phase 19 is the UI overhaul: Tailwind CSS migration, light/dark theming, Lucide Icons, responsive design, sidebar navigation, and accessibility.
+
+Your job is to verify that the UI layer meets **professional-grade quality standards** and correctly implements all Phase 19 requirements. Do NOT rewrite code. Produce a **numbered checklist of issues**.
+
+Review the following aspects specifically:
+
+# 1. Tailwind CSS Migration Completeness
+- Are ALL scoped `<style>` blocks removed from migrated components (except truly necessary animation keyframes or pseudo-element hacks)?
+- Is there any remaining hardcoded CSS color value (hex, rgb) in `.svelte` files that should be a Tailwind utility?
+- Is `src/app.css` clean and minimal (only Tailwind directives, CSS custom properties for theming, and minimal `@apply` rules)?
+- Does the final CSS bundle contain only used utilities (proper purging)?
+
+# 2. Theme System
+- Does the `ThemeManager` support three states: `'system'`, `'light'`, `'dark'`?
+- Is the theme preference persisted in a cookie (not localStorage)?
+- Does the cookie have correct attributes: `path=/`, `max-age=31536000`, `SameSite=Lax`?
+- Is there a synchronous pre-paint script in `src/app.html` that reads the cookie and applies the `dark` class BEFORE first render (no FOWT)?
+- Does `window.matchMedia('(prefers-color-scheme: dark)')` have a change listener for live system theme changes?
+- Does the `ThemeToggle` component cycle through System (Monitor icon) → Light (Sun icon) → Dark (Moon icon)?
+- Are ALL theme-aware colors defined as CSS custom properties with separate light/dark values?
+- Do both themes have adequate contrast ratios (WCAG AA: 4.5:1 normal text, 3:1 large text)?
+
+# 3. Lucide Icons
+- Are ALL emoji characters removed from the codebase (no 📋, ⚔️, 🌟, ✨, 🎒, etc. remaining)?
+- Are Lucide icons imported as Svelte components (not raw SVG strings)?
+- Are icon sizes consistent: 16px inline, 20px buttons/nav, 24px section headers?
+- Do icons use `currentColor` to inherit text color?
+- Is tree-shaking working (only imported icons included in the bundle)?
+
+# 4. Sidebar Navigation
+- Is the sidebar rendered on the left side of the layout?
+- Desktop (≥1024px): Is it expanded by default with icon + label, with a collapse toggle?
+- Tablet (768px-1023px): Is it icon-only by default?
+- Mobile (<768px): Is it hidden by default, opening as a slide-in drawer with backdrop?
+- Is the sidebar collapsed/expanded state persisted in a cookie?
+- Does the active route get highlighted with an accent indicator?
+- Is the theme toggle accessible from the sidebar?
+
+# 5. Character Sheet Full-Height Layout
+- Does the character sheet occupy `100vh` minus any top bar/sidebar?
+- Is the tab bar always visible (never scrolled out of view)?
+- Does only the tab content area scroll (not the entire page)?
+- On mobile: Do tab labels hide, showing only icons?
+- On wide screens (≥1280px): Does the content area use multi-column layout?
+- Is `overflow-y: auto` applied to the correct content container?
+
+# 6. Responsive Design
+- Test at ALL breakpoints: 320px, 375px, 414px, 768px, 1024px, 1280px, 1536px, 1920px.
+- Is there any horizontal overflow at any breakpoint?
+- Do grids collapse appropriately (3-col → 2-col → 1-col)?
+- Does the Skills Matrix have a sticky first column with horizontal scroll on mobile?
+- Do large modals become full-screen sheets on mobile?
+- Are long lists (skills, spells, feats) using horizontal scrolling where appropriate?
+
+# 7. Touch Adaptation
+- Are ALL interactive elements (buttons, links, inputs, tabs, dropdown items) at least 44px tall on `pointer: coarse` devices?
+- Is there adequate spacing between adjacent interactive elements to prevent mis-taps?
+- Are focus rings visible for keyboard navigation (`:focus-visible`)?
+- Are focus rings hidden for mouse/touch users?
+- Does `prefers-reduced-motion: reduce` disable transitions/animations?
+
+# 8. Design System Consistency
+- Is the card/panel pattern consistent across ALL components?
+- Are buttons consistent (Primary/Secondary/Danger/Ghost variants)?
+- Are inputs styled consistently (height, border, focus ring)?
+- Are badges consistent (size, rounded, color variants)?
+- Are section headers consistent (icon + uppercase label + action buttons)?
+- Is spacing consistent (using Tailwind spacing scale, not arbitrary values)?
+
+# 9. Component Quality
+- Does `Modal.svelte` support: backdrop click to close, Escape to close, focus trap, smooth transitions, bottom sheet on mobile, configurable max-width?
+- Does `HorizontalScroll.svelte` provide: fade-out edge shadows, scroll-snap, thin scrollbar styling?
+- Do all form inputs have proper labels (explicit `<label>` or `aria-label`)?
+- Are all images using `alt` attributes?
+- Are ARIA roles correct on interactive elements (tabs, modals, navigation)?
+
+# 10. Performance
+- Is the CSS bundle size reasonable (< 50KB gzipped for Tailwind output)?
+- Are Lucide icons tree-shaken (not importing the entire library)?
+- Are transitions using `transform` and `opacity` (GPU-accelerated properties) rather than layout-triggering properties?
+- Is there any layout thrashing or unnecessary reflows from the sidebar toggle?
+
+# 11. Zero Regressions
+- Do ALL existing features still work after the migration?
+- Can a user complete the full flow: view campaigns → enter campaign → view vault → open character → navigate all 6 tabs → edit values → return to vault?
+- Are GM-exclusive features still hidden from non-GM users?
+- Does the tab query parameter (`?tab=`) still work correctly?
+- Are all modals (FeatureModal, DiceRollModal, ModifierBreakdown, FeatSelection, Grimoire) functional?
+
+Output format: A numbered markdown checklist. For each issue:
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.svelte:lineNumber` — Description of the issue and what Phase 19 spec requires instead.
+
+If no issues are found in a category, write: "✅ [Category]: No issues found."
+```
+
+---
+
+## Final Review #7 — Complete System Validation
+
+```markdown
+You are a principal software architect performing a final acceptance review before v1.0 release of a D&D 3.5 Virtual Tabletop application built with Svelte 5, TypeScript, Tailwind CSS, and PHP/SQLite.
 
 I have attached:
 1. `ARCHITECTURE.md` — The complete architecture specification
 2. `ANNEXES.md` — JSON examples and configuration tables
-3. `PROGRESS.md` — All tasks checked off
-4. ALL source code files (TypeScript, Svelte, PHP)
-5. ALL test files (Vitest + PHPUnit) — all tests are passing
+3. `PROMPT.md` — The complete checklist including Phase 19 (UI Excellence) spec
+4. `PROGRESS.md` — All tasks checked off
+5. ALL source code files (TypeScript, Svelte, PHP)
+6. ALL test files (Vitest + PHPUnit) — all tests are passing
 
 This is the FINAL review before release. Your job is comprehensive and covers EVERYTHING.
 
@@ -456,6 +559,20 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 # Part D: Test Coverage Assessment
 
 21. **Coverage Gaps:** List any architecture feature, edge case, or example scenario from ARCHITECTURE.md or ANNEXES.md that has NO corresponding test. Rank by risk.
+
+# Part E: UI Excellence (Phase 19 Validation)
+
+22. **Tailwind CSS Migration:** Is ALL styling done via Tailwind utility classes? Are there any remaining scoped `<style>` blocks or hardcoded CSS color values?
+
+23. **Theme System:** Does the light/dark theme work correctly with system preference detection, cookie persistence, and no flash of wrong theme (FOWT)?
+
+24. **Iconography:** Are ALL emoji characters replaced with Lucide Icons? Are icon sizes consistent (16/20/24px)?
+
+25. **Responsive Layout:** Does the UI work at all breakpoints (320px to 1920px)? Is the sidebar collapsible? Does the character sheet use a full-height layout with always-visible tabs? Do long lists use horizontal scrolling on mobile?
+
+26. **Touch & Accessibility:** Are all touch targets ≥44px on coarse pointer devices? Are focus rings visible for keyboard users? Does `prefers-reduced-motion` disable animations? Are WCAG AA contrast ratios met?
+
+27. **Design System Consistency:** Are cards, buttons, inputs, badges, section headers, and modals visually consistent across ALL pages and components?
 
 # Output Format
 
