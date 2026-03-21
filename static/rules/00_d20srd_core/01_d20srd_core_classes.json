@@ -1,0 +1,803 @@
+[
+  {
+    "id": "class_barbarian",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Barbarian", "fr": "Barbare" },
+    "description": {
+      "en": "A ferocious warrior who can fly into a battle rage.",
+      "fr": "Un guerrier féroce capable d'entrer dans une rage de combat."
+    },
+    "tags": ["class", "base_class", "martial", "class_barbarian"],
+    "forbiddenTags": ["alignment_lawful"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_hit_die",
+        "sourceId": "class_barbarian",
+        "sourceName": { "en": "Barbarian", "fr": "Barbare" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 12,
+        "type": "base"
+      },
+      {
+        "id": "barbarian_skill_points",
+        "sourceId": "class_barbarian",
+        "sourceName": { "en": "Barbarian", "fr": "Barbare" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial",
+      "proficiency_armor_light",
+      "proficiency_armor_medium",
+      "proficiency_shields_except_tower"
+    ],
+    "classSkills": [
+      "skill_climb",
+      "skill_craft",
+      "skill_handle_animal",
+      "skill_intimidate",
+      "skill_jump",
+      "skill_listen",
+      "skill_ride",
+      "skill_survival",
+      "skill_swim"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_barbarian_fast_movement",
+          "class_feature_barbarian_illiteracy",
+          "class_feature_barbarian_rage"
+        ],
+        "grantedModifiers": [
+          { "id": "barb_1_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" }, "targetId": "combatStats.bab",      "value": 1, "type": "base" },
+          { "id": "barb_1_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" }, "targetId": "saves.fortitude",      "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_uncanny_dodge"],
+        "grantedModifiers": [
+          { "id": "barb_2_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 2", "fr": "Barbare 2" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_2_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 2", "fr": "Barbare 2" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_barbarian_trap_sense_1"],
+        "grantedModifiers": [
+          { "id": "barb_3_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "barb_3_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" }, "targetId": "saves.reflex",     "value": 1, "type": "base" },
+          { "id": "barb_3_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" }, "targetId": "saves.will",       "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_barbarian_rage_2_day"],
+        "grantedModifiers": [
+          { "id": "barb_4_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 4", "fr": "Barbare 4" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_4_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 4", "fr": "Barbare 4" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_improved_uncanny_dodge"],
+        "grantedModifiers": [
+          { "id": "barb_5_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 5", "fr": "Barbare 5" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_barbarian_trap_sense_2"],
+        "grantedModifiers": [
+          { "id": "barb_6_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_6_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "barb_6_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "barb_6_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_barbarian_dr_1"],
+        "grantedModifiers": [
+          { "id": "barb_7_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 7", "fr": "Barbare 7" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_barbarian_rage_3_day"],
+        "grantedModifiers": [
+          { "id": "barb_8_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 8", "fr": "Barbare 8" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_8_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 8", "fr": "Barbare 8" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_barbarian_trap_sense_3"],
+        "grantedModifiers": [
+          { "id": "barb_9_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "barb_9_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" }, "targetId": "saves.reflex",     "value": 1, "type": "base" },
+          { "id": "barb_9_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" }, "targetId": "saves.will",       "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_barbarian_dr_2"],
+        "grantedModifiers": [
+          { "id": "barb_10_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 10", "fr": "Barbare 10" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_10_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 10", "fr": "Barbare 10" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": ["class_feature_barbarian_greater_rage"],
+        "grantedModifiers": [
+          { "id": "barb_11_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 11", "fr": "Barbare 11" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [
+          "class_feature_barbarian_rage_4_day",
+          "class_feature_barbarian_trap_sense_4"
+        ],
+        "grantedModifiers": [
+          { "id": "barb_12_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_12_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "barb_12_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "barb_12_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": ["class_feature_barbarian_dr_3"],
+        "grantedModifiers": [
+          { "id": "barb_13_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 13", "fr": "Barbare 13" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": ["class_feature_barbarian_indomitable_will"],
+        "grantedModifiers": [
+          { "id": "barb_14_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 14", "fr": "Barbare 14" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_14_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 14", "fr": "Barbare 14" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": ["class_feature_barbarian_trap_sense_5"],
+        "grantedModifiers": [
+          { "id": "barb_15_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "barb_15_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" }, "targetId": "saves.reflex",     "value": 1, "type": "base" },
+          { "id": "barb_15_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" }, "targetId": "saves.will",       "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [
+          "class_feature_barbarian_dr_4",
+          "class_feature_barbarian_rage_5_day"
+        ],
+        "grantedModifiers": [
+          { "id": "barb_16_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 16", "fr": "Barbare 16" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_16_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 16", "fr": "Barbare 16" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": ["class_feature_barbarian_tireless_rage"],
+        "grantedModifiers": [
+          { "id": "barb_17_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 17", "fr": "Barbare 17" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": ["class_feature_barbarian_trap_sense_6"],
+        "grantedModifiers": [
+          { "id": "barb_18_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_18_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "barb_18_ref",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "barb_18_will", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": ["class_feature_barbarian_dr_5"],
+        "grantedModifiers": [
+          { "id": "barb_19_bab", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 19", "fr": "Barbare 19" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [
+          "class_feature_barbarian_mighty_rage",
+          "class_feature_barbarian_rage_6_day"
+        ],
+        "grantedModifiers": [
+          { "id": "barb_20_bab",  "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 20", "fr": "Barbare 20" }, "targetId": "combatStats.bab", "value": 1, "type": "base" },
+          { "id": "barb_20_fort", "sourceId": "class_barbarian", "sourceName": { "en": "Barbarian 20", "fr": "Barbare 20" }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_bard",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bard", "fr": "Barde" },
+    "description": {
+      "en": "An arcane spellcaster who combines magic with performance, inspiring allies and baffling foes.",
+      "fr": "Un magicien arcanique qui allie magie et performance, inspirant ses alliés et déstabilisant ses ennemis."
+    },
+    "tags": ["class", "base_class", "class_bard", "arcane_caster", "spontaneous_caster", "spellcaster"],
+    "forbiddenTags": ["alignment_lawful"],
+    "grantedModifiers": [
+      {
+        "id": "bard_hit_die",
+        "sourceId": "class_bard",
+        "sourceName": { "en": "Bard", "fr": "Barde" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 6,
+        "type": "base"
+      },
+      {
+        "id": "bard_skill_points",
+        "sourceId": "class_bard",
+        "sourceName": { "en": "Bard", "fr": "Barde" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 6,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_weapons_simple",
+      "proficiency_longsword",
+      "proficiency_rapier",
+      "proficiency_sap",
+      "proficiency_short_sword",
+      "proficiency_shortbow",
+      "proficiency_whip",
+      "proficiency_armor_light",
+      "proficiency_shields_no_tower"
+    ],
+    "classSkills": [
+      "skill_appraise",
+      "skill_balance",
+      "skill_bluff",
+      "skill_climb",
+      "skill_concentration",
+      "skill_craft",
+      "skill_decipher_script",
+      "skill_diplomacy",
+      "skill_disguise",
+      "skill_escape_artist",
+      "skill_gather_information",
+      "skill_hide",
+      "skill_jump",
+      "skill_knowledge_arcana",
+      "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering",
+      "skill_knowledge_geography",
+      "skill_knowledge_history",
+      "skill_knowledge_local",
+      "skill_knowledge_nature",
+      "skill_knowledge_nobility",
+      "skill_knowledge_planes",
+      "skill_knowledge_religion",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_perform",
+      "skill_profession",
+      "skill_sense_motive",
+      "skill_sleight_of_hand",
+      "skill_speak_language",
+      "skill_spellcraft",
+      "skill_swim",
+      "skill_tumble",
+      "skill_use_magic_device"
+    ],
+    "recommendedAttributes": ["stat_cha", "stat_dex"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_bardic_music",
+          "class_feature_bardic_knowledge",
+          "class_feature_bard_countersong",
+          "class_feature_bard_fascinate",
+          "class_feature_bard_inspire_courage",
+          "class_feature_bard_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "bard_1_bab",  "sourceId": "class_bard", "sourceName": { "en": "Bard 1",  "fr": "Barde 1"  }, "targetId": "combatStats.bab",  "value": 0, "type": "base" },
+          { "id": "bard_1_ref",  "sourceId": "class_bard", "sourceName": { "en": "Bard 1",  "fr": "Barde 1"  }, "targetId": "saves.reflex",     "value": 2, "type": "base" },
+          { "id": "bard_1_will", "sourceId": "class_bard", "sourceName": { "en": "Bard 1",  "fr": "Barde 1"  }, "targetId": "saves.will",       "value": 2, "type": "base" },
+          { "id": "bard_1_slots_0", "sourceId": "class_bard", "sourceName": { "en": "Bard 1", "fr": "Barde 1" }, "targetId": "resources.spell_slots_bard_0", "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_2_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 2", "fr": "Barde 2" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_2_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 2", "fr": "Barde 2" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_2_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 2", "fr": "Barde 2" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_2_slots_0", "sourceId": "class_bard", "sourceName": { "en": "Bard 2", "fr": "Barde 2" }, "targetId": "resources.spell_slots_bard_0", "value": 1, "type": "base" },
+          { "id": "bard_2_slots_1", "sourceId": "class_bard", "sourceName": { "en": "Bard 2", "fr": "Barde 2" }, "targetId": "resources.spell_slots_bard_1", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_bard_inspire_competence"],
+        "grantedModifiers": [
+          { "id": "bard_3_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 3", "fr": "Barde 3" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_3_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 3", "fr": "Barde 3" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_3_slots_1", "sourceId": "class_bard", "sourceName": { "en": "Bard 3", "fr": "Barde 3" }, "targetId": "resources.spell_slots_bard_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_4_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 4", "fr": "Barde 4" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_4_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 4", "fr": "Barde 4" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_4_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 4", "fr": "Barde 4" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_4_slots_1", "sourceId": "class_bard", "sourceName": { "en": "Bard 4", "fr": "Barde 4" }, "targetId": "resources.spell_slots_bard_1", "value": 1, "type": "base" },
+          { "id": "bard_4_slots_2", "sourceId": "class_bard", "sourceName": { "en": "Bard 4", "fr": "Barde 4" }, "targetId": "resources.spell_slots_bard_2", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_5_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 5", "fr": "Barde 5" }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "bard_5_slots_1", "sourceId": "class_bard", "sourceName": { "en": "Bard 5", "fr": "Barde 5" }, "targetId": "resources.spell_slots_bard_1", "value": 1, "type": "base" },
+          { "id": "bard_5_slots_2", "sourceId": "class_bard", "sourceName": { "en": "Bard 5", "fr": "Barde 5" }, "targetId": "resources.spell_slots_bard_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_bard_suggestion"],
+        "grantedModifiers": [
+          { "id": "bard_6_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 6", "fr": "Barde 6" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_6_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 6", "fr": "Barde 6" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_6_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 6", "fr": "Barde 6" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_6_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 6", "fr": "Barde 6" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_6_slots_2", "sourceId": "class_bard", "sourceName": { "en": "Bard 6", "fr": "Barde 6" }, "targetId": "resources.spell_slots_bard_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_7_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 7", "fr": "Barde 7" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_7_slots_3", "sourceId": "class_bard", "sourceName": { "en": "Bard 7", "fr": "Barde 7" }, "targetId": "resources.spell_slots_bard_3", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_bard_inspire_courage_2"],
+        "grantedModifiers": [
+          { "id": "bard_8_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 8", "fr": "Barde 8" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_8_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 8", "fr": "Barde 8" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_8_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 8", "fr": "Barde 8" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_8_slots_2", "sourceId": "class_bard", "sourceName": { "en": "Bard 8", "fr": "Barde 8" }, "targetId": "resources.spell_slots_bard_2", "value": 1, "type": "base" },
+          { "id": "bard_8_slots_3", "sourceId": "class_bard", "sourceName": { "en": "Bard 8", "fr": "Barde 8" }, "targetId": "resources.spell_slots_bard_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_bard_inspire_greatness"],
+        "grantedModifiers": [
+          { "id": "bard_9_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 9", "fr": "Barde 9" }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "bard_9_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 9", "fr": "Barde 9" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_9_slots_3", "sourceId": "class_bard", "sourceName": { "en": "Bard 9", "fr": "Barde 9" }, "targetId": "resources.spell_slots_bard_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_10_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 10", "fr": "Barde 10" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_10_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 10", "fr": "Barde 10" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_10_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 10", "fr": "Barde 10" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_10_slots_4", "sourceId": "class_bard", "sourceName": { "en": "Bard 10", "fr": "Barde 10" }, "targetId": "resources.spell_slots_bard_4", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_11_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 11", "fr": "Barde 11" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_11_slots_3", "sourceId": "class_bard", "sourceName": { "en": "Bard 11", "fr": "Barde 11" }, "targetId": "resources.spell_slots_bard_3", "value": 1, "type": "base" },
+          { "id": "bard_11_slots_4", "sourceId": "class_bard", "sourceName": { "en": "Bard 11", "fr": "Barde 11" }, "targetId": "resources.spell_slots_bard_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": ["class_feature_bard_song_of_freedom"],
+        "grantedModifiers": [
+          { "id": "bard_12_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 12", "fr": "Barde 12" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_12_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 12", "fr": "Barde 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_12_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 12", "fr": "Barde 12" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_12_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 12", "fr": "Barde 12" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_12_slots_4", "sourceId": "class_bard", "sourceName": { "en": "Bard 12", "fr": "Barde 12" }, "targetId": "resources.spell_slots_bard_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_13_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 13", "fr": "Barde 13" }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "bard_13_slots_5", "sourceId": "class_bard", "sourceName": { "en": "Bard 13", "fr": "Barde 13" }, "targetId": "resources.spell_slots_bard_5", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": ["class_feature_bard_inspire_courage_3"],
+        "grantedModifiers": [
+          { "id": "bard_14_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_14_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_14_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_14_slots_0", "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "resources.spell_slots_bard_0", "value": 1, "type": "base" },
+          { "id": "bard_14_slots_4", "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "resources.spell_slots_bard_4", "value": 1, "type": "base" },
+          { "id": "bard_14_slots_5", "sourceId": "class_bard", "sourceName": { "en": "Bard 14", "fr": "Barde 14" }, "targetId": "resources.spell_slots_bard_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": ["class_feature_bard_inspire_heroics"],
+        "grantedModifiers": [
+          { "id": "bard_15_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 15", "fr": "Barde 15" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_15_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 15", "fr": "Barde 15" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_15_slots_1", "sourceId": "class_bard", "sourceName": { "en": "Bard 15", "fr": "Barde 15" }, "targetId": "resources.spell_slots_bard_1", "value": 1, "type": "base" },
+          { "id": "bard_15_slots_5", "sourceId": "class_bard", "sourceName": { "en": "Bard 15", "fr": "Barde 15" }, "targetId": "resources.spell_slots_bard_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_16_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 16", "fr": "Barde 16" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_16_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 16", "fr": "Barde 16" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_16_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 16", "fr": "Barde 16" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_16_slots_2", "sourceId": "class_bard", "sourceName": { "en": "Bard 16", "fr": "Barde 16" }, "targetId": "resources.spell_slots_bard_2", "value": 1, "type": "base" },
+          { "id": "bard_16_slots_6", "sourceId": "class_bard", "sourceName": { "en": "Bard 16", "fr": "Barde 16" }, "targetId": "resources.spell_slots_bard_6", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_17_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 17", "fr": "Barde 17" }, "targetId": "combatStats.bab",              "value": 0, "type": "base" },
+          { "id": "bard_17_slots_3", "sourceId": "class_bard", "sourceName": { "en": "Bard 17", "fr": "Barde 17" }, "targetId": "resources.spell_slots_bard_3", "value": 1, "type": "base" },
+          { "id": "bard_17_slots_5", "sourceId": "class_bard", "sourceName": { "en": "Bard 17", "fr": "Barde 17" }, "targetId": "resources.spell_slots_bard_5", "value": 1, "type": "base" },
+          { "id": "bard_17_slots_6", "sourceId": "class_bard", "sourceName": { "en": "Bard 17", "fr": "Barde 17" }, "targetId": "resources.spell_slots_bard_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": ["class_feature_bard_mass_suggestion"],
+        "grantedModifiers": [
+          { "id": "bard_18_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_18_fort",    "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "bard_18_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_18_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_18_slots_4", "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "resources.spell_slots_bard_4", "value": 1, "type": "base" },
+          { "id": "bard_18_slots_6", "sourceId": "class_bard", "sourceName": { "en": "Bard 18", "fr": "Barde 18" }, "targetId": "resources.spell_slots_bard_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "bard_19_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 19", "fr": "Barde 19" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_19_slots_5", "sourceId": "class_bard", "sourceName": { "en": "Bard 19", "fr": "Barde 19" }, "targetId": "resources.spell_slots_bard_5", "value": 1, "type": "base" },
+          { "id": "bard_19_slots_6", "sourceId": "class_bard", "sourceName": { "en": "Bard 19", "fr": "Barde 19" }, "targetId": "resources.spell_slots_bard_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": ["class_feature_bard_inspire_courage_4"],
+        "grantedModifiers": [
+          { "id": "bard_20_bab",     "sourceId": "class_bard", "sourceName": { "en": "Bard 20", "fr": "Barde 20" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "bard_20_ref",     "sourceId": "class_bard", "sourceName": { "en": "Bard 20", "fr": "Barde 20" }, "targetId": "saves.reflex",                 "value": 1, "type": "base" },
+          { "id": "bard_20_will",    "sourceId": "class_bard", "sourceName": { "en": "Bard 20", "fr": "Barde 20" }, "targetId": "saves.will",                   "value": 1, "type": "base" },
+          { "id": "bard_20_slots_6", "sourceId": "class_bard", "sourceName": { "en": "Bard 20", "fr": "Barde 20" }, "targetId": "resources.spell_slots_bard_6", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_cleric",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Cleric", "fr": "Prêtre" },
+    "description": {
+      "en": "A master of divine magic and a capable warrior as well.",
+      "fr": "Un maître de la magie divine et un guerrier capable."
+    },
+    "tags": ["class", "base_class", "class_cleric", "divine_caster", "prepared_caster", "spellcaster"],
+    "grantedModifiers": [
+      {
+        "id": "cleric_hit_die",
+        "sourceId": "class_cleric",
+        "sourceName": { "en": "Cleric", "fr": "Prêtre" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base"
+      },
+      {
+        "id": "cleric_skill_points",
+        "sourceId": "class_cleric",
+        "sourceName": { "en": "Cleric", "fr": "Prêtre" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_weapons_simple",
+      "proficiency_armor_all",
+      "proficiency_shields_all"
+    ],
+    "classSkills": [
+      "skill_concentration",
+      "skill_craft",
+      "skill_diplomacy",
+      "skill_heal",
+      "skill_knowledge_arcana",
+      "skill_knowledge_history",
+      "skill_knowledge_religion",
+      "skill_knowledge_planes",
+      "skill_profession",
+      "skill_spellcraft"
+    ],
+    "choices": [
+      {
+        "choiceId": "domain_1",
+        "label": { "en": "First Domain", "fr": "Premier domaine" },
+        "optionsQuery": "tag:domain",
+        "maxSelections": 1
+      },
+      {
+        "choiceId": "domain_2",
+        "label": { "en": "Second Domain", "fr": "Second domaine" },
+        "optionsQuery": "tag:domain",
+        "maxSelections": 1
+      }
+    ],
+    "recommendedAttributes": ["stat_wis", "stat_cha"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_cleric_turn_undead",
+          "class_feature_cleric_aura",
+          "class_feature_cleric_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "cleric_1_bab",          "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "combatStats.bab",                              "value": 0, "type": "base" },
+          { "id": "cleric_1_fort",         "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "saves.fortitude",                             "value": 2, "type": "base" },
+          { "id": "cleric_1_ref",          "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "saves.reflex",                                "value": 0, "type": "base" },
+          { "id": "cleric_1_will",         "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "saves.will",                                  "value": 2, "type": "base" },
+          { "id": "cleric_1_slots_0",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "resources.spell_slots_cleric_0",              "value": 3, "type": "base" },
+          { "id": "cleric_1_slots_1",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1",  "fr": "Prêtre 1"  }, "targetId": "resources.spell_slots_cleric_1",              "value": 1, "type": "base" },
+          { "id": "cleric_1_domain_1",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 1 (Domain)", "fr": "Prêtre 1 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_2_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 2",  "fr": "Prêtre 2"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_2_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 2",  "fr": "Prêtre 2"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_2_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 2",  "fr": "Prêtre 2"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_2_slots_0", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 2",  "fr": "Prêtre 2"  }, "targetId": "resources.spell_slots_cleric_0", "value": 1, "type": "base" },
+          { "id": "cleric_2_slots_1", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 2",  "fr": "Prêtre 2"  }, "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_3_bab",       "sourceId": "class_cleric", "sourceName": { "en": "Cleric 3",  "fr": "Prêtre 3"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_3_ref",       "sourceId": "class_cleric", "sourceName": { "en": "Cleric 3",  "fr": "Prêtre 3"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_3_slots_2",   "sourceId": "class_cleric", "sourceName": { "en": "Cleric 3",  "fr": "Prêtre 3"  }, "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base" },
+          { "id": "cleric_3_domain_2",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 3 (Domain)", "fr": "Prêtre 3 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_4_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_4_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_4_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_4_slots_0", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "resources.spell_slots_cleric_0", "value": 1, "type": "base" },
+          { "id": "cleric_4_slots_1", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base" },
+          { "id": "cleric_4_slots_2", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 4",  "fr": "Prêtre 4"  }, "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_5_slots_3",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 5",  "fr": "Prêtre 5"  }, "targetId": "resources.spell_slots_cleric_3", "value": 1, "type": "base" },
+          { "id": "cleric_5_domain_3", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 5 (Domain)", "fr": "Prêtre 5 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_6_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_6_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_6_ref",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_6_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_6_slots_2", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base" },
+          { "id": "cleric_6_slots_3", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 6",  "fr": "Prêtre 6"  }, "targetId": "resources.spell_slots_cleric_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_7_bab",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 7",  "fr": "Prêtre 7"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_7_slots_0",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 7",  "fr": "Prêtre 7"  }, "targetId": "resources.spell_slots_cleric_0", "value": 1, "type": "base" },
+          { "id": "cleric_7_slots_1",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 7",  "fr": "Prêtre 7"  }, "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base" },
+          { "id": "cleric_7_slots_4",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 7",  "fr": "Prêtre 7"  }, "targetId": "resources.spell_slots_cleric_4", "value": 1, "type": "base" },
+          { "id": "cleric_7_domain_4", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 7 (Domain)", "fr": "Prêtre 7 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_8_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 8",  "fr": "Prêtre 8"  }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_8_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 8",  "fr": "Prêtre 8"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_8_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 8",  "fr": "Prêtre 8"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_8_slots_3", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 8",  "fr": "Prêtre 8"  }, "targetId": "resources.spell_slots_cleric_3", "value": 1, "type": "base" },
+          { "id": "cleric_8_slots_4", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 8",  "fr": "Prêtre 8"  }, "targetId": "resources.spell_slots_cleric_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_9_ref",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 9",  "fr": "Prêtre 9"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_9_slots_2",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 9",  "fr": "Prêtre 9"  }, "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base" },
+          { "id": "cleric_9_slots_5",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 9",  "fr": "Prêtre 9"  }, "targetId": "resources.spell_slots_cleric_5", "value": 1, "type": "base" },
+          { "id": "cleric_9_domain_5", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 9 (Domain)", "fr": "Prêtre 9 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_10_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 10", "fr": "Prêtre 10" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_10_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 10", "fr": "Prêtre 10" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_10_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 10", "fr": "Prêtre 10" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_10_slots_4", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 10", "fr": "Prêtre 10" }, "targetId": "resources.spell_slots_cleric_4", "value": 1, "type": "base" },
+          { "id": "cleric_10_slots_5", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 10", "fr": "Prêtre 10" }, "targetId": "resources.spell_slots_cleric_5", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_11_bab",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 11", "fr": "Prêtre 11" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_11_slots_1",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 11", "fr": "Prêtre 11" }, "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base" },
+          { "id": "cleric_11_slots_3",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 11", "fr": "Prêtre 11" }, "targetId": "resources.spell_slots_cleric_3", "value": 1, "type": "base" },
+          { "id": "cleric_11_slots_6",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 11", "fr": "Prêtre 11" }, "targetId": "resources.spell_slots_cleric_6", "value": 1, "type": "base" },
+          { "id": "cleric_11_domain_6", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 11 (Domain)", "fr": "Prêtre 11 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_12_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_12_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_12_ref",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_12_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_12_slots_5", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "resources.spell_slots_cleric_5", "value": 1, "type": "base" },
+          { "id": "cleric_12_slots_6", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 12", "fr": "Prêtre 12" }, "targetId": "resources.spell_slots_cleric_6", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_13_slots_2",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 13", "fr": "Prêtre 13" }, "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base" },
+          { "id": "cleric_13_slots_4",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 13", "fr": "Prêtre 13" }, "targetId": "resources.spell_slots_cleric_4", "value": 1, "type": "base" },
+          { "id": "cleric_13_slots_7",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 13", "fr": "Prêtre 13" }, "targetId": "resources.spell_slots_cleric_7", "value": 1, "type": "base" },
+          { "id": "cleric_13_domain_7", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 13 (Domain)", "fr": "Prêtre 13 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_14_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 14", "fr": "Prêtre 14" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_14_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 14", "fr": "Prêtre 14" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_14_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 14", "fr": "Prêtre 14" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_14_slots_6", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 14", "fr": "Prêtre 14" }, "targetId": "resources.spell_slots_cleric_6", "value": 1, "type": "base" },
+          { "id": "cleric_14_slots_7", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 14", "fr": "Prêtre 14" }, "targetId": "resources.spell_slots_cleric_7", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_15_bab",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15", "fr": "Prêtre 15" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_15_ref",      "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15", "fr": "Prêtre 15" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_15_slots_3",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15", "fr": "Prêtre 15" }, "targetId": "resources.spell_slots_cleric_3", "value": 1, "type": "base" },
+          { "id": "cleric_15_slots_5",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15", "fr": "Prêtre 15" }, "targetId": "resources.spell_slots_cleric_5", "value": 1, "type": "base" },
+          { "id": "cleric_15_slots_8",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15", "fr": "Prêtre 15" }, "targetId": "resources.spell_slots_cleric_8", "value": 1, "type": "base" },
+          { "id": "cleric_15_domain_8", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 15 (Domain)", "fr": "Prêtre 15 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_16_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 16", "fr": "Prêtre 16" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_16_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 16", "fr": "Prêtre 16" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_16_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 16", "fr": "Prêtre 16" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_16_slots_7", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 16", "fr": "Prêtre 16" }, "targetId": "resources.spell_slots_cleric_7", "value": 1, "type": "base" },
+          { "id": "cleric_16_slots_8", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 16", "fr": "Prêtre 16" }, "targetId": "resources.spell_slots_cleric_8", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_17_slots_4",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 17", "fr": "Prêtre 17" }, "targetId": "resources.spell_slots_cleric_4", "value": 1, "type": "base" },
+          { "id": "cleric_17_slots_6",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 17", "fr": "Prêtre 17" }, "targetId": "resources.spell_slots_cleric_6", "value": 1, "type": "base" },
+          { "id": "cleric_17_slots_9",  "sourceId": "class_cleric", "sourceName": { "en": "Cleric 17", "fr": "Prêtre 17" }, "targetId": "resources.spell_slots_cleric_9", "value": 1, "type": "base" },
+          { "id": "cleric_17_domain_9", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 17 (Domain)", "fr": "Prêtre 17 (Domaine)" }, "targetId": "resources.spell_slots_cleric_domain_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_18_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_18_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_18_ref",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "cleric_18_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_18_slots_8", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "resources.spell_slots_cleric_8", "value": 1, "type": "base" },
+          { "id": "cleric_18_slots_9", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 18", "fr": "Prêtre 18" }, "targetId": "resources.spell_slots_cleric_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_19_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 19", "fr": "Prêtre 19" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_19_slots_5", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 19", "fr": "Prêtre 19" }, "targetId": "resources.spell_slots_cleric_5", "value": 1, "type": "base" },
+          { "id": "cleric_19_slots_7", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 19", "fr": "Prêtre 19" }, "targetId": "resources.spell_slots_cleric_7", "value": 1, "type": "base" },
+          { "id": "cleric_19_slots_9", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 19", "fr": "Prêtre 19" }, "targetId": "resources.spell_slots_cleric_9", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "cleric_20_bab",     "sourceId": "class_cleric", "sourceName": { "en": "Cleric 20", "fr": "Prêtre 20" }, "targetId": "combatStats.bab",             "value": 1, "type": "base" },
+          { "id": "cleric_20_fort",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 20", "fr": "Prêtre 20" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "cleric_20_will",    "sourceId": "class_cleric", "sourceName": { "en": "Cleric 20", "fr": "Prêtre 20" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "cleric_20_slots_8", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 20", "fr": "Prêtre 20" }, "targetId": "resources.spell_slots_cleric_8", "value": 1, "type": "base" },
+          { "id": "cleric_20_slots_9", "sourceId": "class_cleric", "sourceName": { "en": "Cleric 20", "fr": "Prêtre 20" }, "targetId": "resources.spell_slots_cleric_9", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  }
+]

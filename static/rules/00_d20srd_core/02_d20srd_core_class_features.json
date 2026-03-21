@@ -1,0 +1,1224 @@
+[
+  {
+    "id": "class_feature_barbarian_fast_movement",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fast Movement", "fr": "Déplacement accéléré" },
+    "description": {
+      "en": "A barbarian's land speed is faster than the norm for his race by +10 feet. This benefit applies only when he is wearing no armor, light armor, or medium armor and not carrying a heavy load.",
+      "fr": "La vitesse de déplacement terrestre du barbare est supérieure à la norme de sa race de +3 m (10 ft). Cet avantage ne s'applique que lorsqu'il ne porte pas d'armure lourde et ne transporte pas une charge lourde."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_fast_movement_speed",
+        "sourceId": "class_feature_barbarian_fast_movement",
+        "sourceName": { "en": "Fast Movement", "fr": "Déplacement accéléré" },
+        "targetId": "attributes.speed_land",
+        "value": 10,
+        "type": "enhancement",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            {
+              "logic": "NOT",
+              "node": {
+                "logic": "CONDITION",
+                "targetPath": "@activeTags",
+                "operator": "has_tag",
+                "value": "heavy_armor",
+                "errorMessage": "Fast Movement does not apply while wearing heavy armor"
+              }
+            },
+            {
+              "logic": "NOT",
+              "node": {
+                "logic": "CONDITION",
+                "targetPath": "@activeTags",
+                "operator": "has_tag",
+                "value": "heavy_load",
+                "errorMessage": "Fast Movement does not apply while carrying a heavy load"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_illiteracy",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Illiteracy", "fr": "Illettrisme" },
+    "description": {
+      "en": "Barbarians are the only characters who do not automatically know how to read and write. A barbarian may spend 2 skill points to gain the ability to read and write all languages he is able to speak. A barbarian who gains a level in any other class automatically gains literacy.",
+      "fr": "Les barbares sont les seuls personnages qui ne savent pas automatiquement lire et écrire. Un barbare peut dépenser 2 points de compétence pour acquérir la capacité de lire et d'écrire toutes les langues qu'il est capable de parler. Un barbare qui gagne un niveau dans une autre classe acquiert automatiquement l'alphabétisation."
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage", "fr": "Furie" },
+    "description": {
+      "en": "A barbarian can fly into a rage, temporarily gaining +4 Strength, +4 Constitution, and a +2 morale bonus on Will saves, but suffers -2 penalty to AC. The rage lasts 3 + Constitution modifier rounds. At the end of a rage, the barbarian is fatigued for the duration of the current encounter.",
+      "fr": "Un barbare peut entrer dans une furie, gagnant temporairement +4 en Force, +4 en Constitution et un bonus de moral de +2 aux jets de Volonté, mais souffrant d'une pénalité de -2 à la CA. La furie dure 3 + modificateur de Constitution rounds. À la fin de la furie, le barbare est fatigué pour la durée de la rencontre."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "rage"],
+    "activation": {
+      "actionType": "free",
+      "resourceCost": { "targetId": "resources.barbarian_rage_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "barbarian_rage_uses_max",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "resources.barbarian_rage_uses.maxValue",
+        "value": "1 + floor(@classLevels.class_barbarian / 4)",
+        "type": "base"
+      },
+      {
+        "id": "rage_str_bonus",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "attributes.stat_str",
+        "value": 4,
+        "type": "morale"
+      },
+      {
+        "id": "rage_con_bonus",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "attributes.stat_con",
+        "value": 4,
+        "type": "morale"
+      },
+      {
+        "id": "rage_will_bonus",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "saves.will",
+        "value": 2,
+        "type": "morale"
+      },
+      {
+        "id": "rage_ac_penalty",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "combatStats.ac_normal",
+        "value": -2,
+        "type": "untyped"
+      },
+      {
+        "id": "rage_ac_touch_penalty",
+        "sourceId": "class_feature_barbarian_rage",
+        "sourceName": { "en": "Rage", "fr": "Furie" },
+        "targetId": "combatStats.ac_touch",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_uncanny_dodge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Uncanny Dodge", "fr": "Esquive instinctive" },
+    "description": {
+      "en": "The character retains his Dexterity bonus to AC even if caught flat-footed or struck by an invisible attacker. However, he still loses his Dexterity bonus to AC if immobilized.",
+      "fr": "Le personnage conserve son bonus de Dextérité à la CA même s'il est pris au dépourvu ou frappé par un attaquant invisible. Il perd cependant son bonus de Dextérité à la CA s'il est immobilisé."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "uncanny_dodge"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+    "description": {
+      "en": "The barbarian gains a +1 bonus on Reflex saves made to avoid traps and a +1 bonus to AC against attacks made by traps.",
+      "fr": "Le barbare obtient un bonus de +1 aux jets de Réflexes pour éviter les pièges et un bonus de +1 à la CA contre les attaques faites par les pièges."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_1_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_1",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_1_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_1",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage_2_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage 2/Day", "fr": "Furie 2/jour" },
+    "description": {
+      "en": "At 4th level, the barbarian can use his rage ability twice per day. (This increase is handled automatically by the rage resource formula.)",
+      "fr": "Au niveau 4, le barbare peut utiliser sa furie deux fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource de furie.)"
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_improved_uncanny_dodge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Uncanny Dodge", "fr": "Esquive instinctive améliorée" },
+    "description": {
+      "en": "The character can no longer be flanked. This defense denies a rogue the ability to sneak attack the character by flanking, unless the attacker has at least four more rogue levels than the target has barbarian levels.",
+      "fr": "Le personnage ne peut plus être pris en tenaille. Cette défense empêche un roublard d'utiliser l'attaque sournoise contre lui, sauf si l'attaquant possède au moins quatre niveaux de roublard de plus que la cible n'a de niveaux de barbare."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "improved_uncanny_dodge"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +2", "fr": "Sens des pièges +2" },
+    "description": {
+      "en": "The barbarian's trap sense bonus increases by +1 (total +2 with Trap Sense +1).",
+      "fr": "Le bonus de sens des pièges du barbare augmente de +1 (total +2 avec Sens des pièges +1)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_2_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_2",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_2_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_2",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_dr_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 1/—", "fr": "Réduction des dégâts 1/—" },
+    "description": {
+      "en": "At 7th level, a barbarian gains Damage Reduction. Subtract 1 from the damage the barbarian takes each time he is dealt damage from a weapon or a natural attack.",
+      "fr": "Au niveau 7, le barbare obtient une réduction des dégâts. Soustrayez 1 aux dégâts qu'il subit chaque fois qu'il est touché par une arme ou une attaque naturelle."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_dr_1",
+        "sourceId": "class_feature_barbarian_dr_1",
+        "sourceName": { "en": "Barbarian DR", "fr": "Réduction des dégâts (Barbare)" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage_3_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage 3/Day", "fr": "Furie 3/jour" },
+    "description": {
+      "en": "At 8th level, the barbarian can use his rage ability three times per day. (This increase is handled automatically by the rage resource formula.)",
+      "fr": "Au niveau 8, le barbare peut utiliser sa furie trois fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource de furie.)"
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +3", "fr": "Sens des pièges +3" },
+    "description": {
+      "en": "The barbarian's trap sense bonus increases by +1 (total +3 with prior Trap Sense bonuses).",
+      "fr": "Le bonus de sens des pièges du barbare augmente de +1 (total +3 avec les bonus de Sens des pièges précédents)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_3_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_3",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_3_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_3",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_dr_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 2/—", "fr": "Réduction des dégâts 2/—" },
+    "description": {
+      "en": "At 10th level, the barbarian's damage reduction increases to 2/— (subtract 2 from damage taken from weapons and natural attacks).",
+      "fr": "Au niveau 10, la réduction des dégâts du barbare passe à 2/— (soustrayez 2 aux dégâts subis par les armes et les attaques naturelles)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_dr_2",
+        "sourceId": "class_feature_barbarian_dr_2",
+        "sourceName": { "en": "Barbarian DR", "fr": "Réduction des dégâts (Barbare)" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_greater_rage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Greater Rage", "fr": "Grande furie" },
+    "description": {
+      "en": "At 11th level, a barbarian's bonuses to Strength and Constitution during his rage each increase to +6, and his morale bonus on Will saves increases to +3. The penalty to AC remains at -2.",
+      "fr": "Au niveau 11, les bonus de Force et de Constitution du barbare en furie passent chacun à +6, et son bonus de moral aux jets de Volonté passe à +3. La pénalité à la CA reste à -2."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "rage_upgrade"],
+    "grantedModifiers": [
+      {
+        "id": "greater_rage_str_upgrade",
+        "sourceId": "class_feature_barbarian_greater_rage",
+        "sourceName": { "en": "Greater Rage", "fr": "Grande furie" },
+        "targetId": "attributes.stat_str",
+        "value": 2,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Greater Rage bonus only applies while raging"
+        }
+      },
+      {
+        "id": "greater_rage_con_upgrade",
+        "sourceId": "class_feature_barbarian_greater_rage",
+        "sourceName": { "en": "Greater Rage", "fr": "Grande furie" },
+        "targetId": "attributes.stat_con",
+        "value": 2,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Greater Rage bonus only applies while raging"
+        }
+      },
+      {
+        "id": "greater_rage_will_upgrade",
+        "sourceId": "class_feature_barbarian_greater_rage",
+        "sourceName": { "en": "Greater Rage", "fr": "Grande furie" },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Greater Rage bonus only applies while raging"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage_4_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage 4/Day", "fr": "Furie 4/jour" },
+    "description": {
+      "en": "At 12th level, the barbarian can use his rage ability four times per day. (This increase is handled automatically by the rage resource formula.)",
+      "fr": "Au niveau 12, le barbare peut utiliser sa furie quatre fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource de furie.)"
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +4", "fr": "Sens des pièges +4" },
+    "description": {
+      "en": "The barbarian's trap sense bonus increases by +1 (total +4 with prior Trap Sense bonuses).",
+      "fr": "Le bonus de sens des pièges du barbare augmente de +1 (total +4 avec les bonus de Sens des pièges précédents)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_4_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_4",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_4_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_4",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_dr_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 3/—", "fr": "Réduction des dégâts 3/—" },
+    "description": {
+      "en": "At 13th level, the barbarian's damage reduction increases to 3/— (subtract 3 from damage taken from weapons and natural attacks).",
+      "fr": "Au niveau 13, la réduction des dégâts du barbare passe à 3/— (soustrayez 3 aux dégâts subis par les armes et les attaques naturelles)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_dr_3",
+        "sourceId": "class_feature_barbarian_dr_3",
+        "sourceName": { "en": "Barbarian DR", "fr": "Réduction des dégâts (Barbare)" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_indomitable_will",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Indomitable Will", "fr": "Volonté indomptable" },
+    "description": {
+      "en": "While in a rage, a barbarian of 14th level or higher gains a +4 bonus on Will saves to resist enchantment spells. This bonus stacks with all other modifiers, including the morale bonus on Will saves also received during rage.",
+      "fr": "Lorsqu'il est en furie, un barbare de niveau 14 ou plus obtient un bonus de +4 aux jets de Volonté pour résister aux sorts d'enchantement. Ce bonus se cumule avec tous les autres modificateurs, y compris le bonus de moral aux jets de Volonté également reçu pendant la furie."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "indomitable_will_bonus",
+        "sourceId": "class_feature_barbarian_indomitable_will",
+        "sourceName": { "en": "Indomitable Will", "fr": "Volonté indomptable" },
+        "targetId": "saves.will",
+        "value": 4,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Indomitable Will only applies while raging"
+        },
+        "situationalContext": "vs_enchantment"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +5", "fr": "Sens des pièges +5" },
+    "description": {
+      "en": "The barbarian's trap sense bonus increases by +1 (total +5 with prior Trap Sense bonuses).",
+      "fr": "Le bonus de sens des pièges du barbare augmente de +1 (total +5 avec les bonus de Sens des pièges précédents)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_5_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_5",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_5_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_5",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_dr_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 4/—", "fr": "Réduction des dégâts 4/—" },
+    "description": {
+      "en": "At 16th level, the barbarian's damage reduction increases to 4/— (subtract 4 from damage taken from weapons and natural attacks).",
+      "fr": "Au niveau 16, la réduction des dégâts du barbare passe à 4/— (soustrayez 4 aux dégâts subis par les armes et les attaques naturelles)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_dr_4",
+        "sourceId": "class_feature_barbarian_dr_4",
+        "sourceName": { "en": "Barbarian DR", "fr": "Réduction des dégâts (Barbare)" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage_5_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage 5/Day", "fr": "Furie 5/jour" },
+    "description": {
+      "en": "At 16th level, the barbarian can use his rage ability five times per day. (This increase is handled automatically by the rage resource formula.)",
+      "fr": "Au niveau 16, le barbare peut utiliser sa furie cinq fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource de furie.)"
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_tireless_rage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tireless Rage", "fr": "Furie infatigable" },
+    "description": {
+      "en": "At 17th level and higher, a barbarian no longer becomes fatigued at the end of his rage.",
+      "fr": "À partir du niveau 17, un barbare n'est plus fatigué à la fin de sa furie."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "tireless_rage"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_trap_sense_6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +6", "fr": "Sens des pièges +6" },
+    "description": {
+      "en": "The barbarian's trap sense bonus increases by +1 (total +6 with prior Trap Sense bonuses).",
+      "fr": "Le bonus de sens des pièges du barbare augmente de +1 (total +6 avec les bonus de Sens des pièges précédents)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_trap_sense_6_reflex",
+        "sourceId": "class_feature_barbarian_trap_sense_6",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "barbarian_trap_sense_6_ac",
+        "sourceId": "class_feature_barbarian_trap_sense_6",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_dr_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 5/—", "fr": "Réduction des dégâts 5/—" },
+    "description": {
+      "en": "At 19th level, the barbarian's damage reduction increases to 5/— (subtract 5 from damage taken from weapons and natural attacks).",
+      "fr": "Au niveau 19, la réduction des dégâts du barbare passe à 5/— (soustrayez 5 aux dégâts subis par les armes et les attaques naturelles)."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "barbarian_dr_5",
+        "sourceId": "class_feature_barbarian_dr_5",
+        "sourceName": { "en": "Barbarian DR", "fr": "Réduction des dégâts (Barbare)" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_mighty_rage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mighty Rage", "fr": "Furie surpuissante" },
+    "description": {
+      "en": "At 20th level, a barbarian's bonuses to Strength and Constitution during his rage each increase to +8, and his morale bonus on Will saves increases to +4. The penalty to AC remains at -2.",
+      "fr": "Au niveau 20, les bonus de Force et de Constitution du barbare en furie passent chacun à +8, et son bonus de moral aux jets de Volonté passe à +4. La pénalité à la CA reste à -2."
+    },
+    "tags": ["class_feature", "barbarian", "extraordinary", "rage_upgrade"],
+    "grantedModifiers": [
+      {
+        "id": "mighty_rage_str_upgrade",
+        "sourceId": "class_feature_barbarian_mighty_rage",
+        "sourceName": { "en": "Mighty Rage", "fr": "Furie surpuissante" },
+        "targetId": "attributes.stat_str",
+        "value": 2,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Mighty Rage bonus only applies while raging"
+        }
+      },
+      {
+        "id": "mighty_rage_con_upgrade",
+        "sourceId": "class_feature_barbarian_mighty_rage",
+        "sourceName": { "en": "Mighty Rage", "fr": "Furie surpuissante" },
+        "targetId": "attributes.stat_con",
+        "value": 2,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Mighty Rage bonus only applies while raging"
+        }
+      },
+      {
+        "id": "mighty_rage_will_upgrade",
+        "sourceId": "class_feature_barbarian_mighty_rage",
+        "sourceName": { "en": "Mighty Rage", "fr": "Furie surpuissante" },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "rage",
+          "errorMessage": "Mighty Rage bonus only applies while raging"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_barbarian_rage_6_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rage 6/Day", "fr": "Furie 6/jour" },
+    "description": {
+      "en": "At 20th level, the barbarian can use his rage ability six times per day. (This increase is handled automatically by the rage resource formula.)",
+      "fr": "Au niveau 20, le barbare peut utiliser sa furie six fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource de furie.)"
+    },
+    "tags": ["class_feature", "barbarian"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_cleric_turn_undead",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Turn or Rebuke Undead", "fr": "Renvoi ou intimidation des morts-vivants" },
+    "description": {
+      "en": "Any cleric can affect undead creatures by channeling the power of his faith. A good cleric (or neutral cleric of a good deity) turns or destroys undead. An evil cleric (or neutral cleric of an evil deity) rebukes or commands undead. A neutral cleric of a neutral deity chooses one function at character creation (this also determines cure vs. inflict spontaneous casting). The cleric may attempt this a number of times per day equal to 3 + Charisma modifier. A cleric with 5+ ranks in Knowledge (religion) gains a +2 bonus on turning checks.",
+      "fr": "Tout prêtre peut affecter les morts-vivants en canalisant la puissance de sa foi. Un prêtre bon (ou neutre d'une divinité bonne) renvoie ou détruit les morts-vivants. Un prêtre mauvais (ou neutre d'une divinité mauvaise) intimide ou commande les morts-vivants. Un prêtre neutre d'une divinité neutre choisit l'une ou l'autre fonction à la création (ce choix détermine aussi l'incantation spontanée Soins/Blessures). Le prêtre peut tenter cela un nombre de fois par jour égal à 3 + modificateur de Charisme."
+    },
+    "tags": ["class_feature", "cleric", "supernatural", "turn_undead"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.turn_undead_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "turn_undead_uses_max",
+        "sourceId": "class_feature_cleric_turn_undead",
+        "sourceName": { "en": "Turn Undead", "fr": "Renvoi des morts-vivants" },
+        "targetId": "resources.turn_undead_uses.maxValue",
+        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_cleric_aura",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Aura", "fr": "Aura" },
+    "description": {
+      "en": "A cleric of a chaotic, evil, good, or lawful deity has a particularly powerful aura corresponding to the deity's alignment (detectable by spells such as detect evil). Clerics who don't worship a specific deity but choose the Chaos, Evil, Good, or Law domain have a similarly powerful aura of the corresponding alignment.",
+      "fr": "Un prêtre d'une divinité chaotique, mauvaise, bonne ou loyale possède une aura particulièrement puissante correspondant à l'alignement de sa divinité (détectable par des sorts comme Détection du Mal). Les prêtres qui n'adorent pas de divinité spécifique mais choisissent le domaine du Chaos, du Mal, du Bien ou de la Loi ont une aura similaire de l'alignement correspondant."
+    },
+    "tags": ["class_feature", "cleric", "extraordinary", "aura"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_cleric_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Spellcasting (Cleric)", "fr": "Incantation divine (Prêtre)" },
+    "description": {
+      "en": "A cleric casts divine spells drawn from the cleric spell list (prepared caster). To cast a spell, the cleric needs Wisdom 10 + spell level. Save DCs are 10 + spell level + Wisdom modifier. The cleric prepares spells after 1 hour of prayer. He also gains one domain spell slot per spell level he can cast (tracked in resources.spell_slots_cleric_domain_1 through _9); domain slots must be used for spells from one of the cleric's two chosen domains. Spontaneous casting: a good (or good-deity) cleric can lose any non-domain prepared spell to cast any cure spell of equal or lower level; an evil (or evil-deity) cleric can do the same for inflict spells. Spell slots per day are tracked in resources.spell_slots_cleric_0 through resources.spell_slots_cleric_9.",
+      "fr": "Un prêtre lance des sorts divins tirés de la liste de sorts du prêtre (lanceur préparé). Pour lancer un sort, le prêtre doit avoir une Sagesse d'au moins 10 + le niveau du sort. Les DD des jets de résistance sont 10 + niveau du sort + modificateur de Sagesse. Le prêtre prépare ses sorts après 1 heure de prière. Il obtient également un emplacement de sort de domaine par niveau de sort qu'il peut lancer (dans resources.spell_slots_cleric_domain_1 à _9) ; les emplacements de domaine doivent être utilisés pour des sorts de l'un de ses deux domaines. Incantation spontanée : un prêtre bon (ou d'une divinité bonne) peut abandonner tout sort préparé non-domaine pour lancer un sort de Soins de niveau égal ou inférieur ; un prêtre mauvais peut faire de même pour les sorts de Blessures."
+    },
+    "tags": ["class_feature", "cleric", "divine_spellcasting", "prepared_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bardic_music",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bardic Music", "fr": "Musique de barde" },
+    "description": {
+      "en": "Once per day per bard level, a bard can use his song or poetics to produce magical effects. Starting a bardic music effect is a standard action. A deaf bard has a 20% chance to fail when attempting to use bardic music.",
+      "fr": "Une fois par jour par niveau de barde, un barde peut utiliser son chant ou sa poésie pour produire des effets magiques. Démarrer un effet de musique de barde est une action simple. Un barde sourd a 20% de chance d'échouer lorsqu'il tente d'utiliser la musique de barde."
+    },
+    "tags": ["class_feature", "bard", "bardic_music"],
+    "grantedModifiers": [
+      {
+        "id": "bardic_music_uses_max",
+        "sourceId": "class_feature_bardic_music",
+        "sourceName": { "en": "Bardic Music", "fr": "Musique de barde" },
+        "targetId": "resources.bardic_music_uses.maxValue",
+        "value": "@characterLevel",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bardic_knowledge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bardic Knowledge", "fr": "Savoir du barde" },
+    "description": {
+      "en": "A bard may make a special bardic knowledge check with a bonus equal to his bard level + his Intelligence modifier to recall information about notable people, legendary items, or noteworthy places.",
+      "fr": "Un barde peut effectuer un test de savoir du barde avec un bonus égal à son niveau de barde + son modificateur d'Intelligence pour se remémorer des informations sur des personnages notables, des objets légendaires ou des lieux remarquables."
+    },
+    "tags": ["class_feature", "bard", "bardic_knowledge"],
+    "grantedModifiers": [
+      {
+        "id": "bardic_knowledge_bonus",
+        "sourceId": "class_feature_bardic_knowledge",
+        "sourceName": { "en": "Bardic Knowledge", "fr": "Savoir du barde" },
+        "targetId": "attributes.bardic_knowledge",
+        "value": "@classLevels.class_bard + @attributes.stat_int.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_countersong",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Countersong", "fr": "Contrechant" },
+    "description": {
+      "en": "A bard with 3 or more ranks in Perform can use music or poetics to counter magical effects that depend on sound. Each round, he makes a Perform check. Any creature within 30 feet affected by a sonic or language-dependent magical attack may use the bard's Perform check result in place of its saving throw. Countersong lasts up to 10 rounds.",
+      "fr": "Un barde possédant 3 rangs ou plus en Représentation peut utiliser sa musique ou sa poésie pour contrer les effets magiques dépendant du son. Chaque round, il effectue un test de Représentation. Toute créature à 9 m ou moins affectée par une attaque magique sonique ou dépendant du langage peut utiliser le résultat du test de Représentation du barde à la place de son jet de sauvegarde. Le contrechant dure jusqu'à 10 rounds."
+    },
+    "tags": ["class_feature", "bard", "supernatural", "bardic_music", "countersong"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_fascinate",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fascinate", "fr": "Fascination" },
+    "description": {
+      "en": "A bard with 3 or more ranks in Perform can cause one or more creatures within 90 feet to become fascinated. The bard makes a Perform check; the result is the DC for each affected creature's Will save. A fascinated creature sits quietly and listens for up to 1 round per bard level. Fascinate is an enchantment (compulsion), mind-affecting ability.",
+      "fr": "Un barde possédant 3 rangs ou plus en Représentation peut fasciner une ou plusieurs créatures à 27 m ou moins. Le barde effectue un test de Représentation ; le résultat est le DD du jet de Volonté de chaque créature affectée. Une créature fascinée reste immobile et écoute pendant 1 round par niveau de barde au maximum. Fascination est une capacité d'enchantement (contrainte) à effet mental."
+    },
+    "tags": ["class_feature", "bard", "spell_like", "bardic_music", "fascinate", "mind_affecting", "enchantment", "compulsion"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_courage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Courage +1", "fr": "Inspiration vaillante +1" },
+    "description": {
+      "en": "A bard with 3 or more ranks in Perform can inspire courage in allies (including himself), granting a +1 morale bonus on saving throws against charm and fear effects and a +1 morale bonus on attack and weapon damage rolls. The effect lasts while the ally hears the bard and for 5 rounds thereafter. Inspire courage is a mind-affecting ability.",
+      "fr": "Un barde possédant 3 rangs ou plus en Représentation peut inspirer le courage à ses alliés (y compris lui-même), accordant un bonus de moral de +1 aux jets de sauvegarde contre les effets de charme et de peur et un bonus de moral de +1 aux jets d'attaque et de dégâts. L'effet dure tant que l'allié entend le barde et pendant 5 rounds par la suite. L'inspiration vaillante est une capacité à effet mental."
+    },
+    "tags": ["class_feature", "bard", "supernatural", "bardic_music", "inspire_courage", "mind_affecting"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "inspire_courage_1_attack",
+        "sourceId": "class_feature_bard_inspire_courage",
+        "sourceName": { "en": "Inspire Courage", "fr": "Inspiration vaillante" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "morale"
+      },
+      {
+        "id": "inspire_courage_1_damage",
+        "sourceId": "class_feature_bard_inspire_courage",
+        "sourceName": { "en": "Inspire Courage", "fr": "Inspiration vaillante" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "morale"
+      },
+      {
+        "id": "inspire_courage_1_saves_charm_fear",
+        "sourceId": "class_feature_bard_inspire_courage",
+        "sourceName": { "en": "Inspire Courage", "fr": "Inspiration vaillante" },
+        "targetId": "saves.all",
+        "value": 1,
+        "type": "morale",
+        "situationalContext": "vs_charm_or_fear"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Spellcasting (Bard)", "fr": "Incantation arcanique (Barde)" },
+    "description": {
+      "en": "A bard casts arcane spells drawn from the bard spell list. He can cast any spell he knows without preparing it (spontaneous caster). Every bard spell has a verbal component. To cast a spell, the bard needs a Charisma score of at least 10 + spell level. Spell save DCs are 10 + spell level + Charisma modifier. Spell slots per day are tracked in resources.spell_slots_bard_0 through resources.spell_slots_bard_6.",
+      "fr": "Un barde lance des sorts arcaniques issus de la liste de sorts du barde. Il peut lancer n'importe quel sort qu'il connaît sans le préparer (lanceur de sorts spontané). Chaque sort de barde possède une composante verbale. Pour lancer un sort, le barde doit avoir un score de Charisme d'au moins 10 + le niveau du sort. Les DD des jets de résistance sont 10 + niveau du sort + modificateur de Charisme. Les emplacements de sorts par jour sont suivis dans resources.spell_slots_bard_0 à resources.spell_slots_bard_6."
+    },
+    "tags": ["class_feature", "bard", "arcane_spellcasting", "spontaneous_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_competence",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Competence", "fr": "Inspiration de compétence" },
+    "description": {
+      "en": "A bard of 3rd level or higher with 6 or more ranks in Perform can help an ally (within 30 feet) succeed at a task, granting a +2 competence bonus on skill checks with a particular skill as long as the ally can hear the bard. The effect lasts as long as the bard concentrates (maximum 2 minutes). A bard cannot inspire competence in himself. Inspire competence is a mind-affecting ability.",
+      "fr": "Un barde de niveau 3 ou plus possédant 6 rangs ou plus en Représentation peut aider un allié (à 9 m ou moins) à réussir une tâche, lui accordant un bonus de compétence de +2 aux tests de compétence avec une compétence particulière tant que l'allié peut entendre le barde. L'effet dure autant que le barde se concentre (2 minutes maximum). Un barde ne peut pas s'inspirer lui-même. L'inspiration de compétence est une capacité à effet mental."
+    },
+    "tags": ["class_feature", "bard", "supernatural", "bardic_music", "inspire_competence", "mind_affecting"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_suggestion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Suggestion", "fr": "Suggestion" },
+    "description": {
+      "en": "A bard of 6th level or higher with 9 or more ranks in Perform can make a suggestion (as the spell) to a creature he has already fascinated. Making a suggestion does not count against the bard's daily limit on bardic music. A Will save (DC 10 + half bard level + Cha modifier) negates the effect. Suggestion is an enchantment (compulsion), mind-affecting, language-dependent ability.",
+      "fr": "Un barde de niveau 6 ou plus possédant 9 rangs ou plus en Représentation peut faire une suggestion (comme le sort) à une créature qu'il a déjà fascinée. Faire une suggestion ne compte pas contre la limite journalière du barde en musique de barde. Un jet de Volonté (DD 10 + moitié du niveau de barde + modificateur de Charisme) annule l'effet. La suggestion est une capacité d'enchantement (contrainte) à effet mental et dépendante du langage."
+    },
+    "tags": ["class_feature", "bard", "spell_like", "suggestion", "mind_affecting", "enchantment", "compulsion", "language_dependent"],
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_courage_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Courage +2 (upgrade)", "fr": "Inspiration vaillante +2 (amélioration)" },
+    "description": {
+      "en": "At 8th level, the bard's Inspire Courage bonus increases by +1 (total +2). This bonus applies whenever the bard is actively performing Inspire Courage.",
+      "fr": "Au niveau 8, le bonus d'Inspiration vaillante du barde augmente de +1 (total +2). Ce bonus s'applique chaque fois que le barde effectue activement une Inspiration vaillante."
+    },
+    "tags": ["class_feature", "bard", "inspire_courage_upgrade"],
+    "grantedModifiers": [
+      {
+        "id": "inspire_courage_2_attack",
+        "sourceId": "class_feature_bard_inspire_courage_2",
+        "sourceName": { "en": "Inspire Courage +2", "fr": "Inspiration vaillante +2" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_2_damage",
+        "sourceId": "class_feature_bard_inspire_courage_2",
+        "sourceName": { "en": "Inspire Courage +2", "fr": "Inspiration vaillante +2" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_2_saves",
+        "sourceId": "class_feature_bard_inspire_courage_2",
+        "sourceName": { "en": "Inspire Courage +2", "fr": "Inspiration vaillante +2" },
+        "targetId": "saves.all",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        },
+        "situationalContext": "vs_charm_or_fear"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_greatness",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Greatness", "fr": "Inspiration de grandeur" },
+    "description": {
+      "en": "A bard of 9th level or higher with 12 or more ranks in Perform can inspire greatness in himself or a willing ally within 30 feet, granting 2 bonus Hit Dice (d10s), a +2 competence bonus on attack rolls, and a +1 competence bonus on Fortitude saves. The effect lasts while the ally hears the bard and for 5 rounds thereafter. Inspire greatness is a mind-affecting ability.",
+      "fr": "Un barde de niveau 9 ou plus possédant 12 rangs ou plus en Représentation peut inspirer la grandeur en lui-même ou en un allié consentant à 9 m ou moins, accordant 2 dés de vie supplémentaires (d10), un bonus de compétence de +2 aux jets d'attaque et un bonus de compétence de +1 aux jets de Vigueur. L'effet dure tant que l'allié entend le barde et pendant 5 rounds par la suite. L'inspiration de grandeur est une capacité à effet mental."
+    },
+    "tags": ["class_feature", "bard", "supernatural", "bardic_music", "inspire_greatness", "mind_affecting"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "inspire_greatness_attack",
+        "sourceId": "class_feature_bard_inspire_greatness",
+        "sourceName": { "en": "Inspire Greatness", "fr": "Inspiration de grandeur" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "competence"
+      },
+      {
+        "id": "inspire_greatness_fort",
+        "sourceId": "class_feature_bard_inspire_greatness",
+        "sourceName": { "en": "Inspire Greatness", "fr": "Inspiration de grandeur" },
+        "targetId": "saves.fortitude",
+        "value": 1,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_song_of_freedom",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Song of Freedom", "fr": "Chant de liberté" },
+    "description": {
+      "en": "A bard of 12th level or higher with 15 or more ranks in Perform can create an effect equivalent to the break enchantment spell (caster level equals bard level) on a single target within 30 feet. Using this ability requires 1 minute of uninterrupted concentration and music. A bard cannot use song of freedom on himself.",
+      "fr": "Un barde de niveau 12 ou plus possédant 15 rangs ou plus en Représentation peut créer un effet équivalent au sort de Dissipation des enchantements (niveau de lanceur égal au niveau de barde) sur une cible unique à 9 m ou moins. L'utilisation de cette capacité nécessite 1 minute de concentration et de musique sans interruption. Un barde ne peut pas utiliser le chant de liberté sur lui-même."
+    },
+    "tags": ["class_feature", "bard", "spell_like", "bardic_music", "song_of_freedom"],
+    "activation": {
+      "actionType": "minutes",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_courage_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Courage +3 (upgrade)", "fr": "Inspiration vaillante +3 (amélioration)" },
+    "description": {
+      "en": "At 14th level, the bard's Inspire Courage bonus increases by +1 (total +3). This bonus applies whenever the bard is actively performing Inspire Courage.",
+      "fr": "Au niveau 14, le bonus d'Inspiration vaillante du barde augmente de +1 (total +3). Ce bonus s'applique chaque fois que le barde effectue activement une Inspiration vaillante."
+    },
+    "tags": ["class_feature", "bard", "inspire_courage_upgrade"],
+    "grantedModifiers": [
+      {
+        "id": "inspire_courage_3_attack",
+        "sourceId": "class_feature_bard_inspire_courage_3",
+        "sourceName": { "en": "Inspire Courage +3", "fr": "Inspiration vaillante +3" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_3_damage",
+        "sourceId": "class_feature_bard_inspire_courage_3",
+        "sourceName": { "en": "Inspire Courage +3", "fr": "Inspiration vaillante +3" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_3_saves",
+        "sourceId": "class_feature_bard_inspire_courage_3",
+        "sourceName": { "en": "Inspire Courage +3", "fr": "Inspiration vaillante +3" },
+        "targetId": "saves.all",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        },
+        "situationalContext": "vs_charm_or_fear"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_heroics",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Heroics", "fr": "Inspiration héroïque" },
+    "description": {
+      "en": "A bard of 15th level or higher with 18 or more ranks in Perform can inspire tremendous heroism in himself or a willing ally within 30 feet. An inspired creature gains a +4 morale bonus on saving throws and a +4 dodge bonus to AC. The effect lasts while the ally hears the bard and for 5 rounds thereafter. Inspire heroics is a mind-affecting ability.",
+      "fr": "Un barde de niveau 15 ou plus possédant 18 rangs ou plus en Représentation peut inspirer l'héroïsme en lui-même ou en un allié consentant à 9 m ou moins. Une créature ainsi inspirée obtient un bonus de moral de +4 aux jets de sauvegarde et un bonus de parade de +4 à la CA. L'effet dure tant que l'allié entend le barde et pendant 5 rounds par la suite. L'inspiration héroïque est une capacité à effet mental."
+    },
+    "tags": ["class_feature", "bard", "supernatural", "bardic_music", "inspire_heroics", "mind_affecting"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.bardic_music_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "inspire_heroics_saves",
+        "sourceId": "class_feature_bard_inspire_heroics",
+        "sourceName": { "en": "Inspire Heroics", "fr": "Inspiration héroïque" },
+        "targetId": "saves.all",
+        "value": 4,
+        "type": "morale"
+      },
+      {
+        "id": "inspire_heroics_ac",
+        "sourceId": "class_feature_bard_inspire_heroics",
+        "sourceName": { "en": "Inspire Heroics", "fr": "Inspiration héroïque" },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "dodge"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_mass_suggestion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mass Suggestion", "fr": "Suggestion de masse" },
+    "description": {
+      "en": "A bard of 18th level or higher with 21 or more ranks in Perform can make a suggestion simultaneously to any number of creatures already fascinated. This functions like suggestion but affects multiple targets. Making a mass suggestion does not count against the bard's daily limit on bardic music. Mass suggestion is an enchantment (compulsion), mind-affecting, language-dependent ability.",
+      "fr": "Un barde de niveau 18 ou plus possédant 21 rangs ou plus en Représentation peut faire une suggestion simultanément à n'importe quel nombre de créatures déjà fascinées. Fonctionne comme la suggestion mais affecte plusieurs cibles. Faire une suggestion de masse ne compte pas contre la limite journalière du barde en musique de barde. La suggestion de masse est une capacité d'enchantement (contrainte) à effet mental et dépendante du langage."
+    },
+    "tags": ["class_feature", "bard", "spell_like", "mass_suggestion", "mind_affecting", "enchantment", "compulsion", "language_dependent"],
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_bard_inspire_courage_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inspire Courage +4 (upgrade)", "fr": "Inspiration vaillante +4 (amélioration)" },
+    "description": {
+      "en": "At 20th level, the bard's Inspire Courage bonus increases by +1 (total +4). This bonus applies whenever the bard is actively performing Inspire Courage.",
+      "fr": "Au niveau 20, le bonus d'Inspiration vaillante du barde augmente de +1 (total +4). Ce bonus s'applique chaque fois que le barde effectue activement une Inspiration vaillante."
+    },
+    "tags": ["class_feature", "bard", "inspire_courage_upgrade"],
+    "grantedModifiers": [
+      {
+        "id": "inspire_courage_4_attack",
+        "sourceId": "class_feature_bard_inspire_courage_4",
+        "sourceName": { "en": "Inspire Courage +4", "fr": "Inspiration vaillante +4" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_4_damage",
+        "sourceId": "class_feature_bard_inspire_courage_4",
+        "sourceName": { "en": "Inspire Courage +4", "fr": "Inspiration vaillante +4" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        }
+      },
+      {
+        "id": "inspire_courage_4_saves",
+        "sourceId": "class_feature_bard_inspire_courage_4",
+        "sourceName": { "en": "Inspire Courage +4", "fr": "Inspiration vaillante +4" },
+        "targetId": "saves.all",
+        "value": 1,
+        "type": "morale",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "inspire_courage",
+          "errorMessage": "Inspire Courage upgrade only applies while performing Inspire Courage"
+        },
+        "situationalContext": "vs_charm_or_fear"
+      }
+    ],
+    "grantedFeatures": []
+  }
+]
