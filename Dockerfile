@@ -129,9 +129,12 @@ WORKDIR /export
 COPY --from=node-build /app/build            ./character-vault/build/
 COPY --from=node-build /app/static           ./character-vault/static/
 
-# Copy the PHP backend (no vendor — installed by the host at deploy time)
+# Copy the PHP backend only — no vendor/, no composer.json.
+# The backend has zero production dependencies; Composer is used only during
+# the build for PHPUnit. Including composer.json in the artifact would mislead
+# server administrators into running `composer install` on the production host,
+# which is explicitly not required (and not supported by this deployment model).
 COPY --from=php-test  /app/api              ./character-vault/api/
-COPY --from=php-test  /app/composer.json    ./character-vault/composer.json
 
 # Generate the Apache .htaccess routing file
 RUN cat > ./character-vault/.htaccess <<'HTACCESS'

@@ -121,7 +121,7 @@ Or use the VS Code task **Run: DB migrations** (see [VS Code — debugging](#vs-
 ### Frontend — Vitest
 
 ```sh
-# Run all unit tests (7 test files, 219+ cases)
+# Run all unit tests (7 test files)
 npm test
 
 # Watch mode

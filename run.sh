@@ -175,7 +175,11 @@ $appDir = rtrim((string)getenv('CHARACTER_VAULT_DIR'), '/');
 $uri    = urldecode((string)parse_url((string)$_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
 // ── 1. PHP API ────────────────────────────────────────────────────────────────
-if (str_starts_with($uri, '/api')) {
+// Match /api/ (with trailing slash) OR exactly /api, consistent with the
+// Apache .htaccess rule ^api/(.*)$. Using str_starts_with('/api') without the
+// slash would incorrectly dispatch any URI that begins with those four letters
+// (e.g. /apiary, /apidocs) to PHP.
+if (str_starts_with($uri, '/api/') || $uri === '/api') {
     // Ensure relative requires inside api/ resolve correctly
     chdir($appDir);
     require $appDir . '/api/index.php';
@@ -184,36 +188,48 @@ if (str_starts_with($uri, '/api')) {
 
 // ── 2. Static file from build/ ────────────────────────────────────────────────
 $staticFile = $appDir . '/build' . $uri;
-if ($uri !== '/' && is_file($staticFile)) {
-    static $mimes = [
-        'html'  => 'text/html; charset=utf-8',
-        'js'    => 'application/javascript',
-        'mjs'   => 'application/javascript',
-        'css'   => 'text/css',
-        'json'  => 'application/json',
-        'svg'   => 'image/svg+xml',
-        'png'   => 'image/png',
-        'jpg'   => 'image/jpeg',
-        'jpeg'  => 'image/jpeg',
-        'gif'   => 'image/gif',
-        'ico'   => 'image/x-icon',
-        'woff'  => 'font/woff',
-        'woff2' => 'font/woff2',
-        'ttf'   => 'font/ttf',
-        'webp'  => 'image/webp',
-        'txt'   => 'text/plain',
-        'xml'   => 'application/xml',
-    ];
-    $ext = strtolower((string)pathinfo($staticFile, PATHINFO_EXTENSION));
-    if (isset($mimes[$ext])) {
-        header('Content-Type: ' . $mimes[$ext]);
+if ($uri !== '/') {
+    // Guard against directory traversal: verify the resolved real path lives
+    // inside build/. urldecode() above already canonicalises %2e%2e sequences,
+    // but we double-check here for defence-in-depth.
+    $realStatic = realpath($staticFile);
+    $realBuild  = realpath($appDir . '/build');
+    if (
+        $realStatic !== false
+        && $realBuild !== false
+        && str_starts_with($realStatic, $realBuild . DIRECTORY_SEPARATOR)
+        && is_file($realStatic)
+    ) {
+        static $mimes = [
+            'html'  => 'text/html; charset=utf-8',
+            'js'    => 'application/javascript',
+            'mjs'   => 'application/javascript',
+            'css'   => 'text/css',
+            'json'  => 'application/json',
+            'svg'   => 'image/svg+xml',
+            'png'   => 'image/png',
+            'jpg'   => 'image/jpeg',
+            'jpeg'  => 'image/jpeg',
+            'gif'   => 'image/gif',
+            'ico'   => 'image/x-icon',
+            'woff'  => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf'   => 'font/ttf',
+            'webp'  => 'image/webp',
+            'txt'   => 'text/plain',
+            'xml'   => 'application/xml',
+        ];
+        $ext = strtolower((string)pathinfo($realStatic, PATHINFO_EXTENSION));
+        if (isset($mimes[$ext])) {
+            header('Content-Type: ' . $mimes[$ext]);
+        }
+        // Long-lived cache for versioned assets (_app/immutable/…)
+        if (str_contains($uri, '/_app/immutable/')) {
+            header('Cache-Control: public, max-age=31536000, immutable');
+        }
+        readfile($realStatic);
+        return;
     }
-    // Long-lived cache for versioned assets (_app/immutable/…)
-    if (str_contains($uri, '/_app/immutable/')) {
-        header('Cache-Control: public, max-age=31536000, immutable');
-    }
-    readfile($staticFile);
-    return;
 }
 
 // ── 3. SvelteKit SPA fallback ─────────────────────────────────────────────────

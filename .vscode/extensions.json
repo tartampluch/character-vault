@@ -13,6 +13,9 @@
 		// Backend — PHP Xdebug debug adapter
 		"xdebug.php-debug",
 
+		// Environment files (.env, .env.example) — syntax highlighting + IntelliSense
+		"mikestead.dotenv",
+
 		// Code quality
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode"

@@ -162,14 +162,20 @@ echo ""
 # Run with:
 #   - artifact mounted read-only at the document root
 #   - database persisted in a named Docker volume (survives container restarts)
-#   - .env variables passed to the container (APP_ENV, DB_PATH, CORS_ORIGIN…)
+#   - .env variables passed to the container via --env-file (APP_ENV, DB_PATH, CORS_ORIGIN…)
+#   - port bound to 127.0.0.1 only (local test runner — not for public access)
+#
+# Note: no --name is used so that multiple invocations can coexist without
+# "container name already in use" failures (Docker assigns a random name).
+#
+# Note: APP_ENV is NOT injected via -e here; the value in --env-file takes
+# effect cleanly without being overridden by a hard-coded -e flag.
+# If no --env-file is provided, api/config.php defaults to APP_ENV=development.
 # DB_PATH inside the container defaults to /var/lib/character-vault/database.sqlite
 # which is mapped to the character-vault-db named volume.
 docker run --rm \
-    --name "character-vault-run" \
     -v "${APP_DIR}:/var/www/html:ro" \
     -v "character-vault-db:/var/lib/character-vault" \
     "${ENV_FILE_ARG[@]}" \
-    -e "APP_ENV=${APP_ENV:-production}" \
-    -p "${PORT}:80" \
+    -p "127.0.0.1:${PORT}:80" \
     "$RUN_IMAGE"

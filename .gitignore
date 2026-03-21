@@ -44,8 +44,13 @@ composer.lock
 # Build artefacts
 /dist-pkg/           # compressed tarballs
 /dist/               # extracted deployment artifacts (used by run.sh)
-/tmp/.buildx-cache/
-/tmp/.buildx-cache-new/
+# BuildKit local cache directories (may be created in the project root by some
+# CI environments or manual docker buildx invocations).
+# Note: the system /tmp/.buildx-cache* paths are outside the repository and
+# never need a gitignore entry — these patterns target any cache accidentally
+# created inside the project tree.
+/.buildx-cache/
+/.buildx-cache-new/
 
 # Portable build tools (downloaded by scripts/build.sh — never commit)
 /.build-tools/

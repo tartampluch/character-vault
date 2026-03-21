@@ -8,7 +8,8 @@
 # OPTIONS:
 #   -e, --env <env>        Target environment: production (default) | staging
 #   -o, --output <dir>     Output directory for the tarball (default: dist-pkg)
-#   -d, --deploy <dir>     Output directory for the extracted artifact (default: dist)
+#   -d, --deploy <dir>     Local directory for the extracted artifact (default: dist)
+#                          This is a LOCAL path — not a remote deployment target.
 #   -t, --tag <tag>        Package version tag (default: git describe or timestamp)
 #   -s, --skip-tests       Skip PHP and JS test suites
 #   --no-clean             Do not remove the intermediate build directory
@@ -322,11 +323,14 @@ step "Assembling deployment artifact → ${STAGE_DIR}"
 [[ "$CLEAN" == true ]] && rm -rf "$STAGE_DIR"
 mkdir -p "$STAGE_DIR"
 
-# SvelteKit compiled output
-if [[ -d "${ROOT_DIR}/.svelte-kit/output" ]]; then
-    cp -r "${ROOT_DIR}/.svelte-kit/output" "${STAGE_DIR}/build"
-elif [[ -d "${ROOT_DIR}/build" ]]; then
+# SvelteKit compiled output.
+# adapter-static (the only adapter compatible with zero-Node.js shared hosting)
+# always writes to build/. Check build/ first; .svelte-kit/output is only
+# relevant for SSR/Node adapters and is never produced by adapter-static.
+if [[ -d "${ROOT_DIR}/build" ]]; then
     cp -r "${ROOT_DIR}/build" "${STAGE_DIR}/build"
+elif [[ -d "${ROOT_DIR}/.svelte-kit/output" ]]; then
+    cp -r "${ROOT_DIR}/.svelte-kit/output" "${STAGE_DIR}/build"
 else
     warn "No SvelteKit build output found — checked 'build/' and '.svelte-kit/output/'"
 fi

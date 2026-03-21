@@ -126,6 +126,16 @@ step "Exporting artefact → ${OUTPUT_DIR}"
 
 ${COMPOSE} run --rm builder
 
+# ── Rotate the BuildKit inline cache ─────────────────────────────────────────
+# docker-compose.yml writes the new cache to /tmp/.buildx-cache-new and reads
+# from /tmp/.buildx-cache. Without this rotation the cache accumulates orphaned
+# blobs and is never actually reused on the next build.
+# Reference: https://docs.docker.com/build/cache/backends/local/
+if [[ -d /tmp/.buildx-cache-new ]]; then
+    rm -rf /tmp/.buildx-cache
+    mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+fi
+
 # ── Verify the artefact ───────────────────────────────────────────────────────
 step "Verifying artefact"
 
