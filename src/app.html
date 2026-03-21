@@ -3,6 +3,80 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!--
+			FLASH-OF-WRONG-THEME (FOWT) PREVENTION — Phase 19.2
+			=======================================================
+			This inline <script> runs SYNCHRONOUSLY during HTML parsing, BEFORE the
+			browser renders any pixels. It reads the 'theme' cookie and applies the
+			'dark' class to <html> immediately if needed.
+
+			WHY SYNCHRONOUS?
+			  If we waited for Svelte's ThemeManager to hydrate (which happens after
+			  the initial paint), the user would see a brief flash of the wrong theme:
+			  e.g. light mode rendered for 50-200ms before the JS kicks in and switches
+			  to dark. This is the classic FOWT problem and it is deeply jarring.
+
+			  By running this script synchronously in <head> — BEFORE any CSS is applied
+			  or any DOM content is rendered — we ensure the correct class is set from
+			  the very first paint.
+
+			WHAT IT DOES:
+			  1. Parses the 'theme' cookie from document.cookie (same logic as readThemeCookie
+			     in ThemeManager.svelte.ts, but inlined to avoid any module import overhead).
+			  2. If 'dark': adds 'dark' class to <html> immediately.
+			  3. If 'system': checks prefers-color-scheme and adds 'dark' only if OS is dark.
+			  4. If 'light' or no cookie: does nothing (light is the default).
+
+			SECURITY NOTE:
+			  This script is intentionally minimal — no external dependencies, no async ops.
+			  It only reads a cookie and toggles a class. There is no XSS risk as the cookie
+			  value is compared against known string literals only; any other value is ignored.
+
+			MAINTENANCE NOTE:
+			  If ThemeManager.svelte.ts changes its cookie name (currently 'theme') or its
+			  valid values ('system', 'light', 'dark'), this script must be updated to match.
+		-->
+		<script>
+			(function () {
+				try {
+					// Step 1: Parse the 'theme' cookie value
+					var themeCookie = '';
+					var cookies = document.cookie.split(';');
+					for (var i = 0; i < cookies.length; i++) {
+						var parts = cookies[i].trim().split('=');
+						if (parts[0] === 'theme') {
+							themeCookie = decodeURIComponent(parts[1] || '');
+							break;
+						}
+					}
+
+					// Step 2: Determine whether to apply the 'dark' class
+					var shouldBeDark = false;
+
+					if (themeCookie === 'dark') {
+						// User explicitly chose dark
+						shouldBeDark = true;
+					} else if (themeCookie === 'system' || themeCookie === '') {
+						// 'system' mode (or no cookie = default to system):
+						// Check the OS preference via matchMedia
+						shouldBeDark =
+							window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+					}
+					// If 'light': shouldBeDark stays false (no action needed)
+
+					// Step 3: Apply the class synchronously before first paint
+					if (shouldBeDark) {
+						document.documentElement.classList.add('dark');
+						document.documentElement.style.colorScheme = 'dark';
+					}
+				} catch (e) {
+					// Silently ignore errors (cookie parsing failures, missing matchMedia, etc.)
+					// The app will fall back to light mode, which is the safe default.
+				}
+			})();
+		</script>
+
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
