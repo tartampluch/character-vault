@@ -32,6 +32,7 @@
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ItemFeature } from '$lib/types/feature';
   import type { StatisticPipeline } from '$lib/types/pipeline';
+  import { IconAttacks, IconDiceRoll } from '$lib/components/ui/icons';
 
   // ============================================================
   // UNARMED OPTION
@@ -179,7 +180,7 @@
 </script>
 
 <div class="attacks-panel">
-  <h2 class="panel-title">⚔️ Weapons & Attacks</h2>
+   <h2 class="panel-title"><IconAttacks size={24} aria-hidden="true" /> Weapons & Attacks</h2>
 
   <!-- ========================================================= -->
   <!-- WEAPONS TABLE -->
@@ -213,8 +214,8 @@
           </span>
         </div>
         <div class="weapon-roll-btns">
-          <button class="roll-btn attack" onclick={() => (rollTarget = 'main_attack')} aria-label="Roll attack">🎲 Attack</button>
-          <button class="roll-btn damage" onclick={() => (rollTarget = 'main_damage')} aria-label="Roll damage">🎲 Damage</button>
+           <button class="roll-btn attack" onclick={() => (rollTarget = 'main_attack')} aria-label="Roll attack"><IconDiceRoll size={16} aria-hidden="true" /> Attack</button>
+           <button class="roll-btn damage" onclick={() => (rollTarget = 'main_damage')} aria-label="Roll damage"><IconDiceRoll size={16} aria-hidden="true" /> Damage</button>
         </div>
       {/if}
     </div>

@@ -20,6 +20,7 @@
   import type { MagicFeature } from '$lib/types/feature';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
+  import { IconTabMagic, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   let modalSpellId = $state<ID | null>(null);
   let diceSpellId = $state<ID | null>(null);
@@ -77,7 +78,7 @@
 </script>
 
 <div class="casting-panel">
-  <h2 class="panel-title">✨ Spells & Powers</h2>
+   <h2 class="panel-title"><IconTabMagic size={24} aria-hidden="true" /> Spells & Powers</h2>
 
   {#if knownSpells.length === 0}
     <p class="empty-note">No spells known. Use the Grimoire to learn spells.</p>
@@ -92,9 +93,9 @@
           <div class="spell-row">
             <span class="spell-name">{engine.t(spell.label)}</span>
             <span class="spell-school">{spell.school}</span>
-            <button class="btn-icon info" onclick={() => (modalSpellId = spell.id)} aria-label="Details">ℹ</button>
+            <button class="btn-icon info" onclick={() => (modalSpellId = spell.id)} aria-label="Details"><IconInfo size={16} aria-hidden="true" /></button>
             {#if spell.grantedModifiers?.some(m => m.targetId.includes('damage'))}
-              <button class="btn-icon dice" onclick={() => (diceSpellId = spell.id)} aria-label="Roll damage">🎲</button>
+              <button class="btn-icon dice" onclick={() => (diceSpellId = spell.id)} aria-label="Roll damage"><IconDiceRoll size={16} aria-hidden="true" /></button>
             {/if}
             <button class="btn-cast" aria-label="Cast {engine.t(spell.label)}">Cast</button>
           </div>

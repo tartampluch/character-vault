@@ -13,21 +13,24 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { Flame, Snowflake, FlaskConical, Zap, Volume2, Sparkles, BrainCircuit, ShieldAlert } from 'lucide-svelte';
+  import { IconSaves } from '$lib/components/ui/icons';
 
   /**
    * Data-driven list of resistance pipelines.
+   * Icons are Lucide component references (not emoji strings).
    * If the pipeline has no value (0 or absent), it is shown as "—" (no resistance).
    */
   const RESISTANCES = [
-    { id: 'combatStats.resist_fire',        icon: '🔥', label: 'Fire' },
-    { id: 'combatStats.resist_cold',        icon: '❄️', label: 'Cold' },
-    { id: 'combatStats.resist_acid',        icon: '🧪', label: 'Acid' },
-    { id: 'combatStats.resist_electricity', icon: '⚡', label: 'Electricity' },
-    { id: 'combatStats.resist_sonic',       icon: '🔊', label: 'Sonic' },
-    { id: 'combatStats.spell_resistance',   icon: '✨', label: 'SR' },
-    { id: 'combatStats.power_resistance',   icon: '🧠', label: 'PR' },
-    { id: 'combatStats.fortification',      icon: '🏰', label: 'Fort.' },
-  ] as const;
+    { id: 'combatStats.resist_fire',        icon: Flame,         label: 'Fire' },
+    { id: 'combatStats.resist_cold',        icon: Snowflake,     label: 'Cold' },
+    { id: 'combatStats.resist_acid',        icon: FlaskConical,  label: 'Acid' },
+    { id: 'combatStats.resist_electricity', icon: Zap,           label: 'Electricity' },
+    { id: 'combatStats.resist_sonic',       icon: Volume2,       label: 'Sonic' },
+    { id: 'combatStats.spell_resistance',   icon: Sparkles,      label: 'SR' },
+    { id: 'combatStats.power_resistance',   icon: BrainCircuit,  label: 'PR' },
+    { id: 'combatStats.fortification',      icon: ShieldAlert,   label: 'Fort.' },
+  ];
 
   /** Misc modifiers entered by the player (stored locally). */
   let miscMods = $state<Record<string, string>>({});
@@ -39,7 +42,7 @@
 </script>
 
 <div class="resistances-panel">
-  <h2 class="panel-title">🛡️ Resistances</h2>
+   <h2 class="panel-title"><IconSaves size={24} aria-hidden="true" /> Resistances</h2>
 
   <div class="resist-grid">
     {#each RESISTANCES as res}
@@ -49,7 +52,7 @@
       {@const total = baseVal + misc}
 
       <div class="resist-row">
-        <span class="resist-icon" aria-hidden="true">{res.icon}</span>
+        <span class="resist-icon" aria-hidden="true"><res.icon size={16} /></span>
         <span class="resist-label">{res.label}</span>
         <span class="resist-value" class:has-value={total > 0}>
           {total > 0 ? total : '—'}

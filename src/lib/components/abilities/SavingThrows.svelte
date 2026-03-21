@@ -29,6 +29,7 @@
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconSaves, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   /**
    * Saving throw configuration read from engine.savingThrowConfig.
@@ -56,7 +57,7 @@
 </script>
 
 <div class="saving-throws-panel">
-  <h2 class="panel-title">🛡️ Saving Throws</h2>
+   <h2 class="panel-title"><IconSaves size={24} aria-hidden="true" /> Saving Throws</h2>
 
   <div class="saves-grid">
     {#each SAVES as save}
@@ -135,13 +136,13 @@
               onclick={() => (breakdownSaveId = save.pipelineId)}
               aria-label="Show {engine.t(pipeline.label)} breakdown"
               title="Show breakdown"
-            >ℹ</button>
+            ><IconInfo size={16} aria-hidden="true" /></button>
             <button
               class="action-btn dice-btn"
               onclick={() => (diceRollSaveId = save.pipelineId)}
               aria-label="Roll {engine.t(pipeline.label)} save"
               title="Roll saving throw"
-            >🎲</button>
+            ><IconDiceRoll size={16} aria-hidden="true" /></button>
           </div>
         </div>
       {/if}

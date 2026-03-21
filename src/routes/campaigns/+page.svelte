@@ -30,6 +30,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { goto } from '$app/navigation';
+  import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
 
   // ============================================================
   // STATE
@@ -79,7 +80,7 @@
   <!-- ======================================================== -->
   <header class="hub-header">
     <div class="header-content">
-      <h1 class="hub-title">⚔️ Your Campaigns</h1>
+       <h1 class="hub-title"><IconCampaign size={24} aria-hidden="true" /> Your Campaigns</h1>
       <p class="hub-subtitle">
         Choose a campaign to begin, or create a new one.
       </p>
@@ -92,7 +93,7 @@
         onclick={() => (showCreateForm = !showCreateForm)}
         aria-expanded={showCreateForm}
       >
-        {showCreateForm ? '✕ Cancel' : '✚ Create Campaign'}
+        {#if showCreateForm}<IconClose size={16} aria-hidden="true" /> Cancel{:else}<IconAdd size={16} aria-hidden="true" /> Create Campaign{/if}
       </button>
     {/if}
   </header>
@@ -137,11 +138,11 @@
   {#if campaignStore.campaigns.length === 0}
     <!-- Empty state -->
     <div class="empty-state">
-      <p class="empty-icon">🗺️</p>
+       <p class="empty-icon"><IconCampaign size={64} aria-hidden="true" /></p>
       <h2>No campaigns yet</h2>
       <p>
         {#if sessionContext.isGameMaster}
-          Click <strong>"✚ Create Campaign"</strong> above to start your first adventure.
+           Click <strong>"+ Create Campaign"</strong> above to start your first adventure.
         {:else}
           Your Game Master hasn't created a campaign yet. Check back later!
         {/if}
@@ -166,7 +167,7 @@
             {:else}
               <!-- Placeholder with themed gradient -->
               <div class="poster-placeholder" aria-hidden="true">
-                <span class="poster-icon">⚔️</span>
+                <span class="poster-icon"><IconCampaign size={48} aria-hidden="true" /></span>
               </div>
             {/if}
           </div>
@@ -211,9 +212,9 @@
 
   <!-- Dev toolbar (visible only in development — helps test role switching) -->
   <div class="dev-toolbar" aria-label="Developer toolbar (development only)">
-    <span class="dev-label">🛠 Dev:</span>
-    <span class="role-badge" class:gm={sessionContext.isGameMaster}>
-      {sessionContext.isGameMaster ? '🎲 GM' : '🧙 Player'}
+     <span class="dev-label">Dev:</span>
+     <span class="role-badge" class:gm={sessionContext.isGameMaster}>
+       {#if sessionContext.isGameMaster}<IconGMDashboard size={12} aria-hidden="true" /> GM{:else}<IconCharacter size={12} aria-hidden="true" /> Player{/if}
       ({sessionContext.currentUserDisplayName})
     </span>
     <button

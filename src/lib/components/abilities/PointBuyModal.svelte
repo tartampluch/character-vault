@@ -26,6 +26,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconTabFeats, IconChecked } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -191,7 +192,7 @@
 >
   <div class="modal-panel">
     <header class="modal-header">
-      <h2 class="modal-title">🎯 Point Buy</h2>
+       <h2 class="modal-title"><IconTabFeats size={20} aria-hidden="true" /> Point Buy</h2>
       <div class="budget-display" class:over-budget={isOverBudget}>
         <span class="budget-label">Budget:</span>
         <span class="budget-value">{pointsSpent}/{budget}</span>
@@ -252,7 +253,7 @@
             </span>
 
             {#if isRec}
-              <span class="rec-indicator" aria-label="Recommended" title="Recommended for your class">★</span>
+              <span class="rec-indicator" aria-label="Recommended" title="Recommended for your class"><IconTabFeats size={12} /></span>
             {/if}
           </div>
         {/each}
@@ -266,7 +267,7 @@
           onclick={confirmBuy}
           disabled={isOverBudget}
         >
-          ✓ Confirm Point Buy
+           <IconChecked size={16} aria-hidden="true" /> Confirm Point Buy
         </button>
       </div>
     </div>

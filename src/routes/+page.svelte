@@ -28,6 +28,7 @@
   import { parseAndRoll, type RollContext, type RollResult } from '$lib/utils/diceEngine';
   // Import formatters for display
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconTabCombat, IconSettings, IconStats, IconAttacks, IconWarning, IconSuccess, IconError } from '$lib/components/ui/icons';
 
   // ===================================================
   // INITIALIZATION: Load test data on component mount
@@ -248,7 +249,7 @@
 
 <main class="test-harness">
   <header>
-    <h1>⚔️ Character Vault — Engine Test Harness (Phase 5)</h1>
+     <h1><IconTabCombat size={24} aria-hidden="true" /> Character Vault — Engine Test Harness (Phase 5)</h1>
     <p class="subtitle">
       Validation UI — proves the DAG pipeline, situational modifiers, house rules, and merge engine.
     </p>
@@ -259,11 +260,11 @@
   <!-- ================================================== -->
   {#if !isInitialized && !loadError}
     <section class="status-panel loading">
-      <p>⏳ Loading rule sources...</p>
+       <p>Loading rule sources...</p>
     </section>
   {:else if loadError}
     <section class="status-panel error">
-      <p>❌ Failed to load rules: {loadError}</p>
+       <p><IconError size={16} aria-hidden="true" /> Failed to load rules: {loadError}</p>
       <p><small>Check that <code>static/rules/manifest.json</code> exists and is accessible.</small></p>
     </section>
   {:else}
@@ -272,7 +273,7 @@
   <!-- SECTION 1: Campaign Settings -->
   <!-- ================================================== -->
   <section class="panel">
-    <h2>⚙️ Campaign Settings</h2>
+     <h2><IconSettings size={20} aria-hidden="true" /> Campaign Settings</h2>
 
     <div class="setting-row">
       <label for="exploding-twenties">
@@ -307,7 +308,7 @@
   <!-- SECTION 2: Character Stats (DAG Output — Phase 5.2) -->
   <!-- ================================================== -->
   <section class="panel">
-    <h2>📊 Character Statistics — DAG Output</h2>
+     <h2><IconStats size={20} aria-hidden="true" /> Character Statistics — DAG Output</h2>
     <p class="hint">
       These values are computed by the reactive DAG ($derived chain). Changes to base values
       automatically cascade through the pipeline.
@@ -317,7 +318,7 @@
 
       <div class="stat-block">
         <label for="str-base">
-          <h3>💪 Strength (STR)</h3>
+           <h3>Strength (STR)</h3>
         </label>
         <div class="stat-row">
           <span class="label">Base Score:</span>
@@ -341,7 +342,7 @@
       </div>
 
       <div class="stat-block">
-        <h3>🛡️ Armor Class (AC)</h3>
+         <h3>Armor Class (AC)</h3>
         <div class="stat-row highlight">
           <span class="label">Normal AC:</span>
           <code class="value">{totalAC}</code>
@@ -357,7 +358,7 @@
       </div>
 
       <div class="stat-block">
-        <h3>⚔️ Combat Stats</h3>
+         <h3><IconAttacks size={16} aria-hidden="true" /> Combat Stats</h3>
         <div class="stat-row">
           <span class="label">Character Level:</span>
           <code class="value">{characterLevel}</code>
@@ -392,7 +393,7 @@
   <!-- SECTION 3: Situational Modifier Test (Phase 5.3) -->
   <!-- ================================================== -->
   <section class="panel">
-    <h2>🎯 Situational Modifier Test — "Attack the Orc" (Phase 5.3)</h2>
+     <h2><IconAttacks size={20} aria-hidden="true" /> Situational Modifier Test — "Attack the Orc" (Phase 5.3)</h2>
     <p class="hint">
       The character has the <strong>Favoured Enemy: Orc</strong> feat, granting <strong>+2 to attack</strong>
       vs Orcs. This modifier is SITUATIONAL — it does NOT appear in the BAB above.
@@ -405,13 +406,13 @@
       onclick={attackOrc}
       disabled={!isInitialized}
     >
-      ⚔️ Attack the Orc! (Roll 1d20 + BAB vs Orc target)
+       <IconAttacks size={16} aria-hidden="true" /> Attack the Orc! (Roll 1d20 + BAB vs Orc target)
     </button>
 
     {#if lastRollResult}
       <div class="roll-result" class:critical={lastRollResult.isCriticalThreat} class:fumble={lastRollResult.isAutomaticMiss}>
         <h3>
-          {#if lastRollResult.isCriticalThreat}🎯 CRITICAL HIT!{:else if lastRollResult.isAutomaticMiss}💀 FUMBLE!{:else}🎲 Roll Result{/if}
+           {#if lastRollResult.isCriticalThreat}CRITICAL HIT!{:else if lastRollResult.isAutomaticMiss}FUMBLE!{:else}Roll Result{/if}
         </h3>
 
         <div class="roll-breakdown">
@@ -427,7 +428,7 @@
             <span class="label">Natural Total:</span>
             <code class="natural">{lastRollResult.naturalTotal}</code>
             {#if lastRollResult.numberOfExplosions > 0}
-              <span class="explosion-badge">💥 EXPLOSION ×{lastRollResult.numberOfExplosions}</span>
+               <span class="explosion-badge">EXPLOSION ×{lastRollResult.numberOfExplosions}</span>
             {/if}
           </div>
           <div class="roll-row">
@@ -439,9 +440,9 @@
             <code class="situational-value">
               {formatModifier(lastRollResult.situationalBonusApplied)}
               {#if lastRollResult.situationalBonusApplied > 0}
-                ✅ Applied! (+2 Favoured Enemy)
-              {:else}
-                ⚠️ Not applied (target lacks "orc" tag, or feat not equipped)
+                 <IconSuccess size={14} aria-hidden="true" /> Applied! (+2 Favoured Enemy)
+               {:else}
+                 <IconWarning size={14} aria-hidden="true" /> Not applied (target lacks "orc" tag, or feat not equipped)
               {/if}
             </code>
           </div>
@@ -453,12 +454,12 @@
 
         <p class="roll-explanation">
           {#if lastRollResult.situationalBonusApplied > 0}
-            ✅ <strong>PROOF:</strong> The +2 Favoured Enemy bonus ONLY applied here (at roll time),
+             <IconSuccess size={14} aria-hidden="true" /> <strong>PROOF:</strong> The +2 Favoured Enemy bonus ONLY applied here (at roll time),
             NOT in the BAB ({formatModifier(bab)}) shown above. This confirms that situational modifiers
             are correctly isolated in the pipeline and applied only by the Dice Engine when the target
             context matches.
           {:else}
-            ⚠️ Situational bonus not applied. Verify that the feat is loaded and the target has the "orc" tag.
+             <IconWarning size={14} aria-hidden="true" /> Situational bonus not applied. Verify that the feat is loaded and the target has the "orc" tag.
           {/if}
         </p>
       </div>
@@ -469,9 +470,9 @@
   <!-- SECTION 4: Merge Engine Test (Phase 5.4) -->
   <!-- ================================================== -->
   <section class="panel">
-    <h2>🔀 Merge Engine Test (Phase 5.4)</h2>
+     <h2>Merge Engine Test (Phase 5.4)</h2>
     <p class="hint">
-      Enable the <strong>test_override</strong> rule source above (⚙️ Settings) to test merge semantics.
+       Enable the <strong>test_override</strong> rule source above (Settings) to test merge semantics.
     </p>
 
     <div class="merge-test">
@@ -526,7 +527,7 @@
         <p class="hint">
           The highlighted row matches the current state.
           If the DataLoader shows <code>ruleSource: test_override</code> after enabling the override,
-          the replace merge semantics are correctly implemented. ✅
+           the replace merge semantics are correctly implemented.
         </p>
       </div>
     </div>

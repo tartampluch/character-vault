@@ -55,6 +55,7 @@
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconSkills, IconChecked, IconUnchecked, IconInfo } from '$lib/components/ui/icons';
 
   // ============================================================
   // SKILL POINTS CALCULATION
@@ -165,7 +166,7 @@
   <!-- HEADER: Skill Points Budget -->
   <!-- ========================================================= -->
   <div class="matrix-header">
-    <h2 class="panel-title">📚 Skills Matrix</h2>
+     <h2 class="panel-title"><IconSkills size={24} aria-hidden="true" /> Skills Matrix</h2>
     <div class="sp-budget" class:over-budget={isOverBudget}>
       <span class="sp-label">Skill Points:</span>
       <span class="sp-spent" class:over={isOverBudget}>{skillPointsSpent}</span>
@@ -190,14 +191,14 @@
       <table class="skill-table" aria-label="Skills matrix">
         <thead>
           <tr>
-            <th class="th-cs" aria-label="Class skill">★</th>
+             <th class="th-cs" aria-label="Class skill"><IconChecked size={12} /></th>
             <th class="th-name">Skill</th>
             <th class="th-total">Total</th>
             <th class="th-ability">Ability</th>
             <th class="th-ranks">Ranks</th>
             <th class="th-cost">Cost</th>
             <th class="th-max">Max</th>
-            <th class="th-actions">ℹ</th>
+             <th class="th-actions"><IconInfo size={12} /></th>
           </tr>
         </thead>
         <tbody>
@@ -220,7 +221,7 @@
                   title={skill.isClassSkill ? 'Class Skill' : 'Cross-class Skill'}
                   aria-label={skill.isClassSkill ? 'Class Skill' : 'Cross-class'}
                 >
-                  {skill.isClassSkill ? '★' : '·'}
+                  {#if skill.isClassSkill}<IconChecked size={12} />{:else}<IconUnchecked size={12} />{/if}
                 </span>
               </td>
 
@@ -281,7 +282,7 @@
                   onclick={() => (breakdownSkillId = skill.id)}
                   aria-label="Show {engine.t(skill.label)} breakdown"
                   title="Show modifier breakdown"
-                >ℹ</button>
+                 ><IconInfo size={16} aria-hidden="true" /></button>
               </td>
             </tr>
           {/each}

@@ -33,6 +33,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconStats } from '$lib/components/ui/icons';
 
   // ============================================================
   // ABILITY SCORE IDs — the 6 main ability scores
@@ -61,7 +62,7 @@
 
 <div class="ability-scores-summary">
   <div class="summary-header">
-    <h3 class="summary-title">💪 Ability Scores</h3>
+     <h3 class="summary-title"><IconStats size={20} aria-hidden="true" /> Ability Scores</h3>
     <a
       href="/character/{charId}?tab=abilities"
       class="edit-link"

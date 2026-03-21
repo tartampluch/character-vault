@@ -40,6 +40,7 @@
   import { formatModifier } from '$lib/utils/formatters';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import type { Modifier } from '$lib/types/pipeline';
+  import { IconStats, IconWarning } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -104,7 +105,7 @@
     <!-- HEADER -->
     <!-- ========================================================= -->
     <header class="modal-header">
-      <h2 class="modal-title">📊 {label} — Breakdown</h2>
+      <h2 class="modal-title"><IconStats size={20} aria-hidden="true" /> {label} — Breakdown</h2>
       <button class="modal-close" onclick={onclose} aria-label="Close breakdown">×</button>
     </header>
 
@@ -129,7 +130,7 @@
           <span class="breakdown-value" style="color: {getModifierColor(numVal)}">
             {formatModifier(numVal)}
             {#if mod.conditionNode}
-              <span class="conditional-tag" title="Conditional modifier" aria-label="Conditional">⚡</span>
+              <span class="conditional-tag" title="Conditional modifier" aria-label="Conditional"><IconWarning size={12} aria-hidden="true" /></span>
             {/if}
           </span>
         </div>

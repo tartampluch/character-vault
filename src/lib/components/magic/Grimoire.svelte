@@ -23,6 +23,7 @@
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import type { MagicFeature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
+  import { IconSpells, IconInfo, IconAdd, IconChecked } from '$lib/components/ui/icons';
 
   let searchQuery = $state('');
   let modalSpellId = $state<ID | null>(null);
@@ -99,7 +100,7 @@
 
 <div class="grimoire-panel">
   <div class="panel-header">
-    <h2 class="panel-title">📖 Grimoire — Spell Catalog</h2>
+     <h2 class="panel-title"><IconSpells size={24} aria-hidden="true" /> Grimoire — Spell Catalog</h2>
     <div class="caster-info">
       <span class="info-chip">CL {engine.phase_casterLevel}</span>
       <span class="info-chip">Max spell level: {maxSpellLevel}</span>
@@ -140,14 +141,14 @@
               class="info-btn"
               onclick={() => (modalSpellId = spell.id)}
               aria-label="Show {engine.t(spell.label)} details"
-            >ℹ</button>
+            ><IconInfo size={16} aria-hidden="true" /></button>
             <button
               class="btn-learn"
               onclick={() => learnSpell(spell.id)}
               disabled={known}
               aria-label="{known ? 'Already known' : 'Learn ' + engine.t(spell.label)}"
             >
-              {known ? '✓ Known' : '+ Learn'}
+              {#if known}<IconChecked size={14} aria-hidden="true" /> Known{:else}<IconAdd size={14} aria-hidden="true" /> Learn{/if}
             </button>
           </div>
         </div>

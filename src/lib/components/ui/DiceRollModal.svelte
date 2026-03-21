@@ -32,6 +32,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import type { RollResult } from '$lib/utils/diceEngine';
+  import { IconDiceRoll, IconAttacks, IconDamage, IconAbilities, IconClose } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -133,7 +134,7 @@
     <!-- ===================================================== -->
     <header class="modal-header">
       <div class="header-left">
-        <h2 class="modal-title">🎲 {label}</h2>
+        <h2 class="modal-title"><IconDiceRoll size={20} aria-hidden="true" /> {label}</h2>
         <code class="formula-display">{formula}</code>
       </div>
       <button class="modal-close" onclick={onclose} aria-label="Close dice roll">×</button>
@@ -190,12 +191,13 @@
         disabled={isRolling}
         aria-label="Roll {formula}"
       >
+        <IconDiceRoll size={16} aria-hidden="true" />
         {#if isRolling}
-          🎲 Rolling...
+          Rolling...
         {:else if lastResult}
-          🎲 Roll Again
+          Roll Again
         {:else}
-          🎲 Roll!
+          Roll!
         {/if}
       </button>
 
@@ -204,7 +206,7 @@
       <!-- ===================================================== -->
       {#if isRolling}
         <div class="rolling-animation" aria-live="polite" aria-label="Rolling dice...">
-          <span class="rolling-dice">🎲</span>
+          <span class="rolling-dice"><IconDiceRoll size={32} aria-hidden="true" /></span>
         </div>
 
       {:else if lastResult}
@@ -217,15 +219,15 @@
           <!-- Result headline -->
           <div class="result-headline">
             {#if lastResult.isCriticalThreat}
-              <span class="result-badge crit">⚔️ CRITICAL THREAT!</span>
+              <span class="result-badge crit"><IconAttacks size={16} aria-hidden="true" /> CRITICAL THREAT!</span>
             {:else if lastResult.isAutomaticMiss}
-              <span class="result-badge fumble">💀 FUMBLE!</span>
+              <span class="result-badge fumble"><IconDamage size={16} aria-hidden="true" /> FUMBLE!</span>
             {:else}
               <span class="result-badge normal" aria-label="Final result">Result</span>
             {/if}
             {#if lastResult.numberOfExplosions > 0}
               <span class="explosion-badge" aria-label="{lastResult.numberOfExplosions} explosions">
-                💥 EXPLOSION ×{lastResult.numberOfExplosions}
+                <IconAbilities size={14} aria-hidden="true" /> EXPLOSION ×{lastResult.numberOfExplosions}
               </span>
             {/if}
           </div>
@@ -271,7 +273,7 @@
 
       <!-- Settings display -->
       {#if engine.settings.diceRules.explodingTwenties}
-        <p class="setting-active">⚡ Exploding 20s active</p>
+        <p class="setting-active"><IconAbilities size={14} aria-hidden="true" /> Exploding 20s active</p>
       {/if}
 
     </div><!-- /modal-body -->

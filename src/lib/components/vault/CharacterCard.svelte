@@ -41,6 +41,7 @@
   import type { Character } from '$lib/types/character';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { IconNPC, IconCharacter } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS (Svelte 5 runes syntax)
@@ -154,10 +155,10 @@
         height="200"
       />
     {:else}
-      <!-- Fallback placeholder (300×200) -->
+       <!-- Fallback placeholder (300×200) -->
       <div class="poster-placeholder" aria-hidden="true">
         <span class="poster-icon">
-          {isNPC ? '👹' : '🧙'}
+          {#if isNPC}<IconNPC size={48} />{:else}<IconCharacter size={48} />{/if}
         </span>
       </div>
     {/if}

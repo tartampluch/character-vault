@@ -38,6 +38,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconSaves } from '$lib/components/ui/icons';
 
   /**
    * Saving throw configuration is read from `engine.savingThrowConfig`.
@@ -51,7 +52,7 @@
 
 <div class="saving-throws-summary">
   <div class="summary-header">
-    <h3 class="summary-title">🛡️ Saving Throws</h3>
+     <h3 class="summary-title"><IconSaves size={20} aria-hidden="true" /> Saving Throws</h3>
     <a
       href="/character/{charId}?tab=abilities"
       class="edit-link"

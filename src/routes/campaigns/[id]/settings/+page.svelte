@@ -38,6 +38,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
+  import { IconSettings, IconGMDashboard, IconSpells, IconAdd, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle } from '$lib/components/ui/icons';
 
   // ============================================================
   // NAVIGATION GUARD — GM-only page
@@ -267,17 +268,17 @@
   <!-- ========================================================= -->
   <header class="page-header">
     <a href="/campaigns/{campaignId}" class="back-link">← Campaign</a>
-    <h1 class="page-title">⚙️ Campaign Settings</h1>
-    <div class="header-meta">
-      <span class="gm-badge">🎲 GM View</span>
-      <button
-        class="btn-save"
-        onclick={saveSettings}
-        disabled={isSaving || !isValidJson}
-        aria-label="Save campaign settings"
-      >
-        {isSaving ? 'Saving...' : '💾 Save Settings'}
-      </button>
+     <h1 class="page-title"><IconSettings size={24} aria-hidden="true" /> Campaign Settings</h1>
+     <div class="header-meta">
+       <span class="gm-badge"><IconGMDashboard size={14} aria-hidden="true" /> GM View</span>
+       <button
+         class="btn-save"
+         onclick={saveSettings}
+         disabled={isSaving || !isValidJson}
+         aria-label="Save campaign settings"
+       >
+         {isSaving ? 'Saving...' : 'Save Settings'}
+       </button>
     </div>
   </header>
 
@@ -289,7 +290,7 @@
   <!-- SECTION 1: RULE SOURCE MANAGER (Phase 15.1) -->
   <!-- ========================================================= -->
   <section class="settings-section">
-    <h2 class="section-title">📚 Rule Sources</h2>
+     <h2 class="section-title"><IconSpells size={20} aria-hidden="true" /> Rule Sources</h2>
     <p class="section-desc">
       Enable or disable rule source files. Drag to reorder — sources loaded LATER have HIGHER priority
       (last source wins when two entities share the same ID).
@@ -302,7 +303,7 @@
     <!-- ENABLED SOURCES (reorderable) -->
     {#if enabledSources.length > 0}
       <div class="sources-section">
-        <h3 class="subsection-title">✅ Enabled Sources (drag to reorder)</h3>
+         <h3 class="subsection-title"><IconChecked size={16} aria-hidden="true" /> Enabled Sources (drag to reorder)</h3>
         <div class="sources-list reorderable">
           {#each enabledSources as sourcePath, index}
             {@const meta = availableSources.find(s => s.path === sourcePath)}
@@ -316,7 +317,7 @@
               role="listitem"
               aria-label="{sourcePath} (drag to reorder)"
             >
-              <span class="drag-handle" aria-hidden="true">⠿</span>
+               <span class="drag-handle" aria-hidden="true"><IconDragHandle size={16} /></span>
               <div class="source-info">
                 <span class="source-path">{sourcePath}</span>
                 {#if meta}
@@ -339,11 +340,11 @@
     {#if availableSources.filter(s => !enabledSources.includes(s.path)).length > 0}
       {@const disabledSources = availableSources.filter(s => !enabledSources.includes(s.path))}
       <div class="sources-section">
-        <h3 class="subsection-title">⭕ Available Sources (not loaded)</h3>
+         <h3 class="subsection-title">Available Sources (not loaded)</h3>
         <div class="sources-list">
           {#each disabledSources as source}
             <div class="source-item disabled">
-              <span class="drag-handle muted" aria-hidden="true">⠿</span>
+               <span class="drag-handle muted" aria-hidden="true"><IconDragHandle size={16} /></span>
               <div class="source-info">
                 <span class="source-path muted">{source.path}</span>
                 <span class="source-meta">{source.ruleSource} · {source.entityCount} entities</span>
@@ -371,7 +372,7 @@
   <!-- SECTION 2: GLOBAL OVERRIDE TEXT AREA (Phase 15.2) -->
   <!-- ========================================================= -->
   <section class="settings-section">
-    <h2 class="section-title">🎭 GM Global Overrides</h2>
+     <h2 class="section-title"><IconGMDashboard size={20} aria-hidden="true" /> GM Global Overrides</h2>
     <p class="section-desc">
       A JSON array of Feature-like objects and/or config tables applied to ALL characters
       in this campaign, AFTER all rule source files. Features need <code>id</code> + <code>category</code>.
@@ -381,7 +382,7 @@
     <!-- JSON Error indicator -->
     {#if jsonError}
       <div class="json-error" role="alert">
-        <strong>⚠ JSON Syntax Error:</strong> {jsonError}
+         <strong><IconWarning size={14} aria-hidden="true" /> JSON Syntax Error:</strong> {jsonError}
       </div>
     {/if}
 
@@ -389,7 +390,7 @@
     {#if jsonWarnings.length > 0}
       <ul class="json-warnings" role="list">
         {#each jsonWarnings as warning}
-          <li class="json-warning">⚠ {warning}</li>
+           <li class="json-warning"><IconWarning size={12} aria-hidden="true" /> {warning}</li>
         {/each}
       </ul>
     {/if}
@@ -407,7 +408,7 @@
     <!-- JSON status bar -->
     <div class="json-status-bar">
       <span class="status-indicator" class:valid={isValidJson} class:invalid={!isValidJson}>
-        {isValidJson ? '✅ Valid JSON' : '❌ Invalid JSON — fix errors before saving'}
+         {#if isValidJson}<IconSuccess size={14} aria-hidden="true" /> Valid JSON{:else}<IconError size={14} aria-hidden="true" /> Invalid JSON — fix errors before saving{/if}
       </span>
       {#if isValidJson}
         {@const count = JSON.parse(gmOverridesText || '[]').length}

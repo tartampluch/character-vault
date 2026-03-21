@@ -41,6 +41,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
+  import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCharacter, IconCampaign } from '$lib/components/ui/icons';
 
   // ============================================================
   // DERIVED DATA
@@ -123,7 +124,7 @@
     <div class="header-left">
       <a href="/campaigns/{campaignId}" class="back-link">← Campaign</a>
       <h1 class="vault-title">
-        🧙 Your Adventurers
+         <IconVault size={24} aria-hidden="true" /> Your Adventurers
       </h1>
       {#if campaign}
         <p class="vault-campaign">{campaign.title}</p>
@@ -132,11 +133,11 @@
 
     <div class="header-actions">
       <button class="btn-primary" onclick={createNewCharacter}>
-        ✚ Create New Character
-      </button>
-      {#if sessionContext.isGameMaster}
-        <button class="btn-secondary" onclick={addNPCMonster}>
-          👹 Add NPC / Monster
+           <IconAddCharacter size={16} aria-hidden="true" /> Create New Character
+         </button>
+         {#if sessionContext.isGameMaster}
+           <button class="btn-secondary" onclick={addNPCMonster}>
+             <IconNPC size={16} aria-hidden="true" /> Add NPC / Monster
         </button>
       {/if}
     </div>
@@ -148,11 +149,11 @@
   <div class="visibility-info" aria-live="polite">
     {#if sessionContext.isGameMaster}
       <span class="info-badge gm">
-        🎲 GM View — Showing all {engine.visibleCharacters.length} characters
+         <IconGMDashboard size={14} aria-hidden="true" /> GM View — Showing all {engine.visibleCharacters.length} characters
       </span>
     {:else}
       <span class="info-badge player">
-        🧙 Player View — Showing your {engine.visibleCharacters.length} characters
+         <IconCharacter size={14} aria-hidden="true" /> Player View — Showing your {engine.visibleCharacters.length} characters
       </span>
     {/if}
   </div>
@@ -163,7 +164,7 @@
   {#if engine.visibleCharacters.length === 0}
     <!-- ---- EMPTY STATE ---- -->
     <div class="empty-state">
-      <p class="empty-icon" aria-hidden="true">⚔️</p>
+       <p class="empty-icon" aria-hidden="true"><IconCampaign size={64} /></p>
       <h2>No adventurers yet!</h2>
       <p class="empty-desc">
         {#if sessionContext.isGameMaster}
@@ -175,11 +176,11 @@
       </p>
       <div class="empty-actions">
         <button class="btn-primary btn-large" onclick={createNewCharacter}>
-          ✚ Create New Character
-        </button>
-        {#if sessionContext.isGameMaster}
-          <button class="btn-secondary btn-large" onclick={addNPCMonster}>
-            👹 Add NPC / Monster
+           <IconAddCharacter size={16} aria-hidden="true" /> Create New Character
+         </button>
+         {#if sessionContext.isGameMaster}
+           <button class="btn-secondary btn-large" onclick={addNPCMonster}>
+             <IconNPC size={16} aria-hidden="true" /> Add NPC / Monster
           </button>
         {/if}
       </div>

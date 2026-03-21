@@ -34,6 +34,7 @@
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconAC, IconInfo } from '$lib/components/ui/icons';
 
   /**
    * The three AC pipeline configurations.
@@ -78,7 +79,7 @@
 
 <div class="armor-class-panel">
   <div class="panel-header">
-    <h2 class="panel-title">🛡️ Armor Class</h2>
+     <h2 class="panel-title"><IconAC size={24} aria-hidden="true" /> Armor Class</h2>
     <!-- Temporary modifier applies to all AC types -->
     <div class="temp-row">
       <label for="ac-temp-input" class="temp-label">Temp Mod</label>

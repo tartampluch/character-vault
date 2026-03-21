@@ -35,6 +35,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess } from '$lib/components/ui/icons';
 
   // ============================================================
   // DERIVED DATA
@@ -128,7 +129,7 @@
     <!-- NOT FOUND STATE -->
     <!-- ================================================ -->
     <div class="not-found">
-      <h1>🗺️ Campaign not found</h1>
+       <h1><IconCampaign size={24} aria-hidden="true" /> Campaign not found</h1>
       <p>The campaign with ID <code>{campaignId}</code> doesn't exist.</p>
       <a href="/campaigns" class="back-link">← Back to Campaign Hub</a>
     </div>
@@ -145,7 +146,7 @@
         />
       {:else}
         <div class="banner-placeholder" aria-hidden="true">
-          <span class="banner-icon">⚔️</span>
+               <span class="banner-icon"><IconCampaign size={64} aria-hidden="true" /></span>
         </div>
       {/if}
       <!-- Campaign title overlay on banner -->
@@ -163,16 +164,16 @@
       <!-- Navigation action bar -->
       <div class="action-bar">
         <button class="btn-primary" onclick={goToVault}>
-          🧙 Character Vault
-        </button>
+           <IconVault size={16} aria-hidden="true" /> Character Vault
+         </button>
 
-        {#if sessionContext.isGameMaster}
-          <button class="btn-secondary" onclick={goToDashboard}>
-            🎲 GM Dashboard
-          </button>
-          <button class="btn-secondary" onclick={goToSettings}>
-            ⚙️ Settings
-          </button>
+         {#if sessionContext.isGameMaster}
+           <button class="btn-secondary" onclick={goToDashboard}>
+             <IconGMDashboard size={16} aria-hidden="true" /> GM Dashboard
+           </button>
+           <button class="btn-secondary" onclick={goToSettings}>
+             <IconSettings size={16} aria-hidden="true" /> Settings
+           </button>
         {/if}
       </div>
 
@@ -186,7 +187,7 @@
       <!-- ============================================= -->
       <section class="chapters-section" aria-label="Campaign chapters">
         <div class="section-header">
-          <h2 class="section-title">📖 Chapters & Acts</h2>
+           <h2 class="section-title"><IconSpells size={20} aria-hidden="true" /> Chapters & Acts</h2>
           {#if chapterStats.total > 0}
             <div class="progress-summary">
               <span class="progress-text">
@@ -230,7 +231,7 @@
               >
                 <!-- Chapter number badge -->
                 <span class="chapter-number" aria-hidden="true">
-                  {chapter.isCompleted ? '✅' : `${index + 1}`}
+                   {#if chapter.isCompleted}<IconChecked size={16} aria-hidden="true" />{:else}{index + 1}{/if}
                 </span>
 
                 <!-- Chapter content -->
@@ -255,12 +256,12 @@
                       class="sr-only"
                     />
                     <span class="toggle-label" aria-hidden="true">
-                      {chapter.isCompleted ? 'Completed ✓' : 'Mark done'}
+                       {chapter.isCompleted ? 'Completed' : 'Mark done'}{#if chapter.isCompleted} <IconSuccess size={12} aria-hidden="true" />{/if}
                     </span>
                   </label>
                 {:else}
                   <span class="chapter-status" aria-hidden="true">
-                    {chapter.isCompleted ? '✓ Done' : ''}
+                     {#if chapter.isCompleted}<IconSuccess size={12} aria-hidden="true" /> Done{/if}
                   </span>
                 {/if}
               </li>
@@ -274,7 +275,7 @@
       <!-- ============================================= -->
       {#if sessionContext.isGameMaster && campaign.enabledRuleSources.length > 0}
         <section class="sources-section" aria-label="Active rule sources">
-          <h2 class="section-title">📚 Active Rule Sources</h2>
+           <h2 class="section-title"><IconSpells size={20} aria-hidden="true" /> Active Rule Sources</h2>
           <div class="sources-list">
             {#each campaign.enabledRuleSources as sourceId}
               <span class="source-badge">{sourceId}</span>

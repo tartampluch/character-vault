@@ -11,24 +11,25 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { Footprints, Pickaxe, Mountain, Wind, Waves } from 'lucide-svelte';
 
   const SPEED_PIPELINES = [
-    { id: 'combatStats.speed_land',    icon: '🚶', labelKey: 'en' },
-    { id: 'combatStats.speed_burrow',  icon: '🐛', labelKey: 'en' },
-    { id: 'combatStats.speed_climb',   icon: '🧗', labelKey: 'en' },
-    { id: 'combatStats.speed_fly',     icon: '🦅', labelKey: 'en' },
-    { id: 'combatStats.speed_swim',    icon: '🏊', labelKey: 'en' },
-  ] as const;
+    { id: 'combatStats.speed_land',    icon: Footprints },
+    { id: 'combatStats.speed_burrow',  icon: Pickaxe    },
+    { id: 'combatStats.speed_climb',   icon: Mountain   },
+    { id: 'combatStats.speed_fly',     icon: Wind       },
+    { id: 'combatStats.speed_swim',    icon: Waves      },
+  ];
 </script>
 
 <div class="movement-panel">
-  <h2 class="panel-title">🚀 Movement Speeds</h2>
+   <h2 class="panel-title"><Footprints size={24} aria-hidden="true" /> Movement Speeds</h2>
   <div class="speeds-grid">
     {#each SPEED_PIPELINES as sp}
       {@const pipeline = engine.phase3_combatStats[sp.id]}
       {#if pipeline && pipeline.totalValue > 0}
         <div class="speed-card">
-          <span class="speed-icon" aria-hidden="true">{sp.icon}</span>
+          <span class="speed-icon" aria-hidden="true"><sp.icon size={16} /></span>
           <span class="speed-label">{engine.t(pipeline.label)}</span>
           <span class="speed-value">{engine.formatDistance(pipeline.totalValue)}</span>
           {#if pipeline.totalBonus < 0}

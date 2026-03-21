@@ -49,6 +49,9 @@
   import SavingThrowsSummary from '$lib/components/core/SavingThrowsSummary.svelte';
   import SkillsSummary from '$lib/components/core/SkillsSummary.svelte';
   import LoreAndLanguages from '$lib/components/core/LoreAndLanguages.svelte';
+  import {
+    IconTabCore, IconTabAbilities, IconTabCombat, IconTabFeats, IconTabMagic, IconTabInventory, IconStats
+  } from '$lib/components/ui/icons';
 
   // ============================================================
   // TABS DEFINITION
@@ -57,12 +60,12 @@
   // ============================================================
 
   const TABS = [
-    { key: 'core',      label: '📋 Core',       phase: 8  },
-    { key: 'abilities', label: '💪 Abilities',   phase: 9  },
-    { key: 'combat',    label: '⚔️ Combat',      phase: 10 },
-    { key: 'feats',     label: '🌟 Feats',       phase: 11 },
-    { key: 'magic',     label: '✨ Magic',        phase: 12 },
-    { key: 'inventory', label: '🎒 Inventory',    phase: 13 },
+    { key: 'core',      label: 'Core',       icon: IconTabCore,       phase: 8  },
+    { key: 'abilities', label: 'Abilities',  icon: IconTabAbilities,  phase: 9  },
+    { key: 'combat',    label: 'Combat',     icon: IconTabCombat,     phase: 10 },
+    { key: 'feats',     label: 'Feats',      icon: IconTabFeats,      phase: 11 },
+    { key: 'magic',     label: 'Magic',      icon: IconTabMagic,      phase: 12 },
+    { key: 'inventory', label: 'Inventory',  icon: IconTabInventory,  phase: 13 },
   ] as const;
 
   type TabKey = (typeof TABS)[number]['key'];
@@ -203,6 +206,7 @@
         aria-controls="tab-panel-{tab.key}"
         id="tab-btn-{tab.key}"
       >
+        <tab.icon size={16} aria-hidden="true" />
         {tab.label}
       </button>
     {/each}
@@ -231,55 +235,55 @@
         <LoreAndLanguages />
       </div>
 
-    {:else if activeTab === 'abilities'}
+     {:else if activeTab === 'abilities'}
       <!-- ---- ABILITIES TAB STUB (Phase 9) ---- -->
       <div class="tab-stub">
-        <span class="stub-icon">💪</span>
+        <span class="stub-icon"><IconTabAbilities size={48} aria-hidden="true" /></span>
         <h2>Abilities & Skills</h2>
         <p>Full interactive editor — Point Buy, Roll Stats, Saving Throws, Skills Matrix.</p>
         <span class="phase-badge large">Phase 9</span>
       </div>
 
-    {:else if activeTab === 'combat'}
+     {:else if activeTab === 'combat'}
       <!-- ---- COMBAT TAB STUB (Phase 10) ---- -->
       <div class="tab-stub">
-        <span class="stub-icon">⚔️</span>
+        <span class="stub-icon"><IconTabCombat size={48} aria-hidden="true" /></span>
         <h2>Combat</h2>
         <p>HP bar, AC panels, BAB, Weapons & Attacks, Movement, Resistances, Damage Reduction.</p>
         <span class="phase-badge large">Phase 10</span>
       </div>
 
-    {:else if activeTab === 'feats'}
+     {:else if activeTab === 'feats'}
       <!-- ---- FEATS TAB STUB (Phase 11) ---- -->
       <div class="tab-stub">
-        <span class="stub-icon">🌟</span>
+        <span class="stub-icon"><IconTabFeats size={48} aria-hidden="true" /></span>
         <h2>Feats</h2>
         <p>Feat slots management, granted feats list, feat catalog with prerequisite evaluation.</p>
         <span class="phase-badge large">Phase 11</span>
       </div>
 
-    {:else if activeTab === 'magic'}
+     {:else if activeTab === 'magic'}
       <!-- ---- MAGIC TAB STUB (Phase 12) ---- -->
       <div class="tab-stub">
-        <span class="stub-icon">✨</span>
+        <span class="stub-icon"><IconTabMagic size={48} aria-hidden="true" /></span>
         <h2>Spells & Powers</h2>
         <p>Grimoire, spell preparation/casting, psionic powers, domain abilities.</p>
         <span class="phase-badge large">Phase 12</span>
       </div>
 
-    {:else if activeTab === 'inventory'}
+     {:else if activeTab === 'inventory'}
       <!-- ---- INVENTORY TAB STUB (Phase 13) ---- -->
       <div class="tab-stub">
-        <span class="stub-icon">🎒</span>
+        <span class="stub-icon"><IconTabInventory size={48} aria-hidden="true" /></span>
         <h2>Inventory</h2>
         <p>Equipment slots, backpack, encumbrance calculator, wealth tracker.</p>
         <span class="phase-badge large">Phase 13</span>
       </div>
 
-    {:else}
-      <!-- Unknown tab key -->
-      <div class="tab-stub">
-        <span class="stub-icon">❓</span>
+     {:else}
+       <!-- Unknown tab key -->
+       <div class="tab-stub">
+         <span class="stub-icon"><IconStats size={48} aria-hidden="true" /></span>
         <h2>Unknown Tab</h2>
         <p>Tab <code>{activeTab}</code> is not recognised. Use the navigation above.</p>
       </div>

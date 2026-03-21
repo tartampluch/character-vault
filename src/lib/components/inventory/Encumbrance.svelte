@@ -19,6 +19,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import type { ItemFeature } from '$lib/types/feature';
+  import { IconEncumbrance, IconWealth } from '$lib/components/ui/icons';
 
   // ============================================================
   // TOTAL WEIGHT
@@ -91,7 +92,7 @@
 </script>
 
 <div class="encumbrance-panel">
-  <h3 class="panel-title">⚖️ Encumbrance & Wealth</h3>
+   <h3 class="panel-title"><IconEncumbrance size={24} aria-hidden="true" /> Encumbrance & Wealth</h3>
 
   <!-- Weight Summary -->
   <div class="weight-row">

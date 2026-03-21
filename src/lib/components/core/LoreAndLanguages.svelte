@@ -54,6 +54,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import type { ID } from '$lib/types/primitives';
+  import { IconLore, IconCharacter, IconLanguages, IconLocked } from '$lib/components/ui/icons';
 
   // ============================================================
   // LORE STATE (local, synced to character on change)
@@ -243,7 +244,7 @@
   <!-- PERSONAL STORY -->
   <!-- ========================================================= -->
   <section class="section">
-    <h3 class="section-title">📖 Personal Story</h3>
+     <h3 class="section-title"><IconLore size={20} aria-hidden="true" /> Personal Story</h3>
     <textarea
       class="lore-textarea"
       bind:value={personalStory}
@@ -257,7 +258,7 @@
   <!-- APPEARANCE -->
   <!-- ========================================================= -->
   <section class="section">
-    <h3 class="section-title">🪞 Appearance</h3>
+     <h3 class="section-title"><IconCharacter size={20} aria-hidden="true" /> Appearance</h3>
     <div class="appearance-grid">
       <div class="field-group">
         <label for="char-height" class="field-label">Height</label>
@@ -333,7 +334,7 @@
   <!-- ========================================================= -->
   <section class="section" aria-label="Languages known">
     <div class="lang-header">
-      <h3 class="section-title">🗣️ Languages</h3>
+       <h3 class="section-title"><IconLanguages size={20} aria-hidden="true" /> Languages</h3>
       <div class="lang-slots">
         <span
           class="slots-remaining"
@@ -357,7 +358,7 @@
           {#each languages.automatic as lang}
             <span class="lang-chip lang-chip--auto" aria-label="{lang.name} (automatic)">
               <span class="lang-name">{lang.name}</span>
-              <span class="lang-lock" aria-hidden="true" title="Automatic — cannot be removed">🔒</span>
+               <span class="lang-lock" aria-hidden="true" title="Automatic — cannot be removed"><IconLocked size={12} /></span>
             </span>
           {/each}
         </div>

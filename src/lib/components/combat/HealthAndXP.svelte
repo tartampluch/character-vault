@@ -37,6 +37,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
 
   // ============================================================
   // HP STATE
@@ -174,7 +175,7 @@
   <!-- HEALTH SECTION -->
   <!-- ========================================================= -->
   <section class="section health-section">
-    <h2 class="section-title">❤️ Hit Points</h2>
+     <h2 class="section-title"><IconHealth size={24} aria-hidden="true" /> Hit Points</h2>
 
     <!-- HP Status Badge -->
     <div class="hp-status-row">
@@ -328,7 +329,7 @@
       </button>
       {#if canLevelUp}
         <button class="btn-level-up" aria-label="Level Up (stub — full UI in future phase)">
-          🎉 Level Up!
+          <IconXP size={16} aria-hidden="true" /> Level Up!
         </button>
       {/if}
     </div>

@@ -25,6 +25,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { rollAllAbilityScores } from '$lib/utils/diceEngine';
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconDiceRoll, IconChecked, IconSuccess, IconTabFeats } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -155,7 +156,7 @@
 >
   <div class="modal-panel">
     <header class="modal-header">
-      <h2 class="modal-title">🎲 Roll Stats (4d6 Drop Lowest)</h2>
+       <h2 class="modal-title"><IconDiceRoll size={20} aria-hidden="true" /> Roll Stats (4d6 Drop Lowest)</h2>
       <button class="modal-close" onclick={onclose} aria-label="Close">×</button>
     </header>
 
@@ -163,7 +164,7 @@
       <!-- Settings info -->
       <div class="settings-info">
         {#if engine.settings.statGeneration.rerollOnes}
-          <span class="setting-chip active">✔ Reroll 1s active</span>
+          <span class="setting-chip active"><IconSuccess size={12} aria-hidden="true" /> Reroll 1s active</span>
         {:else}
           <span class="setting-chip">Reroll 1s: OFF</span>
         {/if}
@@ -172,7 +173,7 @@
 
       <!-- ROLL BUTTON -->
       <button class="roll-btn" onclick={rollAll}>
-        🎲 {rolledValues ? 'Roll Again' : 'Roll!'}
+        <IconDiceRoll size={16} aria-hidden="true" /> {rolledValues ? 'Roll Again' : 'Roll!'}
       </button>
 
       {#if rolledValues}
@@ -196,7 +197,7 @@
               >
                 {val}
                 {#if isUsed}
-                  <span class="used-mark" aria-hidden="true">✓</span>
+                  <span class="used-mark" aria-hidden="true"><IconChecked size={12} /></span>
                 {/if}
               </button>
             {/each}
@@ -246,7 +247,7 @@
               {/if}
 
               {#if isRec}
-                <span class="rec-star" aria-label="Recommended">★</span>
+                <span class="rec-star" aria-label="Recommended"><IconTabFeats size={12} /></span>
               {/if}
             </div>
           {/each}
@@ -259,7 +260,7 @@
             onclick={confirmAssignments}
             disabled={!allAssigned}
           >
-            ✓ Apply These Scores
+             <IconChecked size={16} aria-hidden="true" /> Apply These Scores
           </button>
         </div>
       {:else}

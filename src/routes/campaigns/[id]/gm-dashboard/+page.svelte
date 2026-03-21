@@ -31,6 +31,7 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { IconGMDashboard, IconStats, IconSuccess, IconError } from '$lib/components/ui/icons';
 
   // ============================================================
   // NAVIGATION GUARD — GM-only page
@@ -165,7 +166,7 @@
   <!-- ========================================================= -->
   <header class="page-header">
     <a href="/campaigns/{campaignId}" class="back-link">← Campaign</a>
-    <h1 class="page-title">🎲 GM Dashboard</h1>
+     <h1 class="page-title"><IconGMDashboard size={24} aria-hidden="true" /> GM Dashboard</h1>
     <span class="gm-badge">GM View</span>
   </header>
 
@@ -231,7 +232,7 @@
 
         <!-- READ-ONLY SUMMARY -->
         <section class="summary-section">
-          <h3 class="summary-title">📊 Quick Stats (read-only)</h3>
+           <h3 class="summary-title"><IconStats size={20} aria-hidden="true" /> Quick Stats (read-only)</h3>
           <div class="stat-chips">
             <div class="stat-chip">
               <span class="stat-chip-label">STR</span>
@@ -264,7 +265,7 @@
 
         <!-- PER-CHARACTER GM OVERRIDES EDITOR -->
         <section class="override-section">
-          <h3 class="override-title">🎭 Per-Character GM Overrides</h3>
+           <h3 class="override-title"><IconGMDashboard size={20} aria-hidden="true" /> Per-Character GM Overrides</h3>
           <p class="override-desc">
             Array of <code>ActiveFeatureInstance</code> objects applied LAST in the resolution chain.
             Each entry needs <code>instanceId</code>, <code>featureId</code>, <code>isActive</code>.
@@ -287,7 +288,7 @@
 
           <div class="override-actions">
             <span class="json-status" class:valid={overrideValid[selectedChar.id] !== false} class:invalid={overrideValid[selectedChar.id] === false}>
-              {overrideValid[selectedChar.id] === false ? '❌ Invalid JSON' : '✅ Valid JSON'}
+               {#if overrideValid[selectedChar.id] === false}<IconError size={14} aria-hidden="true" /> Invalid JSON{:else}<IconSuccess size={14} aria-hidden="true" /> Valid JSON{/if}
             </span>
 
             {#if saveSuccessIds[selectedChar.id]}
@@ -300,7 +301,7 @@
               disabled={savingIds[selectedChar.id] || overrideValid[selectedChar.id] === false}
               aria-label="Save GM overrides for {selectedChar.name}"
             >
-              {savingIds[selectedChar.id] ? 'Saving...' : '💾 Save Overrides'}
+               {savingIds[selectedChar.id] ? 'Saving...' : 'Save Overrides'}
             </button>
           </div>
         </section>

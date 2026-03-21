@@ -18,6 +18,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
 
   // DR builder form state
   let drValue = $state(5);
@@ -79,7 +80,7 @@
 </script>
 
 <div class="dr-panel">
-  <h2 class="panel-title">🗡️ Damage Reduction</h2>
+   <h2 class="panel-title"><IconDR size={24} aria-hidden="true" /> Damage Reduction</h2>
 
   <!-- Active DRs -->
   {#if activeDRs.length === 0}

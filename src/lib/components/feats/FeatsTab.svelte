@@ -17,6 +17,7 @@
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import FeatSelectionModal from './FeatSelectionModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconTabFeats, IconLocked, IconInfo, IconAdd, IconDelete } from '$lib/components/ui/icons';
 
   // ============================================================
   // DERIVED FEAT LISTS
@@ -82,7 +83,7 @@
   <!-- HEADER: Feat Slot Budget -->
   <!-- ========================================================= -->
   <div class="feats-header">
-    <h2 class="feats-title">🌟 Feats</h2>
+     <h2 class="feats-title"><IconTabFeats size={24} aria-hidden="true" /> Feats</h2>
     <div class="slot-display" class:over={isOverBudget}>
       <span class="slot-label">Feats Available:</span>
       <span class="slot-value">{engine.phase_featSlotsTotal}</span>
@@ -98,7 +99,7 @@
       disabled={engine.phase_featSlotsRemaining <= 0}
       aria-label="Add a new feat ({engine.phase_featSlotsRemaining} slots remaining)"
     >
-      ✚ Add Feat
+      <IconAdd size={16} aria-hidden="true" /> Add Feat
     </button>
   </div>
 
@@ -107,7 +108,7 @@
   <!-- ========================================================= -->
   {#if grantedFeatInstances.length > 0}
     <section class="feats-section">
-      <h3 class="section-title">🔒 Granted Feats (automatic)</h3>
+       <h3 class="section-title"><IconLocked size={20} aria-hidden="true" /> Granted Feats (automatic)</h3>
       <div class="feat-list">
         {#each grantedFeatInstances as afi}
           {@const feat = dataLoader.getFeature(afi.featureId)}
@@ -121,24 +122,24 @@
                 <button
                   class="info-btn"
                   onclick={() => (modalFeatId = feat.id)}
-                  aria-label="Show {engine.t(feat.label)} details"
-                >ℹ</button>
-              </div>
-            </div>
-          {/if}
-        {/each}
-      </div>
-    </section>
-  {/if}
+                   aria-label="Show {engine.t(feat.label)} details"
+                 ><IconInfo size={16} aria-hidden="true" /></button>
+               </div>
+             </div>
+           {/if}
+         {/each}
+       </div>
+     </section>
+   {/if}
 
   <!-- ========================================================= -->
   <!-- MANUALLY SELECTED FEATS (deletable) -->
   <!-- ========================================================= -->
   <section class="feats-section">
-    <h3 class="section-title">🎯 Selected Feats</h3>
-    {#if manualFeatInstances.length === 0}
-      <p class="empty-note">
-        No feats selected yet. Click "✚ Add Feat" to choose from the catalog.
+     <h3 class="section-title"><IconTabFeats size={20} aria-hidden="true" /> Selected Feats</h3>
+     {#if manualFeatInstances.length === 0}
+       <p class="empty-note">
+         No feats selected yet. Click "+ Add Feat" to choose from the catalog.
         {engine.phase_featSlotsTotal - grantedFeatInstances.length} slot{engine.phase_featSlotsTotal - grantedFeatInstances.length !== 1 ? 's' : ''} available.
       </p>
     {:else}
@@ -161,14 +162,14 @@
                 <button
                   class="info-btn"
                   onclick={() => (modalFeatId = feat.id)}
-                  aria-label="Show {engine.t(feat.label)} details"
-                >ℹ</button>
-                <button
-                  class="delete-btn"
-                  onclick={() => engine.removeFeature(afi.instanceId)}
-                  aria-label="Remove {engine.t(feat.label)}"
-                  title="Remove this feat (frees a slot)"
-                >×</button>
+                   aria-label="Show {engine.t(feat.label)} details"
+                 ><IconInfo size={16} aria-hidden="true" /></button>
+                 <button
+                   class="delete-btn"
+                   onclick={() => engine.removeFeature(afi.instanceId)}
+                   aria-label="Remove {engine.t(feat.label)}"
+                   title="Remove this feat (frees a slot)"
+                 ><IconDelete size={16} aria-hidden="true" /></button>
               </div>
             </div>
           {/if}

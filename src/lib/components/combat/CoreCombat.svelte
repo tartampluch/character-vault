@@ -20,6 +20,7 @@
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconTabCombat, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   const CORE_STATS = [
     {
@@ -52,7 +53,7 @@
 </script>
 
 <div class="core-combat-panel">
-  <h2 class="panel-title">⚔️ Core Combat</h2>
+   <h2 class="panel-title"><IconTabCombat size={24} aria-hidden="true" /> Core Combat</h2>
 
   <div class="stats-row">
     {#each CORE_STATS as stat}
@@ -69,14 +70,14 @@
               onclick={() => (breakdownId = stat.id)}
               aria-label="Show {stat.description} breakdown"
               title="Breakdown"
-            >ℹ</button>
+            ><IconInfo size={16} aria-hidden="true" /></button>
             {#if stat.showDice}
               <button
                 class="action-btn dice"
                 onclick={() => (diceRollId = stat.id)}
-                aria-label="Roll {stat.diceLabel ?? stat.description}"
+                aria-label="Roll dice"
                 title="Roll"
-              >🎲</button>
+              ><IconDiceRoll size={16} aria-hidden="true" /></button>
             {/if}
           </div>
           <span class="stat-desc">{stat.description}</span>
@@ -108,7 +109,7 @@
     <DiceRollModal
       formula="1d20"
       pipeline={dp}
-      label={sc.diceLabel ?? sc.description}
+      label={'diceLabel' in sc ? sc.diceLabel : sc.description}
       onclose={() => (diceRollId = null)}
     />
   {/if}

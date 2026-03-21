@@ -36,6 +36,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { IconSkills, IconChecked, IconUnchecked } from '$lib/components/ui/icons';
 
   const charId = $derived(engine.character.id);
 
@@ -57,7 +58,7 @@
 
 <div class="skills-summary">
   <div class="summary-header">
-    <h3 class="summary-title">📚 Skills</h3>
+     <h3 class="summary-title"><IconSkills size={20} aria-hidden="true" /> Skills</h3>
     <a
       href="/character/{charId}?tab=abilities"
       class="edit-link"
@@ -99,7 +100,7 @@
             aria-hidden="true"
             title={skill.isClassSkill ? 'Class skill' : 'Cross-class skill'}
           >
-            {skill.isClassSkill ? '★' : '·'}
+            {#if skill.isClassSkill}<IconChecked size={12} aria-label="Class skill" />{:else}<IconUnchecked size={12} aria-hidden="true" />{/if}
           </span>
 
           <!-- Skill name -->

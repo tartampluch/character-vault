@@ -57,6 +57,7 @@
   import { interpolateDescription } from '$lib/utils/mathParser';
   import { formatModifier } from '$lib/utils/formatters';
   import type { ID } from '$lib/types/primitives';
+  import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -212,20 +213,20 @@
         <!-- ---- PREREQUISITES ---- -->
         {#if feature.prerequisitesNode}
           <section class="section" aria-label="Prerequisites">
-            <h3 class="section-title">📋 Prerequisites</h3>
+             <h3 class="section-title"><IconInfo size={20} aria-hidden="true" /> Prerequisites</h3>
             {#if prereqResult}
               <ul class="prereq-list">
                 <!-- Met prerequisites (green) -->
                 {#each prereqResult.metMessages as msg}
                   <li class="prereq-item met" aria-label="Met: {msg}">
-                    <span class="prereq-icon" aria-hidden="true">✅</span>
+                    <span class="prereq-icon" aria-hidden="true"><IconSuccess size={16} /></span>
                     <span>{msg}</span>
                   </li>
                 {/each}
                 <!-- Unmet prerequisites (red) -->
                 {#each prereqResult.errorMessages as msg}
                   <li class="prereq-item unmet" aria-label="Not met: {msg}">
-                    <span class="prereq-icon" aria-hidden="true">❌</span>
+                    <span class="prereq-icon" aria-hidden="true"><IconError size={16} /></span>
                     <span>{msg}</span>
                   </li>
                 {/each}
@@ -240,7 +241,7 @@
         <!-- ---- GRANTED MODIFIERS ---- -->
         {#if feature.grantedModifiers?.length}
           <section class="section" aria-label="Granted modifiers">
-            <h3 class="section-title">⚡ Modifiers</h3>
+             <h3 class="section-title"><IconAbilities size={20} aria-hidden="true" /> Modifiers</h3>
             <ul class="modifier-list">
               {#each feature.grantedModifiers as mod}
                 {@const numericVal = typeof mod.value === 'number' ? mod.value : null}
@@ -263,7 +264,7 @@
                     <span class="mod-situational">vs. {mod.situationalContext}</span>
                   {/if}
                   {#if mod.conditionNode}
-                    <span class="mod-conditional" aria-label="Conditional modifier">⚠️ Conditional</span>
+                    <span class="mod-conditional" aria-label="Conditional modifier"><IconWarning size={14} aria-hidden="true" /> Conditional</span>
                   {/if}
                 </li>
               {/each}
@@ -274,7 +275,7 @@
         <!-- ---- GRANTED FEATURES ---- -->
         {#if grantedFeatureNames.length > 0}
           <section class="section" aria-label="Granted features">
-            <h3 class="section-title">🎁 Grants</h3>
+             <h3 class="section-title"><IconAdd size={20} aria-hidden="true" /> Grants</h3>
             <ul class="grant-list">
               {#each grantedFeatureNames as { id, name }}
                 <li class="grant-item">
@@ -289,7 +290,7 @@
         <!-- ---- CHOICES ---- -->
         {#if feature.choices?.length}
           <section class="section" aria-label="Player choices">
-            <h3 class="section-title">🎯 Choices</h3>
+             <h3 class="section-title"><IconTabFeats size={20} aria-hidden="true" /> Choices</h3>
             <ul class="choice-list">
               {#each feature.choices as choice}
                 <li class="choice-item">

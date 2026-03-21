@@ -42,6 +42,7 @@
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import PointBuyModal from './PointBuyModal.svelte';
   import RollStatsModal from './RollStatsModal.svelte';
+  import { IconStats, IconTabFeats, IconDiceRoll, IconInfo } from '$lib/components/ui/icons';
   import type { ID } from '$lib/types/primitives';
 
   // ============================================================
@@ -132,15 +133,15 @@
 
 <div class="ability-scores-panel">
   <div class="panel-header">
-    <h2 class="panel-title">💪 Ability Scores</h2>
-    <div class="wizard-buttons">
-      <button class="btn-wizard" onclick={() => (showPointBuy = true)} title="Point Buy stat generation wizard">
-        🎯 Point Buy
-      </button>
-      <button class="btn-wizard" onclick={() => (showRollStats = true)} title="Roll Stats wizard (4d6 drop lowest)">
-        🎲 Roll Stats
-      </button>
-    </div>
+     <h2 class="panel-title"><IconStats size={24} aria-hidden="true" /> Ability Scores</h2>
+     <div class="wizard-buttons">
+       <button class="btn-wizard" onclick={() => (showPointBuy = true)} title="Point Buy stat generation wizard">
+         <IconTabFeats size={16} aria-hidden="true" /> Point Buy
+       </button>
+       <button class="btn-wizard" onclick={() => (showRollStats = true)} title="Roll Stats wizard (4d6 drop lowest)">
+         <IconDiceRoll size={16} aria-hidden="true" /> Roll Stats
+       </button>
+     </div>
   </div>
 
   <!-- ========================================================= -->
@@ -176,8 +177,8 @@
           <div class="cell-label" role="cell">
             <span class="ability-abbr">{abbr}</span>
             <span class="ability-full">{engine.t(pipeline.label)}</span>
-            {#if isRecommended}
-              <span class="rec-star" title="Recommended for your class" aria-label="Recommended">★</span>
+             {#if isRecommended}
+              <span class="rec-star" title="Recommended for your class" aria-label="Recommended"><IconTabFeats size={12} /></span>
             {/if}
           </div>
 
@@ -238,13 +239,13 @@
               onclick={() => (breakdownPipelineId = abilityId)}
               title="Show modifier breakdown"
               aria-label="Show {engine.t(pipeline.label)} breakdown"
-            >ℹ</button>
+            ><IconInfo size={16} aria-hidden="true" /></button>
             <button
               class="action-btn dice-btn"
               onclick={() => (diceRollPipelineId = abilityId)}
               title="Roll a {engine.t(pipeline.label)} check"
               aria-label="Roll {engine.t(pipeline.label)} check"
-            >🎲</button>
+            ><IconDiceRoll size={16} aria-hidden="true" /></button>
           </div>
         </div>
       {/if}

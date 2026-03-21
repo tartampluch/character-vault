@@ -18,6 +18,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import type { ID } from '$lib/types/primitives';
+  import { IconAbilities } from '$lib/components/ui/icons';
 
   let modalId = $state<ID | null>(null);
 
@@ -38,7 +39,7 @@
 </script>
 
 <div class="special-panel">
-  <h2 class="panel-title">⚡ Special Abilities</h2>
+   <h2 class="panel-title"><IconAbilities size={24} aria-hidden="true" /> Special Abilities</h2>
 
   {#if specialAbilities.length === 0}
     <p class="empty-note">No special abilities found. Class and domain abilities with activation types will appear here.</p>

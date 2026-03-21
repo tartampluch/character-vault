@@ -20,6 +20,7 @@
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import type { ID } from '$lib/types/primitives';
   import type { Feature } from '$lib/types/feature';
+  import { IconTabFeats, IconSearch, IconSuccess, IconError, IconLocked, IconChecked } from '$lib/components/ui/icons';
 
   // ============================================================
   // PROPS
@@ -115,7 +116,7 @@
 >
   <div class="modal-panel">
     <header class="modal-header">
-      <h2 class="modal-title">🌟 Feat Catalog</h2>
+       <h2 class="modal-title"><IconTabFeats size={20} aria-hidden="true" /> Feat Catalog</h2>
       <div class="header-meta">
         <span class="slots-left">
           {engine.phase_featSlotsRemaining} slot{engine.phase_featSlotsRemaining !== 1 ? 's' : ''} left
@@ -174,7 +175,7 @@
             <div class="entry-name-row">
               <span class="entry-name">{engine.t(feat.label)}</span>
               {#if alreadyHave}
-                <span class="already-badge">✓ Have</span>
+                <span class="already-badge"><IconChecked size={12} aria-hidden="true" /> Have</span>
               {/if}
             </div>
             <p class="entry-desc">{engine.t(feat.description).slice(0, 120)}...</p>
@@ -189,10 +190,10 @@
             {#if feat.prerequisitesNode}
               <div class="prereq-list">
                 {#each prereq.metMessages as msg}
-                  <span class="prereq-met-msg">✅ {msg}</span>
+                  <span class="prereq-met-msg"><IconSuccess size={12} aria-hidden="true" /> {msg}</span>
                 {/each}
                 {#each prereq.errorMessages as msg}
-                  <span class="prereq-err-msg">❌ {msg}</span>
+                  <span class="prereq-err-msg"><IconError size={12} aria-hidden="true" /> {msg}</span>
                 {/each}
               </div>
             {/if}
@@ -206,9 +207,9 @@
             aria-label="{alreadyHave ? 'Already have this feat' : canSelect ? 'Select ' + engine.t(feat.label) : 'Cannot select: prerequisites not met'}"
           >
             {#if alreadyHave}
-              ✓
+              <IconChecked size={14} aria-hidden="true" />
             {:else if !prereq.passed}
-              🔒
+              <IconLocked size={14} aria-hidden="true" />
             {:else}
               Select
             {/if}

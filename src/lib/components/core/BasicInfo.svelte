@@ -38,6 +38,7 @@
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
+  import { IconInfo } from '$lib/components/ui/icons';
 
   // ============================================================
   // DROPDOWN POPULATIONS (from DataLoader cache)
@@ -370,7 +371,7 @@
 </script>
 
 <div class="basic-info-panel">
-  <h2 class="panel-title">📋 Basic Information</h2>
+   <h2 class="panel-title"><IconInfo size={24} aria-hidden="true" /> Basic Information</h2>
 
   <div class="selectors-grid">
 

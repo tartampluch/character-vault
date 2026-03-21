@@ -22,6 +22,7 @@
   import Encumbrance from './Encumbrance.svelte';
   import type { ItemFeature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
+  import { IconTabInventory, IconAttacks, IconInfo, IconEquip, IconUnequip, IconDelete } from '$lib/components/ui/icons';
 
   let modalItemId = $state<ID | null>(null);
 
@@ -87,7 +88,7 @@
 </script>
 
 <div class="inventory-tab">
-  <h2 class="inv-title">🎒 Inventory</h2>
+   <h2 class="inv-title"><IconTabInventory size={24} aria-hidden="true" /> Inventory</h2>
 
   <div class="inventory-sections">
 
@@ -95,7 +96,7 @@
     <!-- EQUIPPED / READIED -->
     <!-- ============================================================ -->
     <section class="inv-section equipped">
-      <h3 class="section-header">⚔️ Equipped / Readied</h3>
+       <h3 class="section-header"><IconAttacks size={20} aria-hidden="true" /> Equipped / Readied</h3>
       {#if equippedItems.length === 0}
         <p class="empty-note">No items equipped.</p>
       {:else}
@@ -107,8 +108,8 @@
               <span class="item-weight">{engine.formatWeight(item.feature.weightLbs)}</span>
             </div>
             <div class="item-actions">
-              <button class="btn-info" onclick={() => (modalItemId = item.feature.id)} aria-label="Details">ℹ</button>
-              <button class="btn-unequip" onclick={() => unequipItem(item.instanceId)} aria-label="Unequip">↓</button>
+               <button class="btn-info" onclick={() => (modalItemId = item.feature.id)} aria-label="Details"><IconInfo size={16} aria-hidden="true" /></button>
+               <button class="btn-unequip" onclick={() => unequipItem(item.instanceId)} aria-label="Unequip"><IconUnequip size={16} aria-hidden="true" /></button>
             </div>
           </div>
         {/each}
@@ -119,7 +120,7 @@
     <!-- BACKPACK / CARRIED -->
     <!-- ============================================================ -->
     <section class="inv-section carried">
-      <h3 class="section-header">🎒 Backpack / Carried</h3>
+       <h3 class="section-header"><IconTabInventory size={20} aria-hidden="true" /> Backpack / Carried</h3>
       {#if carriedItems.length === 0}
         <p class="empty-note">No items in backpack.</p>
       {:else}
@@ -132,21 +133,21 @@
               <span class="item-weight">{engine.formatWeight(item.feature.weightLbs)}</span>
             </div>
             <div class="item-actions">
-              <button class="btn-info" onclick={() => (modalItemId = item.feature.id)} aria-label="Details">ℹ</button>
+               <button class="btn-info" onclick={() => (modalItemId = item.feature.id)} aria-label="Details"><IconInfo size={16} aria-hidden="true" /></button>
               {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
-                <button
-                  class="btn-equip"
-                  onclick={() => equipItem(item.instanceId, item.feature)}
-                  disabled={!check.ok}
-                  title={check.ok ? 'Equip this item' : check.reason}
-                  aria-label="Equip {engine.t(item.feature.label)}"
-                >↑</button>
-              {/if}
-              <button
-                class="btn-delete"
-                onclick={() => engine.removeFeature(item.instanceId)}
-                aria-label="Remove {engine.t(item.feature.label)}"
-              >×</button>
+                 <button
+                   class="btn-equip"
+                   onclick={() => equipItem(item.instanceId, item.feature)}
+                   disabled={!check.ok}
+                   title={check.ok ? 'Equip this item' : check.reason}
+                   aria-label="Equip {engine.t(item.feature.label)}"
+                 ><IconEquip size={16} aria-hidden="true" /></button>
+               {/if}
+               <button
+                 class="btn-delete"
+                 onclick={() => engine.removeFeature(item.instanceId)}
+                 aria-label="Remove {engine.t(item.feature.label)}"
+               ><IconDelete size={16} aria-hidden="true" /></button>
             </div>
           </div>
         {/each}
