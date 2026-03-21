@@ -20,8 +20,13 @@
 	//
 	// Quick start:
 	//   • 🚀 Full Stack  → starts Vite + PHP server + attaches both debuggers
-	//   • 🎮 Run artifact → starts the built artifact (run.sh) + Chrome
+	//                       (Chrome / Edge / Firefox variants available)
+	//   • 🎮 Run artifact → starts the built artifact (run.sh) + browser
 	//   • Individual configs are organized in groups (1-frontend, 2-backend…)
+	//
+	// Required extensions:
+	//   Chrome / Edge : ms-edgetools.vscode-edge-devtools  (built-in on Windows)
+	//   Firefox       : firefox-devtools.vscode-firefox-debug
 	// =========================================================================
 	"configurations": [
 
@@ -65,6 +70,30 @@
 				"**/.svelte-kit/**"
 			],
 			"presentation": { "group": "1-frontend", "order": 2 }
+		},
+		// ─────────────────────────────────────────────────────────────────────
+		// FRONTEND — Firefox
+		//
+		// Requires extension: firefox-devtools.vscode-firefox-debug
+		// Firefox uses "pathMappings" (array) instead of "sourceMapPathOverrides".
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"name": "🟠 Frontend — Firefox",
+			"type": "firefox",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"webRoot": "${workspaceFolder}/src",
+			"pathMappings": [
+				// Vite virtual /@fs/ prefix — maps to filesystem root
+				{ "url": "/@fs/",  "path": "/" },
+				// Project sources
+				{ "url": "http://localhost:5173/src/", "path": "${workspaceFolder}/src/" }
+			],
+			"skipFiles": [
+				"**/node_modules/**",
+				"**/.svelte-kit/**"
+			],
+			"presentation": { "group": "1-frontend", "order": 3 }
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
@@ -190,9 +219,9 @@
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
-		// RUN ARTIFACT — Attach Chrome to the built artifact served by run.sh
+		// RUN ARTIFACT — open the built artifact served by run.sh
 		//
-		// Use this after running scripts/build.sh to test the production build
+		// Use these after running scripts/build.sh to test the production build
 		// locally.  The task "Run: Local server (run.sh)" is started
 		// automatically as a pre-launch task.
 		// ─────────────────────────────────────────────────────────────────────
@@ -213,6 +242,37 @@
 			],
 			"preLaunchTask": "Run: Local server (run.sh)",
 			"presentation": { "group": "4-artifact", "order": 1 }
+		},
+		{
+			"name": "🎮 Run artifact — Firefox",
+			"type": "firefox",
+			"request": "launch",
+			"url": "http://localhost:8080",
+			"webRoot": "${workspaceFolder}/src",
+			"pathMappings": [
+				{ "url": "http://localhost:8080/", "path": "${workspaceFolder}/src/" }
+			],
+			"skipFiles": ["**/node_modules/**"],
+			"preLaunchTask": "Run: Local server (run.sh)",
+			"presentation": { "group": "4-artifact", "order": 2 }
+		},
+		{
+			"name": "🎮 Run artifact — Edge",
+			"type": "msedge",
+			"request": "launch",
+			"url": "http://localhost:8080",
+			"webRoot": "${workspaceFolder}/src",
+			"sourceMapPathOverrides": {
+				"/@fs/*": "${workspaceFolder}/*",
+				"/*": "${webRoot}/*"
+			},
+			"smartStep": true,
+			"skipFiles": [
+				"<node_internals>/**",
+				"**/node_modules/**"
+			],
+			"preLaunchTask": "Run: Local server (run.sh)",
+			"presentation": { "group": "4-artifact", "order": 3 }
 		}
 	],
 
@@ -256,6 +316,21 @@
 			],
 			"preLaunchTask": "Start: Vite dev server",
 			"presentation": { "group": "0-fullstack", "order": 2 },
+			"stopAll": true
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// 🚀 Full Stack (Firefox variant — recommended on Linux)
+		// Requires extension: firefox-devtools.vscode-firefox-debug
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"name": "🚀 Full Stack — Vite + PHP + Firefox",
+			"configurations": [
+				"🐘 Backend — PHP (spawn server + Xdebug)",
+				"🟠 Frontend — Firefox"
+			],
+			"preLaunchTask": "Start: Vite dev server",
+			"presentation": { "group": "0-fullstack", "order": 3 },
 			"stopAll": true
 		}
 	]

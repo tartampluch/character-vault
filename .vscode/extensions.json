@@ -3,8 +3,9 @@
 		// Frontend — Svelte
 		"svelte.svelte-vscode",
 
-		// Frontend — Chrome / Edge debugger
-		"ms-edgetools.vscode-edge-devtools",
+		// Frontend — browser debuggers
+		"ms-edgetools.vscode-edge-devtools",  // Chrome + Edge
+		"firefox-devtools.vscode-firefox-debug", // Firefox (especially useful on Linux)
 
 		// Backend — PHP language support
 		"bmewburn.vscode-intelephense-client",
