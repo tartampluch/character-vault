@@ -305,6 +305,92 @@ If no issues are found in a category, write: "✅ [Category]: No issues found."
 
 ---
 
+## Checkpoint Review #6 — After Phase 18 (Tooling, Build Pipeline & Developer Experience)
+
+```markdown
+You are a senior DevOps / DX engineer specializing in build pipelines, containerization, IDE integration, and developer tooling for full-stack web projects (Node.js + PHP).
+
+I have attached all tooling-related files produced during Phase 18 of the project. The application code (Phases 1-17) has already been reviewed and is stable. Phase 18 adds build scripts, Docker pipeline, VS Code debug configurations, local run scripts, environment variable management, and a PHP binary resolver.
+
+Your job is to verify that the tooling layer is **correct, portable, secure, and well-documented**. Do NOT rewrite code. Produce a **numbered checklist of issues** with file paths, line references, and severity (CRITICAL / MAJOR / MINOR).
+
+Review the following aspects specifically:
+
+# 1. Build Pipeline — Native (`scripts/build.sh`)
+- Does it bootstrap portable build tools (PHP, Composer) in `.build-tools/` without requiring global installation?
+- Does it execute the full pipeline in order: dependency install → type-check → Vitest → PHPUnit → Vite build → artifact assembly?
+- Does the artifact include all required files (SvelteKit build, PHP API, static rules, `.htaccess`, VERSION file)?
+- Does the `--skip-tests` flag work correctly (skipping Vitest + PHPUnit without breaking the build)?
+- Does the `--deploy` flag correctly rsync to a remote target?
+- Is the output tarball correctly structured for deployment on shared PHP hosting?
+
+# 2. Build Pipeline — Docker (`Dockerfile` + `docker-compose.yml` + `scripts/build-docker.sh`)
+- Does the Dockerfile use a proper multi-stage build (separate stages for deps, check, test, build, artifact)?
+- Are Node.js and PHP versions pinnable via build arguments?
+- Does `docker-compose.yml` correctly mount the output directory and pass through environment variables?
+- Does `build-docker.sh` detect Docker/docker-compose availability and provide clear error messages?
+- Is BuildKit inline cache configured correctly?
+- Does `--no-cache` propagate to the Docker build?
+
+# 3. Local Run Scripts
+- **`run.sh`**: Does it auto-locate the latest artifact, resolve the PHP binary, load `.env` with correct priority, write a working PHP router, and auto-run migrations on first launch?
+- **`run-docker.sh`**: Does it build a minimal Apache+PHP run image, mount the artifact read-only, persist the SQLite DB in a Docker volume, and support `--env-file`?
+- Do both scripts support `--port`, `--dir`, and `--env-file` options with sane defaults?
+- Do both scripts handle missing dependencies gracefully (no PHP, no Docker) with clear error messages?
+
+# 4. VS Code Debug Configurations (`.vscode/launch.json`)
+- Are there working configurations for: Chrome, Edge, Firefox (frontend), PHP/Xdebug (backend), and compound full-stack sessions?
+- Do compound configurations start both Vite and PHP servers as preLaunchTasks?
+- Do frontend configs attach to the correct port (5173 for dev, 8080 for artifact)?
+- Does the PHP/Xdebug config use `scripts/php-dev.sh` as runtime for correct binary resolution?
+- Are path mappings correct for Xdebug (`${workspaceFolder}/api` → `/api`)?
+- Is the presentation grouping logical (fullstack → frontend → backend → tests → artifact)?
+
+# 5. VS Code Tasks (`.vscode/tasks.json`)
+- Are background server tasks (Vite, PHP) correctly configured with `isBackground: true` and appropriate `problemMatcher` patterns to detect server readiness?
+- Do task dependencies form a correct chain (compound debug → preLaunchTask → server tasks)?
+
+# 6. PHP Binary Resolver (`scripts/php-dev.sh`)
+- Is the resolution priority correct: explicit override → Xdebug-capable PHP → portable PHP → system PHP?
+- Does it handle the case where Xdebug is requested but not found (clear warning + fallback)?
+- Does it check PHP version >= 8.1?
+- Are all arguments forwarded correctly via `exec`?
+
+# 7. Environment Variable Support
+- **`.env.example`**: Does it document all supported variables (`APP_ENV`, `DB_PATH`, `CORS_ORIGIN`) with clear descriptions?
+- **`api/config.php`**: Does the `.env` loader correctly implement the priority chain (process env > .env file > defaults)? Does it never override existing process environment variables?
+- **`run.sh` / `run-docker.sh`**: Do they load `.env` with the same priority semantics?
+- Is `.env` listed in `.gitignore`? Is `.env.example` tracked?
+
+# 8. `.gitignore` Completeness
+- Are all generated artifacts excluded: `dist/`, `dist-pkg/`, `.build-tools/`, `build/`, `.svelte-kit/`, `node_modules/`, `vendor/`?
+- Are sensitive files excluded: `.env`, `*.sqlite*`?
+- Are IDE-specific files correctly handled (`.vscode/` settings tracked where appropriate)?
+
+# 9. `extensions.json` Recommendations
+- Are all recommended extensions relevant to the project stack (Svelte, PHP, Xdebug, ESLint, Prettier, browser debug tools)?
+- Are there any missing extensions that would significantly improve the DX?
+
+# 10. README Documentation
+- Does the README cover: project structure, prerequisites, quick start, development setup, testing, debugging, building, running locally, environment variables, and production deployment?
+- Are all CLI options for all scripts documented?
+- Are VS Code debug configurations and tasks documented with tables?
+- Is the information accurate and consistent with the actual scripts?
+
+# 11. Security Considerations
+- Does `run.sh` bind to `localhost` by default (not `0.0.0.0`)?
+- Does `run-docker.sh` expose ports only on `localhost` by default?
+- Are `.env` files excluded from Docker build contexts (via `.dockerignore` or equivalent)?
+- Does the PHP router script in `run.sh` prevent directory traversal or access to sensitive files?
+
+Output format: A numbered markdown checklist. For each issue:
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file:lineNumber` — Description of the issue and what is expected instead.
+
+If no issues are found in a category, write: "✅ [Category]: No issues found."
+```
+
+---
+
 ## Final Review #5 — Complete System Validation
 
 ```markdown
