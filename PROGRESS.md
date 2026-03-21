@@ -370,7 +370,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - _Requirement:_ The user must NEVER need to scroll the page to reach the tabs. Tabs are always accessible.
     - _Requirement:_ On desktop wide screens (≥1280px), the content area should intelligently use the horizontal space by arranging panels in a multi-column grid (2 or 3 columns), avoiding excessively long single-column layouts.
 
-- [ ] **19.7 Core Tab Migration:** Migrate all Core tab components to Tailwind CSS and add Lucide icons:
+- [x] **19.7 Core Tab Migration:** Migrate all Core tab components to Tailwind CSS and add Lucide icons:
     - `BasicInfo.svelte`: Redesign the feature selectors (Race, Class, Deity, Alignment, Size) as a clean card with icon-labeled dropdowns. Dynamic badges (e.g., "+2 DEX") use the badge component pattern. Feature choices render as a sub-card with indented styling.
     - `AbilityScoresSummary.svelte`: Compact 6-stat grid. Each stat as a mini-card with the stat icon, value, and modifier. On desktop: horizontal row. On mobile: 3×2 grid or 2×3 grid.
     - `SavingThrowsSummary.svelte`: Three inline stat blocks (Fortitude/Reflex/Will) with Shield icons.

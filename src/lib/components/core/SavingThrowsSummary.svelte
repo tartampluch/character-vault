@@ -1,38 +1,17 @@
 <!--
   @file src/lib/components/core/SavingThrowsSummary.svelte
   @description Compact read-only summary of the three saving throws for the Core tab.
+  Phase 19.7: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Displays Fortitude, Reflex, and Will saving throw total modifiers.
-    Each saving throw shows:
-      - A label (localised via engine.t())
-      - The total modifier value with explicit sign (+N or -N)
-      - The ability score that governs it (CON → Fort, DEX → Ref, WIS → Will)
-        displayed as a small indicator
+  LAYOUT:
+    Three stacked rows (Fort / Ref / Will). Each row shows:
+      - Save name label (flex-1)
+      - Governing ability abbreviation (CON/DEX/WIS) in the save's accent colour
+      - Total modifier value, colour-coded via inline style from savingThrowConfig
 
-    Includes a link to the full Abilities tab (Phase 9) where the player can
-    see the breakdown (class base + ability mod + misc bonuses).
-
-  READ-ONLY DESIGN:
-    This is a SUMMARY component — shows final computed values only.
-    The full interactive editor with breakdown modals and dice roll buttons
-    is in Phase 9: SavingThrows.svelte.
-
-  D&D 3.5 SAVING THROW MECHANISM:
-    Fortitude = Class base (CON type increments summed) + CON modifier + misc
-    Reflex    = Class base (DEX type increments summed) + DEX modifier + misc
-    Will      = Class base (WIS type increments summed) + WIS modifier + misc
-
-    The `phase3_combatStats` $derived in GameEngine.svelte.ts resolves these
-    complete totals. This component just reads the final `totalValue`.
-
-  ARCHITECTURE:
-    - Reads: `engine.phase3_combatStats` (saves.fort, saves.ref, saves.will)
-    - Reads: `engine.phase2_attributes` (for ability score modifier indicator)
-    - No mutations.
-
-  @see src/lib/components/abilities/SavingThrows.svelte (Phase 9) for full editor.
-  @see ARCHITECTURE.md Phase 8.6 for the specification.
+  NOTE: The save rows use `style` for the accent colour because it comes from the
+  `engine.savingThrowConfig` data (dynamic, runtime value) — not from a static
+  Tailwind class. This is the only intentional inline style in this file.
 -->
 
 <script lang="ts">
@@ -40,45 +19,46 @@
   import { formatModifier } from '$lib/utils/formatters';
   import { IconSaves } from '$lib/components/ui/icons';
 
-  /**
-   * Saving throw configuration is read from `engine.savingThrowConfig`.
-   * This keeps D&D 3.5 knowledge (CON → Fort, DEX → Ref, WIS → Will) in the
-   * GameEngine rather than hardcoded in the Svelte component.
-   */
   const SAVES = engine.savingThrowConfig;
-
   const charId = $derived(engine.character.id);
 </script>
 
-<div class="saving-throws-summary">
-  <div class="summary-header">
-     <h3 class="summary-title"><IconSaves size={20} aria-hidden="true" /> Saving Throws</h3>
+<div class="card p-4 flex flex-col gap-3">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b border-border pb-2">
+    <div class="section-header">
+      <IconSaves size={20} aria-hidden="true" />
+      <span>Saving Throws</span>
+    </div>
     <a
       href="/character/{charId}?tab=abilities"
-      class="edit-link"
+      class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
       aria-label="Open full Saving Throws editor"
     >
       Edit →
     </a>
   </div>
 
-  <div class="saves-list" role="list" aria-label="Saving throws">
+  <!-- Saves list -->
+  <div class="flex flex-col gap-1.5" role="list" aria-label="Saving throws">
     {#each SAVES as save}
       {@const pipeline = engine.phase3_combatStats[save.pipelineId]}
       {@const keyAbilityMod = engine.phase2_attributes[save.keyAbilityId]?.derivedModifier ?? 0}
 
       {#if pipeline}
         <div
-          class="save-row"
+          class="flex items-center gap-2 px-3 py-2 bg-surface-alt border border-border rounded-md
+                 hover:border-accent/40 transition-colors duration-150"
           role="listitem"
           aria-label="{engine.t(pipeline.label)}: {formatModifier(pipeline.totalValue)}"
         >
-          <!-- Save label -->
-          <span class="save-label">{engine.t(pipeline.label)}</span>
+          <!-- Save name -->
+          <span class="flex-1 text-sm text-text-primary">{engine.t(pipeline.label)}</span>
 
-          <!-- Key ability indicator (CON, DEX, WIS) -->
+          <!-- Key ability abbreviation (CON, DEX, WIS) coloured per save -->
           <span
-            class="save-ability"
+            class="text-xs font-bold tracking-wider opacity-75 cursor-help"
             title="Governed by {save.keyAbilityAbbr} ({formatModifier(keyAbilityMod)})"
             aria-hidden="true"
             style="color: {save.accentColor};"
@@ -88,9 +68,7 @@
 
           <!-- Total modifier value -->
           <span
-            class="save-total"
-            class:positive={pipeline.totalValue > 0}
-            class:negative={pipeline.totalValue < 0}
+            class="text-base font-bold min-w-[2.5rem] text-right"
             style="color: {save.accentColor};"
           >
             {formatModifier(pipeline.totalValue)}
@@ -99,90 +77,5 @@
       {/if}
     {/each}
   </div>
+
 </div>
-
-<style>
-  .saving-throws-summary {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-  }
-
-  /* ========================= HEADER ========================= */
-  .summary-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid #21262d;
-    padding-bottom: 0.5rem;
-  }
-
-  .summary-title {
-    margin: 0;
-    font-size: 0.95rem;
-    color: #c4b5fd;
-  }
-
-  .edit-link {
-    font-size: 0.78rem;
-    color: #7c3aed;
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .edit-link:hover {
-    color: #c4b5fd;
-    text-decoration: underline;
-  }
-
-  /* ========================= SAVES LIST ========================= */
-  .saves-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .save-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-radius: 6px;
-    transition: border-color 0.15s;
-  }
-
-  .save-row:hover {
-    border-color: #4c35a0;
-  }
-
-  .save-label {
-    flex: 1;
-    font-size: 0.9rem;
-    color: #c0c0d0;
-  }
-
-  .save-ability {
-    font-size: 0.72rem;
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    opacity: 0.7;
-    cursor: help;
-  }
-
-  .save-total {
-    font-size: 1.1rem;
-    font-weight: bold;
-    min-width: 2.5rem;
-    text-align: right;
-    color: #8080a0; /* Neutral default */
-  }
-
-  /* Color overriding via inline style (per save color in SAVES config) */
-  /* The class modifiers further adjust when significant */
-  .save-total.positive { /* Handled by inline style */ }
-  .save-total.negative { /* Handled by inline style */ }
-</style>
