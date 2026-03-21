@@ -830,7 +830,7 @@ Key mechanics:
 
 ### C-04g — Base Class: Paladin (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04g** — Convert Paladin (structure only — features in C-05g)
+- [x] **C-04g** — Convert Paladin (structure only — features in C-05g)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/paladin.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -849,7 +849,7 @@ Capture:
 
 ### C-05g — Base Class Features: Paladin (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05g** — Convert Paladin class features
+- [x] **C-05g** — Convert Paladin class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/paladin.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -877,7 +877,7 @@ Key mechanics:
 
 ### C-04h — Base Class: Ranger (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04h** — Convert Ranger (structure only — features in C-05h)
+- [x] **C-04h** — Convert Ranger (structure only — features in C-05h)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/ranger.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -895,7 +895,7 @@ Capture:
 
 ### C-05h — Base Class Features: Ranger (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05h** — Convert Ranger class features
+- [x] **C-05h** — Convert Ranger class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/ranger.html`
 **Context:** Read `ANNEXES.md` sections A.1.1 and A.8 only.
@@ -922,7 +922,7 @@ Key mechanics:
 
 ### C-04i — Base Class: Rogue (`01_d20srd_core_classes.json`)
 
-- [ ] **C-04i** — Convert Rogue (structure only — features in C-05i)
+- [x] **C-04i** — Convert Rogue (structure only — features in C-05i)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/rogue.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -940,7 +940,7 @@ Capture:
 
 ### C-05i — Base Class Features: Rogue (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05i** — Convert Rogue class features
+- [x] **C-05i** — Convert Rogue class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/rogue.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.

@@ -705,6 +705,1453 @@
   },
 
   {
+    "id": "class_feature_rogue_sneak_attack_1d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +1d6", "fr": "Attaque sournoise +1d6" },
+    "description": {
+      "en": "The rogue deals extra damage whenever her target is denied a Dexterity bonus to AC (flat-footed) or when she flanks her target. This extra damage is 1d6 at 1st level, increasing by 1d6 every two rogue levels (1d6 at 1st, 2d6 at 3rd, etc., to 10d6 at 19th). Extra damage is not multiplied on a critical hit. Only effective against living creatures with discernible anatomies within 30 feet for ranged attacks.",
+      "fr": "Le roublard inflige des dégâts supplémentaires quand sa cible est privée de son bonus de Dextérité à la CA (pris au dépourvu) ou quand il prend en tenaille sa cible. Ces dégâts sont de 1d6 au niveau 1 et augmentent de 1d6 tous les deux niveaux (jusqu'à 10d6 au niveau 19). Les dégâts supplémentaires ne sont pas multipliés sur un coup critique. Uniquement efficace contre les créatures vivantes à anatomie discernable, à 9 m ou moins pour les attaques à distance."
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "sneak_attack_damage",
+        "sourceId": "class_feature_rogue_sneak_attack_1d6",
+        "sourceName": { "en": "Sneak Attack", "fr": "Attaque sournoise" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "floor((@classLevels.class_rogue + 1) / 2)d6",
+        "type": "setAbsolute",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trapfinding",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trapfinding", "fr": "Détection des pièges" },
+    "description": {
+      "en": "Rogues (and only rogues) can use the Search skill to locate traps with DC higher than 20, and use Disable Device to disarm magic traps. A rogue who beats a trap's DC by 10 or more with Disable Device can study and bypass it without disarming it.",
+      "fr": "Les roublards (et uniquement eux) peuvent utiliser la compétence Recherche pour localiser les pièges de DD supérieur à 20, et utiliser Désamorçage pour désarmer les pièges magiques. Un roublard qui dépasse le DD d'un piège de 10 ou plus peut l'étudier et le contourner sans le désamorcer."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trapfinding"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Evasion", "fr": "Esquive totale" },
+    "description": {
+      "en": "At 2nd level, if the rogue makes a successful Reflex save against an attack that normally deals half damage on a successful save, she takes no damage instead. Usable only in light or no armor; helpless rogues do not gain this benefit.",
+      "fr": "Au niveau 2, si le roublard réussit un jet de Réflexes contre une attaque infligeant normalement la moitié des dégâts, il ne subit aucun dégât. Utilisable uniquement en armure légère ou sans armure ; un roublard sans défense n'en bénéficie pas."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "evasion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_2d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +2d6", "fr": "Attaque sournoise +2d6" },
+    "description": {
+      "en": "At 3rd level, the rogue's sneak attack damage increases to 2d6. (Handled automatically by the sneak attack formula in class_feature_rogue_sneak_attack_1d6.)",
+      "fr": "Au niveau 3, les dégâts d'attaque sournoise passent à 2d6. (Géré automatiquement par la formule dans class_feature_rogue_sneak_attack_1d6.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+    "description": {
+      "en": "At 3rd level, the rogue gains a +1 bonus on Reflex saves made to avoid traps and a +1 bonus to AC against attacks made by traps.",
+      "fr": "Au niveau 3, le roublard obtient un bonus de +1 aux jets de Réflexes pour éviter les pièges et un bonus de +1 à la CA contre les attaques de pièges."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_1_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_1",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_1_ac",
+        "sourceId": "class_feature_rogue_trap_sense_1",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_uncanny_dodge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Uncanny Dodge", "fr": "Esquive instinctive" },
+    "description": {
+      "en": "Starting at 4th level, the rogue retains her Dexterity bonus to AC even if flat-footed or struck by an invisible attacker. She still loses it if immobilized. If she already has uncanny dodge from another class, she gains improved uncanny dodge instead.",
+      "fr": "À partir du niveau 4, le roublard conserve son bonus de Dextérité à la CA même pris au dépourvu ou frappé par un attaquant invisible. Elle le perd toujours si immobilisée. Si elle possède déjà l'esquive instinctive d'une autre classe, elle obtient l'esquive instinctive améliorée à la place."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "uncanny_dodge"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_3d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +3d6", "fr": "Attaque sournoise +3d6" },
+    "description": {
+      "en": "At 5th level, the rogue's sneak attack damage increases to 3d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 5, les dégâts d'attaque sournoise passent à 3d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +2", "fr": "Sens des pièges +2" },
+    "description": {
+      "en": "At 6th level, the rogue's trap sense bonus increases by +1 (total +2).",
+      "fr": "Au niveau 6, le bonus de sens des pièges du roublard augmente de +1 (total +2)."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_2_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_2",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_2_ac",
+        "sourceId": "class_feature_rogue_trap_sense_2",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_4d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +4d6", "fr": "Attaque sournoise +4d6" },
+    "description": {
+      "en": "At 7th level, the rogue's sneak attack damage increases to 4d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 7, les dégâts d'attaque sournoise passent à 4d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_improved_uncanny_dodge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Uncanny Dodge", "fr": "Esquive instinctive améliorée" },
+    "description": {
+      "en": "A rogue of 8th level or higher can no longer be flanked. This denies another rogue the ability to sneak attack by flanking unless the attacker has at least four more rogue levels than the target.",
+      "fr": "Un roublard de niveau 8 ou plus ne peut plus être pris en tenaille. Cela empêche un autre roublard d'effectuer une attaque sournoise par prise en tenaille, sauf si l'attaquant a au moins quatre niveaux de roublard de plus que la cible."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "improved_uncanny_dodge"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_5d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +5d6", "fr": "Attaque sournoise +5d6" },
+    "description": {
+      "en": "At 9th level, the rogue's sneak attack damage increases to 5d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 9, les dégâts d'attaque sournoise passent à 5d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +3", "fr": "Sens des pièges +3" },
+    "description": {
+      "en": "At 9th level, the rogue's trap sense bonus increases by +1 (total +3).",
+      "fr": "Au niveau 9, le bonus de sens des pièges du roublard augmente de +1 (total +3)."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_3_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_3",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_3_ac",
+        "sourceId": "class_feature_rogue_trap_sense_3",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_special_ability_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rogue Special Ability (Level 10)", "fr": "Capacité spéciale de roublard (niveau 10)" },
+    "description": {
+      "en": "At 10th level, the rogue gains a special ability chosen from: Crippling Strike, Defensive Roll, Improved Evasion, Opportunist, Skill Mastery, Slippery Mind, or a bonus feat.",
+      "fr": "Au niveau 10, le roublard obtient une capacité spéciale choisie parmi : Frappe handicapante, Roulade défensive, Esquive totale améliorée, Opportuniste, Maîtrise des compétences, Esprit glissant ou un don supplémentaire."
+    },
+    "tags": ["class_feature", "rogue"],
+    "choices": [
+      {
+        "choiceId": "rogue_special_ability_1",
+        "label": { "en": "Special Ability", "fr": "Capacité spéciale" },
+        "optionsQuery": "tag:rogue_special_ability",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_6d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +6d6", "fr": "Attaque sournoise +6d6" },
+    "description": {
+      "en": "At 11th level, the rogue's sneak attack damage increases to 6d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 11, les dégâts d'attaque sournoise passent à 6d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +4", "fr": "Sens des pièges +4" },
+    "description": {
+      "en": "At 12th level, the rogue's trap sense bonus increases by +1 (total +4).",
+      "fr": "Au niveau 12, le bonus de sens des pièges du roublard augmente de +1 (total +4)."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_4_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_4",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_4_ac",
+        "sourceId": "class_feature_rogue_trap_sense_4",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_7d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +7d6", "fr": "Attaque sournoise +7d6" },
+    "description": {
+      "en": "At 13th level, the rogue's sneak attack damage increases to 7d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 13, les dégâts d'attaque sournoise passent à 7d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_special_ability_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rogue Special Ability (Level 13)", "fr": "Capacité spéciale de roublard (niveau 13)" },
+    "description": {
+      "en": "At 13th level, the rogue gains a second special ability of her choice.",
+      "fr": "Au niveau 13, le roublard obtient une deuxième capacité spéciale de son choix."
+    },
+    "tags": ["class_feature", "rogue"],
+    "choices": [
+      {
+        "choiceId": "rogue_special_ability_2",
+        "label": { "en": "Special Ability", "fr": "Capacité spéciale" },
+        "optionsQuery": "tag:rogue_special_ability",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_8d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +8d6", "fr": "Attaque sournoise +8d6" },
+    "description": {
+      "en": "At 15th level, the rogue's sneak attack damage increases to 8d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 15, les dégâts d'attaque sournoise passent à 8d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +5", "fr": "Sens des pièges +5" },
+    "description": {
+      "en": "At 15th level, the rogue's trap sense bonus increases by +1 (total +5).",
+      "fr": "Au niveau 15, le bonus de sens des pièges du roublard augmente de +1 (total +5)."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_5_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_5",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_5_ac",
+        "sourceId": "class_feature_rogue_trap_sense_5",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_special_ability_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rogue Special Ability (Level 16)", "fr": "Capacité spéciale de roublard (niveau 16)" },
+    "description": {
+      "en": "At 16th level, the rogue gains a third special ability of her choice.",
+      "fr": "Au niveau 16, le roublard obtient une troisième capacité spéciale de son choix."
+    },
+    "tags": ["class_feature", "rogue"],
+    "choices": [
+      {
+        "choiceId": "rogue_special_ability_3",
+        "label": { "en": "Special Ability", "fr": "Capacité spéciale" },
+        "optionsQuery": "tag:rogue_special_ability",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_9d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +9d6", "fr": "Attaque sournoise +9d6" },
+    "description": {
+      "en": "At 17th level, the rogue's sneak attack damage increases to 9d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 17, les dégâts d'attaque sournoise passent à 9d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_trap_sense_6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +6", "fr": "Sens des pièges +6" },
+    "description": {
+      "en": "At 18th level, the rogue's trap sense bonus increases by +1 (total +6).",
+      "fr": "Au niveau 18, le bonus de sens des pièges du roublard augmente de +1 (total +6)."
+    },
+    "tags": ["class_feature", "rogue", "extraordinary", "trap_sense"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_trap_sense_6_reflex",
+        "sourceId": "class_feature_rogue_trap_sense_6",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "saves.reflex",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      },
+      {
+        "id": "rogue_trap_sense_6_ac",
+        "sourceId": "class_feature_rogue_trap_sense_6",
+        "sourceName": { "en": "Trap Sense", "fr": "Sens des pièges" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_trap"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_sneak_attack_10d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +10d6", "fr": "Attaque sournoise +10d6" },
+    "description": {
+      "en": "At 19th level, the rogue's sneak attack damage reaches its maximum of 10d6. (Handled automatically by the formula.)",
+      "fr": "Au niveau 19, les dégâts d'attaque sournoise atteignent leur maximum de 10d6. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "rogue", "sneak_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_rogue_special_ability_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rogue Special Ability (Level 19)", "fr": "Capacité spéciale de roublard (niveau 19)" },
+    "description": {
+      "en": "At 19th level, the rogue gains a fourth special ability of her choice.",
+      "fr": "Au niveau 19, le roublard obtient une quatrième capacité spéciale de son choix."
+    },
+    "tags": ["class_feature", "rogue"],
+    "choices": [
+      {
+        "choiceId": "rogue_special_ability_4",
+        "label": { "en": "Special Ability", "fr": "Capacité spéciale" },
+        "optionsQuery": "tag:rogue_special_ability",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_favored_enemy_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Favored Enemy (1st)", "fr": "Ennemi juré (1er)" },
+    "description": {
+      "en": "At 1st level, select a creature type as a favored enemy. Gain +2 on Bluff, Listen, Sense Motive, Spot, and Survival checks against that type, plus +2 on weapon damage rolls against them. At 5th, 10th, 15th, and 20th level, select an additional favored enemy and increase one existing bonus by +2.",
+      "fr": "Au niveau 1, choisissez un type de créature comme ennemi juré. Obtenez +2 aux tests de Bluff, Écoute, Psychologie, Observation et Survie contre ce type, ainsi que +2 aux jets de dégâts contre eux. Aux niveaux 5, 10, 15 et 20, choisissez un ennemi juré supplémentaire et augmentez un bonus existant de +2."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "favored_enemy"],
+    "choices": [
+      {
+        "choiceId": "ranger_favored_enemy_1",
+        "label": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "optionsQuery": "tag:favored_enemy_type",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "favored_enemy_1_skills",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "skills.skill_bluff.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      },
+      {
+        "id": "favored_enemy_1_listen",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "skills.skill_listen.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      },
+      {
+        "id": "favored_enemy_1_sense_motive",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "skills.skill_sense_motive.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      },
+      {
+        "id": "favored_enemy_1_spot",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "skills.skill_spot.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      },
+      {
+        "id": "favored_enemy_1_survival",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      },
+      {
+        "id": "favored_enemy_1_damage",
+        "sourceId": "class_feature_ranger_favored_enemy_1",
+        "sourceName": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_1"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_track",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Track", "fr": "Pistage" },
+    "description": {
+      "en": "A ranger gains Track as a bonus feat.",
+      "fr": "Un rôdeur obtient le don Pistage comme don supplémentaire."
+    },
+    "tags": ["class_feature", "ranger"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["feat_track"]
+  },
+
+  {
+    "id": "class_feature_ranger_wild_empathy",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wild Empathy", "fr": "Empathie sauvage" },
+    "description": {
+      "en": "A ranger can improve the attitude of an animal. Roll 1d20 adding ranger level and Charisma modifier. Can also influence magical beasts with Int 1 or 2 at a -4 penalty. Ranger and animal must be within 30 feet and able to study each other; typically takes 1 minute.",
+      "fr": "Un rôdeur peut améliorer l'attitude d'un animal. Lancez 1d20 en ajoutant le niveau de rôdeur et le modificateur de Charisme. Peut aussi influencer les créatures magiques avec Int 1 ou 2 avec une pénalité de -4. Le rôdeur et l'animal doivent être à 9 m ou moins et pouvoir s'étudier ; cela prend généralement 1 minute."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "ranger_wild_empathy_bonus",
+        "sourceId": "class_feature_ranger_wild_empathy",
+        "sourceName": { "en": "Wild Empathy", "fr": "Empathie sauvage" },
+        "targetId": "attributes.wild_empathy",
+        "value": "@classLevels.class_ranger + @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_combat_style",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Combat Style", "fr": "Style de combat" },
+    "description": {
+      "en": "At 2nd level, select one of two combat styles: archery or two-weapon combat. If archery, treated as having Rapid Shot even without prerequisites. If two-weapon combat, treated as having Two-Weapon Fighting even without prerequisites. Benefits apply only in light or no armor.",
+      "fr": "Au niveau 2, choisissez un style de combat : tir à l'arc ou combat à deux armes. Si tir à l'arc, considéré comme possédant Tir rapide même sans les conditions. Si combat à deux armes, considéré comme possédant Combat à deux armes même sans les conditions. Les avantages ne s'appliquent qu'en armure légère ou sans armure."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "choices": [
+      {
+        "choiceId": "ranger_combat_style",
+        "label": { "en": "Combat Style", "fr": "Style de combat" },
+        "optionsQuery": "tag:ranger_combat_style_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_endurance",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Endurance", "fr": "Résistance" },
+    "description": {
+      "en": "A ranger gains Endurance as a bonus feat at 3rd level.",
+      "fr": "Un rôdeur obtient le don Résistance comme don supplémentaire au niveau 3."
+    },
+    "tags": ["class_feature", "ranger"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["feat_endurance"]
+  },
+
+  {
+    "id": "class_feature_ranger_animal_companion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Animal Companion", "fr": "Compagnon animal" },
+    "description": {
+      "en": "At 4th level, a ranger gains an animal companion. This functions like the druid ability of the same name except the ranger's effective druid level is one-half his ranger level.",
+      "fr": "Au niveau 4, un rôdeur obtient un compagnon animal. Fonctionne comme la capacité de druide du même nom, sauf que le niveau de druide effectif du rôdeur est la moitié de son niveau de rôdeur."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "animal_companion"],
+    "choices": [
+      {
+        "choiceId": "ranger_companion_choice",
+        "label": { "en": "Animal Companion", "fr": "Compagnon animal" },
+        "optionsQuery": "tag:animal_companion_base",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Spellcasting (Ranger)", "fr": "Incantation divine (Rôdeur)" },
+    "description": {
+      "en": "Beginning at 4th level, a ranger casts divine spells from the ranger spell list (prepared caster). Requires WIS 10 + spell level. Save DC = 10 + spell level + WIS modifier. Caster level = half ranger level (rounded down). No domain spells; cannot spontaneously cast cure spells. Slots in resources.spell_slots_ranger_1 through _4.",
+      "fr": "À partir du niveau 4, un rôdeur lance des sorts divins de la liste de sorts du rôdeur (lanceur préparé). Nécessite SAG 10 + niveau du sort. DD = 10 + niveau du sort + mod. SAG. Niveau de lanceur = moitié du niveau de rôdeur (arrondi à l'inférieur). Pas de sorts de domaine."
+    },
+    "tags": ["class_feature", "ranger", "divine_spellcasting", "prepared_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_favored_enemy_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Favored Enemy (2nd)", "fr": "Ennemi juré (2e)" },
+    "description": {
+      "en": "At 5th level, select a second favored enemy (+2 bonus). Also, increase the bonus against any one existing favored enemy by +2.",
+      "fr": "Au niveau 5, choisissez un deuxième ennemi juré (bonus +2). Également, augmentez de +2 le bonus contre l'un de vos ennemis jurés existants."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "favored_enemy"],
+    "choices": [
+      {
+        "choiceId": "ranger_favored_enemy_2",
+        "label": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "optionsQuery": "tag:favored_enemy_type",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "favored_enemy_2_skills",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "skills.skill_bluff.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      },
+      {
+        "id": "favored_enemy_2_listen",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "skills.skill_listen.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      },
+      {
+        "id": "favored_enemy_2_sense_motive",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "skills.skill_sense_motive.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      },
+      {
+        "id": "favored_enemy_2_spot",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "skills.skill_spot.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      },
+      {
+        "id": "favored_enemy_2_survival",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      },
+      {
+        "id": "favored_enemy_2_damage",
+        "sourceId": "class_feature_ranger_favored_enemy_2",
+        "sourceName": { "en": "Favored Enemy 2", "fr": "Ennemi juré 2" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_2"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_improved_combat_style",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Combat Style", "fr": "Style de combat amélioré" },
+    "description": {
+      "en": "At 6th level, the ranger's chosen combat style improves. If archery, treated as having Manyshot without prerequisites. If two-weapon combat, treated as having Improved Two-Weapon Fighting without prerequisites. Benefits apply only in light or no armor.",
+      "fr": "Au niveau 6, le style de combat choisi du rôdeur s'améliore. Si tir à l'arc, considéré comme possédant Tir en rafale sans conditions. Si combat à deux armes, considéré comme possédant Combat à deux armes amélioré sans conditions. Bénéfices en armure légère ou sans armure seulement."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_woodland_stride",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Woodland Stride", "fr": "Foulée forestière" },
+    "description": {
+      "en": "Starting at 7th level, a ranger may move through any sort of natural undergrowth (thorns, briars, overgrown areas) at normal speed without taking damage or suffering impairment. Magically manipulated terrain still affects him.",
+      "fr": "À partir du niveau 7, un rôdeur peut se déplacer à travers tout type de sous-bois naturel à sa vitesse normale sans subir de dégâts ni d'altération. Les terrains manipulés magiquement l'affectent toujours."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_swift_tracker",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Swift Tracker", "fr": "Pisteur rapide" },
+    "description": {
+      "en": "Beginning at 8th level, a ranger can move at his normal speed while following tracks without taking the normal -5 penalty. At full speed he takes only a -10 penalty (instead of the normal -20).",
+      "fr": "À partir du niveau 8, un rôdeur peut se déplacer à sa vitesse normale en suivant des traces sans subir la pénalité normale de -5. À pleine vitesse, il ne subit que -10 (au lieu de -20 normalement)."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Evasion", "fr": "Esquive totale" },
+    "description": {
+      "en": "At 9th level, a ranger can avoid even magical and unusual attacks with great agility. If he makes a successful Reflex save against an attack that normally deals half damage on a successful save, he takes no damage instead. Only while wearing light or no armor. A helpless ranger does not gain this benefit.",
+      "fr": "Au niveau 9, un rôdeur peut éviter même les attaques magiques et inhabituelles avec grande agilité. Si un jet de Réflexes réussit contre une attaque infligeant normalement la moitié des dégâts, il ne subit aucun dégât. Seulement en armure légère ou sans armure. Un rôdeur sans défense n'en bénéficie pas."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "evasion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_favored_enemy_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Favored Enemy (3rd)", "fr": "Ennemi juré (3e)" },
+    "description": {
+      "en": "At 10th level, select a third favored enemy (+2 bonus). Also, increase the bonus against any one existing favored enemy by +2.",
+      "fr": "Au niveau 10, choisissez un troisième ennemi juré (bonus +2). Également, augmentez de +2 le bonus contre l'un de vos ennemis jurés existants."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "favored_enemy"],
+    "choices": [
+      {
+        "choiceId": "ranger_favored_enemy_3",
+        "label": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "optionsQuery": "tag:favored_enemy_type",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "favored_enemy_3_skills",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "skills.skill_bluff.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      },
+      {
+        "id": "favored_enemy_3_listen",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "skills.skill_listen.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      },
+      {
+        "id": "favored_enemy_3_sense_motive",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "skills.skill_sense_motive.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      },
+      {
+        "id": "favored_enemy_3_spot",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "skills.skill_spot.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      },
+      {
+        "id": "favored_enemy_3_survival",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      },
+      {
+        "id": "favored_enemy_3_damage",
+        "sourceId": "class_feature_ranger_favored_enemy_3",
+        "sourceName": { "en": "Favored Enemy 3", "fr": "Ennemi juré 3" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_3"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_combat_style_mastery",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Combat Style Mastery", "fr": "Maîtrise du style de combat" },
+    "description": {
+      "en": "At 11th level, the ranger's chosen combat style reaches mastery. If archery, treated as having Improved Precise Shot without prerequisites. If two-weapon combat, treated as having Greater Two-Weapon Fighting without prerequisites. Benefits apply only in light or no armor.",
+      "fr": "Au niveau 11, le style de combat choisi du rôdeur atteint la maîtrise. Si tir à l'arc, considéré comme possédant Tir précis amélioré sans conditions. Si combat à deux armes, considéré comme possédant Combat à deux armes supérieur sans conditions. Bénéfices en armure légère ou sans armure seulement."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_camouflage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Camouflage", "fr": "Camouflage" },
+    "description": {
+      "en": "A ranger of 13th level or higher can use the Hide skill in any sort of natural terrain, even if the terrain doesn't grant cover or concealment.",
+      "fr": "Un rôdeur de niveau 13 ou plus peut utiliser la compétence Discrétion dans tout type de terrain naturel, même si le terrain ne fournit pas de couverture ou de dissimulation."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "camouflage"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_favored_enemy_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Favored Enemy (4th)", "fr": "Ennemi juré (4e)" },
+    "description": {
+      "en": "At 15th level, select a fourth favored enemy (+2 bonus). Also, increase the bonus against any one existing favored enemy by +2.",
+      "fr": "Au niveau 15, choisissez un quatrième ennemi juré (bonus +2). Également, augmentez de +2 le bonus contre l'un de vos ennemis jurés existants."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "favored_enemy"],
+    "choices": [
+      {
+        "choiceId": "ranger_favored_enemy_4",
+        "label": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "optionsQuery": "tag:favored_enemy_type",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "favored_enemy_4_skills",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "skills.skill_bluff.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      },
+      {
+        "id": "favored_enemy_4_listen",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "skills.skill_listen.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      },
+      {
+        "id": "favored_enemy_4_sense_motive",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "skills.skill_sense_motive.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      },
+      {
+        "id": "favored_enemy_4_spot",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "skills.skill_spot.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      },
+      {
+        "id": "favored_enemy_4_survival",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      },
+      {
+        "id": "favored_enemy_4_damage",
+        "sourceId": "class_feature_ranger_favored_enemy_4",
+        "sourceName": { "en": "Favored Enemy 4", "fr": "Ennemi juré 4" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_4"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_hide_in_plain_sight",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hide in Plain Sight", "fr": "Se cacher à la vue de tous" },
+    "description": {
+      "en": "While in any sort of natural terrain, a ranger of 17th level or higher can use the Hide skill even while being observed.",
+      "fr": "Dans tout type de terrain naturel, un rôdeur de niveau 17 ou plus peut utiliser la compétence Discrétion même s'il est observé."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "hide_in_plain_sight"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_ranger_favored_enemy_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Favored Enemy (5th)", "fr": "Ennemi juré (5e)" },
+    "description": {
+      "en": "At 20th level, select a fifth favored enemy (+2 bonus). Also, increase the bonus against any one existing favored enemy by +2.",
+      "fr": "Au niveau 20, choisissez un cinquième ennemi juré (bonus +2). Également, augmentez de +2 le bonus contre l'un de vos ennemis jurés existants."
+    },
+    "tags": ["class_feature", "ranger", "extraordinary", "favored_enemy"],
+    "choices": [
+      {
+        "choiceId": "ranger_favored_enemy_5",
+        "label": { "en": "Favored Enemy", "fr": "Ennemi juré" },
+        "optionsQuery": "tag:favored_enemy_type",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "favored_enemy_5_skills",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "skills.skill_bluff.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      },
+      {
+        "id": "favored_enemy_5_listen",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "skills.skill_listen.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      },
+      {
+        "id": "favored_enemy_5_sense_motive",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "skills.skill_sense_motive.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      },
+      {
+        "id": "favored_enemy_5_spot",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "skills.skill_spot.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      },
+      {
+        "id": "favored_enemy_5_survival",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "skills.skill_survival.bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      },
+      {
+        "id": "favored_enemy_5_damage",
+        "sourceId": "class_feature_ranger_favored_enemy_5",
+        "sourceName": { "en": "Favored Enemy 5", "fr": "Ennemi juré 5" },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "situationalContext": "vs_favored_enemy_5"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_aura_of_good",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Aura of Good", "fr": "Aura de Bien" },
+    "description": {
+      "en": "The power of a paladin's aura of good (as the detect good spell) is equal to her paladin level.",
+      "fr": "La puissance de l'aura de Bien du paladin (comme le sort de détection du Bien) est égale à son niveau de paladin."
+    },
+    "tags": ["class_feature", "paladin", "extraordinary", "aura_of_good"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_detect_evil",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Detect Evil", "fr": "Détection du Mal" },
+    "description": {
+      "en": "At will, a paladin can use detect evil, as the spell. Using this ability requires a move action.",
+      "fr": "À volonté, un paladin peut utiliser Détection du Mal, comme le sort. L'utilisation de cette capacité nécessite une action de mouvement."
+    },
+    "tags": ["class_feature", "paladin", "spell_like"],
+    "activation": { "actionType": "move" },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_smite_evil",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Evil", "fr": "Châtiment du Mal" },
+    "description": {
+      "en": "Once per day (plus once more per 5 paladin levels), a paladin may smite evil with one normal melee attack, adding her Charisma bonus to the attack roll and dealing 1 extra point of damage per paladin level. If the target is not evil, the smite has no effect but the use is spent.",
+      "fr": "Une fois par jour (plus une fois de plus par 5 niveaux de paladin), un paladin peut effectuer un châtiment du Mal avec une attaque de corps à corps normale, ajoutant son bonus de Charisme au jet d'attaque et infligeant 1 point de dégâts supplémentaire par niveau de paladin. Si la cible n'est pas mauvaise, l'effet n'a pas lieu mais l'utilisation est dépensée."
+    },
+    "tags": ["class_feature", "paladin", "supernatural", "smite_evil"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.smite_evil_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "smite_evil_uses_max",
+        "sourceId": "class_feature_paladin_smite_evil",
+        "sourceName": { "en": "Smite Evil", "fr": "Châtiment du Mal" },
+        "targetId": "resources.smite_evil_uses.maxValue",
+        "value": "1 + floor(@classLevels.class_paladin / 5)",
+        "type": "base"
+      },
+      {
+        "id": "smite_evil_attack_bonus",
+        "sourceId": "class_feature_paladin_smite_evil",
+        "sourceName": { "en": "Smite Evil", "fr": "Châtiment du Mal" },
+        "targetId": "combatStats.attack_bonus",
+        "value": "@attributes.stat_cha.derivedModifier",
+        "type": "untyped"
+      },
+      {
+        "id": "smite_evil_damage_bonus",
+        "sourceId": "class_feature_paladin_smite_evil",
+        "sourceName": { "en": "Smite Evil", "fr": "Châtiment du Mal" },
+        "targetId": "combatStats.damage_bonus",
+        "value": "@classLevels.class_paladin",
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_divine_grace",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Grace", "fr": "Grâce divine" },
+    "description": {
+      "en": "At 2nd level, a paladin gains a bonus equal to her Charisma bonus (if any) on all saving throws.",
+      "fr": "Au niveau 2, un paladin obtient un bonus égal à son bonus de Charisme (le cas échéant) à tous ses jets de sauvegarde."
+    },
+    "tags": ["class_feature", "paladin", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "divine_grace_saves",
+        "sourceId": "class_feature_paladin_divine_grace",
+        "sourceName": { "en": "Divine Grace", "fr": "Grâce divine" },
+        "targetId": "saves.all",
+        "value": "@attributes.stat_cha.derivedModifier",
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_lay_on_hands",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lay on Hands", "fr": "Imposition des mains" },
+    "description": {
+      "en": "Beginning at 2nd level (requires CHA 12+), a paladin can heal a total number of hit points per day equal to her paladin level × Charisma bonus. Using lay on hands is a standard action (free action on herself). She can also use healing points to deal damage to undead via touch attack.",
+      "fr": "À partir du niveau 2 (nécessite CHA 12+), un paladin peut soigner un total de points de vie par jour égal à son niveau de paladin × son bonus de Charisme. Imposer les mains est une action simple (action libre sur elle-même). Elle peut aussi utiliser ces points pour blesser les morts-vivants via une attaque de contact."
+    },
+    "tags": ["class_feature", "paladin", "supernatural"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.lay_on_hands_hp", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "lay_on_hands_pool_max",
+        "sourceId": "class_feature_paladin_lay_on_hands",
+        "sourceName": { "en": "Lay on Hands", "fr": "Imposition des mains" },
+        "targetId": "resources.lay_on_hands_hp.maxValue",
+        "value": "@classLevels.class_paladin * @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_aura_of_courage",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Aura of Courage", "fr": "Aura de courage" },
+    "description": {
+      "en": "Beginning at 3rd level, a paladin is immune to fear (magical or otherwise). Each ally within 10 feet gains a +4 morale bonus on saving throws against fear effects. This functions while the paladin is conscious.",
+      "fr": "À partir du niveau 3, un paladin est immunisé à la peur (magique ou autre). Chaque allié à 3 m ou moins obtient un bonus de moral de +4 aux jets de sauvegarde contre les effets de peur. Cela fonctionne tant que le paladin est conscient."
+    },
+    "tags": ["class_feature", "paladin", "supernatural", "immunity_fear"],
+    "grantedModifiers": [
+      {
+        "id": "aura_of_courage_self_saves",
+        "sourceId": "class_feature_paladin_aura_of_courage",
+        "sourceName": { "en": "Aura of Courage", "fr": "Aura de courage" },
+        "targetId": "saves.all",
+        "value": 4,
+        "type": "morale",
+        "situationalContext": "vs_fear"
+      }
+    ],
+    "grantedFeatures": ["immunity_fear"]
+  },
+
+  {
+    "id": "class_feature_paladin_divine_health",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Health", "fr": "Santé divine" },
+    "description": {
+      "en": "At 3rd level, a paladin gains immunity to all diseases, including supernatural and magical diseases.",
+      "fr": "Au niveau 3, un paladin devient immunisé à toutes les maladies, y compris les maladies surnaturelles et magiques."
+    },
+    "tags": ["class_feature", "paladin", "extraordinary", "immunity_disease"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["immunity_disease"]
+  },
+
+  {
+    "id": "class_feature_paladin_turn_undead",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Turn Undead", "fr": "Renvoi des morts-vivants" },
+    "description": {
+      "en": "At 4th level, a paladin gains the supernatural ability to turn undead. She may use this ability a number of times per day equal to 3 + her Charisma modifier. She turns undead as a cleric of three levels lower would.",
+      "fr": "Au niveau 4, un paladin obtient la capacité surnaturelle de renvoyer les morts-vivants. Il peut utiliser cette capacité un nombre de fois par jour égal à 3 + son modificateur de Charisme. Il renvoie les morts-vivants comme un prêtre de trois niveaux inférieur le ferait."
+    },
+    "tags": ["class_feature", "paladin", "supernatural", "turn_undead"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.turn_undead_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "paladin_turn_undead_uses_max",
+        "sourceId": "class_feature_paladin_turn_undead",
+        "sourceName": { "en": "Turn Undead", "fr": "Renvoi des morts-vivants" },
+        "targetId": "resources.turn_undead_uses.maxValue",
+        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Spellcasting (Paladin)", "fr": "Incantation divine (Paladin)" },
+    "description": {
+      "en": "Beginning at 4th level, a paladin can cast divine spells drawn from the paladin spell list (prepared caster). Requires WIS 10 + spell level. Save DC = 10 + spell level + WIS modifier. Caster level = half paladin level (rounded down). No domain spells. Cannot spontaneously cast cure spells. Spell slots per day in resources.spell_slots_paladin_1 through _4.",
+      "fr": "À partir du niveau 4, un paladin peut lancer des sorts divins tirés de la liste de sorts du paladin (lanceur préparé). Nécessite SAG 10 + niveau du sort. DD = 10 + niveau du sort + modificateur de SAG. Niveau de lanceur = moitié du niveau de paladin (arrondi à l'inférieur). Pas de sorts de domaine. Ne peut pas lancer spontanément des sorts de soins."
+    },
+    "tags": ["class_feature", "paladin", "divine_spellcasting", "prepared_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_special_mount",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Special Mount", "fr": "Monture spéciale" },
+    "description": {
+      "en": "Upon reaching 5th level, a paladin gains the service of a special mount. Once per day as a full-round action, the paladin may magically call her mount from the celestial realms. The mount appears for 2 hours per paladin level and may be dismissed as a free action.",
+      "fr": "Au niveau 5, un paladin obtient les services d'une monture spéciale. Une fois par jour par une action d'un round complet, le paladin peut appeler magiquement sa monture depuis les royaumes célestes. La monture apparaît pendant 2 heures par niveau de paladin et peut être renvoyée par une action libre."
+    },
+    "tags": ["class_feature", "paladin", "spell_like", "special_mount"],
+    "choices": [
+      {
+        "choiceId": "paladin_mount_choice",
+        "label": { "en": "Special Mount", "fr": "Monture spéciale" },
+        "optionsQuery": "tag:paladin_mount",
+        "maxSelections": 1
+      }
+    ],
+    "activation": { "actionType": "full_round" },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_smite_evil_2_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Evil 2/Day", "fr": "Châtiment du Mal 2/jour" },
+    "description": {
+      "en": "At 5th level, the paladin can smite evil twice per day. (This increase is handled automatically by the smite evil resource formula.)",
+      "fr": "Au niveau 5, le paladin peut utiliser le châtiment du Mal deux fois par jour. (Cette augmentation est gérée automatiquement par la formule de ressource.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_remove_disease",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Remove Disease", "fr": "Guérison des maladies" },
+    "description": {
+      "en": "At 6th level, a paladin can produce a remove disease effect once per week, as the spell. She can use this ability one additional time per week for every three levels after 6th. Uses per week = floor((paladin level - 3) / 3).",
+      "fr": "Au niveau 6, un paladin peut produire un effet de Guérison des maladies une fois par semaine, comme le sort. Elle peut utiliser cette capacité une fois de plus par semaine tous les trois niveaux après le 6e. Utilisations par semaine = floor((niveau de paladin - 3) / 3)."
+    },
+    "tags": ["class_feature", "paladin", "spell_like"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.remove_disease_uses_week", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "remove_disease_uses_max",
+        "sourceId": "class_feature_paladin_remove_disease",
+        "sourceName": { "en": "Remove Disease", "fr": "Guérison des maladies" },
+        "targetId": "resources.remove_disease_uses_week.maxValue",
+        "value": "floor((@classLevels.class_paladin - 3) / 3)",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_remove_disease_2_week",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Remove Disease 2/Week", "fr": "Guérison des maladies 2/semaine" },
+    "description": {
+      "en": "At 9th level, the paladin can use remove disease twice per week. (Handled automatically by the formula.)",
+      "fr": "Au niveau 9, le paladin peut utiliser la guérison des maladies deux fois par semaine. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_smite_evil_3_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Evil 3/Day", "fr": "Châtiment du Mal 3/jour" },
+    "description": {
+      "en": "At 10th level, the paladin can smite evil three times per day. (Handled automatically by the formula.)",
+      "fr": "Au niveau 10, le paladin peut utiliser le châtiment du Mal trois fois par jour. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_remove_disease_3_week",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Remove Disease 3/Week", "fr": "Guérison des maladies 3/semaine" },
+    "description": {
+      "en": "At 12th level, the paladin can use remove disease three times per week. (Handled automatically by the formula.)",
+      "fr": "Au niveau 12, le paladin peut utiliser la guérison des maladies trois fois par semaine. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_smite_evil_4_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Evil 4/Day", "fr": "Châtiment du Mal 4/jour" },
+    "description": {
+      "en": "At 15th level, the paladin can smite evil four times per day. (Handled automatically by the formula.)",
+      "fr": "Au niveau 15, le paladin peut utiliser le châtiment du Mal quatre fois par jour. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_remove_disease_4_week",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Remove Disease 4/Week", "fr": "Guérison des maladies 4/semaine" },
+    "description": {
+      "en": "At 15th level, the paladin can use remove disease four times per week. (Handled automatically by the formula.)",
+      "fr": "Au niveau 15, le paladin peut utiliser la guérison des maladies quatre fois par semaine. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_remove_disease_5_week",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Remove Disease 5/Week", "fr": "Guérison des maladies 5/semaine" },
+    "description": {
+      "en": "At 18th level, the paladin can use remove disease five times per week. (Handled automatically by the formula.)",
+      "fr": "Au niveau 18, le paladin peut utiliser la guérison des maladies cinq fois par semaine. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_paladin_smite_evil_5_day",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Evil 5/Day", "fr": "Châtiment du Mal 5/jour" },
+    "description": {
+      "en": "At 20th level, the paladin can smite evil five times per day. (Handled automatically by the formula.)",
+      "fr": "Au niveau 20, le paladin peut utiliser le châtiment du Mal cinq fois par jour. (Géré automatiquement par la formule.)"
+    },
+    "tags": ["class_feature", "paladin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
     "id": "class_feature_monk_ac_bonus",
     "category": "class_feature",
     "ruleSource": "srd_core",

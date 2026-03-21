@@ -1648,5 +1648,769 @@
         ]
       }
     ]
+  },
+  {
+    "id": "class_paladin",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Paladin", "fr": "Paladin" },
+    "description": {
+      "en": "A holy crusader, blessed with divine power to smite evil and protect the innocent.",
+      "fr": "Un croisé sacré, béni d'un pouvoir divin pour frapper le mal et protéger les innocents."
+    },
+    "tags": ["class", "base_class", "class_paladin", "divine_caster", "prepared_caster", "spellcaster"],
+    "forbiddenTags": ["alignment_non_lawful_good"],
+    "grantedModifiers": [
+      {
+        "id": "paladin_hit_die",
+        "sourceId": "class_paladin",
+        "sourceName": { "en": "Paladin", "fr": "Paladin" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 10,
+        "type": "base"
+      },
+      {
+        "id": "paladin_skill_points",
+        "sourceId": "class_paladin",
+        "sourceName": { "en": "Paladin", "fr": "Paladin" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_martial",
+      "proficiency_weapons_simple",
+      "proficiency_armor_all",
+      "proficiency_shields_all"
+    ],
+    "classSkills": [
+      "skill_concentration",
+      "skill_craft",
+      "skill_diplomacy",
+      "skill_handle_animal",
+      "skill_heal",
+      "skill_knowledge_nobility",
+      "skill_knowledge_religion",
+      "skill_profession",
+      "skill_ride",
+      "skill_sense_motive"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_cha", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_paladin_aura_of_good",
+          "class_feature_paladin_detect_evil",
+          "class_feature_paladin_smite_evil"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_1_bab",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 1",  "fr": "Paladin 1"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "paladin_1_fort", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 1",  "fr": "Paladin 1"  }, "targetId": "saves.fortitude", "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_paladin_divine_grace",
+          "class_feature_paladin_lay_on_hands"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_2_bab",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 2",  "fr": "Paladin 2"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "paladin_2_fort", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 2",  "fr": "Paladin 2"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_paladin_aura_of_courage",
+          "class_feature_paladin_divine_health"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_3_bab",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 3",  "fr": "Paladin 3"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "paladin_3_ref",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 3",  "fr": "Paladin 3"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "paladin_3_will", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 3",  "fr": "Paladin 3"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [
+          "class_feature_paladin_turn_undead",
+          "class_feature_paladin_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_4_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 4",  "fr": "Paladin 4"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_4_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 4",  "fr": "Paladin 4"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_4_slots_1", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 4",  "fr": "Paladin 4"  }, "targetId": "resources.spell_slots_paladin_1", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_paladin_special_mount",
+          "class_feature_paladin_smite_evil_2_day"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_5_bab", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 5",  "fr": "Paladin 5"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [
+          "class_feature_paladin_remove_disease"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_6_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 6",  "fr": "Paladin 6"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_6_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 6",  "fr": "Paladin 6"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_6_ref",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 6",  "fr": "Paladin 6"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "paladin_6_will",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 6",  "fr": "Paladin 6"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "paladin_6_slots_1", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 6",  "fr": "Paladin 6"  }, "targetId": "resources.spell_slots_paladin_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_7_bab", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 7",  "fr": "Paladin 7"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_8_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 8",  "fr": "Paladin 8"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_8_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 8",  "fr": "Paladin 8"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_8_slots_2", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 8",  "fr": "Paladin 8"  }, "targetId": "resources.spell_slots_paladin_2", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [
+          "class_feature_paladin_remove_disease_2_week"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_9_bab",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 9",  "fr": "Paladin 9"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "paladin_9_ref",  "sourceId": "class_paladin", "sourceName": { "en": "Paladin 9",  "fr": "Paladin 9"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "paladin_9_will", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 9",  "fr": "Paladin 9"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [
+          "class_feature_paladin_smite_evil_3_day"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_10_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 10", "fr": "Paladin 10" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_10_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 10", "fr": "Paladin 10" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_10_slots_2", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 10", "fr": "Paladin 10" }, "targetId": "resources.spell_slots_paladin_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_11_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 11", "fr": "Paladin 11" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_11_slots_3", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 11", "fr": "Paladin 11" }, "targetId": "resources.spell_slots_paladin_3", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [
+          "class_feature_paladin_remove_disease_3_week"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_12_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 12", "fr": "Paladin 12" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_12_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 12", "fr": "Paladin 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_12_ref",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 12", "fr": "Paladin 12" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "paladin_12_will",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 12", "fr": "Paladin 12" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "paladin_12_slots_3", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 12", "fr": "Paladin 12" }, "targetId": "resources.spell_slots_paladin_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_13_bab", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 13", "fr": "Paladin 13" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_14_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 14", "fr": "Paladin 14" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_14_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 14", "fr": "Paladin 14" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_14_slots_1", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 14", "fr": "Paladin 14" }, "targetId": "resources.spell_slots_paladin_1", "value": 1, "type": "base" },
+          { "id": "paladin_14_slots_4", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 14", "fr": "Paladin 14" }, "targetId": "resources.spell_slots_paladin_4", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [
+          "class_feature_paladin_smite_evil_4_day",
+          "class_feature_paladin_remove_disease_4_week"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_15_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 15", "fr": "Paladin 15" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_15_ref",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 15", "fr": "Paladin 15" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "paladin_15_will",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 15", "fr": "Paladin 15" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "paladin_15_slots_4", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 15", "fr": "Paladin 15" }, "targetId": "resources.spell_slots_paladin_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_16_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 16", "fr": "Paladin 16" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_16_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 16", "fr": "Paladin 16" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_16_slots_2", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 16", "fr": "Paladin 16" }, "targetId": "resources.spell_slots_paladin_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_17_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 17", "fr": "Paladin 17" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_17_slots_3", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 17", "fr": "Paladin 17" }, "targetId": "resources.spell_slots_paladin_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [
+          "class_feature_paladin_remove_disease_5_week"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_18_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 18", "fr": "Paladin 18" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_18_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 18", "fr": "Paladin 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_18_ref",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 18", "fr": "Paladin 18" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "paladin_18_will",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 18", "fr": "Paladin 18" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "paladin_18_slots_1", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 18", "fr": "Paladin 18" }, "targetId": "resources.spell_slots_paladin_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "paladin_19_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 19", "fr": "Paladin 19" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_19_slots_2", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 19", "fr": "Paladin 19" }, "targetId": "resources.spell_slots_paladin_2", "value": 1, "type": "base" },
+          { "id": "paladin_19_slots_3", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 19", "fr": "Paladin 19" }, "targetId": "resources.spell_slots_paladin_3", "value": 1, "type": "base" },
+          { "id": "paladin_19_slots_4", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 19", "fr": "Paladin 19" }, "targetId": "resources.spell_slots_paladin_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [
+          "class_feature_paladin_smite_evil_5_day"
+        ],
+        "grantedModifiers": [
+          { "id": "paladin_20_bab",     "sourceId": "class_paladin", "sourceName": { "en": "Paladin 20", "fr": "Paladin 20" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "paladin_20_fort",    "sourceId": "class_paladin", "sourceName": { "en": "Paladin 20", "fr": "Paladin 20" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "paladin_20_slots_4", "sourceId": "class_paladin", "sourceName": { "en": "Paladin 20", "fr": "Paladin 20" }, "targetId": "resources.spell_slots_paladin_4", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_ranger",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ranger", "fr": "Rôdeur" },
+    "description": {
+      "en": "A skilled hunter and tracker who bonds with nature and specializes in fighting favored enemies.",
+      "fr": "Un chasseur et pisteur habile qui se lie avec la nature et se spécialise dans le combat contre ses ennemis favoris."
+    },
+    "tags": ["class", "base_class", "class_ranger", "divine_caster", "prepared_caster", "spellcaster"],
+    "grantedModifiers": [
+      {
+        "id": "ranger_hit_die",
+        "sourceId": "class_ranger",
+        "sourceName": { "en": "Ranger", "fr": "Rôdeur" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base"
+      },
+      {
+        "id": "ranger_skill_points",
+        "sourceId": "class_ranger",
+        "sourceName": { "en": "Ranger", "fr": "Rôdeur" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 6,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_martial",
+      "proficiency_weapons_simple",
+      "proficiency_armor_light",
+      "proficiency_shields"
+    ],
+    "classSkills": [
+      "skill_climb",
+      "skill_concentration",
+      "skill_craft",
+      "skill_handle_animal",
+      "skill_heal",
+      "skill_hide",
+      "skill_jump",
+      "skill_knowledge_dungeoneering",
+      "skill_knowledge_geography",
+      "skill_knowledge_nature",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_profession",
+      "skill_ride",
+      "skill_search",
+      "skill_spot",
+      "skill_survival",
+      "skill_swim",
+      "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_dex", "stat_wis"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_ranger_favored_enemy_1",
+          "class_feature_ranger_track",
+          "class_feature_ranger_wild_empathy"
+        ],
+        "grantedModifiers": [
+          { "id": "ranger_1_bab",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 1",  "fr": "Rôdeur 1"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "ranger_1_fort", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 1",  "fr": "Rôdeur 1"  }, "targetId": "saves.fortitude", "value": 2, "type": "base" },
+          { "id": "ranger_1_ref",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 1",  "fr": "Rôdeur 1"  }, "targetId": "saves.reflex",    "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_ranger_combat_style"],
+        "grantedModifiers": [
+          { "id": "ranger_2_bab",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 2",  "fr": "Rôdeur 2"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "ranger_2_fort", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 2",  "fr": "Rôdeur 2"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "ranger_2_ref",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 2",  "fr": "Rôdeur 2"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_ranger_endurance"],
+        "grantedModifiers": [
+          { "id": "ranger_3_bab",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 3",  "fr": "Rôdeur 3"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "ranger_3_will", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 3",  "fr": "Rôdeur 3"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [
+          "class_feature_ranger_animal_companion",
+          "class_feature_ranger_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "ranger_4_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 4",  "fr": "Rôdeur 4"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_4_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 4",  "fr": "Rôdeur 4"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_4_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 4",  "fr": "Rôdeur 4"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_4_slots_1", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 4",  "fr": "Rôdeur 4"  }, "targetId": "resources.spell_slots_ranger_1", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_ranger_favored_enemy_2"],
+        "grantedModifiers": [
+          { "id": "ranger_5_bab", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 5",  "fr": "Rôdeur 5"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_ranger_improved_combat_style"],
+        "grantedModifiers": [
+          { "id": "ranger_6_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 6",  "fr": "Rôdeur 6"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_6_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 6",  "fr": "Rôdeur 6"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_6_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 6",  "fr": "Rôdeur 6"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_6_will",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 6",  "fr": "Rôdeur 6"  }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "ranger_6_slots_1", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 6",  "fr": "Rôdeur 6"  }, "targetId": "resources.spell_slots_ranger_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_ranger_woodland_stride"],
+        "grantedModifiers": [
+          { "id": "ranger_7_bab", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 7",  "fr": "Rôdeur 7"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_ranger_swift_tracker"],
+        "grantedModifiers": [
+          { "id": "ranger_8_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 8",  "fr": "Rôdeur 8"  }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_8_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 8",  "fr": "Rôdeur 8"  }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_8_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 8",  "fr": "Rôdeur 8"  }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_8_slots_2", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 8",  "fr": "Rôdeur 8"  }, "targetId": "resources.spell_slots_ranger_2", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_ranger_evasion"],
+        "grantedModifiers": [
+          { "id": "ranger_9_bab",  "sourceId": "class_ranger", "sourceName": { "en": "Ranger 9",  "fr": "Rôdeur 9"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "ranger_9_will", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 9",  "fr": "Rôdeur 9"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_ranger_favored_enemy_3"],
+        "grantedModifiers": [
+          { "id": "ranger_10_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 10", "fr": "Rôdeur 10" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_10_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 10", "fr": "Rôdeur 10" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_10_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 10", "fr": "Rôdeur 10" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_10_slots_2", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 10", "fr": "Rôdeur 10" }, "targetId": "resources.spell_slots_ranger_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": ["class_feature_ranger_combat_style_mastery"],
+        "grantedModifiers": [
+          { "id": "ranger_11_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 11", "fr": "Rôdeur 11" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_11_slots_3", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 11", "fr": "Rôdeur 11" }, "targetId": "resources.spell_slots_ranger_3", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "ranger_12_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 12", "fr": "Rôdeur 12" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_12_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 12", "fr": "Rôdeur 12" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_12_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 12", "fr": "Rôdeur 12" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_12_will",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 12", "fr": "Rôdeur 12" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "ranger_12_slots_3", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 12", "fr": "Rôdeur 12" }, "targetId": "resources.spell_slots_ranger_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": ["class_feature_ranger_camouflage"],
+        "grantedModifiers": [
+          { "id": "ranger_13_bab", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 13", "fr": "Rôdeur 13" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "ranger_14_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 14", "fr": "Rôdeur 14" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_14_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 14", "fr": "Rôdeur 14" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_14_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 14", "fr": "Rôdeur 14" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_14_slots_1", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 14", "fr": "Rôdeur 14" }, "targetId": "resources.spell_slots_ranger_1", "value": 1, "type": "base" },
+          { "id": "ranger_14_slots_4", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 14", "fr": "Rôdeur 14" }, "targetId": "resources.spell_slots_ranger_4", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": ["class_feature_ranger_favored_enemy_4"],
+        "grantedModifiers": [
+          { "id": "ranger_15_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 15", "fr": "Rôdeur 15" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_15_will",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 15", "fr": "Rôdeur 15" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "ranger_15_slots_4", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 15", "fr": "Rôdeur 15" }, "targetId": "resources.spell_slots_ranger_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "ranger_16_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 16", "fr": "Rôdeur 16" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_16_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 16", "fr": "Rôdeur 16" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_16_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 16", "fr": "Rôdeur 16" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_16_slots_2", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 16", "fr": "Rôdeur 16" }, "targetId": "resources.spell_slots_ranger_2", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": ["class_feature_ranger_hide_in_plain_sight"],
+        "grantedModifiers": [
+          { "id": "ranger_17_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 17", "fr": "Rôdeur 17" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_17_slots_3", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 17", "fr": "Rôdeur 17" }, "targetId": "resources.spell_slots_ranger_3", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "ranger_18_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 18", "fr": "Rôdeur 18" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_18_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 18", "fr": "Rôdeur 18" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_18_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 18", "fr": "Rôdeur 18" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_18_will",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 18", "fr": "Rôdeur 18" }, "targetId": "saves.will",                  "value": 1, "type": "base" },
+          { "id": "ranger_18_slots_1", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 18", "fr": "Rôdeur 18" }, "targetId": "resources.spell_slots_ranger_1", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "ranger_19_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 19", "fr": "Rôdeur 19" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_19_slots_2", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 19", "fr": "Rôdeur 19" }, "targetId": "resources.spell_slots_ranger_2", "value": 1, "type": "base" },
+          { "id": "ranger_19_slots_3", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 19", "fr": "Rôdeur 19" }, "targetId": "resources.spell_slots_ranger_3", "value": 1, "type": "base" },
+          { "id": "ranger_19_slots_4", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 19", "fr": "Rôdeur 19" }, "targetId": "resources.spell_slots_ranger_4", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": ["class_feature_ranger_favored_enemy_5"],
+        "grantedModifiers": [
+          { "id": "ranger_20_bab",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 20", "fr": "Rôdeur 20" }, "targetId": "combatStats.bab",              "value": 1, "type": "base" },
+          { "id": "ranger_20_fort",    "sourceId": "class_ranger", "sourceName": { "en": "Ranger 20", "fr": "Rôdeur 20" }, "targetId": "saves.fortitude",             "value": 1, "type": "base" },
+          { "id": "ranger_20_ref",     "sourceId": "class_ranger", "sourceName": { "en": "Ranger 20", "fr": "Rôdeur 20" }, "targetId": "saves.reflex",                "value": 1, "type": "base" },
+          { "id": "ranger_20_slots_4", "sourceId": "class_ranger", "sourceName": { "en": "Ranger 20", "fr": "Rôdeur 20" }, "targetId": "resources.spell_slots_ranger_4", "value": 1, "type": "base" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_rogue",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rogue", "fr": "Roublard" },
+    "description": {
+      "en": "A skilled trickster who surprises enemies with sneak attacks and disarms deadly traps.",
+      "fr": "Un filou habile qui surprend ses ennemis par des attaques sournoises et désamorce les pièges mortels."
+    },
+    "tags": ["class", "base_class", "class_rogue"],
+    "grantedModifiers": [
+      {
+        "id": "rogue_hit_die",
+        "sourceId": "class_rogue",
+        "sourceName": { "en": "Rogue", "fr": "Roublard" },
+        "targetId": "combatStats.hit_die_type",
+        "value": 6,
+        "type": "base"
+      },
+      {
+        "id": "rogue_skill_points",
+        "sourceId": "class_rogue",
+        "sourceName": { "en": "Rogue", "fr": "Roublard" },
+        "targetId": "attributes.skill_points_per_level",
+        "value": 8,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_weapons_simple",
+      "proficiency_hand_crossbow",
+      "proficiency_rapier",
+      "proficiency_sap",
+      "proficiency_shortbow",
+      "proficiency_short_sword",
+      "proficiency_armor_light"
+    ],
+    "classSkills": [
+      "skill_appraise",
+      "skill_balance",
+      "skill_bluff",
+      "skill_climb",
+      "skill_craft",
+      "skill_decipher_script",
+      "skill_diplomacy",
+      "skill_disable_device",
+      "skill_disguise",
+      "skill_escape_artist",
+      "skill_forgery",
+      "skill_gather_information",
+      "skill_hide",
+      "skill_intimidate",
+      "skill_jump",
+      "skill_knowledge_local",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_open_lock",
+      "skill_perform",
+      "skill_profession",
+      "skill_search",
+      "skill_sense_motive",
+      "skill_sleight_of_hand",
+      "skill_spot",
+      "skill_swim",
+      "skill_tumble",
+      "skill_use_magic_device",
+      "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_1d6",
+          "class_feature_rogue_trapfinding"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_1_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 1",  "fr": "Roublard 1"  }, "targetId": "combatStats.bab",  "value": 0, "type": "base" },
+          { "id": "rogue_1_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 1",  "fr": "Roublard 1"  }, "targetId": "saves.reflex",    "value": 2, "type": "base" }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_rogue_evasion"],
+        "grantedModifiers": [
+          { "id": "rogue_2_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 2",  "fr": "Roublard 2"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_2_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 2",  "fr": "Roublard 2"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_2d6",
+          "class_feature_rogue_trap_sense_1"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_3_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 3",  "fr": "Roublard 3"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_3_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 3",  "fr": "Roublard 3"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_3_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 3",  "fr": "Roublard 3"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_rogue_uncanny_dodge"],
+        "grantedModifiers": [
+          { "id": "rogue_4_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 4",  "fr": "Roublard 4"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_4_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 4",  "fr": "Roublard 4"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_rogue_sneak_attack_3d6"],
+        "grantedModifiers": [
+          { "id": "rogue_5_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 5",  "fr": "Roublard 5"  }, "targetId": "combatStats.bab", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_rogue_trap_sense_2"],
+        "grantedModifiers": [
+          { "id": "rogue_6_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 6",  "fr": "Roublard 6"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_6_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 6",  "fr": "Roublard 6"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_6_ref",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 6",  "fr": "Roublard 6"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "rogue_6_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 6",  "fr": "Roublard 6"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_rogue_sneak_attack_4d6"],
+        "grantedModifiers": [
+          { "id": "rogue_7_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 7",  "fr": "Roublard 7"  }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_rogue_improved_uncanny_dodge"],
+        "grantedModifiers": [
+          { "id": "rogue_8_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 8",  "fr": "Roublard 8"  }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_8_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 8",  "fr": "Roublard 8"  }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_5d6",
+          "class_feature_rogue_trap_sense_3"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_9_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 9",  "fr": "Roublard 9"  }, "targetId": "combatStats.bab",  "value": 0, "type": "base" },
+          { "id": "rogue_9_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 9",  "fr": "Roublard 9"  }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_9_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 9",  "fr": "Roublard 9"  }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_rogue_special_ability_1"],
+        "grantedModifiers": [
+          { "id": "rogue_10_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 10", "fr": "Roublard 10" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_10_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 10", "fr": "Roublard 10" }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 11,
+        "grantedFeatures": ["class_feature_rogue_sneak_attack_6d6"],
+        "grantedModifiers": [
+          { "id": "rogue_11_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 11", "fr": "Roublard 11" }, "targetId": "combatStats.bab", "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 12,
+        "grantedFeatures": ["class_feature_rogue_trap_sense_4"],
+        "grantedModifiers": [
+          { "id": "rogue_12_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 12", "fr": "Roublard 12" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_12_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 12", "fr": "Roublard 12" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_12_ref",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 12", "fr": "Roublard 12" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "rogue_12_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 12", "fr": "Roublard 12" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 13,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_7d6",
+          "class_feature_rogue_special_ability_2"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_13_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 13", "fr": "Roublard 13" }, "targetId": "combatStats.bab", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 14,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "rogue_14_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 14", "fr": "Roublard 14" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_14_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 14", "fr": "Roublard 14" }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 15,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_8d6",
+          "class_feature_rogue_trap_sense_5"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_15_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 15", "fr": "Roublard 15" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_15_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 15", "fr": "Roublard 15" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_15_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 15", "fr": "Roublard 15" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 16,
+        "grantedFeatures": ["class_feature_rogue_special_ability_3"],
+        "grantedModifiers": [
+          { "id": "rogue_16_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 16", "fr": "Roublard 16" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_16_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 16", "fr": "Roublard 16" }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 17,
+        "grantedFeatures": ["class_feature_rogue_sneak_attack_9d6"],
+        "grantedModifiers": [
+          { "id": "rogue_17_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 17", "fr": "Roublard 17" }, "targetId": "combatStats.bab", "value": 0, "type": "base" }
+        ]
+      },
+      {
+        "level": 18,
+        "grantedFeatures": ["class_feature_rogue_trap_sense_6"],
+        "grantedModifiers": [
+          { "id": "rogue_18_bab",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 18", "fr": "Roublard 18" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_18_fort", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 18", "fr": "Roublard 18" }, "targetId": "saves.fortitude", "value": 1, "type": "base" },
+          { "id": "rogue_18_ref",  "sourceId": "class_rogue", "sourceName": { "en": "Rogue 18", "fr": "Roublard 18" }, "targetId": "saves.reflex",    "value": 1, "type": "base" },
+          { "id": "rogue_18_will", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 18", "fr": "Roublard 18" }, "targetId": "saves.will",      "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 19,
+        "grantedFeatures": [
+          "class_feature_rogue_sneak_attack_10d6",
+          "class_feature_rogue_special_ability_4"
+        ],
+        "grantedModifiers": [
+          { "id": "rogue_19_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 19", "fr": "Roublard 19" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" }
+        ]
+      },
+      {
+        "level": 20,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "rogue_20_bab", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 20", "fr": "Roublard 20" }, "targetId": "combatStats.bab",  "value": 1, "type": "base" },
+          { "id": "rogue_20_ref", "sourceId": "class_rogue", "sourceName": { "en": "Rogue 20", "fr": "Roublard 20" }, "targetId": "saves.reflex",    "value": 1, "type": "base" }
+        ]
+      }
+    ]
   }
 ]
