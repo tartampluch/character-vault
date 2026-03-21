@@ -30,6 +30,19 @@
 	import { onMount } from 'svelte';
 	import { themeManager } from '$lib/stores/ThemeManager.svelte';
 
+	/**
+	 * AppShell — Phase 19.4.
+	 *
+	 * The AppShell wraps every page in the application with:
+	 *   - A collapsible sidebar navigation (Sidebar.svelte)
+	 *   - A mobile-first top bar with hamburger menu
+	 *   - A scrollable main content area
+	 *
+	 * It owns the sidebar collapsed/mobile state and persists it in a cookie.
+	 * The {children} slot is rendered inside the AppShell's content area.
+	 */
+	import AppShell from '$lib/components/layout/AppShell.svelte';
+
 	let { children } = $props();
 
 	onMount(() => {
@@ -43,4 +56,16 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<!--
+  Every page in the application is wrapped in the AppShell layout.
+  The AppShell renders the sidebar, mobile top bar, and scrollable content
+  area. Individual pages are rendered via the {children} slot inside the
+  content area.
+
+  Phase 19.4 — AppShell replaces the bare {@render children()} call that was
+  here in previous phases. The AppShell itself uses {@render children()} internally
+  to insert the page content into the correct slot.
+-->
+<AppShell>
+	{@render children()}
+</AppShell>

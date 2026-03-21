@@ -345,7 +345,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
       - **Status:** Success → `Check`, Error → `AlertCircle`, Warning → `AlertTriangle`, Locked → `Lock`
     - _Requirement:_ Icons must be used as Svelte components, not as raw SVG strings. This ensures tree-shaking works correctly.
 
-- [ ] **19.4 Global Layout Shell & Sidebar Navigation:** Refactor `src/routes/+layout.svelte` to implement the application shell layout. Create `src/lib/components/layout/AppShell.svelte` as the main wrapper providing:
+- [x] **19.4 Global Layout Shell & Sidebar Navigation:** Refactor `src/routes/+layout.svelte` to implement the application shell layout. Create `src/lib/components/layout/AppShell.svelte` as the main wrapper providing:
     - **Sidebar** (`src/lib/components/layout/Sidebar.svelte`): Rendered on the left side. On desktop (≥1024px): default to expanded (showing icon + label), with a collapse toggle button that shrinks it to icon-only mode (persisted in a cookie). On tablet (768px-1023px): default to icon-only. On mobile (<768px): hidden by default, slides in as an overlay drawer when the hamburger button is tapped, with a semi-transparent backdrop.
       - _Content:_ App logo/title at the top, navigation links (Campaigns, Vault — contextual to active campaign, Character Sheet — if a character is loaded), a divider, then the Theme Toggle and a user/session indicator at the bottom.
       - _Active state:_ Current route highlighted with accent background and left border indicator.
