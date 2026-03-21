@@ -428,7 +428,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - **Viewport consistency:** Test at: 320px (small phone), 375px (iPhone), 414px (large phone), 768px (tablet portrait), 1024px (tablet landscape), 1280px (laptop), 1536px (desktop), 1920px (widescreen). Ensure no horizontal overflow at any breakpoint.
     - **Animations:** Use `prefers-reduced-motion: reduce` to disable transitions/animations for users who prefer reduced motion.
 
-- [ ] **19.14 Legacy CSS Cleanup, Performance Audit & Final QA:** Complete the migration by removing all legacy styles and verifying quality:
+- [x] **19.14 Legacy CSS Cleanup, Performance Audit & Final QA:** Complete the migration by removing all legacy styles and verifying quality:
     - Remove ALL `<style>` blocks from every `.svelte` component that has been migrated to Tailwind. No scoped CSS should remain except for truly component-specific animation keyframes or pseudo-element hacks that cannot be expressed in Tailwind.
     - Audit `src/app.css` to ensure the `@apply` directives (if used) are minimal and justified. Prefer direct utility classes in templates.
     - Run `npx tailwindcss --content` analysis to verify unused styles are purged. Check final CSS bundle size.
