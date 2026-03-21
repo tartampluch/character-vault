@@ -1020,7 +1020,7 @@ Capture:
 
 ### C-05k — Base Class Features: Wizard (`02_d20srd_core_class_features.json`)
 
-- [ ] **C-05k** — Convert Wizard class features
+- [x] **C-05k** — Convert Wizard class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
