@@ -475,4 +475,145 @@
 	.stat-modifier {
 		@apply text-sm font-medium text-text-secondary;
 	}
+
+	/* -------------------------------------------------------------------------
+	   DATA TABLE ROWS
+	   Consistent row styling for dense tabular data (skills matrix, feat list,
+	   item inventory). Uses alternating backgrounds in light theme and a subtle
+	   hover highlight that works in both themes.
+
+	   Usage:
+	     <table class="data-table">
+	       <thead><tr class="data-table-header-row">...</tr></thead>
+	       <tbody>
+	         <tr class="data-table-row">...</tr>
+	         ...
+	       </tbody>
+	     </table>
+
+	   Or with manual odd/even via class:
+	     <tr class="data-table-row data-table-row--odd">...</tr>
+	   ------------------------------------------------------------------------- */
+
+	/** Full table — resets browser defaults and sets base styles. */
+	.data-table {
+		@apply w-full text-sm text-left border-collapse;
+	}
+
+	/** thead row: uppercase labels, slightly elevated background. */
+	.data-table-header-row {
+		@apply border-b border-border;
+	}
+
+	/** thead cells */
+	.data-table-header-row th {
+		@apply px-2 py-1.5 text-xs font-semibold uppercase tracking-wider
+		       text-text-muted bg-surface-alt whitespace-nowrap;
+	}
+
+	/** tbody row: hover highlight + alternating row colours. */
+	.data-table-row {
+		@apply border-b border-border transition-colors duration-100
+		       hover:bg-surface-alt;
+	}
+
+	/**
+	 * Odd rows get a very subtle tinted background in light mode to create the
+	 * classic "zebra" striping effect. `.even:bg-surface` ensures even rows are
+	 * always on the plain surface. The :nth-child CSS pseudo-class works on
+	 * table rows just fine, but we also expose explicit class variants so that
+	 * virtual/dynamic lists (e.g. #each with index) can apply them without
+	 * relying solely on DOM order.
+	 */
+	.data-table-row:nth-child(odd),
+	.data-table-row--odd {
+		@apply bg-surface;
+	}
+
+	.data-table-row:nth-child(even),
+	.data-table-row--even {
+		@apply bg-surface-alt/40;
+	}
+
+	/** tbody cells — consistent padding and text color */
+	.data-table-row td {
+		@apply px-2 py-1.5 text-text-primary align-middle;
+	}
+
+	/**
+	 * Sticky first column — used in skills matrix / mobile horizontal-scroll tables.
+	 * Apply via: <td class="data-table-sticky-col">
+	 * Ensure the parent row's background is opaque (bg-surface) to mask scrolled
+	 * content showing through underneath.
+	 */
+	.data-table-sticky-col {
+		@apply sticky left-0 bg-inherit z-10;
+		/* Box shadow on the right edge signals that content is scrolled behind */
+		box-shadow: 2px 0 4px -2px var(--theme-border);
+	}
+
+	/* -------------------------------------------------------------------------
+	   HP BAR
+	   Semantic health bar component used in HealthAndXP.svelte.
+	   The progress bar changes color based on HP percentage via CSS custom
+	   properties injected by the component. Not a full component on its own —
+	   just the CSS infrastructure. The Svelte component sets --hp-pct.
+
+	   Usage:
+	     <div class="hp-bar" style="--hp-pct: 65%">
+	       <div class="hp-bar__fill"></div>
+	     </div>
+	   ------------------------------------------------------------------------- */
+	.hp-bar {
+		@apply w-full rounded-full overflow-hidden bg-surface-alt border border-border;
+		height: 12px;
+	}
+
+	.hp-bar__fill {
+		height: 100%;
+		width: var(--hp-pct, 100%);
+		/* Gradient: green (full) → yellow (medium) → red (critical) */
+		background: linear-gradient(
+			to right,
+			oklch(55% 0.16 145),   /* green    — 0%  of gradient */
+			oklch(72% 0.17 88),    /* yellow   — 50% of gradient */
+			oklch(55% 0.20 28)     /* red      — 100% of gradient */
+		);
+		border-radius: inherit;
+		transition: width 0.4s ease-out;
+	}
+
+	/* -------------------------------------------------------------------------
+	   XP / PROGRESS BAR
+	   Generic progress bar for XP, spell slot usage, etc.
+	   The component sets --progress-pct and optionally --progress-color.
+
+	   Usage:
+	     <div class="progress-bar" style="--progress-pct: 40%; --progress-color: var(--color-accent)">
+	       <div class="progress-bar__fill"></div>
+	     </div>
+	   ------------------------------------------------------------------------- */
+	.progress-bar {
+		@apply w-full rounded-full overflow-hidden bg-surface-alt border border-border;
+		height: 8px;
+	}
+
+	.progress-bar__fill {
+		height: 100%;
+		width: var(--progress-pct, 0%);
+		background: var(--progress-color, var(--theme-accent));
+		border-radius: inherit;
+		transition: width 0.4s ease-out;
+	}
+
+	/* -------------------------------------------------------------------------
+	   FOCUS TRAP OVERLAY
+	   A transparent full-screen overlay placed BEHIND modals and drawers.
+	   Prevents focus from escaping the modal via `inert` attribute on content
+	   behind it. The actual z-index management is in Modal.svelte.
+	   ------------------------------------------------------------------------- */
+	.modal-backdrop {
+		@apply fixed inset-0 z-50 bg-black/50;
+		backdrop-filter: blur(2px);
+	}
 }

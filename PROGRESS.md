@@ -353,7 +353,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - _Requirement:_ The sidebar state (expanded/collapsed) must be persisted in a cookie.
     - _Requirement:_ Use Tailwind `transition-all` with `duration-200` for smooth sidebar expand/collapse and drawer animations.
 
-- [ ] **19.5 Design System: Base Component Classes & Patterns:** Define a set of reusable Tailwind-based component patterns. These are NOT new Svelte components for simple cases — they are documented utility class combinations applied via Tailwind's `@apply` in `src/app.css` or used directly. For complex interactive patterns, create minimal Svelte wrapper components in `src/lib/components/ui/`.
+- [x] **19.5 Design System: Base Component Classes & Patterns:** Define a set of reusable Tailwind-based component patterns. These are NOT new Svelte components for simple cases — they are documented utility class combinations applied via Tailwind's `@apply` in `src/app.css` or used directly. For complex interactive patterns, create minimal Svelte wrapper components in `src/lib/components/ui/`.
     - **Cards/Panels:** `.card` class — `bg-surface rounded-lg border border-border shadow-sm` with dark variant. Used for all content sections.
     - **Section Headers:** Consistent pattern: Lucide icon (20px) + label text (`text-sm font-semibold uppercase tracking-wider text-muted`) + optional action buttons aligned right.
     - **Buttons:** Primary (`bg-accent text-white hover:bg-accent-600`), Secondary (`bg-surface-alt border border-border hover:bg-surface`), Danger (`bg-red-600`), Ghost (`hover:bg-surface-alt`). All with `rounded-md px-3 py-2 text-sm font-medium transition-colors`. Touch: minimum `h-11` on `pointer: coarse`.
