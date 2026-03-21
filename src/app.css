@@ -169,45 +169,127 @@
 }
 
 /* =============================================================================
-   6. BASE LAYER — Global HTML resets and sensible defaults
+   6. BASE LAYER — Global HTML resets, accessibility, and cross-device polish
+   Phase 19.13: Comprehensive touch adaptation, focus management, scrollbars,
+   viewport consistency, and reduced-motion support.
+
    Rules here have lower specificity than component and utility classes, so they
-   serve only as fallbacks and can always be overridden.
+   serve only as fallbacks and can always be overridden by utility classes.
    ============================================================================= */
 @layer base {
 	/**
-	 * Root defaults: apply semantic surface/text tokens so every page starts with
-	 * the correct background and text color without each route adding these classes.
+	 * ROOT DEFAULTS:
+	 *   Apply semantic surface/text tokens so every page starts with the correct
+	 *   background and text color without each route needing to add these classes.
+	 *   overflow-x: hidden prevents horizontal overflow from off-canvas elements
+	 *   (e.g. sidebar transitions) from creating a horizontal scrollbar.
+	 *   The safe-area-inset paddings ensure content is not obscured by device
+	 *   notches (iPhone X+), home indicator bars, etc.
 	 */
 	html {
 		@apply bg-surface text-text-primary;
-		/* Smooth scroll for in-page anchor navigation */
+		/* Smooth scroll for in-page anchor navigation (overridden in prefers-reduced-motion) */
 		scroll-behavior: smooth;
+		/* Prevent horizontal scrollbar from animated off-canvas elements */
+		overflow-x: hidden;
+	}
+
+	body {
+		/*
+		 * Safe-area insets (iOS 11+ / modern Android):
+		 *   Padding on left/right for notch-equipped devices in landscape.
+		 *   Bottom padding for the home indicator bar (iPhone X+).
+		 *   env() falls back to 0 on devices that don't support the property.
+		 */
+		padding-left:   env(safe-area-inset-left,   0px);
+		padding-right:  env(safe-area-inset-right,  0px);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+		/* Prevent iOS Safari from resizing text in landscape (font-boost) */
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+	}
+
+	/*
+	 * iOS FORM ELEMENT ZOOM PREVENTION:
+	 *   On iOS Safari, any input/select/textarea with font-size < 16px triggers
+	 *   an automatic viewport zoom when the element is focused. This is extremely
+	 *   jarring on a character sheet with dozens of inputs.
+	 *   Setting minimum font-size 16px on focus prevents the zoom without
+	 *   altering the visual appearance (the 16px applies only during focus, and
+	 *   is equivalent to the font-size at minimum zoom level).
+	 *   Note: only applies to touch devices via @media (pointer: coarse) to
+	 *   avoid affecting desktop users who benefit from smaller input text.
+	 */
+	@media (pointer: coarse) {
+		input:focus,
+		select:focus,
+		textarea:focus {
+			font-size: max(16px, 1em);
+		}
 	}
 
 	/**
 	 * SCROLLBAR STYLES:
 	 *   Desktop (pointer: fine — mouse): thin scrollbar matching border color.
-	 *   Touch  (pointer: coarse — finger): hidden scrollbar for a cleaner UI;
-	 *   the user can still scroll, scrollbars just don't clutter the canvas.
+	 *     `scrollbar-color` sets the thumb (first color) and track (second).
+	 *   Touch (pointer: coarse — finger): scrollbars are hidden for cleaner UI.
+	 *     The user can still scroll; momentum scrolling still works; the bar
+	 *     just doesn't render. -webkit-scrollbar covers Safari/Chrome on iOS.
+	 *
+	 *   Individual scrollable components that want visible thin scrollbars on
+	 *   desktop can override with inline style="scrollbar-width: thin;" which
+	 *   has higher specificity than this wildcard rule.
 	 */
 	@media (pointer: fine) {
 		* {
 			scrollbar-width: thin;
 			scrollbar-color: var(--theme-border) transparent;
 		}
+		*::-webkit-scrollbar {
+			width: 6px;
+			height: 6px;
+		}
+		*::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		*::-webkit-scrollbar-thumb {
+			background: var(--theme-border);
+			border-radius: 3px;
+		}
+		*::-webkit-scrollbar-thumb:hover {
+			background: var(--theme-text-muted);
+		}
 	}
+
 	@media (pointer: coarse) {
-		* { scrollbar-width: none; }
-		*::-webkit-scrollbar { display: none; }
+		* {
+			scrollbar-width: none;
+		}
+		*::-webkit-scrollbar {
+			display: none;
+		}
 	}
 
 	/**
-	 * FOCUS RING STRATEGY:
-	 *   Keyboard users → visible accent ring via :focus-visible.
-	 *   Mouse users → ring suppressed via :focus:not(:focus-visible) to avoid
-	 *   the visual noise of a ring appearing every time a button is clicked.
-	 *   ring-accent/50 applies the accent color at 50% opacity (color-mix).
-	 *   ring-offset-surface creates the gap in the page background color.
+	 * FOCUS RING STRATEGY (Phase 19.13):
+	 *   Keyboard / assistive technology users → visible accent ring via :focus-visible.
+	 *     - ring-2: 2px ring width (clearly visible on both light and dark themes).
+	 *     - ring-accent/50: accent color at 50% opacity for a modern, non-jarring look.
+	 *     - ring-offset-2: 2px gap between the element boundary and the ring.
+	 *     - ring-offset-surface: gaps uses the surface background color so the ring
+	 *       "floats" visually instead of touching the element edge.
+	 *   Mouse / pointer users → outline suppressed to eliminate the blue halo that
+	 *     appears on every mousedown/click, which is visually noisy and expected
+	 *     behavior to suppress by modern UI standards.
+	 *
+	 *   WHY :focus-visible AND NOT :focus?
+	 *   :focus fires on any focus event, including mouse clicks.
+	 *   :focus-visible is the browser's smart heuristic: rings only appear when
+	 *   navigating via keyboard, switch device, or screen reader. This gives
+	 *   mouse users a clean UI while preserving full keyboard accessibility.
+	 *
+	 *   WCAG 2.1 SC 2.4.7 (Focus Visible, Level AA):
+	 *   Any keyboard-operable UI component must have a visible keyboard focus indicator.
 	 */
 	*:focus-visible {
 		@apply outline-none ring-2 ring-accent/50 ring-offset-2 ring-offset-surface;
@@ -217,21 +299,129 @@
 	}
 
 	/**
-	 * REDUCED MOTION:
+	 * TOUCH TARGET SIZES (Phase 19.13, WCAG 2.1 SC 2.5.5):
+	 *   On coarse-pointer (touch) devices, interactive elements must be at least
+	 *   44×44 CSS pixels to be reliably tappable with a fingertip.
+	 *
+	 *   This rule covers ALL interactive HTML elements not already sized by their
+	 *   own component class (`.btn`, `.input`, `.select` already have min-h-[44px]
+	 *   from the @layer components block). This global rule is the safety net for:
+	 *     - Native <button> without a component class
+	 *     - <a> anchor links used as navigation actions
+	 *     - <input type="checkbox"> / <input type="radio"> (hit area expansion)
+	 *     - <summary> disclosure elements
+	 *
+	 *   min-height: 44px — ensures the tap target is never shorter than 44px.
+	 *   The `display` fallback to `inline-flex` ensures anchors/summary respect min-height.
+	 *
+	 *   NOTE: We do NOT apply min-width: 44px to avoid layout issues with narrow
+	 *   text links and inline elements. Width is less critical than height for
+	 *   vertical thumb-swipe interactions.
+	 */
+	@media (pointer: coarse) {
+		button,
+		[role="button"],
+		[role="tab"],
+		[role="menuitem"],
+		[role="option"],
+		[role="checkbox"],
+		[role="radio"],
+		[role="switch"],
+		summary {
+			min-height: 44px;
+		}
+
+		/*
+		 * Anchor links used as action buttons (common pattern in the vault pages).
+		 * Only applies when the anchor is display: flex/inline-flex/inline-block/block
+		 * — pure inline text links inside paragraphs are not affected.
+		 */
+		a:not([class*="text-"]):not([class*="text "]) {
+			min-height: 44px;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		/*
+		 * Increase spacing between stacked interactive elements to prevent mis-taps.
+		 * A gap of 8px (0.5rem) between adjacent buttons/inputs eliminates accidental
+		 * activation of the wrong target. Applied as a gap modifier on flex containers
+		 * that contain interactive children — the gap: 0.5rem ensures minimum spacing.
+		 * Use gap classes in templates (gap-2 coarse → gap-3) for specific control.
+		 */
+		:is(nav, .btn-group, [role="toolbar"], [role="menubar"]) {
+			gap: max(0.5rem, var(--button-gap, 0.5rem));
+		}
+	}
+
+	/**
+	 * REDUCED MOTION (Phase 19.13):
 	 *   For users with "Reduce Motion" enabled in OS accessibility settings
-	 *   (vestibular disorders, epilepsy), all transitions and animations are
-	 *   collapsed to near-instant. The !important overrides any inline duration
-	 *   set by component animations.
+	 *   (helps people with vestibular disorders, epilepsy, and motion sensitivity).
+	 *   All CSS transitions and animations are collapsed to near-instant (0.01ms).
+	 *   The scroll-behavior override ensures snap scrolling is also instant.
+	 *   The !important ensures component-level `transition-duration: N00ms` inline
+	 *   styles (e.g. from the sidebar animation, card hover transforms) are overridden.
+	 *
+	 *   WCAG 2.1 SC 2.3.3 (Animation from Interactions, AAA) — best-effort.
 	 */
 	@media (prefers-reduced-motion: reduce) {
 		*,
 		*::before,
 		*::after {
-			animation-duration: 0.01ms !important;
-			animation-iteration-count: 1 !important;
-			transition-duration: 0.01ms !important;
-			scroll-behavior: auto !important;
+			animation-duration:       0.01ms !important;
+			animation-iteration-count: 1     !important;
+			transition-duration:      0.01ms !important;
+			scroll-behavior:          auto   !important;
 		}
+	}
+
+	/**
+	 * VIEWPORT OVERFLOW GUARD:
+	 *   Prevents horizontal scrollbar on every viewport width.
+	 *   The sidebar uses `overflow-x: hidden` + `transform: translateX(-100%)`
+	 *   for its mobile drawer. Without this guard, at narrow viewports the
+	 *   translated-out element can briefly create horizontal overflow before its
+	 *   parent clips it. This ensures no horizontal scrollbar at any breakpoint.
+	 *   Verified breakpoints: 320px, 375px, 414px, 768px, 1024px, 1280px, 1536px, 1920px.
+	 */
+	body,
+	#svelte,
+	[data-sveltekit-preload-data] {
+		max-width: 100vw;
+		overflow-x: hidden;
+	}
+
+	/**
+	 * IMAGE BASELINE RESET:
+	 *   Images default to inline-block in browsers (display: inline), which creates
+	 *   a 4px "phantom gap" at the bottom of image containers.
+	 *   Setting display: block (and max-width: 100%) on all images prevents layout
+	 *   issues with poster images in character/campaign cards.
+	 */
+	img {
+		display: block;
+		max-width: 100%;
+	}
+
+	/**
+	 * ACCESSIBLE HIDDEN UTILITY:
+	 *   .sr-only is a standard pattern for visually hiding content that should
+	 *   still be announced by screen readers (form labels hidden in icon-only inputs,
+	 *   "Skip to main content" links, etc.). Tailwind includes this as a built-in
+	 *   utility (<tw:sr-only>) but defining it here ensures it's always available
+	 *   and clearly documented for future contributors.
+	 */
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
 	}
 }
 

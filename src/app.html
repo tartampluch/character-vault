@@ -2,7 +2,59 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!--
+			VIEWPORT META TAG — Phase 19.13 Cross-Device Polish
+			=====================================================
+			width=device-width, initial-scale=1:
+			  Standard responsive viewport. Prevents mobile browsers from rendering
+			  the page at a scaled-down desktop width.
+
+			viewport-fit=cover:
+			  Tells iOS Safari to render the page edge-to-edge under the device's
+			  notch / Dynamic Island / status bar. Without this, content is
+			  automatically inset inside the "safe area", leaving ugly black bars.
+			  With cover + the env(safe-area-inset-*) padding in app.css, we control
+			  exactly which content is inset and which bleeds to the edge (e.g. the
+			  campaign banner image can go full-bleed while nav/text is safe-inset).
+
+			  Support: iOS 11+ (iPhone X onwards), Chrome 69+, Firefox 69+.
+
+			minimum-scale=1, maximum-scale=5:
+			  Allows user zoom (accessibility requirement — never use maximum-scale=1).
+			  iOS will still zoom to 16px-equivalent on focused <input> elements smaller
+			  than 16px (handled by the CSS font-size: max(16px, 1em) rule in app.css).
+			  WCAG 1.4.4 requires text can be resized to 200% — not preventing zoom upholds this.
+		-->
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=5" />
+
+		<!--
+			THEME COLOR — Phase 19.13
+			=========================
+			Controls the browser UI chrome color (status bar, address bar) on:
+			  - Android Chrome / Edge (uses this meta tag directly)
+			  - iOS Safari / Chrome (uses the media-query variants)
+			  - PWA installed apps (title bar tint)
+
+			Two values with media queries:
+			  light: oklch(97.3% 0.003 264) ≈ #f5f5f8 — matches --theme-surface-alt in light mode
+			  dark:  oklch(13% 0.012 264)   ≈ #1a1b25 — matches --theme-surface in dark mode
+
+			These values match the AppShell top bar / header background so the browser
+			chrome blends seamlessly with the app shell (especially at the top on iOS).
+		-->
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f5f8" />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1a1b25" />
+
+		<!--
+			MOBILE WEB APP CAPABILITIES:
+			  apple-mobile-web-app-capable: Enables full-screen standalone mode when
+			  the app is added to the iOS Home Screen (no address bar shown).
+			  apple-mobile-web-app-status-bar-style: "black-translucent" makes the iOS
+			  status bar transparent + overlaps app content (requires viewport-fit=cover).
+		-->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 		<!--
 			FLASH-OF-WRONG-THEME (FOWT) PREVENTION — Phase 19.2
@@ -27,6 +79,12 @@
 			  2. If 'dark': adds 'dark' class to <html> immediately.
 			  3. If 'system': checks prefers-color-scheme and adds 'dark' only if OS is dark.
 			  4. If 'light' or no cookie: does nothing (light is the default).
+
+			ALSO UPDATES theme-color META:
+			  The meta tags above use prefers-color-scheme, which reflects the OS preference.
+			  If the user has manually chosen 'dark' or 'light' in the app (overriding OS),
+			  we update the meta tag's content dynamically to match the app's actual theme.
+			  This keeps the browser chrome color in sync with the app theme.
 
 			SECURITY NOTE:
 			  This script is intentionally minimal — no external dependencies, no async ops.
@@ -69,6 +127,21 @@
 					if (shouldBeDark) {
 						document.documentElement.classList.add('dark');
 						document.documentElement.style.colorScheme = 'dark';
+					}
+
+					// Step 4: Update theme-color meta to match actual applied theme
+					// This ensures browser chrome (status bar, address bar) matches the app.
+					// Only needed when the user's cookie overrides the OS preference.
+					var actuallyDark = shouldBeDark;
+					var themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+					if (themeMetas.length > 0) {
+						var targetColor = actuallyDark ? '#1a1b25' : '#f5f5f8';
+						// Update all theme-color metas to a single consistent value
+						// (replaces the media-query conditional pair with a single winner)
+						themeMetas.forEach(function(meta) {
+							meta.setAttribute('content', targetColor);
+							meta.removeAttribute('media'); // Remove media query since we now know
+						});
 					}
 				} catch (e) {
 					// Silently ignore errors (cookie parsing failures, missing matchMedia, etc.)

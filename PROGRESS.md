@@ -420,7 +420,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - **GM Dashboard** (`/campaigns/[id]/gm-dashboard`): Entity list as a sidebar list on desktop (responsive split view), drawer on mobile. Read-only character summary as stat cards. Per-character override text area.
     - _Requirement:_ All pages must have smooth theme transitions and consistent card/panel styling.
 
-- [ ] **19.13 Touch Adaptation, Accessibility & Cross-Device Polish:** Ensure the entire UI works flawlessly on touch devices and all screen sizes:
+- [x] **19.13 Touch Adaptation, Accessibility & Cross-Device Polish:** Ensure the entire UI works flawlessly on touch devices and all screen sizes:
     - **Touch targets:** Add a global CSS rule: `@media (pointer: coarse)` increases minimum interactive element height to `44px` (buttons, links, inputs, tab buttons, dropdown options, list items). Increase spacing between adjacent interactive elements to prevent mis-taps.
     - **Focus management:** All interactive elements must have visible focus rings (`ring-2 ring-accent/50 ring-offset-2`) for keyboard navigation. Focus rings hidden for mouse users (`:focus-visible` only).
     - **Responsive spacing:** Define a Tailwind plugin or utility pattern where padding/gaps increase on `pointer: coarse` (e.g., `gap-2` on desktop, `gap-3` on touch).
