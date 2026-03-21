@@ -1,16 +1,15 @@
 <!--
   @file src/lib/components/magic/SpecialAbilities.svelte
   @description Special Abilities and Domain Abilities panel.
+  Phase 19.10: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Filters the character's activeFeatures for class_feature or domain features
-    that have an `activation` type. Displays them as distinct cards with:
-      - Feature name and description snippet
-      - Activation type (Standard Action, 3/Day, etc.)
-      - A ResourcePool tick-off display for daily uses
-      - An ℹ button → FeatureModal
-
-  @see ARCHITECTURE.md Phase 12.4 for the specification.
+  LAYOUT:
+    Responsive card grid (auto-fill, min 200px). Each ability card:
+      - Accent top border.
+      - Name + activation type badge.
+      - 100-char description snippet.
+      - Resource cost indicator.
+      - Info + Use action buttons.
 -->
 
 <script lang="ts">
@@ -18,121 +17,80 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import type { ID } from '$lib/types/primitives';
-  import { IconAbilities } from '$lib/components/ui/icons';
+  import { IconAbilities, IconInfo } from '$lib/components/ui/icons';
 
   let modalId = $state<ID | null>(null);
 
-  const specialAbilities = $derived.by(() => {
-    return engine.character.activeFeatures
+  const specialAbilities = $derived.by(() =>
+    engine.character.activeFeatures
       .filter(afi => {
         if (!afi.isActive) return false;
         const feat = dataLoader.getFeature(afi.featureId);
         if (!feat) return false;
-        return (feat.category === 'class_feature' || feat.category === 'domain') &&
-               feat.activation !== undefined;
+        return (feat.category === 'class_feature' || feat.category === 'domain') && feat.activation !== undefined;
       })
-      .map(afi => ({
-        instanceId: afi.instanceId,
-        feature: dataLoader.getFeature(afi.featureId)!,
-      }));
-  });
+      .map(afi => ({ instanceId: afi.instanceId, feature: dataLoader.getFeature(afi.featureId)! }))
+  );
 </script>
 
-<div class="special-panel">
-   <h2 class="panel-title"><IconAbilities size={24} aria-hidden="true" /> Special Abilities</h2>
+<div class="card p-4 flex flex-col gap-3">
+
+  <div class="section-header border-b border-border pb-2">
+    <IconAbilities size={20} aria-hidden="true" />
+    <span>Special Abilities</span>
+  </div>
 
   {#if specialAbilities.length === 0}
-    <p class="empty-note">No special abilities found. Class and domain abilities with activation types will appear here.</p>
+    <p class="text-sm text-text-muted italic">
+      No special abilities found. Class and domain abilities with activation types will appear here.
+    </p>
   {:else}
-    <div class="abilities-grid">
+    <!-- Responsive card grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
       {#each specialAbilities as { instanceId, feature }}
-        <div class="ability-card">
-          <div class="ability-header">
-            <span class="ability-name">{engine.t(feature.label)}</span>
-            <span class="ability-action">{feature.activation?.actionType ?? '—'}</span>
+        <div
+          class="flex flex-col gap-2 p-3 rounded-lg border border-border bg-surface-alt"
+          style="border-top: 3px solid var(--theme-accent);"
+        >
+          <!-- Header: name + action type badge -->
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-sm font-semibold text-text-primary leading-tight">{engine.t(feature.label)}</span>
+            <span class="badge-accent text-[10px] shrink-0">{feature.activation?.actionType ?? '—'}</span>
           </div>
-          <p class="ability-desc">{engine.t(feature.description).slice(0, 100)}...</p>
+
+          <!-- Description snippet -->
+          <p class="text-xs text-text-secondary leading-snug line-clamp-2">
+            {engine.t(feature.description).slice(0, 100)}…
+          </p>
+
+          <!-- Resource cost -->
           {#if feature.activation?.resourceCost}
-            <span class="resource-cost">
+            <span class="text-xs text-yellow-500 dark:text-yellow-400">
               Cost: {feature.activation.resourceCost.cost} × {feature.activation.resourceCost.targetId}
             </span>
           {/if}
-          <div class="card-actions">
-            <button class="info-btn" onclick={() => (modalId = feature.id)} aria-label="Show details">ℹ</button>
-            <button class="btn-use" aria-label="Use {engine.t(feature.label)}">Use</button>
+
+          <!-- Action buttons -->
+          <div class="flex gap-1.5 mt-auto pt-1">
+            <button
+              class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
+              onclick={() => (modalId = feature.id)}
+              aria-label="Show details"
+              type="button"
+            ><IconInfo size={14} aria-hidden="true" /></button>
+            <button
+              class="flex-1 btn-primary text-xs py-1.5"
+              aria-label="Use {engine.t(feature.label)}"
+              type="button"
+            >Use</button>
           </div>
         </div>
       {/each}
     </div>
   {/if}
+
 </div>
 
 {#if modalId}
   <FeatureModal featureId={modalId} onclose={() => (modalId = null)} />
 {/if}
-
-<style>
-  .special-panel {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1.25rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-  }
-
-  .panel-title { margin: 0 0 1rem; font-size: 1rem; color: #c4b5fd; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
-  .empty-note { font-size: 0.82rem; color: #4a4a6a; font-style: italic; }
-
-  .abilities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .ability-card {
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-top: 3px solid #7c3aed;
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .ability-header { display: flex; justify-content: space-between; align-items: center; }
-  .ability-name { font-size: 0.9rem; font-weight: 600; color: #e0e0f0; }
-  .ability-action { font-size: 0.7rem; background: #1c1a3a; color: #c4b5fd; border-radius: 3px; padding: 0.1rem 0.35rem; }
-  .ability-desc { font-size: 0.78rem; color: #6080a0; margin: 0; line-height: 1.4; }
-  .resource-cost { font-size: 0.72rem; color: #fbbf24; }
-
-  .card-actions { display: flex; gap: 0.4rem; margin-top: 0.25rem; }
-
-  .info-btn {
-    background: transparent;
-    border: 1px solid #30363d;
-    color: #7c3aed;
-    border-radius: 4px;
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 0.72rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .info-btn:hover { background: #1c1a3a; }
-
-  .btn-use {
-    flex: 1;
-    background: #7c3aed;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.78rem;
-    cursor: pointer;
-  }
-  .btn-use:hover { background: #6d28d9; }
-</style>

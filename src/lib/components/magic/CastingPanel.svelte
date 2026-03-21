@@ -1,15 +1,12 @@
 <!--
   @file src/lib/components/magic/CastingPanel.svelte
   @description Spell preparation and casting panel for active spellcasters.
+  Phase 19.10: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Groups known spells by level (0-9). For each spell:
-      - Prepare counter (Vancian: Wizard/Cleric) or Cast button (Sorcerer/Psion).
-      - Clicking a spell name opens a spell detail modal.
-      - Spell Save DC: 10 + spell level + key ability modifier.
-      - "Dice Roll" button for damage/healing spells.
-
-  @see ARCHITECTURE.md Phase 12.3 for the specification.
+  LAYOUT:
+    Section header.
+    Known spells grouped by level in collapsible-like sections.
+    Each level group: accent header with DC. Each spell row: name, school, info, dice, cast buttons.
 -->
 
 <script lang="ts">
@@ -23,21 +20,18 @@
   import { IconTabMagic, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   let modalSpellId = $state<ID | null>(null);
-  let diceSpellId = $state<ID | null>(null);
+  let diceSpellId  = $state<ID | null>(null);
 
-  /** Known spells (magic features in activeFeatures). */
-  const knownSpells = $derived.by(() => {
-    return engine.character.activeFeatures
+  const knownSpells = $derived.by(() =>
+    engine.character.activeFeatures
       .filter(afi => {
         if (!afi.isActive) return false;
-        const feat = dataLoader.getFeature(afi.featureId);
-        return feat?.category === 'magic';
+        return dataLoader.getFeature(afi.featureId)?.category === 'magic';
       })
       .map(afi => dataLoader.getFeature(afi.featureId) as MagicFeature)
-      .filter(Boolean);
-  });
+      .filter(Boolean)
+  );
 
-  /** Spells grouped by level. */
   const spellsByLevel = $derived.by(() => {
     const groups: Record<number, MagicFeature[]> = {};
     for (const spell of knownSpells) {
@@ -48,27 +42,17 @@
     return groups;
   });
 
-  const sortedLevels = $derived(Object.keys(spellsByLevel).map(Number).sort((a,b) => a-b));
+  const sortedLevels = $derived(Object.keys(spellsByLevel).map(Number).sort((a, b) => a - b));
 
-  /**
-   * Spell Save DC delegated to the GameEngine (no game logic in components).
-   * GameEngine.getSpellSaveDC() implements D&D 3.5 formula: 10 + spell level + ability mod.
-   */
   function getSpellDC(spellLevel: number): number {
     return engine.getSpellSaveDC(spellLevel);
   }
 
-  /** Minimal pipeline for spell damage rolls. */
   function buildSpellPipeline(): StatisticPipeline {
     return {
-      id: 'synthetic_spell_roll',
-      label: { en: 'Spell' },
-      baseValue: 0,
-      activeModifiers: [],
-      situationalModifiers: [],
-      totalBonus: engine.phase_casterLevel,
-      totalValue: engine.phase_casterLevel,
-      derivedModifier: 0,
+      id: 'synthetic_spell_roll', label: { en: 'Spell' }, baseValue: 0,
+      activeModifiers: [], situationalModifiers: [],
+      totalBonus: engine.phase_casterLevel, totalValue: engine.phase_casterLevel, derivedModifier: 0,
     };
   }
 
@@ -77,32 +61,60 @@
   );
 </script>
 
-<div class="casting-panel">
-   <h2 class="panel-title"><IconTabMagic size={24} aria-hidden="true" /> Spells & Powers</h2>
+<div class="card p-4 flex flex-col gap-3">
+
+  <div class="section-header border-b border-border pb-2">
+    <IconTabMagic size={20} aria-hidden="true" />
+    <span>Spells &amp; Powers</span>
+  </div>
 
   {#if knownSpells.length === 0}
-    <p class="empty-note">No spells known. Use the Grimoire to learn spells.</p>
+    <p class="text-sm text-text-muted italic">No spells known. Use the Grimoire to learn spells.</p>
   {:else}
     {#each sortedLevels as level}
-      <div class="spell-level-group">
-        <h3 class="level-header">
-          {level === 0 ? 'Cantrips (0)' : `Level ${level}`}
-          <span class="dc-hint">Save DC: {getSpellDC(level)}</span>
-        </h3>
+      <div class="flex flex-col gap-1">
+
+        <!-- Level header with DC -->
+        <div class="flex items-center justify-between px-2 py-1 rounded bg-accent/10 border border-accent/20">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent">
+            {level === 0 ? 'Cantrips (0)' : `Level ${level}`}
+          </span>
+          <span class="text-[10px] text-text-muted">Save DC: {getSpellDC(level)}</span>
+        </div>
+
+        <!-- Spell rows within this level -->
         {#each spellsByLevel[level] ?? [] as spell}
-          <div class="spell-row">
-            <span class="spell-name">{engine.t(spell.label)}</span>
-            <span class="spell-school">{spell.school}</span>
-            <button class="btn-icon info" onclick={() => (modalSpellId = spell.id)} aria-label="Details"><IconInfo size={16} aria-hidden="true" /></button>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surface-alt transition-colors duration-100">
+            <span class="flex-1 text-sm text-text-primary truncate">{engine.t(spell.label)}</span>
+            <span class="text-[10px] text-text-muted shrink-0">{spell.school}</span>
+
+            <button
+              class="btn-ghost p-1 text-accent hover:bg-accent/10 shrink-0"
+              onclick={() => (modalSpellId = spell.id)}
+              aria-label="Details"
+              type="button"
+            ><IconInfo size={13} aria-hidden="true" /></button>
+
             {#if spell.grantedModifiers?.some(m => m.targetId.includes('damage'))}
-              <button class="btn-icon dice" onclick={() => (diceSpellId = spell.id)} aria-label="Roll damage"><IconDiceRoll size={16} aria-hidden="true" /></button>
+              <button
+                class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10 shrink-0"
+                onclick={() => (diceSpellId = spell.id)}
+                aria-label="Roll damage"
+                type="button"
+              ><IconDiceRoll size={13} aria-hidden="true" /></button>
             {/if}
-            <button class="btn-cast" aria-label="Cast {engine.t(spell.label)}">Cast</button>
+
+            <button
+              class="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20 transition-colors duration-150"
+              aria-label="Cast {engine.t(spell.label)}"
+              type="button"
+            >Cast</button>
           </div>
         {/each}
       </div>
     {/each}
   {/if}
+
 </div>
 
 {#if modalSpellId}
@@ -117,79 +129,3 @@
     onclose={() => (diceSpellId = null)}
   />
 {/if}
-
-<style>
-  .casting-panel {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1.25rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-  }
-
-  .panel-title { margin: 0 0 1rem; font-size: 1rem; color: #c4b5fd; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
-
-  .empty-note { font-size: 0.82rem; color: #4a4a6a; font-style: italic; }
-
-  .spell-level-group { margin-bottom: 1rem; }
-
-  .level-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.82rem;
-    color: #7c3aed;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid #21262d;
-    padding-bottom: 0.25rem;
-    margin: 0 0 0.5rem;
-  }
-
-  .dc-hint { font-size: 0.72rem; color: #6080a0; }
-
-  .spell-row {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.25rem 0.3rem;
-    border-radius: 4px;
-  }
-
-  .spell-row:hover { background: #0d1117; }
-
-  .spell-name { flex: 1; font-size: 0.85rem; color: #e0e0f0; }
-  .spell-school { font-size: 0.72rem; color: #6080a0; }
-
-  .btn-icon {
-    background: transparent;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    width: 1.4rem;
-    height: 1.4rem;
-    font-size: 0.7rem;
-    cursor: pointer;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .btn-icon.info { color: #7c3aed; }
-  .btn-icon.info:hover { background: #1c1a3a; }
-  .btn-icon.dice { color: #fbbf24; }
-  .btn-icon.dice:hover { background: #1a1a00; }
-
-  .btn-cast {
-    background: #1c1a3a;
-    color: #c4b5fd;
-    border: 1px solid #4c35a0;
-    border-radius: 4px;
-    padding: 0.15rem 0.5rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .btn-cast:hover { background: #2d1b69; }
-</style>

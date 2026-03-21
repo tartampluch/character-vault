@@ -398,7 +398,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - `DamageReduction.svelte`: DR list as cards with delete action. Builder form as a compact inline form.
     - _Layout:_ On desktop (≥1280px), arrange in a 2-column grid: left column (Health, AC, Core Combat), right column (Attacks, Movement, Resistances, DR). On mobile: single column stacked.
 
-- [ ] **19.10 Feats & Magic Tabs Migration:** Migrate Feats and Magic tab components to Tailwind CSS:
+- [x] **19.10 Feats & Magic Tabs Migration:** Migrate Feats and Magic tab components to Tailwind CSS:
     - **Feats Tab:**
       - `FeatsTab.svelte`: Header with feat counter (available/left) as badge indicators. Granted feats section with `Lock` icon (read-only). Selected feats with `Trash2` delete action. Responsive card grid.
       - `FeatSelectionModal.svelte`: On mobile: full-screen modal with sticky search bar at top. On desktop: large centered modal. Search input with `Search` icon. Tag badges for feat categories. Prerequisites: `Check` (green) for met, `X` (red) for unmet, with `errorMessage` tooltip. Scrollable feat list.
