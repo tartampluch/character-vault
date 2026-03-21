@@ -1,29 +1,12 @@
 <!--
   @file src/routes/campaigns/+page.svelte
   @description Campaign Hub — the list of all available campaigns.
+  Phase 19.12: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Displays a responsive grid of campaign cards. Each card shows the campaign's
-    poster image, title, and a brief description.
-
-    The "Create Campaign" button is ONLY visible to GMs (isGameMaster === true).
-    This is enforced by reading `sessionContext.isGameMaster` — no game logic,
-    just conditional rendering based on role.
-
-  ARCHITECTURE PATTERN:
-    This component is deliberately "dumb":
-      - Reads campaign data from `campaignStore` ($state).
-      - Reads role from `sessionContext` ($state).
-      - Dispatches intents via `campaignStore` methods.
-      - No D&D rules. No game logic. Just data display + user intent dispatching.
-
-  NAVIGATION:
-    From ARCHITECTURE.md section 20:
-      /campaigns → Campaign Hub (this page)
-      /campaigns/[id] → Campaign Details (Phase 6.4)
-
-  @see src/lib/engine/CampaignStore.svelte.ts for campaign state.
-  @see src/lib/engine/SessionContext.svelte.ts for GM role check.
+  LAYOUT: max-w-5xl centered, responsive grid of campaign cards.
+  Campaign cards: poster image (160px tall) + card body + hover CTA.
+  "Create Campaign" button: visible only to GMs.
+  Dev toolbar: always shown in DEV builds for role switching.
 -->
 
 <script lang="ts">
@@ -32,510 +15,186 @@
   import { goto } from '$app/navigation';
   import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
 
-  // ============================================================
-  // STATE
-  // ============================================================
-
-  /** Controls visibility of the "Create Campaign" input form. */
-  let showCreateForm = $state(false);
-  /** The title input value for the new campaign. */
+  let showCreateForm   = $state(false);
   let newCampaignTitle = $state('');
 
-  // ============================================================
-  // ACTIONS
-  // ============================================================
-
-  /**
-   * Creates a new campaign and navigates to its details page.
-   * Only callable when `sessionContext.isGameMaster === true` (button hidden otherwise).
-   */
   function handleCreateCampaign() {
     if (!newCampaignTitle.trim()) return;
-
-    const campaign = campaignStore.createCampaign(
-      newCampaignTitle.trim(),
-      sessionContext.currentUserId
-    );
-
-    // Reset form
+    const campaign = campaignStore.createCampaign(newCampaignTitle.trim(), sessionContext.currentUserId);
     newCampaignTitle = '';
     showCreateForm = false;
-
-    // Navigate to the new campaign's details page
     goto(`/campaigns/${campaign.id}`);
   }
 
-  /**
-   * Navigates to a campaign's details page.
-   */
   function openCampaign(campaignId: string) {
     sessionContext.setActiveCampaign(campaignId);
     goto(`/campaigns/${campaignId}`);
   }
 </script>
 
-<div class="campaign-hub">
-  <!-- ======================================================== -->
-  <!-- HEADER -->
-  <!-- ======================================================== -->
-  <header class="hub-header">
-    <div class="header-content">
-       <h1 class="hub-title"><IconCampaign size={24} aria-hidden="true" /> Your Campaigns</h1>
-      <p class="hub-subtitle">
-        Choose a campaign to begin, or create a new one.
-      </p>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+
+  <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
+  <header class="flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <h1 class="flex items-center gap-2 text-3xl font-bold text-text-primary">
+        <IconCampaign size={28} aria-hidden="true" />
+        Your Campaigns
+      </h1>
+      <p class="mt-1 text-text-muted text-sm">Choose a campaign to begin, or create a new one.</p>
     </div>
 
-    <!-- "Create Campaign" button — only visible to GMs -->
     {#if sessionContext.isGameMaster}
       <button
-        class="btn-create"
+        class="btn-primary gap-1 shrink-0"
         onclick={() => (showCreateForm = !showCreateForm)}
         aria-expanded={showCreateForm}
+        type="button"
       >
-        {#if showCreateForm}<IconClose size={16} aria-hidden="true" /> Cancel{:else}<IconAdd size={16} aria-hidden="true" /> Create Campaign{/if}
+        {#if showCreateForm}
+          <IconClose size={16} aria-hidden="true" /> Cancel
+        {:else}
+          <IconAdd size={16} aria-hidden="true" /> Create Campaign
+        {/if}
       </button>
     {/if}
   </header>
 
-  <!-- ======================================================== -->
-  <!-- CREATE CAMPAIGN FORM (GM only, inline) -->
-  <!-- ======================================================== -->
+  <!-- ── CREATE FORM (GM only, inline) ────────────────────────────────────── -->
   {#if showCreateForm && sessionContext.isGameMaster}
-    <div class="create-form" role="form" aria-label="Create new campaign">
-      <h2>New Campaign</h2>
-      <div class="form-row">
-        <label for="campaign-title">Campaign Title</label>
+    <div class="card p-5 flex flex-col gap-4" role="form" aria-label="Create new campaign">
+      <h2 class="text-base font-semibold text-accent">New Campaign</h2>
+      <div class="flex flex-col gap-1.5">
+        <label for="campaign-title" class="text-sm text-text-secondary">Campaign Title</label>
         <input
           id="campaign-title"
           type="text"
           bind:value={newCampaignTitle}
-          placeholder="e.g. Reign of Winter, Curse of Strahd..."
+          placeholder="e.g. Reign of Winter, Curse of Strahd…"
           maxlength="80"
-          autofocus
+          class="input max-w-lg"
           onkeydown={(e) => e.key === 'Enter' && handleCreateCampaign()}
-          class="title-input"
         />
       </div>
-      <div class="form-actions">
+      <div class="flex gap-2">
         <button
-          class="btn-confirm"
+          class="btn-primary"
           onclick={handleCreateCampaign}
           disabled={!newCampaignTitle.trim()}
-        >
-          Create Campaign
-        </button>
-        <button class="btn-cancel" onclick={() => (showCreateForm = false)}>
-          Cancel
-        </button>
+          type="button"
+        >Create Campaign</button>
+        <button class="btn-secondary" onclick={() => (showCreateForm = false)} type="button">Cancel</button>
       </div>
     </div>
   {/if}
 
-  <!-- ======================================================== -->
-  <!-- CAMPAIGN GRID -->
-  <!-- ======================================================== -->
+  <!-- ── CAMPAIGN GRID or EMPTY STATE ─────────────────────────────────────── -->
   {#if campaignStore.campaigns.length === 0}
-    <!-- Empty state -->
-    <div class="empty-state">
-       <p class="empty-icon"><IconCampaign size={64} aria-hidden="true" /></p>
-      <h2>No campaigns yet</h2>
-      <p>
+    <div class="flex flex-col items-center gap-3 py-20 text-center text-text-muted">
+      <IconCampaign size={64} class="opacity-20" aria-hidden="true" />
+      <h2 class="text-xl font-semibold text-text-secondary">No campaigns yet</h2>
+      <p class="text-sm max-w-sm">
         {#if sessionContext.isGameMaster}
-           Click <strong>"+ Create Campaign"</strong> above to start your first adventure.
+          Click <strong class="text-text-primary">"+ Create Campaign"</strong> above to start your first adventure.
         {:else}
           Your Game Master hasn't created a campaign yet. Check back later!
         {/if}
       </p>
     </div>
+
   {:else}
-    <div class="campaign-grid">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {#each campaignStore.campaigns as campaign (campaign.id)}
         <button
-          class="campaign-card"
+          class="group flex flex-col text-left rounded-xl border border-border bg-surface
+                 overflow-hidden transition-all duration-200
+                 hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
+                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           onclick={() => openCampaign(campaign.id)}
           aria-label="Open campaign: {campaign.title}"
+          type="button"
         >
-          <!-- Poster image (fallback placeholder) -->
-          <div class="card-poster">
+          <!-- Poster / placeholder -->
+          <div class="relative w-full h-40 shrink-0 overflow-hidden">
             {#if campaign.posterUrl}
               <img
                 src={campaign.posterUrl}
                 alt={campaign.title}
-                class="poster-image"
+                class="w-full h-full object-cover"
               />
             {:else}
-              <!-- Placeholder with themed gradient -->
-              <div class="poster-placeholder" aria-hidden="true">
-                <span class="poster-icon"><IconCampaign size={48} aria-hidden="true" /></span>
+              <div
+                class="w-full h-full flex items-center justify-center"
+                style="background: linear-gradient(135deg, oklch(25% 0.08 280) 0%, oklch(30% 0.15 280) 60%, oklch(20% 0.10 280) 100%);"
+                aria-hidden="true"
+              >
+                <IconCampaign size={48} class="opacity-30 text-accent" />
               </div>
             {/if}
+
+            <!-- Hover CTA overlay -->
+            <div class="absolute inset-0 flex items-end justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150" aria-hidden="true">
+              <span class="text-xs font-medium text-accent bg-surface/80 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                Open →
+              </span>
+            </div>
           </div>
 
-          <!-- Card content -->
-          <div class="card-body">
-            <h2 class="card-title">{campaign.title}</h2>
+          <!-- Card body -->
+          <div class="flex flex-col gap-2 p-4 flex-1">
+            <h2 class="text-base font-semibold text-text-primary leading-tight">{campaign.title}</h2>
 
             {#if campaign.description}
-              <p class="card-description">{campaign.description}</p>
+              <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{campaign.description}</p>
             {/if}
 
-            <!-- Chapter progress indicator -->
+            <!-- Chapter progress -->
             {#if campaign.chapters.length > 0}
               {@const completedCount = campaign.chapters.filter(ch => ch.isCompleted).length}
-              <div class="chapter-progress">
-                <span class="progress-label">
-                  {completedCount}/{campaign.chapters.length} chapters
-                </span>
+              {@const pct = Math.round((completedCount / campaign.chapters.length) * 100)}
+              <div class="flex items-center gap-2 mt-auto pt-1">
+                <span class="text-[10px] text-text-muted shrink-0">{completedCount}/{campaign.chapters.length}</span>
                 <div
-                  class="progress-bar"
+                  class="flex-1 h-1 bg-border rounded-full overflow-hidden"
                   role="progressbar"
                   aria-valuenow={completedCount}
                   aria-valuemin={0}
                   aria-valuemax={campaign.chapters.length}
                 >
                   <div
-                    class="progress-fill"
-                    style="width: {campaign.chapters.length > 0 ? (completedCount / campaign.chapters.length) * 100 : 0}%"
+                    class="h-full bg-accent rounded-full transition-all duration-300"
+                    style="width: {pct}%"
                   ></div>
                 </div>
+                <span class="text-[10px] text-accent shrink-0">{pct}%</span>
               </div>
             {/if}
           </div>
-
-          <!-- Hover cue -->
-          <div class="card-cta" aria-hidden="true">Open →</div>
         </button>
       {/each}
     </div>
   {/if}
 
-  <!-- Dev toolbar (visible only in development — helps test role switching) -->
-  <div class="dev-toolbar" aria-label="Developer toolbar (development only)">
-     <span class="dev-label">Dev:</span>
-     <span class="role-badge" class:gm={sessionContext.isGameMaster}>
-       {#if sessionContext.isGameMaster}<IconGMDashboard size={12} aria-hidden="true" /> GM{:else}<IconCharacter size={12} aria-hidden="true" /> Player{/if}
-      ({sessionContext.currentUserDisplayName})
-    </span>
-    <button
-      class="dev-btn"
-      onclick={() =>
-        sessionContext.isGameMaster
-          ? sessionContext.switchToPlayer()
-          : sessionContext.switchToGM()}
-    >
-      Switch to {sessionContext.isGameMaster ? 'Player' : 'GM'} view
-    </button>
-  </div>
+  <!-- ── DEV TOOLBAR ───────────────────────────────────────────────────────── -->
+  {#if import.meta.env.DEV}
+    <div class="flex items-center gap-3 flex-wrap mt-4 p-3 rounded-lg border border-dashed border-border text-xs text-text-muted" aria-label="Developer toolbar">
+      <span class="font-bold">Dev:</span>
+      <span class="{sessionContext.isGameMaster ? 'badge-accent' : 'badge-gray'} flex items-center gap-1">
+        {#if sessionContext.isGameMaster}
+          <IconGMDashboard size={11} aria-hidden="true" /> GM
+        {:else}
+          <IconCharacter size={11} aria-hidden="true" /> Player
+        {/if}
+        ({sessionContext.currentUserDisplayName})
+      </span>
+      <button
+        class="btn-ghost px-2 py-1 text-xs ml-auto"
+        onclick={() => sessionContext.isGameMaster ? sessionContext.switchToPlayer() : sessionContext.switchToGM()}
+        type="button"
+      >
+        Switch to {sessionContext.isGameMaster ? 'Player' : 'GM'} view
+      </button>
+    </div>
+  {/if}
+
 </div>
-
-<style>
-  .campaign-hub {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-    min-height: 100vh;
-    background: #0d1117;
-  }
-
-  /* -------------------------------- HEADER -------------------------------- */
-  .hub-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .hub-title {
-    font-size: 2rem;
-    margin: 0 0 0.25rem;
-    color: #f0f0ff;
-  }
-
-  .hub-subtitle {
-    color: #8080a0;
-    margin: 0;
-    font-size: 0.95rem;
-  }
-
-  .btn-create {
-    background: #7c3aed;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.65rem 1.4rem;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .btn-create:hover {
-    background: #6d28d9;
-  }
-
-  /* ----------------------------- CREATE FORM ----------------------------- */
-  .create-form {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .create-form h2 {
-    margin: 0 0 1rem;
-    font-size: 1.1rem;
-    color: #c4b5fd;
-  }
-
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
-  }
-
-  .form-row label {
-    font-size: 0.85rem;
-    color: #8080a0;
-  }
-
-  .title-input {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    color: #e0e0ff;
-    padding: 0.5rem 0.75rem;
-    font-size: 1rem;
-    width: 100%;
-    max-width: 480px;
-    box-sizing: border-box;
-  }
-
-  .title-input:focus {
-    outline: 2px solid #7c3aed;
-    border-color: transparent;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  .btn-confirm {
-    background: #7c3aed;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-
-  .btn-confirm:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .btn-cancel {
-    background: transparent;
-    color: #8080a0;
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-
-  /* ------------------------------ EMPTY STATE ------------------------------ */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: #8080a0;
-  }
-
-  .empty-icon {
-    font-size: 3rem;
-    margin: 0 0 0.5rem;
-  }
-
-  .empty-state h2 {
-    color: #c0c0d0;
-    margin-bottom: 0.5rem;
-  }
-
-  /* ------------------------------- GRID ----------------------------------- */
-  .campaign-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  /* ------------------------------ CARD ------------------------------------ */
-  .campaign-card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    text-align: left;
-    padding: 0;
-    transition: border-color 0.2s, transform 0.15s;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .campaign-card:hover {
-    border-color: #7c3aed;
-    transform: translateY(-2px);
-  }
-
-  /* Poster */
-  .card-poster {
-    width: 100%;
-    height: 160px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .poster-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .poster-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1e1b4b 0%, #2d1b69 60%, #1c1033 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .poster-icon {
-    font-size: 3rem;
-    opacity: 0.5;
-  }
-
-  /* Card body */
-  .card-body {
-    padding: 1rem 1.25rem;
-    flex: 1;
-  }
-
-  .card-title {
-    font-size: 1.15rem;
-    margin: 0 0 0.5rem;
-    color: #f0f0ff;
-  }
-
-  .card-description {
-    font-size: 0.85rem;
-    color: #8080a0;
-    margin: 0 0 0.75rem;
-    line-height: 1.5;
-    /* Clamp to 3 lines */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Chapter progress */
-  .chapter-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .progress-label {
-    font-size: 0.75rem;
-    color: #6080a0;
-    white-space: nowrap;
-  }
-
-  .progress-bar {
-    flex: 1;
-    height: 4px;
-    background: #30363d;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: #7c3aed;
-    border-radius: 2px;
-    transition: width 0.3s;
-  }
-
-  /* CTA overlay */
-  .card-cta {
-    position: absolute;
-    bottom: 0.75rem;
-    right: 1rem;
-    font-size: 0.8rem;
-    color: #7c3aed;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .campaign-card:hover .card-cta {
-    opacity: 1;
-  }
-
-  /* ----------------------------- DEV TOOLBAR ------------------------------ */
-  .dev-toolbar {
-    margin-top: 3rem;
-    padding: 0.6rem 1rem;
-    background: #161b22;
-    border: 1px dashed #30363d;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.8rem;
-    color: #6080a0;
-  }
-
-  .dev-label {
-    font-weight: bold;
-  }
-
-  .role-badge {
-    background: #0d3060;
-    color: #93c5fd;
-    padding: 0.15rem 0.6rem;
-    border-radius: 12px;
-    border: 1px solid #1e4080;
-  }
-
-  .role-badge.gm {
-    background: #1c1a3a;
-    color: #c4b5fd;
-    border-color: #4c35a0;
-  }
-
-  .dev-btn {
-    background: transparent;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    color: #6080a0;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    margin-left: auto;
-  }
-
-  .dev-btn:hover {
-    background: #1c2030;
-  }
-</style>

@@ -412,7 +412,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - `Encumbrance.svelte`: Full-width encumbrance bar with three tier markers (Light/Medium/Heavy). Current weight displayed numerically. Wealth section as a compact inline form (CP/SP/GP/PP inputs with coin icons).
     - _Mobile:_ Item actions accessible via swipe-to-reveal or action menu (tap → action sheet). Equipment slot validation warnings as toast-style notifications.
 
-- [ ] **19.12 Campaign Hub, Vault & GM Tools Migration:** Migrate all non-character-sheet pages to Tailwind CSS:
+- [x] **19.12 Campaign Hub, Vault & GM Tools Migration:** Migrate all non-character-sheet pages to Tailwind CSS:
     - **Campaign Hub** (`/campaigns`): Campaign cards as large image-topped cards in a responsive grid. "Create Campaign" button with `Plus` icon, visible only for GM.
     - **Campaign Details** (`/campaigns/[id]`): Banner image full-width. Chapter list with `Check` icons for completion status. GM controls for chapter management.
     - **Character Vault** (`/campaigns/[id]/vault`): Character cards in responsive grid. Poster image with fallback avatar (Lucide `User` icon). Level badge. Class/race subtitle. Empty state with illustration and CTA buttons.

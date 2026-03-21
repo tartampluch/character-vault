@@ -1,32 +1,11 @@
 <!--
   @file src/routes/campaigns/[id]/+page.svelte
-  @description Campaign Details page — banner, summary, and chapters/acts.
+  @description Campaign Details page — banner, summary, chapters.
+  Phase 19.12: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Displays the full details of one campaign:
-      1. The campaign banner image (fallback placeholder if absent).
-      2. The campaign title and description.
-      3. The list of Chapters/Acts with their completion status.
-    
-    If `isGameMaster === true`, each chapter shows a checkbox to toggle
-    `isCompleted`. This is the GM's primary tool for tracking story progress.
-    Players can see chapter titles but cannot change completion status.
-
-  ARCHITECTURE PATTERN:
-    - "Dumb" component: reads from `campaignStore` and `sessionContext`.
-    - Dispatches intents via `campaignStore.toggleChapterCompleted()`.
-    - No game logic. No D&D rules.
-    - The URL parameter `[id]` is read from `$page.params.id`.
-
-  NAVIGATION:
-    From ARCHITECTURE.md section 20:
-      /campaigns/[id] → This page
-      /campaigns/[id]/vault → Character Vault (Phase 7.3)
-      /campaigns/[id]/settings → GM Settings (Phase 15.1, GM only)
-      /campaigns/[id]/gm-dashboard → GM Dashboard (Phase 15.3, GM only)
-
-  @see src/lib/engine/CampaignStore.svelte.ts for campaign/chapter state.
-  @see src/lib/engine/SessionContext.svelte.ts for GM role check.
+  LAYOUT:
+    Full-width banner image (220px) with gradient overlay and title/back-link.
+    Below: action bar, description, chapter list, rule sources (GM only).
 -->
 
 <script lang="ts">
@@ -35,217 +14,168 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess } from '$lib/components/ui/icons';
+  import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
 
-  // ============================================================
-  // DERIVED DATA
-  // ============================================================
+  const campaignId = $derived($page.params.id ?? '');
+  const campaign   = $derived(campaignStore.getCampaign(campaignId));
 
-  /**
-   * The campaign ID from the URL route parameter.
-   * SvelteKit provides this via `$page.params.id`.
-   */
-  const campaignId = $derived($page.params.id);
-
-  /**
-   * The full campaign object looked up by URL id.
-   * `undefined` if the ID doesn't exist (handled in template).
-   */
-  const campaign = $derived(campaignStore.getCampaign(campaignId));
-
-  /**
-   * Overall chapter completion statistics.
-   */
   const chapterStats = $derived.by(() => {
     if (!campaign) return { total: 0, completed: 0, percent: 0 };
-    const total = campaign.chapters.length;
+    const total     = campaign.chapters.length;
     const completed = campaign.chapters.filter(ch => ch.isCompleted).length;
-    const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-    return { total, completed, percent };
+    return { total, completed, percent: total > 0 ? Math.round((completed / total) * 100) : 0 };
   });
 
-  // ============================================================
-  // LIFECYCLE
-  // ============================================================
-
-  // Update the session context when this campaign page is visited.
-  // This ensures components deeper in the tree (e.g., the Vault) know
-  // which campaign is active.
   $effect(() => {
-    if (campaignId) {
-      sessionContext.setActiveCampaign(campaignId);
-    }
-    return () => {
-      // Clean up when leaving this campaign's routes
-      // (do NOT reset to null here — sub-pages like /vault still need it)
-    };
+    if (campaignId) sessionContext.setActiveCampaign(campaignId);
   });
 
-  // ============================================================
-  // ACTIONS
-  // ============================================================
-
-  /**
-   * Toggles a chapter's completion status.
-   * Only called from the GM's checkbox — UI enforces the GM restriction.
-   */
   function toggleChapter(chapterId: string) {
     campaignStore.toggleChapterCompleted(campaignId, chapterId);
   }
 
-  /**
-   * Navigates to the Character Vault for this campaign.
-   */
-  function goToVault() {
-    goto(`/campaigns/${campaignId}/vault`);
-  }
-
-  /**
-   * Navigates to the GM Settings page (GM only).
-   */
-  function goToSettings() {
-    goto(`/campaigns/${campaignId}/settings`);
-  }
-
-  /**
-   * Navigates to the GM Dashboard (GM only).
-   */
-  function goToDashboard() {
-    goto(`/campaigns/${campaignId}/gm-dashboard`);
-  }
-
-  /**
-   * Translates a localised string using the engine's t() helper.
-   * Falls back gracefully per the i18n spec.
-   */
   function t(textObj: Record<string, string> | string): string {
     return engine.t(textObj);
   }
 </script>
 
-<div class="campaign-details">
-  {#if !campaign}
-    <!-- ================================================ -->
-    <!-- NOT FOUND STATE -->
-    <!-- ================================================ -->
-    <div class="not-found">
-       <h1><IconCampaign size={24} aria-hidden="true" /> Campaign not found</h1>
-      <p>The campaign with ID <code>{campaignId}</code> doesn't exist.</p>
-      <a href="/campaigns" class="back-link">← Back to Campaign Hub</a>
-    </div>
-  {:else}
-    <!-- ================================================ -->
-    <!-- BANNER  -->
-    <!-- ================================================ -->
-    <div class="campaign-banner">
+{#if !campaign}
+  <!-- Not found -->
+  <div class="flex flex-col items-center gap-4 py-20 text-center text-text-muted px-6">
+    <IconCampaign size={48} class="opacity-20" aria-hidden="true" />
+    <h1 class="text-xl font-bold text-text-secondary">Campaign not found</h1>
+    <p class="text-sm">The campaign with ID <code class="bg-surface-alt px-1.5 py-0.5 rounded text-xs">{campaignId}</code> doesn't exist.</p>
+    <a href="/campaigns" class="btn-secondary gap-1 mt-2">
+      <IconBack size={14} aria-hidden="true" /> Back to Campaign Hub
+    </a>
+  </div>
+
+{:else}
+  <div class="flex flex-col">
+
+    <!-- ── BANNER ─────────────────────────────────────────────────────────── -->
+    <div class="relative w-full h-52 overflow-hidden shrink-0">
       {#if campaign.bannerUrl}
         <img
           src={campaign.bannerUrl}
           alt="{campaign.title} banner"
-          class="banner-image"
+          class="w-full h-full object-cover"
         />
       {:else}
-        <div class="banner-placeholder" aria-hidden="true">
-               <span class="banner-icon"><IconCampaign size={64} aria-hidden="true" /></span>
+        <div
+          class="w-full h-full flex items-center justify-center"
+          style="background: linear-gradient(135deg, oklch(25% 0.08 280) 0%, oklch(30% 0.15 280) 50%, oklch(20% 0.10 280) 100%);"
+          aria-hidden="true"
+        >
+          <IconCampaign size={72} class="opacity-20 text-accent" />
         </div>
       {/if}
-      <!-- Campaign title overlay on banner -->
-      <div class="banner-overlay">
-        <a href="/campaigns" class="back-link" aria-label="Back to Campaign Hub">← Campaigns</a>
-        <h1 class="campaign-title">{campaign.title}</h1>
+
+      <!-- Gradient overlay with back link + title -->
+      <div class="absolute inset-0 flex flex-col justify-end gap-1 px-5 py-4"
+           style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);">
+        <a
+          href="/campaigns"
+          class="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white transition-colors w-fit"
+          aria-label="Back to Campaign Hub"
+        >
+          <IconBack size={12} aria-hidden="true" /> Campaigns
+        </a>
+        <h1 class="text-2xl font-bold text-white text-shadow-sm">{campaign.title}</h1>
       </div>
     </div>
 
-    <!-- ================================================ -->
-    <!-- CAMPAIGN SUMMARY + NAVIGATION -->
-    <!-- ================================================ -->
-    <div class="campaign-body">
+    <!-- ── BODY ───────────────────────────────────────────────────────────── -->
+    <div class="max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
 
-      <!-- Navigation action bar -->
-      <div class="action-bar">
-        <button class="btn-primary" onclick={goToVault}>
-           <IconVault size={16} aria-hidden="true" /> Character Vault
-         </button>
-
-         {#if sessionContext.isGameMaster}
-           <button class="btn-secondary" onclick={goToDashboard}>
-             <IconGMDashboard size={16} aria-hidden="true" /> GM Dashboard
-           </button>
-           <button class="btn-secondary" onclick={goToSettings}>
-             <IconSettings size={16} aria-hidden="true" /> Settings
-           </button>
+      <!-- Action bar -->
+      <div class="flex gap-2 flex-wrap">
+        <button class="btn-primary gap-1" onclick={() => goto(`/campaigns/${campaignId}/vault`)} type="button">
+          <IconVault size={16} aria-hidden="true" /> Character Vault
+        </button>
+        {#if sessionContext.isGameMaster}
+          <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/gm-dashboard`)} type="button">
+            <IconGMDashboard size={16} aria-hidden="true" /> GM Dashboard
+          </button>
+          <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/settings`)} type="button">
+            <IconSettings size={16} aria-hidden="true" /> Settings
+          </button>
         {/if}
       </div>
 
       <!-- Description -->
       {#if campaign.description}
-        <p class="campaign-description">{campaign.description}</p>
+        <p class="text-text-secondary text-sm leading-relaxed">{campaign.description}</p>
       {/if}
 
-      <!-- ============================================= -->
-      <!-- CHAPTERS / ACTS LIST -->
-      <!-- ============================================= -->
-      <section class="chapters-section" aria-label="Campaign chapters">
-        <div class="section-header">
-           <h2 class="section-title"><IconSpells size={20} aria-hidden="true" /> Chapters & Acts</h2>
+      <!-- ── CHAPTERS ────────────────────────────────────────────────────── -->
+      <section aria-label="Campaign chapters">
+        <div class="flex items-center gap-4 flex-wrap mb-4">
+          <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
+            <IconSpells size={18} aria-hidden="true" /> Chapters &amp; Acts
+          </h2>
           {#if chapterStats.total > 0}
-            <div class="progress-summary">
-              <span class="progress-text">
-                {chapterStats.completed}/{chapterStats.total} completed
-              </span>
+            <div class="flex items-center gap-2 flex-1 min-w-[160px]">
+              <span class="text-xs text-text-muted whitespace-nowrap">{chapterStats.completed}/{chapterStats.total}</span>
               <div
-                class="progress-bar"
+                class="flex-1 h-1.5 bg-border rounded-full overflow-hidden"
                 role="progressbar"
                 aria-valuenow={chapterStats.completed}
                 aria-valuemin={0}
                 aria-valuemax={chapterStats.total}
-                aria-label="{chapterStats.percent}% of chapters completed"
               >
-                <div
-                  class="progress-fill"
-                  style="width: {chapterStats.percent}%"
-                ></div>
+                <div class="h-full bg-accent rounded-full transition-all duration-300" style="width: {chapterStats.percent}%"></div>
               </div>
-              <span class="progress-percent">{chapterStats.percent}%</span>
+              <span class="text-xs text-accent font-medium">{chapterStats.percent}%</span>
             </div>
           {/if}
         </div>
 
         {#if campaign.chapters.length === 0}
-          <div class="chapters-empty">
-            <p>
-              {#if sessionContext.isGameMaster}
-                No chapters yet. You can add chapters via the GM Settings page.
-              {:else}
-                No chapters have been added to this campaign yet.
-              {/if}
-            </p>
+          <div class="card p-5 text-sm text-text-muted text-center italic">
+            {sessionContext.isGameMaster
+              ? 'No chapters yet. Add chapters via GM Settings.'
+              : 'No chapters have been added to this campaign yet.'}
           </div>
         {:else}
-          <ol class="chapter-list" aria-label="List of chapters">
+          <ol class="flex flex-col gap-2" aria-label="List of chapters">
             {#each campaign.chapters as chapter, index (chapter.id)}
               <li
-                class="chapter-item"
-                class:completed={chapter.isCompleted}
+                class="flex items-start gap-3 rounded-xl border px-4 py-3 transition-colors duration-150
+                       {chapter.isCompleted
+                         ? 'border-green-700/40 bg-green-950/10 dark:bg-green-950/20'
+                         : 'border-border bg-surface-alt hover:border-accent/40'}"
                 aria-label="Chapter {index + 1}: {t(chapter.title)}"
               >
-                <!-- Chapter number badge -->
-                <span class="chapter-number" aria-hidden="true">
-                   {#if chapter.isCompleted}<IconChecked size={16} aria-hidden="true" />{:else}{index + 1}{/if}
+                <!-- Number / check badge -->
+                <span
+                  class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mt-0.5
+                         {chapter.isCompleted
+                           ? 'bg-green-800/40 text-green-400'
+                           : 'bg-surface-alt border border-border text-text-muted'}"
+                  aria-hidden="true"
+                >
+                  {#if chapter.isCompleted}
+                    <IconChecked size={14} />
+                  {:else}
+                    {index + 1}
+                  {/if}
                 </span>
 
-                <!-- Chapter content -->
-                <div class="chapter-content">
-                  <h3 class="chapter-title">{t(chapter.title)}</h3>
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-sm font-medium {chapter.isCompleted ? 'text-text-muted line-through decoration-green-600/40' : 'text-text-primary'}">
+                    {t(chapter.title)}
+                  </h3>
                   {#if chapter.description}
-                    <p class="chapter-description">{t(chapter.description)}</p>
+                    <p class="mt-0.5 text-xs text-text-muted leading-relaxed">{t(chapter.description)}</p>
                   {/if}
                 </div>
 
-                <!-- GM completion toggle -->
+                <!-- GM toggle / player status -->
                 {#if sessionContext.isGameMaster}
                   <label
-                    class="chapter-toggle"
+                    class="shrink-0 cursor-pointer"
                     title={chapter.isCompleted ? 'Mark as incomplete' : 'Mark as completed'}
                   >
                     <input
@@ -255,13 +185,19 @@
                       aria-label="Toggle completion for {t(chapter.title)}"
                       class="sr-only"
                     />
-                    <span class="toggle-label" aria-hidden="true">
-                       {chapter.isCompleted ? 'Completed' : 'Mark done'}{#if chapter.isCompleted} <IconSuccess size={12} aria-hidden="true" />{/if}
+                    <span
+                      class="text-xs border rounded px-2 py-0.5 cursor-pointer flex items-center gap-1 transition-colors duration-150
+                             {chapter.isCompleted
+                               ? 'border-green-600/50 text-green-400 hover:bg-green-900/20'
+                               : 'border-border text-accent hover:bg-accent/10'}"
+                      aria-hidden="true"
+                    >
+                      {#if chapter.isCompleted}<IconSuccess size={10} aria-hidden="true" /> Completed{:else}Mark done{/if}
                     </span>
                   </label>
-                {:else}
-                  <span class="chapter-status" aria-hidden="true">
-                     {#if chapter.isCompleted}<IconSuccess size={12} aria-hidden="true" /> Done{/if}
+                {:else if chapter.isCompleted}
+                  <span class="shrink-0 flex items-center gap-1 text-xs text-green-400" aria-hidden="true">
+                    <IconSuccess size={12} aria-hidden="true" /> Done
                   </span>
                 {/if}
               </li>
@@ -270,362 +206,23 @@
         {/if}
       </section>
 
-      <!-- ============================================= -->
-      <!-- ENABLED RULE SOURCES (informational) -->
-      <!-- ============================================= -->
+      <!-- ── RULE SOURCES (GM only) ────────────────────────────────────────── -->
       {#if sessionContext.isGameMaster && campaign.enabledRuleSources.length > 0}
-        <section class="sources-section" aria-label="Active rule sources">
-           <h2 class="section-title"><IconSpells size={20} aria-hidden="true" /> Active Rule Sources</h2>
-          <div class="sources-list">
+        <section class="border-t border-border pt-5" aria-label="Active rule sources">
+          <h2 class="flex items-center gap-2 text-sm font-semibold text-accent mb-3">
+            <IconSpells size={16} aria-hidden="true" /> Active Rule Sources
+          </h2>
+          <div class="flex flex-wrap gap-2 mb-2">
             {#each campaign.enabledRuleSources as sourceId}
-              <span class="source-badge">{sourceId}</span>
+              <span class="badge-accent font-mono text-[10px]">{sourceId}</span>
             {/each}
           </div>
-          <p class="sources-hint">
-            Manage rule sources and overrides in <a href="/campaigns/{campaignId}/settings">GM Settings</a>.
+          <p class="text-xs text-text-muted">
+            Manage rule sources in <a href="/campaigns/{campaignId}/settings" class="text-accent hover:underline">GM Settings</a>.
           </p>
         </section>
       {/if}
+
     </div>
-  {/if}
-</div>
-
-<style>
-  .campaign-details {
-    max-width: 900px;
-    margin: 0 auto;
-    padding-bottom: 3rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-    background: #0d1117;
-    min-height: 100vh;
-  }
-
-  /* ----------------------------- NOT FOUND -------------------------------- */
-  .not-found {
-    padding: 4rem 2rem;
-    text-align: center;
-    color: #8080a0;
-  }
-
-  .not-found h1 { color: #c0c0d0; }
-  .not-found code {
-    background: #161b22;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-  }
-
-  /* ------------------------------- BANNER --------------------------------- */
-  .campaign-banner {
-    position: relative;
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-  }
-
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .banner-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1e1b4b 0%, #2d1b69 50%, #1c1033 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .banner-icon {
-    font-size: 4rem;
-    opacity: 0.3;
-  }
-
-  .banner-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(13,17,23,0.9) 0%, rgba(13,17,23,0.2) 60%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 1.25rem 1.5rem;
-    gap: 0.25rem;
-  }
-
-  .back-link {
-    color: #8080c0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    width: fit-content;
-    transition: color 0.15s;
-  }
-
-  .back-link:hover { color: #c4b5fd; }
-
-  .campaign-title {
-    margin: 0;
-    font-size: 2rem;
-    color: #f0f0ff;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-  }
-
-  /* ------------------------------ BODY ------------------------------------ */
-  .campaign-body {
-    padding: 1.5rem;
-  }
-
-  .action-bar {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  }
-
-  .btn-primary {
-    background: #7c3aed;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.6rem 1.3rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: #6d28d9; }
-
-  .btn-secondary {
-    background: transparent;
-    color: #a0a0c0;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 0.6rem 1.3rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-secondary:hover {
-    border-color: #7c3aed;
-    color: #c4b5fd;
-  }
-
-  .campaign-description {
-    color: #9090b0;
-    font-size: 0.95rem;
-    line-height: 1.65;
-    margin-bottom: 2rem;
-  }
-
-  /* ----------------------------- CHAPTERS --------------------------------- */
-  .chapters-section {
-    margin-bottom: 2.5rem;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .section-title {
-    margin: 0;
-    font-size: 1.15rem;
-    color: #c4b5fd;
-  }
-
-  .progress-summary {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .progress-text {
-    font-size: 0.8rem;
-    color: #6080a0;
-    white-space: nowrap;
-  }
-
-  .progress-bar {
-    flex: 1;
-    height: 6px;
-    background: #21262d;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #7c3aed, #a855f7);
-    border-radius: 3px;
-    transition: width 0.4s ease;
-  }
-
-  .progress-percent {
-    font-size: 0.8rem;
-    color: #c4b5fd;
-    min-width: 2.5rem;
-    text-align: right;
-  }
-
-  .chapters-empty {
-    padding: 1.5rem;
-    background: #161b22;
-    border-radius: 8px;
-    color: #6080a0;
-    text-align: center;
-    font-size: 0.9rem;
-  }
-
-  .chapter-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .chapter-item {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    transition: border-color 0.15s;
-  }
-
-  .chapter-item.completed {
-    border-color: #1e3a1a;
-    background: #0f1e0f;
-  }
-
-  .chapter-number {
-    flex-shrink: 0;
-    width: 2rem;
-    height: 2rem;
-    background: #21262d;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #8080a0;
-  }
-
-  .chapter-item.completed .chapter-number {
-    background: #1a3a1a;
-    color: #4ade80;
-  }
-
-  .chapter-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .chapter-title {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
-    color: #e0e0f0;
-  }
-
-  .chapter-item.completed .chapter-title {
-    color: #6080a0;
-    text-decoration: line-through;
-    text-decoration-color: #4ade8060;
-  }
-
-  .chapter-description {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #6080a0;
-    line-height: 1.5;
-  }
-
-  /* GM chapter toggle */
-  .chapter-toggle {
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-
-  .toggle-label {
-    font-size: 0.8rem;
-    color: #7c3aed;
-    border: 1px solid #4c35a0;
-    border-radius: 4px;
-    padding: 0.2rem 0.6rem;
-    cursor: pointer;
-    transition: background 0.15s;
-    white-space: nowrap;
-  }
-
-  .chapter-item.completed .toggle-label {
-    color: #4ade80;
-    border-color: #166534;
-  }
-
-  .toggle-label:hover {
-    background: #2d1b69;
-  }
-
-  .chapter-status {
-    font-size: 0.8rem;
-    color: #4ade80;
-    flex-shrink: 0;
-  }
-
-  /* Screen-reader only helper */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
-
-  /* -------------------------- RULE SOURCES -------------------------------- */
-  .sources-section {
-    border-top: 1px solid #21262d;
-    padding-top: 1.5rem;
-  }
-
-  .sources-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0.75rem 0;
-  }
-
-  .source-badge {
-    background: #1c2540;
-    color: #93c5fd;
-    border: 1px solid #1e4080;
-    border-radius: 6px;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.8rem;
-    font-family: monospace;
-  }
-
-  .sources-hint {
-    font-size: 0.8rem;
-    color: #6080a0;
-    margin: 0;
-  }
-
-  .sources-hint a {
-    color: #7c3aed;
-    text-decoration: none;
-  }
-
-  .sources-hint a:hover {
-    text-decoration: underline;
-  }
-</style>
+  </div>
+{/if}
