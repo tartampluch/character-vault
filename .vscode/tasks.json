@@ -1,0 +1,123 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		// ─────────────────────────────────────────────────────────────────────
+		// SvelteKit dev server (Vite) — port 5173
+		//
+		// Used as a pre-launch task so that compound launch configs can start
+		// the frontend server automatically before attaching the debugger.
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Start: Vite dev server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "vite",
+				"pattern": {
+					"regexp": "^$"
+				},
+				"background": {
+					"activeOnStart": true,
+					// Vite prints this when the server is ready
+					"beginsPattern": "^\\s*VITE",
+					"endsPattern": "Local:.*localhost"
+				}
+			},
+			"presentation": {
+				"group": "devservers",
+				"reveal": "silent",
+				"panel": "dedicated",
+				"label": "Vite"
+			}
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// PHP development server — port 8080
+		//
+		// Spawns php-dev.sh which picks the best available PHP binary.
+		// Environment variables from .env are loaded automatically by
+		// api/config.php (no extra setup needed here).
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Start: PHP dev server",
+			"type": "shell",
+			"command": "scripts/php-dev.sh",
+			"args": [
+				"-S", "localhost:8080",
+				"-t", "${workspaceFolder}/api",
+				"${workspaceFolder}/api/index.php"
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "php-server",
+				"pattern": {
+					"regexp": "^$"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "\\[php-dev\\]|PHP .* Development Server",
+					"endsPattern": "Listening on"
+				}
+			},
+			"presentation": {
+				"group": "devservers",
+				"reveal": "silent",
+				"panel": "dedicated",
+				"label": "PHP"
+			}
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// Run database migrations
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Run: DB migrations",
+			"type": "shell",
+			"command": "scripts/php-dev.sh",
+			"args": ["${workspaceFolder}/api/migrate.php"],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// Build the project (native build with portable PHP)
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Run: Build (native)",
+			"type": "shell",
+			"command": "scripts/build.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// Run the built artifact locally
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Run: Local server (run.sh)",
+			"type": "shell",
+			"command": "./run.sh",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "run-sh",
+				"pattern": { "regexp": "^$" },
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "Character Vault",
+					"endsPattern": "localhost:"
+				}
+			},
+			"presentation": {
+				"group": "devservers",
+				"reveal": "always",
+				"panel": "dedicated",
+				"label": "run.sh"
+			}
+		}
+	]
+}

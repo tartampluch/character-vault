@@ -6,19 +6,28 @@
 #   ./run.sh [OPTIONS]
 #
 # OPTIONS:
-#   -p, --port <port>   Port to listen on (default: 8080)
-#   -d, --dir <path>    Path to the extracted artifact directory
-#                       (default: latest entry in dist/)
-#   -h, --help          Show this help and exit
+#   -p, --port <port>       Port to listen on (default: 8080)
+#   -d, --dir <path>        Path to the extracted artifact directory
+#                           (default: latest entry in dist/)
+#   --env-file <file>       .env file to load (default: .env in project root
+#                           if it exists, falls back to artifact root .env)
+#   -h, --help              Show this help and exit
 #
 # DESCRIPTION:
 #   Uses PHP's built-in web server with a custom router that dispatches:
 #     /api/*  → PHP backend  (api/index.php)
 #     /*      → SvelteKit static files from build/, with SPA fallback
 #
-#   PHP is located (in order):
+#   Environment variables:
+#     Variables are resolved in this priority order:
+#       1. Process environment (variables already exported in your shell)
+#       2. --env-file (or .env in project root / artifact root)
+#       3. Built-in defaults in api/config.php
+#     See .env.example for all available variables.
+#
+#   PHP resolution (in order):
 #     1. .build-tools/bin/php  (cached by scripts/build.sh)
-#     2. System PHP (if ≥ 8.1)
+#     2. System PHP ≥ 8.1
 #
 #   For a production-like run with Apache + mod_rewrite, use run-docker.sh.
 # =============================================================================
@@ -37,15 +46,17 @@ die()     { echo -e "${RED}[ERROR]${RESET} $*" >&2; exit 1; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PORT=8080
 APP_DIR=""
+ENV_FILE=""
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
 usage() { grep '^# ' "$0" | sed 's/^# //'; exit 0; }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -p|--port) PORT="$2"; shift 2 ;;
-        -d|--dir)  APP_DIR="$2"; shift 2 ;;
-        -h|--help) usage ;;
+        -p|--port)      PORT="$2";     shift 2 ;;
+        -d|--dir)       APP_DIR="$2";  shift 2 ;;
+        --env-file)     ENV_FILE="$2"; shift 2 ;;
+        -h|--help)      usage ;;
         *) die "Unknown option: $1  (use --help for usage)" ;;
     esac
 done
@@ -68,6 +79,54 @@ APP_DIR="$(cd "$APP_DIR" && pwd)"   # resolve to absolute path
 
 [[ -d "${APP_DIR}/api" ]]   || die "Malformed artifact: missing api/ in ${APP_DIR}"
 [[ -d "${APP_DIR}/build" ]] || die "Malformed artifact: missing build/ in ${APP_DIR}"
+
+# ── Resolve .env file ─────────────────────────────────────────────────────────
+# Priority: --env-file → project-root .env → artifact-root .env (auto-loaded by PHP)
+# When an env file is found here, we export its variables into the shell
+# environment so PHP inherits them (env vars take priority over .env in PHP).
+
+_load_env_file() {
+    local file="$1"
+    local count=0
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line%%#*}"         # strip inline comments
+        line="${line#"${line%%[![:space:]]*}"}"  # ltrim
+        line="${line%"${line##*[![:space:]]}"}"  # rtrim
+        [[ -z "$line" || "$line" != *=* ]] && continue
+
+        local name="${line%%=*}"
+        local value="${line#*=}"
+
+        # Strip surrounding quotes
+        if [[ ${#value} -ge 2 ]]; then
+            if [[ "${value:0:1}" == '"' && "${value: -1}" == '"' ]] \
+            || [[ "${value:0:1}" == "'" && "${value: -1}" == "'" ]]; then
+                value="${value:1:${#value}-2}"
+            fi
+        fi
+
+        # Only export if not already set in the environment
+        if [[ -z "${!name+x}" ]]; then
+            export "${name}=${value}"
+            (( count++ )) || true
+        fi
+    done < "$file"
+    echo "$count"
+}
+
+ENV_FILE_USED=""
+if [[ -n "$ENV_FILE" ]]; then
+    [[ -f "$ENV_FILE" ]] || die ".env file not found: ${ENV_FILE}"
+    ENV_FILE_USED="$ENV_FILE"
+elif [[ -f "${SCRIPT_DIR}/.env" ]]; then
+    ENV_FILE_USED="${SCRIPT_DIR}/.env"
+elif [[ -f "${APP_DIR}/.env" ]]; then
+    ENV_FILE_USED="${APP_DIR}/.env"
+fi
+
+if [[ -n "$ENV_FILE_USED" ]]; then
+    LOADED="$(_load_env_file "$ENV_FILE_USED")"
+fi
 
 # ── Locate PHP ────────────────────────────────────────────────────────────────
 PORTABLE_PHP="${SCRIPT_DIR}/.build-tools/bin/php"
@@ -105,6 +164,10 @@ cat > "$ROUTER" <<'ROUTER_PHP'
  * PHP built-in server router for Character Vault.
  *
  * Env: CHARACTER_VAULT_DIR — absolute path to the extracted artifact.
+ *
+ * Environment variables (APP_ENV, DB_PATH, CORS_ORIGIN, …) are inherited from
+ * the shell that started this server; api/config.php also reads .env from the
+ * artifact root as a fallback.
  */
 declare(strict_types=1);
 
@@ -115,7 +178,6 @@ $uri    = urldecode((string)parse_url((string)$_SERVER['REQUEST_URI'], PHP_URL_P
 if (str_starts_with($uri, '/api')) {
     // Ensure relative requires inside api/ resolve correctly
     chdir($appDir);
-    // Forward the request path — api/index.php strips the /api prefix itself
     require $appDir . '/api/index.php';
     return;
 }
@@ -168,14 +230,32 @@ echo "404 – Not Found\n";
 echo "Artifact path: $appDir\n";
 ROUTER_PHP
 
-# ── Launch ────────────────────────────────────────────────────────────────────
+# ── Auto-migrate (first run) ──────────────────────────────────────────────────
+# Run migrate.php if no database file exists yet (first launch convenience).
+DB_FILE="${DB_PATH:-${APP_DIR}/database.sqlite}"
+if [[ ! -f "$DB_FILE" && -f "${APP_DIR}/api/migrate.php" ]]; then
+    info "Database not found — running migrations…"
+    "$PHP_BIN" "${APP_DIR}/api/migrate.php" \
+        && success "Database initialised: ${DB_FILE}" \
+        || warn "Migration failed — the app will try again on first API request."
+fi
+
+# ── Banner ────────────────────────────────────────────────────────────────────
+APP_VERSION="$(cat "${APP_DIR}/VERSION" 2>/dev/null || echo "dev")"
+
 echo ""
 echo -e "${BOLD}════════════════════════════════════════════════════${RESET}"
-echo -e "${BOLD}  Character Vault — Local server${RESET}"
+echo -e "${BOLD}  Character Vault — Local server  (v${APP_VERSION})${RESET}"
 echo -e "${BOLD}════════════════════════════════════════════════════${RESET}"
 info "Artifact  : ${APP_DIR}"
 info "PHP       : ${PHP_BIN} (${PHP_VER})"
 info "Address   : http://localhost:${PORT}"
+if [[ -n "$ENV_FILE_USED" ]]; then
+    info "Env file  : ${ENV_FILE_USED}  (${LOADED:-0} vars loaded)"
+else
+    warn "No .env file found — using built-in defaults (APP_ENV=development)"
+    warn "Create one: cp .env.example .env"
+fi
 echo ""
 echo -e "  Press ${BOLD}Ctrl+C${RESET} to stop."
 echo ""

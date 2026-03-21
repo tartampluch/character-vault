@@ -12,12 +12,12 @@ See [`FINAL_REVIEW.md`](FINAL_REVIEW.md) for the final review.
 ## Prerequisites
 
 - **Node.js** 18+ and npm
-- **PHP** 8.1+ (for the backend API and local dev server)
-- **Composer** (for PHPUnit tests only — not needed on the production server)
+- **PHP** 8.1+ with `pdo_sqlite` (for the backend API and local dev server)
+- **Composer** — only needed for PHPUnit tests, **not on the production server**.
+  `scripts/build.sh` downloads it automatically; you never need to install it globally.
 
-> **Tip:** `scripts/build.sh` downloads Composer automatically into `.build-tools/`
-> and can also download a portable PHP binary if no system PHP is found.
-> You never need to install Composer globally.
+> **Zero-dependency quick start:** `git clone` → `npm install` → `./scripts/build.sh` → `./run.sh`
+> The build script downloads Composer (and PHP if not found) into `.build-tools/` automatically.
 
 ## Setup
 
@@ -25,8 +25,11 @@ See [`FINAL_REVIEW.md`](FINAL_REVIEW.md) for the final review.
 # Install frontend dependencies
 npm install
 
-# Install PHP test dependencies (Composer is downloaded automatically by build.sh)
-# For manual setup or local dev:
+# Copy the environment template and edit as needed (optional for local dev)
+cp .env.example .env
+
+# Install PHP test dependencies — Composer is downloaded automatically
+# (only needed if you want to run PHPUnit tests outside of build.sh)
 composer install
 ```
 
@@ -98,8 +101,30 @@ Test suites (6 files):
 
 ## Debugging (VS Code)
 
-The repository includes a [`launch.json`](.vscode/launch.json) with ready-to-use debug configurations.
+The repository includes a [`launch.json`](.vscode/launch.json) with ready-to-use debug
+configurations and a [`tasks.json`](.vscode/tasks.json) that starts background servers automatically.
+
+**Quick start:** open Run & Debug (`⇧⌘D`), select **🚀 Full Stack — Vite + PHP + Chrome**,
+and press **F5**. Vite and the PHP server start automatically.
+
 Install the recommended extensions first (VS Code will prompt you automatically via [`.vscode/extensions.json`](.vscode/extensions.json)):
+
+### PHP binary resolution
+
+All PHP launch configs use [`scripts/php-dev.sh`](scripts/php-dev.sh) as the runtime,
+which picks the best available PHP automatically:
+
+| Priority | When |
+|----------|------|
+| `CHAR_VAULT_PHP` env var | Explicit override |
+| System PHP with Xdebug | Debug sessions (`XDEBUG_MODE` is set) |
+| `.build-tools/bin/php` | Portable PHP cached by `build.sh` |
+| System PHP ≥ 8.1 | Fallback |
+
+> **Note:** The portable PHP binary (`.build-tools/bin/php`) does **not** include
+> Xdebug — Zend extensions cannot be compiled into a static binary. For breakpoints
+> to work, a system PHP with the Xdebug extension is required
+> (`pecl install xdebug` / `apt install php-xdebug`).
 
 | Extension | Purpose |
 |-----------|---------|
@@ -277,6 +302,59 @@ The SQLite database is persisted in a Docker volume (`character-vault-db`).
 
 ---
 
+---
+
+## Environment Variables
+
+Configuration is resolved in this priority order (highest wins):
+
+| Source | When to use |
+|--------|-------------|
+| Server / process environment | VPS, Docker, CI, shell `export` |
+| `.env` file in the project root | Local dev, shared hosting |
+| Built-in defaults | Out-of-the-box development (no setup needed) |
+
+Create your local `.env` from the template:
+
+```sh
+cp .env.example .env
+# then open .env and edit as needed
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `APP_ENV` | `development` | `development` \| `production` |
+| `DB_PATH` | `<root>/database.sqlite` (dev) | Path to the SQLite database file |
+| `CORS_ORIGIN` | *(localhost only)* | Extra allowed origin, e.g. `https://yourvtt.example.com` |
+
+### On shared hosting (OVH, etc.)
+
+Server control panels rarely expose environment variable configuration.
+The `.env` file is the only reliable solution. Place it in the same directory
+as the extracted tarball (next to `api/`):
+
+```
+character-vault-v1.2.3/
+├── api/
+├── build/
+├── static/
+├── .htaccess
+└── .env          ← create this file on the server
+```
+
+Minimum content for a production deployment:
+
+```ini
+APP_ENV=production
+DB_PATH=/home/yourlogin/private/cvault.sqlite
+CORS_ORIGIN=https://yourvtt.example.com
+```
+
+> The `.env` file is **never included in the build artifact** — it must be
+> created manually on the server to keep secrets out of version control.
+
+---
+
 ## Production Deployment
 
 After extracting the tarball on the server:
@@ -286,11 +364,11 @@ After extracting the tarball on the server:
 tar -xzf character-vault-<tag>.tar.gz
 cd character-vault-<tag>
 
-# 2. Create / update the database
-php api/migrate.php
+# 2. Create .env with your production settings (see section above)
+nano .env
 
-# 3. Set the environment (edit api/config.php or use server env variables)
-export APP_ENV=production
+# 3. Create / update the database
+php api/migrate.php
 
 # 4. Configure your web server
 #    - Document root → extracted directory
@@ -299,12 +377,12 @@ export APP_ENV=production
 ```
 
 **Server requirements:**
-- PHP ≥ 8.1 with `pdo_sqlite` enabled (standard on all shared hosts including OVH)
+- PHP ≥ 8.1 with `pdo_sqlite` (standard on all shared hosts including OVH)
 - Apache with `mod_rewrite` and `AllowOverride All`
-- **No Composer, no Node.js, no npm** needed on the server
+- **No Composer, no Node.js, no npm** needed
 
-See [`api/config.php`](api/config.php) for the full list of environment variables
-(DB path, session settings, CORS origins, etc.).
+See [`.env.example`](.env.example) and [`api/config.php`](api/config.php) for the full list
+of available environment variables.
 
 Preview the production build locally (without packaging):
 

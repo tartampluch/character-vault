@@ -1,25 +1,42 @@
 {
 	"version": "0.2.0",
+	// =========================================================================
+	// CHARACTER VAULT — VS Code Launch Configurations
+	//
+	// PHP binary resolution (handled by scripts/php-dev.sh):
+	//   For all PHP-related configurations, the wrapper script automatically
+	//   picks the best available PHP:
+	//     1. CHAR_VAULT_PHP env var (explicit override)
+	//     2. System PHP with Xdebug loaded   (for debug sessions)
+	//     3. .build-tools/bin/php            (portable, cached by build.sh)
+	//     4. System PHP ≥ 8.1               (fallback)
+	//
+	// Environment variables (.env support):
+	//   api/config.php automatically reads .env from the project root.
+	//   Create .env from the template: cp .env.example .env
+	//   Variables set in .env are used as FALLBACK — the process environment
+	//   always takes priority. You can also define extra vars via the "env"
+	//   key in any configuration below.
+	//
+	// Quick start:
+	//   • 🚀 Full Stack  → starts Vite + PHP server + attaches both debuggers
+	//   • 🎮 Run artifact → starts the built artifact (run.sh) + Chrome
+	//   • Individual configs are organized in groups (1-frontend, 2-backend…)
+	// =========================================================================
 	"configurations": [
+
 		// ─────────────────────────────────────────────────────────────────────
-		// FRONTEND — SvelteKit (Vite dev server on port 5173)
+		// FRONTEND — SvelteKit dev server (Vite, port 5173)
 		//
-		// Prerequisites:
-		//   1. Run `npm run dev` in a terminal (starts Vite on port 5173)
-		//   2. Launch this configuration to attach Chrome DevTools to the
-		//      running Vite server with full source-map support.
-		//
-		// Required VS Code extension: ms-edgetools.vscode-edge-devtools
-		//   OR just use "Chrome" (msjsdiag.debugger-for-chrome / built-in)
+		// Requires: npm run dev to be running (or use the compound below).
 		// ─────────────────────────────────────────────────────────────────────
 		{
-			"name": "🟠 Frontend — Chrome (SvelteKit / Vite)",
+			"name": "🟠 Frontend — Chrome",
 			"type": "chrome",
 			"request": "launch",
 			"url": "http://localhost:5173",
 			"webRoot": "${workspaceFolder}/src",
 			"sourceMapPathOverrides": {
-				// Map Vite virtual module paths back to workspace sources
 				"/@fs/*": "${workspaceFolder}/*",
 				"/*": "${webRoot}/*"
 			},
@@ -29,14 +46,10 @@
 				"**/node_modules/**",
 				"**/.svelte-kit/**"
 			],
-			"presentation": {
-				"group": "1-frontend",
-				"order": 1
-			}
+			"presentation": { "group": "1-frontend", "order": 1 }
 		},
-		// Same as above but opens Microsoft Edge instead of Chrome
 		{
-			"name": "🟠 Frontend — Edge (SvelteKit / Vite)",
+			"name": "🟠 Frontend — Edge",
 			"type": "msedge",
 			"request": "launch",
 			"url": "http://localhost:5173",
@@ -51,41 +64,38 @@
 				"**/node_modules/**",
 				"**/.svelte-kit/**"
 			],
-			"presentation": {
-				"group": "1-frontend",
-				"order": 2
-			}
+			"presentation": { "group": "1-frontend", "order": 2 }
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
-		// BACKEND — PHP (Xdebug on port 9003)
+		// BACKEND — PHP debug listener (Xdebug, port 9003)
 		//
-		// Prerequisites:
-		//   1. Install Xdebug for PHP:
-		//        pecl install xdebug
-		//   2. Add to php.ini (or xdebug.ini):
-		//        zend_extension=xdebug
-		//        xdebug.mode=debug
-		//        xdebug.start_with_request=yes
-		//        xdebug.client_host=127.0.0.1
-		//        xdebug.client_port=9003
-		//   3. Start the PHP dev server:
-		//        php -S localhost:8080 -t api api/index.php
-		//      OR use the compound launch below to start everything at once.
-		//   4. Launch this configuration — VS Code will listen for Xdebug
-		//      connections on port 9003.
+		// Listens for an incoming Xdebug connection — use this when the PHP
+		// server is started separately (e.g. by another terminal or task).
 		//
-		// Required VS Code extension: xdebug.php-debug
+		// Requires:
+		//   • Xdebug installed in the PHP binary used by the server.
+		//     scripts/php-dev.sh prefers system PHP when XDEBUG_MODE is set.
+		//   • PHP server running with Xdebug enabled (see compound below or
+		//     the "spawn" variant further down).
+		//
+		// Xdebug setup (once per system):
+		//   macOS:  pecl install xdebug   (after: brew install php)
+		//   Linux:  apt install php-xdebug
+		//   Then add to php.ini / xdebug.ini:
+		//     zend_extension=xdebug
+		//     xdebug.mode=debug
+		//     xdebug.start_with_request=yes
+		//     xdebug.client_host=127.0.0.1
+		//     xdebug.client_port=9003
+		//   Or just use the env vars injected in the "spawn" config below.
 		// ─────────────────────────────────────────────────────────────────────
 		{
-			"name": "🐘 Backend — PHP (Xdebug)",
+			"name": "🐘 Backend — PHP (listen for Xdebug)",
 			"type": "php",
 			"request": "launch",
-			// Listen for an incoming Xdebug connection (rather than spawning PHP)
 			"port": 9003,
 			"pathMappings": {
-				// Map the server-side path to the local workspace path.
-				// If running PHP locally (not in Docker) both sides are the same.
 				"${workspaceFolder}/api": "${workspaceFolder}/api"
 			},
 			"log": false,
@@ -95,26 +105,30 @@
 				"max_children": 128,
 				"max_depth": 5
 			},
-			"skipFiles": [
-				"${workspaceFolder}/vendor/**"
-			],
-			"presentation": {
-				"group": "2-backend",
-				"order": 1
-			}
+			"skipFiles": ["${workspaceFolder}/vendor/**"],
+			"presentation": { "group": "2-backend", "order": 1 }
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
-		// BACKEND — PHP (run built-in server + Xdebug in one shot)
+		// BACKEND — PHP dev server + Xdebug (spawn)
 		//
-		// Spawns `php -S localhost:8080 -t api api/index.php` directly from
-		// VS Code and simultaneously listens for the Xdebug connection.
-		// Xdebug env vars are injected so no permanent php.ini change is needed.
+		// Spawns the PHP server via scripts/php-dev.sh and simultaneously
+		// listens for Xdebug.  Xdebug env vars are injected at launch so no
+		// permanent php.ini change is required — only the Xdebug extension
+		// itself must be installed (pecl install xdebug / apt install php-xdebug).
+		//
+		// scripts/php-dev.sh will pick a system PHP that has Xdebug loaded.
+		// If none is found, the server starts without Xdebug and a warning is
+		// printed — useful for running without breakpoints.
+		//
+		// To use a specific PHP binary, set CHAR_VAULT_PHP in your shell or
+		// add it to the "env" block below.
 		// ─────────────────────────────────────────────────────────────────────
 		{
 			"name": "🐘 Backend — PHP (spawn server + Xdebug)",
 			"type": "php",
 			"request": "launch",
+			"runtimeExecutable": "${workspaceFolder}/scripts/php-dev.sh",
 			"runtimeArgs": [
 				"-S", "localhost:8080",
 				"-t", "${workspaceFolder}/api",
@@ -122,8 +136,16 @@
 			],
 			"port": 9003,
 			"env": {
-				"XDEBUG_MODE": "debug",
-				"XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=9003 start_with_request=yes"
+				// Xdebug environment — injected so no permanent php.ini edit needed.
+				// php-dev.sh uses XDEBUG_MODE to prefer a system PHP with Xdebug.
+				"XDEBUG_MODE":   "debug",
+				"XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=9003 start_with_request=yes",
+				// Application environment loaded by api/config.php.
+				// .env in the project root is also read automatically.
+				// Uncomment or add variables as needed:
+				// "APP_ENV": "development",
+				// "DB_PATH": "",
+				// "CORS_ORIGIN": "http://localhost:5173"
 			},
 			"pathMappings": {
 				"${workspaceFolder}/api": "${workspaceFolder}/api"
@@ -135,24 +157,21 @@
 				"max_children": 128,
 				"max_depth": 5
 			},
-			"skipFiles": [
-				"${workspaceFolder}/vendor/**"
-			],
-			"presentation": {
-				"group": "2-backend",
-				"order": 2
-			}
+			"skipFiles": ["${workspaceFolder}/vendor/**"],
+			"presentation": { "group": "2-backend", "order": 2 }
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
-		// TESTS — PHPUnit
+		// TESTS — PHPUnit (with Xdebug for breakpoints in tests)
 		//
-		// Runs the full PHPUnit test suite and stops on the first error.
+		// Runs the full PHPUnit test suite through scripts/php-dev.sh.
+		// Breakpoints in both test files and api/ source files are supported.
 		// ─────────────────────────────────────────────────────────────────────
 		{
 			"name": "🧪 Tests — PHPUnit",
 			"type": "php",
 			"request": "launch",
+			"runtimeExecutable": "${workspaceFolder}/scripts/php-dev.sh",
 			"program": "${workspaceFolder}/vendor/bin/phpunit",
 			"args": [
 				"--configuration", "${workspaceFolder}/phpunit.xml",
@@ -160,39 +179,83 @@
 			],
 			"port": 9003,
 			"env": {
-				"XDEBUG_MODE": "debug",
+				"XDEBUG_MODE":   "debug",
 				"XDEBUG_CONFIG": "client_host=127.0.0.1 client_port=9003 start_with_request=yes"
 			},
 			"pathMappings": {
 				"${workspaceFolder}": "${workspaceFolder}"
 			},
+			"skipFiles": ["${workspaceFolder}/vendor/**"],
+			"presentation": { "group": "3-tests", "order": 1 }
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// RUN ARTIFACT — Attach Chrome to the built artifact served by run.sh
+		//
+		// Use this after running scripts/build.sh to test the production build
+		// locally.  The task "Run: Local server (run.sh)" is started
+		// automatically as a pre-launch task.
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"name": "🎮 Run artifact — Chrome",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:8080",
+			"webRoot": "${workspaceFolder}/src",
+			"sourceMapPathOverrides": {
+				"/@fs/*": "${workspaceFolder}/*",
+				"/*": "${webRoot}/*"
+			},
+			"smartStep": true,
 			"skipFiles": [
-				"${workspaceFolder}/vendor/**"
+				"<node_internals>/**",
+				"**/node_modules/**"
 			],
-			"presentation": {
-				"group": "3-tests",
-				"order": 1
-			}
+			"preLaunchTask": "Run: Local server (run.sh)",
+			"presentation": { "group": "4-artifact", "order": 1 }
 		}
 	],
 
-	// ─────────────────────────────────────────────────────────────────────────
-	// COMPOUND — Full stack (frontend + backend at the same time)
-	//
-	// Launches both the Chrome debugger and the PHP server+Xdebug listener.
-	// Make sure `npm run dev` is already running before using this compound.
-	// ─────────────────────────────────────────────────────────────────────────
+	// =========================================================================
+	// COMPOUND CONFIGURATIONS — launch multiple debuggers at once
+	// =========================================================================
 	"compounds": [
+
+		// ─────────────────────────────────────────────────────────────────────
+		// 🚀 Full Stack — the main development compound
+		//
+		// What it does:
+		//   1. Starts the Vite dev server (background task)
+		//   2. Spawns the PHP server with Xdebug via php-dev.sh
+		//   3. Attaches Chrome to http://localhost:5173
+		//
+		// Prerequisites:
+		//   • npm install        (first time)
+		//   • cp .env.example .env  (then edit as needed)
+		//   • Xdebug installed in system PHP (optional — server starts without it)
+		// ─────────────────────────────────────────────────────────────────────
 		{
-			"name": "🚀 Full Stack — Frontend + Backend",
+			"name": "🚀 Full Stack — Vite + PHP + Chrome",
 			"configurations": [
-				"🟠 Frontend — Chrome (SvelteKit / Vite)",
-				"🐘 Backend — PHP (Xdebug)"
+				"🐘 Backend — PHP (spawn server + Xdebug)",
+				"🟠 Frontend — Chrome"
 			],
-			"presentation": {
-				"group": "0-fullstack",
-				"order": 1
-			},
+			"preLaunchTask": "Start: Vite dev server",
+			"presentation": { "group": "0-fullstack", "order": 1 },
+			"stopAll": true
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// 🚀 Full Stack (Edge variant)
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"name": "🚀 Full Stack — Vite + PHP + Edge",
+			"configurations": [
+				"🐘 Backend — PHP (spawn server + Xdebug)",
+				"🟠 Frontend — Edge"
+			],
+			"preLaunchTask": "Start: Vite dev server",
+			"presentation": { "group": "0-fullstack", "order": 2 },
 			"stopAll": true
 		}
 	]
