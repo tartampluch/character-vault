@@ -1,17 +1,10 @@
 <!--
   @file src/lib/components/combat/CoreCombat.svelte
   @description Core Combat Statistics panel (BAB, Initiative, Grapple).
+  Phase 19.9: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Displays the three core combat roll statistics:
-      - BAB (Base Attack Bonus): accumulated from class levelProgression.
-      - Initiative: DEX modifier + feat modifiers.
-      - Grapple: BAB + STR modifier + size modifier.
-
-    Initiative and Grapple have both ℹ (breakdown) and 🎲 (dice roll) buttons.
-    BAB is informational (no dice roll button since it's used as a component by attacks).
-
-  @see ARCHITECTURE.md Phase 10.3 for the specification.
+  Responsive stat-block grid using app.css .stat-block pattern.
+  BAB: info button only. Initiative & Grapple: info + dice roll buttons.
 -->
 
 <script lang="ts">
@@ -23,68 +16,67 @@
   import { IconTabCombat, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   const CORE_STATS = [
-    {
-      id: 'combatStats.bab',
-      shortName: 'BAB',
-      description: 'Base Attack Bonus',
-      showDice: false,
-      color: '#f87171',
-    },
-    {
-      id: 'combatStats.init',
-      shortName: 'Initiative',
-      description: 'Initiative modifier (DEX + misc)',
-      showDice: true,
-      diceLabel: 'Initiative Roll',
-      color: '#fbbf24',
-    },
-    {
-      id: 'combatStats.grapple',
-      shortName: 'Grapple',
-      description: 'Grapple modifier (BAB + STR + size)',
-      showDice: true,
-      diceLabel: 'Grapple Check',
-      color: '#c084fc',
-    },
+    { id: 'combatStats.bab',     shortName: 'BAB',        description: 'Base Attack Bonus',                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
+    { id: 'combatStats.init',    shortName: 'Initiative', description: 'Initiative modifier (DEX + misc)',  showDice: true, diceLabel: 'Initiative Roll',   color: 'oklch(78% 0.17 88)'  },
+    { id: 'combatStats.grapple', shortName: 'Grapple',    description: 'Grapple modifier (BAB + STR + size)', showDice: true, diceLabel: 'Grapple Check', color: 'oklch(70% 0.17 300)' },
   ] as const;
 
   let breakdownId = $state<ID | null>(null);
-  let diceRollId = $state<ID | null>(null);
+  let diceRollId  = $state<ID | null>(null);
 </script>
 
-<div class="core-combat-panel">
-   <h2 class="panel-title"><IconTabCombat size={24} aria-hidden="true" /> Core Combat</h2>
+<div class="card p-4 flex flex-col gap-4">
 
-  <div class="stats-row">
+  <div class="section-header border-b border-border pb-2">
+    <IconTabCombat size={20} aria-hidden="true" />
+    <span>Core Combat</span>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2">
     {#each CORE_STATS as stat}
       {@const pipeline = engine.phase3_combatStats[stat.id]}
       {#if pipeline}
-        <div class="stat-block" style="--color: {stat.color};">
-          <span class="stat-label">{stat.shortName}</span>
-          <span class="stat-value" style="color: {stat.color};">
+        <div
+          class="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-border bg-surface-alt text-center"
+          style="border-top: 3px solid {stat.color};"
+        >
+          <!-- Label -->
+          <span class="text-[10px] font-bold uppercase tracking-wider" style="color: {stat.color};">
+            {stat.shortName}
+          </span>
+
+          <!-- Value -->
+          <span class="text-3xl font-bold leading-none" style="color: {stat.color};">
             {formatModifier(pipeline.totalValue)}
           </span>
-          <div class="stat-actions">
+
+          <!-- Action buttons -->
+          <div class="flex gap-1">
             <button
-              class="action-btn"
+              class="btn-ghost p-1 text-accent hover:bg-accent/10"
               onclick={() => (breakdownId = stat.id)}
               aria-label="Show {stat.description} breakdown"
               title="Breakdown"
-            ><IconInfo size={16} aria-hidden="true" /></button>
+              type="button"
+            ><IconInfo size={14} aria-hidden="true" /></button>
             {#if stat.showDice}
               <button
-                class="action-btn dice"
+                class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollId = stat.id)}
                 aria-label="Roll dice"
                 title="Roll"
-              ><IconDiceRoll size={16} aria-hidden="true" /></button>
+                type="button"
+              ><IconDiceRoll size={14} aria-hidden="true" /></button>
             {/if}
           </div>
-          <span class="stat-desc">{stat.description}</span>
+
+          <!-- Description -->
+          <span class="text-[10px] text-text-muted leading-tight">{stat.description}</span>
         </div>
       {/if}
     {/each}
   </div>
+
 </div>
 
 {#if breakdownId}
@@ -114,58 +106,3 @@
     />
   {/if}
 {/if}
-
-<style>
-  .core-combat-panel {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1.25rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-  }
-
-  .panel-title { margin: 0 0 1rem; font-size: 1rem; color: #c4b5fd; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
-
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .stat-block {
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-top: 3px solid var(--color, #7c3aed);
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    text-align: center;
-  }
-
-  .stat-label { font-size: 0.72rem; font-weight: bold; color: var(--color, #c4b5fd); letter-spacing: 0.06em; text-transform: uppercase; }
-  .stat-value { font-size: 1.8rem; font-weight: bold; line-height: 1; }
-  .stat-desc  { font-size: 0.64rem; color: #4a4a6a; line-height: 1.3; }
-
-  .stat-actions { display: flex; gap: 0.3rem; }
-
-  .action-btn {
-    background: transparent;
-    border: 1px solid #30363d;
-    color: #7c3aed;
-    border-radius: 4px;
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 0.72rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .action-btn:hover { background: #1c1a3a; border-color: #7c3aed; }
-  .action-btn.dice { color: #fbbf24; }
-  .action-btn.dice:hover { background: #1a1a00; border-color: #fbbf24; }
-</style>

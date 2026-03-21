@@ -1,37 +1,11 @@
 <!--
   @file src/lib/components/combat/HealthAndXP.svelte
   @description Health (HP) and Experience Points panel for the Combat tab.
+  Phase 19.9: Migrated to Tailwind CSS — all scoped <style> removed except
+  the Level Up pulse animation keyframe (justified by spec §19.14).
 
-  PURPOSE:
-    Manages the character's health state and experience progression:
-
-    HEALTH:
-      - Visual HP bar showing Current / Temporary / Max HP.
-      - "Heal" button: adds to currentValue (respects max cap).
-      - "Damage" button: depletes temporaryValue first, then currentValue.
-      - Status indicator: Healthy / Injured / Bloodied / Down / Dead.
-      - CON modifier contribution display.
-
-    EXPERIENCE:
-      - XP progress bar showing current XP toward next level.
-      - XP thresholds loaded from `config_xp_thresholds` (not hardcoded).
-      - "Level Up" button (enabled when XP reaches the threshold).
-      - Manual XP input for awarding experience.
-
-  D&D 3.5 DAMAGE RULES:
-    1. Damage depletes temporary HP first.
-    2. If temporary HP is exhausted, regular HP is reduced.
-    3. HP can go negative (unconscious at 0, dying at -1 to -9, dead at -10 or below CON score).
-    4. All of this is handled by `engine.adjustHP()` which follows the SRD rules.
-
-  XP TABLE:
-    Loaded from `dataLoader.getConfigTable("config_xp_thresholds")`.
-    Each row: `{ level: number, xpRequired: number }`.
-    The component reads the threshold for `currentLevel + 1` to find the next level XP.
-
-  @see src/lib/engine/GameEngine.svelte.ts for adjustHP(), setTemporaryHP().
-  @see ANNEXES.md B.1 for the XP threshold table data.
-  @see ARCHITECTURE.md Phase 10.1 for the specification.
+  HP BAR: Uses `.hp-bar` / `.hp-bar__fill` from app.css (gradient green→yellow→red).
+  XP BAR: Uses `.progress-bar` / `.progress-bar__fill` from app.css (accent colour).
 -->
 
 <script lang="ts">
@@ -39,304 +13,289 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
 
-  // ============================================================
-  // HP STATE
-  // ============================================================
-
-  const hpPool = $derived(engine.character.resources['resources.hp']);
-  const maxHp = $derived(engine.phase3_maxHp);
-  const currentHp = $derived(hpPool?.currentValue ?? 0);
-  const tempHp = $derived(hpPool?.temporaryValue ?? 0);
-
-  /** Total effective HP including temporary (for bar width calculation). */
+  const hpPool        = $derived(engine.character.resources['resources.hp']);
+  const maxHp         = $derived(engine.phase3_maxHp);
+  const currentHp     = $derived(hpPool?.currentValue ?? 0);
+  const tempHp        = $derived(hpPool?.temporaryValue ?? 0);
   const effectiveMaxHp = $derived(maxHp + tempHp);
+  const hpPercent     = $derived(maxHp > 0 ? Math.max(0, Math.min(100, (currentHp / maxHp) * 100)) : 0);
+  const tempPercent   = $derived(effectiveMaxHp > 0 ? (tempHp / effectiveMaxHp) * 100 : 0);
 
-  /** Current HP as percentage of max (capped 0-100). */
-  const hpPercent = $derived(
-    maxHp > 0 ? Math.max(0, Math.min(100, (currentHp / maxHp) * 100)) : 0
-  );
-
-  /** Temp HP width as percentage of effective max. */
-  const tempPercent = $derived(
-    effectiveMaxHp > 0 ? (tempHp / effectiveMaxHp) * 100 : 0
-  );
-
-  /** Health status label based on HP fraction. */
+  /* Health status — colour stays inline since it's a runtime computed value */
   const hpStatus = $derived.by(() => {
-    if (!hpPool || maxHp <= 0) return { label: 'Unknown', color: '#6080a0' };
-    if (currentHp <= -(engine.phase2_attributes['stat_con']?.totalValue ?? 10)) {
-      return { label: 'Dead', color: '#4a0000' };
-    }
-    if (currentHp <= -1) return { label: 'Dying', color: '#7f0000' };
-    if (currentHp === 0) return { label: 'Unconscious', color: '#7f1d1d' };
+    if (!hpPool || maxHp <= 0) return { label: 'Unknown', color: 'oklch(55% 0.010 264)' };
+    if (currentHp <= -(engine.phase2_attributes['stat_con']?.totalValue ?? 10))
+      return { label: 'Dead',        color: 'oklch(30% 0.18 28)' };
+    if (currentHp <= -1) return { label: 'Dying',       color: 'oklch(40% 0.20 28)' };
+    if (currentHp ===  0) return { label: 'Unconscious', color: 'oklch(40% 0.18 28)' };
     const frac = currentHp / maxHp;
-    if (frac <= 0.25) return { label: 'Bloodied', color: '#dc2626' };
-    if (frac <= 0.5)  return { label: 'Injured', color: '#d97706' };
-    return { label: 'Healthy', color: '#4ade80' };
+    if (frac <= 0.25) return { label: 'Bloodied', color: 'oklch(55% 0.20 28)' };
+    if (frac <= 0.50) return { label: 'Injured',  color: 'oklch(72% 0.17 88)' };
+    return { label: 'Healthy', color: 'oklch(65% 0.17 145)' };
   });
 
-  /** CON modifier contribution to HP shown informatively. */
-  const conMod = $derived(engine.phase2_attributes['stat_con']?.derivedModifier ?? 0);
+  const conMod       = $derived(engine.phase2_attributes['stat_con']?.derivedModifier ?? 0);
   const conHpContrib = $derived(conMod * engine.phase0_characterLevel);
 
-  // ============================================================
-  // HEAL / DAMAGE UI
-  // ============================================================
-
-  let healAmount = $state('');
+  let healAmount   = $state('');
   let damageAmount = $state('');
   let tempHpAmount = $state('');
 
   function doHeal() {
-    const amount = parseInt(healAmount, 10);
-    if (isNaN(amount) || amount <= 0) return;
-    engine.adjustHP(amount);
-    healAmount = '';
+    const n = parseInt(healAmount, 10);
+    if (!isNaN(n) && n > 0) { engine.adjustHP(n); healAmount = ''; }
   }
-
   function doDamage() {
-    const amount = parseInt(damageAmount, 10);
-    if (isNaN(amount) || amount <= 0) return;
-    engine.adjustHP(-amount);
-    damageAmount = '';
+    const n = parseInt(damageAmount, 10);
+    if (!isNaN(n) && n > 0) { engine.adjustHP(-n); damageAmount = ''; }
   }
-
   function addTempHp() {
-    const amount = parseInt(tempHpAmount, 10);
-    if (isNaN(amount) || amount <= 0) return;
-    engine.setTemporaryHP(amount);
-    tempHpAmount = '';
+    const n = parseInt(tempHpAmount, 10);
+    if (!isNaN(n) && n > 0) { engine.setTemporaryHP(n); tempHpAmount = ''; }
   }
-
   function setCurrentHpDirectly(event: Event) {
     const val = parseInt((event.target as HTMLInputElement).value, 10);
-    if (!isNaN(val) && hpPool) {
-      hpPool.currentValue = Math.min(val, maxHp);
-    }
+    if (!isNaN(val) && hpPool) hpPool.currentValue = Math.min(val, maxHp);
   }
 
-  // ============================================================
-  // XP STATE (local for session, not persisted in this phase)
-  // ============================================================
-
-  /** Player's current XP (stored locally for now). */
+  /* XP */
   let currentXp = $state(0);
-
-  /**
-   * XP required to reach the next level.
-   * Read from config_xp_thresholds table (ANNEXES B.1).
-   */
   const nextLevelXp = $derived.by(() => {
     const level = engine.phase0_characterLevel;
     const table = dataLoader.getConfigTable('config_xp_thresholds');
     if (!table?.data) {
-      // Fallback for levels 1-5 without the config table loaded
-      const fallback: Record<number, number> = {
-        1: 1000, 2: 3000, 3: 6000, 4: 10000, 5: 15000,
-        6: 21000, 7: 28000, 8: 36000, 9: 45000, 10: 55000,
-      };
-      return fallback[level + 1] ?? 999999;
+      const fb: Record<number, number> = { 1:1000,2:3000,3:6000,4:10000,5:15000,6:21000,7:28000,8:36000,9:45000,10:55000 };
+      return fb[level + 1] ?? 999999;
     }
-    const rows = table.data as Array<Record<string, unknown>>;
-    const nextRow = rows.find(r => r['level'] === level + 1);
-    return typeof nextRow?.['xpRequired'] === 'number' ? nextRow['xpRequired'] : 999999;
+    const rows = table.data as Array<Record<string,unknown>>;
+    const row  = rows.find(r => r['level'] === level + 1);
+    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 999999;
   });
-
   const currentLevelXp = $derived.by(() => {
     const level = engine.phase0_characterLevel;
     const table = dataLoader.getConfigTable('config_xp_thresholds');
     if (!table?.data) return 0;
-    const rows = table.data as Array<Record<string, unknown>>;
-    const currentRow = rows.find(r => r['level'] === level);
-    return typeof currentRow?.['xpRequired'] === 'number' ? currentRow['xpRequired'] : 0;
+    const rows = table.data as Array<Record<string,unknown>>;
+    const row  = rows.find(r => r['level'] === level);
+    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 0;
   });
-
   const xpIntoLevel = $derived(currentXp - currentLevelXp);
-  const xpNeeded = $derived(nextLevelXp - currentLevelXp);
-  const xpPercent = $derived(
-    xpNeeded > 0 ? Math.max(0, Math.min(100, (xpIntoLevel / xpNeeded) * 100)) : 0
-  );
-
-  const canLevelUp = $derived(currentXp >= nextLevelXp);
-
+  const xpNeeded    = $derived(nextLevelXp - currentLevelXp);
+  const xpPercent   = $derived(xpNeeded > 0 ? Math.max(0, Math.min(100, (xpIntoLevel / xpNeeded) * 100)) : 0);
+  const canLevelUp  = $derived(currentXp >= nextLevelXp);
   let xpToAdd = $state('');
-
   function addXp() {
-    const amount = parseInt(xpToAdd, 10);
-    if (isNaN(amount)) return;
-    currentXp += amount;
-    xpToAdd = '';
+    const n = parseInt(xpToAdd, 10);
+    if (!isNaN(n)) { currentXp += n; xpToAdd = ''; }
   }
 </script>
 
-<div class="health-xp-panel">
+<div class="card p-4 flex flex-col gap-5">
 
-  <!-- ========================================================= -->
-  <!-- HEALTH SECTION -->
-  <!-- ========================================================= -->
-  <section class="section health-section">
-     <h2 class="section-title"><IconHealth size={24} aria-hidden="true" /> Hit Points</h2>
+  <!-- ── HIT POINTS ──────────────────────────────────────────────────────── -->
+  <section class="flex flex-col gap-2">
+    <div class="section-header border-b border-border pb-2">
+      <IconHealth size={20} aria-hidden="true" />
+      <span>Hit Points</span>
+    </div>
 
-    <!-- HP Status Badge -->
-    <div class="hp-status-row">
-      <span class="hp-status-badge" style="color: {hpStatus.color}; border-color: {hpStatus.color};">
+    <!-- Status badge + CON contribution -->
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <span
+        class="text-xs font-semibold border rounded px-2 py-0.5"
+        style="color: {hpStatus.color}; border-color: {hpStatus.color};"
+      >
         ● {hpStatus.label}
       </span>
-      <span class="con-contrib" title="CON modifier × character level">
-        CON contribution: {conHpContrib >= 0 ? '+' : ''}{conHpContrib}
+      <span class="text-xs text-text-muted" title="CON modifier × character level">
+        CON contrib: {conHpContrib >= 0 ? '+' : ''}{conHpContrib}
       </span>
     </div>
 
-    <!-- HP Numbers -->
-    <div class="hp-numbers">
-      <div class="hp-group">
-        <span class="hp-label">Current</span>
+    <!-- HP numbers row -->
+    <div class="flex items-end gap-3 flex-wrap">
+      <div class="flex flex-col items-center gap-0.5">
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">Current</span>
         <input
           type="number"
-          class="hp-input"
+          class="w-16 text-center text-xl font-bold rounded border border-border bg-surface px-1 py-0.5 text-red-400 focus:outline-none focus:border-red-400"
           value={currentHp}
           onchange={setCurrentHpDirectly}
           aria-label="Current HP"
         />
       </div>
-      <span class="hp-slash">/</span>
-      <div class="hp-group">
-        <span class="hp-label">Max</span>
-        <span class="hp-max">{maxHp}</span>
+      <span class="text-xl text-text-muted self-center">/</span>
+      <div class="flex flex-col items-center gap-0.5">
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">Max</span>
+        <span class="text-xl font-bold text-sky-400">{maxHp}</span>
       </div>
       {#if tempHp > 0}
-        <div class="hp-group temp-group">
-          <span class="hp-label">+Temp</span>
-          <span class="hp-temp">+{tempHp}</span>
+        <div class="flex flex-col items-center gap-0.5">
+          <span class="text-[10px] uppercase tracking-wider text-text-muted">+Temp</span>
+          <span class="text-lg font-bold text-green-400">+{tempHp}</span>
         </div>
       {/if}
     </div>
 
-    <!-- HP Visual Bar -->
+    <!-- HP visual bar — using app.css .hp-bar classes with --hp-pct -->
     <div
-      class="hp-bar-container"
+      class="hp-bar relative"
       role="progressbar"
       aria-valuenow={currentHp}
       aria-valuemin={-100}
       aria-valuemax={maxHp}
       aria-label="HP: {currentHp} / {maxHp}"
     >
-      <!-- Temp HP portion -->
+      <!-- Temp HP overlay (right-aligned, semi-transparent green) -->
       {#if tempHp > 0}
-        <div class="hp-bar temp-bar" style="width: {tempPercent}%; right: 0;"></div>
+        <div
+          class="absolute top-0 right-0 h-full rounded-full bg-green-400/40"
+          style="width: {tempPercent}%;"
+          aria-hidden="true"
+        ></div>
       {/if}
-      <!-- Regular HP portion -->
+      <!-- Current HP fill using the gradient from app.css -->
       <div
-        class="hp-bar current-bar"
-        style="width: {hpPercent}%; background: {hpStatus.color};"
+        class="hp-bar__fill"
+        style="--hp-pct: {hpPercent}%;"
       ></div>
     </div>
 
-    <!-- Heal / Damage Controls -->
-    <div class="hp-controls">
-      <div class="control-group">
+    <!-- Heal / Damage / Temp HP controls -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <!-- Heal -->
+      <div class="flex gap-1.5">
         <input
           type="number"
           bind:value={healAmount}
           placeholder="0"
           min="1"
-          class="amount-input heal-input"
+          class="input w-14 text-center px-1"
           aria-label="Healing amount"
           onkeydown={(e) => e.key === 'Enter' && doHeal()}
         />
-        <button class="btn-heal" onclick={doHeal} aria-label="Apply healing">
-          + Heal
+        <button
+          class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
+                 px-2 py-2 bg-green-800/60 text-green-300 hover:bg-green-700/60 transition-colors duration-150"
+          onclick={doHeal}
+          aria-label="Apply healing"
+          type="button"
+        >
+          <IconHeal size={14} aria-hidden="true" /> Heal
         </button>
       </div>
-      <div class="control-group">
+
+      <!-- Damage -->
+      <div class="flex gap-1.5">
         <input
           type="number"
           bind:value={damageAmount}
           placeholder="0"
           min="1"
-          class="amount-input damage-input"
+          class="input w-14 text-center px-1"
           aria-label="Damage amount"
           onkeydown={(e) => e.key === 'Enter' && doDamage()}
         />
-        <button class="btn-damage" onclick={doDamage} aria-label="Apply damage">
-          − Damage
+        <button
+          class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
+                 px-2 py-2 bg-red-800/60 text-red-300 hover:bg-red-700/60 transition-colors duration-150"
+          onclick={doDamage}
+          aria-label="Apply damage"
+          type="button"
+        >
+          <IconDamage size={14} aria-hidden="true" /> Damage
         </button>
       </div>
-      <div class="control-group">
+
+      <!-- Temp HP -->
+      <div class="flex gap-1.5">
         <input
           type="number"
           bind:value={tempHpAmount}
           placeholder="0"
           min="1"
-          class="amount-input temp-input"
+          class="input w-14 text-center px-1"
           aria-label="Temporary HP amount"
           onkeydown={(e) => e.key === 'Enter' && addTempHp()}
         />
-        <button class="btn-temp" onclick={addTempHp} aria-label="Add temporary HP">
-          + Temp HP
+        <button
+          class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
+                 px-2 py-2 bg-emerald-800/60 text-emerald-300 hover:bg-emerald-700/60 transition-colors duration-150"
+          onclick={addTempHp}
+          aria-label="Add temporary HP"
+          type="button"
+        >
+          + Temp
         </button>
       </div>
     </div>
   </section>
 
-  <!-- ========================================================= -->
-  <!-- EXPERIENCE SECTION -->
-  <!-- ========================================================= -->
-  <section class="section xp-section">
-    <h2 class="section-title">⭐ Experience</h2>
+  <!-- ── EXPERIENCE ──────────────────────────────────────────────────────── -->
+  <section class="flex flex-col gap-2">
+    <div class="section-header border-b border-border pb-2">
+      <IconXP size={20} aria-hidden="true" />
+      <span>Experience</span>
+    </div>
 
-    <div class="xp-numbers">
-      <div class="xp-level">
-        <span class="xp-level-label">Level</span>
-        <span class="xp-level-value">{engine.phase0_characterLevel}</span>
+    <!-- Level + XP numbers -->
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border border-border bg-surface-alt min-w-[3.5rem]">
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">Level</span>
+        <span class="text-2xl font-bold text-yellow-500 dark:text-yellow-400 leading-none">
+          {engine.phase0_characterLevel}
+        </span>
       </div>
-      <div class="xp-progress-numbers">
-        <span class="xp-current">{currentXp.toLocaleString()}</span>
-        <span class="xp-sep">XP /</span>
-        <span class="xp-next">{nextLevelXp.toLocaleString()} XP</span>
+      <div class="flex items-center gap-1.5 text-sm flex-wrap">
+        <span class="font-bold text-yellow-500 dark:text-yellow-400">{currentXp.toLocaleString()}</span>
+        <span class="text-text-muted">XP /</span>
+        <span class="text-text-secondary">{nextLevelXp.toLocaleString()} XP</span>
       </div>
     </div>
 
-    <!-- XP Progress Bar -->
+    <!-- XP progress bar -->
     <div
-      class="xp-bar-container"
+      class="progress-bar"
+      style="--progress-pct: {xpPercent}%; --progress-color: oklch(72% 0.17 88);"
       role="progressbar"
       aria-valuenow={xpIntoLevel}
       aria-valuemin={0}
       aria-valuemax={xpNeeded}
-      aria-label="XP progress: {xpPercent.toFixed(0)}% to next level"
+      aria-label="XP: {xpPercent.toFixed(0)}% to next level"
     >
-      <div class="xp-bar" style="width: {xpPercent}%;"></div>
+      <div class="progress-bar__fill"></div>
     </div>
-
-    <p class="xp-label-line">
-      {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} XP to next level
-      ({xpPercent.toFixed(0)}%)
+    <p class="text-xs text-text-muted">
+      {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} XP to next level ({xpPercent.toFixed(0)}%)
     </p>
 
-    <!-- XP Add and Level Up Controls -->
-    <div class="xp-controls">
+    <!-- Award XP + Level Up -->
+    <div class="flex items-center gap-2 flex-wrap">
       <input
         type="number"
         bind:value={xpToAdd}
-        placeholder="Add XP..."
-        class="amount-input xp-input"
+        placeholder="Add XP…"
+        class="input flex-1 min-w-[8rem]"
         aria-label="XP to add"
         onkeydown={(e) => e.key === 'Enter' && addXp()}
       />
-      <button class="btn-add-xp" onclick={addXp} aria-label="Award XP">
+      <button class="btn-secondary" onclick={addXp} aria-label="Award XP" type="button">
         + Award XP
       </button>
       {#if canLevelUp}
-        <button class="btn-level-up" aria-label="Level Up (stub — full UI in future phase)">
+        <button
+          class="level-up-btn flex items-center gap-1 px-3 py-2 rounded-md text-sm font-bold text-white"
+          aria-label="Level Up"
+          type="button"
+        >
           <IconXP size={16} aria-hidden="true" /> Level Up!
         </button>
       {/if}
     </div>
 
     {#if dataLoader.getConfigTable('config_xp_thresholds') === undefined}
-      <p class="config-hint">
-        Load <code>config_xp_thresholds</code> for accurate XP thresholds.
+      <p class="text-xs text-text-muted italic">
+        Load <code class="bg-surface-alt px-1 rounded">config_xp_thresholds</code> for accurate XP thresholds.
       </p>
     {/if}
   </section>
@@ -344,217 +303,18 @@
 </div>
 
 <style>
-  .health-xp-panel {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1.25rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  /*
+   * Level-Up pulsing button gradient.
+   * Kept here because CSS keyframe animations and gradient backgrounds cannot
+   * be expressed as Tailwind utility classes (spec §19.14 exemption for keyframes).
+   */
+  .level-up-btn {
+    background: linear-gradient(135deg, var(--color-accent-600), oklch(72% 0.17 88));
+    animation: pulse-glow 1.5s ease infinite;
   }
 
-  /* ========================= SECTIONS ========================= */
-  .section { display: flex; flex-direction: column; gap: 0.6rem; }
-
-  .section-title {
-    margin: 0;
-    font-size: 0.95rem;
-    color: #c4b5fd;
-    border-bottom: 1px solid #21262d;
-    padding-bottom: 0.4rem;
-  }
-
-  /* ========================= HP STATUS ROW ========================= */
-  .hp-status-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .hp-status-badge {
-    font-size: 0.82rem;
-    font-weight: 600;
-    border: 1px solid;
-    border-radius: 4px;
-    padding: 0.15rem 0.6rem;
-  }
-
-  .con-contrib { font-size: 0.75rem; color: #6080a0; }
-
-  /* ========================= HP NUMBERS ========================= */
-  .hp-numbers {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .hp-group { display: flex; flex-direction: column; align-items: center; gap: 0; }
-  .hp-label { font-size: 0.65rem; color: #4a4a6a; text-transform: uppercase; }
-  .hp-input {
-    width: 4rem;
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-radius: 4px;
-    color: #f87171;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 0.1rem 0.2rem;
-  }
-  .hp-input:focus { outline: none; border-color: #f87171; }
-  .hp-max { font-size: 1.2rem; font-weight: bold; color: #7dd3fc; }
-  .hp-slash { font-size: 1.2rem; color: #4a4a6a; align-self: center; }
-  .temp-group .hp-temp { font-size: 1rem; font-weight: bold; color: #4ade80; }
-
-  /* ========================= HP BAR ========================= */
-  .hp-bar-container {
-    position: relative;
-    height: 10px;
-    background: #21262d;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-
-  .hp-bar { position: absolute; height: 100%; transition: width 0.3s ease; border-radius: 5px; }
-  .current-bar { left: 0; }
-  .temp-bar { background: #4ade80; opacity: 0.5; }
-
-  /* ========================= HP CONTROLS ========================= */
-  .hp-controls {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .control-group {
-    display: flex;
-    gap: 0.3rem;
-    align-items: center;
-    flex: 1;
-    min-width: 120px;
-  }
-
-  .amount-input {
-    width: 4rem;
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    color: #e0e0f0;
-    padding: 0.25rem 0.3rem;
-    font-size: 0.85rem;
-    text-align: center;
-  }
-
-  .amount-input:focus { outline: none; border-color: #7c3aed; }
-
-  .btn-heal, .btn-damage, .btn-temp {
-    flex: 1;
-    border: none;
-    border-radius: 4px;
-    padding: 0.3rem 0.5rem;
-    font-size: 0.8rem;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .btn-heal   { background: #166534; color: #4ade80; }
-  .btn-heal:hover { background: #14532d; }
-  .btn-damage { background: #7f1d1d; color: #f87171; }
-  .btn-damage:hover { background: #6d1717; }
-  .btn-temp   { background: #1c4a2a; color: #86efac; }
-  .btn-temp:hover { background: #15402a; }
-
-  /* ========================= XP SECTION ========================= */
-  .xp-numbers {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .xp-level {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    padding: 0.4rem 0.75rem;
-  }
-
-  .xp-level-label { font-size: 0.65rem; color: #4a4a6a; text-transform: uppercase; }
-  .xp-level-value { font-size: 1.5rem; font-weight: bold; color: #fbbf24; }
-
-  .xp-progress-numbers {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.85rem;
-  }
-
-  .xp-current { color: #fbbf24; font-weight: bold; }
-  .xp-sep { color: #4a4a6a; }
-  .xp-next { color: #6080a0; }
-
-  .xp-bar-container {
-    height: 8px;
-    background: #21262d;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .xp-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #fbbf24, #f59e0b);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
-
-  .xp-label-line { font-size: 0.75rem; color: #6080a0; margin: 0; }
-
-  .xp-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .xp-input { width: 7rem; }
-
-  .btn-add-xp {
-    background: #1c1a3a;
-    color: #c4b5fd;
-    border: 1px solid #4c35a0;
-    border-radius: 4px;
-    padding: 0.3rem 0.75rem;
-    font-size: 0.82rem;
-    cursor: pointer;
-  }
-  .btn-add-xp:hover { background: #2d1b69; }
-
-  .btn-level-up {
-    background: linear-gradient(135deg, #7c3aed, #d97706);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.35rem 1rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    font-weight: bold;
-    animation: pulse 1.5s ease infinite;
-  }
-
-  @keyframes pulse {
+  @keyframes pulse-glow {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.75; }
+    50%       { opacity: 0.75; }
   }
-
-  .config-hint { font-size: 0.75rem; color: #4a4a6a; font-style: italic; margin: 0; }
 </style>

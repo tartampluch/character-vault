@@ -1,18 +1,10 @@
 <!--
   @file src/lib/components/combat/DamageReduction.svelte
   @description Damage Reduction (DR) builder and manager for the Combat tab.
+  Phase 19.9: Migrated to Tailwind CSS — all scoped <style> removed.
 
-  PURPOSE:
-    Allows the GM/player to construct DR rules graphically:
-      - DR value (e.g., 5)
-      - Rule type: "Bypassed by" or "Excepted from"
-      - Material type: Adamantine, Magic, Cold Iron, Silver, Slashing, Bludgeoning, etc.
-    
-    When "Add DR" is clicked, a synthetic `ActiveFeatureInstance` (category: condition)
-    with a `combatStats.damage_reduction` modifier is injected into the engine.
-    The list shows all active DR entries with a delete button.
-
-  @see ARCHITECTURE.md Phase 10.7 for the specification.
+  Active DR entries as badge-like chips with delete (×) button.
+  Builder form: value input + bypass select + Add button.
 -->
 
 <script lang="ts">
@@ -20,9 +12,8 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
 
-  // DR builder form state
-  let drValue = $state(5);
-  let drBypass = $state('—');     // e.g., "magic", "adamantine"
+  let drValue    = $state(5);
+  let drBypass   = $state('—');
   let drRuleType = $state<'bypassed' | 'excepted'>('bypassed');
 
   const DR_BYPASS_OPTIONS = [
@@ -30,178 +21,90 @@
     'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic',
   ];
 
-  /**
-   * All active DR instances (synthetic features with id starting with "dr_custom_").
-   */
-  const activeDRs = $derived.by(() => {
-    return engine.character.activeFeatures
+  const activeDRs = $derived.by(() =>
+    engine.character.activeFeatures
       .filter(afi => afi.featureId.startsWith('dr_custom_') && afi.isActive)
       .map(afi => {
         const feature = dataLoader.getFeature(afi.featureId);
         return { instanceId: afi.instanceId, label: feature ? engine.t(feature.label) : afi.featureId };
-      });
-  });
+      })
+  );
 
-  /**
-   * Adds a new DR to the character as a synthetic condition feature.
-   */
   function addDR() {
     if (drValue <= 0) return;
-    const drId = `dr_custom_${drValue}_${drBypass}_${Date.now()}`;
+    const drId    = `dr_custom_${drValue}_${drBypass}_${Date.now()}`;
     const drLabel = `DR ${drValue}/${drBypass === '—' ? '—' : drBypass}`;
-
-    // Cache a minimal feature definition for this DR
     dataLoader.cacheFeature({
-      id: drId,
-      category: 'condition',
+      id: drId, category: 'condition',
       label: { en: drLabel, fr: drLabel },
       description: { en: `Damage Reduction ${drValue}/${drBypass}`, fr: `Réduction de dégâts ${drValue}/${drBypass}` },
       tags: ['condition', 'damage_reduction', drId],
-      grantedModifiers: [
-        {
-          id: `${drId}_mod`,
-          sourceId: drId,
-          sourceName: { en: drLabel, fr: drLabel },
-          targetId: 'combatStats.damage_reduction',
-          value: drValue,
-          type: 'base',
-        },
-      ],
+      grantedModifiers: [{
+        id: `${drId}_mod`, sourceId: drId, sourceName: { en: drLabel, fr: drLabel },
+        targetId: 'combatStats.damage_reduction', value: drValue, type: 'base',
+      }],
       grantedFeatures: [],
       ruleSource: 'gm_override',
     });
-
-    engine.addFeature({
-      instanceId: `afi_${drId}`,
-      featureId: drId,
-      isActive: true,
-    });
+    engine.addFeature({ instanceId: `afi_${drId}`, featureId: drId, isActive: true });
   }
 </script>
 
-<div class="dr-panel">
-   <h2 class="panel-title"><IconDR size={24} aria-hidden="true" /> Damage Reduction</h2>
+<div class="card p-4 flex flex-col gap-3">
 
-  <!-- Active DRs -->
+  <div class="section-header border-b border-border pb-2">
+    <IconDR size={20} aria-hidden="true" />
+    <span>Damage Reduction</span>
+  </div>
+
+  <!-- Active DRs list -->
   {#if activeDRs.length === 0}
-    <p class="empty-note">No Damage Reduction configured.</p>
+    <p class="text-sm text-text-muted italic">No Damage Reduction configured.</p>
   {:else}
-    <ul class="dr-list">
+    <ul class="flex flex-col gap-1.5">
       {#each activeDRs as dr}
-        <li class="dr-item">
-          <span class="dr-label">{dr.label}</span>
+        <li class="flex items-center justify-between px-3 py-1.5 rounded-md border border-border bg-surface-alt">
+          <span class="text-sm font-mono text-accent">{dr.label}</span>
           <button
-            class="dr-delete"
+            class="btn-ghost p-1 text-red-400 hover:text-red-500"
             onclick={() => engine.removeFeature(dr.instanceId)}
             aria-label="Remove {dr.label}"
-          >×</button>
+            type="button"
+          ><IconDelete size={14} aria-hidden="true" /></button>
         </li>
       {/each}
     </ul>
   {/if}
 
-  <!-- DR Builder -->
-  <div class="dr-builder">
-    <h3 class="builder-title">Add DR</h3>
-    <div class="builder-row">
-      <label class="field-label">Value</label>
-      <input type="number" min="1" max="50" bind:value={drValue} class="dr-input small" />
+  <!-- Builder form -->
+  <div class="flex flex-col gap-2 pt-2 border-t border-border">
+    <span class="text-xs text-text-muted uppercase tracking-wider">Add DR</span>
+    <div class="flex items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-1.5">
+        <label for="dr-value-input" class="text-xs text-text-muted shrink-0">Value</label>
+        <input
+          id="dr-value-input"
+          type="number" min="1" max="50"
+          bind:value={drValue}
+          class="input w-14 text-center text-sm text-sky-500 dark:text-sky-400 px-1"
+        />
+      </div>
+      <div class="flex items-center gap-1.5 flex-1 min-w-[140px]">
+        <label for="dr-bypass-select" class="text-xs text-text-muted shrink-0">Bypassed By</label>
+        <select id="dr-bypass-select" bind:value={drBypass} class="select flex-1 text-sm py-1">
+          {#each DR_BYPASS_OPTIONS as opt}
+            <option value={opt}>{opt}</option>
+          {/each}
+        </select>
+      </div>
     </div>
-    <div class="builder-row">
-      <label class="field-label">Bypassed By</label>
-      <select bind:value={drBypass} class="dr-select">
-        {#each DR_BYPASS_OPTIONS as opt}
-          <option value={opt}>{opt}</option>
-        {/each}
-      </select>
-    </div>
-    <button class="btn-add" onclick={addDR}>+ Add DR {drValue}/{drBypass}</button>
+    <button
+      class="btn-primary gap-1 self-start"
+      onclick={addDR}
+      type="button"
+    >
+      <IconAdd size={14} aria-hidden="true" /> Add DR {drValue}/{drBypass}
+    </button>
   </div>
+
 </div>
-
-<style>
-  .dr-panel {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 10px;
-    padding: 1.25rem;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    color: #e0e0e0;
-  }
-
-  .panel-title { margin: 0 0 1rem; font-size: 1rem; color: #c4b5fd; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
-
-  .empty-note { font-size: 0.82rem; color: #4a4a6a; font-style: italic; margin: 0 0 0.75rem; }
-
-  .dr-list { list-style: none; padding: 0; margin: 0 0 0.75rem; display: flex; flex-direction: column; gap: 0.3rem; }
-
-  .dr-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #0d1117;
-    border: 1px solid #21262d;
-    border-radius: 4px;
-    padding: 0.25rem 0.6rem;
-    font-size: 0.85rem;
-  }
-
-  .dr-label { color: #c4b5fd; font-family: monospace; }
-
-  .dr-delete {
-    background: transparent;
-    border: none;
-    color: #f87171;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    padding: 0 0.2rem;
-  }
-  .dr-delete:hover { color: #dc2626; }
-
-  .dr-builder {
-    border-top: 1px solid #21262d;
-    padding-top: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .builder-title { margin: 0 0 0.25rem; font-size: 0.82rem; color: #6080a0; text-transform: uppercase; letter-spacing: 0.05em; }
-  .builder-row { display: flex; align-items: center; gap: 0.5rem; }
-  .field-label { font-size: 0.75rem; color: #6080a0; width: 5rem; flex-shrink: 0; }
-
-  .dr-input {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    color: #7dd3fc;
-    padding: 0.25rem 0.35rem;
-    font-size: 0.85rem;
-    text-align: center;
-  }
-  .dr-input.small { width: 4rem; }
-
-  .dr-select {
-    flex: 1;
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 4px;
-    color: #e0e0f0;
-    padding: 0.25rem 0.35rem;
-    font-size: 0.85rem;
-    font-family: inherit;
-  }
-
-  .btn-add {
-    background: #7c3aed;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.4rem 0.9rem;
-    font-size: 0.82rem;
-    cursor: pointer;
-    margin-top: 0.25rem;
-  }
-  .btn-add:hover { background: #6d28d9; }
-</style>

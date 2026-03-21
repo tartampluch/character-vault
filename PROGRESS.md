@@ -388,7 +388,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - `PointBuyModal.svelte` and `RollStatsModal.svelte`: Redesign as full-screen sheets on mobile, centered modals on desktop. Touch-friendly increment/decrement buttons (≥44px).
     - `ModifierBreakdownModal.svelte` and `DiceRollModal.svelte`: Use the unified `Modal` component. Clean math breakdown layout. Dice results with animated roll display (optional, subtle).
 
-- [ ] **19.9 Combat Tab Migration:** Migrate all Combat tab components to Tailwind CSS:
+- [x] **19.9 Combat Tab Migration:** Migrate all Combat tab components to Tailwind CSS:
     - `HealthAndXP.svelte`: HP bar redesigned as a full-width visual bar with gradient colors (green → yellow → red). Touch-friendly Heal (`HeartPulse`) and Damage (`Skull`) buttons. XP progress bar with level indicator. Level Up button prominent with `TrendingUp` icon.
     - `ArmorClass.svelte`: Three AC values (Normal, Touch, Flat-Footed) displayed as prominent number cards in a row. Each with breakdown icon. Temp modifier input styled consistently.
     - `CoreCombat.svelte`: BAB, Initiative, Grapple displayed as stat blocks with action buttons. Responsive grid.
