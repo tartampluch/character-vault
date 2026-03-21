@@ -1,0 +1,633 @@
+body {
+	font-family: "Trebuchet MS", Verdana, sans-serif;
+	font-size: .9em;
+	background-color: #F2ECDA;
+	background-image: url(http://www.d20srd.org/images/bkg_base.jpg);
+	padding: 0 10px;
+	margin: 0 auto;
+	max-width: 1125px;
+}
+
+#topad {
+	position: relative;
+	overflow:auto;
+	z-index:0;
+}
+
+#index-ad {
+        position: relative;
+        overflow:auto;
+        z-index:0;
+}
+
+h1 {
+	font-size: 2em;
+	margin: 0 0 10px 0;
+}
+
+h2 {
+	font-size: 1.75em;
+	margin: 20px 0 5px 0;
+	font-style: italic;
+}
+
+h3 {
+	font-size: 1.5em;
+	margin: 20px 0 5px 0;
+}
+
+h4 {
+	font-size: 1.25em;
+	margin: 20px 0 5px 0;
+	font-style: italic;
+}
+
+h5 {
+	font-size: 1em;
+	margin: 10px 0 0 0;
+}
+
+h6 {
+	font-size: 1em;
+	font-weight: normal;
+	font-style: italic;
+	margin: 10px 0 0 0;
+}
+
+h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
+	margin-top: 0;
+}
+
+h1 + table.right + p, h2 + table.right + p, h3 + table.right + p, h4 + table.right + p, h5 + table.right + p, h6 + table.right + p {
+	margin-top: 0;
+}
+
+a {
+	outline: none;
+}
+
+a:link, a:visited {
+	color: #000066;
+	text-decoration: none;
+}
+
+th a:link, th a:visited {
+	color: #E5E5FF;
+	text-decoration: none;
+}
+
+a:hover, a:active, th a:hover, th a:active {
+	color: #000066;
+	text-decoration: none;
+	background-image: url(http://www.d20srd.org/images/linkbkg.png);
+	background-repeat: repeat-x;
+	background-position: left center;
+}
+
+a img {
+	border: none;
+}
+
+a.diceRoller {
+	color: #660000;
+}
+
+pre {
+	font: 1em "Courier New", Courier, mono;
+	background-image: url(http://www.d20srd.org/images/tables/odd.png);
+	padding: 20px;
+	display: table;
+	border: 1px solid #E5C3A1;
+}
+
+table {
+	border-color: #8C7054;
+	border-width: 1px;
+	border-style: none solid solid none;
+	width: 10px;
+}
+
+caption {
+	text-align: left;
+	font-size: 100%;
+	margin: 1em 0 0 0;
+	padding: 0px 0px 3px 0px;
+	font-weight: bold;
+}
+
+p + table caption {
+	margin: 0;
+}
+
+tfoot td {
+	font-size: 90%;
+	background-color: #FFFFFF;
+	white-space: normal;
+}
+
+tfoot ul, tfoot ol {
+	padding: 0 0 0 1.5em;
+	margin: 0;
+}
+
+tfoot li {
+	margin-top: 0px;
+}
+
+tfoot li + li {
+	padding-top: 5px;
+}
+
+tfoot p:first-child {
+	margin: 0 0 1em 0;
+}
+
+tfoot p {
+	margin-bottom: 0px;
+}
+
+tr:nth-child(odd) td {
+  background-color: #F2E0CE;
+}
+
+tr:nth-child(even) td {
+  background-color: #FFF2E5;
+}
+
+th {
+	background-color: #A68563;
+	color: #FFFFFF;
+	vertical-align: bottom;
+}
+
+.h2 th {
+	background-color: #E5C3A1;
+	text-align: left;
+	font-style: italic;
+	font-weight: bold;
+	color: #000000;
+}
+
+td {
+	vertical-align: top;
+}
+
+td.sub {
+	padding-left: 15px;
+}
+
+td.sub2 {
+	padding-left: 25px;
+}
+
+td, th {
+	border-color: #8C7054;
+	border-width: 1px;
+	border-style: solid none none solid;
+	padding: 1px 5px 1px 5px;
+	white-space: nowrap;
+}
+
+table.right, h4.right, div.right, img.right {
+	float: right;
+	clear: right;
+	margin: 0 0 1em 1em;
+}
+
+h1 + table.right caption, h2 + table.right caption, h3 + table.right caption, h4 + table.right caption, h5 + table.right caption, h6 + table.right caption {
+	margin: 0 0 0 1em;
+}
+
+table.left {
+	float: left;
+	margin: 0 2em 1em 0;
+}
+
+table.list {
+	border: none;
+	width: auto;
+	margin-left: 2em;
+}
+
+table.list th {
+	background-color: transparent;
+	color: #000000;
+	vertical-align: top;
+	text-align: right;
+	border: none;
+	padding: 1px 0 1px 0;
+}
+
+table.list td {
+	vertical-align: top;
+	border: none;
+	white-space: normal;
+	background-color: transparent !important;
+}
+
+table.layout {
+	border: none;
+}
+
+table.layout td {
+	border: none;
+	white-space: normal;
+}
+
+ol li ol li {
+	list-style-type: lower-alpha;
+}
+
+li {
+	margin-top: 5px;
+}
+
+#dc15search {
+	display: none;
+}
+
+#header {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	background-image: url(http://www.d20srd.org/images/headerBkg.png);
+	padding: 10px 10px 0 10px;
+	background-repeat: repeat-x;
+	height: 70px;
+	z-index: 99999;
+}
+
+#searchIndex {
+    position: absolute;
+    top: 10px;
+    right: 250px;
+    white-space: nowrap;
+    font-style: italic;
+    font-size: 20px;
+}
+
+#siteSearch {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	white-space: nowrap;
+}
+
+#siteSearch input.text {
+	font-size: 80%;
+	border-color: #000000;
+	border-width: 1px;
+	border-style: solid;
+	color: #666666;
+	padding-left: 3px;
+}
+
+#siteSearch input.button {
+	font-size: 80%;
+	border-color: #000000;
+	border-width: 1px;
+	border-style: solid;
+	background-image: url(http://www.d20srd.org/images/tables/even.png);
+	background-color: transparent;
+	cursor: pointer;
+}
+
+#path {
+	position: absolute;
+	top: 40px;
+	left: 125px;
+	font-size: 80%;
+}
+
+#rollovermenu {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+	top: -20px;
+	right: 10px;
+	float:right;
+}
+
+#rollovermenu a {
+	background-image: none;
+}
+
+#rollovermenu li {
+	/*
+
+all list items */
+	position: relative;
+	padding: 0;
+	margin: 0;
+	color: #999999;
+	float: left;
+}
+
+#rollovermenu ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#rollovermenu ul a {
+	display: block;
+	padding: 2px 5px 2px 5px;
+	text-decoration: none;
+	white-space: nowrap;
+	border-width: 1px;
+	border-style: none none solid none;
+}
+
+#rollovermenu ul a:link, #rollovermenu ul a:visited {
+	color: #ffffff;
+}
+
+#rollovermenu ul a:hover, #rollovermenu ul a:active {
+	color: #000000;
+}
+
+#rollovermenu li ul {
+	/*
+
+second-level lists */
+	position: absolute;
+	display: none;
+	border-width: 1px;
+	border-style: solid solid none solid;
+}
+
+#rollovermenu li:hover ul, #rollovermenu li.sfhover ul {
+	/*
+
+lists nested under hovered list items */
+	top: 21px;
+	display: block;
+}
+
+#rollovermenu li ul li {
+	width: 100%;
+	white-space: nowrap;
+}
+
+#rollovermenu li ul li .note {
+	font-size: 10px;
+	color: #E4D5BE;
+}
+
+#hd20srdMenuIcon {
+	padding: 0 5px 0 0;
+	border: none;
+}
+
+#rollovermenu img {
+	border-color: #000000;
+	border-width: 1px;
+	border-style: none;
+}
+
+#hd20srdMenu ul {
+	right: -61px;
+	background-image: url(http://www.d20srd.org/images/menuBkg.jpg);
+	border-color: #664C33;
+}
+
+#hd20srdMenu ul a {
+	border-color: #664C33;
+}
+
+#hd20srdMenu ul a:hover {
+	background-image: url(http://www.d20srd.org/images/bkg_base.jpg);
+}
+
+#extrasMenu ul {
+	right: -28px;
+	background-color: #5B84A5;
+	border-color: #666666;
+}
+
+#extrasMenu ul a {
+	border-color: #666666;
+}
+
+#extrasMenu ul a:hover {
+	background-color: #CCCCCC;
+}
+
+#d20SystemMenu ul {
+	right: 0px;
+	background-color: #CC0000;
+	border-color: #000000;
+}
+
+#d20SystemMenu ul a {
+	border-color: #000000;
+}
+
+#d20SystemMenu ul a:hover {
+	background-color: #ffffff;
+}
+
+#bolsMenu ul {
+        right: 0px;
+        background-color: #f05a28;
+        border-color: #000000;
+}
+
+#bolsMenu ul a {
+        border-color: #000000;
+}
+
+#bolsMenu ul a:hover {
+        background-color: #ffffff;
+}
+
+*:target {
+	padding-left: 15px !important;
+	background: url(http://www.d20srd.org/images/targetBkg.png) no-repeat left center;
+}
+
+#d20Logo {
+	float: right;
+	width: 74px;
+	margin: 0 0 0 10px;
+}
+
+#ENnie {
+	float: right;
+	width: 75px;
+}
+
+#d20Logo a, #ENnie a, #siteLogo a {
+	background-image: none;
+}
+
+#pageIndex {
+	margin: 0 0 10px 0;
+	border-color: #997A53;
+	border-width: 1px;
+	border-style: dotted none dotted none;
+	padding: 10px 0 10px 0;
+}
+
+#pageIndex ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#pageIndex li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#pageIndex ul li ul {
+	margin: 0 0 0 15px;
+	font-size: 90%;
+}
+
+#pageIndex .column {
+	float: left;
+	width: 25%;
+	clear: right;
+}
+
+.spell, .psionicPower {
+	font-style: italic;
+}
+
+.footer p, .fileNote, .footnote {
+	color: #997A53;
+	font-size: .8em;
+	clear: both;
+}
+
+.footer {
+	clear: both;
+	text-align: center;
+	padding: 30px 0 0 0;
+	margin: 0 auto 0 auto;
+}
+
+.announceNote {
+	background-color: #990000;
+	color: #ffffff;
+	border-color: #000000;
+	border-width: 1px;
+	border-style: solid;
+	padding: 0 5px 0 5px;
+	font-size: .8em;
+}
+
+.footer a:link, .footer a:visited {
+	color: #997A53;
+	border-color: #CCA36E;
+	text-decoration: underline;
+}
+
+.footer a:hover, .footer a:active {
+	color: #000000;
+	text-decoration: underline;
+	background-image: none;
+}
+
+.footer sup {
+	font-size: .5em;
+}
+
+ul#standards li {
+	font-size: .8em;
+	list-style: none;
+	display: inline;
+	color: #ffffff;
+	border-width: 1px 1px 1px 10px;
+	margin: 5px;
+	padding: 1px 2px 1px 2px;
+	border-color: #B29C7D;
+	border-style: solid;
+	background-image: none;
+}
+
+ul#standards li a:link, ul#standards li a:visited {
+	color: #997A53;
+	text-decoration: none;
+}
+
+ul#standards li a:hover, ul#standards li a:active {
+	color: #000066;
+	text-decoration: none;
+	background-image: url(http://www.d20srd.org/images/linkbkg.png);
+	background-repeat: repeat-x;
+	background-position: left center;
+}
+
+.bookTitle {
+	font-style: italic;
+}
+
+.sidebar {
+  float: right;
+  margin: 0 0 20px 20px;
+}
+
+.sidebar li {
+  margin-top: 0;
+}
+
+/* @group Google Custom Search */
+
+.gsc-control-cse {
+  padding: 0 !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+form.gsc-search-box {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background-color: transparent !important;
+  width: 230px !important;
+}
+
+table.gsc-search-box {
+  margin: 0 !important;
+}
+
+form.gsc-search-box td {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+td.gsc-input {
+  padding: 0 !important;
+}
+
+input.gsc-input {
+  width: 99% !important;
+  padding: 0 !important;
+}
+
+input.gsc-search-button {
+  height: 20px !important;
+}
+
+.gsc-clear-button {
+  display: none !important;
+}
+
+.gsc-results-wrapper-overlay td {
+  white-space: normal !important;
+}
+
+/* @end */
+
+@media print {
+
+#header {
+	display: none;
+}
+
+}

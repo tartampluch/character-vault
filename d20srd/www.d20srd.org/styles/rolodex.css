@@ -1,0 +1,68 @@
+#rolodexBox {
+	padding: 2px 5px 2px 10px;
+	border-color: #9A8369;
+	border-width: 1px;
+	border-style: dotted none dotted none;
+	width: auto;
+}
+
+#rolodex {
+	margin: 0;
+	padding: 0;
+}
+
+#rolodex ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+#rolodex li {
+	display: inline;
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+#rolodex li a:link, #rolodex li a:visited {
+	margin: 0px;
+	padding: 2px 6px 2px 6px;
+	text-decoration: none;
+}
+
+#rolodex li a:hover, #rolodex li a:active {
+	background-image: none;
+	background-color: #CD9767;
+}
+
+#rolodex li ul {
+	list-style: none;
+	background-color: #796144;
+	display: block;
+	position: absolute;
+	top: 300px;
+	width: auto;
+	visibility: hidden;
+	z-index: 999;
+	padding-bottom: 5px;
+	background-image: url(http://www.d20srd.org/images/menuBkg.jpg);
+	border-color: #664C33;
+	border-width: 1px;
+	border-style: solid;
+}
+
+#rolodex li ul li a:link, #rolodex li ul li a:visited {
+	display: block;
+	margin: 0px;
+	padding: 0 5px 0 5px;
+	text-decoration: none;
+	border: none;
+	font-size: 90%;
+	color: #FFFFFF;
+}
+
+#rolodex li ul li a:hover, #rolodex li ul li a:active {
+	background-color: #E2BF9E;
+	border: none;
+	background-image: url(http://www.d20srd.org/images/bkg_base.jpg);
+	color: #000000;
+}

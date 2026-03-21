@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from www.d20srd.org/srd/epic/developingEpicSpells.htm by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Mar 2026 09:47:21 GMT -->
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Developing Epic Spells :: d20srd.org</title>
+	<link href="../../styles/srd.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="../../scripts/diceRoller.js"></script>
+	<script type="text/javascript" src="../../scripts/scrollingLinks.js"></script>
+	<script type="text/javascript" src="../../scripts/menus.js"></script>
+	<script type="text/javascript" src="https://www.google-analytics.com/urchin.js"></script>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-21940748-1']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5HK4VFB');</script>
+<!-- End Google Tag Manager -->
+
+<!--- GOOGLE 728x90 AD --->
+
+
+<!--- END GOOGLE AD HEADER TAG --->
+
+</head>
+<body onload="setupPage()"><!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="../../../www.googletagmanager.com/ns6f10.html?id=GTM-5HK4VFB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div id="header">
+	<div id="siteLogo"><a href="../../index.html"><img src="../../images/srdLogo.png" alt="The Hypertext d20 SRD - the ultimate d20 system reference" width="221" height="50" /></a></div>
+<div id="searchIndex"><b>Site Search</b></div>
+  <div id="siteSearch">
+    <script>
+      (function() {
+        var cx = '017876066608833108912:gg5d1fu6rlg';
+        var gcse = document.createElement('script');
+        gcse.type = 'text/javascript';
+        gcse.async = true;
+        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(gcse, s);
+      })();
+    </script>
+    <gcse:searchbox-only></gcse:searchbox-only>
+  </div>
+	<div id="path"><a href="../../index.html">Home</a> &gt; <a href="../../indexes/epicSpells.html">Epic Spells &amp; Psionic Powers</a> &gt; <a href="#">Developing Epic Spells</a></div>
+	<ul id="rollovermenu">
+		<li id="hd20srdMenu"><a href="../../index.html" style="padding-right:5px"><img src="../../images/menu_hd20srd.png" alt="Hypertext d20 SRD menu icon" width="23" height="20" /></a>
+			<ul>
+				<script type="text/javascript">
+					// Popup window code
+					function newPopup(url) {
+        					popupWindow = window.open(
+                				url,'popUpWindow','height=750,width=750,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=yes')
+					}
+				</script>
+				<li><a href="http://www.lounge.belloflostsouls.net/forumdisplay.php?175-D20srd-org-General-Discussion">D20srd Community Forum</a></li>
+				<li><a href="../../about.html">About This Site</a></li>
+				<li><a href="../../faq.html">Frequently Asked Questions</a></li>
+				<li><a href="../../changes.html">Changes from the Official d20 SRD</a></li>
+				<li><a href="../../ogl.html">Open Game License</a></li>
+			</ul>
+		</li>
+		<li id="extrasMenu"><a href="http://www.d20srd.org/" style="padding:0 5px 0 5px" title="Extras"><img src="../../images/menu_cog.png" alt="Extras icon" width="23" height="20" /></a>
+			<ul>
+				<li><a href="http://www.d20srd.org/extras/d20dicebag">d20 Dice Bag</a></li>
+				<li><a href="http://www.d20srd.org/extras/d20encountercalculator">d20 Encounter Calculator</a></li>
+				<li><a href="http://www.d20srd.org/extras/d20monsterfilter">d20 Monster Filter</a></li>
+				<li><a href="http://www.d20srd.org/extras/d20spellfilter">d20 Spell Filter</a></li>
+				<li><a href="../../d20/random/index.html">d20 Random Generator</a></li>
+				<li><a href="../../d20/demographics/index.html">d20 Demographics Calculator</a></li>
+				<li><a href="../../d20/dungeon/index.html">d20 Dungeon Generator</a></li>
+				<li><a href="../../d20/encounter/index.html">d20 Encounter Generator</a></li>
+				<li><a href="../../d20/magic/shop.html">d20 Magic Shop Generator</a></li>
+				<li><a href="../../d20/treasure/index.html">d20 Treasure Generator</a></li>
+				<li><a href="../../fantasy/name/index.html">Fantasy Name Generator</a></li>
+				<li><a href="../../fantasy/world/index.html">Fantasy World Generator</a></li>
+				<li><a href="../../fantasy/adventure/index.html">Adventure Generator</a></li>
+				<li><a href="../../fantasy/inn/index.html">Inn Generator</a></li>
+			</ul>
+		</li>
+	<li id="d20SystemMenu"><a href="../../landing.html" style="padding:0 5px 0 5px"><img alt="d20 System menu icon" height="20" src="../../images/menu_d20.gif" width="23" /></a>
+	<ul>
+		<li><a href="../../index.html">3.5 SRD</a></li>
+		<li><a href="http://5e.d20srd.org/">5e SRD</a></li>
+		<li><a href="http://www.wizards.com/default.asp?x=d20/article/srdarchive">SRD System (WotC)</a></li>
+		<li><a href="http://www.wizards.com/default.asp?x=d20/srdfaq/20040123c">SRD FAQ (WotC)</a></li>
+		<li><a href="http://www.wizards.com/default.asp?x=d20/article/msrd">d20 Modern SRD (WotC)</a></li>
+		<li><a href="http://paizo.com/pathfinderRPG/prd/">Pathfinder SRD (Paizo)</a></li>
+	</ul>
+	</li>
+    <li id="bolsMenu"><a style="padding-left:5px" href="http://www.belloflostsouls.net/"><img src="../../images/menu_bols.gif" alt="BoLS menu icon" width="23" height="20" /></a>
+            <ul>
+                <li><a href="https://www.facebook.com/d20srd/">d20SRD Facebook</a></li>
+				<li><a href="https://dnd-wiki.org/">D&D Wiki</a></li>
+        		<li><a href="http://www.belloflostsouls.net/">BoLS</a></li>
+                <li><a href="https://www.facebook.com/belloflostsouls">BoLS Facebook</a></li>
+                <li><a href="http://www.lexicanum.com/">Lexicanum</a></li>
+                <li><a href="https://www.facebook.com/LEXICANUMWIKI/">Lexicanum Facebook</a></li>
+                <li><a href="http://www.belloflostsouls.net/category/rpgs">D&D - RPG News</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<!--- GOOGLE 728x90 AD --->
+
+<!-- /1004459/d20srdheader -->
+<div id='div-gpt-ad-1462389232009-0' align="center";style='height:90px; width:728px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1462389232009-0'); });
+</script>
+</div>
+
+<!--- END GOOGLE 728x90 AD --->
+
+<h1>Developing Epic Spells</h1>
+<p>
+	An epic spell is developed from smaller pieces called seeds and connecting pieces called factors. Every epic seed has a base Spellcraft DC, and every factor has a Spell-craft DC adjustment. When a desired spell is developed, the spellcaster spends resources and time to assemble the pieces that make up the epic spell. The base Spellcraft DCs of each seed are added together; then the DC adjustments of the factors are added to that total. The sum equals the final Spellcraft DC for the epic spell.
+</p>
+<p>
+	The final Spellcraft DC is the most significant gauge of the epic spell’s power. A spellcaster attempts to cast an epic spell by making a Spellcraft check against the epic spell’s Spellcraft DC. Thus, a spellcaster knows immediately, based on his or her own Spellcraft bonus, what epic spells are within his or her capability to cast, which are risky, and which are beyond him or her. Epic casters don’t commit time and money to develop epic spells until they are powerful enough to cast them.
+</p>
+<p>
+	An epic spell developed by an arcane spellcaster is arcane, and an epic spell developed by a divine spellcaster is divine. A character who can cast both divine and arcane epic spells chooses whether a particular spell he or she develops will be arcane or divine. If that same caster uses the heal or life seed in an epic spell, that spell is always considered divine. All the epic spells described here can be developed independently by a character who spends the necessary time, money, and experience points. Alternatively, a character can use those spells as a starting point when creating customized versions of the spells.
+</p>
+
+<h5 id="resourceCost">Resource Cost</h5>
+<p>
+	The development of an epic spell uses up raw materials costing a number of gold pieces equal to 9,000 &times; the final Spellcraft DC of the epic spell being developed.
+</p>
+
+<h5 id="developmentTime">Development Time</h5>
+<p>
+	Developing an epic spell takes one day for each 50,000 gp in resources required to develop the spell, rounded up to whole days.
+</p>
+
+<h5>XP Cost</h5>
+<p>
+	To develop an epic spell, a character must spend 1/25 of its resource price in experience points.
+</p>
+
+<h5 id="addingSeedDCs">Adding Seed DCs</h5>
+<p>
+	When two or more epic seeds are combined in an epic spell, their base Spellcraft DCs are added together. Both contribute toward the spell’s final Spellcraft DC.
+</p>
+
+<h5 id="determiningSchool">Determining School</h5>
+<p>
+	When combining two or more seeds to develop an epic spell, the school of the finished spell is decided by the caster from among the seeds that make up the epic spell.
+</p>
+
+<h5 id="combiningDescriptors">Combining Descriptors</h5>
+<p>
+	When two or more epic seeds are combined in an epic spell, all the descriptors from each seed apply to the finished spell.
+</p>
+
+<h5 id="combiningComponentsandCastingTimes">Combining Components and Casting Times</h5>
+<p>
+	Almost every epic spell has verbal and somatic components and a 1-minute casting time, regardless of the number of epic seeds combined. The only exceptions are epic spells with the heal and life seeds, which have divine focus components.
+</p>
+
+<h5 id="combiningRangeTargetsAreaandEffect">Combining Range, Targets, Area, and Effect</h5>
+<p>
+	One seed might have a range of 12,000 feet, another seed might have a range of 400 feet, and a third seed might not have a range at all. Likewise, some seeds have targets, while others have an effect or an area. To determine which seed takes precedence in the finished epic spell, the character must decide which seed is the base seed. The seed most important to the spell’s overall purpose is the base seed, and it determines the casting time, range, target, and so on. The other seeds apply only their specific effects to the finished spell. It is occasionally difficult to determine a base seed by examining the spell’s effects. If no one seed is most important, simply pick one seed for the purposes of making this determination.
+</p>
+
+<h5 id="combiningDurations">Combining Durations</h5>
+<p>
+	When combining two or more seeds to develop an epic spell, the seed with the shortest duration determines the duration of the finished epic spell. If any seed of an epic spell is dismissible by the caster, the epic spell is dismissible.
+</p>
+
+<h5 id="savingThrows">Saving Throws</h5>
+<p>
+	Even if more than one seed has an associated <a href="../combat/combatStatistics.html#savingThrows">saving throw</a>, the final spell will have only a single saving throw. If two or more seeds have the same kind of saving throw (Fortitude, Reflex, or Will), then obviously that will be used for the spell’s saving throw. If the seeds have different kinds of saving throws, simply choose the saving throw that seems most appropriate for the final spell.
+</p>
+
+<h5 id="spellResistance">Spell Resistance</h5>
+<p>
+	When combining two or more seeds to develop an epic spell, if even one seed is subject to <a href="../specialAbilities.html#spellResistance">spell resistance</a>, the finished epic spell is subject to it as well.
+</p>
+
+<h5 id="factors">Factors</h5>
+<p>
+	Factors are not part of epic seeds, but they are the tools used to modify specific parameters of any given seed. Applying factors to the seeds of an epic spell can increase or decrease the final Spellcraft DC, increase the duration, change the area of a spell, and affect many other aspects of the spell.
+</p>
+<p>
+	There are three kinds of factors:
+</p>
+<ol>
+	<li>Those that can affect a number of seeds.</li>
+	<li>Those that can only be used with specific seeds.</li>
+	<li>Those that reduce the Spellcraft DC rather than increasing it. These are referred to as mitigating factors. To calculate the final Spellcraft DC of an epic spell correctly, it’s important to determine the mitigating factors last, after all the factors that increase the DC have been accounted for.</li>
+</ol>
+
+<h5 id="developmentIsanArt">Development Is an Art</h5>
+<p>
+	Many times developing a completely new epic spell requires some guesswork and rule stretching. As with making and pricing magic items, a sort of balancing act is required. Often the description of a seed will need to be stretched for a particular spell. If necessary, assess an “ad hoc” Spellcraft DC adjustment for any effect that cannot be extrapolated from the seeds and factors presented here—the example spells use ad hoc factors frequently. In all cases, the GM determines the actual Spellcraft DC of the new spell
+</p>
+
+<h5 id="approval">Approval</h5>
+<p>
+	This is the final step, and it’s critically important. The epic spell development work and reasoning must be shown to the GM and receive his or her approval. If the GM doesn’t approve, then the epic spell cannot be developed. However, the GM should explain why the epic spell wasn’t approved and possibly offer suggestions on how to create an epic spell that will be acceptable.
+</p>
+
+<table id="tableEpicSpellFactors" cellspacing="0">
+	<caption>Table: Epic Spell Factors</caption>
+	<thead>
+		<tr>
+			<th align="left">Factor</th>
+			<th>Spellcraft<br />DC Modifier</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+				<p>
+					Unless stated otherwise, the same factor can be applied more than once.
+				</p>
+				<ol>
+					<li>Each contingent spell in use counts as a slot used from the caster’s daily epic spell slots.</li>
+					<li>Seeds that already have an instantaneous or permanent duration cannot be increased.</li>
+					<li>When changing a targeted or area seed to a touch or ranged attack, the seed no longer requires a save if it deals damage, instead requiring a successful <a href="../combat/combatStatistics.html#attackRoll">attack roll</a>. Seeds with a nondamaging effect still allow the target a save. Area spells changed to touch or ranged attacks now affect only the creature successfully attacked.</li>
+					<li>When changing a touch or ranged attack seed to a targeted seed, the seed no longer requires an <a href="../combat/combatStatistics.html#attackRoll">attack roll</a> if it deals damage, instead requiring a <a href="../combat/combatStatistics.html#savingThrows">saving throw</a> from the target. On a failed saving throw, the target takes half damage. Area seeds changed to targeted seeds now only affect the target. The GM determines the most appropriate kind of saving throw for the epic spell.</li>
+					<li>Epic spells may only be inscribed on stone tablets or other substances of equal or greater <a href="../exploration.html#hardness">hardness</a>. Once a spell is so inscribed, another epic spellcaster can learn it without going through the process of development. Once an inscribed epic spell is learned by another epic spellcaster in this fashion, the tablet upon which it is inscribed is destroyed and cannot be mended.</li>
+				</ol>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr class="h2">
+			<th align="left" colspan="2">Casting Time</th>
+		</tr>
+		<tr>
+			<td>Reduce casting time by 1 round (minimum 1 round)</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>1-action casting time</td>
+			<td align="center">+20</td>
+		</tr>
+		<tr>
+			<td>Quickened spell (limit one quickened action/round)</td>
+			<td align="center">+28</td>
+		</tr>
+		<tr>
+			<td>Contingent on specific trigger<sup>1</sup></td>
+			<td align="center">+25</td>
+		</tr>
+		<tr>
+			<td>Components No verbal component</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>No somatic component</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Duration<sup>2</sup></th>
+		</tr>
+		<tr>
+			<td>Increase duration by 100%</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Permanent duration (apply this factor after all other epic spell factors but before mitigating factors)</td>
+			<td align="center">&times;5</td>
+		</tr>
+		<tr>
+			<td>Dismissible by caster (if not already)</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Range</th>
+		</tr>
+		<tr>
+			<td>Range Increase range by 100%</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Target<sup>3</sup></th>
+		</tr>
+		<tr>
+			<td>Add extra target within 300 ft.</td>
+			<td align="center">+10</td>
+		</tr>
+		<tr>
+			<td>Change from target to area (pick area option below)</td>
+			<td align="center">+10</td>
+		</tr>
+		<tr>
+			<td>Change from personal to area (pick area option below)</td>
+			<td align="center">+15</td>
+		</tr>
+		<tr>
+			<td>Change from target to touch or ray (300-ft. range)</td>
+			<td align="center">+4</td>
+		</tr>
+		<tr>
+			<td>Change from touch or ranged <a href="../combat/combatStatistics.html#touchAttacks">touch attack</a> to target</td>
+			<td align="center">+4</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Area<sup>4</sup></th>
+		</tr>
+		<tr>
+			<td>Change area to bolt (5 ft. &times;300 ft. or 10 ft. &times;150 ft.)</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Change area to cylinder (10-ft. radius,  30 ft. high)</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Change area to 40-ft. cone</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Change area to four 10-ft. cubes</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Change area to 20-ft. radius</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Change area to target</td>
+			<td align="center">+4</td>
+		</tr>
+		<tr>
+			<td>Change area to touch or ray (close range)</td>
+			<td align="center">+4</td>
+		</tr>
+		<tr>
+			<td>Increase area by 100%</td>
+			<td align="center">+4</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Saving Throw</th>
+		</tr>
+		<tr>
+			<td>Increase spell’s <a href="../combat/combatStatistics.html#savingThrows">saving throw</a> DC by +1</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Spell Resistance</th>
+		</tr>
+		<tr>
+			<td>Gain +1 bonus on <a href="../magicOverview/castingSpells.html#casterLevelChecks">caster level check</a> to overcome target’s <a href="../specialAbilities.html#spellResistance">spell resistance</a></td>
+			<td align="center">+2</td>
+		</tr>
+		<tr>
+			<td>Gain +1 on <a href="../magicOverview/castingSpells.html#casterLevelChecks">caster level check</a> to beat foe’s dispel effect</td>
+			<td align="center">+2</td>
+		</tr>
+		<tr class="h2">
+			<th align="left" colspan="2">Other</th>
+		</tr>
+		<tr>
+			<td>Recorded onto stone tablet<sup>5</sup></td>
+			<td align="center">&times;2</td>
+		</tr>
+		<tr>
+			<td>Increase damage die by one step (d20 maximum)</td>
+			<td align="center">+10</td>
+		</tr>
+	</tbody>
+</table>
+
+<table id="tableEpicSpellMitigatingFactors" cellspacing="0">
+	<caption>Table: Epic Spell Mitigating Factors</caption>
+	<thead>
+		<tr>
+			<th align="left">Factor</th>
+			<th align="left">Spellcraft DC Modifier</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+				<p>
+					<em>Note:</em> Mitigating factors are always applied after all epic spell factors (see above) are accounted for in the development of an epic spell.
+				</p>
+				<ol>
+					<li>The caster cannot somehow avoid or make him or her self immune to backlash damage. For spells with durations longer than instantaneous, the backlash damage is per round. If backlash damage kills a caster, no spell or method exists that will return life to the caster’s body without costing the caster a level—not even <a class="spell" href="../spells/wish.html">wish</a>, <a class="spell" href="../spells/trueResurrection.html">true resurrection</a>, <a class="spell" href="../spells/miracle.html">miracle</a>, or epic spells that return life to the deceased. Spells that normally penalize the recipient one level when they return him or her to life penalize a caster killed by backlash two levels.</li>
+					<li>When increasing the casting time of a spell in order to reduce the Spellcraft DC, a character must first “use up” the maximum of 10 minutes (for a total DC modifier of -20). After that, a character can continue to add days to the casting time, with a further modifier of -2 per day, up to the maximum of 100 days.</li>
+				</ol>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+			<td>Backlash 1d6 points of damage (max d6 = caster’s HD &times;2)<sup>1</sup></td>
+			<td>-1</td>
+		</tr>
+		<tr>
+			<td>Burn 100 XP during casting (max 20,000 XP)</td>
+			<td>-1</td>
+		</tr>
+		<tr>
+			<td>Increase casting time by 1 minute (max 10 minutes)<sup>2</sup></td>
+			<td>-2</td>
+		</tr>
+		<tr>
+			<td>Increase casting time by 1 day (max 100 days)<sup>2</sup></td>
+			<td>-2</td>
+		</tr>
+		<tr>
+			<td>Change from target, touch, or area to personal</td>
+			<td>-2</td>
+		</tr>
+		<tr>
+			<td>Additional participants (ritual)</td>
+			<td>see <a href="#tableAdditionalParticipantsinRituals">Table: Additional Participants in Rituals</a></td>
+		</tr>
+		<tr>
+			<td>Decrease damage die by one step (d4 minimum)</td>
+			<td>-5</td>
+		</tr>
+	</tbody>
+</table>
+
+<table id="tableAdditionalParticipantsinRituals" cellspacing="0" class="right">
+	<caption>Table: Additional Participants in Rituals</caption>
+	<tr>
+		<th>Spell Slot Level<br />Contributed</th>
+		<th>Spellcraft DC<br />Reduction</th>
+	</tr>
+	<tr>
+		<td align="center">1st</td>
+		<td align="center">-1</td>
+	</tr>
+	<tr>
+		<td align="center">2nd</td>
+		<td align="center">-3</td>
+	</tr>
+	<tr>
+		<td align="center">3rd</td>
+		<td align="center">-5</td>
+	</tr>
+	<tr>
+		<td align="center">4th</td>
+		<td align="center">-7</td>
+	</tr>
+	<tr>
+		<td align="center">5th</td>
+		<td align="center">-9</td>
+	</tr>
+	<tr>
+		<td align="center">6th</td>
+		<td align="center">-11</td>
+	</tr>
+	<tr>
+		<td align="center">7th</td>
+		<td align="center">-13</td>
+	</tr>
+	<tr>
+		<td align="center">8th</td>
+		<td align="center">-15</td>
+	</tr>
+	<tr>
+		<td align="center">9th</td>
+		<td align="center">-17</td>
+	</tr>
+	<tr>
+		<td align="center">Epic slot</td>
+		<td align="center">-19</td>
+	</tr>
+</table>
+
+<h5 id="additionalParticipants">Additional Participants</h5>
+<p>
+	Epic spells can be developed that specifically require additional participants. These spells are called rituals. An epic spell developed as a ritual requires a specific number of additional participants, who each must use up one spell slot of a specified level for the day. During an epic spell’s development, the spell’s creator determines the number of additional participants and the level of the spell slots to be contributed. If the exact number of spellcasters does not partake in the casting, or if the casters do not each contribute the proper spell slot, the epic spell automatically fails. To participate, each participant readies an action to contribute his or her raw spell energy when the primary caster begins the epic spell. Additional participants in a ritual spell reduce the Spellcraft DC, as shown on <a href="#tableAdditionalParticipantsinRituals">Table: Additional Participants in Rituals</a>. Each additional participant may only contribute one spell slot. It doesn’t matter whether the additional participants are arcane or divine spellcasters; only the level of the spell slot contributed matters. A contributed spell slot is treated as if normally cast. A <a href="../classes/sorcererWizard.html#wizard">wizard</a> may contribute either a prepared, uncast spell slot, or an open, unprepared slot. The Spellcraft DC adjustments for each additional participant stack.
+</p>
+
+<h5 id="special">Special</h5>
+<p>
+	A ritual epic spell that takes longer than 1 <a href="../combat/actionsInCombat.html#standardActions">standard action</a> to cast requires all extra participants to stand as if casting for the same amount of time. If an extra participant is attacked while contributing a spell slot, the participant must make a <a href="../skills/concentration.html">Concentration</a> check as if casting a spell of the same level as the slot contributed. If the attack disrupts the participant in the ritual, the epic spell is not necessarily ruined. However, the Spellcraft DC reduction that would have been provided by that additional participant cannot be applied to the final Spellcraft DC of the epic spell. Thus the ritual epic spell will be harder for the primary spellcaster to cast.
+</p>
+
+<div class="footer">
+	
+<!--- GOOGLE 300x250 ADS --->
+
+<div align="center" style="display:inline-block;">
+
+<!--- LEFT --->
+
+<!-- /1004459/d20srd300x250-1 -->
+<div id='div-gpt-ad-1462389232009-1' style='height:250px; width:300px; margin-left:5px; float:right;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1462389232009-1'); });
+</script>
+</div>  
+
+<!--- RIGHT --->
+
+<!-- /1004459/d20srd300x250-2 -->
+<div id='div-gpt-ad-1462389232009-2' style='height:250px; width:300px; margin-right:5px; float:left;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1462389232009-2'); });
+</script>
+</div>
+
+</div>
+
+<!--- END GOOGLE 300x250 ADS --->
+
+	<p>
+		The Hypertext d20 SRD<sup>TM</sup> is owned by <a href="http://www.bolsinteractive.com/">BoLS Interactive LLC</a>.
+	</p>
+	<p class="legal">
+		The text on this page is Open Game Content, and is licensed for public use under the terms of the <a href="../../ogl.html">Open Game License v1.0a</a>.
+	</p>
+	<p class="legal">
+		‘d20 System’ and the ‘d20 System’ logo are trademarks of Wizards of the Coast, Inc.<br />and are used according to the terms of the d20 System License version 6.0.<br />A copy of this License can be found at <a href="http://www.wizards.com/d20">www.wizards.com/d20</a>.
+	</p>
+<!-- removing standards place holder -->
+</div>
+
+<!-- Quantcast Tag -->
+<script type="text/javascript">
+  var _qevents = _qevents || [];
+  (function() {
+    var elem = document.createElement('script');
+    elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
+    elem.async = true;
+    elem.type = "text/javascript";
+    var scpt = document.getElementsByTagName('script')[0];
+    scpt.parentNode.insertBefore(elem, scpt);
+  })();
+  _qevents.push({
+    qacct: "p-e3P2kHqpGAv2I"
+  });
+</script>
+<noscript>
+	<div style="display:none;"><img src="http://pixel.quantserve.com/pixel/p-e3P2kHqpGAv2I.gif" border="0" height="1" width="1" alt="Quantcast"/></div>
+</noscript>
+<!-- End Quantcast tag -->
+
+<script type="text/javascript" class="teads" src="http://a.teads.tv/page/86489/tag" async="true"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"5a60f847befe481f8af724e3b4c5de46","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+<!-- Mirrored from www.d20srd.org/srd/epic/developingEpicSpells.htm by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Mar 2026 09:47:21 GMT -->
+</html>

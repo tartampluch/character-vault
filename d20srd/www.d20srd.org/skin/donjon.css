@@ -1,0 +1,203 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* donjon.css
+ *
+ * copyright (c) 2009-2014 Douglas Rau
+ * all rights reserved.
+*/
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* font-family */
+
+body { font-family: 'Asul', sans-serif;max-width:1125px;margin:0 auto; }
+textarea { font-family: 'Asul', sans-serif; font-size: 14px; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* structure */
+
+table.body { width: 100%; margin: 0px; }
+td.header a { text-decoration: none; }
+td.header p#subtitle { margin-top: -2ex; text-align: center; }
+
+td.nav { width: 16em; padding-bottom: 4ex;
+  border-right: 1px solid; }
+td.nav h2 { margin: 1ex 1ex; font-size: 100%; }
+td.nav h2 span.disclose { display: inline-block; width: 2ex; }
+td.nav div.list { margin: 1ex 1em; }
+td.nav ul { margin: 0px; padding: 0px; list-style: none; }
+td.nav ul li { padding: 3px 1em; font-size: 80%; }
+td.nav ul li:hover { background: #cccccc; }
+td.nav a { display: block; text-decoration: none; color: #000000; }
+td.nav hr { margin: 2ex 1ex; margin-top: 4ex;
+  border: none; border-top: 1px solid; }
+
+td.content { padding: 1ex 2em; padding-bottom: 2em; }
+td.footer { font-size: 80%; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* common */
+
+
+h1 { text-align: center; }
+table { border-collapse: collapse; }
+.center { text-align: center; }
+table.center { margin: 0px auto; }
+div.footnotes { margin-top: 6ex; text-align: center; }
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* content */
+
+h1 { margin: 2ex 2em; text-align: center; }
+h2 { margin: 2ex 0em; }
+h3 { margin: 2ex 1em; }
+
+a:link { color: #0000cc; }
+a:hover { color: #0000ff; }
+a:active { color: #0000cc; }
+a:visited { color: #0000cc; }
+
+optgroup { margin: 1ex 1em;
+  font-style: normal; font-weight: normal; color: #808080; }
+optgroup option { color: #000000; }
+
+option.in1 { padding-left: 1em; }
+option.in2 { padding-left: 2em; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* tricks */
+
+p.intro { margin-bottom: 6ex; padding: 1ex 2em;
+  border: 1px solid #808080; border-radius: 2ex 0px;
+/*  background: #dedede;/ }
+
+div#sections { display: none; }
+div.block { display: table; margin: 2ex 2em; }
+div.block div { display: table-cell; vertical-align: top; }
+div.block div.img { min-width: 100px; text-align: center; }
+div.block div.desc h3 { margin-top: 0px; }
+div.block div.desc p { margin-top: 0px; margin-right: 0px; }
+div.block div.desc hr { margin-left: 2em; }
+
+h3.error { margin: 4ex 10%; padding: 1ex 5%; border: 1px solid;
+  text-align: center; color: #cc0000; }
+table.form select { min-width: 10em; }
+table.form select.num { min-width: 5em; }
+table.form table.form { margin: 0px; }
+
+td.preview { padding-left: 2em; }
+td.preview h3 { margin: 0px; margin-bottom: 1ex; }
+td.preview div.img { width: 201px; overflow: hidden; }
+
+div.out { width: 40em; margin: 0px; padding: 4px 8px;
+  border: 1px solid; border-color: #999999; }
+div.out p { margin: 0ex 0em 1ex 0em; }
+div.out ol { margin: 0ex 0em; }
+div.out hr { margin: 1ex 0em;
+  border: none; border-top: 1px solid; border-color: #999999; }
+
+div.source { max-height: 50ex; overflow: auto;
+  margin: 4ex 2em; border: 1px solid; border-radius: 1ex; }
+
+div.footnotes { margin-top: 6ex; padding: 0px 10%;
+  font-size: smaller; }
+div.footnotes p { text-align: center; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* icons */
+
+img.axe { background: url('http://www.d20srd.org/icons/icons.gif') 0px 0px; }
+img.calc { background: url('http://www.d20srd.org/icons/icons.gif') 0px -50px; }
+img.coins { background: url('http://www.d20srd.org/icons/icons.gif') 0px -100px; }
+img.dice { background: url('http://www.d20srd.org/icons/icons.gif') 0px -150px; }
+img.dragon { background: url('http://www.d20srd.org/icons/icons.gif') 0px -200px; }
+img.dungeon { background: url('http://www.d20srd.org/icons/icons.gif') 0px -250px; }
+img.system { background: url('http://www.d20srd.org/icons/icons.gif') 0px -300px; }
+img.tavern { background: url('http://www.d20srd.org/icons/icons.gif') 0px -350px; }
+img.tome { background: url('http://www.d20srd.org/icons/icons.gif') 0px -400px; }
+img.treasure { background: url('http://www.d20srd.org/icons/icons.gif') 0px -450px; }
+img.weather { background: url('http://www.d20srd.org/icons/icons.gif') 0px -500px; }
+img.world { background: url('http://www.d20srd.org/icons/icons.gif') 0px -550px; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* stat block */
+
+table.stats { margin: 2ex auto;
+  border: none; border-top: 1px solid; border-color: #cccccc; }
+table.stats table { width: 100%; margin: 4px;
+  border: none; border-top: 1px solid; border-color: #cccccc; }
+table.stats tr.selected td { background: none; } /*#deffde; }*/
+table.stats tr:hover td { background: none; } /*#dedede; }*/
+table.stats tr.empty:hover td { background: none; }
+table.stats tr:hover ol li:hover { background: none; } /*#ffffff; }*/
+table.stats tr:hover table tr:hover td { background: none; } /*#ffffff; }*/
+table.stats tr:hover table tr.empty:hover td { background: none; }
+table.stats tr:hover table tr:hover ol li:hover { background: none; } /*#dedede; }*/
+
+table.stats th { padding: 1ex 1em; background: none; color: #ffffff; }
+table.stats td { padding: 4px 1em;
+  border: none; border-bottom: 1px solid; border-color: #cccccc;
+  vertical-align: top; }
+table.stats td.icon img { border: 1px solid; border-color: #cccccc; }
+table.stats td.section { width: 8em; padding-top: 8px;
+  text-align: right; white-space: nowrap;
+  font-size: larger; font-weight: bold; }
+table.stats td.detail { width: 8em;
+  text-align: right; white-space: nowrap; font-style: italic; }
+table.stats td.key { width: 8em;
+  text-align: right; white-space: nowrap; font-weight: bold; }
+
+table.stats td.value { vertical-align: bottom; }
+table.stats td.value p { margin: 0px 0px 0px 0px; }
+table.stats td.value p + p { margin-top: 1ex; }
+table.stats td.value ol { margin: 0px 0px 2ex 2em; padding: 0px; }
+table.stats td.value ol li { margin: 0px; padding: 2px 0.5em; }
+table.stats td.value hr { margin: 4px 0em;
+  border: none; border-top: 1px solid; border-color: #cccccc; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* screen */
+
+@media screen {
+  body { background: none; } /*#000000*/
+  table.body { background: none; } /*#ffffff; }*/
+  td.header { background: #000000; color: #ffffff; }
+  td.header a { color: #ffffff; }
+  td.header p.note { margin-top: -2ex; }
+  td.nav { background: #dedede; }
+  div.source { border-color: #333333;
+    background: #333333; color: #33ff33; }
+  td.footer { background: #000000; color: #ffffff; }
+  p.copyright a { color: #ffffff; }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* handheld */
+
+@media screen and (max-device-width: 480px) {
+  body { font-size: 24px; }
+  input, textarea { font-size: 24px; }
+  select { font-size: 24px; }
+
+  td.nav { display: none; }
+  div#sections { display: block; }
+
+  div.block div.img { display: none; }
+  div.block h3 { margin: 0px; }
+  div.block p { margin: 0px; }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* print */
+
+@media print {
+  body { padding: 0px 1ex; }
+  td.header { border: 1px solid; border-color: #333333;
+    box-shadow: 0.5ex 0.5ex 0.5ex #999999;
+    background: none; color: #000000; }
+  td.header h1 { margin: 1ex 0px; padding: 0px; }
+  td.header a { color: #000000; }
+  td.header p#subtitle { display: none; }
+  td.nav { display: none; }
+  th.ctrl, td.ctrl { display: none; }
+  td.footer {  border: 1px solid; border-color: #333333; }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

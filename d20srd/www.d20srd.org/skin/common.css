@@ -1,0 +1,121 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* common.css
+ *
+ * copyright (c) 2000-2010 Douglas Rau
+ * all rights reserved.
+*/
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* structure */
+
+body { margin-top: 100px; padding: 0px; font-size: 14px; }
+p.text_menu { text-align: center; }
+p.copyright { text-align: center; }
+div.banner { text-align: center; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* content */
+
+h1 { text-align: center; font-size: 150%; font-weight: bold; }
+h2 { margin-top: 3ex; font-size: 120%; font-weight: bold; }
+h2:first-of-type { margin-top: 2ex; }
+h3 { margin: 2ex 1em; font-size: 100%; font-weight: bold; }
+h4, h5, h6 { margin-left: 1em; margin-right: 1em; }
+
+.h1 { font-size: 150%; font-weight: bold; }
+.h2 { font-size: 120%; font-weight: bold; }
+.h3 { font-size: 100%; font-weight: bold; }
+
+p { margin: 2ex 2em; } /*text-align: justify; }*/
+  p, li, dt, dd { line-height: 3ex; }
+
+blockquote { margin: 2ex 4em; text-align: justify; }
+blockquote p { margin: 0ex 0em; }
+blockquote p + p { margin-top: 1ex; }
+blockquote p.attr { text-align: right; }
+blockquote.script { font-family: 'Apple Chancery', script; }
+
+pre { margin: 2ex 2em;
+  font-family: Hack, Monaco, monospace; font-size: 80%; }
+code { font-family: Hack, Monaco, monospace; font-size: 80%;
+  white-space: nowrap; }
+
+ul, ol { margin: 2ex 2em; padding-left: 2em; }
+ul ul { margin: 0.5ex 0px; }
+li { margin: 0px; padding: 0.5ex; }
+
+dl { margin: 2ex 2em; }
+dd { margin: 1ex 0em 1ex 2em; text-align: justify; }
+dd p { margin: 1ex 0em; }
+
+dl.linklist { clear: both; }
+dl.linklist dt { width: 12em; float: left; clear: both; text-align: right; }
+dl.linklist dd { margin-left: 14em; }
+
+a img { border: none; }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* tables */
+
+table { margin: 0px 2em; border: none; border-collapse: collapse; }
+table table { width: 100%; margin: 0px; }
+table table.center { width: auto; }
+th, td { padding: 0.5ex 0.5em; text-align: left; vertical-align: top; }
+th { background: #dedede; }
+th.key, td.key { text-align: right; font-weight: bold; }
+td.value p { margin-top: 0px; }
+
+table.compact td { padding: 0.25ex 0.5em; }
+table.scroll tbody { overflow: hidden; overflow-y: auto; }
+table.scroll thead tr th:last-child { padding-right: 40px; }
+table.scroll tbody tr td:last-child { padding-right: 40px; }
+
+table.imglist td { margin: 0.5em; }
+table.imglist td.img { text-align: center; }
+table.imglist td.text { padding-left: 2em; }
+
+table.recaps td { padding: 1ex 1em; }
+table.recaps td.date { width: 11em; text-align: right; white-space: nowrap; }
+table.recaps td.title { width: 25em; }
+table.recaps td.score { text-align: right; white-space: nowrap; }
+table.recaps td.total { text-align: right; font-weight: bold; }
+
+table.stats td { padding: 0.5ex 0.5em; }
+table.stats td.key { width: 10em; text-align: right; }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* forms */
+
+form { margin: 0px; padding: 0px; }
+input, textarea { margin-right: 0.5em; font-size: 11px; }
+input[type="text"], textarea { padding: 0.5ex 0.5em;
+  font-family: Hack, Monaco, monospace; }
+input[disabled] { color: #404040; }
+select { margin-right: 0.5em; font-size: 11px; }
+option { padding-top: 2px; padding-bottom: 2px; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* tricks */
+
+.smaller { font-size: smaller; }
+.larger { font-size: larger; }
+.nowrap { white-space: nowrap; }
+
+.inset { margin-left: 4em; margin-right: 4em; }
+.left { text-align: left; }
+.center { text-align: center; }
+table.center { margin-left: auto; margin-right: auto; }
+.right { text-align: right; }
+table.right { margin-left: auto; margin-right: 0px; }
+
+.illustr { clear: right; float: right; margin: 1ex 0em 4ex 2em;
+  text-align: center; }
+.illustr:first-of-type { margin-top: 0ex; }
+.illustr img { display: block; }
+.illustr .credit { margin-top: -2ex; text-align: right; font-size: smaller; }
+.sidebar { float: right; margin: 0ex 0em 4ex 2em; text-align: center; }
+.clear { clear: both; }
+
+.scripted { display: none; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

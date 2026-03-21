@@ -1,0 +1,10 @@
+@import "srd.css";
+
+h4 { margin: 0px; }
+h4 + ul, h4 + ol { margin-top: 0px; }
+ul li { margin-top: 0px; }
+ul {
+	list-style: none;
+	padding-left: 10px;
+}
+sup { font-weight: normal; }

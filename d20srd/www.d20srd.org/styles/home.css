@@ -1,0 +1,93 @@
+@import "main.css";
+
+#ennieBanner {
+	float: right;
+	width: 468px;
+	margin: 0 20px 10px 0;
+	text-align: center;
+}
+
+#ennieBanner a {
+	background-image: none;
+}
+
+body {
+	padding: 10px;
+	margin: 0 auto;
+}
+
+h1 {
+	margin: 0;
+}
+
+h1 sup {
+	font-size: 12px;
+	font-weight: normal;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0 0 0 12px;
+	padding: 0;
+}
+
+li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.column {
+	float: left;
+	clear: right;
+}
+
+hr {
+	width: 100px;
+	margin: 5px 0 5px 30px;
+	border-color: #806959;
+	border-width: 1px;
+	border-style: solid none none none;
+}
+
+form {
+	margin: 0;
+}
+
+.tagline {
+	font-style: italic;
+	margin: 0 0 0 10px;
+}
+
+.subHeader {
+	margin: 0 0 5px 0;
+	padding-left: 2px;
+	font-size: 11px;
+}
+
+#homeSearch {
+	white-space: nowrap;
+}
+
+#homeSearch input.text {
+	font-size: 80%;
+	border-color: #000000;
+	border-width: 1px;
+	border-style: solid;
+}
+
+#homeSearch input.button {
+	font-size: 80%;
+	border-color: #000000;
+	border-width: 1px;
+	border-style: solid;
+	background-image: url(http://www.d20srd.org/images/tables/even.png);
+	background-color: transparent;
+}
+
+a.live:link, a.live:visited {
+	background-image: url(http://www.d20srd.org/images/liveLink.png);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 15px;
+}
