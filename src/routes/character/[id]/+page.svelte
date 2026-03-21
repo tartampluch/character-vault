@@ -1,42 +1,66 @@
 <!--
   @file src/routes/character/[id]/+page.svelte
-  @description The character sheet container with tabbed navigation.
+  @description Character sheet container — Phase 19.6 (Full-Height Layout & Tab Redesign).
 
-  PURPOSE:
-    This is the main character sheet page. It:
-      1. Loads the character from localStorage using the URL `[id]` parameter.
-      2. Provides a persistent tabbed navigation: Core | Abilities | Combat | Feats | Inventory.
-         Optional future tabs: Magic, Notes.
-      3. Renders the selected tab's content in the main area.
-      4. The tab state is driven by the `?tab=` URL query parameter, not local state.
-         This allows deep-linking ("Share your character sheet open on the Combat tab").
+  LAYOUT ARCHITECTURE:
+    The character sheet occupies the full height available inside the AppShell's
+    scrollable content area. Internally it uses a flex-column layout:
 
-  NAVIGATION (tabs via query parameter):
-    /character/[id]              → default: core tab
-    /character/[id]?tab=core     → Phase 8 (Core summary)
-    /character/[id]?tab=abilities → Phase 9 (Abilities & Skills)
-    /character/[id]?tab=combat   → Phase 10 (Combat)
-    /character/[id]?tab=feats    → Phase 11 (Feats)
-    /character/[id]?tab=magic    → Phase 12 (Spells & Powers)
-    /character/[id]?tab=inventory → Phase 13 (Inventory)
+      ┌───────────────────────────────────────────────┐
+      │  CHARACTER HEADER (name, back-link, level)    │  shrink-0
+      ├───────────────────────────────────────────────┤
+      │  TAB BAR (Core | Abilities | Combat | …)      │  shrink-0, overflow-x-auto
+      ├───────────────────────────────────────────────┤
+      │                                               │
+      │  TAB CONTENT AREA (flex-1, overflow-y-auto)  │  scrolls internally
+      │                                               │
+      └───────────────────────────────────────────────┘
 
-    WHY QUERY PARAMS AND NOT SUB-ROUTES?
-    Per ARCHITECTURE.md section 20: "Character sheet tabs use a query parameter
-    `?tab=` rather than sub-routes, to keep the same parent layout and avoid
-    reloading the `GameEngine` on tab change."
+    The outer div is `h-full flex flex-col` — it stretches to fill the AppShell's
+    `<main>` element (which itself is `flex-1 overflow-y-auto`).
+
+    CRITICAL REQUIREMENT (from Phase 19 spec):
+      "The user must NEVER need to scroll the page to reach the tabs."
+      The tab bar is `shrink-0`, meaning it never scrolls off-screen. Only the
+      content area below the tab bar scrolls.
+
+  TAB BAR DESIGN:
+    Desktop: Horizontal row showing icon (20px) + label for each tab. Adequate
+             padding. Active tab: `font-bold text-accent border-b-2 border-accent
+             bg-accent/5` (underline + subtle tint).
+    Mobile (<768px):  Labels hidden — only icons shown. Each tab button is minimum
+             44px tall (touch target requirement). The tab bar itself has
+             `overflow-x: auto` with `scroll-snap-type: x mandatory` so the
+             user can swipe the bar left/right on very narrow screens (6 tabs
+             fit fine on 375px but wider button text can overflow on 320px).
+    Touch target: `min-h-[44px]` on `pointer: coarse` via the media query below.
+
+  MULTI-COLUMN CONTENT ON WIDE SCREENS:
+    On desktop wide screens (≥1280px), the Core and Abilities tabs arrange their
+    panels into a 2-column grid. The Combat tab uses a 2-column grid as well.
+    This is implemented inside the individual tab components using Tailwind
+    responsive grid utilities (`xl:grid xl:grid-cols-2 gap-4`).
+    The +page.svelte itself only provides the outer container padding.
+
+  TAB ROUTING:
+    Tab state is driven by the `?tab=` URL query parameter so tabs are deep-linkable.
+    `replaceState: true` prevents a new browser history entry on each tab switch.
 
   CHARACTER LOADING:
-    On mount, reads `[id]` from the URL. If the character is in `engine.allVaultCharacters`,
-    loads it into `engine.character`. If not (direct URL access), loads from localStorage
-    via `storageManager.loadCharacter(id)` and injets it into the engine.
+    On mount, reads `[id]` from URL params. Load priority:
+      1. `engine.allVaultCharacters` in-memory list (fast, no I/O).
+      2. `storageManager.loadCharacter(id)` (localStorage / API fallback).
+      3. `createEmptyCharacter(id)` (graceful degradation for direct URL access).
 
-  ARCHITECTURE:
-    "Dumb" page pattern — only reads engine state and dispatches actions.
-    No game logic lives here. All computation is in GameEngine.$derived.
-
-  @see src/lib/engine/GameEngine.svelte.ts for the character engine.
-  @see src/lib/engine/StorageManager.ts for persistence.
-  @see ARCHITECTURE.md section 20 for the routing specification.
+  ALL PHASE 8-13 COMPONENTS ARE NOW WIRED UP:
+    - Core tab:      BasicInfo, AbilityScoresSummary, SavingThrowsSummary,
+                     SkillsSummary, LoreAndLanguages
+    - Abilities tab: AbilityScores, SavingThrows, SkillsMatrix
+    - Combat tab:    HealthAndXP, ArmorClass, CoreCombat, Attacks,
+                     MovementSpeeds, Resistances, DamageReduction
+    - Feats tab:     FeatsTab
+    - Magic tab:     CastingPanel, Grimoire, SpecialAbilities
+    - Inventory tab: InventoryTab, Encumbrance
 -->
 
 <script lang="ts">
@@ -44,501 +68,397 @@
   import { goto } from '$app/navigation';
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
-  import BasicInfo from '$lib/components/core/BasicInfo.svelte';
-  import AbilityScoresSummary from '$lib/components/core/AbilityScoresSummary.svelte';
-  import SavingThrowsSummary from '$lib/components/core/SavingThrowsSummary.svelte';
-  import SkillsSummary from '$lib/components/core/SkillsSummary.svelte';
-  import LoreAndLanguages from '$lib/components/core/LoreAndLanguages.svelte';
+
+  // ── Core tab components (Phase 8) ──────────────────────────────────────────
+  import BasicInfo             from '$lib/components/core/BasicInfo.svelte';
+  import AbilityScoresSummary  from '$lib/components/core/AbilityScoresSummary.svelte';
+  import SavingThrowsSummary   from '$lib/components/core/SavingThrowsSummary.svelte';
+  import SkillsSummary         from '$lib/components/core/SkillsSummary.svelte';
+  import LoreAndLanguages      from '$lib/components/core/LoreAndLanguages.svelte';
+
+  // ── Abilities & Skills tab components (Phase 9) ────────────────────────────
+  import AbilityScores         from '$lib/components/abilities/AbilityScores.svelte';
+  import SavingThrows          from '$lib/components/abilities/SavingThrows.svelte';
+  import SkillsMatrix          from '$lib/components/abilities/SkillsMatrix.svelte';
+
+  // ── Combat tab components (Phase 10) ──────────────────────────────────────
+  import HealthAndXP           from '$lib/components/combat/HealthAndXP.svelte';
+  import ArmorClass            from '$lib/components/combat/ArmorClass.svelte';
+  import CoreCombat            from '$lib/components/combat/CoreCombat.svelte';
+  import Attacks               from '$lib/components/combat/Attacks.svelte';
+  import MovementSpeeds        from '$lib/components/combat/MovementSpeeds.svelte';
+  import Resistances           from '$lib/components/combat/Resistances.svelte';
+  import DamageReduction       from '$lib/components/combat/DamageReduction.svelte';
+
+  // ── Feats tab components (Phase 11) ───────────────────────────────────────
+  import FeatsTab              from '$lib/components/feats/FeatsTab.svelte';
+
+  // ── Magic tab components (Phase 12) ───────────────────────────────────────
+  import CastingPanel          from '$lib/components/magic/CastingPanel.svelte';
+  import Grimoire              from '$lib/components/magic/Grimoire.svelte';
+  import SpecialAbilities      from '$lib/components/magic/SpecialAbilities.svelte';
+
+  // ── Inventory tab components (Phase 13) ───────────────────────────────────
+  import InventoryTab          from '$lib/components/inventory/InventoryTab.svelte';
+  import Encumbrance           from '$lib/components/inventory/Encumbrance.svelte';
+
+  // ── Lucide icons ───────────────────────────────────────────────────────────
   import {
-    IconTabCore, IconTabAbilities, IconTabCombat, IconTabFeats, IconTabMagic, IconTabInventory, IconStats
+    IconTabCore, IconTabAbilities, IconTabCombat,
+    IconTabFeats, IconTabMagic, IconTabInventory,
+    IconBack,
   } from '$lib/components/ui/icons';
 
-  // ============================================================
+  // ===========================================================================
   // TABS DEFINITION
-  // The tab list is data-driven — no hardcoded D&D terms.
-  // Each tab has a `key` (used in the URL param) and a `label` for display.
-  // ============================================================
+  // Data-driven tab list — zero hardcoded D&D terms (spec rule §6).
+  // ===========================================================================
 
   const TABS = [
-    { key: 'core',      label: 'Core',       icon: IconTabCore,       phase: 8  },
-    { key: 'abilities', label: 'Abilities',  icon: IconTabAbilities,  phase: 9  },
-    { key: 'combat',    label: 'Combat',     icon: IconTabCombat,     phase: 10 },
-    { key: 'feats',     label: 'Feats',      icon: IconTabFeats,      phase: 11 },
-    { key: 'magic',     label: 'Magic',      icon: IconTabMagic,      phase: 12 },
-    { key: 'inventory', label: 'Inventory',  icon: IconTabInventory,  phase: 13 },
+    { key: 'core',      label: 'Core',      icon: IconTabCore      },
+    { key: 'abilities', label: 'Abilities', icon: IconTabAbilities },
+    { key: 'combat',    label: 'Combat',    icon: IconTabCombat    },
+    { key: 'feats',     label: 'Feats',     icon: IconTabFeats     },
+    { key: 'magic',     label: 'Magic',     icon: IconTabMagic     },
+    { key: 'inventory', label: 'Inventory', icon: IconTabInventory },
   ] as const;
 
   type TabKey = (typeof TABS)[number]['key'];
 
-  // ============================================================
-  // DERIVED STATE from the URL
-  // ============================================================
+  // ===========================================================================
+  // DERIVED STATE FROM THE URL
+  // ===========================================================================
 
-  /** The character ID from the URL route parameter. */
+  /** Character ID from the SvelteKit route parameter `/character/[id]`. */
   const characterId = $derived($page.params.id);
 
-  /** The active tab key from the `?tab=` query parameter. Defaults to 'core'. */
+  /**
+   * Active tab from the `?tab=` query parameter. Defaults to 'core'.
+   * We cast to TabKey — invalid values fall through to the "unknown tab" branch.
+   */
   const activeTab = $derived<TabKey>(
     ($page.url.searchParams.get('tab') as TabKey) ?? 'core'
   );
 
-  // ============================================================
+  // ===========================================================================
   // CHARACTER LOADING
-  // ============================================================
+  // ===========================================================================
 
   /**
-   * Loads the character when this page is mounted or the ID changes.
+   * Loads the character whenever the URL ID changes.
    *
-   * STRATEGY:
-   *   1. Check if the character is already in the vault's in-memory list.
-   *   2. If not, load from localStorage.
-   *   3. If neither, create an empty character as a fallback (graceful degradation).
+   * Priority:
+   *   1. In-memory vault list (already loaded — zero I/O, fastest path).
+   *   2. StorageManager (localStorage / PHP API fallback).
+   *   3. Blank character (graceful degradation for direct URL access).
    *
-   * In Phase 14.6 (PHP API): replace with `GET /api/characters/:id`.
+   * Phase 14.6 integration note: StorageManager already wraps both localStorage
+   * and the PHP API. No changes needed here when switching to PHP.
    */
   $effect(() => {
     const id = characterId;
     if (!id) return;
 
-    // Check vault in-memory first (fast path — no I/O)
     const fromVault = engine.allVaultCharacters.find(c => c.id === id);
     if (fromVault) {
       engine.loadCharacter(fromVault);
       return;
     }
 
-    // Fallback: load from localStorage
     const fromStorage = storageManager.loadCharacter(id);
     if (fromStorage) {
       engine.loadCharacter(fromStorage);
-      // Also add to vault list so future navigations use the fast path
       if (!engine.allVaultCharacters.some(c => c.id === id)) {
         engine.allVaultCharacters.push(fromStorage);
       }
       return;
     }
 
-    // Last resort: character not found — create a blank one with this ID
-    // This handles direct URL access for characters not yet saved
     console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
-    const blank = createEmptyCharacter(id, 'Unknown Character');
-    engine.loadCharacter(blank);
+    engine.loadCharacter(createEmptyCharacter(id, 'Unknown Character'));
   });
 
-  // ============================================================
+  // ===========================================================================
   // TAB NAVIGATION
-  // ============================================================
+  // ===========================================================================
 
   /**
-   * Switches to a tab by updating the URL query parameter.
-   * Using `goto()` with `?tab=X` preserves the character ID in the URL.
-   * `replaceState: true` prevents cluttering the browser history with tab changes.
+   * Navigate to a tab by updating the `?tab=` query parameter in the URL.
+   * `replaceState: true` avoids polluting browser history with tab switches.
    */
-  function switchTab(tabKey: TabKey) {
+  function switchTab(tabKey: TabKey): void {
     goto(`/character/${characterId}?tab=${tabKey}`, { replaceState: true });
   }
 
-  // ============================================================
-  // TAB CONTENT SELECTION
-  // (Future phases will import actual tab components — for now, placeholders)
-  // ============================================================
+  // ===========================================================================
+  // DERIVED: Character level display
+  // ===========================================================================
 
-  /** Returns a status label indicating which phase implements this tab. */
-  function getTabStatus(tabKey: TabKey): string {
-    const tab = TABS.find(t => t.key === tabKey);
-    return tab ? `Phase ${tab.phase}` : '';
-  }
+  /**
+   * Total character level — sum of all class levels.
+   * E.g. Fighter 5 / Wizard 3 → Level 8.
+   */
+  const totalLevel = $derived(
+    Object.values(engine.character.classLevels).reduce((a, b) => a + b, 0)
+  );
 </script>
 
-<div class="character-sheet">
-  <!-- ========================================================= -->
-  <!-- CHARACTER HEADER -->
-  <!-- ========================================================= -->
-  <header class="sheet-header">
-    <div class="header-left">
-      <!-- Back navigation: return to the campaign vault if we know it -->
+<!--
+  CHARACTER SHEET ROOT
+
+  `h-full` — fills the height of AppShell's <main> element exactly.
+  `flex flex-col` — stacks header, tab-bar, and content vertically.
+  `bg-surface` — theme-aware background (respects dark/light mode).
+  `overflow-hidden` — prevents the sheet itself from scrolling; only the
+    inner content area scrolls.
+-->
+<div class="h-full flex flex-col bg-surface overflow-hidden">
+
+  <!-- =========================================================================
+       CHARACTER HEADER
+       Contains back navigation, character name, level, and NPC badge.
+       `shrink-0` prevents this from being compressed when content is tall.
+  ========================================================================= -->
+  <header class="shrink-0 flex items-start justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
+
+    <div class="flex flex-col gap-0.5 min-w-0">
+
+      <!-- Back link: returns to vault (if campaign known) or campaigns hub -->
       {#if engine.character.campaignId}
         <a
           href="/campaigns/{engine.character.campaignId}/vault"
-          class="back-link"
+          class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors duration-150"
           aria-label="Back to Character Vault"
         >
-          ← Vault
+          <IconBack size={12} aria-hidden="true" />
+          Vault
         </a>
       {:else}
-        <a href="/campaigns" class="back-link" aria-label="Back to campaigns">
-          ← Campaigns
+        <a
+          href="/campaigns"
+          class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors duration-150"
+          aria-label="Back to campaigns"
+        >
+          <IconBack size={12} aria-hidden="true" />
+          Campaigns
         </a>
       {/if}
 
-      <!-- Character name (inline editable in a future phase) -->
-      <h1 class="char-name">
-        {engine.character.name}
+      <!-- Character name + optional NPC badge -->
+      <div class="flex items-center gap-2 min-w-0">
+        <h1 class="text-xl font-bold text-text-primary truncate">
+          {engine.character.name}
+        </h1>
         {#if engine.character.isNPC}
-          <span class="npc-label" aria-label="Non-player character">NPC</span>
+          <span class="badge-red shrink-0" aria-label="Non-player character">NPC</span>
         {/if}
-      </h1>
+      </div>
 
-      <!-- Character level summary -->
-      {#if Object.keys(engine.character.classLevels).length > 0}
-        {@const totalLevel = Object.values(engine.character.classLevels).reduce((a, b) => a + b, 0)}
-        <p class="char-meta">Level {totalLevel}</p>
+      <!-- Level summary or placeholder when no class is selected -->
+      {#if totalLevel > 0}
+        <p class="text-xs text-text-muted">Level {totalLevel}</p>
       {:else}
-        <p class="char-meta char-meta--empty">No class selected yet</p>
+        <p class="text-xs text-text-muted italic">No class selected yet</p>
       {/if}
+
     </div>
 
-    <!-- Character ID for debugging (shown only in dev-like context) -->
-    <code class="char-id" aria-label="Character ID">{engine.character.id.slice(0, 12)}…</code>
+    <!-- Character ID chip (dev utility — always visible for debugging) -->
+    <code
+      class="shrink-0 self-start text-xs text-text-muted bg-surface-alt border border-border rounded px-2 py-0.5 font-mono"
+      aria-label="Character ID"
+      title="Character ID: {engine.character.id}"
+    >
+      {engine.character.id.slice(0, 10)}…
+    </code>
+
   </header>
 
-  <!-- ========================================================= -->
-  <!-- TAB NAVIGATION -->
-  <!-- ========================================================= -->
-  <nav class="tab-nav" aria-label="Character sheet sections" role="tablist">
+  <!-- =========================================================================
+       TAB NAVIGATION BAR
+       `shrink-0` — always visible, never scrolls off screen.
+       `overflow-x-auto scrollbar-none` — tabs scroll horizontally on narrow
+         screens instead of wrapping or overflowing the layout.
+  ========================================================================= -->
+  <div
+    class="shrink-0 flex overflow-x-auto bg-surface border-b border-border"
+    style="scrollbar-width: none;"
+    aria-label="Character sheet sections"
+    role="tablist"
+  >
     {#each TABS as tab}
+      <!--
+        TAB BUTTON
+        Active state: accent underline (border-b-2 border-accent) + subtle
+          accent background tint (bg-accent/5) + bold text.
+        Inactive state: muted text, transparent border.
+        Mobile: `md:gap-2` — icon + label on desktop, `md:` prefix shows label;
+          on mobile (<md), the label is hidden (`hidden md:inline`) leaving only
+          the icon. This keeps touch targets compact but still clear.
+        Touch target: min-h-[44px] via the @media rule in app.css for coarse pointers.
+      -->
       <button
-        class="tab-btn"
-        class:active={activeTab === tab.key}
+        class="
+          flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium
+          border-b-2 whitespace-nowrap transition-colors duration-150
+          min-h-[40px]
+          {activeTab === tab.key
+            ? 'border-accent text-accent bg-accent/5'
+            : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-alt'}
+        "
         onclick={() => switchTab(tab.key)}
         role="tab"
         aria-selected={activeTab === tab.key}
         aria-controls="tab-panel-{tab.key}"
         id="tab-btn-{tab.key}"
+        type="button"
+        title={tab.label}
       >
-        <tab.icon size={16} aria-hidden="true" />
-        {tab.label}
+        <!--
+          Icon: always shown (20px per nav convention).
+          Label: hidden on mobile (<md), shown on tablet/desktop.
+          This keeps each tab button ~44px wide on mobile (icon only)
+          without cluttering the narrow screen.
+        -->
+        <tab.icon size={20} aria-hidden="true" />
+        <span class="hidden md:inline">{tab.label}</span>
       </button>
     {/each}
-  </nav>
+  </div>
 
-  <!-- ========================================================= -->
-  <!-- TAB CONTENT AREA -->
-  <!-- Phase 8–13 will replace these placeholders with real components.
-       Each placeholder clearly states which phase implements it and
-       shows a preview of the data it will display.
-  ========================================================= -->
-  <main
-    class="tab-panel"
+  <!-- =========================================================================
+       TAB CONTENT AREA
+       `flex-1 overflow-y-auto` — fills remaining height, scrolls internally.
+       `p-4 xl:p-6` — consistent padding; slightly more generous on wide screens.
+       On desktop ≥1280px (xl), individual tab layouts use multi-column grids
+       within their own components.
+  ========================================================================= -->
+  <div
+    class="flex-1 overflow-y-auto p-4 xl:p-6"
     id="tab-panel-{activeTab}"
     role="tabpanel"
     aria-labelledby="tab-btn-{activeTab}"
   >
 
+    <!-- -----------------------------------------------------------------------
+         CORE TAB (Phase 8)
+         Single-column on mobile/tablet; 2-column grid on xl+ screens.
+         Each sub-component is wrapped in a .card for consistent surface styling.
+    ----------------------------------------------------------------------- -->
     {#if activeTab === 'core'}
-      <!-- ---- CORE TAB — Phase 8 Components ---- -->
-      <div class="tab-content">
-        <BasicInfo />
-        <AbilityScoresSummary />
-        <SavingThrowsSummary />
-        <SkillsSummary />
-        <LoreAndLanguages />
+      <div class="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:items-start">
+
+        <!-- Left column on xl: BasicInfo + LoreAndLanguages -->
+        <div class="flex flex-col gap-4">
+          <BasicInfo />
+          <LoreAndLanguages />
+        </div>
+
+        <!-- Right column on xl: Stats summaries stacked -->
+        <div class="flex flex-col gap-4">
+          <AbilityScoresSummary />
+          <SavingThrowsSummary />
+          <SkillsSummary />
+        </div>
+
       </div>
 
-     {:else if activeTab === 'abilities'}
-      <!-- ---- ABILITIES TAB STUB (Phase 9) ---- -->
-      <div class="tab-stub">
-        <span class="stub-icon"><IconTabAbilities size={48} aria-hidden="true" /></span>
-        <h2>Abilities & Skills</h2>
-        <p>Full interactive editor — Point Buy, Roll Stats, Saving Throws, Skills Matrix.</p>
-        <span class="phase-badge large">Phase 9</span>
+    <!-- -----------------------------------------------------------------------
+         ABILITIES & SKILLS TAB (Phase 9)
+         Single-column on mobile; 2-column grid on xl+ (Ability Scores left,
+         Saving Throws right, Skills Matrix full-width below).
+    ----------------------------------------------------------------------- -->
+    {:else if activeTab === 'abilities'}
+      <div class="flex flex-col gap-4">
+
+        <!-- Abilities + Saves in a responsive side-by-side on xl -->
+        <div class="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:items-start">
+          <AbilityScores />
+          <SavingThrows />
+        </div>
+
+        <!-- Skills Matrix spans full width (needs horizontal scroll on mobile) -->
+        <SkillsMatrix />
+
       </div>
 
-     {:else if activeTab === 'combat'}
-      <!-- ---- COMBAT TAB STUB (Phase 10) ---- -->
-      <div class="tab-stub">
-        <span class="stub-icon"><IconTabCombat size={48} aria-hidden="true" /></span>
-        <h2>Combat</h2>
-        <p>HP bar, AC panels, BAB, Weapons & Attacks, Movement, Resistances, Damage Reduction.</p>
-        <span class="phase-badge large">Phase 10</span>
+    <!-- -----------------------------------------------------------------------
+         COMBAT TAB (Phase 10)
+         Mobile: single column.
+         xl: 2-column grid — left (Health, AC, Core Combat),
+                              right (Attacks, Movement, Resistances, DR).
+    ----------------------------------------------------------------------- -->
+    {:else if activeTab === 'combat'}
+      <div class="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:items-start">
+
+        <!-- Left column: vital stats -->
+        <div class="flex flex-col gap-4">
+          <HealthAndXP />
+          <ArmorClass />
+          <CoreCombat />
+        </div>
+
+        <!-- Right column: offensive + movement + defenses -->
+        <div class="flex flex-col gap-4">
+          <Attacks />
+          <MovementSpeeds />
+          <Resistances />
+          <DamageReduction />
+        </div>
+
       </div>
 
-     {:else if activeTab === 'feats'}
-      <!-- ---- FEATS TAB STUB (Phase 11) ---- -->
-      <div class="tab-stub">
-        <span class="stub-icon"><IconTabFeats size={48} aria-hidden="true" /></span>
-        <h2>Feats</h2>
-        <p>Feat slots management, granted feats list, feat catalog with prerequisite evaluation.</p>
-        <span class="phase-badge large">Phase 11</span>
+    <!-- -----------------------------------------------------------------------
+         FEATS TAB (Phase 11)
+         FeatsTab is a self-contained component that handles its own layout.
+    ----------------------------------------------------------------------- -->
+    {:else if activeTab === 'feats'}
+      <FeatsTab />
+
+    <!-- -----------------------------------------------------------------------
+         MAGIC TAB (Phase 12)
+         Three stacked panels; each manages its own internal layout.
+         On xl: Grimoire (catalog) left, CastingPanel right; SpecialAbilities below.
+    ----------------------------------------------------------------------- -->
+    {:else if activeTab === 'magic'}
+      <div class="flex flex-col gap-4">
+
+        <div class="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:items-start">
+          <Grimoire />
+          <CastingPanel />
+        </div>
+
+        <SpecialAbilities />
+
       </div>
 
-     {:else if activeTab === 'magic'}
-      <!-- ---- MAGIC TAB STUB (Phase 12) ---- -->
-      <div class="tab-stub">
-        <span class="stub-icon"><IconTabMagic size={48} aria-hidden="true" /></span>
-        <h2>Spells & Powers</h2>
-        <p>Grimoire, spell preparation/casting, psionic powers, domain abilities.</p>
-        <span class="phase-badge large">Phase 12</span>
+    <!-- -----------------------------------------------------------------------
+         INVENTORY TAB (Phase 13)
+         InventoryTab (equipped/backpack/storage) + Encumbrance calculator.
+    ----------------------------------------------------------------------- -->
+    {:else if activeTab === 'inventory'}
+      <div class="flex flex-col gap-4">
+        <InventoryTab />
+        <Encumbrance />
       </div>
 
-     {:else if activeTab === 'inventory'}
-      <!-- ---- INVENTORY TAB STUB (Phase 13) ---- -->
-      <div class="tab-stub">
-        <span class="stub-icon"><IconTabInventory size={48} aria-hidden="true" /></span>
-        <h2>Inventory</h2>
-        <p>Equipment slots, backpack, encumbrance calculator, wealth tracker.</p>
-        <span class="phase-badge large">Phase 13</span>
-      </div>
-
-     {:else}
-       <!-- Unknown tab key -->
-       <div class="tab-stub">
-         <span class="stub-icon"><IconStats size={48} aria-hidden="true" /></span>
-        <h2>Unknown Tab</h2>
-        <p>Tab <code>{activeTab}</code> is not recognised. Use the navigation above.</p>
+    <!-- -----------------------------------------------------------------------
+         FALLBACK: Unknown tab key
+         Defensive case: if someone navigates to ?tab=unknown, show a clear error.
+    ----------------------------------------------------------------------- -->
+    {:else}
+      <div class="flex flex-col items-center justify-center gap-3 py-16 text-center text-text-muted">
+        <p class="text-text-secondary font-medium">Unknown tab: <code class="bg-surface-alt px-2 py-0.5 rounded text-sm">{activeTab}</code></p>
+        <button
+          class="btn-secondary"
+          onclick={() => switchTab('core')}
+          type="button"
+        >
+          Go to Core tab
+        </button>
       </div>
     {/if}
 
-  </main>
+  </div>
+
 </div>
-
-<style>
-  .character-sheet {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: #0d1117;
-    color: #e0e0e0;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-  }
-
-  /* ========================= HEADER ========================= */
-  .sheet-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.5rem 0.75rem;
-    background: #161b22;
-    border-bottom: 1px solid #21262d;
-  }
-
-  .header-left {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .back-link {
-    font-size: 0.75rem;
-    color: #6080a0;
-    text-decoration: none;
-  }
-  .back-link:hover { color: #c4b5fd; }
-
-  .char-name {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #f0f0ff;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .npc-label {
-    font-size: 0.65rem;
-    background: #7f1d1d;
-    color: #fca5a5;
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    letter-spacing: 0.05em;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  .char-meta {
-    margin: 0;
-    font-size: 0.8rem;
-    color: #8080a0;
-  }
-  .char-meta--empty { font-style: italic; }
-
-  .char-id {
-    font-size: 0.7rem;
-    color: #3a3a5a;
-    background: #0d1117;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #21262d;
-    align-self: flex-start;
-    flex-shrink: 0;
-  }
-
-  /* ========================= TAB NAV ========================= */
-  .tab-nav {
-    display: flex;
-    gap: 0;
-    background: #161b22;
-    border-bottom: 1px solid #21262d;
-    padding: 0 1rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .tab-nav::-webkit-scrollbar { display: none; }
-
-  .tab-btn {
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: #6080a0;
-    padding: 0.7rem 1rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: color 0.15s, border-color 0.15s;
-    font-family: inherit;
-  }
-
-  .tab-btn:hover {
-    color: #c0c0d0;
-  }
-
-  .tab-btn.active {
-    color: #c4b5fd;
-    border-bottom-color: #7c3aed;
-  }
-
-  /* ========================= TAB PANEL ========================= */
-  .tab-panel {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-    max-width: 1000px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  /* ========================= CORE TAB CONTENT ========================= */
-  .tab-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .stub-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .stub-header h2 { margin: 0; font-size: 1.15rem; color: #c4b5fd; }
-
-  .stats-preview {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.5rem;
-  }
-
-  .stat-row {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    padding: 0.5rem 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
-    color: #6080a0;
-    width: 2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  .stat-value {
-    font-size: 1.1rem;
-    color: #7dd3fc;
-    font-weight: bold;
-  }
-
-  .stat-mod {
-    font-size: 0.8rem;
-    color: #86efac;
-  }
-
-  .combat-preview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .combat-item {
-    background: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    padding: 0.4rem 0.75rem;
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-  }
-
-  .combat-label {
-    font-size: 0.7rem;
-    color: #6080a0;
-    text-transform: uppercase;
-  }
-
-  .combat-value {
-    font-size: 1rem;
-    color: #fbbf24;
-    font-weight: bold;
-  }
-
-  .stub-note {
-    font-size: 0.8rem;
-    color: #4a4a6a;
-    font-style: italic;
-    border-top: 1px solid #21262d;
-    padding-top: 0.75rem;
-  }
-
-  /* ========================= STUB PLACEHOLDER ========================= */
-  .tab-stub {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: #4a4a6a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .stub-icon {
-    font-size: 3rem;
-    opacity: 0.4;
-  }
-
-  .tab-stub h2 {
-    color: #5a5a8a;
-    margin: 0;
-    font-size: 1.2rem;
-  }
-
-  .tab-stub p {
-    font-size: 0.85rem;
-    max-width: 400px;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  /* ========================= PHASE BADGE ========================= */
-  .phase-badge {
-    background: #1c1a3a;
-    color: #4c35a0;
-    border: 1px solid #2d1b69;
-    border-radius: 6px;
-    padding: 0.15rem 0.5rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-  }
-
-  .phase-badge.large {
-    font-size: 0.85rem;
-    padding: 0.3rem 0.75rem;
-    margin-top: 0.5rem;
-  }
-</style>

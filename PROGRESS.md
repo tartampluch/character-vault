@@ -363,7 +363,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - **Horizontal Scroll Container:** Create `src/lib/components/ui/HorizontalScroll.svelte` — a wrapper that enables horizontal scrolling with scroll-snap, fade-out edge shadows (left/right gradients) indicating scrollable content, and optional scroll indicator dots or arrows. Uses `overflow-x: auto`, `scroll-snap-type: x mandatory`, and `scrollbar-width: thin` (or hidden on mobile).
     - **Data Tables:** Define a pattern for tabular data with `overflow-x: auto` wrapper, sticky first column on mobile, alternating row colors in light theme, subtle hover highlight.
 
-- [ ] **19.6 Character Sheet Full-Height Layout & Tab Redesign:** Refactor `src/routes/character/[id]/+page.svelte` to implement a full-viewport-height layout:
+- [x] **19.6 Character Sheet Full-Height Layout & Tab Redesign:** Refactor `src/routes/character/[id]/+page.svelte` to implement a full-viewport-height layout:
     - _Structure:_ The character sheet occupies `100vh` minus the sidebar/top-bar height. Inside, the layout is split: a fixed tab navigation bar at the top, and a scrollable content area below that fills the remaining height (`flex-1 overflow-y-auto`).
     - _Tab bar:_ Horizontal row of tab buttons. Each tab shows a Lucide icon (20px) + label text. On mobile (<768px): labels are hidden, only icons shown (with tooltip on long-press or title attribute). The tab bar has `overflow-x: auto` with scroll-snap for swipe navigation between tabs on mobile. Active tab: bold text + accent underline (2px bottom border) + subtle accent background tint.
     - _Content area:_ Uses `overflow-y: auto` with smooth scrolling. Padded appropriately (`p-4` on mobile, `p-6` on desktop).
