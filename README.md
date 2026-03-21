@@ -12,8 +12,12 @@ See [`FINAL_REVIEW.md`](FINAL_REVIEW.md) for the final review.
 ## Prerequisites
 
 - **Node.js** 18+ and npm
-- **PHP** 8.1+ (for the backend API)
-- **Composer** (for PHPUnit tests)
+- **PHP** 8.1+ (for the backend API and local dev server)
+- **Composer** (for PHPUnit tests only — not needed on the production server)
+
+> **Tip:** `scripts/build.sh` downloads Composer automatically into `.build-tools/`
+> and can also download a portable PHP binary if no system PHP is found.
+> You never need to install Composer globally.
 
 ## Setup
 
@@ -21,7 +25,8 @@ See [`FINAL_REVIEW.md`](FINAL_REVIEW.md) for the final review.
 # Install frontend dependencies
 npm install
 
-# Install PHP test dependencies
+# Install PHP test dependencies (Composer is downloaded automatically by build.sh)
+# For manual setup or local dev:
 composer install
 ```
 
@@ -76,7 +81,7 @@ Test suites (7 files, 219+ test cases):
 ### Backend Tests (PHPUnit)
 
 ```sh
-# Run all PHPUnit tests
+# Run all PHPUnit tests (Composer + PHPUnit must be installed)
 ./vendor/bin/phpunit
 
 # Run a specific test file
@@ -135,42 +140,50 @@ Select **🚀 Full Stack — Frontend + Backend** to launch frontend and backend
 
 ## Building & Packaging
 
-Two build strategies are available: **native** (requires Node.js + PHP + Composer on the host) and **Docker** (no dependencies required on the host).
+Two build strategies are available.
 
 ### Option A — Native build (`scripts/build.sh`)
+
+No global Composer installation required — the script downloads Composer into
+`.build-tools/` automatically. If PHP is not found on the system, a portable
+static binary is downloaded there too. Nothing is installed system-wide.
 
 ```sh
 # Make executable once
 chmod +x scripts/build.sh
 
-# Standard production build (runs type-checker, tests, vite build, PHPUnit)
+# Standard production build (type-check → tests → vite build → PHPUnit → package)
 ./scripts/build.sh
 
-# Skip all test suites (faster, for CI pre-checks)
+# Skip all test suites (faster, useful for CI pre-checks)
 ./scripts/build.sh --skip-tests
 
 # Custom version tag
 ./scripts/build.sh --tag v1.2.3
 
-# Custom output directory
-./scripts/build.sh --output /tmp/releases
+# Custom output directories
+./scripts/build.sh --output /tmp/releases --deploy /tmp/deploy
 
 # Staging environment
 ./scripts/build.sh --env staging --tag v1.2.3-rc1
 
-# No-clean (keep intermediate build directory)
+# Keep the intermediate build directory after packaging
 ./scripts/build.sh --no-clean
 
 # Show all options
 ./scripts/build.sh --help
 ```
 
-Output: `dist-pkg/character-vault-<tag>.tar.gz`
+**Outputs:**
+
+| Path | Contents |
+|------|----------|
+| `dist/character-vault-<tag>/` | Extracted artifact — used directly by `run.sh` |
+| `dist-pkg/character-vault-<tag>.tar.gz` | Compressed tarball — upload this to the server |
 
 ### Option B — Docker build (`scripts/build-docker.sh`)
 
-Runs the entire pipeline (type-check → test → build → package) inside Docker.
-**No Node.js, PHP or Composer needed on the host.**
+Runs the entire pipeline inside Docker. **No Node.js, PHP or Composer needed on the host.**
 
 ```sh
 # Make executable once
@@ -182,9 +195,6 @@ chmod +x scripts/build-docker.sh
 # Custom version tag
 ./scripts/build-docker.sh --tag v1.2.3
 
-# Custom output directory
-./scripts/build-docker.sh --output /tmp/releases
-
 # Force full rebuild (no Docker layer cache)
 ./scripts/build-docker.sh --no-cache
 
@@ -195,64 +205,106 @@ chmod +x scripts/build-docker.sh
 ./scripts/build-docker.sh --help
 ```
 
-You can also call docker compose directly:
-
-```sh
-# Default (APP_VERSION=dev)
-docker compose run --rm builder
-
-# With a custom version tag
-APP_VERSION=v1.2.3 docker compose run --rm builder
-
-# Force rebuild
-docker compose build --no-cache && docker compose run --rm builder
-```
-
-Output: `dist-pkg/character-vault-<tag>.tar.gz`
+**Outputs:** same as Option A — `dist/` and `dist-pkg/`.
 
 ### Artefact contents
 
 ```
 character-vault-<tag>/
-├── build/          # SvelteKit compiled output
-├── api/            # PHP backend (controllers, config, index.php …)
-├── static/         # Static assets (rules JSON, robots.txt …)
-├── composer.json   # Run `composer install --no-dev` on the server
-├── .htaccess       # Apache routing (/api/* → PHP, rest → SvelteKit)
-└── VERSION         # Version tag string
+├── build/      # SvelteKit compiled output (static SPA)
+├── api/        # PHP backend — zero external dependencies
+├── static/     # Static assets (rules JSON, robots.txt …)
+├── .htaccess   # Apache routing (/api/* → PHP, rest → SvelteKit)
+└── VERSION     # Version tag string
 ```
+
+> **No `vendor/` directory** — there are no PHP production dependencies.
+> Composer is only used during the build to run PHPUnit tests.
+
+---
+
+## Running the Application
+
+### Locally — PHP built-in server (`run.sh`)
+
+Serves the latest artifact from `dist/` using PHP's built-in server with a custom
+router that dispatches `/api/*` to the PHP backend and everything else to the
+SvelteKit static build.
+
+```sh
+# Make executable once
+chmod +x run.sh
+
+# Run using the latest artifact in dist/ (port 8080)
+./run.sh
+
+# Custom port
+./run.sh --port 9000
+
+# Point at a specific artifact directory
+./run.sh --dir dist/character-vault-v1.2.3
+
+# Show all options
+./run.sh --help
+```
+
+PHP is located automatically: `.build-tools/bin/php` (cached by `build.sh`) → system PHP.
+
+### Locally — Docker / Apache (`run-docker.sh`)
+
+Provides a production-like environment (Apache + mod_rewrite + PHP + pdo_sqlite)
+without installing anything on the host beyond Docker.
+
+```sh
+# Make executable once
+chmod +x run-docker.sh
+
+# Run using the latest artifact in dist/ (port 8080)
+./run-docker.sh
+
+# Custom port
+./run-docker.sh --port 9000
+
+# Force rebuild of the run image
+./run-docker.sh --no-cache
+
+# Show all options
+./run-docker.sh --help
+```
+
+The run image (`character-vault-run:latest`) is built once and reused.
+The SQLite database is persisted in a Docker volume (`character-vault-db`).
 
 ---
 
 ## Production Deployment
 
-After extracting the artefact on the server:
+After extracting the tarball on the server:
 
 ```sh
 # 1. Extract
 tar -xzf character-vault-<tag>.tar.gz
 cd character-vault-<tag>
 
-# 2. Install PHP production dependencies
-composer install --no-dev --optimize-autoloader
-
-# 3. Set environment variables (or create a .env file)
-export DB_HOST=localhost
-export DB_NAME=character_vault
-export DB_USER=app
-export DB_PASS=secret
-export JWT_SECRET=<long-random-string>
-
-# 4. Run database migrations
+# 2. Create / update the database
 php api/migrate.php
 
-# 5. Configure your web server
+# 3. Set the environment (edit api/config.php or use server env variables)
+export APP_ENV=production
+
+# 4. Configure your web server
 #    - Document root → extracted directory
-#    - /api/* → handled by PHP (see .htaccess)
-#    - All other paths → build/index.html (SvelteKit)
+#    - AllowOverride All (so .htaccess is honoured)
+#    - The included .htaccess handles all routing automatically
 ```
 
-See [`api/config.php`](api/config.php) for the full list of environment variables.
+**Server requirements:**
+- PHP ≥ 8.1 with `pdo_sqlite` enabled (standard on all shared hosts including OVH)
+- Apache with `mod_rewrite` and `AllowOverride All`
+- **No Composer, no Node.js, no npm** needed on the server
+
+See [`api/config.php`](api/config.php) for the full list of environment variables
+(DB path, session settings, CORS origins, etc.).
 
 Preview the production build locally (without packaging):
 

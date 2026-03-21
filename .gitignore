@@ -41,7 +41,11 @@ composer.lock
 .phpunit.result.cache
 .phpunit.cache/
 
-# Docker build artefacts
-/dist-pkg/
+# Build artefacts
+/dist-pkg/           # compressed tarballs
+/dist/               # extracted deployment artifacts (used by run.sh)
 /tmp/.buildx-cache/
 /tmp/.buildx-cache-new/
+
+# Portable build tools (downloaded by scripts/build.sh — never commit)
+/.build-tools/

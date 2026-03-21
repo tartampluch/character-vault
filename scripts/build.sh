@@ -7,36 +7,41 @@
 #
 # OPTIONS:
 #   -e, --env <env>        Target environment: production (default) | staging
-#   -o, --output <dir>     Output directory for the package (default: dist-pkg)
+#   -o, --output <dir>     Output directory for the tarball (default: dist-pkg)
+#   -d, --deploy <dir>     Output directory for the extracted artifact (default: dist)
 #   -t, --tag <tag>        Package version tag (default: git describe or timestamp)
 #   -s, --skip-tests       Skip PHP and JS test suites
 #   --no-clean             Do not remove the intermediate build directory
 #   -h, --help             Show this help and exit
 #
 # WHAT IT DOES:
-#   1. Validates required tools (node, npm, php, composer)
-#   2. Installs/updates Node.js and Composer dependencies
-#   3. Runs the JS type-checker (svelte-check) and test suite (vitest)
-#   4. Runs the PHP test suite (PHPUnit)
-#   5. Builds the SvelteKit frontend with `npm run build`
-#   6. Assembles a deployment artifact:
+#   0. Sets up portable build tools in .build-tools/ (never pollutes the system):
+#        - Uses system PHP ≥ 8.1 if available, or downloads a static PHP binary
+#        - Downloads Composer PHAR if not already cached
+#   1. Installs/updates Node.js and Composer dev dependencies
+#   2. Runs the JS type-checker (svelte-check) and Vitest test suite
+#   3. Runs the PHP test suite (PHPUnit) — Composer is ONLY needed here
+#   4. Builds the SvelteKit frontend with `npm run build`
+#   5. Assembles a self-contained deployment artifact:
+#        dist/
+#          character-vault-<tag>/     ← extracted, ready to use (for run.sh)
+#            build/     ← SvelteKit compiled output
+#            api/       ← PHP backend (zero external dependencies)
+#            static/    ← Static assets (rules JSON, robots.txt …)
+#            .htaccess  ← Apache routing rules
+#            VERSION    ← Version tag string
 #        dist-pkg/
-#          character-vault-<tag>/
-#            build/          ← SvelteKit build output
-#            api/            ← PHP backend (controllers, config, index.php …)
-#            static/         ← Static rules / assets
-#            composer.json   ← For production `composer install --no-dev`
-#            .htaccess       ← Generated Apache routing rules
-#   7. Creates a compressed tarball: character-vault-<tag>.tar.gz
+#          character-vault-<tag>.tar.gz  ← compressed tarball for upload
 #
-# PRODUCTION DEPLOYMENT CHECKLIST (after running this script):
-#   • Upload the tarball to the server and extract it
-#   • Run: composer install --no-dev --optimize-autoloader
-#   • Set environment variables / .env  (DB_HOST, DB_NAME, DB_USER, DB_PASS,
-#     JWT_SECRET, APP_ENV=production)
-#   • Point the web server document root at:  <extract-dir>/build/   for assets
-#     and configure /api/* to be handled by PHP (see .htaccess below)
-#   • Verify PHP ≥ 8.1 with pdo_sqlite / pdo_mysql and mbstring enabled
+# PRODUCTION DEPLOYMENT (after uploading and extracting the tarball):
+#   • php api/migrate.php           (creates/updates the SQLite database)
+#   • Set APP_ENV=production in the server environment (or edit api/config.php)
+#   • Point the Apache document root at the extracted directory
+#   • Verify PHP ≥ 8.1 with pdo_sqlite enabled — NO Composer needed on the server
+#
+# LOCAL TEST RUN (after building):
+#   ./run.sh           — PHP built-in server (no dependencies beyond PHP)
+#   ./run-docker.sh    — Docker with Apache + PHP (no host PHP needed)
 # =============================================================================
 
 set -euo pipefail
@@ -56,15 +61,19 @@ error()   { echo -e "${RED}[ERROR]${RESET} $*" >&2; }
 die()     { error "$*"; exit 1; }
 step()    { echo -e "\n${BOLD}▸ $*${RESET}"; }
 
-# ── Defaults ──────────────────────────────────────────────────────────────────
-ENV="production"
-OUTPUT_DIR="dist-pkg"
-SKIP_TESTS=false
-CLEAN=true
+# ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+BUILD_TOOLS_DIR="${ROOT_DIR}/.build-tools"
 
-# ── Determine version tag ─────────────────────────────────────────────────────
+# ── Defaults ──────────────────────────────────────────────────────────────────
+ENV="production"
+OUTPUT_DIR="dist-pkg"    # tarball destination (relative to ROOT_DIR)
+DEPLOY_DIR="dist"        # extracted artifact destination (relative to ROOT_DIR)
+SKIP_TESTS=false
+CLEAN=true
+
+# ── Version tag ───────────────────────────────────────────────────────────────
 if git -C "$ROOT_DIR" rev-parse --git-dir > /dev/null 2>&1; then
     TAG="$(git -C "$ROOT_DIR" describe --tags --always --dirty 2>/dev/null || true)"
 fi
@@ -78,19 +87,21 @@ usage() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -e|--env)       ENV="$2";        shift 2 ;;
-        -o|--output)    OUTPUT_DIR="$2"; shift 2 ;;
-        -t|--tag)       TAG="$2";        shift 2 ;;
+        -e|--env)        ENV="$2";        shift 2 ;;
+        -o|--output)     OUTPUT_DIR="$2"; shift 2 ;;
+        -d|--deploy)     DEPLOY_DIR="$2"; shift 2 ;;
+        -t|--tag)        TAG="$2";        shift 2 ;;
         -s|--skip-tests) SKIP_TESTS=true; shift ;;
-        --no-clean)     CLEAN=false;     shift ;;
-        -h|--help)      usage ;;
+        --no-clean)      CLEAN=false;     shift ;;
+        -h|--help)       usage ;;
         *) die "Unknown option: $1  (use --help for usage)" ;;
     esac
 done
 
 PACKAGE_NAME="character-vault-${TAG}"
 OUTPUT_DIR="${ROOT_DIR}/${OUTPUT_DIR}"
-STAGE_DIR="${OUTPUT_DIR}/${PACKAGE_NAME}"
+DEPLOY_DIR="${ROOT_DIR}/${DEPLOY_DIR}"
+STAGE_DIR="${DEPLOY_DIR}/${PACKAGE_NAME}"
 TARBALL="${OUTPUT_DIR}/${PACKAGE_NAME}.tar.gz"
 
 # ── Banner ────────────────────────────────────────────────────────────────────
@@ -100,52 +111,178 @@ echo -e "${BOLD}═════════════════════�
 info "Root dir  : ${ROOT_DIR}"
 info "Tag       : ${TAG}"
 info "Env       : ${ENV}"
-info "Output    : ${TARBALL}"
+info "Tarball   : ${TARBALL}"
+info "Deploy dir: ${STAGE_DIR}"
 info "Skip tests: ${SKIP_TESTS}"
 
-# ── Step 0 — Prerequisite checks ─────────────────────────────────────────────
-step "Checking prerequisites"
+# =============================================================================
+# Step 0 — Portable build-tool setup (.build-tools/)
+# =============================================================================
+step "Setting up portable build tools (.build-tools/)"
 
-check_tool() {
-    local cmd="$1"
-    local hint="${2:-}"
-    command -v "$cmd" &>/dev/null \
-        || die "'${cmd}' not found.${hint:+ ${hint}}"
-    success "${cmd} $(${cmd} --version 2>&1 | head -1)"
+mkdir -p "${BUILD_TOOLS_DIR}/bin"
+
+# ── 0a: PHP ───────────────────────────────────────────────────────────────────
+# We try (in order):
+#   1. Cached portable PHP from a previous build
+#   2. System PHP if it meets the version requirement
+#   3. Download a static PHP binary from static-php-cli releases
+PHP_MIN="8.1"
+PORTABLE_PHP="${BUILD_TOOLS_DIR}/bin/php"
+
+# PHP command array — supports flags without string-splitting issues
+PHP=()
+
+_php_ok() {
+    local bin="$1"
+    [[ -x "$bin" ]] && "$bin" -r "exit(version_compare(PHP_VERSION,'${PHP_MIN}','>=') ? 0 : 1);" 2>/dev/null
 }
 
-check_tool node  "Install Node.js ≥ 18 from https://nodejs.org"
-check_tool npm
-check_tool php   "Install PHP ≥ 8.1"
-check_tool composer "Install from https://getcomposer.org"
+if _php_ok "$PORTABLE_PHP"; then
+    PHP=("$PORTABLE_PHP")
+    success "Portable PHP cached: $(${PORTABLE_PHP} -r 'echo PHP_VERSION;')"
 
-PHP_MIN="8.1"
-PHP_VER="$(php -r 'echo PHP_VERSION;')"
-if ! php -r "exit(version_compare(PHP_VERSION, '${PHP_MIN}', '>=') ? 0 : 1);"; then
-    die "PHP ${PHP_MIN}+ required (found ${PHP_VER})"
+elif _php_ok "$(command -v php 2>/dev/null || true)"; then
+    PHP=("$(command -v php)")
+    success "Using system PHP: $(php -r 'echo PHP_VERSION;')"
+
+else
+    info "No suitable PHP found — downloading a static PHP binary…"
+
+    _OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    _ARCH="$(uname -m)"
+    [[ "$_ARCH" == "arm64" ]] && _ARCH="aarch64"
+
+    case "${_OS}-${_ARCH}" in
+        linux-x86_64)    _PLATFORM="linux-x86_64"   ;;
+        linux-aarch64)   _PLATFORM="linux-aarch64"  ;;
+        darwin-x86_64)   _PLATFORM="macos-x86_64"   ;;
+        darwin-aarch64)  _PLATFORM="macos-aarch64"  ;;
+        *)
+            die "No pre-built PHP binary available for ${_OS}-${_ARCH}.
+  → Install PHP ${PHP_MIN}+ manually (brew install php, apt install php8.3-cli, …)
+  → Or use the Docker build: ./scripts/build-docker.sh"
+            ;;
+    esac
+
+    info "Querying GitHub API for latest static-php-cli release (${_PLATFORM})…"
+    _API_RESP="$(curl -sfL \
+        "https://api.github.com/repos/crazywhalecc/static-php-cli/releases/latest" \
+        2>/dev/null)" \
+        || die "Cannot reach GitHub API. Check your connection or use: ./scripts/build-docker.sh"
+
+    _PHP_URL="$(printf '%s\n' "$_API_RESP" \
+        | grep '"browser_download_url"' \
+        | grep -E "php-8\.[0-9]+-cli-${_PLATFORM}" \
+        | head -1 \
+        | sed 's/.*"browser_download_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')"
+
+    [[ -n "$_PHP_URL" ]] \
+        || die "No PHP binary found for ${_PLATFORM} in the latest static-php-cli release.
+  → Install PHP ${PHP_MIN}+ manually or use: ./scripts/build-docker.sh"
+
+    info "Downloading: ${_PHP_URL}"
+    _TMP_ARCHIVE="$(mktemp /tmp/php-static-XXXXXX.tar.gz)"
+    curl -#L "$_PHP_URL" -o "$_TMP_ARCHIVE" \
+        || die "Download failed. Use: ./scripts/build-docker.sh"
+
+    # Extract — handle archives with or without a containing directory
+    _TMP_EXTRACT="$(mktemp -d /tmp/php-extract-XXXXXX)"
+    tar -xzf "$_TMP_ARCHIVE" -C "$_TMP_EXTRACT"
+    rm -f "$_TMP_ARCHIVE"
+
+    _PHP_FOUND="$(find "$_TMP_EXTRACT" -maxdepth 3 -type f -name 'php' | head -1)"
+    [[ -n "$_PHP_FOUND" ]] \
+        || die "Could not find a 'php' binary inside the downloaded archive"
+
+    mv "$_PHP_FOUND" "$PORTABLE_PHP"
+    rm -rf "$_TMP_EXTRACT"
+    chmod +x "$PORTABLE_PHP"
+
+    _php_ok "$PORTABLE_PHP" \
+        || die "Downloaded PHP binary failed the version check (need ≥ ${PHP_MIN})"
+
+    PHP=("$PORTABLE_PHP")
+    success "Portable PHP ready: $("$PORTABLE_PHP" -r 'echo PHP_VERSION;')"
 fi
+
+# Write a minimal php.ini for the build environment (memory + display errors only;
+# pdo_sqlite and other extensions are compiled into static binaries or already active).
+BUILD_PHP_INI="${BUILD_TOOLS_DIR}/php.ini"
+cat > "$BUILD_PHP_INI" <<'PHPINI'
+; Character Vault — build-environment PHP configuration
+; Used only by the build script; never deployed to production.
+memory_limit        = 512M
+max_execution_time  = 120
+error_reporting     = E_ALL
+display_errors      = On
+log_errors          = Off
+PHPINI
+
+# Add the ini flag only for the portable binary (system PHP has its own ini)
+[[ "${PHP[0]}" == "$PORTABLE_PHP" ]] && PHP+=("-c" "$BUILD_PHP_INI")
+
+# ── 0b: Composer ──────────────────────────────────────────────────────────────
+# Composer is ONLY needed to install PHPUnit for the test suite.
+# The production artifact contains no PHP vendor dependencies whatsoever.
+COMPOSER_PHAR="${BUILD_TOOLS_DIR}/composer.phar"
+
+if [[ -f "$COMPOSER_PHAR" ]]; then
+    _CV="$("${PHP[@]}" "$COMPOSER_PHAR" --version --no-ansi 2>/dev/null | head -1 || true)"
+    success "Composer cached: ${_CV}"
+else
+    info "Downloading Composer PHAR…"
+    curl -sfL "https://getcomposer.org/download/latest-stable/composer.phar" \
+        -o "$COMPOSER_PHAR" \
+        || die "Failed to download Composer. Check your internet connection."
+    chmod +x "$COMPOSER_PHAR"
+    _CV="$("${PHP[@]}" "$COMPOSER_PHAR" --version --no-ansi 2>/dev/null | head -1 || true)"
+    success "Composer ready: ${_CV}"
+fi
+
+# =============================================================================
+# Step 1 — Check Node.js
+# =============================================================================
+step "Checking Node.js prerequisites"
+
+command -v node &>/dev/null \
+    || die "'node' not found. Install Node.js ≥ 18 from https://nodejs.org"
+command -v npm &>/dev/null \
+    || die "'npm' not found"
 
 NODE_MIN=18
 NODE_VER="$(node -e 'process.stdout.write(process.versions.node)')"
 NODE_MAJOR="${NODE_VER%%.*}"
-(( NODE_MAJOR >= NODE_MIN )) || die "Node.js ${NODE_MIN}+ required (found ${NODE_VER})"
+(( NODE_MAJOR >= NODE_MIN )) \
+    || die "Node.js ${NODE_MIN}+ required (found ${NODE_VER})"
 
-# ── Step 1 — Install dependencies ────────────────────────────────────────────
+success "node ${NODE_VER}"
+
+# =============================================================================
+# Step 2 — Install dependencies
+# =============================================================================
 step "Installing Node.js dependencies"
 npm ci --prefer-offline 2>&1 | tail -5
 success "npm ci done"
 
-step "Installing Composer dependencies"
-composer install --working-dir="$ROOT_DIR" --prefer-dist --quiet
-success "composer install done"
+step "Installing Composer dev dependencies (PHPUnit)"
+"${PHP[@]}" "$COMPOSER_PHAR" install \
+    --working-dir="$ROOT_DIR" \
+    --prefer-dist \
+    --quiet
+success "composer install done (vendor/ — dev only, not deployed)"
 
-# ── Step 2 — Type-check & lint (JS/TS) ───────────────────────────────────────
+# =============================================================================
+# Step 3 — Type-check (JS/TS)
+# =============================================================================
 step "Running svelte-check (TypeScript / Svelte)"
 npm --prefix "$ROOT_DIR" run check \
     || die "svelte-check reported errors — aborting build"
 success "svelte-check passed"
 
-# ── Step 3 — JS / TS Tests ───────────────────────────────────────────────────
+# =============================================================================
+# Step 4 — JS / TS tests (Vitest)
+# =============================================================================
 if [[ "$SKIP_TESTS" == false ]]; then
     step "Running Vitest (frontend unit tests)"
     npm --prefix "$ROOT_DIR" run test \
@@ -155,10 +292,12 @@ else
     warn "Skipping JS/TS tests (--skip-tests)"
 fi
 
-# ── Step 4 — PHP Tests ───────────────────────────────────────────────────────
+# =============================================================================
+# Step 5 — PHP tests (PHPUnit)
+# =============================================================================
 if [[ "$SKIP_TESTS" == false ]]; then
     step "Running PHPUnit (backend tests)"
-    php "${ROOT_DIR}/vendor/bin/phpunit" \
+    "${PHP[@]}" "${ROOT_DIR}/vendor/bin/phpunit" \
         --configuration "${ROOT_DIR}/phpunit.xml" \
         --no-coverage \
         || die "PHPUnit tests failed — aborting build"
@@ -167,86 +306,104 @@ else
     warn "Skipping PHP tests (--skip-tests)"
 fi
 
-# ── Step 5 — SvelteKit build ─────────────────────────────────────────────────
+# =============================================================================
+# Step 6 — SvelteKit frontend build
+# =============================================================================
 step "Building SvelteKit frontend (NODE_ENV=${ENV})"
 NODE_ENV="$ENV" npm --prefix "$ROOT_DIR" run build \
     || die "vite build failed — see output above"
 success "Frontend build completed"
 
-# ── Step 6 — Assemble staging directory ──────────────────────────────────────
-step "Assembling deployment package → ${STAGE_DIR}"
+# =============================================================================
+# Step 7 — Assemble the deployment artifact
+# =============================================================================
+step "Assembling deployment artifact → ${STAGE_DIR}"
 
 [[ "$CLEAN" == true ]] && rm -rf "$STAGE_DIR"
 mkdir -p "$STAGE_DIR"
 
-# SvelteKit output (adapter-auto → .svelte-kit/output or build/)
+# SvelteKit compiled output
 if [[ -d "${ROOT_DIR}/.svelte-kit/output" ]]; then
     cp -r "${ROOT_DIR}/.svelte-kit/output" "${STAGE_DIR}/build"
 elif [[ -d "${ROOT_DIR}/build" ]]; then
     cp -r "${ROOT_DIR}/build" "${STAGE_DIR}/build"
 else
-    warn "No SvelteKit build output found at 'build/' or '.svelte-kit/output/'"
+    warn "No SvelteKit build output found — checked 'build/' and '.svelte-kit/output/'"
 fi
 
-# PHP backend
-cp -r "${ROOT_DIR}/api"           "${STAGE_DIR}/api"
-cp    "${ROOT_DIR}/composer.json" "${STAGE_DIR}/composer.json"
+# PHP backend — no vendor/ directory needed; zero production dependencies
+cp -r "${ROOT_DIR}/api"    "${STAGE_DIR}/api"
 
-# Static assets (game rules JSON, robots.txt …)
-cp -r "${ROOT_DIR}/static"        "${STAGE_DIR}/static"
+# Static assets (game-rule JSON files, robots.txt …)
+cp -r "${ROOT_DIR}/static" "${STAGE_DIR}/static"
 
-# ── Step 7 — Generate .htaccess ───────────────────────────────────────────────
+# Version tag
+echo "$TAG" > "${STAGE_DIR}/VERSION"
+
+# =============================================================================
+# Step 8 — Generate Apache .htaccess
+# =============================================================================
 step "Generating Apache .htaccess"
 cat > "${STAGE_DIR}/.htaccess" <<'HTACCESS'
 # Character Vault — Apache routing
-# Place this file in the web server document root.
+# Place the contents of the extracted artifact in the web document root.
 
 Options -Indexes
 
 # ── Security headers ──────────────────────────────────────────────────────────
 <IfModule mod_headers.c>
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-Frame-Options "DENY"
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Content-Type-Options  "nosniff"
+    Header always set X-Frame-Options         "DENY"
+    Header always set X-XSS-Protection        "1; mode=block"
+    Header always set Referrer-Policy         "strict-origin-when-cross-origin"
 </IfModule>
 
-# ── PHP API routing ───────────────────────────────────────────────────────────
-# All /api/* requests are handled by the PHP front-controller.
+# ── Routing ───────────────────────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Route /api/* to the PHP router
+    # /api/* → PHP front-controller
     RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
-    # Route everything else to the SvelteKit build (adapter-static / SSR)
+    # Existing files and directories are served as-is
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    # Everything else → SvelteKit SPA entry point
     RewriteRule ^(.*)$ build/index.html [QSA,L]
 </IfModule>
 HTACCESS
 
 success ".htaccess generated"
 
-# ── Step 8 — Create tarball ───────────────────────────────────────────────────
+# =============================================================================
+# Step 9 — Create tarball
+# =============================================================================
 step "Creating tarball → ${TARBALL}"
 mkdir -p "$OUTPUT_DIR"
-tar -czf "$TARBALL" -C "$OUTPUT_DIR" "$PACKAGE_NAME"
+tar -czf "$TARBALL" -C "$DEPLOY_DIR" "$PACKAGE_NAME"
 TARBALL_SIZE="$(du -sh "$TARBALL" | cut -f1)"
-success "Package ready: ${TARBALL}  (${TARBALL_SIZE})"
+success "Tarball ready: ${TARBALL}  (${TARBALL_SIZE})"
 
-# ── Done ──────────────────────────────────────────────────────────────────────
+# =============================================================================
+# Done
+# =============================================================================
 echo ""
 echo -e "${BOLD}════════════════════════════════════════════════════${RESET}"
 echo -e "${GREEN}${BOLD}  Build complete!${RESET}"
 echo -e "${BOLD}════════════════════════════════════════════════════${RESET}"
-echo -e "  Artifact : ${BOLD}${TARBALL}${RESET}"
-echo -e "  Size     : ${TARBALL_SIZE}"
+echo -e "  Tarball    : ${BOLD}${TARBALL}${RESET}  (${TARBALL_SIZE})"
+echo -e "  Extracted  : ${BOLD}${STAGE_DIR}${RESET}"
 echo ""
-echo -e "  Deploy steps:"
-echo -e "    1. Upload ${BOLD}${PACKAGE_NAME}.tar.gz${RESET} to the server"
+echo -e "  ${BOLD}Production deployment${RESET} (shared hosting, OVH, etc.):"
+echo -e "    1. Upload  ${BOLD}${PACKAGE_NAME}.tar.gz${RESET}  to the server"
 echo -e "    2. tar -xzf ${PACKAGE_NAME}.tar.gz"
-echo -e "    3. cd ${PACKAGE_NAME} && composer install --no-dev --optimize-autoloader"
-echo -e "    4. Set environment variables (DB_HOST, DB_NAME, DB_USER, DB_PASS, JWT_SECRET)"
-echo -e "    5. Point web root at the extracted directory"
+echo -e "    3. php api/migrate.php            # create / update the database"
+echo -e "    4. Set APP_ENV=production          # in server env or edit api/config.php"
+echo -e "    5. Point web document root at the extracted directory"
+echo -e "    ${CYAN}→ No Composer, no Node.js, no npm needed on the server.${RESET}"
+echo -e "    ${CYAN}→ Only PHP ≥ 8.1 with pdo_sqlite (standard on all shared hosts).${RESET}"
+echo ""
+echo -e "  ${BOLD}Local test run${RESET}:"
+echo -e "    ./run.sh          # PHP built-in server on http://localhost:8080"
+echo -e "    ./run-docker.sh   # Docker (Apache + PHP) on http://localhost:8080"
 echo ""
