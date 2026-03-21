@@ -407,7 +407,7 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
       - `CastingPanel.svelte`: Spells grouped by level in collapsible sections. Prepare counters as touch-friendly stepper buttons. Spell detail modal with school icon and roll button.
       - `SpecialAbilities.svelte`: Ability cards with activation info and resource tracking (uses/day as tappable pips or stepper).
 
-- [ ] **19.11 Inventory Tab Migration:** Migrate Inventory tab components to Tailwind CSS:
+- [x] **19.11 Inventory Tab Migration:** Migrate Inventory tab components to Tailwind CSS:
     - `InventoryTab.svelte`: Three sections (Equipped, Backpack, Storage) as collapsible card groups with distinct visual treatment (Equipped: accent-tinted header, Backpack: neutral, Storage: muted). Each item row: icon (`Package` or weapon/armor icon), name, weight, equip/unequip action button. Slot indicator badges on equipped items.
     - `Encumbrance.svelte`: Full-width encumbrance bar with three tier markers (Light/Medium/Heavy). Current weight displayed numerically. Wealth section as a compact inline form (CP/SP/GP/PP inputs with coin icons).
     - _Mobile:_ Item actions accessible via swipe-to-reveal or action menu (tap → action sheet). Equipment slot validation warnings as toast-style notifications.
