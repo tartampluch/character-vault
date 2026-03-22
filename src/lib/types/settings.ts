@@ -157,7 +157,102 @@ export interface CampaignSettings {
   };
 
   // ---------------------------------------------------------------------------
-  // 4. Enabled rule sources (content filter)
+  // 4. Variant rules (optional mechanics that change core engine behaviour)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Variant rules that alter how the engine resolves character statistics.
+   *
+   * D&D 3.5 Unearthed Arcana and the SRD variant rules directory define numerous
+   * opt-in rule variants that change fundamental mechanics. This block collects
+   * those that require ENGINE-LEVEL handling (not just data differences).
+   *
+   * ZERO HARDCODING ENFORCEMENT:
+   *   Each flag in this block corresponds to a specific code branch in the GameEngine
+   *   DAG (Phase 3 or later). The engine NEVER checks variant rules outside of this
+   *   object — all variant behaviour is gated by `settings.variantRules.*`.
+   *
+   * OPTIONAL BLOCK: All sub-fields default to `false` if the block or field is absent.
+   * The default settings factory (`createDefaultCampaignSettings`) always initialises
+   * this block explicitly so TypeScript can enforce field presence.
+   */
+  variantRules: {
+    /**
+     * Gestalt characters (Unearthed Arcana "Gestalt Characters" variant).
+     *
+     * D&D 3.5 VARIANT RULE:
+     *   In a Gestalt campaign, each character advances in TWO classes simultaneously
+     *   at each level. The character uses the BEST features of each class per level,
+     *   rather than combining them additively. This makes every character more powerful
+     *   but is balanced because all characters benefit equally.
+     *
+     * MECHANICAL CHANGE vs STANDARD MULTICLASSING:
+     *
+     *   Standard multiclassing (gestalt = false):
+     *     BAB = SUM of all "base" type modifiers from all class levelProgression entries.
+     *     Fort/Ref/Will = SUM of all "base" type save modifiers from all classes.
+     *
+     *   Gestalt (gestalt = true):
+     *     BAB and saves are resolved by taking the MAXIMUM contribution PER LEVEL
+     *     across both gestalt classes, then summing across all levels.
+     *
+     *     Per level:
+     *       BAB_at_level_N      = max(class1_bab_at_level_N, class2_bab_at_level_N)
+     *       Fort_at_level_N     = max(class1_fort_at_level_N, class2_fort_at_level_N)
+     *       Ref_at_level_N      = max(class1_ref_at_level_N, class2_ref_at_level_N)
+     *       Will_at_level_N     = max(class1_will_at_level_N, class2_will_at_level_N)
+     *
+     *     Total BAB = sum(max_bab_at_each_level)
+     *     Total Fort = sum(max_fort_at_each_level), etc.
+     *
+     * ENGINE IMPLEMENTATION (DAG Phase 3.7):
+     *   When `variantRules.gestalt === true`, Phase 3 uses `computeGestaltBase()` instead
+     *   of passing all "base" type modifiers directly to `applyStackingRules()`.
+     *
+     *   `computeGestaltBase(targetId, classLevels, flatModifiers)` (src/lib/utils/gestaltRules.ts):
+     *     1. Group all "base" type modifiers for the target pipeline by their `sourceId`.
+     *     2. For each character level N (1 to max characterLevel):
+     *        - Collect the "base" increment contributed by each class at level N.
+     *        - Take the MAX of all class contributions at that level.
+     *     3. Sum all per-level maxima → this is the gestalt base for that pipeline.
+     *
+     * WHAT IS AND ISN'T AFFECTED:
+     *   AFFECTED (uses gestalt max-per-level):
+     *     - BAB (`combatStats.bab`)
+     *     - Fortitude save (`saves.fort`)
+     *     - Reflex save (`saves.ref`)
+     *     - Will save (`saves.will`)
+     *
+     *   NOT AFFECTED (uses standard additive stacking even in gestalt):
+     *     - HP (each gestalt class grants full HD at each level — HP stacks)
+     *     - Skill points (use best skill point total, not sum; but this is a UI concern)
+     *     - Class features (character gets ALL features of BOTH classes — additive)
+     *     - Spellcasting (both classes' spell slot progressions are available)
+     *     - Non-"base" modifiers (enhancement, racial, untyped — always standard)
+     *
+     * GESTALT REQUIREMENT:
+     *   Gestalt assumes EXACTLY TWO classes leveled together (same level in both).
+     *   The engine does not enforce this — the variant rules allow flexibility — but
+     *   content authors should ensure gestalt characters have equal levels in both classes.
+     *
+     * LIMITATIONS:
+     *   - Level progression increments MUST be stored per-level (not cumulative totals).
+     *     This is always the case in this engine (ARCHITECTURE.md section 5.4).
+     *   - The GameEngine computes per-level max across ALL active class features whose
+     *     `category === "class"`. If a character has 3+ class features (unusual base
+     *     gestalt), the max still applies correctly across all classes at each level.
+     *
+     * @default false
+     *
+     * @see ARCHITECTURE.md section 8.2 — Gestalt variant rule documentation
+     * @see src/lib/utils/gestaltRules.ts — `computeGestaltBase()` implementation
+     * @see SRD variant: /srd/variant/classes/gestalt.html
+     */
+    gestalt: boolean;
+  };
+
+  // ---------------------------------------------------------------------------
+  // 5. Enabled rule sources (content filter)
   // ---------------------------------------------------------------------------
 
   /**
@@ -220,6 +315,12 @@ export function createDefaultCampaignSettings(): CampaignSettings {
     },
     diceRules: {
       explodingTwenties: false,
+    },
+    variantRules: {
+      // Gestalt characters (Unearthed Arcana): off by default.
+      // When enabled, BAB and saves use max-per-level instead of sum across classes.
+      // @see CampaignSettings.variantRules.gestalt for full documentation.
+      gestalt: false,
     },
     enabledRuleSources: ['srd_core'],
   };

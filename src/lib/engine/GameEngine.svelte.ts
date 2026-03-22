@@ -45,6 +45,7 @@ import { checkCondition } from '../utils/logicEvaluator';
 import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
+import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
 
@@ -1003,24 +1004,33 @@ export class GameEngine {
 
   /**
    * DAG Phase 3: Resolved combat stat and saving throw pipelines.
-   *
-   * Returns a Record mapping combatStats and saves pipelineId → resolved StatisticPipeline.
-   *
-   * READS FROM:
-   *   - phase0_flatModifiers (modifier data)
-   *   - phase2_attributes (ability derivedModifiers — CON for Fort save, DEX for AC, etc.)
-   *   - phase0_characterLevel (for HP formula: CON mod × character level)
-   *
-   * WRITES TO:
-   *   This $derived updates the character sheet data used by the combat UI components.
-   *   The character.$state pipelines are NOT mutated; this returns a computed snapshot.
-   *   Phase 4 (skills) reads the armor_check_penalty from the output of this phase.
-   */
-  phase3_combatStats: Record<ID, StatisticPipeline> = $derived.by(() => {
-    const result: Record<ID, StatisticPipeline> = {};
-    const flatMods = this.phase0_flatModifiers;
-    const attributes = this.phase2_attributes;
-    const characterLevel = this.phase0_characterLevel;
+    *
+    * Returns a Record mapping combatStats and saves pipelineId → resolved StatisticPipeline.
+    *
+    * READS FROM:
+    *   - phase0_flatModifiers (modifier data)
+    *   - phase2_attributes (ability derivedModifiers — CON for Fort save, DEX for AC, etc.)
+    *   - phase0_characterLevel (for HP formula: CON mod × character level)
+    *   - settings.variantRules.gestalt (Phase 3.7 — gestalt mode flag)
+    *
+    * WRITES TO:
+    *   This $derived updates the character sheet data used by the combat UI components.
+    *   The character.$state pipelines are NOT mutated; this returns a computed snapshot.
+    *   Phase 4 (skills) reads the armor_check_penalty from the output of this phase.
+    *
+    * GESTALT MODE (Phase 3.7 — `settings.variantRules.gestalt`):
+    *   When gestalt is enabled, BAB and save pipelines replace the standard "sum all
+    *   base modifiers" path with `computeGestaltBase()` which applies max-per-level
+    *   across all active class features before summing.
+    *   @see src/lib/utils/gestaltRules.ts — computeGestaltBase() implementation
+    *   @see ARCHITECTURE.md section 8.2 — Gestalt variant documentation
+    */
+   phase3_combatStats: Record<ID, StatisticPipeline> = $derived.by(() => {
+     const result: Record<ID, StatisticPipeline> = {};
+     const flatMods = this.phase0_flatModifiers;
+     const attributes = this.phase2_attributes;
+     const characterLevel = this.phase0_characterLevel;
+     const isGestalt = this.settings.variantRules?.gestalt ?? false;
 
     // --- Max HP Special Calculation ---
     // D&D 3.5 formula: sum(hitDieResults per level) + CON_modifier × characterLevel
@@ -1072,38 +1082,77 @@ export class GameEngine {
         effectiveBaseValue = sumDiceRolls + conHpContrib;
       }
 
-      const stacking = applyStackingRules(activeMods, effectiveBaseValue);
-      // Combat stats don't have a "derivedModifier" in the ability score sense (always 0)
-      result[pipelineId] = {
-        ...basePipeline,
-        activeModifiers: stacking.appliedModifiers,
-        situationalModifiers: situationalMods,
-        totalBonus: stacking.totalBonus,
-        totalValue: stacking.totalValue,
-        derivedModifier: 0, // Combat stats have no derived modifier
-      };
-    }
+       // GESTALT MODE (Phase 3.7):
+       //   For BAB and saves, replace the standard "sum all base mods" with
+       //   computeGestaltBase() which applies max-per-level then sums.
+       //   Non-"base" modifiers (enhancement, luck, etc.) still go through
+       //   applyStackingRules() normally in both standard and gestalt modes.
+       let gestaltBaseAdjustment = 0;
+       let nonBaseMods = activeMods;
+       if (isGestalt && isGestaltAffectedPipeline(pipelineId)) {
+         const baseMods = activeMods.filter(m => m.type === 'base');
+         nonBaseMods = activeMods.filter(m => m.type !== 'base');
+         // computeGestaltBase replaces the standard sum of all "base" modifiers
+         gestaltBaseAdjustment = computeGestaltBase(
+           baseMods,
+           { ...this.character.classLevels },
+           characterLevel
+         );
+       }
 
-    // Process each saving throw pipeline
-    for (const [pipelineId, basePipeline] of Object.entries(this.character.saves)) {
-      const activeMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
-        .map(e => e.modifier);
+       const stacking = applyStackingRules(nonBaseMods, isGestalt && isGestaltAffectedPipeline(pipelineId)
+         ? effectiveBaseValue + gestaltBaseAdjustment
+         : effectiveBaseValue);
 
-      const situationalMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
-        .map(e => e.modifier);
+       // Combat stats don't have a "derivedModifier" in the ability score sense (always 0)
+       result[pipelineId] = {
+         ...basePipeline,
+         activeModifiers: stacking.appliedModifiers,
+         situationalModifiers: situationalMods,
+         totalBonus: stacking.totalBonus,
+         totalValue: stacking.totalValue,
+         derivedModifier: 0, // Combat stats have no derived modifier
+       };
+     }
 
-      const stacking = applyStackingRules(activeMods, basePipeline.baseValue);
-      result[pipelineId] = {
-        ...basePipeline,
-        activeModifiers: stacking.appliedModifiers,
-        situationalModifiers: situationalMods,
-        totalBonus: stacking.totalBonus,
-        totalValue: stacking.totalValue,
-        derivedModifier: 0,
-      };
-    }
+     // Process each saving throw pipeline
+     for (const [pipelineId, basePipeline] of Object.entries(this.character.saves)) {
+       const activeMods = flatMods
+         .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
+         .map(e => e.modifier);
+
+       const situationalMods = flatMods
+         .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
+         .map(e => e.modifier);
+
+       // GESTALT MODE for saves: same max-per-level logic as BAB above
+       let gestaltSaveAdjustment = 0;
+       let nonBaseSaveMods = activeMods;
+       if (isGestalt && isGestaltAffectedPipeline(pipelineId)) {
+         const baseSaveMods = activeMods.filter(m => m.type === 'base');
+         nonBaseSaveMods = activeMods.filter(m => m.type !== 'base');
+         gestaltSaveAdjustment = computeGestaltBase(
+           baseSaveMods,
+           { ...this.character.classLevels },
+           characterLevel
+         );
+       }
+
+       const stacking = applyStackingRules(
+         nonBaseSaveMods,
+         isGestalt && isGestaltAffectedPipeline(pipelineId)
+           ? basePipeline.baseValue + gestaltSaveAdjustment
+           : basePipeline.baseValue
+       );
+       result[pipelineId] = {
+         ...basePipeline,
+         activeModifiers: stacking.appliedModifiers,
+         situationalModifiers: situationalMods,
+         totalBonus: stacking.totalBonus,
+         totalValue: stacking.totalValue,
+         derivedModifier: 0,
+       };
+     }
 
     return result;
   });

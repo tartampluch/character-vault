@@ -1323,8 +1323,16 @@ export interface CampaignSettings {
     diceRules: {
         explodingTwenties: boolean; // If true, a natural 20 on a d20 is rerolled and added
     };
+
+    // 4. Variant rules — flags that change core engine behaviour (default all false)
+    variantRules: {
+        // Gestalt Characters (UA): BAB/saves use max-per-level instead of sum.
+        // @see ARCHITECTURE.md section 8.2 — Gestalt variant documentation
+        // @see src/lib/utils/gestaltRules.ts — computeGestaltBase() implementation
+        gestalt: boolean;
+    };
     
-    // 4. Enabled rule sources (ORDERED)
+    // 5. Enabled rule sources (ORDERED)
     // Ordered array of JSON rule source IDs enabled for this campaign.
     // ORDER IS CRUCIAL: sources listed last have the highest priority.
     // The DataLoader loads and merges Features in this order.
@@ -1332,6 +1340,85 @@ export interface CampaignSettings {
     enabledRuleSources: ID[];
 }
 ```
+
+### 8.1. `variantRules` Block — Engine-Level Variant Flags
+
+The `variantRules` block in `CampaignSettings` collects flags that require **engine-level code branches** — they change how the DAG computes character statistics, not just what data is loaded. This is distinct from `enabledRuleSources`, which controls content filtering.
+
+**Principle:** Every variant rule flag gates exactly ONE code path in the engine. No variant rules are checked outside of `settings.variantRules.*`.
+
+| Flag | Default | Engine Effect |
+|---|:---:|---|
+| `gestalt` | `false` | Phase 3: BAB/saves use max-per-level instead of additive sum |
+
+### 8.2. Gestalt Characters Variant (`variantRules.gestalt`)
+
+**Source:** Unearthed Arcana "Gestalt Characters" (SRD variant rules).
+
+A Gestalt character advances in **two classes simultaneously** at each level. The character gains the best features of each class, but BAB and saving throw progressions use the **maximum contribution per level** rather than the additive sum that standard multiclassing uses.
+
+#### Standard vs Gestalt BAB Comparison
+
+| Level | Fighter BAB | Wizard BAB | Standard BAB | Gestalt BAB |
+|:---:|:---:|:---:|:---:|:---:|
+| 1 | +1 | 0 | 1 | 1 |
+| 2 | +1 | +1 |3 | 2 |
+| 3 | +1 | 0 | 4 | 3 |
+| 4 | +1 | +1 | 6 | 4 |
+| 5 | +1 | 0 | 7 | 5 |
+| **Total** | **5** | **2** | **7** | **5** |
+
+Standard multiclassing gives BAB +7 (Fighter 5 + Wizard 5 increments summed). Gestalt gives BAB +5 (Fighter's full BAB wins at every level).
+
+#### Gestalt Save Comparison
+
+For Fortitude (Fighter = Good save, Wizard = Poor save):
+
+| Level | Fighter Fort | Wizard Fort | Standard | Gestalt |
+|:---:|:---:|:---:|:---:|:---:|
+| 1 | +2 | 0 | 2 | 2 |
+| 2 | 0 | 0 | 2 | 2 |
+| 3 | +1 | +1 | 4 | 3 |
+| 4 | 0 | 0 | 4 | 3 |
+| 5 | +1 | 0 | 5 | 4 |
+| **Total** | **4** | **1** | **5** | **4** |
+
+Fighter's Good Fortitude dominates, giving the same total as Fighter alone.
+
+#### Algorithm — `computeGestaltBase()` (`src/lib/utils/gestaltRules.ts`)
+
+```
+For pipeline P (BAB, Fort, Ref, or Will):
+  For each character level N = 1 to characterLevel:
+    perLevelMax[N] = max(class1.base_increment_at_N, class2.base_increment_at_N, ..., 0)
+  gestaltTotal = sum(perLevelMax[1..N])
+```
+
+Implemented in `src/lib/utils/gestaltRules.ts` as a pure function `computeGestaltBase(mods, classLevels, characterLevel)`.
+
+#### Affected vs Unaffected Pipelines
+
+| Pipeline | Affected? | Notes |
+|---|:---:|---|
+| `combatStats.bab` | ✅ | Max per level |
+| `saves.fort` | ✅ | Max per level |
+| `saves.ref` | ✅ | Max per level |
+| `saves.will` | ✅ | Max per level |
+| `combatStats.max_hp` | ❌ | HP stacks: both classes' hit dice contribute fully |
+| All non-`"base"` types | ❌ | Enhancement/racial/luck etc. always use standard stacking |
+| Class features/spells | ❌ | Gestalt characters get ALL features of BOTH classes |
+
+#### DAG Integration (Phase 3.7)
+
+When `settings.variantRules.gestalt === true`, Phase 3 of the GameEngine splits the active modifiers for each affected pipeline:
+1. Separates `"base"` type modifiers from non-`"base"` modifiers.
+2. Calls `computeGestaltBase(baseMods, classLevels, characterLevel)` → gestalt base value.
+3. Injects the gestalt base as `effectiveBaseValue` into `applyStackingRules()` with only the non-`"base"` modifiers.
+4. Non-`"base"` modifiers (enhancement, luck, morale, etc.) pass through standard stacking unchanged.
+
+When `gestalt === false` (default), both pipelines use the standard path: all modifiers go to `applyStackingRules()` which sums them (because `"base"` is in `ALWAYS_STACKING_TYPES`).
+
+> **AI Implementation Note (Phase 3.7):** The gestalt flag is checked once at the top of `phase3_combatStats` (read from `this.settings.variantRules?.gestalt ?? false`). For each pipeline, `isGestaltAffectedPipeline(pipelineId)` determines if the gestalt path applies. Only `"base"` type modifiers are separated; all other modifier types go through standard stacking in both modes.
 
 ---
 
@@ -1352,9 +1439,10 @@ _Suggested target file: `src/lib/engine/GameEngine.svelte.ts`_
 3. **Phase 2 (Main Attributes):**
    A `$derived` computes STR, DEX, CON, INT, WIS, CHA by applying Phase 0 modifiers, stacking rules, and `derivedModifier` via `floor((totalValue - 10) / 2)`. _(Constitution total is now frozen)._
 
-4. **Phase 3 (Combat Statistics):**
-   A `$derived` computes AC, Initiative, BAB (sum of contributions from all classes via `levelProgression`), Saves, and **Max HP**. It uses the frozen results from Phase 2 (e.g.: Constitution modifier for HP). Character Level is derived here as `Object.values(character.classLevels).reduce((a, b) => a + b, 0)`.
-   **HP Calculation:** Max HP = sum of `hitDieResults[level]` (stored in the character's resources) + (`stat_con.derivedModifier` × character level). Hit die values per level are stored in the character state (rolled once during level-up or set to a fixed value based on campaign rules). When CON changes (e.g., from a Belt of Constitution), the HP maximum automatically recalculates because it reads the frozen CON modifier from Phase 2.
+ 4. **Phase 3 (Combat Statistics):**
+    A `$derived` computes AC, Initiative, BAB (sum of contributions from all classes via `levelProgression`), Saves, and **Max HP**. It uses the frozen results from Phase 2 (e.g.: Constitution modifier for HP). Character Level is derived here as `Object.values(character.classLevels).reduce((a, b) => a + b, 0)`.
+    **HP Calculation:** Max HP = sum of `hitDieResults[level]` (stored in the character's resources) + (`stat_con.derivedModifier` × character level). Hit die values per level are stored in the character state (rolled once during level-up or set to a fixed value based on campaign rules). When CON changes (e.g., from a Belt of Constitution), the HP maximum automatically recalculates because it reads the frozen CON modifier from Phase 2.
+    **Phase 3.7 — Gestalt Mode:** When `settings.variantRules.gestalt === true`, Phase 3 replaces the standard "sum all base modifiers" path for BAB and saves with `computeGestaltBase()` (max per level across classes, then sum). See section 8.2 and `src/lib/utils/gestaltRules.ts`.
 
 5. **Phase 4 (Skills & Abilities):**
    A `$derived` computes skills (which depend on Phase 2 Attributes and Phase 3 Armor Check Penalty). Determines which skills are "class skills" by combining the tags of all active classes.

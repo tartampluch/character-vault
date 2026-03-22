@@ -11,12 +11,14 @@ Your job is to perform a **strict conformance review** of the codebase against t
 
 Review the following aspects specifically:
 
-### 1. Type Conformance (Phase 1)
+### 1. Type Conformance (Phase 1 / 2.5a)
 - Do the TypeScript interfaces in `src/lib/types/` exactly match the definitions in Architecture sections 2-8?
 - Are `sourceId` and `sourceName` required (not optional) on every `Modifier`?
 - Is `derivedModifier` present on `StatisticPipeline`?
 - Does `Character` have `classLevels`, `gmOverrides`, and all UI metadata fields?
 - Does `Character` have `levelAdjustment: number` (default 0) and `xp: number` (default 0) as per Architecture section 6 / Phase 1.5?
+- Does `CampaignSettings` have a `variantRules: { gestalt: boolean }` block per Architecture section 8.1 / Phase 2.5a?
+- Does `createDefaultCampaignSettings()` initialize `variantRules: { gestalt: false }`?
 - Does `ResourcePool.resetCondition` include ALL six values: `"long_rest"`, `"short_rest"`, `"encounter"`, `"never"`, `"per_turn"`, `"per_round"` per Architecture section 4.4 / Phase 1.6?
 - Does `ResourcePool` have an optional `rechargeAmount?: number | string` field per Phase 1.6?
 - Does `Campaign` have `gmGlobalOverrides`, `updatedAt`, `enabledRuleSources`, and `chapters`?
@@ -88,6 +90,13 @@ Review the following aspects specifically:
 - Does it filter `situationalModifiers` by matching `situationalContext` against `RollContext.targetTags`?
 - Does `RollResult` include `numberOfExplosions`?
 
+### 5a. Gestalt Utility (Phase 2.5a)
+- Does `src/lib/utils/gestaltRules.ts` export `computeGestaltBase(mods, classLevels, characterLevel)`?
+- Does `computeGestaltBase()` return standard sum (not max) when only ONE class contributes?
+- Does `computeGestaltBase()` apply max-per-level then sum when TWO+ classes contribute?
+- Is `GESTALT_AFFECTED_PIPELINES` a Set containing `"combatStats.bab"`, `"saves.fort"`, `"saves.ref"`, `"saves.will"` (and NOT `"combatStats.max_hp"`)?
+- Does `isGestaltAffectedPipeline()` return `true` for BAB/saves and `false` for HP and other pipelines?
+
 ### 6. DAG Resolution (Phase 3)
 - Are the 5+ phases (0-4, plus Phase 0c/0c2) implemented as sequential `$derived` runes?
 - Phase 0: Does it process both `activeFeatures` AND `gmOverrides`? Does it filter by `levelProgression` using `classLevels`? Does it check `prerequisitesNode` and `forbiddenTags`?
@@ -99,6 +108,10 @@ Review the following aspects specifically:
 - Phase 4: Does it auto-generate synergy modifiers from the skill synergies config table?
 - Context sorting: Are modifiers with `situationalContext` routed to `situationalModifiers` instead of `activeModifiers`?
 - Infinite loop detection: Is there a depth counter that cuts at 3 re-evaluations?
+- **Gestalt Phase 3.7:** When `settings.variantRules.gestalt === true`, does Phase 3 call `computeGestaltBase()` for BAB and saves instead of passing all "base" mods to `applyStackingRules()`?
+- Does gestalt mode leave HP calculation unaffected (still additive from hitDieResults)?
+- Does gestalt mode leave non-"base" modifier types (enhancement, luck, morale, etc.) unaffected, still going to standard `applyStackingRules()`?
+- Does Phase 3 correctly fall back to the standard (non-gestalt) path when `variantRules.gestalt === false`?
 
 ### 7. Resource Tick & Rest Methods (Phase 3.6)
 - Are `triggerTurnTick()`, `triggerRoundTick()`, `triggerEncounterReset()`, `triggerShortRest()`, `triggerLongRest()` all present on the GameEngine as public methods per Architecture section 4.4 / Phase 3.6?
@@ -617,6 +630,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 6. **Section 6 (Character):** Does the `Character` interface match including `classLevels`, `gmOverrides`, all UI metadata, `levelAdjustment: number` (default 0), and `xp: number` (default 0)? Is `LinkedEntity` serialization unidirectional? Does the `createDefaultCharacter` factory initialize `levelAdjustment: 0` and `xp: 0`?
 
 7. **Section 7 (Campaign):** Does the `Campaign` interface match including `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
+8. **Section 8.1/8.2 (Gestalt variant):** Does `CampaignSettings.variantRules.gestalt` exist per Phase 2.5a? Does `gestaltRules.ts` export `computeGestaltBase()`, `isGestaltAffectedPipeline()`, `GESTALT_AFFECTED_PIPELINES`? Does GameEngine Phase 3.7 apply gestalt max-per-level for BAB/saves when the flag is true? Is HP still additive in gestalt mode?
 
 8. **Section 8 (Settings):** Does `CampaignSettings` match including `statGeneration`, `diceRules`, `enabledRuleSources`?
 
