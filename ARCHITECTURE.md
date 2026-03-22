@@ -38,7 +38,7 @@ graph TD
         P4["Phase 4: Skills + Class Skills<br/>(SP budget, leveling journal)"]
         OUT["CharacterContext snapshot<br/>(read by Math Parser + Logic Evaluator)"]
 
-        P0 -->|flat Modifier[]| P1
+        P0 -->|flat Modifier#91;#93;| P1
         P1 --> P2
         P2 --> P3
         P3 --> P4
