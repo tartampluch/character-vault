@@ -1343,10 +1343,10 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - [x] **C-10y** — Spells: Shout → Spectral Hand (files `shout.html` through `spectralHand.html`)
 - [x] **C-10z** — Spells: Spell Immunity → Summon Instrument (files `spellImmunity.html` through `summonInstrument.html`)
 - [x] **C-10aa** — Spells: Summon Monster I → Sunbeam (files `summonMonsterI.html` through `sunbeam.html`)
-- [ ] **C-10ab** — Spells: Sunburst → Time Stop (files `sunburst.html` through `timeStop.html`)
-- [ ] **C-10ac** — Spells: Tiny Hut → Unholy Blight (files `tinyHut.html` through `unholyBlight.html`)
-- [ ] **C-10ad** — Spells: Unseen Servant → Weird (files `unseenServant.html` through `weird.html`)
-- [ ] **C-10ae** — Spells: Whirlwind → Zone of Truth (files `whirlwind.html` through `zoneOfTruth.html`) — **run full-file validation after writing**
+- [x] **C-10ab** — Spells: Sunburst → Time Stop (files `sunburst.html` through `timeStop.html`)
+- [x] **C-10ac** — Spells: Tiny Hut → Unholy Blight (files `tinyHut.html` through `unholyBlight.html`)
+- [x] **C-10ad** — Spells: Unseen Servant → Weird (files `unseenServant.html` through `weird.html`)
+- [x] **C-10ae** — Spells: Whirlwind → Zone of Truth (files `whirlwind.html` through `zoneOfTruth.html`) — **run full-file validation after writing**
 
 ---
 
