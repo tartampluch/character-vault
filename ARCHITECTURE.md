@@ -928,7 +928,36 @@ The `optionsQuery` field uses a simple declarative format that the `DataLoader` 
 | `category:<cat>` | `"category:feat"` | All Features of this category. |
 | `tag:<tag1>+tag:<tag2>` | `"tag:weapon+tag:martial"` | Intersection: Features having both tags. |
 
-**Concrete example (Weapon Focus):**
+### 5.3.1. Choice-Derived Sub-Tags (`choiceGrantedTagPrefix`)
+
+**The problem:** Parameterised feats like Weapon Focus, Skill Focus, and Spell Focus store the player's selection in `ActiveFeatureInstance.selections`, but those selections are NOT projected onto `@activeTags`. As a result, `has_tag "feat_weapon_focus"` passes for any weapon — a prerequisite like "requires Weapon Focus (longbow)" cannot be expressed precisely.
+
+**The solution — `choiceGrantedTagPrefix`:** An optional field on `FeatureChoice`. When set, for every selected item ID the engine emits a derived active tag: `<choiceGrantedTagPrefix><selectedId>`.
+
+**How it works (GameEngine Phase 0 — `#computeActiveTags()`):**
+
+1. The engine iterates all active `ActiveFeatureInstance`s as usual.
+2. For each instance with both `feature.choices` and `instance.selections`, it checks each choice for a `choiceGrantedTagPrefix`.
+3. For each selected ID in `instance.selections[choice.choiceId]`, it emits `<prefix><selectedId>` into the active tag set.
+4. These sub-tags are available to ALL `prerequisitesNode` and `conditionNode` evaluations just like static tags.
+
+**Examples:**
+
+| Feat | Choice grants prefix | Selection | Emitted tag |
+|---|---|---|---|
+| `feat_weapon_focus` | `"feat_weapon_focus_"` | `"item_longbow"` | `"feat_weapon_focus_item_longbow"` |
+| `feat_skill_focus` | `"feat_skill_focus_"` | `"skill_spellcraft"` | `"feat_skill_focus_skill_spellcraft"` |
+| `feat_spell_focus` | `"feat_spell_focus_"` | `"arcane_school_conjuration"` | `"feat_spell_focus_arcane_school_conjuration"` |
+
+**SRD usage:**
+
+- **Arcane Archer** prerequisite: `has_tag "feat_weapon_focus_item_longbow" OR has_tag "feat_weapon_focus_item_shortbow"` — exactly checks for longbow or shortbow Weapon Focus.
+- **Archmage** prerequisite: `has_tag "feat_skill_focus_skill_spellcraft"` — exactly checks for Skill Focus (Spellcraft). The "two Spell Focus feats" condition still uses the `feat_spell_focus` + `feat_greater_spell_focus` proxy (no count operator exists in the current `LogicOperator` set).
+- **Thaumaturgist** prerequisite: `has_tag "feat_spell_focus_arcane_school_conjuration"` — exactly checks for Spell Focus (Conjuration).
+
+**Arcane School features:** Eight `arcane_school_*` features (one per school) are defined in `03_d20srd_core_feats.json` with `tag: "arcane_school"`. They serve as the selection pool for `feat_spell_focus` and `feat_greater_spell_focus`.
+
+**Concrete example (Weapon Focus with sub-tag):**
 
 ```json
 {
@@ -944,7 +973,8 @@ The `optionsQuery` field uses a simple declarative format that the `DataLoader` 
       "choiceId": "weapon_choice",
       "label": { "en": "Choose a weapon", "fr": "Choisissez une arme" },
       "optionsQuery": "tag:weapon",
-      "maxSelections": 1
+      "maxSelections": 1,
+      "choiceGrantedTagPrefix": "feat_weapon_focus_"
     }
   ],
   "grantedModifiers": [

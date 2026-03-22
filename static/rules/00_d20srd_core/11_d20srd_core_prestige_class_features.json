@@ -1421,5 +1421,1516 @@
       "immunity_sleep_magic",
       "immunity_paralysis"
     ]
+  },
+
+  {
+    "id": "class_feature_duelist_canny_defense",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Canny Defense", "fr": "Défense avisée" },
+    "description": {
+      "en": "When not wearing armor or using a shield, a duelist adds 1 point of Intelligence bonus (if any) per duelist class level to her Dexterity bonus to modify Armor Class while wielding a melee weapon. The total bonus added cannot exceed the duelist's actual Intelligence modifier. If the duelist is caught flat-footed or otherwise denied her Dexterity bonus, she also loses this bonus.",
+      "fr": "Lorsqu'il ne porte pas d'armure et n'utilise pas de bouclier, un duelliste ajoute 1 point de bonus d'Intelligence (le cas échéant) par niveau de classe de duelliste à son bonus de Dextérité pour modifier sa Classe d'Armure tout en maniant une arme de corps à corps. Le bonus total ajouté ne peut pas dépasser le modificateur d'Intelligence réel du duelliste. Si le duelliste est pris au dépourvu ou privé de son bonus de Dextérité, il perd également ce bonus."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_canny_defense_ac",
+        "sourceId": "class_feature_duelist_canny_defense",
+        "sourceName": { "en": "Canny Defense", "fr": "Défense avisée" },
+        "targetId": "combatStats.ac_normal",
+        "value": "@attributes.stat_int.derivedModifier",
+        "type": "dodge",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "wearing_armor",  "errorMessage": "Must not be wearing armor"  },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "using_shield",  "errorMessage": "Must not be using a shield" }
+          ]
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_improved_reaction",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Reaction +2", "fr": "Réaction améliorée +2" },
+    "description": {
+      "en": "At 2nd level, a duelist gains a +2 bonus on initiative checks. At 8th level, this bonus increases to +4. This bonus stacks with the Improved Initiative feat.",
+      "fr": "Au niveau 2, un duelliste obtient un bonus de +2 aux tests d'initiative. Au niveau 8, ce bonus passe à +4. Ce bonus se cumule avec le don Initiative améliorée."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_improved_reaction_init",
+        "sourceId": "class_feature_duelist_improved_reaction",
+        "sourceName": { "en": "Improved Reaction +2", "fr": "Réaction améliorée +2" },
+        "targetId": "combatStats.initiative",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_enhanced_mobility",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhanced Mobility", "fr": "Mobilité accrue" },
+    "description": {
+      "en": "When wearing no armor and not using a shield, a duelist gains an additional +4 dodge bonus to AC against attacks of opportunity caused when she moves out of a threatened square.",
+      "fr": "Lorsqu'il ne porte pas d'armure et n'utilise pas de bouclier, un duelliste obtient un bonus de parade supplémentaire de +4 à la CA contre les attaques d'opportunité provoquées lorsqu'il quitte une case menacée."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_enhanced_mobility_ac",
+        "sourceId": "class_feature_duelist_enhanced_mobility",
+        "sourceName": { "en": "Enhanced Mobility", "fr": "Mobilité accrue" },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "dodge",
+        "situationalContext": "vs_attacks_of_opportunity_on_movement",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "wearing_armor", "errorMessage": "Must not be wearing armor"  },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "using_shield", "errorMessage": "Must not be using a shield" }
+          ]
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_grace",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Grace", "fr": "Grâce" },
+    "description": {
+      "en": "At 4th level, a duelist gains an additional +2 competence bonus on all Reflex saving throws when wearing no armor and not using a shield.",
+      "fr": "Au niveau 4, un duelliste obtient un bonus de compétence supplémentaire de +2 à tous ses jets de sauvegarde de Réflexes lorsqu'il ne porte pas d'armure et n'utilise pas de bouclier."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_grace_ref",
+        "sourceId": "class_feature_duelist_grace",
+        "sourceName": { "en": "Grace", "fr": "Grâce" },
+        "targetId": "saves.ref",
+        "value": 2,
+        "type": "competence",
+        "conditionNode": {
+          "logic": "AND",
+          "nodes": [
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "wearing_armor", "errorMessage": "Must not be wearing armor"  },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "using_shield", "errorMessage": "Must not be using a shield" }
+          ]
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_precise_strike_1d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Precise Strike +1d6", "fr": "Frappe précise +1d6" },
+    "description": {
+      "en": "At 5th level, a duelist gains the ability to strike precisely with a light or one-handed piercing weapon, dealing an extra 1d6 damage added to her normal damage roll. The duelist cannot attack with a weapon in the other hand or use a shield when making a precise strike. This only works against living creatures with discernible anatomies; creatures immune to critical hits are also immune to this. At 10th level, the extra damage increases to +2d6.",
+      "fr": "Au niveau 5, un duelliste acquiert la capacité de frapper avec précision avec une arme perforante légère ou à une main, infligeant 1d6 dégâts supplémentaires en plus de ses dégâts normaux. Le duelliste ne peut pas attaquer avec une arme dans l'autre main ni utiliser un bouclier lors d'une frappe précise. Cela ne fonctionne que contre les créatures vivantes avec une anatomie discernable ; les créatures immunisées contre les coups critiques sont également immunisées contre cela. Au niveau 10, les dégâts supplémentaires passent à +2d6."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_precise_strike_1d6_dmg",
+        "sourceId": "class_feature_duelist_precise_strike_1d6",
+        "sourceName": { "en": "Precise Strike +1d6", "fr": "Frappe précise +1d6" },
+        "targetId": "combatStats.weapon_damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "single_piercing_weapon_no_offhand"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_acrobatic_charge",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Acrobatic Charge", "fr": "Charge acrobatique" },
+    "description": {
+      "en": "At 6th level, a duelist gains the ability to charge in situations where others cannot. She may charge over difficult terrain that normally slows movement. Depending on the circumstance, she may still need to make appropriate checks to successfully move over the terrain.",
+      "fr": "Au niveau 6, un duelliste acquiert la capacité de charger dans des situations où les autres ne peuvent pas le faire. Il peut charger sur un terrain difficile qui ralentirait normalement le déplacement. Selon les circonstances, il peut encore avoir besoin d'effectuer des tests appropriés pour se déplacer avec succès sur ce terrain."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_elaborate_parry",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Elaborate Parry", "fr": "Parade élaborée" },
+    "description": {
+      "en": "At 7th level and higher, if a duelist chooses to fight defensively or use total defense in melee combat, she gains an additional +1 dodge bonus to AC for each level of duelist she has. This bonus stacks with the normal bonuses for fighting defensively or total defense.",
+      "fr": "À partir du niveau 7, si un duelliste choisit de combattre en défensive ou d'utiliser la défense totale lors d'un combat au corps à corps, il obtient un bonus de parade supplémentaire de +1 à la CA pour chaque niveau de duelliste. Ce bonus se cumule avec les bonus normaux accordés pour combattre en défensive ou en défense totale."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_elaborate_parry_ac",
+        "sourceId": "class_feature_duelist_elaborate_parry",
+        "sourceName": { "en": "Elaborate Parry", "fr": "Parade élaborée" },
+        "targetId": "combatStats.ac_normal",
+        "value": "@classLevels.class_duelist",
+        "type": "dodge",
+        "situationalContext": "fighting_defensively_or_total_defense"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_improved_reaction_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Reaction +4", "fr": "Réaction améliorée +4" },
+    "description": {
+      "en": "At 8th level, a duelist's bonus on initiative checks increases to +4 total (an additional +2 from the +2 gained at 2nd level).",
+      "fr": "Au niveau 8, le bonus aux tests d'initiative d'un duelliste passe à +4 au total (un +2 supplémentaire par rapport au +2 obtenu au niveau 2)."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_improved_reaction_init_4",
+        "sourceId": "class_feature_duelist_improved_reaction_4",
+        "sourceName": { "en": "Improved Reaction +4", "fr": "Réaction améliorée +4" },
+        "targetId": "combatStats.initiative",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_deflect_arrows",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Deflect Arrows", "fr": "Déflexion des flèches" },
+    "description": {
+      "en": "At 9th level, a duelist gains the benefit of the Deflect Arrows feat when using a light or one-handed piercing weapon. Once per round when not flat-footed, the duelist can deflect one ranged weapon that would otherwise hit her.",
+      "fr": "Au niveau 9, un duelliste bénéficie du don Déflexion des flèches lorsqu'il utilise une arme perforante légère ou à une main. Une fois par round lorsqu'il n'est pas pris au dépourvu, le duelliste peut dévier une arme à distance qui l'aurait autrement touché."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary", "deflect_arrows"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_duelist_precise_strike_2d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Precise Strike +2d6", "fr": "Frappe précise +2d6" },
+    "description": {
+      "en": "At 10th level, the duelist's precise strike extra damage increases to +2d6 (an additional +1d6 from the +1d6 gained at 5th level).",
+      "fr": "Au niveau 10, les dégâts supplémentaires de la frappe précise du duelliste passent à +2d6 (un +1d6 supplémentaire par rapport au +1d6 obtenu au niveau 5)."
+    },
+    "tags": ["class_feature", "duelist", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "duelist_precise_strike_2d6_dmg",
+        "sourceId": "class_feature_duelist_precise_strike_2d6",
+        "sourceName": { "en": "Precise Strike +1d6", "fr": "Frappe précise +1d6" },
+        "targetId": "combatStats.weapon_damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "single_piercing_weapon_no_offhand"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_dwarven_defender_defensive_stance",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Stance (1/day)", "fr": "Posture défensive (1/jour)" },
+    "description": {
+      "en": "When adopting a defensive stance, a dwarven defender gains +2 Strength, +4 Constitution, a +2 resistance bonus on all saves, and a +4 dodge bonus to AC, but cannot move from the spot. The stance lasts 3 + (new) Con modifier rounds. At the end of the stance the defender is winded (−2 Strength for the encounter). Usable once per day, increasing by one use per day at 3rd, 5th, 7th, and 9th level.",
+      "fr": "En adoptant une posture défensive, un défenseur nain gagne +2 en Force, +4 en Constitution, un bonus de résistance de +2 à tous ses jets de sauvegarde et un bonus de parade de +4 à la CA, mais ne peut pas se déplacer. La posture dure 3 + (nouveau) modificateur de Constitution rounds. À la fin de la posture, le défenseur est épuisé (−2 en Force pendant la rencontre). Utilisable une fois par jour, avec une utilisation supplémentaire par jour aux niveaux 3, 5, 7 et 9."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "activation": {
+      "actionType": "free",
+      "resourceCost": { "targetId": "resources.dwarven_defender_defensive_stance_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_defensive_stance_uses_max",
+        "sourceId": "class_feature_dwarven_defender_defensive_stance",
+        "sourceName": { "en": "Defensive Stance", "fr": "Posture défensive" },
+        "targetId": "resources.dwarven_defender_defensive_stance_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_defensive_stance_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Stance (2/day)", "fr": "Posture défensive (2/jour)" },
+    "description": {
+      "en": "At 3rd level, the dwarven defender may use defensive stance twice per day.",
+      "fr": "Au niveau 3, le défenseur nain peut utiliser la posture défensive deux fois par jour."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_defensive_stance_uses_max_2",
+        "sourceId": "class_feature_dwarven_defender_defensive_stance_2",
+        "sourceName": { "en": "Defensive Stance (2/day)", "fr": "Posture défensive (2/jour)" },
+        "targetId": "resources.dwarven_defender_defensive_stance_uses.maxValue",
+        "value": 2,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_trap_sense_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+    "description": {
+      "en": "At 4th level, a dwarven defender gains a +1 bonus on Reflex saves made to avoid traps and a +1 dodge bonus to AC against attacks by traps. At 8th level, these bonuses increase to +2. These bonuses stack with trap sense bonuses from other classes.",
+      "fr": "Au niveau 4, un défenseur nain gagne un bonus de +1 aux jets de sauvegarde de Réflexes pour éviter les pièges et un bonus de parade de +1 à la CA contre les attaques de pièges. Au niveau 8, ces bonus passent à +2. Ces bonus se cumulent avec les bonus de sens des pièges d'autres classes."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_trap_sense_1_ref",
+        "sourceId": "class_feature_dwarven_defender_trap_sense_1",
+        "sourceName": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_traps"
+      },
+      {
+        "id": "dwarven_defender_trap_sense_1_ac",
+        "sourceId": "class_feature_dwarven_defender_trap_sense_1",
+        "sourceName": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "dodge",
+        "situationalContext": "vs_traps"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_defensive_stance_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Stance (3/day)", "fr": "Posture défensive (3/jour)" },
+    "description": {
+      "en": "At 5th level, the dwarven defender may use defensive stance three times per day.",
+      "fr": "Au niveau 5, le défenseur nain peut utiliser la posture défensive trois fois par jour."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_defensive_stance_uses_max_3",
+        "sourceId": "class_feature_dwarven_defender_defensive_stance_3",
+        "sourceName": { "en": "Defensive Stance (3/day)", "fr": "Posture défensive (3/jour)" },
+        "targetId": "resources.dwarven_defender_defensive_stance_uses.maxValue",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_damage_reduction_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 3/−", "fr": "Réduction des dégâts 3/−" },
+    "description": {
+      "en": "At 6th level, the dwarven defender gains damage reduction 3/−. Subtract 3 points from all damage taken. At 10th level, this rises to DR 6/−. Damage reduction cannot reduce damage below 0.",
+      "fr": "Au niveau 6, le défenseur nain acquiert la réduction des dégâts 3/−. Soustraire 3 points de tous les dégâts subis. Au niveau 10, cela passe à RD 6/−. La réduction des dégâts ne peut pas réduire les dégâts en dessous de 0."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_dr_3",
+        "sourceId": "class_feature_dwarven_defender_damage_reduction_3",
+        "sourceName": { "en": "Damage Reduction 3/−", "fr": "Réduction des dégâts 3/−" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 3,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_defensive_stance_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Stance (4/day)", "fr": "Posture défensive (4/jour)" },
+    "description": {
+      "en": "At 7th level, the dwarven defender may use defensive stance four times per day.",
+      "fr": "Au niveau 7, le défenseur nain peut utiliser la posture défensive quatre fois par jour."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_defensive_stance_uses_max_4",
+        "sourceId": "class_feature_dwarven_defender_defensive_stance_4",
+        "sourceName": { "en": "Defensive Stance (4/day)", "fr": "Posture défensive (4/jour)" },
+        "targetId": "resources.dwarven_defender_defensive_stance_uses.maxValue",
+        "value": 4,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_mobile_defense",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mobile Defense", "fr": "Défense mobile" },
+    "description": {
+      "en": "At 8th level, a dwarven defender can adjust his position while maintaining a defensive stance. While in a defensive stance, he can take one 5-foot step each round without losing the benefit of the stance.",
+      "fr": "Au niveau 8, un défenseur nain peut ajuster sa position tout en maintenant une posture défensive. En posture défensive, il peut effectuer un déplacement de 1,50 m par round sans perdre les avantages de la posture."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_trap_sense_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Trap Sense +2", "fr": "Sens des pièges +2" },
+    "description": {
+      "en": "At 8th level, the dwarven defender's trap sense bonuses increase to +2 on Reflex saves against traps and +2 dodge to AC against trap attacks (cumulative +1 added on top of the +1 from 4th level).",
+      "fr": "Au niveau 8, les bonus de sens des pièges du défenseur nain passent à +2 aux jets de sauvegarde de Réflexes contre les pièges et +2 de parade à la CA contre les attaques de pièges (un +1 cumulatif s'ajoutant au +1 du niveau 4)."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_trap_sense_2_ref",
+        "sourceId": "class_feature_dwarven_defender_trap_sense_2",
+        "sourceName": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_traps"
+      },
+      {
+        "id": "dwarven_defender_trap_sense_2_ac",
+        "sourceId": "class_feature_dwarven_defender_trap_sense_2",
+        "sourceName": { "en": "Trap Sense +1", "fr": "Sens des pièges +1" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "dodge",
+        "situationalContext": "vs_traps"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_defensive_stance_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Stance (5/day)", "fr": "Posture défensive (5/jour)" },
+    "description": {
+      "en": "At 9th level, the dwarven defender may use defensive stance five times per day.",
+      "fr": "Au niveau 9, le défenseur nain peut utiliser la posture défensive cinq fois par jour."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_defensive_stance_uses_max_5",
+        "sourceId": "class_feature_dwarven_defender_defensive_stance_5",
+        "sourceName": { "en": "Defensive Stance (5/day)", "fr": "Posture défensive (5/jour)" },
+        "targetId": "resources.dwarven_defender_defensive_stance_uses.maxValue",
+        "value": 5,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dwarven_defender_damage_reduction_6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Damage Reduction 6/−", "fr": "Réduction des dégâts 6/−" },
+    "description": {
+      "en": "At 10th level, the dwarven defender's damage reduction increases to 6/−.",
+      "fr": "Au niveau 10, la réduction des dégâts du défenseur nain passe à 6/−."
+    },
+    "tags": ["class_feature", "dwarven_defender", "extraordinary", "damage_reduction"],
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_dr_6",
+        "sourceId": "class_feature_dwarven_defender_damage_reduction_6",
+        "sourceName": { "en": "Damage Reduction 6/−", "fr": "Réduction des dégâts 6/−" },
+        "targetId": "combatStats.damage_reduction",
+        "value": 6,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_eldritch_knight_bonus_feat",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Feat", "fr": "Don supplémentaire" },
+    "description": {
+      "en": "At 1st level, an eldritch knight may choose a bonus feat from the list of feats available to fighters. This is in addition to feats normally gained from advancing levels. The character must still meet all prerequisites for the chosen feat, including fighter levels required for Weapon Specialization, Greater Weapon Focus, and Greater Weapon Specialization.",
+      "fr": "Au niveau 1, un chevalier mystique peut choisir un don supplémentaire parmi la liste des dons disponibles pour les guerriers. Cela s'ajoute aux dons normalement obtenus en progressant en niveaux. Le personnage doit toujours remplir toutes les conditions préalables du don choisi, y compris les niveaux de guerrier requis pour Spécialisation martiale, Grande focalisation martiale et Grande spécialisation martiale."
+    },
+    "tags": ["class_feature", "eldritch_knight"],
+    "choices": [
+      {
+        "choiceId": "eldritch_knight_bonus_feat_choice",
+        "label": { "en": "Choose a fighter bonus feat", "fr": "Choisissez un don supplémentaire de guerrier" },
+        "optionsQuery": "tag:fighter_bonus_feat",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_mystic_theurge_arcane_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Spellcasting Advancement", "fr": "Progression des sorts arcaniques" },
+    "description": {
+      "en": "When a new mystic theurge level is gained, the character gains new spells per day as if she had also gained a level in any one arcane spellcasting class she belonged to before adding this prestige class. She does not gain any other benefit that class would have provided. If she had more than one arcane spellcasting class, she must decide which class receives this advancement.",
+      "fr": "Lorsqu'un nouveau niveau de théurge mystique est acquis, le personnage obtient de nouveaux sorts par jour comme s'il avait aussi gagné un niveau dans n'importe quelle classe de lanceur de sorts arcanique à laquelle il appartenait avant d'ajouter cette classe de prestige. Il n'obtient pas les autres avantages de cette classe. S'il avait plusieurs classes de lanceur de sorts arcaniques, il doit choisir laquelle reçoit cette progression."
+    },
+    "tags": ["class_feature", "mystic_theurge", "spellcasting_advancement", "arcane_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_mystic_theurge_divine_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Divine Spellcasting Advancement", "fr": "Progression des sorts divins" },
+    "description": {
+      "en": "When a new mystic theurge level is gained, the character gains new spells per day as if she had also gained a level in any one divine spellcasting class she belonged to before adding this prestige class. She does not gain any other benefit that class would have provided. If she had more than one divine spellcasting class, she must decide which class receives this advancement.",
+      "fr": "Lorsqu'un nouveau niveau de théurge mystique est acquis, le personnage obtient de nouveaux sorts par jour comme s'il avait aussi gagné un niveau dans n'importe quelle classe de lanceur de sorts divin à laquelle il appartenait avant d'ajouter cette classe de prestige. Il n'obtient pas les autres avantages de cette classe. S'il avait plusieurs classes de lanceur de sorts divins, il doit choisir laquelle reçoit cette progression."
+    },
+    "tags": ["class_feature", "mystic_theurge", "spellcasting_advancement", "divine_caster"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_shadowdancer_hide_in_plain_sight",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hide in Plain Sight", "fr": "Se cacher à la vue de tous" },
+    "description": {
+      "en": "A shadowdancer can use the Hide skill even while being observed. As long as she is within 10 feet of some sort of shadow, a shadowdancer can hide herself from view in the open without anything to actually hide behind. She cannot, however, hide in her own shadow.",
+      "fr": "Un danseur des ombres peut utiliser la compétence Discrétion même lorsqu'il est observé. Tant qu'il se trouve à 3 m d'une ombre quelconque, il peut se dissimuler à la vue de tous en plein air sans avoir besoin de quelque chose derrière quoi se cacher. Il ne peut toutefois pas se cacher dans sa propre ombre."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "hide_in_plain_sight"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_darkvision",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Darkvision", "fr": "Vision dans le noir" },
+    "description": {
+      "en": "At 2nd level, a shadowdancer can see in the dark as though she were permanently under the effect of a darkvision spell (60-foot range).",
+      "fr": "Au niveau 2, un danseur des ombres peut voir dans le noir comme s'il était en permanence sous l'effet d'un sort de vision dans le noir (portée de 18 m)."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["sense_darkvision_60"]
+  },
+  {
+    "id": "class_feature_shadowdancer_shadow_illusion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadow Illusion", "fr": "Illusion d'ombre" },
+    "description": {
+      "en": "When a shadowdancer reaches 3rd level, she can create visual illusions. This functions identically to the arcane spell silent image and may be employed once per day.",
+      "fr": "Lorsqu'un danseur des ombres atteint le niveau 3, il peut créer des illusions visuelles. Cela fonctionne de façon identique au sort arcanique image silencieuse et peut être utilisé une fois par jour."
+    },
+    "tags": ["class_feature", "shadowdancer", "spell_like"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.shadowdancer_shadow_illusion_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_shadow_illusion_uses_max",
+        "sourceId": "class_feature_shadowdancer_shadow_illusion",
+        "sourceName": { "en": "Shadow Illusion", "fr": "Illusion d'ombre" },
+        "targetId": "resources.shadowdancer_shadow_illusion_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_summon_shadow",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Summon Shadow", "fr": "Invocation d'ombre" },
+    "description": {
+      "en": "At 3rd level, a shadowdancer can summon a shadow as a companion. Unlike a normal shadow, this shadow's alignment matches the shadowdancer's and cannot create spawn. The companion cannot be turned, rebuked, or commanded by third parties, and communicates intelligibly with the shadowdancer. Every third shadowdancer level adds +2 HD (and appropriate base attack and save increases) to the shadow companion. If destroyed or dismissed, the shadowdancer must make a DC 15 Fortitude save or lose 200 XP per shadowdancer level (100 XP on a successful save). The companion cannot be replaced for 30 days.",
+      "fr": "Au niveau 3, un danseur des ombres peut invoquer une ombre comme compagnon. Contrairement à une ombre normale, l'alignement de cette ombre correspond à celui du danseur des ombres et ne peut pas créer de rejeton. Le compagnon ne peut être neutralisé, repoussé ou commandé par des tiers, et communique intelligiblement avec le danseur des ombres. Tous les trois niveaux de danseur des ombres ajoutent +2 DV (et les augmentations de BBA et de jets de base correspondantes) au compagnon ombre. S'il est détruit ou congédié, le danseur des ombres doit réussir un jet de Vigueur DD 15 ou perdre 200 PX par niveau de danseur des ombres (100 PX en cas de succès). Le compagnon ne peut être remplacé avant 30 jours."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_companion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_shadow_jump_20",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadow Jump (20 ft./day)", "fr": "Saut dans l'ombre (6 m/jour)" },
+    "description": {
+      "en": "At 4th level, the shadowdancer can travel between shadows as if by dimension door. The transport must begin and end in an area with at least some shadow. She can jump up to 20 feet total per day (one jump of 20 ft. or two of 10 ft. each). Every two levels above 4th, the distance doubles (40 ft. at 6th, 80 ft. at 8th, 160 ft. at 10th). Each jump, however small, uses a 10-foot increment from the daily pool.",
+      "fr": "Au niveau 4, le danseur des ombres peut se déplacer entre les ombres comme par une porte dimensionnelle. Le transport doit commencer et se terminer dans une zone comportant au moins une ombre. Il peut sauter au total jusqu'à 6 m par jour (un unique saut de 6 m ou deux sauts de 3 m). Tous les deux niveaux au-delà du 4e, la distance double (12 m au niveau 6, 24 m au niveau 8, 48 m au niveau 10). Chaque saut, même petit, consomme 3 m du total journalier."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_jump"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.shadowdancer_shadow_jump_pool", "cost": 10 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_shadow_jump_pool_max_20",
+        "sourceId": "class_feature_shadowdancer_shadow_jump_20",
+        "sourceName": { "en": "Shadow Jump Pool", "fr": "Réservoir de saut dans l'ombre" },
+        "targetId": "resources.shadowdancer_shadow_jump_pool.maxValue",
+        "value": 20,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_defensive_roll",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Defensive Roll", "fr": "Roulade défensive" },
+    "description": {
+      "en": "Starting at 5th level, once per day when a shadowdancer would be reduced to 0 hit points or fewer by damage from a weapon or physical blow (not a spell or special ability), she can attempt to roll with the damage. She makes a Reflex saving throw (DC = damage dealt) and on success takes only half damage. She must be aware of the attack, able to react to it, and not in a situation denying her Dexterity bonus to AC.",
+      "fr": "À partir du niveau 5, une fois par jour lorsqu'un danseur des ombres serait réduit à 0 point de vie ou moins par des dégâts d'une arme ou d'un coup physique (pas un sort ou une capacité spéciale), il peut tenter de rouler avec les dégâts. Il effectue un jet de sauvegarde de Réflexes (DD = dégâts infligés) et en cas de succès ne subit que la moitié des dégâts. Il doit être conscient de l'attaque, capable d'y réagir et ne pas se trouver dans une situation le privant de son bonus de Dextérité à la CA."
+    },
+    "tags": ["class_feature", "shadowdancer", "extraordinary"],
+    "activation": {
+      "actionType": "reaction",
+      "resourceCost": { "targetId": "resources.shadowdancer_defensive_roll_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_defensive_roll_uses_max",
+        "sourceId": "class_feature_shadowdancer_defensive_roll",
+        "sourceName": { "en": "Defensive Roll", "fr": "Roulade défensive" },
+        "targetId": "resources.shadowdancer_defensive_roll_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_shadow_jump_40",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadow Jump (40 ft./day)", "fr": "Saut dans l'ombre (12 m/jour)" },
+    "description": {
+      "en": "At 6th level, the shadowdancer's shadow jump daily distance pool increases to 40 feet.",
+      "fr": "Au niveau 6, le total journalier de saut dans l'ombre du danseur des ombres passe à 12 m."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_jump"],
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_shadow_jump_pool_max_40",
+        "sourceId": "class_feature_shadowdancer_shadow_jump_40",
+        "sourceName": { "en": "Shadow Jump Pool", "fr": "Réservoir de saut dans l'ombre" },
+        "targetId": "resources.shadowdancer_shadow_jump_pool.maxValue",
+        "value": 40,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_summon_shadow_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Summon Shadow (+2 HD)", "fr": "Invocation d'ombre (+2 DV)" },
+    "description": {
+      "en": "At 6th level, the shadowdancer's shadow companion gains an additional +2 Hit Dice (and commensurate base attack bonus and base save increases).",
+      "fr": "Au niveau 6, le compagnon ombre du danseur des ombres gagne +2 Dés de Vie supplémentaires (ainsi que les augmentations de bonus d'attaque de base et de jets de base correspondantes)."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_companion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_slippery_mind",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slippery Mind", "fr": "Esprit glissant" },
+    "description": {
+      "en": "At 7th level, if a shadowdancer is affected by an enchantment and fails the saving throw, 1 round later she can attempt her saving throw one more time. She only gets this single extra chance; if that save also fails, the spell functions normally.",
+      "fr": "Au niveau 7, si un danseur des ombres est affecté par un enchantement et rate son jet de sauvegarde, 1 round plus tard il peut tenter à nouveau son jet de sauvegarde une fois. Il ne bénéficie que de cette seule chance supplémentaire ; si ce jet échoue également, le sort fonctionne normalement."
+    },
+    "tags": ["class_feature", "shadowdancer", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_shadow_jump_80",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadow Jump (80 ft./day)", "fr": "Saut dans l'ombre (24 m/jour)" },
+    "description": {
+      "en": "At 8th level, the shadowdancer's shadow jump daily distance pool increases to 80 feet.",
+      "fr": "Au niveau 8, le total journalier de saut dans l'ombre du danseur des ombres passe à 24 m."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_jump"],
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_shadow_jump_pool_max_80",
+        "sourceId": "class_feature_shadowdancer_shadow_jump_80",
+        "sourceName": { "en": "Shadow Jump Pool", "fr": "Réservoir de saut dans l'ombre" },
+        "targetId": "resources.shadowdancer_shadow_jump_pool.maxValue",
+        "value": 80,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_summon_shadow_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Summon Shadow (+4 HD total)", "fr": "Invocation d'ombre (+4 DV total)" },
+    "description": {
+      "en": "At 9th level, the shadowdancer's shadow companion gains an additional +2 Hit Dice (total +4 HD above its base from shadowdancer levels).",
+      "fr": "Au niveau 9, le compagnon ombre du danseur des ombres gagne +2 Dés de Vie supplémentaires (total +4 DV au-dessus de sa base grâce aux niveaux de danseur des ombres)."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_companion"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_shadowdancer_shadow_jump_160",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadow Jump (160 ft./day)", "fr": "Saut dans l'ombre (48 m/jour)" },
+    "description": {
+      "en": "At 10th level, the shadowdancer's shadow jump daily distance pool increases to 160 feet.",
+      "fr": "Au niveau 10, le total journalier de saut dans l'ombre du danseur des ombres passe à 48 m."
+    },
+    "tags": ["class_feature", "shadowdancer", "supernatural", "shadow_jump"],
+    "grantedModifiers": [
+      {
+        "id": "shadowdancer_shadow_jump_pool_max_160",
+        "sourceId": "class_feature_shadowdancer_shadow_jump_160",
+        "sourceName": { "en": "Shadow Jump Pool", "fr": "Réservoir de saut dans l'ombre" },
+        "targetId": "resources.shadowdancer_shadow_jump_pool.maxValue",
+        "value": 160,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_thaumaturgist_improved_ally",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Ally", "fr": "Allié amélioré" },
+    "description": {
+      "en": "When a thaumaturgist casts a planar ally spell (including the lesser and greater versions), he may make a Diplomacy check to convince the creature to aid him for reduced payment. If the check adjusts the creature's attitude to helpful, it will work for 50% of the standard fee, as long as the task is not against its nature. This class feature only works when the planar ally shares at least one alignment aspect with the thaumaturgist. The thaumaturgist can have only one such reduced-fee ally at a time.",
+      "fr": "Lorsqu'un thaumaturge lance un sort d'allié planaire (y compris les versions mineure et majeure), il peut effectuer un test de Diplomatie pour convaincre la créature de l'aider contre un paiement réduit. Si le test améliore l'attitude de la créature jusqu'à serviable, elle travaille pour 50 % des frais normaux, tant que la tâche n'est pas contraire à sa nature. Cette capacité de classe ne fonctionne que si l'allié planaire partage au moins un aspect d'alignement avec le thaumaturge. Le thaumaturge ne peut avoir qu'un seul allié à tarif réduit à la fois."
+    },
+    "tags": ["class_feature", "thaumaturgist", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_thaumaturgist_augment_summoning",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Augment Summoning", "fr": "Invocation renforcée" },
+    "description": {
+      "en": "At 2nd level, a thaumaturgist gains the Augment Summoning feat. Each creature he summons gains a +4 enhancement bonus to Strength and Constitution for the duration of the summoning spell.",
+      "fr": "Au niveau 2, un thaumaturge obtient le don Invocation renforcée. Chaque créature qu'il invoque bénéficie d'un bonus d'altération de +4 à la Force et à la Constitution pour la durée du sort d'invocation."
+    },
+    "tags": ["class_feature", "thaumaturgist"],
+    "grantedModifiers": [],
+    "grantedFeatures": ["feat_augment_summoning"]
+  },
+  {
+    "id": "class_feature_thaumaturgist_extended_summoning",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Extended Summoning", "fr": "Invocation prolongée" },
+    "description": {
+      "en": "At 3rd level and higher, all spells from the summoning subschool that the thaumaturgist casts have their durations doubled, as if the Extend Spell feat had been applied to them. The spell levels of the summoning spells do not change. This ability stacks with the Extend Spell feat (which does change the spell's level).",
+      "fr": "À partir du niveau 3, tous les sorts de l'école de convocation (sous-école d'invocation) que le thaumaturge lance voient leur durée doublée, comme si le don Prolongement de sort leur avait été appliqué. Les niveaux des sorts d'invocation ne changent pas. Cette capacité se cumule avec le don Prolongement de sort (qui modifie lui le niveau du sort)."
+    },
+    "tags": ["class_feature", "thaumaturgist", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_thaumaturgist_contingent_conjuration",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Contingent Conjuration", "fr": "Conjuration contingente" },
+    "description": {
+      "en": "A 4th-level thaumaturgist can prepare a summoning or calling spell ahead of time to be triggered by a specific event, functioning like a contingency spell. The conjuration spell is cast instantly when the trigger conditions are met. The conditions must be clear (though may be general); complex conditions may cause the conjuration to fail. A thaumaturgist can have only one contingent conjuration active at a time.",
+      "fr": "Un thaumaturge de niveau 4 peut préparer un sort d'invocation ou d'appel à l'avance pour qu'il se déclenche lors d'un événement spécifique, fonctionnant comme un sort de contingence. Le sort de conjuration est lancé instantanément lorsque les conditions de déclenchement sont remplies. Les conditions doivent être claires (bien qu'elles puissent être générales) ; des conditions complexes peuvent provoquer l'échec de la conjuration. Un thaumaturge ne peut avoir qu'une seule conjuration contingente active à la fois."
+    },
+    "tags": ["class_feature", "thaumaturgist", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_thaumaturgist_planar_cohort",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Planar Cohort", "fr": "Acolyte planaire" },
+    "description": {
+      "en": "A 5th-level thaumaturgist can use any of the planar ally spells to call a creature to act as his cohort. The creature serves loyally so long as the thaumaturgist advances a cause important to it. Calling a planar cohort costs the normal XP plus an offering of 1,000 gp × the creature's HD; the improved ally feature cannot reduce this cost. The cohort cannot have more Hit Dice than the thaumaturgist and must have an ECL no higher than the thaumaturgist's character level −2. Only one planar cohort at a time; replaces an existing Leadership cohort if any.",
+      "fr": "Un thaumaturge de niveau 5 peut utiliser l'un des sorts d'allié planaire pour appeler une créature qui agit comme son acolyte. La créature sert loyalement tant que le thaumaturge défend une cause qui lui est importante. Appeler un acolyte planaire coûte les PX normaux plus une offrande de 1 000 po × les DV de la créature ; la capacité d'allié amélioré ne peut pas réduire ce coût. L'acolyte ne peut pas avoir plus de Dés de Vie que le thaumaturge et doit avoir un NC ne dépassant pas le niveau de personnage du thaumaturge −2. Un seul acolyte planaire à la fois ; remplace un acolyte de Charisme existant le cas échéant."
+    },
+    "tags": ["class_feature", "thaumaturgist", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_thaumaturgist_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spellcasting Advancement", "fr": "Progression des sorts" },
+    "description": {
+      "en": "When a new thaumaturgist level is gained, the character gains new spells per day as if she had also gained a level in whatever spellcasting class she belonged to before adding the prestige class. She does not gain any other class benefit. If she had more than one spellcasting class, she must decide which class receives each thaumaturgist level for determining spells per day.",
+      "fr": "Lorsqu'un nouveau niveau de thaumaturge est acquis, le personnage obtient de nouveaux sorts par jour comme s'il avait aussi gagné un niveau dans la classe de lanceur de sorts à laquelle il appartenait avant d'ajouter la classe de prestige. Il n'obtient pas les autres avantages de classe. S'il avait plusieurs classes de lanceur de sorts, il doit décider laquelle reçoit chaque niveau de thaumaturge pour déterminer les sorts par jour."
+    },
+    "tags": ["class_feature", "thaumaturgist", "spellcasting_advancement"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Evasion", "fr": "Esquive totale" },
+    "description": {
+      "en": "If the character makes a successful Reflex saving throw against an attack that normally deals half damage on a successful save, she instead takes no damage. Evasion can be used only if the character is wearing light armor or no armor. A helpless character does not gain the benefit of evasion.",
+      "fr": "Si le personnage réussit son jet de sauvegarde de Réflexes contre une attaque qui inflige normalement la moitié des dégâts en cas de succès, il ne subit aucun dégât. L'esquive totale ne peut être utilisée que si le personnage porte une armure légère ou aucune armure. Un personnage sans défense ne bénéficie pas de l'esquive totale."
+    },
+    "tags": ["class_feature", "extraordinary", "evasion"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_improved_evasion",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Improved Evasion", "fr": "Esquive totale améliorée" },
+    "description": {
+      "en": "Works like evasion, but even if the character fails her Reflex saving throw against an attack that deals half damage on a successful save, she takes only half damage. If she succeeds, she takes no damage at all.",
+      "fr": "Fonctionne comme l'esquive totale, mais même si le personnage rate son jet de sauvegarde de Réflexes contre une attaque qui inflige la moitié des dégâts en cas de succès, il ne subit que la moitié des dégâts. En cas de succès, il ne subit aucun dégât."
+    },
+    "tags": ["class_feature", "extraordinary", "improved_evasion"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_slippery_mind",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Slippery Mind", "fr": "Esprit glissant" },
+    "description": {
+      "en": "If a character with this ability is affected by an enchantment and fails her initial saving throw, 1 round later she can attempt her saving throw one more time. She only gets this one extra chance. If that save also fails, the spell's effects occur normally.",
+      "fr": "Si un personnage possédant cette capacité est affecté par un enchantement et rate son jet de sauvegarde initial, 1 round plus tard il peut tenter une nouvelle fois son jet de sauvegarde. Il ne bénéficie que de cette seule chance supplémentaire. Si ce jet échoue aussi, les effets du sort se produisent normalement."
+    },
+    "tags": ["class_feature", "extraordinary", "slippery_mind"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_hierophant_special_ability_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Special Ability (1st choice)", "fr": "Capacité spéciale (1er choix)" },
+    "description": {
+      "en": "At 1st level the hierophant selects one special ability from the pool of divine powers: Blast Infidel, Divine Reach, Faith Healing, Gift of the Divine (cleric only), Mastery of Energy (cleric only), Metamagic Feat, Power of Nature (druid only), Spell Power, or Spell-Like Ability.",
+      "fr": "Au niveau 1, le hiérophante choisit une capacité spéciale dans le réservoir de pouvoirs divins : Infidèle foudroyé, Portée divine, Soin de foi, Don du divin (prêtre uniquement), Maîtrise de l'énergie (prêtre uniquement), Don de métamagie, Pouvoir de la nature (druide uniquement), Puissance des sorts, ou Capacité de type sort."
+    },
+    "tags": ["class_feature", "hierophant"],
+    "choices": [{ "choiceId": "hierophant_ability_choice_1", "label": { "en": "Choose a special ability", "fr": "Choisissez une capacité spéciale" }, "optionsQuery": "tag:hierophant_special_ability_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_special_ability_2",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Special Ability (2nd choice)", "fr": "Capacité spéciale (2e choix)" },
+    "description": { "en": "At 2nd level the hierophant selects a second special ability (may not duplicate a previous choice).", "fr": "Au niveau 2, le hiérophante choisit une deuxième capacité spéciale (ne peut pas dupliquer un choix précédent)." },
+    "tags": ["class_feature", "hierophant"],
+    "choices": [{ "choiceId": "hierophant_ability_choice_2", "label": { "en": "Choose a special ability", "fr": "Choisissez une capacité spéciale" }, "optionsQuery": "tag:hierophant_special_ability_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_special_ability_3",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Special Ability (3rd choice)", "fr": "Capacité spéciale (3e choix)" },
+    "description": { "en": "At 3rd level the hierophant selects a third special ability.", "fr": "Au niveau 3, le hiérophante choisit une troisième capacité spéciale." },
+    "tags": ["class_feature", "hierophant"],
+    "choices": [{ "choiceId": "hierophant_ability_choice_3", "label": { "en": "Choose a special ability", "fr": "Choisissez une capacité spéciale" }, "optionsQuery": "tag:hierophant_special_ability_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_special_ability_4",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Special Ability (4th choice)", "fr": "Capacité spéciale (4e choix)" },
+    "description": { "en": "At 4th level the hierophant selects a fourth special ability.", "fr": "Au niveau 4, le hiérophante choisit une quatrième capacité spéciale." },
+    "tags": ["class_feature", "hierophant"],
+    "choices": [{ "choiceId": "hierophant_ability_choice_4", "label": { "en": "Choose a special ability", "fr": "Choisissez une capacité spéciale" }, "optionsQuery": "tag:hierophant_special_ability_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_special_ability_5",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Special Ability (5th choice)", "fr": "Capacité spéciale (5e choix)" },
+    "description": { "en": "At 5th level the hierophant selects a fifth and final special ability.", "fr": "Au niveau 5, le hiérophante choisit une cinquième et dernière capacité spéciale." },
+    "tags": ["class_feature", "hierophant"],
+    "choices": [{ "choiceId": "hierophant_ability_choice_5", "label": { "en": "Choose a special ability", "fr": "Choisissez une capacité spéciale" }, "optionsQuery": "tag:hierophant_special_ability_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_blast_infidel",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Blast Infidel", "fr": "Infidèle foudroyé" },
+    "description": {
+      "en": "The hierophant can use negative energy spells to maximum effect on creatures with an alignment opposed to the hierophant's. Any spell involving negative energy cast on such a creature works as if under a Maximize Spell effect (no higher slot required). Undead affected heal the maximized amount.",
+      "fr": "Le hiérophante peut utiliser des sorts d'énergie négative à leur puissance maximale sur des créatures d'alignement opposé au sien. Tout sort impliquant l'énergie négative lancé sur une telle créature fonctionne comme sous l'effet de Maximisation de sort (sans emplacement supplémenta­ire). Les morts-vivants affectés se soignent du montant maximi­sé."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_divine_reach",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Divine Reach", "fr": "Portée divine" },
+    "description": {
+      "en": "The hierophant can use touch spells on targets up to 30 feet away (ranged touch attack required). Can be selected a second time, increasing range to 60 feet. Costs one 7th-level spell slot (per the Spell Power cost structure, this is a permanently sacrificed slot — see source for implementation details).",
+      "fr": "Le hiérophante peut utiliser des sorts de contact sur des cibles distantes jusqu'à 9 m (attaque de contact à distance requise). Peut être choisie une seconde fois, portant la portée à 18 m. Coûte un emplacement de sort de niveau 7 définitivement sacrifié."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_faith_healing",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Faith Healing", "fr": "Soin de foi" },
+    "description": {
+      "en": "The hierophant can use healing spells to maximum effect on creatures of the same alignment as the hierophant (including the hierophant himself). Any spell with the healing descriptor cast on a same-alignment creature works as if under a Maximize Spell effect (no higher slot required).",
+      "fr": "Le hiérophante peut utiliser des sorts de soin à leur puissance maximale sur des créatures du même alignement que le sien (y compris le hiérophante lui-même). Tout sort avec le descripteur soins lancé sur une créature du même alignement fonctionne comme sous l'effet de Maximisation de sort (sans emplacement supplémentaire)."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_gift_of_divine",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Gift of the Divine", "fr": "Don du divin" },
+    "description": {
+      "en": "Available only to hierophants with cleric levels. The hierophant can transfer one or more uses of turn/rebuke undead to a willing creature for 24 hours to one week. The recipient turns undead as a cleric of the hierophant's cleric level but uses their own Charisma modifier. The hierophant's daily turning attempts are reduced by the number transferred.",
+      "fr": "Disponible uniquement aux hiérophantes ayant des niveaux de prêtre. Le hiérophante peut transférer un ou plusieurs usages de son aptitude de neutralisation/repoussement des morts-vivants à une créature consentante pour 24 heures à une semaine. Le bénéficiaire neutralise les morts-vivants comme un prêtre du niveau de prêtre du hiérophante, mais en utilisant son propre modificateur de Charisme."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_mastery_of_energy",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Mastery of Energy", "fr": "Maîtrise de l'énergie" },
+    "description": {
+      "en": "Available only to hierophants with cleric levels. Adds +4 to the hierophant's turning checks and turning damage rolls. This bonus only affects undead even if the hierophant can turn other creatures.",
+      "fr": "Disponible uniquement aux hiérophantes ayant des niveaux de prêtre. Ajoute +4 aux tests de neutralisation et aux jets de dégâts de neutralisation du hiérophante. Ce bonus n'affecte que les morts-vivants, même si le hiérophante peut neutraliser d'autres créatures."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [
+      {
+        "id": "hierophant_mastery_energy_turn_check",
+        "sourceId": "class_feature_hierophant_mastery_of_energy",
+        "sourceName": { "en": "Mastery of Energy", "fr": "Maîtrise de l'énergie" },
+        "targetId": "combatStats.turn_undead_check",
+        "value": 4, "type": "untyped"
+      },
+      {
+        "id": "hierophant_mastery_energy_turn_damage",
+        "sourceId": "class_feature_hierophant_mastery_of_energy",
+        "sourceName": { "en": "Mastery of Energy", "fr": "Maîtrise de l'énergie" },
+        "targetId": "combatStats.turn_undead_damage",
+        "value": 4, "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_metamagic_feat",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Metamagic Feat", "fr": "Don de métamagie" },
+    "description": {
+      "en": "A hierophant can choose a metamagic feat in place of one of the special abilities from the pool.",
+      "fr": "Un hiérophante peut choisir un don de métamagie à la place d'une des capacités spéciales du réservoir."
+    },
+    "tags": ["class_feature", "hierophant", "hierophant_special_ability_option"],
+    "choices": [{ "choiceId": "hierophant_metamagic_feat_choice", "label": { "en": "Choose a metamagic feat", "fr": "Choisissez un don de métamagie" }, "optionsQuery": "tag:metamagic_feat", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_power_of_nature",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Power of Nature", "fr": "Pouvoir de la nature" },
+    "description": {
+      "en": "Available only to hierophants with druid levels. The hierophant can temporarily transfer one or more druid class features (except spellcasting and animal companion) to a willing creature for 24 hours to one week. Wild shape uses may be partially transferred. The hierophant cannot use transferred powers during the transfer period.",
+      "fr": "Disponible uniquement aux hiérophantes ayant des niveaux de druide. Le hiérophante peut transférer temporairement une ou plusieurs capacités de classe de druide (sauf l'incantation et le compagnon animal) à une créature consentante pour 24 heures à une semaine. Les utilisations de métamorphose peuvent être partiellement transférées. Le hiérophante ne peut pas utiliser les pouvoirs transférés pendant la période de transfert."
+    },
+    "tags": ["class_feature", "hierophant", "supernatural", "hierophant_special_ability_option"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_spell_power",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Spell Power", "fr": "Puissance des sorts" },
+    "description": {
+      "en": "Increases the hierophant's effective caster level by +1 for determining level-dependent spell variables and caster level checks. Can be selected multiple times; effects stack.",
+      "fr": "Augmente le niveau de lanceur de sorts effectif du hiérophante de +1 pour déterminer les variables de sorts dépendantes du niveau et les tests de niveau de lanceur de sorts. Peut être choisie plusieurs fois ; les effets se cumulent."
+    },
+    "tags": ["class_feature", "hierophant", "extraordinary", "hierophant_special_ability_option"],
+    "grantedModifiers": [
+      {
+        "id": "hierophant_spell_power_caster_level",
+        "sourceId": "class_feature_hierophant_spell_power",
+        "sourceName": { "en": "Spell Power", "fr": "Puissance des sorts" },
+        "targetId": "attributes.caster_level",
+        "value": 1, "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hierophant_spell_like_ability",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Spell-Like Ability", "fr": "Capacité de type sort" },
+    "description": {
+      "en": "The hierophant uses one divine spell slot to permanently prepare one of his divine spells as a spell-like ability usable twice per day (no components, XP costs still apply). Higher slots allow more uses per day (+4 uses for 3 higher levels, +6 uses for 6 higher levels). Can be selected multiple times for the same or different spells.",
+      "fr": "Le hiérophante utilise un emplacement de sort divin pour préparer définitivement l'un de ses sorts divins comme une capacité de type sort utilisable deux fois par jour (sans composantes, les coûts en PX s'appliquent toujours). Des emplacements plus élevés permettent davantage d'utilisations par jour (+4 utilisations pour 3 niveaux de plus, +6 utilisations pour 6 niveaux de plus). Peut être choisie plusieurs fois pour des sorts identiques ou différents."
+    },
+    "tags": ["class_feature", "hierophant", "spell_like", "hierophant_special_ability_option"],
+    "choices": [{ "choiceId": "hierophant_spell_like_ability_choice", "label": { "en": "Choose a divine spell to convert", "fr": "Choisissez un sort divin à convertir" }, "optionsQuery": "tag:spell+tag:divine", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_horizon_walker_terrain_mastery_1",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery (1st)", "fr": "Maîtrise du terrain (1er)" },
+    "description": { "en": "At 1st level, the horizon walker selects one terrain type to master, gaining skill bonuses and +1 insight on attack and damage rolls against creatures native to that terrain.", "fr": "Au niveau 1, le marcheur des horizons choisit un type de terrain à maîtriser, obtenant des bonus de compétence et +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures natives de ce terrain." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_terrain_choice_1", "label": { "en": "Choose a terrain", "fr": "Choisissez un terrain" }, "optionsQuery": "tag:horizon_walker_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_terrain_mastery_2",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery (2nd)", "fr": "Maîtrise du terrain (2e)" },
+    "description": { "en": "At 2nd level, the horizon walker selects a second terrain type.", "fr": "Au niveau 2, le marcheur des horizons choisit un deuxième type de terrain." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_terrain_choice_2", "label": { "en": "Choose a terrain", "fr": "Choisissez un terrain" }, "optionsQuery": "tag:horizon_walker_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_terrain_mastery_3",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery (3rd)", "fr": "Maîtrise du terrain (3e)" },
+    "description": { "en": "At 3rd level, the horizon walker selects a third terrain type.", "fr": "Au niveau 3, le marcheur des horizons choisit un troisième type de terrain." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_terrain_choice_3", "label": { "en": "Choose a terrain", "fr": "Choisissez un terrain" }, "optionsQuery": "tag:horizon_walker_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_terrain_mastery_4",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery (4th)", "fr": "Maîtrise du terrain (4e)" },
+    "description": { "en": "At 4th level, the horizon walker selects a fourth terrain type.", "fr": "Au niveau 4, le marcheur des horizons choisit un quatrième type de terrain." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_terrain_choice_4", "label": { "en": "Choose a terrain", "fr": "Choisissez un terrain" }, "optionsQuery": "tag:horizon_walker_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_terrain_mastery_5",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery (5th)", "fr": "Maîtrise du terrain (5e)" },
+    "description": { "en": "At 5th level, the horizon walker selects a fifth terrain type.", "fr": "Au niveau 5, le marcheur des horizons choisit un cinquième type de terrain." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_terrain_choice_5", "label": { "en": "Choose a terrain", "fr": "Choisissez un terrain" }, "optionsQuery": "tag:horizon_walker_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_planar_terrain_mastery_1",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery (1st)", "fr": "Maîtrise du terrain planaire (1er)" },
+    "description": { "en": "At 6th level, the horizon walker may select from either normal or planar terrain types.", "fr": "Au niveau 6, le marcheur des horizons peut choisir parmi les types de terrains normaux ou planaires." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_planar_terrain_choice_1", "label": { "en": "Choose a terrain or planar terrain", "fr": "Choisissez un terrain ou un terrain planaire" }, "optionsQuery": "tag:horizon_walker_planar_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_planar_terrain_mastery_2",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery (2nd)", "fr": "Maîtrise du terrain planaire (2e)" },
+    "description": { "en": "At 7th level, the horizon walker selects another terrain or planar terrain.", "fr": "Au niveau 7, le marcheur des horizons sélectionne un autre terrain ou terrain planaire." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_planar_terrain_choice_2", "label": { "en": "Choose a terrain or planar terrain", "fr": "Choisissez un terrain ou un terrain planaire" }, "optionsQuery": "tag:horizon_walker_planar_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_planar_terrain_mastery_3",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery (3rd)", "fr": "Maîtrise du terrain planaire (3e)" },
+    "description": { "en": "At 8th level, the horizon walker selects another terrain or planar terrain.", "fr": "Au niveau 8, le marcheur des horizons sélectionne un autre terrain ou terrain planaire." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_planar_terrain_choice_3", "label": { "en": "Choose a terrain or planar terrain", "fr": "Choisissez un terrain ou un terrain planaire" }, "optionsQuery": "tag:horizon_walker_planar_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_planar_terrain_mastery_4",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery (4th)", "fr": "Maîtrise du terrain planaire (4e)" },
+    "description": { "en": "At 9th level, the horizon walker selects another terrain or planar terrain.", "fr": "Au niveau 9, le marcheur des horizons sélectionne un autre terrain ou terrain planaire." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_planar_terrain_choice_4", "label": { "en": "Choose a terrain or planar terrain", "fr": "Choisissez un terrain ou un terrain planaire" }, "optionsQuery": "tag:horizon_walker_planar_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_horizon_walker_planar_terrain_mastery_5",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery (5th)", "fr": "Maîtrise du terrain planaire (5e)" },
+    "description": { "en": "At 10th level, the horizon walker selects a final terrain or planar terrain.", "fr": "Au niveau 10, le marcheur des horizons sélectionne un dernier terrain ou terrain planaire." },
+    "tags": ["class_feature", "horizon_walker"],
+    "choices": [{ "choiceId": "hw_planar_terrain_choice_5", "label": { "en": "Choose a terrain or planar terrain", "fr": "Choisissez un terrain ou un terrain planaire" }, "optionsQuery": "tag:horizon_walker_planar_terrain_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_aquatic",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Aquatic", "fr": "Maîtrise du terrain : Aquatique" },
+    "description": { "en": "+4 competence bonus on Swim checks (or +10 ft. to swim speed if you have one). +1 insight bonus on attack and damage rolls against aquatic creatures.", "fr": "+4 de bonus de compétence aux tests de Natation (ou +3 m à la vitesse de nage si vous en avez une). +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures aquatiques." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_aquatic_swim", "sourceId": "class_feature_hw_terrain_aquatic", "sourceName": { "en": "Terrain Mastery: Aquatic", "fr": "Maîtrise : Aquatique" }, "targetId": "skills.skill_swim", "value": 4, "type": "competence" },
+      { "id": "hw_aquatic_atk",  "sourceId": "class_feature_hw_terrain_aquatic", "sourceName": { "en": "Terrain Mastery: Aquatic", "fr": "Maîtrise : Aquatique" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_aquatic_creature" },
+      { "id": "hw_aquatic_dmg",  "sourceId": "class_feature_hw_terrain_aquatic", "sourceName": { "en": "Terrain Mastery: Aquatic", "fr": "Maîtrise : Aquatique" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_aquatic_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_desert",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Desert", "fr": "Maîtrise du terrain : Désert" },
+    "description": { "en": "Immune to fatigue; effects that would cause exhaustion make you fatigued instead. +1 insight bonus on attack and damage rolls against desert creatures.", "fr": "Immunité à l'état fatigué ; les effets qui provoqueraient l'épuisement vous rendent fatigué à la place. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des déserts." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_desert_atk", "sourceId": "class_feature_hw_terrain_desert", "sourceName": { "en": "Terrain Mastery: Desert", "fr": "Maîtrise : Désert" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_desert_creature" },
+      { "id": "hw_desert_dmg", "sourceId": "class_feature_hw_terrain_desert", "sourceName": { "en": "Terrain Mastery: Desert", "fr": "Maîtrise : Désert" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_desert_creature" }
+    ],
+    "grantedFeatures": ["immunity_fatigue"]
+  },
+  {
+    "id": "class_feature_hw_terrain_forest",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Forest", "fr": "Maîtrise du terrain : Forêt" },
+    "description": { "en": "+4 competence bonus on Hide checks. +1 insight bonus on attack and damage rolls against forest creatures.", "fr": "+4 de bonus de compétence aux tests de Discrétion. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des forêts." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_forest_hide", "sourceId": "class_feature_hw_terrain_forest", "sourceName": { "en": "Terrain Mastery: Forest", "fr": "Maîtrise : Forêt" }, "targetId": "skills.skill_hide", "value": 4, "type": "competence" },
+      { "id": "hw_forest_atk",  "sourceId": "class_feature_hw_terrain_forest", "sourceName": { "en": "Terrain Mastery: Forest", "fr": "Maîtrise : Forêt" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_forest_creature" },
+      { "id": "hw_forest_dmg",  "sourceId": "class_feature_hw_terrain_forest", "sourceName": { "en": "Terrain Mastery: Forest", "fr": "Maîtrise : Forêt" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_forest_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_hills",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Hills", "fr": "Maîtrise du terrain : Collines" },
+    "description": { "en": "+4 competence bonus on Listen checks. +1 insight bonus on attack and damage rolls against hills creatures.", "fr": "+4 de bonus de compétence aux tests d'Écoute. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des collines." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_hills_listen", "sourceId": "class_feature_hw_terrain_hills", "sourceName": { "en": "Terrain Mastery: Hills", "fr": "Maîtrise : Collines" }, "targetId": "skills.skill_listen", "value": 4, "type": "competence" },
+      { "id": "hw_hills_atk",    "sourceId": "class_feature_hw_terrain_hills", "sourceName": { "en": "Terrain Mastery: Hills", "fr": "Maîtrise : Collines" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_hills_creature" },
+      { "id": "hw_hills_dmg",    "sourceId": "class_feature_hw_terrain_hills", "sourceName": { "en": "Terrain Mastery: Hills", "fr": "Maîtrise : Collines" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_hills_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_marsh",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Marsh", "fr": "Maîtrise du terrain : Marais" },
+    "description": { "en": "+4 competence bonus on Move Silently checks. +1 insight bonus on attack and damage rolls against marsh creatures.", "fr": "+4 de bonus de compétence aux tests de Déplacement silencieux. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des marais." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_marsh_ms",  "sourceId": "class_feature_hw_terrain_marsh", "sourceName": { "en": "Terrain Mastery: Marsh", "fr": "Maîtrise : Marais" }, "targetId": "skills.skill_move_silently", "value": 4, "type": "competence" },
+      { "id": "hw_marsh_atk", "sourceId": "class_feature_hw_terrain_marsh", "sourceName": { "en": "Terrain Mastery: Marsh", "fr": "Maîtrise : Marais" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_marsh_creature" },
+      { "id": "hw_marsh_dmg", "sourceId": "class_feature_hw_terrain_marsh", "sourceName": { "en": "Terrain Mastery: Marsh", "fr": "Maîtrise : Marais" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_marsh_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_mountains",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Mountains", "fr": "Maîtrise du terrain : Montagnes" },
+    "description": { "en": "+4 competence bonus on Climb checks (or +10 ft. to climb speed if you have one). +1 insight bonus on attack and damage rolls against mountain creatures.", "fr": "+4 de bonus de compétence aux tests d'Escalade (ou +3 m à la vitesse d'escalade si vous en avez une). +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des montagnes." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_mtn_climb", "sourceId": "class_feature_hw_terrain_mountains", "sourceName": { "en": "Terrain Mastery: Mountains", "fr": "Maîtrise : Montagnes" }, "targetId": "skills.skill_climb", "value": 4, "type": "competence" },
+      { "id": "hw_mtn_atk",   "sourceId": "class_feature_hw_terrain_mountains", "sourceName": { "en": "Terrain Mastery: Mountains", "fr": "Maîtrise : Montagnes" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_mountain_creature" },
+      { "id": "hw_mtn_dmg",   "sourceId": "class_feature_hw_terrain_mountains", "sourceName": { "en": "Terrain Mastery: Mountains", "fr": "Maîtrise : Montagnes" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_mountain_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_plains",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Plains", "fr": "Maîtrise du terrain : Plaines" },
+    "description": { "en": "+4 competence bonus on Spot checks. +1 insight bonus on attack and damage rolls against plains creatures.", "fr": "+4 de bonus de compétence aux tests de Perception. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des plaines." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_plains_spot", "sourceId": "class_feature_hw_terrain_plains", "sourceName": { "en": "Terrain Mastery: Plains", "fr": "Maîtrise : Plaines" }, "targetId": "skills.skill_spot", "value": 4, "type": "competence" },
+      { "id": "hw_plains_atk",  "sourceId": "class_feature_hw_terrain_plains", "sourceName": { "en": "Terrain Mastery: Plains", "fr": "Maîtrise : Plaines" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_plains_creature" },
+      { "id": "hw_plains_dmg",  "sourceId": "class_feature_hw_terrain_plains", "sourceName": { "en": "Terrain Mastery: Plains", "fr": "Maîtrise : Plaines" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_plains_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_terrain_underground",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Terrain Mastery: Underground", "fr": "Maîtrise du terrain : Souterrain" },
+    "description": { "en": "Gain 60-ft. darkvision, or 120-ft. darkvision if you already had it from another source. +1 insight bonus on attack and damage rolls against underground creatures.", "fr": "Acquiert une vision dans le noir de 18 m, ou 36 m si vous en aviez déjà une d'une autre source. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures souterraines." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_terrain_option", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_underground_atk", "sourceId": "class_feature_hw_terrain_underground", "sourceName": { "en": "Terrain Mastery: Underground", "fr": "Maîtrise : Souterrain" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_underground_creature" },
+      { "id": "hw_underground_dmg", "sourceId": "class_feature_hw_terrain_underground", "sourceName": { "en": "Terrain Mastery: Underground", "fr": "Maîtrise : Souterrain" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_underground_creature" }
+    ],
+    "grantedFeatures": ["sense_darkvision_60"]
+  },
+  {
+    "id": "class_feature_hw_planar_fiery",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Fiery", "fr": "Maîtrise planaire : Igné" },
+    "description": { "en": "Resistance to fire 20. +1 insight bonus on attack and damage rolls against outsiders and elementals with the fire subtype.", "fr": "Résistance au feu 20. +1 en perspicacité aux jets d'attaque et de dégâts contre les extérieurs et les élémentaires de sous-type feu." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_fiery_fire_resist", "sourceId": "class_feature_hw_planar_fiery", "sourceName": { "en": "Planar: Fiery", "fr": "Planaire : Igné" }, "targetId": "combatStats.fire_resistance", "value": 20, "type": "base" },
+      { "id": "hw_fiery_atk",         "sourceId": "class_feature_hw_planar_fiery", "sourceName": { "en": "Planar: Fiery", "fr": "Planaire : Igné" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_fire_creature" },
+      { "id": "hw_fiery_dmg",         "sourceId": "class_feature_hw_planar_fiery", "sourceName": { "en": "Planar: Fiery", "fr": "Planaire : Igné" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_fire_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_planar_cold",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Cold", "fr": "Maîtrise planaire : Froid" },
+    "description": { "en": "Resistance to cold 20. +1 insight bonus on attack and damage rolls against outsiders and elementals with the cold subtype.", "fr": "Résistance au froid 20. +1 en perspicacité aux jets d'attaque et de dégâts contre les extérieurs et les élémentaires de sous-type froid." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_cold_resist", "sourceId": "class_feature_hw_planar_cold", "sourceName": { "en": "Planar: Cold", "fr": "Planaire : Froid" }, "targetId": "combatStats.cold_resistance", "value": 20, "type": "base" },
+      { "id": "hw_cold_atk",    "sourceId": "class_feature_hw_planar_cold", "sourceName": { "en": "Planar: Cold", "fr": "Planaire : Froid" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_cold_creature" },
+      { "id": "hw_cold_dmg",    "sourceId": "class_feature_hw_planar_cold", "sourceName": { "en": "Planar: Cold", "fr": "Planaire : Froid" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_cold_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_planar_weightless",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Weightless", "fr": "Maîtrise planaire : Apesanteur" },
+    "description": { "en": "+30-ft. bonus to fly speed on planes with no gravity or subjective gravity. +1 insight bonus on attack and damage rolls against creatures native to the Astral Plane, Elemental Plane of Air, and Ethereal Plane.", "fr": "+9 m à la vitesse de vol sur les plans sans gravité ou à gravité subjective. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures natives du Plan Astral, du Plan Élémentaire de l'Air et du Plan Éthéré." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_weightless_atk", "sourceId": "class_feature_hw_planar_weightless", "sourceName": { "en": "Planar: Weightless", "fr": "Planaire : Apesanteur" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_air_planar_creature" },
+      { "id": "hw_weightless_dmg", "sourceId": "class_feature_hw_planar_weightless", "sourceName": { "en": "Planar: Weightless", "fr": "Planaire : Apesanteur" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_air_planar_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_planar_shifting",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Shifting", "fr": "Maîtrise planaire : Changeant" },
+    "description": { "en": "Gain the spell-like ability to use dimension door (at character level) once every 1d4 rounds. +1 insight bonus on attack and damage rolls against outsiders and elementals native to a shifting plane.", "fr": "Acquiert la capacité de type sort de porte dimensionnelle (au niveau de personnage) une fois tous les 1d4 rounds. +1 en perspicacité aux jets d'attaque et de dégâts contre les extérieurs et élémentaires natifs d'un plan changeant." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option", "spell_like"],
+    "grantedModifiers": [
+      { "id": "hw_shifting_atk", "sourceId": "class_feature_hw_planar_shifting", "sourceName": { "en": "Planar: Shifting", "fr": "Planaire : Changeant" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_shifting_plane_creature" },
+      { "id": "hw_shifting_dmg", "sourceId": "class_feature_hw_planar_shifting", "sourceName": { "en": "Planar: Shifting", "fr": "Planaire : Changeant" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_shifting_plane_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_planar_aligned",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Aligned", "fr": "Maîtrise planaire : Aligné" },
+    "description": { "en": "Instinctively mimic the dominant alignment of the plane: no penalties for opposed alignment, and alignment-affecting spells do not affect you. +1 insight bonus on attack and damage rolls against creatures from aligned planes.", "fr": "Mime instinctivement l'alignement dominant du plan : aucune pénalité pour un alignement opposé, et les sorts affectant l'alignement ne vous affectent pas. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures des plans alignés." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_aligned_atk", "sourceId": "class_feature_hw_planar_aligned", "sourceName": { "en": "Planar: Aligned", "fr": "Planaire : Aligné" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_aligned_plane_creature" },
+      { "id": "hw_aligned_dmg", "sourceId": "class_feature_hw_planar_aligned", "sourceName": { "en": "Planar: Aligned", "fr": "Planaire : Aligné" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_aligned_plane_creature" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_hw_planar_cavernous",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Planar Terrain Mastery: Cavernous", "fr": "Maîtrise planaire : Caverneux" },
+    "description": { "en": "Gain tremorsense with a 30-foot range. +1 insight bonus on attack and damage rolls against creatures native to cavernous planes.", "fr": "Acquiert la perception des vibrations à une portée de 9 m. +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures natives des plans caverneux." },
+    "tags": ["class_feature", "horizon_walker", "horizon_walker_planar_terrain_option"],
+    "grantedModifiers": [
+      { "id": "hw_cavernous_atk", "sourceId": "class_feature_hw_planar_cavernous", "sourceName": { "en": "Planar: Cavernous", "fr": "Planaire : Caverneux" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "insight", "situationalContext": "vs_cavernous_plane_creature" },
+      { "id": "hw_cavernous_dmg", "sourceId": "class_feature_hw_planar_cavernous", "sourceName": { "en": "Planar: Cavernous", "fr": "Planaire : Caverneux" }, "targetId": "combatStats.damage_bonus",  "value": 1, "type": "insight", "situationalContext": "vs_cavernous_plane_creature" }
+    ],
+    "grantedFeatures": ["sense_tremorsense_30"]
+  },
+
+  {
+    "id": "class_feature_loremaster_secret_1",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret (1st)", "fr": "Secret (1er)" },
+    "description": { "en": "At 1st level, the loremaster chooses a secret from the Loremaster Secrets table (secrets available depend on loremaster level + Intelligence modifier). She cannot choose the same secret twice.", "fr": "Au niveau 1, le maître du savoir choisit un secret dans le tableau des Secrets du maître du savoir (les secrets disponibles dépendent du niveau de maître du savoir + modificateur d'Intelligence). Il ne peut pas choisir le même secret deux fois." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_secret_choice_1", "label": { "en": "Choose a secret", "fr": "Choisissez un secret" }, "optionsQuery": "tag:loremaster_secret_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_3",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret (2nd)", "fr": "Secret (2e)" },
+    "description": { "en": "At 3rd level, the loremaster chooses a second secret (cannot duplicate a previous choice).", "fr": "Au niveau 3, le maître du savoir choisit un deuxième secret (ne peut pas dupliquer un choix précédent)." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_secret_choice_3", "label": { "en": "Choose a secret", "fr": "Choisissez un secret" }, "optionsQuery": "tag:loremaster_secret_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_5",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret (3rd)", "fr": "Secret (3e)" },
+    "description": { "en": "At 5th level, the loremaster chooses a third secret.", "fr": "Au niveau 5, le maître du savoir choisit un troisième secret." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_secret_choice_5", "label": { "en": "Choose a secret", "fr": "Choisissez un secret" }, "optionsQuery": "tag:loremaster_secret_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_7",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret (4th)", "fr": "Secret (4e)" },
+    "description": { "en": "At 7th level, the loremaster chooses a fourth secret.", "fr": "Au niveau 7, le maître du savoir choisit un quatrième secret." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_secret_choice_7", "label": { "en": "Choose a secret", "fr": "Choisissez un secret" }, "optionsQuery": "tag:loremaster_secret_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_9",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret (5th)", "fr": "Secret (5e)" },
+    "description": { "en": "At 9th level, the loremaster chooses a fifth and final secret.", "fr": "Au niveau 9, le maître du savoir choisit un cinquième et dernier secret." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_secret_choice_9", "label": { "en": "Choose a secret", "fr": "Choisissez un secret" }, "optionsQuery": "tag:loremaster_secret_option", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_instant_mastery",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Instant Mastery", "fr": "Secret : Maîtrise instantanée" },
+    "description": { "en": "The loremaster gains 4 ranks in a skill in which she has no ranks (as if gained from a high ability score). Available at level+Int modifier ≥ 1.", "fr": "Le maître du savoir gagne 4 rangs dans une compétence dans laquelle il n'en a pas (comme s'il les avait obtenus d'un score de caractéristique élevé). Disponible à partir de niveau+modificateur d'Intelligence ≥ 1." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "choices": [{ "choiceId": "lm_instant_mastery_skill", "label": { "en": "Choose a skill to master", "fr": "Choisissez une compétence à maîtriser" }, "optionsQuery": "category:skill", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_secret_health",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Secret Health", "fr": "Secret : Santé secrète" },
+    "description": { "en": "+3 hit points. Available at level+Int modifier ≥ 2.", "fr": "+3 points de vie. Disponible à partir de niveau+modificateur d'Intelligence ≥ 2." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_secret_health_hp", "sourceId": "class_feature_loremaster_secret_secret_health", "sourceName": { "en": "Secret Health", "fr": "Santé secrète" }, "targetId": "combatStats.hit_points_bonus", "value": 3, "type": "untyped" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_inner_strength",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Secrets of Inner Strength", "fr": "Secret : Secrets de la force intérieure" },
+    "description": { "en": "+2 bonus on Will saves. Available at level+Int modifier ≥ 3.", "fr": "+2 de bonus aux jets de sauvegarde de Volonté. Disponible à partir de niveau+modificateur d'Intelligence ≥ 3." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_inner_strength_will", "sourceId": "class_feature_loremaster_secret_inner_strength", "sourceName": { "en": "Inner Strength", "fr": "Force intérieure" }, "targetId": "saves.will", "value": 2, "type": "untyped" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_true_stamina",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: The Lore of True Stamina", "fr": "Secret : Le savoir de la vraie endurance" },
+    "description": { "en": "+2 bonus on Fortitude saves. Available at level+Int modifier ≥ 4.", "fr": "+2 de bonus aux jets de sauvegarde de Vigueur. Disponible à partir de niveau+modificateur d'Intelligence ≥ 4." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_true_stamina_fort", "sourceId": "class_feature_loremaster_secret_true_stamina", "sourceName": { "en": "True Stamina", "fr": "Vraie endurance" }, "targetId": "saves.fort", "value": 2, "type": "untyped" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_knowledge_avoidance",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Secret Knowledge of Avoidance", "fr": "Secret : Savoir secret d'esquive" },
+    "description": { "en": "+2 bonus on Reflex saves. Available at level+Int modifier ≥ 5.", "fr": "+2 de bonus aux jets de sauvegarde de Réflexes. Disponible à partir de niveau+modificateur d'Intelligence ≥ 5." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_knowledge_avoidance_ref", "sourceId": "class_feature_loremaster_secret_knowledge_avoidance", "sourceName": { "en": "Knowledge of Avoidance", "fr": "Savoir d'esquive" }, "targetId": "saves.ref", "value": 2, "type": "untyped" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_weapon_trick",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Weapon Trick", "fr": "Secret : Tour d'arme" },
+    "description": { "en": "+1 bonus on attack rolls. Available at level+Int modifier ≥ 6.", "fr": "+1 de bonus aux jets d'attaque. Disponible à partir de niveau+modificateur d'Intelligence ≥ 6." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_weapon_trick_atk", "sourceId": "class_feature_loremaster_secret_weapon_trick", "sourceName": { "en": "Weapon Trick", "fr": "Tour d'arme" }, "targetId": "combatStats.attack_bonus", "value": 1, "type": "untyped" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_dodge_trick",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Dodge Trick", "fr": "Secret : Tour d'esquive" },
+    "description": { "en": "+1 dodge bonus to AC. Available at level+Int modifier ≥ 7.", "fr": "+1 de bonus de parade à la CA. Disponible à partir de niveau+modificateur d'Intelligence ≥ 7." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_dodge_trick_ac", "sourceId": "class_feature_loremaster_secret_dodge_trick", "sourceName": { "en": "Dodge Trick", "fr": "Tour d'esquive" }, "targetId": "combatStats.ac_normal", "value": 1, "type": "dodge" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_applicable_knowledge",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Applicable Knowledge", "fr": "Secret : Savoir applicable" },
+    "description": { "en": "The loremaster gains any one feat (must still meet prerequisites). Available at level+Int modifier ≥ 8.", "fr": "Le maître du savoir obtient un don quelconque (doit toujours remplir les conditions préalables). Disponible à partir de niveau+modificateur d'Intelligence ≥ 8." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "choices": [{ "choiceId": "lm_applicable_knowledge_feat", "label": { "en": "Choose any feat", "fr": "Choisissez un don quelconque" }, "optionsQuery": "category:feat", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_newfound_arcana",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: Newfound Arcana", "fr": "Secret : Arcane nouvelle" },
+    "description": { "en": "The loremaster gains one bonus 1st-level spell (as if from a high ability score). Available at level+Int modifier ≥ 9.", "fr": "Le maître du savoir obtient un sort de niveau 1 supplémentaire (comme d'un score de caractéristique élevé). Disponible à partir de niveau+modificateur d'Intelligence ≥ 9." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_newfound_arcana_slot1", "sourceId": "class_feature_loremaster_secret_newfound_arcana", "sourceName": { "en": "Newfound Arcana", "fr": "Arcane nouvelle" }, "targetId": "resources.spell_slots_bonus_1", "value": 1, "type": "base" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_secret_more_newfound_arcana",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Secret: More Newfound Arcana", "fr": "Secret : Davantage d'arcane nouvelle" },
+    "description": { "en": "The loremaster gains one bonus 2nd-level spell (as if from a high ability score). Available at level+Int modifier ≥ 10.", "fr": "Le maître du savoir obtient un sort de niveau 2 supplémentaire (comme d'un score de caractéristique élevé). Disponible à partir de niveau+modificateur d'Intelligence ≥ 10." },
+    "tags": ["class_feature", "loremaster", "loremaster_secret_option"],
+    "grantedModifiers": [
+      { "id": "lm_newfound_arcana_slot2", "sourceId": "class_feature_loremaster_secret_more_newfound_arcana", "sourceName": { "en": "More Newfound Arcana", "fr": "Davantage d'arcane nouvelle" }, "targetId": "resources.spell_slots_bonus_2", "value": 1, "type": "base" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_lore",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Lore", "fr": "Savoir" },
+    "description": { "en": "At 2nd level, a loremaster gains the ability to know legends or information regarding various topics, similar to a bard's bardic knowledge. The loremaster adds her class level and Intelligence modifier to the check.", "fr": "Au niveau 2, le maître du savoir acquiert la capacité de connaître des légendes ou des informations sur divers sujets, de façon similaire au savoir bardique d'un barde. Le maître du savoir ajoute son niveau de classe et son modificateur d'Intelligence au test." },
+    "tags": ["class_feature", "loremaster", "extraordinary"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_bonus_language",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Bonus Language", "fr": "Langue supplémentaire" },
+    "description": { "en": "The loremaster can choose any new language at 4th and again at 8th level.", "fr": "Le maître du savoir peut choisir une nouvelle langue au niveau 4 et à nouveau au niveau 8." },
+    "tags": ["class_feature", "loremaster"],
+    "choices": [{ "choiceId": "lm_bonus_language_choice", "label": { "en": "Choose a language", "fr": "Choisissez une langue" }, "optionsQuery": "tag:language", "maxSelections": 1 }],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_greater_lore",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Greater Lore", "fr": "Grand savoir" },
+    "description": { "en": "At 6th level, a loremaster gains the ability to understand magic items as with the identify spell.", "fr": "Au niveau 6, le maître du savoir acquiert la capacité de comprendre les objets magiques comme avec le sort identification." },
+    "tags": ["class_feature", "loremaster", "extraordinary"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_true_lore",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "True Lore", "fr": "Vrai savoir" },
+    "description": { "en": "At 10th level, once per day a loremaster can use her knowledge to gain the effect of a legend lore spell or an analyze dweomer spell.", "fr": "Au niveau 10, une fois par jour, le maître du savoir peut utiliser son savoir pour obtenir l'effet d'un sort de légende ou d'un sort d'analyse de dweomer." },
+    "tags": ["class_feature", "loremaster", "extraordinary"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.loremaster_true_lore_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      { "id": "lm_true_lore_uses_max", "sourceId": "class_feature_loremaster_true_lore", "sourceName": { "en": "True Lore", "fr": "Vrai savoir" }, "targetId": "resources.loremaster_true_lore_uses.maxValue", "value": 1, "type": "base" }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_loremaster_spellcasting",
+    "category": "class_feature", "ruleSource": "srd_core",
+    "label": { "en": "Spellcasting Advancement", "fr": "Progression des sorts" },
+    "description": {
+      "en": "When a new loremaster level is gained, the character gains new spells per day (and spells known, if applicable) as if she had also gained a level in a spellcasting class she belonged to before adding the prestige class. She does not gain any other class benefit. If she had more than one spellcasting class, she must decide to which class she adds each loremaster level.",
+      "fr": "Lorsqu'un nouveau niveau de maître du savoir est acquis, le personnage obtient de nouveaux sorts par jour (et de nouveaux sorts connus, le cas échéant) comme s'il avait gagné un niveau d'une classe de lanceur de sorts à laquelle il appartenait avant d'ajouter la classe de prestige. Il n'obtient pas les autres avantages de cette classe. S'il avait plusieurs classes de lanceur de sorts, il doit décider à quelle classe il ajoute chaque niveau de maître du savoir."
+    },
+    "tags": ["class_feature", "loremaster", "spellcasting_advancement"],
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_eldritch_knight_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spellcasting Advancement", "fr": "Progression des sorts" },
+    "description": {
+      "en": "From 2nd level on, when a new eldritch knight level is gained, the character gains new spells per day as if she had also gained a level in whatever arcane spellcasting class she belonged to before adding the prestige class. She does not gain any other benefit a character of that class would have gained. If a character had more than one arcane spellcasting class, she must decide to which class she adds each eldritch knight level for the purpose of determining spells per day.",
+      "fr": "À partir du niveau 2, lorsqu'un nouveau niveau de chevalier mystique est acquis, le personnage obtient de nouveaux sorts par jour comme s'il avait aussi gagné un niveau dans la classe de lanceur de sorts arcanique à laquelle il appartenait avant d'ajouter la classe de prestige. Il n'obtient pas les autres avantages qu'un personnage de cette classe aurait obtenus. Si un personnage appartenait à plus d'une classe de lanceur de sorts arcanique, il doit décider à quelle classe il ajoute chaque niveau de chevalier mystique pour déterminer les sorts par jour."
+    },
+    "tags": ["class_feature", "eldritch_knight", "spellcasting_advancement"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
   }
 ]

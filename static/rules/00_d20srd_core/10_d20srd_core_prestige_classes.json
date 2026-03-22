@@ -25,8 +25,10 @@
         {
           "logic": "OR",
           "nodes": [
-            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_longbow", "errorMessage": "Requires Weapon Focus (longbow or shortbow)" },
-            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_shortbow", "errorMessage": "Requires Weapon Focus (longbow or shortbow)" }
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_item_longbow",           "errorMessage": "Requires Weapon Focus (longbow)" },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_item_longbow_composite", "errorMessage": "Requires Weapon Focus (composite longbow)" },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_item_shortbow",          "errorMessage": "Requires Weapon Focus (shortbow)" },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_item_shortbow_composite","errorMessage": "Requires Weapon Focus (composite shortbow)" }
           ]
         },
         { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster", "errorMessage": "Must be able to cast 1st-level arcane spells" }
@@ -365,9 +367,10 @@
       "nodes": [
         { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_arcana.ranks", "operator": ">=", "value": 15, "errorMessage": "Requires 15 ranks in Knowledge (Arcana)" },
         { "logic": "CONDITION", "targetPath": "@skills.skill_spellcraft.ranks",        "operator": ">=", "value": 15, "errorMessage": "Requires 15 ranks in Spellcraft" },
-        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_skill_focus_spellcraft", "errorMessage": "Requires Skill Focus (Spellcraft)" },
-        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_spell_focus",            "errorMessage": "Requires Spell Focus in two schools of magic" },
-        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster",              "errorMessage": "Must be able to cast 7th-level arcane spells with knowledge of 5th-level spells from at least five schools" }
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_skill_focus_skill_spellcraft", "errorMessage": "Requires Skill Focus (Spellcraft)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_spell_focus",         "errorMessage": "Requires Spell Focus (first school)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_greater_spell_focus", "errorMessage": "Requires Spell Focus in a second school — Greater Spell Focus used as proxy for investment in a second school; enforce exact two-school requirement at the table" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster",            "errorMessage": "Must be able to cast 7th-level arcane spells with knowledge of 5th-level spells from at least five schools" }
       ]
     },
     "grantedModifiers": [
@@ -968,6 +971,1104 @@
           { "id": "dd_10_cha",       "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_cha",  "value": 2, "type": "untyped",      "sourceName": { "en": "Dragon Apotheosis Cha", "fr": "Apothéose draconique Cha" } },
           { "id": "dd_10_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal","value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle du disciple du dragon" } }
         ]
+      }
+    ]
+  },
+  {
+    "id": "class_duelist",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Duelist", "fr": "Duelliste" },
+    "description": {
+      "en": "The duelist is a nimble, skilled swordsman who depends on speed and agility rather than brute force. Combining classical martial training with acrobatics and blade mastery, the duelist excels at single-weapon combat in light or no armor.",
+      "fr": "Le duelliste est un épéiste agile et habile qui compte sur la vitesse et l'agilité plutôt que sur la force brute. En combinant la formation martiale classique avec l'acrobatie et la maîtrise de la lame, le duelliste excelle dans le combat à une arme en armure légère ou sans armure."
+    },
+    "tags": ["class", "prestige_class", "class_duelist"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue",         "operator": ">=", "value": 6, "errorMessage": "Requires Base Attack Bonus +6"         },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_perform.ranks",          "operator": ">=", "value": 3, "errorMessage": "Requires 3 ranks in Perform"           },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_tumble.ranks",           "operator": ">=", "value": 5, "errorMessage": "Requires 5 ranks in Tumble"            },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_dodge",          "errorMessage": "Requires the Dodge feat"          },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_mobility",       "errorMessage": "Requires the Mobility feat"       },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_finesse", "errorMessage": "Requires the Weapon Finesse feat" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "duelist_hit_die",
+        "sourceId": "class_duelist",
+        "targetId": "combatStats.hit_die_type",
+        "value": 10,
+        "type": "base",
+        "sourceName": { "en": "Duelist", "fr": "Duelliste" }
+      },
+      {
+        "id": "duelist_skill_points",
+        "sourceId": "class_duelist",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Duelist", "fr": "Duelliste" }
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial"
+    ],
+    "classSkills": [
+      "skill_balance", "skill_bluff", "skill_escape_artist",
+      "skill_jump", "skill_listen", "skill_perform",
+      "skill_sense_motive", "skill_spot", "skill_tumble"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_duelist_canny_defense"],
+        "grantedModifiers": [
+          { "id": "duelist_1_bab",  "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 1",  "fr": "Duelliste 1"  } },
+          { "id": "duelist_1_fort", "sourceId": "class_duelist", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Duelist 1",  "fr": "Duelliste 1"  } },
+          { "id": "duelist_1_ref",  "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 2, "type": "base", "sourceName": { "en": "Duelist 1",  "fr": "Duelliste 1"  } },
+          { "id": "duelist_1_will", "sourceId": "class_duelist", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Duelist 1",  "fr": "Duelliste 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_duelist_improved_reaction"],
+        "grantedModifiers": [
+          { "id": "duelist_2_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 2",  "fr": "Duelliste 2"  } },
+          { "id": "duelist_2_ref", "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Duelist 2",  "fr": "Duelliste 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_duelist_enhanced_mobility"],
+        "grantedModifiers": [
+          { "id": "duelist_3_bab",  "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 3",  "fr": "Duelliste 3"  } },
+          { "id": "duelist_3_fort", "sourceId": "class_duelist", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 3",  "fr": "Duelliste 3"  } },
+          { "id": "duelist_3_will", "sourceId": "class_duelist", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 3",  "fr": "Duelliste 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_duelist_grace"],
+        "grantedModifiers": [
+          { "id": "duelist_4_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 4",  "fr": "Duelliste 4"  } },
+          { "id": "duelist_4_ref", "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Duelist 4",  "fr": "Duelliste 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_duelist_precise_strike_1d6"],
+        "grantedModifiers": [
+          { "id": "duelist_5_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 5",  "fr": "Duelliste 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_duelist_acrobatic_charge"],
+        "grantedModifiers": [
+          { "id": "duelist_6_bab",  "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 6",  "fr": "Duelliste 6"  } },
+          { "id": "duelist_6_fort", "sourceId": "class_duelist", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 6",  "fr": "Duelliste 6"  } },
+          { "id": "duelist_6_ref",  "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Duelist 6",  "fr": "Duelliste 6"  } },
+          { "id": "duelist_6_will", "sourceId": "class_duelist", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 6",  "fr": "Duelliste 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_duelist_elaborate_parry"],
+        "grantedModifiers": [
+          { "id": "duelist_7_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 7",  "fr": "Duelliste 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_duelist_improved_reaction_4"],
+        "grantedModifiers": [
+          { "id": "duelist_8_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 8",  "fr": "Duelliste 8"  } },
+          { "id": "duelist_8_ref", "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Duelist 8",  "fr": "Duelliste 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_duelist_deflect_arrows"],
+        "grantedModifiers": [
+          { "id": "duelist_9_bab",  "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 9",  "fr": "Duelliste 9"  } },
+          { "id": "duelist_9_fort", "sourceId": "class_duelist", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 9",  "fr": "Duelliste 9"  } },
+          { "id": "duelist_9_will", "sourceId": "class_duelist", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Duelist 9",  "fr": "Duelliste 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_duelist_precise_strike_2d6"],
+        "grantedModifiers": [
+          { "id": "duelist_10_bab", "sourceId": "class_duelist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Duelist 10", "fr": "Duelliste 10" } },
+          { "id": "duelist_10_ref", "sourceId": "class_duelist", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Duelist 10", "fr": "Duelliste 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_dwarven_defender",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Dwarven Defender", "fr": "Défenseur nain" },
+    "description": {
+      "en": "The dwarven defender is a sworn defender of the dwarven people, a warrior who specializes in holding ground against any foe. Dwarven defenders adopt an immovable defensive stance that dramatically increases their durability and grants a growing dodge bonus to Armor Class.",
+      "fr": "Le défenseur nain est un gardien juré du peuple nain, un guerrier spécialisé dans la défense d'un terrain contre n'importe quel ennemi. Les défenseurs nains adoptent une posture défensive immuable qui augmente considérablement leur endurance et accorde un bonus de parade croissant à la Classe d'Armure."
+    },
+    "tags": ["class", "prestige_class", "class_dwarven_defender"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag",   "value": "race_dwarf",          "errorMessage": "Must be a dwarf"                    },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag",   "value": "alignment_lawful",    "errorMessage": "Must be of any lawful alignment"    },
+        { "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue", "operator": ">=", "value": 7, "errorMessage": "Requires Base Attack Bonus +7" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_dodge",     "errorMessage": "Requires the Dodge feat"     },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_endurance", "errorMessage": "Requires the Endurance feat" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_toughness", "errorMessage": "Requires the Toughness feat" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "dwarven_defender_hit_die",
+        "sourceId": "class_dwarven_defender",
+        "targetId": "combatStats.hit_die_type",
+        "value": 12,
+        "type": "base",
+        "sourceName": { "en": "Dwarven Defender", "fr": "Défenseur nain" }
+      },
+      {
+        "id": "dwarven_defender_skill_points",
+        "sourceId": "class_dwarven_defender",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Dwarven Defender", "fr": "Défenseur nain" }
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial",
+      "proficiency_armor_all",
+      "proficiency_shields_all"
+    ],
+    "classSkills": [
+      "skill_craft", "skill_listen", "skill_sense_motive", "skill_spot"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_dwarven_defender_defensive_stance"],
+        "grantedModifiers": [
+          { "id": "dd_def_1_bab",      "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab",      "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 1",  "fr": "Défenseur nain 1"  } },
+          { "id": "dd_def_1_fort",     "sourceId": "class_dwarven_defender", "targetId": "saves.fort",           "value": 2, "type": "base",  "sourceName": { "en": "Dwarven Defender 1",  "fr": "Défenseur nain 1"  } },
+          { "id": "dd_def_1_ref",      "sourceId": "class_dwarven_defender", "targetId": "saves.ref",            "value": 0, "type": "base",  "sourceName": { "en": "Dwarven Defender 1",  "fr": "Défenseur nain 1"  } },
+          { "id": "dd_def_1_will",     "sourceId": "class_dwarven_defender", "targetId": "saves.will",           "value": 2, "type": "base",  "sourceName": { "en": "Dwarven Defender 1",  "fr": "Défenseur nain 1"  } },
+          { "id": "dd_def_1_ac_bonus", "sourceId": "class_dwarven_defender", "targetId": "combatStats.ac_normal","value": 1, "type": "dodge", "sourceName": { "en": "Dwarven Defender AC Bonus", "fr": "Bonus de CA du défenseur nain" } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_uncanny_dodge"],
+        "grantedModifiers": [
+          { "id": "dd_def_2_bab",  "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 2",  "fr": "Défenseur nain 2"  } },
+          { "id": "dd_def_2_fort", "sourceId": "class_dwarven_defender", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 2",  "fr": "Défenseur nain 2"  } },
+          { "id": "dd_def_2_will", "sourceId": "class_dwarven_defender", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 2",  "fr": "Défenseur nain 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_dwarven_defender_defensive_stance_2"],
+        "grantedModifiers": [
+          { "id": "dd_def_3_bab", "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 3",  "fr": "Défenseur nain 3"  } },
+          { "id": "dd_def_3_ref", "sourceId": "class_dwarven_defender", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 3",  "fr": "Défenseur nain 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_dwarven_defender_trap_sense_1"],
+        "grantedModifiers": [
+          { "id": "dd_def_4_bab",      "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab",      "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 4",  "fr": "Défenseur nain 4"  } },
+          { "id": "dd_def_4_fort",     "sourceId": "class_dwarven_defender", "targetId": "saves.fort",           "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 4",  "fr": "Défenseur nain 4"  } },
+          { "id": "dd_def_4_will",     "sourceId": "class_dwarven_defender", "targetId": "saves.will",           "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 4",  "fr": "Défenseur nain 4"  } },
+          { "id": "dd_def_4_ac_bonus", "sourceId": "class_dwarven_defender", "targetId": "combatStats.ac_normal","value": 1, "type": "dodge", "sourceName": { "en": "Dwarven Defender AC Bonus", "fr": "Bonus de CA du défenseur nain" } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_dwarven_defender_defensive_stance_3"],
+        "grantedModifiers": [
+          { "id": "dd_def_5_bab", "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 5",  "fr": "Défenseur nain 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [
+          "class_feature_dwarven_defender_damage_reduction_3",
+          "class_feature_improved_uncanny_dodge"
+        ],
+        "grantedModifiers": [
+          { "id": "dd_def_6_bab",  "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 6",  "fr": "Défenseur nain 6"  } },
+          { "id": "dd_def_6_fort", "sourceId": "class_dwarven_defender", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 6",  "fr": "Défenseur nain 6"  } },
+          { "id": "dd_def_6_ref",  "sourceId": "class_dwarven_defender", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 6",  "fr": "Défenseur nain 6"  } },
+          { "id": "dd_def_6_will", "sourceId": "class_dwarven_defender", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 6",  "fr": "Défenseur nain 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_dwarven_defender_defensive_stance_4"],
+        "grantedModifiers": [
+          { "id": "dd_def_7_bab",      "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab",      "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 7",  "fr": "Défenseur nain 7"  } },
+          { "id": "dd_def_7_ac_bonus", "sourceId": "class_dwarven_defender", "targetId": "combatStats.ac_normal","value": 1, "type": "dodge", "sourceName": { "en": "Dwarven Defender AC Bonus", "fr": "Bonus de CA du défenseur nain" } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [
+          "class_feature_dwarven_defender_mobile_defense",
+          "class_feature_dwarven_defender_trap_sense_2"
+        ],
+        "grantedModifiers": [
+          { "id": "dd_def_8_bab",  "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 8",  "fr": "Défenseur nain 8"  } },
+          { "id": "dd_def_8_fort", "sourceId": "class_dwarven_defender", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 8",  "fr": "Défenseur nain 8"  } },
+          { "id": "dd_def_8_will", "sourceId": "class_dwarven_defender", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 8",  "fr": "Défenseur nain 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_dwarven_defender_defensive_stance_5"],
+        "grantedModifiers": [
+          { "id": "dd_def_9_bab", "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 9",  "fr": "Défenseur nain 9"  } },
+          { "id": "dd_def_9_ref", "sourceId": "class_dwarven_defender", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Dwarven Defender 9",  "fr": "Défenseur nain 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_dwarven_defender_damage_reduction_6"],
+        "grantedModifiers": [
+          { "id": "dd_def_10_bab",      "sourceId": "class_dwarven_defender", "targetId": "combatStats.bab",      "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 10", "fr": "Défenseur nain 10" } },
+          { "id": "dd_def_10_fort",     "sourceId": "class_dwarven_defender", "targetId": "saves.fort",           "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 10", "fr": "Défenseur nain 10" } },
+          { "id": "dd_def_10_will",     "sourceId": "class_dwarven_defender", "targetId": "saves.will",           "value": 1, "type": "base",  "sourceName": { "en": "Dwarven Defender 10", "fr": "Défenseur nain 10" } },
+          { "id": "dd_def_10_ac_bonus", "sourceId": "class_dwarven_defender", "targetId": "combatStats.ac_normal","value": 1, "type": "dodge", "sourceName": { "en": "Dwarven Defender AC Bonus", "fr": "Bonus de CA du défenseur nain" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_eldritch_knight",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Eldritch Knight", "fr": "Chevalier mystique" },
+    "description": {
+      "en": "The eldritch knight blends martial prowess with arcane power, fighting with weapon and spell alike. At 1st level the eldritch knight gains a bonus fighter feat; from 2nd level onward each level advances an existing arcane spellcasting class. This makes the eldritch knight one of the premier gish archetypes.",
+      "fr": "Le chevalier mystique allie la prouesse martiale au pouvoir arcanique, combattant à la fois avec des armes et des sorts. Au niveau 1, le chevalier mystique obtient un don de guerrier supplémentaire ; à partir du niveau 2, chaque niveau fait progresser une classe de lanceur de sorts arcanique existante. Cela fait du chevalier mystique l'un des principaux archétypes de guerrier-mage."
+    },
+    "tags": ["class", "prestige_class", "class_eldritch_knight", "arcane_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "proficiency_all_martial", "errorMessage": "Must be proficient with all martial weapons" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster",           "errorMessage": "Must be able to cast 3rd-level arcane spells" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "eldritch_knight_hit_die",
+        "sourceId": "class_eldritch_knight",
+        "targetId": "combatStats.hit_die_type",
+        "value": 6,
+        "type": "base",
+        "sourceName": { "en": "Eldritch Knight", "fr": "Chevalier mystique" }
+      },
+      {
+        "id": "eldritch_knight_skill_points",
+        "sourceId": "class_eldritch_knight",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Eldritch Knight", "fr": "Chevalier mystique" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_decipher_script",
+      "skill_jump", "skill_knowledge_arcana", "skill_knowledge_nobility",
+      "skill_ride", "skill_sense_motive", "skill_spellcraft", "skill_swim"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_eldritch_knight_bonus_feat"],
+        "grantedModifiers": [
+          { "id": "ek_1_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 1",  "fr": "Chevalier mystique 1"  } },
+          { "id": "ek_1_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 2, "type": "base", "sourceName": { "en": "Eldritch Knight 1",  "fr": "Chevalier mystique 1"  } },
+          { "id": "ek_1_ref",  "sourceId": "class_eldritch_knight", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Eldritch Knight 1",  "fr": "Chevalier mystique 1"  } },
+          { "id": "ek_1_will", "sourceId": "class_eldritch_knight", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Eldritch Knight 1",  "fr": "Chevalier mystique 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_2_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 2",  "fr": "Chevalier mystique 2"  } },
+          { "id": "ek_2_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 2",  "fr": "Chevalier mystique 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_3_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 3",  "fr": "Chevalier mystique 3"  } },
+          { "id": "ek_3_ref",  "sourceId": "class_eldritch_knight", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 3",  "fr": "Chevalier mystique 3"  } },
+          { "id": "ek_3_will", "sourceId": "class_eldritch_knight", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 3",  "fr": "Chevalier mystique 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_4_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 4",  "fr": "Chevalier mystique 4"  } },
+          { "id": "ek_4_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 4",  "fr": "Chevalier mystique 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_5_bab", "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 5",  "fr": "Chevalier mystique 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_6_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 6",  "fr": "Chevalier mystique 6"  } },
+          { "id": "ek_6_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 6",  "fr": "Chevalier mystique 6"  } },
+          { "id": "ek_6_ref",  "sourceId": "class_eldritch_knight", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 6",  "fr": "Chevalier mystique 6"  } },
+          { "id": "ek_6_will", "sourceId": "class_eldritch_knight", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 6",  "fr": "Chevalier mystique 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_7_bab", "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 7",  "fr": "Chevalier mystique 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_8_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 8",  "fr": "Chevalier mystique 8"  } },
+          { "id": "ek_8_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 8",  "fr": "Chevalier mystique 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_9_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 9",  "fr": "Chevalier mystique 9"  } },
+          { "id": "ek_9_ref",  "sourceId": "class_eldritch_knight", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 9",  "fr": "Chevalier mystique 9"  } },
+          { "id": "ek_9_will", "sourceId": "class_eldritch_knight", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 9",  "fr": "Chevalier mystique 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_eldritch_knight_spellcasting"],
+        "grantedModifiers": [
+          { "id": "ek_10_bab",  "sourceId": "class_eldritch_knight", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 10", "fr": "Chevalier mystique 10" } },
+          { "id": "ek_10_fort", "sourceId": "class_eldritch_knight", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Eldritch Knight 10", "fr": "Chevalier mystique 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_hierophant",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hierophant", "fr": "Hiérophante" },
+    "description": {
+      "en": "The hierophant is the pinnacle of divine spellcasting mastery. Selecting one special ability per level from a pool of divine powers, the hierophant does not advance spell progression but does add class levels to caster level for purposes of determining level-dependent spell variables and caster level checks.",
+      "fr": "Le hiérophante représente le sommet de la maîtrise des sorts divins. Choisissant une capacité spéciale par niveau parmi un éventail de pouvoirs divins, le hiérophante n'avance pas dans la progression des sorts, mais ajoute ses niveaux de classe au niveau de lanceur de sorts pour déterminer les variables de sorts dépendantes du niveau et les tests de niveau de lanceur de sorts."
+    },
+    "tags": ["class", "prestige_class", "class_hierophant", "divine_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_religion.ranks", "operator": ">=", "value": 15, "errorMessage": "Requires 15 ranks in Knowledge (Religion)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "metamagic_feat", "errorMessage": "Requires any metamagic feat" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "divine_caster",  "errorMessage": "Must be able to cast 7th-level divine spells" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "hierophant_hit_die",
+        "sourceId": "class_hierophant",
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base",
+        "sourceName": { "en": "Hierophant", "fr": "Hiérophante" }
+      },
+      {
+        "id": "hierophant_skill_points",
+        "sourceId": "class_hierophant",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Hierophant", "fr": "Hiérophante" }
+      },
+      {
+        "id": "hierophant_caster_level_stacking",
+        "sourceId": "class_hierophant",
+        "targetId": "attributes.caster_level",
+        "value": "@classLevels.class_hierophant",
+        "type": "untyped",
+        "sourceName": { "en": "Hierophant Caster Level", "fr": "Niveau de lanceur de sorts du hiérophante" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_diplomacy", "skill_heal",
+      "skill_knowledge_arcana", "skill_knowledge_religion",
+      "skill_profession", "skill_spellcraft"
+    ],
+    "recommendedAttributes": ["stat_wis", "stat_cha"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_hierophant_special_ability_1"],
+        "grantedModifiers": [
+          { "id": "hierophant_1_bab",  "sourceId": "class_hierophant", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Hierophant 1", "fr": "Hiérophante 1" } },
+          { "id": "hierophant_1_fort", "sourceId": "class_hierophant", "targetId": "saves.fort",      "value": 2, "type": "base", "sourceName": { "en": "Hierophant 1", "fr": "Hiérophante 1" } },
+          { "id": "hierophant_1_ref",  "sourceId": "class_hierophant", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Hierophant 1", "fr": "Hiérophante 1" } },
+          { "id": "hierophant_1_will", "sourceId": "class_hierophant", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Hierophant 1", "fr": "Hiérophante 1" } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_hierophant_special_ability_2"],
+        "grantedModifiers": [
+          { "id": "hierophant_2_bab",  "sourceId": "class_hierophant", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Hierophant 2", "fr": "Hiérophante 2" } },
+          { "id": "hierophant_2_fort", "sourceId": "class_hierophant", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Hierophant 2", "fr": "Hiérophante 2" } },
+          { "id": "hierophant_2_will", "sourceId": "class_hierophant", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Hierophant 2", "fr": "Hiérophante 2" } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_hierophant_special_ability_3"],
+        "grantedModifiers": [
+          { "id": "hierophant_3_ref", "sourceId": "class_hierophant", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Hierophant 3", "fr": "Hiérophante 3" } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_hierophant_special_ability_4"],
+        "grantedModifiers": [
+          { "id": "hierophant_4_bab",  "sourceId": "class_hierophant", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Hierophant 4", "fr": "Hiérophante 4" } },
+          { "id": "hierophant_4_fort", "sourceId": "class_hierophant", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Hierophant 4", "fr": "Hiérophante 4" } },
+          { "id": "hierophant_4_will", "sourceId": "class_hierophant", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Hierophant 4", "fr": "Hiérophante 4" } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_hierophant_special_ability_5"],
+        "grantedModifiers": []
+      }
+    ]
+  },
+  {
+    "id": "class_horizon_walker",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Horizon Walker", "fr": "Marcheur des horizons" },
+    "description": {
+      "en": "The horizon walker is an expert traverser of every kind of terrain, gaining mastery of environments from mundane wilderness to exotic planes. Each level grants a new terrain mastery, providing skill bonuses and +1 insight on attack and damage rolls against creatures native to that terrain.",
+      "fr": "Le marcheur des horizons est un expert de tous types de terrains, maîtrisant des environnements allant de la nature sauvage ordinaire aux plans exotiques. Chaque niveau accorde une nouvelle maîtrise du terrain, octroyant des bonus de compétence et +1 en perspicacité aux jets d'attaque et de dégâts contre les créatures natives de ce terrain."
+    },
+    "tags": ["class", "prestige_class", "class_horizon_walker"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_geography.ranks", "operator": ">=", "value": 8, "errorMessage": "Requires 8 ranks in Knowledge (Geography)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_endurance", "errorMessage": "Requires the Endurance feat" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "horizon_walker_hit_die",
+        "sourceId": "class_horizon_walker",
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base",
+        "sourceName": { "en": "Horizon Walker", "fr": "Marcheur des horizons" }
+      },
+      {
+        "id": "horizon_walker_skill_points",
+        "sourceId": "class_horizon_walker",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Horizon Walker", "fr": "Marcheur des horizons" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_balance", "skill_climb", "skill_diplomacy", "skill_handle_animal",
+      "skill_hide", "skill_knowledge_geography", "skill_listen",
+      "skill_move_silently", "skill_profession", "skill_ride",
+      "skill_spot", "skill_survival"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_horizon_walker_terrain_mastery_1"],
+        "grantedModifiers": [
+          { "id": "hw_1_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 1",  "fr": "Marcheur des horizons 1"  } },
+          { "id": "hw_1_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 2, "type": "base", "sourceName": { "en": "Horizon Walker 1",  "fr": "Marcheur des horizons 1"  } },
+          { "id": "hw_1_ref",  "sourceId": "class_horizon_walker", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Horizon Walker 1",  "fr": "Marcheur des horizons 1"  } },
+          { "id": "hw_1_will", "sourceId": "class_horizon_walker", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Horizon Walker 1",  "fr": "Marcheur des horizons 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_horizon_walker_terrain_mastery_2"],
+        "grantedModifiers": [
+          { "id": "hw_2_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 2",  "fr": "Marcheur des horizons 2"  } },
+          { "id": "hw_2_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 2",  "fr": "Marcheur des horizons 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_horizon_walker_terrain_mastery_3"],
+        "grantedModifiers": [
+          { "id": "hw_3_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 3",  "fr": "Marcheur des horizons 3"  } },
+          { "id": "hw_3_ref",  "sourceId": "class_horizon_walker", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 3",  "fr": "Marcheur des horizons 3"  } },
+          { "id": "hw_3_will", "sourceId": "class_horizon_walker", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 3",  "fr": "Marcheur des horizons 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_horizon_walker_terrain_mastery_4"],
+        "grantedModifiers": [
+          { "id": "hw_4_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 4",  "fr": "Marcheur des horizons 4"  } },
+          { "id": "hw_4_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 4",  "fr": "Marcheur des horizons 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_horizon_walker_terrain_mastery_5"],
+        "grantedModifiers": [
+          { "id": "hw_5_bab", "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 5",  "fr": "Marcheur des horizons 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_horizon_walker_planar_terrain_mastery_1"],
+        "grantedModifiers": [
+          { "id": "hw_6_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 6",  "fr": "Marcheur des horizons 6"  } },
+          { "id": "hw_6_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 6",  "fr": "Marcheur des horizons 6"  } },
+          { "id": "hw_6_ref",  "sourceId": "class_horizon_walker", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 6",  "fr": "Marcheur des horizons 6"  } },
+          { "id": "hw_6_will", "sourceId": "class_horizon_walker", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 6",  "fr": "Marcheur des horizons 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_horizon_walker_planar_terrain_mastery_2"],
+        "grantedModifiers": [
+          { "id": "hw_7_bab", "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 7",  "fr": "Marcheur des horizons 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_horizon_walker_planar_terrain_mastery_3"],
+        "grantedModifiers": [
+          { "id": "hw_8_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 8",  "fr": "Marcheur des horizons 8"  } },
+          { "id": "hw_8_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 8",  "fr": "Marcheur des horizons 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_horizon_walker_planar_terrain_mastery_4"],
+        "grantedModifiers": [
+          { "id": "hw_9_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 9",  "fr": "Marcheur des horizons 9"  } },
+          { "id": "hw_9_ref",  "sourceId": "class_horizon_walker", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 9",  "fr": "Marcheur des horizons 9"  } },
+          { "id": "hw_9_will", "sourceId": "class_horizon_walker", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 9",  "fr": "Marcheur des horizons 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_horizon_walker_planar_terrain_mastery_5"],
+        "grantedModifiers": [
+          { "id": "hw_10_bab",  "sourceId": "class_horizon_walker", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 10", "fr": "Marcheur des horizons 10" } },
+          { "id": "hw_10_fort", "sourceId": "class_horizon_walker", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Horizon Walker 10", "fr": "Marcheur des horizons 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_loremaster",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Loremaster", "fr": "Maître du savoir" },
+    "description": {
+      "en": "The loremaster is a spellcaster who has turned magic study into an art, accumulating arcane and mundane knowledge that grants unique secrets and abilities. Every other level the loremaster selects a secret from a table keyed to class level plus Intelligence modifier. Every level advances an existing spellcasting class.",
+      "fr": "Le maître du savoir est un lanceur de sorts qui a fait de l'étude de la magie un art, accumulant des connaissances arcaniques et profanes qui lui confèrent des secrets et des capacités uniques. Un niveau sur deux, le maître du savoir choisit un secret dans un tableau indexé sur le niveau de classe plus le modificateur d'Intelligence. Chaque niveau fait progresser une classe de lanceur de sorts existante."
+    },
+    "tags": ["class", "prestige_class", "class_loremaster", "arcane_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster",       "errorMessage": "Must be able to cast 7 different divination spells including one 3rd level or higher" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_skill_focus",    "errorMessage": "Requires Skill Focus (any Knowledge skill)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "metamagic_feat",      "errorMessage": "Requires any three metamagic or item creation feats" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "loremaster_hit_die",
+        "sourceId": "class_loremaster",
+        "targetId": "combatStats.hit_die_type",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Loremaster", "fr": "Maître du savoir" }
+      },
+      {
+        "id": "loremaster_skill_points",
+        "sourceId": "class_loremaster",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Loremaster", "fr": "Maître du savoir" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_appraise", "skill_concentration", "skill_craft_alchemy",
+      "skill_decipher_script", "skill_gather_information", "skill_handle_animal",
+      "skill_heal",
+      "skill_knowledge_arcana", "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering", "skill_knowledge_geography",
+      "skill_knowledge_history", "skill_knowledge_local",
+      "skill_knowledge_nature", "skill_knowledge_nobility",
+      "skill_knowledge_planes", "skill_knowledge_religion",
+      "skill_perform", "skill_profession",
+      "skill_spellcraft", "skill_use_magic_device"
+    ],
+    "recommendedAttributes": ["stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_loremaster_secret_1", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_1_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Loremaster 1",  "fr": "Maître du savoir 1"  } },
+          { "id": "lm_1_fort", "sourceId": "class_loremaster", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Loremaster 1",  "fr": "Maître du savoir 1"  } },
+          { "id": "lm_1_ref",  "sourceId": "class_loremaster", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Loremaster 1",  "fr": "Maître du savoir 1"  } },
+          { "id": "lm_1_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Loremaster 1",  "fr": "Maître du savoir 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_loremaster_lore", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_2_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 2",  "fr": "Maître du savoir 2"  } },
+          { "id": "lm_2_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 2",  "fr": "Maître du savoir 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_loremaster_secret_3", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_3_fort", "sourceId": "class_loremaster", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 3",  "fr": "Maître du savoir 3"  } },
+          { "id": "lm_3_ref",  "sourceId": "class_loremaster", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Loremaster 3",  "fr": "Maître du savoir 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_loremaster_bonus_language", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_4_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 4",  "fr": "Maître du savoir 4"  } },
+          { "id": "lm_4_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 4",  "fr": "Maître du savoir 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_loremaster_secret_5", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_loremaster_greater_lore", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_6_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 6",  "fr": "Maître du savoir 6"  } },
+          { "id": "lm_6_fort", "sourceId": "class_loremaster", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 6",  "fr": "Maître du savoir 6"  } },
+          { "id": "lm_6_ref",  "sourceId": "class_loremaster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Loremaster 6",  "fr": "Maître du savoir 6"  } },
+          { "id": "lm_6_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 6",  "fr": "Maître du savoir 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_loremaster_secret_7", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_loremaster_bonus_language", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_8_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 8",  "fr": "Maître du savoir 8"  } },
+          { "id": "lm_8_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 8",  "fr": "Maître du savoir 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_loremaster_secret_9", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_9_fort", "sourceId": "class_loremaster", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 9",  "fr": "Maître du savoir 9"  } },
+          { "id": "lm_9_ref",  "sourceId": "class_loremaster", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Loremaster 9",  "fr": "Maître du savoir 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_loremaster_true_lore", "class_feature_loremaster_spellcasting"],
+        "grantedModifiers": [
+          { "id": "lm_10_bab",  "sourceId": "class_loremaster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Loremaster 10", "fr": "Maître du savoir 10" } },
+          { "id": "lm_10_will", "sourceId": "class_loremaster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Loremaster 10", "fr": "Maître du savoir 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_mystic_theurge",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mystic Theurge", "fr": "Théurge mystique" },
+    "description": {
+      "en": "The mystic theurge pursues both arcane and divine magic with equal devotion. Each class level advances both an existing arcane and an existing divine spellcasting class simultaneously, making the mystic theurge one of the most versatile dual-spellcasting prestige classes available.",
+      "fr": "Le théurge mystique poursuit avec une égale dévotion la magie arcanique et divine. Chaque niveau de classe fait progresser simultanément une classe de lanceur de sorts arcanique et une classe de lanceur de sorts divin existantes, faisant du théurge mystique l'une des classes de prestige à double incantation les plus polyvalentes."
+    },
+    "tags": ["class", "prestige_class", "class_mystic_theurge", "arcane_caster", "divine_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_arcana.ranks",   "operator": ">=", "value": 6, "errorMessage": "Requires 6 ranks in Knowledge (Arcana)"   },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_religion.ranks", "operator": ">=", "value": 6, "errorMessage": "Requires 6 ranks in Knowledge (Religion)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster", "errorMessage": "Must be able to cast 2nd-level arcane spells"  },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "divine_caster", "errorMessage": "Must be able to cast 2nd-level divine spells"  }
+      ]
+    },
+    "grantedModifiers": [
+      { "id": "mystic_theurge_hit_die",      "sourceId": "class_mystic_theurge", "targetId": "combatStats.hit_die_type",             "value": 4, "type": "base", "sourceName": { "en": "Mystic Theurge", "fr": "Théurge mystique" } },
+      { "id": "mystic_theurge_skill_points", "sourceId": "class_mystic_theurge", "targetId": "attributes.skill_points_per_level", "value": 2, "type": "base", "sourceName": { "en": "Mystic Theurge", "fr": "Théurge mystique" } }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_decipher_script",
+      "skill_knowledge_arcana", "skill_knowledge_religion",
+      "skill_profession", "skill_sense_motive", "skill_spellcraft"
+    ],
+    "recommendedAttributes": ["stat_int", "stat_wis"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_1_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Mystic Theurge 1",  "fr": "Théurge mystique 1"  } },
+          { "id": "mt_1_fort", "sourceId": "class_mystic_theurge", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Mystic Theurge 1",  "fr": "Théurge mystique 1"  } },
+          { "id": "mt_1_ref",  "sourceId": "class_mystic_theurge", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Mystic Theurge 1",  "fr": "Théurge mystique 1"  } },
+          { "id": "mt_1_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Mystic Theurge 1",  "fr": "Théurge mystique 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_2_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 2",  "fr": "Théurge mystique 2"  } },
+          { "id": "mt_2_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 2",  "fr": "Théurge mystique 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_3_fort", "sourceId": "class_mystic_theurge", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 3",  "fr": "Théurge mystique 3"  } },
+          { "id": "mt_3_ref",  "sourceId": "class_mystic_theurge", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 3",  "fr": "Théurge mystique 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_4_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 4",  "fr": "Théurge mystique 4"  } },
+          { "id": "mt_4_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 4",  "fr": "Théurge mystique 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_6_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 6",  "fr": "Théurge mystique 6"  } },
+          { "id": "mt_6_fort", "sourceId": "class_mystic_theurge", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 6",  "fr": "Théurge mystique 6"  } },
+          { "id": "mt_6_ref",  "sourceId": "class_mystic_theurge", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 6",  "fr": "Théurge mystique 6"  } },
+          { "id": "mt_6_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 6",  "fr": "Théurge mystique 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_8_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 8",  "fr": "Théurge mystique 8"  } },
+          { "id": "mt_8_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 8",  "fr": "Théurge mystique 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_9_fort", "sourceId": "class_mystic_theurge", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 9",  "fr": "Théurge mystique 9"  } },
+          { "id": "mt_9_ref",  "sourceId": "class_mystic_theurge", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 9",  "fr": "Théurge mystique 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_mystic_theurge_arcane_spellcasting", "class_feature_mystic_theurge_divine_spellcasting"],
+        "grantedModifiers": [
+          { "id": "mt_10_bab",  "sourceId": "class_mystic_theurge", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 10", "fr": "Théurge mystique 10" } },
+          { "id": "mt_10_will", "sourceId": "class_mystic_theurge", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Mystic Theurge 10", "fr": "Théurge mystique 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_shadowdancer",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Shadowdancer", "fr": "Danseur des ombres" },
+    "description": {
+      "en": "The shadowdancer is a master of shadow and movement, slipping between light and darkness with supernatural ease. Blending the skills of rogue and performer, shadowdancers hide in plain sight, leap between shadows, and summon a loyal shadow companion as they progress.",
+      "fr": "Le danseur des ombres est un maître de l'ombre et du mouvement, se glissant entre la lumière et les ténèbres avec une facilité surnaturelle. En combinant les aptitudes du roublard et de l'artiste, les danseurs des ombres se cachent à la vue de tous, bondissent entre les ombres et évoquent un compagnon ombre loyal à mesure qu'ils progressent."
+    },
+    "tags": ["class", "prestige_class", "class_shadowdancer"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@skills.skill_move_silently.ranks", "operator": ">=", "value": 8,  "errorMessage": "Requires 8 ranks in Move Silently"     },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_hide.ranks",          "operator": ">=", "value": 10, "errorMessage": "Requires 10 ranks in Hide"              },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_perform.ranks",       "operator": ">=", "value": 5,  "errorMessage": "Requires 5 ranks in Perform (dance)"    },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_combat_reflexes", "errorMessage": "Requires the Combat Reflexes feat" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_dodge",           "errorMessage": "Requires the Dodge feat"           },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_mobility",        "errorMessage": "Requires the Mobility feat"        }
+      ]
+    },
+    "grantedModifiers": [
+      { "id": "shadowdancer_hit_die",      "sourceId": "class_shadowdancer", "targetId": "combatStats.hit_die_type",         "value": 8, "type": "base", "sourceName": { "en": "Shadowdancer", "fr": "Danseur des ombres" } },
+      { "id": "shadowdancer_skill_points", "sourceId": "class_shadowdancer", "targetId": "attributes.skill_points_per_level", "value": 6, "type": "base", "sourceName": { "en": "Shadowdancer", "fr": "Danseur des ombres" } }
+    ],
+    "grantedFeatures": [
+      "proficiency_club",
+      "proficiency_crossbow_hand",
+      "proficiency_crossbow_light",
+      "proficiency_crossbow_heavy",
+      "proficiency_dagger",
+      "proficiency_dart",
+      "proficiency_mace",
+      "proficiency_morningstar",
+      "proficiency_quarterstaff",
+      "proficiency_rapier",
+      "proficiency_sap",
+      "proficiency_shortbow",
+      "proficiency_shortbow_composite",
+      "proficiency_short_sword",
+      "proficiency_armor_light"
+    ],
+    "classSkills": [
+      "skill_balance", "skill_bluff", "skill_decipher_script", "skill_diplomacy",
+      "skill_disguise", "skill_escape_artist", "skill_hide", "skill_jump",
+      "skill_listen", "skill_move_silently", "skill_perform", "skill_profession",
+      "skill_search", "skill_sleight_of_hand", "skill_spot", "skill_tumble", "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_cha"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_shadowdancer_hide_in_plain_sight"],
+        "grantedModifiers": [
+          { "id": "sd_1_bab",  "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Shadowdancer 1",  "fr": "Danseur des ombres 1"  } },
+          { "id": "sd_1_fort", "sourceId": "class_shadowdancer", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Shadowdancer 1",  "fr": "Danseur des ombres 1"  } },
+          { "id": "sd_1_ref",  "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 2, "type": "base", "sourceName": { "en": "Shadowdancer 1",  "fr": "Danseur des ombres 1"  } },
+          { "id": "sd_1_will", "sourceId": "class_shadowdancer", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Shadowdancer 1",  "fr": "Danseur des ombres 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_evasion",
+          "class_feature_shadowdancer_darkvision",
+          "class_feature_uncanny_dodge"
+        ],
+        "grantedModifiers": [
+          { "id": "sd_2_bab", "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 2",  "fr": "Danseur des ombres 2"  } },
+          { "id": "sd_2_ref", "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 2",  "fr": "Danseur des ombres 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_shadowdancer_shadow_illusion",
+          "class_feature_shadowdancer_summon_shadow"
+        ],
+        "grantedModifiers": [
+          { "id": "sd_3_bab",  "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 3",  "fr": "Danseur des ombres 3"  } },
+          { "id": "sd_3_fort", "sourceId": "class_shadowdancer", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 3",  "fr": "Danseur des ombres 3"  } },
+          { "id": "sd_3_will", "sourceId": "class_shadowdancer", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 3",  "fr": "Danseur des ombres 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_shadowdancer_shadow_jump_20"],
+        "grantedModifiers": [
+          { "id": "sd_4_bab", "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 4",  "fr": "Danseur des ombres 4"  } },
+          { "id": "sd_4_ref", "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 4",  "fr": "Danseur des ombres 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_shadowdancer_defensive_roll",
+          "class_feature_improved_uncanny_dodge"
+        ],
+        "grantedModifiers": []
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [
+          "class_feature_shadowdancer_shadow_jump_40",
+          "class_feature_shadowdancer_summon_shadow_2"
+        ],
+        "grantedModifiers": [
+          { "id": "sd_6_bab",  "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 6",  "fr": "Danseur des ombres 6"  } },
+          { "id": "sd_6_fort", "sourceId": "class_shadowdancer", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 6",  "fr": "Danseur des ombres 6"  } },
+          { "id": "sd_6_ref",  "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 6",  "fr": "Danseur des ombres 6"  } },
+          { "id": "sd_6_will", "sourceId": "class_shadowdancer", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 6",  "fr": "Danseur des ombres 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_shadowdancer_slippery_mind"],
+        "grantedModifiers": [
+          { "id": "sd_7_bab", "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 7",  "fr": "Danseur des ombres 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_shadowdancer_shadow_jump_80"],
+        "grantedModifiers": [
+          { "id": "sd_8_bab", "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 8",  "fr": "Danseur des ombres 8"  } },
+          { "id": "sd_8_ref", "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 8",  "fr": "Danseur des ombres 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_shadowdancer_summon_shadow_3"],
+        "grantedModifiers": [
+          { "id": "sd_9_fort", "sourceId": "class_shadowdancer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 9",  "fr": "Danseur des ombres 9"  } },
+          { "id": "sd_9_will", "sourceId": "class_shadowdancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 9",  "fr": "Danseur des ombres 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [
+          "class_feature_shadowdancer_shadow_jump_160",
+          "class_feature_improved_evasion"
+        ],
+        "grantedModifiers": [
+          { "id": "sd_10_bab", "sourceId": "class_shadowdancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 10", "fr": "Danseur des ombres 10" } },
+          { "id": "sd_10_ref", "sourceId": "class_shadowdancer", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Shadowdancer 10", "fr": "Danseur des ombres 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_thaumaturgist",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Thaumaturgist", "fr": "Thaumaturge" },
+    "description": {
+      "en": "The thaumaturgist is a specialist in summoning and calling extraplanar creatures, forming lasting alliances with powerful outsiders. Each level advances an existing spellcasting class while granting new conjuration abilities culminating in a permanent planar cohort.",
+      "fr": "Le thaumaturge est un spécialiste de l'évocation et de l'invocation de créatures extraplanaires, forgent des alliances durables avec de puissants extérieurs. Chaque niveau fait progresser une classe de lanceur de sorts existante tout en accordant de nouvelles capacités de conjuration aboutissant à un acolyte planaire permanent."
+    },
+    "tags": ["class", "prestige_class", "class_thaumaturgist", "divine_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_spell_focus_arcane_school_conjuration", "errorMessage": "Requires Spell Focus (Conjuration)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "divine_caster", "errorMessage": "Must be able to cast lesser planar ally" }
+      ]
+    },
+    "grantedModifiers": [
+      { "id": "thaumaturgist_hit_die",      "sourceId": "class_thaumaturgist", "targetId": "combatStats.hit_die_type",         "value": 4, "type": "base", "sourceName": { "en": "Thaumaturgist", "fr": "Thaumaturge" } },
+      { "id": "thaumaturgist_skill_points", "sourceId": "class_thaumaturgist", "targetId": "attributes.skill_points_per_level", "value": 2, "type": "base", "sourceName": { "en": "Thaumaturgist", "fr": "Thaumaturge" } }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_diplomacy",
+      "skill_knowledge_religion", "skill_knowledge_planes",
+      "skill_profession", "skill_sense_motive", "skill_spellcraft"
+    ],
+    "recommendedAttributes": ["stat_wis", "stat_cha"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_thaumaturgist_improved_ally", "class_feature_thaumaturgist_spellcasting"],
+        "grantedModifiers": [
+          { "id": "thaum_1_bab",  "sourceId": "class_thaumaturgist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Thaumaturgist 1", "fr": "Thaumaturge 1" } },
+          { "id": "thaum_1_fort", "sourceId": "class_thaumaturgist", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Thaumaturgist 1", "fr": "Thaumaturge 1" } },
+          { "id": "thaum_1_ref",  "sourceId": "class_thaumaturgist", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Thaumaturgist 1", "fr": "Thaumaturge 1" } },
+          { "id": "thaum_1_will", "sourceId": "class_thaumaturgist", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Thaumaturgist 1", "fr": "Thaumaturge 1" } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_thaumaturgist_augment_summoning", "class_feature_thaumaturgist_spellcasting"],
+        "grantedModifiers": [
+          { "id": "thaum_2_bab",  "sourceId": "class_thaumaturgist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 2", "fr": "Thaumaturge 2" } },
+          { "id": "thaum_2_will", "sourceId": "class_thaumaturgist", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 2", "fr": "Thaumaturge 2" } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_thaumaturgist_extended_summoning", "class_feature_thaumaturgist_spellcasting"],
+        "grantedModifiers": [
+          { "id": "thaum_3_fort", "sourceId": "class_thaumaturgist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 3", "fr": "Thaumaturge 3" } },
+          { "id": "thaum_3_ref",  "sourceId": "class_thaumaturgist", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 3", "fr": "Thaumaturge 3" } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_thaumaturgist_contingent_conjuration", "class_feature_thaumaturgist_spellcasting"],
+        "grantedModifiers": [
+          { "id": "thaum_4_bab",  "sourceId": "class_thaumaturgist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 4", "fr": "Thaumaturge 4" } },
+          { "id": "thaum_4_will", "sourceId": "class_thaumaturgist", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Thaumaturgist 4", "fr": "Thaumaturge 4" } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_thaumaturgist_planar_cohort", "class_feature_thaumaturgist_spellcasting"],
+        "grantedModifiers": []
       }
     ]
   }

@@ -1,5 +1,157 @@
 [
   {
+    "id": "arcane_school_abjuration",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Abjuration",
+      "fr": "Abjuration"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_abjuration"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_conjuration",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Conjuration",
+      "fr": "Invocation"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_conjuration"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_divination",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Divination",
+      "fr": "Divination"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_divination"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_enchantment",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Enchantment",
+      "fr": "Enchantement"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_enchantment"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_evocation",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Evocation",
+      "fr": "Évocation"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_evocation"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_illusion",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Illusion",
+      "fr": "Illusion"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_illusion"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_necromancy",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Necromancy",
+      "fr": "Nécromancie"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_necromancy"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "arcane_school_transmutation",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Transmutation",
+      "fr": "Transmutation"
+    },
+    "description": {
+      "en": "An arcane school of magic, used as a selection target for feats like Spell Focus and Spell Mastery.",
+      "fr": "Une école de magie arcanique, utilisée comme cible de sélection pour des dons comme Focalisation dans un école de magie."
+    },
+    "tags": [
+      "arcane_school",
+      "arcane_school_transmutation"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
     "id": "feat_acrobatic",
     "category": "feat",
     "ruleSource": "srd_core",
@@ -3146,7 +3298,8 @@
           "fr": "Choisissez une compétence"
         },
         "optionsQuery": "category:skill",
-        "maxSelections": 1
+        "maxSelections": 1,
+        "choiceGrantedTagPrefix": "feat_skill_focus_"
       }
     ],
     "grantedModifiers": [
@@ -3242,7 +3395,8 @@
           "fr": "Choisissez une école de magie"
         },
         "optionsQuery": "tag:arcane_school",
-        "maxSelections": 1
+        "maxSelections": 1,
+        "choiceGrantedTagPrefix": "feat_spell_focus_"
       }
     ],
     "grantedModifiers": [],
@@ -3797,7 +3951,8 @@
           "fr": "Choisissez une arme"
         },
         "optionsQuery": "tag:weapon",
-        "maxSelections": 1
+        "maxSelections": 1,
+        "choiceGrantedTagPrefix": "feat_weapon_focus_"
       }
     ],
     "grantedModifiers": [

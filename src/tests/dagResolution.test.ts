@@ -943,3 +943,242 @@ describe('DAG circular dependency safety', () => {
     expect(result.totalValue).toBe(100);
   });
 });
+
+// ============================================================
+// SCENARIO 6: Choice-Derived Sub-Tags (Phase 1.3d)
+//
+// Tests the logic of `choiceGrantedTagPrefix` that the GameEngine
+// `#computeActiveTags()` uses.  Because the GameEngine is a Svelte
+// class (cannot be instantiated in Vitest without a runtime), we
+// test the pure computation logic directly.
+// ============================================================
+
+/**
+ * Pure helper that mirrors GameEngine.#computeActiveTags() choice-subtag logic.
+ * Used to verify the algorithm independently of the Svelte runtime.
+ */
+function computeChoiceSubTags(
+  featureChoices: Array<{ choiceId: string; choiceGrantedTagPrefix?: string }>,
+  selections: Record<string, string[]>
+): string[] {
+  const tags: string[] = [];
+  for (const choice of featureChoices) {
+    if (!choice.choiceGrantedTagPrefix) continue;
+    const selected = selections[choice.choiceId] ?? [];
+    for (const selectedId of selected) {
+      if (selectedId) tags.push(`${choice.choiceGrantedTagPrefix}${selectedId}`);
+    }
+  }
+  return tags;
+}
+
+describe('Choice-derived sub-tags (Phase 1.3d — choiceGrantedTagPrefix)', () => {
+
+  describe('computeChoiceSubTags helper', () => {
+    it('emits no sub-tags when choiceGrantedTagPrefix is absent', () => {
+      const choices = [{ choiceId: 'weapon_choice' }];
+      const selections = { weapon_choice: ['item_longbow'] };
+      expect(computeChoiceSubTags(choices, selections)).toEqual([]);
+    });
+
+    it('emits sub-tag when prefix is set and selection exists', () => {
+      const choices = [{ choiceId: 'weapon_choice', choiceGrantedTagPrefix: 'feat_weapon_focus_' }];
+      const selections = { weapon_choice: ['item_longbow'] };
+      expect(computeChoiceSubTags(choices, selections)).toContain('feat_weapon_focus_item_longbow');
+    });
+
+    it('emits sub-tag for shortbow selection', () => {
+      const choices = [{ choiceId: 'weapon_choice', choiceGrantedTagPrefix: 'feat_weapon_focus_' }];
+      const selections = { weapon_choice: ['item_shortbow'] };
+      expect(computeChoiceSubTags(choices, selections)).toContain('feat_weapon_focus_item_shortbow');
+    });
+
+    it('emits correct sub-tag for Skill Focus (Spellcraft)', () => {
+      const choices = [{ choiceId: 'skill_choice', choiceGrantedTagPrefix: 'feat_skill_focus_' }];
+      const selections = { skill_choice: ['skill_spellcraft'] };
+      expect(computeChoiceSubTags(choices, selections)).toContain('feat_skill_focus_skill_spellcraft');
+    });
+
+    it('emits correct sub-tag for Spell Focus (Conjuration)', () => {
+      const choices = [{ choiceId: 'spell_school_choice', choiceGrantedTagPrefix: 'feat_spell_focus_' }];
+      const selections = { spell_school_choice: ['arcane_school_conjuration'] };
+      expect(computeChoiceSubTags(choices, selections)).toContain('feat_spell_focus_arcane_school_conjuration');
+    });
+
+    it('emits no sub-tag when selection is empty', () => {
+      const choices = [{ choiceId: 'weapon_choice', choiceGrantedTagPrefix: 'feat_weapon_focus_' }];
+      const selections: Record<string, string[]> = {};
+      expect(computeChoiceSubTags(choices, selections)).toEqual([]);
+    });
+
+    it('emits multiple sub-tags for multi-select choices', () => {
+      const choices = [{ choiceId: 'feat_choice', choiceGrantedTagPrefix: 'feat_bonus_feat_' }];
+      const selections = { feat_choice: ['feat_power_attack', 'feat_cleave'] };
+      const tags = computeChoiceSubTags(choices, selections);
+      expect(tags).toContain('feat_bonus_feat_feat_power_attack');
+      expect(tags).toContain('feat_bonus_feat_feat_cleave');
+      expect(tags).toHaveLength(2);
+    });
+
+    it('emits sub-tags from multiple choices on the same feature', () => {
+      const choices = [
+        { choiceId: 'choice_a', choiceGrantedTagPrefix: 'prefix_a_' },
+        { choiceId: 'choice_b', choiceGrantedTagPrefix: 'prefix_b_' },
+      ];
+      const selections = { choice_a: ['item_x'], choice_b: ['item_y'] };
+      const tags = computeChoiceSubTags(choices, selections);
+      expect(tags).toContain('prefix_a_item_x');
+      expect(tags).toContain('prefix_b_item_y');
+    });
+
+    it('skips choices without prefix even when selections exist', () => {
+      const choices = [
+        { choiceId: 'choice_a' },
+        { choiceId: 'choice_b', choiceGrantedTagPrefix: 'prefix_b_' },
+      ];
+      const selections = { choice_a: ['item_x'], choice_b: ['item_y'] };
+      const tags = computeChoiceSubTags(choices, selections);
+      expect(tags).not.toContain('item_x');
+      expect(tags).toContain('prefix_b_item_y');
+    });
+  });
+
+  describe('Prestige class prerequisite evaluation with sub-tags', () => {
+    /**
+     * Simulates the @activeTags that a character would have if they took
+     * Weapon Focus (longbow) — the engine emits feat_weapon_focus_item_longbow
+     * in addition to the static feat_weapon_focus tag.
+     */
+    const contextWithLongbow: CharacterContext = {
+      attributes: {
+        stat_str: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+        stat_dex: { baseValue: 16, totalValue: 16, derivedModifier: 3 },
+        stat_int: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+      },
+      skills: {},
+      combatStats: { bab: { totalValue: 8 } },
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: {},
+      activeTags: [
+        'feat_weapon_focus',
+        'feat_weapon_focus_item_longbow', // emitted by choiceGrantedTagPrefix
+        'feat_point_blank_shot',
+        'feat_precise_shot',
+        'arcane_caster',
+        'race_elf',
+      ],
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    };
+
+    const contextWithDagger: CharacterContext = {
+      ...contextWithLongbow,
+      activeTags: [
+        'feat_weapon_focus',
+        'feat_weapon_focus_item_dagger', // wrong weapon
+        'feat_point_blank_shot',
+        'feat_precise_shot',
+        'arcane_caster',
+        'race_elf',
+      ],
+    };
+
+    const arcaneArcherWeaponFocusNode: LogicNode = {
+      logic: 'OR',
+      nodes: [
+        { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_weapon_focus_item_longbow', errorMessage: 'Requires Weapon Focus (longbow)' },
+        { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_weapon_focus_item_longbow_composite', errorMessage: 'Requires Weapon Focus (composite longbow)' },
+        { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_weapon_focus_item_shortbow', errorMessage: 'Requires Weapon Focus (shortbow)' },
+        { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_weapon_focus_item_shortbow_composite', errorMessage: 'Requires Weapon Focus (composite shortbow)' },
+      ],
+    };
+
+    it('Arcane Archer: passes when character has Weapon Focus (longbow) sub-tag', () => {
+      expect(checkCondition(arcaneArcherWeaponFocusNode, contextWithLongbow)).toBe(true);
+    });
+
+    it('Arcane Archer: fails when character has Weapon Focus (dagger) — wrong weapon', () => {
+      expect(checkCondition(arcaneArcherWeaponFocusNode, contextWithDagger)).toBe(false);
+    });
+
+    it('Arcane Archer: passes when character has Weapon Focus (shortbow) sub-tag', () => {
+      const ctxShortbow: CharacterContext = {
+        ...contextWithLongbow,
+        activeTags: [
+          ...contextWithLongbow.activeTags.filter(t => !t.includes('longbow')),
+          'feat_weapon_focus_item_shortbow',
+        ],
+      };
+      expect(checkCondition(arcaneArcherWeaponFocusNode, ctxShortbow)).toBe(true);
+    });
+
+    it('Thaumaturgist: passes when character has Spell Focus (Conjuration) sub-tag', () => {
+      const node: LogicNode = {
+        logic: 'CONDITION',
+        targetPath: '@activeTags',
+        operator: 'has_tag',
+        value: 'feat_spell_focus_arcane_school_conjuration',
+        errorMessage: 'Requires Spell Focus (Conjuration)',
+      };
+      const ctxConjuration: CharacterContext = {
+        ...contextWithLongbow,
+        activeTags: [
+          'feat_spell_focus',
+          'feat_spell_focus_arcane_school_conjuration',
+          'divine_caster',
+        ],
+      };
+      expect(checkCondition(node, ctxConjuration)).toBe(true);
+    });
+
+    it('Thaumaturgist: fails when character has Spell Focus (Necromancy) — wrong school', () => {
+      const node: LogicNode = {
+        logic: 'CONDITION',
+        targetPath: '@activeTags',
+        operator: 'has_tag',
+        value: 'feat_spell_focus_arcane_school_conjuration',
+      };
+      const ctxNecromancy: CharacterContext = {
+        ...contextWithLongbow,
+        activeTags: ['feat_spell_focus', 'feat_spell_focus_arcane_school_necromancy', 'divine_caster'],
+      };
+      expect(checkCondition(node, ctxNecromancy)).toBe(false);
+    });
+
+    it('Archmage: passes when character has Skill Focus (Spellcraft) sub-tag', () => {
+      const node: LogicNode = {
+        logic: 'CONDITION',
+        targetPath: '@activeTags',
+        operator: 'has_tag',
+        value: 'feat_skill_focus_skill_spellcraft',
+        errorMessage: 'Requires Skill Focus (Spellcraft)',
+      };
+      const ctxSkillFocus: CharacterContext = {
+        ...contextWithLongbow,
+        activeTags: [
+          'feat_skill_focus',
+          'feat_skill_focus_skill_spellcraft',
+          'arcane_caster',
+        ],
+      };
+      expect(checkCondition(node, ctxSkillFocus)).toBe(true);
+    });
+
+    it('Archmage: fails when character has Skill Focus (Knowledge Arcana) — wrong skill', () => {
+      const node: LogicNode = {
+        logic: 'CONDITION',
+        targetPath: '@activeTags',
+        operator: 'has_tag',
+        value: 'feat_skill_focus_skill_spellcraft',
+      };
+      const ctxWrongSkill: CharacterContext = {
+        ...contextWithLongbow,
+        activeTags: ['feat_skill_focus', 'feat_skill_focus_skill_knowledge_arcana', 'arcane_caster'],
+      };
+      expect(checkCondition(node, ctxWrongSkill)).toBe(false);
+    });
+  });
+});

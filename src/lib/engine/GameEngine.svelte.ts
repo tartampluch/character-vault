@@ -3060,8 +3060,32 @@ export class GameEngine {
       if (!instance.isActive) continue;
       const feature = dataLoader.getFeature(instance.featureId);
       if (!feature) continue;
+
+      // 1. Add the feature's own static tags
       for (const tag of feature.tags) {
         tagSet.add(tag);
+      }
+
+      // 2. Emit choice-derived sub-tags from choices with `choiceGrantedTagPrefix`.
+      //    For each FeatureChoice that has a `choiceGrantedTagPrefix`, every selected
+      //    item ID is combined with the prefix to produce a specific active tag.
+      //
+      //    Example: feat_weapon_focus with choiceId="weapon_choice", prefix="feat_weapon_focus_"
+      //    and selection ["item_longbow"] → emits "feat_weapon_focus_item_longbow"
+      //
+      //    This allows prerequisite conditions on OTHER features to precisely check
+      //    parameterized feat selections using the standard `has_tag` operator.
+      if (feature.choices && instance.selections) {
+        for (const choice of feature.choices) {
+          if (!choice.choiceGrantedTagPrefix) continue;
+          const selected = instance.selections[choice.choiceId];
+          if (!selected) continue;
+          for (const selectedId of selected) {
+            if (selectedId) {
+              tagSet.add(`${choice.choiceGrantedTagPrefix}${selectedId}`);
+            }
+          }
+        }
       }
     }
 

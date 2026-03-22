@@ -167,6 +167,66 @@ export interface FeatureChoice {
    * Most choices are 1 (exclusive). Some allow multiple (e.g., some homebrew feats).
    */
   maxSelections: number;
+
+  /**
+   * Optional tag prefix for choice-derived sub-tags.
+   *
+   * WHY THIS EXISTS — THE PARAMETERIZED FEAT PREREQUISITE PROBLEM:
+   *   Feats like Weapon Focus, Skill Focus, and Spell Focus are parameterized:
+   *   the player picks a specific weapon/skill/school. These selections are stored
+   *   in `ActiveFeatureInstance.selections` but are NOT reflected in `@activeTags`
+   *   without this field. Consequently, a prerequisite like "requires Weapon Focus
+   *   (longbow)" cannot be expressed — `has_tag "feat_weapon_focus"` passes for ANY
+   *   weapon, not specifically longbow.
+   *
+   * HOW IT WORKS:
+   *   When `choiceGrantedTagPrefix` is set on a `FeatureChoice`, the GameEngine
+   *   (Phase 0 — `#computeActiveTags()`) inspects every `ActiveFeatureInstance`'s
+   *   `selections` map for this `choiceId`. For each selected item ID, it emits
+   *   a new active tag: `<choiceGrantedTagPrefix><selectedId>`.
+   *
+   *   This happens at the same phase as static tag collection, so the derived
+   *   sub-tags are available to ALL prerequisitesNode and conditionNode evaluations.
+   *
+   * EXAMPLE — Weapon Focus (feat_weapon_focus):
+   * ```json
+   * {
+   *   "choiceId": "weapon_choice",
+   *   "optionsQuery": "tag:weapon",
+   *   "maxSelections": 1,
+   *   "choiceGrantedTagPrefix": "feat_weapon_focus_"
+   * }
+   * ```
+   * Player selects `item_longbow` → engine emits `feat_weapon_focus_item_longbow`.
+   * Arcane Archer can then require: `has_tag "feat_weapon_focus_item_longbow"`.
+   *
+   * EXAMPLE — Spell Focus (feat_spell_focus):
+   * ```json
+   * {
+   *   "choiceId": "spell_school_choice",
+   *   "optionsQuery": "tag:arcane_school",
+   *   "maxSelections": 1,
+   *   "choiceGrantedTagPrefix": "feat_spell_focus_"
+   * }
+   * ```
+   * Player selects `arcane_school_conjuration` → emits `feat_spell_focus_arcane_school_conjuration`.
+   * Thaumaturgist can then require: `has_tag "feat_spell_focus_arcane_school_conjuration"`.
+   *
+   * EXAMPLE — Skill Focus (feat_skill_focus):
+   * Player selects `skill_spellcraft` → emits `feat_skill_focus_skill_spellcraft`.
+   * Archmage can then require: `has_tag "feat_skill_focus_skill_spellcraft"`.
+   *
+   * MULTIPLE SELECTIONS (maxSelections > 1):
+   *   All selected IDs emit tags. A character who selected multiple schools for
+   *   Spell Focus (if the feat were multiselect) would get one sub-tag per school.
+   *
+   * NAMING CONVENTION:
+   *   Prefix should end with `_` and mirror the feat's own ID for readability:
+   *   `feat_weapon_focus_`, `feat_skill_focus_`, `feat_spell_focus_`.
+   *
+   * @see ARCHITECTURE.md section 5.3 — FeatureChoice and active tag derivation
+   */
+  choiceGrantedTagPrefix?: string;
 }
 
 // =============================================================================

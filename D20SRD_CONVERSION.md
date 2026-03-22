@@ -1409,7 +1409,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ### C-11c / C-12c — Prestige Classes batch 3/5: Duelist, Dwarven Defender, Eldritch Knight
 
-- [ ] **C-11c** — Convert structure: Duelist, Dwarven Defender, Eldritch Knight
+- [x] **C-11c** — Convert structure: Duelist, Dwarven Defender, Eldritch Knight
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/duelist.html`
@@ -1418,7 +1418,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [ ] **C-12c** — Convert features for: Duelist, Dwarven Defender, Eldritch Knight
+- [x] **C-12c** — Convert features for: Duelist, Dwarven Defender, Eldritch Knight
 
 **Source files:** Same as C-11c.
 
@@ -1426,7 +1426,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ### C-11d / C-12d — Prestige Classes batch 4/5: Hierophant, Horizon Walker, Loremaster
 
-- [ ] **C-11d** — Convert structure: Hierophant, Horizon Walker, Loremaster
+- [x] **C-11d** — Convert structure: Hierophant, Horizon Walker, Loremaster
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/hierophant.html`
@@ -1435,7 +1435,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [ ] **C-12d** — Convert features for: Hierophant, Horizon Walker, Loremaster
+- [x] **C-12d** — Convert features for: Hierophant, Horizon Walker, Loremaster
 
 **Source files:** Same as C-11d.
 
@@ -1443,7 +1443,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ### C-11e / C-12e — Prestige Classes batch 5/5: Mystic Theurge, Shadowdancer, Thaumaturgist + full validation
 
-- [ ] **C-11e** — Convert structure: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
+- [x] **C-11e** — Convert structure: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/mysticTheurge.html`
@@ -1452,7 +1452,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [ ] **C-12e** — Convert features for: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
+- [x] **C-12e** — Convert features for: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
 
 **Source files:** Same as C-11e.
 
