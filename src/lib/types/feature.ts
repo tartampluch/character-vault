@@ -33,7 +33,7 @@
 import type { ID } from './primitives';
 import type { LocalizedString } from './i18n';
 import type { LogicNode } from './logic';
-import type { Modifier } from './pipeline';
+import type { Modifier, ResourcePool } from './pipeline';
 
 // =============================================================================
 // FEATURE CATEGORY
@@ -293,6 +293,173 @@ export interface LevelProgressionEntry {
 }
 
 // =============================================================================
+// RESOURCE POOL TEMPLATE — Charge/use pools scoped to item instances
+// =============================================================================
+
+/**
+ * Declares a resource pool that is created per-instance when an item is equipped.
+ *
+ * WHY THIS EXISTS — INSTANCE-SCOPED CHARGES:
+ *   Charged items (Ring of the Ram, wands, staves) have charges that belong to
+ *   the SPECIFIC ITEM INSTANCE, not to the character. When the item is traded,
+ *   its remaining charges travel with it.
+ *
+ *   This template is the STATIC SCHEMA on the Feature definition (written once
+ *   in JSON by the content author). The RUNTIME STATE (current charge count)
+ *   is stored in `ActiveFeatureInstance.itemResourcePools[poolId]`.
+ *
+ * LIFECYCLE:
+ *   1. Content author adds `resourcePoolTemplates` to the Feature JSON.
+ *   2. When the item is first equipped (added to activeFeatures), the engine
+ *      calls `initItemResourcePools()` to create any missing pool entries
+ *      in `ActiveFeatureInstance.itemResourcePools` using `defaultCurrent`.
+ *   3. During play, charges are spent via `spendItemPoolCharge()`.
+ *   4. Calendar/rest resets restore pools matching their `resetCondition`.
+ *
+ * @see ActiveFeatureInstance.itemResourcePools — the runtime state storage
+ * @see GameEngine.initItemResourcePools()       — idempotent initialisation
+ * @see ARCHITECTURE.md section 5.7              — full design documentation
+ *
+ * @example Ring of the Ram — 50 finite charges, never auto-refills:
+ * ```json
+ * {
+ *   "poolId": "charges",
+ *   "label": { "en": "Ram Charges", "fr": "Charges du bélier" },
+ *   "maxPipelineId": "combatStats.ram_charges_max",
+ *   "defaultCurrent": 50,
+ *   "resetCondition": "never"
+ * }
+ * ```
+ *
+ * @example Ring of Spell Turning — 3 uses/day, resets at dawn:
+ * ```json
+ * {
+ *   "poolId": "spell_turning_uses",
+ *   "label": { "en": "Spell Turning (3/day)", "fr": "Renvoi des sorts (3/jour)" },
+ *   "maxPipelineId": "combatStats.spell_turning_max",
+ *   "defaultCurrent": 3,
+ *   "resetCondition": "per_day"
+ * }
+ * ```
+ */
+export interface ResourcePoolTemplate {
+  /**
+   * Stable identifier for this pool within the item instance.
+   * Referenced as the key in `ActiveFeatureInstance.itemResourcePools`.
+   * Convention: short kebab-case noun ("charges", "spell_turning_uses", "daily_call").
+   */
+  poolId: string;
+
+  /**
+   * Localized display label for this pool.
+   * Shown on the item card in the Inventory tab.
+   * Example: { en: "Ram Charges", fr: "Charges du bélier" }
+   */
+  label: LocalizedString;
+
+  /**
+   * ID of the pipeline that computes the MAXIMUM allowed value.
+   *
+   * For most charged items this is a simple config pipeline set to a fixed number
+   * (e.g., "combatStats.ram_charges_max" → totalValue = 50).
+   * For scaling items it could depend on caster level or character level.
+   */
+  maxPipelineId: ID;
+
+  /**
+   * The starting current value when this pool is first initialised on an item instance.
+   *
+   * D&D 3.5 convention:
+   *   - Newly created items start at maximum (defaultCurrent = max).
+   *   - Found/looted items may have fewer charges — the GM sets
+   *     `ActiveFeatureInstance.itemResourcePools[poolId]` directly.
+   *
+   * `initItemResourcePools()` uses this value ONLY for pools not yet present
+   * in `itemResourcePools`. It never overwrites an existing (depleted) count.
+   */
+  defaultCurrent: number;
+
+  /**
+   * When and how this pool automatically resets.
+   *
+   * Shares the same union as `ResourcePool.resetCondition` (Phase 1.6 + E-1):
+   *   - `"never"`:    Finite charges — Ring of the Ram, Three Wishes, wands.
+   *   - `"per_day"`:  Resets at dawn — Ring of Djinni Calling (1/day).
+   *   - `"per_week"`: Resets weekly  — Elemental Command chain lightning (1/week).
+   *   - `"long_rest"`: Recovers on rest — unusual for items but possible.
+   *   - `"encounter"`: Recovers per encounter — very rare for items.
+   */
+  resetCondition: ResourcePool['resetCondition'];
+
+  /**
+   * Amount restored per tick for `"per_turn"` or `"per_round"` reset conditions.
+   * Rarely used on items but included for completeness with `ResourcePool.rechargeAmount`.
+   * Accepts a number or a Math Parser formula string.
+   */
+  rechargeAmount?: number | string;
+}
+
+// =============================================================================
+// ACTIVATION TIER — One option in a tiered variable-cost activation
+// =============================================================================
+
+/**
+ * One option in a `Feature.activation.tieredResourceCosts` array.
+ *
+ * Represents a single power level the player can choose when activating an
+ * ability that offers variable charge expenditure (e.g., Ring of the Ram).
+ *
+ * The player selects a tier at activation time. The engine:
+ *   1. Validates the choice (tier index in bounds, pool has enough charges).
+ *   2. Deducts `cost` from the pool identified by `targetPoolId`.
+ *   3. Makes `grantedModifiers` available to the Dice Engine for the current
+ *      roll, as transient context modifiers valid for this activation only.
+ *
+ * @see Feature.activation.tieredResourceCosts — parent field
+ * @see GameEngine.activateWithTier()          — execution method
+ * @see ARCHITECTURE.md section 5              — tiered activation specification
+ */
+export interface ActivationTier {
+  /**
+   * Localized label describing this power tier.
+   * Displayed in the tier selector UI.
+   * Example: { en: "2 Charges: 2d6 + bull rush +1", fr: "2 Charges : 2d6 + brise-adversaire +1" }
+   */
+  label: LocalizedString;
+
+  /**
+   * The ID of the pool to deduct charges from.
+   * References a key in `ActiveFeatureInstance.itemResourcePools` (E-2)
+   * OR a `Character.resources` pool ID for class-based tiered abilities.
+   */
+  targetPoolId: string;
+
+  /**
+   * Number of charges (or uses) to deduct when this tier is chosen.
+   * Formula strings are supported for dynamic cost scaling:
+   *   Example: `"floor(@classLevels.class_soulknife / 4)"` (unusual but valid).
+   */
+  cost: number | string;
+
+  /**
+   * Transient modifiers activated for this specific use of the ability.
+   *
+   * These modifiers are NOT permanently added to the character sheet. They
+   * are only active for the CURRENT activation (the single attack, roll, or
+   * effect triggered by choosing this tier). After the Dice Engine consumes them,
+   * they are discarded.
+   *
+   * Use case: Tier 2 of Ring of the Ram grants +1 to the bull rush check.
+   * The `grantedModifiers` here hold that +1. They are applied only to the
+   * roll triggered by this activation.
+   *
+   * Empty array: the tier's effect is purely descriptive (handled by the UI
+   * constructing the correct dice formula, e.g., "2d6" vs "1d6").
+   */
+  grantedModifiers: Modifier[];
+}
+
+// =============================================================================
 // FEATURE — The central data block
 // =============================================================================
 
@@ -501,6 +668,30 @@ export interface Feature {
   classSkills?: ID[];
 
   /**
+   * Optional charge / use pools scoped to each individual instance of this item.
+   *
+   * Present ONLY on features that represent charged items (rings with X/day or
+   * X/week abilities, wands, staves, rings with finite charges, etc.).
+   * Absent (undefined) on all other features (races, classes, feats, spells, etc.).
+   *
+   * Each template declares ONE pool. Items with multiple independent charge pools
+   * (e.g., a ring with both a daily ability AND a weekly ability) declare multiple
+   * templates in this array.
+   *
+   * ENGINE CONTRACT:
+   *   When an item Feature is added to a character's `activeFeatures`, the engine
+   *   calls `initItemResourcePools(instance, feature)` to create `itemResourcePools`
+   *   entries for any templates not yet present. This is idempotent — a second call
+   *   on the same instance adds only NEW pools, never resets existing ones.
+   *
+   * @see ResourcePoolTemplate — the template interface
+   * @see ActiveFeatureInstance.itemResourcePools — the per-instance runtime state
+   * @see GameEngine.initItemResourcePools() — initialisation method
+   * @see ARCHITECTURE.md section 5.7 — full design documentation
+   */
+  resourcePoolTemplates?: ResourcePoolTemplate[];
+
+  /**
    * Optional activation data for active abilities (Ex/Su/Sp).
    *
    * Presence of this field indicates the feature requires an action to use
@@ -519,17 +710,110 @@ export interface Feature {
       | 'free'
       | 'full_round'
       | 'minutes'
-      | 'hours';
+      | 'hours'
+      | 'passive'    // Always active, no player action required (Enhancement E-4)
+      | 'reaction';  // Fires automatically in response to a trigger event (Enhancement E-4)
 
     /**
      * Optional resource consumed when this ability is activated.
      * `targetId` references a `ResourcePool.id` (e.g., "resources.turn_undead").
      * `cost` is the amount consumed per activation (number or formula string).
+     *
+     * Mutually exclusive with `tieredResourceCosts` — specify one or the other,
+     * not both. If both are present, `tieredResourceCosts` takes precedence.
      */
     resourceCost?: {
       targetId: ID;
       cost: number | string;
     };
+
+    /**
+     * Optional tiered resource costs for variable-spend abilities.
+     *
+     * WHY THIS EXISTS — THE VARIABLE-CHARGE PROBLEM:
+     *   Some abilities (Ring of the Ram, many Rods and Staves in D&D 3.5) allow the
+     *   player to choose HOW MANY charges to spend. More charges = stronger effect.
+     *
+     *   Example — Ring of the Ram:
+     *     Spend 1 charge → 1d6 damage, no bonus on bull rush.
+     *     Spend 2 charges → 2d6 damage, +1 on bull rush.
+     *     Spend 3 charges → 3d6 damage, +2 on bull rush.
+     *
+     *   The standard `resourceCost` field cannot represent this because the cost
+     *   is not fixed. The player must choose a tier at activation time.
+     *
+     * HOW IT WORKS:
+     *   1. The UI (Special Abilities panel / Inventory item card) reads `tieredResourceCosts`
+     *      and renders a tier selector ("1 charge / 2 charges / 3 charges").
+     *   2. The player selects a tier.
+     *   3. The engine calls `activateWithTier(instanceId, poolId, tierIndex)`:
+     *      a. Validates the selected tier index is within bounds.
+     *      b. Checks the pool has enough charges (pools identified by
+     *         `tieredResourceCosts[i].targetPoolId`).
+     *      c. Deducts the tier's `cost` from the pool.
+     *      d. Makes the tier's `grantedModifiers` available to the Dice Engine
+     *         for the current roll context.
+     *
+     * RELATIONSHIP TO `resourceCost`:
+     *   Use `resourceCost` for fixed-cost abilities (one cost, always the same).
+     *   Use `tieredResourceCosts` when the player has a choice of power level.
+     *   Do NOT set both on the same activation — the engine ignores `resourceCost`
+     *   when `tieredResourceCosts` is present.
+     *
+     * @see ARCHITECTURE.md section 5 — activation.tieredResourceCosts
+     * @see GameEngine.activateWithTier() — the execution method
+     *
+     * @example Ring of the Ram activation tiers:
+     * ```json
+     * "tieredResourceCosts": [
+     *   {
+     *     "label": { "en": "1 Charge: 1d6 damage", "fr": "1 Charge : 1d6 dégâts" },
+     *     "targetPoolId": "charges",
+     *     "cost": 1,
+     *     "grantedModifiers": [
+     *       { "id": "ram_1_dmg", "sourceId": "item_ring_ram", "targetId": "combatStats.attack_bonus",
+     *         "value": 0, "type": "untyped", "sourceName": { "en": "Ram 1 charge" } }
+     *     ]
+     *   },
+     *   {
+     *     "label": { "en": "2 Charges: 2d6 + bull rush +1", "fr": "2 Charges : 2d6 + brise-adversaire +1" },
+     *     "targetPoolId": "charges",
+     *     "cost": 2,
+     *     "grantedModifiers": []
+     *   },
+     *   {
+     *     "label": { "en": "3 Charges: 3d6 + bull rush +2", "fr": "3 Charges : 3d6 + brise-adversaire +2" },
+     *     "targetPoolId": "charges",
+     *     "cost": 3,
+     *     "grantedModifiers": []
+     *   }
+     * ]
+     * ```
+     */
+    tieredResourceCosts?: ActivationTier[];
+
+    /**
+     * Optional trigger event identifier for `"reaction"` action types.
+     *
+     * Only meaningful when `actionType === "reaction"`. Indicates the in-world
+     * event that automatically fires this ability. The combat tracker / event
+     * system reads this field to know when to invoke the reaction.
+     *
+     * STANDARD TRIGGER EVENTS:
+     *   - `"on_fall"`:          Activates when the wearer falls > 5 feet.
+     *                           (Ring of Feather Falling)
+     *   - `"on_spell_targeted"`: Activates when a spell is cast at the wearer.
+     *                           (Ring of Counterspells, Spell Turning)
+     *   - `"on_damage_taken"`:  Activates after the wearer takes X damage.
+     *   - `"on_attack_received"`: Activates when the wearer is attacked.
+     *
+     * Custom trigger event strings are allowed (open string for future extensibility).
+     * The engine does not validate the string — it is used as a lookup key by
+     * the combat event dispatcher.
+     *
+     * @see Enhancement E-4 — trigger-based activation full documentation
+     */
+    triggerEvent?: string;
   };
 
   /**

@@ -136,6 +136,23 @@ export interface Modifier {
    *   - Skills:           "skills.skill_climb", "skills.skill_jump"
    *   - Resources:        "resources.hp.maxValue" (via the maxPipelineId pointer)
    *   - Custom homebrew:  Any ID — the engine auto-creates the pipeline on first encounter.
+   *
+   * SPECIAL PREFIX — `"attacker.*"` (Enhancement E-5):
+   *   Modifiers whose `targetId` begins with `"attacker."` are attacker modifiers.
+   *   They impose penalties on incoming attackers rather than on the modifier owner.
+   *
+   *   These modifiers are NEVER included in the owner's static pipeline totals.
+   *   They are collected separately from the DAG and applied at Dice Engine roll time,
+   *   targeting the attacker's roll (not the defender's sheet).
+   *
+   *   The `"attacker."` prefix is stripped at resolution time — the remainder is treated
+   *   as a pipeline path on the attacker's context.
+   *
+   *   Example: `"attacker.combatStats.attack_bonus"` with `value: -1` and
+   *   `situationalContext: "vs_air_elementals"` → the attacking air elemental
+   *   takes −1 to their attack roll.
+   *
+   *   @see ARCHITECTURE.md section 4.6 — `attacker.*` target namespace full documentation
    */
   targetId: ID;
 
@@ -595,12 +612,37 @@ export interface ResourcePool {
    * The condition under which this resource naturally resets (or incrementally recharges).
    *
    * ─── FULL RESET (restore to maximum) ───────────────────────────────────────
-   * - `"long_rest"`:  D&D 3.5 "8 hours of restful sleep" (SRD standard for spells, HP).
-   * - `"short_rest"`: Optional house rule (not default D&D 3.5 — typically for variants).
-   * - `"encounter"`:  Resets at the start of each combat encounter (some class abilities).
-   *                   Triggered by `GameEngine.triggerEncounterReset()`.
-   * - `"never"`:      Does not reset automatically (e.g., item charges, once-per-day abilities
-   *                   on items, XP-spent powers). Requires an explicit action or rest mechanic.
+ * - `"long_rest"`:  D&D 3.5 "8 hours of restful sleep" (SRD standard for spells, HP).
+ * - `"short_rest"`: Optional house rule (not default D&D 3.5 — typically for variants).
+ * - `"encounter"`:  Resets at the start of each combat encounter (some class abilities).
+ *                   Triggered by `GameEngine.triggerEncounterReset()`.
+ * - `"never"`:      Does not reset automatically (e.g., finite item charges like Ring of
+ *                   the Ram's 50 charges, Ring of Three Wishes gems, XP-spent powers).
+ *                   Requires an explicit restore action or a GM override.
+ *
+ * ─── CALENDAR RESET (restore to maximum at a fixed in-game time boundary) ───
+ * - `"per_day"`:    Resets at DAWN each in-game day, regardless of whether the character
+ *                   slept. This is distinct from `"long_rest"` — a character who stays
+ *                   awake all night still sees dawn and has their X/day charges reset.
+ *                   Triggered by `GameEngine.triggerDawnReset()`.
+ *                   Used for: X/day ring abilities (Ring of Djinni Calling 1/day, Ring of
+ *                   Spell Turning 3/day), X/day item charges, class features stated as
+ *                   "once per day" that reset independently of rest (e.g., some activated
+ *                   item abilities on the Elemental Command rings).
+ *
+ * - `"per_week"`:   Resets once per in-game WEEK, typically at the GM's discretion.
+ *                   Triggered by `GameEngine.triggerWeeklyReset()`.
+ *                   Used for: X/week ring abilities (Elemental Command rings:
+ *                   chain lightning 1/week, ice storm 2/week, etc.), rare X/week item
+ *                   powers added by magic item tables in the SRD.
+ *
+ * D&D 3.5 DESIGN RATIONALE — "per_day" vs "long_rest":
+ *   The SRD consistently differentiates between abilities that reset "per day" (calendar)
+ *   and resources that require "8 hours of restful sleep" to recover. A Ring of Djinni
+ *   Calling can be used once per day at midnight+1 ms, whether or not the wearer slept.
+ *   Spell slots, however, explicitly need sleep. By separating these into two conditions,
+ *   the engine correctly handles adventuring parties that skip rest while still allowing
+ *   daily-reset items to function on their calendar schedule.
    *
    * ─── INCREMENTAL RECHARGE (add `rechargeAmount` per tick, capped at max) ──
    * - `"per_turn"`:   Recharges at the START OF THE CHARACTER'S OWN TURN each round.
@@ -640,7 +682,9 @@ export interface ResourcePool {
     | 'encounter'
     | 'never'
     | 'per_turn'
-    | 'per_round';
+    | 'per_round'
+    | 'per_day'   // Calendar dawn reset — X/day item charges, independent of sleep
+    | 'per_week'; // Calendar weekly reset — X/week item abilities
 
   /**
    * Amount restored per tick for `"per_turn"` and `"per_round"` reset conditions.

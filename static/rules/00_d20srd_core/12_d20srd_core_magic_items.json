@@ -136,7 +136,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_climbing_improved",
@@ -173,7 +176,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_counterspells",
@@ -198,7 +204,11 @@
     "hardness": 10,
     "hpMax": 2,
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "reaction",
+      "triggerEvent": "on_spell_targeted"
+    }
   },
   {
     "id": "item_ring_djinni_calling",
@@ -226,7 +236,19 @@
       "actionType": "standard"
     },
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "djinni_call",
+        "label": {
+          "en": "Djinni Call (1/day)",
+          "fr": "Appel du djinn (1/jour)"
+        },
+        "maxPipelineId": "combatStats.djinni_call_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
   },
   {
     "id": "item_ring_elemental_command_air",
@@ -297,9 +319,56 @@
         "targetId": "combatStats.energy_resistance_electricity",
         "value": 10,
         "type": "resistance"
+      },
+      {
+        "id": "item_ring_elemental_command_air_attacker_penalty",
+        "sourceId": "item_ring_elemental_command_air",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Air)",
+          "fr": "Anneau de commandement élémentaire (Air)"
+        },
+        "targetId": "attacker.combatStats.attack_bonus",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "air_elemental"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "gust_of_wind",
+        "label": {
+          "en": "Gust of Wind (2/day)",
+          "fr": "Rafale de vent (2/jour)"
+        },
+        "maxPipelineId": "combatStats.gust_wind_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "air_walk",
+        "label": {
+          "en": "Air Walk (1/day)",
+          "fr": "Marche dans les airs (1/jour)"
+        },
+        "maxPipelineId": "combatStats.air_walk_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "chain_lightning",
+        "label": {
+          "en": "Chain Lightning (1/week)",
+          "fr": "Éclair multiple (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.chain_lightning_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      }
+    ],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_elemental_command_earth",
@@ -359,9 +428,63 @@
         "value": -2,
         "type": "untyped",
         "situationalContext": "vs_air_or_electricity_effects"
+      },
+      {
+        "id": "item_ring_elemental_command_earth_attacker_penalty",
+        "sourceId": "item_ring_elemental_command_earth",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Earth)",
+          "fr": "Anneau de commandement élémentaire (Terre)"
+        },
+        "targetId": "attacker.combatStats.attack_bonus",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "earth_elemental"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "stone_shape",
+        "label": {
+          "en": "Stone Shape (2/day)",
+          "fr": "Façonnage de la pierre (2/jour)"
+        },
+        "maxPipelineId": "combatStats.stone_shape_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "wall_of_stone",
+        "label": {
+          "en": "Wall of Stone (1/day)",
+          "fr": "Mur de pierre (1/jour)"
+        },
+        "maxPipelineId": "combatStats.wall_stone_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "stoneskin",
+        "label": {
+          "en": "Stoneskin (1/week)",
+          "fr": "Peau de pierre (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.stoneskin_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      },
+      {
+        "poolId": "passwall",
+        "label": {
+          "en": "Passwall (2/week)",
+          "fr": "Traversée des murs (2/semaine)"
+        },
+        "maxPipelineId": "combatStats.passwall_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_week"
+      }
+    ]
   },
   {
     "id": "item_ring_elemental_command_fire",
@@ -432,9 +555,53 @@
         "value": -2,
         "type": "untyped",
         "situationalContext": "vs_water_or_cold_effects"
+      },
+      {
+        "id": "item_ring_elemental_command_fire_attacker_penalty",
+        "sourceId": "item_ring_elemental_command_fire",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Fire)",
+          "fr": "Anneau de commandement élémentaire (Feu)"
+        },
+        "targetId": "attacker.combatStats.attack_bonus",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "fire_elemental"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "flaming_sphere",
+        "label": {
+          "en": "Flaming Sphere (2/day)",
+          "fr": "Sphère de feu (2/jour)"
+        },
+        "maxPipelineId": "combatStats.flaming_sphere_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "wall_of_fire",
+        "label": {
+          "en": "Wall of Fire (1/day)",
+          "fr": "Mur de feu (1/jour)"
+        },
+        "maxPipelineId": "combatStats.wall_fire_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "flame_strike",
+        "label": {
+          "en": "Flame Strike (2/week)",
+          "fr": "Colonne de feu (2/semaine)"
+        },
+        "maxPipelineId": "combatStats.flame_strike_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_week"
+      }
+    ]
   },
   {
     "id": "item_ring_elemental_command_water",
@@ -494,9 +661,53 @@
         "value": -2,
         "type": "untyped",
         "situationalContext": "vs_fire_effects"
+      },
+      {
+        "id": "item_ring_elemental_command_water_attacker_penalty",
+        "sourceId": "item_ring_elemental_command_water",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Water)",
+          "fr": "Anneau de commandement élémentaire (Eau)"
+        },
+        "targetId": "attacker.combatStats.attack_bonus",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "water_elemental"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "wall_of_ice",
+        "label": {
+          "en": "Wall of Ice (1/day)",
+          "fr": "Mur de glace (1/jour)"
+        },
+        "maxPipelineId": "combatStats.wall_ice_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "ice_storm",
+        "label": {
+          "en": "Ice Storm (2/week)",
+          "fr": "Tempête de grêle (2/semaine)"
+        },
+        "maxPipelineId": "combatStats.ice_storm_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_week"
+      },
+      {
+        "poolId": "control_water",
+        "label": {
+          "en": "Control Water (2/week)",
+          "fr": "Contrôle de l'eau (2/semaine)"
+        },
+        "maxPipelineId": "combatStats.control_water_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_week"
+      }
+    ]
   },
   {
     "id": "item_ring_energy_resistance_minor_acid",
@@ -1118,7 +1329,11 @@
     "hardness": 10,
     "hpMax": 2,
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "reaction",
+      "triggerEvent": "on_fall"
+    }
   },
   {
     "id": "item_ring_force_shield",
@@ -1282,7 +1497,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_jumping_improved",
@@ -1319,7 +1537,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_meld_into_stone",
@@ -1582,10 +1803,75 @@
     "hardness": 10,
     "hpMax": 2,
     "activation": {
-      "actionType": "standard"
+      "actionType": "standard",
+      "tieredResourceCosts": [
+        {
+          "label": {
+            "en": "1 Charge: 1d6 damage",
+            "fr": "1 Charge : 1d6 dégâts"
+          },
+          "targetPoolId": "charges",
+          "cost": 1,
+          "grantedModifiers": []
+        },
+        {
+          "label": {
+            "en": "2 Charges: 2d6 damage, bull rush +1 (STR 27)",
+            "fr": "2 Charges : 2d6 dégâts, brise-adversaire +1 (FOR 27)"
+          },
+          "targetPoolId": "charges",
+          "cost": 2,
+          "grantedModifiers": [
+            {
+              "id": "ram_tier2_bullrush",
+              "sourceId": "item_ring_ram",
+              "sourceName": {
+                "en": "Ring of the Ram (2 charges)",
+                "fr": "Anneau du bélier (2 charges)"
+              },
+              "targetId": "combatStats.bull_rush_bonus",
+              "value": 1,
+              "type": "untyped"
+            }
+          ]
+        },
+        {
+          "label": {
+            "en": "3 Charges: 3d6 damage, bull rush +2 (STR 29)",
+            "fr": "3 Charges : 3d6 dégâts, brise-adversaire +2 (FOR 29)"
+          },
+          "targetPoolId": "charges",
+          "cost": 3,
+          "grantedModifiers": [
+            {
+              "id": "ram_tier3_bullrush",
+              "sourceId": "item_ring_ram",
+              "sourceName": {
+                "en": "Ring of the Ram (3 charges)",
+                "fr": "Anneau du bélier (3 charges)"
+              },
+              "targetId": "combatStats.bull_rush_bonus",
+              "value": 2,
+              "type": "untyped"
+            }
+          ]
+        }
+      ]
     },
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Ram Charges",
+          "fr": "Charges du bélier"
+        },
+        "maxPipelineId": "combatStats.ram_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
   },
   {
     "id": "item_ring_regeneration",
@@ -1638,7 +1924,59 @@
       "actionType": "standard"
     },
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "ball_lightning",
+        "label": {
+          "en": "Ball Lightning (1/night)",
+          "fr": "Boule de foudre (1/nuit)"
+        },
+        "maxPipelineId": "combatStats.ball_lightning_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "light_uses",
+        "label": {
+          "en": "Light (2/night)",
+          "fr": "Lumière (2/nuit)"
+        },
+        "maxPipelineId": "combatStats.light_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "faerie_fire_uses",
+        "label": {
+          "en": "Faerie Fire (2/day)",
+          "fr": "Feu féerique (2/jour)"
+        },
+        "maxPipelineId": "combatStats.faerie_fire_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "spark_shower",
+        "label": {
+          "en": "Spark Shower (1/day)",
+          "fr": "Averse d'étincelles (1/jour)"
+        },
+        "maxPipelineId": "combatStats.spark_shower_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "shooting_stars",
+        "label": {
+          "en": "Shooting Stars (3/week)",
+          "fr": "Étoiles filantes (3/semaine)"
+        },
+        "maxPipelineId": "combatStats.shooting_stars_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_week"
+      }
+    ]
   },
   {
     "id": "item_ring_spell_storing_minor",
@@ -1741,7 +2079,19 @@
       "actionType": "standard"
     },
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "spell_turning_uses",
+        "label": {
+          "en": "Spell Turning Uses (3/day)",
+          "fr": "Utilisations de renvoi des sorts (3/jour)"
+        },
+        "maxPipelineId": "combatStats.spell_turning_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
   },
   {
     "id": "item_ring_sustenance",
@@ -1803,7 +2153,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_swimming_improved",
@@ -1840,7 +2193,10 @@
         "type": "competence"
       }
     ],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "passive"
+    }
   },
   {
     "id": "item_ring_telekinesis",
@@ -1896,7 +2252,19 @@
       "actionType": "standard"
     },
     "grantedModifiers": [],
-    "grantedFeatures": []
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "wish_charges",
+        "label": {
+          "en": "Wish Charges (Rubies)",
+          "fr": "Charges de vœux (Rubis)"
+        },
+        "maxPipelineId": "combatStats.wish_charges_max",
+        "defaultCurrent": 3,
+        "resetCondition": "never"
+      }
+    ]
   },
   {
     "id": "item_ring_water_walking",

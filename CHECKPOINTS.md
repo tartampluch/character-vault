@@ -605,7 +605,7 @@ If no issues are found in a category, write: "✅ [Category]: No issues found."
 
 ---
 
-## Final Review #7 — Complete System Validation
+## Final Review — Complete System Validation
 
 ```markdown
 You are a principal software architect performing a final acceptance review before v1.0 release of a D&D 3.5 Virtual Tabletop application built with Svelte 5, TypeScript, Tailwind CSS, and PHP/SQLite.
@@ -630,12 +630,20 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 3. **Section 3 (Logic Engine):** Does the implementation handle all 4 LogicNode types and all 8 LogicOperator values?
 
-4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a?
+4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all **8 values** (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`, `per_day`, `per_week`) per section 4.4 and Enhancement E-1? Does `GameEngine` expose `triggerDawnReset()` and `triggerWeeklyReset()` per E-1.3? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a? Does `Modifier.targetId` support the `"attacker.*"` prefix per section 4.6 / Enhancement E-5 (documented in JSDoc)? Does `parseAndRoll()` accept the optional `defenderAttackerMods` parameter and apply attacker penalties to `finalTotal`? Is `RollResult.attackerPenaltiesApplied?: Modifier[]` present?
 5. **Section 5.1.1 (ItemFeature psionic item subtypes):** Does `ItemFeature.psionicItemData` include all five psionic item types with their fields per Phase 1.3b? Is the field matrix correct (cognizance crystal uses `storedPP/maxPP/attuned`; dorje uses `powerStored/charges/manifesterLevel`; power stone uses `powersImprinted[]`; psicrown uses `storedPP/maxPP/powersKnown/manifesterLevel`; tattoo uses `powerStored/manifesterLevel/activated`)? Are mutable vs immutable fields correctly labelled in the docs?
 5a. **Section 5.6 (Feature `actionBudget`):** Does `Feature.actionBudget` exist as an optional field with six optional numeric keys per Phase 1.3c? Does the SRD condition table include Staggered (`{standard:1,move:1,full_round:0}`), Nauseated (`{standard:0,move:1,full_round:0}`), and Stunned (`{standard:0,move:0,full_round:0}`)? Is the minimum-wins UI resolution rule documented? Is the XOR mutual exclusion (`action_budget_xor` tag) described?
 6. **Section 5.2.1 (MagicFeature psionic fields):** Does `MagicFeature` include `discipline?: PsionicDiscipline` and `displays?: PsionicDisplay[]` per Phase 1.3a? Are both types exported? Is `discipline` `undefined` for arcane/divine spells? Does the psionic casting panel (Phase 12.3) use `discipline` for grouping and `displays` for display suppression UI?
 
-5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
+4b. **Section 4.6 + Enhancement E-5 (`attacker.*` modifiers):** Is `resolveAttackerMods()` correctly stripping the `"attacker."` prefix before pipeline matching? Does it respect `situationalContext` filtering (attacker's tags)? Does it never affect static pipeline `totalBonus` or `totalValue`? Does `attackerPenaltiesApplied` only appear in `RollResult` when there are actual applied penalties (not empty array)?
+
+5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)? Does `Feature` include `resourcePoolTemplates?: ResourcePoolTemplate[]` per E-2.3? Is `ResourcePoolTemplate` exported from `feature.ts` with all required fields (`poolId`, `label`, `maxPipelineId`, `defaultCurrent`, `resetCondition`, optional `rechargeAmount`)? Does `Feature.activation.actionType` include `"passive"` and `"reaction"` per E-4.2? Does `Feature.activation` include optional `tieredResourceCosts?: ActivationTier[]` per E-3.1 and optional `triggerEvent?: string` per E-4.2? Is `ActivationTier` exported with `label`, `targetPoolId`, `cost`, `grantedModifiers`?
+
+5b. **Section 5.5b + Enhancement E-4 (trigger-based activation):** Does `GameEngine.getReactionFeaturesByTrigger(event)` correctly return only `"reaction"` features (not `"passive"`)? Does it exclude `isActive: false` instances? Does it return all features with the matching `triggerEvent` regardless of how many? Are `"on_fall"`, `"on_spell_targeted"`, `"on_damage_taken"`, `"on_attack_received"` documented as standard trigger events in ARCHITECTURE.md section 5.5b?
+
+5c. **Section 5.7 + Enhancement E-2 (instance-scoped `itemResourcePools`):** Is `ActiveFeatureInstance.itemResourcePools?: Record<string, number>` present in `character.ts`? Is `GameEngine.initItemResourcePools()` correctly idempotent (only adds absent keys, never overwrites existing 0-values)? Does `spendItemPoolCharge()` floor at 0? Does `getItemPoolValue()` return `defaultCurrent` for uninitialised pools? Do `triggerDawnReset()` and `triggerWeeklyReset()` call `#resetItemPoolsByCondition()` to also reset item pools?
+
+5d. **Enhancement E-3 (tiered activation):** Does `GameEngine.activateWithTier(instanceId, tierIndex)` return `null` (not throw) for out-of-range tier, missing feature, missing pool, and insufficient charges? Does it correctly prefer `itemResourcePools` (E-2) over `character.resources` when both could match? Does it return the tier's `grantedModifiers` array (may be empty) on success? Are tiers 0-indexed? Does a formula-string `cost` get resolved via the Math Parser?
 
 6. **Section 6 (Character):** Does the `Character` interface match including `classLevels`, `gmOverrides`, all UI metadata, `levelAdjustment: number` (default 0), and `xp: number` (default 0)? Is `LinkedEntity` serialization unidirectional? Does the `createDefaultCharacter` factory initialize `levelAdjustment: 0` and `xp: 0`?
 
@@ -673,23 +681,47 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 20. **Annex B:** Verify that all 13 config tables (B.1 through B.13) are loadable by the DataLoader and accessible via `getConfigTable(tableId)`. Verify that the engine uses them where documented (XP thresholds in Combat tab, carrying capacity in Inventory tab, skill synergies in DAG Phase 4, etc.).
 
+# Part C2: Engine Enhancement Conformance (E-1 through E-5)
+
+21. **E-1 Calendar Resets:** Are both `"per_day"` and `"per_week"` present in `ResourcePool.resetCondition` union? Do `triggerDawnReset()` and `triggerWeeklyReset()` exist on `GameEngine`? Do they correctly ignore `"long_rest"`, `"never"`, and the wrong calendar pool? Do they also reset matching item pools (E-2 integration)? Does `resourcePool.test.ts` cover all isolation permutations (dawn doesn't reset weekly, weekly doesn't reset daily, long-rest unaffected by both, `"never"` unaffected by both)?
+
+22. **E-2 Instance-Scoped Item Pools:** Does `ActiveFeatureInstance.itemResourcePools` exist and is it optional? Is `ResourcePoolTemplate` exported from `feature.ts`? Is `Feature.resourcePoolTemplates` optional and does it default to `undefined` (not `[]`)? Does `initItemResourcePools` never reset an entry that is already present (even if its value is 0)? Does `spendItemPoolCharge` floor at 0 for over-spending? Is cross-instance independence verified (spending on one ring doesn't affect another instance of the same ring type)? Does `itemResourcePools.test.ts` cover stashed instance reset exclusion (`isActive: false`)?
+
+23. **E-3 Tiered Activation:** Is `ActivationTier` exported from `feature.ts`? Is `tieredResourceCosts` optional on `activation`? Does `activateWithTier` handle: missing feature (returns `null`), no `tieredResourceCosts` (returns `null`), negative tier index (returns `null`), tier index ≥ array length (returns `null`), 0 charges (returns `null`), exactly-sufficient charges (succeeds, depletes pool), formula-string cost? Does `tieredActivation.test.ts` confirm that returning `null` never throws?
+
+24. **E-4 Trigger-Based Activation:** Is `"passive"` in the `actionType` union? Is `"reaction"` in the `actionType` union? Does `triggerEvent` compile as an optional string on `activation`? Does `getReactionFeaturesByTrigger` exclude `"passive"` features even if they have a `triggerEvent` set? Does it exclude stashed/inactive instances? Is ARCHITECTURE.md section 5.5b present with the standard trigger event table?
+
+25. **E-5 Attacker Modifiers:** Does `resolveAttackerMods` correctly strip the `"attacker."` prefix before pipeline comparison? Does it handle a modifier with NO `situationalContext` (unconditional — applies to all attackers)? Does it correctly skip modifiers whose stripped targetId doesn't match the rolled pipeline? Does it skip non-`"attacker.*"` modifiers entirely? Is `attackerPenaltiesApplied` absent (not an empty array) from `RollResult` when no penalties apply? Is the defender's static `totalBonus` provably unaffected by attacker modifier resolution?
+
+26. **SRD JSON Conformance for Engine Enhancements:** Do the following rings in `12_d20srd_core_magic_items.json` have the correct new fields?
+    - Ring of the Ram: `resourcePoolTemplates[0].resetCondition === "never"`, `activation.tieredResourceCosts` length 3, tier costs 1/2/3.
+    - Ring of Spell Turning: `resourcePoolTemplates[0].resetCondition === "per_day"`, `defaultCurrent === 3`.
+    - Ring of Djinni Calling: `resourcePoolTemplates[0].resetCondition === "per_day"`, `defaultCurrent === 1`.
+    - Ring of Three Wishes: `resourcePoolTemplates[0].resetCondition === "never"`, `defaultCurrent === 3`.
+    - Ring of Elemental Command (all 4): each has an `attacker.combatStats.attack_bonus` modifier with `value: -1` and appropriate `situationalContext` (e.g. `"air_elemental"`).
+    - Ring of Elemental Command (Air): `resourcePoolTemplates` includes `chain_lightning` with `resetCondition: "per_week"`.
+    - Ring of Shooting Stars: has both `"per_day"` and `"per_week"` templates.
+    - Ring of Feather Falling: `activation.actionType === "reaction"`, `activation.triggerEvent === "on_fall"`.
+    - Ring of Counterspells: `activation.actionType === "reaction"`, `activation.triggerEvent === "on_spell_targeted"`.
+    - Skill rings (Swimming, Climbing, Jumping): `activation.actionType === "passive"`.
+
 # Part D: Test Coverage Assessment
 
-21. **Coverage Gaps:** List any architecture feature, edge case, or example scenario from ARCHITECTURE.md or ANNEXES.md that has NO corresponding test. Rank by risk.
+28. **Coverage Gaps:** List any architecture feature, edge case, or example scenario from ARCHITECTURE.md or ANNEXES.md that has NO corresponding test. Rank by risk. **Also check for E-series gaps:** any engine enhancement scenario not covered by `resourcePool.test.ts`, `itemResourcePools.test.ts`, `tieredActivation.test.ts`, `triggerActivation.test.ts`, `attackerModifiers.test.ts`.
 
 # Part E: UI Excellence (Phase 19 Validation)
 
-22. **Tailwind CSS Migration:** Is ALL styling done via Tailwind utility classes? Are there any remaining scoped `<style>` blocks or hardcoded CSS color values?
+29. **Tailwind CSS Migration:** Is ALL styling done via Tailwind utility classes? Are there any remaining scoped `<style>` blocks or hardcoded CSS color values?
 
-23. **Theme System:** Does the light/dark theme work correctly with system preference detection, cookie persistence, and no flash of wrong theme (FOWT)?
+30. **Theme System:** Does the light/dark theme work correctly with system preference detection, cookie persistence, and no flash of wrong theme (FOWT)?
 
-24. **Iconography:** Are ALL emoji characters replaced with Lucide Icons? Are icon sizes consistent (16/20/24px)?
+31. **Iconography:** Are ALL emoji characters replaced with Lucide Icons? Are icon sizes consistent (16/20/24px)?
 
-25. **Responsive Layout:** Does the UI work at all breakpoints (320px to 1920px)? Is the sidebar collapsible? Does the character sheet use a full-height layout with always-visible tabs? Do long lists use horizontal scrolling on mobile?
+32. **Responsive Layout:** Does the UI work at all breakpoints (320px to 1920px)? Is the sidebar collapsible? Does the character sheet use a full-height layout with always-visible tabs? Do long lists use horizontal scrolling on mobile?
 
-26. **Touch & Accessibility:** Are all touch targets ≥44px on coarse pointer devices? Are focus rings visible for keyboard users? Does `prefers-reduced-motion` disable animations? Are WCAG AA contrast ratios met?
+33. **Touch & Accessibility:** Are all touch targets ≥44px on coarse pointer devices? Are focus rings visible for keyboard users? Does `prefers-reduced-motion` disable animations? Are WCAG AA contrast ratios met?
 
-27. **Design System Consistency:** Are cards, buttons, inputs, badges, section headers, and modals visually consistent across ALL pages and components?
+34. **Design System Consistency:** Are cards, buttons, inputs, badges, section headers, and modals visually consistent across ALL pages and components?
 
 # Output Format
 
@@ -703,7 +735,9 @@ Produce a structured report with 4 sections:
 
 **✅ VALIDATION PASSED** (Categories that are fully conformant)
 
-For each issue: file path, line reference, architecture section reference, and specific description of what's wrong vs what's expected.
+For each issue: file path, line reference, architecture section or enhancement reference (e.g. "E-2", "section 4.6"), and specific description of what's wrong vs what's expected.
+
+**Scope reminder:** This review now covers 34 check items — Architecture sections 1–20, Engine Enhancements E-1 through E-5 (checks 21–26), Test Coverage (check 27), and UI Excellence (checks 28–33).
 ```
 
 ---

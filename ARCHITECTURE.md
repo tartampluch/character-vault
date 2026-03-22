@@ -171,7 +171,8 @@ export interface ResourcePool {
 
     // Full-reset: "long_rest" | "short_rest" | "encounter" | "never"
     // Incremental: "per_turn" (start of character's turn) | "per_round" (once per global round)
-    resetCondition: "short_rest" | "long_rest" | "encounter" | "never" | "per_turn" | "per_round";
+    // Calendar: "per_day" (resets at dawn, does NOT require sleep) | "per_week" (resets weekly at dawn)
+    resetCondition: "short_rest" | "long_rest" | "encounter" | "never" | "per_turn" | "per_round" | "per_day" | "per_week";
 
     // Only used for "per_turn" / "per_round" incremental pools.
     // Amount to restore per tick (number or Math Parser formula string).
@@ -234,7 +235,7 @@ When the Math Parser encounters `@` prefixed paths in formula strings, it reso
 
 ### 4.4. ResourcePool `resetCondition` — Full Reference
 
-The `resetCondition` field governs exactly when and how a pool recovers. There are two conceptually distinct recovery modes:
+The `resetCondition` field governs exactly when and how a pool recovers. There are three conceptually distinct recovery modes:
 
 #### Full-Reset Conditions (restore to maximum on event)
 
@@ -246,6 +247,25 @@ The `resetCondition` field governs exactly when and how a pool recovers. There a
 | `"never"` | Never automatic | Item charges, XP-spent powers, truly consumable resources |
 
 `triggerLongRest()` resets BOTH `"long_rest"` AND `"short_rest"` pools (a long rest implies a short rest).
+
+#### Calendar Reset Conditions (restore to maximum at a fixed real-world time boundary)
+
+| Value | Trigger | Typical Uses |
+|---|---|---|
+| `"per_day"` | `GameEngine.triggerDawnReset()` | X/day ring abilities, wand-like class features, daily item charges |
+| `"per_week"` | `GameEngine.triggerWeeklyReset()` | X/week ring abilities (Elemental Command chain lightning, etc.) |
+
+**Key distinction from `"long_rest"`:** D&D 3.5 separates *calendar-day* limits (reset at dawn regardless of sleep) from *rest* limits (require 8 hours of sleep). A wounded party that skips sleep and stays awake all night still sees the dawn — items reset `"per_day"` at dawn, but spell slots (`"long_rest"`) only recover after actual sleep.
+
+**`triggerDawnReset()`** resets ONLY `"per_day"` pools, NOT `"long_rest"` pools.
+**`triggerWeeklyReset()`** resets ONLY `"per_week"` pools (called once per in-game week, usually a GM call).
+**`triggerLongRest()`** resets `"long_rest"` AND `"short_rest"` pools. It does NOT reset `"per_day"` or `"per_week"` pools (those reset on their own calendar, not rest).
+
+**Content authoring guide:**
+- Use `"long_rest"` for class spell slots, psi points, Rage rounds, Turn Undead — anything that requires actual sleep to recover.
+- Use `"per_day"` for X/day item charges (Ring of Djinni Calling 1/day, Ring of Spell Turning 3/day, etc.) and for class features stated as "X per day" that mechanically reset at dawn independently of rest.
+- Use `"per_week"` for X/week item abilities (Elemental Command ring chain lightning 1/week, etc.).
+- Use `"never"` for finite charges (Ring of the Ram 50 charges, Ring of Three Wishes 3 rubies) — these only decrease, never refill automatically.
 
 #### Incremental Recharge Conditions (add `rechargeAmount` per tick, capped at max)
 
@@ -262,11 +282,14 @@ The `resetCondition` field governs exactly when and how a pool recovers. There a
 
 #### Engine Contract — Stateless w.r.t. the combat clock
 
-The `GameEngine` is a stateless character-sheet engine. It does NOT track rounds, turns, or a clock. **The UI / combat tracker is responsible for calling the tick methods at the correct times.** The engine guarantees:
+The `GameEngine` is a stateless character-sheet engine. It does NOT track rounds, turns, or a wall-clock date. **The UI / combat tracker / session manager is responsible for calling the reset methods at the correct times.** The engine guarantees:
 - `triggerTurnTick()` applies exactly `rechargeAmount` to all `"per_turn"` pools, capped at max.
 - `triggerRoundTick()` applies exactly `rechargeAmount` to all `"per_round"` pools, capped at max.
 - `triggerEncounterReset()` fully restores all `"encounter"` pools.
+- `triggerShortRest()` fully restores all `"short_rest"` pools.
 - `triggerLongRest()` fully restores all `"long_rest"` and `"short_rest"` pools.
+- `triggerDawnReset()` fully restores all `"per_day"` pools.
+- `triggerWeeklyReset()` fully restores all `"per_week"` pools.
 
 #### Fast Healing vs Regeneration (D&D 3.5 SRD)
 
@@ -385,6 +408,71 @@ At roll time, for each `DREntry` in the target's `combatStats.damage_reduction.d
 3. If **NO** (or `bypassTags` is empty): subtract `DREntry.amount` from the damage total.
 4. **Minimum 0** per hit (damage cannot go negative from DR, per SRD).
 5. Spells and most energy damage **ignore DR** entirely (unless the feat "Penetrating Strike" or similar applies).
+
+---
+
+### 4.6. `attacker.*` Modifier Target Namespace — Penalties on Incoming Attacks
+
+#### The Problem — Modifiers That Apply to the *Attacker*, Not the Defender
+
+All modifiers in the current system are **self-modifiers**: they adjust a pipeline on the character that owns the feature. The Elemental Command rings, however, create a situation where the *defender* imposes a penalty on the *attacker's* roll:
+
+> "Creatures from the plane to which the ring is attuned who attack the wearer take a **−1 penalty** on their attack rolls."
+
+This cannot be expressed as a `grantedModifier` targeting `combatStats.attack_bonus` — that would subtract 1 from the wearer's OWN attack bonus, which is wrong. The penalty must apply to the attacker's roll when they target the wearer.
+
+#### Solution — The `attacker.` Target Prefix
+
+Any `Modifier.targetId` beginning with `"attacker."` is an **attacker modifier**. It is NEVER included in the wearer's static pipeline totals. Instead:
+
+1. The Dice Engine reads the **defender's** active modifiers at roll time.
+2. It collects all modifiers whose `targetId` starts with `"attacker."`.
+3. It strips the `"attacker."` prefix and resolves the remainder as a pipeline path on the **attacker's** roll context.
+4. The modifier's value is applied to the matching attacker roll.
+
+**Crucially, `situationalContext` still applies**: if the modifier has `situationalContext: "vs_air_elementals"`, the penalty only applies when the attacker has the `air_elemental` tag in their `targetTags`. This matches the SRD rule ("creatures FROM the associated plane").
+
+#### The Roll-Time Pipeline — Never Static
+
+Attacker modifiers are resolved **exclusively in the Dice Engine** during the incoming attack resolution. They have zero effect on:
+- The defender's character sheet display.
+- The `totalBonus` or `totalValue` of any pipeline.
+- The stacking-rules resolution loop.
+
+They are transient contributions applied at roll time, visible only in the `RollResult.attackerPenaltiesApplied` array (for transparency in the dice roll modal).
+
+#### Authoring Example — Ring of Elemental Command (Air)
+
+```json
+{
+  "id": "mod_air_elemental_attack_penalty",
+  "sourceId": "item_ring_elemental_command_air",
+  "sourceName": { "en": "Ring of Elemental Command (Air)", "fr": "Anneau de Commandement Élémentaire (Air)" },
+  "targetId": "attacker.combatStats.attack_bonus",
+  "value": -1,
+  "type": "untyped",
+  "situationalContext": "vs_air_elementals"
+}
+```
+
+When an air elemental attacks the wearer of this ring, the Dice Engine:
+1. Reads the wearer's active modifiers.
+2. Finds this modifier (`targetId` starts with `"attacker."`).
+3. Checks `situationalContext: "vs_air_elementals"` against the attacker's tags — matches.
+4. Applies −1 to the incoming attack roll.
+
+The wearer's attack bonus pipeline (`combatStats.attack_bonus`) is **unchanged** — it still shows the wearer's own attack total.
+
+#### Engine Contract
+
+| Phase | Responsibility |
+|---|---|
+| DAG Phase 0 | `attacker.*` modifiers are collected in `phase0_flatModifiers` but routed to a separate `attackerModifiers[]` list — they never enter pipeline stacking |
+| Dice Engine `parseAndRoll()` | At incoming roll resolution, receives `defenderAttackerMods: Modifier[]` and the attacker's `targetTags`. Matches situational context and applies to attacker's roll |
+| Stacking rules | Attacker modifiers follow standard non-stacking rules among themselves: two `"untyped"` modifiers DO stack, two `"morale"` modifiers DON'T |
+| UI display | The Modifier Breakdown Modal shows attacker modifiers in a separate "Aura / Penalties on Attackers" section — never in the wearer's own pipeline totals |
+
+> **AI Implementation Note (Phase 2.5 / Phase 4.2):** Extend `RollResult` with an optional `attackerPenaltiesApplied: Modifier[]` field. In `parseAndRoll()`, add a parameter `defenderAttackerMods?: Modifier[]`. When provided, apply them to the roll result (after resolving `situationalContext`). The static DAG pipelines remain completely unchanged.
 
 ---
 
@@ -1065,6 +1153,68 @@ During DAG Phase 4 (Skills & Abilities), the engine collects `classSkills` from 
 
 > **AI Implementation Note:** The `classSkills` field is optional on ALL Feature categories, not just `"class"`. This allows domains, racial features, or even feats to grant class skills. The engine should scan all active Features (not just classes) for this field during Phase 4.
 
+### 5.5b. Trigger-Based Activation (`"passive"` / `"reaction"` actionTypes)
+
+Enhancement E-4 adds two new `actionType` values to `Feature.activation` to handle abilities that the character does not manually trigger.
+
+#### `"passive"` — Always Active, No Action Required
+
+A `"passive"` feature is always on when the item is equipped. The engine includes its `grantedModifiers` in every DAG cycle. The player never presses an "Activate" button.
+
+**Examples:**
+- Ring of Protection +2: deflection bonus without activation.
+- Ring of Swimming: +5 competence Climb — always on.
+- Ring of Feather Falling: triggers automatically (see `"reaction"` below).
+
+For passive features, `activation.actionType = "passive"` is optional metadata for the UI (to indicate "this item has no use button"). Purely mechanical features without the `activation` field at all are also passive by omission.
+
+#### `"reaction"` — Fires Automatically in Response to a Trigger Event
+
+A `"reaction"` feature fires automatically when a specific in-world event occurs. The event is identified by the string `activation.triggerEvent`.
+
+**Standard trigger events:**
+
+| `triggerEvent` | Fires when... | D&D 3.5 Example |
+|---|---|---|
+| `"on_fall"` | Wearer falls > 5 feet | Ring of Feather Falling |
+| `"on_spell_targeted"` | A spell is cast at the wearer | Ring of Counterspells, Ring of Spell Turning |
+| `"on_damage_taken"` | Any damage is taken | Future: Ring of Regeneration tick |
+| `"on_attack_received"` | An attack roll is made against the wearer | Future: Shield Other from Friend Shield ring |
+
+Custom event strings are allowed for homebrew. The engine does not validate the event string — the combat event dispatcher is responsible for calling the trigger at the right time.
+
+#### Engine Contract
+
+The engine does NOT fire reactions automatically. The responsibility chain is:
+1. **Content author** declares `actionType: "reaction"` and `triggerEvent: "on_fall"` on the feature.
+2. **Combat tracker (Phase 10)** detects the fall event and queries: "which active features have `triggerEvent: 'on_fall'`?"
+3. **Combat tracker** calls the appropriate handler (e.g., applies feather fall effect) without player input.
+
+The `triggerEvent` is a filter key, not a method call hook. The game engine provides `getReactionFeaturesByTrigger(triggerEvent: string)` as a helper to collect all currently-active reaction features matching a given event.
+
+#### JSON Examples
+
+```json
+// Ring of Feather Falling — fires automatically on fall, no action needed
+{
+  "id": "item_ring_feather_falling",
+  "activation": {
+    "actionType": "reaction",
+    "triggerEvent": "on_fall"
+  }
+}
+
+// Ring of Swimming — passive, always active
+{
+  "id": "item_ring_swimming",
+  "activation": {
+    "actionType": "passive"
+  }
+}
+```
+
+---
+
 ### 5.6. Action Budget (`actionBudget`) — Condition-Imposed Action Restrictions
 
 D&D 3.5 has many conditions that limit a character's available actions per round. Without a machine-readable action budget, the engine can apply a condition's modifiers (attack penalties, DEX loss, etc.) but the Combat UI has no programmatic way to enforce action restrictions — a Staggered character shouldn't be allowed a full attack.
@@ -1201,6 +1351,120 @@ While primarily used on `category: "condition"` Features, `actionBudget` is defi
 > 3. Render each action button with the budget applied: show a count indicator ("1/1") and disable the button when the turn budget is exhausted.
 > 4. On the Staggered/Disabled XOR case: check for the `"action_budget_xor"` tag and apply mutual exclusion logic.
 > 5. Display a tooltip on restricted buttons: "[Condition Name]: [original SRD text]".
+
+---
+
+### 5.7. Instance-Scoped Item Resource Pools (`itemResourcePools` + `resourcePoolTemplates`)
+
+#### The Problem — Charges Belong to the Item, Not the Character
+
+The standard `Character.resources` record is a flat dictionary keyed by pool ID. This works perfectly for class resources (Rage rounds, Turn Undead uses) because those are tied to the *character*. But it breaks for *charged items*:
+
+- Ring of the Ram has 50 charges. If the player loots it from a slain enemy with 23 charges, those 23 charges belong to **this specific ring instance**, not to the character in general.
+- If the player later drops the ring and someone else picks it up, the ring should carry its 23 remaining charges with it — not leave them behind in the original character's `resources` record.
+
+The solution is to scope each item's charge pool to the **`ActiveFeatureInstance`** instead of the `Character`.
+
+#### Field Locations
+
+**On `Feature` (the static template):**
+```typescript
+resourcePoolTemplates?: ResourcePoolTemplate[];
+```
+Declares the pool(s) an item provides. This is the *schema* — the initial max and reset condition. Written by content authors once in JSON, never changes.
+
+```typescript
+interface ResourcePoolTemplate {
+  poolId:           ID;               // Identifies the pool within this item instance
+  label:            LocalizedString;  // Display label ("Charges", "Uses per Day", etc.)
+  maxPipelineId:    ID;               // Pipeline that determines the maximum charge count
+  defaultCurrent:   number;           // Starting currentValue when the item is first created
+  resetCondition:   ResourcePool['resetCondition']; // "never" | "per_day" | "per_week" | etc.
+  rechargeAmount?:  number | string;  // Optional formula for incremental pools
+}
+```
+
+**On `ActiveFeatureInstance` (the runtime state):**
+```typescript
+itemResourcePools?: Record<ID, number>;
+```
+Stores the *current value* of each pool, keyed by `poolId`. This sparse record carries the charge count with the item instance when it is traded, stashed, or transferred.
+
+#### Lifecycle
+
+| Event | Action |
+|---|---|
+| Item first added to character | `GameEngine.initItemResourcePools(instance, feature)` — creates missing `poolId` entries from `resourcePoolTemplates` using `defaultCurrent` |
+| Charge spent | `GameEngine.spendItemPoolCharge(instanceId, poolId, amount)` — atomically decrements, floors at 0 |
+| Dawn resets | `triggerDawnReset()` iterates all active instances' `itemResourcePools`, finds pools with `"per_day"` template, restores to max |
+| Weekly resets | `triggerWeeklyReset()` — same for `"per_week"` |
+| Long rest | `triggerLongRest()` — same for `"long_rest"` item pools |
+| Item transferred | Move the `ActiveFeatureInstance` (including its `itemResourcePools`) to the recipient's `activeFeatures` — charges migrate automatically |
+
+#### JSON Example — Ring of the Ram (50 charges, `"never"` reset)
+
+```json
+{
+  "id": "item_ring_ram",
+  "category": "item",
+  "resourcePoolTemplates": [
+    {
+      "poolId": "charges",
+      "label": { "en": "Ram Charges", "fr": "Charges du bélier" },
+      "maxPipelineId": "combatStats.ram_charges_max",
+      "defaultCurrent": 50,
+      "resetCondition": "never"
+    }
+  ]
+}
+```
+
+At runtime, the `ActiveFeatureInstance` carries:
+```json
+{
+  "instanceId": "afi_ring_ram_x7k2",
+  "featureId": "item_ring_ram",
+  "isActive": true,
+  "itemResourcePools": { "charges": 23 }
+}
+```
+
+#### JSON Example — Ring of Spell Turning (3/day, `"per_day"` reset)
+
+```json
+{
+  "id": "item_ring_spell_turning",
+  "resourcePoolTemplates": [
+    {
+      "poolId": "spell_turning_uses",
+      "label": { "en": "Spell Turning (3/day)", "fr": "Renvoi des sorts (3/jour)" },
+      "maxPipelineId": "combatStats.spell_turning_max",
+      "defaultCurrent": 3,
+      "resetCondition": "per_day"
+    }
+  ]
+}
+```
+
+#### `getItemPoolValue(instanceId, poolId)` — Engine Query Helper
+
+For UI display and prerequisite checks, the engine exposes:
+```typescript
+getItemPoolValue(instanceId: ID, poolId: ID): number
+```
+Returns the current charge count from `instance.itemResourcePools[poolId]`, or `defaultCurrent` from the template if not yet initialised.
+
+#### Relationship to `Character.resources`
+
+| Aspect | `Character.resources` | `ActiveFeatureInstance.itemResourcePools` |
+|---|---|---|
+| **Keyed by** | Pool ID (global) | Pool ID (local to instance) |
+| **Travels with** | Character | Item instance |
+| **Used for** | Class features, HP, psi points, spell slots | Item charges, per-day item uses |
+| **Transfer** | Stays with character on item transfer | Moves with item |
+| **Display** | Character sheet resources panel | Inventory item card |
+
+> **AI Implementation Note:** `initItemResourcePools()` must be idempotent: calling it twice on the same instance must not reset an existing charge count. It only populates `poolId` entries that are absent from `itemResourcePools` (i.e., first-time equip).
 
 ---
 

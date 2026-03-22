@@ -7,8 +7,9 @@
  *   Phase 1.6 / Phase 3.6:
  *
  *   1. `resetCondition` type coverage:
- *      - All six values (`long_rest`, `short_rest`, `encounter`, `never`,
- *        `per_turn`, `per_round`) are valid TypeScript types on `ResourcePool`.
+ *      - All eight values (`long_rest`, `short_rest`, `encounter`, `never`,
+ *        `per_turn`, `per_round`, `per_day`, `per_week`) are valid TypeScript
+ *        types on `ResourcePool`.
  *
  *   2. Incremental tick logic (mirrors `GameEngine.#applyIncrementalTick()`):
  *      - `"per_turn"` pools gain `rechargeAmount` per tick and cap at max.
@@ -182,7 +183,7 @@ function makeFastHealingPool(currentHp: number, rechargeAmount: number | string)
 // SECTION 1: TypeScript type soundness — all six resetCondition values compile
 // =============================================================================
 
-describe('ResourcePool.resetCondition — type coverage (all 6 values)', () => {
+describe('ResourcePool.resetCondition — type coverage (all 8 values)', () => {
   /**
    * This test is primarily a TypeScript compile-time check:
    * if any union member were missing, the assignment would fail to compile.
@@ -238,6 +239,33 @@ describe('ResourcePool.resetCondition — type coverage (all 6 values)', () => {
     };
     expect(pool.resetCondition).toBe('per_round');
     expect(pool.rechargeAmount).toBe(2);
+  });
+
+  it('accepts "per_day" (E-1 calendar dawn reset — new)', () => {
+    // Ring of Djinni Calling: 1 call per day. Resets at dawn regardless of sleep.
+    const pool: ResourcePool = {
+      id: 'resources.djinni_call',
+      label: { en: 'Djinni Call (1/day)', fr: 'Appel du djinn (1/jour)' },
+      maxPipelineId: 'combatStats.djinni_call_max',
+      currentValue: 0,
+      temporaryValue: 0,
+      resetCondition: 'per_day',
+    };
+    expect(pool.resetCondition).toBe('per_day');
+    expect(pool.rechargeAmount).toBeUndefined(); // per_day does full reset, no rechargeAmount needed
+  });
+
+  it('accepts "per_week" (E-1 calendar weekly reset — new)', () => {
+    // Ring of Elemental Command (Air): chain lightning 1/week.
+    const pool: ResourcePool = {
+      id: 'resources.chain_lightning_charges',
+      label: { en: 'Chain Lightning (1/week)', fr: 'Éclair multiple (1/semaine)' },
+      maxPipelineId: 'combatStats.chain_lightning_max',
+      currentValue: 1,
+      temporaryValue: 0,
+      resetCondition: 'per_week',
+    };
+    expect(pool.resetCondition).toBe('per_week');
   });
 
   it('rechargeAmount is optional (can be omitted for non-incremental pools)', () => {
@@ -622,5 +650,272 @@ describe('ResourcePool tick invariants', () => {
 
     expect(fastHealing.currentValue).toBe(13);  // 10 + 3
     expect(regeneration.currentValue).toBe(0);  // -5 + 5
+  });
+});
+
+// =============================================================================
+// SECTION 7: Calendar reset conditions — "per_day" and "per_week" (Enhancement 1)
+// =============================================================================
+
+/**
+ * Helper: simulates `GameEngine.triggerDawnReset()` against a pool collection.
+ * Mirrors the method added in E-1.3 so tests are independent of GameEngine instantiation.
+ */
+function triggerDawnReset(
+  pools: Record<string, ResourcePool>,
+  maxResolver: (id: string) => number,
+): void {
+  for (const pool of Object.values(pools)) {
+    if (pool.resetCondition !== 'per_day') continue;
+    pool.currentValue = maxResolver(pool.maxPipelineId);
+  }
+}
+
+/**
+ * Helper: simulates `GameEngine.triggerWeeklyReset()`.
+ */
+function triggerWeeklyReset(
+  pools: Record<string, ResourcePool>,
+  maxResolver: (id: string) => number,
+): void {
+  for (const pool of Object.values(pools)) {
+    if (pool.resetCondition !== 'per_week') continue;
+    pool.currentValue = maxResolver(pool.maxPipelineId);
+  }
+}
+
+describe('triggerDawnReset — "per_day" calendar reset (E-1, Ring of Djinni Calling)', () => {
+  /**
+   * D&D 3.5 SRD: Ring of Djinni Calling can be used 1 time per day.
+   * This resets at dawn, independently of whether the wearer slept.
+   *
+   * ARCHITECTURE section 4.4 (E-1):
+   *   "per_day" = calendar dawn reset. Does NOT require sleep.
+   *   Distinct from "long_rest" which requires 8 hours of restful sleep.
+   */
+  it('restores a depleted "per_day" pool to its maximum at dawn', () => {
+    // Scenario: Ring of Djinni Calling used (currentValue = 0), dawn arrives.
+    const pools: Record<string, ResourcePool> = {
+      'resources.djinni_call': {
+        id: 'resources.djinni_call',
+        label: { en: 'Djinni Call (1/day)' },
+        maxPipelineId: 'djinni_call_max',
+        currentValue: 0,          // used up
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+    };
+    triggerDawnReset(pools, (_id) => 1); // max = 1 use per day
+    expect(pools['resources.djinni_call'].currentValue).toBe(1);
+  });
+
+  it('restores multiple "per_day" pools simultaneously', () => {
+    // Scenario: Ring of Spell Turning (3/day) and Ring of Blinking (1/day) both depleted.
+    const pools: Record<string, ResourcePool> = {
+      'resources.spell_turning': {
+        id: 'resources.spell_turning',
+        label: { en: 'Spell Turning (3/day)' },
+        maxPipelineId: 'spell_turning_max',
+        currentValue: 1, // 2 uses spent
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+      'resources.blinking': {
+        id: 'resources.blinking',
+        label: { en: 'Blinking (1/day)' },
+        maxPipelineId: 'blinking_max',
+        currentValue: 0, // used
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+    };
+    triggerDawnReset(pools, (id) => id === 'spell_turning_max' ? 3 : 1);
+    expect(pools['resources.spell_turning'].currentValue).toBe(3); // fully restored
+    expect(pools['resources.blinking'].currentValue).toBe(1);       // fully restored
+  });
+
+  it('does NOT reset "long_rest" pools at dawn (party skipped sleep)', () => {
+    // Critical distinction: spell slots require sleep, not just calendar time.
+    const pools: Record<string, ResourcePool> = {
+      'resources.spell_slots': {
+        id: 'resources.spell_slots',
+        label: { en: 'Level 1 Spell Slots' },
+        maxPipelineId: 'spell_slots_max',
+        currentValue: 0, // depleted
+        temporaryValue: 0,
+        resetCondition: 'long_rest', // NOT per_day
+      },
+      'resources.djinni': {
+        id: 'resources.djinni',
+        label: { en: 'Djinni (1/day)' },
+        maxPipelineId: 'djinni_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+    };
+    triggerDawnReset(pools, (_id) => 3);
+    expect(pools['resources.spell_slots'].currentValue).toBe(0); // unchanged — needs sleep
+    expect(pools['resources.djinni'].currentValue).toBe(3);      // restored — calendar-based
+  });
+
+  it('does NOT reset "per_week" pools at dawn', () => {
+    const pools: Record<string, ResourcePool> = {
+      'resources.chain_lightning': {
+        id: 'resources.chain_lightning',
+        label: { en: 'Chain Lightning (1/week)' },
+        maxPipelineId: 'cl_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+      'resources.per_day_ability': {
+        id: 'resources.per_day_ability',
+        label: { en: 'Daily Ability' },
+        maxPipelineId: 'daily_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+    };
+    triggerDawnReset(pools, (_id) => 1);
+    expect(pools['resources.chain_lightning'].currentValue).toBe(0); // unchanged — weekly, not daily
+    expect(pools['resources.per_day_ability'].currentValue).toBe(1); // restored
+  });
+
+  it('does NOT reset "never" pools (finite charges are permanent depletions)', () => {
+    // Ring of the Ram: 50 charges, never auto-refills.
+    const pools: Record<string, ResourcePool> = {
+      'resources.ram_charges': {
+        id: 'resources.ram_charges',
+        label: { en: 'Ram Charges' },
+        maxPipelineId: 'ram_max',
+        currentValue: 23, // partially depleted
+        temporaryValue: 0,
+        resetCondition: 'never',
+      },
+    };
+    triggerDawnReset(pools, (_id) => 50);
+    expect(pools['resources.ram_charges'].currentValue).toBe(23); // unchanged
+  });
+});
+
+describe('triggerWeeklyReset — "per_week" calendar reset (E-1, Elemental Command rings)', () => {
+  /**
+   * D&D 3.5 SRD: Several Ring of Elemental Command abilities reset weekly.
+   * Example: Ring of Elemental Command (Air) — chain lightning 1/week.
+   *
+   * ARCHITECTURE section 4.4 (E-1):
+   *   "per_week" = calendar weekly reset. Called by `triggerWeeklyReset()`.
+   */
+  it('restores a depleted "per_week" pool to its maximum after one week', () => {
+    // Scenario: Ring of Elemental Command (Air) — chain lightning used, week passes.
+    const pools: Record<string, ResourcePool> = {
+      'resources.chain_lightning': {
+        id: 'resources.chain_lightning',
+        label: { en: 'Chain Lightning (1/week)' },
+        maxPipelineId: 'cl_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+    };
+    triggerWeeklyReset(pools, (_id) => 1);
+    expect(pools['resources.chain_lightning'].currentValue).toBe(1);
+  });
+
+  it('restores multiple "per_week" pools (Ring of Shooting Stars — shooting stars 3/week)', () => {
+    const pools: Record<string, ResourcePool> = {
+      'resources.shooting_stars': {
+        id: 'resources.shooting_stars',
+        label: { en: 'Shooting Stars (3/week)' },
+        maxPipelineId: 'ss_max',
+        currentValue: 1, // 2 used this week
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+      'resources.flame_strike': {
+        id: 'resources.flame_strike',
+        label: { en: 'Flame Strike (2/week)' },
+        maxPipelineId: 'fs_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+    };
+    triggerWeeklyReset(pools, (id) => id === 'ss_max' ? 3 : 2);
+    expect(pools['resources.shooting_stars'].currentValue).toBe(3);
+    expect(pools['resources.flame_strike'].currentValue).toBe(2);
+  });
+
+  it('does NOT reset "per_day" pools on weekly reset', () => {
+    // Weekly reset only affects per_week pools, leaving per_day untouched.
+    const pools: Record<string, ResourcePool> = {
+      'resources.per_day': {
+        id: 'resources.per_day',
+        label: { en: 'Daily Ability' },
+        maxPipelineId: 'pd_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+      'resources.per_week': {
+        id: 'resources.per_week',
+        label: { en: 'Weekly Ability' },
+        maxPipelineId: 'pw_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+    };
+    triggerWeeklyReset(pools, (_id) => 1);
+    expect(pools['resources.per_day'].currentValue).toBe(0);  // untouched
+    expect(pools['resources.per_week'].currentValue).toBe(1); // restored
+  });
+
+  it('does NOT reset "long_rest" pools on weekly reset', () => {
+    const pools: Record<string, ResourcePool> = {
+      'resources.spell_slots': {
+        id: 'resources.spell_slots',
+        label: { en: 'Spell Slots' },
+        maxPipelineId: 'ss_max',
+        currentValue: 2,
+        temporaryValue: 0,
+        resetCondition: 'long_rest',
+      },
+    };
+    triggerWeeklyReset(pools, (_id) => 4);
+    expect(pools['resources.spell_slots'].currentValue).toBe(2); // unchanged
+  });
+
+  it('weekly and dawn resets are completely independent of each other', () => {
+    // Both trigger in the same session but target only their respective pools.
+    const pools: Record<string, ResourcePool> = {
+      'resources.daily': {
+        id: 'resources.daily',
+        label: { en: 'Daily' },
+        maxPipelineId: 'd_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_day',
+      },
+      'resources.weekly': {
+        id: 'resources.weekly',
+        label: { en: 'Weekly' },
+        maxPipelineId: 'w_max',
+        currentValue: 0,
+        temporaryValue: 0,
+        resetCondition: 'per_week',
+      },
+    };
+    // Dawn arrives (only daily resets)
+    triggerDawnReset(pools, (_id) => 5);
+    expect(pools['resources.daily'].currentValue).toBe(5);   // restored at dawn
+    expect(pools['resources.weekly'].currentValue).toBe(0);  // weekly still empty
+
+    // A week passes (only weekly resets)
+    triggerWeeklyReset(pools, (_id) => 3);
+    expect(pools['resources.daily'].currentValue).toBe(5);   // unchanged by weekly reset
+    expect(pools['resources.weekly'].currentValue).toBe(3);  // now restored
   });
 });

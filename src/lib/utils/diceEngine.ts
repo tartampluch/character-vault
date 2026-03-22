@@ -50,7 +50,7 @@
  * @see ARCHITECTURE.md section 17 for the full specification
  */
 
-import type { StatisticPipeline } from '../types/pipeline';
+import type { StatisticPipeline, Modifier } from '../types/pipeline';
 import type { CampaignSettings } from '../types/settings';
 
 // =============================================================================
@@ -290,6 +290,31 @@ export interface RollResult {
    * @see ARCHITECTURE.md Phase 2.5b — task tracking
    */
   targetPool: DamageTargetPool;
+
+  /**
+   * Modifiers drawn from the DEFENDER's `attacker.*` active modifiers that were
+   * applied to THIS roll (Enhancement E-5).
+   *
+   * CONTEXT:
+   *   Some features (Ring of Elemental Command, supernatural auras) impose penalties
+   *   on characters who ATTACK the feature owner, rather than on the owner themselves.
+   *   At roll time, when an attacker targets the owner, the Dice Engine collects the
+   *   defender's `attacker.*` modifiers (pre-filtered for the `situationalContext`)
+   *   and applies them to the incoming attack roll.
+   *
+   * This field records which modifiers were applied, for transparent display in the
+   * dice roll modal ("Air elemental: −1 to attack rolls while targeting ring wearer").
+   *
+   * EMPTY ARRAY when: no `attacker.*` modifiers exist on the defender, OR none match
+   * the attacker's tag set.
+   *
+   * OPTIONAL: this field is absent on rolls that do not involve an attacker context
+   * (e.g., saving throws, skill checks, initiative rolls).
+   *
+   * @see ARCHITECTURE.md section 4.6 — `attacker.*` target namespace
+   * @see Modifier.targetId — the `"attacker."` prefix convention
+   */
+  attackerPenaltiesApplied?: Modifier[];
 }
 
 // =============================================================================
@@ -432,13 +457,67 @@ function defaultRng(faces: number): number {
  *                      correctly flag critical threats without caller-side workarounds.
  * @returns A fully structured `RollResult` including `targetPool` for damage routing.
  */
+/**
+ * ENHANCEMENT E-5 — `attacker.*` modifier resolution helper.
+ *
+ * Filters the defender's active modifiers for entries whose `targetId` starts with
+ * `"attacker."`, strips the prefix, and returns the resolved modifier value sum
+ * that should be applied to the attacker's roll.
+ *
+ * EXAMPLE:
+ *   Defender has `{ targetId: "attacker.combatStats.attack_bonus", value: -1, situationalContext: "vs_air_elementals" }`
+ *   Attacker's targetTags includes `"air_elemental"` → mod applies → returns -1.
+ *
+ * @param defenderMods   - The full set of active modifiers from the defender's character.
+ * @param targetTags     - The attacker's tags (from `RollContext.targetTags`).
+ * @param targetPipeline - The pipeline the attacker is rolling against (e.g., "combatStats.attack_bonus").
+ *                         Only `attacker.*` mods whose stripped targetId matches this are applied.
+ * @returns The total penalty/bonus from matching attacker modifiers, and the list of applied modifiers.
+ *
+ * @internal Called inside `parseAndRoll` when `defenderAttackerMods` is provided.
+ */
+function resolveAttackerMods(
+  defenderMods: Modifier[],
+  targetTags: string[],
+  targetPipeline: string,
+): { totalBonus: number; applied: Modifier[] } {
+  const ATTACKER_PREFIX = 'attacker.';
+  let totalBonus = 0;
+  const applied: Modifier[] = [];
+
+  for (const mod of defenderMods) {
+    // Only process `attacker.*` modifiers
+    if (!mod.targetId.startsWith(ATTACKER_PREFIX)) continue;
+
+    // Strip the prefix to get the effective pipeline target
+    const strippedTarget = mod.targetId.slice(ATTACKER_PREFIX.length);
+
+    // Only apply when the stripped target matches the pipeline being rolled
+    if (strippedTarget !== targetPipeline) continue;
+
+    // Apply situationalContext filtering: like regular situational mods,
+    // the modifier only fires when the attacker has the matching tag.
+    if (mod.situationalContext && !targetTags.includes(mod.situationalContext)) continue;
+
+    const modValue = typeof mod.value === 'number'
+      ? mod.value
+      : parseFloat(String(mod.value)) || 0;
+
+    totalBonus += modValue;
+    applied.push(mod);
+  }
+
+  return { totalBonus, applied };
+}
+
 export function parseAndRoll(
   formula: string,
   pipeline: StatisticPipeline,
   context: RollContext,
   settings: CampaignSettings,
   rng: (faces: number) => number = defaultRng,
-  critRange: string = '20'
+  critRange: string = '20',
+  defenderAttackerMods?: Modifier[]
 ): RollResult {
   const groups = parseDiceExpression(formula);
 
@@ -526,8 +605,31 @@ export function parseAndRoll(
     }
   }
 
+  // --- Step 3b: Resolve attacker modifiers from the defender (Enhancement E-5) ---
+  // When a defender has `attacker.*` modifiers (e.g., Ring of Elemental Command −1 penalty
+  // on attackers from the associated plane), the combat system passes these via
+  // `defenderAttackerMods`. The Dice Engine applies them to the attacker's roll here.
+  //
+  // The `targetPipeline` for attacker mod matching is inferred from the pipeline.id.
+  // This ensures only mods targeting the rolled pipeline are applied
+  // (e.g., an `attacker.combatStats.attack_bonus` mod won't wrongly apply to a damage roll).
+  let attackerPenaltyTotal = 0;
+  let attackerPenaltiesApplied: Modifier[] | undefined;
+  if (defenderAttackerMods && defenderAttackerMods.length > 0) {
+    const result = resolveAttackerMods(
+      defenderAttackerMods,
+      effectiveTargetTags,
+      pipeline.id,
+    );
+    attackerPenaltyTotal = result.totalBonus;
+    if (result.applied.length > 0) {
+      attackerPenaltiesApplied = result.applied;
+    }
+  }
+
   // --- Step 4: Compute final total ---
-  const finalTotal = naturalTotal + staticBonus + situationalBonusApplied;
+  // Incorporates situational bonuses + attacker penalties (E-5).
+  const finalTotal = naturalTotal + staticBonus + situationalBonusApplied + attackerPenaltyTotal;
 
   // --- Step 5: Detect crits and fumbles (d20 only) ---
   // Parse the critRange string to determine the minimum roll for a critical threat.
@@ -597,6 +699,8 @@ export function parseAndRoll(
     isAutomaticHit,
     isAutomaticMiss,
     targetPool,
+    // E-5: only include if attacker penalties were actually applied
+    ...(attackerPenaltiesApplied ? { attackerPenaltiesApplied } : {}),
   };
 }
 

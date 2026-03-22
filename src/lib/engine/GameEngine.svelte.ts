@@ -38,7 +38,7 @@ import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
 import type { LocalizedString, SupportedLanguage } from '../types/i18n';
 import type { StatisticPipeline, SkillPipeline, ResourcePool, Modifier } from '../types/pipeline';
-import type { Feature } from '../types/feature';
+import type { Feature, ResourcePoolTemplate, ActivationTier } from '../types/feature';
 import type { ID } from '../types/primitives';
 import { dataLoader } from './DataLoader';
 import { checkCondition } from '../utils/logicEvaluator';
@@ -2628,6 +2628,385 @@ export class GameEngine {
       if (pool.resetCondition !== 'long_rest' && pool.resetCondition !== 'short_rest') continue;
       const max = this.#getEffectiveMax(pool);
       pool.currentValue = max;
+    }
+  }
+
+  /**
+   * Resets all `"per_day"` resource pools to their maximum value.
+   *
+   * D&D 3.5 CONTEXT — CALENDAR-DAY RESET:
+   *   Many magic items and abilities reset on a daily calendar basis ("X uses per day"),
+   *   independently of whether the character has slept. Dawn arrives whether or not the
+   *   party rested. This is explicitly different from `"long_rest"`, which requires
+   *   8 hours of restful sleep to recover spell slots and similar class resources.
+   *
+   * EXAMPLES OF `"per_day"` POOLS:
+   *   - Ring of Djinni Calling: 1 call per day → `resetCondition: "per_day"`, `maxValue: 1`
+   *   - Ring of Spell Turning: 3 uses per day → `resetCondition: "per_day"`, `maxValue: 3`
+   *   - Ring of Elemental Command (Air): gust of wind 2/day, air walk 1/day
+   *   - Any X/day activated item charge
+   *
+   * DOES NOT RESET: `"long_rest"` or `"per_week"` pools.
+   * The GM or combat manager calls this method at the in-game dawn transition.
+   *
+   * @see ResourcePool.resetCondition — `"per_day"` documentation
+   * @see ARCHITECTURE.md section 4.4 — Calendar Reset Conditions
+   */
+  triggerDawnReset(): void {
+    // Reset character-level per_day pools (e.g., class features with daily uses)
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== 'per_day') continue;
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = max;
+    }
+    // Reset item instance per_day pools (E-2: Ring of Djinni Calling, Spell Turning, etc.)
+    this.#resetItemPoolsByCondition('per_day');
+  }
+
+  /**
+   * Resets all `"per_week"` resource pools to their maximum value.
+   *
+   * D&D 3.5 CONTEXT — WEEKLY CALENDAR RESET:
+   *   Some magic item abilities reset on a weekly basis. The Ring of Elemental Command
+   *   series specifies several abilities as "X per week" (chain lightning 1/week,
+   *   ice storm 2/week, control water 2/week, etc.). These are significantly rarer
+   *   than per-day abilities and reset on their own weekly schedule.
+   *
+   * EXAMPLES OF `"per_week"` POOLS:
+   *   - Ring of Elemental Command (Air): chain lightning 1/week
+   *   - Ring of Elemental Command (Earth): stoneskin 1/week, passwall 2/week
+   *   - Ring of Elemental Command (Fire): flame strike 2/week
+   *   - Ring of Elemental Command (Water): ice storm 2/week, control water 2/week
+   *   - Ring of Shooting Stars: shooting stars 3/week
+   *
+   * DOES NOT RESET: `"long_rest"`, `"per_day"`, or other pool types.
+   * The GM calls this method at the weekly in-game boundary (typically a Monday
+   * sunrise equivalent in the game world).
+   *
+   * @see ResourcePool.resetCondition — `"per_week"` documentation
+   * @see ARCHITECTURE.md section 4.4 — Calendar Reset Conditions
+   */
+  triggerWeeklyReset(): void {
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== 'per_week') continue;
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = max;
+    }
+    // Also reset per_week item pools on all active feature instances
+    this.#resetItemPoolsByCondition('per_week');
+  }
+
+  // ---------------------------------------------------------------------------
+  // TRIGGER-BASED ACTIVATION — REACTION / PASSIVE FEATURES (Enhancement E-4)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns all currently active features whose activation type is `"reaction"`
+   * and whose `triggerEvent` matches the given event string.
+   *
+   * PURPOSE — AUTOMATIC REACTION DISPATCH:
+   *   In the combat event loop (Phase 10), when a triggerable event occurs
+   *   (e.g., character falls more than 5 feet), the combat tracker should call
+   *   this method to discover which active features respond to that event.
+   *   Features with matching `triggerEvent` are "fired" without player input.
+   *
+   * D&D 3.5 EXAMPLES:
+   *   - `"on_fall"`:          Ring of Feather Falling.
+   *   - `"on_spell_targeted"`: Ring of Counterspells (auto-counters stored spell).
+   *
+   * ALGORITHM:
+   *   1. Iterates all `character.activeFeatures` where `isActive: true`.
+   *   2. For each, loads the Feature from the DataLoader.
+   *   3. Returns features whose `activation.actionType === "reaction"` AND
+   *      `activation.triggerEvent === triggerEvent`.
+   *
+   * @param triggerEvent - The event string to match against `Feature.activation.triggerEvent`.
+   * @returns Array of matching Feature objects (may be empty). Caller fires them.
+   *
+   * @see ARCHITECTURE.md section 5.5b — Trigger-Based Activation full reference
+   * @see Feature.activation.triggerEvent — the event discriminant field
+   */
+  getReactionFeaturesByTrigger(triggerEvent: string): Feature[] {
+    const result: Feature[] = [];
+    for (const instance of this.character.activeFeatures) {
+      if (!instance.isActive) continue;
+      const feature = dataLoader.getFeature(instance.featureId);
+      if (!feature?.activation) continue;
+      if (
+        feature.activation.actionType === 'reaction' &&
+        feature.activation.triggerEvent === triggerEvent
+      ) {
+        result.push(feature);
+      }
+    }
+    return result;
+  }
+
+  // ---------------------------------------------------------------------------
+  // TIERED VARIABLE-COST ACTIVATION (Enhancement E-3)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Activates a tiered variable-cost ability, spending the chosen tier's charges.
+   *
+   * D&D 3.5 CONTEXT — RING OF THE RAM:
+   *   The Ring of the Ram lets the wearer choose to spend 1, 2, or 3 charges per use,
+   *   with escalating damage and bull-rush bonus. Without tiered activation, the engine
+   *   would need hardcoded logic to differentiate the three power levels. With it, the
+   *   data author declares the tiers in JSON and the engine resolves them uniformly.
+   *
+   * CALL SITE:
+   *   The Inventory item card or Special Abilities panel calls this method after the
+   *   player selects a tier from the tier selector UI. The method returns the chosen
+   *   tier's `grantedModifiers` for the calling code to pass to the Dice Engine.
+   *
+   * ALGORITHM:
+   *   1. Validates `tierIndex` is within the `tieredResourceCosts` array bounds.
+   *   2. Looks up the pool: first checks `instance.itemResourcePools[tier.targetPoolId]`
+   *      (instance-scoped E-2 pools), then `character.resources[tier.targetPoolId]`
+   *      (character-level pools).
+   *   3. Resolves tier `cost` (number or formula string via Math Parser).
+   *   4. Validates the pool has enough charges.
+   *   5. Deducts the cost.
+   *   6. Returns the tier's `grantedModifiers` (transient — valid for ONE roll only).
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId` of the activating item.
+   * @param tierIndex  - 0-based index into `feature.activation.tieredResourceCosts`.
+   * @returns The tier's `grantedModifiers` to inject into the Dice Engine roll context,
+   *          OR `null` if validation fails (invalid tier, insufficient charges, etc.).
+   *
+   * @see ARCHITECTURE.md section 5 — activation.tieredResourceCosts
+   * @see ActivationTier                — the tier data structure
+   * @see spendItemPoolCharge()         — the underlying charge deduction method
+   */
+  activateWithTier(instanceId: string, tierIndex: number): import('../types/pipeline').Modifier[] | null {
+    // Find the item instance
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    if (!instance) return null;
+
+    // Load the feature and find its tiered costs
+    const feature = dataLoader.getFeature(instance.featureId);
+    if (!feature?.activation?.tieredResourceCosts) return null;
+
+    const tiers: ActivationTier[] = feature.activation.tieredResourceCosts;
+
+    // Validate tier index
+    if (tierIndex < 0 || tierIndex >= tiers.length) {
+      console.warn(
+        `[GameEngine.activateWithTier] Tier index ${tierIndex} out of range ` +
+        `(0–${tiers.length - 1}) for feature "${feature.id}".`,
+      );
+      return null;
+    }
+
+    const tier = tiers[tierIndex];
+
+    // Resolve the cost (may be a formula string)
+    let resolvedCost: number;
+    if (typeof tier.cost === 'number') {
+      resolvedCost = tier.cost;
+    } else {
+      const parsed = evaluateFormula(tier.cost, this.phase0_context, this.settings.language);
+      resolvedCost = typeof parsed === 'number' ? parsed : parseFloat(String(parsed));
+      if (!isFinite(resolvedCost) || resolvedCost < 0) {
+        console.warn(
+          `[GameEngine.activateWithTier] Cost formula "${tier.cost}" resolved to invalid` +
+          ` value: ${resolvedCost}. Aborting activation.`,
+        );
+        return null;
+      }
+    }
+
+    // Find the current pool value (item pool takes precedence over character pool)
+    let currentCharges: number;
+    const hasItemPool = instance.itemResourcePools &&
+      Object.prototype.hasOwnProperty.call(instance.itemResourcePools, tier.targetPoolId);
+
+    if (hasItemPool) {
+      currentCharges = instance.itemResourcePools![tier.targetPoolId];
+    } else if (this.character.resources[tier.targetPoolId]) {
+      currentCharges = this.character.resources[tier.targetPoolId].currentValue;
+    } else {
+      console.warn(
+        `[GameEngine.activateWithTier] Pool "${tier.targetPoolId}" not found ` +
+        `on instance "${instanceId}" or character resources.`,
+      );
+      return null;
+    }
+
+    // Validate sufficient charges
+    if (currentCharges < resolvedCost) {
+      console.warn(
+        `[GameEngine.activateWithTier] Insufficient charges: ` +
+        `need ${resolvedCost}, have ${currentCharges} in pool "${tier.targetPoolId}".`,
+      );
+      return null;
+    }
+
+    // Deduct the cost
+    if (hasItemPool) {
+      this.spendItemPoolCharge(instanceId, tier.targetPoolId, resolvedCost);
+    } else {
+      const pool = this.character.resources[tier.targetPoolId];
+      pool.currentValue = Math.max(0, pool.currentValue - resolvedCost);
+    }
+
+    // Return the tier's transient modifiers for the Dice Engine
+    return tier.grantedModifiers;
+  }
+
+  // ---------------------------------------------------------------------------
+  // INSTANCE-SCOPED ITEM RESOURCE POOLS (Enhancement E-2)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Initialises `itemResourcePools` on a feature instance for any pool templates
+   * declared on the feature that do not yet have an entry.
+   *
+   * IDEMPOTENCY CONTRACT:
+   *   Safe to call multiple times on the same instance. Only adds NEW keys —
+   *   never overwrites existing (depleted) charge counts. This means calling
+   *   this method on an already-equipped item with 23/50 charges does NOT
+   *   reset it back to 50.
+   *
+   * CALL SITE: whenever a new `ActiveFeatureInstance` is added to the character's
+   * `activeFeatures` (equip/loot flow in Phase 13.3).
+   *
+   * @param instance - The `ActiveFeatureInstance` being initialised.
+   * @param feature  - The resolved `Feature` definition for this instance.
+   *
+   * @see ARCHITECTURE.md section 5.7 — itemResourcePools lifecycle
+   */
+  initItemResourcePools(instance: ActiveFeatureInstance, feature: Feature): void {
+    // If the feature declares no pool templates, there is nothing to initialise.
+    if (!feature.resourcePoolTemplates || feature.resourcePoolTemplates.length === 0) return;
+
+    // Ensure the itemResourcePools record exists on the instance.
+    if (!instance.itemResourcePools) {
+      instance.itemResourcePools = {};
+    }
+
+    for (const template of feature.resourcePoolTemplates) {
+      // IDEMPOTENCY: only set if this poolId is not already present.
+      // We use `Object.prototype.hasOwnProperty` to distinguish absent (never set)
+      // from 0 (fully depleted) — both are falsy, but only the former should be initialised.
+      if (!Object.prototype.hasOwnProperty.call(instance.itemResourcePools, template.poolId)) {
+        instance.itemResourcePools[template.poolId] = template.defaultCurrent;
+      }
+    }
+  }
+
+  /**
+   * Returns the current value of a named pool on a specific item instance.
+   *
+   * Returns the value from `instance.itemResourcePools[poolId]` if present,
+   * or `template.defaultCurrent` if the pool has never been initialised
+   * (consistent with what `initItemResourcePools` would set).
+   * Returns `0` if neither the instance nor a matching template can be found.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId` to query.
+   * @param poolId     - The pool identifier (from `ResourcePoolTemplate.poolId`).
+   * @returns The current charge / use count.
+   *
+   * @see ARCHITECTURE.md section 5.7 — `getItemPoolValue()` specification
+   */
+  getItemPoolValue(instanceId: string, poolId: string): number {
+    // Find the instance in the character's active features.
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    if (!instance) return 0;
+
+    // If already initialised, return the recorded current value directly.
+    if (instance.itemResourcePools && Object.prototype.hasOwnProperty.call(
+      instance.itemResourcePools, poolId)) {
+      return instance.itemResourcePools[poolId];
+    }
+
+    // Not yet initialised — look up the template's defaultCurrent as the authoritative value.
+    const feature = dataLoader.getFeature(instance.featureId);
+    if (!feature?.resourcePoolTemplates) return 0;
+    const template = (feature.resourcePoolTemplates as ResourcePoolTemplate[])
+      .find((t: ResourcePoolTemplate) => t.poolId === poolId);
+    return template?.defaultCurrent ?? 0;
+  }
+
+  /**
+   * Atomically deducts charges from an item instance's named pool.
+   *
+   * FLOOR: `currentValue` can never go below 0 (charges cannot become negative).
+   * The caller should check `getItemPoolValue() >= amount` BEFORE calling
+   * `spendItemPoolCharge()` if "insufficient charges" validation is needed
+   * (the engine itself does not throw — it simply clamps at 0).
+   *
+   * PATTERN: Spend 3 charges from Ring of the Ram:
+   * ```typescript
+   * if (engine.getItemPoolValue(instanceId, "charges") >= 3) {
+   *   engine.spendItemPoolCharge(instanceId, "charges", 3);
+   *   // resolve the 3d6 damage attack
+   * }
+   * ```
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   * @param poolId     - The pool to deduct from.
+   * @param amount     - Number of charges to spend (default: 1). Must be > 0.
+   *
+   * @see ARCHITECTURE.md section 5.7 — `spendItemPoolCharge()` specification
+   */
+  spendItemPoolCharge(instanceId: string, poolId: string, amount = 1): void {
+    if (amount <= 0) return; // Nothing to spend
+
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    if (!instance) return;
+
+    // Ensure the pool is initialised before spending.
+    const feature = dataLoader.getFeature(instance.featureId);
+    if (feature) {
+      this.initItemResourcePools(instance, feature);
+    }
+    if (!instance.itemResourcePools) return;
+
+    const current = instance.itemResourcePools[poolId] ?? 0;
+    // Floor at 0 — charges cannot go negative.
+    instance.itemResourcePools[poolId] = Math.max(0, current - amount);
+  }
+
+  /**
+   * Resets all item instance pools whose template declares the given `resetCondition`.
+   *
+   * Private helper invoked by `triggerDawnReset()` and `triggerWeeklyReset()` to
+   * handle item pools alongside character-level `resources` pools.
+   *
+   * ALGORITHM:
+   *   For each active feature instance → load the feature → for each template
+   *   with matching `resetCondition` → restore `itemResourcePools[poolId]`
+   *   to the template's `defaultCurrent` (treated as the full max for calendar-reset
+   *   item pools, since the actual max pipeline may vary).
+   *
+   * @param condition - The `resetCondition` value to match against templates.
+   */
+  #resetItemPoolsByCondition(condition: ResourcePoolTemplate['resetCondition']): void {
+    for (const instance of this.character.activeFeatures) {
+      if (!instance.isActive) continue; // stashed items don't reset
+
+      const feature = dataLoader.getFeature(instance.featureId);
+      if (!feature?.resourcePoolTemplates) continue;
+
+      // Ensure itemResourcePools exists before writing to it.
+      if (!instance.itemResourcePools) {
+        instance.itemResourcePools = {};
+      }
+
+      for (const template of feature.resourcePoolTemplates) {
+        if (template.resetCondition !== condition) continue;
+        // Restore to defaultCurrent (the "full" value defined by the template).
+        // For a Ring of Spell Turning with 3/day, this resets the pool back to 3.
+        instance.itemResourcePools[template.poolId] = template.defaultCurrent;
+      }
     }
   }
 

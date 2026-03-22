@@ -135,6 +135,51 @@ export interface ActiveFeatureInstance {
    * Default: undefined/false (item is in backpack, not stashed).
    */
   isStashed?: boolean;
+
+  /**
+   * Instance-scoped resource pool current values for charged items.
+   *
+   * D&D 3.5 CONTEXT — WHY INSTANCE-SCOPED:
+   *   Charges on a Ring of the Ram, uses-per-day on a Ring of Spell Turning, or
+   *   weekly uses on an Elemental Command ring belong to THE SPECIFIC ITEM, not to
+   *   the character in general. If the character trades the ring away, whoever receives
+   *   it should get the remaining charges, not start fresh.
+   *
+   *   `Character.resources` holds pools that belong to the CHARACTER (HP, spell slots,
+   *   Rage rounds). This field holds pools that belong to THIS SPECIFIC ITEM INSTANCE.
+   *
+   * DATA MODEL:
+   *   Key:   `poolId` — matches a `ResourcePoolTemplate.poolId` on the parent Feature.
+   *   Value: `currentValue` — the current charge / uses count for this item instance.
+   *
+   * LIFECYCLE:
+   *   - On first equip: `GameEngine.initItemResourcePools()` populates missing keys
+   *     using the Feature's `resourcePoolTemplates[n].defaultCurrent`. Idempotent.
+   *   - During play: `GameEngine.spendItemPoolCharge()` decrements atomically.
+   *   - At dawn/weekly reset: `triggerDawnReset()` / `triggerWeeklyReset()` restore
+   *     pools whose template has `resetCondition: "per_day"` or `"per_week"`.
+   *   - On item transfer: move the entire `ActiveFeatureInstance` (including this field)
+   *     to the recipient character — charges travel with the item.
+   *
+   * EXAMPLES:
+   *   Ring of the Ram, 23 charges remaining:
+   *   ```json
+   *   { "charges": 23 }
+   *   ```
+   *   Ring of Spell Turning, 1 of 3 daily uses remaining:
+   *   ```json
+   *   { "spell_turning_uses": 1 }
+   *   ```
+   *
+   * Items without `resourcePoolTemplates` on their Feature definition
+   * (the vast majority of items) will have this field as `undefined`.
+   *
+   * @see Feature.resourcePoolTemplates — the static charge pool schema on the item definition
+   * @see GameEngine.initItemResourcePools() — idempotent initialisation on equip
+   * @see GameEngine.spendItemPoolCharge()  — atomic charge deduction
+   * @see ARCHITECTURE.md section 5.7 — full instance-scoped pool documentation
+   */
+  itemResourcePools?: Record<string, number>;
 }
 
 // =============================================================================
