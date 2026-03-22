@@ -89,6 +89,7 @@
   import MovementSpeeds        from '$lib/components/combat/MovementSpeeds.svelte';
   import Resistances           from '$lib/components/combat/Resistances.svelte';
   import DamageReduction       from '$lib/components/combat/DamageReduction.svelte';
+  import ActionBudgetBar       from '$lib/components/combat/ActionBudgetBar.svelte';
 
   // ── Feats tab components (Phase 11) ───────────────────────────────────────
   import FeatsTab              from '$lib/components/feats/FeatsTab.svelte';
@@ -398,6 +399,8 @@
 
         <!-- Left column: vital stats -->
         <div class="flex flex-col gap-4">
+          <!-- Action Budget Bar — shown only when conditions restrict actions (Extension F) -->
+          <ActionBudgetBar />
           <HealthAndXP />
           <ArmorClass />
           <CoreCombat />

@@ -194,6 +194,25 @@
             </span>
           </div>
 
+          <!-- Damage Pool Routing (Extension H — Vitality/Wound Points variant) -->
+          {#if engine.settings.variantRules?.vitalityWoundPoints && lastResult.targetPool !== 'res_hp'}
+            <div
+              class="flex items-center justify-between pt-1 text-xs font-semibold tracking-wide
+                     {lastResult.targetPool === 'res_wound_points'
+                       ? 'text-red-400'
+                       : 'text-sky-400'}"
+              role="status"
+              aria-live="polite"
+            >
+              <span>{ui('dice.damage_routes_to', engine.settings.language)}</span>
+              <span>
+                {lastResult.targetPool === 'res_wound_points'
+                  ? ui('dice.critical_wound', engine.settings.language)
+                  : ui('dice.normal_vitality', engine.settings.language)}
+              </span>
+            </div>
+          {/if}
+
         </div>
       {/if}
 

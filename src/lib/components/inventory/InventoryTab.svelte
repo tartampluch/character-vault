@@ -24,6 +24,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import Encumbrance from './Encumbrance.svelte';
+  import PsionicItemCard from './PsionicItemCard.svelte';
   import type { ItemFeature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import {
@@ -143,24 +144,28 @@
                   </div>
                 </div>
 
-                <!-- Action buttons -->
-                <div class="flex gap-1 shrink-0">
-                  <button
-                    class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
-                    onclick={() => (modalItemId = item.feature.id)}
-                    aria-label="Details for {engine.t(item.feature.label)}"
-                    type="button"
-                  ><IconInfo size={14} aria-hidden="true" /></button>
-                  <button
-                    class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
-                    onclick={() => unequipItem(item.instanceId)}
-                    aria-label="Unequip {engine.t(item.feature.label)}"
-                    title="Unequip"
-                    type="button"
-                  ><IconUnequip size={14} aria-hidden="true" /></button>
-                </div>
-              </div>
-            {/each}
+                 <!-- Action buttons -->
+                 <div class="flex gap-1 shrink-0">
+                   <button
+                     class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
+                     onclick={() => (modalItemId = item.feature.id)}
+                     aria-label="Details for {engine.t(item.feature.label)}"
+                     type="button"
+                   ><IconInfo size={14} aria-hidden="true" /></button>
+                   <button
+                     class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
+                     onclick={() => unequipItem(item.instanceId)}
+                     aria-label="Unequip {engine.t(item.feature.label)}"
+                     title="Unequip"
+                     type="button"
+                   ><IconUnequip size={14} aria-hidden="true" /></button>
+                 </div>
+               </div>
+               <!-- Psionic item data card (Extension E) -->
+               {#if item.feature.psionicItemData}
+                 <PsionicItemCard item={item.feature} instanceId={item.instanceId} />
+               {/if}
+             {/each}
           {/if}
         </div>
       {/if}
@@ -243,23 +248,27 @@
                     ><IconEquip size={14} aria-hidden="true" /></button>
                   {/if}
 
-                  <button
-                    class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
-                    onclick={() => engine.removeFeature(item.instanceId)}
-                    aria-label="Remove {engine.t(item.feature.label)}"
-                    type="button"
-                  ><IconDelete size={14} aria-hidden="true" /></button>
-                </div>
-              </div>
-            {/each}
-          {/if}
-        </div>
-      {/if}
-    </div>
+                   <button
+                     class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
+                     onclick={() => engine.removeFeature(item.instanceId)}
+                     aria-label="Remove {engine.t(item.feature.label)}"
+                     type="button"
+                   ><IconDelete size={14} aria-hidden="true" /></button>
+                 </div>
+               </div>
+               <!-- Psionic item data card (Extension E) -->
+               {#if item.feature.psionicItemData}
+                 <PsionicItemCard item={item.feature} instanceId={item.instanceId} />
+               {/if}
+             {/each}
+           {/if}
+         </div>
+       {/if}
+     </div>
 
-    <!-- ================================================================= -->
-    <!-- STORAGE / STASHED — muted header, no weight contribution         -->
-    <!-- ================================================================= -->
+     <!-- ================================================================= -->
+     <!-- STORAGE / STASHED — muted header, no weight contribution         -->
+     <!-- ================================================================= -->
     <div class="border-t border-border">
       <button
         class="w-full flex items-center justify-between gap-2 px-4 py-3

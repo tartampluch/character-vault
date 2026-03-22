@@ -17,6 +17,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
   import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack } from '$lib/components/ui/icons';
+  import { ui } from '$lib/i18n/ui-strings';
 
   $effect(() => {
     if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`);
@@ -113,6 +114,10 @@
 
   $effect(() => { gmOverridesText; validateOverrideJson(); });
 
+  // ── Variant Rules (Extensions G + H) ─────────────────────────────────────
+  let variantGestalt = $state(engine.settings.variantRules?.gestalt ?? false);
+  let variantVWP     = $state(engine.settings.variantRules?.vitalityWoundPoints ?? false);
+
   let isSaving    = $state(false);
   let saveSuccess = $state('');
 
@@ -120,15 +125,24 @@
     if (!isValidJson) return;
     isSaving = true; saveSuccess = '';
     engine.settings.enabledRuleSources = [...enabledSources];
+    // Persist variant rule flags to engine settings
+    engine.settings.variantRules = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
     try {
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ enabledRuleSources: enabledSources, gmGlobalOverrides: gmOverridesText }),
+        body: JSON.stringify({
+          enabledRuleSources: enabledSources,
+          gmGlobalOverrides: gmOverridesText,
+          variantRules: { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
+        }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      if (campaign) { campaign.enabledRuleSources = [...enabledSources]; campaign.gmGlobalOverrides = gmOverridesText; }
+      if (campaign) {
+        campaign.enabledRuleSources = [...enabledSources];
+        campaign.gmGlobalOverrides = gmOverridesText;
+      }
       saveSuccess = 'Settings saved successfully!';
       setTimeout(() => (saveSuccess = ''), 3000);
     } catch (err) {
@@ -259,7 +273,66 @@
     {/if}
   </section>
 
-  <!-- ── SECTION 2: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
+  <!-- ── SECTION 2: VARIANT RULES (Extensions G + H) ─────────────────────── -->
+  <section class="card p-5 flex flex-col gap-4">
+    <div>
+      <h2 class="section-header text-base border-b border-border pb-2">
+        ⚗ {ui('variant.title', engine.settings.language)}
+      </h2>
+      <p class="mt-2 text-xs text-text-muted leading-relaxed">
+        Variant rules change core engine behaviour. These flags are saved per-campaign and applied immediately.
+        Only enable variant rules your group has agreed to use.
+      </p>
+    </div>
+
+    <!-- Gestalt Characters (Extension G) -->
+    <label class="flex items-start gap-3 cursor-pointer group">
+      <div class="mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          bind:checked={variantGestalt}
+          class="w-4 h-4 accent-accent rounded"
+          aria-labelledby="variant-gestalt-label"
+        />
+      </div>
+      <div class="flex flex-col gap-0.5">
+        <span id="variant-gestalt-label" class="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
+          {ui('variant.gestalt', engine.settings.language)}
+        </span>
+        <span class="text-xs text-text-muted leading-relaxed">
+          {ui('variant.gestalt_desc', engine.settings.language)}
+        </span>
+      </div>
+    </label>
+
+    <!-- Vitality / Wound Points (Extension H) -->
+    <label class="flex items-start gap-3 cursor-pointer group">
+      <div class="mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          bind:checked={variantVWP}
+          class="w-4 h-4 accent-accent rounded"
+          aria-labelledby="variant-vwp-label"
+        />
+      </div>
+      <div class="flex flex-col gap-0.5">
+        <span id="variant-vwp-label" class="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
+          {ui('variant.vitality_wound', engine.settings.language)}
+        </span>
+        <span class="text-xs text-text-muted leading-relaxed">
+          {ui('variant.vitality_wound_desc', engine.settings.language)}
+        </span>
+        {#if variantVWP}
+          <p class="text-xs text-amber-400/80 italic mt-0.5">
+            ⚠ Requires <code class="bg-surface-alt px-1 rounded">resources.vitality_points</code> and
+            <code class="bg-surface-alt px-1 rounded">resources.wound_points</code> pools on each character.
+          </p>
+        {/if}
+      </div>
+    </label>
+  </section>
+
+  <!-- ── SECTION 3: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
   <section class="card p-5 flex flex-col gap-3">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">

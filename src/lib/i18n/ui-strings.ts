@@ -417,6 +417,131 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   // PREREQUISITE STATUS (for runtime re-validation)
   // ==========================================================================
   'prereq.disabled':              { en: 'Prerequisites no longer met — effects suspended', fr: 'Prérequis non remplis — effets suspendus' },
+
+  // ==========================================================================
+  // ECL / LEVEL ADJUSTMENT (Engine Extension A — Phase 1.5)
+  // ==========================================================================
+  'ecl.title':                    { en: 'Level Adjustment', fr: 'Ajustement de niveau' },
+  'ecl.la_label':                 { en: 'LA', fr: 'AN' },
+  'ecl.ecl_label':                { en: 'ECL', fr: 'NCE' },
+  'ecl.xp_label':                 { en: 'XP', fr: 'XP' },
+  'ecl.la_tooltip':               { en: 'Level Adjustment — racial balance surcharge. ECL = class levels + LA.', fr: 'Ajustement de niveau — surcoût racial. NCE = niveaux de classe + AN.' },
+  'ecl.ecl_tooltip':              { en: 'Effective Character Level — used for XP thresholds.', fr: 'Niveau de personnage effectif — utilisé pour les seuils d\'XP.' },
+  'ecl.reduce_la':                { en: 'Reduce LA', fr: 'Réduire AN' },
+  'ecl.reduce_la_tooltip':        { en: 'Pay XP to reduce LA by 1 (requires 3× LA class levels — SRD variant rule).', fr: 'Payez des XP pour réduire l\'AN de 1 (nécessite 3× AN en niveaux de classe).' },
+  'ecl.reduce_la_confirm':        { en: 'Reduce Level Adjustment from {current} to {next}?', fr: 'Réduire l\'ajustement de niveau de {current} à {next} ?' },
+  'ecl.xp_bar_label':             { en: 'XP to next level', fr: 'XP jusqu\'au prochain niveau' },
+
+  // ==========================================================================
+  // FAST HEALING / REGENERATION — per_turn pools (Engine Extension B — Phase 1.6 / 3.6)
+  // ==========================================================================
+  'heal.fast_healing':            { en: 'Fast Healing', fr: 'Guérison accélérée' },
+  'heal.regeneration':            { en: 'Regeneration', fr: 'Régénération' },
+  'heal.tick_button':             { en: 'Start Turn', fr: 'Début de tour' },
+  'heal.tick_tooltip':            { en: 'Apply per-turn healing (Fast Healing / Regeneration) for this character\'s turn.', fr: 'Appliquer la guérison par tour (Guérison accélérée / Régénération) au début du tour.' },
+  'heal.per_turn_badge':          { en: '+{n}/turn', fr: '+{n}/tour' },
+  'heal.per_round_badge':         { en: '+{n}/round', fr: '+{n}/round' },
+  'heal.encounter_reset':         { en: 'New Encounter', fr: 'Nouveau combat' },
+  'heal.long_rest':               { en: 'Long Rest', fr: 'Repos long' },
+  'heal.short_rest':              { en: 'Short Rest', fr: 'Repos court' },
+
+  // ==========================================================================
+  // DAMAGE REDUCTION — drBypassTags (Engine Extension C — Phase 2.4a)
+  // ==========================================================================
+  'dr.groups_title':              { en: 'Active DR', fr: 'RD active' },
+  'dr.bypass_label':              { en: 'Bypassed by:', fr: 'Contournable par :' },
+  'dr.none_bypass':               { en: '— (nothing)', fr: '— (rien)' },
+  'dr.suppressed':                { en: 'Suppressed (lower value)', fr: 'Supprimée (valeur inférieure)' },
+  'dr.add_innate':                { en: 'Add Innate DR', fr: 'Ajouter une RD innée' },
+  'dr.base_class_label':          { en: 'Class DR (additive):', fr: 'RD de classe (additive) :' },
+  'dr.innate_label':              { en: 'Innate / Racial DR:', fr: 'RD innée / raciale :' },
+
+  // ==========================================================================
+  // PSIONIC POWERS — discipline / displays (Engine Extension D — Phase 1.3a)
+  // ==========================================================================
+  'psi.discipline_label':         { en: 'Discipline', fr: 'Discipline' },
+  'psi.displays_label':           { en: 'Displays', fr: 'Manifestations' },
+  'psi.suppress_displays':        { en: 'Suppress Displays', fr: 'Supprimer manifestations' },
+  'psi.suppress_dc':              { en: 'DC {dc}', fr: 'DD {dc}' },
+  'psi.pp_cost':                  { en: '{pp} PP', fr: '{pp} PM' },
+  'psi.discipline.clairsentience':  { en: 'Clairsentience', fr: 'Clairsentience' },
+  'psi.discipline.metacreativity': { en: 'Metacreativity', fr: 'Métacréativité' },
+  'psi.discipline.psychokinesis':  { en: 'Psychokinesis', fr: 'Psychokinésie' },
+  'psi.discipline.psychometabolism': { en: 'Psychometabolism', fr: 'Psychométabolisme' },
+  'psi.discipline.psychoportation': { en: 'Psychoportation', fr: 'Psychoportation' },
+  'psi.discipline.telepathy':      { en: 'Telepathy', fr: 'Télépathie' },
+  'psi.display.auditory':         { en: 'Aud', fr: 'Aud' },
+  'psi.display.material':         { en: 'Mat', fr: 'Mat' },
+  'psi.display.mental':           { en: 'Men', fr: 'Men' },
+  'psi.display.olfactory':        { en: 'Olf', fr: 'Olf' },
+  'psi.display.visual':           { en: 'Vis', fr: 'Vis' },
+  'psi.filter_discipline':        { en: 'Filter by discipline', fr: 'Filtrer par discipline' },
+  'psi.all_disciplines':          { en: 'All disciplines', fr: 'Toutes les disciplines' },
+
+  // ==========================================================================
+  // PSIONIC ITEMS (Engine Extension E — Phase 1.3b)
+  // ==========================================================================
+  'psionic_item.cognizance_crystal': { en: 'Cognizance Crystal', fr: 'Cristal de cognizance' },
+  'psionic_item.dorje':              { en: 'Dorje', fr: 'Dorjé' },
+  'psionic_item.power_stone':        { en: 'Power Stone', fr: 'Pierre mentale' },
+  'psionic_item.psicrown':           { en: 'Psicrown', fr: 'Psicouronne' },
+  'psionic_item.psionic_tattoo':     { en: 'Psionic Tattoo', fr: 'Tatouage psionique' },
+  'psionic_item.stored_pp':          { en: '{pp} / {max} PP', fr: '{pp} / {max} PM' },
+  'psionic_item.charges':            { en: '{n} / {max} charges', fr: '{n} / {max} charges' },
+  'psionic_item.attuned':            { en: 'Attuned', fr: 'Accordé' },
+  'psionic_item.not_attuned':        { en: 'Not attuned (10 min.)', fr: 'Non accordé (10 min.)' },
+  'psionic_item.attune_button':      { en: 'Attune', fr: 'Accorder' },
+  'psionic_item.activated':          { en: 'Used', fr: 'Utilisé' },
+  'psionic_item.activate_button':    { en: 'Activate Tattoo', fr: 'Activer tatouage' },
+  'psionic_item.use_charge':         { en: 'Use', fr: 'Utiliser' },
+  'psionic_item.manifest_from_crown': { en: 'Manifest', fr: 'Manifester' },
+  'psionic_item.draw_pp':            { en: 'Draw {pp} PP', fr: 'Puiser {pp} PM' },
+  'psionic_item.powers_known':       { en: 'Powers', fr: 'Pouvoirs' },
+  'psionic_item.brainburn_risk':     { en: '⚠ Brainburn risk (ML check DC {dc})', fr: '⚠ Risque d\'incandescence (jet ML DD {dc})' },
+  'psionic_item.power_flushed':      { en: 'Used up', fr: 'Consommé' },
+
+  // ==========================================================================
+  // ACTION BUDGET (Engine Extension F — Phase 1.3c)
+  // ==========================================================================
+  'action.budget_title':          { en: 'Actions This Turn', fr: 'Actions ce tour' },
+  'action.standard':              { en: 'Standard', fr: 'Standard' },
+  'action.move':                  { en: 'Move', fr: 'Déplacement' },
+  'action.swift':                 { en: 'Swift', fr: 'Rapide' },
+  'action.immediate':             { en: 'Immediate', fr: 'Immédiate' },
+  'action.free':                  { en: 'Free', fr: 'Libre' },
+  'action.full_round':            { en: 'Full Round', fr: 'Tour complet' },
+  'action.blocked':               { en: 'Blocked by: {conditions}', fr: 'Bloqué par : {conditions}' },
+  'action.spent':                 { en: 'Spent', fr: 'Dépensée' },
+  'action.available':             { en: 'Available', fr: 'Disponible' },
+  'action.spend_standard':        { en: 'Use Standard Action', fr: 'Utiliser action standard' },
+  'action.spend_move':            { en: 'Use Move Action', fr: 'Utiliser action de déplacement' },
+  'action.spend_full':            { en: 'Use Full-Round Action', fr: 'Utiliser action de tour complet' },
+  'action.reset_turn':            { en: 'Reset Turn', fr: 'Réinitialiser le tour' },
+  'action.xor_note':              { en: 'Standard OR Move — not both.', fr: 'Standard OU Déplacement — pas les deux.' },
+
+  // ==========================================================================
+  // VARIANT RULES (Engine Extensions G + H — Phase 2.5a / 2.5b)
+  // ==========================================================================
+  'variant.title':                { en: 'Variant Rules', fr: 'Règles variantes' },
+  'variant.gestalt':              { en: 'Gestalt Characters', fr: 'Personnages gestalts' },
+  'variant.gestalt_desc':         { en: 'Characters advance in two classes simultaneously. BAB and saves use the best progression each level (not additive).', fr: 'Les personnages progressent simultanément dans deux classes. BBA et jets de sauvegarde utilisent la meilleure progression par niveau (non additive).' },
+  'variant.vitality_wound':       { en: 'Vitality & Wound Points', fr: 'Points de vitalité et de blessure' },
+  'variant.vitality_wound_desc':  { en: 'Replaces HP with Vitality Points (normal hits) and Wound Points (critical hits). Critical damage goes directly to Wound Points.', fr: 'Remplace les PV par des Points de vitalité (touches normales) et Points de blessure (coups critiques). Les dégâts critiques vont directement aux Points de blessure.' },
+
+  // ==========================================================================
+  // VITALITY / WOUND POINTS (Engine Extension H — Phase 2.5b)
+  // ==========================================================================
+  'vwp.vitality_label':           { en: 'Vitality', fr: 'Vitalité' },
+  'vwp.wound_label':              { en: 'Wounds', fr: 'Blessures' },
+  'vwp.wound_dc_note':            { en: 'Fort save DC {dc} or stunned', fr: 'Save Vig DD {dc} ou étourdi' },
+  'vwp.fatigued_note':            { en: 'First wound damage → Fatigued', fr: 'Premiers dégâts de blessure → Fatigué' },
+  'vwp.damage_to':                { en: 'Damage → {pool}', fr: 'Dégâts → {pool}' },
+  'vwp.pool_vitality':            { en: 'Vitality Points', fr: 'Points de vitalité' },
+  'vwp.pool_wounds':              { en: 'Wound Points', fr: 'Points de blessure' },
+  'vwp.pool_hp':                  { en: 'Hit Points', fr: 'Points de vie' },
+  'dice.damage_routes_to':        { en: 'Routes to:', fr: 'Affecte :' },
+  'dice.critical_wound':          { en: '→ WOUND POINTS', fr: '→ POINTS DE BLESSURE' },
+  'dice.normal_vitality':         { en: '→ Vitality Points', fr: '→ Points de vitalité' },
 };
 
 // ---------------------------------------------------------------------------

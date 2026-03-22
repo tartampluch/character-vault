@@ -115,7 +115,8 @@ _Goal: Build the complete interactive Abilities, Saving Throws, and Skills inter
 - [x] **9.1 Data Model Extensions:** Update `src/lib/types/feature.ts`. Add `recommendedAttributes?: ID[]` to the `Feature` interface (used by the Point Buy UI to highlight class-preferred stats). Ensure the `SkillPipeline` and `Feature` logic correctly handles "Synergy" modifiers triggered by skill ranks.
 - [x] **9.2 Breakdown & Dice Roll Modals (Shared UI):**
     - Create `src/lib/components/ui/ModifierBreakdownModal.svelte`. It reads a pipeline's `activeModifiers` and displays the math (Base + Modifiers = Final).
-    - Create `src/lib/components/ui/DiceRollModal.svelte`. It takes a target pipeline (e.g., Strength, Jump), calls the `DiceEngine.parseAndRoll()` function, and displays the `RollResult` (Natural Roll + Total Bonus = Final Result, highlighting Critical Failures/Successes).
+     - Create `src/lib/components/ui/DiceRollModal.svelte`. It takes a target pipeline (e.g., Strength, Jump), calls the `DiceEngine.parseAndRoll()` function, and displays the `RollResult` (Natural Roll + Total Bonus = Final Result, highlighting Critical Failures/Successes).
+     - **Extension H (Phase 2.5b — implemented):** When `variantRules.vitalityWoundPoints = true`, an additional row below the Final Total shows the damage routing: `→ WOUND POINTS` (red, for crits) or `→ Vitality Points` (sky blue, for normal hits). Not shown in standard HP mode.
 - [x] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. Display the 6 main stats (STR to CHA). Show the Final Modifier (`derivedModifier`), Base Score (editable), and Temporary Modifier. Add the "i" button (opens Breakdown) and the "Dice" button (opens Roll Modal) for each stat.
 - [x] **9.4 Stat Generation Wizards (Point Buy & Roll):**
     - Create `PointBuyModal.svelte`. Implement the 3.5 point buy math. Read `recommendedAttributes` from the character's active Class feature to color-code (green/orange/red) the stats. Restrict spending based on `CampaignSettings.statGeneration.pointBuyBudget`.
@@ -133,8 +134,10 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 
  - [x] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`.
      - **Health:** Bind to the `resources.hp` pool. Create the visual HP bar (Current, Temporary, Nonlethal). Implement the "Heal" and "Damage" buttons that open a small prompt to add/subtract from `currentValue` and `temporaryValue` correctly (damage depletes temp HP first). Display the base HP and CON modifier breakdown.
-     - **Experience:** Create the XP progress bar. XP thresholds per level are defined in the configuration JSON lookup table (not hardcoded). Add the "Level Up" button.
-     - **Action Budget (Phase 1.3c):** Collect all active `ActiveFeatureInstance`s with `feature.actionBudget` defined. Compute effective budget (min per category). Disable action buttons whose budget is 0 or exhausted. Apply XOR mutual exclusion (standard ↔ move) when `"action_budget_xor"` tag is present. Show tooltip with condition name on disabled buttons. See `ARCHITECTURE.md` section 5.6.
+     - **Experience (Phase 1.5 / Extension A):** XP now bound to `engine.character.xp` (not local state). XP threshold lookups use `@eclForXp` (ECL for monster PCs). ECL and LA badges shown when `levelAdjustment > 0`. "Reduce LA" button shown when SRD conditions met (3× LA class levels). All four fields display correctly for both standard and monster PCs.
+     - **Fast Healing / Regeneration (Phase 1.6 / Extension B):** `per_turn` and `per_round` resource pools displayed as badges. "Start Turn" button calls `engine.triggerTurnTick()`. "New Encounter" and "Long Rest" buttons call corresponding engine methods.
+     - **Vitality/Wound Points (Phase 2.5b / Extension H):** When `variantRules.vitalityWoundPoints = true`, dual VP/WP progress bars replace the standard HP bar status section.
+     - **Action Budget (Phase 1.3c / Extension F):** `ActionBudgetBar.svelte` component shown above HealthAndXP in the left column. Collects all active features with `actionBudget`, computes min-wins, renders per-action buttons with spent counter, handles XOR (Staggered/Disabled), and provides "Reset Turn".
 - [x] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
     - Read from three distinct pipelines: `combatStats.ac_normal`, `combatStats.ac_touch`, and `combatStats.ac_flat_footed`.
     - _Requirement:_ Include the `ModifierBreakdownModal` (from Phase 9) on the "i" icons so the user can see exactly why their Touch AC ignores Armor/Shield modifiers. Bind the "Temporary Modifier" input to a generic untyped modifier applied to all three AC pipelines.
@@ -145,8 +148,10 @@ _Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense 
 - [x] **10.5 Movement Speeds Panel:** Create `src/lib/components/combat/MovementSpeeds.svelte`. Display Land, Burrow, Climb, Fly, and Swim speed pipelines. Explicitly show the "Armor Penalty Effect" and "Load Penalty Effect" pipelines so the player understands why their speed is reduced.
 - [x] **10.6 Energy & Special Resistances:** Create `src/lib/components/combat/Resistances.svelte`. Display pipelines for Fire, Cold, Acid, Electricity, Sonic, Spell Resistance (SR), Power Resistance (PR), and Fortification. Allow user-inputted "Misc Modifiers".
 - [x] **10.7 Damage Reduction (DR) Builder:** Create `src/lib/components/combat/DamageReduction.svelte`.
-    - Implement the UI to construct a DR rule (Value, Rule: Bypassed/Excepted, Type: Adamantine/Magic/Slashing).
-    - _Requirement:_ When "Add Damage Reduction" is clicked, it should generate a custom `ActiveFeatureInstance` (category: condition/trait) containing the DR modifier and push it to the `GameEngine`. Display the list of active DRs with a delete button.
+     - Implement the UI to construct a DR rule (Value, Rule: Bypassed/Excepted, Type: Adamantine/Magic/Slashing).
+     - _Requirement:_ When "Add Damage Reduction" is clicked, it should generate a custom `ActiveFeatureInstance` (category: condition/trait) containing the DR modifier and push it to the `GameEngine`. Display the list of active DRs with a delete button.
+     - **Extension C (Phase 2.4a — drBypassTags):** DR panel now shows resolved `drEntries` from `StackingResult` grouped by bypass signature. Best-wins suppressed DRs shown with strikethrough. Additive class DR (type: "base") displayed separately. Add form now offers "Innate (best-wins)" vs "Class (additive)" type selector, generates correct `drBypassTags` on the saved modifier.
+- [x] **10.8 Action Budget Bar (Extension F — Phase 1.3c):** Create `src/lib/components/combat/ActionBudgetBar.svelte`. Reads all active features with `actionBudget` field, computes min-wins per category, renders per-action buttons (Standard, Move, Swift, Full-Round, Free). Blocked actions shown as red/disabled with tooltip listing source conditions. Spent-counter tracks uses within the turn. XOR mutual exclusion for Staggered/Disabled (`action_budget_xor` tag). "Reset Turn" button. Integrated into combat tab left column above HealthAndXP.
 
 ### Phase 11: UI Construction - "Feats" Tab
 
@@ -182,6 +187,7 @@ _Goal: Build the Magic, Psionics, and Special Abilities interface. This tab mana
      - _Layout:_ Group known spells by Level (0 to 9). For psionic characters, also group by `discipline` (Phase 1.3a) with discipline tabs (Clairsentience, Metacreativity, etc.).
      - _Interaction:_ Add a "Prepare" counter (for Vancian magic like Wizards/Clerics) or a "Cast/Manifest" button (for Sorcerers/Psions).
      - _Breakdown UI:_ Clicking a spell opens a modal displaying its School, Components, Range, Duration, and a "Dice Roll" button for damage/healing. Calculate the Spell Save DC dynamically (`10 + Spell Level + Key Ability Mod`). For psionic powers: show `discipline`, `displays` (with icons), and augmentation cost options.
+     - **Extension D (Phase 1.3a — implemented):** Discipline filter bar shown when psionic powers detected; each discipline button filters the spell list. Display badges (Aud/Mat/Men/Olf/Vis) shown per power with suppress-DC tooltip. Psionic school shown in purple instead of gray. Manifest button shows PP cost placeholder.
 - [x] **12.4 Special & Domain Abilities Panel:** Create `src/lib/components/magic/SpecialAbilities.svelte`.
     - Filter the character's `activeFeatures` for abilities categorized as `class_feature` or `domain` that have an `activation` type (e.g., "Standard Action", "3/Day").
     - Display these as distinct cards. Tie their daily uses to localized `ResourcePool`s so the player can tick off uses (e.g., Turn Undead uses per day).
@@ -201,6 +207,7 @@ _Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equ
      - _Action:_ If successful, toggle the `isActive` boolean on the `ActiveFeatureInstance`. The `GameEngine` will automatically inject its modifiers (like Armor AC or Sword Damage) into the DAG.
      - _Two-Handed Weapons:_ If `equipmentSlot` is `two_hands`, the engine must check that both `slots.main_hand` and `slots.off_hand` are free, and occupy both when equipped.
      - _Psionic Tattoo Limit (Phase 1.3b):_ When equipping a psionic tattoo, count non-activated tattoos currently equipped. If count ≥ 20, block equipping (or warn GM of the "all activate" consequence per SRD rules).
+     - **Extension E (Phase 1.3b — implemented):** Created `PsionicItemCard.svelte`. Rendered beneath each item row that has `psionicItemData`. Per-type UI: Cognizance Crystal (PP bar, attunement toggle, recharge controls); Dorje (power name, charge bar 0–50, Use button); Power Stone (per-power list, flush button, Brainburn ⚠ warning when user ML < stone ML); Psicrown (PP bar, known powers as Manifest buttons, capped by storedPP); Psionic Tattoo (activate button, fade indicator).
 - [x] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`.
     - _Weight Calculation:_ Create a `$derived` that sums the `weightLbs` of all items in the "Equipped" and "Backpack" categories.
     - _Encumbrance Tiers:_ Compare total weight against the character's Strength carrying capacity (thresholds loaded from a configuration JSON lookup table, not hardcoded). If the load is Medium or Heavy, automatically dispatch a situational `condition_encumbered` feature to the engine to apply speed and armor check penalties.
@@ -239,14 +246,15 @@ _Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. T
 
 _Goal: Build the GM-exclusive interfaces for managing rule sources, global overrides, and per-character secret overrides._
 
-- [x] **15.1 Rule Source Manager UI:** Create `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only).
-    - Display the list of available JSON rule source files (read from a manifest or directory listing).
-    - Allow the GM to **enable/disable** sources and **reorder** them via drag-and-drop (order determines override priority: last wins).
-    - Display a summary of what each source provides (number of Features, classes, items, etc.).
-    - Save the ordered list to `CampaignSettings.enabledRuleSources`.
-- [x] **15.2 Global Override Text Area:** On the same settings page, add a large JSON text area for `gmGlobalOverrides`.
-    - Include a JSON validator with clear error messages (red highlight on the offending line).
-    - The content is a JSON array of Feature-like objects (any category). Each entry must have a `category` field to identify what it overrides.
+ - [x] **15.1 Rule Source Manager UI:** Create `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only).
+     - Display the list of available JSON rule source files (read from a manifest or directory listing).
+     - Allow the GM to **enable/disable** sources and **reorder** them via drag-and-drop (order determines override priority: last wins).
+     - Display a summary of what each source provides (number of Features, classes, items, etc.).
+     - Save the ordered list to `CampaignSettings.enabledRuleSources`.
+     - **Extensions G + H (Phase 2.5a / 2.5b — implemented):** New "Variant Rules" section (Section 2, between Rule Sources and GM Overrides). Two checkboxes: "Gestalt Characters" (with UA description) and "Vitality & Wound Points" (with crit-routing description + VP/WP resource pool warning). Flags persisted in `engine.settings.variantRules` and sent with the save API call.
+ - [x] **15.2 Global Override Text Area:** On the same settings page, add a large JSON text area for `gmGlobalOverrides`.
+     - Include a JSON validator with clear error messages (red highlight on the offending line).
+     - The content is a JSON array of Feature-like objects (any category). Each entry must have a `category` field to identify what it overrides.
     - This override layer is applied **after** all rule source files in the DataLoader resolution chain.
     - Save to `Campaign.gmGlobalOverrides` on the backend.
 - [x] **15.3 GM Entity Dashboard:** Create `src/routes/campaigns/[id]/gm-dashboard/+page.svelte` (GM-only).

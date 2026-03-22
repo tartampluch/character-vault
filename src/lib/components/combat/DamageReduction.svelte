@@ -12,16 +12,18 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
+  import type { DREntry } from '$lib/utils/stackingRules';
 
   let drValue    = $state(5);
-  let drBypass   = $state('—');
-  let drRuleType = $state<'bypassed' | 'excepted'>('bypassed');
+  let drBypass   = $state<string>('—');
+  let drType     = $state<'base' | 'damage_reduction'>('damage_reduction');
 
   const DR_BYPASS_OPTIONS = [
     '—', 'magic', 'adamantine', 'cold_iron', 'silver', 'mithral',
-    'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic',
+    'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic', 'epic',
   ];
 
+  // ── Active custom DRs (GM-added via this UI) ─────────────────────────────
   const activeDRs = $derived.by(() =>
     engine.character.activeFeatures
       .filter(afi => afi.featureId.startsWith('dr_custom_') && afi.isActive)
@@ -31,10 +33,22 @@
       })
   );
 
+  // ── Resolved drEntries from the combat stat pipeline (Extension C) ───────
+  // The pipeline's stacking result contains drEntries grouped by bypass signature.
+  const drPipeline  = $derived(engine.phase3_combatStats['combatStats.damage_reduction']);
+  const baseAddDR   = $derived(drPipeline?.totalValue ?? 0); // class-progression additive DR
+  const drEntries   = $derived<DREntry[]>((drPipeline as unknown as { drEntries?: DREntry[] })?.drEntries ?? []);
+
+  function formatBypassTags(tags: string[]): string {
+    if (tags.length === 0) return '—';
+    return tags.join(' & ');
+  }
+
   function addDR() {
     if (drValue <= 0) return;
-    const drId    = `dr_custom_${drValue}_${drBypass}_${Date.now()}`;
-    const drLabel = `DR ${drValue}/${drBypass === '—' ? '—' : drBypass}`;
+    const tags     = drBypass === '—' ? [] : [drBypass];
+    const drId     = `dr_custom_${drValue}_${drBypass}_${Date.now()}`;
+    const drLabel  = `DR ${drValue}/${drBypass === '—' ? '—' : drBypass}`;
     dataLoader.cacheFeature({
       id: drId, category: 'condition',
       label: { en: drLabel, fr: drLabel },
@@ -42,7 +56,9 @@
       tags: ['condition', 'damage_reduction', drId],
       grantedModifiers: [{
         id: `${drId}_mod`, sourceId: drId, sourceName: { en: drLabel, fr: drLabel },
-        targetId: 'combatStats.damage_reduction', value: drValue, type: 'base',
+        targetId: 'combatStats.damage_reduction', value: drValue,
+        type: drType,
+        drBypassTags: drType === 'damage_reduction' ? tags : undefined,
       }],
       grantedFeatures: [],
       ruleSource: 'gm_override',
@@ -58,10 +74,52 @@
     <span>{ui('combat.dr.title', engine.settings.language)}</span>
   </div>
 
-  <!-- Active DRs list -->
-  {#if activeDRs.length === 0}
+  <!-- ── RESOLVED DR ENTRIES (Extension C — best-wins per bypass group) ─── -->
+  {#if baseAddDR > 0 || drEntries.length > 0}
+    <div class="flex flex-col gap-1.5">
+      <span class="text-[10px] uppercase tracking-wider text-text-muted font-semibold">
+        {ui('dr.groups_title', engine.settings.language)}
+      </span>
+      <!-- Additive class DR (type: "base") -->
+      {#if baseAddDR > 0}
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-surface-alt">
+          <span class="text-sm font-mono font-bold text-accent">DR {baseAddDR}/—</span>
+          <span class="text-[10px] text-text-muted italic ml-auto">
+            {ui('dr.base_class_label', engine.settings.language)}
+          </span>
+        </div>
+      {/if}
+      <!-- Innate/racial DR entries (type: "damage_reduction", best-wins) -->
+      {#each drEntries as entry}
+        <div class="flex flex-col gap-0.5 px-3 py-1.5 rounded-md border border-border bg-surface-alt">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm font-mono font-bold text-accent">
+              DR {entry.amount}/{formatBypassTags(entry.bypassTags)}
+            </span>
+            <span class="text-[10px] text-text-muted">
+              {ui('dr.innate_label', engine.settings.language)}
+            </span>
+          </div>
+          <!-- Suppressed peers (lower-value same-bypass DRs) -->
+          {#if entry.suppressedModifiers.length > 0}
+            <div class="flex flex-wrap gap-1 mt-0.5">
+              {#each entry.suppressedModifiers as sup}
+                <span class="text-[10px] text-text-muted line-through opacity-60 px-1.5 py-0.5 rounded border border-border/50">
+                  DR {sup.value}/{formatBypassTags((sup as {drBypassTags?: string[]}).drBypassTags ?? [])}
+                  ({sup.sourceName?.en ?? sup.sourceId})
+                </span>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  {:else if activeDRs.length === 0}
     <p class="text-sm text-text-muted italic">{ui('combat.dr.empty', engine.settings.language)}</p>
-  {:else}
+  {/if}
+
+  <!-- Custom GM-added DRs (old-style, for backward compat) -->
+  {#if activeDRs.length > 0}
     <ul class="flex flex-col gap-1.5">
       {#each activeDRs as dr}
         <li class="flex items-center justify-between px-3 py-1.5 rounded-md border border-border bg-surface-alt">
@@ -77,9 +135,9 @@
     </ul>
   {/if}
 
-  <!-- Builder form -->
+  <!-- Builder form (Extension C — now with innate/base type choice) -->
   <div class="flex flex-col gap-2 pt-2 border-t border-border">
-    <span class="text-xs text-text-muted uppercase tracking-wider">{ui('combat.dr.add', engine.settings.language)}</span>
+    <span class="text-xs text-text-muted uppercase tracking-wider">{ui('dr.add_innate', engine.settings.language)}</span>
     <div class="flex items-center gap-2 flex-wrap">
       <div class="flex items-center gap-1.5">
         <label for="dr-value-input" class="text-xs text-text-muted shrink-0">{ui('combat.dr.value', engine.settings.language)}</label>
@@ -96,6 +154,14 @@
           {#each DR_BYPASS_OPTIONS as opt}
             <option value={opt}>{opt}</option>
           {/each}
+        </select>
+      </div>
+      <!-- Best-wins vs additive type toggle -->
+      <div class="flex items-center gap-1.5">
+        <label class="text-xs text-text-muted shrink-0">Type</label>
+        <select bind:value={drType} class="select text-xs py-1">
+          <option value="damage_reduction">Innate (best-wins)</option>
+          <option value="base">Class (additive)</option>
         </select>
       </div>
     </div>

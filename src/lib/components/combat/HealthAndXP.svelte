@@ -14,6 +14,10 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
 
+  // ── Variant detection ────────────────────────────────────────────────────
+  const isVWPMode  = $derived(engine.settings.variantRules?.vitalityWoundPoints === true);
+
+  // ── Standard HP pool ─────────────────────────────────────────────────────
   const hpPool        = $derived(engine.character.resources['resources.hp']);
   const maxHp         = $derived(engine.phase3_maxHp);
   const currentHp     = $derived(hpPool?.currentValue ?? 0);
@@ -21,6 +25,16 @@
   const effectiveMaxHp = $derived(maxHp + tempHp);
   const hpPercent     = $derived(maxHp > 0 ? Math.max(0, Math.min(100, (currentHp / maxHp) * 100)) : 0);
   const tempPercent   = $derived(effectiveMaxHp > 0 ? (tempHp / effectiveMaxHp) * 100 : 0);
+
+  // ── Vitality / Wound Points pools (Extension H) ──────────────────────────
+  const vpPool     = $derived(engine.character.resources['resources.vitality_points']);
+  const wpPool     = $derived(engine.character.resources['resources.wound_points']);
+  const maxVP      = $derived(vpPool ? (engine.phase3_combatStats['combatStats.max_vitality']?.totalValue ?? 0) : 0);
+  const currentVP  = $derived(vpPool?.currentValue ?? 0);
+  const currentWP  = $derived(wpPool?.currentValue ?? 0);
+  const maxWP      = $derived(wpPool ? (engine.phase2_attributes['stat_con']?.totalValue ?? 10) : 10);
+  const vpPercent  = $derived(maxVP > 0 ? Math.max(0, Math.min(100, (currentVP / maxVP) * 100)) : 0);
+  const wpPercent  = $derived(maxWP > 0 ? Math.max(0, Math.min(100, (currentWP / maxWP) * 100)) : 0);
 
   /* Health status — colour stays inline since it's a runtime computed value */
   const hpStatus = $derived.by(() => {
@@ -59,10 +73,27 @@
     if (!isNaN(val) && hpPool) hpPool.currentValue = Math.min(val, maxHp);
   }
 
-  /* XP */
-  let currentXp = $state(0);
+  // ── Per-turn healing (Extension B) ───────────────────────────────────────
+  /** All resource pools with resetCondition "per_turn" — Fast Healing / Regeneration */
+  const perTurnPools = $derived(
+    Object.values(engine.character.resources).filter(p => p.resetCondition === 'per_turn')
+  );
+  const perRoundPools = $derived(
+    Object.values(engine.character.resources).filter(p => p.resetCondition === 'per_round')
+  );
+
+  function onStartTurn() { engine.triggerTurnTick(); }
+  function onNewEncounter() { engine.triggerEncounterReset(); }
+  function onLongRest() { engine.triggerLongRest(); }
+
+  // ── XP — bound to engine.character.xp (Extension A) ─────────────────────
+  /** ECL: class levels + level adjustment */
+  const eclForXp = $derived(engine.phase0_eclForXp);
+  const levelAdj = $derived(engine.character.levelAdjustment ?? 0);
+
   const nextLevelXp = $derived.by(() => {
-    const level = engine.phase0_characterLevel;
+    // Use ECL (not characterLevel) for XP threshold table lookups
+    const level = eclForXp;
     const table = dataLoader.getConfigTable('config_xp_thresholds');
     if (!table?.data) {
       const fb: Record<number, number> = { 1:1000,2:3000,3:6000,4:10000,5:15000,6:21000,7:28000,8:36000,9:45000,10:55000 };
@@ -73,21 +104,38 @@
     return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 999999;
   });
   const currentLevelXp = $derived.by(() => {
-    const level = engine.phase0_characterLevel;
+    const level = eclForXp;
     const table = dataLoader.getConfigTable('config_xp_thresholds');
     if (!table?.data) return 0;
     const rows = table.data as Array<Record<string,unknown>>;
     const row  = rows.find(r => r['level'] === level);
     return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 0;
   });
+  const currentXp   = $derived(engine.character.xp ?? 0);
   const xpIntoLevel = $derived(currentXp - currentLevelXp);
   const xpNeeded    = $derived(nextLevelXp - currentLevelXp);
   const xpPercent   = $derived(xpNeeded > 0 ? Math.max(0, Math.min(100, (xpIntoLevel / xpNeeded) * 100)) : 0);
   const canLevelUp  = $derived(currentXp >= nextLevelXp);
+
+  /** Can reduce LA? Requires 3 × current LA class levels (SRD reducing LA variant) */
+  const canReduceLA = $derived(
+    levelAdj > 0 &&
+    engine.phase0_characterLevel >= levelAdj * 3
+  );
+
   let xpToAdd = $state('');
   function addXp() {
     const n = parseInt(xpToAdd, 10);
-    if (!isNaN(n)) { currentXp += n; xpToAdd = ''; }
+    if (!isNaN(n)) { engine.character.xp = (engine.character.xp ?? 0) + n; xpToAdd = ''; }
+  }
+  function reduceLA() {
+    if (!canReduceLA) return;
+    if (!confirm(
+      ui('ecl.reduce_la_confirm', engine.settings.language)
+        .replace('{current}', String(levelAdj))
+        .replace('{next}', String(levelAdj - 1))
+    )) return;
+    engine.character.levelAdjustment = (engine.character.levelAdjustment ?? 1) - 1;
   }
 </script>
 
@@ -232,6 +280,79 @@
     </div>
   </section>
 
+  <!-- ── VITALITY / WOUND POINTS (Extension H — VWP variant) ────────────── -->
+  {#if isVWPMode}
+    <section class="flex flex-col gap-2">
+      <!-- Vitality Points -->
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-semibold text-sky-400">{ui('vwp.vitality_label', engine.settings.language)}</span>
+          <span class="text-text-muted">{currentVP} / {maxVP}</span>
+        </div>
+        <div class="h-2.5 rounded-full bg-surface-alt overflow-hidden border border-border">
+          <div class="h-full rounded-full bg-sky-500 transition-all duration-300" style="width: {vpPercent}%;" aria-hidden="true"></div>
+        </div>
+      </div>
+      <!-- Wound Points -->
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-semibold text-red-400">{ui('vwp.wound_label', engine.settings.language)}</span>
+          <span class="text-text-muted">{currentWP} / {maxWP}</span>
+        </div>
+        <div class="h-2.5 rounded-full bg-surface-alt overflow-hidden border border-border">
+          <div class="h-full rounded-full bg-red-600 transition-all duration-300" style="width: {wpPercent}%;" aria-hidden="true"></div>
+        </div>
+        <p class="text-[10px] text-text-muted">{ui('vwp.fatigued_note', engine.settings.language)}</p>
+      </div>
+    </section>
+  {/if}
+
+  <!-- ── FAST HEALING / PER-TURN POOLS (Extension B) ──────────────────── -->
+  {#if perTurnPools.length > 0 || perRoundPools.length > 0}
+    <section class="flex flex-col gap-2">
+      <div class="text-[10px] uppercase tracking-wider text-text-muted font-semibold">
+        {ui('heal.fast_healing', engine.settings.language)}
+      </div>
+      <div class="flex flex-wrap gap-2 items-center">
+        {#each perTurnPools as pool}
+          <span class="badge-accent text-xs px-2 py-0.5 rounded-full">
+            {pool.label?.en ?? pool.id}: {ui('heal.per_turn_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
+          </span>
+        {/each}
+        {#each perRoundPools as pool}
+          <span class="badge-accent text-xs px-2 py-0.5 rounded-full opacity-70">
+            {pool.label?.en ?? pool.id}: {ui('heal.per_round_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
+          </span>
+        {/each}
+        <button
+          class="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-sky-800/50 text-sky-300 hover:bg-sky-700/60 transition-colors duration-150"
+          onclick={onStartTurn}
+          title={ui('heal.tick_tooltip', engine.settings.language)}
+          type="button"
+          aria-label={ui('heal.tick_button', engine.settings.language)}
+        >
+          ⏱ {ui('heal.tick_button', engine.settings.language)}
+        </button>
+      </div>
+    </section>
+  {/if}
+
+  <!-- ── REST / ENCOUNTER BUTTONS ─────────────────────────────────────── -->
+  <section class="flex gap-2 flex-wrap">
+    <button
+      class="flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-accent hover:text-accent transition-colors duration-150"
+      onclick={onNewEncounter}
+      title="Reset encounter-slot abilities"
+      type="button"
+    >⚔ {ui('heal.encounter_reset', engine.settings.language)}</button>
+    <button
+      class="flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-sky-500 hover:text-sky-400 transition-colors duration-150"
+      onclick={onLongRest}
+      title="Restore all long-rest resources"
+      type="button"
+    >🌙 {ui('heal.long_rest', engine.settings.language)}</button>
+  </section>
+
   <!-- ── EXPERIENCE ──────────────────────────────────────────────────────── -->
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
@@ -239,13 +360,29 @@
       <span>{ui('combat.xp.title', engine.settings.language)}</span>
     </div>
 
-    <!-- Level + XP numbers -->
+    <!-- Level + ECL row (Extension A) -->
     <div class="flex items-center justify-between flex-wrap gap-3">
-      <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border border-border bg-surface-alt min-w-[3.5rem]">
-        <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.xp.level', engine.settings.language)}</span>
-        <span class="text-2xl font-bold text-yellow-500 dark:text-yellow-400 leading-none">
-          {engine.phase0_characterLevel}
-        </span>
+      <div class="flex gap-2">
+        <!-- Character level (class levels only — for feats/HP) -->
+        <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border border-border bg-surface-alt min-w-[3.5rem]">
+          <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.xp.level', engine.settings.language)}</span>
+          <span class="text-2xl font-bold text-yellow-500 dark:text-yellow-400 leading-none">
+            {engine.phase0_characterLevel}
+          </span>
+        </div>
+        <!-- ECL and LA — shown only when LA > 0 (monster PCs) -->
+        {#if levelAdj > 0}
+          <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border border-amber-600/40 bg-amber-950/20 min-w-[3.5rem]"
+               title={ui('ecl.ecl_tooltip', engine.settings.language)}>
+            <span class="text-[10px] uppercase tracking-wider text-amber-400/80">{ui('ecl.ecl_label', engine.settings.language)}</span>
+            <span class="text-2xl font-bold text-amber-400 leading-none">{eclForXp}</span>
+          </div>
+          <div class="flex flex-col items-center px-2 py-1.5 rounded-lg border border-orange-600/30 bg-orange-950/15 min-w-[2.5rem]"
+               title={ui('ecl.la_tooltip', engine.settings.language)}>
+            <span class="text-[10px] uppercase tracking-wider text-orange-400/80">{ui('ecl.la_label', engine.settings.language)}</span>
+            <span class="text-lg font-bold text-orange-400 leading-none">+{levelAdj}</span>
+          </div>
+        {/if}
       </div>
       <div class="flex items-center gap-1.5 text-sm flex-wrap">
         <span class="font-bold text-yellow-500 dark:text-yellow-400">{currentXp.toLocaleString()}</span>
@@ -254,7 +391,19 @@
       </div>
     </div>
 
-    <!-- XP progress bar -->
+    <!-- Reduce LA button (SRD variant — available when 3×LA class levels accumulated) -->
+    {#if canReduceLA}
+      <button
+        class="self-start flex items-center gap-1.5 px-2.5 py-1 rounded border border-orange-600/40 text-orange-400 text-xs hover:bg-orange-950/30 transition-colors duration-150"
+        onclick={reduceLA}
+        title={ui('ecl.reduce_la_tooltip', engine.settings.language)}
+        type="button"
+      >
+        ↓ {ui('ecl.reduce_la', engine.settings.language)}
+      </button>
+    {/if}
+
+    <!-- XP progress bar — uses ECL for threshold lookup -->
     <div
       class="progress-bar"
       style="--progress-pct: {xpPercent}%; --progress-color: oklch(72% 0.17 88);"
@@ -262,12 +411,13 @@
       aria-valuenow={xpIntoLevel}
       aria-valuemin={0}
       aria-valuemax={xpNeeded}
-      aria-label="XP: {xpPercent.toFixed(0)}% to next level"
+      aria-label="XP: {xpPercent.toFixed(0)}% to next level (ECL {eclForXp})"
     >
       <div class="progress-bar__fill"></div>
     </div>
     <p class="text-xs text-text-muted">
       {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} {ui('combat.xp.to_next', engine.settings.language)} ({xpPercent.toFixed(0)}%)
+      {#if levelAdj > 0}<span class="text-amber-400/80 ml-1">(ECL {eclForXp})</span>{/if}
     </p>
 
     <!-- Award XP + Level Up -->
