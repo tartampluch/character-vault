@@ -135,6 +135,7 @@ describe('DAG cascade: Belt of Constitution +2', () => {
       combatStats: {},
       saves: {},
       characterLevel: 9,
+      eclForXp: 9,
       classLevels: { 'class_soulknife': 9 },
       activeTags: [],
       equippedWeaponTags: [],
@@ -288,6 +289,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
       combatStats: {},
       saves: {},
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: { 'class_monk': 5 },
       activeTags: ['class_monk', 'race_human', 'alignment_lawful_good'],  // No armor tags
       equippedWeaponTags: [],
@@ -316,6 +318,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
       combatStats: {},
       saves: {},
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: { 'class_monk': 5 },
       activeTags: ['class_monk', 'race_human', 'wearing_armor', 'medium_armor'],  // Wearing armor!
       equippedWeaponTags: [],
@@ -357,6 +360,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
       combatStats: {},
       saves: {},
       characterLevel: 3,
+      eclForXp: 3,
       classLevels: { 'class_barbarian': 3 },
       activeTags: ['class_barbarian', 'raging'],
       equippedWeaponTags: [],
@@ -418,6 +422,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       combatStats: {},
       saves: {},
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: { 'class_monk': 5 },
       activeTags: [],
       equippedWeaponTags: [],
@@ -446,6 +451,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       combatStats: {},
       saves: {},
       characterLevel: 8,
+      eclForXp: 8,
       classLevels: { 'class_monk': 8 },
       activeTags: [],
       equippedWeaponTags: [],
@@ -488,6 +494,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       combatStats: {},
       saves: {},
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: {},
       activeTags: [],
       equippedWeaponTags: [],
@@ -502,6 +509,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       combatStats: {},
       saves: {},
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: {},
       activeTags: [],
       equippedWeaponTags: [],
@@ -539,6 +547,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       combatStats: {},
       saves: {},
       characterLevel: 9,
+      eclForXp: 9,
       classLevels: { 'class_soulknife': 9 },
       activeTags: [],
       equippedWeaponTags: [],
@@ -549,12 +558,14 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
     const ctxLevel5: CharacterContext = {
       ...ctxLevel9,
       characterLevel: 5,
+      eclForXp: 5,
       classLevels: { 'class_soulknife': 5 },
     };
 
     const ctxLevel1: CharacterContext = {
       ...ctxLevel9,
       characterLevel: 1,
+      eclForXp: 1,
       classLevels: { 'class_soulknife': 1 },
     };
 
@@ -876,6 +887,7 @@ describe('DAG circular dependency safety', () => {
       combatStats: {},
       saves: {},
       characterLevel: 1,
+      eclForXp: 1,
       classLevels: {},
       activeTags: [],
       equippedWeaponTags: [],
@@ -902,6 +914,7 @@ describe('DAG circular dependency safety', () => {
       combatStats: {},
       saves: {},
       characterLevel: 1,
+      eclForXp: 1,
       classLevels: {},
       activeTags: [],
       equippedWeaponTags: [],

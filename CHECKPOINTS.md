@@ -16,12 +16,15 @@ Review the following aspects specifically:
 - Are `sourceId` and `sourceName` required (not optional) on every `Modifier`?
 - Is `derivedModifier` present on `StatisticPipeline`?
 - Does `Character` have `classLevels`, `gmOverrides`, and all UI metadata fields?
+- Does `Character` have `levelAdjustment: number` (default 0) and `xp: number` (default 0) as per Architecture section 6 / Phase 1.5?
 - Does `Campaign` have `gmGlobalOverrides`, `updatedAt`, `enabledRuleSources`, and `chapters`?
 - Does `Feature` have `ruleSource`, `merge`, `levelProgression`, `classSkills`, `recommendedAttributes`, and `activation`?
 - Does `ItemFeature` include the `two_hands` equipment slot?
 
 ### 2. Math Parser (Phase 2.2)
-- Does it handle all special paths listed in Architecture section 4.3 (`@characterLevel`, `@classLevels.<id>`, `@activeTags`, `@selection.<choiceId>`, `@constant.<id>`, `@master.classLevels.<id>`)?
+- Does it handle all special paths listed in Architecture section 4.3 (`@characterLevel`, `@eclForXp`, `@classLevels.<id>`, `@activeTags`, `@selection.<choiceId>`, `@constant.<id>`, `@master.classLevels.<id>`)?
+- Does `@eclForXp` correctly return `characterLevel + character.levelAdjustment` per Architecture section 4.3 and 6.4?
+- Does `@characterLevel` correctly exclude `levelAdjustment` (returns class levels sum only)?
 - Does it handle `|distance` and `|weight` pipes?
 - Does it handle nested path resolution by splitting on `.`?
 - Does it return `0` and log a warning for unresolved paths (not crash)?
@@ -44,10 +47,13 @@ Review the following aspects specifically:
 - Does `RollResult` include `numberOfExplosions`?
 
 ### 6. DAG Resolution (Phase 3)
-- Are the 5 phases (0-4) implemented as sequential `$derived` runes?
+- Are the 5+ phases (0-4, plus Phase 0c/0c2) implemented as sequential `$derived` runes?
 - Phase 0: Does it process both `activeFeatures` AND `gmOverrides`? Does it filter by `levelProgression` using `classLevels`? Does it check `prerequisitesNode` and `forbiddenTags`?
+- Phase 0c: Is `phase0_characterLevel` computed as `Object.values(classLevels).reduce()` (excludes `levelAdjustment`)?
+- Phase 0c2: Is `phase0_eclForXp` computed as `phase0_characterLevel + (character.levelAdjustment ?? 0)` per Architecture section 6.4 / Phase 3.5?
+- Is `eclForXp` exposed in the `CharacterContext` snapshot (used by the Math Parser for `@eclForXp`)?
 - Phase 2: Does it compute `derivedModifier` via `floor((totalValue - 10) / 2)` for the 6 ability scores only?
-- Phase 3: Does it compute `characterLevel` as `Object.values(classLevels).reduce()`? Does it include the HP calculation (sum of hitDieResults + CON mod × character level)?
+- Phase 3: Does the HP calculation use `phase0_characterLevel` (NOT `eclForXp`) for "CON mod × character level"?
 - Phase 4: Does it auto-generate synergy modifiers from the skill synergies config table?
 - Context sorting: Are modifiers with `situationalContext` routed to `situationalModifiers` instead of `activeModifiers`?
 - Infinite loop detection: Is there a depth counter that cuts at 3 re-evaluations?
@@ -128,6 +134,7 @@ Review the following aspects specifically:
 # 7. Combat Tab (Phase 10)
 - Does the HP system deplete temporary HP first when taking damage?
 - Are XP thresholds loaded from the config table (not hardcoded)?
+- Does the XP progress bar and Level Up button use `@eclForXp` (not `@characterLevel`) to look up the XP threshold in `config_xp_table`? (This ensures monster PCs with LA > 0 require more XP to level up per Architecture section 6.4.)
 - Do the 3 AC pipelines (normal, touch, flat-footed) read from separate pipelines?
 - Does the weapon dropdown read from inventory (not a hardcoded list)?
 
@@ -277,6 +284,9 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
 - Is `characterLevel` sum tested for a multiclass character?
 - Is BAB contribution from multiple classes tested (full + half BAB)?
 - Is level-gated feature granting tested (granted at level X, not granted at level X-1)?
+- Is `@eclForXp` tested for a monster PC character with `levelAdjustment > 0` (e.g., Drow Rogue 3 LA+2 → eclForXp = 5)?
+- Is it verified that `@characterLevel` for the same character returns 3 (not 5), confirming LA is excluded from feat/HP math?
+- Is it verified that `@eclForXp === @characterLevel` for standard PCs with `levelAdjustment = 0`?
 
 # 8. Vitest — Merge Engine (Phase 17.7)
 - Is full replace tested?
@@ -522,7 +532,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
 
-6. **Section 6 (Character):** Does the `Character` interface match including `classLevels`, `gmOverrides`, and all UI metadata? Is `LinkedEntity` serialization unidirectional?
+6. **Section 6 (Character):** Does the `Character` interface match including `classLevels`, `gmOverrides`, all UI metadata, `levelAdjustment: number` (default 0), and `xp: number` (default 0)? Is `LinkedEntity` serialization unidirectional? Does the `createDefaultCharacter` factory initialize `levelAdjustment: 0` and `xp: 0`?
 
 7. **Section 7 (Campaign):** Does the `Campaign` interface match including `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
 

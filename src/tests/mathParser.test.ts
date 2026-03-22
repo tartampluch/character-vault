@@ -8,7 +8,8 @@
  *   - @attributes.<id>.baseValue
  *   - @skills.<id>.ranks
  *   - @combatStats.<id>.totalValue
- *   - @characterLevel
+ *   - @characterLevel    — sum of classLevels only (excludes levelAdjustment)
+ *   - @eclForXp          — sum of classLevels + levelAdjustment (for XP table lookups)
  *   - @classLevels.<classId>
  *   - @activeTags (via has_tag in logicEvaluator, not directly in mathParser)
  *   - @selection.<choiceId>
@@ -17,8 +18,15 @@
  *   - Unresolved paths → returns 0 (no crash)
  *   - floor() and math operations
  *
+ * ECL / Level Adjustment (ARCHITECTURE.md section 4.3, 6, and 6.4):
+ *   Standard PCs (levelAdjustment = 0):  @eclForXp === @characterLevel
+ *   Monster PCs  (levelAdjustment > 0):  @eclForXp === @characterLevel + levelAdjustment
+ *   The distinction matters for XP-table lookups — a Drow Rogue 3 (LA +2) needs
+ *   the same XP as a 5th-level character, even though she only has 3 class levels.
+ *
  * @see src/lib/utils/mathParser.ts
  * @see ARCHITECTURE.md section 4.3
+ * @see ARCHITECTURE.md section 6.4 (Level Adjustment and ECL — Monster PCs)
  * @see ARCHITECTURE.md Phase 17.1
  */
 
@@ -63,6 +71,7 @@ const mockContext: CharacterContext = {
     fort: { totalValue: 5 },
   },
   characterLevel: 8,
+  eclForXp: 8,
   classLevels: {
     'class_fighter': 5,
     'class_wizard': 3,
@@ -137,10 +146,141 @@ describe('evaluateFormula — @combatStats paths', () => {
   });
 });
 
+// ============================================================
+// MONSTER PC CONTEXT — Drow Rogue 3 with Level Adjustment +2
+// ============================================================
+
+/**
+ * Drow Rogue 3 — a canonical monster PC example (ARCHITECTURE.md section 6.4):
+ *   classLevels:     { "class_rogue": 3 }
+ *   levelAdjustment: 2
+ *
+ *   @characterLevel  = 3  (class levels only — used for feats, HP, max ranks)
+ *   @eclForXp        = 5  (3 + LA 2 — used for XP table lookups and wealth)
+ *
+ * This character is as powerful as a 5th-level character for balance purposes,
+ * but she only has Rogue levels 1–3 for class features, skill points, and feats.
+ */
+const monsterPcContext: CharacterContext = {
+  attributes: {
+    stat_str: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_dex: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_int: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+    stat_wis: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_cha: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_con: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+  },
+  skills: {
+    skill_hide:         { ranks: 3,  totalValue: 5 },
+    skill_move_silently:{ ranks: 3,  totalValue: 5 },
+    skill_sneak:        { ranks: 3,  totalValue: 5 },
+  },
+  combatStats: {
+    bab: { totalValue: 2 },  // Rogue 3 with 3/4 BAB = +2
+  },
+  saves: {},
+  // classLevels sum = 3; levelAdjustment = 2; eclForXp = 5
+  characterLevel: 3,
+  eclForXp: 5,
+  classLevels: { 'class_rogue': 3 },
+  activeTags: ['race_drow', 'class_rogue', 'alignment_chaotic_neutral'],
+  equippedWeaponTags: ['weapon', 'short_sword', 'light', 'martial'],
+  selection: {},
+  constants: {},
+};
+
+// ============================================================
+// @characterLevel PATH TESTS
+// ============================================================
+
 describe('evaluateFormula — @characterLevel', () => {
-  it('resolves @characterLevel', () => {
+  it('resolves @characterLevel for a standard PC (Fighter 5 / Wizard 3 = 8)', () => {
     const result = evaluateFormula('@characterLevel', mockContext, 'en');
     expect(result).toBe(8);
+  });
+
+  it('resolves @characterLevel for a monster PC (Drow Rogue 3, LA +2 = 3)', () => {
+    // CRITICAL: @characterLevel must return 3, not 5.
+    // levelAdjustment is NOT included here — only class levels count.
+    // This ensures feats, HP, and skill max ranks are based on actual class levels.
+    // @see ARCHITECTURE.md section 4.3 and 6.4
+    const result = evaluateFormula('@characterLevel', monsterPcContext, 'en');
+    expect(result).toBe(3);
+  });
+
+  it('@characterLevel equals @eclForXp for a standard PC with no level adjustment', () => {
+    // For all standard PC races (levelAdjustment = 0), both paths return the same value.
+    const cl  = evaluateFormula('@characterLevel', mockContext, 'en');
+    const ecl = evaluateFormula('@eclForXp',       mockContext, 'en');
+    expect(cl).toBe(ecl);
+  });
+});
+
+// ============================================================
+// @eclForXp PATH TESTS (ARCHITECTURE.md section 4.3, 6.4 — Phase 1.5 / 3.5)
+// ============================================================
+
+describe('evaluateFormula — @eclForXp (Level Adjustment support)', () => {
+  /**
+   * Standard PC (LA = 0): @eclForXp === @characterLevel
+   * ARCHITECTURE.md section 6.4: "For standard PC races with levelAdjustment = 0,
+   * eclForXp === characterLevel."
+   */
+  it('resolves @eclForXp for a standard PC (Fighter 5 / Wizard 3 = 8, LA 0 → ECL 8)', () => {
+    const result = evaluateFormula('@eclForXp', mockContext, 'en');
+    expect(result).toBe(8);
+  });
+
+  /**
+   * Monster PC (LA = 2): @eclForXp = @characterLevel + levelAdjustment
+   * Drow Rogue 3 (LA +2): ECL = 3 + 2 = 5.
+   * Used to look up the XP required for level 4 Rogue: config_xp_table[6].xpRequired.
+   */
+  it('resolves @eclForXp for a monster PC (Drow Rogue 3, LA +2 → ECL 5)', () => {
+    const result = evaluateFormula('@eclForXp', monsterPcContext, 'en');
+    expect(result).toBe(5);
+  });
+
+  it('@eclForXp is HIGHER than @characterLevel for a monster PC with LA > 0', () => {
+    // The whole point of this distinction: ECL > character level when LA > 0.
+    // evaluateFormula returns string | number; cast to number for arithmetic comparison.
+    const cl  = evaluateFormula('@characterLevel', monsterPcContext, 'en') as number;
+    const ecl = evaluateFormula('@eclForXp',       monsterPcContext, 'en') as number;
+    expect(ecl).toBeGreaterThan(cl);
+    expect(ecl - cl).toBe(2); // LA = +2
+  });
+
+  /**
+   * Half-Dragon Fighter 4 (LA +3): ECL = 4 + 3 = 7.
+   * Used to verify that a large LA correctly makes ECL much higher than character level.
+   */
+  it('resolves @eclForXp for Half-Dragon Fighter 4 (LA +3 → ECL 7)', () => {
+    const halfDragonCtx: CharacterContext = {
+      ...monsterPcContext,
+      characterLevel: 4,
+      eclForXp: 7,   // 4 + LA 3
+      classLevels: { 'class_fighter': 4 },
+      activeTags: ['race_half_dragon', 'class_fighter', 'template_half_dragon'],
+    };
+    const cl  = evaluateFormula('@characterLevel', halfDragonCtx, 'en') as number;
+    const ecl = evaluateFormula('@eclForXp',       halfDragonCtx, 'en') as number;
+    expect(cl).toBe(4);
+    expect(ecl).toBe(7);
+    expect(ecl - cl).toBe(3);  // LA = +3
+  });
+
+  it('@eclForXp can be used in a floor formula (XP threshold multiplier)', () => {
+    // Example formula from config_xp_table lookup helper:
+    //   "(@eclForXp - 1) * 1000"  — simplistic XP needed at ECL N
+    // For Drow Rogue 3 (eclForXp = 5): (5 - 1) * 1000 = 4000
+    const result = evaluateFormula('(@eclForXp - 1) * 1000', monsterPcContext, 'en');
+    expect(result).toBe(4000);
+  });
+
+  it('@eclForXp formula: floor(@eclForXp / 2) for ECL 5 → 2', () => {
+    // Some CR / encounter budget formulae use floor(ECL / 2)
+    const result = evaluateFormula('floor(@eclForXp / 2)', monsterPcContext, 'en');
+    expect(result).toBe(2); // floor(5 / 2) = 2
   });
 });
 

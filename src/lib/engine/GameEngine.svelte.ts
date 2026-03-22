@@ -252,6 +252,15 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     name,
     isNPC: false,
     classLevels: {},
+    // Level Adjustment is 0 for all standard PC races.
+    // Set > 0 for monster PCs (e.g. Drow LA+2, Half-Dragon LA+3).
+    // ECL for XP = sum(classLevels) + levelAdjustment.
+    // @see ARCHITECTURE.md section 6 — levelAdjustment, @eclForXp path
+    levelAdjustment: 0,
+    // XP earned by this character. New characters start at 0.
+    // Compared against config_xp_table thresholds using ECL (classLevels sum + LA).
+    // @see ARCHITECTURE.md section 6 — xp field
+    xp: 0,
     // Hit die results per character level — empty for a new character.
     // Populated by the Level Up mechanic (Phase 10.1).
     // Key: character level (1-indexed), Value: die result at that level.
@@ -688,10 +697,50 @@ export class GameEngine {
    * Formula: Object.values(character.classLevels).reduce((a, b) => a + b, 0)
    *
    * Used by: Phase 3 HP calculation, feat slot calculation (Phase 11.1),
-   *          class progression gating, skill max ranks.
+   *          class progression gating, skill max ranks, feat/ASI acquisition.
+   *
+   * IMPORTANT — This value does NOT include levelAdjustment.
+   * For monster PCs, use `eclForXp` when looking up XP thresholds.
+   * Feat slots and ability score increases use THIS value (total HD only).
+   *
+   * @see phase0_eclForXp — for XP-table lookups including Level Adjustment
    */
   phase0_characterLevel: number = $derived(
     Object.values(this.character.classLevels).reduce((sum, lvl) => sum + lvl, 0)
+  );
+
+  /**
+   * DAG Phase 0c2: Effective Character Level (ECL) for XP table lookups.
+   *
+   * D&D 3.5 FORMULA:
+   *   ECL = sum(classLevels values) + levelAdjustment
+   *
+   * WHY SEPARATE FROM characterLevel:
+   *   Monster PCs (e.g., Gnolls, Drow, Half-Dragons) have racial power that makes
+   *   them equivalent to a higher-level character for balance purposes, even though
+   *   they may have fewer actual class levels. Their XP requirements are based on ECL,
+   *   but feat and ability score increase (ASI) acquisition is governed by total HD
+   *   (= classLevels sum only, NOT including levelAdjustment).
+   *
+   * Math Parser path: `@eclForXp` — used in XP-threshold formulas in config tables
+   *                                  and in the Level Up UI (Phase 10.1).
+   *
+   * EXAMPLES:
+   *   - Standard human Fighter 5:       ECL = 5 + 0 = 5
+   *   - Drow Rogue 3 (LA +2):           ECL = 3 + 2 = 5 (same effective power)
+   *   - Half-Dragon Fighter 4 (LA +3):  ECL = 4 + 3 = 7
+   *
+   * REDUCING LA VARIANT:
+   *   Over time, a character can pay XP to reduce their LA by 1 (after accumulating
+   *   3× LA in class levels). This mutates `character.levelAdjustment` in-place,
+   *   which automatically cascades to recalculate ECL here via Svelte reactivity.
+   *
+   * @see character.levelAdjustment — the mutable LA value
+   * @see config_xp_table — looked up with eclForXp to find next XP threshold
+   * @see SRD: monstersAsRaces.html, variant/races/reducingLevelAdjustments.html
+   */
+  phase0_eclForXp: number = $derived(
+    this.phase0_characterLevel + (this.character.levelAdjustment ?? 0)
   );
 
   /**
@@ -745,6 +794,10 @@ export class GameEngine {
       combatStats,
       saves,
       characterLevel: this.phase0_characterLevel,
+      // ECL for XP lookups: classLevels sum + levelAdjustment (for monster PCs).
+      // Accessible in formulas as `@eclForXp`.
+      // @see ARCHITECTURE.md section 6 — levelAdjustment / eclForXp
+      eclForXp: this.phase0_eclForXp,
       classLevels: { ...char.classLevels },
       activeTags: tags,
       // KNOWN LIMITATION: equippedWeaponTags is empty in Phase 0 context.

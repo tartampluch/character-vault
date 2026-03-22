@@ -154,21 +154,24 @@ When the Math Parser encounters `@` prefixed paths in formula strings, it reso
 | Path Pattern                       | Resolves To                                                                                 | Available                              |
 | ---------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------- |
 | `@attributes.<id>.totalValue`      | The pipeline's computed total                                                               | Always                                 |
-| `@attributes.<id>.derivedModifier` | `floor((totalValue - 10) / 2)` for ability scores                                           | Always                                 |
+| `@attributes.<id>.derivedModifier` | `floor((totalValue - 10) / 2)` for ability scores                                           | Always                                 |
 | `@attributes.<id>.baseValue`       | The pipeline's base value before modifiers                                                  | Always                                 |
 | `@skills.<id>.ranks`               | The invested skill ranks                                                                    | Always                                 |
 | `@combatStats.<id>.totalValue`     | The combat pipeline's computed total                                                        | Always                                 |
 | `@saves.<id>.totalValue`           | The save pipeline's computed total                                                          | Always                                 |
-| `@characterLevel`                  | `Object.values(character.classLevels).reduce((a, b) => a + b, 0)`                           | Always                                 |
-| `@classLevels.<classId>`           | `character.classLevels[classId]` (e.g., `@classLevels.class_soulknife`)                     | Always                                 |
-| `@activeTags`                      | Flat array of all tags from active Features (used with `has_tag` / `missing_tag` operators) | Always                                 |
+| `@characterLevel`                  | `Object.values(character.classLevels).reduce((a, b) => a + b, 0)` — **excludes LA** — use for feats/ASI/HP/skills | Always |
+| `@eclForXp`                        | `characterLevel + character.levelAdjustment` — **includes LA** — use for XP table lookups  | Always                                 |
+| `@classLevels.<classId>`           | `character.classLevels[classId]` (e.g., `@classLevels.class_soulknife`)                     | Always                                 |
+| `@activeTags`                      | Flat array of all tags from active Features (used with `has_tag` / `missing_tag` operators) | Always                                 |
 | `@equippedWeaponTags`              | Tags of the currently equipped weapon                                                       | Always                                 |
-| `@selection.<choiceId>`            | The selected value(s) from an `ActiveFeatureInstance.selections` record                     | Always                                 |
-| `@targetTags`                      | The target creature's tags                                                                  | **Roll time only** (via `RollContext`) |
-| `@master.classLevels.<classId>`    | The master character's class level (for `LinkedEntity` companion formulas)                  | LinkedEntity only                      |
-| `@constant.<id>`                   | A named constant from a config table (e.g., `@constant.darkvision_range`)                   | Always                                 |
+| `@selection.<choiceId>`            | The selected value(s) from an `ActiveFeatureInstance.selections` record                     | Always                                 |
+| `@targetTags`                      | The target creature's tags                                                                  | **Roll time only** (via `RollContext`) |
+| `@master.classLevels.<classId>`    | The master character's class level (for `LinkedEntity` companion formulas)                  | LinkedEntity only                      |
+| `@constant.<id>`                   | A named constant from a config table (e.g., `@constant.darkvision_range`)                   | Always                                 |
 
-> **AI Implementation Note:** The Math Parser MUST handle nested paths by splitting on `.` and walking the object tree. For example, `@attributes.stat_str.derivedModifier` splits into `["attributes", "stat_str", "derivedModifier"]` and resolves by looking up `character.attributes["stat_str"].derivedModifier`. Paths that don't resolve should return `0` and log a warning, not crash.
+> **AI Implementation Note:** The Math Parser MUST handle nested paths by splitting on `.` and walking the object tree. For example, `@attributes.stat_str.derivedModifier` splits into `["attributes", "stat_str", "derivedModifier"]` and resolves by looking up `character.attributes["stat_str"].derivedModifier`. Paths that don't resolve should return `0` and log a warning, not crash.
+>
+> **Special path distinction — `@characterLevel` vs `@eclForXp`:** Always use `@characterLevel` for game-mechanical calculations (feats, HP, skill max ranks, caster level, class feature gating). Use `@eclForXp` ONLY when consulting the XP threshold table (`config_xp_table`) for level-up checks, starting wealth, and encounter budgeting. For standard PC races with `levelAdjustment = 0`, both paths return the same value.
 
 ---
 
@@ -482,10 +485,36 @@ export interface Character {
     
     // --- Multiclassing ---
     // Dictionary of levels per class. The sum of all values gives the Character Level.
+    // Racial Hit Dice (e.g., "hd_gnoll") are also stored here as class-like entries.
     // Example: { "class_fighter": 5, "class_wizard": 3 } = Character Level 8
     // The engine uses this structure to resolve each class's levelProgression.
     classLevels: Record<ID, number>;
-    
+
+    // --- Effective Character Level (ECL) — Monster PCs and Level Adjustment variant ---
+    //
+    // Level Adjustment (LA): Offset added to classLevels sum when computing ECL.
+    // Standard PC races have LA = 0; monster PCs may have LA = 1–5+.
+    //
+    // ECL formula:  eclForXp = sum(classLevels values) + levelAdjustment
+    //
+    // ECL governs XP thresholds (config_xp_table lookup key) and starting wealth.
+    // Feat/ASI acquisition uses ONLY sum(classLevels) — levelAdjustment is excluded.
+    //
+    // Math Parser paths:
+    //   @characterLevel  = sum(classLevels values)           ← feats, ASI, HP, skills
+    //   @eclForXp        = sum(classLevels values) + LA      ← XP table lookups
+    //
+    // Mutability: LA can decrease via "Reducing Level Adjustments" variant rule
+    // (after 3× LA class levels have been accumulated, pay XP to reduce LA by 1).
+    //
+    // Default: 0 for all standard player-character races.
+    levelAdjustment: number;
+
+    // Experience Points earned by this character.
+    // Compared against config_xp_table[eclForXp] to determine next level threshold.
+    // Updated by the GM or combat resolution UI. Default: 0.
+    xp: number;
+
     // Pipeline containers (Generated on the fly, but base state is saved)
     attributes: Record<ID, StatisticPipeline>;
     skills: Record<ID, SkillPipeline>;
@@ -543,6 +572,42 @@ To force an absolute value (e.g., an NPC with exactly 200 HP), the GM uses a mod
   "type": "setAbsolute"
 }
 ```
+
+### 6.4. Level Adjustment and ECL — Monster PCs
+
+**Context:** In D&D 3.5, monster races that are played as PCs (e.g., Gnolls, Drow, Half-Dragons) have a **Level Adjustment (LA)** value that increases their **Effective Character Level (ECL)** beyond their actual class level count. This reflects their innate racial power.
+
+**Two distinct level values on the Character object:**
+
+| Field | Formula | Used for |
+|---|---|---|
+| `character.classLevels` sum → `@characterLevel` | `Σ classLevels values` | Feat slots, ASI, HP, skill max ranks, class progression |
+| `character.levelAdjustment` + above → `@eclForXp` | `@characterLevel + levelAdjustment` | XP threshold table lookups, starting wealth, encounter balance |
+
+**Design details:**
+
+- `levelAdjustment` is stored as a plain integer on `Character` (default `0` for all standard PC races). It is **mutable** in play (the "Reducing Level Adjustments" SRD variant allows a character to pay XP to lower their LA by 1 after accumulating 3× LA in class levels).
+- `xp` stores total accumulated experience points.  The engine computes XP until next level as `config_xp_table[eclForXp + 1].xpRequired - character.xp`.
+- Racial Hit Dice are stored in `classLevels` as a class-like entry (e.g., `"hd_gnoll": 2`), making them naturally contribute to `@characterLevel` (for feat purposes) while `levelAdjustment` handles the balance surcharge separately.
+
+**Example — Drow Rogue 3 (LA +2):**
+
+```json
+{
+  "classLevels": { "hd_elf_drow": 0, "class_rogue": 3 },
+  "levelAdjustment": 2,
+  "xp": 6000
+}
+```
+
+- `@characterLevel` = 3 (Rogue levels only — used for feat acquisition, HP, max ranks)
+- `@eclForXp` = 3 + 2 = 5 (XP threshold same as a 5th-level character)
+- To gain Rogue level 4, she needs the XP required for ECL 6: `config_xp_table[6].xpRequired`
+
+**Math Parser paths (section 4.3):**
+
+- Use `@characterLevel` everywhere **except** XP calculations (feats, HP, skills, class features).
+- Use `@eclForXp` only when looking up XP thresholds or initial wealth.
 
 ---
 

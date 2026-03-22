@@ -32,6 +32,7 @@ Once the `PROGRESS.md` file is successfully created and saved, apply the Pause &
 - [ ] **1.2 Logic & Math Engine:** Create `src/lib/types/logic.ts` (Recursive LogicNode) and `src/lib/types/pipeline.ts` (Modifier with `situationalContext`, StatisticPipeline with computed `derivedModifier`, separating active/situational, SkillPipeline, ResourcePool).
 - [ ] **1.3 Unified Feature Model:** Create `src/lib/types/feature.ts` (Feature with `levelProgression`, ItemFeature with `two_hands` slot, MagicFeature, FeatureChoice, AugmentationRule). Ensure every JSON entity carries a `ruleSource` field and an optional `merge` field for the Data Override system.
 - [ ] **1.4 Global State & Campaign Settings:** Create `src/lib/types/character.ts` (ActiveFeatureInstance, LinkedEntity with serialization guard, Character with `classLevels` record and `gmOverrides` array) and `src/lib/types/settings.ts` (CampaignSettings with language, point buy budget, reroll 1s, exploding 20s rules, and `enabledRuleSources`). Create `src/lib/types/campaign.ts` (Campaign, Chapter, SceneState).
+- [x] **1.5 Character ECL & XP fields (monster PC support):** Add `levelAdjustment: number` and `xp: number` fields to the `Character` interface in `src/lib/types/character.ts`. Document both fields and the `@characterLevel` vs `@eclForXp` distinction in `ARCHITECTURE.md` (sections 4.3 and 6, new subsection 6.4). Required for: monster PCs with racial Level Adjustment, the "Reducing Level Adjustments" SRD variant, correct XP-table lookups when LA > 0.
 
 ## Phase 2: Pure Functions & Dice Engine (The Brain)
 
@@ -47,6 +48,7 @@ Once the `PROGRESS.md` file is successfully created and saved, apply the Pause &
 - [ ] **3.2 Flattening & Filtering:** Create Step 0 `$derived` (Flat list of valid modifiers after checking prerequisites, forbidden tags, `classLevel` gating from `levelProgression`, and applying the full Data Override resolution chain including `gmOverrides`).
 - [ ] **3.3 DAG - Base Attributes:** Create Step 1 & 2 `$derived` (Calculate 6 main stats and their `derivedModifier`, isolating situational modifiers).
 - [ ] **3.4 DAG - Combat Stats & Skills:** Create Step 3 & 4 `$derived` (Calculate AC, BAB, Saves, Max HP, and Skills using results from previous derivations to prevent infinite loops).
+- [x] **3.5 DAG - ECL derivation (`@eclForXp`):** Add `phase0_eclForXp` `$derived` to `GameEngine.svelte.ts` (formula: `phase0_characterLevel + character.levelAdjustment`). Expose as `eclForXp` in the `CharacterContext` snapshot so the Math Parser can resolve `@eclForXp`. Add `eclForXp` field to `CharacterContext` in `src/lib/utils/mathParser.ts`. Add `resolvePath` case for `@eclForXp`. Required by: XP-threshold lookups for monster PCs, Level Up UI, config_xp_table formula references.
 
 ## Phase 4: Persistence & I/O
 

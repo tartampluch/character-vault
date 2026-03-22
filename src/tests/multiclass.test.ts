@@ -8,7 +8,8 @@
  *   Instead, we test the PURE UTILITY FUNCTIONS and DATA STRUCTURES that implement
  *   the multiclassing logic, simulating what the GameEngine would compute:
  *
- *     - character_level = Object.values(classLevels).reduce((a, b) => a + b, 0)
+ *     - characterLevel = Object.values(classLevels).reduce((a, b) => a + b, 0)
+ *     - eclForXp       = characterLevel + levelAdjustment
  *     - BAB per class: sum of "base" modifiers in levelProgression entries ≤ classLevel
  *     - Level-gated features: grantedFeatures from entries where entry.level ≤ classLevel
  *     - applyStackingRules: BAB contributions are type "base" (always stacks)
@@ -20,6 +21,13 @@
  *     3. Level-gated features: Fighter bonus feats at level 2 and 4 are active;
  *        level 6 Fighter bonus feat is NOT (Fighter level is only 5).
  *
+ * ECL / LEVEL ADJUSTMENT SCENARIOS (ARCHITECTURE.md section 6.4, Phase 1.5 and 3.5):
+ *   Standard PC (LA = 0):   eclForXp = characterLevel
+ *   Monster PC (LA > 0):    eclForXp = characterLevel + levelAdjustment
+ *   - Drow Rogue 3 (LA +2): eclForXp = 5  (@characterLevel = 3)
+ *   - Half-Dragon Fighter 4 (LA +3): eclForXp = 7  (@characterLevel = 4)
+ *   - Reducing LA: after 3× LA class levels, LA reduces by 1 via XP payment.
+ *
  * MULTICLASSING RULES (D&D 3.5 SRD):
  *   - Character level: Sum of all class levels.
  *   - Base Attack Bonus (BAB): Each class contributes its BAB increment per level,
@@ -29,6 +37,7 @@
  *     entries where entry.level ≤ character.classLevels[classId].
  *
  * @see ARCHITECTURE.md section 5.4 for levelProgression mechanics
+ * @see ARCHITECTURE.md section 6.4 for Level Adjustment and ECL
  * @see ARCHITECTURE.md section 9, Example G for multiclassing BAB and save resolution
  * @see src/lib/engine/GameEngine.svelte.ts #collectModifiersFromInstance
  * @see src/lib/utils/stackingRules.ts for applyStackingRules
@@ -763,5 +772,178 @@ describe('Multiclass: Boundary conditions and edge cases', () => {
     };
     const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
     expect(characterLevel).toBe(17);
+  });
+});
+
+// =============================================================================
+// SCENARIO 6: Effective Character Level (ECL) and Level Adjustment
+//
+// ARCHITECTURE.md section 6.4 and Phase 1.5/3.5:
+//   ECL is used for XP-table lookups and encounter balance.
+//   It differs from @characterLevel when levelAdjustment > 0 (monster PCs).
+//
+//   eclForXp formula (GameEngine.svelte.ts `phase0_eclForXp`):
+//     eclForXp = Object.values(classLevels).reduce() + levelAdjustment
+//
+//   This test suite verifies the ECL formula in isolation (pure math),
+//   mirroring what GameEngine.$derived `phase0_eclForXp` computes.
+// =============================================================================
+
+/**
+ * Helper that mirrors the GameEngine `phase0_eclForXp` $derived computation.
+ * Defined as a pure function for testability (the real version is a $derived
+ * in GameEngine.svelte.ts that cannot be instantiated in Vitest).
+ *
+ * @param classLevels      - The character's class-level record.
+ * @param levelAdjustment  - Racial Level Adjustment (0 for standard PCs, 1-5+ for monster PCs).
+ * @returns Effective Character Level for XP-table lookups.
+ */
+function computeEclForXp(
+  classLevels: Record<string, number>,
+  levelAdjustment: number
+): number {
+  const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+  return characterLevel + levelAdjustment;
+}
+
+describe('ECL and Level Adjustment (ARCHITECTURE.md section 6.4, Phase 1.5)', () => {
+  // -----------------------------------------------------------------------
+  // Standard PCs — LA = 0
+  // -----------------------------------------------------------------------
+
+  it('Standard PC (Fighter 10, LA 0): ECL equals characterLevel = 10', () => {
+    // All standard PC races have LA = 0. ECL = class levels sum.
+    const ecl = computeEclForXp({ 'class_fighter': 10 }, 0);
+    expect(ecl).toBe(10);
+  });
+
+  it('Standard multiclass (Fighter 5 / Wizard 3, LA 0): ECL = 8', () => {
+    const ecl = computeEclForXp({ 'class_fighter': 5, 'class_wizard': 3 }, 0);
+    expect(ecl).toBe(8);
+  });
+
+  it('Standard PC level 1 (LA 0): ECL = 1', () => {
+    const ecl = computeEclForXp({ 'class_rogue': 1 }, 0);
+    expect(ecl).toBe(1);
+  });
+
+  it('New character (no class levels, LA 0): ECL = 0', () => {
+    // Edge case: character with no levels at all.
+    const ecl = computeEclForXp({}, 0);
+    expect(ecl).toBe(0);
+  });
+
+  // -----------------------------------------------------------------------
+  // Monster PCs — LA > 0 (core validation scenario from ARCHITECTURE.md §6.4)
+  // -----------------------------------------------------------------------
+
+  it('Drow Rogue 3 (LA +2): @characterLevel = 3, @eclForXp = 5', () => {
+    // ARCHITECTURE.md section 6.4 canonical example.
+    // A Drow has LA +2; a Rogue 3 Drow needs the same XP as a level-5 character.
+    const classLevels = { 'class_rogue': 3 };
+    const levelAdjustment = 2;
+
+    const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+    const eclForXp = computeEclForXp(classLevels, levelAdjustment);
+
+    // @characterLevel: used for feats, HP, max skill ranks (class levels only)
+    expect(characterLevel).toBe(3);
+    // @eclForXp: used for XP threshold — she needs as much XP as a 5th-level character
+    expect(eclForXp).toBe(5);
+    // The LA delta is exactly the level adjustment value
+    expect(eclForXp - characterLevel).toBe(levelAdjustment);
+  });
+
+  it('Half-Dragon Fighter 4 (LA +3): characterLevel = 4, eclForXp = 7', () => {
+    // Half-Dragon template grants LA +3.
+    const classLevels = { 'class_fighter': 4 };
+    const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+    const eclForXp = computeEclForXp(classLevels, 3);
+
+    expect(characterLevel).toBe(4);
+    expect(eclForXp).toBe(7);
+    expect(eclForXp - characterLevel).toBe(3);
+  });
+
+  it('Ogre Fighter 2 (racial HD 4 in classLevels, LA +2): characterLevel = 6, eclForXp = 8', () => {
+    // Racial HD are stored in classLevels (e.g., "hd_ogre": 4).
+    // An Ogre Fighter 2 has: 4 racial HD + 2 Fighter levels + LA 2 = ECL 8.
+    // @characterLevel = 6 (4 HD + 2 Fighter) — used for feats/HP/skills
+    // @eclForXp       = 8 (6 + LA 2)         — used for XP requirement
+    const classLevels = { 'hd_ogre': 4, 'class_fighter': 2 };
+    const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+    const eclForXp = computeEclForXp(classLevels, 2);
+
+    expect(characterLevel).toBe(6);
+    expect(eclForXp).toBe(8);
+  });
+
+  // -----------------------------------------------------------------------
+  // Reducing Level Adjustment variant (ARCHITECTURE.md section 6.4, SRD variant)
+  // -----------------------------------------------------------------------
+
+  it('Reducing LA variant: Drow Rogue 6 pays XP to reduce LA from 2 to 1 → eclForXp drops from 8 to 7', () => {
+    // After accumulating 3× LA (= 6 class levels), a Drow may pay XP to reduce LA by 1.
+    // Before reduction: Drow Rogue 6, LA 2 → ECL 8
+    const classLevelsBefore = { 'class_rogue': 6 };
+    const eclBefore = computeEclForXp(classLevelsBefore, 2);
+    expect(eclBefore).toBe(8);
+
+    // After reduction: same class levels, LA 1 → ECL 7
+    // (character.levelAdjustment is mutated from 2 → 1 after paying XP)
+    const eclAfter = computeEclForXp(classLevelsBefore, 1);
+    expect(eclAfter).toBe(7);
+
+    // The XP advantage of reducing LA: ECL drops, so next level is cheaper.
+    expect(eclBefore - eclAfter).toBe(1);
+  });
+
+  it('Reducing LA to 0: Drow Rogue 12 (LA 0 after full reduction) → eclForXp === characterLevel', () => {
+    // Full LA reduction to 0: ECL is now identical to character level.
+    const classLevels = { 'class_rogue': 12 };
+    const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+    const eclForXp = computeEclForXp(classLevels, 0);
+
+    expect(characterLevel).toBe(12);
+    expect(eclForXp).toBe(12);
+    expect(eclForXp).toBe(characterLevel); // Fully reduced — no longer a burden
+  });
+
+  // -----------------------------------------------------------------------
+  // ECL property invariants
+  // -----------------------------------------------------------------------
+
+  it('ECL is never less than characterLevel (LA is always ≥ 0)', () => {
+    // Level Adjustment cannot be negative per the SRD.
+    // This invariant ensures ECL lookups never go below actual class-level count.
+    const testCases: Array<{ classLevels: Record<string, number>; la: number }> = [
+      { classLevels: {},                                          la: 0 },
+      { classLevels: { 'class_fighter': 1 },                     la: 0 },
+      { classLevels: { 'class_fighter': 5, 'class_wizard': 3 },  la: 0 },
+      { classLevels: { 'class_rogue': 3 },                       la: 2 },
+      { classLevels: { 'hd_gnoll': 2, 'class_ranger': 1 },       la: 1 },
+    ];
+
+    for (const { classLevels, la } of testCases) {
+      const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+      const eclForXp = computeEclForXp(classLevels, la);
+      expect(eclForXp).toBeGreaterThanOrEqual(characterLevel);
+    }
+  });
+
+  it('ECL delta equals levelAdjustment exactly', () => {
+    // eclForXp - characterLevel === levelAdjustment, always.
+    const testCases: Array<{ classLevels: Record<string, number>; la: number }> = [
+      { classLevels: { 'class_fighter': 5 },  la: 0 },
+      { classLevels: { 'class_rogue': 3 },    la: 2 },
+      { classLevels: { 'class_fighter': 4 },  la: 3 },
+      { classLevels: { 'hd_ogre': 4, 'class_fighter': 2 }, la: 2 },
+    ];
+
+    for (const { classLevels, la } of testCases) {
+      const characterLevel = Object.values(classLevels).reduce((sum, lvl) => sum + lvl, 0);
+      const eclForXp = computeEclForXp(classLevels, la);
+      expect(eclForXp - characterLevel).toBe(la);
+    }
   });
 });

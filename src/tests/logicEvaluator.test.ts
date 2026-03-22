@@ -44,6 +44,7 @@ const mockContext: CharacterContext = {
   },
   saves: {},
   characterLevel: 8,
+  eclForXp: 8,
   classLevels: { 'class_fighter': 4, 'class_wizard': 4 },
   activeTags: [
     'race_human', 'class_fighter', 'class_wizard',

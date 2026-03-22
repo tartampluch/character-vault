@@ -329,8 +329,79 @@ export interface Character {
    * declared level in each class.
    *
    * Empty for level 0 characters (commoners with no class levels).
+   *
+   * MONSTER PCs / LEVEL ADJUSTMENT:
+   *   Racial HD (e.g., "hd_gnoll") are also tracked here as a class-like entry.
+   *   The `levelAdjustment` field (below) adds to this sum when computing ECL.
    */
   classLevels: Record<ID, number>;
+
+  // ---------------------------------------------------------------------------
+  // Effective Character Level (ECL) — monster PCs and level adjustment variant
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Level Adjustment (LA) for monster player-characters and LA-variant rules.
+   *
+   * D&D 3.5 CONTEXT:
+   *   Some races (e.g., Drow, Ogre, Half-Dragon) have a Level Adjustment that
+   *   raises their Effective Character Level (ECL) above their Hit Dice count,
+   *   reflecting their innate racial power.
+   *
+   *   ECL = sum(classLevels values) + racial HD (if tracked in classLevels) + levelAdjustment
+   *
+   *   ECL governs:
+   *   - XP required to advance (looked up in `config_xp_table` with ECL as key)
+   *   - Starting wealth calculations
+   *   - Party balance (encounter budgeting)
+   *
+   *   BUT feat and ability score increase acquisition is governed by total HD
+   *   (class levels + racial HD only, NOT adding levelAdjustment).
+   *
+   * MUTABILITY:
+   *   This field can decrease over time via the "Reducing Level Adjustments" variant
+   *   (SRD variant rules) — after accumulating 3× their current LA in class levels,
+   *   a character pays XP to reduce LA by 1. This makes the field mutable in-play.
+   *
+   * MATH PARSER PATHS:
+   *   - `@characterLevel`  = sum(classLevels values) — HD for feats/ASI only
+   *   - `@eclForXp`        = sum(classLevels values) + levelAdjustment — for XP table lookups
+   *
+   * Default: 0 (no adjustment, all standard PC races have LA 0)
+   *
+   * @see ARCHITECTURE.md section 6 — Character Entity (levelAdjustment field)
+   * @see D20SRD_CONVERSION.md C-15f — Psionic races (several have LA > 0)
+   * @see SRD variant Reducing Level Adjustments (races/reducingLevelAdjustments.html)
+   */
+  levelAdjustment: number;
+
+  /**
+   * Character's current Experience Points (XP).
+   *
+   * D&D 3.5 CONTEXT:
+   *   XP is accumulated through encounters and other rewards. When XP crosses the
+   *   threshold for the next ECL, the character may level up.
+   *   Thresholds are loaded from `config_xp_table` using ECL as the key.
+   *
+   *   XP penalty:
+   *   - Bloodline variant: may trigger a 20% XP penalty modifier if level thresholds
+   *     are skipped (tracked via `character.xpPenaltyModifier` in future variants).
+   *   - Multiclassing: in RAW D&D 3.5, each class more than 1 level apart from the
+   *     highest applies a 20% XP penalty. This is a UI-level enforcement concern,
+   *     not an engine computation.
+   *
+   * STORAGE:
+   *   Stored as a plain integer (total XP earned, not spending-based). The engine
+   *   computes XP until next level = `config_xp_table[eclForXp + 1].xpRequired - xp`.
+   *
+   *   Updated by the GM or combat resolution UI (Phase 10.1 Level Up flow).
+   *
+   * Default: 0 (new character, no XP yet)
+   *
+   * @see ARCHITECTURE.md section 6 — Character Entity (xp field)
+   * @see `config_xp_table` config table for XP thresholds per ECL
+   */
+  xp: number;
 
   // ---------------------------------------------------------------------------
   // Hit Die Results — Per-level HP rolls (stored, not recomputed)

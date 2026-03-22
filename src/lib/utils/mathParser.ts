@@ -103,8 +103,27 @@ export interface CharacterContext {
   /**
    * Sum of all class levels (character level).
    * Formula: Object.values(classLevels).reduce((a, b) => a + b, 0)
+   *
+   * IMPORTANT: Does NOT include levelAdjustment.
+   * Used for: feat/ASI acquisition, class progression gating, HP, skill max ranks.
+   * NOT used for XP threshold lookups — use `eclForXp` for that.
    */
   characterLevel: number;
+
+  /**
+   * Effective Character Level for XP table lookups.
+   * Formula: sum(classLevels values) + character.levelAdjustment
+   *
+   * Accessible in data formulas as `@eclForXp`.
+   * Should be used whenever a formula references the XP threshold table so that
+   * monster PCs (with LA > 0) correctly look up a higher XP requirement.
+   *
+   * For standard PCs with levelAdjustment = 0, eclForXp === characterLevel.
+   *
+   * @see ARCHITECTURE.md section 6 — levelAdjustment and eclForXp
+   * @see ARCHITECTURE.md section 4.3 — Math Parser special paths
+   */
+  eclForXp: number;
 
   /**
    * Per-class level record.
@@ -165,7 +184,8 @@ export interface CharacterContext {
  * Unknown paths return `0` with a console warning (no crash on missing data).
  *
  * SPECIAL CASES:
- *   - `@characterLevel`: Resolved directly from `context.characterLevel`.
+ *   - `@characterLevel`: Resolved directly from `context.characterLevel` (sum of class levels; no LA).
+ *   - `@eclForXp`:       Resolved from `context.eclForXp` (classLevels sum + levelAdjustment).
  *   - `@activeTags`:     Resolved to the full string array (for `has_tag` checks).
  *   - `@targetTags`:     Returns empty array during sheet time; populated at roll time.
  *   - `@selection.<id>`: Returns the first selected value (string) or empty string.
@@ -184,6 +204,14 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
   // Handle special top-level shortcuts
   if (parts[0] === 'characterLevel') {
     return context.characterLevel;
+  }
+
+  // Handle @eclForXp → ECL including levelAdjustment.
+  // Used in XP-threshold formulas for monster PCs and the Level Up UI.
+  // For standard PCs (levelAdjustment = 0), returns the same as @characterLevel.
+  // @see ARCHITECTURE.md section 4.3 — Math Parser special paths
+  if (parts[0] === 'eclForXp') {
+    return context.eclForXp;
   }
 
   // Handle @constant.<id> → context.constants[id]
