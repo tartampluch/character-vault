@@ -118,7 +118,7 @@ function requireAuth(): array
             'error'   => 'Unauthorized',
             'message' => 'Authentication required. Please log in via POST /api/auth/login.',
         ]);
-        exit;
+        httpExit();
     }
 
     return [
@@ -149,7 +149,7 @@ function requireGameMaster(): array
             'error'   => 'Forbidden',
             'message' => 'This endpoint requires Game Master privileges.',
         ]);
-        exit;
+        httpExit();
     }
 
     return $user;
@@ -255,22 +255,26 @@ function handleLogout(): void
     // Clear all session data
     $_SESSION = [];
 
-    // Delete the session cookie from the client's browser
-    if (ini_get('session.use_cookies')) {
-        $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
-        );
-    }
+    // Cookie and session-destroy operations are only meaningful in a web context.
+    // In CLI / PHPUnit tests there is no real PHP session, so we skip them.
+    if (PHP_SAPI !== 'cli' && session_status() === PHP_SESSION_ACTIVE) {
+        // Delete the session cookie from the client's browser
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+        }
 
-    // Destroy the server-side session
-    session_destroy();
+        // Destroy the server-side session
+        session_destroy();
+    }
 
     http_response_code(200);
     echo json_encode(['message' => 'Logged out successfully.']);

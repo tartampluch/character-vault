@@ -172,6 +172,9 @@ abstract class TestCase extends PHPUnitTestCase
         ob_start();
         try {
             $controllerAction();
+        } catch (HttpExitException) {
+            // Controller sent a response and called httpExit() — this is expected.
+            // The buffered output is still intact; we fall through to ob_get_clean().
         } catch (\Throwable $e) {
             ob_end_clean();
             throw $e;
@@ -205,12 +208,18 @@ abstract class TestCase extends PHPUnitTestCase
         TestPhpInputStream::$inputData = $jsonBody;
 
         ob_start();
+        $httpExited = false;
         try {
             $action();
+        } catch (HttpExitException) {
+            // Controller sent a response and called httpExit() — expected.
+            $httpExited = true;
         } finally {
             // IMPORTANT: always restore php stream wrapper, even if test fails
             stream_wrapper_restore('php');
         }
+        // Suppress "unused variable" hint — $httpExited documents intent.
+        unset($httpExited);
         $output = ob_get_clean();
 
         $status = http_response_code();

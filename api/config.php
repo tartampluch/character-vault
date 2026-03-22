@@ -46,6 +46,43 @@
 declare(strict_types=1);
 
 // ============================================================
+// HTTP EXIT HELPER
+// ============================================================
+
+/**
+ * Exception thrown instead of calling exit() when running under PHPUnit (CLI).
+ *
+ * Controllers and middleware call httpExit() instead of bare exit after sending
+ * an HTTP response. In CLI / test mode this throws HttpExitException so the
+ * output buffer in callController() / callControllerWithInput() is intact and
+ * PHPUnit can continue running subsequent tests.  In production (non-CLI) mode
+ * httpExit() simply calls exit — behaviour is identical to before this change.
+ *
+ * @internal Used only by httpExit() and caught only by TestCase::callController().
+ */
+class HttpExitException extends \RuntimeException {}
+
+/**
+ * Terminates the current HTTP response.
+ *
+ * In a web context (PHP-FPM / mod_php): calls exit() to stop script execution.
+ * In CLI context (PHPUnit): throws HttpExitException so the test harness can
+ * capture the buffered response body and continue with the next test.
+ *
+ * USAGE (replace every bare `exit;` that follows an `echo json_encode(...)` call):
+ *   httpExit();
+ *
+ * @throws HttpExitException When running under CLI (PHPUnit tests).
+ */
+function httpExit(): never
+{
+    if (PHP_SAPI === 'cli') {
+        throw new HttpExitException('HTTP response sent — stopping execution.');
+    }
+    exit;
+}
+
+// ============================================================
 // .ENV LOADER
 // ============================================================
 

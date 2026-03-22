@@ -65,7 +65,7 @@ function applyCorsHeaders(): void
     // Handle CORS preflight (browser OPTIONS request before the actual request)
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(200);
-        exit;
+        httpExit();
     }
 }
 
@@ -134,7 +134,7 @@ function verifyCsrfToken(): void
             'error'   => 'InvalidCsrfToken',
             'message' => 'CSRF token missing or invalid. Please re-fetch the token from GET /api/auth/me.',
         ]);
-        exit;
+        httpExit();
     }
 }
 
@@ -210,7 +210,7 @@ function checkRateLimit(string $key = 'global', int $maxRequests = 60, int $wind
             'message'     => "Rate limit exceeded. Max {$maxRequests} requests per {$windowSec} seconds.",
             'retry_after' => max(0, $retryAfter),
         ]);
-        exit;
+        httpExit();
     }
 }
 
