@@ -1458,11 +1458,11 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-### C-13 — Cleric Domains (`13_d20srd_core_domains.json`)
+### C-13 — Cleric Domains (`13_d20srd_core_cleric_domains.json`)
 
-- [ ] **C-13** — Convert all 22 core cleric domains
+- [x] **C-13** — Convert all 22 core cleric domains
 
-**Source files:** `d20srd/www.d20srd.org/srd/divine/domains.html`
+**Source files:** `d20srd/www.d20srd.org/srd/spellLists/clericDomains.html`
 
 **Domains:** Air, Animal, Chaos, Death, Destruction, Earth, Evil, Fire, Good, Healing, Knowledge, Law, Luck, Magic, Plant, Protection, Strength, Sun, Travel, Trickery, War, Water
 
