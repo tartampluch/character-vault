@@ -71,6 +71,8 @@ Once the `PROGRESS.md` file is successfully created and saved, apply the Pause &
 - [ ] **5.3 Graph & Context Testing:** Add a button "Attack the Orc" to trigger the Dice Engine. Prove the "+2 vs Orcs" situational modifier applies ONLY to the roll. Prove that turning on "Exploding 20s" properly rerolls and adds consecutive 20s.
 - [ ] **5.4 Merge Engine Testing:** Prove that enabling `test_override.json` as a rule source correctly merges/replaces Features, including `-prefix` deletions.
 
+- [ ] **Checkpoint Review #1** (after Phases 1–5): Run the conformance review from `CHECKPOINTS.md`. Covers: TypeScript type conformance (Feature, Character, Pipeline, Settings, all Phase 1.x extensions), Math Parser `@`-paths, Logic Evaluator, Stacking Rules (incl. DR best-wins), Dice Engine (incl. V/WP routing, Gestalt), DAG resolution phases 0–4, Resource tick/rest methods, DataLoader & Merge Engine, Test UI. Resolve all CRITICAL and MAJOR issues before proceeding.
+
 ## Phase 6: Campaign Management & User Context
 
 _Goal: Establish the overarching container for characters. A Campaign groups characters, tracks story progression via Acts/Chapters, and handles Game Master (GM) vs Player visibility._
@@ -206,6 +208,8 @@ _Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equ
     - _Encumbrance Tiers:_ Compare total weight against the character's Strength carrying capacity (thresholds loaded from a configuration JSON lookup table, not hardcoded). If the load is Medium or Heavy, automatically dispatch a situational `condition_encumbered` feature to the engine to apply speed and armor check penalties.
     - _Wealth:_ Add simple input fields for CP, SP, GP, PP, and calculate their total weight (standard rule: 50 coins = 1 lb).
 
+- [ ] **Checkpoint Review #2** (after Phases 6–13): Run the UI conformance review from `CHECKPOINTS.md`. Covers: zero game logic in `.svelte` files, zero hardcoding, Campaign & Session context, Character Vault visibility rules, Core/Abilities/Combat/Feats/Spells/Inventory tab implementations, Navigation & Routes. Resolve all CRITICAL and MAJOR issues before proceeding.
+
 ## Phase 14: PHP Backend & Frontend Integration
 
 _Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. The backend will serve as a REST API to persist Campaigns, Users, and Character states. Designed for cheap shared hosting (e.g., OVH shared hosting)._
@@ -262,6 +266,8 @@ _Goal: Build the GM-exclusive interfaces for managing rule sources, global overr
     
     Each layer respects `merge` semantics: `"replace"` (default) overwrites entirely, `"partial"` merges additively with `-prefix` deletion support.
 
+- [ ] **Checkpoint Review #3** (after Phases 14–15): Run the PHP backend & GM tools review from `CHECKPOINTS.md`. Covers: authentication & bcrypt, CSRF protection, SQL injection audit, database schema (separate `character_json`/`gm_overrides_json`), visibility rules (GM vs player), sync timestamps, GM override system (Feature + config table objects), Vite proxy config, Rule Source discovery endpoint. Resolve all CRITICAL and MAJOR issues before proceeding.
+
 ## Phase 16: Backend Unit Testing (PHPUnit)
 
 _Goal: Ensure the PHP API is secure, handles data correctly, and respects the SQLite database._
@@ -311,6 +317,8 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - _Deletion Test:_ Load a partial with `"-feat_wild_shape"` in `grantedFeatures`. Assert that `feat_wild_shape` is removed from the merged result.
     - _Resolution Chain Test:_ Load a base source, a partial override source, a GM global override, and a GM per-character override. Assert the final resolution follows the correct priority order.
 
+- [ ] **Checkpoint Review #4** (after Phases 16–17): Run the test exhaustiveness review from `CHECKPOINTS.md`. Covers: PHPUnit coverage (persistence, visibility, auth, GM overrides, sync), Vitest coverage (Math Parser paths, Logic Evaluator, Stacking Rules incl. DR groups, Dice Engine incl. V/WP, DAG integration, Multiclass/ECL/LA, Merge Engine, Psionic Item subtypes), missing test categories (forbiddenTags, conditionNode, dual-gated modifiers, formula-as-value, setAbsolute string values, skill synergies, classSkills union). Resolve all CRITICAL and MAJOR gaps before proceeding.
+
 ## Phase 18: Tooling, Build Pipeline & Developer Experience
 
 _Goal: Create a complete, zero-dependency build and deployment pipeline, VS Code debug integration, environment variable management, and local runner scripts. All tooling must work both natively (macOS/Linux) and inside Docker containers. The developer should be able to clone, build, test, debug, and deploy without installing global dependencies beyond Node.js._
@@ -325,6 +333,8 @@ _Goal: Create a complete, zero-dependency build and deployment pipeline, VS Code
 - [ ] **18.8 PHP Binary Resolver:** Create `scripts/php-dev.sh`. Resolution priority: (1) `CHAR_VAULT_PHP` env var override, (2) system PHP with Xdebug when `XDEBUG_MODE` is set, (3) `.build-tools/bin/php` portable binary, (4) system PHP >= 8.1. Print clear warning if Xdebug is requested but not found. Forward all arguments via `exec`.
 - [ ] **18.9 Environment Variable Support:** Create `.env.example` documenting all supported variables (`APP_ENV`, `DB_PATH`, `CORS_ORIGIN`) with usage instructions for shared hosting, local development, and Docker. Update `api/config.php` to load `.env` files with priority resolution (process env > .env file > built-in defaults). Update `run.sh` and `run-docker.sh` with `--env-file` option and `.env` loading logic.
 - [ ] **18.10 Version Control & Documentation:** Update `.gitignore` to exclude build artifacts (`dist/`, `dist-pkg/`, `.build-tools/`), portable tools, and sensitive files (`.env`, `*.sqlite*`). Rewrite `README.md` with comprehensive sections: project structure, prerequisites, quick start, development setup, testing, VS Code debugging, building & packaging (native + Docker), running locally, environment variables, and production deployment.
+
+- [ ] **Checkpoint Review #5** (after Phase 18): Run the tooling & DX review from `CHECKPOINTS.md`. Covers: native build pipeline (`build.sh` — portable tools bootstrap, full pipeline order, `--skip-tests`/`--deploy` flags, artifact structure), Docker build (multi-stage, pinnable versions, BuildKit cache), local run scripts (`run.sh`/`run-docker.sh` — port/dir/env-file options, migration on first launch, DB volume), VS Code launch/tasks configs (full-stack compound, PHP/Xdebug, background tasks, path mappings), PHP binary resolver priority chain, `.env` priority semantics, `.gitignore` completeness, README accuracy. Resolve all CRITICAL and MAJOR issues before proceeding.
 
 ## Phase 19: UI Excellence — Tailwind CSS, Theming, Responsive Design & Iconography
 
@@ -450,6 +460,8 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - Verify the sidebar cookie persistence works (collapsed state survives page reload).
     - Smoke-test the complete user flow: landing → campaign hub → vault → character sheet → all 6 tabs → back to vault. Ensure no visual glitches, no broken layouts, no orphaned old styles.
 
+- [ ] **Checkpoint Review #6** (after Phase 19): Run the UI Excellence review from `CHECKPOINTS.md`. Covers: Tailwind migration completeness (no remaining scoped CSS, no hardcoded hex colors), theme system (3-state cycle, cookie persistence, FOWT prevention script, live media query listener), Lucide icon sizing and coverage (no remaining emoji), sidebar responsiveness (desktop/tablet/mobile, cookie persistence), character sheet full-height layout (always-visible tabs), responsive breakpoints (320px–1920px, no horizontal overflow), touch targets (min 44px, focus rings, `prefers-reduced-motion`), design system consistency (cards/buttons/inputs/badges/modals), zero regressions on full user flow. Resolve all CRITICAL and MAJOR issues before proceeding.
+
 ## Phase 20: Leveling Progression & Skill Points (SRD-Accurate Engine Corrections)
 
 _Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-class skill point budgets (including the first-level 4× bonus), minimum rank enforcement (permanently spent SP cannot be refunded), and a Leveling Journal UI that makes all per-class contributions transparent. All mechanics documented in ARCHITECTURE.md section 9.6._
@@ -471,3 +483,7 @@ _Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-c
 - [ ] **20.8 Vitest — Scenario 8 (minimum rank enforcement):** Extend `src/tests/multiclass.test.ts`. Test: `setSkillRanks` floor clamping, `lockSkillRanksMin` max-merge, absent `minimumSkillRanks` defaults to 0, cross-class skill cost (2 SP/rank).
 
 - [ ] **20.9 Vitest — Character build scenario (`characterBuildScenario.test.ts`):** Create `src/tests/characterBuildScenario.test.ts`. Validate a complete Fighter 3 / Monk 3 / Psion 1 / Wizard 1 multiclass build verifying: character level (8), ECL (8), ability scores and ASI tracking (CON 17→19), BAB (+5), saves (Fort +10 / Ref +7 / Will +10), SP budget (50 SP RAW), feat slots (5), HP (75 with fixed dice, max at L1 then half+1), AC (15 unarmored with WIS Monk bonus), Wizard spells/day (3 cantrips / 2 first-level), psionic PP (3), class skill union, level-gated feature granting, multiclass XP penalty with favored-class exemption, caster/manifester level independence.
+
+- [ ] **Checkpoint Review #7a** (after Phase 20): Run the leveling progression review from `CHECKPOINTS.md`. Covers: per-class SP budget (`phase4_skillPointsBudget` — per-class independence, first-level 4× bonus on first class only, INT minimum floor, racial bonus SP per total level), minimum rank enforcement (`minimumSkillRanks` optional field, `setSkillRanks` clamping, `lockSkillRanksMin` max-merge), `SkillsMatrix.svelte` budget display and locked rank UI, `LevelingJournalModal` SP formula display and XP penalty warning, `phase4_levelingJournal` derived correctness, i18n completeness, Vitest Scenarios 7–9, SRD accuracy cross-check (first-level 4×, INT retroactivity, XP penalty boundary, favored class exemption, cross-class max ranks). Resolve all CRITICAL and MAJOR issues before proceeding.
+
+- [ ] **Final Review #7** (complete system validation — before v1.0 release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis, Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

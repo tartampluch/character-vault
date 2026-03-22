@@ -7,7 +7,49 @@ This engine is designed to handle the extreme complexity of D&D 3.5 (SRD, Psioni
 - **Entities:** The Character, the Animal Companion, the Weapon. These are pure data aggregators.
 - **Components:** `Features`. A race, a class, a buff, a weapon are all Features. They contain `Modifiers` and `Tags`.
 - **System:** The `GameEngine` (a Svelte 5 reactive class). It listens to active Features, evaluates their prerequisites (logic trees), resolves mathematical formulas (placeholders), and updates `StatisticPipelines` (Strength, AC, Attack).
-- **Open Content Ecosystem:** The architecture is designed for community-driven content creation. Rule source files are plain JSON that can be shared, versioned, and distributed independently. Characters can be exported as self-contained JSON blobs. No compilation or build step is required to add new content — drop a JSON file and update the manifest.
+- **Open Content Ecosystem:** The architecture is designed for community-driven content creation. Rule source files are plain JSON that can be shared, versioned, and distributed independently. Characters can be exported as self-contained JSON blobs. No compilation or build step is required to add new content — drop a JSON file and update the manifest.
+
+```mermaid
+graph TD
+    subgraph "Content Layer (JSON)"
+        RS[Rule Source Files<br/>static/rules/**/*.json]
+        GM_G[GM Global Overrides<br/>Campaign.gmGlobalOverrides]
+        GM_C[GM Per-Character Overrides<br/>Character.gmOverrides]
+    end
+
+    subgraph "Data Layer"
+        DL[DataLoader<br/>Merge Engine]
+        RS --> DL
+        GM_G --> DL
+        GM_C --> DL
+    end
+
+    subgraph "Entity (Character)"
+        AFI[activeFeatures: ActiveFeatureInstance[]]
+        CL[classLevels: Record&lt;ID, number&gt;]
+        PIPE[attributes / skills / combatStats / saves / resources]
+    end
+
+    subgraph "System (GameEngine — Svelte 5 Runes)"
+        P0["Phase 0: Flatten & Filter<br/>(prerequisites, forbiddenTags, levelProgression)"]
+        P1["Phase 1: Size & Encumbrance"]
+        P2["Phase 2: Ability Scores + derivedModifier"]
+        P3["Phase 3: Combat Stats + HP<br/>(BAB, AC, Saves — gestalt-aware)"]
+        P4["Phase 4: Skills + Class Skills<br/>(SP budget, leveling journal)"]
+        OUT["CharacterContext snapshot<br/>(read by Math Parser + Logic Evaluator)"]
+
+        P0 -->|flat Modifier[]| P1
+        P1 --> P2
+        P2 --> P3
+        P3 --> P4
+        P4 --> OUT
+    end
+
+    DL -->|resolved Feature JSON| AFI
+    AFI --> P0
+    CL --> P0
+    OUT --> PIPE
+```
 
 ---
 
@@ -349,6 +391,54 @@ At roll time, for each `DREntry` in the target's `combatStats.damage_reduction.d
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.
+
+```mermaid
+classDiagram
+    class Feature {
+        +ID id
+        +FeatureCategory category
+        +LocalizedString label
+        +LocalizedString description
+        +string[] tags
+        +string[] forbiddenTags
+        +LogicNode prerequisitesNode
+        +Modifier[] grantedModifiers
+        +ID[] grantedFeatures
+        +FeatureChoice[] choices
+        +ID ruleSource
+        +MergeStrategy merge
+        +LevelProgressionEntry[] levelProgression
+        +ID[] classSkills
+        +ID[] recommendedAttributes
+        +activation
+        +actionBudget
+    }
+
+    class ItemFeature {
+        +equipmentSlot
+        +number weightLbs
+        +number costGp
+        +weaponData
+        +armorData
+        +psionicItemData
+    }
+
+    class MagicFeature {
+        +magicType: arcane|divine|psionic
+        +Record spellLists
+        +string school
+        +PsionicDiscipline discipline
+        +PsionicDisplay[] displays
+        +AugmentationRule[] augmentations
+    }
+
+    Feature <|-- ItemFeature : extends (category:"item")
+    Feature <|-- MagicFeature : extends (category:"magic")
+    Feature --> "0..1" LogicNode : prerequisitesNode
+    Feature --> "0..*" Modifier : grantedModifiers
+    Feature --> "0..*" LevelProgressionEntry : levelProgression
+    ItemFeature --> "0..1" PsionicItemData : psionicItemData
+```
 
 _Suggested target file: `src/lib/types/feature.ts`_
 
@@ -901,7 +991,7 @@ The `levelProgression` field is the central mechanism for handling **multiclassi
 
 The increments in `levelProgression` represent the **difference** between the total at this level and the total at the previous level.
 
-See **Annex A** (sections A.1 through A.2) for complete class examples including Fighter (4 levels), Barbarian (20 levels), Cleric (5 levels + Turn Undead), Monk (5 levels), Dragon Disciple (10 levels as prestige class), Druid (5 levels + Animal Companion), and Soulknife (6 levels, psionic).
+See **Annex A** (sections A.1 through A.2) for complete class examples including Barbarian (20 levels), Cleric (5 levels + Turn Undead), Monk (5 levels), Dragon Disciple (10 levels as prestige class), Druid (5 levels + Animal Companion), and Soulknife (6 levels, psionic). Fighter class increments are demonstrated in multiclass test fixtures (`src/tests/multiclass.test.ts`) and `static/rules/test_mock.json`.
 
 ### 5.5. Class Skills Declaration (`classSkills`)
 
@@ -1184,11 +1274,48 @@ export interface Character {
 
 ### 6.1. Example: Multiclassed Character
 
-See the Fighter 5 / Wizard 3 / Duelist 2 example in the original document section 6.1.
+A Fighter 5 / Wizard 3 / Duelist 2 (character level 10):
+
+```json
+{
+  "id": "char_aldric",
+  "name": "Aldric",
+  "classLevels": {
+    "class_fighter": 5,
+    "class_wizard": 3,
+    "class_duelist": 2
+  },
+  "levelAdjustment": 0,
+  "xp": 45000
+}
+```
+
+- `@characterLevel` = 10 (5 + 3 + 2)
+- BAB = 5 (Fighter full) + 1 (Wizard half) + 2 (Duelist full) = **+8**
+- The engine sums BAB increments from each class's `levelProgression` up to `classLevels[classId]`.
 
 ### 6.2. Example: `ActiveFeatureInstance` with `selections`
 
-See the Cleric domain selection example in the original document section 6.2.
+A Cleric who has chosen the War domain and the deity Heironeous:
+
+```json
+{
+  "instances": [
+    {
+      "instanceId": "afi_cleric_001",
+      "featureId": "class_cleric",
+      "isActive": true,
+      "selections": {
+        "domain_choice_1": ["domain_war"],
+        "domain_choice_2": ["domain_strength"],
+        "deity_choice": ["deity_heironeous"]
+      }
+    }
+  ]
+}
+```
+
+The `selections` record maps each `choiceId` (defined in the Feature's `choices` array) to the array of selected Feature IDs. The `GameEngine` reads this record during Phase 0 to activate the chosen sub-features (e.g., injecting `domain_war` and `domain_strength` into the active features list as if they were directly granted).
 
 ### 6.3. Example: GM Secret Override
 
@@ -1524,6 +1651,49 @@ The reactive store architecture. It uses Svelte 5 Runes (`$state`, `$derived`). 
 
 _Suggested target file: `src/lib/engine/GameEngine.svelte.ts`_
 
+```mermaid
+flowchart TD
+    INPUT["character.$state\nactiveFeatures, classLevels,\nlevelAdjustment, xp, ..."]
+
+    subgraph "Phase 0 — Flatten & Filter"
+        P0C["phase0_characterLevel\n= Σ classLevels"]
+        P0ECL["phase0_eclForXp\n= characterLevel + LA"]
+        P0FLAT["phase0_flatModifiers\nFilter: prerequisites ✓\nFilter: forbiddenTags ✓\nFilter: levelProgression ✓\nApply: gmOverrides"]
+    end
+
+    subgraph "Phase 1 — Size & Encumbrance"
+        P1["Size modifiers\nEquipment weight sum\nLoad condition injection"]
+    end
+
+    subgraph "Phase 2 — Ability Scores"
+        P2["STR / DEX / CON / INT / WIS / CHA\nStack modifiers (stacking rules)\nCompute derivedModifier = ⌊(total−10)/2⌋"]
+    end
+
+    subgraph "Phase 3 — Combat Statistics"
+        P3BAB["BAB\n(gestalt-aware: max/level)"]
+        P3SAVES["Fort / Ref / Will\n(gestalt-aware: max/level)"]
+        P3HP["Max HP\n= Σ hitDieResults + CON_mod×level"]
+        P3AC["AC (normal / touch / flat-footed)\nInitiative, Grapple"]
+    end
+
+    subgraph "Phase 4 — Skills & Budget"
+        P4SKILLS["SkillPipeline per skill\nisClassSkill union\napplyArmorCheckPenalty"]
+        P4BUDGET["phase4_skillPointsBudget\nper-class SP (4× first level)"]
+        P4JOURNAL["phase4_levelingJournal\nper-class BAB/saves/SP breakdown"]
+    end
+
+    SNAPSHOT["CharacterContext snapshot\nused by Math Parser & Logic Evaluator"]
+
+    INPUT --> P0C & P0ECL
+    P0C & P0ECL --> P0FLAT
+    P0FLAT --> P1
+    P1 --> P2
+    P2 --> P3BAB & P3SAVES & P3HP & P3AC
+    P3BAB & P3SAVES & P3HP & P3AC --> P4SKILLS
+    P4SKILLS --> P4BUDGET & P4JOURNAL
+    P4BUDGET & P4JOURNAL --> SNAPSHOT
+```
+
 **Responsibilities and Resolution Order (Cascading `$derived` Phases):**
 
 1. **Phase 0 (Extraction & Flattening):**
@@ -1560,6 +1730,64 @@ The sequential DAG naturally prevents most cyclic dependencies since each phase 
 - The engine maintains a resolution depth counter.
 - If a pipeline is re-evaluated more than **3 times** in a single resolution cycle, the engine cuts the evaluation, logs a warning ("Circular dependency detected on pipeline: stat_con"), and preserves the last stable value.
 - This mechanism is tested in Phase 17.5.
+
+### 9.2. Phase 0 Detail — Character Level and ECL Derivation
+
+Two intermediate `$derived` values are computed in Phase 0 before the main resolution phases:
+
+**Phase 0c — `phase0_characterLevel`:**
+```typescript
+phase0_characterLevel = Object.values(character.classLevels).reduce((a, b) => a + b, 0);
+```
+This is the sum of all class levels. It explicitly **excludes** `levelAdjustment`. Used for: feat slot calculation, max skill ranks, HP formula, class feature gating.
+
+**Phase 0c2 — `phase0_eclForXp`:**
+```typescript
+phase0_eclForXp = phase0_characterLevel + (character.levelAdjustment ?? 0);
+```
+Combined ECL used only for XP threshold lookups. Exposed in `CharacterContext` as `@eclForXp` for the Math Parser.
+
+Both values are computed before the modifier flattening phase so that `levelProgression` filtering and formula resolution (`@characterLevel`, `@eclForXp`) are available throughout all subsequent phases.
+
+### 9.3. Phase 0 Detail — Feature Activation and `levelProgression` Filtering
+
+The flattening phase (Phase 0) applies three layers of filtering for each `ActiveFeatureInstance`:
+
+1. **Feature existence check:** The Feature JSON is fetched from `DataLoader`. If the Feature ID is unknown (not in any loaded rule source), the instance is silently skipped with a console warning.
+2. **`prerequisitesNode` evaluation:** The `logicEvaluator` is called with `phase0_context`. If the node returns `false`, all modifiers from this instance are excluded for this resolution cycle.
+3. **`forbiddenTags` check:** If the character has any tag from the Feature's `forbiddenTags` array in their current `@activeTags`, the Feature is deactivated.
+4. **`levelProgression` filtering:** For class Features, only `levelProgression` entries where `entry.level <= classLevels[featureId]` contribute their modifiers. This implements the "you only get bonuses for levels you've attained" rule.
+
+The output of Phase 0 is `phase0_flatModifiers`: a flat `Modifier[]` array ready for pipeline injection.
+
+### 9.4. Context Snapshot (`CharacterContext`)
+
+The `CharacterContext` is a read-only snapshot of the character's current state, passed to the Math Parser and Logic Evaluator. It is rebuilt at the start of each resolution cycle to avoid stale reads.
+
+```typescript
+interface CharacterContext {
+    attributes:     Record<ID, StatisticPipeline>;
+    skills:         Record<ID, SkillPipeline>;
+    combatStats:    Record<ID, StatisticPipeline>;
+    saves:          Record<ID, StatisticPipeline>;
+    resources:      Record<ID, ResourcePool>;
+    activeTags:     string[];         // @activeTags
+    classLevels:    Record<ID, number>; // @classLevels.<classId>
+    characterLevel: number;           // @characterLevel
+    eclForXp:       number;           // @eclForXp
+    selections:     Record<ID, string[]>; // @selection.<choiceId>
+}
+```
+
+The `activeTags` array is the union of all `tags` from active Features (instances with `isActive: true`). It is used heavily by `conditionNode` logic trees.
+
+### 9.5. Phase 1 Detail — Size and Encumbrance
+
+Phase 1 computes two foundational pipeline groups before ability scores:
+
+**Size modifiers:** The Size pipeline (`attributes.size_category`) is set by the race Feature. The engine uses it to apply standard D&D 3.5 size modifiers to attack rolls, AC, Hide checks, grapple checks, and carrying capacity. Size is one of the first things resolved because it affects combat statistics computed in Phase 3.
+
+**Encumbrance:** The `GameEngine` sums `weightLbs` across all `isActive: true` `ItemFeature` instances. It then looks up the character's Strength score (from a previous-cycle snapshot to avoid circular dependency) in the carrying capacity config table (`config_carrying_capacity`). If the total weight exceeds the Medium or Heavy load threshold, it automatically activates the `condition_medium_load` or `condition_heavy_load` feature respectively, injecting encumbrance penalties into Phase 3 without any hardcoded logic.
 
 ### 9.6. Leveling Progression & Skill Point Budget
 
@@ -1970,13 +2198,44 @@ The engine has no strict list of statistics. If a JSON declares a modifier targe
 
 ### 16.3. Global Variant System Tags
 
-For rules that modify game resolution itself (e.g.: Vitality/Wound Points), the campaign uses tags via its `enabledRuleSources`. The Dice Engine checks these tags.
+For rules that modify game resolution itself (e.g.: psionic transparency, divine immunity), the engine uses `sys_` prefixed tags on Features loaded via `enabledRuleSources`. Examples:
+
+- `sys_immune_mind_affecting` — blocks Features tagged `mind-affecting`
+- `sys_roll_maximize_damage` — Math Parser replaces all `XdY` expressions with `X × Y`
+- `sys_ignore_dr` — attack rolls bypass all Damage Reduction entries
+
+**Important:** The Vitality/Wound Points variant is handled via `CampaignSettings.variantRules.vitalityWoundPoints` (a boolean engine flag), NOT via `sys_` tags. This is because V/WP changes the Dice Engine's damage routing algorithm, which requires a direct engine code branch rather than a tag check. See **section 8.3** for the complete V/WP specification.
 
 ---
 
 ## 17. The Dice Engine (RNG & Action Resolver)
 
 _Suggested target file: `src/lib/utils/diceEngine.ts`_
+
+```mermaid
+flowchart TD
+    FORMULA["formula: string\ne.g. '1d20 + 7'"]
+    PIPELINE["pipeline: StatisticPipeline\n(carries situationalModifiers)"]
+    CTX["context: RollContext\n{ targetTags, isCriticalHit? }"]
+    SETTINGS["settings: CampaignSettings\n{ explodingTwenties, variantRules }"]
+
+    PARSE["Parse formula\nExtract dice groups (XdY) + static bonus"]
+
+    ROLL["Roll each die\n(injectable rng for tests)"]
+
+    EXP["Exploding 20s?\nif settings.explodingTwenties\n  while lastRoll===20: reroll+add\n  numberOfExplosions++"]
+
+    CRIT["Determine crit\nisCriticalThreat: roll >= critRange.min\nisAutomaticHit: natural 20\nisAutomaticMiss: natural 1"]
+
+    SITU["Situational modifiers\nFilter pipeline.situationalModifiers\nwhere mod.situationalContext\n  ∈ context.targetTags\nAdd to situationalBonusApplied"]
+
+    POOL["Target pool routing\nif !vitalityWoundPoints → res_hp\nif vitalityWoundPoints:\n  crit? → res_wound_points\n  else → res_vitality"]
+
+    RESULT["RollResult\n{ formula, diceRolls, naturalTotal,\n  staticBonus, situationalBonusApplied,\n  finalTotal, numberOfExplosions,\n  isCriticalThreat, isAutomaticHit,\n  isAutomaticMiss, targetPool }"]
+
+    FORMULA & PIPELINE & CTX & SETTINGS --> PARSE
+    PARSE --> ROLL --> EXP --> CRIT --> SITU --> POOL --> RESULT
+```
 
 ```typescript
 export interface RollContext {
@@ -2111,9 +2370,36 @@ Each JSON rule file is an **array of mixed-type entities**. A single file can co
 
 ### 18.4. Deletion Convention (`-prefix`)
 
-To remove an element from an array during partial merge, prefix it with a dash `-`.
+To remove an element from an array during partial merge, prefix the element with a dash `-`.
 
-See the Winter Circle Druid example in the original document section 17.4.
+**Example — The Winter Circle homebrew Druid variant:**
+
+The Winter Circle splat restricts the Druid to a different animal companion type and removes Wild Shape, but adds elemental ice traits.
+
+```json
+{
+  "id": "class_druid",
+  "category": "class",
+  "ruleSource": "homebrew_winter_circle",
+  "merge": "partial",
+  "tags": ["circle_winter"],
+  "grantedFeatures": [
+    "-class_feature_druid_wild_shape",
+    "class_feature_winter_circle_ice_form"
+  ]
+}
+```
+
+**Result after merge:**
+- `grantedFeatures` from the base Druid: `[..., "class_feature_druid_wild_shape", ...]`
+- After applying the Winter Circle partial: `wild_shape` removed, `ice_form` added.
+- All other base Druid fields (`levelProgression`, `classSkills`, `choices`, etc.) are preserved.
+
+**Rules:**
+- The `-` prefix applies element-by-element to any array field: `tags`, `grantedFeatures`, `grantedModifiers`, `forbiddenTags`, `descriptors`, `components`.
+- A `-choiceId` entry in `choices` removes that choice entirely.
+- Attempting to remove an element that doesn't exist is a **no-op** (no crash).
+- The `-` prefix applies only to string elements (IDs). Object-keyed entries (`levelProgression`, `choices`) use ID/level matching instead.
 
 ### 18.5. Complete Resolution Chain
 
@@ -2139,6 +2425,32 @@ See the Winter Circle Druid example in the original document section 17.4.
 │   Referenced Features can be defined in any previous │
 │   layer, or be custom Features from Layer 2.         │
 └──────────────────────────────────────────────────────┘
+```
+
+```mermaid
+flowchart LR
+    subgraph "Layer 1 — Rule Source Files (filtered by enabledRuleSources)"
+        F1["00_srd_core/\n(lowest priority)"]
+        F2["01_srd_psionics/"]
+        F3["50_homebrew_winter/\n(highest among files)"]
+        F1 -->|merge| F2 -->|merge| F3
+    end
+
+    subgraph "Layer 2 — GM Global Override"
+        GG["Campaign.gmGlobalOverrides\n(JSON array — Features + config tables)"]
+    end
+
+    subgraph "Layer 3 — GM Per-Character Override"
+        GC["Character.gmOverrides\n(ActiveFeatureInstance[])"]
+    end
+
+    subgraph "Output"
+        RESOLVED["Resolved Feature registry\n+ config tables\n(used by GameEngine Phase 0)"]
+    end
+
+    F3 -->|replace / partial merge| GG
+    GG -->|replace / partial merge| RESOLVED
+    GC -->|injected last, invisible to player| RESOLVED
 ```
 
 **Important:** Layers 2 and 3 are only visible to the GM. The player never sees the raw content of these overrides — they only see the final result after complete chain resolution.
@@ -2192,7 +2504,7 @@ In this example, the GM creates a custom curse Feature AND overrides the XP tabl
 ### 18.7. Client-Side JSON Validation
 
 1. **Syntactic validation:** Must be valid JSON. On error, highlight the offending line in red.
-2. **2. **Structural validation:** Each entry in the array must have either (`id` + `category`) for a Feature, or `tableId` for a configuration table. A non-blocking warning is displayed if expected fields are missing (e.g., `label` or `grantedModifiers` for Features, `data` for config tables).
+2. **Structural validation:** Each entry in the array must have either (`id` + `category`) for a Feature, or `tableId` for a configuration table. A non-blocking warning is displayed if expected fields are missing (e.g., `label` or `grantedModifiers` for Features, `data` for config tables).
 3. **Preview:** Optionally display a summary of changes ("2 Features added, 1 Feature modified (partial), 1 modifier removed").
 
 ---

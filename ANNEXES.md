@@ -85,8 +85,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_fast_movement", "class_feature_barbarian_illiteracy", "class_feature_barbarian_rage"],
       "grantedModifiers": [
         { "id": "barb_1_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } },
-        { "id": "barb_1_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } },
-        { "id": "barb_1_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } },
+        { "id": "barb_1_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } },
+        { "id": "barb_1_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } },
         { "id": "barb_1_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 0, "type": "base", "sourceName": { "en": "Barbarian 1", "fr": "Barbare 1" } }
       ]
     },
@@ -95,7 +95,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_uncanny_dodge"],
       "grantedModifiers": [
         { "id": "barb_2_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 2", "fr": "Barbare 2" } },
-        { "id": "barb_2_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 2", "fr": "Barbare 2" } }
+        { "id": "barb_2_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 2", "fr": "Barbare 2" } }
       ]
     },
     {
@@ -103,7 +103,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_trap_sense_1"],
       "grantedModifiers": [
         { "id": "barb_3_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" } },
-        { "id": "barb_3_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" } },
+        { "id": "barb_3_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" } },
         { "id": "barb_3_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 3", "fr": "Barbare 3" } }
       ]
     },
@@ -112,7 +112,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_rage_2_day"],
       "grantedModifiers": [
         { "id": "barb_4_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 4", "fr": "Barbare 4" } },
-        { "id": "barb_4_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 4", "fr": "Barbare 4" } }
+        { "id": "barb_4_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 4", "fr": "Barbare 4" } }
       ]
     },
     {
@@ -127,8 +127,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_trap_sense_2"],
       "grantedModifiers": [
         { "id": "barb_6_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } },
-        { "id": "barb_6_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } },
-        { "id": "barb_6_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } },
+        { "id": "barb_6_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } },
+        { "id": "barb_6_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } },
         { "id": "barb_6_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 6", "fr": "Barbare 6" } }
       ]
     },
@@ -144,7 +144,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_rage_3_day"],
       "grantedModifiers": [
         { "id": "barb_8_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 8", "fr": "Barbare 8" } },
-        { "id": "barb_8_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 8", "fr": "Barbare 8" } }
+        { "id": "barb_8_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 8", "fr": "Barbare 8" } }
       ]
     },
     {
@@ -152,7 +152,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_trap_sense_3"],
       "grantedModifiers": [
         { "id": "barb_9_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" } },
-        { "id": "barb_9_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" } },
+        { "id": "barb_9_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" } },
         { "id": "barb_9_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 9", "fr": "Barbare 9" } }
       ]
     },
@@ -161,7 +161,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_dr_2"],
       "grantedModifiers": [
         { "id": "barb_10_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 10", "fr": "Barbare 10" } },
-        { "id": "barb_10_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 10", "fr": "Barbare 10" } }
+        { "id": "barb_10_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 10", "fr": "Barbare 10" } }
       ]
     },
     {
@@ -176,8 +176,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_rage_4_day", "class_feature_barbarian_trap_sense_4"],
       "grantedModifiers": [
         { "id": "barb_12_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } },
-        { "id": "barb_12_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } },
-        { "id": "barb_12_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } },
+        { "id": "barb_12_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } },
+        { "id": "barb_12_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } },
         { "id": "barb_12_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 12", "fr": "Barbare 12" } }
       ]
     },
@@ -193,7 +193,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_indomitable_will"],
       "grantedModifiers": [
         { "id": "barb_14_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 14", "fr": "Barbare 14" } },
-        { "id": "barb_14_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 14", "fr": "Barbare 14" } }
+        { "id": "barb_14_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 14", "fr": "Barbare 14" } }
       ]
     },
     {
@@ -201,7 +201,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_trap_sense_5"],
       "grantedModifiers": [
         { "id": "barb_15_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" } },
-        { "id": "barb_15_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" } },
+        { "id": "barb_15_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" } },
         { "id": "barb_15_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 15", "fr": "Barbare 15" } }
       ]
     },
@@ -210,7 +210,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_dr_4", "class_feature_barbarian_rage_5_day"],
       "grantedModifiers": [
         { "id": "barb_16_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 16", "fr": "Barbare 16" } },
-        { "id": "barb_16_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 16", "fr": "Barbare 16" } }
+        { "id": "barb_16_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 16", "fr": "Barbare 16" } }
       ]
     },
     {
@@ -225,8 +225,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_trap_sense_6"],
       "grantedModifiers": [
         { "id": "barb_18_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } },
-        { "id": "barb_18_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } },
-        { "id": "barb_18_ref", "sourceId": "class_barbarian", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } },
+        { "id": "barb_18_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } },
+        { "id": "barb_18_ref", "sourceId": "class_barbarian", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } },
         { "id": "barb_18_will", "sourceId": "class_barbarian", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 18", "fr": "Barbare 18" } }
       ]
     },
@@ -242,7 +242,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_barbarian_mighty_rage", "class_feature_barbarian_rage_6_day"],
       "grantedModifiers": [
         { "id": "barb_20_bab", "sourceId": "class_barbarian", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 20", "fr": "Barbare 20" } },
-        { "id": "barb_20_fort", "sourceId": "class_barbarian", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 20", "fr": "Barbare 20" } }
+        { "id": "barb_20_fort", "sourceId": "class_barbarian", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Barbarian 20", "fr": "Barbare 20" } }
       ]
     }
   ]
@@ -537,8 +537,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_cleric_turn_undead", "class_feature_cleric_aura", "class_feature_cleric_spellcasting"],
       "grantedModifiers": [
         { "id": "cleric_1_bab", "sourceId": "class_cleric", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
-        { "id": "cleric_1_fort", "sourceId": "class_cleric", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
-        { "id": "cleric_1_ref", "sourceId": "class_cleric", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
+        { "id": "cleric_1_fort", "sourceId": "class_cleric", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
+        { "id": "cleric_1_ref", "sourceId": "class_cleric", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
         { "id": "cleric_1_will", "sourceId": "class_cleric", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
         { "id": "cleric_1_slots_0", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_0", "value": 3, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
         { "id": "cleric_1_slots_1", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base", "sourceName": { "en": "Cleric 1", "fr": "Pretre 1" } },
@@ -550,7 +550,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "cleric_2_bab", "sourceId": "class_cleric", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } },
-        { "id": "cleric_2_fort", "sourceId": "class_cleric", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } },
+        { "id": "cleric_2_fort", "sourceId": "class_cleric", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } },
         { "id": "cleric_2_will", "sourceId": "class_cleric", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } },
         { "id": "cleric_2_slots_0", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_0", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } },
         { "id": "cleric_2_slots_1", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base", "sourceName": { "en": "Cleric 2", "fr": "Pretre 2" } }
@@ -561,7 +561,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "cleric_3_bab", "sourceId": "class_cleric", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cleric 3", "fr": "Pretre 3" } },
-        { "id": "cleric_3_ref", "sourceId": "class_cleric", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Cleric 3", "fr": "Pretre 3" } },
+        { "id": "cleric_3_ref", "sourceId": "class_cleric", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Cleric 3", "fr": "Pretre 3" } },
         { "id": "cleric_3_slots_2", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_2", "value": 1, "type": "base", "sourceName": { "en": "Cleric 3", "fr": "Pretre 3" } },
         { "id": "cleric_3_domain_slots_2", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_domain_2", "value": 1, "type": "base", "sourceName": { "en": "Cleric 3 (Domain)", "fr": "Pretre 3 (Domaine)" } }
       ]
@@ -571,7 +571,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "cleric_4_bab", "sourceId": "class_cleric", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
-        { "id": "cleric_4_fort", "sourceId": "class_cleric", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
+        { "id": "cleric_4_fort", "sourceId": "class_cleric", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
         { "id": "cleric_4_will", "sourceId": "class_cleric", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
         { "id": "cleric_4_slots_0", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_0", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
         { "id": "cleric_4_slots_1", "sourceId": "class_cleric", "targetId": "resources.spell_slots_cleric_1", "value": 1, "type": "base", "sourceName": { "en": "Cleric 4", "fr": "Pretre 4" } },
@@ -689,8 +689,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_monk_flurry_of_blows", "class_feature_monk_bonus_feat_1"],
       "grantedModifiers": [
         { "id": "monk_1_bab", "sourceId": "class_monk", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
-        { "id": "monk_1_fort", "sourceId": "class_monk", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
-        { "id": "monk_1_ref", "sourceId": "class_monk", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
+        { "id": "monk_1_fort", "sourceId": "class_monk", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
+        { "id": "monk_1_ref", "sourceId": "class_monk", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
         { "id": "monk_1_will", "sourceId": "class_monk", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } },
         { "id": "monk_1_unarmed", "sourceId": "class_monk", "targetId": "combatStats.unarmed_damage", "value": "1d6", "type": "setAbsolute", "sourceName": { "en": "Monk 1", "fr": "Moine 1" } }
       ]
@@ -700,8 +700,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_monk_bonus_feat_2", "class_feature_evasion"],
       "grantedModifiers": [
         { "id": "monk_2_bab", "sourceId": "class_monk", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } },
-        { "id": "monk_2_fort", "sourceId": "class_monk", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } },
-        { "id": "monk_2_ref", "sourceId": "class_monk", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } },
+        { "id": "monk_2_fort", "sourceId": "class_monk", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } },
+        { "id": "monk_2_ref", "sourceId": "class_monk", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } },
         { "id": "monk_2_will", "sourceId": "class_monk", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Monk 2", "fr": "Moine 2" } }
       ]
     },
@@ -718,8 +718,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_monk_ki_strike_magic", "class_feature_monk_slow_fall_20"],
       "grantedModifiers": [
         { "id": "monk_4_bab", "sourceId": "class_monk", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
-        { "id": "monk_4_fort", "sourceId": "class_monk", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
-        { "id": "monk_4_ref", "sourceId": "class_monk", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
+        { "id": "monk_4_fort", "sourceId": "class_monk", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
+        { "id": "monk_4_ref", "sourceId": "class_monk", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
         { "id": "monk_4_will", "sourceId": "class_monk", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } },
         { "id": "monk_4_unarmed", "sourceId": "class_monk", "targetId": "combatStats.unarmed_damage", "value": "1d8", "type": "setAbsolute", "sourceName": { "en": "Monk 4", "fr": "Moine 4" } }
       ]
@@ -839,8 +839,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_natural_armor_1", "class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_1_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
-        { "id": "dd_1_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
-        { "id": "dd_1_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
+        { "id": "dd_1_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
+        { "id": "dd_1_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
         { "id": "dd_1_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple Draconique 1" } },
         { "id": "dd_1_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal", "value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle Disciple Draconique" } }
       ]
@@ -850,7 +850,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_claws_and_bite", "class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_2_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple Draconique 2" } },
-        { "id": "dd_2_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple Draconique 2" } },
+        { "id": "dd_2_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple Draconique 2" } },
         { "id": "dd_2_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple Draconique 2" } },
         { "id": "dd_2_str", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Str +2", "fr": "Disciple Draconique For +2" } }
       ]
@@ -860,7 +860,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_breath_weapon_2d8"],
       "grantedModifiers": [
         { "id": "dd_3_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 3", "fr": "Disciple Draconique 3" } },
-        { "id": "dd_3_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 3", "fr": "Disciple Draconique 3" } }
+        { "id": "dd_3_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 3", "fr": "Disciple Draconique 3" } }
       ]
     },
     {
@@ -868,7 +868,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_4_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple Draconique 4" } },
-        { "id": "dd_4_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple Draconique 4" } },
+        { "id": "dd_4_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple Draconique 4" } },
         { "id": "dd_4_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple Draconique 4" } },
         { "id": "dd_4_str", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Str +2", "fr": "Disciple Draconique For +2" } },
         { "id": "dd_4_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal", "value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle Disciple Draconique" } }
@@ -878,7 +878,7 @@ The following examples are provided (see the full Annex A document for complete 
       "level": 5,
       "grantedFeatures": ["class_feature_dd_blindsense_30", "class_feature_dd_bonus_spell"],
       "grantedModifiers": [
-        { "id": "dd_5_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Dragon Disciple 5", "fr": "Disciple Draconique 5" } }
+        { "id": "dd_5_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Dragon Disciple 5", "fr": "Disciple Draconique 5" } }
       ]
     },
     {
@@ -886,8 +886,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_6_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
-        { "id": "dd_6_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
-        { "id": "dd_6_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
+        { "id": "dd_6_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
+        { "id": "dd_6_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
         { "id": "dd_6_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple Draconique 6" } },
         { "id": "dd_6_con", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_con", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Con +2", "fr": "Disciple Draconique Con +2" } }
       ]
@@ -905,7 +905,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_8_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple Draconique 8" } },
-        { "id": "dd_8_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple Draconique 8" } },
+        { "id": "dd_8_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple Draconique 8" } },
         { "id": "dd_8_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple Draconique 8" } },
         { "id": "dd_8_int", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_int", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Int +2", "fr": "Disciple Draconique Int +2" } }
       ]
@@ -914,7 +914,7 @@ The following examples are provided (see the full Annex A document for complete 
       "level": 9,
       "grantedFeatures": ["class_feature_dd_wings", "class_feature_dd_bonus_spell"],
       "grantedModifiers": [
-        { "id": "dd_9_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 9", "fr": "Disciple Draconique 9" } },
+        { "id": "dd_9_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 9", "fr": "Disciple Draconique 9" } },
         { "id": "dd_9_fly_speed", "sourceId": "class_dragon_disciple", "targetId": "attributes.speed_fly", "value": "@attributes.speed_land.totalValue", "type": "base", "sourceName": { "en": "Dragon Wings", "fr": "Ailes draconiques" } }
       ]
     },
@@ -923,7 +923,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_blindsense_60", "class_feature_dd_dragon_apotheosis"],
       "grantedModifiers": [
         { "id": "dd_10_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple Draconique 10" } },
-        { "id": "dd_10_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple Draconique 10" } },
+        { "id": "dd_10_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple Draconique 10" } },
         { "id": "dd_10_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple Draconique 10" } },
         { "id": "dd_10_str", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str", "value": 4, "type": "untyped", "sourceName": { "en": "Dragon Apotheosis Str", "fr": "Apothéose draconique For" } },
         { "id": "dd_10_cha", "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_cha", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Apotheosis Cha", "fr": "Apothéose draconique Cha" } },
@@ -2041,8 +2041,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "sk_1_bab", "sourceId": "class_soulknife", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } },
-        { "id": "sk_1_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } },
-        { "id": "sk_1_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } },
+        { "id": "sk_1_fort", "sourceId": "class_soulknife", "targetId": "saves.fort", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } },
+        { "id": "sk_1_ref", "sourceId": "class_soulknife", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } },
         { "id": "sk_1_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Couteau de l'âme 1" } }
       ]
     },
@@ -2051,7 +2051,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_soulknife_throw_mind_blade"],
       "grantedModifiers": [
         { "id": "sk_2_bab", "sourceId": "class_soulknife", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Couteau de l'âme 2" } },
-        { "id": "sk_2_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Couteau de l'âme 2" } },
+        { "id": "sk_2_ref", "sourceId": "class_soulknife", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Couteau de l'âme 2" } },
         { "id": "sk_2_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Couteau de l'âme 2" } }
       ]
     },
@@ -2060,7 +2060,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_soulknife_psychic_strike_1d8"],
       "grantedModifiers": [
         { "id": "sk_3_bab", "sourceId": "class_soulknife", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 3", "fr": "Couteau de l'âme 3" } },
-        { "id": "sk_3_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 3", "fr": "Couteau de l'âme 3" } }
+        { "id": "sk_3_fort", "sourceId": "class_soulknife", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 3", "fr": "Couteau de l'âme 3" } }
       ]
     },
     {
@@ -2068,7 +2068,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "sk_4_bab", "sourceId": "class_soulknife", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Couteau de l'âme 4" } },
-        { "id": "sk_4_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Couteau de l'âme 4" } },
+        { "id": "sk_4_ref", "sourceId": "class_soulknife", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Couteau de l'âme 4" } },
         { "id": "sk_4_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Couteau de l'âme 4" } },
         { "id": "sk_4_mind_blade_enhancement", "sourceId": "class_soulknife", "targetId": "combatStats.mind_blade_enhancement", "value": 1, "type": "enhancement", "sourceName": { "en": "+1 Mind Blade", "fr": "Lame mentale +1" } }
       ]
@@ -2077,7 +2077,7 @@ The following examples are provided (see the full Annex A document for complete 
       "level": 5,
       "grantedFeatures": ["class_feature_soulknife_free_draw", "class_feature_soulknife_shape_mind_blade"],
       "grantedModifiers": [
-        { "id": "sk_5_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 5", "fr": "Couteau de l'âme 5" } }
+        { "id": "sk_5_fort", "sourceId": "class_soulknife", "targetId": "saves.fort", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 5", "fr": "Couteau de l'âme 5" } }
       ]
     },
     {
@@ -2085,8 +2085,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_soulknife_mind_blade_enhancement_1", "feat_speed_of_thought"],
       "grantedModifiers": [
         { "id": "sk_6_bab", "sourceId": "class_soulknife", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } },
-        { "id": "sk_6_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } },
-        { "id": "sk_6_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } },
+        { "id": "sk_6_fort", "sourceId": "class_soulknife", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } },
+        { "id": "sk_6_ref", "sourceId": "class_soulknife", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } },
         { "id": "sk_6_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Couteau de l'âme 6" } }
       ]
     }
@@ -2200,8 +2200,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_druid_animal_companion", "class_feature_druid_nature_sense", "class_feature_druid_wild_empathy"],
       "grantedModifiers": [
         { "id": "druid_1_bab", "sourceId": "class_druid", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
-        { "id": "druid_1_fort", "sourceId": "class_druid", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
-        { "id": "druid_1_ref", "sourceId": "class_druid", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
+        { "id": "druid_1_fort", "sourceId": "class_druid", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
+        { "id": "druid_1_ref", "sourceId": "class_druid", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
         { "id": "druid_1_will", "sourceId": "class_druid", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
         { "id": "druid_1_slots_0", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_0", "value": 3, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } },
         { "id": "druid_1_slots_1", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base", "sourceName": { "en": "Druid 1", "fr": "Druide 1" } }
@@ -2212,7 +2212,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_druid_woodland_stride"],
       "grantedModifiers": [
         { "id": "druid_2_bab", "sourceId": "class_druid", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } },
-        { "id": "druid_2_fort", "sourceId": "class_druid", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } },
+        { "id": "druid_2_fort", "sourceId": "class_druid", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } },
         { "id": "druid_2_will", "sourceId": "class_druid", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } },
         { "id": "druid_2_slots_0", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_0", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } },
         { "id": "druid_2_slots_1", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base", "sourceName": { "en": "Druid 2", "fr": "Druide 2" } }
@@ -2223,7 +2223,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_druid_trackless_step"],
       "grantedModifiers": [
         { "id": "druid_3_bab", "sourceId": "class_druid", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Druid 3", "fr": "Druide 3" } },
-        { "id": "druid_3_ref", "sourceId": "class_druid", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Druid 3", "fr": "Druide 3" } },
+        { "id": "druid_3_ref", "sourceId": "class_druid", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Druid 3", "fr": "Druide 3" } },
         { "id": "druid_3_slots_2", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base", "sourceName": { "en": "Druid 3", "fr": "Druide 3" } }
       ]
     },
@@ -2232,7 +2232,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_druid_resist_natures_lure"],
       "grantedModifiers": [
         { "id": "druid_4_bab", "sourceId": "class_druid", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } },
-        { "id": "druid_4_fort", "sourceId": "class_druid", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } },
+        { "id": "druid_4_fort", "sourceId": "class_druid", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } },
         { "id": "druid_4_will", "sourceId": "class_druid", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } },
         { "id": "druid_4_slots_1", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_1", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } },
         { "id": "druid_4_slots_2", "sourceId": "class_druid", "targetId": "resources.spell_slots_druid_2", "value": 1, "type": "base", "sourceName": { "en": "Druid 4", "fr": "Druide 4" } }
@@ -2429,8 +2429,8 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "warrior_1_bab", "sourceId": "class_warrior", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } },
-        { "id": "warrior_1_fort", "sourceId": "class_warrior", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } },
-        { "id": "warrior_1_ref", "sourceId": "class_warrior", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } },
+        { "id": "warrior_1_fort", "sourceId": "class_warrior", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } },
+        { "id": "warrior_1_ref", "sourceId": "class_warrior", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } },
         { "id": "warrior_1_will", "sourceId": "class_warrior", "targetId": "saves.will", "value": 0, "type": "base", "sourceName": { "en": "Warrior 1", "fr": "Homme d'armes 1" } }
       ]
     },
@@ -2439,7 +2439,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "warrior_2_bab", "sourceId": "class_warrior", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Warrior 2", "fr": "Homme d'armes 2" } },
-        { "id": "warrior_2_fort", "sourceId": "class_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Warrior 2", "fr": "Homme d'armes 2" } }
+        { "id": "warrior_2_fort", "sourceId": "class_warrior", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Warrior 2", "fr": "Homme d'armes 2" } }
       ]
     },
     {
@@ -2447,7 +2447,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": [],
       "grantedModifiers": [
         { "id": "warrior_3_bab", "sourceId": "class_warrior", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Warrior 3", "fr": "Homme d'armes 3" } },
-        { "id": "warrior_3_ref", "sourceId": "class_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Warrior 3", "fr": "Homme d'armes 3" } },
+        { "id": "warrior_3_ref", "sourceId": "class_warrior", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Warrior 3", "fr": "Homme d'armes 3" } },
         { "id": "warrior_3_will", "sourceId": "class_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Warrior 3", "fr": "Homme d'armes 3" } }
       ]
     }
@@ -2566,7 +2566,7 @@ The following examples are provided (see the full Annex A document for complete 
     {
       "id": "extreme_heat_fort_penalty_heavy",
       "sourceId": "environment_extreme_heat",
-      "targetId": "saves.fortitude",
+      "targetId": "saves.fort",
       "value": -4,
       "type": "untyped",
       "sourceName": { "en": "Extreme Heat (Heavy Armor)", "fr": "Chaleur extrême (Armure lourde)" },

@@ -121,11 +121,11 @@ Or use the VS Code task **Run: DB migrations** (see [VS Code — debugging](#vs-
 ### Frontend — Vitest
 
 ```sh
-# Run all unit tests (7 test files)
+# Run all unit tests (13 test files, 558 tests)
 npm test
 
 # Watch mode
-npm run test -- --watch
+npm run test:watch
 
 # Single test file
 npm test -- src/tests/diceEngine.test.ts
@@ -135,11 +135,17 @@ npm test -- src/tests/diceEngine.test.ts
 |-----------|----------------|
 | [`mathParser.test.ts`](src/tests/mathParser.test.ts) | Formula evaluation, `@`-path resolution, pipe operators |
 | [`logicEvaluator.test.ts`](src/tests/logicEvaluator.test.ts) | Logic tree evaluation (AND / OR / NOT / CONDITION) |
-| [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) | D&D 3.5 modifier stacking rules |
-| [`diceEngine.test.ts`](src/tests/diceEngine.test.ts) | Dice rolling, situational bonuses, exploding 20s |
-| [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) | DAG cascade, forbidden tags, formula-as-value |
-| [`multiclass.test.ts`](src/tests/multiclass.test.ts) | Multiclass BAB/saves, level-gated features |
+| [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) | D&D 3.5 modifier stacking rules, DR best-wins grouping |
+| [`diceEngine.test.ts`](src/tests/diceEngine.test.ts) | Dice rolling, situational bonuses, exploding 20s, V/WP pool routing |
+| [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) | DAG cascade, forbidden tags, formula-as-value, circular dep guard |
+| [`multiclass.test.ts`](src/tests/multiclass.test.ts) | Multiclass BAB/saves, level-gated features, SP budget, rank locking |
 | [`mergeEngine.test.ts`](src/tests/mergeEngine.test.ts) | Data override merge engine (replace / partial / `-` prefix) |
+| [`gestaltRules.test.ts`](src/tests/gestaltRules.test.ts) | Gestalt variant: max-per-level BAB/saves algorithm |
+| [`magicFeature.test.ts`](src/tests/magicFeature.test.ts) | Psionic discipline, display fields, augmentation rules |
+| [`psionicItems.test.ts`](src/tests/psionicItems.test.ts) | All five psionic item types (dorje, crystal, stone, crown, tattoo) |
+| [`resourcePool.test.ts`](src/tests/resourcePool.test.ts) | Resource pool tick/rest conditions, rechargeAmount formulas |
+| [`actionBudget.test.ts`](src/tests/actionBudget.test.ts) | Combat action budget min-wins, XOR staggered/disabled rule |
+| [`characterBuildScenario.test.ts`](src/tests/characterBuildScenario.test.ts) | Full Fighter 3/Monk 3/Psion 1/Wizard 1 build (103 tests) |
 
 ### Backend — PHPUnit
 
@@ -153,13 +159,16 @@ npm test -- src/tests/diceEngine.test.ts
 
 | Test file | What it covers |
 |-----------|----------------|
-| [`AuthTest.php`](tests/AuthTest.php) | Login/logout, session persistence, wrong credentials |
-| [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) | Character CRUD, JSON persistence |
-| [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access control (GM vs player) |
-| [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility (merged vs raw) |
-| [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync mechanism |
-| [`TestCase.php`](tests/TestCase.php) | Base test utilities with in-memory SQLite |
+| [`AuthTest.php`](tests/AuthTest.php) | Login/logout, session persistence, wrong credentials (11 tests) |
+| [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) | Character CRUD, JSON persistence (6 tests) |
+| [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access control (GM vs player) (11 tests) |
+| [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility (merged vs raw) (6 tests) |
+| [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync mechanism (6 tests) |
 
+> **Total: 40 PHPUnit tests, 131 assertions.**
+>
+> `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock), not test files themselves.
+>
 > Composer and PHPUnit are downloaded automatically by `scripts/build.sh`. Running `./vendor/bin/phpunit` directly requires `composer install` first.
 
 ---
