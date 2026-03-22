@@ -27,7 +27,16 @@ Review the following aspects specifically:
 - Are `PsionicDiscipline` and `PsionicDisplay` exported from `feature.ts` as typed unions (not plain `string`)?
 - Are both fields `optional` (`undefined` for arcane/divine spells)?
 
-### 1a. Type Conformance — MagicFeature Psionic Fields (Phase 1.3a)
+### 1a. Type Conformance — ItemFeature Psionic Item Subtypes (Phase 1.3b)
+- Is `PsionicItemType` a typed union of exactly 5 values: `"cognizance_crystal"`, `"dorje"`, `"power_stone"`, `"psicrown"`, `"psionic_tattoo"` per Architecture section 5.1.1 / Phase 1.3b?
+- Is `PowerStoneEntry` an exported interface with `powerId: ID`, `manifesterLevel: number`, `usedUp: boolean`?
+- Does `ItemFeature` have an optional `psionicItemData` block with the `psionicItemType` discriminant per section 5.1.1?
+- Does `psionicItemData` include ALL ten sub-fields: `storedPP`, `maxPP`, `attuned`, `powerStored`, `charges`, `powersImprinted`, `powersKnown`, `manifesterLevel`, `activated`, and `psionicItemType`?
+- Are ALL psionic item sub-fields optional (`?`) — only the discriminant `psionicItemType` is required within the block?
+- For non-psionic items: does `psionicItemData` remain `undefined` without TypeScript error?
+- Are `PsionicItemType` and `PowerStoneEntry` both exported from `src/lib/types/feature.ts`?
+
+### 1b. Type Conformance — MagicFeature Psionic Fields (Phase 1.3a)
 - Is `PsionicDiscipline` a typed union of exactly 6 values: `"clairsentience"`, `"metacreativity"`, `"psychokinesis"`, `"psychometabolism"`, `"psychoportation"`, `"telepathy"`?
 - Is `PsionicDisplay` a typed union of exactly 5 values: `"auditory"`, `"material"`, `"mental"`, `"olfactory"`, `"visual"`?
 - On a psionic `MagicFeature`: can `discipline` be `undefined` (optional) for non-psionic spells?
@@ -341,7 +350,21 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
 - Is the full 3-layer resolution chain tested (base → GM global → GM per-character)?
 - Is a config table replacement tested (same `tableId` from different sources)?
 
-# 9. Missing Test Categories
+# 9. Vitest — Psionic Item Subtypes (Phase 1.3b)
+- Are all 5 `PsionicItemType` values tested as valid TypeScript assignments?
+- Is `PowerStoneEntry` interface tested (all 3 fields: `powerId`, `manifesterLevel`, `usedUp`)?
+- Is each psionic item type instantiated as an `ItemFeature` with the correct `psionicItemData` fields?
+  - Cognizance Crystal: `storedPP`, `maxPP`, `attuned` — including odd-maxPP validation logic?
+  - Dorje: `powerStored`, `charges` (50 default), `manifesterLevel`?
+  - Power Stone: `powersImprinted[]` with ≥1 entry; `usedUp` depletes correctly?
+  - Psicrown: `storedPP`, `maxPP` (`50 × ML`), `powersKnown[]`, `manifesterLevel`?
+  - Psionic Tattoo: `powerStored`, `manifesterLevel`, `activated` (false → true after use)?
+- Is `psionicItemData` absent (`undefined`) for non-psionic items (weapon, armour)?
+- Do mutable fields (`storedPP`, `charges`, `activated`, `usedUp`) change correctly when depleted?
+- Is the Brainburn risk condition detectable from `PowerStoneEntry.manifesterLevel` vs user ML?
+- Is the 20-tattoo body-limit logic testable (count of unactivated tattoos)?
+
+# 10. Missing Test Categories
 Flag any architecture feature that has NO corresponding test:
 - `forbiddenTags` conflict detection
 - `conditionNode` evaluation on modifiers (e.g., Barbarian Fast Movement conditional)
@@ -573,7 +596,8 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 3. **Section 3 (Logic Engine):** Does the implementation handle all 4 LogicNode types and all 8 LogicOperator values?
 
 4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a?
-5. **Section 5.2.1 (MagicFeature psionic fields):** Does `MagicFeature` include `discipline?: PsionicDiscipline` and `displays?: PsionicDisplay[]` per Phase 1.3a? Are both types exported? Is `discipline` `undefined` for arcane/divine spells? Does the psionic casting panel (Phase 12.3) use `discipline` for grouping and `displays` for display suppression UI?
+5. **Section 5.1.1 (ItemFeature psionic item subtypes):** Does `ItemFeature.psionicItemData` include all five psionic item types with their fields per Phase 1.3b? Is the field matrix correct (cognizance crystal uses `storedPP/maxPP/attuned`; dorje uses `powerStored/charges/manifesterLevel`; power stone uses `powersImprinted[]`; psicrown uses `storedPP/maxPP/powersKnown/manifesterLevel`; tattoo uses `powerStored/manifesterLevel/activated`)? Are mutable vs immutable fields correctly labelled in the docs?
+6. **Section 5.2.1 (MagicFeature psionic fields):** Does `MagicFeature` include `discipline?: PsionicDiscipline` and `displays?: PsionicDisplay[]` per Phase 1.3a? Are both types exported? Is `discipline` `undefined` for arcane/divine spells? Does the psionic casting panel (Phase 12.3) use `discipline` for grouping and `displays` for display suppression UI?
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
 

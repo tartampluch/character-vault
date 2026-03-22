@@ -433,6 +433,18 @@ export interface Feature {
 // --- SPECIALIZED SUB-TYPES ---
 
 // 5.1 Items (Equipment, Magic Items, Treasure)
+
+// Psionic item type discriminant (see section 5.1.1 for full reference)
+export type PsionicItemType =
+    "cognizance_crystal" | "dorje" | "power_stone" | "psicrown" | "psionic_tattoo";
+
+// One imprinted power on a Power Stone (see section 5.1.1)
+export interface PowerStoneEntry {
+    powerId: ID;           // MagicFeature ID of the imprinted power
+    manifesterLevel: number; // ML at which the power was imprinted (for Brainburn check)
+    usedUp: boolean;       // True = power has been "flushed" (single-use)
+}
+
 export interface ItemFeature extends Feature {
     category: "item";
     equipmentSlot?: "head" | "eyes" | "neck" | "torso" | "body" | "waist" | "shoulders" 
@@ -461,8 +473,199 @@ export interface ItemFeature extends Feature {
         armorCheckPenalty: number;
         arcaneSpellFailure: number; // Percentage
     };
-}
 
+    // Psionic item-specific data — present only for psionic item types.
+    // See section 5.1.1 for full per-type field documentation.
+    psionicItemData?: {
+        psionicItemType: PsionicItemType;
+        // === COGNIZANCE CRYSTAL + PSICROWN ===
+        storedPP?: number;      // Current PP available to draw on
+        maxPP?: number;         // Maximum PP capacity (odd 1–17 for crystals; 50×ML for psicrowns)
+        attuned?: boolean;      // Cognizance crystal only — needs 10 min to attune
+        // === DORJE + PSIONIC TATTOO ===
+        powerStored?: ID;       // The single power stored in this item
+        charges?: number;       // Dorje only — remaining uses (created with 50)
+        // === POWER STONE ===
+        powersImprinted?: PowerStoneEntry[]; // Array of 1–6 imprinted powers
+        // === PSICROWN ===
+        powersKnown?: ID[];     // Fixed list of power IDs accessible via the crown's PP
+        // === SHARED ===
+        manifesterLevel?: number; // Dorje/tattoo/psicrown: creation ML (affects variable effects)
+        // === PSIONIC TATTOO ===
+         activated?: boolean;    // True = tattoo has been used and has faded
+     };
+}
+```
+
+### 5.1.1. Psionic Item Data — `psionicItemData` and the Five Item Types
+
+The D&D 3.5 SRD (Expanded Psionics Handbook) defines five psionic item categories, each analogous to a mundane magic item type but with psionic-specific mechanics. All five are modelled as `ItemFeature` with a `psionicItemData` block — no separate interface is needed.
+
+#### Overview Table
+
+| Type | SRD Analogue | Key mechanic | Fields used |
+|---|---|---|---|
+| `"cognizance_crystal"` | Ring of Storing | External PP battery; rechargeable | `storedPP`, `maxPP`, `attuned` |
+| `"dorje"` | Wand | 50 charges, single power, power-trigger | `powerStored`, `charges`, `manifesterLevel` |
+| `"power_stone"` | Scroll | 1–6 powers, single-use each, Brainburn | `powersImprinted[]` |
+| `"psicrown"` | Staff | PP pool + fixed power list, augmentable | `storedPP`, `maxPP`, `powersKnown[]`, `manifesterLevel` |
+| `"psionic_tattoo"` | Potion | Body-worn single-use, 1st–3rd level only | `powerStored`, `manifesterLevel`, `activated` |
+
+#### Cognizance Crystal (`"cognizance_crystal"`)
+
+A PP-storing crystal worn or held by a psionic character. Acts as a supplemental PP battery.
+
+- `storedPP` (mutable): current PP available. Decrements as powers are manifested.  
+- `maxPP` (immutable after creation): always an **odd integer between 1–17**. Determines market price tier.  
+- `attuned` (mutable): requires 10 minutes of contact to attune. Until `true`, stored PP cannot be accessed.  
+- **Recharge rule**: owner may spend their own PP to refill (1 PP spent → 1 PP stored). Does NOT auto-recharge on rest.  
+- **Restriction**: cannot draw from more than one PP source per power manifestation.
+
+```json
+{
+  "id": "item_cognizance_crystal_5pp",
+  "category": "item",
+  "equipmentSlot": "none",
+  "weightLbs": 1,
+  "costGp": 9000,
+  "psionicItemData": {
+    "psionicItemType": "cognizance_crystal",
+    "maxPP": 5,
+    "storedPP": 5,
+    "attuned": false
+  }
+}
+```
+
+#### Dorje (`"dorje"`)
+
+A slender crystal wand containing a single psionic power. Uses the power-trigger activation method (standard action, no AoO).
+
+- `powerStored`: ID of the `MagicFeature` (psionic power) this dorje manifests.  
+- `charges` (mutable): starts at 50, decrements per use. At 0, the dorje is an inert crystal.  
+- `manifesterLevel`: the ML at which the power was baked in (affects range/duration/damage). Cannot exceed `minimumML + 5`.  
+- **Augmentation**: dorjes cannot be augmented at use time. A higher-ML dorje is pre-augmented at creation.  
+- **Restriction**: user must have the power on their class list.
+
+```json
+{
+  "id": "item_dorje_mind_thrust_750gp",
+  "category": "item",
+  "equipmentSlot": "main_hand",
+  "weightLbs": 0.25,
+  "costGp": 750,
+  "psionicItemData": {
+    "psionicItemType": "dorje",
+    "powerStored": "power_mind_thrust",
+    "charges": 50,
+    "manifesterLevel": 1
+  }
+}
+```
+
+#### Power Stone (`"power_stone"`)
+
+A crystal scroll analogue. Holds 1–6 independently usable powers, each with its own manifester level.
+
+- `powersImprinted`: array of `PowerStoneEntry` objects (each: `powerId`, `manifesterLevel`, `usedUp`).  
+- Each power is used independently — manifesting one does not affect the others.  
+- When all `usedUp === true`, the stone is fully depleted.  
+- **Brainburn**: if the user's ML is below an entry's `manifesterLevel`, they make a level check (DC = ML + 1). Failure triggers Brainburn: 1d6/stored power/round for 1d4 rounds.  
+- **Addressing**: before use, the stone must be "addressed" (Psicraft DC 15 + power level) to know what it contains.
+
+```json
+{
+  "id": "item_power_stone_minor_001",
+  "category": "item",
+  "equipmentSlot": "none",
+  "weightLbs": 0.05,
+  "costGp": 175,
+  "psionicItemData": {
+    "psionicItemType": "power_stone",
+    "powersImprinted": [
+      { "powerId": "power_mind_thrust", "manifesterLevel": 1, "usedUp": false },
+      { "powerId": "power_psionic_minor_creation", "manifesterLevel": 3, "usedUp": false }
+    ]
+  }
+}
+```
+
+#### Psicrown (`"psicrown"`)
+
+A head-slot item containing a fixed set of psionic powers backed by a dedicated PP pool.
+
+- `storedPP` (mutable): current PP in the crown. Created with `50 × manifesterLevel` PP.  
+- `maxPP` (immutable): set to `50 × manifesterLevel` at creation.  
+- `powersKnown[]`: IDs of powers accessible via the crown. Wearer can augment using crown PP.  
+- `manifesterLevel`: affects PP pool size and per-power augmentation ceiling.  
+- **Key restriction**: the user CANNOT supplement crown PP with personal PP.  
+  They also cannot use personal PP to manifest the crown's powers independently.
+
+```json
+{
+  "id": "item_psicrown_dominator",
+  "category": "item",
+  "equipmentSlot": "head",
+  "weightLbs": 0.5,
+  "costGp": 20250,
+  "psionicItemData": {
+    "psionicItemType": "psicrown",
+    "manifesterLevel": 9,
+    "maxPP": 450,
+    "storedPP": 450,
+    "powersKnown": [
+      "power_charm_person_psionic",
+      "power_dominate_person",
+      "power_mass_conceal_thoughts"
+    ]
+  }
+}
+```
+
+#### Psionic Tattoo (`"psionic_tattoo"`)
+
+A single-use psionic power inscribed on the body. Only 1st–3rd level powers. Maximum 20 tattoos per body.
+
+- `powerStored`: ID of the power this tattoo manifests when activated.  
+- `manifesterLevel`: the minimum ML for the stored power.  
+- `activated` (mutable): `false` = intact; `true` = tattoo has been used and faded.  
+- **Body-slot limit**: the inventory manager (Phase 13.3) must count non-activated tattoos. At 21, ALL activate simultaneously (house narration).  
+- **Equipment slot**: use `"body"` for tattoos (they cover body surface; unlike normal body-slot items, 20 can coexist).
+
+```json
+{
+  "id": "item_psionic_tattoo_force_screen",
+  "category": "item",
+  "equipmentSlot": "body",
+  "weightLbs": 0,
+  "costGp": 50,
+  "psionicItemData": {
+    "psionicItemType": "psionic_tattoo",
+    "powerStored": "power_force_screen",
+    "manifesterLevel": 1,
+    "activated": false
+  }
+}
+```
+
+#### Field-to-Type Matrix
+
+| Field | cognizance_crystal | dorje | power_stone | psicrown | psionic_tattoo |
+|---|:---:|:---:|:---:|:---:|:---:|
+| `psionicItemType` | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `storedPP` | ✓ | — | — | ✓ | — |
+| `maxPP` | ✓ | — | — | ✓ | — |
+| `attuned` | ✓ | — | — | — | — |
+| `powerStored` | — | ✓ | — | — | ✓ |
+| `charges` | — | ✓ | — | — | — |
+| `powersImprinted` | — | — | ✓ | — | — |
+| `powersKnown` | — | — | — | ✓ | — |
+| `manifesterLevel` | — | ✓ | — | ✓ | ✓ |
+| `activated` | — | — | — | — | ✓ |
+
+> **Mutable vs immutable**: `storedPP`, `charges`, `powersImprinted[].usedUp`, and `activated` change during play (deplete as the item is used). `maxPP`, `powerStored`, `powersImprinted[].powerId`, `powersImprinted[].manifesterLevel`, `powersKnown`, and `manifesterLevel` are immutable static configuration set at item creation time.
+
+```typescript
 // 5.2 Magic (Spells & Psionic Powers unified)
 export interface AugmentationRule {
     costIncrement: number; // E.g.: +1 Psi Point
