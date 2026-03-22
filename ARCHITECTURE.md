@@ -475,9 +475,27 @@ export interface MagicFeature extends Feature {
     magicType: "arcane" | "divine" | "psionic";
     spellLists: Record<ID, number>; // E.g.: { "list_wizard": 3, "list_cleric": 3 }
     
-    school: string;      // E.g.: "evocation", "metacreativity"
+    // For arcane/divine: the school of magic ("abjuration", "conjuration", etc.)
+    // For psionic: legacy/display use only — use `discipline` field for engine queries.
+    school: string;
     subSchool?: string;  
     descriptors: string[]; // E.g.: ["fire", "evil", "mind-affecting"]
+
+    // === PSIONIC-ONLY FIELDS (undefined for arcane/divine spells) ===
+
+    // Canonical psionic discipline. All engine queries use this, not `school`.
+    // "clairsentience"|"metacreativity"|"psychokinesis"|"psychometabolism"|"psychoportation"|"telepathy"
+    // @see PsionicDiscipline type and ARCHITECTURE.md section 5.2.1
+    discipline?: "clairsentience" | "metacreativity" | "psychokinesis"
+               | "psychometabolism" | "psychoportation" | "telepathy";
+
+    // Sensory display effects. Can have multiple simultaneously.
+    // "auditory"|"material"|"mental"|"olfactory"|"visual"
+    // Suppressed with Concentration DC 15 + power level.
+    // @see PsionicDisplay type and ARCHITECTURE.md section 5.2.1
+    displays?: ("auditory" | "material" | "mental" | "olfactory" | "visual")[];
+
+    // ======================================================
     
     resistanceType: "spell_resistance" | "power_resistance" | "none";
     components: string[]; // Magic (V, S, M) or Psionic (A, M, O, V)
@@ -487,7 +505,110 @@ export interface MagicFeature extends Feature {
     duration: string;    
     savingThrow: "fort_half" | "ref_negates" | "will_disbelieves" | "none" | string;
     
-    augmentations?: AugmentationRule[]; // Exclusive to Psionics (or custom rules)
+     augmentations?: AugmentationRule[]; // Exclusive to Psionics (or custom rules)
+}
+```
+
+### 5.2.1. Psionic Power Fields — `discipline` and `displays`
+
+These two fields extend `MagicFeature` specifically for `magicType: "psionic"` powers. They have no meaning for arcane or divine spells and should be left `undefined` for those.
+
+#### `discipline: PsionicDiscipline | undefined`
+
+The psionic discipline is the canonical grouping of a power in the D&D 3.5 SRD (EPH). It is a **required field for all psionic powers**. Arcane/divine spells leave it `undefined`.
+
+| Value | Specialist Class | Focus |
+|---|---|---|
+| `"clairsentience"` | Seer | Information, precognition, scrying |
+| `"metacreativity"` | Shaper | Matter/creature creation from psionic energy |
+| `"psychokinesis"` | Kineticist | Energy manipulation (fire, ice, electricity, force) |
+| `"psychometabolism"` | Egoist | Body alteration, healing, self-transformation |
+| `"psychoportation"` | Nomad | Movement, teleportation, time/plane travel |
+| `"telepathy"` | Telepath | Mind-affecting, control, charm, compulsion |
+
+**Why a separate `discipline` field instead of using `school`?**
+
+The `school` field already exists and is a plain `string` — it was used in early psionic entries to store the discipline name (e.g., `"clairsentience"`). However, `school` is a generic string that carries no type safety or engine-queryable contract. The dedicated `discipline` field:
+1. Is a **typed union** — the TypeScript compiler rejects invalid values.
+2. Provides a **stable query key** for DataLoader queries (`"discipline:telepathy"`).
+3. Enables **psicraft mechanics** (Psicraft DC +5 to identify powers outside specialist discipline).
+4. Enables **UI grouping** in the Psionic Powers panel — powers organised by discipline tab.
+5. Enables future **Psion specialist class restrictions** (Seer gets extra clairsentience powers).
+
+`school` on psionic powers is kept for display/legacy compatibility but is NOT used by the engine for mechanical discipline queries.
+
+**`discipline` in `optionsQuery`:**
+
+The DataLoader supports a new query format for psionic filtering:
+
+| Format | Example | Meaning |
+|---|---|---|
+| `discipline:<d>` | `"discipline:telepathy"` | All psionic powers in that discipline |
+| `discipline:<d>+level:<n>` | `"discipline:clairsentience+level:3"` | Discipline + level filter |
+
+#### `displays: PsionicDisplay[] | undefined`
+
+An array of sensory display types observable when the power is manifested. For most psionic powers this has 0–3 entries; for spells it is `undefined` or `[]`.
+
+| Value | SRD abbreviation | Sensory effect |
+|---|---|---|
+| `"auditory"` | `A` | Bass hum, like deep voices; heard up to 100 ft. |
+| `"material"` | `Ma` | Translucent ectoplasmic coating on subject; evaporates in 1 round |
+| `"mental"` | `Me` | Subtle chime in minds of creatures within 15 ft. |
+| `"olfactory"` | `Ol` | Odd scent spreading 20 ft. from manifester; fades quickly |
+| `"visual"` | `Vi` | Silver eye-fire on manifester; rainbow flash at 5 ft. |
+
+Multiple displays can coexist: `["auditory", "visual"]` means both effects occur simultaneously.
+
+**Suppressing displays (SRD rule):**
+A manifester can suppress ALL of a power's displays by succeeding on a Concentration check (DC 15 + power level) as part of the manifestation action. This is a UI/Dice Engine concern, not an engine pipeline concern — `displays` is purely informational/display metadata.
+
+**Authoring note:** SRD power descriptions use abbreviation letters (`A`, `Ma`, `Me`, `Ol`, `Vi`, `see text`). JSON data content should translate these to full `PsionicDisplay` values. Powers with `"see text"` should use the display type that best matches the described effect.
+
+#### Complete psionic power example
+
+```json
+{
+  "id": "power_mind_thrust",
+  "category": "magic",
+  "magicType": "psionic",
+  "ruleSource": "srd_psionics",
+  "label": { "en": "Mind Thrust", "fr": "Assaut mental" },
+  "description": { "en": "You send a lance of mental energy at a target..." },
+  "tags": ["magic", "psionic", "mind-affecting"],
+  "school": "telepathy",
+  "discipline": "telepathy",
+  "subSchool": null,
+  "descriptors": ["mind-affecting"],
+  "spellLists": {
+    "list_psion_wilder": 1,
+    "list_psion_telepath": 1
+  },
+  "displays": ["auditory", "mental"],
+  "resistanceType": "power_resistance",
+  "components": ["Me"],
+  "range": "close",
+  "targetArea": { "en": "One creature", "fr": "Une créature" },
+  "duration": "instantaneous",
+  "savingThrow": "will_negates",
+  "grantedModifiers": [],
+  "grantedFeatures": [],
+  "augmentations": [
+    {
+      "costIncrement": 2,
+      "grantedModifiers": [
+        {
+          "id": "aug_mind_thrust_1d10",
+          "sourceId": "power_mind_thrust",
+          "sourceName": { "en": "Mind Thrust (augmented)" },
+          "targetId": "damage",
+          "value": "1d10",
+          "type": "untyped"
+        }
+      ],
+      "isRepeatable": true
+    }
+  ]
 }
 ```
 

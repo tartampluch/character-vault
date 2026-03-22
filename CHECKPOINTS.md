@@ -22,8 +22,20 @@ Review the following aspects specifically:
 - Does `Campaign` have `gmGlobalOverrides`, `updatedAt`, `enabledRuleSources`, and `chapters`?
 - Does `Feature` have `ruleSource`, `merge`, `levelProgression`, `classSkills`, `recommendedAttributes`, and `activation`?
 - Does `ItemFeature` include the `two_hands` equipment slot?
+- Does `MagicFeature` have `discipline?: PsionicDiscipline` with all 6 SRD discipline values per Architecture section 5.2.1 / Phase 1.3a?
+- Does `MagicFeature` have `displays?: PsionicDisplay[]` with all 5 SRD display values per Architecture section 5.2.1 / Phase 1.3a?
+- Are `PsionicDiscipline` and `PsionicDisplay` exported from `feature.ts` as typed unions (not plain `string`)?
+- Are both fields `optional` (`undefined` for arcane/divine spells)?
 
-### 1a. Type Conformance — Modifier and ModifierType (Phase 2.4a)
+### 1a. Type Conformance — MagicFeature Psionic Fields (Phase 1.3a)
+- Is `PsionicDiscipline` a typed union of exactly 6 values: `"clairsentience"`, `"metacreativity"`, `"psychokinesis"`, `"psychometabolism"`, `"psychoportation"`, `"telepathy"`?
+- Is `PsionicDisplay` a typed union of exactly 5 values: `"auditory"`, `"material"`, `"mental"`, `"olfactory"`, `"visual"`?
+- On a psionic `MagicFeature`: can `discipline` be `undefined` (optional) for non-psionic spells?
+- On an arcane `MagicFeature`: does the TypeScript compiler accept `discipline: undefined` without error?
+- Does the `school` field on psionic powers still function as a display/legacy string (not removed)?
+- Are both `PsionicDiscipline` and `PsionicDisplay` exported from `src/lib/types/feature.ts`?
+
+### 1b. Type Conformance — Modifier and ModifierType (Phase 2.4a)
 - Does `ModifierType` include `"damage_reduction"` per Architecture section 4.5 / Phase 2.4a?
 - Does `Modifier` have an optional `drBypassTags?: string[]` field per Phase 2.4a?
 - Is `drBypassTags` documented as only meaningful when `type === "damage_reduction"`?
@@ -561,6 +573,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 3. **Section 3 (Logic Engine):** Does the implementation handle all 4 LogicNode types and all 8 LogicOperator values?
 
 4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a?
+5. **Section 5.2.1 (MagicFeature psionic fields):** Does `MagicFeature` include `discipline?: PsionicDiscipline` and `displays?: PsionicDisplay[]` per Phase 1.3a? Are both types exported? Is `discipline` `undefined` for arcane/divine spells? Does the psionic casting panel (Phase 12.3) use `discipline` for grouping and `displays` for display suppression UI?
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
 

@@ -661,6 +661,95 @@ export interface ItemFeature extends Feature {
 }
 
 // =============================================================================
+// PSIONIC DISCIPLINE & DISPLAY — Psionic-specific scalar types
+// =============================================================================
+
+/**
+ * The six psionic disciplines defined by the D&D 3.5 SRD (Expanded Psionics Handbook).
+ *
+ * Every psionic power belongs to exactly ONE discipline. A discipline is a group of
+ * related powers that work in similar ways (SRD "Psionic Powers Overview", §Discipline).
+ *
+ * DISCIPLINES AND THEIR MECHANICS:
+ *   - `"clairsentience"`:    Gather information, perceive the past/future, reveal hidden things.
+ *                            (Subdisciplines: scrying)
+ *   - `"metacreativity"`:   Create physical matter, objects, or creatures from psionic energy.
+ *                            (Subdisciplines: creation)
+ *   - `"psychokinesis"`:    Manipulate energy (fire, electricity, cold, sonic) or physical force.
+ *                            (Subdisciplines: none in SRD)
+ *   - `"psychometabolism"`: Alter the manifester's or target's physical body.
+ *                            (Subdisciplines: healing)
+ *   - `"psychoportation"`:  Move creatures or objects through space/time/planes.
+ *                            (Subdisciplines: teleportation)
+ *   - `"telepathy"`:        Influence, control, or read minds.
+ *                            (Subdisciplines: charm, compulsion)
+ *
+ * DISCIPLINE SPECIALIST CLASSES (Psion specialisations):
+ *   Each discipline corresponds to a Psion specialist focus-class:
+ *   | Specialist     | Discipline          |
+ *   |----------------|---------------------|
+ *   | Seer           | clairsentience       |
+ *   | Shaper         | metacreativity       |
+ *   | Kineticist     | psychokinesis        |
+ *   | Egoist         | psychometabolism     |
+ *   | Nomad          | psychoportation      |
+ *   | Telepath       | telepathy            |
+ *
+ * ONLY relevant when `MagicFeature.magicType === "psionic"`.
+ * For arcane/divine spells, `discipline` remains `undefined`.
+ *
+ * @see ARCHITECTURE.md section 5.2.1 — MagicFeature psionic fields
+ * @see SRD: /srd/psionic/psionicPowersOverview.html#disciplineSubdiscipline
+ */
+export type PsionicDiscipline =
+  | 'clairsentience'    // Information, scrying, precognition
+  | 'metacreativity'    // Matter creation, astral constructs
+  | 'psychokinesis'     // Energy manipulation, force
+  | 'psychometabolism'  // Body alteration, healing
+  | 'psychoportation'   // Movement, teleportation
+  | 'telepathy';        // Mind reading, control, charm
+
+/**
+ * The five sensory display types for psionic powers (D&D 3.5 SRD).
+ *
+ * When a power is manifested, a secondary sensory effect (a "display") may be
+ * perceivable by observers. Displays are cosmetic — they have no mechanical impact
+ * during combat but can be suppressed with a Concentration check (DC 15 + power level).
+ *
+ * SRD DISPLAY TYPES (from psionicPowersOverview.html):
+ *   - `"auditory"`:   A bass hum, like deep voices, heard up to 100 ft. away.
+ *   - `"material"`:   A translucent, shimmering ectoplasmic substance briefly coats
+ *                     the subject or area. Evaporates in 1 round.
+ *   - `"mental"`:     A subtle chime rings once (or continuously) in the minds of
+ *                     creatures within 15 ft. of the manifester or subject.
+ *   - `"olfactory"`:  An odd, hard-to-pin-down scent spreads 20 ft. from the manifester,
+ *                     fading almost immediately.
+ *   - `"visual"`:     The manifester's eyes burn like silver fire; a rainbow flash sweeps
+ *                     5 ft. from the manifester and dissipates.
+ *
+ * A power may have MULTIPLE displays simultaneously (e.g., `["auditory", "visual"]`).
+ * Powers marked "see text" in an original source should use the display type that most
+ * closely describes the unique text description.
+ *
+ * SUPPRESSING DISPLAYS:
+ *   To manifest without any display, the manifester makes a Concentration check
+ *   (DC 15 + power level). Handled by the UI / Dice Engine — not by the engine's
+ *   DAG pipeline.
+ *
+ * ONLY relevant when `MagicFeature.magicType === "psionic"`.
+ * For arcane/divine spells, the `displays` array should be empty or absent.
+ *
+ * @see ARCHITECTURE.md section 5.2.1 — MagicFeature psionic fields
+ * @see SRD: /srd/psionic/psionicPowersOverview.html#auditory (et seq.)
+ */
+export type PsionicDisplay =
+  | 'auditory'    // Bass hum; heard up to 100 ft.
+  | 'material'    // Ectoplasmic coating; evaporates in 1 round
+  | 'mental'      // Subtle chime in nearby minds (15 ft.)
+  | 'olfactory'   // Odd scent; spreads 20 ft., fades quickly
+  | 'visual';     // Silver eye-fire + rainbow flash at 5 ft.
+
+// =============================================================================
 // MAGIC FEATURE — Spells and psionic powers
 // =============================================================================
 
@@ -746,19 +835,98 @@ export interface MagicFeature extends Feature {
   spellLists: Record<ID, number>;
 
   /**
-   * The school of magic or psionic discipline.
-   * Arcane/Divine: "abjuration", "conjuration", "divination", "enchantment",
-   *   "evocation", "illusion", "necromancy", "transmutation", "universal"
-   * Psionic: "clairsentience", "metacreativity", "psychokinesis",
-   *   "psychometabolism", "psychoportation", "telepathy"
+   * The school of magic for arcane/divine spells.
+   *
+   * For `magicType: "arcane"` or `"divine"`:
+   *   One of the eight schools of magic from the SRD, plus "universal":
+   *   "abjuration" | "conjuration" | "divination" | "enchantment" |
+   *   "evocation" | "illusion" | "necromancy" | "transmutation" | "universal"
+   *
+   * For `magicType: "psionic"`:
+   *   Use this field for backward compatibility with legacy psionic entries that
+   *   stored the discipline name here (e.g., "clairsentience"). ALL NEW psionic
+   *   power entries should use the dedicated `discipline` field instead, and set
+   *   `school` to `""` (empty) or the discipline string for display convenience.
+   *
+   *   The canonical machine-readable discipline value is ALWAYS `discipline`, not `school`.
+   *   The engine reads `discipline` for game-mechanical psionic queries.
+   *   `school` on psionic powers is informational/display text only.
+   *
+   * @see discipline — the canonical psionic discipline field
    */
   school: string;
 
   /**
-   * Optional sub-school within the main school.
-   * Examples: "calling" (within Conjuration), "charm" (within Enchantment)
+   * Optional sub-school within the main school (arcane/divine) or
+   * subdiscipline within the psionic discipline.
+   *
+   * Arcane/Divine examples: "calling" (within Conjuration), "charm" (Enchantment),
+   *   "creation" (Conjuration), "summoning" (Conjuration), "scrying" (Divination)
+   *
+   * Psionic subdiscipline examples (same value, different field context):
+   *   "scrying" (within Clairsentience), "creation" (within Metacreativity),
+   *   "healing" (within Psychometabolism), "teleportation" (within Psychoportation),
+   *   "charm" (within Telepathy), "compulsion" (within Telepathy)
    */
   subSchool?: string;
+
+  /**
+   * The psionic discipline this power belongs to.
+   *
+   * ONLY set for `magicType: "psionic"` powers.
+   * `undefined` for all arcane and divine spells.
+   *
+   * D&D 3.5 SRD defines six disciplines:
+   *   clairsentience | metacreativity | psychokinesis |
+   *   psychometabolism | psychoportation | telepathy
+   *
+   * RELATIONSHIP TO `school`:
+   *   `discipline` is the canonical, typed field for psionic powers.
+   *   `school` on a psionic power may hold the same string as a display fallback,
+   *   but all engine-level queries should use `discipline`.
+   *
+   * USES IN THE ENGINE:
+   *   - DataLoader query `"discipline:clairsentience"` → powers of that discipline.
+   *   - Psion specialist class restrictions (Seer can access extra clairsentience powers).
+   *   - Psicraft DC calculation (+5 DC to identify powers from a non-specialist discipline).
+   *   - UI filtering in the Psionic Powers panel (Phase 12) — group by discipline.
+   *   - Psicraft "detect psionics" check (SRD: see discipline of psionic aura).
+   *
+   * @see PsionicDiscipline for the full type documentation
+   * @see ARCHITECTURE.md section 5.2.1 — Psionic power fields
+   */
+  discipline?: PsionicDiscipline;
+
+  /**
+   * Sensory effects observable when this power is manifested.
+   *
+   * ONLY relevant for `magicType: "psionic"` powers.
+   * For arcane/divine spells, this array should be empty or absent.
+   *
+   * A power can have multiple simultaneous display types.
+   * Examples:
+   *   []                      → No display (rare; most powers have at least one)
+   *   ["auditory"]            → Bass hum only
+   *   ["visual"]              → Silver eye-fire + rainbow flash
+   *   ["auditory", "visual"]  → Both hum and visual effect
+   *   ["material", "olfactory"] → Ectoplasmic coating + odd scent
+   *
+   * MECHANICAL USE:
+   *   The Concentration DC to suppress ALL displays is: 15 + power level.
+   *   The `displays` array is read by the psionic casting panel (Phase 12.3) to:
+   *     1. Show which displays will be observable when manifesting.
+   *     2. Offer a "Suppress Display" option (with Concentration check button).
+   *   Displays have NO mechanical effect during combat per the SRD.
+   *
+   * AUTHORING NOTE:
+   *   Original SRD power descriptions use letters: "A" (auditory), "Ma" (material),
+   *   "Me" (mental), "Ol" (olfactory), "Vi" (visual). JSON data content should
+   *   translate these abbreviations to full `PsionicDisplay` string values.
+   *
+   * @see PsionicDisplay for the full type documentation and SRD definitions
+   * @see ARCHITECTURE.md section 5.2.1 — Psionic power fields
+   */
+  displays?: PsionicDisplay[];
 
   /**
    * Array of descriptor tags.
