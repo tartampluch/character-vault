@@ -39,14 +39,22 @@
  *                       If multiple setAbsolute modifiers compete, the LAST one wins
  *                       (following resolution chain order — see DataLoader phase).
  *
+ *       `damage_reduction` — DR uses BEST-WINS PER BYPASS GROUP, not additive stacking.
+ *                       Each unique `drBypassTags` signature forms a separate DR entry.
+ *                       Within that group, only the HIGHEST value applies.
+ *                       A creature can have multiple independent DR entries simultaneously
+ *                       (e.g., "DR 5/magic AND DR 10/silver" from different sources).
+ *                       See ARCHITECTURE.md section 4.5 for the full DR rules.
+ *
  *   PENALTIES:
  *     Penalties (negative modifier values) are handled IDENTICALLY to bonuses with respect
  *     to stacking rules. A penalty of type `armor` does not stack with another `armor`
  *     penalty (take the WORST, i.e., most negative). An `untyped` penalty always stacks.
  *     This implementation handles both signs uniformly.
  *
- * @see src/lib/types/primitives.ts    for ModifierType definitions
- * @see src/lib/types/pipeline.ts      for Modifier and StatisticPipeline
+ * @see src/lib/types/primitives.ts    for ModifierType definitions (includes "damage_reduction")
+ * @see src/lib/types/pipeline.ts      for Modifier (includes drBypassTags) and StatisticPipeline
+ * @see ARCHITECTURE.md section 4.5    for Damage Reduction design documentation
  */
 
 import type { Modifier } from '../types/pipeline';
@@ -93,6 +101,62 @@ export const ALWAYS_STACKING_TYPES = new Set([
 // STACKING RESULT
 // =============================================================================
 
+// =============================================================================
+// DR ENTRY — One resolved Damage Reduction entry after best-wins grouping
+// =============================================================================
+
+/**
+ * A single resolved Damage Reduction entry, produced by `applyStackingRules()`.
+ *
+ * D&D 3.5 DR is presented as "DR X/material" — this type captures both the
+ * numeric amount and the bypass condition for display and combat resolution.
+ *
+ * Multiple `DREntry` objects can coexist on one creature simultaneously:
+ *   e.g., a creature with both "DR 5/magic" and "DR 10/silver" has two entries.
+ *
+ * The Dice Engine uses `drEntries` from the `combatStats.damage_reduction` pipeline
+ * to check whether the attacking weapon bypasses each entry before subtracting damage.
+ *
+ * @see Modifier.drBypassTags
+ * @see ARCHITECTURE.md section 4.5
+ */
+export interface DREntry {
+  /**
+   * The amount of damage reduced per hit.
+   * This is the HIGHEST value among all modifiers sharing this bypass signature.
+   */
+  amount: number;
+
+  /**
+   * The material/condition tags that bypass this DR entry.
+   *
+   * An attack weapon that carries ANY tag in this array bypasses the DR entirely.
+   * Empty array (`[]`) means the DR is unbeatable ("DR X/—" overcome by nothing).
+   *
+   * Examples:
+   *   []                      → DR X/— (nothing bypasses)
+   *   ["magic"]               → DR X/magic
+   *   ["silver"]              → DR X/silver
+   *   ["good"]                → DR X/good (good-aligned weapons)
+   *   ["cold_iron"]           → DR X/cold iron
+   *   ["epic"]                → DR X/epic (+6 or better)
+   *   ["magic", "silver"]     → DR X/magic and silver (extremely rare AND condition)
+   */
+  bypassTags: string[];
+
+  /**
+   * The winning modifier that provided this DR entry.
+   * Used by the UI to show the source ("Barbarian DR", "Troll Regeneration", etc.).
+   */
+  sourceModifier: Modifier;
+
+  /**
+   * Modifiers with the same bypass signature that were suppressed (lower value).
+   * Shown in the ModifierBreakdownModal to explain which DR source was overridden.
+   */
+  suppressedModifiers: Modifier[];
+}
+
 /**
  * The result of applying stacking rules to a list of modifiers.
  *
@@ -104,6 +168,10 @@ export interface StackingResult {
    * The net bonus (or penalty) after applying stacking rules.
    * Does NOT include `setAbsolute` results (those bypass this entirely).
    * `multiplier` effects are also not in this value — they are in `multiplierFactor`.
+   *
+   * NOTE: For the `combatStats.damage_reduction` pipeline, `totalBonus` reflects
+   * only the `"base"` type DR increments (class-progression additive DR).
+   * The separate best-wins DR is surfaced through `drEntries` instead.
    */
   totalBonus: number;
 
@@ -111,6 +179,9 @@ export interface StackingResult {
    * The final `totalValue` of the pipeline after applying all modifier categories:
    *   1. If `setAbsoluteValue` is present: use that directly.
    *   2. Otherwise: `baseValue + totalBonus` then applied with `multiplierFactor`.
+   *
+   * For `combatStats.damage_reduction`, `totalValue` represents the "base" additive
+   * DR amount (class progression). The full resolved DR list is in `drEntries`.
    */
   totalValue: number;
 
@@ -142,6 +213,23 @@ export interface StackingResult {
    * Used by the ModifierBreakdownModal to show why a bonus wasn't counted.
    */
   suppressedModifiers: Modifier[];
+
+  /**
+   * Resolved Damage Reduction entries after best-wins grouping by bypass signature.
+   *
+   * This field is populated when ANY modifier in the input has `type: "damage_reduction"`.
+   * Each entry represents one "DR X/material" line that the UI and Dice Engine use.
+   *
+   * EMPTY (absent) for pipelines that do not contain `"damage_reduction"` modifiers.
+   *
+   * Multiple entries coexist independently. The Dice Engine checks each entry
+   * separately — a weapon that bypasses DR 5/magic still faces DR 10/silver
+   * unless it is also made of silver.
+   *
+   * @see DREntry
+   * @see ARCHITECTURE.md section 4.5
+   */
+  drEntries?: DREntry[];
 }
 
 // =============================================================================
@@ -154,17 +242,20 @@ export interface StackingResult {
  *
  * ALGORITHM:
  *   1. Scan for any `setAbsolute` modifier → if found, return immediately with forced value.
- *   2. Group modifiers by their `type` (ModifierType).
- *   3. For each group:
+ *   2. Separate `multiplier`, `damage_reduction`, and all other ("regular") modifiers.
+ *   3. Group regular modifiers by their `type` (ModifierType).
+ *   4. For each regular group:
  *      a. If the type is in `ALWAYS_STACKING_TYPES`: sum ALL values in the group.
  *      b. For all others: separate into positive (bonuses) and negative (penalties).
  *         - Bonuses: take only the HIGHEST value (best).
  *         - Penalties: take only the LOWEST value (worst, most negative).
  *         This matches the SRD ruling that non-stacking types use the best/worst value.
- *   4. Collect `multiplier` type modifiers → use the value farthest from 1.0
+ *   5. Collect `multiplier` type modifiers → use the value farthest from 1.0
  *      (the most impactful multiplier wins; see note on `setAbsolute` behavior).
- *   5. Sum all group totals → `totalBonus`.
- *   6. Apply multiplier: `totalValue = (baseValue + totalBonus) * multiplierFactor`.
+ *   6. Process `damage_reduction` modifiers → group by sorted `drBypassTags` signature;
+ *      within each group, keep the HIGHEST value (best-wins). Return as `drEntries[]`.
+ *   7. Sum all group totals → `totalBonus`.
+ *   8. Apply multiplier: `totalValue = (baseValue + totalBonus) * multiplierFactor`.
  *
  * NOTE ON MODIFIER VALUES:
  *   `Modifier.value` can be a `number | string`. When this function is called,
@@ -210,9 +301,14 @@ export function applyStackingRules(
     };
   }
 
-  // --- Step 2: Separate multipliers from regular modifiers ---
+  // --- Step 2: Separate multipliers, DR, and regular modifiers ---
   const multiplierMods = modifiers.filter(m => m.type === 'multiplier');
-  const regularMods = modifiers.filter(m => m.type !== 'multiplier' && m.type !== 'setAbsolute');
+  const drMods = modifiers.filter(m => m.type === 'damage_reduction');
+  const regularMods = modifiers.filter(m =>
+    m.type !== 'multiplier' &&
+    m.type !== 'setAbsolute' &&
+    m.type !== 'damage_reduction'
+  );
 
   // --- Step 3: Group regular modifiers by type ---
   const byType = new Map<string, Modifier[]>();
@@ -281,7 +377,55 @@ export function applyStackingRules(
     suppressedModifiers.push(...multiplierMods.filter(m => m !== bestMultiplier));
   }
 
-  // --- Step 6: Compute final total ---
+  // --- Step 6: Resolve Damage Reduction entries (best-wins per bypass-tag group) ---
+  //
+  // D&D 3.5 SRD rule (specialAbilities.html):
+  //   "A creature does not get to apply both its DR 5/magic and its DR 10/silver as
+  //    bonuses to damage reduction — it simply possesses both independently."
+  //   This means DR entries with DIFFERENT bypass signatures coexist as separate entries.
+  //   DR entries with the SAME bypass signature: only the HIGHEST value applies.
+  //
+  // ALGORITHM:
+  //   1. Serialize each modifier's `drBypassTags` array into a canonical string key
+  //      (sorted, JSON-serialized: `["magic","silver"]` → '["magic","silver"]').
+  //      Sorting ensures ["silver","magic"] and ["magic","silver"] map to the same key.
+  //   2. Group all DR modifiers by this key.
+  //   3. Within each group, keep the modifier with the HIGHEST value; suppress the rest.
+  //   4. Return each winning modifier as a `DREntry`, alongside its suppressed peers.
+  let drEntries: DREntry[] | undefined;
+  if (drMods.length > 0) {
+    drEntries = [];
+
+    // Build a map: serialized bypass key → list of DR modifiers
+    const drByGroup = new Map<string, Modifier[]>();
+    for (const mod of drMods) {
+      // Sort the bypass tags so ["silver","magic"] and ["magic","silver"] are identical
+      const sortedTags = [...(mod.drBypassTags ?? [])].sort();
+      const key = JSON.stringify(sortedTags);
+      if (!drByGroup.has(key)) drByGroup.set(key, []);
+      drByGroup.get(key)!.push(mod);
+    }
+
+    // For each bypass group, find the winner (highest DR value)
+    for (const [key, group] of drByGroup.entries()) {
+      const winner = group.reduce((prev, curr) =>
+        getNumericValue(curr) > getNumericValue(prev) ? curr : prev
+      );
+      const suppressed = group.filter(m => m !== winner);
+
+      appliedModifiers.push(winner);
+      suppressedModifiers.push(...suppressed);
+
+      drEntries.push({
+        amount:            getNumericValue(winner),
+        bypassTags:        JSON.parse(key) as string[], // Reconstruct sorted array
+        sourceModifier:    winner,
+        suppressedModifiers: suppressed,
+      });
+    }
+  }
+
+  // --- Step 7: Compute final total ---
   const totalValue = Math.floor((baseValue + totalBonus) * multiplierFactor);
 
   return {
@@ -291,6 +435,7 @@ export function applyStackingRules(
     setAbsoluteValue: undefined,
     appliedModifiers,
     suppressedModifiers,
+    drEntries,
   };
 }
 

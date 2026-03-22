@@ -38,8 +38,9 @@
 - [x] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (Localization and unit conversion based on CampaignSettings).
 - [x] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts` (Evaluate formulas, replace `@` placeholders, and handle `|distance` / `|weight` pipes).
 - [x] **2.3 Logic Evaluator:** Create `src/lib/utils/logicEvaluator.ts` (Recursive evaluation of `LogicNode`).
-- [x] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts` (Ignore stacking for identical modifier types unless exceptions apply).
-- [x] **2.5 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings)`. It MUST accept `CampaignSettings` to handle "Exploding 20s" (recursive reroll and add) and "Reroll 1s" (for stat generation). Return a strict `RollResult` type handling crits, fumbles, explosions count, and applying situational buffs.
+ - [x] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts` (Ignore stacking for identical modifier types unless exceptions apply).
+ - [x] **2.4a Damage Reduction stacking & `drBypassTags`:** Add `"damage_reduction"` to `ModifierType` in `primitives.ts`. Add `drBypassTags?: string[]` field to `Modifier` in `pipeline.ts` — holds the material/condition tags that bypass a DR entry (e.g., `["magic"]`, `["silver"]`, `[]` for DR/—). Add `DREntry` result type to `stackingRules.ts`. Implement best-wins-per-bypass-group DR resolution in `applyStackingRules()`: group DR modifiers by sorted `drBypassTags` signature; within each group keep only the highest value; return as `StackingResult.drEntries[]`. Document two DR authoring modes ("base" for additive class-progression DR, "damage_reduction" for innate/racial DR) in `ARCHITECTURE.md` section 4.5.
+ - [x] **2.5 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings)`. It MUST accept `CampaignSettings` to handle "Exploding 20s" (recursive reroll and add) and "Reroll 1s" (for stat generation). Return a strict `RollResult` type handling crits, fumbles, explosions count, and applying situational buffs.
 
 ### Phase 3: Svelte 5 Reactive Engine (The DAG)
 
@@ -280,7 +281,7 @@ _Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathem
     - Construct a JSON string of a deeply nested `LogicNode` (e.g., an `AND` node requiring `BAB >= 8`, `tag: weapon_focus`, and a `NOT` node forbidding `tag: heavy_armor`).
     - Assert it returns `true` when the mock context meets all conditions.
     - Assert it returns `false` (and the correct `errorMessage`) when a specific condition fails.
-- [x] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`.
+- [x] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`. Includes DR best-wins grouping tests (Phase 2.4a): all bypass types, multi-source same-bypass suppression, coexisting independent entries, AND-bypass, boundary values.
     - Pass an array of `Modifier` objects: `+2 enhancement`, `+4 enhancement`, `+1 dodge`, `+1 dodge`, `+2 deflection`.
     - Assert the total is exactly `+8` (Takes the highest enhancement (4) + stacks both dodges (2) + deflection (2)).
 - [x] **17.4 Dice Engine Tests:** Create `src/tests/diceEngine.test.ts`.

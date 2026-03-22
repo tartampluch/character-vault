@@ -23,6 +23,11 @@ Review the following aspects specifically:
 - Does `Feature` have `ruleSource`, `merge`, `levelProgression`, `classSkills`, `recommendedAttributes`, and `activation`?
 - Does `ItemFeature` include the `two_hands` equipment slot?
 
+### 1a. Type Conformance — Modifier and ModifierType (Phase 2.4a)
+- Does `ModifierType` include `"damage_reduction"` per Architecture section 4.5 / Phase 2.4a?
+- Does `Modifier` have an optional `drBypassTags?: string[]` field per Phase 2.4a?
+- Is `drBypassTags` documented as only meaningful when `type === "damage_reduction"`?
+
 ### 2. Math Parser (Phase 2.2)
 - Does it handle all special paths listed in Architecture section 4.3 (`@characterLevel`, `@eclForXp`, `@classLevels.<id>`, `@activeTags`, `@selection.<choiceId>`, `@constant.<id>`, `@master.classLevels.<id>`)?
 - Does `@eclForXp` correctly return `characterLevel + character.levelAdjustment` per Architecture section 4.3 and 6.4?
@@ -36,10 +41,17 @@ Review the following aspects specifically:
 - Does it support all LogicOperator values: `==`, `>=`, `<=`, `!=`, `includes`, `not_includes`, `has_tag`, `missing_tag`?
 - Does it return `errorMessage` from failing CONDITION nodes?
 
-### 4. Stacking Rules (Phase 2.4)
+### 4. Stacking Rules (Phase 2.4 / 2.4a)
 - Does it correctly stack `dodge`, `circumstance`, `synergy`, and `untyped` (all stack)?
 - Does it take only the highest for all other types?
 - Does it handle `setAbsolute` correctly (overrides everything, last one wins)?
+- Does `applyStackingRules()` handle `type: "damage_reduction"` modifiers as a SEPARATE pass from regular type stacking per Architecture section 4.5 / Phase 2.4a?
+- Does it group DR modifiers by sorted `drBypassTags` signature (so `["silver","magic"]` and `["magic","silver"]` map to the same group)?
+- Within each bypass group: does it keep only the HIGHEST DR value and suppress the rest?
+- Do multiple groups with different bypass signatures coexist independently in `StackingResult.drEntries[]`?
+- Does `StackingResult` include a `drEntries?: DREntry[]` field?
+- Does each `DREntry` have `amount`, `bypassTags`, `sourceModifier`, and `suppressedModifiers`?
+- Is `type: "damage_reduction"` excluded from the regular non-stacking pass (so it is NOT subject to the normal best-wins-for-same-type rule)?
 
 ### 5. Dice Engine (Phase 2.5)
 - Does `parseAndRoll` match the signature in Architecture section 17?
@@ -272,12 +284,20 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
 - Does the test verify that `errorMessage` is returned from the failing CONDITION?
 - Is an OR node tested where the first condition fails but the second succeeds?
 
-# 4. Vitest — Stacking Rules (Phase 17.3)
+# 4. Vitest — Stacking Rules (Phase 17.3 / 2.4a)
 - Are all 4 stackable types tested (`dodge`, `circumstance`, `synergy`, `untyped`)?
 - Is `setAbsolute` tested (overrides all other modifiers)?
 - Are two conflicting `setAbsolute` modifiers tested (last wins)?
 - Is a negative modifier tested (penalty)?
 - Is a mix of positive and negative modifiers of the same type tested?
+- Is `type: "damage_reduction"` best-wins-per-bypass-group tested (Phase 2.4a)?
+  - Two DR/magic with different amounts: highest wins, lower suppressed?
+  - DR/magic and DR/silver coexist as separate `drEntries`?
+  - DR/— (empty bypass) is its own group and does not interfere with DR/magic?
+  - AND bypass `["magic","silver"]` is treated as a different group from `["magic"]` alone?
+  - Bypass tag sort order is consistent: `["silver","magic"]` equals `["magic","silver"]`?
+  - DR modifiers do NOT affect `totalBonus` (they only appear in `drEntries`)?
+  - `drEntries` is absent/undefined when no `damage_reduction` modifiers exist?
 
 # 5. Vitest — Dice Engine (Phase 17.4)
 - Is the injectable `rng` parameter used in ALL dice tests (no random results)?
@@ -540,7 +560,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 3. **Section 3 (Logic Engine):** Does the implementation handle all 4 LogicNode types and all 8 LogicOperator values?
 
-4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable?
+4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a?
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
 

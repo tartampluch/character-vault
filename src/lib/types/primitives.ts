@@ -63,26 +63,32 @@ export type ID = string;
  *                     resolution chain wins (see DataLoader resolution order).
  */
 export type ModifierType =
-  | "base"         // Foundational value; accumulated per class level
-  | "multiplier"   // Multiplicative factor applied after all additive bonuses
-  | "untyped"      // Always stacks; no declared type
-  | "racial"       // Racial trait bonus; non-stacking with other racial bonuses
-  | "enhancement"  // Magic enhancement to an item or natural attribute; non-stacking
-  | "morale"       // Morale bonus (courage spells, bard song); non-stacking
-  | "luck"         // Luck bonus (divine favour, etc.); non-stacking
-  | "insight"      // Insight bonus (divine power, oracle spells); non-stacking
-  | "sacred"       // Holy/sacred bonus (divine magic); non-stacking
-  | "profane"      // Unholy/profane penalty or bonus; non-stacking
-  | "dodge"        // Dodge bonus; ALWAYS STACKS (exception to general rule)
-  | "armor"        // Armour bonus (physical armour); non-stacking
-  | "shield"       // Shield bonus (shields); non-stacking
-  | "natural_armor"// Natural armour bonus (racial hide, Barkskin spell); non-stacking
-  | "deflection"   // Deflection bonus (Ring of Protection, Shield of Faith); non-stacking
-  | "competence"   // Competence bonus (skills and checks, Guidance spell); non-stacking
-  | "circumstance" // Circumstance bonus; ALWAYS STACKS (exception to general rule)
-  | "synergy"      // Skill-synergy bonus; ALWAYS STACKS (exception to general rule)
-  | "size"         // Size modifier to attack rolls and AC; non-stacking
-  | "setAbsolute"; // Forces an absolute value; overrides everything on the pipeline
+  | "base"             // Foundational value; accumulated per class level (ALWAYS STACKS)
+  | "multiplier"       // Multiplicative factor applied after all additive bonuses
+  | "untyped"          // Always stacks; no declared type (ALWAYS STACKS)
+  | "racial"           // Racial trait bonus; non-stacking with other racial bonuses
+  | "enhancement"      // Magic enhancement to an item or natural attribute; non-stacking
+  | "morale"           // Morale bonus (courage spells, bard song); non-stacking
+  | "luck"             // Luck bonus (divine favour, etc.); non-stacking
+  | "insight"          // Insight bonus (divine power, oracle spells); non-stacking
+  | "sacred"           // Holy/sacred bonus (divine magic); non-stacking
+  | "profane"          // Unholy/profane penalty or bonus; non-stacking
+  | "dodge"            // Dodge bonus; ALWAYS STACKS (explicit SRD exception)
+  | "armor"            // Armour bonus (physical armour); non-stacking
+  | "shield"           // Shield bonus (shields); non-stacking
+  | "natural_armor"    // Natural armour bonus (racial hide, Barkskin); non-stacking
+  | "deflection"       // Deflection bonus (Ring of Protection, Shield of Faith); non-stacking
+  | "competence"       // Competence bonus (skills and checks, Guidance spell); non-stacking
+  | "circumstance"     // Circumstance bonus; ALWAYS STACKS (explicit SRD exception)
+  | "synergy"          // Skill-synergy bonus; ALWAYS STACKS (explicit SRD exception)
+  | "size"             // Size modifier to attack rolls and AC; non-stacking
+  | "setAbsolute"      // Forces an absolute value; overrides everything on the pipeline
+  | "damage_reduction";// D&D 3.5 DR — special stacking: BEST-WINS per bypass-tag group.
+                       // Modifier.value = DR amount; Modifier.drBypassTags = material type.
+                       // Use this for racial/innate/template DR. For class-progression
+                       // incremental DR that ADDS, use "base" instead (it always stacks).
+                       // @see Modifier.drBypassTags in pipeline.ts
+                       // @see ARCHITECTURE.md section 4.5 — Damage Reduction reference
 
 // =============================================================================
 // LOGIC OPERATORS — PREREQUISITE & CONDITION SYSTEM

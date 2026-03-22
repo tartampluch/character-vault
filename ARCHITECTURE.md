@@ -23,8 +23,9 @@ export type ModifierType =
     | "base" | "multiplier" | "untyped" | "racial" | "enhancement" 
     | "morale" | "luck" | "insight" | "sacred" | "profane" 
     | "dodge" | "armor" | "shield" | "natural_armor" | "deflection" 
-    | "competence" | "circumstance" | "synergy" | "size" | "setAbsolute"; 
-    // "setAbsolute" forces the value (e.g.: Wild Shape), "base" defines the foundation before bonuses.
+    | "competence" | "circumstance" | "synergy" | "size" | "setAbsolute"
+    | "damage_reduction"; // Best-wins per bypass-tag group. See Modifier.drBypassTags + section 4.5.
+    // "setAbsolute" forces the value (e.g.: Wild Shape); "base" defines the additive foundation.
 
 // Operators for the logic engine
 export type LogicOperator = "==" | ">=" | "<=" | "!=" | "includes" | "not_includes" | "has_tag" | "missing_tag";
@@ -78,7 +79,15 @@ export interface Modifier {
     
     // Evaluated at DICE ROLL time (e.g.: "vs_orcs", "vs_attacks_of_opportunity")
     // If this field is present, the modifier is NOT added to the static `totalBonus` on the sheet.
-    situationalContext?: string; 
+    situationalContext?: string;
+
+    // Only used when type === "damage_reduction".
+    // Tags that bypass this DR entry. Empty array = "DR X/—" (overcome by nothing).
+    // Examples: ["magic"], ["silver"], ["good"], ["cold_iron"], ["magic","silver"] (AND).
+    // Content authoring: use type "damage_reduction" for innate/racial DR (best-wins per group).
+    // For class-progression DR that adds up (Barbarian DR/—): use type "base" instead.
+    // @see ARCHITECTURE.md section 4.5 — full Damage Reduction reference
+    drBypassTags?: string[];
 }
 
 // Generic pipeline (Strength, AC, Speed, Initiative)
@@ -235,6 +244,105 @@ The mechanical difference between Fast Healing and Regeneration lies **not** in 
 - **Regeneration**: the creature Feature carries tags like `"regeneration_bypassed_by_fire"` or `"regeneration_bypassed_by_acid"`, and bypass damage is tracked via separate modifier logic. The tick itself (`rechargeAmount`) is identical.
 
 The calling UI should skip `triggerTurnTick()` for Fast Healing only creatures when `currentValue ≤ 0`. For Regeneration creatures, the tick applies even at negative HP.
+
+### 4.5. Damage Reduction (DR) — `drBypassTags` and Best-Wins Grouping
+
+Damage Reduction (SRD "Special Abilities") is one of the most mechanically distinctive systems in D&D 3.5. It does **not** follow the normal stacking rules — it uses a **best-wins-per-bypass-group** model instead.
+
+#### The DR Data Model
+
+DR is expressed as a `Modifier` with two fields working together:
+
+| Field | Type | Role |
+|---|---|---|
+| `value` | `number` | How much damage is reduced per hit |
+| `type` | `"damage_reduction"` | Identifies this modifier for DR-specific grouping |
+| `drBypassTags` | `string[]` | Materials/conditions that overcome the DR |
+
+```json
+// Examples showing the full DR modifier structure
+{ "id": "dr_vampire",     "value": 10, "type": "damage_reduction", "drBypassTags": ["magic"] }
+{ "id": "dr_lycanthrope", "value": 10, "type": "damage_reduction", "drBypassTags": ["silver"] }
+{ "id": "dr_barbarian",   "value": 1,  "type": "damage_reduction", "drBypassTags": ["magic", "silver"] }
+{ "id": "dr_barbarian_dr","value": 2,  "type": "base",             "targetId": "combatStats.damage_reduction" }
+```
+
+`drBypassTags` semantics:
+- `[]` → DR X/— (nothing bypasses; e.g., Barbarian end-game DR)
+- `["magic"]` → DR X/magic (any +1 or better magic weapon bypasses)
+- `["silver"]` → DR X/silver (silver weapon bypasses)
+- `["cold_iron"]` → DR X/cold iron
+- `["good"]` → DR X/good (good-aligned weapon bypasses)
+- `["epic"]` → DR X/epic (+6 or better weapon)
+- `["magic", "silver"]` → DR X/magic AND silver (weapon must be BOTH — extremely rare)
+
+#### The Two DR Authoring Modes
+
+| Mode | `type` field | Stacking | Use For |
+|---|---|---|---|
+| **Additive class progression** | `"base"` | Always stacks (ALWAYS_STACKING_TYPES) | Barbarian DR/— increments (+1 at level 7, +2 at 10, +3 at 13, +4 at 16, +5 at 20) |
+| **Innate/racial/template DR** | `"damage_reduction"` | Best-wins per bypass group | Vampire DR 10/magic, Troll (no DR), race/template DRs |
+
+**Why two modes?**
+- Barbarian DR is gained incrementally as the character levels. Each level adds +1 DR. These all target `combatStats.damage_reduction` with `type: "base"` so they SUM to the correct total (DR 1/— at 7th, DR 2/— at 10th, etc.).
+- Racial or template DR from different sources uses `type: "damage_reduction"` and follows the best-wins rule: having both DR 5/magic and DR 10/silver from different racial features means the creature has BOTH, but it won't gain DR 10/magic if it only has DR 5/magic and DR 10/silver.
+
+#### The Stacking Resolution Algorithm
+
+`applyStackingRules()` in `stackingRules.ts` handles `"damage_reduction"` modifiers separately in Step 6 (after all regular modifier types):
+
+1. Sort each modifier's `drBypassTags` array and JSON-serialize it as a group key.
+   - `["silver", "magic"]` and `["magic", "silver"]` both serialize to `'["magic","silver"]'` (same group).
+2. Group all DR modifiers by this key. Each unique key = one `DREntry` in `StackingResult.drEntries`.
+3. Within each group: keep the modifier with the **highest `value`**. Suppress all others.
+4. Return each winner as a `DREntry` with `{ amount, bypassTags, sourceModifier, suppressedModifiers }`.
+
+**Result:** `StackingResult.drEntries` is an array of `DREntry` objects. Each one describes one "DR X/material" line independently.
+
+#### Example: Vampire Fighter 3 (DR 10/magic from race + no DR from class)
+
+```json
+[
+  { "value": 10, "type": "damage_reduction", "drBypassTags": ["magic"], "sourceId": "race_vampire" }
+]
+```
+→ `drEntries = [{ amount: 10, bypassTags: ["magic"] }]`
+
+#### Example: Half-Troll Barbarian 10 (DR 5/— from class + DR 5/fire from race)
+
+```json
+[
+  { "value": 1, "type": "base",             "targetId": "combatStats.damage_reduction" },  // Level 7 increment
+  { "value": 1, "type": "base",             "targetId": "combatStats.damage_reduction" },  // Level 10 increment
+  { "value": 5, "type": "damage_reduction", "drBypassTags": [],      "sourceId": "race_half_troll" },
+  { "value": 5, "type": "damage_reduction", "drBypassTags": ["fire"],"sourceId": "half_troll_fire_vuln" }
+]
+```
+→ `totalBonus = 2` (from "base" additive increments)  
+→ `drEntries = [{ amount: 5, bypassTags: [] }, { amount: 5, bypassTags: ["fire"] }]`  
+→ The creature effectively has: DR 2/— (class) + DR 5/— (race) + DR 5/fire (race vuln)
+
+> **Note:** The "base" DR and the `type: "damage_reduction"` DR entries are **independent**. The UI should display both: the `totalValue` pipeline (base additive DR) and each `drEntry` separately.
+
+#### Example: Best-wins — Two DR/magic sources, different amounts
+
+```json
+[
+  { "value": 5,  "type": "damage_reduction", "drBypassTags": ["magic"], "sourceId": "feature_a" },
+  { "value": 10, "type": "damage_reduction", "drBypassTags": ["magic"], "sourceId": "feature_b" }
+]
+```
+→ `drEntries = [{ amount: 10, bypassTags: ["magic"], suppressedModifiers: [feature_a mod] }]`  
+→ feature_a is suppressed; only the best DR 10/magic applies.
+
+#### Combat Resolution (Dice Engine)
+
+At roll time, for each `DREntry` in the target's `combatStats.damage_reduction.drEntries`:
+1. Check if the attacking weapon's tags include **any** tag from `DREntry.bypassTags`.
+2. If **YES**: the DR is overcome; skip this entry (no damage reduction).
+3. If **NO** (or `bypassTags` is empty): subtract `DREntry.amount` from the damage total.
+4. **Minimum 0** per hit (damage cannot go negative from DR, per SRD).
+5. Spells and most energy damage **ignore DR** entirely (unless the feat "Penetrating Strike" or similar applies).
 
 ---
 

@@ -208,6 +208,86 @@ export interface Modifier {
    *     AGAINST AN ENCHANTMENT for the +4 bonus to apply.
    */
   situationalContext?: string;
+
+  /**
+   * Optional: Material or condition tags that BYPASS this Damage Reduction entry.
+   *
+   * D&D 3.5 CONTEXT — DAMAGE REDUCTION (SRD "Special Abilities", dr section):
+   *   DR is written as "DR X/material" (e.g., DR 5/silver, DR 10/magic, DR 15/adamantine).
+   *   The number X is the modifier `value`; the bypass material is `drBypassTags`.
+   *
+   *   If an attack is made with a weapon that carries ANY tag matching an entry in this
+   *   array, the DR does NOT reduce the damage for that hit (the bypass "works").
+   *
+   *   EXAMPLES:
+   *   ```json
+   *   // Barbarian DR 1/— (overcome by nothing — empty array = "—")
+   *   { "value": 1, "type": "damage_reduction", "drBypassTags": [] }
+   *
+   *   // Vampire DR 10/magic (any +1 or better magic weapon bypasses)
+   *   { "value": 10, "type": "damage_reduction", "drBypassTags": ["magic"] }
+   *
+   *   // Lycanthrope DR 10/silver (silver weapon bypasses)
+   *   { "value": 10, "type": "damage_reduction", "drBypassTags": ["silver"] }
+   *
+   *   // Devil DR 10/good (good-aligned weapon bypasses)
+   *   { "value": 10, "type": "damage_reduction", "drBypassTags": ["good"] }
+   *
+   *   // Demon DR 10/cold_iron (cold iron weapon bypasses — same as silver rule)
+   *   { "value": 10, "type": "damage_reduction", "drBypassTags": ["cold_iron"] }
+   *
+   *   // Epic creature DR 10/epic (bypassed only by +6 or better weapons)
+   *   { "value": 10, "type": "damage_reduction", "drBypassTags": ["epic"] }
+   *
+   *   // AND bypass (must be BOTH magic AND silver — extremely rare)
+   *   { "value": 15, "type": "damage_reduction", "drBypassTags": ["magic", "silver"] }
+   *   ```
+   *
+   * STACKING RULE FOR DR (implemented in `stackingRules.ts`):
+   *   DR does NOT add across sources: "A creature does not get a better DR by
+   *   combining both its DR 5/magic and its DR 10/silver — it simply has both."
+   *   (SRD Special Abilities).
+   *   When multiple DR modifiers target `combatStats.damage_reduction`:
+   *   - They are grouped BY their `drBypassTags` signature (JSON-serialised array).
+   *   - Within each bypass group, ONLY THE HIGHEST value applies (no additive stacking).
+   *   - Each bypass group contributes independently as a separate DR entry.
+   *   The UI displays this as "DR 5/magic AND DR 10/silver" (both listed separately).
+   *
+   *   Exception — SAME SOURCE STACKS: When the Barbarian gains DR/— from multiple
+   *   class-level milestones, THOSE DO stack because they all share the same empty
+   *   bypass signature (`[]`) AND are accumulated from a single class progression.
+   *   The engine handles this by using `type: "base"` for same-source progression
+   *   increments (which stack per the ALWAYS_STACKING_TYPES rule in stackingRules.ts)
+   *   AND `type: "damage_reduction"` for cross-source DR comparisons.
+   *
+   *   CONTENT AUTHORING GUIDE:
+   *   - For class-progression DR that ADD together (Barbarian DR/—):
+   *     Use `type: "base"` targeting `combatStats.damage_reduction` WITHOUT `drBypassTags`.
+   *     The ALWAYS_STACKING_TYPES rule will sum them correctly.
+   *   - For racial/template/innate DR that should use "best wins" (not additive):
+   *     Use `type: "damage_reduction"` WITH `drBypassTags` set appropriately.
+   *     This triggers the special DR resolution in `applyStackingRules`.
+   *
+   * UI RENDERING:
+   *   The character sheet reads `combatStats.damage_reduction.activeModifiers`,
+   *   groups them by `drBypassTags` signature, and displays each DR entry as a
+   *   formatted string: "DR 5/magic, DR 10/silver". If `drBypassTags` is empty,
+   *   it renders as "DR X/—" (overcome by nothing).
+   *
+   * COMBAT APPLICATION (Dice Engine):
+   *   At roll time, the Dice Engine reads `drEntries` (see `StackingResult`) from
+   *   the `combatStats.damage_reduction` pipeline breakdown. For each DR entry, it
+   *   checks whether the attacking weapon's tags include ANY bypass tag. If yes: the
+   *   DR is overcome and no reduction is applied. If no: subtract the DR value from
+   *   the damage total (minimum 0 damage per hit, except for spells and touch attacks).
+   *
+   * Only meaningful when `type === "damage_reduction"`.
+   * Ignored for all other modifier types.
+   *
+   * @see stackingRules.ts — `applyStackingRules()` DR grouping + best-wins logic
+   * @see ARCHITECTURE.md section 4.5 — Damage Reduction full reference
+   */
+  drBypassTags?: string[];
 }
 
 // =============================================================================
