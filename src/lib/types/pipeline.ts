@@ -512,13 +512,84 @@ export interface ResourcePool {
   temporaryValue: number;
 
   /**
-   * The condition under which this resource naturally resets to its maximum.
+   * The condition under which this resource naturally resets (or incrementally recharges).
    *
+   * ─── FULL RESET (restore to maximum) ───────────────────────────────────────
    * - `"long_rest"`:  D&D 3.5 "8 hours of restful sleep" (SRD standard for spells, HP).
    * - `"short_rest"`: Optional house rule (not default D&D 3.5 — typically for variants).
    * - `"encounter"`:  Resets at the start of each combat encounter (some class abilities).
+   *                   Triggered by `GameEngine.triggerEncounterReset()`.
    * - `"never"`:      Does not reset automatically (e.g., item charges, once-per-day abilities
    *                   on items, XP-spent powers). Requires an explicit action or rest mechanic.
+   *
+   * ─── INCREMENTAL RECHARGE (add `rechargeAmount` per tick, capped at max) ──
+   * - `"per_turn"`:   Recharges at the START OF THE CHARACTER'S OWN TURN each round.
+   *                   Triggered by `GameEngine.triggerTurnTick()`.
+   *                   Used for: Fast Healing (regain X HP per turn), Regeneration (regrow to
+   *                   max HP per turn — same tick, different bypass rules tracked separately),
+   *                   any ability that recovers gradually each time the character acts.
+   *
+   * - `"per_round"`:  Recharges at a FIXED POINT once per combat round (e.g., start of the
+   *                   *global* round, regardless of initiative order).
+   *                   Triggered by `GameEngine.triggerRoundTick()`.
+   *                   Used for: area-of-effect sustained damage pools (e.g., an environmental
+   *                   hazard that deals X per round), aura charges that accumulate each round.
+   *
+   * DESIGN NOTE — WHY TWO INCREMENTAL VARIANTS:
+   *   `"per_turn"` and `"per_round"` are separate because D&D 3.5 distinguishes between
+   *   "at the start of your turn" (character-specific initiative) and "once per round"
+   *   (global initiative clock). Fast Healing is always "at the start of YOUR turn".
+   *   Future aura damage or timed conditions may need "once per round" independent of who acts.
+   *
+   * ENGINE CONTRACT:
+   *   For `"per_turn"` and `"per_round"`, the engine calls `triggerTurnTick()` /
+   *   `triggerRoundTick()` on the ACTIVE character's `GameEngine` instance. It is the
+   *   UI / game loop's responsibility to call these methods at the correct time.
+   *   The engine does NOT auto-call these — it is stateless w.r.t. the combat round clock.
+   *
+   * `rechargeAmount` controls HOW MUCH is restored per tick (see field below).
+   *
+   * @see GameEngine.triggerTurnTick()     — call at the start of the character's turn
+   * @see GameEngine.triggerRoundTick()    — call once per global round
+   * @see GameEngine.triggerEncounterReset() — call at the start of a new encounter
+   * @see ARCHITECTURE.md section 4 (ResourcePool) for full documentation
    */
-  resetCondition: 'short_rest' | 'long_rest' | 'encounter' | 'never';
+  resetCondition:
+    | 'short_rest'
+    | 'long_rest'
+    | 'encounter'
+    | 'never'
+    | 'per_turn'
+    | 'per_round';
+
+  /**
+   * Amount restored per tick for `"per_turn"` and `"per_round"` reset conditions.
+   *
+   * Ignored for all other `resetCondition` values (full-reset conditions always
+   * restore to the computed maximum from `maxPipelineId`).
+   *
+   * D&D 3.5 EXAMPLES:
+   *  - Fast Healing 3: `resetCondition: "per_turn"`, `rechargeAmount: 3`
+   *    — At the start of each of the creature's turns, it regains 3 HP.
+   *    — The creature still dies at −10 HP; Fast Healing stops working at 0 HP (nonlethal).
+   *  - Regeneration 5: `resetCondition: "per_turn"`, `rechargeAmount: 5`
+   *    — Same tick as Fast Healing but upgrades lethal → nonlethal (tracked via tags).
+   *    — The `rechargeAmount` is the same; which damage is lethal vs bypassed is a
+   *      separate concern handled by DR/bypass tags on the creature Feature.
+   *
+   * FORMULA OR NUMBER:
+   *   Can be a plain number (most common) OR a Math Parser formula string, enabling
+   *   scaling healing rates:
+   *     `"floor(@classLevels.class_cleric / 2)"` — scales with cleric level
+   *     `"@attributes.stat_con.derivedModifier"` — scales with CON modifier (unusual but valid)
+   *
+   * DEFAULT: `undefined` / `0` — no incremental recharge. Pools with full-reset
+   * `resetCondition` values can omit this field.
+   *
+   * CAPPING RULE (enforced by tick methods):
+   *   After applying `rechargeAmount`, `currentValue` is capped at the effective maximum
+   *   (`maxPipelineId` pipeline's `totalValue`). It can never exceed its maximum via ticking.
+   *   Temporary HP is NOT affected by tick recharges — `temporaryValue` is unchanged.
+   */
+  rechargeAmount?: number | string;
 }

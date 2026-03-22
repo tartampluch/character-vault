@@ -187,7 +187,10 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     derivedModifier: 0,
   });
 
-  // Helper to create a blank ResourcePool
+  // Helper to create a blank ResourcePool.
+  // `rechargeAmount` is omitted here (undefined) — incremental pools define it in JSON.
+  // The default `resetCondition: 'long_rest'` covers all standard daily-use resources.
+  // @see ResourcePool.resetCondition for 'per_turn' / 'per_round' variants.
   const makeResource = (resourceId: ID, label: LocalizedString, maxPipelineId: ID): ResourcePool => ({
     id: resourceId,
     label,
@@ -195,6 +198,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     currentValue: 0,
     temporaryValue: 0,
     resetCondition: 'long_rest',
+    // rechargeAmount: undefined — only set for 'per_turn' / 'per_round' pools
   });
 
   // --- Attribute label resolution (data-driven when available) ---
@@ -1943,6 +1947,201 @@ export class GameEngine {
     const hp = this.character.resources['resources.hp'];
     if (!hp) return;
     hp.temporaryValue = Math.max(hp.temporaryValue, amount);
+  }
+
+  // ---------------------------------------------------------------------------
+  // INCREMENTAL RESOURCE TICK METHODS
+  // (Fast Healing, Regeneration, per-round hazard pools, etc.)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Applies one incremental recharge tick to all `"per_turn"` resource pools.
+   *
+   * D&D 3.5 USAGE — FAST HEALING / REGENERATION:
+   *   Call this at the START OF THE CHARACTER'S OWN TURN in initiative order.
+   *   The UI / combat tracker is responsible for calling this at the correct moment.
+   *   The engine itself is stateless with respect to the round clock.
+   *
+   *   Example JSON pool for Fast Healing 3:
+   *   ```json
+   *   {
+   *     "id": "resources.hp",
+   *     "resetCondition": "per_turn",
+   *     "rechargeAmount": 3
+   *   }
+   *   ```
+   *
+   * ALGORITHM (per matching pool):
+   *   1. Resolve `rechargeAmount` as a number (or evaluate the formula string).
+   *   2. Clamp the pool: `currentValue = min(currentValue + amount, effectiveMax)`.
+   *      `effectiveMax` is read from the pipeline pointed to by `maxPipelineId`.
+   *   3. `temporaryValue` is NOT modified — temporary HP is never healed by ticking.
+   *
+   * REGENERATION NOTE:
+   *   Regeneration (SRD specialAbilities.html) uses the same `"per_turn"` tick
+   *   as Fast Healing. The distinction (lethal ↔ nonlethal conversion, bypass damage
+   *   types) is modelled via separate DR/bypass tags on the creature Feature, NOT by
+   *   a different `resetCondition`. Both Fast Healing and Regeneration share this method.
+   *
+   * FAST HEALING LIMITS (SRD rule):
+   *   Fast Healing stops recovering HP once the creature has 0 HP (it cannot pull a
+   *   creature out of "dying" on its own without Regeneration). This check is NOT
+   *   enforced here — the calling UI should skip `triggerTurnTick()` if `currentValue ≤ 0`
+   *   and the creature only has Fast Healing (not Regeneration). With Regeneration,
+   *   it DOES apply even at 0 or negative HP.
+   *
+   * @see ResourcePool.resetCondition — `"per_turn"` documentation
+   * @see ResourcePool.rechargeAmount — amount to restore per tick
+   * @see ARCHITECTURE.md section 4 (ResourcePool) — per_turn/per_round design
+   * @see ARCHITECTURE.md Phase 1.6
+   */
+  triggerTurnTick(): void {
+    this.#applyIncrementalTick('per_turn');
+  }
+
+  /**
+   * Applies one incremental recharge tick to all `"per_round"` resource pools.
+   *
+   * D&D 3.5 USAGE:
+   *   Call this ONCE PER COMBAT ROUND at a fixed point in the initiative order
+   *   (e.g., at the top of the round, before the highest-initiative combatant acts).
+   *   Distinct from `triggerTurnTick()` which is per-character-initiative.
+   *
+   *   Use cases: area hazard damage pools, accumulating aura charges, sustained
+   *   environmental effects that tick globally rather than per character.
+   *
+   * ALGORITHM: identical to `triggerTurnTick()` but targets `"per_round"` pools.
+   *
+   * @see ResourcePool.resetCondition — `"per_round"` documentation
+   * @see ARCHITECTURE.md section 4 (ResourcePool) — per_turn/per_round design
+   * @see ARCHITECTURE.md Phase 1.6
+   */
+  triggerRoundTick(): void {
+    this.#applyIncrementalTick('per_round');
+  }
+
+  /**
+   * Resets all `"encounter"` resource pools to their computed maximum.
+   *
+   * D&D 3.5 USAGE:
+   *   Call at the START OF A NEW COMBAT ENCOUNTER (before the first initiative roll).
+   *   Restores once-per-encounter class abilities (e.g., Smite Evil uses, Stunning Fist
+   *   if the GM rules it as encounter-reset).
+   *
+   *   `"long_rest"` and `"short_rest"` pools are NOT affected by this method.
+   *
+   * @see ResourcePool.resetCondition — `"encounter"` documentation
+   * @see ARCHITECTURE.md Phase 1.6
+   */
+  triggerEncounterReset(): void {
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== 'encounter') continue;
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = max;
+    }
+  }
+
+  /**
+   * Resets all `"short_rest"` resource pools to their computed maximum.
+   *
+   * D&D 3.5 USAGE (optional / house rule):
+   *   Standard D&D 3.5 does not use short rests; this is provided for variant rules
+   *   (e.g., the "Spell Points" variant or d20 Modern) that include a short rest concept.
+   *
+   * @see ResourcePool.resetCondition — `"short_rest"` documentation
+   * @see ARCHITECTURE.md Phase 1.6
+   */
+  triggerShortRest(): void {
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== 'short_rest') continue;
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = max;
+    }
+  }
+
+  /**
+   * Resets ALL resource pools that recover on a long rest to their computed maximum.
+   *
+   * D&D 3.5 standard rest = 8 hours of sleep. Restores HP, spell slots, psi points,
+   * rage rounds, turn undead uses, and all other `"long_rest"` pools.
+   * Also restores `"short_rest"` pools (a long rest includes a short rest).
+   *
+   * @see ResourcePool.resetCondition
+   * @see ARCHITECTURE.md Phase 1.6
+   */
+  triggerLongRest(): void {
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== 'long_rest' && pool.resetCondition !== 'short_rest') continue;
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = max;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // PRIVATE HELPERS — Resource tick & max resolution
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Resolves the effective maximum for a resource pool.
+   *
+   * Reads the `maxPipelineId` pointer and looks up the pipeline's `totalValue`
+   * from the current character state. Falls back to the pool's current value if the
+   * pipeline is not found (prevents accidental over-correction during early init).
+   *
+   * @param pool - The resource pool whose max is needed.
+   * @returns The effective maximum as a number.
+   */
+  #getEffectiveMax(pool: ResourcePool): number {
+    // Search across all pipeline categories for the maxPipelineId
+    const allPipelines: Record<string, { totalValue: number }> = {
+      ...this.character.attributes,
+      ...this.character.combatStats,
+      ...this.character.saves,
+    };
+    const pipeline = allPipelines[pool.maxPipelineId];
+    if (pipeline) {
+      return pipeline.totalValue;
+    }
+    // Fallback: use current value (prevents accidental zero-cap during init)
+    return pool.currentValue;
+  }
+
+  /**
+   * Core incremental tick implementation shared by `triggerTurnTick` and `triggerRoundTick`.
+   *
+   * For each pool with the given `resetCondition`:
+   *   1. Resolves `rechargeAmount` (formula or number; defaults to 0 if absent).
+   *   2. Adds the amount to `currentValue`.
+   *   3. Clamps `currentValue` to `[currentValue, effectiveMax]` (cannot exceed max,
+   *      cannot go below its pre-tick value through this method).
+   *
+   * FORMULA EVALUATION:
+   *   If `rechargeAmount` is a string formula, it is resolved via the Math Parser
+   *   using the current `phase0_context` snapshot. This allows scaling recharge
+   *   rates (e.g., `"floor(@classLevels.class_cleric / 2)"` for level-scaled healing).
+   *
+   * @param condition - `"per_turn"` or `"per_round"`.
+   */
+  #applyIncrementalTick(condition: 'per_turn' | 'per_round'): void {
+    for (const pool of Object.values(this.character.resources)) {
+      if (pool.resetCondition !== condition) continue;
+
+      // Resolve rechargeAmount (number or formula string)
+      const raw = pool.rechargeAmount;
+      let amount = 0;
+      if (typeof raw === 'number') {
+        amount = raw;
+      } else if (typeof raw === 'string') {
+        const resolved = evaluateFormula(raw, this.phase0_context, this.settings.language);
+        amount = typeof resolved === 'number' ? resolved : parseFloat(String(resolved)) || 0;
+      }
+      // Nothing to recharge if amount ≤ 0
+      if (amount <= 0) continue;
+
+      // Apply recharge, capped at effective maximum
+      const max = this.#getEffectiveMax(pool);
+      pool.currentValue = Math.min(pool.currentValue + amount, max);
+    }
   }
 
   /** Toggles a feature instance's active state (equip/unequip, buff on/off). */

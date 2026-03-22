@@ -17,6 +17,8 @@ Review the following aspects specifically:
 - Is `derivedModifier` present on `StatisticPipeline`?
 - Does `Character` have `classLevels`, `gmOverrides`, and all UI metadata fields?
 - Does `Character` have `levelAdjustment: number` (default 0) and `xp: number` (default 0) as per Architecture section 6 / Phase 1.5?
+- Does `ResourcePool.resetCondition` include ALL six values: `"long_rest"`, `"short_rest"`, `"encounter"`, `"never"`, `"per_turn"`, `"per_round"` per Architecture section 4.4 / Phase 1.6?
+- Does `ResourcePool` have an optional `rechargeAmount?: number | string` field per Phase 1.6?
 - Does `Campaign` have `gmGlobalOverrides`, `updatedAt`, `enabledRuleSources`, and `chapters`?
 - Does `Feature` have `ruleSource`, `merge`, `levelProgression`, `classSkills`, `recommendedAttributes`, and `activation`?
 - Does `ItemFeature` include the `two_hands` equipment slot?
@@ -57,6 +59,16 @@ Review the following aspects specifically:
 - Phase 4: Does it auto-generate synergy modifiers from the skill synergies config table?
 - Context sorting: Are modifiers with `situationalContext` routed to `situationalModifiers` instead of `activeModifiers`?
 - Infinite loop detection: Is there a depth counter that cuts at 3 re-evaluations?
+
+### 7. Resource Tick & Rest Methods (Phase 3.6)
+- Are `triggerTurnTick()`, `triggerRoundTick()`, `triggerEncounterReset()`, `triggerShortRest()`, `triggerLongRest()` all present on the GameEngine as public methods per Architecture section 4.4 / Phase 3.6?
+- Does `triggerTurnTick()` apply `rechargeAmount` ONLY to `"per_turn"` pools (not `"per_round"` or full-reset pools)?
+- Does `triggerRoundTick()` apply `rechargeAmount` ONLY to `"per_round"` pools?
+- Does each tick method cap `currentValue` at the effective max from `maxPipelineId`?
+- Does `triggerLongRest()` reset BOTH `"long_rest"` AND `"short_rest"` pools (long rest includes short rest)?
+- Is `rechargeAmount` resolved via the Math Parser when it is a formula string (not just a plain number)?
+- Is `temporaryValue` (temporary HP) left unchanged by turn/round tick methods?
+- Is `#getEffectiveMax()` looking up `maxPipelineId` across `attributes`, `combatStats`, and `saves`?
 
 ### 7. DataLoader & Merge Engine (Phase 4.2)
 - Does it scan `static/rules/` recursively in alphabetical order?
@@ -528,7 +540,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 3. **Section 3 (Logic Engine):** Does the implementation handle all 4 LogicNode types and all 8 LogicOperator values?
 
-4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented?
+4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable?
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?
 

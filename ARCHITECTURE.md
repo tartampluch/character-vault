@@ -114,10 +114,18 @@ export interface SkillPipeline extends StatisticPipeline {
 export interface ResourcePool {
     id: ID;
     label: LocalizedString;
-    maxPipelineId: ID;      // Pointer to the pipeline computing the Max (e.g.: "stat_max_hp")
-    currentValue: number;   
-    temporaryValue: number; // E.g.: Temporary HP (absorb damage first)
-    resetCondition: "short_rest" | "long_rest" | "encounter" | "never"; 
+    maxPipelineId: ID;       // Pointer to the pipeline computing the Max (e.g.: "stat_max_hp")
+    currentValue: number;
+    temporaryValue: number;  // E.g.: Temporary HP (absorb damage first)
+
+    // Full-reset: "long_rest" | "short_rest" | "encounter" | "never"
+    // Incremental: "per_turn" (start of character's turn) | "per_round" (once per global round)
+    resetCondition: "short_rest" | "long_rest" | "encounter" | "never" | "per_turn" | "per_round";
+
+    // Only used for "per_turn" / "per_round" incremental pools.
+    // Amount to restore per tick (number or Math Parser formula string).
+    // Capped at maxPipelineId totalValue. Ignored for full-reset conditions.
+    rechargeAmount?: number | string;
 }
 ```
 
@@ -172,6 +180,61 @@ When the Math Parser encounters `@` prefixed paths in formula strings, it reso
 > **AI Implementation Note:** The Math Parser MUST handle nested paths by splitting on `.` and walking the object tree. For example, `@attributes.stat_str.derivedModifier` splits into `["attributes", "stat_str", "derivedModifier"]` and resolves by looking up `character.attributes["stat_str"].derivedModifier`. Paths that don't resolve should return `0` and log a warning, not crash.
 >
 > **Special path distinction — `@characterLevel` vs `@eclForXp`:** Always use `@characterLevel` for game-mechanical calculations (feats, HP, skill max ranks, caster level, class feature gating). Use `@eclForXp` ONLY when consulting the XP threshold table (`config_xp_table`) for level-up checks, starting wealth, and encounter budgeting. For standard PC races with `levelAdjustment = 0`, both paths return the same value.
+
+### 4.4. ResourcePool `resetCondition` — Full Reference
+
+The `resetCondition` field governs exactly when and how a pool recovers. There are two conceptually distinct recovery modes:
+
+#### Full-Reset Conditions (restore to maximum on event)
+
+| Value | Trigger | Typical Uses |
+|---|---|---|
+| `"long_rest"` | `GameEngine.triggerLongRest()` | Spell slots, psi points, HP, Rage rounds, Turn Undead uses |
+| `"short_rest"` | `GameEngine.triggerShortRest()` | Optional house-rule pools, d20 Modern variant resources |
+| `"encounter"` | `GameEngine.triggerEncounterReset()` | Once-per-encounter class abilities, Ki points (if house-ruled) |
+| `"never"` | Never automatic | Item charges, XP-spent powers, truly consumable resources |
+
+`triggerLongRest()` resets BOTH `"long_rest"` AND `"short_rest"` pools (a long rest implies a short rest).
+
+#### Incremental Recharge Conditions (add `rechargeAmount` per tick, capped at max)
+
+| Value | Trigger | `rechargeAmount` | Typical Uses |
+|---|---|---|---|
+| `"per_turn"` | `GameEngine.triggerTurnTick()` | Required | Fast Healing, Regeneration |
+| `"per_round"` | `GameEngine.triggerRoundTick()` | Required | Environmental hazard pools, global aura charges |
+
+**`rechargeAmount`** — the amount restored per tick. Accepts a number or a Math Parser formula string (enables level-scaled healing). The pool is capped at the `maxPipelineId` pipeline's `totalValue` — it can never exceed its maximum via ticking. `temporaryValue` (temporary HP) is never affected by tick recharges.
+
+**`"per_turn"` vs `"per_round"` distinction:**
+- `"per_turn"` fires at the **start of the specific character's turn** in initiative order. The combat tracker calls `engine.triggerTurnTick()` on the correct character's `GameEngine` instance.
+- `"per_round"` fires **once per global round** at a fixed point (e.g., top of round), independent of initiative. Used for environmental or world-level effects.
+
+#### Engine Contract — Stateless w.r.t. the combat clock
+
+The `GameEngine` is a stateless character-sheet engine. It does NOT track rounds, turns, or a clock. **The UI / combat tracker is responsible for calling the tick methods at the correct times.** The engine guarantees:
+- `triggerTurnTick()` applies exactly `rechargeAmount` to all `"per_turn"` pools, capped at max.
+- `triggerRoundTick()` applies exactly `rechargeAmount` to all `"per_round"` pools, capped at max.
+- `triggerEncounterReset()` fully restores all `"encounter"` pools.
+- `triggerLongRest()` fully restores all `"long_rest"` and `"short_rest"` pools.
+
+#### Fast Healing vs Regeneration (D&D 3.5 SRD)
+
+Both **Fast Healing** and **Regeneration** use `resetCondition: "per_turn"` with `rechargeAmount: N`:
+
+```json
+// Fast Healing 3 — added via creature Feature's grantedFeatures or grantedModifiers
+{
+  "id": "resources.hp",
+  "resetCondition": "per_turn",
+  "rechargeAmount": 3
+}
+```
+
+The mechanical difference between Fast Healing and Regeneration lies **not** in the `resetCondition` but in DR/bypass tags on the creature Feature:
+- **Fast Healing**: does not convert lethal to nonlethal; stops at 0 HP without Regeneration.
+- **Regeneration**: the creature Feature carries tags like `"regeneration_bypassed_by_fire"` or `"regeneration_bypassed_by_acid"`, and bypass damage is tracked via separate modifier logic. The tick itself (`rechargeAmount`) is identical.
+
+The calling UI should skip `triggerTurnTick()` for Fast Healing only creatures when `currentValue ≤ 0`. For Regeneration creatures, the tick applies even at negative HP.
 
 ---
 
