@@ -457,3 +457,36 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - Verify the theme cookie is correctly read before first paint (no flash of wrong theme).
     - Verify the sidebar cookie persistence works (collapsed state survives page reload).
     - Smoke-test the complete user flow: landing → campaign hub → vault → character sheet → all 6 tabs → back to vault. Ensure no visual glitches, no broken layouts, no orphaned old styles.
+
+---
+
+### Phase 20: Leveling Progression & Skill Points (SRD-Accurate Engine Corrections)
+
+_Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-class skill point budgets (including the first-level 4× bonus), minimum rank enforcement (permanently spent SP cannot be refunded), and a Leveling Journal UI that makes all per-class contributions transparent. Documented in ARCHITECTURE.md section 9.6._
+
+- [x] **20.1 Per-class skill point budget (`phase4_skillPointsBudget`):** `GameEngine` now exports a `SkillPointsBudget` `$derived` that computes skill points independently per class: `max(1, spPerLevel + intMod) × classLevel` for each class, then sums. Applies the SRD first-level 4× bonus to the first class in `classLevels` (identified by JS insertion-order key). Racial/feat bonuses (`attributes.bonus_skill_points_per_level`) applied per total character level. The old unified formula `(sumSPPerLevel + intMod) × totalLevel` was wrong for multiclassing and is replaced.
+    - _New types exported from `GameEngine.svelte.ts`:_ `ClassSkillPointsEntry` (with `firstLevelBonus` and `totalPoints` fields), `SkillPointsBudget`.
+    - _SRD-accurate SP total for Fighter 3 / Monk 3 / Psion 1 / Wizard 1 (INT 15):_ 24 + 18 + 4 + 4 = **50 SP** (old broken formula gave 96 SP).
+
+- [x] **20.2 Minimum skill rank enforcement:** Added `minimumSkillRanks?: Record<ID, number>` to `Character` interface (stored in save files). Added `lockSkillRanksMin(skillId)`, `lockAllSkillRanks()` to `GameEngine`. `setSkillRanks()` now clamps to `max(minimumFloor, 0)` — once a level-up is committed, invested ranks cannot be refunded. During character creation (floor = 0) ranks are freely editable.
+
+- [x] **20.3 `SkillsMatrix.svelte` updated:** Uses `engine.phase4_skillPointsBudget` for budget display (correct multiclass + first-level bonus). Rank inputs clamped to `[minimumRanks, maxRanks]`. Locked ranks shown with "Min" badge and `cursor-not-allowed` styling. "Journal" button opens the Leveling Journal modal.
+
+- [x] **20.4 Leveling Journal Modal (`LevelingJournalModal.svelte`):** New component at `src/lib/components/abilities/LevelingJournalModal.svelte`. Opens from the Skills Matrix Journal button. Displays:
+    - Overview table: all active classes × BAB/Fort/Ref/Will/SP columns with a totals row.
+    - Per-class detail cards: SP formula with first-level bonus annotation `(2 +2) × 3 + 12 (×4 L1) = 24`, class skill badges (highlighted if loaded), granted features from `levelProgression`.
+    - Lock/Unlock rank controls: "Lock Current Ranks" calls `engine.lockAllSkillRanks()`; "Unlock Ranks" resets `minimumSkillRanks`.
+    - First-level 4× bonus info note (already included in totals).
+    - Multiclass XP penalty warning (−20% per class 2+ levels below highest; favored class excluded).
+    - `IconJournal` (`BookOpen` from lucide-svelte) added to `icons.ts`.
+
+- [x] **20.5 `phase4_levelingJournal` derived:** `LevelingJournal` `$derived` in `GameEngine` collects per-class BAB/save totals by filtering `phase0_flatModifiers` on `modifier.sourceId`. Also carries `LevelingJournalClassEntry.firstLevelBonus` and `spPointsPerLevel` for correct journal display.
+    - _New types exported:_ `LevelingJournalClassEntry`, `LevelingJournal`.
+
+- [x] **20.6 i18n strings:** Added `journal.*` namespace (title, subtitle, column headers, SP formula, first-level note, XP penalty, lock/unlock controls) and `skills.rank_locked*` / `skills.journal_*` keys to `src/lib/i18n/ui-strings.ts`.
+
+- [x] **20.7 Vitest — Scenario 7 (per-class SP budget):** Extended `src/tests/multiclass.test.ts` with `computeCorrectSkillPointBudget()` (supports `isFirstClass` flag for 4× bonus) and `firstLevelBonus()` helpers. Tests cover: first-level 4× applied to first class only, INT minimum floor (min 1/level), racial bonus SP per total level, three-class multiclass, and proof that the old unified formula over-counts by 2×.
+
+- [x] **20.8 Vitest — Scenario 8 (minimum rank enforcement):** Extended `src/tests/multiclass.test.ts` with tests for `setSkillRanks` floor clamping, `lockSkillRanksMin` max-merge logic, absent `minimumSkillRanks` defaults to 0, and cross-class skill cost (2 SP/rank).
+
+- [x] **20.9 Vitest — Character build scenario (`characterBuildScenario.test.ts`):** New test file `src/tests/characterBuildScenario.test.ts`. Validates a complete Fighter 3 / Monk 3 / Psion 1 / Wizard 1 multiclass build (103 tests, 14 suites) covering: character level (8), ECL (8), ability scores & ASIs (CON 17→19, mod +4), BAB (+5), saves (Fort +10 / Ref +7 / Will +10), SP budget (50 SP RAW), feat slots (5), HP (75 with fixed dice), AC (15 unarmored with WIS Monk bonus), Wizard spells/day (3/2), psionic PP (3), class skill union (20+), level-gated features, multiclass XP penalty with favored-class exemption, caster/manifester level independence.

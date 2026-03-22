@@ -158,8 +158,8 @@
       </div>
       <!-- Best-wins vs additive type toggle -->
       <div class="flex items-center gap-1.5">
-        <label class="text-xs text-text-muted shrink-0">Type</label>
-        <select bind:value={drType} class="select text-xs py-1">
+        <label for="dr-type-select" class="text-xs text-text-muted shrink-0">Type</label>
+        <select id="dr-type-select" bind:value={drType} class="select text-xs py-1">
           <option value="damage_reduction">Innate (best-wins)</option>
           <option value="base">Class (additive)</option>
         </select>

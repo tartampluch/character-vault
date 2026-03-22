@@ -461,6 +461,36 @@ export interface Character {
   skills: Record<ID, SkillPipeline>;
 
   /**
+   * The minimum allowed ranks for each skill (per-skill rank floor).
+   *
+   * WHY THIS EXISTS — D&D 3.5 RULE:
+   *   In D&D 3.5, skill points granted at a given character level are PERMANENTLY spent.
+   *   Once a player commits ranks to a skill (by confirming a level-up), those ranks
+   *   cannot be lowered — the skill points have been permanently allocated.
+   *
+   *   This field stores the floor for each skill, set by `GameEngine.lockSkillRanksMin()`
+   *   whenever the player commits a level-up. The engine's `setSkillRanks()` method
+   *   refuses to set ranks below this value for each skill.
+   *
+   * ABSENT = ALL ZEROS:
+   *   During character creation (before any level is committed), this record is either
+   *   absent or empty — all minimums default to 0, and ranks can be freely reassigned.
+   *   This lets players freely experiment with skill allocation while building a character
+   *   before play begins.
+   *
+   * MULTICLASS NOTE:
+   *   The minimum only applies to ranks already confirmed as spent. When a new class level
+   *   is gained and new skill points are available, those NEW points can be freely allocated
+   *   to any skill up to the new level's max ranks, then locked via `lockAllSkillRanks()`.
+   *
+   * KEY: skill ID (e.g., "skill_climb")
+   * VALUE: minimum rank count the player can never lower below.
+   *
+   * STORED in save files (committed level-up decisions are irreversible).
+   */
+  minimumSkillRanks?: Record<ID, number>;
+
+  /**
    * Combat-related derived statistics.
    *
    * Standard keys:

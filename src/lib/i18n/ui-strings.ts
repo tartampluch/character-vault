@@ -183,6 +183,38 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'skills.class_skill':           { en: 'Class Skill', fr: 'Compétence de classe' },
   'skills.cross_class':           { en: 'Cross-class Skill', fr: 'Compétence hors classe' },
   'skills.cross_class_short':     { en: 'Cross-class', fr: 'Hors classe' },
+  'skills.rank_locked':           { en: 'Min', fr: 'Min' },
+  'skills.rank_locked_tooltip':   { en: 'Minimum rank — skill points spent at a committed level-up cannot be refunded.', fr: 'Rang minimum — les points de compétence dépensés lors d\'un gain de niveau validé ne peuvent pas être remboursés.' },
+  'skills.journal_btn':           { en: 'Journal', fr: 'Journal' },
+  'skills.journal_tooltip':       { en: 'Open the leveling journal — explains which class contributed which skill points, BAB, and saves.', fr: 'Ouvrir le journal de progression — explique quels points de compétence, BBA et jets de sauvegarde viennent de chaque classe.' },
+
+  // ==========================================================================
+  // LEVELING JOURNAL MODAL
+  // ==========================================================================
+  'journal.title':                { en: 'Leveling Journal', fr: 'Journal de progression' },
+  'journal.subtitle':             { en: 'Per-class contribution breakdown', fr: 'Répartition des contributions par classe' },
+  'journal.no_classes':           { en: 'No classes active. Add a class on the Core tab to begin.', fr: 'Aucune classe active. Ajoutez une classe dans l\'onglet Principal pour commencer.' },
+  'journal.class_level':          { en: 'Level', fr: 'Niveau' },
+  'journal.bab':                  { en: 'BAB', fr: 'BBA' },
+  'journal.fort':                 { en: 'Fort', fr: 'Vig.' },
+  'journal.ref':                  { en: 'Ref', fr: 'Réf.' },
+  'journal.will':                 { en: 'Will', fr: 'Vol.' },
+  'journal.skill_points':         { en: 'SP', fr: 'PC' },
+  'journal.sp_formula':           { en: '{base} SP/lv', fr: '{base} PC/nv' },
+  'journal.sp_with_int':          { en: '({base}+INT{int:+}) × {lvl} = {total}', fr: '({base}+INT{int:+}) × {lvl} = {total}' },
+  'journal.sp_note':              { en: '× {lvl} levels', fr: '× {lvl} niveaux' },
+  'journal.class_skills_title':   { en: 'Class Skills', fr: 'Compétences de classe' },
+  'journal.class_skills_none':    { en: 'None declared', fr: 'Aucune déclarée' },
+  'journal.features_title':       { en: 'Features Granted (up to level {lvl})', fr: 'Capacités obtenues (jusqu\'au niveau {lvl})' },
+  'journal.features_none':        { en: 'No features', fr: 'Aucune capacité' },
+  'journal.totals_row':           { en: 'Totals', fr: 'Totaux' },
+  'journal.bonus_sp':             { en: 'Bonus SP/lv (racial/feat): +{bonus}', fr: 'PC bonus/nv (racial/don) : +{bonus}' },
+  'journal.multiclass_warning':   { en: 'Multiclass XP penalty may apply if classes differ by more than 1 level (SRD rule).', fr: 'Une pénalité d\'XP multiclasse peut s\'appliquer si les classes diffèrent de plus d\'un niveau (règle du MR).' },
+  'journal.lock_ranks_btn':       { en: 'Lock Current Ranks', fr: 'Verrouiller les rangs' },
+  'journal.lock_ranks_tooltip':   { en: 'Lock current skill ranks as the minimum floor — simulates committing a level-up.', fr: 'Verrouille les rangs actuels comme plancher minimum — simule la validation d\'un gain de niveau.' },
+  'journal.unlock_ranks_btn':     { en: 'Unlock Ranks', fr: 'Déverrouiller les rangs' },
+  'journal.unlock_ranks_tooltip': { en: 'Remove all rank minimums — allow free reallocation (only for character creation).', fr: 'Supprime tous les minima de rangs — autorise la réallocation libre (création de personnage seulement).' },
+  'journal.sp_first_level_note':  { en: 'The first class taken at character level 1 receives 4× the normal SP for that level (D&D 3.5 SRD). This bonus is already included in the totals above.', fr: 'La première classe prise au niveau 1 du personnage reçoit 4× les PC normaux pour ce niveau (SRD D&D 3.5). Ce bonus est déjà inclus dans les totaux ci-dessus.' },
 
   // ==========================================================================
   // COMBAT TAB — HIT POINTS & XP

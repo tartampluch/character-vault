@@ -705,3 +705,115 @@ Produce a structured report with 4 sections:
 
 For each issue: file path, line reference, architecture section reference, and specific description of what's wrong vs what's expected.
 ```
+
+---
+
+## Checkpoint Review #7a — After Phase 20 (Leveling Progression & Skill Points)
+
+```markdown
+You are a senior game systems engineer specializing in D&D 3.5 SRD accuracy and Svelte 5 reactive engines.
+
+I have attached ARCHITECTURE.md (including the new section 9.6), PROGRESS.md (Phase 20 checked off), and all source files modified in Phase 20: `GameEngine.svelte.ts`, `character.ts`, `SkillsMatrix.svelte`, `LevelingJournalModal.svelte`, `ui-strings.ts`, `icons.ts`, `multiclass.test.ts`, `characterBuildScenario.test.ts`.
+
+Your job is to verify that Phase 20 is **fully SRD-accurate** and correctly integrated into the engine. Do NOT rewrite code. Produce a **numbered checklist of issues**.
+
+# 1. Skill Point Budget (Phase 20.1 / ARCHITECTURE.md section 9.6.1–9.6.3)
+
+### Per-class independence
+- Does `phase4_skillPointsBudget` compute each class's SP contribution independently? (Verify: no summing of SP/level across classes before multiplying.)
+- Does each entry use `max(1, spPerLevel + intMod)` as the effective points-per-level?
+- Is the INT modifier read from `phase2_attributes['stat_int']?.derivedModifier` (not base value)?
+
+### First-level 4× bonus (section 9.6.2)
+- Is the first class identified via `Object.keys(character.classLevels)[0]`?
+- Is `firstLevelBonus = 3 × max(1, spPerLevel + intMod)` for the first class (and 0 for all others)?
+- Is `totalPoints = (pointsPerLevel × classLevel) + firstLevelBonus` for each entry?
+
+### Racial/feat bonus SP (section 9.6.1)
+- Are modifiers targeting `attributes.bonus_skill_points_per_level` accumulated as `bonusSpPerLevel`?
+- Is `totalBonusPoints = bonusSpPerLevel × phase0_characterLevel`?
+- Are non-class sources targeting `attributes.skill_points_per_level` (no matching `classLevels` entry) treated as bonus-per-total-level (not per-class)?
+
+### Types
+- Does `ClassSkillPointsEntry` have all required fields: `classId`, `classLabel`, `spPerLevel`, `classLevel`, `intModifier`, `pointsPerLevel`, `firstLevelBonus`, `totalPoints`?
+- Does `SkillPointsBudget` have: `perClassBreakdown`, `bonusSpPerLevel`, `totalBonusPoints`, `totalClassPoints`, `totalAvailable`, `intModifier`?
+
+# 2. Minimum Rank Enforcement (Phase 20.2 / ARCHITECTURE.md section 9.6.4)
+
+- Does `Character.minimumSkillRanks?: Record<ID, number>` exist in `src/lib/types/character.ts`?
+- Is it `optional` (absent for new characters, not initialized to `{}`)?
+- Does `GameEngine.setSkillRanks()` clamp to `max(minimumSkillRanks?.[skillId] ?? 0, 0)`?
+- Does `lockSkillRanksMin(skillId)` set the floor to `max(existingFloor, currentRanks)` (never lowers the floor)?
+- Does `lockAllSkillRanks()` call `lockSkillRanksMin` for every key in `character.skills`?
+- Is `minimumSkillRanks` absent (not initialized) in `createEmptyCharacter()`?
+
+# 3. SkillsMatrix.svelte (Phase 20.3)
+
+- Does it use `engine.phase4_skillPointsBudget.totalAvailable` for the SP budget (not a manually computed value)?
+- Is the rank input `min` attribute set to `getMinRanks(skill.id)` (not hardcoded to 0)?
+- Does `handleRanksChange()` clamp to `[minRanks, maxRanks]` before calling `engine.setSkillRanks()`?
+- Is a "Min" badge shown when `skill.ranks <= minimumRanks && minimumRanks > 0`?
+- Is the "Journal" button present and does it set `showJournal = true`?
+
+# 4. LevelingJournalModal.svelte (Phase 20.4)
+
+- Is the overview table correct: one row per active class + bonus SP row + totals row?
+- Does `formatSpFormula()` include `firstLevelBonus` in the display when > 0 (e.g. `(2 +2) × 3 + 12 (×4 L1) = 24`)?
+- Are class skill badges shown with active-status highlighting (green if the skill is loaded, dimmed if not)?
+- Does `lockAllRanks()` call `engine.lockAllSkillRanks()`?
+- Does `unlockAllRanks()` set `engine.character.minimumSkillRanks = {}`?
+- Does the XP penalty warning show correctly when any class is 2+ levels below the max?
+- Is `hasLockedRanks` derived correctly (some value in `minimumSkillRanks` > 0)?
+- Is `IconJournal` (`BookOpen`) correctly imported from `icons.ts`?
+
+# 5. phase4_levelingJournal (Phase 20.5)
+
+- Does it build per-class BAB totals by filtering `phase0_flatModifiers` where `modifier.sourceId === classId && modifier.targetId === 'combatStats.bab' && modifier.type === 'base'`?
+- Same for Fort/Ref/Will saves?
+- Does each `LevelingJournalClassEntry` include `firstLevelBonus` and `spPointsPerLevel` from the SP budget map?
+- Does `LevelingJournal.totalSp` include both class SP and bonus SP from `phase4_skillPointsBudget`?
+
+# 6. i18n (Phase 20.6)
+
+- Are all `journal.*` keys present with both `en` and `fr` translations?
+- Are `skills.rank_locked`, `skills.rank_locked_tooltip`, `skills.journal_btn`, `skills.journal_tooltip` present?
+- Is the `journal.sp_first_level_note` updated to say the bonus is already included (not a manual reminder)?
+
+# 7. Vitest Tests (Phase 20.7–20.9)
+
+### Scenario 7 — Per-class SP budget (`multiclass.test.ts`)
+- Is `firstLevelBonus()` helper tested with INT floor (min 1/level)?
+- Is the 4× first-level bonus applied ONLY to `isFirstClass: true` class (and 0 for others)?
+- Is the three-class multiclass tested (Fighter 2 / Rogue 3 / Wizard 4)?
+- Is the proof-of-broken-formula test still present (`computeWrongSkillPointBudget` gives 96)?
+- Does the racial bonus test now include `isFirstClass: true` on the first class and verify the correct total with first-level bonus?
+
+### Scenario 8 — Minimum rank enforcement (`multiclass.test.ts`)
+- Is `simulateSetSkillRanks(currentRanks, requestedRanks, minimumRanks)` helper tested with floor > 0?
+- Is `simulateLockRanks(existingMin, currentRanks)` tested for the case where existing min is HIGHER (floor cannot be lowered)?
+- Is the character creation mode (absent `minimumSkillRanks`) tested returning 0?
+
+### Character Build Scenario (`characterBuildScenario.test.ts`)
+- Does the test cover Fighter 3 / Monk 3 / Psion 1 / Wizard 1 with STR 18 / DEX 16 / CON 17→19 / INT 15 / WIS 14 / CHA 13?
+- Is the SP total correct at **50 SP** (Fighter 24 + Monk 18 + Psion 4 + Wizard 4)?
+- Is the proof that CON 18→19 does NOT improve HP (same +4 modifier) present?
+- Is the Monk WIS-to-AC modifier verified as `type: "untyped"` (stacks with DEX)?
+- Is the Wizard 1 bonus spell slot at 2nd level verified as inaccessible (base slots = 0)?
+- Is the favored class XP penalty exemption tested (e.g. Wizard as favored → only −20% penalty)?
+- Is the Monk "Evasion" and "Still Mind" verified as class features (not feat slots)?
+- Is the cross-class skill cost (2 SP/rank) tested explicitly?
+- Does the total test count exceed 100?
+
+# 8. SRD Accuracy Cross-Check
+
+- **First-level bonus:** Does the engine correctly give `4 × max(1, spPerLevel + intMod)` for character level 1 (not `4 × spPerLevel + intMod`)?
+- **INT retroactivity:** Is the current INT modifier used for ALL previous levels (retroactive per SRD)? Is this documented?
+- **XP penalty boundary:** Is the threshold "more than 1 level below" (i.e. 2+ levels = penalty; 1 level below = no penalty) correctly implemented in the journal warning?
+- **Favored class exemption:** Is the favored class excluded from the penalty check (not just from the offender count)?
+- **Max ranks cross-class:** Is `floor((characterLevel + 3) / 2)` used for cross-class (not `(characterLevel + 3) / 2` without floor)?
+
+Output format: A numbered markdown checklist. For each issue:
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what section 9.6 / SRD requires instead.
+
+If no issues are found in a category, write: "✅ [Category]: No issues found."
+```

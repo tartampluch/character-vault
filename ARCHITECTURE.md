@@ -1541,7 +1541,13 @@ _Suggested target file: `src/lib/engine/GameEngine.svelte.ts`_
     **Phase 3.7 — Gestalt Mode:** When `settings.variantRules.gestalt === true`, Phase 3 replaces the standard "sum all base modifiers" path for BAB and saves with `computeGestaltBase()` (max per level across classes, then sum). See section 8.2 and `src/lib/utils/gestaltRules.ts`.
 
 5. **Phase 4 (Skills & Abilities):**
-   A `$derived` computes skills (which depend on Phase 2 Attributes and Phase 3 Armor Check Penalty). Determines which skills are "class skills" by combining the tags of all active classes.
+   A `$derived` computes skills (which depend on Phase 2 Attributes and Phase 3 Armor Check Penalty). Determines which skills are "class skills" by combining the tags of all active classes. Also derives the full skill point budget and the leveling journal. See **section 9.6** for the complete specification.
+
+   **Phase 4.5 — Skill Point Budget (`phase4_skillPointsBudget`):**
+   A dedicated `$derived` computes the per-class skill point budget using the SRD RAW formula (section 9.6). Exported as `SkillPointsBudget`.
+
+   **Phase 4.6 — Leveling Journal (`phase4_levelingJournal`):**
+   A dedicated `$derived` produces per-class breakdowns of BAB, saves, SP, class skills, and granted features. Exported as `LevelingJournal`. Consumed by `LevelingJournalModal.svelte`.
 
 6. **Context Sorting:**
    During injection into Pipelines, the engine separates modifiers that have a `situationalContext`. They are not summed into `totalBonus`, but stored in `situationalModifiers` for the UI and the Dice Engine.
@@ -1554,6 +1560,153 @@ The sequential DAG naturally prevents most cyclic dependencies since each phase 
 - The engine maintains a resolution depth counter.
 - If a pipeline is re-evaluated more than **3 times** in a single resolution cycle, the engine cuts the evaluation, logs a warning ("Circular dependency detected on pipeline: stat_con"), and preserves the last stable value.
 - This mechanism is tested in Phase 17.5.
+
+### 9.6. Leveling Progression & Skill Point Budget
+
+This section formalises the D&D 3.5 SRD leveling rules as implemented by the engine. It covers skill point calculation, minimum rank enforcement, multiclass class skill tracking, and the Leveling Journal UI.
+
+#### 9.6.1 Skill Points Per Level — The Correct Multiclass Formula
+
+**SRD rule (Skills chapter):** At each character level, the character gains skill points equal to the base SP/level of the *class gained at that level* plus their current INT modifier (minimum 1).
+
+This means skill points must be computed **per class independently**, never as a unified average:
+
+| Class | Formula | Example (INT 14, +2 mod) |
+|-------|---------|--------------------------|
+| Fighter 3 | max(1, 2+2) × 3 = **12 SP** | 4/level × 3 levels |
+| Rogue 3   | max(1, 8+2) × 3 = **30 SP** | 10/level × 3 levels |
+| **Combined** | 12 + 30 = **42 SP** | _correct_ |
+| **Broken unified formula** | max(1, (2+8)+2) × 6 = 72 SP | _wrong — averages SP/level_ |
+
+**How SP/level modifiers are attributed:** Class Features declare a modifier to `attributes.skill_points_per_level` with `sourceId` = the class Feature ID. The engine reads `modifier.sourceId` to match it against `character.classLevels[sourceId]` and compute the per-class contribution independently.
+
+**Racial/feat bonus SP:** Sources that target `attributes.bonus_skill_points_per_level` (e.g. Human "+1 SP/level") apply uniformly per **total character level** (not per class level). They are tracked separately in `SkillPointsBudget.bonusSpPerLevel`.
+
+**INT modifier retroactivity:** D&D 3.5 makes INT bonuses retroactive. The engine uses the **current** INT modifier for all levels (the most common practitioner interpretation). This is configurable in a future campaign setting flag if strict retroactivity is needed.
+
+#### 9.6.2 First-Level 4× Skill Point Bonus
+
+**SRD rule:** "At 1st level, you get **four times** the number of skill points you normally get for a level in that class." This is a one-time bonus for the class taken at **character level 1 only**.
+
+**Engine implementation:** `phase4_skillPointsBudget` identifies the first class via `Object.keys(character.classLevels)[0]` — JavaScript ES2015+ preserves insertion order for string keys, so the first key is the class the player added first in the UI. The bonus is: `firstLevelBonus = 3 × max(1, spPerLevel + intMod)`.
+
+```
+Fighter first at char level 1 (INT 14, +2 mod):
+  Base levels 1-3:   max(1, 2+2) × 3 = 12 SP
+  First-level bonus: 3 × max(1, 2+2) = 12 SP  (3 extra multiples → 4× total for level 1)
+  Fighter total: 24 SP
+```
+
+The `ClassSkillPointsEntry` type tracks `firstLevelBonus` separately for transparency in the Leveling Journal display.
+
+#### 9.6.3 Skill Point Budget Types
+
+```typescript
+// Exported from GameEngine.svelte.ts
+
+interface ClassSkillPointsEntry {
+  classId: ID;
+  classLabel: LocalizedString;
+  spPerLevel: number;       // base SP/level (before INT)
+  classLevel: number;       // character's level in this class
+  intModifier: number;      // INT modifier used in computation
+  pointsPerLevel: number;   // max(1, spPerLevel + intMod)
+  firstLevelBonus: number;  // 3 × pointsPerLevel if this is the first class; else 0
+  totalPoints: number;      // (pointsPerLevel × classLevel) + firstLevelBonus
+}
+
+interface SkillPointsBudget {
+  perClassBreakdown: ClassSkillPointsEntry[];  // one entry per active class
+  bonusSpPerLevel: number;     // from racial/feat sources (human +1, etc.)
+  totalBonusPoints: number;    // bonusSpPerLevel × totalCharacterLevel
+  totalClassPoints: number;    // sum of all ClassSkillPointsEntry.totalPoints
+  totalAvailable: number;      // totalClassPoints + totalBonusPoints
+  intModifier: number;         // current INT derivedModifier
+}
+```
+
+#### 9.6.4 Minimum Skill Rank Enforcement
+
+**SRD rule:** Skill points spent at a given level are **permanently allocated**. A player cannot lower a skill's ranks to reclaim points after a level-up is committed.
+
+**Engine implementation:**
+
+- `Character.minimumSkillRanks?: Record<ID, number>` — per-skill rank floor stored in the character save. Absent for new characters (all zeros = free allocation during creation).
+- `GameEngine.lockSkillRanksMin(skillId)` — sets the floor for one skill to `max(existingFloor, currentRanks)`.
+- `GameEngine.lockAllSkillRanks()` — locks all skills at once (call at level-up commit).
+- `GameEngine.setSkillRanks(skillId, ranks)` — clamps the requested value to `max(minimumFloor, 0)`. Cannot go below the floor.
+
+**Character creation mode:** While `minimumSkillRanks` is absent or empty, all rank floors are 0. Players can freely reassign ranks to experiment with builds. After calling `lockAllSkillRanks()`, the current ranks become the irreducible minimum.
+
+#### 9.6.5 Maximum Skill Ranks
+
+| Skill type | Maximum ranks |
+|------------|---------------|
+| Class skill | `characterLevel + 3` |
+| Cross-class skill | `floor((characterLevel + 3) / 2)` |
+
+Enforced by `SkillsMatrix.svelte` input clamping and read from `phase0_characterLevel`.
+
+#### 9.6.6 Class Skills — Multiclass Union
+
+The character's effective set of class skills is the **union** of `classSkills` arrays from ALL active Features (not just class features). A skill that is a class skill for **any one** of the character's active classes costs 1 SP/rank for that character.
+
+Computed by `phase4_classSkillSet: ReadonlySet<ID>` in `GameEngine`. This derived is consumed by:
+- `phase4_skills` — to set `SkillPipeline.isClassSkill`
+- `SkillsMatrix.svelte` — to display class/cross-class indicator and cost per rank
+- `phase4_levelingJournal` — to list class skills per class in the Journal
+
+#### 9.6.7 Leveling Journal
+
+The Leveling Journal provides complete transparency about where every mechanical bonus comes from. It is surfaced via `LevelingJournalModal.svelte` (opened from the Skills Matrix).
+
+```typescript
+interface LevelingJournalClassEntry {
+  classId: ID;
+  classLabel: LocalizedString;
+  classLevel: number;
+  totalBab: number;         // sum of "base" BAB increments up to classLevel
+  totalFort: number;        // sum of "base" Fort save increments
+  totalRef: number;         // sum of "base" Ref save increments
+  totalWill: number;        // sum of "base" Will save increments
+  spPerLevel: number;       // base SP/level
+  spPointsPerLevel: number; // max(1, spPerLevel + intMod)
+  firstLevelBonus: number;  // 3 × spPointsPerLevel if this was the first class
+  totalSp: number;          // total SP including first-level bonus
+  classSkills: ID[];
+  classSkillLabels: Array<{ id: ID; label: LocalizedString }>;
+  grantedFeatureIds: string[];  // features from levelProgression entries ≤ classLevel
+}
+
+interface LevelingJournal {
+  perClassBreakdown: LevelingJournalClassEntry[];
+  totalBab: number;
+  totalFort: number;
+  totalRef: number;
+  totalWill: number;
+  totalSp: number;       // includes all class SP + bonus SP (racial etc.)
+  characterLevel: number;
+}
+```
+
+**BAB/save attribution:** Each increment's `modifier.sourceId` identifies which class contributed it. The journal filters `phase0_flatModifiers` by `sourceId` to build per-class totals.
+
+**Multiclass XP penalty detection:** The Journal modal shows a warning when any class is 2+ levels below the highest class level (applying the 20%/class SRD XP penalty rule). The favored class (racial or player-designated) is excluded from this check.
+
+#### 9.6.8 Hit Points and Hit Dice
+
+**HP Formula (SRD):**
+```
+Max HP = sum(hitDieResults[1..characterLevel]) + (CON_derivedModifier × characterLevel)
+```
+
+`character.hitDieResults: Record<number, number>` — keyed by character level (1-indexed). Values are die results rolled (or fixed) at each level-up. The standard "half+1" convention for levels 2+:
+- Level 1: max die value (e.g. 10 for d10)
+- Level 2+: `floor(maxDie / 2) + 1` (e.g. 6 for d10)
+
+HP recalculates automatically when CON changes (reactive DAG dependency on `phase2_attributes['stat_con'].derivedModifier`).
+
+**Hit die type per level:** The die type used at each character level is determined by the class taken at that level. Since the engine does not track level-up order (only final `classLevels`), the hit die type per character level is derived from `hitDieResults` directly — the player enters the die result; the engine sums them. For Level Up UX, the UI reads `combatStats.hit_die_type` from the most recently added class Feature.
 
 ---
 

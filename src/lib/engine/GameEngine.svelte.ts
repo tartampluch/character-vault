@@ -61,6 +61,157 @@ import { sessionContext } from './SessionContext.svelte';
 const MAX_RESOLUTION_DEPTH = 3;
 
 // =============================================================================
+// SKILL POINTS BUDGET — exported type for UI consumption
+// =============================================================================
+
+/**
+ * Per-class contribution to the skill point budget.
+ *
+ * D&D 3.5 MULTICLASS RULE:
+ *   Each class level grants skill points equal to its base SP/level plus the
+ *   character's INT modifier (minimum 1 per level). In multiclass characters,
+ *   each class contributes SEPARATELY — the Fighter's 2 SP/level is NOT averaged
+ *   with the Rogue's 8 SP/level. The totals are summed independently.
+ *
+ * FIRST LEVEL BONUS:
+ *   At character level 1, the first class taken grants 4× the normal SP (SRD rule).
+ *   The engine identifies the "first class" via JavaScript object insertion order on
+ *   `character.classLevels` — the first key corresponds to the class the player added
+ *   first in the UI, which is the class taken at character level 1.
+ *   `firstLevelBonus = 3 × pointsPerLevel` (the extra 3 multiples beyond the normal 1×).
+ *   `totalPoints` includes this bonus: `(pointsPerLevel × classLevel) + firstLevelBonus`.
+ */
+export interface ClassSkillPointsEntry {
+  /** The class Feature ID (e.g., "class_fighter"). */
+  classId: ID;
+  /** Localized class name for display in the journal. */
+  classLabel: LocalizedString;
+  /** Base skill points per level as declared in the class Feature's modifier. */
+  spPerLevel: number;
+  /** The character's current level count in this class. */
+  classLevel: number;
+  /**
+   * The INT modifier applied at calculation time.
+   * Uses the CURRENT INT modifier (most character builders use this retroactive approach).
+   * D&D 3.5 rules technically make INT bonuses retroactive for previously gained levels.
+   */
+  intModifier: number;
+  /** max(1, spPerLevel + intModifier) — effective SP per level (after INT and minimum-1 rule). */
+  pointsPerLevel: number;
+  /**
+   * Extra skill points from the first-level 4× bonus (D&D 3.5 SRD).
+   * = 3 × pointsPerLevel for the class taken at character level 1; 0 for all other classes.
+   * Always 0 if this class did not contribute character level 1 (i.e., is not the first class).
+   */
+  firstLevelBonus: number;
+  /**
+   * Total skill point contribution from this class.
+   * = (pointsPerLevel × classLevel) + firstLevelBonus
+   * Includes the first-level 4× bonus for whichever class was taken first.
+   */
+  totalPoints: number;
+}
+
+/**
+ * Per-class entry in the Leveling Journal.
+ *
+ * Aggregates all the mechanical contributions from one class to the character sheet.
+ * The LevelingJournalModal renders one card per entry to explain WHERE each bonus came from.
+ */
+export interface LevelingJournalClassEntry {
+  /** Class Feature ID (e.g., "class_fighter"). */
+  classId: ID;
+  /** Localized class name. */
+  classLabel: LocalizedString;
+  /** The character's level in this class. */
+  classLevel: number;
+  /** Total BAB contribution from this class (type "base" modifiers on "combatStats.bab"). */
+  totalBab: number;
+  /** Total Fortitude save base from this class (type "base" modifiers on "saves.fort"). */
+  totalFort: number;
+  /** Total Reflex save base from this class (type "base" modifiers on "saves.ref"). */
+  totalRef: number;
+  /** Total Will save base from this class (type "base" modifiers on "saves.will"). */
+  totalWill: number;
+  /** Base SP/level from this class (before INT modifier). */
+  spPerLevel: number;
+  /** Effective SP per level: max(1, spPerLevel + intMod). */
+  spPointsPerLevel: number;
+  /** First-level 4× bonus SP (3 × spPointsPerLevel if this was the first class; else 0). */
+  firstLevelBonus: number;
+  /** Skill points contributed by this class: (spPointsPerLevel × classLevel) + firstLevelBonus. */
+  totalSp: number;
+  /** Class skill IDs declared by this class. */
+  classSkills: ID[];
+  /** Localized class skill names for display. */
+  classSkillLabels: Array<{ id: ID; label: LocalizedString }>;
+  /**
+   * IDs of features granted by levelProgression entries (up to classLevel).
+   * Used to show "Class Features Gained" in the journal.
+   */
+  grantedFeatureIds: string[];
+}
+
+/**
+ * Complete leveling journal for the character.
+ *
+ * Contains the per-class breakdown of all mechanical contributions, making it
+ * easy to verify that BAB, saves, HP, and skill points are correctly tracked.
+ */
+export interface LevelingJournal {
+  /** Breakdown per active class. */
+  perClassBreakdown: LevelingJournalClassEntry[];
+  /** Sum of BAB contributions from all classes. */
+  totalBab: number;
+  /** Sum of Fort save base from all classes. */
+  totalFort: number;
+  /** Sum of Ref save base from all classes. */
+  totalRef: number;
+  /** Sum of Will save base from all classes. */
+  totalWill: number;
+  /** Total skill points available. */
+  totalSp: number;
+  /** Total character level (sum of all class levels). */
+  characterLevel: number;
+}
+
+/**
+ * Complete skill point budget for the character.
+ *
+ * Consumed by the SkillsMatrix and LevelingJournalModal to correctly display
+ * and enforce the per-class, per-level skill point allocation for D&D 3.5.
+ */
+export interface SkillPointsBudget {
+  /**
+   * Breakdown of skill points contributed by each active class.
+   * Empty for characters with no active classes.
+   */
+  perClassBreakdown: ClassSkillPointsEntry[];
+
+  /**
+   * Sum of bonus SP/level from racial or feat sources (e.g., Human +1 SP/level).
+   * These are added uniformly per total character level, not per-class level.
+   *
+   * Example:
+   *   Human racial trait grants `attributes.bonus_skill_points_per_level: 1`.
+   *   A Fighter 5 / Rogue 3 Human gets: bonus = 1 × 8 = 8 extra SP.
+   */
+  bonusSpPerLevel: number;
+
+  /** Total bonus skill points: bonusSpPerLevel × totalCharacterLevel. */
+  totalBonusPoints: number;
+
+  /** Sum of all ClassSkillPointsEntry.totalPoints across all classes. */
+  totalClassPoints: number;
+
+  /** Grand total: totalClassPoints + totalBonusPoints. */
+  totalAvailable: number;
+
+  /** The current INT derivedModifier used in all class budget calculations. */
+  intModifier: number;
+}
+
+// =============================================================================
 // TARGETID NORMALISATION — Handles both JSON authoring conventions
 // =============================================================================
 
@@ -303,6 +454,10 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       'saves.will': makePipeline('saves.will', { en: 'Will', fr: 'Volonté' }, 0),
     },
     skills: {},
+    // minimumSkillRanks is ABSENT for new characters — all ranks can be freely adjusted
+    // during character creation. Call engine.lockAllSkillRanks() after each level-up commit
+    // to lock in the current ranks as the irreducible minimum.
+    // @see Character.minimumSkillRanks and GameEngine.lockSkillRanksMin()
     resources: {
       'resources.hp': makeResource('resources.hp', { en: 'Hit Points', fr: 'Points de vie' }, 'combatStats.max_hp'),
     },
@@ -1251,6 +1406,293 @@ export class GameEngine {
   });
 
   /**
+   * DAG Phase 4: Per-class skill point budget breakdown.
+   *
+   * D&D 3.5 MULTICLASS SKILL POINT RULES (SRD, "Skills" section):
+   *   At EACH CHARACTER LEVEL, the character gains skill points equal to:
+   *     max(1, Class_SP_Per_Level + INT_modifier)
+   *   ...where "Class_SP_Per_Level" is the base SP/level for the CLASS whose level
+   *   was gained at that character level.
+   *
+   *   For MULTICLASS characters, each class contributes INDEPENDENTLY:
+   *     Fighter 2 SP/level + Rogue 8 SP/level does NOT average to 5 SP/level × total level.
+   *     Instead: Fighter contributes (max(1, 2+INT) × fighterLevels) and
+   *              Rogue contributes  (max(1, 8+INT) × rogueLevels).
+   *
+   * BONUS SP/LEVEL SOURCES:
+   *   Some sources (e.g., Human racial trait) add a flat bonus to SP/level for ALL levels.
+   *   These target `attributes.bonus_skill_points_per_level` instead of
+   *   `attributes.skill_points_per_level` — they are applied uniformly per total character level.
+   *
+   * FIRST LEVEL BONUS:
+   *   RAW D&D 3.5 grants 4× SP at character level 1. Since the current data model does not
+   *   track class level-up ORDER (only final classLevels counts), the first-level quadrupling
+   *   must be acknowledged but cannot be precisely attributed without a level history.
+   *   THIS IMPLEMENTATION does NOT apply the 4× multiplier automatically. It is the
+   *   responsibility of the Level Journal UI to display this rule and let the GM/player
+   *   account for it manually (or a future "Level History" feature can automate it).
+   *
+   * HOW CLASS SP ARE IDENTIFIED:
+   *   Class features grant a modifier to `attributes.skill_points_per_level`.
+   *   The `modifier.sourceId` identifies WHICH class the SP/level comes from.
+   *   Matching against `character.classLevels[sourceId]` gives the level count.
+   *   Non-class sources (racial, racial features) targeting the same pipeline are
+   *   treated as bonus-per-level (since they don't have a matching classLevels entry).
+   */
+  phase4_skillPointsBudget: SkillPointsBudget = $derived.by(() => {
+    // INT modifier: actual value; max(1, ...) applied per level below.
+    const intMod = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
+
+    // --- D&D 3.5 FIRST-LEVEL 4× BONUS ---
+    //
+    // At character level 1, the class taken grants 4× the normal SP (SRD rule, "Skills" chapter).
+    //   "At 1st level, you get four times the number of skill points you normally get
+    //    for a level in that class."
+    //
+    // IDENTIFYING THE "FIRST CLASS":
+    //   character.classLevels is a plain JS object. Modern JS (ES2015+) preserves insertion
+    //   order for string keys, so Object.keys(classLevels)[0] is the class the player added
+    //   first in the UI — which corresponds to the class taken at character level 1.
+    //   This is a sound heuristic and matches how BasicInfo.svelte builds classLevels.
+    //
+    // The bonus is represented as `firstLevelBonus = 3 × pointsPerLevel` (3 extra multiples,
+    // taking the effective count from 1× to 4× for that first level).
+    const firstClassId = Object.keys(this.character.classLevels)[0] as ID | undefined;
+
+    const classEntries: ClassSkillPointsEntry[] = [];
+    // Track which sourceIds have been processed as class SP sources to avoid double-counting
+    const processedClassSPSources = new Set<ID>();
+
+    // --- Step 1: Collect class-based SP/level modifiers ---
+    //
+    // Scan all active flat modifiers for those targeting `attributes.skill_points_per_level`.
+    // Each such modifier SHOULD come from a class Feature (sourceId = class Feature ID).
+    // We verify by checking character.classLevels[sourceId] exists.
+    //
+    // WHY FLAT MODIFIERS (not directly from feature.grantedModifiers)?
+    //   Phase 0 already resolved all level-gated and conditional modifiers.
+    //   Reading from phase0_flatModifiers ensures we respect isActive, forbiddenTags,
+    //   conditionNodes, and the full resolution chain — consistent with all other DAG phases.
+    for (const entry of this.phase0_flatModifiers) {
+      const mod = entry.modifier;
+      if (mod.targetId !== 'attributes.skill_points_per_level') continue;
+      if (mod.situationalContext) continue; // Ignore situational SP modifiers
+
+      const sourceId = mod.sourceId;
+      if (processedClassSPSources.has(sourceId)) continue; // De-duplicate per source
+
+      const classLevel = this.character.classLevels[sourceId];
+      if (classLevel === undefined || classLevel < 1) {
+        // This SP/level modifier comes from a non-class source (racial trait etc.)
+        // Treat it as a bonus — will be accumulated below with the bonus pass.
+        continue;
+      }
+
+      // Found a class-based SP/level source.
+      processedClassSPSources.add(sourceId);
+
+      const spPerLevel = typeof mod.value === 'number' ? mod.value : 0;
+      const pointsPerLevel = Math.max(1, spPerLevel + intMod);
+
+      // Apply the first-level 4× bonus to whichever class was taken at character level 1.
+      const isFirstClass = sourceId === firstClassId;
+      const firstLevelBonus = isFirstClass ? 3 * pointsPerLevel : 0;
+      const totalPoints = pointsPerLevel * classLevel + firstLevelBonus;
+
+      // Look up the class feature label for display in the journal
+      const classFeature = dataLoader.getFeature(sourceId);
+      const classLabel: LocalizedString = classFeature?.label ?? { en: sourceId, fr: sourceId };
+
+      classEntries.push({
+        classId: sourceId,
+        classLabel,
+        spPerLevel,
+        classLevel,
+        intModifier: intMod,
+        pointsPerLevel,
+        firstLevelBonus,
+        totalPoints,
+      });
+    }
+
+    // --- Step 2: Collect bonus SP/level modifiers (racial, feat, etc.) ---
+    //
+    // These modifiers target `attributes.bonus_skill_points_per_level`.
+    // They apply uniformly per TOTAL CHARACTER LEVEL (not per-class level).
+    // Example: Human racial "+1 SP/level" adds 1 SP for every level the character has.
+    let bonusSpPerLevel = 0;
+    for (const entry of this.phase0_flatModifiers) {
+      const mod = entry.modifier;
+      if (mod.targetId !== 'attributes.bonus_skill_points_per_level') continue;
+      if (mod.situationalContext) continue;
+      bonusSpPerLevel += typeof mod.value === 'number' ? mod.value : 0;
+    }
+
+    // Also check for non-class sources targeting `attributes.skill_points_per_level` —
+    // these are treated as bonus SP per total level (same treatment as bonus_skill_points_per_level).
+    for (const entry of this.phase0_flatModifiers) {
+      const mod = entry.modifier;
+      if (mod.targetId !== 'attributes.skill_points_per_level') continue;
+      if (mod.situationalContext) continue;
+      const sourceId = mod.sourceId;
+      if (processedClassSPSources.has(sourceId)) continue; // Already handled as class SP
+      // Not a class source — treat as bonus per total character level
+      bonusSpPerLevel += typeof mod.value === 'number' ? mod.value : 0;
+    }
+
+    const totalClassPoints = classEntries.reduce((sum, e) => sum + e.totalPoints, 0);
+    const totalBonusPoints = bonusSpPerLevel * this.phase0_characterLevel;
+    const totalAvailable = totalClassPoints + totalBonusPoints;
+
+    return {
+      perClassBreakdown: classEntries,
+      bonusSpPerLevel,
+      totalBonusPoints,
+      totalClassPoints,
+      totalAvailable,
+      intModifier: intMod,
+    };
+  });
+
+  /**
+   * DAG Phase 4: Leveling journal — per-class contribution breakdown.
+   *
+   * Used by LevelingJournalModal.svelte to explain which class contributed which
+   * bonuses to BAB, saves, and skill points.
+   *
+   * MULTICLASS ACCOUNTING:
+   *   For each class in `character.classLevels`, this phase collects:
+   *   1. BAB contribution: sum of "base" type modifiers targeting "combatStats.bab"
+   *      from this class's level-gated levelProgression entries.
+   *   2. Save contributions: same logic for "saves.fort", "saves.ref", "saves.will".
+   *   3. Skill points: taken directly from phase4_skillPointsBudget.
+   *   4. Class skills: from the class Feature's `classSkills` array.
+   *   5. Granted features: from levelProgression entries up to classLevel.
+   *
+   * READS FROM:
+   *   - phase0_flatModifiers (source BAB and save increments per class)
+   *   - phase4_skillPointsBudget (correct per-class SP)
+   *   - DataLoader (feature labels and classSkills arrays)
+   */
+  phase4_levelingJournal: LevelingJournal = $derived.by(() => {
+    const flatMods = this.phase0_flatModifiers;
+    const budget = this.phase4_skillPointsBudget;
+    const classSPMap = new Map<ID, ClassSkillPointsEntry>(
+      budget.perClassBreakdown.map(e => [e.classId, e])
+    );
+
+    const perClassBreakdown: LevelingJournalClassEntry[] = [];
+
+    for (const [classId, classLevel] of Object.entries(this.character.classLevels)) {
+      if (classLevel < 1) continue;
+
+      // Get the class Feature definition for labels, classSkills, etc.
+      const classFeature = dataLoader.getFeature(classId);
+      const classLabel: LocalizedString = classFeature?.label ?? { en: classId, fr: classId };
+
+      // --- BAB and saves: sum all "base" type modifiers from this class source ---
+      //
+      // The modifier.sourceId tells us which class contributed each increment.
+      // We filter by sourceId = classId to get only THIS class's contributions.
+      // "base" type modifiers stack, so summing gives the correct total per class.
+      const babMods = flatMods.filter(
+        e => e.modifier.sourceId === classId
+          && e.modifier.targetId === 'combatStats.bab'
+          && e.modifier.type === 'base'
+          && !e.modifier.situationalContext
+      );
+      const fortMods = flatMods.filter(
+        e => e.modifier.sourceId === classId
+          && e.modifier.targetId === 'saves.fort'
+          && e.modifier.type === 'base'
+          && !e.modifier.situationalContext
+      );
+      const refMods = flatMods.filter(
+        e => e.modifier.sourceId === classId
+          && e.modifier.targetId === 'saves.ref'
+          && e.modifier.type === 'base'
+          && !e.modifier.situationalContext
+      );
+      const willMods = flatMods.filter(
+        e => e.modifier.sourceId === classId
+          && e.modifier.targetId === 'saves.will'
+          && e.modifier.type === 'base'
+          && !e.modifier.situationalContext
+      );
+
+      const totalBab  = babMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
+      const totalFort = fortMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
+      const totalRef  = refMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
+      const totalWill = willMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
+
+      // Skill points from the per-class SP budget (includes first-level bonus if applicable)
+      const spEntry = classSPMap.get(classId);
+      const totalSp         = spEntry?.totalPoints    ?? 0;
+      const spPerLevel      = spEntry?.spPerLevel     ?? 0;
+      const spPointsPerLevel = spEntry?.pointsPerLevel ?? 0;
+      const firstLevelBonus = spEntry?.firstLevelBonus ?? 0;
+
+      // Class skills from the Feature definition
+      const classSkills: ID[] = classFeature?.classSkills ?? [];
+      const classSkillLabels = classSkills.map(skillId => {
+        const skillDef = dataLoader.getFeature(skillId);
+        return {
+          id: skillId,
+          label: skillDef?.label ?? ({ en: skillId } as LocalizedString),
+        };
+      });
+
+      // Granted features from levelProgression up to classLevel
+      const grantedFeatureIds: string[] = [];
+      if (classFeature?.levelProgression) {
+        for (const entry of classFeature.levelProgression) {
+          if (entry.level <= classLevel) {
+            for (const fid of entry.grantedFeatures) {
+              if (fid && !fid.startsWith('-') && !grantedFeatureIds.includes(fid)) {
+                grantedFeatureIds.push(fid);
+              }
+            }
+          }
+        }
+      }
+
+      perClassBreakdown.push({
+        classId,
+        classLabel,
+        classLevel,
+        totalBab,
+        totalFort,
+        totalRef,
+        totalWill,
+        totalSp,
+        spPerLevel,
+        spPointsPerLevel,
+        firstLevelBonus,
+        classSkills,
+        classSkillLabels,
+        grantedFeatureIds,
+      });
+    }
+
+    const totalBab  = perClassBreakdown.reduce((s, e) => s + e.totalBab,  0);
+    const totalFort = perClassBreakdown.reduce((s, e) => s + e.totalFort, 0);
+    const totalRef  = perClassBreakdown.reduce((s, e) => s + e.totalRef,  0);
+    const totalWill = perClassBreakdown.reduce((s, e) => s + e.totalWill, 0);
+    const totalSp   = perClassBreakdown.reduce((s, e) => s + e.totalSp,   0)
+      + budget.totalBonusPoints;
+
+    return {
+      perClassBreakdown,
+      totalBab,
+      totalFort,
+      totalRef,
+      totalWill,
+      totalSp,
+      characterLevel: this.phase0_characterLevel,
+    };
+  });
+
+  /**
    * DAG Phase 4: Resolved skill pipelines.
    *
    * Computes the total value for every skill in character.skills.
@@ -1961,12 +2403,75 @@ export class GameEngine {
     }
   }
 
-  /** Sets the invested skill ranks for a skill pipeline. */
+  /**
+   * Sets the invested skill ranks for a skill pipeline.
+   *
+   * D&D 3.5 RULE — RANK FLOORS:
+   *   Skill ranks received at a given level are permanently spent — they cannot be
+   *   refunded and reallocated to a different skill after that level is committed.
+   *   The engine enforces this by refusing to set ranks below `character.minimumSkillRanks[skillId]`,
+   *   which is updated by `lockSkillRanksMin()` when a level-up is committed.
+   *
+   *   During CHARACTER CREATION (before any level-up is committed) the minimum is 0,
+   *   so ranks can be freely changed to help the player explore builds.
+   *
+   * @param skillId - The skill pipeline ID.
+   * @param ranks   - The desired rank count (clamped to [minimumRanks, maxRanks]).
+   */
   setSkillRanks(skillId: ID, ranks: number): void {
     if (this.character.skills[skillId]) {
-      this.character.skills[skillId].ranks = ranks;
+      // Enforce the minimum rank floor set by committed level-ups.
+      // `minimumSkillRanks` is optional (absent = all zeros = free reassignment).
+      const minimum = this.character.minimumSkillRanks?.[skillId] ?? 0;
+      const clamped = Math.max(minimum, Math.max(0, ranks));
+      this.character.skills[skillId].ranks = clamped;
     } else {
       console.warn(`[GameEngine] setSkillRanks: skill "${skillId}" not found.`);
+    }
+  }
+
+  /**
+   * Locks in the current skill ranks as the minimum floor for a given skill.
+   *
+   * WHEN TO CALL:
+   *   Call this on each skill whose ranks were modified during a level-up commit.
+   *   Once called for a skill, the player can never lower those ranks again (they
+   *   represent permanently spent skill points from that level).
+   *
+   * D&D 3.5 CONTEXT:
+   *   In core D&D 3.5, once a character has gained XP and leveled up, the skill
+   *   point allocation from past levels is considered "used". This method formalises
+   *   that constraint in the engine. For characters still in creation mode (no levels
+   *   committed), the minimum remains 0 and ranks can be freely changed.
+   *
+   * @param skillId - The skill pipeline ID whose current ranks become the new floor.
+   */
+  lockSkillRanksMin(skillId: ID): void {
+    if (!this.character.skills[skillId]) {
+      console.warn(`[GameEngine] lockSkillRanksMin: skill "${skillId}" not found.`);
+      return;
+    }
+    // Initialize the minimumSkillRanks record if absent.
+    if (!this.character.minimumSkillRanks) {
+      this.character.minimumSkillRanks = {};
+    }
+    const currentRanks = this.character.skills[skillId].ranks;
+    const existingMin = this.character.minimumSkillRanks[skillId] ?? 0;
+    // The minimum is the HIGHER of the current minimum and the current ranks.
+    // This prevents accidentally raising the minimum above the actual ranks.
+    this.character.minimumSkillRanks[skillId] = Math.max(existingMin, currentRanks);
+  }
+
+  /**
+   * Locks the minimum skill rank floor for ALL skills simultaneously.
+   *
+   * Convenience method for committing a full level-up that reallocated any
+   * number of skills. Call once at the end of a level-up flow after all
+   * skill rank adjustments have been finalised by the player.
+   */
+  lockAllSkillRanks(): void {
+    for (const skillId of Object.keys(this.character.skills)) {
+      this.lockSkillRanksMin(skillId);
     }
   }
 

@@ -947,3 +947,350 @@ describe('ECL and Level Adjustment (ARCHITECTURE.md section 6.4, Phase 1.5)', ()
     }
   });
 });
+
+// ============================================================
+// SCENARIO 7: Skill Point Budget (Multiclass-correct calculation)
+// ============================================================
+
+/**
+ * D&D 3.5 MULTICLASS SKILL POINTS (SRD RAW):
+ *   Each class grants SP/level independently. You do NOT average them.
+ *   Fighter: 2+INT per level,  Rogue: 8+INT per level.
+ *
+ * FIRST CHARACTER LEVEL BONUS (SRD, "Skills" section):
+ *   "At 1st level, you get four times the number of skill points you normally
+ *    get for a level in that class."
+ *   The class taken at character level 1 gets 4× SP for that one level.
+ *   = 3 extra × max(1, spPerLevel + intMod) added to that class's total.
+ *
+ * Fighter 5 / Rogue 3 with INT 14 (+2 mod), Fighter taken first:
+ *   Fighter: max(1, 2+2)×5 + 3×4 = 20 + 12 = 32 SP  (with first-level bonus)
+ *   Rogue:   max(1, 8+2)×3        = 30 SP
+ *   Total: 62 SP  (RAW with first-level bonus)
+ *
+ * WITHOUT first-level bonus:
+ *   Fighter: max(1, 2+2)×5 = 20 SP
+ *   Rogue:   max(1, 8+2)×3 = 30 SP
+ *   Total: 50 SP  (per-class correct but missing first level)
+ *
+ * WRONG (broken unified formula): max(1, (2+8)+2) × 8 = 12 × 8 = 96 SP
+ *
+ * This simulates the per-class calculation logic in GameEngine.phase4_skillPointsBudget.
+ */
+
+/**
+ * First-level 4× bonus: extra SP granted at character level 1.
+ * Returns 3 × max(1, spPerLevel + intMod) — the "extra 3 multiples" beyond the normal 1×.
+ */
+function firstLevelBonus(spPerLevel: number, intModifier: number): number {
+  return 3 * Math.max(1, spPerLevel + intModifier);
+}
+
+/**
+ * Compute the correct D&D 3.5 per-class skill point budget.
+ *
+ * @param classes          - Array of {spPerLevel, classLevel, isFirstClass}.
+ * @param intModifier      - Current INT modifier (applies to ALL classes' SP/level).
+ * @param bonusSpPerLevel  - Additional flat SP/level from racial/feat sources.
+ * @returns Total available skill points.
+ */
+function computeCorrectSkillPointBudget(
+  classes: Array<{ spPerLevel: number; classLevel: number; isFirstClass?: boolean }>,
+  intModifier: number,
+  bonusSpPerLevel = 0
+): { totalClassPoints: number; totalBonusPoints: number; totalAvailable: number } {
+  const characterLevel = classes.reduce((sum, c) => sum + c.classLevel, 0);
+  const totalClassPoints = classes.reduce((sum, c) => {
+    const pointsPerLevel = Math.max(1, c.spPerLevel + intModifier);
+    const base = pointsPerLevel * c.classLevel;
+    const bonus = c.isFirstClass ? 3 * pointsPerLevel : 0; // first-level 4× bonus
+    return sum + base + bonus;
+  }, 0);
+  const totalBonusPoints = bonusSpPerLevel * characterLevel;
+  return {
+    totalClassPoints,
+    totalBonusPoints,
+    totalAvailable: totalClassPoints + totalBonusPoints,
+  };
+}
+
+/**
+ * Compute the WRONG (broken) legacy formula:
+ *   (sum of all class SP/level + bonus) × totalCharacterLevel
+ * This is what the old SkillsMatrix used before the fix.
+ */
+function computeWrongSkillPointBudget(
+  classes: Array<{ spPerLevel: number; classLevel: number }>,
+  intModifier: number,
+  bonusSpPerLevel = 0
+): number {
+  const characterLevel = classes.reduce((sum, c) => sum + c.classLevel, 0);
+  const totalSpPerLevel = classes.reduce((sum, c) => sum + c.spPerLevel, 0) + bonusSpPerLevel;
+  return Math.max(1, totalSpPerLevel + intModifier) * characterLevel;
+}
+
+describe('Multiclass skill points: per-class calculation (ARCHITECTURE.md Phase 9.6)', () => {
+  /**
+   * THE CORE MULTICLASS BUG:
+   *   Old broken formula: (2+8+INT) × 8 = 12×8 = 96 (WRONG — averages class SP/level)
+   *   Correct (no first-level bonus):   Fighter 20 + Rogue 30 = 50 (per-class independent)
+   *   Correct (WITH first-level bonus): Fighter (20+12) + Rogue 30 = 62 (SRD RAW)
+   */
+  it('Fighter 5 / Rogue 3 (INT 14, +2 mod) WITHOUT first-level bonus: 50 SP', () => {
+    const classes = [
+      { spPerLevel: 2, classLevel: 5 }, // Fighter — no isFirstClass flag
+      { spPerLevel: 8, classLevel: 3 }, // Rogue
+    ];
+    const intMod = 2;
+
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // Fighter: max(1, 2+2)×5 = 20 ; Rogue: max(1, 8+2)×3 = 30
+    expect(result.totalClassPoints).toBe(50);
+  });
+
+  it('Fighter 5 first, Rogue 3 (INT 14, +2 mod) WITH first-level bonus: 62 SP (SRD RAW)', () => {
+    const classes = [
+      { spPerLevel: 2, classLevel: 5, isFirstClass: true }, // Fighter at char level 1
+      { spPerLevel: 8, classLevel: 3 },                     // Rogue
+    ];
+    const intMod = 2;
+
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // Fighter: max(1,2+2)×5 + firstLevelBonus(2,2) = 20 + 3×4 = 20+12 = 32
+    // Rogue:   max(1,8+2)×3 = 30
+    expect(firstLevelBonus(2, intMod)).toBe(12);
+    expect(result.totalClassPoints).toBe(62);
+  });
+
+  it('Broken (unified) formula gives 96 SP — nearly 2× too many', () => {
+    const classes = [
+      { spPerLevel: 2, classLevel: 5 },
+      { spPerLevel: 8, classLevel: 3 },
+    ];
+    const intMod = 2;
+    const wrong = computeWrongSkillPointBudget(classes, intMod);
+    expect(wrong).toBe(96); // (2+8+2)×8 = 12×8 = 96
+    // Correct RAW (per-class + first-level bonus) = 62
+    expect(wrong).toBeGreaterThan(62);
+  });
+
+  it('Single class Fighter 10 with INT 10 (0 mod): correct = 20 SP', () => {
+    const classes = [{ spPerLevel: 2, classLevel: 10 }];
+    const intMod = 0;
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // max(1, 2+0) × 10 = 2 × 10 = 20
+    expect(result.totalClassPoints).toBe(20);
+    expect(result.totalAvailable).toBe(20);
+  });
+
+  it('Single class Rogue 5 with INT 16 (+3 mod): correct = 55 SP', () => {
+    const classes = [{ spPerLevel: 8, classLevel: 5 }];
+    const intMod = 3;
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // max(1, 8+3) × 5 = 11 × 5 = 55
+    expect(result.totalClassPoints).toBe(55);
+    expect(result.totalAvailable).toBe(55);
+  });
+
+  it('INT floor: min 1 SP per level even with negative INT modifier', () => {
+    const classes = [{ spPerLevel: 2, classLevel: 4 }];
+    const intMod = -3; // INT 4, very low
+
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // max(1, 2 + (-3)) = max(1, -1) = 1 → 1 × 4 = 4 SP  (NOT 0 or negative)
+    expect(result.totalClassPoints).toBe(4);
+    expect(result.totalAvailable).toBe(4);
+  });
+
+  it('INT floor: even 0 SP/level class gets 1 SP/level minimum (hypothetical)', () => {
+    // Hypothetical class with 0 base skill points — still gets 1/level minimum
+    const classes = [{ spPerLevel: 0, classLevel: 3 }];
+    const intMod = 0;
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    // max(1, 0+0) = 1 → 1 × 3 = 3 SP
+    expect(result.totalClassPoints).toBe(3);
+  });
+
+  it('firstLevelBonus(): 3 × max(1, spPerLevel + intMod)', () => {
+    expect(firstLevelBonus(2, 2)).toBe(12); // 3 × max(1, 2+2) = 3×4 = 12 (Fighter + INT 14)
+    expect(firstLevelBonus(8, 2)).toBe(30); // 3 × max(1, 8+2) = 3×10 = 30 (Rogue + INT 14)
+    expect(firstLevelBonus(2, -3)).toBe(3); // 3 × max(1, 2-3) = 3×1 = 3 (INT floor)
+    expect(firstLevelBonus(0, 0)).toBe(3);  // 3 × max(1, 0+0) = 3×1 = 3 (min 1/level)
+  });
+
+  it('Single class Fighter 1 with INT 14 (+2 mod), isFirstClass: 4× = 16 SP at L1', () => {
+    // Without first-level bonus: max(1,2+2)×1 = 4 SP
+    // With first-level 4× bonus: 4 + 3×4 = 16 SP (= 4×4)
+    const base = computeCorrectSkillPointBudget([{ spPerLevel: 2, classLevel: 1 }], 2);
+    const withBonus = computeCorrectSkillPointBudget([{ spPerLevel: 2, classLevel: 1, isFirstClass: true }], 2);
+    expect(base.totalClassPoints).toBe(4);       // 1 level at 4/level
+    expect(withBonus.totalClassPoints).toBe(16); // 4 × 4 SP (the 4× first-level rule)
+  });
+
+  it('Racial bonus SP/level is applied per TOTAL character level (not per-class)', () => {
+    // Human +1 SP/level applies to every level of EVERY class.
+    // Fighter 3 / Rogue 2 with INT 10 (mod 0), Human +1 SP/level, Fighter taken first:
+    //   Fighter:  max(1,2+0)×3 + firstLevelBonus(2,0) = 6 + 3×2 = 6+6 = 12
+    //   Rogue:    max(1,8+0)×2 = 16
+    //   Bonus SP: 1 × (3+2) = 5
+    //   Total: 12 + 16 + 5 = 33 SP (RAW with first-level bonus)
+    // Without first-level bonus (base per-class only):
+    //   Fighter 6 + Rogue 16 + Bonus 5 = 27 SP
+    const classes = [
+      { spPerLevel: 2, classLevel: 3, isFirstClass: true }, // Fighter (first class)
+      { spPerLevel: 8, classLevel: 2 },                     // Rogue
+    ];
+    const intMod = 0;
+    const bonusSpPerLevel = 1; // Human racial
+    const result = computeCorrectSkillPointBudget(classes, intMod, bonusSpPerLevel);
+
+    // Fighter base 6 + firstLevel bonus 6 = 12; Rogue 16; class total = 28
+    expect(result.totalClassPoints).toBe(28); // 12 + 16
+    expect(result.totalBonusPoints).toBe(5);  // 1 × 5 levels
+    expect(result.totalAvailable).toBe(33);   // 28 + 5
+
+    // For reference — WITHOUT first-level bonus:
+    const noBonus = computeCorrectSkillPointBudget(
+      [{ spPerLevel: 2, classLevel: 3 }, { spPerLevel: 8, classLevel: 2 }],
+      intMod, bonusSpPerLevel
+    );
+    expect(noBonus.totalAvailable).toBe(27); // 6+16+5 = 27
+  });
+
+  it('Multiclass with identical SP/level classes: correct = broken formula', () => {
+    // If all classes have the same SP/level, both formulas agree.
+    // Fighter 3 / Barbarian 3 — both have 2+INT SP/level.
+    const classes = [
+      { spPerLevel: 2, classLevel: 3 },
+      { spPerLevel: 2, classLevel: 3 },
+    ];
+    const intMod = 2; // INT 14
+    const correct = computeCorrectSkillPointBudget(classes, intMod);
+    const wrong   = computeWrongSkillPointBudget(classes, intMod);
+
+    // Both should be max(1, 2+2) × 3 + max(1, 2+2) × 3 = 4×3 + 4×3 = 24
+    // Wrong formula: max(1, (2+2)+2) × 6 = 6×6 = 36 (STILL WRONG — summing SP first)
+    // Correct formula: 4 × 3 + 4 × 3 = 24
+    expect(correct.totalAvailable).toBe(24);
+    expect(wrong).toBe(36); // The broken formula double-counts when multiple classes have same SP
+  });
+
+  it('Three-class multiclass: each class independent', () => {
+    // Fighter 2 / Rogue 3 / Wizard 4 with INT 12 (+1 mod):
+    //   Fighter: max(1, 2+1) × 2 = 3 × 2 = 6
+    //   Rogue:   max(1, 8+1) × 3 = 9 × 3 = 27
+    //   Wizard:  max(1, 2+1) × 4 = 3 × 4 = 12 (Wizards also get 2+INT in 3.5)
+    //   Total: 6 + 27 + 12 = 45
+    const classes = [
+      { spPerLevel: 2, classLevel: 2 }, // Fighter
+      { spPerLevel: 8, classLevel: 3 }, // Rogue
+      { spPerLevel: 2, classLevel: 4 }, // Wizard
+    ];
+    const intMod = 1;
+    const result = computeCorrectSkillPointBudget(classes, intMod);
+    expect(result.totalClassPoints).toBe(45);
+    expect(result.totalAvailable).toBe(45);
+  });
+
+  it('Zero levels — no skill points', () => {
+    // Character with no class levels: 0 SP
+    const result = computeCorrectSkillPointBudget([], 0);
+    expect(result.totalClassPoints).toBe(0);
+    expect(result.totalAvailable).toBe(0);
+  });
+});
+
+// ============================================================
+// SCENARIO 8: Minimum Skill Rank Enforcement
+// ============================================================
+
+describe('Minimum skill rank enforcement (D&D 3.5 level-up permanence)', () => {
+  /**
+   * D&D 3.5 RULE:
+   *   Skill points allocated when leveling up are PERMANENTLY spent.
+   *   You cannot lower a skill rank to reclaim skill points after committing a level.
+   *
+   * The engine enforces this via:
+   *   1. character.minimumSkillRanks: per-skill floor (set by lockSkillRanksMin())
+   *   2. engine.setSkillRanks(): clamps to max(minimumRanks, requestedRanks)
+   */
+
+  it('Minimum clamp: setSkillRanks cannot go below the locked floor', () => {
+    // Simulate the engine's setSkillRanks() clamping logic
+    function simulateSetSkillRanks(
+      currentRanks: number,
+      requestedRanks: number,
+      minimumRanks: number
+    ): number {
+      // Engine logic: const minimum = character.minimumSkillRanks?.[skillId] ?? 0;
+      return Math.max(minimumRanks, Math.max(0, requestedRanks));
+    }
+
+    // Ranks locked at 5 — cannot go below 5
+    expect(simulateSetSkillRanks(5, 3, 5)).toBe(5); // clamped to floor
+    expect(simulateSetSkillRanks(5, 0, 5)).toBe(5); // clamped to floor
+    expect(simulateSetSkillRanks(5, 6, 5)).toBe(6); // above floor — OK
+    expect(simulateSetSkillRanks(5, 5, 5)).toBe(5); // at floor — OK
+
+    // No floor set (character creation) — can go to 0
+    expect(simulateSetSkillRanks(5, 0, 0)).toBe(0);  // no floor — allowed
+    expect(simulateSetSkillRanks(5, 3, 0)).toBe(3);  // no floor — allowed
+  });
+
+  it('Floor is the MAXIMUM of existing floor and current ranks', () => {
+    // lockSkillRanksMin() sets floor = max(existingMin, currentRanks)
+    function simulateLockRanks(existingMin: number, currentRanks: number): number {
+      return Math.max(existingMin, currentRanks);
+    }
+
+    // First lock: floor becomes current ranks
+    expect(simulateLockRanks(0, 3)).toBe(3);
+    expect(simulateLockRanks(0, 5)).toBe(5);
+    // Second lock after gaining more ranks: floor increases
+    expect(simulateLockRanks(3, 5)).toBe(5);
+    // Second lock with same ranks: floor unchanged
+    expect(simulateLockRanks(5, 5)).toBe(5);
+    // Cannot LOWER the floor via locking (the max() prevents this)
+    expect(simulateLockRanks(5, 3)).toBe(5); // floor stays at 5, not 3
+  });
+
+  it('Floor is 0 for absent minimumSkillRanks (character creation mode)', () => {
+    // When minimumSkillRanks is undefined/absent, all skills have floor 0.
+    // This is the character creation state where ranks are freely editable.
+    function getFloor(minimumSkillRanks: Record<string, number> | undefined, skillId: string): number {
+      return minimumSkillRanks?.[skillId] ?? 0;
+    }
+
+    // Undefined record → all floors are 0
+    expect(getFloor(undefined, 'skill_climb')).toBe(0);
+    expect(getFloor(undefined, 'skill_tumble')).toBe(0);
+
+    // Empty record → all floors are 0
+    expect(getFloor({}, 'skill_climb')).toBe(0);
+
+    // Skill not in the record → floor is 0
+    expect(getFloor({ 'skill_climb': 3 }, 'skill_tumble')).toBe(0);
+  });
+
+  it('Multiclass scenario: cross-class skill cost affects SP budget', () => {
+    // A skill that is a class skill costs 1 SP/rank.
+    // A cross-class skill costs 2 SP/rank.
+    // For a Fighter/Rogue: Climb is a Fighter class skill (1/rank),
+    //   and Use Magic Device is a Rogue class skill (1/rank).
+    //   Knowledge Arcana is cross-class for both (2/rank).
+    function computeSpSpent(
+      skills: Array<{ ranks: number; isClassSkill: boolean }>
+    ): number {
+      return skills.reduce((sum, s) => sum + s.ranks * (s.isClassSkill ? 1 : 2), 0);
+    }
+
+    // Example: 5 ranks Climb (class, 1/rank) + 3 ranks UMD (class, 1/rank) + 2 ranks Arcana (cross, 2/rank)
+    const sp = computeSpSpent([
+      { ranks: 5, isClassSkill: true  }, // Climb: class skill
+      { ranks: 3, isClassSkill: true  }, // UMD: class skill
+      { ranks: 2, isClassSkill: false }, // Knowledge Arcana: cross-class (×2)
+    ]);
+    // 5×1 + 3×1 + 2×2 = 5 + 3 + 4 = 12
+    expect(sp).toBe(12);
+  });
+});

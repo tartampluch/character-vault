@@ -449,3 +449,25 @@ _Goal: Elevate the entire UI to professional-grade quality. Replace all hand-wri
     - Verify the theme cookie is correctly read before first paint (no flash of wrong theme).
     - Verify the sidebar cookie persistence works (collapsed state survives page reload).
     - Smoke-test the complete user flow: landing → campaign hub → vault → character sheet → all 6 tabs → back to vault. Ensure no visual glitches, no broken layouts, no orphaned old styles.
+
+## Phase 20: Leveling Progression & Skill Points (SRD-Accurate Engine Corrections)
+
+_Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-class skill point budgets (including the first-level 4× bonus), minimum rank enforcement (permanently spent SP cannot be refunded), and a Leveling Journal UI that makes all per-class contributions transparent. All mechanics documented in ARCHITECTURE.md section 9.6._
+
+- [ ] **20.1 Per-class skill point budget (`phase4_skillPointsBudget`):** Add `SkillPointsBudget` `$derived` to `GameEngine`. Compute skill points independently per class using `max(1, spPerLevel + intMod) × classLevel` for each class. Apply the SRD first-level 4× bonus to the first class added (identified by JS key insertion order). Track racial/feat bonus SP (`attributes.bonus_skill_points_per_level`) separately, applied per total character level. Export `ClassSkillPointsEntry` (with `firstLevelBonus` and `totalPoints`) and `SkillPointsBudget` types.
+
+- [ ] **20.2 Minimum skill rank enforcement:** Add `minimumSkillRanks?: Record<ID, number>` to `Character` interface. Add `lockSkillRanksMin(skillId)`, `lockAllSkillRanks()` to `GameEngine`. Update `setSkillRanks()` to clamp to `max(minimumFloor, 0)`. Absent field = all floors 0 = free editing during character creation.
+
+- [ ] **20.3 `SkillsMatrix.svelte` updated:** Use `engine.phase4_skillPointsBudget` for budget display. Clamp rank inputs to `[minimumRanks, maxRanks]`. Show "Min" badge on locked rank floors. Add "Journal" button linking to the Leveling Journal modal.
+
+- [ ] **20.4 Leveling Journal Modal (`LevelingJournalModal.svelte`):** Create `src/lib/components/abilities/LevelingJournalModal.svelte`. Show overview table (all classes × BAB/Fort/Ref/Will/SP + totals row), per-class detail cards (SP formula with first-level bonus annotation, class skill badges, granted features), Lock/Unlock rank controls, first-level 4× info note, multiclass XP penalty warning with favored-class exemption. Add `IconJournal` (`BookOpen`) to `icons.ts`.
+
+- [ ] **20.5 `phase4_levelingJournal` derived:** Add `LevelingJournal` `$derived` to `GameEngine`. Collect per-class BAB/save totals from `phase0_flatModifiers` filtered by `modifier.sourceId`. Export `LevelingJournalClassEntry` and `LevelingJournal` types.
+
+- [ ] **20.6 i18n strings:** Add `journal.*` namespace and `skills.rank_locked*` / `skills.journal_*` keys to `src/lib/i18n/ui-strings.ts` (EN + FR).
+
+- [ ] **20.7 Vitest — Scenario 7 (per-class SP budget):** Extend `src/tests/multiclass.test.ts`. Add `computeCorrectSkillPointBudget()` (with `isFirstClass` flag) and `firstLevelBonus()` helpers. Test: first-level 4× on first class only, INT minimum floor, racial bonus per total level, three-class multiclass, proof that the pre-fix unified formula over-counts.
+
+- [ ] **20.8 Vitest — Scenario 8 (minimum rank enforcement):** Extend `src/tests/multiclass.test.ts`. Test: `setSkillRanks` floor clamping, `lockSkillRanksMin` max-merge, absent `minimumSkillRanks` defaults to 0, cross-class skill cost (2 SP/rank).
+
+- [ ] **20.9 Vitest — Character build scenario (`characterBuildScenario.test.ts`):** Create `src/tests/characterBuildScenario.test.ts`. Validate a complete Fighter 3 / Monk 3 / Psion 1 / Wizard 1 multiclass build verifying: character level (8), ECL (8), ability scores and ASI tracking (CON 17→19), BAB (+5), saves (Fort +10 / Ref +7 / Will +10), SP budget (50 SP RAW), feat slots (5), HP (75 with fixed dice, max at L1 then half+1), AC (15 unarmored with WIS Monk bonus), Wizard spells/day (3 cantrips / 2 first-level), psionic PP (3), class skill union, level-gated feature granting, multiclass XP penalty with favored-class exemption, caster/manifester level independence.

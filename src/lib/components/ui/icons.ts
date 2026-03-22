@@ -56,6 +56,7 @@ export { BookOpen   as IconSpells       } from 'lucide-svelte'; // Spells / Grim
 export { Zap        as IconAbilities    } from 'lucide-svelte'; // Special abilities / class features
 export { Languages  as IconLanguages    } from 'lucide-svelte'; // Languages section
 export { Scroll     as IconLore         } from 'lucide-svelte'; // Personal lore / backstory
+export { BookOpen   as IconJournal      } from 'lucide-svelte'; // Leveling journal / history
 export { Package    as IconInventory    } from 'lucide-svelte'; // Generic inventory item
 export { Coins      as IconWealth       } from 'lucide-svelte'; // Wealth / currency
 
