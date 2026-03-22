@@ -1170,7 +1170,7 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ### C-07 — Weapons (`06_d20srd_core_equipment_weapons.json`)
 
-- [ ] **C-07** — Convert all weapons (simple, martial, exotic)
+- [x] **C-07** — Convert all weapons (simple, martial, exotic)
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/weapons.html`
 **Context:** Read `ANNEXES.md` section A.5 (item examples) before starting.
