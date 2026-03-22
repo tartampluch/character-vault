@@ -15,13 +15,22 @@
  *   - 4d6 drop lowest: rollAllAbilityScores basic roll.
  *   - rerollOnes: 1s are rerolled when setting is enabled.
  *
+ * RollResult.targetPool — Vitality/Wound Points variant (Phase 2.5b):
+ *   - Standard mode: all rolls return targetPool = "res_hp".
+ *   - V/WP mode, normal hit: targetPool = "res_vitality".
+ *   - V/WP mode, crit threat on attack roll: targetPool = "res_wound_points".
+ *   - V/WP mode, context.isCriticalHit = true (separate damage roll): targetPool = "res_wound_points".
+ *   - V/WP mode, non-d20 damage roll with no crit flag: targetPool = "res_vitality".
+ *
  * @see src/lib/utils/diceEngine.ts
+ * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant
  * @see ARCHITECTURE.md section 17
  * @see ARCHITECTURE.md Phase 17.4
  */
 
 import { describe, it, expect } from 'vitest';
 import { parseAndRoll, rollAllAbilityScores } from '$lib/utils/diceEngine';
+import type { DamageTargetPool, RollContext } from '$lib/utils/diceEngine';
 import type { CampaignSettings } from '$lib/types/settings';
 import { createDefaultCampaignSettings } from '$lib/types/settings';
 import type { StatisticPipeline } from '$lib/types/pipeline';
@@ -419,5 +428,205 @@ describe('rollAllAbilityScores — 4d6 drop lowest', () => {
     expect(scores[3]).toBe(12);  // 4+4+4
     expect(scores[4]).toBe(15);  // 5+5+5
     expect(scores[5]).toBe(18);  // 6+6+6
+  });
+});
+
+// =============================================================================
+// RollResult.targetPool — Vitality/Wound Points variant (Phase 2.5b)
+//
+// ARCHITECTURE.md section 8.3:
+//   Standard mode (vitalityWoundPoints = false): ALL rolls return targetPool = "res_hp".
+//   V/WP mode (vitalityWoundPoints = true):
+//     Normal hit → targetPool = "res_vitality"
+//     Critical hit → targetPool = "res_wound_points"
+//     context.isCriticalHit = true (separate damage roll) → "res_wound_points"
+// =============================================================================
+
+/** Campaign settings with V/WP mode on. */
+const vwpSettings: CampaignSettings = {
+  ...createDefaultCampaignSettings(),
+  variantRules: {
+    vitalityWoundPoints: true,
+    gestalt: false,
+  },
+};
+
+describe('RollResult.targetPool — standard mode (vitalityWoundPoints = false)', () => {
+  /**
+   * In standard D&D 3.5, all damage routes to res_hp regardless of crit status.
+   * targetPool should always be "res_hp" when the flag is off.
+   */
+  it('attack roll (1d20, normal hit): targetPool = "res_hp"', () => {
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      defaultSettings, makeSequentialRng(15) // Natural 15 — normal hit
+    );
+    expect(result.targetPool).toBe('res_hp');
+  });
+
+  it('attack roll (1d20, crit threat nat 20): targetPool = "res_hp" in standard mode', () => {
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      defaultSettings, makeSequentialRng(20) // Natural 20 — crit threat
+    );
+    expect(result.isCriticalThreat).toBe(true); // Crit detected
+    expect(result.targetPool).toBe('res_hp');   // But still hp in standard mode
+  });
+
+  it('damage roll (2d6, no crit): targetPool = "res_hp"', () => {
+    const result = parseAndRoll(
+      '2d6', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      defaultSettings, makeSequentialRng(4, 3) // [4, 3] = 7 damage
+    );
+    expect(result.targetPool).toBe('res_hp');
+  });
+
+  it('damage roll with context.isCriticalHit = true: still "res_hp" in standard mode', () => {
+    const critContext: RollContext = {
+      targetTags: [],
+      isAttackOfOpportunity: false,
+      isCriticalHit: true,
+    };
+    const result = parseAndRoll(
+      '2d6', makePipeline(), critContext,
+      defaultSettings, makeSequentialRng(5, 5)
+    );
+    // isCriticalHit is set but standard mode means we still use res_hp
+    expect(result.targetPool).toBe('res_hp');
+  });
+});
+
+describe('RollResult.targetPool — Vitality/Wound Points mode (vitalityWoundPoints = true)', () => {
+  /**
+   * V/WP mode changes where damage goes based on crit status.
+   * @see ARCHITECTURE.md section 8.3 — Critical Hit Damage Routing
+   */
+
+  it('normal attack roll (nat 15): targetPool = "res_vitality"', () => {
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      vwpSettings, makeSequentialRng(15)
+    );
+    expect(result.isCriticalThreat).toBe(false);
+    expect(result.targetPool).toBe('res_vitality');
+  });
+
+  it('critical threat attack (nat 20): targetPool = "res_wound_points"', () => {
+    /**
+     * SRD V/WP rule: "A critical hit deals the same amount of damage as a normal
+     * hit, but that damage is deducted from wound points rather than vitality points."
+     * (vitalityAndWoundPoints.html)
+     */
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      vwpSettings, makeSequentialRng(20)
+    );
+    expect(result.isCriticalThreat).toBe(true);
+    expect(result.targetPool).toBe('res_wound_points');
+  });
+
+  it('crit range 18-20: nat 18 is a crit threat → targetPool = "res_wound_points"', () => {
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      vwpSettings, makeSequentialRng(18), '18-20'
+    );
+    expect(result.isCriticalThreat).toBe(true);
+    expect(result.targetPool).toBe('res_wound_points');
+  });
+
+  it('crit range 18-20: nat 17 is NOT a crit → targetPool = "res_vitality"', () => {
+    const result = parseAndRoll(
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
+      vwpSettings, makeSequentialRng(17), '18-20'
+    );
+    expect(result.isCriticalThreat).toBe(false);
+    expect(result.targetPool).toBe('res_vitality');
+  });
+
+  it('separate damage roll for confirmed crit (context.isCriticalHit = true): → "res_wound_points"', () => {
+    /**
+     * TWO-ROLL COMBAT FLOW (ARCHITECTURE.md section 8.3):
+     *   1. Attack roll: parseAndRoll("1d20") → isCriticalThreat = true.
+     *   2. Player confirms the crit.
+     *   3. Damage roll: parseAndRoll("2d6", ..., { isCriticalHit: true }) → routes to WP.
+     *
+     * On a pure damage roll ("2d6"), isCriticalThreat is always false (no d20 rolled).
+     * The context.isCriticalHit flag is the only way to signal a confirmed crit
+     * for damage routing purposes.
+     */
+    const critDamageContext: RollContext = {
+      targetTags: [],
+      isAttackOfOpportunity: false,
+      isCriticalHit: true, // Caller signals this damage roll is for a confirmed crit
+    };
+    const result = parseAndRoll(
+      '2d6', makePipeline(), critDamageContext,
+      vwpSettings, makeSequentialRng(5, 3) // [5, 3] = 8 damage
+    );
+    expect(result.isCriticalThreat).toBe(false); // No d20 on damage roll
+    expect(result.finalTotal).toBe(8);           // Normal damage amount (no multiplier in V/WP)
+    expect(result.targetPool).toBe('res_wound_points'); // Routes to WP
+  });
+
+  it('separate damage roll, NOT a crit (context.isCriticalHit = false): → "res_vitality"', () => {
+    const normalDamageContext: RollContext = {
+      targetTags: [],
+      isAttackOfOpportunity: false,
+      isCriticalHit: false,
+    };
+    const result = parseAndRoll(
+      '1d8', makePipeline(), normalDamageContext,
+      vwpSettings, makeSequentialRng(6)
+    );
+    expect(result.targetPool).toBe('res_vitality');
+  });
+
+  it('separate damage roll, isCriticalHit absent: treats as normal hit → "res_vitality"', () => {
+    // When isCriticalHit is absent (undefined), falls back to isCriticalThreat (false for non-d20)
+    const noFlagContext: RollContext = {
+      targetTags: [],
+      isAttackOfOpportunity: false,
+      // isCriticalHit intentionally absent
+    };
+    const result = parseAndRoll(
+      '1d8', makePipeline(), noFlagContext,
+      vwpSettings, makeSequentialRng(7)
+    );
+    expect(result.targetPool).toBe('res_vitality'); // No crit → vitality
+  });
+
+  it('targetPool is the correct enum type (DamageTargetPool)', () => {
+    // Type check: ensure the field carries a valid DamageTargetPool value.
+    const r1 = parseAndRoll('1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, makeSequentialRng(10));
+    const r2 = parseAndRoll('1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false }, vwpSettings, makeSequentialRng(10));
+    const r3 = parseAndRoll('1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false }, vwpSettings, makeSequentialRng(20));
+
+    const validValues: DamageTargetPool[] = ['res_hp', 'res_vitality', 'res_wound_points'];
+    expect(validValues).toContain(r1.targetPool);
+    expect(validValues).toContain(r2.targetPool);
+    expect(validValues).toContain(r3.targetPool);
+
+    expect(r1.targetPool).toBe('res_hp');
+    expect(r2.targetPool).toBe('res_vitality');
+    expect(r3.targetPool).toBe('res_wound_points');
+  });
+});
+
+describe('DamageTargetPool — createDefaultCampaignSettings initialises V/WP flag correctly', () => {
+  it('default settings have vitalityWoundPoints = false', () => {
+    const settings = createDefaultCampaignSettings();
+    expect(settings.variantRules.vitalityWoundPoints).toBe(false);
+  });
+
+  it('default settings have gestalt = false', () => {
+    const settings = createDefaultCampaignSettings();
+    expect(settings.variantRules.gestalt).toBe(false);
+  });
+
+  it('V/WP flag can be toggled independently of gestalt', () => {
+    const settings = createDefaultCampaignSettings();
+    settings.variantRules.vitalityWoundPoints = true;
+    expect(settings.variantRules.vitalityWoundPoints).toBe(true);
+    expect(settings.variantRules.gestalt).toBe(false); // gestalt unchanged
   });
 });

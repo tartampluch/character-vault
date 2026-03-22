@@ -178,6 +178,49 @@ export interface CampaignSettings {
    */
   variantRules: {
     /**
+     * Vitality and Wound Points system (Unearthed Arcana variant).
+     *
+     * D&D 3.5 VARIANT RULE:
+     *   Replaces the standard hit point system with two separate resource pools:
+     *   - **Vitality Points (VP)**: Represents the ability to avoid real harm; gained
+     *     per level using the class vitality die. Most damage depletes VP first.
+     *   - **Wound Points (WP)**: Represents true physical damage; equals the character's
+     *     current Constitution score. Only reduced by critical hits or when VP hits 0.
+     *
+     * CRITICAL HIT DAMAGE ROUTING:
+     *   In standard D&D 3.5, a critical hit multiplies damage and routes it to HP.
+     *   In the V/WP system, a critical hit routes the SAME (non-multiplied) damage
+     *   directly to Wound Points, bypassing Vitality Points entirely. There is no
+     *   critical multiplier — the danger of crits comes from targeting WP directly.
+     *   This is the key mechanical change requiring engine support.
+     *
+     * ENGINE IMPLEMENTATION (Phase 2.5b):
+     *   When `vitalityWoundPoints === true`, `parseAndRoll()` in `diceEngine.ts` sets
+     *   `RollResult.targetPool` based on the roll's critical status:
+     *     - Normal damage: `targetPool = "res_vitality"`
+     *     - Critical hit damage: `targetPool = "res_wound_points"`
+     *   The Combat UI reads `targetPool` to apply damage to the correct ResourcePool.
+     *
+     * RESOURCE POOLS REQUIRED (content authors must create these):
+     *   - `resources.vitality_points`:  resetCondition "long_rest", maxPipelineId points
+     *                                   to a VP max pipeline (class vitality die + CON).
+     *   - `resources.wound_points`:     equals current Constitution score.
+     *
+     * OVERFLOW HANDLING (Combat UI concern, not engine):
+     *   When `resources.vitality_points.currentValue === 0`, the Combat UI redirects
+     *   ALL subsequent damage (even non-crits) to `resources.wound_points`.
+     *   The dice engine only provides the INITIAL routing based on crit status.
+     *
+     * @default false
+     *
+     * @see RollResult.targetPool — the field carrying the routing decision
+     * @see DamageTargetPool — the enum: "res_hp" | "res_vitality" | "res_wound_points"
+     * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant documentation
+     * @see src/lib/utils/diceEngine.ts — parseAndRoll() targetPool computation
+     */
+    vitalityWoundPoints: boolean;
+
+    /**
      * Gestalt characters (Unearthed Arcana "Gestalt Characters" variant).
      *
      * D&D 3.5 VARIANT RULE:
@@ -317,6 +360,10 @@ export function createDefaultCampaignSettings(): CampaignSettings {
       explodingTwenties: false,
     },
     variantRules: {
+      // Vitality/Wound Points (Unearthed Arcana): off by default.
+      // When enabled, parseAndRoll() routes crit damage to res_wound_points.
+      // @see CampaignSettings.variantRules.vitalityWoundPoints for full documentation.
+      vitalityWoundPoints: false,
       // Gestalt characters (Unearthed Arcana): off by default.
       // When enabled, BAB and saves use max-per-level instead of sum across classes.
       // @see CampaignSettings.variantRules.gestalt for full documentation.

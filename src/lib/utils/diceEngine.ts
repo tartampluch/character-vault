@@ -54,6 +54,37 @@ import type { StatisticPipeline } from '../types/pipeline';
 import type { CampaignSettings } from '../types/settings';
 
 // =============================================================================
+// DAMAGE ROUTING — Vitality/Wound Points variant target pool enum
+// =============================================================================
+
+/**
+ * Identifies which ResourcePool receives the damage from a roll result.
+ *
+ * STANDARD HP MODE (default):
+ *   All damage routes to `"res_hp"` regardless of crit status.
+ *
+ * VITALITY/WOUND POINTS MODE (`settings.variantRules.vitalityWoundPoints === true`):
+ *   Normal hits:   damage routes to `"res_vitality"`
+ *   Critical hits: damage routes to `"res_wound_points"` (same amount, different pool)
+ *   After vitality reaches 0: subsequent normal damage routes to `"res_wound_points"`
+ *     (this overflow routing is handled by the Combat UI, not the dice engine)
+ *
+ * The dice engine always sets the INITIAL routing based on the roll outcome.
+ * The Combat UI (Phase 10.1) may redirect routing if vitality is already at 0.
+ *
+ * @see RollResult.targetPool — the field on RollResult that carries this value
+ * @see CampaignSettings.variantRules.vitalityWoundPoints — the flag that enables V/WP mode
+ * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant documentation
+ */
+export type DamageTargetPool =
+  /** Standard D&D 3.5: all damage to the main HP resource pool. Default. */
+  | 'res_hp'
+  /** V/WP variant: normal hits reduce Vitality Points (standard pool). */
+  | 'res_vitality'
+  /** V/WP variant: critical hits (and overflow when VP = 0) reduce Wound Points. */
+  | 'res_wound_points';
+
+// =============================================================================
 // ROLL CONTEXT — Target information for situational bonuses
 // =============================================================================
 
@@ -108,6 +139,32 @@ export interface RollContext {
    * target tags before matching. The engine appends it to `targetTags` internally.
    */
   isAttackOfOpportunity: boolean;
+
+  /**
+   * Optional flag indicating this is a damage roll for a CONFIRMED critical hit.
+   *
+   * PURPOSE — Two-Roll Combat Flow:
+   *   In D&D 3.5, attack and damage are separate rolls:
+   *     1. Attack roll → `isCriticalThreat` signals a threat (natural 20 or within critRange).
+   *     2. Optional: confirmation roll (some tables require it).
+   *     3. Damage roll → caller passes `isCriticalHit: true` if the crit was confirmed.
+   *
+   * ON A DAMAGE ROLL ("2d6", "1d8"), there is no d20, so `isCriticalThreat` is always `false`.
+   * Setting `isCriticalHit: true` is the ONLY way to signal a confirmed critical for damage
+   * pool routing in the Vitality/Wound Points variant.
+   *
+   * DAMAGE ROUTING IN V/WP MODE:
+   *   - `isCriticalHit: true` → `targetPool = "res_wound_points"` (critical hit → wound pool)
+   *   - `isCriticalHit: false` or absent → use `isCriticalThreat` from the roll itself.
+   *     For non-d20 rolls, `isCriticalThreat` is false → `targetPool = "res_vitality"`.
+   *
+   * Ignored in standard HP mode (`variantRules.vitalityWoundPoints === false`).
+   *
+   * @default undefined (absent = check isCriticalThreat from the roll)
+   * @see RollResult.targetPool — uses this to determine routing
+   * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points combat flow
+   */
+  isCriticalHit?: boolean;
 }
 
 // =============================================================================
@@ -205,6 +262,34 @@ export interface RollResult {
    * Note: If exploding 20s are active and the first roll is 1, this is still a fumble.
    */
   isAutomaticMiss: boolean;
+
+  /**
+   * The resource pool ID that should receive the damage from this roll.
+   *
+   * STANDARD MODE (CampaignSettings.variantRules.vitalityWoundPoints === false):
+   *   Always `"res_hp"`. The standard hit point pool takes all damage.
+   *
+   * VITALITY/WOUND POINTS MODE (variantRules.vitalityWoundPoints === true):
+   *   `"res_vitality"`:     Normal hit — damage reduces Vitality Points.
+   *   `"res_wound_points"`: Critical hit — damage reduces Wound Points directly.
+   *
+   *   The Combat UI uses this field to route the damage to the correct ResourcePool
+   *   without needing to re-examine the crit flag after the fact.
+   *
+   *   NOTE: Vitality overflow (when VP hits 0 and further damage must go to wound
+   *   points) is handled separately by the Combat UI after applying the damage.
+   *   The dice engine only provides the INITIAL routing decision based on crit status.
+   *
+   * ONLY SET FOR DAMAGE ROLLS. For attack rolls, saves, and skill checks,
+   * this field is `"res_hp"` as a reasonable default (it is ignored by the UI
+   * for non-damage rolls).
+   *
+   * @see DamageTargetPool — the enum type for this field
+   * @see CampaignSettings.variantRules.vitalityWoundPoints — the activating flag
+   * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant documentation
+   * @see ARCHITECTURE.md Phase 2.5b — task tracking
+   */
+  targetPool: DamageTargetPool;
 }
 
 // =============================================================================
@@ -338,14 +423,14 @@ function defaultRng(faces: number): number {
  * @param formula     - The dice expression. Examples: "1d20", "2d6 + 3", "1d8 + 1d6"
  * @param pipeline    - The relevant pipeline (used for staticBonus and situationalModifiers).
  * @param context     - Roll context: target tags and action type for situational matching.
- * @param settings    - Campaign settings (explodingTwenties, etc.).
+ * @param settings    - Campaign settings (explodingTwenties, variantRules, etc.).
  * @param rng         - Optional injectable RNG for testing. Default: Math.random-based.
  * @param critRange   - Optional weapon critical threat range string (e.g., "19-20", "18-20").
  *                      If provided, the engine parses it and uses it to determine `isCriticalThreat`.
  *                      If absent, defaults to "20" (natural 20 only, standard D&D 3.5 behavior).
  *                      This enables weapons like longswords (19-20) and scimitars (18-20) to
  *                      correctly flag critical threats without caller-side workarounds.
- * @returns A fully structured `RollResult`.
+ * @returns A fully structured `RollResult` including `targetPool` for damage routing.
  */
 export function parseAndRoll(
   formula: string,
@@ -467,6 +552,39 @@ export function parseAndRoll(
   const isAutomaticHit = isD20Roll && effectiveFirstRoll >= 20;
   const isAutomaticMiss = isD20Roll && firstD20Roll === 1;
 
+  // --- Step 6: Determine damage target pool (Vitality/Wound Points variant) ---
+  //
+  // VITALITY/WOUND POINTS VARIANT (ARCHITECTURE.md section 8.3):
+  //   When `settings.variantRules?.vitalityWoundPoints` is true, damage rolls are
+  //   routed to different resource pools based on hit type:
+  //     - Normal hit:   → res_vitality   (standard body resilience)
+  //     - Critical hit: → res_wound_points (represents a telling blow bypassing VP)
+  //
+  //   In standard mode (flag false/absent), ALL damage routes to res_hp.
+  //
+  //   NOTE: This field is meaningful primarily for DAMAGE rolls. For attack rolls
+  //   (and saves/skills), the targetPool is set but ignored by the Combat UI.
+  //   The caller may pass `isCriticalHit: true` in the RollContext when a confirmed
+  //   crit is being rolled for damage — this is a separate call from the attack roll.
+  //   In practice: attack roll determines isCriticalThreat (+ confirmation in SRD),
+  //   damage roll uses `context.isCriticalHit` (if present) for pool routing.
+  //
+  // @see DamageTargetPool — the enum type
+  // @see ARCHITECTURE.md section 8.3 — full V/WP rules
+  const isVWPMode = settings.variantRules?.vitalityWoundPoints === true;
+  // Use context.isCriticalHit if provided (damage roll for a confirmed crit).
+  // Fall back to isCriticalThreat for simple cases (combined attack+damage rolls).
+  const isConfirmedCrit = context.isCriticalHit ?? isCriticalThreat;
+
+  let targetPool: DamageTargetPool;
+  if (!isVWPMode) {
+    targetPool = 'res_hp';
+  } else if (isConfirmedCrit) {
+    targetPool = 'res_wound_points';
+  } else {
+    targetPool = 'res_vitality';
+  }
+
   return {
     formula,
     diceRolls,
@@ -478,6 +596,7 @@ export function parseAndRoll(
     isCriticalThreat,
     isAutomaticHit,
     isAutomaticMiss,
+    targetPool,
   };
 }
 

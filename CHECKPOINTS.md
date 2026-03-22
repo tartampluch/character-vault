@@ -17,8 +17,11 @@ Review the following aspects specifically:
 - Is `derivedModifier` present on `StatisticPipeline`?
 - Does `Character` have `classLevels`, `gmOverrides`, and all UI metadata fields?
 - Does `Character` have `levelAdjustment: number` (default 0) and `xp: number` (default 0) as per Architecture section 6 / Phase 1.5?
-- Does `CampaignSettings` have a `variantRules: { gestalt: boolean }` block per Architecture section 8.1 / Phase 2.5a?
-- Does `createDefaultCampaignSettings()` initialize `variantRules: { gestalt: false }`?
+- Does `CampaignSettings` have a `variantRules: { vitalityWoundPoints: boolean; gestalt: boolean }` block per Architecture section 8.1 / Phase 2.5a–b?
+- Does `createDefaultCampaignSettings()` initialize `variantRules: { vitalityWoundPoints: false, gestalt: false }`?
+- Does `RollResult` have a required `targetPool: DamageTargetPool` field per Architecture section 8.3 / Phase 2.5b?
+- Is `DamageTargetPool` exported from `diceEngine.ts` as `"res_hp" | "res_vitality" | "res_wound_points"`?
+- Does `RollContext` have an optional `isCriticalHit?: boolean` field per Phase 2.5b?
 - Does `ResourcePool.resetCondition` include ALL six values: `"long_rest"`, `"short_rest"`, `"encounter"`, `"never"`, `"per_turn"`, `"per_round"` per Architecture section 4.4 / Phase 1.6?
 - Does `ResourcePool` have an optional `rechargeAmount?: number | string` field per Phase 1.6?
 - Does `Campaign` have `gmGlobalOverrides`, `updatedAt`, `enabledRuleSources`, and `chapters`?
@@ -90,7 +93,14 @@ Review the following aspects specifically:
 - Does it filter `situationalModifiers` by matching `situationalContext` against `RollContext.targetTags`?
 - Does `RollResult` include `numberOfExplosions`?
 
-### 5a. Gestalt Utility (Phase 2.5a)
+### 5a. Vitality/Wound Points (Phase 2.5b)
+- Does `parseAndRoll()` with `settings.variantRules.vitalityWoundPoints = false` return `targetPool = "res_hp"` for all rolls (standard mode)?
+- Does `parseAndRoll()` with `vitalityWoundPoints = true` and a normal hit return `targetPool = "res_vitality"`?
+- Does `parseAndRoll()` with `vitalityWoundPoints = true` and `isCriticalThreat = true` (forced natural 20 on d20) return `targetPool = "res_wound_points"`?
+- Does `parseAndRoll()` with `vitalityWoundPoints = true` and `context.isCriticalHit = true` (separate damage roll for confirmed crit) return `targetPool = "res_wound_points"`, even when the damage roll itself has no d20 (non-crit dice)?
+- Does a non-d20 damage roll (`"2d6"`) in standard mode return `targetPool = "res_hp"`?
+
+### 5b. Gestalt Utility (Phase 2.5a)
 - Does `src/lib/utils/gestaltRules.ts` export `computeGestaltBase(mods, classLevels, characterLevel)`?
 - Does `computeGestaltBase()` return standard sum (not max) when only ONE class contributes?
 - Does `computeGestaltBase()` apply max-per-level then sum when TWO+ classes contribute?
@@ -631,6 +641,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 7. **Section 7 (Campaign):** Does the `Campaign` interface match including `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
 8. **Section 8.1/8.2 (Gestalt variant):** Does `CampaignSettings.variantRules.gestalt` exist per Phase 2.5a? Does `gestaltRules.ts` export `computeGestaltBase()`, `isGestaltAffectedPipeline()`, `GESTALT_AFFECTED_PIPELINES`? Does GameEngine Phase 3.7 apply gestalt max-per-level for BAB/saves when the flag is true? Is HP still additive in gestalt mode?
+9. **Section 8.3 (V/WP variant):** Does `CampaignSettings.variantRules.vitalityWoundPoints` exist per Phase 2.5b? Does `RollResult.targetPool` correctly route to `"res_hp"` / `"res_vitality"` / `"res_wound_points"` based on crit status and variant flag? Is `DamageTargetPool` exported? Does `RollContext.isCriticalHit?` exist for two-roll combat flow?
 
 8. **Section 8 (Settings):** Does `CampaignSettings` match including `statGeneration`, `diceRules`, `enabledRuleSources`?
 

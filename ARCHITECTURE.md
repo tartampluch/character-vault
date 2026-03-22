@@ -1326,6 +1326,11 @@ export interface CampaignSettings {
 
     // 4. Variant rules — flags that change core engine behaviour (default all false)
     variantRules: {
+        // Vitality/Wound Points (UA): crit damage routes to res_wound_points.
+        // RollResult.targetPool = "res_vitality" | "res_wound_points" | "res_hp"
+        // @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant
+        // @see DamageTargetPool in diceEngine.ts — the routing enum
+        vitalityWoundPoints: boolean;
         // Gestalt Characters (UA): BAB/saves use max-per-level instead of sum.
         // @see ARCHITECTURE.md section 8.2 — Gestalt variant documentation
         // @see src/lib/utils/gestaltRules.ts — computeGestaltBase() implementation
@@ -1349,6 +1354,7 @@ The `variantRules` block in `CampaignSettings` collects flags that require **eng
 
 | Flag | Default | Engine Effect |
 |---|:---:|---|
+| `vitalityWoundPoints` | `false` | Dice Engine: `RollResult.targetPool` set to `"res_vitality"`/`"res_wound_points"` based on crit |
 | `gestalt` | `false` | Phase 3: BAB/saves use max-per-level instead of additive sum |
 
 ### 8.2. Gestalt Characters Variant (`variantRules.gestalt`)
@@ -1419,6 +1425,96 @@ When `settings.variantRules.gestalt === true`, Phase 3 of the GameEngine splits 
 When `gestalt === false` (default), both pipelines use the standard path: all modifiers go to `applyStackingRules()` which sums them (because `"base"` is in `ALWAYS_STACKING_TYPES`).
 
 > **AI Implementation Note (Phase 3.7):** The gestalt flag is checked once at the top of `phase3_combatStats` (read from `this.settings.variantRules?.gestalt ?? false`). For each pipeline, `isGestaltAffectedPipeline(pipelineId)` determines if the gestalt path applies. Only `"base"` type modifiers are separated; all other modifier types go through standard stacking in both modes.
+
+### 8.3. Vitality and Wound Points Variant (`variantRules.vitalityWoundPoints`)
+
+**Source:** Unearthed Arcana "Vitality and Wound Points" (SRD variant rules, `aventuring/vitalityAndWoundPoints.html`).
+
+This variant replaces the standard hit point system with TWO separate resource pools. It creates a more cinematic combat experience: characters are hard to kill outright on normal hits, but a lucky critical strike can bring down even a powerful character in one blow.
+
+#### The Two Resource Pools
+
+| Pool | Standard analogue | Refilled by | Reduced by |
+|---|---|---|---|
+| **Vitality Points** (`res_vitality`) | Hit Points | Long rest (like VP die roll at level-up) | Normal hits, most damage |
+| **Wound Points** (`res_wound_points`) | (none) | Healing only | Critical hits; overflow when VP = 0 |
+
+- **Vitality Points (VP)**: Gained per level using the class vitality die (d4–d12, same as the class hit die). Equal to class die + CON modifier at each level. Can be recovered with an 8-hour rest. Represents the ability to turn a hit into a glancing blow.
+- **Wound Points (WP)**: Equal to the character's **current Constitution score** (not modifier — the score itself). Represents actual physical damage. Very slow to recover.
+
+#### Critical Hit Damage Routing — The Key Rule
+
+In standard D&D 3.5: critical hits multiply damage (`×2`, `×3`, `×4`) and route it to HP.
+
+In V/WP mode:
+- **Critical hits route the SAME (non-multiplied) damage** directly to **Wound Points**, bypassing Vitality Points. There is NO critical multiplier.
+- This is why crits are so dangerous: even a Fighter with 50 VP can be one-shot by a crit if their WP (= CON score) is low.
+
+| Scenario | Standard HP | V/WP Vitality | V/WP Wound |
+|---|---|---|---|
+| Normal hit, 8 damage | −8 HP | −8 VP | 0 WP |
+| Critical (×2), 8 damage | −16 HP | 0 VP | −8 WP |
+| Critical (×3), 8 damage | −24 HP | 0 VP | −8 WP |
+| Overflow (VP = 0), 8 damage | −8 HP | 0 (already 0) | −8 WP |
+
+#### `DamageTargetPool` — The Routing Enum
+
+```typescript
+type DamageTargetPool =
+  | "res_hp"           // Standard mode: all damage here
+  | "res_vitality"     // V/WP mode: normal hit → vitality points
+  | "res_wound_points" // V/WP mode: critical hit → wound points
+```
+
+#### Algorithm in `parseAndRoll()` (Phase 2.5b)
+
+When `settings.variantRules.vitalityWoundPoints === true`:
+
+1. `isVWPMode = true`
+2. Check `context.isCriticalHit` (caller explicitly signals this is a confirmed-crit damage roll) OR fall back to `isCriticalThreat` (combined attack+damage rolls).
+3. If confirmed crit: `targetPool = "res_wound_points"`
+4. Otherwise: `targetPool = "res_vitality"`
+
+When `vitalityWoundPoints === false` (default): `targetPool = "res_hp"` always.
+
+#### Overflow Handling (Combat UI Responsibility)
+
+When `res_vitality.currentValue === 0`, the Combat UI redirects ALL subsequent damage — even normal hits — to `res_wound_points`. The dice engine only determines the **initial routing** based on crit status. This overflow check is a Combat Tab (Phase 10.1) concern.
+
+#### `RollContext.isCriticalHit` — Two-Roll Combat Flow
+
+In standard D&D 3.5 combat, attack and damage are separate rolls:
+1. **Attack roll** → determines `isCriticalThreat` (and crit confirmation, if applicable).
+2. **Damage roll** → caller passes `context.isCriticalHit: true` if the attack was a confirmed crit.
+
+The `isCriticalHit` field on `RollContext` is optional (`boolean | undefined`). When present and `true`, it overrides `isCriticalThreat` (which is always `false` on a damage roll) for pool routing.
+
+#### Required Content (JSON data)
+
+For V/WP mode to work, each character needs these ResourcePools in their character data:
+
+```json
+// Vitality Points pool — replaces res_hp for normal damage
+{
+  "id": "resources.vitality_points",
+  "label": { "en": "Vitality Points" },
+  "maxPipelineId": "combatStats.max_vitality",
+  "currentValue": 0,
+  "temporaryValue": 0,
+  "resetCondition": "long_rest"
+}
+// Wound Points pool — equals current Constitution score
+{
+  "id": "resources.wound_points",
+  "label": { "en": "Wound Points" },
+  "maxPipelineId": "attributes.stat_con.totalValue",
+  "currentValue": 0,
+  "temporaryValue": 0,
+  "resetCondition": "never"
+}
+```
+
+> **AI Implementation Note (Combat Tab Phase 10.1):** When `settings.variantRules.vitalityWoundPoints` is `true`, the Combat Tab must: (1) display BOTH `resources.vitality_points` AND `resources.wound_points` bars. (2) After applying any damage: if `vitality_points.currentValue` dropped to 0 and there is remaining damage, apply the rest to `wound_points`. (3) Read `RollResult.targetPool` on damage rolls to route to the initial pool. (4) Apply the Wound damage consequences (Fatigued on first wound, Fortitude save DC 5+WP_lost or Stunned).
 
 ---
 
@@ -1733,7 +1829,13 @@ _Suggested target file: `src/lib/utils/diceEngine.ts`_
 export interface RollContext {
     targetTags: string[]; // E.g.: ["orc", "evil", "living"]
     isAttackOfOpportunity: boolean;
+    // Optional: set to true on damage rolls for a confirmed crit (for V/WP pool routing)
+    isCriticalHit?: boolean;
 }
+
+// Damage routing for Vitality/Wound Points variant. Default: "res_hp".
+// "res_vitality": normal hit in V/WP mode. "res_wound_points": crit or VP overflow.
+export type DamageTargetPool = "res_hp" | "res_vitality" | "res_wound_points";
 
 export interface RollResult {
     formula: string;
@@ -1746,6 +1848,10 @@ export interface RollResult {
     isCriticalThreat: boolean;
     isAutomaticHit: boolean;
     isAutomaticMiss: boolean;
+    // Which ResourcePool receives the damage. "res_hp" in standard mode.
+    // "res_vitality" / "res_wound_points" when variantRules.vitalityWoundPoints = true.
+    // @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points variant
+    targetPool: DamageTargetPool;
 }
 
 /**
@@ -1753,15 +1859,15 @@ export interface RollResult {
  *
  * @param formula - The dice expression already resolved by the Math Parser (e.g.: "1d20 + 7").
  * @param pipeline - The relevant StatisticPipeline, providing situationalModifiers to evaluate.
- * @param context - The roll context (target tags, action type) to filter situational bonuses.
- * @param settings - The campaign configuration (Exploding 20s, Reroll 1s, etc.).
+ * @param context - The roll context (target tags, action type, optional isCriticalHit flag).
+ * @param settings - The campaign configuration (Exploding 20s, Reroll 1s, variantRules, etc.).
  * @param rng - (Optional) Injectable random generation function for unit tests.
  *             Default: () => Math.floor(Math.random() * faces) + 1
  * @param critRange - (Optional) The weapon's critical threat range as a string.
  *                   Format: "X-20" or "20". Default: "20" (natural 20 only).
  *                   Examples: "19-20" (keen longsword), "18-20" (improved crit rapier).
  *                   Parsed to determine `isCriticalThreat` on the RollResult.
- * @returns A structured RollResult object containing all roll details.
+ * @returns A structured RollResult including `targetPool` for damage routing.
  */
 export function parseAndRoll(
     formula: string,
@@ -1776,6 +1882,8 @@ export function parseAndRoll(
 **Contextual Evaluation:** Before finalizing the result, the Dice Engine reads `situationalModifiers` from the provided pipeline. It compares each `situationalContext` with the `targetTags` in the `RollContext`. If there's a match (e.g.: `"vs_orc"` matches `"orc"` in the tags), it adds the bonus to `situationalBonusApplied`.
 
 **Exploding 20s:** If `settings.diceRules.explodingTwenties` is active, the function implements a `while (lastRoll === 20)` loop for d20s. Each new 20 is added to `naturalTotal` and increments `numberOfExplosions`.
+
+**Vitality/Wound Points Routing:** If `settings.variantRules.vitalityWoundPoints` is active, `parseAndRoll()` sets `RollResult.targetPool` based on crit status. See section 8.3.
 
 ---
 
