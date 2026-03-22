@@ -1,0 +1,1956 @@
+[
+  {
+    "id": "item_backpack",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Backpack (empty)", "fr": "Sac à dos (vide)" },
+    "description": { "en": "A leather backpack used to carry equipment.", "fr": "Un sac à dos en cuir pour transporter son équipement." },
+    "tags": ["item", "gear", "container", "item_backpack"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_barrel",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Barrel (empty)", "fr": "Tonneau (vide)" },
+    "description": { "en": "A large wooden barrel for storing liquids or dry goods.", "fr": "Un grand tonneau en bois pour stocker des liquides ou des marchandises sèches." },
+    "tags": ["item", "gear", "container", "item_barrel"],
+    "equipmentSlot": "none",
+    "weightLbs": 30,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_basket",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Basket (empty)", "fr": "Panier (vide)" },
+    "description": { "en": "A woven basket for carrying light goods.", "fr": "Un panier tressé pour transporter des marchandises légères." },
+    "tags": ["item", "gear", "container", "item_basket"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.4,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bedroll",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bedroll", "fr": "Rouleau de couchage" },
+    "description": { "en": "Blankets and a pad that you unfurl to make a sleeping space.", "fr": "Des couvertures et une natte que l'on déploie pour dormir." },
+    "tags": ["item", "gear", "item_bedroll"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bell",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bell", "fr": "Cloche" },
+    "description": { "en": "A small metal bell, useful for signaling or alarms.", "fr": "Une petite cloche en métal, utile pour la signalisation ou les alarmes." },
+    "tags": ["item", "gear", "item_bell"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_blanket_winter",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Blanket, winter", "fr": "Couverture d'hiver" },
+    "description": { "en": "A thick wool blanket suitable for cold weather camping.", "fr": "Une épaisse couverture en laine adaptée au camping par temps froid." },
+    "tags": ["item", "gear", "item_blanket_winter"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_block_and_tackle",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Block and tackle", "fr": "Palan" },
+    "description": { "en": "A set of pulleys used to lift or haul heavy loads with reduced effort.", "fr": "Un système de poulies utilisé pour soulever ou tirer des charges lourdes avec moins d'effort." },
+    "tags": ["item", "gear", "item_block_and_tackle"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bottle_wine_glass",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bottle, wine, glass", "fr": "Bouteille de vin (verre)" },
+    "description": { "en": "An empty glass wine bottle.", "fr": "Une bouteille de vin en verre vide." },
+    "tags": ["item", "gear", "container", "item_bottle_wine_glass"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bucket",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bucket (empty)", "fr": "Seau (vide)" },
+    "description": { "en": "A wooden or metal bucket for carrying water or other liquids.", "fr": "Un seau en bois ou en métal pour transporter de l'eau ou d'autres liquides." },
+    "tags": ["item", "gear", "container", "item_bucket"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_caltrops",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Caltrops", "fr": "Chausse-trapes" },
+    "description": {
+      "en": "A 2-pound bag of four-pronged iron spikes scattered on the ground to slow enemies. Covers a 5-ft. square. Creatures moving through the area may be attacked (base attack +0); on a hit the creature's speed is halved for 24 hours. A charging creature must stop immediately.",
+      "fr": "Un sac de 2 livres de pointes de fer à quatre branches dispersées sur le sol pour ralentir les ennemis. Couvre une case de 1,5 m. Les créatures qui traversent la zone peuvent être attaquées (bonus d'attaque +0) ; en cas de touche, leur vitesse est réduite de moitié pendant 24 heures. Une créature qui charge doit s'arrêter immédiatement."
+    },
+    "tags": ["item", "gear", "item_caltrops"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_candle",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Candle", "fr": "Bougie" },
+    "description": { "en": "Dimly illuminates a 5-ft. radius and burns for 1 hour.", "fr": "Éclaire faiblement dans un rayon de 1,5 m et brûle pendant 1 heure." },
+    "tags": ["item", "gear", "item_candle"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0.01,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_canvas",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Canvas (sq. yd.)", "fr": "Toile (mètre carré)" },
+    "description": { "en": "A square yard of sturdy canvas for making shelters, sails, or bags.", "fr": "Un mètre carré de toile solide pour faire des abris, des voiles ou des sacs." },
+    "tags": ["item", "gear", "item_canvas"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_case_map_scroll",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Case, map or scroll", "fr": "Étui à cartes ou parchemins" },
+    "description": { "en": "A cylindrical leather case for protecting maps or scrolls.", "fr": "Un étui cylindrique en cuir pour protéger les cartes ou les parchemins." },
+    "tags": ["item", "gear", "container", "item_case_map_scroll"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_chain_10ft",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Chain (10 ft.)", "fr": "Chaîne (3 m)" },
+    "description": {
+      "en": "A 10-foot length of iron chain. Hardness 10, 5 hit points. Can be burst with a DC 26 Strength check.",
+      "fr": "Une chaîne en fer de 3 m. Solidité 10, 5 points de vie. Peut être brisée par un test de Force DD 26."
+    },
+    "tags": ["item", "gear", "item_chain_10ft"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 30,
+    "hardness": 10,
+    "hpMax": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_chalk",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Chalk, 1 piece", "fr": "Craie (1 morceau)" },
+    "weightLbs": 0,
+    "costGp": 0.01,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_chest",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Chest (empty)", "fr": "Coffre (vide)" },
+    "description": { "en": "A sturdy wooden chest for storing valuables.", "fr": "Un coffre en bois solide pour stocker des objets de valeur." },
+    "tags": ["item", "gear", "container", "item_chest"],
+    "equipmentSlot": "none",
+    "weightLbs": 25,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_crowbar",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Crowbar", "fr": "Pied-de-biche" },
+    "description": {
+      "en": "Grants a +2 circumstance bonus on Strength checks made for prying purposes. If used in combat, treat as a one-handed improvised weapon dealing bludgeoning damage equal to a club of its size.",
+      "fr": "Accorde un bonus de circonstance de +2 aux tests de Force pour faire levier. En combat, traiter comme une arme improvisée à une main infligeant des dégâts contondants équivalents à un gourdin de sa taille."
+    },
+    "tags": ["item", "gear", "item_crowbar"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_firewood",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Firewood (per day)", "fr": "Bois de chauffage (par jour)" },
+    "weightLbs": 20,
+    "costGp": 0.01,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_fishhook",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fishhook", "fr": "Hameçon" },
+    "weightLbs": 0,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_fishing_net",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fishing net, 25 sq. ft.", "fr": "Filet de pêche (2,3 m²)" },
+    "description": { "en": "A 25-square-foot net for catching fish.", "fr": "Un filet de 2,3 m² pour attraper des poissons." },
+    "tags": ["item", "gear", "item_fishing_net"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 4,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_flask",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Flask (empty)", "fr": "Flacon (vide)" },
+    "description": { "en": "A glass or ceramic flask, holds about a pint of liquid.", "fr": "Un flacon en verre ou en céramique, contient environ une chopine de liquide." },
+    "tags": ["item", "gear", "container", "item_flask"],
+    "equipmentSlot": "none",
+    "weightLbs": 1.5,
+    "costGp": 0.03,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_flint_and_steel",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Flint and steel", "fr": "Briquet (silex et acier)" },
+    "description": { "en": "Used to start fires. Lighting a torch with flint and steel is a full-round action.", "fr": "Utilisé pour allumer des feux. Allumer une torche avec un briquet est une action complexe." },
+    "tags": ["item", "gear", "item_flint_and_steel"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_grappling_hook",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Grappling hook", "fr": "Grappin" },
+    "description": { "en": "Throwing a grappling hook requires a Use Rope check (DC 10, +2 per 10 feet of distance thrown).", "fr": "Lancer un grappin nécessite un test d'Utilisation de corde (DD 10, +2 par tranche de 3 m de distance)." },
+    "tags": ["item", "gear", "item_grappling_hook"],
+    "equipmentSlot": "none",
+    "weightLbs": 4,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_hammer_tool",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hammer", "fr": "Marteau (outil)" },
+    "description": { "en": "A carpenter's or builder's hammer. If used in combat, treat as a one-handed improvised weapon dealing bludgeoning damage equal to a spiked gauntlet of its size.", "fr": "Un marteau de charpentier ou de constructeur. En combat, traiter comme une arme improvisée à une main." },
+    "tags": ["item", "gear", "item_hammer_tool"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ink",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ink (1 oz. vial)", "fr": "Encre (flacon de 30 ml)" },
+    "description": { "en": "Black ink. Other colors cost twice as much.", "fr": "Encre noire. Les autres couleurs coûtent deux fois plus cher." },
+    "tags": ["item", "gear", "item_ink"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 8,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_inkpen",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Inkpen", "fr": "Plume" },
+    "weightLbs": 0,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_jug_clay",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Jug, clay", "fr": "Cruche en argile" },
+    "description": { "en": "A ceramic jug fitted with a stopper; holds 1 gallon of liquid.", "fr": "Une cruche en céramique avec bouchon, contient 4 litres de liquide." },
+    "tags": ["item", "gear", "container", "item_jug_clay"],
+    "equipmentSlot": "none",
+    "weightLbs": 9,
+    "costGp": 0.03,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ladder_10ft",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ladder, 10-foot", "fr": "Échelle (3 m)" },
+    "weightLbs": 20,
+    "costGp": 0.05,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lamp_common",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lamp, common", "fr": "Lampe ordinaire" },
+    "description": { "en": "Clearly illuminates a 15-ft. radius, provides shadowy illumination to 30 ft. Burns 6 hours on a pint of oil.", "fr": "Illumine clairement dans un rayon de 4,5 m, avec une illumination ténébreuse jusqu'à 9 m. Brûle 6 heures avec une chopine d'huile." },
+    "tags": ["item", "gear", "item_lamp_common"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lantern_bullseye",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lantern, bullseye", "fr": "Lanterne à longue portée" },
+    "description": { "en": "Provides clear illumination in a 60-ft. cone and shadowy illumination in a 120-ft. cone. Burns 6 hours per pint of oil.", "fr": "Éclaire clairement dans un cône de 18 m et de façon ténébreuse dans un cône de 36 m. Brûle 6 heures par chopine d'huile." },
+    "tags": ["item", "gear", "item_lantern_bullseye"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 12,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lantern_hooded",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lantern, hooded", "fr": "Lanterne à capote" },
+    "description": { "en": "Clearly illuminates a 30-ft. radius and provides shadowy illumination in a 60-ft. radius. Burns 6 hours per pint of oil.", "fr": "Illumine clairement dans un rayon de 9 m et de façon ténébreuse dans un rayon de 18 m. Brûle 6 heures par chopine d'huile." },
+    "tags": ["item", "gear", "item_lantern_hooded"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 7,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lock_simple",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lock (very simple)", "fr": "Serrure (très simple)" },
+    "description": { "en": "A very simple lock. DC 20 Open Lock check to pick.", "fr": "Une serrure très simple. DD 20 en Crochetage pour l'ouvrir." },
+    "tags": ["item", "gear", "item_lock_simple"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 20,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lock_average",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lock (average)", "fr": "Serrure (ordinaire)" },
+    "description": { "en": "An average lock. DC 25 Open Lock check to pick.", "fr": "Une serrure ordinaire. DD 25 en Crochetage pour l'ouvrir." },
+    "tags": ["item", "gear", "item_lock_average"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 40,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lock_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lock (good)", "fr": "Serrure (bonne)" },
+    "description": { "en": "A good lock. DC 30 Open Lock check to pick.", "fr": "Une bonne serrure. DD 30 en Crochetage pour l'ouvrir." },
+    "tags": ["item", "gear", "item_lock_good"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 80,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_lock_amazing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Lock (amazing)", "fr": "Serrure (extraordinaire)" },
+    "description": { "en": "An amazing lock. DC 40 Open Lock check to pick.", "fr": "Une serrure extraordinaire. DD 40 en Crochetage pour l'ouvrir." },
+    "tags": ["item", "gear", "item_lock_amazing"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 150,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_manacles",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Manacles", "fr": "Menottes" },
+    "description": {
+      "en": "Binds a Medium creature. Escape Artist DC 30 to slip free; Strength DC 26 to break. Hardness 10, 10 hp.",
+      "fr": "Entrave une créature de taille Moyenne. Acrobaties DD 30 pour se libérer ; Force DD 26 pour briser. Solidité 10, 10 pv."
+    },
+    "tags": ["item", "gear", "item_manacles"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 15,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_manacles_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Manacles, masterwork", "fr": "Menottes de maître" },
+    "description": {
+      "en": "Superior manacles. Escape Artist DC 35 to slip free; Strength DC 28 to break. Hardness 10, 10 hp.",
+      "fr": "Menottes supérieures. Acrobaties DD 35 pour se libérer ; Force DD 28 pour briser. Solidité 10, 10 pv."
+    },
+    "tags": ["item", "gear", "item_manacles_masterwork"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 50,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_mirror_small_steel",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mirror, small steel", "fr": "Petit miroir d'acier" },
+    "description": { "en": "A small polished steel mirror, useful for signaling or checking around corners.", "fr": "Un petit miroir en acier poli, utile pour les signaux ou pour regarder dans les angles." },
+    "tags": ["item", "gear", "item_mirror_small_steel"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_mug_clay",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mug/Tankard, clay", "fr": "Mug/Chope en argile" },
+    "weightLbs": 1,
+    "costGp": 0.02,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_oil_flask",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Oil (1-pint flask)", "fr": "Huile (flacon d'une chopine)" },
+    "description": {
+      "en": "A pint of lamp oil. Burns for 6 hours in a lantern. Can be used as a splash weapon (10-ft. range increment, 50% chance to ignite). Poured and lit, deals 1d3 fire damage for 2 rounds in a 5-ft. area.",
+      "fr": "Une chopine d'huile de lampe. Brûle 6 heures dans une lanterne. Peut être utilisée comme arme à éclaboussures (facteur de portée 3 m, 50% de chances de s'enflammer). Versée et enflammée, inflige 1d3 dégâts de feu pendant 2 rounds dans une zone de 1,5 m."
+    },
+    "tags": ["item", "gear", "item_oil_flask"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_paper",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Paper (sheet)", "fr": "Papier (feuille)" },
+    "weightLbs": 0,
+    "costGp": 0.4,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_parchment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Parchment (sheet)", "fr": "Parchemin (feuille)" },
+    "weightLbs": 0,
+    "costGp": 0.2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_pick_miners",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Pick, miner's", "fr": "Pioche" },
+    "description": { "en": "A heavy iron pick used for mining and breaking stone.", "fr": "Une lourde pioche en fer utilisée pour l'exploitation minière et la casse de pierres." },
+    "tags": ["item", "gear", "item_pick_miners"],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 3,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_pitcher_clay",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Pitcher, clay", "fr": "Pichet en argile" },
+    "weightLbs": 5,
+    "costGp": 0.02,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_piton",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Piton", "fr": "Piton" },
+    "description": { "en": "A metal spike hammered into rock or wood for climbing or to attach ropes.", "fr": "Un crampon métallique enfoncé dans la roche ou le bois pour l'escalade ou pour fixer des cordes." },
+    "tags": ["item", "gear", "item_piton"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_pole_10ft",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Pole, 10-foot", "fr": "Perche (3 m)" },
+    "weightLbs": 8,
+    "costGp": 0.2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_pot_iron",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Pot, iron", "fr": "Marmite en fer" },
+    "weightLbs": 10,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_pouch_belt",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Pouch, belt (empty)", "fr": "Bourse de ceinture (vide)" },
+    "description": { "en": "A small leather pouch worn on the belt.", "fr": "Une petite bourse en cuir portée à la ceinture." },
+    "tags": ["item", "gear", "container", "item_pouch_belt"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ram_portable",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ram, portable", "fr": "Bélier portatif" },
+    "description": {
+      "en": "This iron-shod wooden beam gives a +2 circumstance bonus on Strength checks to break open a door and allows a second person to help without rolling, increasing the bonus by 2.",
+      "fr": "Cette poutre en bois ferrée donne un bonus de circonstance de +2 aux tests de Force pour enfoncer une porte et permet à une deuxième personne d'aider sans jet, augmentant le bonus de 2."
+    },
+    "tags": ["item", "gear", "item_ram_portable"],
+    "equipmentSlot": "none",
+    "weightLbs": 20,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_rations_trail",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rations, trail (per day)", "fr": "Rations de voyage (par jour)" },
+    "description": { "en": "Jerky, dried fruit, and hard biscuit. One day's worth of food.", "fr": "Viande séchée, fruits secs et biscuits durs. Une journée de nourriture." },
+    "tags": ["item", "gear", "food", "item_rations_trail"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_rope_hempen",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rope, hempen (50 ft.)", "fr": "Corde de chanvre (15 m)" },
+    "description": { "en": "2 hit points. Can be burst with a DC 23 Strength check.", "fr": "2 points de vie. Peut être brisée par un test de Force DD 23." },
+    "tags": ["item", "gear", "item_rope_hempen"],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 1,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_rope_silk",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rope, silk (50 ft.)", "fr": "Corde de soie (15 m)" },
+    "description": {
+      "en": "4 hit points. Can be burst with a DC 24 Strength check. So supple it provides a +2 circumstance bonus on Use Rope checks.",
+      "fr": "4 points de vie. Peut être brisée par un test de Force DD 24. Si souple qu'elle accorde un bonus de circonstance de +2 aux tests d'Utilisation de corde."
+    },
+    "tags": ["item", "gear", "item_rope_silk"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 10,
+    "hpMax": 4,
+    "grantedModifiers": [
+      {
+        "id": "rope_silk_use_rope",
+        "sourceId": "item_rope_silk",
+        "sourceName": { "en": "Rope, silk", "fr": "Corde de soie" },
+        "targetId": "skill_use_rope",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sack",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sack (empty)", "fr": "Sac (vide)" },
+    "weightLbs": 0.5,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sealing_wax",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sealing wax", "fr": "Cire à cacheter" },
+    "weightLbs": 1,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sewing_needle",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sewing needle", "fr": "Aiguille à coudre" },
+    "weightLbs": 0,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_signal_whistle",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Signal whistle", "fr": "Sifflet" },
+    "weightLbs": 0,
+    "costGp": 0.8,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_signet_ring",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Signet ring", "fr": "Bague de sceau" },
+    "description": { "en": "A ring engraved with a personal or family seal used to stamp wax seals.", "fr": "Une bague gravée d'un sceau personnel ou familial utilisée pour sceller la cire." },
+    "tags": ["item", "gear", "item_signet_ring"],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sledge",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sledge", "fr": "Masse" },
+    "description": { "en": "A heavy hammer for breaking stone or driving spikes.", "fr": "Un lourd marteau pour casser la roche ou enfoncer des pitons." },
+    "tags": ["item", "gear", "item_sledge"],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_soap",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Soap (per lb.)", "fr": "Savon (par livre)" },
+    "weightLbs": 1,
+    "costGp": 0.5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_spade_shovel",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spade or shovel", "fr": "Bêche ou pelle" },
+    "description": { "en": "An iron-bladed digging tool.", "fr": "Un outil de terrassement à lame de métal." },
+    "tags": ["item", "gear", "item_spade_shovel"],
+    "equipmentSlot": "none",
+    "weightLbs": 8,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_spyglass",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spyglass", "fr": "Longue-vue" },
+    "description": {
+      "en": "Objects viewed through a spyglass are magnified to twice their size, granting a +2 circumstance bonus on Spot checks to observe distant creatures or objects.",
+      "fr": "Les objets vus à travers une longue-vue sont agrandis deux fois, accordant un bonus de circonstance de +2 aux tests d'Observation pour voir des créatures ou des objets éloignés."
+    },
+    "tags": ["item", "gear", "item_spyglass"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 1000,
+    "grantedModifiers": [
+      {
+        "id": "spyglass_spot",
+        "sourceId": "item_spyglass",
+        "sourceName": { "en": "Spyglass", "fr": "Longue-vue" },
+        "targetId": "skill_spot",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_tent",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tent", "fr": "Tente" },
+    "description": { "en": "A simple canvas tent providing shelter for up to two Small or Medium creatures.", "fr": "Une tente en toile simple offrant un abri pour deux créatures Petites ou Moyennes." },
+    "tags": ["item", "gear", "item_tent"],
+    "equipmentSlot": "none",
+    "weightLbs": 20,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_torch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Torch", "fr": "Torche" },
+    "description": { "en": "Burns 1 hour; clearly illuminates 20-ft. radius, shadowy illumination to 40 ft. Used in combat as an improvised weapon dealing bludgeoning damage as a gauntlet plus 1 fire damage.", "fr": "Brûle 1 heure ; illumine clairement dans un rayon de 6 m, illumination ténébreuse jusqu'à 12 m. En combat, arme improvisée infligeant des dégâts contondants comme un gantelet plus 1 de feu." },
+    "tags": ["item", "gear", "item_torch"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.01,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_vial",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Vial, ink or potion", "fr": "Fiole (encre ou potion)" },
+    "description": { "en": "Holds 1 ounce of liquid. Usually no more than 1 inch wide and 3 inches high.", "fr": "Contient 30 ml de liquide. Généralement pas plus de 2,5 cm de large et 7,5 cm de haut." },
+    "tags": ["item", "gear", "container", "item_vial"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_waterskin",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Waterskin", "fr": "Outre" },
+    "description": { "en": "A leather pouch for carrying water or other liquid, holds about 1 quart.", "fr": "Une poche en cuir pour transporter de l'eau ou un autre liquide, contient environ 1 litre." },
+    "tags": ["item", "gear", "container", "item_waterskin"],
+    "equipmentSlot": "none",
+    "weightLbs": 4,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_whetstone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Whetstone", "fr": "Pierre à aiguiser" },
+    "weightLbs": 1,
+    "costGp": 0.02,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_acid",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Acid (flask)", "fr": "Acide (flacon)" },
+    "description": {
+      "en": "Thrown as a splash weapon (ranged touch attack, 10-ft. range increment). Direct hit deals 1d6 acid damage; every creature within 5 ft. takes 1 acid damage from the splash.",
+      "fr": "Lancé comme une arme à éclaboussures (attaque de contact à distance, facteur de portée 3 m). Un toucher direct inflige 1d6 dégâts acides ; chaque créature dans un rayon de 1,5 m subit 1 dégât acide de l'éclaboussure."
+    },
+    "tags": ["item", "gear", "alchemical", "splash_weapon", "item_acid"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_alchemists_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Alchemist's fire (flask)", "fr": "Feu d'alchimiste (flacon)" },
+    "description": {
+      "en": "Thrown as a splash weapon (ranged touch, 10-ft. range increment). Direct hit: 1d6 fire damage; splash 1 fire damage within 5 ft. Target continues burning for 1d6 fire damage next round (DC 15 Reflex to extinguish).",
+      "fr": "Lancé comme une arme à éclaboussures (contact à distance, facteur de portée 3 m). Toucher direct : 1d6 dégâts de feu ; éclaboussure 1 dégât de feu dans un rayon de 1,5 m. La cible continue de brûler pour 1d6 feu au round suivant (Réflexes DD 15 pour éteindre)."
+    },
+    "tags": ["item", "gear", "alchemical", "splash_weapon", "item_alchemists_fire"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 20,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_antitoxin",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Antitoxin (vial)", "fr": "Antitoxine (vial)" },
+    "description": {
+      "en": "If you drink antitoxin, you gain a +5 alchemical bonus on Fortitude saves against poison for 1 hour.",
+      "fr": "Si vous buvez l'antitoxine, vous obtenez un bonus alchimique de +5 aux jets de Vigueur contre le poison pendant 1 heure."
+    },
+    "tags": ["item", "gear", "alchemical", "consumable", "item_antitoxin"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 50,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_everburning_torch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Everburning torch", "fr": "Torche perpétuelle" },
+    "description": {
+      "en": "A torch with a continual flame spell cast upon it. Clearly illuminates a 20-ft. radius and provides shadowy illumination out to 40 ft. Never burns out.",
+      "fr": "Une torche sur laquelle a été lancé un sort de flamme continue. Illumine clairement dans un rayon de 6 m et de façon ténébreuse jusqu'à 12 m. Ne s'éteint jamais."
+    },
+    "tags": ["item", "gear", "magic_item", "item_everburning_torch"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 110,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_holy_water",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Holy water (flask)", "fr": "Eau bénite (flacon)" },
+    "description": {
+      "en": "Damages undead creatures and evil outsiders. Thrown as a splash weapon (ranged touch, 10-ft. range increment). Direct hit: 2d4 damage to undead or evil outsiders; splash 1 damage within 5 ft.",
+      "fr": "Blesse les morts-vivants et les extérieurs mauvais. Lancée comme une arme à éclaboussures (contact à distance, facteur de portée 3 m). Toucher direct : 2d4 dégâts contre les morts-vivants ou les extérieurs mauvais ; éclaboussure 1 dégât dans un rayon de 1,5 m."
+    },
+    "tags": ["item", "gear", "splash_weapon", "item_holy_water"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 25,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_smokestick",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smokestick", "fr": "Bâton fumigène" },
+    "description": {
+      "en": "When ignited, instantly creates thick opaque smoke filling a 10-ft. cube (as fog cloud; dissipates in 1 round in moderate wind). Consumed after 1 round.",
+      "fr": "Lorsqu'il est allumé, crée instantanément une épaisse fumée opaque remplissant un cube de 3 m (comme nuage de brouillard ; se dissipe en 1 round par vent modéré). Consommé après 1 round."
+    },
+    "tags": ["item", "gear", "alchemical", "consumable", "item_smokestick"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 20,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sunrod",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sunrod", "fr": "Baguette lumineuse" },
+    "description": {
+      "en": "When struck, glows brightly for 6 hours. Clearly illuminates a 30-ft. radius and provides shadowy illumination to 60 ft.",
+      "fr": "Lorsqu'elle est frappée, brille vivement pendant 6 heures. Illumine clairement dans un rayon de 9 m et de façon ténébreuse jusqu'à 18 m."
+    },
+    "tags": ["item", "gear", "alchemical", "item_sunrod"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_tanglefoot_bag",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tanglefoot bag", "fr": "Sachet gluant" },
+    "description": {
+      "en": "Ranged touch attack (10-ft. range increment). Entangles target on hit: −2 attack rolls, −4 Dexterity. DC 15 Reflex or stuck to floor (unable to move). DC 17 Strength or 15 damage to break free. Goo dissolves after 2d4 rounds.",
+      "fr": "Attaque de contact à distance (facteur de portée 3 m). En cas de touche, enchevêtre la cible : −2 jets d'attaque, −4 Dextérité. Réflexes DD 15 ou collé au sol. Force DD 17 ou 15 dégâts pour se libérer. La glu se désagrège après 2d4 rounds."
+    },
+    "tags": ["item", "gear", "alchemical", "consumable", "item_tanglefoot_bag"],
+    "equipmentSlot": "none",
+    "weightLbs": 4,
+    "costGp": 50,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_thunderstone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Thunderstone", "fr": "Pierre du tonnerre" },
+    "description": {
+      "en": "Thrown as a ranged attack (20-ft. range increment). Creates a deafening bang (sonic). DC 15 Fortitude or deafened for 1 hour (−4 initiative, 20% spell failure) for all creatures within 10-ft. radius.",
+      "fr": "Lancée comme une attaque à distance (facteur de portée 6 m). Crée un bang assourdissant (sonique). Vigueur DD 15 ou assourdissement pendant 1 heure (−4 initiative, 20% de risque d'échec de sort) dans un rayon de 3 m."
+    },
+    "tags": ["item", "gear", "alchemical", "consumable", "item_thunderstone"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 30,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_tindertwig",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tindertwig", "fr": "Allumette alchimique" },
+    "description": {
+      "en": "Lights when struck against a rough surface. Lighting a torch with a tindertwig is a standard action (not a full-round action).",
+      "fr": "S'allume quand on la frotte contre une surface rugueuse. Allumer une torche avec une allumette alchimique est une action standard (et non une action complexe)."
+    },
+    "tags": ["item", "gear", "alchemical", "consumable", "item_tindertwig"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_alchemists_lab",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Alchemist's lab", "fr": "Laboratoire d'alchimiste" },
+    "description": {
+      "en": "Has the perfect tools for making alchemical items, providing a +2 circumstance bonus on Craft (alchemy) checks. Without this lab, a character is assumed to have enough tools to use the skill but not enough to get the bonus.",
+      "fr": "Dispose des outils parfaits pour fabriquer des objets alchimiques, accordant un bonus de circonstance de +2 aux tests d'Artisanat (alchimie). Sans ce laboratoire, un personnage est supposé avoir assez d'outils pour utiliser la compétence mais pas pour obtenir le bonus."
+    },
+    "tags": ["item", "gear", "tool", "item_alchemists_lab"],
+    "equipmentSlot": "none",
+    "weightLbs": 40,
+    "costGp": 500,
+    "grantedModifiers": [
+      {
+        "id": "alchemists_lab_craft_alchemy",
+        "sourceId": "item_alchemists_lab",
+        "sourceName": { "en": "Alchemist's lab", "fr": "Laboratoire d'alchimiste" },
+        "targetId": "skill_craft_alchemy",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_artisans_tools",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Artisan's tools", "fr": "Outils d'artisan" },
+    "description": {
+      "en": "Tools needed to pursue any craft. Without them, you take a −2 penalty on Craft checks (improvised tools), if you can do the job at all.",
+      "fr": "Outils nécessaires pour exercer tout artisanat. Sans eux, vous prenez un malus de −2 aux tests d'Artisanat (outils de fortune), si vous pouvez accomplir le travail."
+    },
+    "tags": ["item", "gear", "tool", "item_artisans_tools"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_artisans_tools_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Artisan's tools, masterwork", "fr": "Outils d'artisan de maître" },
+    "description": {
+      "en": "The perfect tools for the job, granting a +2 circumstance bonus on Craft checks.",
+      "fr": "Les outils parfaits pour le travail, accordant un bonus de circonstance de +2 aux tests d'Artisanat."
+    },
+    "tags": ["item", "gear", "tool", "item_artisans_tools_masterwork"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 55,
+    "grantedModifiers": [
+      {
+        "id": "artisans_tools_mw_craft",
+        "sourceId": "item_artisans_tools_masterwork",
+        "sourceName": { "en": "Artisan's tools, masterwork", "fr": "Outils d'artisan de maître" },
+        "targetId": "skill_craft",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_climbers_kit",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Climber's kit", "fr": "Kit d'escalade" },
+    "description": {
+      "en": "The perfect tool for climbing. Grants a +2 circumstance bonus on Climb checks.",
+      "fr": "L'outil parfait pour l'escalade. Accorde un bonus de circonstance de +2 aux tests d'Escalade."
+    },
+    "tags": ["item", "gear", "kit", "item_climbers_kit"],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 80,
+    "grantedModifiers": [
+      {
+        "id": "climbers_kit_climb",
+        "sourceId": "item_climbers_kit",
+        "sourceName": { "en": "Climber's kit", "fr": "Kit d'escalade" },
+        "targetId": "skill_climb",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_disguise_kit",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Disguise kit", "fr": "Kit de déguisement" },
+    "description": {
+      "en": "The perfect tool for disguise. Provides a +2 circumstance bonus on Disguise checks. Exhausted after ten uses.",
+      "fr": "L'outil parfait pour le déguisement. Accorde un bonus de circonstance de +2 aux tests de Déguisement. Épuisé après dix utilisations."
+    },
+    "tags": ["item", "gear", "kit", "item_disguise_kit"],
+    "equipmentSlot": "none",
+    "weightLbs": 8,
+    "costGp": 50,
+    "grantedModifiers": [
+      {
+        "id": "disguise_kit_disguise",
+        "sourceId": "item_disguise_kit",
+        "sourceName": { "en": "Disguise kit", "fr": "Kit de déguisement" },
+        "targetId": "skill_disguise",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_healers_kit",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Healer's kit", "fr": "Trousse de soins" },
+    "description": {
+      "en": "The perfect tool for healing. Provides a +2 circumstance bonus on Heal checks. Exhausted after ten uses.",
+      "fr": "L'outil parfait pour les soins. Accorde un bonus de circonstance de +2 aux tests de Premiers secours. Épuisé après dix utilisations."
+    },
+    "tags": ["item", "gear", "kit", "item_healers_kit"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 50,
+    "grantedModifiers": [
+      {
+        "id": "healers_kit_heal",
+        "sourceId": "item_healers_kit",
+        "sourceName": { "en": "Healer's kit", "fr": "Trousse de soins" },
+        "targetId": "skill_heal",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_holly_and_mistletoe",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Holly and mistletoe", "fr": "Houx et gui" },
+    "description": { "en": "The divine focus for druid spellcasting. Free, and easily gathered in the wild.", "fr": "Le focalisateur divin pour les sorts de druide. Gratuit et facile à trouver dans la nature." },
+    "tags": ["item", "gear", "divine_focus", "item_holly_and_mistletoe"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_holy_symbol_wooden",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Holy symbol, wooden", "fr": "Symbole sacré (bois)" },
+    "description": { "en": "A wooden holy symbol. Divine focus for cleric and paladin spellcasting; tool for turning undead.", "fr": "Un symbole sacré en bois. Focalisateur divin pour les sorts de clerc et de paladin ; outil pour la mise en fuite des morts-vivants." },
+    "tags": ["item", "gear", "divine_focus", "item_holy_symbol_wooden"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_holy_symbol_silver",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Holy symbol, silver", "fr": "Symbole sacré (argent)" },
+    "description": { "en": "A silver holy symbol. Divine focus for cleric and paladin spellcasting; tool for turning undead.", "fr": "Un symbole sacré en argent. Focalisateur divin pour les sorts de clerc et de paladin ; outil pour la mise en fuite des morts-vivants." },
+    "tags": ["item", "gear", "divine_focus", "item_holy_symbol_silver"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 25,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_hourglass",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hourglass", "fr": "Sablier" },
+    "description": { "en": "A glass container filled with sand, used to measure the passage of one hour.", "fr": "Un récipient en verre rempli de sable, utilisé pour mesurer le passage d'une heure." },
+    "tags": ["item", "gear", "item_hourglass"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 25,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magnifying_glass",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Magnifying glass", "fr": "Loupe" },
+    "description": {
+      "en": "Allows a closer look at small objects. Grants a +2 circumstance bonus on Appraise checks involving small or highly detailed items. Can substitute for flint and steel in bright sunlight.",
+      "fr": "Permet de regarder de près les petits objets. Accorde un bonus de circonstance de +2 aux tests d'Estimation pour les objets petits ou très détaillés. Peut remplacer un briquet en plein soleil."
+    },
+    "tags": ["item", "gear", "tool", "item_magnifying_glass"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 100,
+    "grantedModifiers": [
+      {
+        "id": "magnifying_glass_appraise",
+        "sourceId": "item_magnifying_glass",
+        "sourceName": { "en": "Magnifying glass", "fr": "Loupe" },
+        "targetId": "skill_appraise",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_musical_instrument_common",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Musical instrument, common", "fr": "Instrument de musique (ordinaire)" },
+    "description": { "en": "A common musical instrument such as a lute, drum, or flute.", "fr": "Un instrument de musique ordinaire tel qu'un luth, un tambour ou une flûte." },
+    "tags": ["item", "gear", "item_musical_instrument_common"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_musical_instrument_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Musical instrument, masterwork", "fr": "Instrument de musique (maître)" },
+    "description": {
+      "en": "A masterwork instrument of exceptional quality, granting a +2 circumstance bonus on Perform checks involving its use.",
+      "fr": "Un instrument de musique de maître d'une qualité exceptionnelle, accordant un bonus de circonstance de +2 aux tests d'Interprétation impliquant son utilisation."
+    },
+    "tags": ["item", "gear", "item_musical_instrument_masterwork"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 100,
+    "grantedModifiers": [
+      {
+        "id": "musical_instrument_mw_perform",
+        "sourceId": "item_musical_instrument_masterwork",
+        "sourceName": { "en": "Musical instrument, masterwork", "fr": "Instrument de musique (maître)" },
+        "targetId": "skill_perform",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_scale_merchants",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Scale, merchant's", "fr": "Balance de marchand" },
+    "description": {
+      "en": "Grants a +2 circumstance bonus on Appraise checks involving items valued by weight, including anything made of precious metals.",
+      "fr": "Accorde un bonus de circonstance de +2 aux tests d'Estimation pour les objets évalués au poids, y compris tout ce qui est fait de métaux précieux."
+    },
+    "tags": ["item", "gear", "tool", "item_scale_merchants"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 2,
+    "grantedModifiers": [
+      {
+        "id": "scale_merchants_appraise",
+        "sourceId": "item_scale_merchants",
+        "sourceName": { "en": "Scale, merchant's", "fr": "Balance de marchand" },
+        "targetId": "skill_appraise",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_spell_component_pouch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spell component pouch", "fr": "Bourse de composants" },
+    "description": {
+      "en": "A spellcaster with this pouch is assumed to have all material components and focuses needed for spellcasting, except components with a specific cost, divine focuses, and focuses that wouldn't fit in a pouch.",
+      "fr": "Un lanceur de sorts avec cette bourse est supposé avoir tous les composants matériels et focalisateurs nécessaires pour lancer des sorts, sauf les composants avec un coût spécifique, les focalisateurs divins et les focalisateurs trop grands pour tenir dans une bourse."
+    },
+    "tags": ["item", "gear", "container", "item_spell_component_pouch"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_spellbook_blank",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spellbook, wizard's (blank)", "fr": "Livre de sorts (vierge)" },
+    "description": {
+      "en": "Contains 100 pages of parchment. Each spell takes up one page per spell level (one page each for 0-level spells).",
+      "fr": "Contient 100 pages de parchemin. Chaque sort occupe une page par niveau de sort (une page pour les sorts de niveau 0)."
+    },
+    "tags": ["item", "gear", "item_spellbook_blank"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 15,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_thieves_tools",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Thieves' tools", "fr": "Outils de voleur" },
+    "description": {
+      "en": "Contains the tools needed to use the Disable Device and Open Lock skills. Without these tools, you must improvise and take a −2 circumstance penalty on Disable Device and Open Lock checks.",
+      "fr": "Contient les outils nécessaires pour utiliser les compétences Sabotage et Crochetage. Sans ces outils, vous devez improviser et prenez un malus de circonstance de −2 aux tests de Sabotage et de Crochetage."
+    },
+    "tags": ["item", "gear", "tool", "item_thieves_tools"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 30,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_thieves_tools_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Thieves' tools, masterwork", "fr": "Outils de voleur de maître" },
+    "description": {
+      "en": "Extra tools of better make that grant a +2 circumstance bonus on Disable Device and Open Lock checks (in addition to having the tools at all).",
+      "fr": "Des outils supplémentaires de meilleure qualité qui accordent un bonus de circonstance de +2 aux tests de Sabotage et de Crochetage (en plus de bénéficier des outils)."
+    },
+    "tags": ["item", "gear", "tool", "item_thieves_tools_masterwork"],
+    "equipmentSlot": "none",
+    "weightLbs": 2,
+    "costGp": 100,
+    "grantedModifiers": [
+      {
+        "id": "thieves_tools_mw_disable_device",
+        "sourceId": "item_thieves_tools_masterwork",
+        "sourceName": { "en": "Thieves' tools, masterwork", "fr": "Outils de voleur de maître" },
+        "targetId": "skill_disable_device",
+        "value": 2,
+        "type": "circumstance"
+      },
+      {
+        "id": "thieves_tools_mw_open_lock",
+        "sourceId": "item_thieves_tools_masterwork",
+        "sourceName": { "en": "Thieves' tools, masterwork", "fr": "Outils de voleur de maître" },
+        "targetId": "skill_open_lock",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_tool_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Tool, masterwork", "fr": "Outil de maître" },
+    "description": {
+      "en": "A well-made item that is the perfect tool for the job, granting a +2 circumstance bonus on a related skill check. Bonuses from multiple masterwork items toward the same check do not stack.",
+      "fr": "Un objet bien fabriqué qui est l'outil parfait pour la tâche, accordant un bonus de circonstance de +2 à un test de compétence associé. Les bonus de plusieurs outils de maître pour le même test ne se cumulent pas."
+    },
+    "tags": ["item", "gear", "tool", "item_tool_masterwork"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 50,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_water_clock",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Water clock", "fr": "Clepsydre" },
+    "description": { "en": "Gives the time accurate to within half an hour per day. Requires a source of water and must be kept still.", "fr": "Donne l'heure avec une précision d'environ une demi-heure par jour. Nécessite une source d'eau et doit rester immobile." },
+    "tags": ["item", "gear", "item_water_clock"],
+    "equipmentSlot": "none",
+    "weightLbs": 200,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_artisan",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Artisan's outfit", "fr": "Tenue d'artisan" },
+    "description": { "en": "A shirt with buttons, pants with a drawstring, shoes, and possibly a cap. May include a belt or apron.", "fr": "Une chemise à boutons, un pantalon à cordon, des chaussures et éventuellement une casquette. Peut inclure une ceinture ou un tablier." },
+    "tags": ["item", "clothing", "item_outfit_artisan"],
+    "equipmentSlot": "body",
+    "weightLbs": 4,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_cleric",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Cleric's vestments", "fr": "Vêtements de prêtre" },
+    "description": { "en": "Ecclesiastical clothes for performing priestly functions, not for adventuring.", "fr": "Vêtements ecclésiastiques pour exercer des fonctions religieuses, non pour l'aventure." },
+    "tags": ["item", "clothing", "item_outfit_cleric"],
+    "equipmentSlot": "body",
+    "weightLbs": 6,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_cold_weather",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Cold weather outfit", "fr": "Tenue grand froid" },
+    "description": {
+      "en": "Includes a wool coat, linen shirt, wool cap, heavy cloak, thick pants, and boots. Grants a +5 circumstance bonus on Fortitude saves against exposure to cold weather.",
+      "fr": "Comprend un manteau en laine, une chemise en lin, une casquette en laine, une lourde cape, un pantalon épais et des bottes. Accorde un bonus de circonstance de +5 aux jets de Vigueur contre l'exposition au froid."
+    },
+    "tags": ["item", "clothing", "item_outfit_cold_weather"],
+    "equipmentSlot": "body",
+    "weightLbs": 7,
+    "costGp": 8,
+    "grantedModifiers": [
+      {
+        "id": "outfit_cold_weather_fort",
+        "sourceId": "item_outfit_cold_weather",
+        "sourceName": { "en": "Cold weather outfit", "fr": "Tenue grand froid" },
+        "targetId": "combatStats.save_fortitude",
+        "value": 5,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_courtier",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Courtier's outfit", "fr": "Tenue de courtisan" },
+    "description": { "en": "Fancy, tailored clothes for court. Without jewelry (+50 gp extra), you look like an out-of-place commoner. Those without this outfit take −2 on Charisma-based checks to influence nobles.", "fr": "Vêtements élégants et taillés sur mesure pour la cour. Sans bijoux (+50 po supplémentaires), vous ressemblez à un roturier déplacé. Ceux sans cette tenue prennent −2 aux tests basés sur le Charisme pour influencer les nobles." },
+    "tags": ["item", "clothing", "item_outfit_courtier"],
+    "equipmentSlot": "body",
+    "weightLbs": 6,
+    "costGp": 30,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_entertainer",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Entertainer's outfit", "fr": "Tenue d'artiste" },
+    "description": { "en": "Flashy, perhaps gaudy clothes for entertaining. Practical design allows tumbling, dancing, and running.", "fr": "Des vêtements voyants, peut-être criards, pour se produire. La conception pratique permet les cabrioles, la danse et la course." },
+    "tags": ["item", "clothing", "item_outfit_entertainer"],
+    "equipmentSlot": "body",
+    "weightLbs": 4,
+    "costGp": 3,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_explorer",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Explorer's outfit", "fr": "Tenue d'explorateur" },
+    "description": { "en": "Sturdy boots, leather breeches or skirt, a belt, shirt, gloves, and an ample hooded cloak. Plenty of pockets.", "fr": "Bottes solides, pantalon ou jupe en cuir, une ceinture, une chemise, des gants et un ample manteau à capuche. Beaucoup de poches." },
+    "tags": ["item", "clothing", "item_outfit_explorer"],
+    "equipmentSlot": "body",
+    "weightLbs": 8,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_monk",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Monk's outfit", "fr": "Tenue de moine" },
+    "description": { "en": "Sandals, loose breeches, and a loose shirt bound together with sashes. Maximum mobility, high-quality fabric. Can hide small weapons in pockets; sashes strong enough to serve as short ropes.", "fr": "Sandales, large pantalon et chemise amples retenus par des écharpes. Mobilité maximale, tissu de haute qualité. Peut dissimuler de petites armes dans des poches ; les écharpes sont assez solides pour servir de courtes cordes." },
+    "tags": ["item", "clothing", "item_outfit_monk"],
+    "equipmentSlot": "body",
+    "weightLbs": 2,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_noble",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Noble's outfit", "fr": "Tenue de noble" },
+    "description": { "en": "Expensive clothing with precious metals and gems worked into the fabric. A would-be noble also needs a signet ring and jewelry (worth at least 100 gp).", "fr": "Vêtements coûteux avec des métaux précieux et des gemmes incrustés dans le tissu. Un aspirant noble a également besoin d'une bague de sceau et de bijoux (d'une valeur d'au moins 100 po)." },
+    "tags": ["item", "clothing", "item_outfit_noble"],
+    "equipmentSlot": "body",
+    "weightLbs": 10,
+    "costGp": 75,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_peasant",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Peasant's outfit", "fr": "Tenue de paysan" },
+    "description": { "en": "A loose shirt and baggy breeches, or a loose shirt and skirt. Cloth wrappings serve as shoes.", "fr": "Une chemise ample et un large pantalon, ou une chemise ample et une jupe. Des chiffons servent de chaussures." },
+    "tags": ["item", "clothing", "item_outfit_peasant"],
+    "equipmentSlot": "body",
+    "weightLbs": 2,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_royal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Royal outfit", "fr": "Tenue royale" },
+    "description": { "en": "Ostentatious clothing with gems, gold, silk, and fur in abundance. This is just the clothing, not any regalia.", "fr": "Vêtements ostentatoires avec des gemmes, de l'or, de la soie et de la fourrure en abondance. Il s'agit uniquement des vêtements, pas des insignes royaux." },
+    "tags": ["item", "clothing", "item_outfit_royal"],
+    "equipmentSlot": "body",
+    "weightLbs": 15,
+    "costGp": 200,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_scholar",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Scholar's outfit", "fr": "Tenue d'érudit" },
+    "description": { "en": "A robe, a belt, a cap, soft shoes, and possibly a cloak.", "fr": "Une robe, une ceinture, une casquette, des chaussures souples et éventuellement un manteau." },
+    "tags": ["item", "clothing", "item_outfit_scholar"],
+    "equipmentSlot": "body",
+    "weightLbs": 6,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_outfit_traveler",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Traveler's outfit", "fr": "Tenue de voyageur" },
+    "description": { "en": "Boots, a wool skirt or breeches, a sturdy belt, a shirt, and an ample cloak with a hood.", "fr": "Des bottes, une jupe ou un pantalon en laine, une solide ceinture, une chemise et une ample cape à capuche." },
+    "tags": ["item", "clothing", "item_outfit_traveler"],
+    "equipmentSlot": "body",
+    "weightLbs": 5,
+    "costGp": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bit_and_bridle",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bit and bridle", "fr": "Mors et bride" },
+    "description": { "en": "Used to control a horse or other mount.", "fr": "Utilisé pour contrôler un cheval ou une autre monture." },
+    "tags": ["item", "gear", "mount_gear", "item_bit_and_bridle"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_feed_per_day",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Feed (per day)", "fr": "Nourriture (par jour)" },
+    "description": { "en": "A day's supply of fodder for a horse, donkey, mule, or pony.", "fr": "Une journée de fourrage pour un cheval, un âne, une mule ou un poney." },
+    "tags": ["item", "gear", "mount_gear", "item_feed_per_day"],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 0.05,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_military",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, military", "fr": "Selle militaire" },
+    "description": {
+      "en": "Braces the rider, providing a +2 circumstance bonus on Ride checks related to staying in the saddle. If knocked unconscious, 75% chance to stay in the saddle (vs. 50% for a riding saddle).",
+      "fr": "Maintient le cavalier, accordant un bonus de circonstance de +2 aux tests de Monte liés au maintien en selle. Si inconscient, 75% de chances de rester en selle (contre 50% pour une selle de monte)."
+    },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_military"],
+    "equipmentSlot": "none",
+    "weightLbs": 30,
+    "costGp": 20,
+    "grantedModifiers": [
+      {
+        "id": "saddle_military_ride",
+        "sourceId": "item_saddle_military",
+        "sourceName": { "en": "Saddle, military", "fr": "Selle militaire" },
+        "targetId": "skill_ride",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_pack",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, pack", "fr": "Selle de bât" },
+    "description": { "en": "Holds gear and supplies, but not a rider. Supports as much gear as the mount can carry.", "fr": "Supporte du matériel et des provisions, mais pas de cavalier. Prend en charge autant de matériel que la monture peut porter." },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_pack"],
+    "equipmentSlot": "none",
+    "weightLbs": 15,
+    "costGp": 5,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_riding",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, riding", "fr": "Selle de monte" },
+    "description": { "en": "The standard saddle for a rider. If knocked unconscious, 50% chance to stay in the saddle.", "fr": "La selle standard pour un cavalier. Si inconscient, 50% de chances de rester en selle." },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_riding"],
+    "equipmentSlot": "none",
+    "weightLbs": 25,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_exotic_military",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, exotic (military)", "fr": "Selle exotique (militaire)" },
+    "description": {
+      "en": "A military saddle designed for an unusual mount. Provides a +2 circumstance bonus on Ride checks to stay in the saddle.",
+      "fr": "Une selle militaire conçue pour une monture inhabituelle. Accorde un bonus de circonstance de +2 aux tests de Monte pour rester en selle."
+    },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_exotic_military"],
+    "equipmentSlot": "none",
+    "weightLbs": 40,
+    "costGp": 60,
+    "grantedModifiers": [
+      {
+        "id": "saddle_exotic_military_ride",
+        "sourceId": "item_saddle_exotic_military",
+        "sourceName": { "en": "Saddle, exotic (military)", "fr": "Selle exotique (militaire)" },
+        "targetId": "skill_ride",
+        "value": 2,
+        "type": "circumstance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_exotic_pack",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, exotic (pack)", "fr": "Selle exotique (de bât)" },
+    "description": { "en": "A pack saddle designed for an unusual mount.", "fr": "Une selle de bât conçue pour une monture inhabituelle." },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_exotic_pack"],
+    "equipmentSlot": "none",
+    "weightLbs": 20,
+    "costGp": 15,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddle_exotic_riding",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddle, exotic (riding)", "fr": "Selle exotique (de monte)" },
+    "description": { "en": "A riding saddle designed for an unusual mount.", "fr": "Une selle de monte conçue pour une monture inhabituelle." },
+    "tags": ["item", "gear", "mount_gear", "item_saddle_exotic_riding"],
+    "equipmentSlot": "none",
+    "weightLbs": 30,
+    "costGp": 30,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_saddlebags",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Saddlebags", "fr": "Sacoches de selle" },
+    "description": { "en": "Paired bags designed to hang on either side of a saddle for carrying gear.", "fr": "Des sacoches appariées conçues pour être accrochées de chaque côté d'une selle pour transporter du matériel." },
+    "tags": ["item", "gear", "mount_gear", "container", "item_saddlebags"],
+    "equipmentSlot": "none",
+    "weightLbs": 8,
+    "costGp": 4,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_carriage",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Carriage", "fr": "Carrosse" },
+    "description": { "en": "A four-wheeled enclosed vehicle for up to four passengers plus two drivers. Usually pulled by two horses.", "fr": "Un véhicule fermé à quatre roues pour jusqu'à quatre passagers et deux conducteurs. Généralement tiré par deux chevaux." },
+    "tags": ["item", "gear", "vehicle", "item_carriage"],
+    "equipmentSlot": "none",
+    "weightLbs": 600,
+    "costGp": 100,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cart",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Cart", "fr": "Charrette" },
+    "description": { "en": "A two-wheeled vehicle drawn by a single horse. Comes with a harness.", "fr": "Un véhicule à deux roues tiré par un seul cheval. Fourni avec un harnais." },
+    "tags": ["item", "gear", "vehicle", "item_cart"],
+    "equipmentSlot": "none",
+    "weightLbs": 200,
+    "costGp": 15,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_rowboat",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Rowboat", "fr": "Barque" },
+    "description": { "en": "An 8- to 12-foot boat holding two or three Medium passengers. Moves at about 1.5 miles per hour.", "fr": "Une barque de 2,4 à 3,6 m pouvant accueillir deux ou trois passagers de taille Moyenne. Se déplace à environ 2,5 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_rowboat"],
+    "equipmentSlot": "none",
+    "weightLbs": 100,
+    "costGp": 50,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sled",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sled", "fr": "Traîneau" },
+    "description": { "en": "A wagon on runners for moving through snow and over ice. Usually pulled by two horses.", "fr": "Un chariot sur patins pour se déplacer dans la neige et sur la glace. Généralement tiré par deux chevaux." },
+    "tags": ["item", "gear", "vehicle", "item_sled"],
+    "equipmentSlot": "none",
+    "weightLbs": 300,
+    "costGp": 20,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_wagon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wagon", "fr": "Chariot" },
+    "description": { "en": "A four-wheeled open vehicle for transporting heavy loads. Usually pulled by two horses.", "fr": "Un véhicule ouvert à quatre roues pour le transport de charges lourdes. Généralement tiré par deux chevaux." },
+    "tags": ["item", "gear", "vehicle", "item_wagon"],
+    "equipmentSlot": "none",
+    "weightLbs": 400,
+    "costGp": 35,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ale_gallon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ale, gallon", "fr": "Ale, gallon" },
+    "description": { "en": "A gallon of common ale.", "fr": "Un gallon d'ale ordinaire." },
+    "tags": ["item", "food", "item_ale_gallon"],
+    "equipmentSlot": "none",
+    "weightLbs": 8,
+    "costGp": 0.2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ale_mug",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ale, mug", "fr": "Ale, chope" },
+    "description": { "en": "A mug of common ale.", "fr": "Une chope d'ale ordinaire." },
+    "tags": ["item", "food", "item_ale_mug"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0.04,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_bread_loaf",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bread, per loaf", "fr": "Pain, par miche" },
+    "description": { "en": "A loaf of common bread.", "fr": "Une miche de pain ordinaire." },
+    "tags": ["item", "food", "item_bread_loaf"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 0.02,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cheese",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Cheese, hunk of", "fr": "Fromage, morceau" },
+    "description": { "en": "A hunk of cheese.", "fr": "Un morceau de fromage." },
+    "tags": ["item", "food", "item_cheese"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 0.1,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_meat",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Meat, chunk of", "fr": "Viande, morceau" },
+    "description": { "en": "A chunk of cooked or cured meat.", "fr": "Un morceau de viande cuite ou séchée." },
+    "tags": ["item", "food", "item_meat"],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 0.3,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_wine_common",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wine, common (pitcher)", "fr": "Vin ordinaire (pichet)" },
+    "description": { "en": "A pitcher of common wine.", "fr": "Un pichet de vin ordinaire." },
+    "tags": ["item", "food", "item_wine_common"],
+    "equipmentSlot": "none",
+    "weightLbs": 6,
+    "costGp": 0.2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_wine_fine",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wine, fine (bottle)", "fr": "Vin fin (bouteille)" },
+    "description": { "en": "A bottle of fine wine.", "fr": "Une bouteille de vin fin." },
+    "tags": ["item", "food", "item_wine_fine"],
+    "equipmentSlot": "none",
+    "weightLbs": 1.5,
+    "costGp": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_oar",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Oar", "fr": "Rame" },
+    "description": { "en": "A wooden oar for rowing a boat.", "fr": "Une rame en bois pour ramer dans un bateau." },
+    "tags": ["item", "gear", "vehicle", "item_oar"],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_galley",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Galley", "fr": "Galère" },
+    "description": { "en": "A three-masted ship with seventy oars on either side; crew of 200. 130 ft. long, 20 ft. wide; carries 150 tons of cargo or 250 soldiers. Cannot make sea voyages; sticks to the coast. Moves ~4 mph.", "fr": "Un navire à trois mâts avec soixante-dix rames de chaque côté ; équipage de 200. 40 m de long, 6 m de large ; transporte 150 tonnes de marchandises ou 250 soldats. Ne peut pas faire de voyages en mer. Se déplace à environ 6 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_galley"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 30000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_keelboat",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Keelboat", "fr": "Bateau à quille" },
+    "description": { "en": "A 50- to 75-foot ship, 15–20 ft. wide, crew of 8–15. Carries 40–50 tons or 100 soldiers. Can make sea voyages and sail down rivers (flat bottom). Moves ~1 mph.", "fr": "Un navire de 15 à 23 m de long, 4,5–6 m de large, équipage de 8–15. Transporte 40–50 tonnes ou 100 soldats. Peut naviguer en mer et sur les rivières (fond plat). Se déplace à environ 1,6 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_keelboat"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 3000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_longship",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Longship", "fr": "Drakkar" },
+    "description": { "en": "A 75-foot ship with forty oars; crew of 50. Single mast and square sail. Carries 50 tons or 120 soldiers. Can make sea voyages. Moves ~3 mph.", "fr": "Un navire de 23 m avec quarante rames ; équipage de 50. Un mât et une voile carrée. Transporte 50 tonnes ou 120 soldats. Peut naviguer en mer. Se déplace à environ 5 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_longship"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_sailing_ship",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sailing ship", "fr": "Voilier" },
+    "description": { "en": "A 75- to 90-foot seaworthy ship, 20 ft. wide; crew of 20. Carries 150 tons. Two masts with square sails. Moves ~2 mph.", "fr": "Un navire de 23 à 27 m de long, 6 m de large ; équipage de 20. Transporte 150 tonnes. Deux mâts avec voiles carrées. Se déplace à environ 3 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_sailing_ship"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_warship",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": { "en": "Warship", "fr": "Navire de guerre" },
+    "description": { "en": "A 100-foot ship with a single mast; rowed by 60–80. Carries 160 soldiers but not for long distances. Cannot make sea voyages. Moves ~2.5 mph.", "fr": "Un navire de 30 m avec un mât ; rameurs de 60–80. Transporte 160 soldats mais pas sur de longues distances. Ne peut pas faire de voyages en mer. Se déplace à environ 4 km/h." },
+    "tags": ["item", "gear", "vehicle", "item_warship"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  }
+]

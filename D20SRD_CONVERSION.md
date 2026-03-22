@@ -1270,7 +1270,7 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ### C-09 — Goods & Services (`08_d20srd_core_equipment_goods.json`)
 
-- [ ] **C-09** — Convert adventuring gear, tools, and general goods
+- [x] **C-09** — Convert adventuring gear, tools, and general goods
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/goodsAndServices.html`
 
@@ -1626,7 +1626,7 @@ The d20srd mirror at `d20srd/www.d20srd.org/srd/` contains ~1400 HTML files. The
 | `monsterFeats.html` | **Excluded** | — | Monster-only feats; not player-accessible |
 | `equipment/weapons.html` | Covered | C-07 | — |
 | `equipment/armor.html` | Covered | C-08 | — |
-| `equipment/goodsAndServices.html` | Covered | C-09 | — |
+| `equipment/goodsAndServices.html` | Partially covered | C-09 | **Excluded from C-09** (not physical items): inn stay, meals, banquet, coach cab, hireling (trained/untrained), messenger, road/gate toll, ship's passage, spellcasting-for-hire costs — these are services with no weight/slot and belong in a future **C-09b (Services & Prices)** reference task. Barding (cost-multiplier table) and all mounts/animals (horse, pony, warhorse, warpony, donkey/mule, guard dog, riding dog) belong in a future **C-09c (Mounts & Animals)** creature/vehicle task. |
 | `equipment/wealthAndMoney.html` | **Excluded** | — | Price/coinage reference; no game entities |
 | `spells/` (~610 files) | Covered | C-10a–C-10h | — |
 | `spellLists/` (8 files) | **Excluded** | — | Summary reference pages; spell list membership is captured in each spell's `spellLists` field |
