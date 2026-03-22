@@ -25,7 +25,7 @@ graph TD
     end
 
     subgraph "Entity (Character)"
-        AFI[activeFeatures: ActiveFeatureInstance[]]
+        AFI["activeFeatures: ActiveFeatureInstance[]"]
         CL[classLevels: Record&lt;ID, number&gt;]
         PIPE[attributes / skills / combatStats / saves / resources]
     end
@@ -432,8 +432,8 @@ classDiagram
         +AugmentationRule[] augmentations
     }
 
-    Feature <|-- ItemFeature : extends (category:"item")
-    Feature <|-- MagicFeature : extends (category:"magic")
+    Feature <|-- ItemFeature : extends item
+    Feature <|-- MagicFeature : extends magic
     Feature --> "0..1" LogicNode : prerequisitesNode
     Feature --> "0..*" Modifier : grantedModifiers
     Feature --> "0..*" LevelProgressionEntry : levelProgression
@@ -2420,7 +2420,7 @@ The Winter Circle splat restricts the Druid to a different animal companion type
 ├──────────────────────────────────────────────────────┤
 │ Layer 3: GM Per-Character Override                   │
 │   Stored in Character.gmOverrides.                   │
-│   Array of ActiveFeatureInstance injected secretly.   │
+│   Array of ActiveFeatureInstance injected secretly.  │
 │   Applied LAST.                                      │
 │   Referenced Features can be defined in any previous │
 │   layer, or be custom Features from Layer 2.         │
