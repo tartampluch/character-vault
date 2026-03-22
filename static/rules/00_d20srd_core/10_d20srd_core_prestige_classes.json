@@ -1,0 +1,974 @@
+[
+  {
+    "id": "class_arcane_archer",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Archer", "fr": "Archer arcane" },
+    "description": {
+      "en": "Master of the elven warbands, the arcane archer is a warrior skilled in both archery and arcane magic. Through training, arcane archers learn to place magical properties on their arrows and channel spells through their shots.",
+      "fr": "Maître des bandes de guerre elfiques, l'archer arcane est un guerrier versé dans l'art du tir à l'arc et dans la magie arcanique. Par l'entraînement, les archers arcanes apprennent à conférer des propriétés magiques à leurs flèches et à canaliser des sorts à travers leurs tirs."
+    },
+    "tags": ["class", "prestige_class", "class_arcane_archer", "arcane_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "OR",
+          "nodes": [
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "race_elf", "errorMessage": "Must be an elf or half-elf" },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "race_half_elf", "errorMessage": "Must be an elf or half-elf" }
+          ]
+        },
+        { "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue", "operator": ">=", "value": 6, "errorMessage": "Requires Base Attack Bonus +6" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_point_blank_shot", "errorMessage": "Requires the Point Blank Shot feat" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_precise_shot", "errorMessage": "Requires the Precise Shot feat" },
+        {
+          "logic": "OR",
+          "nodes": [
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_longbow", "errorMessage": "Requires Weapon Focus (longbow or shortbow)" },
+            { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_weapon_focus_shortbow", "errorMessage": "Requires Weapon Focus (longbow or shortbow)" }
+          ]
+        },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster", "errorMessage": "Must be able to cast 1st-level arcane spells" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_hit_die",
+        "sourceId": "class_arcane_archer",
+        "targetId": "combatStats.hit_die_type",
+        "value": 8,
+        "type": "base",
+        "sourceName": { "en": "Arcane Archer", "fr": "Archer arcane" }
+      },
+      {
+        "id": "arcane_archer_skill_points",
+        "sourceId": "class_arcane_archer",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Arcane Archer", "fr": "Archer arcane" }
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial",
+      "proficiency_armor_light",
+      "proficiency_armor_medium",
+      "proficiency_shields"
+    ],
+    "classSkills": [
+      "skill_craft",
+      "skill_hide",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_ride",
+      "skill_spot",
+      "skill_survival",
+      "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_arcane_archer_enhance_arrow_1"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_1_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 1",  "fr": "Archer arcane 1"  } },
+          { "id": "arcane_archer_1_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 2, "type": "base", "sourceName": { "en": "Arcane Archer 1",  "fr": "Archer arcane 1"  } },
+          { "id": "arcane_archer_1_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 2, "type": "base", "sourceName": { "en": "Arcane Archer 1",  "fr": "Archer arcane 1"  } },
+          { "id": "arcane_archer_1_will", "sourceId": "class_arcane_archer", "targetId": "saves.will",       "value": 0, "type": "base", "sourceName": { "en": "Arcane Archer 1",  "fr": "Archer arcane 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_arcane_archer_imbue_arrow"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_2_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 2",  "fr": "Archer arcane 2"  } },
+          { "id": "arcane_archer_2_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 2",  "fr": "Archer arcane 2"  } },
+          { "id": "arcane_archer_2_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 2",  "fr": "Archer arcane 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_arcane_archer_enhance_arrow_3"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_3_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 3",  "fr": "Archer arcane 3"  } },
+          { "id": "arcane_archer_3_will", "sourceId": "class_arcane_archer", "targetId": "saves.will",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 3",  "fr": "Archer arcane 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_arcane_archer_seeker_arrow"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_4_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 4",  "fr": "Archer arcane 4"  } },
+          { "id": "arcane_archer_4_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 4",  "fr": "Archer arcane 4"  } },
+          { "id": "arcane_archer_4_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 4",  "fr": "Archer arcane 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_arcane_archer_enhance_arrow_5"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_5_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 5",  "fr": "Archer arcane 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_arcane_archer_phase_arrow"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_6_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 6",  "fr": "Archer arcane 6"  } },
+          { "id": "arcane_archer_6_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 6",  "fr": "Archer arcane 6"  } },
+          { "id": "arcane_archer_6_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 6",  "fr": "Archer arcane 6"  } },
+          { "id": "arcane_archer_6_will", "sourceId": "class_arcane_archer", "targetId": "saves.will",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 6",  "fr": "Archer arcane 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_arcane_archer_enhance_arrow_7"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_7_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 7",  "fr": "Archer arcane 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_arcane_archer_hail_of_arrows"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_8_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 8",  "fr": "Archer arcane 8"  } },
+          { "id": "arcane_archer_8_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 8",  "fr": "Archer arcane 8"  } },
+          { "id": "arcane_archer_8_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 8",  "fr": "Archer arcane 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_arcane_archer_enhance_arrow_9"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_9_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 9",  "fr": "Archer arcane 9"  } },
+          { "id": "arcane_archer_9_will", "sourceId": "class_arcane_archer", "targetId": "saves.will",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 9",  "fr": "Archer arcane 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_arcane_archer_arrow_of_death"],
+        "grantedModifiers": [
+          { "id": "arcane_archer_10_bab",  "sourceId": "class_arcane_archer", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 10", "fr": "Archer arcane 10" } },
+          { "id": "arcane_archer_10_fort", "sourceId": "class_arcane_archer", "targetId": "saves.fort",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 10", "fr": "Archer arcane 10" } },
+          { "id": "arcane_archer_10_ref",  "sourceId": "class_arcane_archer", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Arcane Archer 10", "fr": "Archer arcane 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_arcane_trickster",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Trickster", "fr": "Filou de l'arcane" },
+    "description": {
+      "en": "The arcane trickster combines the cunning of the rogue with the power of the arcane spellcaster. Arcane tricksters can pick pockets, disarm magical traps, sneak up on targets to get off a particularly devastating attack, and telekinetically manipulate objects and creatures —all thanks to the combination of larcenous nature and arcane power.",
+      "fr": "Le filou de l'arcane associe la ruse du roublard à la puissance du lanceur de sorts arcanique. Les filous de l'arcane peuvent faire les poches, désamorcer des pièges magiques, s'approcher furtivement de cibles pour porter une attaque particulièrement dévastatrice, et manipuler à distance des objets et des créatures — tout cela grâce à la combinaison de leur nature déloyale et de leur pouvoir arcanique."
+    },
+    "tags": ["class", "prestige_class", "class_arcane_trickster", "arcane_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "missing_tag", "value": "alignment_lawful", "errorMessage": "Must be any nonlawful alignment" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_decipher_script.ranks", "operator": ">=", "value": 7, "errorMessage": "Requires 7 ranks in Decipher Script" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_disable_device.ranks",  "operator": ">=", "value": 7, "errorMessage": "Requires 7 ranks in Disable Device"  },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_escape_artist.ranks",    "operator": ">=", "value": 7, "errorMessage": "Requires 7 ranks in Escape Artist"   },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_arcana.ranks", "operator": ">=", "value": 4, "errorMessage": "Requires 4 ranks in Knowledge (Arcana)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster", "errorMessage": "Must be able to cast arcane spells including mage hand and at least one 3rd-level arcane spell" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "sneak_attack",   "errorMessage": "Requires Sneak Attack +2d6" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_hit_die",
+        "sourceId": "class_arcane_trickster",
+        "targetId": "combatStats.hit_die_type",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Arcane Trickster", "fr": "Filou de l'arcane" }
+      },
+      {
+        "id": "arcane_trickster_skill_points",
+        "sourceId": "class_arcane_trickster",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Arcane Trickster", "fr": "Filou de l'arcane" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_appraise",
+      "skill_balance",
+      "skill_bluff",
+      "skill_climb",
+      "skill_concentration",
+      "skill_craft",
+      "skill_decipher_script",
+      "skill_diplomacy",
+      "skill_disable_device",
+      "skill_disguise",
+      "skill_escape_artist",
+      "skill_gather_information",
+      "skill_hide",
+      "skill_jump",
+      "skill_knowledge_arcana",
+      "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering",
+      "skill_knowledge_geography",
+      "skill_knowledge_history",
+      "skill_knowledge_local",
+      "skill_knowledge_nature",
+      "skill_knowledge_nobility",
+      "skill_knowledge_planes",
+      "skill_knowledge_religion",
+      "skill_listen",
+      "skill_move_silently",
+      "skill_open_lock",
+      "skill_profession",
+      "skill_search",
+      "skill_sense_motive",
+      "skill_sleight_of_hand",
+      "skill_spellcraft",
+      "skill_spot",
+      "skill_swim",
+      "skill_tumble",
+      "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_ranged_legerdemain",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_1_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Arcane Trickster 1",  "fr": "Filou de l'arcane 1"  } },
+          { "id": "arcane_trickster_1_fort", "sourceId": "class_arcane_trickster", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Arcane Trickster 1",  "fr": "Filou de l'arcane 1"  } },
+          { "id": "arcane_trickster_1_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 2, "type": "base", "sourceName": { "en": "Arcane Trickster 1",  "fr": "Filou de l'arcane 1"  } },
+          { "id": "arcane_trickster_1_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Arcane Trickster 1",  "fr": "Filou de l'arcane 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_sneak_attack_2",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_2_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 2",  "fr": "Filou de l'arcane 2"  } },
+          { "id": "arcane_trickster_2_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 2",  "fr": "Filou de l'arcane 2"  } },
+          { "id": "arcane_trickster_2_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 2",  "fr": "Filou de l'arcane 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_impromptu_sneak_attack",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_3_fort", "sourceId": "class_arcane_trickster", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 3",  "fr": "Filou de l'arcane 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_sneak_attack_4",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_4_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 4",  "fr": "Filou de l'arcane 4"  } },
+          { "id": "arcane_trickster_4_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 4",  "fr": "Filou de l'arcane 4"  } },
+          { "id": "arcane_trickster_4_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 4",  "fr": "Filou de l'arcane 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_ranged_legerdemain_2",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": []
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_sneak_attack_6",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_6_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 6",  "fr": "Filou de l'arcane 6"  } },
+          { "id": "arcane_trickster_6_fort", "sourceId": "class_arcane_trickster", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 6",  "fr": "Filou de l'arcane 6"  } },
+          { "id": "arcane_trickster_6_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 6",  "fr": "Filou de l'arcane 6"  } },
+          { "id": "arcane_trickster_6_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 6",  "fr": "Filou de l'arcane 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_impromptu_sneak_attack_2",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": []
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_sneak_attack_8",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_8_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 8",  "fr": "Filou de l'arcane 8"  } },
+          { "id": "arcane_trickster_8_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 8",  "fr": "Filou de l'arcane 8"  } },
+          { "id": "arcane_trickster_8_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 8",  "fr": "Filou de l'arcane 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_ranged_legerdemain_3",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_9_fort", "sourceId": "class_arcane_trickster", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 9",  "fr": "Filou de l'arcane 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [
+          "class_feature_arcane_trickster_sneak_attack_10",
+          "class_feature_arcane_trickster_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "arcane_trickster_10_bab",  "sourceId": "class_arcane_trickster", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 10", "fr": "Filou de l'arcane 10" } },
+          { "id": "arcane_trickster_10_ref",  "sourceId": "class_arcane_trickster", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 10", "fr": "Filou de l'arcane 10" } },
+          { "id": "arcane_trickster_10_will", "sourceId": "class_arcane_trickster", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Arcane Trickster 10", "fr": "Filou de l'arcane 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_archmage",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Archmage", "fr": "Archimage" },
+    "description": {
+      "en": "The archmage is the pinnacle of arcane spellcasting mastery, combining tremendous arcane knowledge with the ability to reshape the very nature of magic. Most archmages are wizards, though powerful sorcerers sometimes walk this path. The archmage selects High Arcana abilities that sacrifice spell slots for unique magical powers.",
+      "fr": "L'archimage représente le sommet de la maîtrise des sorts arcaniques, alliant une connaissance arcanique prodigieuse à la capacité de remodeler la nature même de la magie. La plupart des archimages sont des magiciens, bien que de puissants ensorceleurs empruntent parfois cette voie. L'archimage choisit des capacités de Haute arcane qui sacrifient des emplacements de sorts pour obtenir des pouvoirs magiques uniques."
+    },
+    "tags": ["class", "prestige_class", "class_archmage", "arcane_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_arcana.ranks", "operator": ">=", "value": 15, "errorMessage": "Requires 15 ranks in Knowledge (Arcana)" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_spellcraft.ranks",        "operator": ">=", "value": 15, "errorMessage": "Requires 15 ranks in Spellcraft" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_skill_focus_spellcraft", "errorMessage": "Requires Skill Focus (Spellcraft)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_spell_focus",            "errorMessage": "Requires Spell Focus in two schools of magic" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster",              "errorMessage": "Must be able to cast 7th-level arcane spells with knowledge of 5th-level spells from at least five schools" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "archmage_hit_die",
+        "sourceId": "class_archmage",
+        "targetId": "combatStats.hit_die_type",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Archmage", "fr": "Archimage" }
+      },
+      {
+        "id": "archmage_skill_points",
+        "sourceId": "class_archmage",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Archmage", "fr": "Archimage" }
+      }
+    ],
+    "grantedFeatures": [],
+    "classSkills": [
+      "skill_concentration",
+      "skill_craft_alchemy",
+      "skill_knowledge_arcana",
+      "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering",
+      "skill_knowledge_geography",
+      "skill_knowledge_history",
+      "skill_knowledge_local",
+      "skill_knowledge_nature",
+      "skill_knowledge_nobility",
+      "skill_knowledge_planes",
+      "skill_knowledge_religion",
+      "skill_profession",
+      "skill_search",
+      "skill_spellcraft"
+    ],
+    "recommendedAttributes": ["stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_archmage_high_arcana_1",
+          "class_feature_archmage_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "archmage_1_bab",  "sourceId": "class_archmage", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Archmage 1", "fr": "Archimage 1" } },
+          { "id": "archmage_1_fort", "sourceId": "class_archmage", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Archmage 1", "fr": "Archimage 1" } },
+          { "id": "archmage_1_ref",  "sourceId": "class_archmage", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Archmage 1", "fr": "Archimage 1" } },
+          { "id": "archmage_1_will", "sourceId": "class_archmage", "targetId": "saves.will",      "value": 2, "type": "base", "sourceName": { "en": "Archmage 1", "fr": "Archimage 1" } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_archmage_high_arcana_2",
+          "class_feature_archmage_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "archmage_2_bab",  "sourceId": "class_archmage", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Archmage 2", "fr": "Archimage 2" } },
+          { "id": "archmage_2_will", "sourceId": "class_archmage", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Archmage 2", "fr": "Archimage 2" } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_archmage_high_arcana_3",
+          "class_feature_archmage_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "archmage_3_fort", "sourceId": "class_archmage", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Archmage 3", "fr": "Archimage 3" } },
+          { "id": "archmage_3_ref",  "sourceId": "class_archmage", "targetId": "saves.ref",  "value": 1, "type": "base", "sourceName": { "en": "Archmage 3", "fr": "Archimage 3" } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": [
+          "class_feature_archmage_high_arcana_4",
+          "class_feature_archmage_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "archmage_4_bab",  "sourceId": "class_archmage", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Archmage 4", "fr": "Archimage 4" } },
+          { "id": "archmage_4_will", "sourceId": "class_archmage", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Archmage 4", "fr": "Archimage 4" } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_archmage_high_arcana_5",
+          "class_feature_archmage_spellcasting"
+        ],
+        "grantedModifiers": []
+      }
+    ]
+  },
+  {
+    "id": "class_assassin",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Assassin", "fr": "Assassin" },
+    "description": {
+      "en": "The assassin is the consummate killer, a mercenary who kills for pay with cold efficiency. Assassins are trained in the art of death: poisons, sneak attacks, death attacks, and spells that help them carry out contracts. Entry requires alignment of any evil and the act of killing someone purely to gain admittance to the guild.",
+      "fr": "L'assassin est le tueur parfait, un mercenaire qui tue pour de l'argent avec une efficacité froide. Les assassins sont formés à l'art de la mort : poisons, attaques sournoises, attaques mortelles et sorts qui les aident à mener à bien leurs contrats. L'entrée exige un alignement mauvais et l'acte de tuer quelqu'un uniquement pour être admis dans la guilde."
+    },
+    "tags": ["class", "prestige_class", "class_assassin", "arcane_caster", "spontaneous_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "alignment_evil", "errorMessage": "Must be of any evil alignment" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_disguise.ranks",      "operator": ">=", "value": 4, "errorMessage": "Requires 4 ranks in Disguise"       },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_hide.ranks",          "operator": ">=", "value": 8, "errorMessage": "Requires 8 ranks in Hide"            },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_move_silently.ranks", "operator": ">=", "value": 8, "errorMessage": "Requires 8 ranks in Move Silently"   }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "assassin_hit_die",
+        "sourceId": "class_assassin",
+        "targetId": "combatStats.hit_die_type",
+        "value": 6,
+        "type": "base",
+        "sourceName": { "en": "Assassin", "fr": "Assassin" }
+      },
+      {
+        "id": "assassin_skill_points",
+        "sourceId": "class_assassin",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 4,
+        "type": "base",
+        "sourceName": { "en": "Assassin", "fr": "Assassin" }
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_crossbow_hand",
+      "proficiency_crossbow_light",
+      "proficiency_crossbow_heavy",
+      "proficiency_dagger",
+      "proficiency_dart",
+      "proficiency_rapier",
+      "proficiency_sap",
+      "proficiency_shortbow",
+      "proficiency_shortbow_composite",
+      "proficiency_short_sword",
+      "proficiency_armor_light"
+    ],
+    "classSkills": [
+      "skill_balance", "skill_bluff", "skill_climb", "skill_craft",
+      "skill_decipher_script", "skill_diplomacy", "skill_disable_device",
+      "skill_disguise", "skill_escape_artist", "skill_forgery",
+      "skill_gather_information", "skill_hide", "skill_intimidate",
+      "skill_jump", "skill_listen", "skill_move_silently", "skill_open_lock",
+      "skill_search", "skill_sense_motive", "skill_sleight_of_hand",
+      "skill_spot", "skill_swim", "skill_tumble",
+      "skill_use_magic_device", "skill_use_rope"
+    ],
+    "recommendedAttributes": ["stat_dex", "stat_int"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_assassin_sneak_attack_1d6",
+          "class_feature_assassin_death_attack",
+          "class_feature_assassin_poison_use",
+          "class_feature_assassin_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "assassin_1_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Assassin 1",  "fr": "Assassin 1"  } },
+          { "id": "assassin_1_fort",    "sourceId": "class_assassin", "targetId": "saves.fort",      "value": 0, "type": "base", "sourceName": { "en": "Assassin 1",  "fr": "Assassin 1"  } },
+          { "id": "assassin_1_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",       "value": 2, "type": "base", "sourceName": { "en": "Assassin 1",  "fr": "Assassin 1"  } },
+          { "id": "assassin_1_will",    "sourceId": "class_assassin", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Assassin 1",  "fr": "Assassin 1"  } },
+          { "id": "assassin_1_slots_1", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_1", "value": 0, "type": "base", "sourceName": { "en": "Assassin 1",  "fr": "Assassin 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_assassin_save_bonus_poison_1",
+          "class_feature_uncanny_dodge"
+        ],
+        "grantedModifiers": [
+          { "id": "assassin_2_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 2",  "fr": "Assassin 2"  } },
+          { "id": "assassin_2_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Assassin 2",  "fr": "Assassin 2"  } },
+          { "id": "assassin_2_slots_1", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_1", "value": 1, "type": "base", "sourceName": { "en": "Assassin 2",  "fr": "Assassin 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_assassin_sneak_attack_2d6"],
+        "grantedModifiers": [
+          { "id": "assassin_3_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 3",  "fr": "Assassin 3"  } },
+          { "id": "assassin_3_fort",    "sourceId": "class_assassin", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 3",  "fr": "Assassin 3"  } },
+          { "id": "assassin_3_will",    "sourceId": "class_assassin", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 3",  "fr": "Assassin 3"  } },
+          { "id": "assassin_3_slots_1", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_1", "value": 1, "type": "base", "sourceName": { "en": "Assassin 3",  "fr": "Assassin 3"  } },
+          { "id": "assassin_3_slots_2", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_2", "value": 0, "type": "base", "sourceName": { "en": "Assassin 3",  "fr": "Assassin 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_assassin_save_bonus_poison_2"],
+        "grantedModifiers": [
+          { "id": "assassin_4_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 4",  "fr": "Assassin 4"  } },
+          { "id": "assassin_4_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Assassin 4",  "fr": "Assassin 4"  } },
+          { "id": "assassin_4_slots_1", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_1", "value": 1, "type": "base", "sourceName": { "en": "Assassin 4",  "fr": "Assassin 4"  } },
+          { "id": "assassin_4_slots_2", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_2", "value": 1, "type": "base", "sourceName": { "en": "Assassin 4",  "fr": "Assassin 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_improved_uncanny_dodge",
+          "class_feature_assassin_sneak_attack_3d6"
+        ],
+        "grantedModifiers": [
+          { "id": "assassin_5_slots_2", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_2", "value": 1, "type": "base", "sourceName": { "en": "Assassin 5",  "fr": "Assassin 5"  } },
+          { "id": "assassin_5_slots_3", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_3", "value": 0, "type": "base", "sourceName": { "en": "Assassin 5",  "fr": "Assassin 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_assassin_save_bonus_poison_3"],
+        "grantedModifiers": [
+          { "id": "assassin_6_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } },
+          { "id": "assassin_6_fort",    "sourceId": "class_assassin", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } },
+          { "id": "assassin_6_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } },
+          { "id": "assassin_6_will",    "sourceId": "class_assassin", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } },
+          { "id": "assassin_6_slots_2", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_2", "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } },
+          { "id": "assassin_6_slots_3", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_3", "value": 1, "type": "base", "sourceName": { "en": "Assassin 6",  "fr": "Assassin 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_assassin_sneak_attack_4d6"],
+        "grantedModifiers": [
+          { "id": "assassin_7_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 7",  "fr": "Assassin 7"  } },
+          { "id": "assassin_7_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Assassin 7",  "fr": "Assassin 7"  } },
+          { "id": "assassin_7_slots_3", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_3", "value": 1, "type": "base", "sourceName": { "en": "Assassin 7",  "fr": "Assassin 7"  } },
+          { "id": "assassin_7_slots_4", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_4", "value": 0, "type": "base", "sourceName": { "en": "Assassin 7",  "fr": "Assassin 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [
+          "class_feature_assassin_save_bonus_poison_4",
+          "class_feature_assassin_hide_in_plain_sight"
+        ],
+        "grantedModifiers": [
+          { "id": "assassin_8_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Assassin 8",  "fr": "Assassin 8"  } },
+          { "id": "assassin_8_fort",    "sourceId": "class_assassin", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 8",  "fr": "Assassin 8"  } },
+          { "id": "assassin_8_slots_3", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_3", "value": 1, "type": "base", "sourceName": { "en": "Assassin 8",  "fr": "Assassin 8"  } },
+          { "id": "assassin_8_slots_4", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_4", "value": 1, "type": "base", "sourceName": { "en": "Assassin 8",  "fr": "Assassin 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_assassin_sneak_attack_5d6"],
+        "grantedModifiers": [
+          { "id": "assassin_9_fort",    "sourceId": "class_assassin", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 9",  "fr": "Assassin 9"  } },
+          { "id": "assassin_9_will",    "sourceId": "class_assassin", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Assassin 9",  "fr": "Assassin 9"  } },
+          { "id": "assassin_9_slots_4", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_4", "value": 1, "type": "base", "sourceName": { "en": "Assassin 9",  "fr": "Assassin 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_assassin_save_bonus_poison_5"],
+        "grantedModifiers": [
+          { "id": "assassin_10_bab",     "sourceId": "class_assassin", "targetId": "combatStats.bab",  "value": 1, "type": "base", "sourceName": { "en": "Assassin 10", "fr": "Assassin 10" } },
+          { "id": "assassin_10_ref",     "sourceId": "class_assassin", "targetId": "saves.ref",        "value": 1, "type": "base", "sourceName": { "en": "Assassin 10", "fr": "Assassin 10" } },
+          { "id": "assassin_10_slots_4", "sourceId": "class_assassin", "targetId": "resources.spell_slots_assassin_4", "value": 1, "type": "base", "sourceName": { "en": "Assassin 10", "fr": "Assassin 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_blackguard",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Blackguard", "fr": "Chevalier maudit" },
+    "description": {
+      "en": "The blackguard is the antithesis of the paladin—a champion of evil who sells his soul to darkness. Armed with divine spells drawn from foul powers, the blackguard commands undead, issues an aura of despair, and smites good with unholy fury. Entry requires any evil alignment, BAB +6, specific feats, and peaceful contact with an evil outsider.",
+      "fr": "Le chevalier maudit est l'antithèse du paladin — un champion du Mal qui vend son âme aux ténèbres. Armé de sorts divins puisés dans des puissances infâmes, le chevalier maudit contrôle les morts-vivants, répand une aura de désespoir et frappe le bien avec une fureur impie. L'entrée exige un alignement mauvais, un BBA de +6, des dons spécifiques et un contact pacifique avec un être extérieur mauvais."
+    },
+    "tags": ["class", "prestige_class", "class_blackguard", "divine_caster", "prepared_caster"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "alignment_evil", "errorMessage": "Must be of any evil alignment" },
+        { "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue", "operator": ">=", "value": 6, "errorMessage": "Requires Base Attack Bonus +6" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_hide.ranks",              "operator": ">=", "value": 5, "errorMessage": "Requires 5 ranks in Hide" },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_religion.ranks", "operator": ">=", "value": 2, "errorMessage": "Requires 2 ranks in Knowledge (Religion)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_cleave",          "errorMessage": "Requires the Cleave feat"          },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_improved_sunder", "errorMessage": "Requires the Improved Sunder feat" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_power_attack",    "errorMessage": "Requires the Power Attack feat"    }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "blackguard_hit_die",
+        "sourceId": "class_blackguard",
+        "targetId": "combatStats.hit_die_type",
+        "value": 10,
+        "type": "base",
+        "sourceName": { "en": "Blackguard", "fr": "Chevalier maudit" }
+      },
+      {
+        "id": "blackguard_skill_points",
+        "sourceId": "class_blackguard",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Blackguard", "fr": "Chevalier maudit" }
+      }
+    ],
+    "grantedFeatures": [
+      "proficiency_all_simple",
+      "proficiency_all_martial",
+      "proficiency_armor_all",
+      "proficiency_shields_all"
+    ],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_diplomacy",
+      "skill_handle_animal", "skill_heal", "skill_hide",
+      "skill_intimidate", "skill_knowledge_religion",
+      "skill_profession", "skill_ride"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_cha", "stat_wis"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": [
+          "class_feature_blackguard_aura_of_evil",
+          "class_feature_blackguard_detect_good",
+          "class_feature_blackguard_poison_use",
+          "class_feature_blackguard_spellcasting"
+        ],
+        "grantedModifiers": [
+          { "id": "blackguard_1_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 1",  "fr": "Chevalier maudit 1"  } },
+          { "id": "blackguard_1_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 2, "type": "base", "sourceName": { "en": "Blackguard 1",  "fr": "Chevalier maudit 1"  } },
+          { "id": "blackguard_1_ref",     "sourceId": "class_blackguard", "targetId": "saves.ref",       "value": 0, "type": "base", "sourceName": { "en": "Blackguard 1",  "fr": "Chevalier maudit 1"  } },
+          { "id": "blackguard_1_will",    "sourceId": "class_blackguard", "targetId": "saves.will",      "value": 0, "type": "base", "sourceName": { "en": "Blackguard 1",  "fr": "Chevalier maudit 1"  } },
+          { "id": "blackguard_1_slots_1", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_1", "value": 0, "type": "base", "sourceName": { "en": "Blackguard 1",  "fr": "Chevalier maudit 1"  } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": [
+          "class_feature_blackguard_dark_blessing",
+          "class_feature_blackguard_smite_good"
+        ],
+        "grantedModifiers": [
+          { "id": "blackguard_2_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 2",  "fr": "Chevalier maudit 2"  } },
+          { "id": "blackguard_2_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 2",  "fr": "Chevalier maudit 2"  } },
+          { "id": "blackguard_2_slots_1", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_1", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 2",  "fr": "Chevalier maudit 2"  } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": [
+          "class_feature_blackguard_command_undead",
+          "class_feature_blackguard_aura_of_despair"
+        ],
+        "grantedModifiers": [
+          { "id": "blackguard_3_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 3",  "fr": "Chevalier maudit 3"  } },
+          { "id": "blackguard_3_ref",     "sourceId": "class_blackguard", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Blackguard 3",  "fr": "Chevalier maudit 3"  } },
+          { "id": "blackguard_3_will",    "sourceId": "class_blackguard", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 3",  "fr": "Chevalier maudit 3"  } },
+          { "id": "blackguard_3_slots_2", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_2", "value": 0, "type": "base", "sourceName": { "en": "Blackguard 3",  "fr": "Chevalier maudit 3"  } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_blackguard_sneak_attack_1d6"],
+        "grantedModifiers": [
+          { "id": "blackguard_4_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 4",  "fr": "Chevalier maudit 4"  } },
+          { "id": "blackguard_4_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 4",  "fr": "Chevalier maudit 4"  } },
+          { "id": "blackguard_4_slots_2", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_2", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 4",  "fr": "Chevalier maudit 4"  } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": [
+          "class_feature_blackguard_fiendish_servant",
+          "class_feature_blackguard_smite_good_2"
+        ],
+        "grantedModifiers": [
+          { "id": "blackguard_5_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 5",  "fr": "Chevalier maudit 5"  } },
+          { "id": "blackguard_5_slots_3", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_3", "value": 0, "type": "base", "sourceName": { "en": "Blackguard 5",  "fr": "Chevalier maudit 5"  } }
+        ]
+      },
+      {
+        "level": 6,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "blackguard_6_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 6",  "fr": "Chevalier maudit 6"  } },
+          { "id": "blackguard_6_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 6",  "fr": "Chevalier maudit 6"  } },
+          { "id": "blackguard_6_ref",     "sourceId": "class_blackguard", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Blackguard 6",  "fr": "Chevalier maudit 6"  } },
+          { "id": "blackguard_6_will",    "sourceId": "class_blackguard", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 6",  "fr": "Chevalier maudit 6"  } },
+          { "id": "blackguard_6_slots_3", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_3", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 6",  "fr": "Chevalier maudit 6"  } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_blackguard_sneak_attack_2d6"],
+        "grantedModifiers": [
+          { "id": "blackguard_7_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 7",  "fr": "Chevalier maudit 7"  } },
+          { "id": "blackguard_7_slots_1", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_1", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 7",  "fr": "Chevalier maudit 7"  } },
+          { "id": "blackguard_7_slots_4", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_4", "value": 0, "type": "base", "sourceName": { "en": "Blackguard 7",  "fr": "Chevalier maudit 7"  } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "blackguard_8_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 8",  "fr": "Chevalier maudit 8"  } },
+          { "id": "blackguard_8_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 8",  "fr": "Chevalier maudit 8"  } },
+          { "id": "blackguard_8_slots_4", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_4", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 8",  "fr": "Chevalier maudit 8"  } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": [],
+        "grantedModifiers": [
+          { "id": "blackguard_9_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 9",  "fr": "Chevalier maudit 9"  } },
+          { "id": "blackguard_9_ref",     "sourceId": "class_blackguard", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Blackguard 9",  "fr": "Chevalier maudit 9"  } },
+          { "id": "blackguard_9_will",    "sourceId": "class_blackguard", "targetId": "saves.will",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 9",  "fr": "Chevalier maudit 9"  } },
+          { "id": "blackguard_9_slots_2", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_2", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 9",  "fr": "Chevalier maudit 9"  } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": [
+          "class_feature_blackguard_sneak_attack_3d6",
+          "class_feature_blackguard_smite_good_3"
+        ],
+        "grantedModifiers": [
+          { "id": "blackguard_10_bab",     "sourceId": "class_blackguard", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 10", "fr": "Chevalier maudit 10" } },
+          { "id": "blackguard_10_fort",    "sourceId": "class_blackguard", "targetId": "saves.fort",      "value": 1, "type": "base", "sourceName": { "en": "Blackguard 10", "fr": "Chevalier maudit 10" } },
+          { "id": "blackguard_10_slots_3", "sourceId": "class_blackguard", "targetId": "resources.spell_slots_blackguard_3", "value": 1, "type": "base", "sourceName": { "en": "Blackguard 10", "fr": "Chevalier maudit 10" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "class_dragon_disciple",
+    "category": "class",
+    "ruleSource": "srd_core",
+    "label": { "en": "Dragon Disciple", "fr": "Disciple du dragon" },
+    "description": {
+      "en": "A prestige class for those who seek to unlock the power of their draconic heritage. Dragon disciples are spontaneous arcane spellcasters who tap into the blood of their dragon ancestry to gain physical draconic traits: natural armor, claw and bite attacks, a breath weapon, blindsense, and ultimately wings and the half-dragon template.",
+      "fr": "Une classe de prestige pour ceux qui cherchent à libérer le pouvoir de leur héritage draconique. Les disciples du dragon sont des lanceurs de sorts arcaniques spontanés qui puisent dans le sang de leur ancêtre dragon pour acquérir des caractéristiques physiques draconiques : armure naturelle, attaques de griffe et de morsure, souffle, perception aveugle et finalement des ailes ainsi que le gabarit demi-dragon."
+    },
+    "tags": ["class", "prestige_class", "class_dragon_disciple"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "NOT",
+          "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "race_dragon", "errorMessage": "Cannot already be a dragon" }
+        },
+        {
+          "logic": "NOT",
+          "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "template_half_dragon", "errorMessage": "Cannot already be a half-dragon" }
+        },
+        { "logic": "CONDITION", "targetPath": "@skills.skill_knowledge_arcana.ranks", "operator": ">=", "value": 8, "errorMessage": "Requires 8 ranks in Knowledge (Arcana)" },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "language_draconic",        "errorMessage": "Must speak Draconic"                                     },
+        { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "arcane_caster_spontaneous", "errorMessage": "Must be able to cast arcane spells without preparation" }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "dragon_disciple_hit_die",
+        "sourceId": "class_dragon_disciple",
+        "targetId": "combatStats.hit_die_type",
+        "value": 12,
+        "type": "base",
+        "sourceName": { "en": "Dragon Disciple", "fr": "Disciple du dragon" }
+      },
+      {
+        "id": "dragon_disciple_skill_points",
+        "sourceId": "class_dragon_disciple",
+        "targetId": "attributes.skill_points_per_level",
+        "value": 2,
+        "type": "base",
+        "sourceName": { "en": "Dragon Disciple", "fr": "Disciple du dragon" }
+      }
+    ],
+    "grantedFeatures": [],
+    "choices": [
+      {
+        "choiceId": "dragon_variety",
+        "label": { "en": "Dragon Variety", "fr": "Type de dragon" },
+        "optionsQuery": "tag:dragon_ancestry",
+        "maxSelections": 1
+      }
+    ],
+    "classSkills": [
+      "skill_concentration", "skill_craft", "skill_diplomacy",
+      "skill_escape_artist", "skill_gather_information",
+      "skill_knowledge_arcana", "skill_knowledge_architecture",
+      "skill_knowledge_dungeoneering", "skill_knowledge_geography",
+      "skill_knowledge_history", "skill_knowledge_local",
+      "skill_knowledge_nature", "skill_knowledge_nobility",
+      "skill_knowledge_planes", "skill_knowledge_religion",
+      "skill_listen", "skill_profession", "skill_search",
+      "skill_spellcraft", "skill_spot"
+    ],
+    "recommendedAttributes": ["stat_str", "stat_con", "stat_cha"],
+    "levelProgression": [
+      {
+        "level": 1,
+        "grantedFeatures": ["class_feature_dd_natural_armor_1", "class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_1_bab",       "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",      "value": 0, "type": "base",         "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple du dragon 1" } },
+          { "id": "dd_1_fort",      "sourceId": "class_dragon_disciple", "targetId": "saves.fort",           "value": 2, "type": "base",         "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple du dragon 1" } },
+          { "id": "dd_1_ref",       "sourceId": "class_dragon_disciple", "targetId": "saves.ref",            "value": 0, "type": "base",         "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple du dragon 1" } },
+          { "id": "dd_1_will",      "sourceId": "class_dragon_disciple", "targetId": "saves.will",           "value": 2, "type": "base",         "sourceName": { "en": "Dragon Disciple 1", "fr": "Disciple du dragon 1" } },
+          { "id": "dd_1_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal","value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle du disciple du dragon" } }
+        ]
+      },
+      {
+        "level": 2,
+        "grantedFeatures": ["class_feature_dd_claws_and_bite", "class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_2_bab",  "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple du dragon 2" } },
+          { "id": "dd_2_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort",      "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple du dragon 2" } },
+          { "id": "dd_2_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will",      "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 2", "fr": "Disciple du dragon 2" } },
+          { "id": "dd_2_str",  "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Str +2", "fr": "Disciple du dragon For +2" } }
+        ]
+      },
+      {
+        "level": 3,
+        "grantedFeatures": ["class_feature_dd_breath_weapon_2d8"],
+        "grantedModifiers": [
+          { "id": "dd_3_bab", "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 3", "fr": "Disciple du dragon 3" } },
+          { "id": "dd_3_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref",       "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 3", "fr": "Disciple du dragon 3" } }
+        ]
+      },
+      {
+        "level": 4,
+        "grantedFeatures": ["class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_4_bab",       "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",      "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple du dragon 4" } },
+          { "id": "dd_4_fort",      "sourceId": "class_dragon_disciple", "targetId": "saves.fort",           "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple du dragon 4" } },
+          { "id": "dd_4_will",      "sourceId": "class_dragon_disciple", "targetId": "saves.will",           "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 4", "fr": "Disciple du dragon 4" } },
+          { "id": "dd_4_str",       "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str",  "value": 2, "type": "untyped",      "sourceName": { "en": "Dragon Disciple Str +2", "fr": "Disciple du dragon For +2" } },
+          { "id": "dd_4_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal","value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle du disciple du dragon" } }
+        ]
+      },
+      {
+        "level": 5,
+        "grantedFeatures": ["class_feature_dd_blindsense_30", "class_feature_dd_bonus_spell"],
+        "grantedModifiers": []
+      },
+      {
+        "level": 6,
+        "grantedFeatures": ["class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_6_bab",  "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",      "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple du dragon 6" } },
+          { "id": "dd_6_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort",           "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple du dragon 6" } },
+          { "id": "dd_6_ref",  "sourceId": "class_dragon_disciple", "targetId": "saves.ref",            "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple du dragon 6" } },
+          { "id": "dd_6_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will",           "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 6", "fr": "Disciple du dragon 6" } },
+          { "id": "dd_6_con",  "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_con",  "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Con +2", "fr": "Disciple du dragon Con +2" } }
+        ]
+      },
+      {
+        "level": 7,
+        "grantedFeatures": ["class_feature_dd_breath_weapon_4d8"],
+        "grantedModifiers": [
+          { "id": "dd_7_bab",       "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",      "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 7", "fr": "Disciple du dragon 7" } },
+          { "id": "dd_7_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal","value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle du disciple du dragon" } }
+        ]
+      },
+      {
+        "level": 8,
+        "grantedFeatures": ["class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_8_bab",  "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",     "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple du dragon 8" } },
+          { "id": "dd_8_fort", "sourceId": "class_dragon_disciple", "targetId": "saves.fort",          "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple du dragon 8" } },
+          { "id": "dd_8_will", "sourceId": "class_dragon_disciple", "targetId": "saves.will",          "value": 1, "type": "base",    "sourceName": { "en": "Dragon Disciple 8", "fr": "Disciple du dragon 8" } },
+          { "id": "dd_8_int",  "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_int", "value": 2, "type": "untyped", "sourceName": { "en": "Dragon Disciple Int +2", "fr": "Disciple du dragon Int +2" } }
+        ]
+      },
+      {
+        "level": 9,
+        "grantedFeatures": ["class_feature_dd_wings", "class_feature_dd_bonus_spell"],
+        "grantedModifiers": [
+          { "id": "dd_9_ref",       "sourceId": "class_dragon_disciple", "targetId": "saves.ref",           "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 9", "fr": "Disciple du dragon 9" } },
+          { "id": "dd_9_fly_speed", "sourceId": "class_dragon_disciple", "targetId": "attributes.speed_fly", "value": "@attributes.speed_land.totalValue", "type": "base", "sourceName": { "en": "Dragon Wings", "fr": "Ailes draconiques" } }
+        ]
+      },
+      {
+        "level": 10,
+        "grantedFeatures": ["class_feature_dd_blindsense_60", "class_feature_dd_dragon_apotheosis"],
+        "grantedModifiers": [
+          { "id": "dd_10_bab",       "sourceId": "class_dragon_disciple", "targetId": "combatStats.bab",      "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple du dragon 10" } },
+          { "id": "dd_10_fort",      "sourceId": "class_dragon_disciple", "targetId": "saves.fort",           "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple du dragon 10" } },
+          { "id": "dd_10_will",      "sourceId": "class_dragon_disciple", "targetId": "saves.will",           "value": 1, "type": "base",         "sourceName": { "en": "Dragon Disciple 10", "fr": "Disciple du dragon 10" } },
+          { "id": "dd_10_str",       "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_str",  "value": 4, "type": "untyped",      "sourceName": { "en": "Dragon Apotheosis Str", "fr": "Apothéose draconique For" } },
+          { "id": "dd_10_cha",       "sourceId": "class_dragon_disciple", "targetId": "attributes.stat_cha",  "value": 2, "type": "untyped",      "sourceName": { "en": "Dragon Apotheosis Cha", "fr": "Apothéose draconique Cha" } },
+          { "id": "dd_10_nat_armor", "sourceId": "class_dragon_disciple", "targetId": "combatStats.ac_normal","value": 1, "type": "natural_armor", "sourceName": { "en": "Dragon Disciple Natural Armor", "fr": "Armure naturelle du disciple du dragon" } }
+        ]
+      }
+    ]
+  }
+]

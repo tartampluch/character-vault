@@ -1375,7 +1375,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ### C-11a / C-12a — Prestige Classes batch 1/5: Arcane Archer, Arcane Trickster, Archmage
 
-- [ ] **C-11a** — Convert structure: Arcane Archer, Arcane Trickster, Archmage (creates `10_d20srd_core_prestige_classes.json`)
+- [x] **C-11a** — Convert structure: Arcane Archer, Arcane Trickster, Archmage (creates `10_d20srd_core_prestige_classes.json`)
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/arcaneArcher.html`
@@ -1384,7 +1384,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [ ] **C-12a** — Convert features for: Arcane Archer, Arcane Trickster, Archmage (creates `11_d20srd_core_prestige_class_features.json`)
+- [x] **C-12a** — Convert features for: Arcane Archer, Arcane Trickster, Archmage (creates `11_d20srd_core_prestige_class_features.json`)
 
 **Source files:** Same as C-11a.
 
@@ -1392,7 +1392,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ### C-11b / C-12b — Prestige Classes batch 2/5: Assassin, Blackguard, Dragon Disciple
 
-- [ ] **C-11b** — Convert structure: Assassin, Blackguard, Dragon Disciple
+- [x] **C-11b** — Convert structure: Assassin, Blackguard, Dragon Disciple
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/assassin.html`
@@ -1401,7 +1401,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [ ] **C-12b** — Convert features for: Assassin, Blackguard, Dragon Disciple
+- [x] **C-12b** — Convert features for: Assassin, Blackguard, Dragon Disciple
 
 **Source files:** Same as C-11b.
 

@@ -1,0 +1,1425 @@
+[
+  {
+    "id": "class_feature_arcane_archer_enhance_arrow_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhance Arrow +1", "fr": "Flèche améliorée +1" },
+    "description": {
+      "en": "At 1st level, every nonmagical arrow an arcane archer nocks and lets fly becomes magical, gaining a +1 enhancement bonus. Unlike magic weapons created by normal means, the archer need not spend experience points or gold pieces to accomplish this task. However, an archer's magic arrows only function for her.",
+      "fr": "Au niveau 1, chaque flèche non magique que l'archer arcane encoche et décoche devient magique, obtenant un bonus d'altération de +1. Contrairement aux armes magiques créées par des moyens normaux, l'archer n'a pas besoin de dépenser des points d'expérience ou des pièces d'or pour accomplir cette tâche. Cependant, les flèches magiques de l'archer ne fonctionnent que pour elle."
+    },
+    "tags": ["class_feature", "arcane_archer", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_enhance_arrow_1_bonus",
+        "sourceId": "class_feature_arcane_archer_enhance_arrow_1",
+        "sourceName": { "en": "Enhance Arrow +1", "fr": "Flèche améliorée +1" },
+        "targetId": "combatStats.arrow_enhancement_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_enhance_arrow_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhance Arrow +2", "fr": "Flèche améliorée +2" },
+    "description": {
+      "en": "At 3rd level, the magic arrows the arcane archer creates increase to a +2 enhancement bonus. This replaces the +1 bonus from the previous tier.",
+      "fr": "Au niveau 3, les flèches magiques que l'archer arcane crée passent à un bonus d'altération de +2. Cela remplace le bonus de +1 du niveau précédent."
+    },
+    "tags": ["class_feature", "arcane_archer", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_enhance_arrow_3_bonus",
+        "sourceId": "class_feature_arcane_archer_enhance_arrow_3",
+        "sourceName": { "en": "Enhance Arrow +2", "fr": "Flèche améliorée +2" },
+        "targetId": "combatStats.arrow_enhancement_bonus",
+        "value": 2,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_enhance_arrow_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhance Arrow +3", "fr": "Flèche améliorée +3" },
+    "description": {
+      "en": "At 5th level, the magic arrows the arcane archer creates increase to a +3 enhancement bonus.",
+      "fr": "Au niveau 5, les flèches magiques que l'archer arcane crée passent à un bonus d'altération de +3."
+    },
+    "tags": ["class_feature", "arcane_archer", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_enhance_arrow_5_bonus",
+        "sourceId": "class_feature_arcane_archer_enhance_arrow_5",
+        "sourceName": { "en": "Enhance Arrow +3", "fr": "Flèche améliorée +3" },
+        "targetId": "combatStats.arrow_enhancement_bonus",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_enhance_arrow_7",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhance Arrow +4", "fr": "Flèche améliorée +4" },
+    "description": {
+      "en": "At 7th level, the magic arrows the arcane archer creates increase to a +4 enhancement bonus.",
+      "fr": "Au niveau 7, les flèches magiques que l'archer arcane crée passent à un bonus d'altération de +4."
+    },
+    "tags": ["class_feature", "arcane_archer", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_enhance_arrow_7_bonus",
+        "sourceId": "class_feature_arcane_archer_enhance_arrow_7",
+        "sourceName": { "en": "Enhance Arrow +4", "fr": "Flèche améliorée +4" },
+        "targetId": "combatStats.arrow_enhancement_bonus",
+        "value": 4,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_enhance_arrow_9",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Enhance Arrow +5", "fr": "Flèche améliorée +5" },
+    "description": {
+      "en": "At 9th level, the magic arrows the arcane archer creates increase to a +5 enhancement bonus.",
+      "fr": "Au niveau 9, les flèches magiques que l'archer arcane crée passent à un bonus d'altération de +5."
+    },
+    "tags": ["class_feature", "arcane_archer", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_enhance_arrow_9_bonus",
+        "sourceId": "class_feature_arcane_archer_enhance_arrow_9",
+        "sourceName": { "en": "Enhance Arrow +5", "fr": "Flèche améliorée +5" },
+        "targetId": "combatStats.arrow_enhancement_bonus",
+        "value": 5,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_imbue_arrow",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Imbue Arrow", "fr": "Flèche imprégnée" },
+    "description": {
+      "en": "At 2nd level, an arcane archer gains the ability to place an area spell upon an arrow. When the arrow is fired, the spell's area is centered on where the arrow lands, even if the spell could normally be centered only on the caster. This ability allows the archer to use the bow's range rather than the spell's range. It takes a standard action to cast the spell and fire the arrow. The arrow must be fired in the round the spell is cast, or the spell is wasted.",
+      "fr": "Au niveau 2, l'archer arcane acquiert la capacité de placer un sort de zone sur une flèche. Quand la flèche est tirée, la zone du sort est centrée là où atterrit la flèche, même si le sort ne peut normalement être centré que sur le lanceur. Cette capacité permet à l'archer d'utiliser la portée de l'arc plutôt que la portée du sort. Il faut une action simple pour lancer le sort et tirer la flèche. La flèche doit être tirée dans le round où le sort est lancé, sans quoi le sort est perdu."
+    },
+    "tags": ["class_feature", "arcane_archer", "spell_like"],
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_seeker_arrow",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Seeker Arrow", "fr": "Flèche chercheuse" },
+    "description": {
+      "en": "At 4th level, an arcane archer can launch an arrow once per day at a target known to her within range, and the arrow travels to the target, even around corners. Only an unavoidable obstacle or the limit of the arrow's range prevents the arrow's flight. This ability negates cover and concealment modifiers, but otherwise the attack is rolled normally. Using this ability is a standard action (and shooting the arrow is part of the action).",
+      "fr": "Au niveau 4, l'archer arcane peut, une fois par jour, décocher une flèche en direction d'une cible qu'elle connaît et qui se trouve à portée. La flèche se dirige vers la cible, même en contournant les angles. Seul un obstacle inévitable ou la limite de portée de la flèche peut arrêter son vol. Cette capacité annule les modificateurs d'abri et de camouflage, mais l'attaque est sinon effectuée normalement. L'utilisation de cette capacité est une action simple (et tirer la flèche fait partie de l'action)."
+    },
+    "tags": ["class_feature", "arcane_archer", "spell_like"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.arcane_archer_seeker_arrow_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_seeker_arrow_uses_max",
+        "sourceId": "class_feature_arcane_archer_seeker_arrow",
+        "sourceName": { "en": "Seeker Arrow", "fr": "Flèche chercheuse" },
+        "targetId": "resources.arcane_archer_seeker_arrow_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_phase_arrow",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Phase Arrow", "fr": "Flèche de phase" },
+    "description": {
+      "en": "At 6th level, an arcane archer can launch an arrow once per day at a target known to her within range, and the arrow travels to the target in a straight path, passing through any nonmagical barrier or wall in its way. Any magical barrier stops the arrow. This ability negates cover, concealment, and even armor modifiers, but otherwise the attack is rolled normally. Using this ability is a standard action (and shooting the arrow is part of the action).",
+      "fr": "Au niveau 6, l'archer arcane peut, une fois par jour, décocher une flèche en direction d'une cible qu'elle connaît et qui se trouve à portée. La flèche se dirige vers la cible en ligne droite, traversant toute barrière ou paroi non magique sur son passage. Toute barrière magique arrête la flèche. Cette capacité annule l'abri, le camouflage et même les modificateurs d'armure, mais l'attaque est sinon effectuée normalement. L'utilisation de cette capacité est une action simple (et tirer la flèche fait partie de l'action)."
+    },
+    "tags": ["class_feature", "arcane_archer", "spell_like"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.arcane_archer_phase_arrow_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_phase_arrow_uses_max",
+        "sourceId": "class_feature_arcane_archer_phase_arrow",
+        "sourceName": { "en": "Phase Arrow", "fr": "Flèche de phase" },
+        "targetId": "resources.arcane_archer_phase_arrow_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_hail_of_arrows",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hail of Arrows", "fr": "Pluie de flèches" },
+    "description": {
+      "en": "In lieu of her regular attacks, once per day an arcane archer of 8th level or higher can fire an arrow at each and every target within range, to a maximum of one target for every arcane archer level she has earned. Each attack uses the archer's primary attack bonus, and each enemy may only be targeted by a single arrow.",
+      "fr": "En remplacement de ses attaques normales, une fois par jour, un archer arcane de niveau 8 ou supérieur peut tirer une flèche sur chaque cible à portée, jusqu'à un maximum d'une cible par niveau d'archer arcane. Chaque attaque utilise le bonus d'attaque principal de l'archer, et chaque ennemi ne peut être visé que par une seule flèche."
+    },
+    "tags": ["class_feature", "arcane_archer", "spell_like"],
+    "activation": {
+      "actionType": "full_round",
+      "resourceCost": { "targetId": "resources.arcane_archer_hail_of_arrows_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_archer_hail_of_arrows_uses_max",
+        "sourceId": "class_feature_arcane_archer_hail_of_arrows",
+        "sourceName": { "en": "Hail of Arrows", "fr": "Pluie de flèches" },
+        "targetId": "resources.arcane_archer_hail_of_arrows_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_archer_arrow_of_death",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arrow of Death", "fr": "Flèche de mort" },
+    "description": {
+      "en": "At 10th level, an arcane archer can create an arrow of death that forces the target, if damaged by the arrow's attack, to make a DC 20 Fortitude save or be slain immediately. It takes one day to make an arrow of death, and the arrow only functions for the arcane archer who created it. The arrow of death lasts no longer than one year, and the archer can only have one such arrow in existence at a time.",
+      "fr": "Au niveau 10, l'archer arcane peut créer une flèche de mort qui force la cible, si elle est blessée par l'attaque de la flèche, à effectuer un jet de Vigueur de DD 20 ou à être tuée immédiatement. La création d'une flèche de mort prend un jour, et la flèche ne fonctionne que pour l'archer arcane qui l'a créée. La flèche de mort dure au plus un an, et l'archer ne peut avoir qu'une seule de ces flèches en existence à la fois."
+    },
+    "tags": ["class_feature", "arcane_archer", "spell_like"],
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_ranged_legerdemain",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ranged Legerdemain (1/day)", "fr": "Prestidigitation à distance (1/jour)" },
+    "description": {
+      "en": "An arcane trickster can perform one of the following class skills at a range of 30 feet: Disable Device, Open Lock, or Sleight of Hand. Working at a distance increases the normal skill check DC by 5, and an arcane trickster cannot take 10 on this check. Any object to be manipulated must weigh 5 pounds or less. Usable once per day initially.",
+      "fr": "Un filou de l'arcane peut effectuer l'une des compétences de classe suivantes à une portée de 9 m : Sabotage, Crochetage ou Escamotage. Travailler à distance augmente le DD du test de compétence normal de 5, et un filou de l'arcane ne peut pas prendre 10 sur ce test. Tout objet à manipuler doit peser 2,3 kg ou moins. Utilisable une fois par jour au départ."
+    },
+    "tags": ["class_feature", "arcane_trickster", "extraordinary"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.arcane_trickster_ranged_legerdemain_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_ranged_legerdemain_uses_max",
+        "sourceId": "class_feature_arcane_trickster_ranged_legerdemain",
+        "sourceName": { "en": "Ranged Legerdemain", "fr": "Prestidigitation à distance" },
+        "targetId": "resources.arcane_trickster_ranged_legerdemain_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_ranged_legerdemain_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ranged Legerdemain (2/day)", "fr": "Prestidigitation à distance (2/jour)" },
+    "description": {
+      "en": "At 5th level, an arcane trickster can use ranged legerdemain twice per day.",
+      "fr": "Au niveau 5, un filou de l'arcane peut utiliser la prestidigitation à distance deux fois par jour."
+    },
+    "tags": ["class_feature", "arcane_trickster", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_ranged_legerdemain_uses_max_2",
+        "sourceId": "class_feature_arcane_trickster_ranged_legerdemain_2",
+        "sourceName": { "en": "Ranged Legerdemain (2/day)", "fr": "Prestidigitation à distance (2/jour)" },
+        "targetId": "resources.arcane_trickster_ranged_legerdemain_uses.maxValue",
+        "value": 2,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_ranged_legerdemain_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Ranged Legerdemain (3/day)", "fr": "Prestidigitation à distance (3/jour)" },
+    "description": {
+      "en": "At 9th level, an arcane trickster can use ranged legerdemain three times per day.",
+      "fr": "Au niveau 9, un filou de l'arcane peut utiliser la prestidigitation à distance trois fois par jour."
+    },
+    "tags": ["class_feature", "arcane_trickster", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_ranged_legerdemain_uses_max_3",
+        "sourceId": "class_feature_arcane_trickster_ranged_legerdemain_3",
+        "sourceName": { "en": "Ranged Legerdemain (3/day)", "fr": "Prestidigitation à distance (3/jour)" },
+        "targetId": "resources.arcane_trickster_ranged_legerdemain_uses.maxValue",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_sneak_attack_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +1d6", "fr": "Attaque sournoise +1d6" },
+    "description": {
+      "en": "At 2nd level, the arcane trickster gains sneak attack +1d6. This is exactly like the rogue ability of the same name. If the arcane trickster gets a sneak attack bonus from another source, the bonuses on damage stack.",
+      "fr": "Au niveau 2, le filou de l'arcane gagne l'attaque sournoise +1d6. C'est exactement comme la capacité du roublard du même nom. Si le filou de l'arcane obtient un bonus d'attaque sournoise d'une autre source, les bonus aux dégâts se cumulent."
+    },
+    "tags": ["class_feature", "arcane_trickster", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_sneak_attack_2_bonus",
+        "sourceId": "class_feature_arcane_trickster_sneak_attack_2",
+        "sourceName": { "en": "Arcane Trickster Sneak Attack +1d6", "fr": "Attaque sournoise du filou de l'arcane +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_sneak_attack_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +2d6", "fr": "Attaque sournoise +2d6" },
+    "description": {
+      "en": "At 4th level, the arcane trickster's sneak attack increases by an additional +1d6 (total +2d6 from this class).",
+      "fr": "Au niveau 4, l'attaque sournoise du filou de l'arcane augmente d'un +1d6 supplémentaire (total +2d6 de cette classe)."
+    },
+    "tags": ["class_feature", "arcane_trickster", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_sneak_attack_4_bonus",
+        "sourceId": "class_feature_arcane_trickster_sneak_attack_4",
+        "sourceName": { "en": "Arcane Trickster Sneak Attack +1d6", "fr": "Attaque sournoise du filou de l'arcane +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_sneak_attack_6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +3d6", "fr": "Attaque sournoise +3d6" },
+    "description": {
+      "en": "At 6th level, the arcane trickster's sneak attack increases by an additional +1d6 (total +3d6 from this class).",
+      "fr": "Au niveau 6, l'attaque sournoise du filou de l'arcane augmente d'un +1d6 supplémentaire (total +3d6 de cette classe)."
+    },
+    "tags": ["class_feature", "arcane_trickster", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_sneak_attack_6_bonus",
+        "sourceId": "class_feature_arcane_trickster_sneak_attack_6",
+        "sourceName": { "en": "Arcane Trickster Sneak Attack +1d6", "fr": "Attaque sournoise du filou de l'arcane +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_sneak_attack_8",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +4d6", "fr": "Attaque sournoise +4d6" },
+    "description": {
+      "en": "At 8th level, the arcane trickster's sneak attack increases by an additional +1d6 (total +4d6 from this class).",
+      "fr": "Au niveau 8, l'attaque sournoise du filou de l'arcane augmente d'un +1d6 supplémentaire (total +4d6 de cette classe)."
+    },
+    "tags": ["class_feature", "arcane_trickster", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_sneak_attack_8_bonus",
+        "sourceId": "class_feature_arcane_trickster_sneak_attack_8",
+        "sourceName": { "en": "Arcane Trickster Sneak Attack +1d6", "fr": "Attaque sournoise du filou de l'arcane +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_sneak_attack_10",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +5d6", "fr": "Attaque sournoise +5d6" },
+    "description": {
+      "en": "At 10th level, the arcane trickster's sneak attack increases by an additional +1d6 (total +5d6 from this class).",
+      "fr": "Au niveau 10, l'attaque sournoise du filou de l'arcane augmente d'un +1d6 supplémentaire (total +5d6 de cette classe)."
+    },
+    "tags": ["class_feature", "arcane_trickster", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_sneak_attack_10_bonus",
+        "sourceId": "class_feature_arcane_trickster_sneak_attack_10",
+        "sourceName": { "en": "Arcane Trickster Sneak Attack +1d6", "fr": "Attaque sournoise du filou de l'arcane +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_impromptu_sneak_attack",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Impromptu Sneak Attack (1/day)", "fr": "Attaque sournoise improvisée (1/jour)" },
+    "description": {
+      "en": "Beginning at 3rd level, once per day an arcane trickster can declare one melee or ranged attack he makes to be a sneak attack (the target can be no more than 30 feet distant if the impromptu sneak attack is a ranged attack). The target of an impromptu sneak attack loses any Dexterity bonus to AC, but only against that attack. The power can be used against any target, but creatures that are not subject to critical hits take no extra damage (though they still lose any Dexterity bonus to AC against the attack).",
+      "fr": "À partir du niveau 3, une fois par jour, un filou de l'arcane peut déclarer que l'une de ses attaques au corps à corps ou à distance est une attaque sournoise (la cible ne peut pas être à plus de 9 m si l'attaque sournoise improvisée est à distance). La cible d'une attaque sournoise improvisée perd tout bonus de Dextérité à la CA, mais uniquement contre cette attaque. Le pouvoir peut être utilisé contre n'importe quelle cible, mais les créatures qui ne sont pas sujettes aux coups critiques ne subissent pas de dégâts supplémentaires (bien qu'elles perdent tout bonus de Dextérité à la CA contre l'attaque)."
+    },
+    "tags": ["class_feature", "arcane_trickster", "extraordinary"],
+    "activation": {
+      "actionType": "free",
+      "resourceCost": { "targetId": "resources.arcane_trickster_impromptu_sneak_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_impromptu_sneak_uses_max",
+        "sourceId": "class_feature_arcane_trickster_impromptu_sneak_attack",
+        "sourceName": { "en": "Impromptu Sneak Attack", "fr": "Attaque sournoise improvisée" },
+        "targetId": "resources.arcane_trickster_impromptu_sneak_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_impromptu_sneak_attack_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Impromptu Sneak Attack (2/day)", "fr": "Attaque sournoise improvisée (2/jour)" },
+    "description": {
+      "en": "At 7th level, an arcane trickster can use impromptu sneak attack twice per day.",
+      "fr": "Au niveau 7, un filou de l'arcane peut utiliser l'attaque sournoise improvisée deux fois par jour."
+    },
+    "tags": ["class_feature", "arcane_trickster", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "arcane_trickster_impromptu_sneak_uses_max_2",
+        "sourceId": "class_feature_arcane_trickster_impromptu_sneak_attack_2",
+        "sourceName": { "en": "Impromptu Sneak Attack (2/day)", "fr": "Attaque sournoise improvisée (2/jour)" },
+        "targetId": "resources.arcane_trickster_impromptu_sneak_uses.maxValue",
+        "value": 2,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_arcane_trickster_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spellcasting Advancement", "fr": "Progression des sorts" },
+    "description": {
+      "en": "When a new arcane trickster level is gained, the character gains new spells per day as if he had also gained a level in a spellcasting class he belonged to before adding the prestige class. He does not, however, gain any other benefit a character of that class would have gained, except for an increased effective level of spellcasting. If a character had more than one spellcasting class before becoming an arcane trickster, he must decide to which class he adds the new level for purposes of determining spells per day.",
+      "fr": "Lorsqu'un nouveau niveau de filou de l'arcane est acquis, le personnage obtient de nouveaux sorts par jour comme s'il avait aussi gagné un niveau dans une classe de lanceur de sorts à laquelle il appartenait avant d'ajouter la classe de prestige. En revanche, il ne gagne pas les autres avantages qu'un personnage de cette classe aurait obtenus, sauf un niveau effectif de lanceur de sorts accru. Si le personnage appartenait à plus d'une classe de lanceur de sorts avant de devenir filou de l'arcane, il doit choisir à quelle classe il ajoute le nouveau niveau pour déterminer les sorts par jour."
+    },
+    "tags": ["class_feature", "arcane_trickster", "spellcasting_advancement"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spellcasting Advancement", "fr": "Progression des sorts" },
+    "description": {
+      "en": "When a new archmage level is gained, the character gains new spells per day (and spells known, if applicable) as if he had also gained a level in whatever arcane spellcasting class in which he could cast 7th-level spells before he added the prestige class level. He does not, however, gain any other benefit a character of that class would have gained. If a character had more than one arcane spellcasting class in which he could cast 7th-level spells before he became an archmage, he must decide to which class he adds each level of archmage for the purpose of determining spells per day.",
+      "fr": "Lorsqu'un nouveau niveau d'archimage est acquis, le personnage obtient de nouveaux sorts par jour (et de nouveaux sorts connus, le cas échéant) comme s'il avait aussi gagné un niveau dans la classe de lanceur de sorts arcanique dans laquelle il pouvait lancer des sorts de niveau 7 avant d'ajouter le niveau de classe de prestige. En revanche, il ne gagne pas les autres avantages qu'un personnage de cette classe aurait obtenus. Si le personnage possédait plus d'une classe de lanceur de sorts arcanique lui permettant de lancer des sorts de niveau 7 avant de devenir archimage, il doit décider à quelle classe il ajoute chaque niveau d'archimage pour déterminer les sorts par jour."
+    },
+    "tags": ["class_feature", "archmage", "spellcasting_advancement"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_high_arcana_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "High Arcana (1st choice)", "fr": "Haute arcane (1er choix)" },
+    "description": {
+      "en": "At 1st level, the archmage gains the opportunity to select a special ability from among those described below by permanently eliminating one existing spell slot (she cannot eliminate a spell slot of higher level than the highest-level spell she can cast). An archmage may choose to eliminate a slot of a higher level than required. Available choices: Arcane Fire (costs one 9th-level slot), Arcane Reach (costs one 7th-level slot), Mastery of Counterspelling (costs one 7th-level slot), Mastery of Elements (costs one 8th-level slot), Mastery of Shaping (costs one 6th-level slot), Spell Power (costs one 5th-level slot), Spell-Like Ability (costs one 5th-level slot).",
+      "fr": "Au niveau 1, l'archimage a la possibilité de choisir une capacité spéciale parmi celles décrites ci-dessous en éliminant définitivement un emplacement de sort existant (elle ne peut pas éliminer un emplacement de sort de niveau supérieur au sort de plus haut niveau qu'elle peut lancer). Un archimage peut choisir d'éliminer un emplacement de niveau supérieur à celui requis. Choix disponibles : Feu arcanique (coûte un emplacement de niveau 9), Portée arcanique (coûte un emplacement de niveau 7), Maîtrise de la contre-magie (coûte un emplacement de niveau 7), Maîtrise des éléments (coûte un emplacement de niveau 8), Maîtrise de la mise en forme (coûte un emplacement de niveau 6), Puissance des sorts (coûte un emplacement de niveau 5), Capacité de type sort (coûte un emplacement de niveau 5)."
+    },
+    "tags": ["class_feature", "archmage", "supernatural"],
+    "choices": [
+      {
+        "choiceId": "archmage_high_arcana_choice_1",
+        "label": { "en": "Choose a High Arcana ability", "fr": "Choisissez une capacité de Haute arcane" },
+        "optionsQuery": "tag:archmage_high_arcana_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_high_arcana_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "High Arcana (2nd choice)", "fr": "Haute arcane (2e choix)" },
+    "description": {
+      "en": "At 2nd level, the archmage selects a second High Arcana special ability, permanently eliminating one existing spell slot as payment.",
+      "fr": "Au niveau 2, l'archimage choisit une deuxième capacité spéciale de Haute arcane, en éliminant définitivement un emplacement de sort existant en paiement."
+    },
+    "tags": ["class_feature", "archmage", "supernatural"],
+    "choices": [
+      {
+        "choiceId": "archmage_high_arcana_choice_2",
+        "label": { "en": "Choose a High Arcana ability", "fr": "Choisissez une capacité de Haute arcane" },
+        "optionsQuery": "tag:archmage_high_arcana_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_high_arcana_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "High Arcana (3rd choice)", "fr": "Haute arcane (3e choix)" },
+    "description": {
+      "en": "At 3rd level, the archmage selects a third High Arcana special ability, permanently eliminating one existing spell slot as payment.",
+      "fr": "Au niveau 3, l'archimage choisit une troisième capacité spéciale de Haute arcane, en éliminant définitivement un emplacement de sort existant en paiement."
+    },
+    "tags": ["class_feature", "archmage", "supernatural"],
+    "choices": [
+      {
+        "choiceId": "archmage_high_arcana_choice_3",
+        "label": { "en": "Choose a High Arcana ability", "fr": "Choisissez une capacité de Haute arcane" },
+        "optionsQuery": "tag:archmage_high_arcana_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_high_arcana_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "High Arcana (4th choice)", "fr": "Haute arcane (4e choix)" },
+    "description": {
+      "en": "At 4th level, the archmage selects a fourth High Arcana special ability, permanently eliminating one existing spell slot as payment.",
+      "fr": "Au niveau 4, l'archimage choisit une quatrième capacité spéciale de Haute arcane, en éliminant définitivement un emplacement de sort existant en paiement."
+    },
+    "tags": ["class_feature", "archmage", "supernatural"],
+    "choices": [
+      {
+        "choiceId": "archmage_high_arcana_choice_4",
+        "label": { "en": "Choose a High Arcana ability", "fr": "Choisissez une capacité de Haute arcane" },
+        "optionsQuery": "tag:archmage_high_arcana_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_high_arcana_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "High Arcana (5th choice)", "fr": "Haute arcane (5e choix)" },
+    "description": {
+      "en": "At 5th level, the archmage selects a fifth and final High Arcana special ability, permanently eliminating one existing spell slot as payment.",
+      "fr": "Au niveau 5, l'archimage choisit une cinquième et dernière capacité spéciale de Haute arcane, en éliminant définitivement un emplacement de sort existant en paiement."
+    },
+    "tags": ["class_feature", "archmage", "supernatural"],
+    "choices": [
+      {
+        "choiceId": "archmage_high_arcana_choice_5",
+        "label": { "en": "Choose a High Arcana ability", "fr": "Choisissez une capacité de Haute arcane" },
+        "optionsQuery": "tag:archmage_high_arcana_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_arcane_fire",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Fire", "fr": "Feu arcanique" },
+    "description": {
+      "en": "The archmage gains the ability to change arcane spell energy into arcane fire, manifesting it as a bolt of raw magical energy. The bolt is a ranged touch attack with long range (400 feet + 40 feet/level of archmage) that deals 1d6 points of damage per class level of the archmage plus 1d6 points of damage per level of the spell used to create the effect. This ability costs one 9th-level spell slot.",
+      "fr": "L'archimage gagne la capacité de transformer l'énergie d'un sort arcanique en feu arcanique, le manifestant sous forme d'un éclair de pur énergie magique. L'éclair est une attaque de contact à distance de longue portée (120 m + 12 m/niveau d'archimage) qui inflige 1d6 points de dégâts par niveau de classe d'archimage plus 1d6 points de dégâts par niveau du sort utilisé pour créer l'effet. Cette capacité coûte un emplacement de sort de niveau 9."
+    },
+    "tags": ["class_feature", "archmage", "supernatural", "archmage_high_arcana_option"],
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_arcane_reach",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Arcane Reach", "fr": "Portée arcanique" },
+    "description": {
+      "en": "The archmage can use spells with a range of touch on a target up to 30 feet away. The archmage must make a ranged touch attack. Arcane reach can be selected a second time as a special ability, in which case the range increases to 60 feet. This ability costs one 7th-level spell slot.",
+      "fr": "L'archimage peut utiliser des sorts ayant une portée de contact sur une cible jusqu'à 9 m de distance. L'archimage doit effectuer une attaque de contact à distance. La portée arcanique peut être choisie une seconde fois comme capacité spéciale, auquel cas la portée passe à 18 m. Cette capacité coûte un emplacement de sort de niveau 7."
+    },
+    "tags": ["class_feature", "archmage", "supernatural", "archmage_high_arcana_option"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_mastery_of_counterspelling",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mastery of Counterspelling", "fr": "Maîtrise de la contre-magie" },
+    "description": {
+      "en": "When the archmage counterspells a spell, it is turned back upon the caster as if it were fully affected by a spell turning spell. If the spell cannot be affected by spell turning, then it is merely counterspelled. This ability costs one 7th-level spell slot.",
+      "fr": "Lorsque l'archimage contre-sort un sort, celui-ci est renvoyé sur le lanceur comme s'il était pleinement affecté par un sort de renvoi de sort. Si le sort ne peut pas être affecté par le renvoi de sort, il est simplement contre-sorcelé. Cette capacité coûte un emplacement de sort de niveau 7."
+    },
+    "tags": ["class_feature", "archmage", "supernatural", "archmage_high_arcana_option"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_mastery_of_elements",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mastery of Elements", "fr": "Maîtrise des éléments" },
+    "description": {
+      "en": "The archmage can alter an arcane spell when cast so that it utilizes a different element from the one it normally uses. This ability can only alter a spell with the acid, cold, fire, electricity, or sonic descriptor. The spell's casting time is unaffected. The caster decides whether to alter the spell's energy type and chooses the new energy type when he begins casting. This ability costs one 8th-level spell slot.",
+      "fr": "L'archimage peut modifier un sort arcanique lors de son lancement pour qu'il utilise un élément différent de celui qu'il utilise normalement. Cette capacité ne peut modifier qu'un sort avec le descripteur acide, froid, feu, électricité ou sonique. Le temps d'incantation du sort n'est pas affecté. Le lanceur décide de modifier le type d'énergie du sort et choisit le nouveau type d'énergie au moment où il commence à lancer. Cette capacité coûte un emplacement de sort de niveau 8."
+    },
+    "tags": ["class_feature", "archmage", "supernatural", "archmage_high_arcana_option"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_mastery_of_shaping",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Mastery of Shaping", "fr": "Maîtrise de la mise en forme" },
+    "description": {
+      "en": "The archmage can alter area and effect spells that use one of the following shapes: burst, cone, cylinder, emanation, or spread. The alteration consists of creating spaces within the spell's area or effect that are not subject to the spell. The minimum dimension for these spaces is a 5-foot cube. Furthermore, any shapeable spells have a minimum dimension of 5 feet instead of 10 feet. This ability costs one 6th-level spell slot.",
+      "fr": "L'archimage peut modifier les sorts de zone et d'effet qui utilisent l'une des formes suivantes : explosion, cône, cylindre, émanation ou propagation. La modification consiste à créer des espaces au sein de la zone ou de l'effet du sort qui ne sont pas soumis au sort. La dimension minimale de ces espaces est un cube de 1,50 m. De plus, tout sort à forme variable a une dimension minimale de 1,50 m au lieu de 3 m. Cette capacité coûte un emplacement de sort de niveau 6."
+    },
+    "tags": ["class_feature", "archmage", "supernatural", "archmage_high_arcana_option"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_spell_power",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spell Power", "fr": "Puissance des sorts" },
+    "description": {
+      "en": "This ability increases the archmage's effective caster level by +1 (for purposes of determining level-dependent spell variables such as damage dice or range, and caster level checks only). This ability costs one 5th-level spell slot.",
+      "fr": "Cette capacité augmente le niveau de lanceur de sorts effectif de l'archimage de +1 (uniquement pour déterminer les variables de sort dépendantes du niveau telles que les dés de dégâts ou la portée, et les tests de niveau de lanceur de sorts). Cette capacité coûte un emplacement de sort de niveau 5."
+    },
+    "tags": ["class_feature", "archmage", "extraordinary", "archmage_high_arcana_option"],
+    "grantedModifiers": [
+      {
+        "id": "archmage_spell_power_caster_level",
+        "sourceId": "class_feature_archmage_spell_power",
+        "sourceName": { "en": "Spell Power", "fr": "Puissance des sorts" },
+        "targetId": "attributes.caster_level",
+        "value": 1,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_archmage_spell_like_ability",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Spell-Like Ability", "fr": "Capacité de type sort" },
+    "description": {
+      "en": "An archmage who selects this type of high arcana can use one of her arcane spell slots (other than a slot expended to learn this or any other type of high arcana) to permanently prepare one of her arcane spells as a spell-like ability that can be used twice per day. The archmage does not use any components when casting the spell, although a spell that costs XP still does so and a spell with a costly material component instead costs 10 times that amount in XP. This ability costs one 5th-level spell slot. The spell-like ability normally uses a spell slot of the spell's level. Using a slot three levels higher allows use four times per day; a slot six levels higher allows six times per day.",
+      "fr": "Un archimage qui choisit ce type de haute arcane peut utiliser l'un de ses emplacements de sorts arcaniques (autre qu'un emplacement dépensé pour apprendre ce type ou tout autre type de haute arcane) pour préparer définitivement l'un de ses sorts arcaniques comme une capacité de type sort utilisable deux fois par jour. L'archimage n'utilise pas de composantes au moment de lancer le sort, bien qu'un sort coûtant des PX les exige toujours et qu'un sort avec une composante matérielle coûteuse coûte à la place 10 fois ce montant en PX. Cette capacité coûte un emplacement de sort de niveau 5."
+    },
+    "tags": ["class_feature", "archmage", "spell_like", "archmage_high_arcana_option"],
+    "choices": [
+      {
+        "choiceId": "archmage_spell_like_ability_spell",
+        "label": { "en": "Choose an arcane spell to convert to spell-like ability", "fr": "Choisissez un sort arcanique à convertir en capacité de type sort" },
+        "optionsQuery": "tag:spell+tag:arcane",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_assassin_sneak_attack_1d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +1d6", "fr": "Attaque sournoise +1d6" },
+    "description": {
+      "en": "At 1st level, the assassin gains sneak attack +1d6. This is exactly like the rogue ability of the same name. The extra damage increases by +1d6 at 3rd, 5th, 7th, and 9th level. If an assassin gets a sneak attack bonus from another source the bonuses on damage stack.",
+      "fr": "Au niveau 1, l'assassin obtient l'attaque sournoise +1d6. C'est exactement comme la capacité du roublard du même nom. Les dégâts supplémentaires augmentent de +1d6 aux niveaux 3, 5, 7 et 9. Si un assassin obtient un bonus d'attaque sournoise d'une autre source, les bonus aux dégâts se cumulent."
+    },
+    "tags": ["class_feature", "assassin", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_sneak_attack_1d6_bonus",
+        "sourceId": "class_feature_assassin_sneak_attack_1d6",
+        "sourceName": { "en": "Assassin Sneak Attack +1d6", "fr": "Attaque sournoise de l'assassin +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_sneak_attack_2d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +2d6", "fr": "Attaque sournoise +2d6" },
+    "description": {
+      "en": "At 3rd level, the assassin's sneak attack increases by +1d6 (total +2d6 from this class).",
+      "fr": "Au niveau 3, l'attaque sournoise de l'assassin augmente de +1d6 (total +2d6 de cette classe)."
+    },
+    "tags": ["class_feature", "assassin", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_sneak_attack_2d6_bonus",
+        "sourceId": "class_feature_assassin_sneak_attack_2d6",
+        "sourceName": { "en": "Assassin Sneak Attack +1d6", "fr": "Attaque sournoise de l'assassin +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_sneak_attack_3d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +3d6", "fr": "Attaque sournoise +3d6" },
+    "description": {
+      "en": "At 5th level, the assassin's sneak attack increases by +1d6 (total +3d6 from this class).",
+      "fr": "Au niveau 5, l'attaque sournoise de l'assassin augmente de +1d6 (total +3d6 de cette classe)."
+    },
+    "tags": ["class_feature", "assassin", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_sneak_attack_3d6_bonus",
+        "sourceId": "class_feature_assassin_sneak_attack_3d6",
+        "sourceName": { "en": "Assassin Sneak Attack +1d6", "fr": "Attaque sournoise de l'assassin +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_sneak_attack_4d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +4d6", "fr": "Attaque sournoise +4d6" },
+    "description": {
+      "en": "At 7th level, the assassin's sneak attack increases by +1d6 (total +4d6 from this class).",
+      "fr": "Au niveau 7, l'attaque sournoise de l'assassin augmente de +1d6 (total +4d6 de cette classe)."
+    },
+    "tags": ["class_feature", "assassin", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_sneak_attack_4d6_bonus",
+        "sourceId": "class_feature_assassin_sneak_attack_4d6",
+        "sourceName": { "en": "Assassin Sneak Attack +1d6", "fr": "Attaque sournoise de l'assassin +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_sneak_attack_5d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +5d6", "fr": "Attaque sournoise +5d6" },
+    "description": {
+      "en": "At 9th level, the assassin's sneak attack increases by +1d6 (total +5d6 from this class).",
+      "fr": "Au niveau 9, l'attaque sournoise de l'assassin augmente de +1d6 (total +5d6 de cette classe)."
+    },
+    "tags": ["class_feature", "assassin", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_sneak_attack_5d6_bonus",
+        "sourceId": "class_feature_assassin_sneak_attack_5d6",
+        "sourceName": { "en": "Assassin Sneak Attack +1d6", "fr": "Attaque sournoise de l'assassin +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_death_attack",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Death Attack", "fr": "Attaque mortelle" },
+    "description": {
+      "en": "If an assassin studies his victim for 3 rounds and then makes a sneak attack with a melee weapon that successfully deals damage, the sneak attack has the additional effect of possibly either paralyzing or killing the target. If the victim fails a Fortitude save (DC 10 + assassin class level + Int modifier) against the kill effect, she dies. If the save fails against the paralysis effect, the victim is helpless for 1d6 rounds + 1 round per assassin level. If the save succeeds, the attack is a normal sneak attack. The assassin must launch the death attack within 3 rounds of completing the study.",
+      "fr": "Si un assassin étudie sa victime pendant 3 rounds, puis effectue une attaque sournoise avec une arme de corps à corps qui inflige des dégâts, l'attaque sournoise peut paralyser ou tuer la cible (au choix de l'assassin). Si la victime rate un jet de Vigueur (DD 10 + niveau de classe d'assassin + modificateur d'Intelligence) contre l'effet de mort, elle meurt. Si le jet rate contre l'effet de paralysie, la victime est sans défense pendant 1d6 rounds + 1 round par niveau d'assassin. Si le jet réussit, l'attaque est une attaque sournoise normale. L'assassin doit lancer l'attaque mortelle dans les 3 rounds suivant la fin de l'étude."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary", "death_attack"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_poison_use",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Poison Use", "fr": "Usage du poison" },
+    "description": {
+      "en": "Assassins are trained in the use of poison and never risk accidentally poisoning themselves when applying poison to a blade.",
+      "fr": "Les assassins sont formés à l'usage du poison et ne risquent jamais de s'empoisonner accidentellement lorsqu'ils appliquent du poison sur une lame."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary", "poison_use"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Assassin Spellcasting", "fr": "Sorts d'assassin" },
+    "description": {
+      "en": "Beginning at 1st level, an assassin gains the ability to cast arcane spells. An assassin must have an Intelligence score of at least 10 + the spell's level to cast it. Assassin bonus spells are based on Intelligence, and saving throws have a DC of 10 + spell level + Intelligence bonus. The assassin casts spells spontaneously as a bard does. The assassin's spell list includes spells useful for infiltration, disguise, and assassination.",
+      "fr": "À partir du niveau 1, un assassin acquiert la capacité de lancer des sorts arcaniques. Un assassin doit avoir un score d'Intelligence d'au moins 10 + le niveau du sort pour le lancer. Les sorts bonus de l'assassin sont basés sur l'Intelligence, et les jets de sauvegarde ont un DD de 10 + niveau du sort + bonus d'Intelligence. L'assassin lance des sorts de façon spontanée comme le barde. La liste de sorts de l'assassin comprend des sorts utiles pour l'infiltration, le déguisement et l'assassinat."
+    },
+    "tags": ["class_feature", "assassin", "arcane_caster", "spellcasting"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_save_bonus_poison_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Save Bonus vs. Poison +1", "fr": "Bonus de sauvegarde contre le poison +1" },
+    "description": {
+      "en": "At 2nd level, the assassin gains a +1 natural saving throw bonus against all poisons.",
+      "fr": "Au niveau 2, l'assassin gagne un bonus naturel de +1 aux jets de sauvegarde contre tous les poisons."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_poison_save_1",
+        "sourceId": "class_feature_assassin_save_bonus_poison_1",
+        "sourceName": { "en": "Save vs. Poison +1", "fr": "Sauvegarde contre le poison +1" },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_poison"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_save_bonus_poison_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Save Bonus vs. Poison +2", "fr": "Bonus de sauvegarde contre le poison +2" },
+    "description": {
+      "en": "At 4th level, the assassin's saving throw bonus against poisons increases to +2 (cumulative).",
+      "fr": "Au niveau 4, le bonus de jet de sauvegarde de l'assassin contre les poisons augmente à +2 (cumulatif)."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_poison_save_2",
+        "sourceId": "class_feature_assassin_save_bonus_poison_2",
+        "sourceName": { "en": "Save vs. Poison +1", "fr": "Sauvegarde contre le poison +1" },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_poison"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_save_bonus_poison_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Save Bonus vs. Poison +3", "fr": "Bonus de sauvegarde contre le poison +3" },
+    "description": {
+      "en": "At 6th level, the assassin's saving throw bonus against poisons increases to +3 (cumulative).",
+      "fr": "Au niveau 6, le bonus de jet de sauvegarde de l'assassin contre les poisons augmente à +3 (cumulatif)."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_poison_save_3",
+        "sourceId": "class_feature_assassin_save_bonus_poison_3",
+        "sourceName": { "en": "Save vs. Poison +1", "fr": "Sauvegarde contre le poison +1" },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_poison"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_save_bonus_poison_4",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Save Bonus vs. Poison +4", "fr": "Bonus de sauvegarde contre le poison +4" },
+    "description": {
+      "en": "At 8th level, the assassin's saving throw bonus against poisons increases to +4 (cumulative).",
+      "fr": "Au niveau 8, le bonus de jet de sauvegarde de l'assassin contre les poisons augmente à +4 (cumulatif)."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_poison_save_4",
+        "sourceId": "class_feature_assassin_save_bonus_poison_4",
+        "sourceName": { "en": "Save vs. Poison +1", "fr": "Sauvegarde contre le poison +1" },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_poison"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_save_bonus_poison_5",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Save Bonus vs. Poison +5", "fr": "Bonus de sauvegarde contre le poison +5" },
+    "description": {
+      "en": "At 10th level, the assassin's saving throw bonus against poisons increases to +5 (cumulative).",
+      "fr": "Au niveau 10, le bonus de jet de sauvegarde de l'assassin contre les poisons augmente à +5 (cumulatif)."
+    },
+    "tags": ["class_feature", "assassin", "extraordinary"],
+    "grantedModifiers": [
+      {
+        "id": "assassin_poison_save_5",
+        "sourceId": "class_feature_assassin_save_bonus_poison_5",
+        "sourceName": { "en": "Save vs. Poison +1", "fr": "Sauvegarde contre le poison +1" },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "vs_poison"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_assassin_hide_in_plain_sight",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Hide in Plain Sight", "fr": "Se cacher à la vue de tous" },
+    "description": {
+      "en": "At 8th level, an assassin can use the Hide skill even while being observed. As long as he is within 10 feet of some sort of shadow, an assassin can hide himself from view in the open without having anything to actually hide behind. He cannot, however, hide in his own shadow.",
+      "fr": "Au niveau 8, un assassin peut utiliser la compétence Discrétion même lorsqu'il est observé. Tant qu'il se trouve à 3 m d'une ombre quelconque, un assassin peut se cacher à la vue de tous en plein air sans avoir besoin de quelque chose derrière quoi se dissimuler réellement. Il ne peut toutefois pas se cacher dans sa propre ombre."
+    },
+    "tags": ["class_feature", "assassin", "supernatural", "hide_in_plain_sight"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_blackguard_aura_of_evil",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Aura of Evil", "fr": "Aura du Mal" },
+    "description": {
+      "en": "The power of a blackguard's aura of evil is equal to his class level plus his cleric level, if any. This aura is detectable by the detect evil spell.",
+      "fr": "La puissance de l'aura du Mal du chevalier maudit est égale à son niveau de classe plus son niveau de prêtre, le cas échéant. Cette aura est détectable par le sort détection du Mal."
+    },
+    "tags": ["class_feature", "blackguard", "extraordinary", "aura_of_evil"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_detect_good",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Detect Good", "fr": "Détection du Bien" },
+    "description": {
+      "en": "At will, a blackguard can use detect good as a spell-like ability, duplicating the effect of the detect good spell.",
+      "fr": "À volonté, un chevalier maudit peut utiliser détection du Bien comme une capacité de type sort, dupliquant l'effet du sort détection du Bien."
+    },
+    "tags": ["class_feature", "blackguard", "spell_like"],
+    "activation": { "actionType": "standard" },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_poison_use",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Poison Use", "fr": "Usage du poison" },
+    "description": {
+      "en": "Blackguards are skilled in the use of poison and never risk accidentally poisoning themselves when applying poison to a blade.",
+      "fr": "Les chevaliers maudits sont habiles dans l'usage du poison et ne risquent jamais de s'empoisonner accidentellement lorsqu'ils appliquent du poison sur une lame."
+    },
+    "tags": ["class_feature", "blackguard", "extraordinary", "poison_use"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_spellcasting",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Blackguard Spellcasting", "fr": "Sorts du chevalier maudit" },
+    "description": {
+      "en": "A blackguard has the ability to cast a small number of divine spells. To cast a spell, a blackguard must have a Wisdom score of at least 10 + the spell's level. Blackguard bonus spells are based on Wisdom, and saving throws have a DC of 10 + spell level + Wisdom modifier. The blackguard prepares and casts spells just as a cleric does, but cannot spontaneously cast cure or inflict spells.",
+      "fr": "Un chevalier maudit a la capacité de lancer un petit nombre de sorts divins. Pour lancer un sort, un chevalier maudit doit avoir un score de Sagesse d'au moins 10 + le niveau du sort. Les sorts bonus du chevalier maudit sont basés sur la Sagesse, et les jets de sauvegarde ont un DD de 10 + niveau du sort + modificateur de Sagesse. Le chevalier maudit prépare et lance des sorts exactement comme un prêtre, mais ne peut pas lancer des sorts de soin ou d'infligeance de façon spontanée."
+    },
+    "tags": ["class_feature", "blackguard", "divine_caster", "spellcasting"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_dark_blessing",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Dark Blessing", "fr": "Bénédiction des ténèbres" },
+    "description": {
+      "en": "A blackguard applies his Charisma modifier (if positive) as a bonus on all saving throws.",
+      "fr": "Un chevalier maudit applique son modificateur de Charisme (s'il est positif) comme bonus à tous ses jets de sauvegarde."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_dark_blessing_fort",
+        "sourceId": "class_feature_blackguard_dark_blessing",
+        "sourceName": { "en": "Dark Blessing", "fr": "Bénédiction des ténèbres" },
+        "targetId": "saves.fort",
+        "value": "@attributes.stat_cha.derivedModifier",
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "operator": ">",
+          "value": 0
+        }
+      },
+      {
+        "id": "blackguard_dark_blessing_ref",
+        "sourceId": "class_feature_blackguard_dark_blessing",
+        "sourceName": { "en": "Dark Blessing", "fr": "Bénédiction des ténèbres" },
+        "targetId": "saves.ref",
+        "value": "@attributes.stat_cha.derivedModifier",
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "operator": ">",
+          "value": 0
+        }
+      },
+      {
+        "id": "blackguard_dark_blessing_will",
+        "sourceId": "class_feature_blackguard_dark_blessing",
+        "sourceName": { "en": "Dark Blessing", "fr": "Bénédiction des ténèbres" },
+        "targetId": "saves.will",
+        "value": "@attributes.stat_cha.derivedModifier",
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "operator": ">",
+          "value": 0
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_smite_good",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Good (1/day)", "fr": "Châtiment du Bien (1/jour)" },
+    "description": {
+      "en": "Once a day, a blackguard of 2nd level or higher may attempt to smite good with one normal melee attack. He adds his Charisma modifier (if positive) to the attack roll and deals 1 extra point of damage per class level. At 5th and 10th level, the blackguard may smite good one additional time per day.",
+      "fr": "Une fois par jour, un chevalier maudit de niveau 2 ou supérieur peut tenter un châtiment du Bien avec une attaque de corps à corps normale. Il ajoute son modificateur de Charisme (s'il est positif) au jet d'attaque et inflige 1 point de dégât supplémentaire par niveau de classe. Aux niveaux 5 et 10, le chevalier maudit peut utiliser le châtiment du Bien une fois de plus par jour."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural", "smite_good"],
+    "activation": {
+      "actionType": "free",
+      "resourceCost": { "targetId": "resources.blackguard_smite_good_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "blackguard_smite_good_uses_max",
+        "sourceId": "class_feature_blackguard_smite_good",
+        "sourceName": { "en": "Smite Good", "fr": "Châtiment du Bien" },
+        "targetId": "resources.blackguard_smite_good_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_command_undead",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Command Undead", "fr": "Commandement des morts-vivants" },
+    "description": {
+      "en": "When a blackguard reaches 3rd level, he gains the supernatural ability to command and rebuke undead. He commands undead as would a cleric of two levels lower.",
+      "fr": "Lorsqu'un chevalier maudit atteint le niveau 3, il obtient la capacité surnaturelle de contrôler et d'intimider les morts-vivants. Il contrôle les morts-vivants comme le ferait un prêtre de deux niveaux inférieurs."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural", "command_undead"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.blackguard_command_undead_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "blackguard_command_undead_uses_max",
+        "sourceId": "class_feature_blackguard_command_undead",
+        "sourceName": { "en": "Command Undead", "fr": "Commandement des morts-vivants" },
+        "targetId": "resources.blackguard_command_undead_uses.maxValue",
+        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_aura_of_despair",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Aura of Despair", "fr": "Aura de désespoir" },
+    "description": {
+      "en": "Beginning at 3rd level, the blackguard radiates a malign aura that causes enemies within 10 feet of him to take a -2 penalty on all saving throws.",
+      "fr": "À partir du niveau 3, le chevalier maudit dégage une aura maligne qui oblige les ennemis situés à 3 m de lui à subir une pénalité de -2 à tous leurs jets de sauvegarde."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural", "aura_of_despair"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_sneak_attack_1d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +1d6", "fr": "Attaque sournoise +1d6" },
+    "description": {
+      "en": "At 4th level, the blackguard gains sneak attack +1d6, like the rogue ability. The extra damage increases by +1d6 at 7th and 10th level. If a blackguard gets a sneak attack bonus from another source the bonuses on damage stack.",
+      "fr": "Au niveau 4, le chevalier maudit obtient l'attaque sournoise +1d6, comme la capacité du roublard. Les dégâts supplémentaires augmentent de +1d6 aux niveaux 7 et 10. Si un chevalier maudit obtient un bonus d'attaque sournoise d'une autre source, les bonus aux dégâts se cumulent."
+    },
+    "tags": ["class_feature", "blackguard", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_sneak_attack_1d6_bonus",
+        "sourceId": "class_feature_blackguard_sneak_attack_1d6",
+        "sourceName": { "en": "Blackguard Sneak Attack +1d6", "fr": "Attaque sournoise du chevalier maudit +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_fiendish_servant",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Fiendish Servant", "fr": "Serviteur diabolique" },
+    "description": {
+      "en": "Upon or after reaching 5th level, a blackguard can call a fiendish bat, cat, dire rat, horse, pony, raven, or toad to serve him. The servant gains bonus HD, natural armor, Strength, and Intelligence as the blackguard's character level increases. A blackguard may have only one fiendish servant at a time. Should it die, a new one may be called after a year and a day.",
+      "fr": "À partir du niveau 5, un chevalier maudit peut appeler une chauve-souris diabolique, un chat, un rat géant, un cheval, un poney, un corbeau ou un crapaud pour le servir. Le serviteur gagne des DV bonus, une armure naturelle, de la Force et de l'Intelligence à mesure que le niveau de personnage du chevalier maudit augmente. Un chevalier maudit ne peut avoir qu'un seul serviteur diabolique à la fois. S'il meurt, un nouveau peut être invoqué après un an et un jour."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural", "fiendish_servant"],
+    "choices": [
+      {
+        "choiceId": "blackguard_fiendish_servant_type",
+        "label": { "en": "Choose a fiendish servant type", "fr": "Choisissez un type de serviteur diabolique" },
+        "optionsQuery": "tag:fiendish_servant_option",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_smite_good_2",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Good (2/day)", "fr": "Châtiment du Bien (2/jour)" },
+    "description": {
+      "en": "At 5th level, the blackguard may use smite good twice per day.",
+      "fr": "Au niveau 5, le chevalier maudit peut utiliser le châtiment du Bien deux fois par jour."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_smite_good_uses_max_2",
+        "sourceId": "class_feature_blackguard_smite_good_2",
+        "sourceName": { "en": "Smite Good (2/day)", "fr": "Châtiment du Bien (2/jour)" },
+        "targetId": "resources.blackguard_smite_good_uses.maxValue",
+        "value": 2,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_sneak_attack_2d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +2d6", "fr": "Attaque sournoise +2d6" },
+    "description": {
+      "en": "At 7th level, the blackguard's sneak attack increases by +1d6 (total +2d6 from this class).",
+      "fr": "Au niveau 7, l'attaque sournoise du chevalier maudit augmente de +1d6 (total +2d6 de cette classe)."
+    },
+    "tags": ["class_feature", "blackguard", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_sneak_attack_2d6_bonus",
+        "sourceId": "class_feature_blackguard_sneak_attack_2d6",
+        "sourceName": { "en": "Blackguard Sneak Attack +1d6", "fr": "Attaque sournoise du chevalier maudit +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_sneak_attack_3d6",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sneak Attack +3d6", "fr": "Attaque sournoise +3d6" },
+    "description": {
+      "en": "At 10th level, the blackguard's sneak attack increases by +1d6 (total +3d6 from this class).",
+      "fr": "Au niveau 10, l'attaque sournoise du chevalier maudit augmente de +1d6 (total +3d6 de cette classe)."
+    },
+    "tags": ["class_feature", "blackguard", "sneak_attack"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_sneak_attack_3d6_bonus",
+        "sourceId": "class_feature_blackguard_sneak_attack_3d6",
+        "sourceName": { "en": "Blackguard Sneak Attack +1d6", "fr": "Attaque sournoise du chevalier maudit +1d6" },
+        "targetId": "combatStats.sneak_attack_damage",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "target_flat_footed_or_flanked"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_blackguard_smite_good_3",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Smite Good (3/day)", "fr": "Châtiment du Bien (3/jour)" },
+    "description": {
+      "en": "At 10th level, the blackguard may use smite good three times per day.",
+      "fr": "Au niveau 10, le chevalier maudit peut utiliser le châtiment du Bien trois fois par jour."
+    },
+    "tags": ["class_feature", "blackguard", "supernatural"],
+    "grantedModifiers": [
+      {
+        "id": "blackguard_smite_good_uses_max_3",
+        "sourceId": "class_feature_blackguard_smite_good_3",
+        "sourceName": { "en": "Smite Good (3/day)", "fr": "Châtiment du Bien (3/jour)" },
+        "targetId": "resources.blackguard_smite_good_uses.maxValue",
+        "value": 3,
+        "type": "setAbsolute"
+      }
+    ],
+    "grantedFeatures": []
+  },
+
+  {
+    "id": "class_feature_dd_natural_armor_1",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Natural Armor Increase (+1)", "fr": "Amélioration d'armure naturelle (+1)" },
+    "description": {
+      "en": "At 1st level, a dragon disciple gains a +1 increase to the character's existing natural armor. As his skin thickens, the dragon disciple takes on more of his progenitor's physical aspect. Further increases are gained at 4th (+2 total) and 7th (+3 total) level, with a final increase at 10th level as part of dragon apotheosis (+4 total).",
+      "fr": "Au niveau 1, un disciple du dragon obtient une amélioration de +1 à l'armure naturelle existante du personnage. À mesure que sa peau s'épaissit, le disciple du dragon prend de plus en plus l'aspect physique de son ancêtre. Des améliorations supplémentaires sont obtenues aux niveaux 4 (+2 au total), 7 (+3 au total) et 10 dans le cadre de l'apothéose draconique (+4 au total)."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_bonus_spell",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Bonus Spell", "fr": "Sort supplémentaire" },
+    "description": {
+      "en": "Dragon disciples gain bonus spells as they gain levels in this prestige class, as if from having a high ability score. A bonus spell can be added to any level of spells the disciple already has the ability to cast. If a character has more than one spellcasting class, he must decide to which class he adds each bonus spell as it is gained. Once applied, it cannot be shifted.",
+      "fr": "Les disciples du dragon gagnent des sorts supplémentaires à mesure qu'ils progressent dans cette classe de prestige, comme s'ils avaient un score de caractéristique élevé. Un sort supplémentaire peut être ajouté à n'importe quel niveau de sorts que le disciple est déjà capable de lancer. Si un personnage a plusieurs classes de lanceur de sorts, il doit décider à quelle classe il ajoute chaque sort supplémentaire dès qu'il est obtenu. Une fois attribué, il ne peut plus être déplacé."
+    },
+    "tags": ["class_feature", "dragon_disciple", "spellcasting_advancement"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_claws_and_bite",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Claws and Bite", "fr": "Griffes et morsure" },
+    "description": {
+      "en": "At 2nd level, a dragon disciple gains claw and bite attacks if he does not already have them. For a medium-sized disciple: bite 1d6, claws 1d4. A dragon disciple is considered proficient with these attacks. When making a full attack, the disciple uses his full base attack bonus with his bite attack but takes a -5 penalty on claw attacks (-2 with the Multiattack feat).",
+      "fr": "Au niveau 2, un disciple du dragon obtient des attaques de griffes et de morsure s'il n'en dispose pas déjà. Pour un disciple de taille moyenne : morsure 1d6, griffes 1d4. Un disciple du dragon est considéré comme compétent avec ces attaques. Lors d'une attaque à outrance, le disciple utilise son bonus d'attaque de base complet pour son attaque de morsure, mais subit une pénalité de -5 aux attaques de griffes (-2 avec le don Attaques multiples)."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary", "natural_weapon"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_breath_weapon_2d8",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Breath Weapon (2d8)", "fr": "Souffle (2d8)" },
+    "description": {
+      "en": "At 3rd level, a dragon disciple gains a minor breath weapon. The type and shape depend on the dragon variety chosen at 1st level. The breath weapon deals 2d8 points of damage of the appropriate energy type. It can be used once per day. DC = 10 + class level + Constitution modifier. A line is 5 ft. high, 5 ft. wide, 60 ft. long; a cone is 30 ft. long. At 7th level the damage increases to 4d8, and at 10th level (dragon apotheosis) to 6d8.",
+      "fr": "Au niveau 3, un disciple du dragon obtient un souffle mineur. Le type et la forme dépendent de la variété de dragon choisie au niveau 1. Le souffle inflige 2d8 points de dégâts du type d'énergie approprié. Il peut être utilisé une fois par jour. DD = 10 + niveau de classe + modificateur de Constitution. Une ligne fait 1,50 m de haut, 1,50 m de large et 18 m de long ; un cône fait 9 m de long. Au niveau 7, les dégâts passent à 4d8 et au niveau 10 (apothéose draconique) à 6d8."
+    },
+    "tags": ["class_feature", "dragon_disciple", "supernatural", "breath_weapon"],
+    "activation": {
+      "actionType": "standard",
+      "resourceCost": { "targetId": "resources.dd_breath_weapon_uses", "cost": 1 }
+    },
+    "grantedModifiers": [
+      {
+        "id": "dd_breath_weapon_uses_max",
+        "sourceId": "class_feature_dd_breath_weapon_2d8",
+        "sourceName": { "en": "Breath Weapon", "fr": "Souffle" },
+        "targetId": "resources.dd_breath_weapon_uses.maxValue",
+        "value": 1,
+        "type": "base"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_blindsense_30",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Blindsense (30 ft.)", "fr": "Perception aveugle (9 m)" },
+    "description": {
+      "en": "At 5th level, the dragon disciple gains blindsense with a range of 30 feet. Using nonvisual senses the dragon disciple notices things it cannot see. He usually does not need to make Spot or Listen checks to pinpoint creatures within range, provided he has line of effect. At 10th level, the range increases to 60 feet.",
+      "fr": "Au niveau 5, le disciple du dragon obtient la perception aveugle à une portée de 9 m. En utilisant ses sens non visuels, le disciple du dragon remarque des choses qu'il ne peut pas voir. En général, il n'a pas besoin d'effectuer des tests de Repérage ou d'Écoute pour localiser les créatures à portée, à condition d'avoir une ligne d'effet. Au niveau 10, la portée passe à 18 m."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary", "blindsense"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_breath_weapon_4d8",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Breath Weapon (4d8)", "fr": "Souffle (4d8)" },
+    "description": {
+      "en": "At 7th level, the dragon disciple's breath weapon damage increases to 4d8 points of damage.",
+      "fr": "Au niveau 7, les dégâts du souffle du disciple du dragon augmentent à 4d8 points de dégâts."
+    },
+    "tags": ["class_feature", "dragon_disciple", "supernatural", "breath_weapon"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_wings",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Wings", "fr": "Ailes" },
+    "description": {
+      "en": "At 9th level, a dragon disciple grows a set of draconic wings. He may now fly at a speed equal to his normal land speed, with average maneuverability. The fly speed modifier is placed in the level progression.",
+      "fr": "Au niveau 9, un disciple du dragon développe une paire d'ailes draconiques. Il peut désormais voler à une vitesse égale à sa vitesse de déplacement terrestre normale, avec une manœuvrabilité moyenne. Le modificateur de vitesse de vol est placé dans la progression de niveau."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary", "flight"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_blindsense_60",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Blindsense (60 ft.)", "fr": "Perception aveugle (18 m)" },
+    "description": {
+      "en": "At 10th level, the dragon disciple's blindsense range increases to 60 feet.",
+      "fr": "Au niveau 10, la portée de la perception aveugle du disciple du dragon passe à 18 m."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary", "blindsense"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "class_feature_dd_dragon_apotheosis",
+    "category": "class_feature",
+    "ruleSource": "srd_core",
+    "label": { "en": "Dragon Apotheosis", "fr": "Apothéose draconique" },
+    "description": {
+      "en": "At 10th level, a dragon disciple takes on the half-dragon template. His breath weapon reaches full strength (6d8), and the large ability score increases are applied via level progression. He also gains low-light vision, darkvision 60 ft., immunity to sleep and paralysis effects, and immunity to the energy type used by his breath weapon.",
+      "fr": "Au niveau 10, un disciple du dragon adopte le gabarit demi-dragon. Son souffle atteint sa pleine puissance (6d8), et les importants bonus aux caractéristiques sont appliqués via la progression de niveau. Il obtient également la vision dans le noir et basse lumière à 18 m, l'immunité aux effets de sommeil et de paralysie, ainsi que l'immunité au type d'énergie utilisé par son souffle."
+    },
+    "tags": ["class_feature", "dragon_disciple", "extraordinary", "dragon_apotheosis", "template_half_dragon"],
+    "grantedModifiers": [],
+    "grantedFeatures": [
+      "sense_low_light_vision",
+      "sense_darkvision_60",
+      "immunity_sleep_magic",
+      "immunity_paralysis"
+    ]
+  }
+]
