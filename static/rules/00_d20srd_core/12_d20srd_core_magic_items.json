@@ -1,0 +1,2082 @@
+[
+  {
+    "id": "item_ring_animal_friendship",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Animal Friendship",
+      "fr": "Anneau d'amitié animale"
+    },
+    "description": {
+      "en": "On command, this ring affects an animal as if the wearer had cast charm animal (CL 3rd).",
+      "fr": "Sur commande, cet anneau affecte un animal comme si le porteur avait lancé le sort charme-animal (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10800,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_blinking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Blinking",
+      "fr": "Anneau de clignotement"
+    },
+    "description": {
+      "en": "On command, this ring makes the wearer blink, as with the blink spell (CL 7th).",
+      "fr": "Sur commande, cet anneau fait clignoter le porteur, comme avec le sort clignotement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 27000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_chameleon_power",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Chameleon Power",
+      "fr": "Anneau de camouflage"
+    },
+    "description": {
+      "en": "As a free action, the wearer can magically blend in with surroundings, granting a +10 competence bonus on Hide checks. As a standard action, she can command the ring to use disguise self as often as desired (CL 3rd).",
+      "fr": "Par une action libre, le porteur peut se fondre magiquement dans son environnement, accordant un bonus de compétence de +10 aux tests de Discrétion. Par une action normale, il peut ordonner à l'anneau d'utiliser déguisement à volonté (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12700,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_chameleon_power_hide",
+        "sourceId": "item_ring_chameleon_power",
+        "sourceName": {
+          "en": "Ring of Chameleon Power",
+          "fr": "Anneau de camouflage"
+        },
+        "targetId": "skills.skill_hide",
+        "value": 10,
+        "type": "competence",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "chameleon_power_active"
+        }
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    }
+  },
+  {
+    "id": "item_ring_climbing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Climbing",
+      "fr": "Anneau d'escalade"
+    },
+    "description": {
+      "en": "This ring is actually a magic leather cord that ties around a finger. It continually grants the wearer a +5 competence bonus on Climb checks (CL 5th).",
+      "fr": "Cet anneau est en réalité un cordon de cuir magique qui s'enroule autour d'un doigt. Il accorde en permanence au porteur un bonus de compétence de +5 aux tests d'Escalade (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2500,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_climbing_bonus",
+        "sourceId": "item_ring_climbing",
+        "sourceName": {
+          "en": "Ring of Climbing",
+          "fr": "Anneau d'escalade"
+        },
+        "targetId": "skills.skill_climb",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_climbing_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Climbing, Improved",
+      "fr": "Anneau d'escalade amélioré"
+    },
+    "description": {
+      "en": "As a ring of climbing, except it grants a +10 competence bonus on its wearer's Climb checks (CL 5th).",
+      "fr": "Comme l'anneau d'escalade, mais il accorde un bonus de compétence de +10 aux tests d'Escalade de son porteur (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_climbing_improved_bonus",
+        "sourceId": "item_ring_climbing_improved",
+        "sourceName": {
+          "en": "Ring of Climbing, Improved",
+          "fr": "Anneau d'escalade amélioré"
+        },
+        "targetId": "skills.skill_climb",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_counterspells",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Counterspells",
+      "fr": "Anneau de contre-sort"
+    },
+    "description": {
+      "en": "This ring allows a single spell of 1st through 6th level to be stored within it. Rather than casting the spell out, when that spell is cast upon the wearer, it is immediately countered as a counterspell action requiring no action on the wearer's part. Once used, the stored spell is lost. A new spell may then be stored (CL 11th).",
+      "fr": "Cet anneau permet de stocker un sort de niveau 1 à 6. Plutôt qu'être lancé, si ce sort est lancé contre le porteur, il est immédiatement contré comme une action de contre-sort sans nécessiter d'action de la part du porteur. Une fois utilisé, le sort stocké est perdu. Un nouveau sort peut alors être stocké (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_djinni_calling",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Djinni Calling",
+      "fr": "Anneau d'invocation du djinn"
+    },
+    "description": {
+      "en": "When rubbed (a standard action), this ring calls a specific djinni from the Elemental Plane of Air, which appears the next round and faithfully serves the wearer for up to 1 hour per day. If the djinni is ever killed, the ring becomes nonmagical (CL 17th).",
+      "fr": "Quand il est frotté (une action normale), cet anneau appelle un djinn spécifique du Plan élémentaire de l'Air, qui apparaît au round suivant et sert loyalement le porteur jusqu'à 1 heure par jour. Si le djinn est tué, l'anneau perd ses pouvoirs (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 125000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_elemental_command_air",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Elemental Command (Air)",
+      "fr": "Anneau de commandement élémentaire (Air)"
+    },
+    "description": {
+      "en": "This ring grants command over air elementals and creatures of the Elemental Plane of Air. Air elementals cannot attack the wearer or approach within 5 feet (or the wearer can attempt to charm them, Will DC 17). Creatures from the Air Plane attacking the wearer take -1 to attack rolls; the wearer gains +2 resistance bonus on saves against such creatures and +4 morale bonus on attack rolls against them. The wearer gains: feather fall (unlimited, self); resist energy (electricity) (unlimited, self); gust of wind (2/day); wind wall (unlimited); air walk (1/day, self); chain lightning (1/week). The wearer takes -2 on saves vs. earth-based effects. Appears as ring of feather falling until activated (CL 15th).",
+      "fr": "Cet anneau accorde le commandement sur les élémentaires d'air et les créatures du Plan élémentaire de l'Air. Les élémentaires d'air ne peuvent attaquer le porteur ni l'approcher à moins de 1,5 m (ou le porteur peut tenter de les charmer, Vol DD 17). Les créatures du Plan de l'Air attaquant le porteur subissent -1 aux jets d'attaque ; le porteur gagne un bonus de résistance de +2 aux jets de sauvegarde contre ces créatures et un bonus moral de +4 aux jets d'attaque contre elles. Capacités : chute de plume (à volonté, porteur) ; résistance à l'énergie (électricité) (à volonté, porteur) ; rafale de vent (2/jour) ; mur de vent (à volonté) ; marche dans les airs (1/jour, porteur) ; éclair multiple (1/semaine). Le porteur subit -2 aux jets contre les effets basés sur la terre. Apparaît comme un anneau de chute de plume jusqu'à son activation (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 200000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_elemental_command_air_att_vs_elementals",
+        "sourceId": "item_ring_elemental_command_air",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Air)",
+          "fr": "Anneau de commandement élémentaire (Air)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "morale",
+        "situationalContext": "vs_air_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_air_save_vs_elementals",
+        "sourceId": "item_ring_elemental_command_air",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Air)",
+          "fr": "Anneau de commandement élémentaire (Air)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": 2,
+        "type": "resistance",
+        "situationalContext": "vs_air_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_air_save_penalty_earth",
+        "sourceId": "item_ring_elemental_command_air",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Air)",
+          "fr": "Anneau de commandement élémentaire (Air)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "vs_earth_effects"
+      },
+      {
+        "id": "item_ring_elemental_command_air_electricity_resist",
+        "sourceId": "item_ring_elemental_command_air",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Air)",
+          "fr": "Anneau de commandement élémentaire (Air)"
+        },
+        "targetId": "combatStats.energy_resistance_electricity",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_elemental_command_earth",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Elemental Command (Earth)",
+      "fr": "Anneau de commandement élémentaire (Terre)"
+    },
+    "description": {
+      "en": "This ring grants command over earth elementals and creatures of the Elemental Plane of Earth. Same general protections as other elemental command rings (vs. earth elementals). Grants: meld into stone (unlimited, self); soften earth and stone (unlimited); stone shape (2/day); stoneskin (1/week, self); passwall (2/week); wall of stone (1/day). The wearer takes -2 on saves vs. air- or electricity-based effects. Appears as ring of meld into stone until activated (CL 15th).",
+      "fr": "Cet anneau accorde le commandement sur les élémentaires de terre et les créatures du Plan élémentaire de la Terre. Mêmes protections générales que les autres anneaux de commandement élémentaire (contre les élémentaires de terre). Accorde : fusion avec la pierre (à volonté, porteur) ; ramollissement de la terre et de la pierre (à volonté) ; façonnage de la pierre (2/jour) ; peau de pierre (1/semaine, porteur) ; traversée des murs (2/semaine) ; mur de pierre (1/jour). Le porteur subit -2 aux jets contre les effets basés sur l'air ou l'électricité (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 200000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_elemental_command_earth_att_vs_elementals",
+        "sourceId": "item_ring_elemental_command_earth",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Earth)",
+          "fr": "Anneau de commandement élémentaire (Terre)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "morale",
+        "situationalContext": "vs_earth_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_earth_save_vs_elementals",
+        "sourceId": "item_ring_elemental_command_earth",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Earth)",
+          "fr": "Anneau de commandement élémentaire (Terre)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": 2,
+        "type": "resistance",
+        "situationalContext": "vs_earth_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_earth_save_penalty_air_elec",
+        "sourceId": "item_ring_elemental_command_earth",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Earth)",
+          "fr": "Anneau de commandement élémentaire (Terre)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "vs_air_or_electricity_effects"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_elemental_command_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Elemental Command (Fire)",
+      "fr": "Anneau de commandement élémentaire (Feu)"
+    },
+    "description": {
+      "en": "This ring grants command over fire elementals and creatures of the Elemental Plane of Fire. Same general protections as other elemental command rings (vs. fire elementals). Grants: resist energy (fire) as a major ring of energy resistance [fire]; burning hands (unlimited); flaming sphere (2/day); pyrotechnics (2/day); wall of fire (1/day); flame strike (2/week). The wearer takes -2 on saves vs. water- or cold-based effects. Appears as major ring of energy resistance (fire) until activated (CL 15th).",
+      "fr": "Cet anneau accorde le commandement sur les élémentaires de feu et les créatures du Plan élémentaire du Feu. Mêmes protections générales que les autres anneaux de commandement élémentaire (contre les élémentaires de feu). Accorde : résistance à l'énergie (feu) comme un anneau de résistance à l'énergie majeur [feu] ; mains brûlantes (à volonté) ; sphère de feu (2/jour) ; pyrotechnie (2/jour) ; mur de feu (1/jour) ; colonne de feu (2/semaine). Le porteur subit -2 aux jets contre les effets basés sur l'eau ou le froid (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 200000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_elemental_command_fire_energy_resist_fire",
+        "sourceId": "item_ring_elemental_command_fire",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Fire)",
+          "fr": "Anneau de commandement élémentaire (Feu)"
+        },
+        "targetId": "combatStats.energy_resistance_fire",
+        "value": 20,
+        "type": "resistance"
+      },
+      {
+        "id": "item_ring_elemental_command_fire_att_vs_elementals",
+        "sourceId": "item_ring_elemental_command_fire",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Fire)",
+          "fr": "Anneau de commandement élémentaire (Feu)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "morale",
+        "situationalContext": "vs_fire_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_fire_save_vs_elementals",
+        "sourceId": "item_ring_elemental_command_fire",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Fire)",
+          "fr": "Anneau de commandement élémentaire (Feu)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": 2,
+        "type": "resistance",
+        "situationalContext": "vs_fire_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_fire_save_penalty_water_cold",
+        "sourceId": "item_ring_elemental_command_fire",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Fire)",
+          "fr": "Anneau de commandement élémentaire (Feu)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "vs_water_or_cold_effects"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_elemental_command_water",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Elemental Command (Water)",
+      "fr": "Anneau de commandement élémentaire (Eau)"
+    },
+    "description": {
+      "en": "This ring grants command over water elementals and creatures of the Elemental Plane of Water. Same general protections as other elemental command rings (vs. water elementals). Grants: water walk (unlimited); create water (unlimited); water breathing (unlimited); wall of ice (1/day); ice storm (2/week); control water (2/week). The wearer takes -2 on saves vs. fire-based effects. Appears as ring of water walking until activated (CL 15th).",
+      "fr": "Cet anneau accorde le commandement sur les élémentaires d'eau et les créatures du Plan élémentaire de l'Eau. Mêmes protections générales que les autres anneaux de commandement élémentaire (contre les élémentaires d'eau). Accorde : marche sur l'eau (à volonté) ; création d'eau (à volonté) ; respiration aquatique (à volonté) ; mur de glace (1/jour) ; tempête de grêle (2/semaine) ; contrôle de l'eau (2/semaine). Le porteur subit -2 aux jets contre les effets basés sur le feu (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 200000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_elemental_command_water_att_vs_elementals",
+        "sourceId": "item_ring_elemental_command_water",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Water)",
+          "fr": "Anneau de commandement élémentaire (Eau)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "morale",
+        "situationalContext": "vs_water_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_water_save_vs_elementals",
+        "sourceId": "item_ring_elemental_command_water",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Water)",
+          "fr": "Anneau de commandement élémentaire (Eau)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": 2,
+        "type": "resistance",
+        "situationalContext": "vs_water_elementals"
+      },
+      {
+        "id": "item_ring_elemental_command_water_save_penalty_fire",
+        "sourceId": "item_ring_elemental_command_water",
+        "sourceName": {
+          "en": "Ring of Elemental Command (Water)",
+          "fr": "Anneau de commandement élémentaire (Eau)"
+        },
+        "targetId": "combatStats.saving_throw_bonus",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "vs_fire_effects"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_minor_acid",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Minor (Acid)",
+      "fr": "Anneau de résistance à l'énergie (mineur, acide)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from acid damage. Each time the wearer would normally take such damage, subtract 10 from the damage dealt (Faint abjuration; CL 3rd).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type acide. Chaque fois que le porteur subirait de tels dégâts, on soustrait 10 des dégâts infligés (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_minor_acid_resist",
+        "sourceId": "item_ring_energy_resistance_minor_acid",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Minor (Acid)",
+          "fr": "Anneau de résistance à l'énergie (mineur, acide)"
+        },
+        "targetId": "combatStats.energy_resistance_acid",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_minor_cold",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Minor (Cold)",
+      "fr": "Anneau de résistance à l'énergie (mineur, froid)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from cold damage. Each time the wearer would normally take such damage, subtract 10 from the damage dealt (Faint abjuration; CL 3rd).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type froid. Chaque fois que le porteur subirait de tels dégâts, on soustrait 10 des dégâts infligés (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_minor_cold_resist",
+        "sourceId": "item_ring_energy_resistance_minor_cold",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Minor (Cold)",
+          "fr": "Anneau de résistance à l'énergie (mineur, froid)"
+        },
+        "targetId": "combatStats.energy_resistance_cold",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_minor_electricity",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Minor (Electricity)",
+      "fr": "Anneau de résistance à l'énergie (mineur, électricité)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from electricity damage. Each time the wearer would normally take such damage, subtract 10 from the damage dealt (Faint abjuration; CL 3rd).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type électricité. Chaque fois que le porteur subirait de tels dégâts, on soustrait 10 des dégâts infligés (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_minor_electricity_resist",
+        "sourceId": "item_ring_energy_resistance_minor_electricity",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Minor (Electricity)",
+          "fr": "Anneau de résistance à l'énergie (mineur, électricité)"
+        },
+        "targetId": "combatStats.energy_resistance_electricity",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_minor_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Minor (Fire)",
+      "fr": "Anneau de résistance à l'énergie (mineur, feu)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from fire damage. Each time the wearer would normally take such damage, subtract 10 from the damage dealt (Faint abjuration; CL 3rd).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type feu. Chaque fois que le porteur subirait de tels dégâts, on soustrait 10 des dégâts infligés (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_minor_fire_resist",
+        "sourceId": "item_ring_energy_resistance_minor_fire",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Minor (Fire)",
+          "fr": "Anneau de résistance à l'énergie (mineur, feu)"
+        },
+        "targetId": "combatStats.energy_resistance_fire",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_minor_sonic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Minor (Sonic)",
+      "fr": "Anneau de résistance à l'énergie (mineur, sonique)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from sonic damage. Each time the wearer would normally take such damage, subtract 10 from the damage dealt (Faint abjuration; CL 3rd).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type sonique. Chaque fois que le porteur subirait de tels dégâts, on soustrait 10 des dégâts infligés (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_minor_sonic_resist",
+        "sourceId": "item_ring_energy_resistance_minor_sonic",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Minor (Sonic)",
+          "fr": "Anneau de résistance à l'énergie (mineur, sonique)"
+        },
+        "targetId": "combatStats.energy_resistance_sonic",
+        "value": 10,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_major_acid",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Major (Acid)",
+      "fr": "Anneau de résistance à l'énergie (majeur, acide)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from acid damage. Each time the wearer would normally take such damage, subtract 20 from the damage dealt (Faint abjuration; CL 7th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type acide. Chaque fois que le porteur subirait de tels dégâts, on soustrait 20 des dégâts infligés (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 28000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_major_acid_resist",
+        "sourceId": "item_ring_energy_resistance_major_acid",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Major (Acid)",
+          "fr": "Anneau de résistance à l'énergie (majeur, acide)"
+        },
+        "targetId": "combatStats.energy_resistance_acid",
+        "value": 20,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_major_cold",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Major (Cold)",
+      "fr": "Anneau de résistance à l'énergie (majeur, froid)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from cold damage. Each time the wearer would normally take such damage, subtract 20 from the damage dealt (Faint abjuration; CL 7th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type froid. Chaque fois que le porteur subirait de tels dégâts, on soustrait 20 des dégâts infligés (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 28000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_major_cold_resist",
+        "sourceId": "item_ring_energy_resistance_major_cold",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Major (Cold)",
+          "fr": "Anneau de résistance à l'énergie (majeur, froid)"
+        },
+        "targetId": "combatStats.energy_resistance_cold",
+        "value": 20,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_major_electricity",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Major (Electricity)",
+      "fr": "Anneau de résistance à l'énergie (majeur, électricité)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from electricity damage. Each time the wearer would normally take such damage, subtract 20 from the damage dealt (Faint abjuration; CL 7th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type électricité. Chaque fois que le porteur subirait de tels dégâts, on soustrait 20 des dégâts infligés (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 28000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_major_electricity_resist",
+        "sourceId": "item_ring_energy_resistance_major_electricity",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Major (Electricity)",
+          "fr": "Anneau de résistance à l'énergie (majeur, électricité)"
+        },
+        "targetId": "combatStats.energy_resistance_electricity",
+        "value": 20,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_major_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Major (Fire)",
+      "fr": "Anneau de résistance à l'énergie (majeur, feu)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from fire damage. Each time the wearer would normally take such damage, subtract 20 from the damage dealt (Faint abjuration; CL 7th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type feu. Chaque fois que le porteur subirait de tels dégâts, on soustrait 20 des dégâts infligés (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 28000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_major_fire_resist",
+        "sourceId": "item_ring_energy_resistance_major_fire",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Major (Fire)",
+          "fr": "Anneau de résistance à l'énergie (majeur, feu)"
+        },
+        "targetId": "combatStats.energy_resistance_fire",
+        "value": 20,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_major_sonic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Major (Sonic)",
+      "fr": "Anneau de résistance à l'énergie (majeur, sonique)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from sonic damage. Each time the wearer would normally take such damage, subtract 20 from the damage dealt (Faint abjuration; CL 7th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type sonique. Chaque fois que le porteur subirait de tels dégâts, on soustrait 20 des dégâts infligés (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 28000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_major_sonic_resist",
+        "sourceId": "item_ring_energy_resistance_major_sonic",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Major (Sonic)",
+          "fr": "Anneau de résistance à l'énergie (majeur, sonique)"
+        },
+        "targetId": "combatStats.energy_resistance_sonic",
+        "value": 20,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_greater_acid",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Greater (Acid)",
+      "fr": "Anneau de résistance à l'énergie (supérieur, acide)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from acid damage. Each time the wearer would normally take such damage, subtract 30 from the damage dealt (Moderate abjuration; CL 11th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type acide. Chaque fois que le porteur subirait de tels dégâts, on soustrait 30 des dégâts infligés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 44000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_greater_acid_resist",
+        "sourceId": "item_ring_energy_resistance_greater_acid",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Greater (Acid)",
+          "fr": "Anneau de résistance à l'énergie (supérieur, acide)"
+        },
+        "targetId": "combatStats.energy_resistance_acid",
+        "value": 30,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_greater_cold",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Greater (Cold)",
+      "fr": "Anneau de résistance à l'énergie (supérieur, froid)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from cold damage. Each time the wearer would normally take such damage, subtract 30 from the damage dealt (Moderate abjuration; CL 11th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type froid. Chaque fois que le porteur subirait de tels dégâts, on soustrait 30 des dégâts infligés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 44000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_greater_cold_resist",
+        "sourceId": "item_ring_energy_resistance_greater_cold",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Greater (Cold)",
+          "fr": "Anneau de résistance à l'énergie (supérieur, froid)"
+        },
+        "targetId": "combatStats.energy_resistance_cold",
+        "value": 30,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_greater_electricity",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Greater (Electricity)",
+      "fr": "Anneau de résistance à l'énergie (supérieur, électricité)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from electricity damage. Each time the wearer would normally take such damage, subtract 30 from the damage dealt (Moderate abjuration; CL 11th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type électricité. Chaque fois que le porteur subirait de tels dégâts, on soustrait 30 des dégâts infligés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 44000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_greater_electricity_resist",
+        "sourceId": "item_ring_energy_resistance_greater_electricity",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Greater (Electricity)",
+          "fr": "Anneau de résistance à l'énergie (supérieur, électricité)"
+        },
+        "targetId": "combatStats.energy_resistance_electricity",
+        "value": 30,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_greater_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Greater (Fire)",
+      "fr": "Anneau de résistance à l'énergie (supérieur, feu)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from fire damage. Each time the wearer would normally take such damage, subtract 30 from the damage dealt (Moderate abjuration; CL 11th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type feu. Chaque fois que le porteur subirait de tels dégâts, on soustrait 30 des dégâts infligés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 44000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_greater_fire_resist",
+        "sourceId": "item_ring_energy_resistance_greater_fire",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Greater (Fire)",
+          "fr": "Anneau de résistance à l'énergie (supérieur, feu)"
+        },
+        "targetId": "combatStats.energy_resistance_fire",
+        "value": 30,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_energy_resistance_greater_sonic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Energy Resistance, Greater (Sonic)",
+      "fr": "Anneau de résistance à l'énergie (supérieur, sonique)"
+    },
+    "description": {
+      "en": "This reddish iron ring continually protects the wearer from sonic damage. Each time the wearer would normally take such damage, subtract 30 from the damage dealt (Moderate abjuration; CL 11th).",
+      "fr": "Cet anneau de fer rougeâtre protège en permanence le porteur contre les dégâts de type sonique. Chaque fois que le porteur subirait de tels dégâts, on soustrait 30 des dégâts infligés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 44000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_energy_resistance_greater_sonic_resist",
+        "sourceId": "item_ring_energy_resistance_greater_sonic",
+        "sourceName": {
+          "en": "Ring of Energy Resistance, Greater (Sonic)",
+          "fr": "Anneau de résistance à l'énergie (supérieur, sonique)"
+        },
+        "targetId": "combatStats.energy_resistance_sonic",
+        "value": 30,
+        "type": "resistance"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_evasion",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Evasion",
+      "fr": "Anneau d'esquive totale"
+    },
+    "description": {
+      "en": "This ring continually grants the wearer the ability to avoid damage as if she had the evasion ability. Whenever she makes a Reflex saving throw to determine whether she takes half damage, a successful save results in no damage (CL 7th).",
+      "fr": "Cet anneau accorde en permanence au porteur la capacité d'éviter les dégâts comme s'il possédait la capacité d'esquive totale. Chaque fois que le porteur réussit un jet de Réflexes pour ne subir que la moitié des dégâts, un jet réussi entraîne aucun dégât (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": [
+      "class_feature_rogue_evasion"
+    ]
+  },
+  {
+    "id": "item_ring_feather_falling",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Feather Falling",
+      "fr": "Anneau de chute de plume"
+    },
+    "description": {
+      "en": "This ring is crafted with a feather pattern all around its edge. It acts exactly like a feather fall spell, activated immediately if the wearer falls more than 5 feet (CL 1st).",
+      "fr": "Cet anneau est orné d'un motif de plume tout autour de son bord. Il agit exactement comme un sort de chute de plume, s'activant immédiatement si le porteur chute de plus de 1,5 m (NLS 1)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2200,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_force_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Force Shield",
+      "fr": "Anneau de bouclier de force"
+    },
+    "description": {
+      "en": "An iron band, this simple ring generates a shield-sized wall of force that can be wielded by the wearer as if it were a heavy shield (+2 AC). It has no armor check penalty or arcane spell failure chance since it is weightless. It can be activated and deactivated at will as a free action (CL 9th).",
+      "fr": "Un anneau de fer simple, il génère un mur de force de la taille d'un bouclier que le porteur peut manier comme un bouclier lourde (+2 CA). Il n'impose aucun malus aux tests d'armure ni de risque d'échec des sorts arcaniques car il est sans masse. Il peut être activé et désactivé à volonté par une action libre (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 8500,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "free"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_ring_force_shield_ac",
+        "sourceId": "item_ring_force_shield",
+        "sourceName": {
+          "en": "Ring of Force Shield",
+          "fr": "Anneau de bouclier de force"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "shield",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "ring_force_shield_active"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_freedom_of_movement",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Freedom of Movement",
+      "fr": "Anneau de liberté de mouvement"
+    },
+    "description": {
+      "en": "This gold ring allows the wearer to act as if continually under the effect of a freedom of movement spell (CL 7th).",
+      "fr": "Cet anneau d'or permet au porteur d'agir comme s'il était en permanence sous l'effet du sort liberté de mouvement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 40000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_friend_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Friend Shield (pair)",
+      "fr": "Anneau de bouclier d'ami (paire)"
+    },
+    "description": {
+      "en": "These curious rings always come in pairs. Either wearer can, at any time, command his or her ring to cast a shield other spell with the wearer of the mated ring as the recipient. This effect has no range limitation (CL 10th). Price given is for a pair.",
+      "fr": "Ces anneaux curieux sont toujours vendus par paires. L'un ou l'autre des porteurs peut, à tout moment, ordonner à son anneau de lancer un sort de protection d'autrui sur le porteur de l'anneau associé. Cet effet ne connaît aucune limite de portée (NLS 10). Le prix indiqué est pour une paire."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_invisibility",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Invisibility",
+      "fr": "Anneau d'invisibilité"
+    },
+    "description": {
+      "en": "By activating this simple silver ring, the wearer can benefit from invisibility, as the spell (CL 3rd).",
+      "fr": "En activant ce simple anneau d'argent, le porteur peut bénéficier de l'invisibilité, comme le sort (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 20000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_jumping",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Jumping",
+      "fr": "Anneau de saut"
+    },
+    "description": {
+      "en": "This ring continually allows the wearer to leap about, providing a +5 competence bonus on all Jump checks (CL 2nd).",
+      "fr": "Cet anneau permet en permanence au porteur de bondir, accordant un bonus de compétence de +5 à tous ses tests de Saut (NLS 2)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2500,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_jumping_bonus",
+        "sourceId": "item_ring_jumping",
+        "sourceName": {
+          "en": "Ring of Jumping",
+          "fr": "Anneau de saut"
+        },
+        "targetId": "skills.skill_jump",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_jumping_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Jumping, Improved",
+      "fr": "Anneau de saut amélioré"
+    },
+    "description": {
+      "en": "As the ring of jumping, except it grants a +10 competence bonus on its wearer's Jump checks (CL 7th).",
+      "fr": "Comme l'anneau de saut, mais il accorde un bonus de compétence de +10 aux tests de Saut de son porteur (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_jumping_improved_bonus",
+        "sourceId": "item_ring_jumping_improved",
+        "sourceName": {
+          "en": "Ring of Jumping, Improved",
+          "fr": "Anneau de saut amélioré"
+        },
+        "targetId": "skills.skill_jump",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_meld_into_stone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Meld into Stone",
+      "fr": "Anneau de fusion avec la pierre"
+    },
+    "description": {
+      "en": "This ring allows the wearer to use the spell meld into stone on command (CL 5th).",
+      "fr": "Cet anneau permet au porteur d'utiliser le sort fusion avec la pierre sur commande (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 27000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_mind_shielding",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Mind Shielding",
+      "fr": "Anneau de protection mentale"
+    },
+    "description": {
+      "en": "This ring is usually of fine workmanship and wrought from heavy gold. The wearer is continually immune to detect thoughts, discern lies, and any attempt to magically discern her alignment (CL 3rd).",
+      "fr": "Cet anneau est généralement d'une facture soignée et forgé en or massif. Le porteur est en permanence immunisé contre détection des pensées, discernement des mensonges, et toute tentative de déterminer magiquement son alignement (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 8000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_protection_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Protection +1",
+      "fr": "Anneau de protection +1"
+    },
+    "description": {
+      "en": "This ring offers continual magical protection in the form of a deflection bonus of +1 to AC (CL 5th).",
+      "fr": "Cet anneau offre une protection magique permanente sous forme d'un bonus de déviation de +1 à la CA (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_protection_1_ac",
+        "sourceId": "item_ring_protection_1",
+        "sourceName": {
+          "en": "Ring of Protection +1",
+          "fr": "Anneau de protection +1"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_protection_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Protection +2",
+      "fr": "Anneau de protection +2"
+    },
+    "description": {
+      "en": "This ring offers continual magical protection in the form of a deflection bonus of +2 to AC (CL 5th).",
+      "fr": "Cet anneau offre une protection magique permanente sous forme d'un bonus de déviation de +2 à la CA (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 8000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_protection_2_ac",
+        "sourceId": "item_ring_protection_2",
+        "sourceName": {
+          "en": "Ring of Protection +2",
+          "fr": "Anneau de protection +2"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_protection_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Protection +3",
+      "fr": "Anneau de protection +3"
+    },
+    "description": {
+      "en": "This ring offers continual magical protection in the form of a deflection bonus of +3 to AC (CL 5th).",
+      "fr": "Cet anneau offre une protection magique permanente sous forme d'un bonus de déviation de +3 à la CA (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_protection_3_ac",
+        "sourceId": "item_ring_protection_3",
+        "sourceName": {
+          "en": "Ring of Protection +3",
+          "fr": "Anneau de protection +3"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_protection_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Protection +4",
+      "fr": "Anneau de protection +4"
+    },
+    "description": {
+      "en": "This ring offers continual magical protection in the form of a deflection bonus of +4 to AC (CL 5th).",
+      "fr": "Cet anneau offre une protection magique permanente sous forme d'un bonus de déviation de +4 à la CA (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 32000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_protection_4_ac",
+        "sourceId": "item_ring_protection_4",
+        "sourceName": {
+          "en": "Ring of Protection +4",
+          "fr": "Anneau de protection +4"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_protection_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Protection +5",
+      "fr": "Anneau de protection +5"
+    },
+    "description": {
+      "en": "This ring offers continual magical protection in the form of a deflection bonus of +5 to AC (CL 5th).",
+      "fr": "Cet anneau offre une protection magique permanente sous forme d'un bonus de déviation de +5 à la CA (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_protection_5_ac",
+        "sourceId": "item_ring_protection_5",
+        "sourceName": {
+          "en": "Ring of Protection +5",
+          "fr": "Anneau de protection +5"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_ram",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of the Ram",
+      "fr": "Anneau du bélier"
+    },
+    "description": {
+      "en": "The wearer can command this ring to give forth a ramlike force. This force strikes a single target dealing 1d6 (1 charge), 2d6 (2 charges), or 3d6 (3 charges) damage as a ranged attack (50-ft range). Creatures struck within 30 feet may be subject to a bull rush (STR 25, Large). Also can open doors at STR 25/27/29 depending on charges spent. A newly created ring has 50 charges; when expended it becomes nonmagical (CL 9th).",
+      "fr": "Le porteur peut ordonner à cet anneau d'émettre une force en forme de bélier. Cette force frappe une cible unique pour 1d6 (1 charge), 2d6 (2 charges) ou 3d6 (3 charges) dégâts comme une attaque à distance (portée de 15 m). Les créatures touchées dans un rayon de 9 m peuvent être soumises à une charge brise-adversaire (FOR 25, Grande taille). Peut aussi ouvrir des portes à FOR 25/27/29 selon les charges dépensées. Un anneau nouvellement créé a 50 charges ; quand elles sont épuisées, il devient non magique (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 8600,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_regeneration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Regeneration",
+      "fr": "Anneau de régénération"
+    },
+    "description": {
+      "en": "This white gold ring continually allows a living wearer to heal 1 point of damage per level every hour (rather than every day). Nonlethal damage heals at 1 point per level every 5 minutes. If the wearer loses a limb or organ while wearing the ring, it regenerates as the regenerate spell. Only damage taken while wearing the ring is regenerated (CL 15th).",
+      "fr": "Cet anneau en or blanc permet en permanence à un porteur vivant de guérir 1 point de dégâts par niveau toutes les heures (plutôt que chaque jour). Les dégâts non-létaux guérissent à raison de 1 point par niveau toutes les 5 minutes. Si le porteur perd un membre ou un organe en portant l'anneau, il se régénère comme avec le sort régénération. Seuls les dégâts subis pendant le port de l'anneau sont régénérés (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 90000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_shooting_stars",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Shooting Stars",
+      "fr": "Anneau des étoiles filantes"
+    },
+    "description": {
+      "en": "This ring has two modes based on environment. Outdoors at night or in shadow/darkness: dancing lights (1/hour); light (2/night); ball lightning 1-4 balls (1/night, varying electricity damage); shooting stars 3/week (12 damage + 24 fire in 5-ft spread, DC 13 Reflex half). Indoors or underground at night: faerie fire (2/day); spark shower (20-ft arc, 2d8 or 4d8 vs metal wearers, 1/day). Strong evocation (CL 12th).",
+      "fr": "Cet anneau a deux modes selon l'environnement. En extérieur la nuit ou dans l'ombre/obscurité : lumières dansantes (1/heure) ; lumière (2/nuit) ; boule de foudre 1 à 4 boules (1/nuit, dégâts d'électricité variables) ; étoiles filantes 3/semaine (12 dégâts + 24 dégâts de feu dans une zone de 1,5 m, Réflexes DD 13 divisé par deux). En intérieur ou sous terre la nuit : feu féerique (2/jour) ; averse d'étincelles (arc de 6 m, 2d8 ou 4d8 contre porteurs de métal, 1/jour). Forte évocation (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_spell_storing_minor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Spell Storing, Minor",
+      "fr": "Anneau de stockage de sorts (mineur)"
+    },
+    "description": {
+      "en": "A minor ring of spell storing contains up to three levels of spells that the wearer can cast. Each spell is cast at the minimum caster level needed. No material components, focus, or XP cost needed; no arcane spell failure. Activation time equals casting time (minimum 1 standard action). A spellcaster can load spells into the ring as long as total spell levels do not exceed three (CL 5th).",
+      "fr": "Un anneau de stockage de sorts mineur contient jusqu'à trois niveaux de sorts que le porteur peut lancer. Chaque sort est lancé au niveau de lanceur de sorts minimal requis. Aucun composante matérielle, focalisateur ou coût en PX requis ; pas d'échec des sorts arcaniques. Le temps d'activation est égal au temps d'incantation (minimum 1 action normale). Un lanceur de sorts peut charger des sorts dans l'anneau tant que le total des niveaux ne dépasse pas trois (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_spell_storing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Spell Storing",
+      "fr": "Anneau de stockage de sorts"
+    },
+    "description": {
+      "en": "As the minor ring of spell storing, except it holds up to five levels of spells (CL 9th).",
+      "fr": "Comme l'anneau de stockage de sorts mineur, mais il peut contenir jusqu'à cinq niveaux de sorts (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_spell_storing_major",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Spell Storing, Major",
+      "fr": "Anneau de stockage de sorts (majeur)"
+    },
+    "description": {
+      "en": "As the minor ring of spell storing, except it holds up to ten levels of spells (CL 17th).",
+      "fr": "Comme l'anneau de stockage de sorts mineur, mais il peut contenir jusqu'à dix niveaux de sorts (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 200000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_spell_turning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Spell Turning",
+      "fr": "Anneau de renvoi des sorts"
+    },
+    "description": {
+      "en": "Up to three times per day on command, this simple platinum band automatically reflects the next nine levels of spells cast at the wearer, exactly as if spell turning had been cast upon the wearer (CL 13th).",
+      "fr": "Jusqu'à trois fois par jour sur commande, ce simple anneau de platine renvoie automatiquement les neuf prochains niveaux de sorts lancés contre le porteur, exactement comme si le sort renvoi des sorts avait été lancé sur le porteur (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 98280,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_sustenance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Sustenance",
+      "fr": "Anneau de subsistance"
+    },
+    "description": {
+      "en": "This ring continually provides its wearer with life-sustaining nourishment. The ring also refreshes the body so that the wearer needs only sleep 2 hours per day to gain the benefit of 8 hours of sleep. The ring must be worn for a full week before it begins to work (CL 5th).",
+      "fr": "Cet anneau nourrit en permanence son porteur de manière à le maintenir en vie. Il régénère aussi le corps, de sorte que le porteur n'a besoin que de 2 heures de sommeil par jour pour bénéficier de 8 heures. L'anneau doit être porté pendant une semaine complète avant de commencer à fonctionner (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2500,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_swimming",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Swimming",
+      "fr": "Anneau de natation"
+    },
+    "description": {
+      "en": "This silver ring has a wave pattern etched into the band. It continually grants the wearer a +5 competence bonus on Swim checks (CL 2nd).",
+      "fr": "Cet anneau d'argent porte un motif de vague gravé sur le bandeau. Il accorde en permanence au porteur un bonus de compétence de +5 aux tests de Natation (NLS 2)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2500,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_swimming_bonus",
+        "sourceId": "item_ring_swimming",
+        "sourceName": {
+          "en": "Ring of Swimming",
+          "fr": "Anneau de natation"
+        },
+        "targetId": "skills.skill_swim",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_swimming_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Swimming, Improved",
+      "fr": "Anneau de natation amélioré"
+    },
+    "description": {
+      "en": "As the ring of swimming, except it grants a +10 competence bonus on its wearer's Swim checks (CL 7th).",
+      "fr": "Comme l'anneau de natation, mais il accorde un bonus de compétence de +10 aux tests de Natation de son porteur (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [
+      {
+        "id": "item_ring_swimming_improved_bonus",
+        "sourceId": "item_ring_swimming_improved",
+        "sourceName": {
+          "en": "Ring of Swimming, Improved",
+          "fr": "Anneau de natation amélioré"
+        },
+        "targetId": "skills.skill_swim",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_telekinesis",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Telekinesis",
+      "fr": "Anneau de télékinésie"
+    },
+    "description": {
+      "en": "This ring allows the wearer to use the spell telekinesis on command (CL 9th).",
+      "fr": "Cet anneau permet au porteur d'utiliser le sort télékinésie sur commande (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 75000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_three_wishes",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Three Wishes",
+      "fr": "Anneau des trois vœux"
+    },
+    "description": {
+      "en": "This ring is set with three rubies. Each ruby stores a wish spell, activated by the ring. When a wish is used, that ruby disappears. When all three wishes are used, the ring becomes a nonmagical item. For a randomly generated ring, roll 1d3 to determine the remaining number of rubies (CL 20th).",
+      "fr": "Cet anneau est serti de trois rubis. Chaque rubis contient un sort de vœu, activé par l'anneau. Quand un vœu est utilisé, ce rubis disparaît. Quand les trois vœux sont utilisés, l'anneau devient un objet non magique. Pour un anneau généré aléatoirement, lancez 1d3 pour déterminer le nombre de rubis restants (NLS 20)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 97950,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_water_walking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Water Walking",
+      "fr": "Anneau de marche sur l'eau"
+    },
+    "description": {
+      "en": "This ring, set with an opal, allows the wearer to continually utilize the effects of the spell water walk (CL 9th).",
+      "fr": "Cet anneau, serti d'une opale, permet au porteur d'utiliser en permanence les effets du sort marche sur l'eau (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "hardness": 10,
+    "hpMax": 2,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_wizardry_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Wizardry I",
+      "fr": "Anneau de magie I"
+    },
+    "description": {
+      "en": "This ring is useful only to arcane spellcasters. The wearer's arcane 1st-level spells per day are doubled. Bonus spells from high ability scores or school specialization are not doubled (CL 11th).",
+      "fr": "Cet anneau n'est utile qu'aux lanceurs de sorts arcaniques. Les sorts arcaniques de niveau 1 par jour du porteur sont doublés. Les sorts supplémentaires issus de scores de caractéristiques élevés ou de la spécialisation d'école ne sont pas doublés (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 20000,
+    "hardness": 10,
+    "hpMax": 2,
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "arcane_caster",
+      "errorMessage": "Requires an arcane spellcaster"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_wizardry_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Wizardry II",
+      "fr": "Anneau de magie II"
+    },
+    "description": {
+      "en": "This ring is useful only to arcane spellcasters. The wearer's arcane 2nd-level spells per day are doubled. Bonus spells from high ability scores or school specialization are not doubled (CL 14th).",
+      "fr": "Cet anneau n'est utile qu'aux lanceurs de sorts arcaniques. Les sorts arcaniques de niveau 2 par jour du porteur sont doublés. Les sorts supplémentaires issus de scores de caractéristiques élevés ou de la spécialisation d'école ne sont pas doublés (NLS 14)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 40000,
+    "hardness": 10,
+    "hpMax": 2,
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "arcane_caster",
+      "errorMessage": "Requires an arcane spellcaster"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_wizardry_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Wizardry III",
+      "fr": "Anneau de magie III"
+    },
+    "description": {
+      "en": "This ring is useful only to arcane spellcasters. The wearer's arcane 3rd-level spells per day are doubled. Bonus spells from high ability scores or school specialization are not doubled (CL 17th).",
+      "fr": "Cet anneau n'est utile qu'aux lanceurs de sorts arcaniques. Les sorts arcaniques de niveau 3 par jour du porteur sont doublés. Les sorts supplémentaires issus de scores de caractéristiques élevés ou de la spécialisation d'école ne sont pas doublés (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 70000,
+    "hardness": 10,
+    "hpMax": 2,
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "arcane_caster",
+      "errorMessage": "Requires an arcane spellcaster"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_wizardry_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Wizardry IV",
+      "fr": "Anneau de magie IV"
+    },
+    "description": {
+      "en": "This ring is useful only to arcane spellcasters. The wearer's arcane 4th-level spells per day are doubled. Bonus spells from high ability scores or school specialization are not doubled (CL 20th).",
+      "fr": "Cet anneau n'est utile qu'aux lanceurs de sorts arcaniques. Les sorts arcaniques de niveau 4 par jour du porteur sont doublés. Les sorts supplémentaires issus de scores de caractéristiques élevés ou de la spécialisation d'école ne sont pas doublés (NLS 20)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 100000,
+    "hardness": 10,
+    "hpMax": 2,
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "arcane_caster",
+      "errorMessage": "Requires an arcane spellcaster"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_xray_vision",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of X-Ray Vision",
+      "fr": "Anneau de vision radiographique"
+    },
+    "description": {
+      "en": "On command, this ring gives its possessor the ability to see into and through solid matter. Vision range is 20 feet, seeing as if in normal light. X-ray vision can penetrate 1 foot of stone, 1 inch of common metal, or up to 3 feet of wood or dirt. Thicker substances or lead blocks the vision. Using the ring is physically exhausting: 1 point of Constitution damage per minute after the first 10 minutes of use in a single day (CL 6th).",
+      "fr": "Sur commande, cet anneau donne à son possesseur la capacité de voir à travers la matière solide. La portée de la vision est de 6 m, avec une vision comme en pleine lumière. La vision radiographique peut pénétrer 30 cm de pierre, 2,5 cm de métal ordinaire, ou jusqu'à 90 cm de bois ou de terre. Des matières plus épaisses ou une fine couche de plomb bloquent la vision. L'utilisation de l'anneau est physiquement épuisante : 1 point de dégâts de Constitution par minute après les 10 premières minutes d'utilisation dans une même journée (NLS 6)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "hardness": 10,
+    "hpMax": 2,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  }
+]

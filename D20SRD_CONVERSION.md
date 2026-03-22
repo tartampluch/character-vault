@@ -1486,11 +1486,30 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - Activated abilities: `activation` block with `ResourcePool` for charges/uses
 - Cursed items: `forbiddenTags` preventing removal, or `conditionNode` on the removal action
 
-- [ ] **C-14a** — Rings (`rings.html`) and Potions & Oils (`potionsAndOils.html`)
-- [ ] **C-14b** — Magic Armor (`magicArmor.html`) and Magic Weapons (`magicWeapons.html`)
-- [ ] **C-14c** — Wondrous Items A–M (`wondrousItems.html`, first half through letter M)
-- [ ] **C-14d** — Wondrous Items N–Z (`wondrousItems.html`, second half from letter N)
-- [ ] **C-14e** — Rods (`rods.html`), Staves (`staffs.html`), Wands (`wands.html`), Scrolls (`scrolls.html`), Artifacts (`artifacts.html`), Cursed Items (`cursedItems.html`), Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
+- [x] **C-14a** — Rings A-E (`rings.html`)
+- [x] **C-14b** — Rings F-J (`rings.html`)
+- [x] **C-14c** — Rings K-O (`rings.html`)
+- [x] **C-14d** — Rings P-T (`rings.html`)
+- [x] **C-14e** — Rings U-Z (`rings.html`) — **run full-file validation after writing**
+- [ ] **C-14f** — Potions & Oils A-E (`potionsAndOils.html`)
+- [ ] **C-14g** — Potions & Oils F-J (`potionsAndOils.html`)
+- [ ] **C-14h** — Potions & Oils K-O (`potionsAndOils.html`)
+- [ ] **C-14i** — Potions & Oils P-T (`potionsAndOils.html`)
+- [ ] **C-14j** — Potions & Oils U-Z (`potionsAndOils.html`) — **run full-file validation after writing**
+- [ ] **C-14k** — Magic Armor (`magicArmor.html`)
+- [ ] **C-14l** — Magic Weapons (`magicWeapons.html`)
+- [ ] **C-14m** — Wondrous Items A–E (`wondrousItems.html`)
+- [ ] **C-14n** — Wondrous Items F–J (`wondrousItems.html`)
+- [ ] **C-14o** — Wondrous Items K–O (`wondrousItems.html`)
+- [ ] **C-14p** — Wondrous Items P–T (`wondrousItems.html`)
+- [ ] **C-14q** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
+- [ ] **C-14r** — Rods (`rods.html`)
+- [ ] **C-14s** — Staves (`staffs.html`)
+- [ ] **C-14t** — Wands (`wands.html`)
+- [ ] **C-14u** — Scrolls (`scrolls.html`)
+- [ ] **C-14v** — Artifacts (`artifacts.html`)
+- [ ] **C-14w** — Cursed Items (`cursedItems.html`)
+- [ ] **C-14x** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
 
 > **Artifacts** (`artifacts.html`): Convert minor and major artifacts. Use `"category": "item"` with `"equipmentSlot": "none"` for non-wearable artifacts. See `ANNEXES.md` section A.9 for the Sphere of Annihilation example.
 > **Cursed items** (`cursedItems.html`): Add `forbiddenTags` (e.g., `["cursed_identified"]`) to prevent removal and model curse effects as permanent `grantedModifiers`.
