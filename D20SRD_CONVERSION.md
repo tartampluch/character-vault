@@ -1212,7 +1212,7 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ### C-08 — Armor & Shields (`07_d20srd_core_equipment_armor.json`)
 
-- [ ] **C-08** — Convert all armors and shields
+- [x] **C-08** — Convert all armors and shields
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/armor.html`
 
