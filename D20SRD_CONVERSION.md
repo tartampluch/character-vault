@@ -61,7 +61,7 @@ static/rules/
     02_d20srd_core_class_features.json           ← C-05a … C-05k (multi-batch)
     03_d20srd_core_feats.json                    ← C-06a … C-06f (multi-batch)
     04_d20srd_core_skills_config.json            ← C-02
-    05_d20srd_core_spells.json                   ← C-10a … C-10h + C-15k (multi-batch)
+    05_d20srd_core_spells.json                   ← C-10a … C-10ae + C-15k (multi-batch)
     06_d20srd_core_equipment_weapons.json        ← C-07
     07_d20srd_core_equipment_armor.json          ← C-08
     08_d20srd_core_equipment_goods.json          ← C-09
@@ -457,7 +457,7 @@ Several tasks build a single output file across multiple sub-tasks:
 | C-04a through C-04k | `01_d20srd_core_classes.json` |
 | C-05a through C-05k | `02_d20srd_core_class_features.json` |
 | C-06a through C-06f | `03_d20srd_core_feats.json` |
-| C-10a through C-10h + C-15k | `05_d20srd_core_spells.json` |
+| C-10a through C-10ae + C-15k | `05_d20srd_core_spells.json` |
 | C-11a through C-11e | `10_d20srd_core_prestige_classes.json` |
 | C-12a through C-12e | `11_d20srd_core_prestige_class_features.json` |
 | C-14a through C-14e | `12_d20srd_core_magic_items.json` |
@@ -468,7 +468,7 @@ Several tasks build a single output file across multiple sub-tasks:
 - **First sub-task** (e.g., C-04a, C-05a, C-10a): create the file as a top-level JSON array `[…]` with that batch's entries.
 - **Subsequent sub-tasks**: read the existing file, parse the array, append the new entries, write back. Never overwrite the whole file from scratch.
 - **Re-executing one sub-task**: remove that batch's entries by ID range, then re-add them.
-- **Full-file validation** is only required after the final sub-task of each group (C-04k, C-05k, C-10h, C-14e, C-15d).
+- **Full-file validation** is only required after the final sub-task of each group (C-04k, C-05k, C-10ae, C-14e, C-15d).
 
 ---
 
@@ -1316,14 +1316,37 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 **Spells with persistent mechanical effects** (e.g., Bull's Strength +4 STR, Mage Armor +4 AC): add `grantedModifiers` with the appropriate type and `conditionNode` that checks the spell is active. Area damage spells describe their effect in `description` only — no `grantedModifiers`.
 
-- [ ] **C-10a** — Spells: Acid Arrow → Burning Hands (files `acidArrow.html` through `burningHands.html`)
-- [ ] **C-10b** — Spells: Call Lightning → Dominate Person (files `callLightning.html` through `dominatePerson.html`)
-- [ ] **C-10c** — Spells: Eagle's Splendor → Freedom of Movement (files `eaglesSplendor.html` through `freedomOfMovement.html`)
-- [ ] **C-10d** — Spells: Gaseous Form → Lullaby (files `gaseousForm.html` through `lullaby.html`)
-- [ ] **C-10e** — Spells: Mage Armor → Neutralize Poison (files `mageArmor.html` through `neutralizePoison.html`)
-- [ ] **C-10f** — Spells: Obscure Object → Resilient Sphere (files `obscureObject.html` through `resilientSphere.html`)
-- [ ] **C-10g** — Spells: Sanctuary → Touch of Fatigue (files `sanctuary.html` through `touchOfFatigue.html`)
-- [ ] **C-10h** — Spells: Undeath to Death → Zone of Truth (files `undeathToDeath.html` through `zoneOfTruth.html`)
+- [x] **C-10a** — Spells: Acid Arrow → Antipathy (files `acidArrow.html` through `antipathy.html`)
+- [x] **C-10b** — Spells: Antiplant Shell → Blade Barrier (files `antiplantShell.html` through `bladeBarrier.html`)
+- [x] **C-10c** — Spells: Blasphemy → Chain Lightning (files `blasphemy.html` through `chainLightning.html`)
+- [ ] **C-10d** — Spells: Changestaff → Commune (files `changestaff.html` through `commune.html`)
+- [ ] **C-10e** — Spells: Commune with Nature → Creeping Doom (files `communeWithNature.html` through `creepingDoom.html`)
+- [ ] **C-10f** — Spells: Crushing Despair → Death Ward (files `crushingDespair.html` through `deathWard.html`)
+- [ ] **C-10g** — Spells: Deathwatch → Detect Undead (files `deathwatch.html` through `detectUndead.html`)
+- [ ] **C-10h** — Spells: Dictum → Disrupting Weapon (files `dictum.html` through `disruptingWeapon.html`)
+- [ ] **C-10i** — Spells: Divination → Entropic Shield (files `divination.html` through `entropicShield.html`)
+- [ ] **C-10j** — Spells: Erase → Fire Trap (files `erase.html` through `fireTrap.html`)
+- [ ] **C-10k** — Spells: Fireball → Gaseous Form (files `fireball.html` through `gaseousForm.html`)
+- [ ] **C-10l** — Spells: Gate → Guidance (files `gate.html` through `guidance.html`)
+- [ ] **C-10m** — Spells: Gust of Wind → Hold Monster (Mass) (files `gustOfWind.html` through `holdMonsterMass.html`)
+- [ ] **C-10n** — Spells: Hold Person → Inflict Critical Wounds (Mass) (files `holdPerson.html` through `inflictCriticalWoundsMass.html`)
+- [ ] **C-10o** — Spells: Inflict Light Wounds → Jump (files `inflictLightWounds.html` through `jump.html`)
+- [ ] **C-10p** — Spells: Keen Edge → Mage's Lucubration (files `keenEdge.html` through `magesLucubration.html`)
+- [ ] **C-10q** — Spells: Mage's Magnificent Mansion → Make Whole (files `magesMagnificentMansion.html` through `makeWhole.html`)
+- [ ] **C-10r** — Spells: Mark of Justice → Mount (files `markOfJustice.html` through `mount.html`)
+- [ ] **C-10s** — Spells: Move Earth → Phase Door (files `moveEarth.html` through `phaseDoor.html`)
+- [ ] **C-10t** — Spells: Planar Ally → Prismatic Wall (files `planarAlly.html` through `prismaticWall.html`)
+- [ ] **C-10u** — Spells: Produce Flame → Ray of Exhaustion (files `produceFlame.html` through `rayOfExhaustion.html`)
+- [ ] **C-10v** — Spells: Ray of Frost → Resistance (files `rayOfFrost.html` through `resistance.html`)
+- [ ] **C-10w** — Spells: Restoration → Secure Shelter (files `restoration.html` through `secureShelter.html`)
+- [ ] **C-10x** — Spells: See Invisibility → Shocking Grasp (files `seeInvisibility.html` through `shockingGrasp.html`)
+- [ ] **C-10y** — Spells: Shout → Spectral Hand (files `shout.html` through `spectralHand.html`)
+- [ ] **C-10z** — Spells: Spell Immunity → Summon Instrument (files `spellImmunity.html` through `summonInstrument.html`)
+- [ ] **C-10aa** — Spells: Summon Monster I → Sunbeam (files `summonMonsterI.html` through `sunbeam.html`)
+- [ ] **C-10ab** — Spells: Sunburst → Time Stop (files `sunburst.html` through `timeStop.html`)
+- [ ] **C-10ac** — Spells: Tiny Hut → Unholy Blight (files `tinyHut.html` through `unholyBlight.html`)
+- [ ] **C-10ad** — Spells: Unseen Servant → Weird (files `unseenServant.html` through `weird.html`)
+- [ ] **C-10ae** — Spells: Whirlwind → Zone of Truth (files `whirlwind.html` through `zoneOfTruth.html`) — **run full-file validation after writing**
 
 ---
 
@@ -1585,6 +1608,9 @@ C-01 → C-02 → C-03
 → C-06a → C-06b → C-06c → C-06d → C-06e → C-06f
 → C-07 → C-08 → C-09 → C-17
 → C-10a → C-10b → C-10c → C-10d → C-10e → C-10f → C-10g → C-10h
+→ C-10i → C-10j → C-10k → C-10l → C-10m → C-10n → C-10o → C-10p
+→ C-10q → C-10r → C-10s → C-10t → C-10u → C-10v → C-10w → C-10x
+→ C-10y → C-10z → C-10aa → C-10ab → C-10ac → C-10ad → C-10ae
 → C-11a → C-12a → C-11b → C-12b → C-11c → C-12c
 → C-11d → C-12d → C-11e → C-12e
 → C-13 → C-16
@@ -1600,7 +1626,7 @@ C-01 → C-02 → C-03
 - **C-06a–C-06f after C-05k:** feats reference class feature tags that are now fully defined. Alphabetical batches of ~17–24 feats; C-06a creates the file, C-06f validates.
 - **C-07–C-09 before spells:** weapon and armor tags are referenced in spell condition nodes.
 - **C-17 (special materials) after C-07–C-09:** materials modify weapon/armor entries; easier to reference after those are complete.
-- **C-10a–C-10h:** ~600 individual HTML files, high volume but architecturally independent. Batched alphabetically by filename.
+- **C-10a–C-10ae:** 610 individual HTML files spread across 31 batches of 20 (last batch has 10), alphabetically by filename. High volume but architecturally independent.
 - **C-11x/C-12x interleaved per batch:** same pattern as C-04x/C-05x — structure first, features immediately after for each group of 3 classes. C-11a/C-12a create their files; C-11e/C-12e validate.
 - **C-13 after C-12e:** domain spell lists reference spell IDs from C-10.
 - **C-16 (NPC classes) after C-13:** NPC classes reference skills and no spell IDs.
@@ -1628,7 +1654,7 @@ The d20srd mirror at `d20srd/www.d20srd.org/srd/` contains ~1400 HTML files. The
 | `equipment/armor.html` | Covered | C-08 | — |
 | `equipment/goodsAndServices.html` | Partially covered | C-09 | **Excluded from C-09** (not physical items): inn stay, meals, banquet, coach cab, hireling (trained/untrained), messenger, road/gate toll, ship's passage, spellcasting-for-hire costs — these are services with no weight/slot and belong in a future **C-09b (Services & Prices)** reference task. Barding (cost-multiplier table) and all mounts/animals (horse, pony, warhorse, warpony, donkey/mule, guard dog, riding dog) belong in a future **C-09c (Mounts & Animals)** creature/vehicle task. |
 | `equipment/wealthAndMoney.html` | **Excluded** | — | Price/coinage reference; no game entities |
-| `spells/` (~610 files) | Covered | C-10a–C-10h | — |
+| `spells/` (610 files) | Covered | C-10a–C-10ae | — |
 | `spellLists/` (8 files) | **Excluded** | — | Summary reference pages; spell list membership is captured in each spell's `spellLists` field |
 | `prestigeClasses/` (15 SRD classes) | Covered | C-11a–C-11e, C-12a–C-12e | — |
 | `prestigeClasses/giftedOfTheTraveler.html` | **Excluded** | — | Not part of standard d20 SRD; site-specific content in the mirror |
