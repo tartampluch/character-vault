@@ -1104,7 +1104,7 @@ Key mechanics:
 
 ### C-06a — Feats batch 1/6: Acrobatic → Diehard (24 feats)
 
-- [ ] **C-06a** — Convert feats: Acrobatic → Diehard
+- [x] **C-06a** — Convert feats: Acrobatic → Diehard
 
 **Feats to convert (24 total):**
 Acrobatic, Agile, Alertness, Animal Affinity, Armor Proficiency (Heavy), Armor Proficiency (Light), Armor Proficiency (Medium), Athletic, Augment Summoning, Blind-Fight, Brew Potion, Cleave, Combat Casting, Combat Expertise, Combat Reflexes, Craft Magic Arms and Armor, Craft Rod, Craft Staff, Craft Wand, Craft Wondrous Item, Deceitful, Deflect Arrows, Deft Hands, Diehard
@@ -1115,7 +1115,7 @@ Acrobatic, Agile, Alertness, Animal Affinity, Armor Proficiency (Heavy), Armor P
 
 ### C-06b — Feats batch 2/6: Diligent → Greater Weapon Specialization (18 feats)
 
-- [ ] **C-06b** — Convert feats: Diligent → Greater Weapon Specialization
+- [x] **C-06b** — Convert feats: Diligent → Greater Weapon Specialization
 
 **Feats to convert (18 total):**
 Diligent, Dodge, Empower Spell, Endurance, Enlarge Spell, Eschew Materials, Exotic Weapon Proficiency, Extend Spell, Extra Turning, Far Shot, Forge Ring, Great Cleave, Great Fortitude, Greater Spell Focus, Greater Spell Penetration, Greater Two-Weapon Fighting, Greater Weapon Focus, Greater Weapon Specialization
@@ -1126,7 +1126,7 @@ Diligent, Dodge, Empower Spell, Endurance, Enlarge Spell, Eschew Materials, Exot
 
 ### C-06c — Feats batch 3/6: Heighten Spell → Improved Unarmed Strike (17 feats)
 
-- [ ] **C-06c** — Convert feats: Heighten Spell → Improved Unarmed Strike
+- [x] **C-06c** — Convert feats: Heighten Spell → Improved Unarmed Strike
 
 **Feats to convert (17 total):**
 Heighten Spell, Improved Bull Rush, Improved Counterspell, Improved Critical, Improved Disarm, Improved Familiar, Improved Feint, Improved Grapple, Improved Initiative, Improved Overrun, Improved Precise Shot, Improved Shield Bash, Improved Sunder, Improved Trip, Improved Turning, Improved Two-Weapon Fighting, Improved Unarmed Strike
@@ -1137,7 +1137,7 @@ Heighten Spell, Improved Bull Rush, Improved Counterspell, Improved Critical, Im
 
 ### C-06d — Feats batch 4/6: Investigator → Precise Shot (18 feats)
 
-- [ ] **C-06d** — Convert feats: Investigator → Precise Shot
+- [x] **C-06d** — Convert feats: Investigator → Precise Shot
 
 **Feats to convert (18 total):**
 Investigator, Iron Will, Leadership, Lightning Reflexes, Magical Aptitude, Manyshot, Martial Weapon Proficiency, Maximize Spell, Mobility, Mounted Archery, Mounted Combat, Natural Spell, Negotiator, Nimble Fingers, Persuasive, Point Blank Shot, Power Attack, Precise Shot
@@ -1148,7 +1148,7 @@ Investigator, Iron Will, Leadership, Lightning Reflexes, Magical Aptitude, Manys
 
 ### C-06e — Feats batch 5/6: Quick Draw → Spell Penetration (17 feats)
 
-- [ ] **C-06e** — Convert feats: Quick Draw → Spell Penetration
+- [x] **C-06e** — Convert feats: Quick Draw → Spell Penetration
 
 **Feats to convert (17 total):**
 Quick Draw, Quicken Spell, Rapid Reload, Rapid Shot, Ride-By Attack, Run, Scribe Scroll, Self-Sufficient, Shield Proficiency, Shot on the Run, Silent Spell, Simple Weapon Proficiency, Skill Focus, Snatch Arrows, Spell Focus, Spell Mastery, Spell Penetration
@@ -1159,7 +1159,7 @@ Quick Draw, Quicken Spell, Rapid Reload, Rapid Shot, Ride-By Attack, Run, Scribe
 
 ### C-06f — Feats batch 6/6: Spirited Charge → Widen Spell (16 feats) + full validation
 
-- [ ] **C-06f** — Convert feats: Spirited Charge → Widen Spell — **run full-file validation after writing**
+- [x] **C-06f** — Convert feats: Spirited Charge → Widen Spell — **run full-file validation after writing**
 
 **Feats to convert (16 total):**
 Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness, Tower Shield Proficiency, Track, Trample, Two-Weapon Defense, Two-Weapon Fighting, Weapon Finesse, Weapon Focus, Weapon Specialization, Whirlwind Attack, Widen Spell

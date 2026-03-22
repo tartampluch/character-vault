@@ -1,0 +1,3988 @@
+[
+  {
+    "id": "feat_acrobatic",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Acrobatic",
+      "fr": "Acrobatique"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Jump checks and Tumble checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Saut et d'Acrobaties."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_acrobatic"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_acrobatic_jump",
+        "sourceId": "feat_acrobatic",
+        "sourceName": {
+          "en": "Acrobatic",
+          "fr": "Acrobatique"
+        },
+        "targetId": "skills.skill_jump",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_acrobatic_tumble",
+        "sourceId": "feat_acrobatic",
+        "sourceName": {
+          "en": "Acrobatic",
+          "fr": "Acrobatique"
+        },
+        "targetId": "skills.skill_tumble",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_agile",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Agile",
+      "fr": "Agile"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Balance checks and Escape Artist checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Équilibre et d'Évasion."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_agile"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_agile_balance",
+        "sourceId": "feat_agile",
+        "sourceName": {
+          "en": "Agile",
+          "fr": "Agile"
+        },
+        "targetId": "skills.skill_balance",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_agile_escape_artist",
+        "sourceId": "feat_agile",
+        "sourceName": {
+          "en": "Agile",
+          "fr": "Agile"
+        },
+        "targetId": "skills.skill_escape_artist",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_alertness",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Alertness",
+      "fr": "Vigilance"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Listen checks and Spot checks. The master of a familiar gains the benefit of the Alertness feat whenever the familiar is within arm's reach.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Écoute et d'Observation. Le maître d'un familier bénéficie de ce don chaque fois que le familier est à portée de bras."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_alertness"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_alertness_listen",
+        "sourceId": "feat_alertness",
+        "sourceName": {
+          "en": "Alertness",
+          "fr": "Vigilance"
+        },
+        "targetId": "skills.skill_listen",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_alertness_spot",
+        "sourceId": "feat_alertness",
+        "sourceName": {
+          "en": "Alertness",
+          "fr": "Vigilance"
+        },
+        "targetId": "skills.skill_spot",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_animal_affinity",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Animal Affinity",
+      "fr": "Affinité animale"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Handle Animal checks and Ride checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Dressage et d'Équitation."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_animal_affinity"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_animal_affinity_handle_animal",
+        "sourceId": "feat_animal_affinity",
+        "sourceName": {
+          "en": "Animal Affinity",
+          "fr": "Affinité animale"
+        },
+        "targetId": "skills.skill_handle_animal",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_animal_affinity_ride",
+        "sourceId": "feat_animal_affinity",
+        "sourceName": {
+          "en": "Animal Affinity",
+          "fr": "Affinité animale"
+        },
+        "targetId": "skills.skill_ride",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_armor_proficiency_heavy",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor Proficiency (Heavy)",
+      "fr": "Port des armures lourdes"
+    },
+    "description": {
+      "en": "When you wear heavy armor with which you are proficient, the armor check penalty for that armor applies only to Balance, Climb, Escape Artist, Hide, Jump, Move Silently, Sleight of Hand, and Tumble checks. Fighters, paladins, and clerics automatically have this feat as a bonus feat.",
+      "fr": "Lorsque vous portez une armure lourde avec laquelle vous êtes initié, le malus aux tests d'armure ne s'applique qu'aux jets d'Équilibre, Escalade, Évasion, Discrétion, Saut, Déplacement silencieux, Escamotage et Acrobaties. Les guerriers, paladins et clercs obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_armor_proficiency_heavy"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_armor_proficiency_light",
+          "errorMessage": "Requires Armor Proficiency (Light)"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_armor_proficiency_medium",
+          "errorMessage": "Requires Armor Proficiency (Medium)"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_armor_proficiency_light",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor Proficiency (Light)",
+      "fr": "Port des armures légères"
+    },
+    "description": {
+      "en": "When you wear light armor with which you are proficient, the armor check penalty for that armor applies only to Balance, Climb, Escape Artist, Hide, Jump, Move Silently, Sleight of Hand, and Tumble checks. A character who is not proficient with armor applies its armor check penalty to attack rolls and to all skill checks that involve moving. All characters except wizards, sorcerers, and monks automatically have this feat.",
+      "fr": "Lorsque vous portez une armure légère avec laquelle vous êtes initié, le malus aux tests d'armure ne s'applique qu'aux jets d'Équilibre, Escalade, Évasion, Discrétion, Saut, Déplacement silencieux, Escamotage et Acrobaties. Un personnage non initié applique ce malus à ses jets d'attaque et à tous les jets de compétences impliquant un mouvement. Tous les personnages sauf les magiciens, ensorceleurs et moines obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_armor_proficiency_light"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_armor_proficiency_medium",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor Proficiency (Medium)",
+      "fr": "Port des armures intermédiaires"
+    },
+    "description": {
+      "en": "When you wear medium armor with which you are proficient, the armor check penalty for that armor applies only to Balance, Climb, Escape Artist, Hide, Jump, Move Silently, Sleight of Hand, and Tumble checks. Fighters, barbarians, paladins, clerics, druids, and bards automatically have this feat as a bonus feat.",
+      "fr": "Lorsque vous portez une armure intermédiaire avec laquelle vous êtes initié, le malus aux tests d'armure ne s'applique qu'aux jets d'Équilibre, Escalade, Évasion, Discrétion, Saut, Déplacement silencieux, Escamotage et Acrobaties. Les guerriers, barbares, paladins, clercs, druides et bardes obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_armor_proficiency_medium"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_armor_proficiency_light",
+      "errorMessage": "Requires Armor Proficiency (Light)"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_athletic",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Athletic",
+      "fr": "Athlétique"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Climb checks and Swim checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Escalade et de Natation."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_athletic"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_athletic_climb",
+        "sourceId": "feat_athletic",
+        "sourceName": {
+          "en": "Athletic",
+          "fr": "Athlétique"
+        },
+        "targetId": "skills.skill_climb",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_athletic_swim",
+        "sourceId": "feat_athletic",
+        "sourceName": {
+          "en": "Athletic",
+          "fr": "Athlétique"
+        },
+        "targetId": "skills.skill_swim",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_augment_summoning",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Augment Summoning",
+      "fr": "Invocation renforcée"
+    },
+    "description": {
+      "en": "Each creature you conjure with any summon spell gains a +4 enhancement bonus to Strength and Constitution for the duration of the spell that summoned it.",
+      "fr": "Chaque créature que vous invoquez avec un sort de convocation bénéficie d'un bonus d'altération de +4 à la Force et à la Constitution pendant la durée du sort."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_augment_summoning"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_spell_focus_conjuration",
+      "errorMessage": "Requires Spell Focus (Conjuration)"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_blind_fight",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Blind-Fight",
+      "fr": "Combat aveugle"
+    },
+    "description": {
+      "en": "In melee, every time you miss because of concealment, you can reroll your miss chance percentile roll one time to see if you actually hit. An invisible attacker gets no advantages related to hitting you in melee — you don't lose your Dexterity bonus to AC, and the attacker doesn't get the usual +2 bonus for being invisible (ranged attacks are unaffected). You take only half the usual penalty to speed for being unable to see (three-quarters normal instead of one-half).",
+      "fr": "Au corps à corps, chaque fois que vous ratez à cause d'un camouflage, vous pouvez relancer votre dé de camouflage une fois. Un assaillant invisible n'obtient aucun avantage pour vous toucher au corps à corps — vous ne perdez pas votre bonus de Dextérité à la CA et l'assaillant n'obtient pas le bonus habituel de +2 (les attaques à distance ne sont pas affectées). Vous ne subissez que la moitié de la pénalité habituelle à la vitesse en cas de mauvaise visibilité (trois quarts au lieu d'un demi)."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_blind_fight"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_brew_potion",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Brew Potion",
+      "fr": "Préparation de potions"
+    },
+    "description": {
+      "en": "You can create a potion of any 3rd-level or lower spell that you know and that targets one or more creatures. Brewing a potion takes one day. The base price of a potion is its spell level × its caster level × 50 gp. To brew a potion, you must spend 1/25 of this base price in XP and use up raw materials costing one half this base price.",
+      "fr": "Vous pouvez créer une potion de n'importe quel sort de niveau 3 ou moins que vous connaissez et qui cible une ou plusieurs créatures. Préparer une potion prend une journée. Le prix de base d'une potion est son niveau de sort × son niveau de lanceur × 50 po. Pour préparer une potion, vous devez dépenser 1/25 de ce prix de base en PX et utiliser des matières premières coûtant la moitié de ce prix."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_brew_potion"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires caster level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_cleave",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Cleave",
+      "fr": "Fente"
+    },
+    "description": {
+      "en": "If you deal a creature enough damage to make it drop (typically by dropping it to below 0 hit points or killing it), you get an immediate, extra melee attack against another creature within reach. You cannot take a 5-foot step before making this extra attack. The extra attack is with the same weapon and at the same bonus as the attack that dropped the previous creature. You can use this ability once per round.",
+      "fr": "Si vous infligez suffisamment de dégâts à une créature pour la faire tomber (en la réduisant généralement à moins de 0 point de vie), vous obtenez immédiatement une attaque de corps à corps supplémentaire contre une autre créature à portée. Vous ne pouvez pas faire de pas de placement avant cette attaque. L'attaque supplémentaire se fait avec la même arme et au même bonus que l'attaque qui a fait tomber la créature précédente. Vous ne pouvez utiliser cette capacité qu'une fois par round."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_cleave"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_combat_casting",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Combat Casting",
+      "fr": "Incantation en combat"
+    },
+    "description": {
+      "en": "You get a +4 bonus on Concentration checks made to cast a spell or use a spell-like ability while on the defensive or while you are grappling or pinned.",
+      "fr": "Vous obtenez un bonus de +4 aux jets de Concentration effectués pour lancer un sort ou utiliser une capacité de type sort en défensive ou pendant que vous êtes agrippé ou immobilisé."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_combat_casting"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_combat_casting_concentration",
+        "sourceId": "feat_combat_casting",
+        "sourceName": {
+          "en": "Combat Casting",
+          "fr": "Incantation en combat"
+        },
+        "targetId": "skills.skill_concentration",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "casting_defensively_or_grappled"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_combat_expertise",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Combat Expertise",
+      "fr": "Expertise martiale"
+    },
+    "description": {
+      "en": "When you use the attack action or the full attack action in melee, you can take a penalty of as much as -5 on your attack roll and add the same number (+5 or less) as a dodge bonus to your Armor Class. This number may not exceed your base attack bonus. The changes to attack rolls and Armor Class last until your next action.",
+      "fr": "Lorsque vous utilisez l'action d'attaque ou l'action d'attaque complète au corps à corps, vous pouvez accepter jusqu'à -5 sur votre jet d'attaque et ajouter le même nombre (+5 ou moins) comme bonus d'esquive à votre Classe d'armure. Ce nombre ne peut pas dépasser votre bonus de base à l'attaque. Ces modifications durent jusqu'à votre prochaine action."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_combat_expertise"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_int.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Intelligence 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_combat_reflexes",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Combat Reflexes",
+      "fr": "Réflexes de combat"
+    },
+    "description": {
+      "en": "You may make a number of additional attacks of opportunity equal to your Dexterity bonus. With this feat, you may also make attacks of opportunity while flat-footed.",
+      "fr": "Vous pouvez effectuer un nombre d'attaques d'opportunité supplémentaires égal à votre modificateur de Dextérité. Vous pouvez également effectuer des attaques d'opportunité pendant que vous êtes pris au dépourvu."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_combat_reflexes"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_combat_reflexes_aoo",
+        "sourceId": "feat_combat_reflexes",
+        "sourceName": {
+          "en": "Combat Reflexes",
+          "fr": "Réflexes de combat"
+        },
+        "targetId": "combatStats.attacks_of_opportunity_per_round",
+        "value": "@attributes.stat_dex.derivedModifier",
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_magic_arms_and_armor",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Craft Magic Arms and Armor",
+      "fr": "Fabrication d'armes et armures magiques"
+    },
+    "description": {
+      "en": "You can create any magic weapon, armor, or shield whose prerequisites you meet. Enhancing a weapon, suit of armor, or shield takes one day for each 1,000 gp in the price of its magical features. To enhance a weapon, suit of armor, or shield, you must spend 1/25 of its features' total price in XP and use up raw materials costing one-half of this total price. You can also mend a broken magic weapon, suit of armor, or shield if it is one that you could make.",
+      "fr": "Vous pouvez créer toute arme, armure ou bouclier magique dont vous remplissez les conditions. Améliorer une arme, une armure ou un bouclier prend un jour par tranche de 1 000 po de ses propriétés magiques. Vous devez dépenser 1/25 du prix total de ces propriétés en PX et utiliser des matières premières d'une valeur de la moitié de ce prix. Vous pouvez également réparer une arme, armure ou bouclier magique brisé que vous auriez pu créer."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_craft_magic_arms_and_armor"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 5,
+      "errorMessage": "Requires caster level 5th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_rod",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Craft Rod",
+      "fr": "Fabrication de bâtons"
+    },
+    "description": {
+      "en": "You can create any rod whose prerequisites you meet. Crafting a rod takes one day for each 1,000 gp in its base price. To craft a rod, you must spend 1/25 of its base price in XP and use up raw materials costing one-half of its base price.",
+      "fr": "Vous pouvez créer tout bâton dont vous remplissez les conditions. Fabriquer un bâton prend un jour par tranche de 1 000 po de son prix de base. Vous devez dépenser 1/25 de ce prix en PX et utiliser des matières premières d'une valeur de la moitié du prix de base."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_craft_rod"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 9,
+      "errorMessage": "Requires caster level 9th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_staff",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Craft Staff",
+      "fr": "Fabrication de bâtons de combat"
+    },
+    "description": {
+      "en": "You can create any staff whose prerequisites you meet. Crafting a staff takes one day for each 1,000 gp in its base price. To craft a staff, you must spend 1/25 of its base price in XP and use up raw materials costing one-half of its base price. A newly created staff has 50 charges.",
+      "fr": "Vous pouvez créer tout bâton de combat dont vous remplissez les conditions. Fabriquer un bâton de combat prend un jour par tranche de 1 000 po de son prix de base. Vous devez dépenser 1/25 de ce prix en PX et utiliser des matières premières d'une valeur de la moitié du prix de base. Un bâton nouvellement créé possède 50 charges."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_craft_staff"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 12,
+      "errorMessage": "Requires caster level 12th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_wand",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Craft Wand",
+      "fr": "Fabrication de baguettes magiques"
+    },
+    "description": {
+      "en": "You can create a wand of any 4th-level or lower spell that you know. Crafting a wand takes one day for each 1,000 gp in its base price. The base price of a wand is its caster level × the spell level × 750 gp. To craft a wand, you must spend 1/25 of this base price in XP and use up raw materials costing one-half of this base price. A newly created wand has 50 charges.",
+      "fr": "Vous pouvez créer une baguette de n'importe quel sort de niveau 4 ou moins que vous connaissez. Fabriquer une baguette prend un jour par tranche de 1 000 po de son prix de base. Le prix de base d'une baguette est son niveau de lanceur × le niveau du sort × 750 po. Vous devez dépenser 1/25 de ce prix en PX et utiliser des matières premières d'une valeur de la moitié du prix de base. Une baguette nouvellement créée possède 50 charges."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_craft_wand"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 5,
+      "errorMessage": "Requires caster level 5th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_wondrous_item",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Craft Wondrous Item",
+      "fr": "Fabrication d'objets merveilleux"
+    },
+    "description": {
+      "en": "You can create any wondrous item whose prerequisites you meet. Enchanting a wondrous item takes one day for each 1,000 gp in its price. To enchant a wondrous item, you must spend 1/25 of the item's price in XP and use up raw materials costing half of this price. You can also mend a broken wondrous item if it is one that you could make.",
+      "fr": "Vous pouvez créer tout objet merveilleux dont vous remplissez les conditions. Enchanter un objet merveilleux prend un jour par tranche de 1 000 po de son prix. Vous devez dépenser 1/25 du prix en PX et utiliser des matières premières d'une valeur de la moitié du prix. Vous pouvez également réparer un objet merveilleux brisé que vous auriez pu créer."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_craft_wondrous_item"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires caster level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_deceitful",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deceitful",
+      "fr": "Trompeur"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Disguise checks and Forgery checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Déguisement et de Contrefaçon."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_deceitful"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_deceitful_disguise",
+        "sourceId": "feat_deceitful",
+        "sourceName": {
+          "en": "Deceitful",
+          "fr": "Trompeur"
+        },
+        "targetId": "skills.skill_disguise",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_deceitful_forgery",
+        "sourceId": "feat_deceitful",
+        "sourceName": {
+          "en": "Deceitful",
+          "fr": "Trompeur"
+        },
+        "targetId": "skills.skill_forgery",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_deflect_arrows",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deflect Arrows",
+      "fr": "Déviation de flèches"
+    },
+    "description": {
+      "en": "You must have at least one hand free (holding nothing) to use this feat. Once per round when you would normally be hit with a ranged weapon, you may deflect it so that you take no damage from it. You must be aware of the attack and not flat-footed. Attempting to deflect a ranged weapon doesn't count as an action. Unusually massive ranged weapons and ranged attacks generated by spell effects can't be deflected.",
+      "fr": "Vous devez avoir au moins une main libre pour utiliser ce don. Une fois par round, lorsque vous seriez normalement touché par une arme à distance, vous pouvez la dévier pour ne subir aucun dégât. Vous devez être conscient de l'attaque et ne pas être pris au dépourvu. La déviation ne compte pas comme une action. Les armes à distance exceptionnellement massives et les attaques à distance générées par des sorts ne peuvent pas être déviées."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_deflect_arrows"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_unarmed_strike",
+          "errorMessage": "Requires Improved Unarmed Strike"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_deft_hands",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deft Hands",
+      "fr": "Mains agiles"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Sleight of Hand checks and Use Rope checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Escamotage et d'Utilisation de cordes."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_deft_hands"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_deft_hands_sleight_of_hand",
+        "sourceId": "feat_deft_hands",
+        "sourceName": {
+          "en": "Deft Hands",
+          "fr": "Mains agiles"
+        },
+        "targetId": "skills.skill_sleight_of_hand",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_deft_hands_use_rope",
+        "sourceId": "feat_deft_hands",
+        "sourceName": {
+          "en": "Deft Hands",
+          "fr": "Mains agiles"
+        },
+        "targetId": "skills.skill_use_rope",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_diehard",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Diehard",
+      "fr": "Dur à cuire"
+    },
+    "description": {
+      "en": "When reduced to between -1 and -9 hit points, you automatically become stable. You don't have to roll d% to see if you lose 1 hit point each round. When reduced to negative hit points, you may choose to act as if you were disabled, rather than dying. You must make this decision as soon as you are reduced to negative hit points. When using this feat, you can take either a single move or standard action each turn, but not both, and you cannot take a full round action. If you perform any strenuous standard action, you take 1 point of damage after completing the act. If you reach -10 hit points, you immediately die.",
+      "fr": "Lorsque vous êtes réduit à entre -1 et -9 points de vie, vous êtes automatiquement stabilisé. Lorsque vous êtes réduit à des points de vie négatifs, vous pouvez choisir d'agir comme si vous étiez neutralisé plutôt que mourant. Vous devez prendre cette décision dès que vous êtes réduit à des points de vie négatifs. Vous pouvez effectuer une action simple de mouvement ou une action standard par tour, mais pas les deux, et vous ne pouvez pas prendre d'action de round complet. Si vous effectuez une action standard épuisante, vous subissez 1 point de dégât. Si vous atteignez -10 points de vie, vous mourez immédiatement."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_diehard"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_endurance",
+      "errorMessage": "Requires Endurance"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_diligent",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Diligent",
+      "fr": "Appliqué"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Appraise checks and Decipher Script checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Estimation et de Déchiffrage."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_diligent"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_diligent_appraise",
+        "sourceId": "feat_diligent",
+        "sourceName": {
+          "en": "Diligent",
+          "fr": "Appliqué"
+        },
+        "targetId": "skills.skill_appraise",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_diligent_decipher_script",
+        "sourceId": "feat_diligent",
+        "sourceName": {
+          "en": "Diligent",
+          "fr": "Appliqué"
+        },
+        "targetId": "skills.skill_decipher_script",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_dodge",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dodge",
+      "fr": "Esquive"
+    },
+    "description": {
+      "en": "During your action, you designate an opponent and receive a +1 dodge bonus to Armor Class against attacks from that opponent. You can select a new opponent on any action. A condition that makes you lose your Dexterity bonus to AC also makes you lose dodge bonuses. Dodge bonuses stack with each other.",
+      "fr": "Lors de votre action, vous désignez un adversaire et obtenez un bonus d'esquive de +1 à la Classe d'armure contre les attaques de cet adversaire. Vous pouvez désigner un nouvel adversaire à chaque action. Une condition qui vous fait perdre votre bonus de Dextérité à la CA vous fait également perdre vos bonus d'esquive. Les bonus d'esquive se cumulent entre eux."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_dodge"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_dex.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Dexterity 13+"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_dodge_ac",
+        "sourceId": "feat_dodge",
+        "sourceName": {
+          "en": "Dodge",
+          "fr": "Esquive"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "dodge",
+        "situationalContext": "vs_designated_target"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_empower_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Empower Spell",
+      "fr": "Puissance des sorts"
+    },
+    "description": {
+      "en": "All variable, numeric effects of an empowered spell are increased by one-half. Saving throws and opposed rolls are not affected, nor are spells without random variables. An empowered spell uses up a spell slot two levels higher than the spell's actual level.",
+      "fr": "Tous les effets numériques variables d'un sort amplifié sont augmentés de moitié. Les jets de sauvegarde et les jets opposés ne sont pas affectés, ni les sorts sans variables aléatoires. Un sort amplifié occupe un emplacement de sort de deux niveaux supérieurs au niveau réel du sort."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_empower_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_endurance",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Endurance",
+      "fr": "Endurance"
+    },
+    "description": {
+      "en": "You gain a +4 bonus on the following checks and saves: Swim checks made to resist nonlethal damage, Constitution checks made to continue running, Constitution checks made to avoid nonlethal damage from a forced march, Constitution checks made to hold your breath, Constitution checks made to avoid nonlethal damage from starvation or thirst, Fortitude saves made to avoid nonlethal damage from hot or cold environments, and Fortitude saves made to resist damage from suffocation. You may also sleep in light or medium armor without becoming fatigued.",
+      "fr": "Vous gagnez un bonus de +4 aux jets suivants : jets de Natation pour résister aux dégâts non létaux, jets de Constitution pour continuer à courir, pour éviter les dégâts d'une marche forcée, pour retenir votre souffle, pour éviter les dégâts de privation ; jets de Vigueur contre les dégâts des environnements chauds ou froids et contre la suffocation. Vous pouvez également dormir en armure légère ou intermédiaire sans être fatigué."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_endurance"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_enlarge_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Enlarge Spell",
+      "fr": "Extension spatiale des sorts"
+    },
+    "description": {
+      "en": "You can alter a spell with a range of close, medium, or long to increase its range by 100%. An enlarged spell with a range of close now has a range of 50 ft. + 5 ft./level, medium-range spells have a range of 200 ft. + 20 ft./level, and long-range spells have a range of 800 ft. + 80 ft./level. Spells whose ranges are not defined by distance, or are not close, medium, or long, are not affected. An enlarged spell uses up a spell slot one level higher than the spell's actual level.",
+      "fr": "Vous pouvez modifier un sort de portée courte, moyenne ou longue pour doubler sa portée. Un sort à portée courte agrandie a une portée de 15 m + 1,5 m/niveau, les sorts à portée moyenne ont une portée de 60 m + 6 m/niveau et les sorts à longue portée ont une portée de 240 m + 24 m/niveau. Un sort agrandi occupe un emplacement de sort d'un niveau supérieur au niveau réel du sort."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_enlarge_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_eschew_materials",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Eschew Materials",
+      "fr": "Incantation sans matériaux"
+    },
+    "description": {
+      "en": "You can cast any spell that has a material component costing 1 gp or less without needing that component. The casting still provokes attacks of opportunity as normal. If the spell requires a material component costing more than 1 gp, you must have the material component at hand.",
+      "fr": "Vous pouvez lancer tout sort dont la composante matérielle coûte 1 po ou moins sans avoir besoin de cette composante. L'incantation provoque toujours des attaques d'opportunité normalement. Si le sort nécessite une composante coûtant plus de 1 po, vous devez l'avoir en main."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_eschew_materials"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_exotic_weapon_proficiency",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Exotic Weapon Proficiency",
+      "fr": "Maniement d'une arme exotique"
+    },
+    "description": {
+      "en": "Choose a type of exotic weapon. You understand how to use that type of exotic weapon in combat and make attack rolls with it normally. Without this feat, you take a -4 penalty on attack rolls with an exotic weapon. You can gain this feat multiple times; each time it applies to a new exotic weapon. Proficiency with the bastard sword or dwarven waraxe requires an additional prerequisite of Strength 13.",
+      "fr": "Choisissez un type d'arme exotique. Vous savez utiliser ce type d'arme au combat et effectuez vos jets d'attaque normalement. Sans ce don, vous subissez un malus de -4 aux jets d'attaque avec une arme exotique. Vous pouvez acquérir ce don plusieurs fois ; chaque fois, il s'applique à un nouveau type d'arme exotique."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_exotic_weapon_proficiency"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Base Attack Bonus +1"
+    },
+    "choices": [
+      {
+        "choiceId": "exotic_weapon_choice",
+        "label": {
+          "en": "Choose an exotic weapon",
+          "fr": "Choisissez une arme exotique"
+        },
+        "optionsQuery": "tag:weapon+tag:weapon_exotic",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_extend_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Extend Spell",
+      "fr": "Extension temporelle des sorts"
+    },
+    "description": {
+      "en": "An extended spell lasts twice as long as normal. A spell with a duration of concentration, instantaneous, or permanent is not affected by this feat. An extended spell uses up a spell slot one level higher than the spell's actual level.",
+      "fr": "Un sort prolongé dure deux fois plus longtemps que la normale. Un sort avec une durée de concentration, instantanée ou permanente n'est pas affecté. Un sort prolongé occupe un emplacement de sort d'un niveau supérieur au niveau réel du sort."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_extend_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_extra_turning",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Extra Turning",
+      "fr": "Renvoi supplémentaire"
+    },
+    "description": {
+      "en": "Each time you take this feat, you can use your ability to turn or rebuke creatures four more times per day than normal. If you have the ability to turn or rebuke more than one kind of creature, each of your turning or rebuking abilities gains four additional uses per day. You can gain this feat multiple times; its effects stack.",
+      "fr": "Chaque fois que vous prenez ce don, vous pouvez utiliser votre capacité à renvoyer ou contrôler des créatures quatre fois de plus par jour que d'habitude. Si vous pouvez renvoyer ou contrôler plus d'un type de créature, chacune de vos capacités gagne quatre utilisations supplémentaires par jour. Vous pouvez prendre ce don plusieurs fois ; ses effets se cumulent."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_extra_turning"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "has_turn_or_rebuke",
+      "errorMessage": "Requires ability to turn or rebuke creatures"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_extra_turning_uses",
+        "sourceId": "feat_extra_turning",
+        "sourceName": {
+          "en": "Extra Turning",
+          "fr": "Renvoi supplémentaire"
+        },
+        "targetId": "resources.turn_undead_uses",
+        "value": 4,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_far_shot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Far Shot",
+      "fr": "Tir à longue portée"
+    },
+    "description": {
+      "en": "When you use a projectile weapon such as a bow, its range increment increases by one-half (multiply by 1½). When you use a thrown weapon, its range increment is doubled.",
+      "fr": "Lorsque vous utilisez une arme à projectiles telle qu'un arc, son incrément de portée augmente de moitié (multipliez par 1,5). Lorsque vous utilisez une arme de jet, son incrément de portée est doublé."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_far_shot"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_point_blank_shot",
+      "errorMessage": "Requires Point Blank Shot"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_forge_ring",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Forge Ring",
+      "fr": "Fabrication d'anneaux magiques"
+    },
+    "description": {
+      "en": "You can create any ring whose prerequisites you meet. Crafting a ring takes one day for each 1,000 gp in its base price. To craft a ring, you must spend 1/25 of its base price in XP and use up raw materials costing one-half of its base price. You can also mend a broken ring if it is one that you could make.",
+      "fr": "Vous pouvez créer tout anneau dont vous remplissez les conditions. Fabriquer un anneau prend un jour par tranche de 1 000 po de son prix de base. Vous devez dépenser 1/25 de ce prix en PX et utiliser des matières premières d'une valeur de la moitié du prix de base. Vous pouvez également réparer un anneau brisé que vous auriez pu créer."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_forge_ring"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 12,
+      "errorMessage": "Requires caster level 12th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_great_cleave",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Great Cleave",
+      "fr": "Grande fente"
+    },
+    "description": {
+      "en": "This feat works like Cleave, except that there is no limit to the number of times you can use it per round.",
+      "fr": "Ce don fonctionne comme Fente, sauf qu'il n'y a pas de limite au nombre de fois que vous pouvez l'utiliser par round."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_great_cleave"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_cleave",
+          "errorMessage": "Requires Cleave"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Base Attack Bonus +4"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_great_fortitude",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Great Fortitude",
+      "fr": "Grande vigueur"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Fortitude saving throws.",
+      "fr": "Vous obtenez un bonus de +2 à tous vos jets de Vigueur."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_great_fortitude"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_great_fortitude_save",
+        "sourceId": "feat_great_fortitude",
+        "sourceName": {
+          "en": "Great Fortitude",
+          "fr": "Grande vigueur"
+        },
+        "targetId": "saves.save_fort",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_spell_focus",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Greater Spell Focus",
+      "fr": "Maîtrise des sorts renforcée"
+    },
+    "description": {
+      "en": "Choose a school of magic to which you have already applied the Spell Focus feat. Add +1 to the Difficulty Class for all saving throws against spells from the school you select. This bonus stacks with the bonus from Spell Focus. You can gain this feat multiple times; each time it applies to a new school of magic.",
+      "fr": "Choisissez une école de magie pour laquelle vous avez déjà le don Maîtrise des sorts. Ajoutez +1 au Degré de difficulté de tous les jets de sauvegarde contre les sorts de l'école sélectionnée. Ce bonus se cumule avec celui de Maîtrise des sorts. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle école de magie."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_greater_spell_focus"
+    ],
+    "choices": [
+      {
+        "choiceId": "spell_school_choice",
+        "label": {
+          "en": "Choose a school of magic",
+          "fr": "Choisissez une école de magie"
+        },
+        "optionsQuery": "tag:arcane_school",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_spell_penetration",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Greater Spell Penetration",
+      "fr": "Pénétration des sorts renforcée"
+    },
+    "description": {
+      "en": "You get a +2 bonus on caster level checks (1d20 + caster level) made to overcome a creature's spell resistance. This bonus stacks with the one from Spell Penetration.",
+      "fr": "Vous obtenez un bonus de +2 aux tests de niveau de lanceur (1d20 + niveau de lanceur) effectués pour surmonter la résistance à la magie d'une créature. Ce bonus se cumule avec celui de Pénétration des sorts."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_greater_spell_penetration"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_spell_penetration",
+      "errorMessage": "Requires Spell Penetration"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_greater_spell_penetration_cl_check",
+        "sourceId": "feat_greater_spell_penetration",
+        "sourceName": {
+          "en": "Greater Spell Penetration",
+          "fr": "Pénétration des sorts renforcée"
+        },
+        "targetId": "combatStats.spell_penetration",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_two_weapon_fighting",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Greater Two-Weapon Fighting",
+      "fr": "Combat à deux armes supérieur"
+    },
+    "description": {
+      "en": "You get a third attack with your off-hand weapon, albeit at a -10 penalty. An 11th-level ranger who has chosen the two-weapon combat style is treated as having this feat when wearing light or no armor.",
+      "fr": "Vous obtenez une troisième attaque avec votre arme secondaire, avec un malus de -10. Un rôdeur de niveau 11 ayant choisi le style de combat à deux armes est considéré comme possédant ce don lorsqu'il porte une armure légère ou aucune armure."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_greater_two_weapon_fighting"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 19,
+          "errorMessage": "Requires Dexterity 19+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_two_weapon_fighting",
+          "errorMessage": "Requires Improved Two-Weapon Fighting"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_two_weapon_fighting",
+          "errorMessage": "Requires Two-Weapon Fighting"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 11,
+          "errorMessage": "Requires Base Attack Bonus +11"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_weapon_focus",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Greater Weapon Focus",
+      "fr": "Concentration sur une arme supérieure"
+    },
+    "description": {
+      "en": "Choose one type of weapon for which you have already selected Weapon Focus (you may also choose unarmed strike or grapple). You gain a +1 bonus on all attack rolls you make using the selected weapon. This stacks with the bonus from Weapon Focus. You can gain this feat multiple times; each time it applies to a new weapon.",
+      "fr": "Choisissez un type d'arme pour lequel vous avez déjà sélectionné Arme de prédilection (vous pouvez aussi choisir l'attaque à mains nues ou la lutte). Vous gagnez un bonus de +1 à tous vos jets d'attaque avec cette arme. Ce bonus se cumule avec celui d'Arme de prédilection. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle arme."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_greater_weapon_focus"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_focus",
+          "errorMessage": "Requires Weapon Focus with selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@classLevels.class_fighter",
+          "operator": ">=",
+          "value": 8,
+          "errorMessage": "Requires Fighter level 8"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "choiceId": "weapon_choice",
+        "label": {
+          "en": "Choose a weapon",
+          "fr": "Choisissez une arme"
+        },
+        "optionsQuery": "tag:weapon",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_greater_weapon_focus_attack",
+        "sourceId": "feat_greater_weapon_focus",
+        "sourceName": {
+          "en": "Greater Weapon Focus",
+          "fr": "Concentration sur une arme supérieure"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@equippedWeaponTags",
+          "operator": "includes",
+          "value": "@selection.weapon_choice"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_weapon_specialization",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Greater Weapon Specialization",
+      "fr": "Spécialisation martiale supérieure"
+    },
+    "description": {
+      "en": "Choose one type of weapon for which you have already selected Weapon Specialization (you may also choose unarmed strike or grapple). You gain a +2 bonus on all damage rolls you make using the selected weapon. This bonus stacks with the one from Weapon Specialization. You can gain this feat multiple times; each time it applies to a new weapon.",
+      "fr": "Choisissez un type d'arme pour lequel vous avez déjà sélectionné Spécialisation martiale (vous pouvez aussi choisir l'attaque à mains nues ou la lutte). Vous gagnez un bonus de +2 à tous vos jets de dégâts avec cette arme. Ce bonus se cumule avec celui de Spécialisation martiale. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle arme."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_greater_weapon_specialization"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_greater_weapon_focus",
+          "errorMessage": "Requires Greater Weapon Focus with selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_focus",
+          "errorMessage": "Requires Weapon Focus with selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_specialization",
+          "errorMessage": "Requires Weapon Specialization with selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@classLevels.class_fighter",
+          "operator": ">=",
+          "value": 12,
+          "errorMessage": "Requires Fighter level 12"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "choiceId": "weapon_choice",
+        "label": {
+          "en": "Choose a weapon",
+          "fr": "Choisissez une arme"
+        },
+        "optionsQuery": "tag:weapon",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_greater_weapon_specialization_damage",
+        "sourceId": "feat_greater_weapon_specialization",
+        "sourceName": {
+          "en": "Greater Weapon Specialization",
+          "fr": "Spécialisation martiale supérieure"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@equippedWeaponTags",
+          "operator": "includes",
+          "value": "@selection.weapon_choice"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_heighten_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Heighten Spell",
+      "fr": "Intensification des sorts"
+    },
+    "description": {
+      "en": "A heightened spell has a higher spell level than normal (up to a maximum of 9th level). Unlike other metamagic feats, Heighten Spell actually increases the effective level of the spell that it modifies. All effects dependent on spell level (such as saving throw DCs and ability to penetrate a lesser globe of invulnerability) are calculated according to the heightened level. The heightened spell is as difficult to prepare and cast as a spell of its effective level.",
+      "fr": "Un sort intensifié a un niveau plus élevé que la normale (jusqu'à un maximum de niveau 9). Contrairement aux autres dons de métamagie, l'Intensification des sorts augmente réellement le niveau effectif du sort. Tous les effets dépendant du niveau de sort (comme les DD des jets de sauvegarde) sont calculés selon le niveau augmenté."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_heighten_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_bull_rush",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Bull Rush",
+      "fr": "Bousculade améliorée"
+    },
+    "description": {
+      "en": "When you perform a bull rush you do not provoke an attack of opportunity from the defender. You also gain a +4 bonus on the opposed Strength check you make to push back the defender.",
+      "fr": "Lorsque vous effectuez une bousculade, vous ne provoquez pas d'attaque d'opportunité de la part du défenseur. Vous gagnez également un bonus de +4 au jet de Force opposé pour repousser le défenseur."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_bull_rush"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_counterspell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Counterspell",
+      "fr": "Contresort amélioré"
+    },
+    "description": {
+      "en": "When counterspelling, you may use a spell of the same school that is one or more spell levels higher than the target spell. Without this feat, you may counter a spell only with the same spell or with a spell specifically designated as countering the target spell.",
+      "fr": "Lors d'un contresort, vous pouvez utiliser un sort de la même école qui est d'un niveau ou plus supérieur au sort cible. Sans ce don, vous ne pouvez contrer un sort qu'avec le même sort ou un sort spécifiquement désigné pour le contrer."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_improved_counterspell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_critical",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Critical",
+      "fr": "Critique amélioré"
+    },
+    "description": {
+      "en": "Choose one type of weapon. When using the weapon you selected, your threat range is doubled. You can gain this feat multiple times; each time it applies to a new type of weapon. This effect does not stack with any other effect that expands the threat range of a weapon.",
+      "fr": "Choisissez un type d'arme. Lorsque vous utilisez l'arme sélectionnée, votre zone de menace est doublée. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à un nouveau type d'arme. Cet effet ne se cumule pas avec d'autres effets qui élargissent la zone de menace."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_critical"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 8,
+          "errorMessage": "Requires Base Attack Bonus +8"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "choiceId": "weapon_choice",
+        "label": {
+          "en": "Choose a weapon",
+          "fr": "Choisissez une arme"
+        },
+        "optionsQuery": "tag:weapon",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_disarm",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Disarm",
+      "fr": "Désarmement amélioré"
+    },
+    "description": {
+      "en": "You do not provoke an attack of opportunity when you attempt to disarm an opponent, nor does the opponent have a chance to disarm you. You also gain a +4 bonus on the opposed attack roll you make to disarm your opponent.",
+      "fr": "Vous ne provoquez pas d'attaque d'opportunité lorsque vous tentez de désarmer un adversaire, et l'adversaire ne peut pas vous désarmer en retour. Vous gagnez également un bonus de +4 au jet d'attaque opposé pour désarmer l'adversaire."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_disarm"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_int.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Intelligence 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_combat_expertise",
+          "errorMessage": "Requires Combat Expertise"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_familiar",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Familiar",
+      "fr": "Familier amélioré"
+    },
+    "description": {
+      "en": "This feat allows spellcasters to acquire a new familiar from a nonstandard list (including shocker lizards, stirges, imps, pseudodragons, quasits, small elementals, and other creatures), but only when they could normally acquire a new familiar. Prerequisites: ability to acquire a new familiar, compatible alignment, sufficiently high arcane spellcaster level.",
+      "fr": "Ce don permet aux lanceurs de sorts d'acquérir un familier issu d'une liste non standard (notamment les lézards foudroyeurs, les stirges, les diablets, les pseudodragons, les quasits, les petits élémentaires et d'autres créatures), mais seulement lorsqu'ils pourraient normalement en acquérir un nouveau."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_improved_familiar"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "has_familiar",
+      "errorMessage": "Requires ability to acquire a familiar"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_feint",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Feint",
+      "fr": "Feinte améliorée"
+    },
+    "description": {
+      "en": "You can make a Bluff check to feint in combat as a move action. Without this feat, feinting in combat is a standard action.",
+      "fr": "Vous pouvez effectuer un jet de Bluff pour feinter au combat comme action de mouvement. Sans ce don, feinter au combat est une action simple."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_feint"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_int.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Intelligence 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_combat_expertise",
+          "errorMessage": "Requires Combat Expertise"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_grapple",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Grapple",
+      "fr": "Lutte améliorée"
+    },
+    "description": {
+      "en": "You do not provoke an attack of opportunity when you make a touch attack to start a grapple. You also gain a +4 bonus on all grapple checks, regardless of whether you started the grapple.",
+      "fr": "Vous ne provoquez pas d'attaque d'opportunité lorsque vous effectuez une attaque de contact pour commencer une lutte. Vous gagnez également un bonus de +4 à tous vos jets de lutte, que vous ayez initié la lutte ou non."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_grapple"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_unarmed_strike",
+          "errorMessage": "Requires Improved Unarmed Strike"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_initiative",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Initiative",
+      "fr": "Initiative améliorée"
+    },
+    "description": {
+      "en": "You get a +4 bonus on initiative checks.",
+      "fr": "Vous obtenez un bonus de +4 aux jets d'initiative."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_initiative"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_improved_initiative_bonus",
+        "sourceId": "feat_improved_initiative",
+        "sourceName": {
+          "en": "Improved Initiative",
+          "fr": "Initiative améliorée"
+        },
+        "targetId": "combatStats.initiative",
+        "value": 4,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_overrun",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Overrun",
+      "fr": "Renversement amélioré"
+    },
+    "description": {
+      "en": "When you attempt to overrun an opponent, the target may not choose to avoid you. You also gain a +4 bonus on your Strength check to knock down your opponent.",
+      "fr": "Lorsque vous tentez de renverser un adversaire, la cible ne peut pas choisir de s'écarter. Vous gagnez également un bonus de +4 au jet de Force pour faire tomber votre adversaire."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_overrun"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_precise_shot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Precise Shot",
+      "fr": "Tir de précision amélioré"
+    },
+    "description": {
+      "en": "Your ranged attacks ignore the AC bonus granted to targets by anything less than total cover, and the miss chance granted to targets by anything less than total concealment. Total cover and total concealment provide their normal benefits. When shooting at a grappling opponent, you automatically strike the opponent you have chosen.",
+      "fr": "Vos attaques à distance ignorent le bonus de CA accordé aux cibles par tout ce qui n'est pas un abri total, et la probabilité de rater accordée par tout ce qui n'est pas une dissimulation totale. Lorsque vous tirez sur un adversaire en train de lutter, vous touchez automatiquement celui que vous avez choisi."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_precise_shot"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 19,
+          "errorMessage": "Requires Dexterity 19+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_precise_shot",
+          "errorMessage": "Requires Precise Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 11,
+          "errorMessage": "Requires Base Attack Bonus +11"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_shield_bash",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Shield Bash",
+      "fr": "Coup de bouclier amélioré"
+    },
+    "description": {
+      "en": "When you perform a shield bash, you may still apply the shield's shield bonus to your AC. Without this feat, a character who performs a shield bash loses the shield's bonus to AC until his or her next turn.",
+      "fr": "Lorsque vous effectuez un coup de bouclier, vous conservez le bonus de bouclier à votre CA. Sans ce don, un personnage qui effectue un coup de bouclier perd le bonus de bouclier à la CA jusqu'à son prochain tour."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_shield_bash"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_shield_proficiency",
+      "errorMessage": "Requires Shield Proficiency"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_sunder",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Sunder",
+      "fr": "Bris d'objet amélioré"
+    },
+    "description": {
+      "en": "When you strike at an object held or carried by an opponent, you do not provoke an attack of opportunity. You also gain a +4 bonus on any attack roll made to attack an object held or carried by another character.",
+      "fr": "Lorsque vous frappez un objet tenu ou porté par un adversaire, vous ne provoquez pas d'attaque d'opportunité. Vous gagnez également un bonus de +4 aux jets d'attaque contre un objet tenu ou porté par un autre personnage."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_sunder"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_trip",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Trip",
+      "fr": "Croc-en-jambe amélioré"
+    },
+    "description": {
+      "en": "You do not provoke an attack of opportunity when you attempt to trip an opponent while unarmed. You also gain a +4 bonus on your Strength check to trip your opponent. If you trip an opponent in melee combat, you immediately get a melee attack against that opponent as if you had not used your attack for the trip attempt.",
+      "fr": "Vous ne provoquez pas d'attaque d'opportunité lorsque vous tentez de faire trébucher un adversaire à mains nues. Vous gagnez également un bonus de +4 au jet de Force. Si vous faites trébucher un adversaire au corps à corps, vous obtenez immédiatement une attaque contre lui comme si vous n'aviez pas utilisé votre attaque pour la tentative."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_trip"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_int.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Intelligence 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_combat_expertise",
+          "errorMessage": "Requires Combat Expertise"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_turning",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Turning",
+      "fr": "Renvoi amélioré"
+    },
+    "description": {
+      "en": "You turn or rebuke creatures as if you were one level higher than you are in the class that grants you the ability.",
+      "fr": "Vous renvoyez ou contrôlez les créatures comme si vous étiez d'un niveau de plus dans la classe qui vous accorde cette capacité."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_improved_turning"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "has_turn_or_rebuke",
+      "errorMessage": "Requires ability to turn or rebuke creatures"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_two_weapon_fighting",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Two-Weapon Fighting",
+      "fr": "Combat à deux armes amélioré"
+    },
+    "description": {
+      "en": "In addition to the standard single extra attack you get with an off-hand weapon, you get a second attack with it, albeit at a -5 penalty. A 6th-level ranger who has chosen the two-weapon combat style is treated as having this feat when wearing light or no armor.",
+      "fr": "En plus de l'attaque supplémentaire normale avec votre arme secondaire, vous obtenez une deuxième attaque avec elle, avec un malus de -5. Un rôdeur de niveau 6 ayant choisi le style de combat à deux armes est considéré comme possédant ce don lorsqu'il porte une armure légère ou aucune armure."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_two_weapon_fighting"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 17,
+          "errorMessage": "Requires Dexterity 17+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_two_weapon_fighting",
+          "errorMessage": "Requires Two-Weapon Fighting"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 6,
+          "errorMessage": "Requires Base Attack Bonus +6"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_unarmed_strike",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Improved Unarmed Strike",
+      "fr": "Attaque à mains nues améliorée"
+    },
+    "description": {
+      "en": "You are considered to be armed even when unarmed — you do not provoke attacks of opportunity from armed opponents when you attack them while unarmed. However, you still get an attack of opportunity against any opponent who makes an unarmed attack on you. Your unarmed strikes can deal lethal or nonlethal damage, at your option.",
+      "fr": "Vous êtes considéré comme armé même à mains nues — vous ne provoquez pas d'attaques d'opportunité de la part d'adversaires armés lorsque vous les attaquez à mains nues. Vos attaques à mains nues peuvent infliger des dégâts létaux ou non létaux, à votre convenance."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_improved_unarmed_strike"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_investigator",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Investigator",
+      "fr": "Investigateur"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Gather Information checks and Search checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Collecte d'informations et de Fouille."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_investigator"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_investigator_gather_info",
+        "sourceId": "feat_investigator",
+        "sourceName": {
+          "en": "Investigator",
+          "fr": "Investigateur"
+        },
+        "targetId": "skills.skill_gather_information",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_investigator_search",
+        "sourceId": "feat_investigator",
+        "sourceName": {
+          "en": "Investigator",
+          "fr": "Investigateur"
+        },
+        "targetId": "skills.skill_search",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_iron_will",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Iron Will",
+      "fr": "Volonté de fer"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Will saving throws.",
+      "fr": "Vous obtenez un bonus de +2 à tous vos jets de Volonté."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_iron_will"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_iron_will_save",
+        "sourceId": "feat_iron_will",
+        "sourceName": {
+          "en": "Iron Will",
+          "fr": "Volonté de fer"
+        },
+        "targetId": "saves.save_will",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_leadership",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Leadership",
+      "fr": "Charisme du meneur"
+    },
+    "description": {
+      "en": "Having this feat enables the character to attract loyal companions and devoted followers. A character's base Leadership score equals her level plus any Charisma modifier. The score determines the maximum level of a cohort the character can attract and the number of followers by level. Various factors (reputation, fairness, cruelty, etc.) modify the Leadership score.",
+      "fr": "Ce don permet au personnage d'attirer des compagnons loyaux et des suivants dévoués. Le score de meneur de base est égal au niveau du personnage plus son modificateur de Charisme. Ce score détermine le niveau maximal d'un acolyte et le nombre de suivants par niveau. Divers facteurs (réputation, équité, cruauté, etc.) modifient ce score."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_leadership"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@characterLevel",
+      "operator": ">=",
+      "value": 6,
+      "errorMessage": "Requires character level 6th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_lightning_reflexes",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Lightning Reflexes",
+      "fr": "Réflexes éclair"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Reflex saving throws.",
+      "fr": "Vous obtenez un bonus de +2 à tous vos jets de Réflexes."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_lightning_reflexes"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_lightning_reflexes_save",
+        "sourceId": "feat_lightning_reflexes",
+        "sourceName": {
+          "en": "Lightning Reflexes",
+          "fr": "Réflexes éclair"
+        },
+        "targetId": "saves.save_ref",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_magical_aptitude",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magical Aptitude",
+      "fr": "Aptitude magique"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Spellcraft checks and Use Magic Device checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Art de la magie et d'Utilisation d'objets magiques."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_magical_aptitude"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_magical_aptitude_spellcraft",
+        "sourceId": "feat_magical_aptitude",
+        "sourceName": {
+          "en": "Magical Aptitude",
+          "fr": "Aptitude magique"
+        },
+        "targetId": "skills.skill_spellcraft",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_magical_aptitude_umd",
+        "sourceId": "feat_magical_aptitude",
+        "sourceName": {
+          "en": "Magical Aptitude",
+          "fr": "Aptitude magique"
+        },
+        "targetId": "skills.skill_use_magic_device",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_manyshot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Manyshot",
+      "fr": "Tir en rafale"
+    },
+    "description": {
+      "en": "As a standard action, you may fire two arrows at a single opponent within 30 feet. Both arrows use the same attack roll (with a -4 penalty) and deal damage normally. For every 5 points of base attack bonus above +6, you may add one additional arrow (maximum four arrows at BAB +16), each adding a cumulative -2 penalty. Precision-based damage applies only once; only the first arrow deals critical damage on a critical hit.",
+      "fr": "En tant qu'action simple, vous pouvez tirer deux flèches sur un seul adversaire à portée courte (9 m). Les deux flèches utilisent le même jet d'attaque (avec un malus de -4) et infligent les dégâts normalement. Pour chaque tranche de 5 points de BBA au-dessus de +6, vous pouvez ajouter une flèche supplémentaire (maximum quatre flèches à BBA +16), chacune ajoutant -2 cumulatif. Les dégâts de précision ne s'appliquent qu'une fois."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_manyshot"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 17,
+          "errorMessage": "Requires Dexterity 17+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_rapid_shot",
+          "errorMessage": "Requires Rapid Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 6,
+          "errorMessage": "Requires Base Attack Bonus +6"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_martial_weapon_proficiency",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Martial Weapon Proficiency",
+      "fr": "Maniement des armes de guerre"
+    },
+    "description": {
+      "en": "Choose a type of martial weapon. You make attack rolls with the selected weapon normally. Without this feat, you take a -4 penalty on attack rolls with martial weapons. Barbarians, fighters, paladins, and rangers are proficient with all martial weapons and need not select this feat. You can gain this feat multiple times; each time it applies to a new weapon.",
+      "fr": "Choisissez un type d'arme de guerre. Vous effectuez vos jets d'attaque normalement avec l'arme sélectionnée. Sans ce don, vous subissez un malus de -4 aux jets d'attaque avec les armes de guerre. Les barbares, guerriers, paladins et rôdeurs maîtrisent toutes les armes de guerre. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle arme."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_martial_weapon_proficiency"
+    ],
+    "choices": [
+      {
+        "choiceId": "martial_weapon_choice",
+        "label": {
+          "en": "Choose a martial weapon",
+          "fr": "Choisissez une arme de guerre"
+        },
+        "optionsQuery": "tag:weapon+tag:weapon_martial",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_maximize_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Maximize Spell",
+      "fr": "Quintessence des sorts"
+    },
+    "description": {
+      "en": "All variable, numeric effects of a spell modified by this feat are maximized. Saving throws and opposed rolls are not affected, nor are spells without random variables. A maximized spell uses up a spell slot three levels higher than the spell's actual level. An empowered, maximized spell gains the separate benefits of each feat: the maximum result plus one-half the normally rolled result.",
+      "fr": "Tous les effets numériques variables d'un sort modifié par ce don sont maximisés. Les jets de sauvegarde et les jets opposés ne sont pas affectés. Un sort maximisé occupe un emplacement de sort de trois niveaux supérieurs au niveau réel du sort. Un sort à la fois amplifié et maximisé bénéficie séparément des deux dons."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_maximize_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mobility",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mobility",
+      "fr": "Mobilité"
+    },
+    "description": {
+      "en": "You get a +4 dodge bonus to Armor Class against attacks of opportunity caused when you move out of or within a threatened area. A condition that makes you lose your Dexterity bonus to AC also makes you lose dodge bonuses. Dodge bonuses stack with each other.",
+      "fr": "Vous obtenez un bonus d'esquive de +4 à la Classe d'armure contre les attaques d'opportunité provoquées lorsque vous quittez ou vous déplacez dans une zone menacée. Une condition qui vous fait perdre votre bonus de Dextérité à la CA vous fait également perdre les bonus d'esquive. Les bonus d'esquive se cumulent entre eux."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_mobility"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_mobility_ac_aoo",
+        "sourceId": "feat_mobility",
+        "sourceName": {
+          "en": "Mobility",
+          "fr": "Mobilité"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "dodge",
+        "situationalContext": "vs_attacks_of_opportunity_while_moving"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mounted_archery",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mounted Archery",
+      "fr": "Tir à cheval"
+    },
+    "description": {
+      "en": "The penalty you take when using a ranged weapon while mounted is halved: -2 instead of -4 if your mount is taking a double move, and -4 instead of -8 if your mount is running.",
+      "fr": "Le malus que vous subissez lorsque vous utilisez une arme à distance à cheval est divisé par deux : -2 au lieu de -4 si votre monture se déplace en double mouvement, et -4 au lieu de -8 si votre monture court."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_mounted_archery"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_ride.ranks",
+          "operator": ">=",
+          "value": 1,
+          "errorMessage": "Requires 1 rank in Ride"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mounted_combat",
+          "errorMessage": "Requires Mounted Combat"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mounted_combat",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mounted Combat",
+      "fr": "Combat à cheval"
+    },
+    "description": {
+      "en": "Once per round when your mount is hit in combat, you may attempt a Ride check (as a reaction) to negate the hit. The hit is negated if your Ride check result is greater than the opponent's attack roll (the Ride check becomes the mount's AC if higher than its regular AC).",
+      "fr": "Une fois par round lorsque votre monture est touchée en combat, vous pouvez tenter un jet d'Équitation (comme une réaction) pour annuler le coup. Le coup est annulé si votre résultat de jet d'Équitation est supérieur au jet d'attaque de l'adversaire (le résultat devient la CA de la monture s'il est plus élevé)."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_mounted_combat"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@skills.skill_ride.ranks",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires 1 rank in Ride"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_natural_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Natural Spell",
+      "fr": "Sort naturel"
+    },
+    "description": {
+      "en": "You can complete the verbal and somatic components of spells while in a wild shape. You substitute various noises and gestures for the normal components. You can also use any material components or focuses you possess, even if melded within your current form. This feat does not permit using magic items in a form that could not normally use them, and you do not gain the ability to speak while in wild shape.",
+      "fr": "Vous pouvez accomplir les composantes verbales et somatiques des sorts sous forme sauvage. Vous substituez divers bruits et gestes aux composantes normales. Vous pouvez également utiliser les composantes matérielles ou focalisateurs que vous possédez, même s'ils sont fondus dans votre forme actuelle. Ce don ne permet pas d'utiliser des objets magiques sous une forme qui ne pourrait pas les utiliser normalement."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_natural_spell"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_wis.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Wisdom 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "has_wild_shape",
+          "errorMessage": "Requires wild shape ability"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_negotiator",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Negotiator",
+      "fr": "Négociateur"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Diplomacy checks and Sense Motive checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Diplomatie et de Psychologie."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_negotiator"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_negotiator_diplomacy",
+        "sourceId": "feat_negotiator",
+        "sourceName": {
+          "en": "Negotiator",
+          "fr": "Négociateur"
+        },
+        "targetId": "skills.skill_diplomacy",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_negotiator_sense_motive",
+        "sourceId": "feat_negotiator",
+        "sourceName": {
+          "en": "Negotiator",
+          "fr": "Négociateur"
+        },
+        "targetId": "skills.skill_sense_motive",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_nimble_fingers",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Nimble Fingers",
+      "fr": "Doigts agiles"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Disable Device checks and Open Lock checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Sabotage et de Crochetage."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_nimble_fingers"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_nimble_fingers_disable_device",
+        "sourceId": "feat_nimble_fingers",
+        "sourceName": {
+          "en": "Nimble Fingers",
+          "fr": "Doigts agiles"
+        },
+        "targetId": "skills.skill_disable_device",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_nimble_fingers_open_lock",
+        "sourceId": "feat_nimble_fingers",
+        "sourceName": {
+          "en": "Nimble Fingers",
+          "fr": "Doigts agiles"
+        },
+        "targetId": "skills.skill_open_lock",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_persuasive",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Persuasive",
+      "fr": "Persuasif"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Bluff checks and Intimidate checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets de Bluff et d'Intimidation."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_persuasive"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_persuasive_bluff",
+        "sourceId": "feat_persuasive",
+        "sourceName": {
+          "en": "Persuasive",
+          "fr": "Persuasif"
+        },
+        "targetId": "skills.skill_bluff",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_persuasive_intimidate",
+        "sourceId": "feat_persuasive",
+        "sourceName": {
+          "en": "Persuasive",
+          "fr": "Persuasif"
+        },
+        "targetId": "skills.skill_intimidate",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_point_blank_shot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Point Blank Shot",
+      "fr": "Tir à bout portant"
+    },
+    "description": {
+      "en": "You get a +1 bonus on attack and damage rolls with ranged weapons at ranges of up to 30 feet.",
+      "fr": "Vous obtenez un bonus de +1 aux jets d'attaque et de dégâts avec les armes à distance à des portées allant jusqu'à 9 mètres."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_point_blank_shot"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_point_blank_shot_attack",
+        "sourceId": "feat_point_blank_shot",
+        "sourceName": {
+          "en": "Point Blank Shot",
+          "fr": "Tir à bout portant"
+        },
+        "targetId": "combatStats.ranged_attack_bonus",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "ranged_within_30ft"
+      },
+      {
+        "id": "feat_point_blank_shot_damage",
+        "sourceId": "feat_point_blank_shot",
+        "sourceName": {
+          "en": "Point Blank Shot",
+          "fr": "Tir à bout portant"
+        },
+        "targetId": "combatStats.ranged_damage_bonus",
+        "value": 1,
+        "type": "untyped",
+        "situationalContext": "ranged_within_30ft"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_power_attack",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Power Attack",
+      "fr": "Attaque en puissance"
+    },
+    "description": {
+      "en": "On your action, before making attack rolls for a round, you may choose to subtract a number from all melee attack rolls and add the same number to all melee damage rolls. This number may not exceed your base attack bonus. The penalty on attacks and bonus on damage apply until your next turn. With a two-handed weapon or one-handed weapon wielded in two hands, you add twice the number subtracted to damage instead.",
+      "fr": "Lors de votre action, avant d'effectuer vos jets d'attaque pour un round, vous pouvez soustraire un nombre de tous vos jets d'attaque de corps à corps et ajouter le même nombre à tous vos jets de dégâts de corps à corps. Ce nombre ne peut pas dépasser votre bonus de base à l'attaque. Avec une arme à deux mains ou à une main maniée à deux mains, vous ajoutez le double du nombre soustrait aux dégâts à la place."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_power_attack"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_precise_shot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Precise Shot",
+      "fr": "Tir de précision"
+    },
+    "description": {
+      "en": "You can shoot or throw ranged weapons at an opponent engaged in melee without taking the standard -4 penalty on your attack roll.",
+      "fr": "Vous pouvez tirer ou lancer des armes à distance sur un adversaire engagé au corps à corps sans subir le malus standard de -4 au jet d'attaque."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_precise_shot"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_point_blank_shot",
+      "errorMessage": "Requires Point Blank Shot"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_quick_draw",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Quick Draw",
+      "fr": "Dégainer rapidement"
+    },
+    "description": {
+      "en": "You can draw a weapon as a free action instead of as a move action. You can draw a hidden weapon as a move action. A character who has selected this feat may throw weapons at his full normal rate of attacks.",
+      "fr": "Vous pouvez dégainer une arme comme action libre au lieu d'une action de mouvement. Vous pouvez dégainer une arme dissimulée comme action de mouvement. Vous pouvez lancer des armes à votre plein rythme d'attaques normal."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_quick_draw"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Base Attack Bonus +1"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_quicken_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Quicken Spell",
+      "fr": "Accélération des sorts"
+    },
+    "description": {
+      "en": "Casting a quickened spell is a swift action. You can perform another action, even casting another spell, in the same round as you cast a quickened spell. You may cast only one quickened spell per round. A spell whose casting time is more than 1 full round action cannot be quickened. A quickened spell uses up a spell slot four levels higher than the spell's actual level. Casting a quickened spell does not provoke an attack of opportunity. This feat cannot be applied to any spell cast spontaneously.",
+      "fr": "Lancer un sort accéléré est une action rapide. Vous pouvez effectuer une autre action, même lancer un autre sort, dans le même round. Vous ne pouvez lancer qu'un sort accéléré par round. Un sort dont le temps d'incantation est supérieur à 1 round complet ne peut pas être accéléré. Un sort accéléré occupe un emplacement de quatre niveaux supérieurs. Lancer un sort accéléré ne provoque pas d'attaque d'opportunité."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_quicken_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_rapid_reload",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rapid Reload",
+      "fr": "Rechargement rapide"
+    },
+    "description": {
+      "en": "Choose a type of crossbow (hand, light, or heavy). The time required for you to reload your chosen type is reduced to a free action (for hand or light crossbow) or a move action (for heavy crossbow). Reloading still provokes an attack of opportunity. With hand or light crossbow, you may fire as many times in a full attack as you could attack with a bow. You can gain this feat multiple times, each time for a new type of crossbow.",
+      "fr": "Choisissez un type d'arbalète (de poing, légère ou lourde). Le temps de rechargement est réduit à une action libre (arbalète de poing ou légère) ou une action de mouvement (lourde). Recharger provoque toujours une attaque d'opportunité. Avec une arbalète de poing ou légère, vous pouvez tirer autant de fois qu'avec un arc en attaque complète. Vous pouvez prendre ce don plusieurs fois, chaque fois pour un nouveau type."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_rapid_reload"
+    ],
+    "choices": [
+      {
+        "choiceId": "crossbow_type_choice",
+        "label": {
+          "en": "Choose a crossbow type",
+          "fr": "Choisissez un type d'arbalète"
+        },
+        "optionsQuery": "tag:weapon+tag:crossbow",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_rapid_shot",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rapid Shot",
+      "fr": "Tir rapide"
+    },
+    "description": {
+      "en": "You can get one extra attack per round with a ranged weapon. The attack is at your highest base attack bonus, but each attack you make in that round (the extra one and the normal ones) takes a -2 penalty. You must use the full attack action. A 2nd-level ranger who has chosen the archery combat style is treated as having this feat when wearing light or no armor.",
+      "fr": "Vous pouvez effectuer une attaque supplémentaire par round avec une arme à distance. L'attaque est à votre bonus de base à l'attaque le plus élevé, mais chaque attaque du round (l'extra et les normales) subit un malus de -2. Vous devez utiliser l'action d'attaque complète."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_rapid_shot"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_ride_by_attack",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ride-By Attack",
+      "fr": "Attaque en chevauchée"
+    },
+    "description": {
+      "en": "When you are mounted and use the charge action, you may move and attack as if with a standard charge and then move again (continuing the straight line of the charge). Your total movement for the round cannot exceed double your mounted speed. You and your mount do not provoke an attack of opportunity from the opponent you attack.",
+      "fr": "Lorsque vous chargez à cheval, vous pouvez vous déplacer et attaquer comme lors d'une charge normale, puis vous déplacer à nouveau (en continuant la ligne droite de la charge). Votre déplacement total ne peut pas dépasser le double de votre vitesse de monture. Vous et votre monture ne provoquez pas d'attaque d'opportunité de la part de l'adversaire attaqué."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_ride_by_attack"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_ride.ranks",
+          "operator": ">=",
+          "value": 1,
+          "errorMessage": "Requires 1 rank in Ride"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mounted_combat",
+          "errorMessage": "Requires Mounted Combat"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_run",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Run",
+      "fr": "Course"
+    },
+    "description": {
+      "en": "When running, you move five times your normal speed (in medium, light, or no armor with no more than a medium load) or four times your speed (in heavy armor or with a heavy load). If you make a jump after a running start, you gain a +4 bonus on your Jump check. While running, you retain your Dexterity bonus to AC.",
+      "fr": "En courant, vous vous déplacez à cinq fois votre vitesse normale (en armure légère, intermédiaire ou sans armure avec une charge moyenne ou moins) ou quatre fois (en armure lourde ou avec une charge lourde). Après un départ en course, vous gagnez +4 aux jets de Saut. En courant, vous conservez votre bonus de Dextérité à la CA."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_run"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_scribe_scroll",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Scribe Scroll",
+      "fr": "Calligraphie de parchemins"
+    },
+    "description": {
+      "en": "You can create a scroll of any spell that you know. Scribing a scroll takes one day for each 1,000 gp in its base price. The base price of a scroll is its spell level × its caster level × 25 gp. To scribe a scroll, you must spend 1/25 of this base price in XP and use up raw materials costing one-half of this base price.",
+      "fr": "Vous pouvez créer un parchemin de n'importe quel sort que vous connaissez. Écrire un parchemin prend un jour par tranche de 1 000 po de son prix de base. Le prix de base d'un parchemin est son niveau de sort × son niveau de lanceur × 25 po. Vous devez dépenser 1/25 de ce prix en PX et utiliser des matières premières d'une valeur de la moitié de ce prix."
+    },
+    "tags": [
+      "feat",
+      "item_creation",
+      "feat_scribe_scroll"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.caster_level.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires caster level 1st"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_self_sufficient",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Self-Sufficient",
+      "fr": "Autonome"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Heal checks and Survival checks.",
+      "fr": "Vous obtenez un bonus de +2 à tous les jets d'Art de la guérison et de Survie."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_self_sufficient"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_self_sufficient_heal",
+        "sourceId": "feat_self_sufficient",
+        "sourceName": {
+          "en": "Self-Sufficient",
+          "fr": "Autonome"
+        },
+        "targetId": "skills.skill_heal",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_self_sufficient_survival",
+        "sourceId": "feat_self_sufficient",
+        "sourceName": {
+          "en": "Self-Sufficient",
+          "fr": "Autonome"
+        },
+        "targetId": "skills.skill_survival",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_shield_proficiency",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield Proficiency",
+      "fr": "Port du bouclier"
+    },
+    "description": {
+      "en": "You can use a shield and take only the standard penalties. Without this feat, you take the shield's armor check penalty on attack rolls and on all skill checks that involve moving. Barbarians, bards, clerics, druids, fighters, paladins, and rangers automatically have this feat.",
+      "fr": "Vous pouvez utiliser un bouclier et ne subir que les pénalités standard. Sans ce don, vous subissez le malus aux tests d'armure du bouclier sur les jets d'attaque et les jets de compétences impliquant un mouvement. Les barbares, bardes, clercs, druides, guerriers, paladins et rôdeurs obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_shield_proficiency"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_shot_on_the_run",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shot on the Run",
+      "fr": "Tir en mouvement"
+    },
+    "description": {
+      "en": "When using the attack action with a ranged weapon, you can move both before and after the attack, provided that your total distance moved is not greater than your speed.",
+      "fr": "Lors d'une action d'attaque avec une arme à distance, vous pouvez vous déplacer avant et après l'attaque, à condition que la distance totale parcourue ne dépasse pas votre vitesse."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_shot_on_the_run"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mobility",
+          "errorMessage": "Requires Mobility"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Base Attack Bonus +4"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_silent_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Silent Spell",
+      "fr": "Silence des sorts"
+    },
+    "description": {
+      "en": "A silent spell can be cast with no verbal components. Spells without verbal components are not affected. A silent spell uses up a spell slot one level higher than the spell's actual level. Bard spells cannot be enhanced by this metamagic feat.",
+      "fr": "Un sort silencieux peut être lancé sans composante verbale. Les sorts sans composante verbale ne sont pas affectés. Un sort silencieux occupe un emplacement d'un niveau supérieur au niveau réel du sort. Les sorts de barde ne peuvent pas bénéficier de ce don de métamagie."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_silent_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_simple_weapon_proficiency",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Simple Weapon Proficiency",
+      "fr": "Maniement des armes courantes"
+    },
+    "description": {
+      "en": "You make attack rolls with simple weapons normally. Without this feat, you take a -4 penalty on attack rolls with simple weapons. All characters except for druids, monks, and wizards are automatically proficient with all simple weapons and need not select this feat.",
+      "fr": "Vous effectuez vos jets d'attaque normalement avec les armes courantes. Sans ce don, vous subissez un malus de -4 aux jets d'attaque avec les armes courantes. Tous les personnages sauf les druides, moines et magiciens maîtrisent automatiquement toutes les armes courantes."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_simple_weapon_proficiency"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_skill_focus",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Skill Focus",
+      "fr": "Expertise d'une compétence"
+    },
+    "description": {
+      "en": "Choose a skill. You get a +3 bonus on all checks involving that skill. You can gain this feat multiple times; each time it applies to a new skill.",
+      "fr": "Choisissez une compétence. Vous obtenez un bonus de +3 à tous les jets impliquant cette compétence. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle compétence."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_skill_focus"
+    ],
+    "choices": [
+      {
+        "choiceId": "skill_choice",
+        "label": {
+          "en": "Choose a skill",
+          "fr": "Choisissez une compétence"
+        },
+        "optionsQuery": "category:skill",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_skill_focus_bonus",
+        "sourceId": "feat_skill_focus",
+        "sourceName": {
+          "en": "Skill Focus",
+          "fr": "Expertise d'une compétence"
+        },
+        "targetId": "skills.@selection.skill_choice",
+        "value": 3,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@selection.skill_choice",
+          "operator": "!=",
+          "value": null
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_snatch_arrows",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Snatch Arrows",
+      "fr": "Attraper les flèches"
+    },
+    "description": {
+      "en": "When using the Deflect Arrows feat you may catch the weapon instead of just deflecting it. Thrown weapons can immediately be thrown back at the original attacker (even if it is not your turn) or kept for later use. You must have at least one hand free (holding nothing) to use this feat.",
+      "fr": "Lorsque vous utilisez le don Déviation de flèches, vous pouvez attraper l'arme au lieu de simplement la dévier. Les armes de jet peuvent immédiatement être renvoyées sur l'attaquant d'origine (même si ce n'est pas votre tour) ou conservées pour une utilisation ultérieure. Vous devez avoir au moins une main libre pour utiliser ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_snatch_arrows"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 15,
+          "errorMessage": "Requires Dexterity 15+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_deflect_arrows",
+          "errorMessage": "Requires Deflect Arrows"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_unarmed_strike",
+          "errorMessage": "Requires Improved Unarmed Strike"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_spell_focus",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spell Focus",
+      "fr": "Maîtrise des sorts"
+    },
+    "description": {
+      "en": "Choose a school of magic. Add +1 to the Difficulty Class for all saving throws against spells from the school of magic you select. You can gain this feat multiple times; each time it applies to a new school of magic.",
+      "fr": "Choisissez une école de magie. Ajoutez +1 au Degré de difficulté de tous les jets de sauvegarde contre les sorts de l'école sélectionnée. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique à une nouvelle école de magie."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_spell_focus"
+    ],
+    "choices": [
+      {
+        "choiceId": "spell_school_choice",
+        "label": {
+          "en": "Choose a school of magic",
+          "fr": "Choisissez une école de magie"
+        },
+        "optionsQuery": "tag:arcane_school",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_spell_mastery",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spell Mastery",
+      "fr": "Maîtrise absolue des sorts"
+    },
+    "description": {
+      "en": "Each time you take this feat, choose a number of spells equal to your Intelligence modifier that you already know. From that point on, you can prepare these spells without referring to a spellbook. Without this feat, you must use a spellbook to prepare all your spells, except read magic.",
+      "fr": "Chaque fois que vous prenez ce don, choisissez un nombre de sorts égal à votre modificateur d'Intelligence parmi les sorts que vous connaissez. À partir de ce moment, vous pouvez préparer ces sorts sans consulter votre grimoire. Sans ce don, vous devez utiliser un grimoire pour préparer tous vos sorts (sauf lecture de la magie)."
+    },
+    "tags": [
+      "feat",
+      "special",
+      "feat_spell_mastery"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@classLevels.class_wizard",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Wizard level 1st"
+    },
+    "choices": [
+      {
+        "choiceId": "mastered_spells",
+        "label": {
+          "en": "Choose spells to master",
+          "fr": "Choisissez les sorts à maîtriser"
+        },
+        "optionsQuery": "category:magic",
+        "maxSelections": 0
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_spell_penetration",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spell Penetration",
+      "fr": "Pénétration des sorts"
+    },
+    "description": {
+      "en": "You get a +2 bonus on caster level checks (1d20 + caster level) made to overcome a creature's spell resistance.",
+      "fr": "Vous obtenez un bonus de +2 aux tests de niveau de lanceur (1d20 + niveau de lanceur) effectués pour surmonter la résistance à la magie d'une créature."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_spell_penetration"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_spell_penetration_cl_check",
+        "sourceId": "feat_spell_penetration",
+        "sourceName": {
+          "en": "Spell Penetration",
+          "fr": "Pénétration des sorts"
+        },
+        "targetId": "combatStats.spell_penetration",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_spirited_charge",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spirited Charge",
+      "fr": "Charge fougueuse"
+    },
+    "description": {
+      "en": "When mounted and using the charge action, you deal double damage with a melee weapon (or triple damage with a lance).",
+      "fr": "Lorsque vous chargez a cheval, vous infligez le double des degats avec une arme de corps a corps (ou le triple avec une lance)."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_spirited_charge"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_ride.ranks",
+          "operator": ">=",
+          "value": 1,
+          "errorMessage": "Requires 1 rank in Ride"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mounted_combat",
+          "errorMessage": "Requires Mounted Combat"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_ride_by_attack",
+          "errorMessage": "Requires Ride-By Attack"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_spring_attack",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spring Attack",
+      "fr": "Attaque en bond"
+    },
+    "description": {
+      "en": "When using the attack action with a melee weapon, you can move both before and after the attack, provided your total distance moved is not greater than your speed. Moving this way does not provoke an attack of opportunity from the defender you attack. You must move at least 5 feet before and after the attack. You cannot use this feat wearing heavy armor.",
+      "fr": "Lors d'une action d'attaque au corps a corps, vous pouvez vous deplacer avant et apres l'attaque a condition que la distance totale ne depasse pas votre vitesse. Ce mouvement ne provoque pas d'attaque d'opportunite de la part de l'adversaire attaque. Inutilisable en armure lourde."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_spring_attack"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mobility",
+          "errorMessage": "Requires Mobility"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Base Attack Bonus +4"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_stealthy",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Stealthy",
+      "fr": "Discret"
+    },
+    "description": {
+      "en": "You get a +2 bonus on all Hide checks and Move Silently checks.",
+      "fr": "Vous obtenez un bonus de +2 a tous les jets de Discretion et de Deplacement silencieux."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_stealthy"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_stealthy_hide",
+        "sourceId": "feat_stealthy",
+        "sourceName": {
+          "en": "Stealthy",
+          "fr": "Discret"
+        },
+        "targetId": "skills.skill_hide",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_stealthy_move_silently",
+        "sourceId": "feat_stealthy",
+        "sourceName": {
+          "en": "Stealthy",
+          "fr": "Discret"
+        },
+        "targetId": "skills.skill_move_silently",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_still_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Still Spell",
+      "fr": "Immobilite des sorts"
+    },
+    "description": {
+      "en": "A stilled spell can be cast with no somatic components. Spells without somatic components are not affected. A stilled spell uses up a spell slot one level higher than the spell's actual level.",
+      "fr": "Un sort immobile peut etre lance sans composante somatique. Les sorts sans composante somatique ne sont pas affectes. Un sort immobile occupe un emplacement d'un niveau superieur au niveau reel du sort."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_still_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_stunning_fist",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Stunning Fist",
+      "fr": "Poing etourdissant"
+    },
+    "description": {
+      "en": "Declare use before making your attack roll. The foe must make a Fortitude save (DC 10 + 1/2 character level + Wis modifier) or be stunned for 1 round. Once per day per four character levels, no more than once per round. Constructs, oozes, plants, undead, incorporeal creatures, and creatures immune to critical hits cannot be stunned.",
+      "fr": "Declarez l'utilisation avant le jet d'attaque. La cible effectue un jet de Vigueur (DD 10 + 1/2 niveau + modificateur de Sagesse) ou est etourdie pendant 1 round. Une fois par jour par tranche de quatre niveaux, jamais plus d'une fois par round."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_stunning_fist"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_wis.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Wisdom 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_unarmed_strike",
+          "errorMessage": "Requires Improved Unarmed Strike"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 8,
+          "errorMessage": "Requires Base Attack Bonus +8"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_toughness",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Toughness",
+      "fr": "Robustesse"
+    },
+    "description": {
+      "en": "You gain +3 hit points. A character may gain this feat multiple times; its effects stack.",
+      "fr": "Vous gagnez +3 points de vie. Un personnage peut prendre ce don plusieurs fois ; ses effets se cumulent."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_toughness"
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_toughness_hp",
+        "sourceId": "feat_toughness",
+        "sourceName": {
+          "en": "Toughness",
+          "fr": "Robustesse"
+        },
+        "targetId": "resources.hp",
+        "value": 3,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_tower_shield_proficiency",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Tower Shield Proficiency",
+      "fr": "Port du pavois"
+    },
+    "description": {
+      "en": "You can use a tower shield and suffer only the standard penalties. Fighters automatically have this feat.",
+      "fr": "Vous pouvez utiliser un pavois et ne subir que les penalites standard. Les guerriers obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_tower_shield_proficiency"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_shield_proficiency",
+      "errorMessage": "Requires Shield Proficiency"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_track",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Track",
+      "fr": "Pistage"
+    },
+    "description": {
+      "en": "To find or follow tracks for 1 mile requires a Survival check. You move at half speed (or normal speed at -5, or double speed at -20 penalty). DC depends on surface and conditions. Without this feat, you can follow tracks only if DC is 10 or lower. Rangers automatically have this feat.",
+      "fr": "Trouver des traces ou les suivre sur 1,5 km necessite un jet de Survie. Vous vous deplacez a la moitie de votre vitesse (ou vitesse normale avec -5, ou double avec -20). Sans ce don, vous ne pouvez suivre des traces que si le DD est de 10 ou moins. Les rodeurs obtiennent automatiquement ce don."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "feat_track"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_trample",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Trample",
+      "fr": "Pietinement"
+    },
+    "description": {
+      "en": "When you attempt to overrun an opponent while mounted, your target may not choose to avoid you. Your mount may make one hoof attack against any target you knock down, gaining the standard +4 bonus on attack rolls against prone targets.",
+      "fr": "Lorsque vous tentez de renverser un adversaire a cheval, la cible ne peut pas choisir de s'ecarter. Votre monture peut effectuer une attaque de sabot contre toute cible que vous renversez, avec le bonus standard de +4 aux jets d'attaque contre les cibles a terre."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_trample"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_ride.ranks",
+          "operator": ">=",
+          "value": 1,
+          "errorMessage": "Requires 1 rank in Ride"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mounted_combat",
+          "errorMessage": "Requires Mounted Combat"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_two_weapon_defense",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Two-Weapon Defense",
+      "fr": "Defense a deux armes"
+    },
+    "description": {
+      "en": "When wielding a double weapon or two weapons (not including natural weapons or unarmed strikes), you gain a +1 shield bonus to AC. When fighting defensively or using total defense, this shield bonus increases to +2.",
+      "fr": "Lorsque vous maniez une arme double ou deux armes (hors attaques naturelles ou a mains nues), vous gagnez un bonus de bouclier de +1 a la CA. En combat defensif ou en defense totale, ce bonus passe a +2."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_two_weapon_defense"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 15,
+          "errorMessage": "Requires Dexterity 15+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_two_weapon_fighting",
+          "errorMessage": "Requires Two-Weapon Fighting"
+        }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_two_weapon_defense_shield_bonus",
+        "sourceId": "feat_two_weapon_defense",
+        "sourceName": {
+          "en": "Two-Weapon Defense",
+          "fr": "Defense a deux armes"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "shield",
+        "situationalContext": "wielding_two_weapons"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_two_weapon_fighting",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Two-Weapon Fighting",
+      "fr": "Combat a deux armes"
+    },
+    "description": {
+      "en": "Your penalties on attack rolls for fighting with two weapons are reduced: the penalty for your primary hand lessens by 2 and the one for your off hand lessens by 6. A 2nd-level ranger who has chosen the two-weapon combat style is treated as having this feat when wearing light or no armor.",
+      "fr": "Vos malus aux jets d'attaque pour le combat a deux armes sont reduits : le malus pour la main principale diminue de 2 et celui pour la main secondaire diminue de 6. Un rodeur de niveau 2 ayant choisi le style a deux armes est considere comme possedant ce don avec une armure legere ou sans armure."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_two_weapon_fighting"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_dex.totalValue",
+      "operator": ">=",
+      "value": 15,
+      "errorMessage": "Requires Dexterity 15+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_weapon_finesse",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon Finesse",
+      "fr": "Finesse avec une arme"
+    },
+    "description": {
+      "en": "With a light weapon, rapier, whip, or spiked chain made for a creature of your size, you may use your Dexterity modifier instead of Strength on attack rolls. If you carry a shield, its armor check penalty applies to your attack rolls. Natural weapons are always considered light weapons.",
+      "fr": "Avec une arme legere, un rapiere, un fouet ou une chaine a pointes de votre categorie de taille, vous pouvez utiliser votre modificateur de Dexterite au lieu de Force pour les jets d'attaque. Si vous portez un bouclier, son malus aux tests d'armure s'applique. Les armes naturelles sont toujours legeres."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_weapon_finesse"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Base Attack Bonus +1"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_weapon_focus",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon Focus",
+      "fr": "Arme de predilection"
+    },
+    "description": {
+      "en": "Choose one type of weapon (or unarmed strike, grapple, or ray). You gain a +1 bonus on all attack rolls you make using the selected weapon. You can gain this feat multiple times; each time it applies to a new type of weapon.",
+      "fr": "Choisissez un type d'arme (ou attaque a mains nues, lutte ou rayon). Vous gagnez un bonus de +1 a tous vos jets d'attaque avec cette arme. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique a un nouveau type d'arme."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_weapon_focus"
+    ],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Base Attack Bonus +1"
+    },
+    "choices": [
+      {
+        "choiceId": "weapon_choice",
+        "label": {
+          "en": "Choose a weapon",
+          "fr": "Choisissez une arme"
+        },
+        "optionsQuery": "tag:weapon",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_weapon_focus_attack",
+        "sourceId": "feat_weapon_focus",
+        "sourceName": {
+          "en": "Weapon Focus",
+          "fr": "Arme de predilection"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@equippedWeaponTags",
+          "operator": "includes",
+          "value": "@selection.weapon_choice"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_weapon_specialization",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon Specialization",
+      "fr": "Specialisation martiale"
+    },
+    "description": {
+      "en": "Choose one type of weapon for which you have Weapon Focus (or unarmed strike or grapple). You gain a +2 bonus on all damage rolls you make using the selected weapon. You can gain this feat multiple times; each time it applies to a new type of weapon.",
+      "fr": "Choisissez un type d'arme pour lequel vous avez Arme de predilection (ou attaque a mains nues ou lutte). Vous gagnez un bonus de +2 a tous vos jets de degats avec cette arme. Vous pouvez prendre ce don plusieurs fois ; chaque fois, il s'applique a un nouveau type d'arme."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_weapon_specialization"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_focus",
+          "errorMessage": "Requires Weapon Focus with selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@classLevels.class_fighter",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Fighter level 4"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "choiceId": "weapon_choice",
+        "label": {
+          "en": "Choose a weapon",
+          "fr": "Choisissez une arme"
+        },
+        "optionsQuery": "tag:weapon",
+        "maxSelections": 1
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "feat_weapon_specialization_damage",
+        "sourceId": "feat_weapon_specialization",
+        "sourceName": {
+          "en": "Weapon Specialization",
+          "fr": "Specialisation martiale"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "untyped",
+        "conditionNode": {
+          "logic": "CONDITION",
+          "targetPath": "@equippedWeaponTags",
+          "operator": "includes",
+          "value": "@selection.weapon_choice"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_whirlwind_attack",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Whirlwind Attack",
+      "fr": "Attaque tourbillonnante"
+    },
+    "description": {
+      "en": "When you use the full attack action, you can give up your regular attacks and instead make one melee attack at your full base attack bonus against each opponent within reach. You forfeit any bonus or extra attacks granted by other feats, spells, or abilities.",
+      "fr": "Lors d'une attaque complete, vous pouvez renoncer a vos attaques normales pour effectuer une attaque de corps a corps a votre BBA complet contre chaque adversaire a portee. Vous perdez tout bonus ou attaque supplementaire accorde par d'autres dons, sorts ou capacites."
+    },
+    "tags": [
+      "feat",
+      "general",
+      "fighter_bonus_feat",
+      "feat_whirlwind_attack"
+    ],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_int.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Intelligence 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_combat_expertise",
+          "errorMessage": "Requires Combat Expertise"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_mobility",
+          "errorMessage": "Requires Mobility"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_spring_attack",
+          "errorMessage": "Requires Spring Attack"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Base Attack Bonus +4"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_widen_spell",
+    "category": "feat",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Widen Spell",
+      "fr": "Extension de zone des sorts"
+    },
+    "description": {
+      "en": "You can alter a burst, emanation, line, or spread shaped spell to increase its area by 100%. A widened spell uses up a spell slot three levels higher than the spell's actual level. Spells that do not have an area of one of these four sorts are not affected.",
+      "fr": "Vous pouvez modifier un sort en zone (eclatement, emanation, ligne ou nappe) pour doubler sa superficie. Un sort elargi occupe un emplacement de trois niveaux superieurs au niveau reel du sort."
+    },
+    "tags": [
+      "feat",
+      "metamagic",
+      "feat_widen_spell"
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  }
+]
