@@ -471,6 +471,126 @@ export interface Feature {
       cost: number | string;
     };
   };
+
+  /**
+   * Optional action-economy budget this feature enforces when active.
+   *
+   * PURPOSE:
+   *   Several D&D 3.5 conditions and status effects restrict what actions a
+   *   character can take each round. Without this field, the engine can apply
+   *   the condition's modifiers (penalties to attack, DEX, etc.) but has no
+   *   machine-readable way to tell the Combat UI "this character may only take
+   *   a single move action — no standard actions, no full-round actions".
+   *
+   *   `actionBudget` bridges that gap: when a condition Feature is active and
+   *   has this field set, the Combat Turn UI reads it to enforce the restriction
+   *   automatically — greying out illegal action buttons, showing a tooltip
+   *   ("Staggered: only one standard OR move action per round"), and blocking
+   *   full-round-action sequences.
+   *
+   * FIELD SEMANTICS:
+   *   Each key represents a category of actions. Its value is the MAXIMUM NUMBER
+   *   of that action type the character may take per round while this feature is
+   *   active. `0` means the action is completely prohibited.
+   *
+   *   The budget is ADDITIVE across multiple active condition Features — if two
+   *   conditions each grant `{ standard: 1 }`, the effective budget is `1` (the
+   *   minimum of all active budgets for each category wins, not the sum).
+   *   The Combat UI must take the MOST RESTRICTIVE value across all active
+   *   condition Features.
+   *
+   *   Fields that are `undefined` (absent) mean "no restriction from this Feature
+   *   on that action type". A feature with `actionBudget: {}` (empty object) also
+   *   means no action restriction (it was defined but left intentionally empty).
+   *
+   * ACTION CATEGORIES (D&D 3.5):
+   *   - `standard`:   Standard actions (attack, cast a spell, use a special ability, etc.)
+   *   - `move`:       Move actions (move up to speed, draw weapon, stand up from prone, etc.)
+   *   - `swift`:      Swift actions (once per turn; some class abilities)
+   *   - `immediate`:  Immediate actions (once per round, even outside turn)
+   *   - `free`:       Free actions (drop item, speak, etc.)
+   *   - `full_round`: Full-round actions (full attack, run, charge, coup de grace, etc.)
+   *
+   * D&D 3.5 SRD Examples (conditionSummary.html):
+   *
+   *   STAGGERED / DISABLED — "may take a single move action or standard action
+   *     each round (but not both, nor can she take full-round actions)":
+   *     ```json
+   *     "actionBudget": { "standard": 1, "move": 1, "full_round": 0 }
+   *     ```
+   *     NOTE: The "or" constraint (standard OR move, not both) is expressed by
+   *     having both at 1 with `full_round: 0`. The Combat UI implements the
+   *     "not both" rule by tracking whether any standard or move action has
+   *     already been taken this turn and blocking the other if so.
+   *
+   *   NAUSEATED — "only action such a character can take is a single move action":
+   *     ```json
+   *     "actionBudget": { "standard": 0, "move": 1, "full_round": 0 }
+   *     ```
+   *
+   *   STUNNED — "can't take actions":
+   *     ```json
+   *     "actionBudget": { "standard": 0, "move": 0, "swift": 0, "immediate": 0, "free": 0, "full_round": 0 }
+   *     ```
+   *
+   *   COWERING / DAZED — "can take no actions":
+   *     ```json
+   *     "actionBudget": { "standard": 0, "move": 0, "full_round": 0 }
+   *     ```
+   *
+   *   PARALYZED — "unable to move or act" (but CAN take purely mental actions,
+   *     which are not physical actions — hence no `free: 0` to allow mental-only):
+   *     ```json
+   *     "actionBudget": { "standard": 0, "move": 0, "full_round": 0 }
+   *     ```
+   *
+   * DESIGN NOTES:
+   *   - `actionBudget` is meaningful on ANY Feature (condition, environment, spell
+   *     effect), not just `category: "condition"`. A Slow spell effect or an
+   *     environmental hazard could also restrict actions.
+   *   - The field is intentionally NOT limited to condition Features. A metamagic
+   *     feat or unusual racial ability could theoretically grant extra swift actions
+   *     by setting `{ swift: 2 }`.
+   *   - The Combat Tab UI (Phase 10) reads `character.activeFeatures` with `isActive: true`,
+   *     finds all features with `actionBudget` set, and computes the effective budget
+   *     per round as the minimum of each key across all active budgets.
+   *
+   * "STAGGERED/DISABLED XOR" SPECIAL CASE:
+   *   The "standard OR move (not both)" rule is a soft constraint — neither action
+   *   is individually prohibited, but the combination is. The budget declares the
+   *   per-action cap (`standard: 1`, `move: 1`). The Combat UI is responsible for
+   *   tracking which action type was spent first this turn and disabling the other.
+   *   This is a UI concern, not a data model concern.
+   *
+   * UI CONTRACT (Phase 10.1 — Combat Tab):
+   *   For each turn:
+   *   1. Collect all active features with `actionBudget` defined.
+   *   2. For each action category, take the MINIMUM value across all collected budgets
+   *      (absent key = unlimited = ∞, treated as no restriction for that category).
+   *   3. Enforce: disable action buttons whose category count has reached the budget.
+   *   4. Show condition tooltip on disabled buttons listing the source condition name.
+   *
+   * NULL SAFETY:
+   *   The Combat UI must handle `actionBudget: undefined` (most features) by treating
+   *   all categories as unrestricted. It must NOT error on missing keys within the block.
+   *
+   * @see ARCHITECTURE.md section 5.6 — actionBudget field full reference
+   * @see SRD: /srd/conditionSummary.html — Staggered, Disabled, Nauseated, Stunned
+   */
+  actionBudget?: {
+    /** Maximum standard actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    standard?: number;
+    /** Maximum move actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    move?: number;
+    /** Maximum swift actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    swift?: number;
+    /** Maximum immediate actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    immediate?: number;
+    /** Maximum free actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    free?: number;
+    /** Maximum full-round actions per round. 0 = prohibited. Default (absent) = unlimited. */
+    full_round?: number;
+  };
 }
 
 // =============================================================================

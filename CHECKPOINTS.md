@@ -27,7 +27,14 @@ Review the following aspects specifically:
 - Are `PsionicDiscipline` and `PsionicDisplay` exported from `feature.ts` as typed unions (not plain `string`)?
 - Are both fields `optional` (`undefined` for arcane/divine spells)?
 
-### 1a. Type Conformance — ItemFeature Psionic Item Subtypes (Phase 1.3b)
+### 1a. Type Conformance — Feature `actionBudget` (Phase 1.3c)
+- Does the base `Feature` interface have an optional `actionBudget?: { standard?; move?; swift?; immediate?; free?; full_round? }` field per Architecture section 5.6 / Phase 1.3c?
+- Are all six keys optional (`?`) with type `number`?
+- Is `actionBudget` absent (`undefined`) on non-condition features (weapons, classes, etc.) by default?
+- Does a feature with `actionBudget: {}` (empty) compile without error?
+- Does a feature with `actionBudget: { standard: 0, move: 1, full_round: 0 }` match the Nauseated pattern from section 5.6?
+
+### 1c. Type Conformance — ItemFeature Psionic Item Subtypes (Phase 1.3b)
 - Is `PsionicItemType` a typed union of exactly 5 values: `"cognizance_crystal"`, `"dorje"`, `"power_stone"`, `"psicrown"`, `"psionic_tattoo"` per Architecture section 5.1.1 / Phase 1.3b?
 - Is `PowerStoneEntry` an exported interface with `powerId: ID`, `manifesterLevel: number`, `usedUp: boolean`?
 - Does `ItemFeature` have an optional `psionicItemData` block with the `psionicItemType` discriminant per section 5.1.1?
@@ -36,7 +43,7 @@ Review the following aspects specifically:
 - For non-psionic items: does `psionicItemData` remain `undefined` without TypeScript error?
 - Are `PsionicItemType` and `PowerStoneEntry` both exported from `src/lib/types/feature.ts`?
 
-### 1b. Type Conformance — MagicFeature Psionic Fields (Phase 1.3a)
+### 1d. Type Conformance — MagicFeature Psionic Fields (Phase 1.3a)
 - Is `PsionicDiscipline` a typed union of exactly 6 values: `"clairsentience"`, `"metacreativity"`, `"psychokinesis"`, `"psychometabolism"`, `"psychoportation"`, `"telepathy"`?
 - Is `PsionicDisplay` a typed union of exactly 5 values: `"auditory"`, `"material"`, `"mental"`, `"olfactory"`, `"visual"`?
 - On a psionic `MagicFeature`: can `discipline` be `undefined` (optional) for non-psionic spells?
@@ -44,7 +51,7 @@ Review the following aspects specifically:
 - Does the `school` field on psionic powers still function as a display/legacy string (not removed)?
 - Are both `PsionicDiscipline` and `PsionicDisplay` exported from `src/lib/types/feature.ts`?
 
-### 1b. Type Conformance — Modifier and ModifierType (Phase 2.4a)
+### 1e. Type Conformance — Modifier and ModifierType (Phase 2.4a)
 - Does `ModifierType` include `"damage_reduction"` per Architecture section 4.5 / Phase 2.4a?
 - Does `Modifier` have an optional `drBypassTags?: string[]` field per Phase 2.4a?
 - Is `drBypassTags` documented as only meaningful when `type === "damage_reduction"`?
@@ -182,6 +189,11 @@ Review the following aspects specifically:
 - Does the XP progress bar and Level Up button use `@eclForXp` (not `@characterLevel`) to look up the XP threshold in `config_xp_table`? (This ensures monster PCs with LA > 0 require more XP to level up per Architecture section 6.4.)
 - Do the 3 AC pipelines (normal, touch, flat-footed) read from separate pipelines?
 - Does the weapon dropdown read from inventory (not a hardcoded list)?
+- Does the Combat Turn UI read all active features with `actionBudget` defined per Architecture section 5.6 / Phase 1.3c?
+- Does the effective budget per category use MIN across all active budgets (most restrictive wins)?
+- Are action buttons disabled/greyed when budget = 0 or when the per-turn count has reached the budget limit?
+- Is the XOR "standard OR move not both" rule applied when a feature has `"action_budget_xor"` tag?
+- Is a tooltip shown on restricted action buttons identifying the source condition?
 
 # 8. Feats Tab (Phase 11)
 - Does feat slot calculation use the formula `1 + floor(characterLevel / 3)` plus bonus slots from Features?
@@ -597,6 +609,7 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 4. **Section 4 (Pipelines):** Do `Modifier`, `StatisticPipeline`, `SkillPipeline`, and `ResourcePool` match? Is `derivedModifier` computed correctly? Is `setAbsolute` behavior correct (section 4.2)? Are all special Math Parser paths (section 4.3) implemented? Does `ResourcePool.resetCondition` include all 6 values (`long_rest`, `short_rest`, `encounter`, `never`, `per_turn`, `per_round`) per section 4.4? Is `rechargeAmount` optional and formula-capable? Does `Modifier` include `drBypassTags?: string[]` per section 4.5 / Phase 2.4a?
 5. **Section 5.1.1 (ItemFeature psionic item subtypes):** Does `ItemFeature.psionicItemData` include all five psionic item types with their fields per Phase 1.3b? Is the field matrix correct (cognizance crystal uses `storedPP/maxPP/attuned`; dorje uses `powerStored/charges/manifesterLevel`; power stone uses `powersImprinted[]`; psicrown uses `storedPP/maxPP/powersKnown/manifesterLevel`; tattoo uses `powerStored/manifesterLevel/activated`)? Are mutable vs immutable fields correctly labelled in the docs?
+5a. **Section 5.6 (Feature `actionBudget`):** Does `Feature.actionBudget` exist as an optional field with six optional numeric keys per Phase 1.3c? Does the SRD condition table include Staggered (`{standard:1,move:1,full_round:0}`), Nauseated (`{standard:0,move:1,full_round:0}`), and Stunned (`{standard:0,move:0,full_round:0}`)? Is the minimum-wins UI resolution rule documented? Is the XOR mutual exclusion (`action_budget_xor` tag) described?
 6. **Section 5.2.1 (MagicFeature psionic fields):** Does `MagicFeature` include `discipline?: PsionicDiscipline` and `displays?: PsionicDisplay[]` per Phase 1.3a? Are both types exported? Is `discipline` `undefined` for arcane/divine spells? Does the psionic casting panel (Phase 12.3) use `discipline` for grouping and `displays` for display suppression UI?
 
 5. **Section 5 (Features):** Do `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice`, `LevelProgressionEntry` match? Is `classSkills` implemented (section 5.5)? Is `optionsQuery` parsing correct (section 5.3)?

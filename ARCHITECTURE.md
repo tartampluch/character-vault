@@ -428,6 +428,19 @@ export interface Feature {
         actionType: "standard" | "move" | "swift" | "immediate" | "free" | "full_round" | "minutes" | "hours";
         resourceCost?: { targetId: ID; cost: number | string }; // E.g.: Consumes 2 Psi Points
     };
+
+    // Action-economy budget imposed by this feature (conditions, slow spells, etc.)
+    // Each key = max of that action type per round. 0 = prohibited. absent = unlimited.
+    // Combat UI takes MIN across all active features' budgets per category.
+    // @see ARCHITECTURE.md section 5.6 — actionBudget full reference and condition table
+    actionBudget?: {
+        standard?: number;   // Max standard actions (0 = blocked)
+        move?: number;       // Max move actions
+        swift?: number;      // Max swift actions
+        immediate?: number;  // Max immediate actions
+        free?: number;       // Max free actions
+        full_round?: number; // Max full-round actions (0 = blocked)
+    };
 }
 
 // --- SPECIALIZED SUB-TYPES ---
@@ -931,6 +944,143 @@ During DAG Phase 4 (Skills & Abilities), the engine collects `classSkills` from 
 ```
 
 > **AI Implementation Note:** The `classSkills` field is optional on ALL Feature categories, not just `"class"`. This allows domains, racial features, or even feats to grant class skills. The engine should scan all active Features (not just classes) for this field during Phase 4.
+
+### 5.6. Action Budget (`actionBudget`) — Condition-Imposed Action Restrictions
+
+D&D 3.5 has many conditions that limit a character's available actions per round. Without a machine-readable action budget, the engine can apply a condition's modifiers (attack penalties, DEX loss, etc.) but the Combat UI has no programmatic way to enforce action restrictions — a Staggered character shouldn't be allowed a full attack.
+
+The `actionBudget` field on `Feature` solves this. When a condition Feature is active and has `actionBudget` set, the Combat Turn UI reads it to enforce the restriction automatically.
+
+#### Field Structure
+
+```typescript
+actionBudget?: {
+    standard?:   number;   // Max standard actions per round (0 = completely blocked)
+    move?:       number;   // Max move actions per round
+    swift?:      number;   // Max swift actions per round
+    immediate?:  number;   // Max immediate actions per round
+    free?:       number;   // Max free actions per round
+    full_round?: number;   // Max full-round actions per round (0 = no full attack/run)
+}
+```
+
+- Each key is **optional**. An **absent key** means "no restriction from this Feature for that action type" (effectively unlimited).
+- A value of **`0`** means that action type is **completely blocked** while this Feature is active.
+- A value of **`1`** means at most one of that action type per round.
+- The field is optional on the `Feature` itself — `actionBudget: undefined` means no restrictions.
+
+#### UI Resolution Rule — Minimum Wins
+
+When multiple active condition Features each have an `actionBudget`, the Combat UI computes the effective budget per category as the **minimum** of all active values for that category. This means the most restrictive condition always wins:
+
+```
+effectiveStandard = min(all active feature.actionBudget.standard values)
+                    (absent values = ∞, treated as no restriction)
+```
+
+Example: If `condition_staggered` gives `{ standard: 1 }` and `condition_nauseated` gives `{ standard: 0 }`, the effective standard action budget is `min(1, 0) = 0` — the character cannot take a standard action.
+
+#### Complete D&D 3.5 SRD Condition Table
+
+| Condition | `standard` | `move` | `full_round` | Notes |
+|---|:---:|:---:|:---:|---|
+| **Normal** | — | — | — | No `actionBudget` field (absent = unlimited) |
+| **Staggered** | 1 | 1 | 0 | Either standard OR move, not both; "or" enforced by UI turn tracker |
+| **Disabled** | 1 | 1 | 0 | Same as Staggered; standard action costs 1 HP (UI concern) |
+| **Nauseated** | 0 | 1 | 0 | Only move action; no attack, cast, concentrate |
+| **Stunned** | 0 | 0 | 0 | No actions at all; `free: 0` optional (drops held items — physical) |
+| **Cowering** | 0 | 0 | 0 | Frozen in fear; no actions |
+| **Dazed** | 0 | 0 | 0 | No actions; 1 round typical duration |
+| **Fascinated** | 0 | 0 | 0 | Only pays attention; no other actions |
+| **Paralyzed** | 0 | 0 | 0 | No physical actions; mental-only (no `free: 0` to allow speech) |
+| **Dying** | 0 | 0 | 0 | Unconscious; no actions |
+| **Unconscious** | 0 | 0 | 0 | Helpless; no actions |
+| **Dead** | 0 | 0 | 0 | No actions |
+
+> **Design Note — `swift` and `immediate` omitted from simple conditions:** Most basic conditions do not explicitly restrict swift/immediate actions in the SRD. Content authors should only add `swift: 0` or `immediate: 0` if the SRD text explicitly says "cannot take any actions whatsoever", and even then only for completeness. The standard conditions above focus on the explicitly named restrictions.
+
+#### The "Standard OR Move, Not Both" Rule (Staggered / Disabled)
+
+The D&D 3.5 SRD states: a Staggered character may take a single move action OR a standard action — but NOT both. This is a **soft mutual exclusion** that cannot be represented as a simple per-category cap alone, because both `standard: 1` and `move: 1` are individually valid.
+
+**Solution — UI turn tracker**: The `actionBudget` declares the per-action cap. The Combat Turn UI tracks a `actionsSpentThisTurn: { standard: 0, move: 0, ... }` counter. When either a standard or a move action has been spent:
+- The counter is updated.
+- The UI checks: if the character is Staggered (has the XOR constraint) AND one action has been spent, disable the other.
+
+This is a **UI logic concern**, not a data model concern. The `actionBudget` remains simple (`{ standard: 1, move: 1, full_round: 0 }`), and the UI adds the mutual exclusion logic when it detects the Staggered or Disabled condition tag.
+
+**Suggested implementation tags for the XOR condition:**
+```json
+// On the condition_staggered Feature:
+{
+  "tags": ["condition", "condition_staggered", "action_budget_xor"],
+  "actionBudget": { "standard": 1, "move": 1, "full_round": 0 }
+}
+```
+
+The `"action_budget_xor"` tag signals the Combat UI that this condition applies a mutual exclusion between standard and move actions.
+
+#### JSON Examples
+
+```json
+// Staggered condition (SRD: conditionSummary.html)
+{
+  "id": "condition_staggered",
+  "category": "condition",
+  "ruleSource": "srd_core",
+  "tags": ["condition", "condition_staggered", "action_budget_xor"],
+  "actionBudget": { "standard": 1, "move": 1, "full_round": 0 },
+  "grantedModifiers": [],
+  "grantedFeatures": []
+}
+
+// Nauseated condition
+{
+  "id": "condition_nauseated",
+  "category": "condition",
+  "ruleSource": "srd_core",
+  "tags": ["condition", "condition_nauseated"],
+  "actionBudget": { "standard": 0, "move": 1, "full_round": 0 },
+  "grantedModifiers": [],
+  "grantedFeatures": []
+}
+
+// Stunned condition
+{
+  "id": "condition_stunned",
+  "category": "condition",
+  "ruleSource": "srd_core",
+  "tags": ["condition", "condition_stunned"],
+  "actionBudget": { "standard": 0, "move": 0, "full_round": 0 },
+  "grantedModifiers": [
+    {
+      "id": "mod_stunned_ac",
+      "sourceId": "condition_stunned",
+      "sourceName": { "en": "Stunned" },
+      "targetId": "combatStats.ac_normal",
+      "value": -2,
+      "type": "untyped"
+    }
+  ],
+  "grantedFeatures": []
+}
+```
+
+#### `actionBudget` on Non-Condition Features
+
+While primarily used on `category: "condition"` Features, `actionBudget` is defined on the base `Feature` interface and is therefore available to ALL Feature types:
+
+- **Spell effects** — A *Slow* spell effect applied as an active Feature could carry `{ move: 1 }` (half speed, one action only).
+- **Environmental conditions** — `environment_gale_force_winds` might restrict full-round actions for small creatures: `{ full_round: 0 }`.
+- **Racial abilities** — A class feature that limits action economy mid-combat (unusual but possible in homebrew).
+
+> **AI Implementation Note (Phase 10.1 — Combat Tab):**
+> The Combat Turn UI must:
+> 1. At the start of each turn, collect all active `ActiveFeatureInstance`s where `feature.actionBudget` is defined and the instance `isActive: true`.
+> 2. Compute effective budget: for each category (`standard`, `move`, etc.), take `min(all defined values)`.
+> 3. Render each action button with the budget applied: show a count indicator ("1/1") and disable the button when the turn budget is exhausted.
+> 4. On the Staggered/Disabled XOR case: check for the `"action_budget_xor"` tag and apply mutual exclusion logic.
+> 5. Display a tooltip on restricted buttons: "[Condition Name]: [original SRD text]".
 
 ---
 
