@@ -96,12 +96,36 @@ export type ModifierType =
                        // this effect via "Expire" — it's a permanent character improvement.
                        // @see ARCHITECTURE.md section 4.10 — Inherent Bonus reference
   | "setAbsolute"      // Forces an absolute value; overrides everything on the pipeline
-  | "damage_reduction";// D&D 3.5 DR — special stacking: BEST-WINS per bypass-tag group.
+  | "damage_reduction" // D&D 3.5 DR — special stacking: BEST-WINS per bypass-tag group.
                        // Modifier.value = DR amount; Modifier.drBypassTags = material type.
                        // Use this for racial/innate/template DR. For class-progression
                        // incremental DR that ADDS, use "base" instead (it always stacks).
                        // @see Modifier.drBypassTags in pipeline.ts
                        // @see ARCHITECTURE.md section 4.5 — Damage Reduction reference
+  | "max_dex_cap";     // Maximum-DEX-to-AC cap imposed by armor, shield, or conditions.
+                       // MINIMUM-WINS STACKING: when multiple max_dex_cap modifiers are
+                       // active simultaneously, the engine applies only the LOWEST value
+                       // (most restrictive cap wins — a character wearing a tower shield AND
+                       // heavy armor cannot exceed the lower of the two maxDex values).
+                       //
+                       // This type is meaningful ONLY on the `combatStats.max_dex_bonus`
+                       // pipeline. The Phase 3 computation handles it specially: it collects
+                       // all `max_dex_cap` modifiers, takes the minimum as the effective
+                       // base for the pipeline, then applies any remaining modifiers
+                       // (e.g., +2 from Mithral special material) on top normally.
+                       //
+                       // baseValue of `combatStats.max_dex_bonus` = 99 (no cap when
+                       // no max_dex_cap modifier is active — unarmored character can apply
+                       // full DEX modifier to AC). Mithral uses `type: "untyped"` (+2) on
+                       // the same pipeline; that stacks AFTER the cap is established.
+                       //
+                       // CONTENT AUTHORING:
+                       //   Armor: { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 3 }
+                       //   Mithral: { type: "untyped", targetId: "combatStats.max_dex_bonus", value: 2 }
+                       //   Heavy Load condition: { type: "max_dex_cap", ... value: 1 }
+                       //   Encumbrance (medium): { type: "max_dex_cap", ... value: 3 }
+                       //
+                       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
 
 // =============================================================================
 // LOGIC OPERATORS — PREREQUISITE & CONDITION SYSTEM

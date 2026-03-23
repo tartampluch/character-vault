@@ -712,6 +712,18 @@ _All other psionic mechanics confirmed as covered: PP pools via ResourcePool, di
 
 - [ ] **E-16c Tests (`src/tests/augmentationRule.test.ts`):** New Vitest test file. Tests: (1) effectDescription is optional (backward compat), (2) mechanical augmentation with both fields, (3) qualitative augmentation with grantedModifiers: [], (4) multiple augmentation entries mixed (mechanical + qualitative), (5) effectDescription with both en+fr languages, (6) CastingPanel fallback logic (effectDescription absent, use modifier sourceName).
 
+## Phase E-17: Special Materials Engine Gap Analysis + `combatStats.max_dex_bonus` Pipeline
+
+_Goal: Pre-conversion engine gap analysis for D20SRD_CONVERSION.md task C-17 (Special Materials). Analyse all 6 SRD special materials (Adamantine, Darkwood, Dragonhide, Cold Iron, Mithral, Alchemical Silver) and determine whether the game engine can express every effect as JSON-only `grantedModifiers`. Implement any engine changes BEFORE creating the C-17 JSON file._
+
+_Gap identified: The `combatStats.max_dex_bonus` pipeline existed in C-08 item data but was never initialized in GameEngine, making its `setAbsolute` modifiers silently ignored. Mithral's "+2 maximum Dex bonus" requires a dynamic pipeline, not a per-item override. Resolution: new `"max_dex_cap"` modifier type (minimum-wins) + Phase 3 special-case algorithm. The "one armor category lighter" movement effect is handled via a tag for future engine integration._
+
+- [x] **E-17a Engine Change:** Added `"max_dex_cap"` to `ModifierType` (minimum-wins stacking, only for `combatStats.max_dex_bonus`). Added `combatStats.max_dex_bonus` pipeline (`baseValue=99`) to GameEngine initial combatStats. Added Phase 3 special-case: extracts `max_dex_cap` mods first (min→effectiveBase), then applies remaining (untyped) mods normally via `applyStackingRules`. Updated all 13 armor/shield items in `07_d20srd_core_equipment_armor.json` + `test_mock.json` from `"setAbsolute"` → `"max_dex_cap"` for their `combatStats.max_dex_bonus` modifiers.
+
+- [x] **E-17b Tests (`src/tests/maxDexBonus.test.ts`):** 22 new Vitest tests (863 total, all passing). 4 sections: stacking rules treatment, Phase 3 computation, content authoring contracts, edge cases.
+
+- [x] **E-17c Documentation:** `ARCHITECTURE.md` section 4.17 (two-layer model, algorithm, 6-row example table, JSON examples, UI contract). `CHECKPOINTS.md` updated with 8 new verification items.
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

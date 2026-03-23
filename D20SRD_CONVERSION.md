@@ -1605,7 +1605,7 @@ Same format as C-04. NPC classes have 20-level `levelProgression`. Key differenc
 
 ### C-17 — Special Materials (`15_d20srd_core_special_materials.json`)
 
-- [ ] **C-17** — Convert special materials (adamantine, cold iron, darkwood, mithral, etc.)
+- [x] **C-17** — Convert special materials (adamantine, cold iron, darkwood, mithral, etc.)
 
 **Source files:** `d20srd/www.d20srd.org/srd/specialMaterials.html`
 

@@ -3,12 +3,21 @@
     "id": "item_armor_padded",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Padded Armor", "fr": "Armure matelassée" },
+    "label": {
+      "en": "Padded Armor",
+      "fr": "Armure matelassée"
+    },
     "description": {
       "en": "Padded armor consists of quilted layers of cloth and batting. It is the lightest armor available, offering minimal protection.",
       "fr": "L'armure matelassée est constituée de couches de tissu et de rembourrage. C'est l'armure la plus légère disponible, offrant une protection minimale."
     },
-    "tags": ["item", "armor", "armor_light", "wearing_armor", "item_armor_padded"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "wearing_armor",
+      "item_armor_padded"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 10,
     "costGp": 5,
@@ -18,7 +27,10 @@
       {
         "id": "armor_padded_ac",
         "sourceId": "item_armor_padded",
-        "sourceName": { "en": "Padded Armor", "fr": "Armure matelassée" },
+        "sourceName": {
+          "en": "Padded Armor",
+          "fr": "Armure matelassée"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "armor"
@@ -26,7 +38,10 @@
       {
         "id": "armor_padded_acp",
         "sourceId": "item_armor_padded",
-        "sourceName": { "en": "Padded Armor", "fr": "Armure matelassée" },
+        "sourceName": {
+          "en": "Padded Armor",
+          "fr": "Armure matelassée"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": 0,
         "type": "base"
@@ -34,15 +49,21 @@
       {
         "id": "armor_padded_max_dex",
         "sourceId": "item_armor_padded",
-        "sourceName": { "en": "Padded Armor", "fr": "Armure matelassée" },
+        "sourceName": {
+          "en": "Padded Armor",
+          "fr": "Armure matelassée"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 8,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_padded_asf",
         "sourceId": "item_armor_padded",
-        "sourceName": { "en": "Padded Armor", "fr": "Armure matelassée" },
+        "sourceName": {
+          "en": "Padded Armor",
+          "fr": "Armure matelassée"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 5,
         "type": "base"
@@ -60,12 +81,21 @@
     "id": "item_armor_leather",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Leather Armor", "fr": "Armure de cuir" },
+    "label": {
+      "en": "Leather Armor",
+      "fr": "Armure de cuir"
+    },
     "description": {
       "en": "Leather armor is made up of pieces of hardened leather carefully fashioned and stitched together, offering good protection with limited encumbrance.",
       "fr": "L'armure de cuir est composée de pièces de cuir durci soigneusement façonnées et cousues ensemble, offrant une bonne protection avec un encombrement limité."
     },
-    "tags": ["item", "armor", "armor_light", "wearing_armor", "item_armor_leather"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "wearing_armor",
+      "item_armor_leather"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 15,
     "costGp": 10,
@@ -75,7 +105,10 @@
       {
         "id": "armor_leather_ac",
         "sourceId": "item_armor_leather",
-        "sourceName": { "en": "Leather Armor", "fr": "Armure de cuir" },
+        "sourceName": {
+          "en": "Leather Armor",
+          "fr": "Armure de cuir"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 2,
         "type": "armor"
@@ -83,7 +116,10 @@
       {
         "id": "armor_leather_acp",
         "sourceId": "item_armor_leather",
-        "sourceName": { "en": "Leather Armor", "fr": "Armure de cuir" },
+        "sourceName": {
+          "en": "Leather Armor",
+          "fr": "Armure de cuir"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": 0,
         "type": "base"
@@ -91,15 +127,21 @@
       {
         "id": "armor_leather_max_dex",
         "sourceId": "item_armor_leather",
-        "sourceName": { "en": "Leather Armor", "fr": "Armure de cuir" },
+        "sourceName": {
+          "en": "Leather Armor",
+          "fr": "Armure de cuir"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 6,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_leather_asf",
         "sourceId": "item_armor_leather",
-        "sourceName": { "en": "Leather Armor", "fr": "Armure de cuir" },
+        "sourceName": {
+          "en": "Leather Armor",
+          "fr": "Armure de cuir"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 10,
         "type": "base"
@@ -117,12 +159,21 @@
     "id": "item_armor_studded_leather",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Studded Leather Armor", "fr": "Armure de cuir clouté" },
+    "label": {
+      "en": "Studded Leather Armor",
+      "fr": "Armure de cuir clouté"
+    },
     "description": {
       "en": "An improved form of leather armor, studded leather is reinforced with close-set metal rivets or studs. Druids may wear it, as it is primarily leather.",
       "fr": "Une forme améliorée d'armure de cuir, le cuir clouté est renforcé par des rivets ou des clous métalliques serrés. Les druides peuvent le porter car il est principalement en cuir."
     },
-    "tags": ["item", "armor", "armor_light", "wearing_armor", "item_armor_studded_leather"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "wearing_armor",
+      "item_armor_studded_leather"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 20,
     "costGp": 25,
@@ -132,7 +183,10 @@
       {
         "id": "armor_studded_leather_ac",
         "sourceId": "item_armor_studded_leather",
-        "sourceName": { "en": "Studded Leather Armor", "fr": "Armure de cuir clouté" },
+        "sourceName": {
+          "en": "Studded Leather Armor",
+          "fr": "Armure de cuir clouté"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 3,
         "type": "armor"
@@ -140,7 +194,10 @@
       {
         "id": "armor_studded_leather_acp",
         "sourceId": "item_armor_studded_leather",
-        "sourceName": { "en": "Studded Leather Armor", "fr": "Armure de cuir clouté" },
+        "sourceName": {
+          "en": "Studded Leather Armor",
+          "fr": "Armure de cuir clouté"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -1,
         "type": "base"
@@ -148,15 +205,21 @@
       {
         "id": "armor_studded_leather_max_dex",
         "sourceId": "item_armor_studded_leather",
-        "sourceName": { "en": "Studded Leather Armor", "fr": "Armure de cuir clouté" },
+        "sourceName": {
+          "en": "Studded Leather Armor",
+          "fr": "Armure de cuir clouté"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 5,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_studded_leather_asf",
         "sourceId": "item_armor_studded_leather",
-        "sourceName": { "en": "Studded Leather Armor", "fr": "Armure de cuir clouté" },
+        "sourceName": {
+          "en": "Studded Leather Armor",
+          "fr": "Armure de cuir clouté"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 15,
         "type": "base"
@@ -174,12 +237,22 @@
     "id": "item_armor_chain_shirt",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
+    "label": {
+      "en": "Chain Shirt",
+      "fr": "Chemise de mailles"
+    },
     "description": {
       "en": "A chain shirt protects the wearer's torso while leaving the limbs free and comes with a steel cap. It is the heaviest of all light armors.",
       "fr": "Une chemise de mailles protège le torse du porteur tout en laissant les membres libres et est accompagnée d'une calotte en acier. C'est la plus lourde des armures légères."
     },
-    "tags": ["item", "armor", "armor_light", "metal_armor", "wearing_armor", "item_armor_chain_shirt"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_chain_shirt"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 25,
     "costGp": 100,
@@ -189,7 +262,10 @@
       {
         "id": "armor_chain_shirt_ac",
         "sourceId": "item_armor_chain_shirt",
-        "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
+        "sourceName": {
+          "en": "Chain Shirt",
+          "fr": "Chemise de mailles"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 4,
         "type": "armor"
@@ -197,7 +273,10 @@
       {
         "id": "armor_chain_shirt_acp",
         "sourceId": "item_armor_chain_shirt",
-        "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
+        "sourceName": {
+          "en": "Chain Shirt",
+          "fr": "Chemise de mailles"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -2,
         "type": "base"
@@ -205,15 +284,21 @@
       {
         "id": "armor_chain_shirt_max_dex",
         "sourceId": "item_armor_chain_shirt",
-        "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
+        "sourceName": {
+          "en": "Chain Shirt",
+          "fr": "Chemise de mailles"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 4,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_chain_shirt_asf",
         "sourceId": "item_armor_chain_shirt",
-        "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
+        "sourceName": {
+          "en": "Chain Shirt",
+          "fr": "Chemise de mailles"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 20,
         "type": "base"
@@ -231,12 +316,21 @@
     "id": "item_armor_hide",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Hide Armor", "fr": "Armure de peau" },
+    "label": {
+      "en": "Hide Armor",
+      "fr": "Armure de peau"
+    },
     "description": {
       "en": "Hide armor is made from the thick skin of powerful animals. It is bulkier and less polished than leather armor but is favored by druids as it contains no metal.",
       "fr": "L'armure de peau est fabriquée à partir de la peau épaisse d'animaux puissants. Elle est plus volumineuse que l'armure de cuir mais est appréciée par les druides car elle ne contient aucun métal."
     },
-    "tags": ["item", "armor", "armor_medium", "wearing_armor", "item_armor_hide"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "wearing_armor",
+      "item_armor_hide"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 25,
     "costGp": 15,
@@ -246,7 +340,10 @@
       {
         "id": "armor_hide_ac",
         "sourceId": "item_armor_hide",
-        "sourceName": { "en": "Hide Armor", "fr": "Armure de peau" },
+        "sourceName": {
+          "en": "Hide Armor",
+          "fr": "Armure de peau"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 3,
         "type": "armor"
@@ -254,7 +351,10 @@
       {
         "id": "armor_hide_acp",
         "sourceId": "item_armor_hide",
-        "sourceName": { "en": "Hide Armor", "fr": "Armure de peau" },
+        "sourceName": {
+          "en": "Hide Armor",
+          "fr": "Armure de peau"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -3,
         "type": "base"
@@ -262,15 +362,21 @@
       {
         "id": "armor_hide_max_dex",
         "sourceId": "item_armor_hide",
-        "sourceName": { "en": "Hide Armor", "fr": "Armure de peau" },
+        "sourceName": {
+          "en": "Hide Armor",
+          "fr": "Armure de peau"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 4,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_hide_asf",
         "sourceId": "item_armor_hide",
-        "sourceName": { "en": "Hide Armor", "fr": "Armure de peau" },
+        "sourceName": {
+          "en": "Hide Armor",
+          "fr": "Armure de peau"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 20,
         "type": "base"
@@ -288,12 +394,22 @@
     "id": "item_armor_scale_mail",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Scale Mail", "fr": "Cotte d'écailles" },
+    "label": {
+      "en": "Scale Mail",
+      "fr": "Cotte d'écailles"
+    },
     "description": {
       "en": "Scale mail is made of overlapping metal scales that cover the wearer from the neck to the knee. The suit includes gauntlets.",
       "fr": "La cotte d'écailles est composée d'écailles métalliques qui se chevauchent et couvrent le porteur du cou au genou. L'ensemble comprend des gantelets."
     },
-    "tags": ["item", "armor", "armor_medium", "metal_armor", "wearing_armor", "item_armor_scale_mail"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_scale_mail"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 30,
     "costGp": 50,
@@ -303,7 +419,10 @@
       {
         "id": "armor_scale_mail_ac",
         "sourceId": "item_armor_scale_mail",
-        "sourceName": { "en": "Scale Mail", "fr": "Cotte d'écailles" },
+        "sourceName": {
+          "en": "Scale Mail",
+          "fr": "Cotte d'écailles"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 4,
         "type": "armor"
@@ -311,7 +430,10 @@
       {
         "id": "armor_scale_mail_acp",
         "sourceId": "item_armor_scale_mail",
-        "sourceName": { "en": "Scale Mail", "fr": "Cotte d'écailles" },
+        "sourceName": {
+          "en": "Scale Mail",
+          "fr": "Cotte d'écailles"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -4,
         "type": "base"
@@ -319,15 +441,21 @@
       {
         "id": "armor_scale_mail_max_dex",
         "sourceId": "item_armor_scale_mail",
-        "sourceName": { "en": "Scale Mail", "fr": "Cotte d'écailles" },
+        "sourceName": {
+          "en": "Scale Mail",
+          "fr": "Cotte d'écailles"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 3,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_scale_mail_asf",
         "sourceId": "item_armor_scale_mail",
-        "sourceName": { "en": "Scale Mail", "fr": "Cotte d'écailles" },
+        "sourceName": {
+          "en": "Scale Mail",
+          "fr": "Cotte d'écailles"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 25,
         "type": "base"
@@ -345,12 +473,22 @@
     "id": "item_armor_chainmail",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Chainmail", "fr": "Cotte de mailles" },
+    "label": {
+      "en": "Chainmail",
+      "fr": "Cotte de mailles"
+    },
     "description": {
       "en": "Chainmail is made of interlocking metal rings. The suit includes gauntlets. It is the most common medium armor among fighters.",
       "fr": "La cotte de mailles est faite d'anneaux métalliques entrelacés. L'ensemble comprend des gantelets. C'est l'armure intermédiaire la plus courante parmi les guerriers."
     },
-    "tags": ["item", "armor", "armor_medium", "metal_armor", "wearing_armor", "item_armor_chainmail"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_chainmail"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 40,
     "costGp": 150,
@@ -360,7 +498,10 @@
       {
         "id": "armor_chainmail_ac",
         "sourceId": "item_armor_chainmail",
-        "sourceName": { "en": "Chainmail", "fr": "Cotte de mailles" },
+        "sourceName": {
+          "en": "Chainmail",
+          "fr": "Cotte de mailles"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 5,
         "type": "armor"
@@ -368,7 +509,10 @@
       {
         "id": "armor_chainmail_acp",
         "sourceId": "item_armor_chainmail",
-        "sourceName": { "en": "Chainmail", "fr": "Cotte de mailles" },
+        "sourceName": {
+          "en": "Chainmail",
+          "fr": "Cotte de mailles"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -5,
         "type": "base"
@@ -376,15 +520,21 @@
       {
         "id": "armor_chainmail_max_dex",
         "sourceId": "item_armor_chainmail",
-        "sourceName": { "en": "Chainmail", "fr": "Cotte de mailles" },
+        "sourceName": {
+          "en": "Chainmail",
+          "fr": "Cotte de mailles"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 2,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_chainmail_asf",
         "sourceId": "item_armor_chainmail",
-        "sourceName": { "en": "Chainmail", "fr": "Cotte de mailles" },
+        "sourceName": {
+          "en": "Chainmail",
+          "fr": "Cotte de mailles"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 30,
         "type": "base"
@@ -402,12 +552,22 @@
     "id": "item_armor_breastplate",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Breastplate", "fr": "Plastron" },
+    "label": {
+      "en": "Breastplate",
+      "fr": "Plastron"
+    },
     "description": {
       "en": "A breastplate covers the torso with a single piece of shaped metal. It comes with a helmet and greaves. It offers better mobility than chainmail while providing similar protection.",
       "fr": "Un plastron couvre le torse avec une seule pièce de métal façonné. Il est fourni avec un casque et des jambières. Il offre une meilleure mobilité que la cotte de mailles tout en offrant une protection similaire."
     },
-    "tags": ["item", "armor", "armor_medium", "metal_armor", "wearing_armor", "item_armor_breastplate"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_breastplate"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 30,
     "costGp": 200,
@@ -417,7 +577,10 @@
       {
         "id": "armor_breastplate_ac",
         "sourceId": "item_armor_breastplate",
-        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "sourceName": {
+          "en": "Breastplate",
+          "fr": "Plastron"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 5,
         "type": "armor"
@@ -425,7 +588,10 @@
       {
         "id": "armor_breastplate_acp",
         "sourceId": "item_armor_breastplate",
-        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "sourceName": {
+          "en": "Breastplate",
+          "fr": "Plastron"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -4,
         "type": "base"
@@ -433,15 +599,21 @@
       {
         "id": "armor_breastplate_max_dex",
         "sourceId": "item_armor_breastplate",
-        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "sourceName": {
+          "en": "Breastplate",
+          "fr": "Plastron"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 3,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_breastplate_asf",
         "sourceId": "item_armor_breastplate",
-        "sourceName": { "en": "Breastplate", "fr": "Plastron" },
+        "sourceName": {
+          "en": "Breastplate",
+          "fr": "Plastron"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 25,
         "type": "base"
@@ -459,12 +631,22 @@
     "id": "item_armor_splint_mail",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Splint Mail", "fr": "Cotte à lamelles" },
+    "label": {
+      "en": "Splint Mail",
+      "fr": "Cotte à lamelles"
+    },
     "description": {
       "en": "Splint mail is made of narrow vertical strips of metal riveted to a backing of chain mail. The suit includes gauntlets. When running in this armor, you move only triple your speed, not quadruple.",
       "fr": "La cotte à lamelles est faite de bandes verticales étroites de métal rivetées sur un support de cotte de mailles. L'ensemble comprend des gantelets. En courant avec cette armure, vous vous déplacez seulement au triple de votre vitesse, pas au quadruple."
     },
-    "tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_splint_mail"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_splint_mail"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 45,
     "costGp": 200,
@@ -474,7 +656,10 @@
       {
         "id": "armor_splint_mail_ac",
         "sourceId": "item_armor_splint_mail",
-        "sourceName": { "en": "Splint Mail", "fr": "Cotte à lamelles" },
+        "sourceName": {
+          "en": "Splint Mail",
+          "fr": "Cotte à lamelles"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 6,
         "type": "armor"
@@ -482,7 +667,10 @@
       {
         "id": "armor_splint_mail_acp",
         "sourceId": "item_armor_splint_mail",
-        "sourceName": { "en": "Splint Mail", "fr": "Cotte à lamelles" },
+        "sourceName": {
+          "en": "Splint Mail",
+          "fr": "Cotte à lamelles"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -7,
         "type": "base"
@@ -490,15 +678,21 @@
       {
         "id": "armor_splint_mail_max_dex",
         "sourceId": "item_armor_splint_mail",
-        "sourceName": { "en": "Splint Mail", "fr": "Cotte à lamelles" },
+        "sourceName": {
+          "en": "Splint Mail",
+          "fr": "Cotte à lamelles"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 0,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_splint_mail_asf",
         "sourceId": "item_armor_splint_mail",
-        "sourceName": { "en": "Splint Mail", "fr": "Cotte à lamelles" },
+        "sourceName": {
+          "en": "Splint Mail",
+          "fr": "Cotte à lamelles"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 40,
         "type": "base"
@@ -516,12 +710,22 @@
     "id": "item_armor_banded_mail",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Banded Mail", "fr": "Cotte à bandes" },
+    "label": {
+      "en": "Banded Mail",
+      "fr": "Cotte à bandes"
+    },
     "description": {
       "en": "Banded mail is made of overlapping horizontal strips of metal sewn over a layer of chain mail and padded armor. The suit includes gauntlets. When running, you move only triple your speed.",
       "fr": "La cotte à bandes est faite de bandes horizontales de métal se chevauchant, cousues sur une couche de cotte de mailles et d'armure matelassée. L'ensemble comprend des gantelets. En courant, vous vous déplacez seulement au triple de votre vitesse."
     },
-    "tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_banded_mail"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_banded_mail"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 35,
     "costGp": 250,
@@ -531,7 +735,10 @@
       {
         "id": "armor_banded_mail_ac",
         "sourceId": "item_armor_banded_mail",
-        "sourceName": { "en": "Banded Mail", "fr": "Cotte à bandes" },
+        "sourceName": {
+          "en": "Banded Mail",
+          "fr": "Cotte à bandes"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 6,
         "type": "armor"
@@ -539,7 +746,10 @@
       {
         "id": "armor_banded_mail_acp",
         "sourceId": "item_armor_banded_mail",
-        "sourceName": { "en": "Banded Mail", "fr": "Cotte à bandes" },
+        "sourceName": {
+          "en": "Banded Mail",
+          "fr": "Cotte à bandes"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -6,
         "type": "base"
@@ -547,15 +757,21 @@
       {
         "id": "armor_banded_mail_max_dex",
         "sourceId": "item_armor_banded_mail",
-        "sourceName": { "en": "Banded Mail", "fr": "Cotte à bandes" },
+        "sourceName": {
+          "en": "Banded Mail",
+          "fr": "Cotte à bandes"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 1,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_banded_mail_asf",
         "sourceId": "item_armor_banded_mail",
-        "sourceName": { "en": "Banded Mail", "fr": "Cotte à bandes" },
+        "sourceName": {
+          "en": "Banded Mail",
+          "fr": "Cotte à bandes"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 35,
         "type": "base"
@@ -573,12 +789,22 @@
     "id": "item_armor_half_plate",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Half-Plate", "fr": "Demi-harnois" },
+    "label": {
+      "en": "Half-Plate",
+      "fr": "Demi-harnois"
+    },
     "description": {
       "en": "Half-plate armor is a combination of chain mail with metal plates covering the vital areas. The suit includes gauntlets. When running, you move only triple your speed.",
       "fr": "Le demi-harnois est une combinaison de cotte de mailles avec des plaques métalliques couvrant les zones vitales. L'ensemble comprend des gantelets. En courant, vous vous déplacez seulement au triple de votre vitesse."
     },
-    "tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_half_plate"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_half_plate"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 50,
     "costGp": 600,
@@ -588,7 +814,10 @@
       {
         "id": "armor_half_plate_ac",
         "sourceId": "item_armor_half_plate",
-        "sourceName": { "en": "Half-Plate", "fr": "Demi-harnois" },
+        "sourceName": {
+          "en": "Half-Plate",
+          "fr": "Demi-harnois"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 7,
         "type": "armor"
@@ -596,7 +825,10 @@
       {
         "id": "armor_half_plate_acp",
         "sourceId": "item_armor_half_plate",
-        "sourceName": { "en": "Half-Plate", "fr": "Demi-harnois" },
+        "sourceName": {
+          "en": "Half-Plate",
+          "fr": "Demi-harnois"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -7,
         "type": "base"
@@ -604,15 +836,21 @@
       {
         "id": "armor_half_plate_max_dex",
         "sourceId": "item_armor_half_plate",
-        "sourceName": { "en": "Half-Plate", "fr": "Demi-harnois" },
+        "sourceName": {
+          "en": "Half-Plate",
+          "fr": "Demi-harnois"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 0,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_half_plate_asf",
         "sourceId": "item_armor_half_plate",
-        "sourceName": { "en": "Half-Plate", "fr": "Demi-harnois" },
+        "sourceName": {
+          "en": "Half-Plate",
+          "fr": "Demi-harnois"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 40,
         "type": "base"
@@ -630,12 +868,22 @@
     "id": "item_armor_full_plate",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Full Plate", "fr": "Harnois" },
+    "label": {
+      "en": "Full Plate",
+      "fr": "Harnois"
+    },
     "description": {
       "en": "Full plate armor consists of shaped, interlocking metal plates that cover the entire body. The suit includes gauntlets, heavy leather boots, a visored helmet, and a thick layer of padding worn underneath. Each suit must be individually fitted to its owner by a master armorsmith. When running, you move only triple your speed.",
       "fr": "Le harnois est composé de plaques de métal façonnées et imbriquées qui couvrent tout le corps. L'ensemble comprend des gantelets, de lourdes bottes de cuir, un heaume à visière et une épaisse couche de rembourrage portée en dessous. Chaque harnois doit être ajusté individuellement à son propriétaire par un maître armurier. En courant, vous vous déplacez seulement au triple de votre vitesse."
     },
-    "tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_full_plate"],
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "item_armor_full_plate"
+    ],
     "equipmentSlot": "body",
     "weightLbs": 50,
     "costGp": 1500,
@@ -645,7 +893,10 @@
       {
         "id": "armor_full_plate_ac",
         "sourceId": "item_armor_full_plate",
-        "sourceName": { "en": "Full Plate", "fr": "Harnois" },
+        "sourceName": {
+          "en": "Full Plate",
+          "fr": "Harnois"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 8,
         "type": "armor"
@@ -653,7 +904,10 @@
       {
         "id": "armor_full_plate_acp",
         "sourceId": "item_armor_full_plate",
-        "sourceName": { "en": "Full Plate", "fr": "Harnois" },
+        "sourceName": {
+          "en": "Full Plate",
+          "fr": "Harnois"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -6,
         "type": "base"
@@ -661,15 +915,21 @@
       {
         "id": "armor_full_plate_max_dex",
         "sourceId": "item_armor_full_plate",
-        "sourceName": { "en": "Full Plate", "fr": "Harnois" },
+        "sourceName": {
+          "en": "Full Plate",
+          "fr": "Harnois"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 1,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "armor_full_plate_asf",
         "sourceId": "item_armor_full_plate",
-        "sourceName": { "en": "Full Plate", "fr": "Harnois" },
+        "sourceName": {
+          "en": "Full Plate",
+          "fr": "Harnois"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 35,
         "type": "base"
@@ -687,12 +947,22 @@
     "id": "item_shield_buckler",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Buckler", "fr": "Rondache" },
+    "label": {
+      "en": "Buckler",
+      "fr": "Rondache"
+    },
     "description": {
       "en": "This small metal shield is worn strapped to your forearm. You can use a bow or crossbow without penalty while carrying it. You can also use your shield arm to wield a weapon, but take a −1 penalty on attack rolls while doing so. In any case, if you use a weapon in your off hand, you don't get the buckler's AC bonus for the rest of the round. You can't bash someone with a buckler.",
       "fr": "Ce petit bouclier métallique est porté attaché à l'avant-bras. Vous pouvez utiliser un arc ou une arbalète sans pénalité tout en le portant. Vous pouvez aussi utiliser votre bras de bouclier pour manier une arme, mais vous prenez un malus de −1 aux jets d'attaque. Si vous utilisez une arme dans la main gauche, vous ne bénéficiez pas du bonus de CA de la rondache pour le reste du round. Impossible d'assommer quelqu'un avec une rondache."
     },
-    "tags": ["item", "armor", "shield", "carrying_shield", "metal_shield", "item_shield_buckler"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "carrying_shield",
+      "metal_shield",
+      "item_shield_buckler"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 5,
     "costGp": 15,
@@ -702,7 +972,10 @@
       {
         "id": "shield_buckler_ac",
         "sourceId": "item_shield_buckler",
-        "sourceName": { "en": "Buckler", "fr": "Rondache" },
+        "sourceName": {
+          "en": "Buckler",
+          "fr": "Rondache"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "shield"
@@ -710,7 +983,10 @@
       {
         "id": "shield_buckler_acp",
         "sourceId": "item_shield_buckler",
-        "sourceName": { "en": "Buckler", "fr": "Rondache" },
+        "sourceName": {
+          "en": "Buckler",
+          "fr": "Rondache"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -1,
         "type": "base"
@@ -718,7 +994,10 @@
       {
         "id": "shield_buckler_asf",
         "sourceId": "item_shield_buckler",
-        "sourceName": { "en": "Buckler", "fr": "Rondache" },
+        "sourceName": {
+          "en": "Buckler",
+          "fr": "Rondache"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 5,
         "type": "base"
@@ -736,12 +1015,26 @@
     "id": "item_shield_light_wooden",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Light Wooden Shield", "fr": "Bouclier léger (bois)" },
+    "label": {
+      "en": "Light Wooden Shield",
+      "fr": "Bouclier léger (bois)"
+    },
     "description": {
       "en": "You strap this shield to your forearm and grip it with your hand. A light shield's weight lets you carry other items in that hand, although you cannot use weapons with it. You can bash an opponent with a light shield as an off-hand weapon (a martial bludgeoning light weapon). If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Vous attachez ce bouclier à votre avant-bras et le tenez en main. Le poids d'un bouclier léger vous permet de porter d'autres objets dans cette main, mais vous ne pouvez pas l'utiliser avec une arme. Vous pouvez assommer un adversaire avec un bouclier léger comme arme secondaire (arme de guerre contondante légère). Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_light", "carrying_shield", "weapon", "weapon_martial", "weapon_melee", "weapon_light", "item_shield_light_wooden"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_light",
+      "carrying_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "weapon_light",
+      "item_shield_light_wooden"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 5,
     "costGp": 3,
@@ -751,7 +1044,10 @@
       {
         "id": "shield_light_wooden_ac",
         "sourceId": "item_shield_light_wooden",
-        "sourceName": { "en": "Light Wooden Shield", "fr": "Bouclier léger (bois)" },
+        "sourceName": {
+          "en": "Light Wooden Shield",
+          "fr": "Bouclier léger (bois)"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "shield"
@@ -759,7 +1055,10 @@
       {
         "id": "shield_light_wooden_acp",
         "sourceId": "item_shield_light_wooden",
-        "sourceName": { "en": "Light Wooden Shield", "fr": "Bouclier léger (bois)" },
+        "sourceName": {
+          "en": "Light Wooden Shield",
+          "fr": "Bouclier léger (bois)"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -1,
         "type": "base"
@@ -767,7 +1066,10 @@
       {
         "id": "shield_light_wooden_asf",
         "sourceId": "item_shield_light_wooden",
-        "sourceName": { "en": "Light Wooden Shield", "fr": "Bouclier léger (bois)" },
+        "sourceName": {
+          "en": "Light Wooden Shield",
+          "fr": "Bouclier léger (bois)"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 5,
         "type": "base"
@@ -783,7 +1085,9 @@
     "weaponData": {
       "wieldCategory": "light",
       "damageDice": "1d3",
-      "damageType": ["bludgeoning"],
+      "damageType": [
+        "bludgeoning"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -793,12 +1097,27 @@
     "id": "item_shield_light_steel",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Light Steel Shield", "fr": "Bouclier léger (acier)" },
+    "label": {
+      "en": "Light Steel Shield",
+      "fr": "Bouclier léger (acier)"
+    },
     "description": {
       "en": "You strap this shield to your forearm and grip it with your hand. A light shield's weight lets you carry other items in that hand, although you cannot use weapons with it. You can bash an opponent with a light steel shield as an off-hand weapon (a martial bludgeoning light weapon). If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Vous attachez ce bouclier à votre avant-bras et le tenez en main. Le poids d'un bouclier léger vous permet de porter d'autres objets dans cette main, mais vous ne pouvez pas l'utiliser avec une arme. Vous pouvez assommer un adversaire avec ce bouclier léger en acier comme arme secondaire. Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_light", "carrying_shield", "metal_shield", "weapon", "weapon_martial", "weapon_melee", "weapon_light", "item_shield_light_steel"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_light",
+      "carrying_shield",
+      "metal_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "weapon_light",
+      "item_shield_light_steel"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 6,
     "costGp": 9,
@@ -808,7 +1127,10 @@
       {
         "id": "shield_light_steel_ac",
         "sourceId": "item_shield_light_steel",
-        "sourceName": { "en": "Light Steel Shield", "fr": "Bouclier léger (acier)" },
+        "sourceName": {
+          "en": "Light Steel Shield",
+          "fr": "Bouclier léger (acier)"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "shield"
@@ -816,7 +1138,10 @@
       {
         "id": "shield_light_steel_acp",
         "sourceId": "item_shield_light_steel",
-        "sourceName": { "en": "Light Steel Shield", "fr": "Bouclier léger (acier)" },
+        "sourceName": {
+          "en": "Light Steel Shield",
+          "fr": "Bouclier léger (acier)"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -1,
         "type": "base"
@@ -824,7 +1149,10 @@
       {
         "id": "shield_light_steel_asf",
         "sourceId": "item_shield_light_steel",
-        "sourceName": { "en": "Light Steel Shield", "fr": "Bouclier léger (acier)" },
+        "sourceName": {
+          "en": "Light Steel Shield",
+          "fr": "Bouclier léger (acier)"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 5,
         "type": "base"
@@ -840,7 +1168,9 @@
     "weaponData": {
       "wieldCategory": "light",
       "damageDice": "1d3",
-      "damageType": ["bludgeoning"],
+      "damageType": [
+        "bludgeoning"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -850,12 +1180,25 @@
     "id": "item_shield_heavy_wooden",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Heavy Wooden Shield", "fr": "Bouclier lourd (bois)" },
+    "label": {
+      "en": "Heavy Wooden Shield",
+      "fr": "Bouclier lourd (bois)"
+    },
     "description": {
       "en": "You strap this shield to your forearm and grip it with your hand. A heavy shield is so heavy that you can't use your shield hand for anything else. You can bash an opponent with a heavy shield, using it as an off-hand weapon (a martial bludgeoning one-handed weapon). If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Vous attachez ce bouclier à votre avant-bras et le tenez en main. Un bouclier lourd est si encombrant que vous ne pouvez pas utiliser votre main de bouclier pour autre chose. Vous pouvez frapper un adversaire avec un bouclier lourd comme arme secondaire (arme de guerre contondante à une main). Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_heavy", "carrying_shield", "weapon", "weapon_martial", "weapon_melee", "item_shield_heavy_wooden"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_heavy",
+      "carrying_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "item_shield_heavy_wooden"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 10,
     "costGp": 7,
@@ -865,7 +1208,10 @@
       {
         "id": "shield_heavy_wooden_ac",
         "sourceId": "item_shield_heavy_wooden",
-        "sourceName": { "en": "Heavy Wooden Shield", "fr": "Bouclier lourd (bois)" },
+        "sourceName": {
+          "en": "Heavy Wooden Shield",
+          "fr": "Bouclier lourd (bois)"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 2,
         "type": "shield"
@@ -873,7 +1219,10 @@
       {
         "id": "shield_heavy_wooden_acp",
         "sourceId": "item_shield_heavy_wooden",
-        "sourceName": { "en": "Heavy Wooden Shield", "fr": "Bouclier lourd (bois)" },
+        "sourceName": {
+          "en": "Heavy Wooden Shield",
+          "fr": "Bouclier lourd (bois)"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -2,
         "type": "base"
@@ -881,7 +1230,10 @@
       {
         "id": "shield_heavy_wooden_asf",
         "sourceId": "item_shield_heavy_wooden",
-        "sourceName": { "en": "Heavy Wooden Shield", "fr": "Bouclier lourd (bois)" },
+        "sourceName": {
+          "en": "Heavy Wooden Shield",
+          "fr": "Bouclier lourd (bois)"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 15,
         "type": "base"
@@ -897,7 +1249,9 @@
     "weaponData": {
       "wieldCategory": "one_handed",
       "damageDice": "1d4",
-      "damageType": ["bludgeoning"],
+      "damageType": [
+        "bludgeoning"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -907,12 +1261,26 @@
     "id": "item_shield_heavy_steel",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Heavy Steel Shield", "fr": "Bouclier lourd (acier)" },
+    "label": {
+      "en": "Heavy Steel Shield",
+      "fr": "Bouclier lourd (acier)"
+    },
     "description": {
       "en": "You strap this shield to your forearm and grip it with your hand. A heavy shield is so heavy that you can't use your shield hand for anything else. You can bash an opponent with a heavy steel shield, using it as an off-hand weapon (a martial bludgeoning one-handed weapon). If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Vous attachez ce bouclier à votre avant-bras et le tenez en main. Un bouclier lourd est si encombrant que vous ne pouvez pas utiliser votre main de bouclier pour autre chose. Vous pouvez frapper un adversaire avec ce bouclier lourd en acier comme arme secondaire. Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_heavy", "carrying_shield", "metal_shield", "weapon", "weapon_martial", "weapon_melee", "item_shield_heavy_steel"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_heavy",
+      "carrying_shield",
+      "metal_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "item_shield_heavy_steel"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 15,
     "costGp": 20,
@@ -922,7 +1290,10 @@
       {
         "id": "shield_heavy_steel_ac",
         "sourceId": "item_shield_heavy_steel",
-        "sourceName": { "en": "Heavy Steel Shield", "fr": "Bouclier lourd (acier)" },
+        "sourceName": {
+          "en": "Heavy Steel Shield",
+          "fr": "Bouclier lourd (acier)"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 2,
         "type": "shield"
@@ -930,7 +1301,10 @@
       {
         "id": "shield_heavy_steel_acp",
         "sourceId": "item_shield_heavy_steel",
-        "sourceName": { "en": "Heavy Steel Shield", "fr": "Bouclier lourd (acier)" },
+        "sourceName": {
+          "en": "Heavy Steel Shield",
+          "fr": "Bouclier lourd (acier)"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -2,
         "type": "base"
@@ -938,7 +1312,10 @@
       {
         "id": "shield_heavy_steel_asf",
         "sourceId": "item_shield_heavy_steel",
-        "sourceName": { "en": "Heavy Steel Shield", "fr": "Bouclier lourd (acier)" },
+        "sourceName": {
+          "en": "Heavy Steel Shield",
+          "fr": "Bouclier lourd (acier)"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 15,
         "type": "base"
@@ -954,7 +1331,9 @@
     "weaponData": {
       "wieldCategory": "one_handed",
       "damageDice": "1d4",
-      "damageType": ["bludgeoning"],
+      "damageType": [
+        "bludgeoning"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -964,12 +1343,22 @@
     "id": "item_shield_tower",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Tower Shield", "fr": "Pavois" },
+    "label": {
+      "en": "Tower Shield",
+      "fr": "Pavois"
+    },
     "description": {
       "en": "This massive wooden shield is nearly as tall as you are. In most situations, it provides the indicated shield bonus to your AC. However, you can instead use it as total cover, though you must give up your attacks to do so. It does not provide cover against targeted spells. You cannot bash with a tower shield, nor can you use your shield hand for anything else. When employing a tower shield in combat, you take a −2 penalty on attack rolls because of the shield's encumbrance.",
       "fr": "Ce bouclier en bois massif est presque aussi grand que vous. Il fournit normalement le bonus de bouclier indiqué à votre CA. Vous pouvez cependant l'utiliser comme couverture totale, mais vous devez renoncer à vos attaques. Il n'offre pas de couverture contre les sorts ciblés. Vous ne pouvez pas assommer avec un pavois ni utiliser votre main de bouclier pour autre chose. En utilisant un pavois au combat, vous prenez un malus de −2 aux jets d'attaque en raison de l'encombrement."
     },
-    "tags": ["item", "armor", "shield", "carrying_shield", "tower_shield", "item_shield_tower"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "carrying_shield",
+      "tower_shield",
+      "item_shield_tower"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 45,
     "costGp": 30,
@@ -979,7 +1368,10 @@
       {
         "id": "shield_tower_ac",
         "sourceId": "item_shield_tower",
-        "sourceName": { "en": "Tower Shield", "fr": "Pavois" },
+        "sourceName": {
+          "en": "Tower Shield",
+          "fr": "Pavois"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 4,
         "type": "shield"
@@ -987,7 +1379,10 @@
       {
         "id": "shield_tower_acp",
         "sourceId": "item_shield_tower",
-        "sourceName": { "en": "Tower Shield", "fr": "Pavois" },
+        "sourceName": {
+          "en": "Tower Shield",
+          "fr": "Pavois"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -10,
         "type": "base"
@@ -995,15 +1390,21 @@
       {
         "id": "shield_tower_max_dex",
         "sourceId": "item_shield_tower",
-        "sourceName": { "en": "Tower Shield", "fr": "Pavois" },
+        "sourceName": {
+          "en": "Tower Shield",
+          "fr": "Pavois"
+        },
         "targetId": "combatStats.max_dex_bonus",
         "value": 2,
-        "type": "setAbsolute"
+        "type": "max_dex_cap"
       },
       {
         "id": "shield_tower_asf",
         "sourceId": "item_shield_tower",
-        "sourceName": { "en": "Tower Shield", "fr": "Pavois" },
+        "sourceName": {
+          "en": "Tower Shield",
+          "fr": "Pavois"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 50,
         "type": "base"
@@ -1021,12 +1422,27 @@
     "id": "item_shield_light_spiked",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Spiked Light Shield", "fr": "Bouclier léger à pointes" },
+    "label": {
+      "en": "Spiked Light Shield",
+      "fr": "Bouclier léger à pointes"
+    },
     "description": {
       "en": "A light shield fitted with sharp metal spikes. The spikes turn its bash attack into a martial piercing weapon. You can bash an opponent with a spiked light shield as an off-hand weapon dealing piercing damage. If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Un bouclier léger équipé de pointes métalliques acérées. Les pointes transforment l'attaque de bouclier en arme martiale perforante. Vous pouvez frapper un adversaire avec ce bouclier léger à pointes comme arme secondaire en infligeant des dégâts perforants. Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_light", "carrying_shield", "metal_shield", "weapon", "weapon_martial", "weapon_melee", "weapon_light", "item_shield_light_spiked"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_light",
+      "carrying_shield",
+      "metal_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "weapon_light",
+      "item_shield_light_spiked"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 11,
     "costGp": 19,
@@ -1036,7 +1452,10 @@
       {
         "id": "shield_light_spiked_ac",
         "sourceId": "item_shield_light_spiked",
-        "sourceName": { "en": "Spiked Light Shield", "fr": "Bouclier léger à pointes" },
+        "sourceName": {
+          "en": "Spiked Light Shield",
+          "fr": "Bouclier léger à pointes"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "shield"
@@ -1044,7 +1463,10 @@
       {
         "id": "shield_light_spiked_acp",
         "sourceId": "item_shield_light_spiked",
-        "sourceName": { "en": "Spiked Light Shield", "fr": "Bouclier léger à pointes" },
+        "sourceName": {
+          "en": "Spiked Light Shield",
+          "fr": "Bouclier léger à pointes"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -1,
         "type": "base"
@@ -1052,7 +1474,10 @@
       {
         "id": "shield_light_spiked_asf",
         "sourceId": "item_shield_light_spiked",
-        "sourceName": { "en": "Spiked Light Shield", "fr": "Bouclier léger à pointes" },
+        "sourceName": {
+          "en": "Spiked Light Shield",
+          "fr": "Bouclier léger à pointes"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 5,
         "type": "base"
@@ -1068,7 +1493,9 @@
     "weaponData": {
       "wieldCategory": "light",
       "damageDice": "1d4",
-      "damageType": ["piercing"],
+      "damageType": [
+        "piercing"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -1078,12 +1505,26 @@
     "id": "item_shield_heavy_spiked",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Spiked Heavy Shield", "fr": "Bouclier lourd à pointes" },
+    "label": {
+      "en": "Spiked Heavy Shield",
+      "fr": "Bouclier lourd à pointes"
+    },
     "description": {
       "en": "A heavy shield fitted with sharp metal spikes. The spikes turn its bash attack into a martial piercing weapon, dealing increased damage compared to a regular shield bash. You can bash an opponent with a spiked heavy shield as an off-hand weapon. If you use your shield as a weapon, you lose its AC bonus until your next action.",
       "fr": "Un bouclier lourd équipé de pointes métalliques acérées. Les pointes transforment l'attaque de bouclier en arme martiale perforante, infligeant plus de dégâts qu'un coup de bouclier standard. Vous pouvez frapper un adversaire avec ce bouclier lourd à pointes comme arme secondaire. Si vous utilisez votre bouclier comme arme, vous perdez son bonus de CA jusqu'à votre prochaine action."
     },
-    "tags": ["item", "armor", "shield", "shield_heavy", "carrying_shield", "metal_shield", "weapon", "weapon_martial", "weapon_melee", "item_shield_heavy_spiked"],
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "shield_heavy",
+      "carrying_shield",
+      "metal_shield",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "item_shield_heavy_spiked"
+    ],
     "equipmentSlot": "off_hand",
     "weightLbs": 20,
     "costGp": 30,
@@ -1093,7 +1534,10 @@
       {
         "id": "shield_heavy_spiked_ac",
         "sourceId": "item_shield_heavy_spiked",
-        "sourceName": { "en": "Spiked Heavy Shield", "fr": "Bouclier lourd à pointes" },
+        "sourceName": {
+          "en": "Spiked Heavy Shield",
+          "fr": "Bouclier lourd à pointes"
+        },
         "targetId": "combatStats.ac_normal",
         "value": 2,
         "type": "shield"
@@ -1101,7 +1545,10 @@
       {
         "id": "shield_heavy_spiked_acp",
         "sourceId": "item_shield_heavy_spiked",
-        "sourceName": { "en": "Spiked Heavy Shield", "fr": "Bouclier lourd à pointes" },
+        "sourceName": {
+          "en": "Spiked Heavy Shield",
+          "fr": "Bouclier lourd à pointes"
+        },
         "targetId": "combatStats.armor_check_penalty",
         "value": -2,
         "type": "base"
@@ -1109,7 +1556,10 @@
       {
         "id": "shield_heavy_spiked_asf",
         "sourceId": "item_shield_heavy_spiked",
-        "sourceName": { "en": "Spiked Heavy Shield", "fr": "Bouclier lourd à pointes" },
+        "sourceName": {
+          "en": "Spiked Heavy Shield",
+          "fr": "Bouclier lourd à pointes"
+        },
         "targetId": "combatStats.arcane_spell_failure",
         "value": 15,
         "type": "base"
@@ -1125,7 +1575,9 @@
     "weaponData": {
       "wieldCategory": "one_handed",
       "damageDice": "1d6",
-      "damageType": ["piercing"],
+      "damageType": [
+        "piercing"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -1135,12 +1587,22 @@
     "id": "item_armor_spikes",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Armor Spikes", "fr": "Pointes d'armure" },
+    "label": {
+      "en": "Armor Spikes",
+      "fr": "Pointes d'armure"
+    },
     "description": {
       "en": "You can have spikes added to your armor, allowing you to deal extra piercing damage (1d6) on a successful grapple attack. The spikes count as a martial weapon. If you are not proficient with them, you take a −4 penalty on grapple checks when you try to use them. You can also make a regular melee attack (or off-hand attack) with the spikes; they count as a light weapon in this case. Cost is +50 gp added to the base armor cost; weight is +10 lb.",
       "fr": "Vous pouvez faire ajouter des pointes à votre armure, ce qui vous permet d'infliger des dégâts perforants supplémentaires (1d6) lors d'une attaque de lutte réussie. Les pointes comptent comme une arme martiale. Si vous n'y êtes pas qualifié, vous prenez un malus de −4 aux tests de lutte. Vous pouvez aussi faire une attaque de mêlée normale (ou secondaire) avec les pointes ; elles comptent comme une arme légère dans ce cas. Coût : +50 po au coût de l'armure de base ; poids : +10 lb."
     },
-    "tags": ["item", "weapon", "weapon_martial", "weapon_melee", "weapon_light", "item_armor_spikes"],
+    "tags": [
+      "item",
+      "weapon",
+      "weapon_martial",
+      "weapon_melee",
+      "weapon_light",
+      "item_armor_spikes"
+    ],
     "equipmentSlot": "none",
     "weightLbs": 10,
     "costGp": 50,
@@ -1151,7 +1613,9 @@
     "weaponData": {
       "wieldCategory": "light",
       "damageDice": "1d6",
-      "damageType": ["piercing"],
+      "damageType": [
+        "piercing"
+      ],
       "critRange": "20",
       "critMultiplier": 2,
       "reachFt": 5
@@ -1161,12 +1625,19 @@
     "id": "item_gauntlet_locked",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Locked Gauntlet", "fr": "Gantelet verrouillé" },
+    "label": {
+      "en": "Locked Gauntlet",
+      "fr": "Gantelet verrouillé"
+    },
     "description": {
       "en": "This armored gauntlet has small chains and braces that allow the wearer to attach a weapon so that it cannot be dropped easily. It provides a +10 bonus on any roll made to keep from being disarmed in combat. Removing or attaching a weapon is a full-round action that provokes attacks of opportunity. While the gauntlet is locked, you can't use the hand wearing it for casting spells or employing skills. Like a normal gauntlet, it lets you deal lethal damage with unarmed strikes.",
       "fr": "Ce gantelet blindé possède de petites chaînes et des attaches permettant au porteur d'y fixer une arme pour qu'elle ne puisse pas être facilement désarmée. Il accorde un bonus de +10 aux jets visant à éviter d'être désarmé. Retirer ou fixer une arme est une action complexe qui provoque des attaques d'opportunité. Tant que le gantelet est verrouillé, vous ne pouvez pas utiliser la main qui le porte pour lancer des sorts ou utiliser des compétences."
     },
-    "tags": ["item", "armor", "item_gauntlet_locked"],
+    "tags": [
+      "item",
+      "armor",
+      "item_gauntlet_locked"
+    ],
     "equipmentSlot": "hands",
     "weightLbs": 5,
     "costGp": 8,
@@ -1176,7 +1647,10 @@
       {
         "id": "gauntlet_locked_disarm",
         "sourceId": "item_gauntlet_locked",
-        "sourceName": { "en": "Locked Gauntlet", "fr": "Gantelet verrouillé" },
+        "sourceName": {
+          "en": "Locked Gauntlet",
+          "fr": "Gantelet verrouillé"
+        },
         "targetId": "combatStats.disarm_defense",
         "value": 10,
         "type": "untyped"
@@ -1188,12 +1662,18 @@
     "id": "item_shield_spikes",
     "category": "item",
     "ruleSource": "srd_core",
-    "label": { "en": "Shield Spikes", "fr": "Pointes de bouclier" },
+    "label": {
+      "en": "Shield Spikes",
+      "fr": "Pointes de bouclier"
+    },
     "description": {
       "en": "When added to your shield, these spikes turn it into a martial piercing weapon that increases the damage dealt by a shield bash as if the shield were designed for a creature one size category larger than you. You can't put spikes on a buckler or a tower shield. Attacking with a spiked shield is like making a shield bash attack. Cost is +10 gp added to the base shield cost; weight is +5 lb.",
       "fr": "Ajoutées à votre bouclier, ces pointes en font une arme martiale perforante qui augmente les dégâts d'un coup de bouclier comme si le bouclier était conçu pour une créature d'une catégorie de taille supérieure. Vous ne pouvez pas mettre des pointes sur une rondache ou un pavois. Attaquer avec un bouclier à pointes revient à faire un coup de bouclier. Coût : +10 po au coût du bouclier de base ; poids : +5 lb."
     },
-    "tags": ["item", "item_shield_spikes"],
+    "tags": [
+      "item",
+      "item_shield_spikes"
+    ],
     "equipmentSlot": "none",
     "weightLbs": 5,
     "costGp": 10,

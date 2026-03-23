@@ -782,13 +782,25 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 25. **E-5 Attacker Modifiers:** Does `resolveAttackerMods` correctly strip the `"attacker."` prefix before pipeline comparison? Does it handle a modifier with NO `situationalContext` (unconditional — applies to all attackers)? Does it correctly skip modifiers whose stripped targetId doesn't match the rolled pipeline? Does it skip non-`"attacker.*"` modifiers entirely? Is `attackerPenaltiesApplied` absent (not an empty array) from `RollResult` when no penalties apply? Is the defender's static `totalBonus` provably unaffected by attacker modifier resolution?
 
-26. **Enhancement E-16 — AugmentationRule.effectDescription (Phase E-16a/b/c):**
-    - Does `AugmentationRule` have `effectDescription?: LocalizedString` as an optional field per ARCHITECTURE.md section 5.2.2 / Phase E-16a?
-    - Is `effectDescription` backward-compatible (optional — existing augmentations without it compile correctly)?
-    - For qualitative augmentations (`grantedModifiers: []`), is `effectDescription` the only description channel?
-    - Does ARCHITECTURE.md section 5.2.2 document: fields table, two authoring patterns (mechanical + qualitative), 6-step CastingPanel contract, transient-vs-static design note?
-    - Does `augmentationRule.test.ts` cover: backward compatibility (undefined is valid), mechanical augmentation with effectDescription, qualitative augmentation (grantedModifiers empty), mixed array (3-entry), CastingPanel fallback logic (effectDescription wins over sourceName, fr locale, both-absent → "Unknown augmentation"), full MagicFeature integration?
-    - Is the test count 841 (825 prior + 16 new)?
+ 26. **Enhancement E-16 — AugmentationRule.effectDescription (Phase E-16a/b/c):**
+     - Does `AugmentationRule` have `effectDescription?: LocalizedString` as an optional field per ARCHITECTURE.md section 5.2.2 / Phase E-16a?
+     - Is `effectDescription` backward-compatible (optional — existing augmentations without it compile correctly)?
+     - For qualitative augmentations (`grantedModifiers: []`), is `effectDescription` the only description channel?
+     - Does ARCHITECTURE.md section 5.2.2 document: fields table, two authoring patterns (mechanical + qualitative), 6-step CastingPanel contract, transient-vs-static design note?
+     - Does `augmentationRule.test.ts` cover: backward compatibility (undefined is valid), mechanical augmentation with effectDescription, qualitative augmentation (grantedModifiers empty), mixed array (3-entry), CastingPanel fallback logic (effectDescription wins over sourceName, fr locale, both-absent → "Unknown augmentation"), full MagicFeature integration?
+     - Is the test count 841 (825 prior + 16 new)?
+
+ 27. **Enhancement E-17 — `combatStats.max_dex_bonus` Pipeline + `max_dex_cap` Modifier Type (Phase E-17a/b/c):**
+     - Does `ModifierType` include `"max_dex_cap"` per ARCHITECTURE.md section 4.17 / Phase E-17a?
+     - Is `"max_dex_cap"` documented as "minimum-wins stacking" and "only meaningful on `combatStats.max_dex_bonus`" in `primitives.ts`?
+     - Is `"max_dex_cap"` NOT in `ALWAYS_STACKING_TYPES` in `stackingRules.ts`?
+     - Is `combatStats.max_dex_bonus` pipeline initialized in GameEngine with `baseValue = 99` (no cap by default)?
+     - Does Phase 3 in `GameEngine.svelte.ts` include a special-case block for `combatStats.max_dex_bonus` that: (1) separates `max_dex_cap` mods, (2) takes `Math.min(...)` as `effectiveBaseValue`, (3) applies remaining mods via `applyStackingRules`, (4) uses `continue` to skip the general loop?
+     - Do all 13 armor/shield items in `07_d20srd_core_equipment_armor.json` use `type: "max_dex_cap"` (NOT `"setAbsolute"`) for their `combatStats.max_dex_bonus` modifiers?
+     - Does `test_mock.json` use `type: "max_dex_cap"` (not `"setAbsolute"`) on breastplate and condition_heavy_load?
+     - Does ARCHITECTURE.md section 4.17 document: two-layer model table (cap vs additive), Phase 3 algorithm, 6-row example table, content authoring JSON, shields-without-restriction note, UI contract?
+     - Does `maxDexBonus.test.ts` cover: no armor (99), single cap (2), cap+mithral (4), multi-cap min-wins, condition beats large cap, mithral on full plate (3), zero cap, mithral on zero (2), independence from other pipelines?
+     - Is the test count 863 (841 prior + 22 new)?
 
 27. **SRD JSON Conformance for Engine Enhancements:** Do the following rings in `12_d20srd_core_magic_items.json` have the correct new fields?
     - Ring of the Ram: `resourcePoolTemplates[0].resetCondition === "never"`, `activation.tieredResourceCosts` length 3, tier costs 1/2/3.

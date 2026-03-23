@@ -1285,6 +1285,116 @@ These negative levels are modelled via `grantedModifiers` with a `conditionNode`
 
 ---
 
+### 4.17. Max DEX Bonus to AC — `combatStats.max_dex_bonus` and `type: "max_dex_cap"`
+
+D&D 3.5 SRD: *"If your armor has a maximum Dexterity bonus, this is the highest Dexterity modifier you can add to your Armor Class while wearing it."*
+
+Armor, shields with a DEX restriction, and encumbrance conditions all cap how much of a character's Dexterity modifier applies to AC. Unlike a simple static number, this cap must be **dynamic** so that special materials (notably Mithral, which increases the cap by +2) can stack on top of it.
+
+#### Data Model — `combatStats.max_dex_bonus`
+
+`combatStats.max_dex_bonus` is a `StatisticPipeline` initialized at `baseValue = 99` (effectively "no cap" for an unarmored character).
+
+**`armorData.maxDex` vs the pipeline:**  
+`armorData.maxDex` on `ItemFeature` is a **display-only shadow** of this value (for the Inventory UI tooltip). The pipeline is the **mechanical source of truth** for all AC calculations — exactly like `armorData.arcaneSpellFailure` vs `combatStats.arcane_spell_failure`.
+
+#### The Two-Layer Model
+
+| Layer | Modifier type | Stacking behavior | Used by |
+|---|---|---|---|
+| **Cap** (armor/conditions) | `"max_dex_cap"` | **MINIMUM wins** — most restrictive cap applies | Chainmail (cap=2), Tower Shield (cap=2), Heavy Load (cap=1) |
+| **Bonus** (special materials) | `"untyped"` | Always stacks (added AFTER the cap) | Mithral (+2), enhancement items |
+
+A character wearing chain mail (cap=2) with mithral (+2 untyped) has `max_dex_bonus.totalValue = 4`.
+
+#### New `ModifierType` — `"max_dex_cap"`
+
+```typescript
+// Imposed by armor, shields with DEX restriction, and encumbrance conditions.
+// Multiple max_dex_cap sources → MINIMUM wins (see Phase 3 special handling).
+// Only meaningful on `combatStats.max_dex_bonus`.
+"max_dex_cap"
+```
+
+`"max_dex_cap"` is NOT in `ALWAYS_STACKING_TYPES`. It is **extracted from the modifier list before `applyStackingRules()`** is called — Phase 3 handles it specially so that additive bonuses (like Mithral's +2 untyped) can still stack on top.
+
+#### Phase 3 Computation Algorithm
+
+```
+// Phase 3 special case for combatStats.max_dex_bonus:
+capMods    = activeMods.filter(m => m.type === 'max_dex_cap')
+otherMods  = activeMods.filter(m => m.type !== 'max_dex_cap')
+
+effectiveBaseValue = capMods.length > 0
+  ? Math.min(...capMods.map(m => m.value))   // most restrictive wins
+  : 99                                         // no armor → no restriction
+
+stacking = applyStackingRules(otherMods, effectiveBaseValue)
+totalValue = stacking.totalValue
+```
+
+#### Examples
+
+| Scenario | max_dex_cap mods | untyped mods | totalValue |
+|---|---|---|---|
+| Unarmored | — | — | 99 (no cap) |
+| Chainmail (cap=2) | [2] | — | 2 |
+| Mithral Chainmail | [2] | [+2] | 4 |
+| Full Plate (cap=1) + Tower Shield (cap=2) | [1, 2] | — | 1 (min wins) |
+| Heavy Load + Padded (cap=8) | [1, 8] | — | 1 (load wins) |
+| Mithral Full Plate (cap=1 + mithral +2) | [1] | [+2] | 3 |
+
+#### Content Authoring
+
+```json
+// Chainmail — restricts max DEX to +2
+{
+  "id": "armor_chainmail_max_dex",
+  "sourceId": "item_armor_chainmail",
+  "sourceName": { "en": "Chainmail", "fr": "Cotte de mailles" },
+  "targetId": "combatStats.max_dex_bonus",
+  "value": 2,
+  "type": "max_dex_cap"
+}
+
+// Mithral special material — raises max DEX cap by +2
+{
+  "id": "special_material_mithral_max_dex",
+  "sourceId": "special_material_mithral",
+  "sourceName": { "en": "Mithral", "fr": "Mithral" },
+  "targetId": "combatStats.max_dex_bonus",
+  "value": 2,
+  "type": "untyped"
+}
+
+// Heavy Load condition — caps max DEX at +1
+{
+  "id": "condition_heavy_load_max_dex",
+  "sourceId": "condition_heavy_load",
+  "sourceName": { "en": "Heavy Load", "fr": "Charge lourde" },
+  "targetId": "combatStats.max_dex_bonus",
+  "value": 1,
+  "type": "max_dex_cap"
+}
+```
+
+**Shields without DEX restriction** (e.g., heavy steel shield with maxDex=99): do NOT add any `max_dex_bonus` modifier — the pipeline remains at 99 by default. Only items that actually restrict DEX should add a `max_dex_cap` modifier.
+
+#### UI Contract — ArmorClass Panel
+
+The `ArmorClass.svelte` panel reads `combatStats.max_dex_bonus.totalValue` to determine the maximum DEX modifier applied to AC:
+- If `totalValue ≥ DEX_modifier`: full DEX applies (cap not reached).
+- If `totalValue < DEX_modifier`: cap the contribution at `totalValue`.
+- If `totalValue === 99`: display "No restriction" or omit the cap entirely.
+
+The `ModifierBreakdownModal` for `combatStats.max_dex_bonus` shows both the cap sources (armor/conditions) and any additive bonuses (mithral) separately for player transparency.
+
+> **AI Implementation Note (Phase 10.2):** When displaying AC, compute:
+> `effectiveDexToAC = Math.min(dexDerivedModifier, combatStats.max_dex_bonus.totalValue)`
+> Use this capped value (not raw `dexDerivedModifier`) when summing AC components. Always guard against `totalValue === 99` as the "no cap" sentinel.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

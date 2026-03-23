@@ -494,6 +494,42 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       //   and rolls 1d100 before every arcane spell cast. If roll <= ASF%, the spell fails.
       //   @see ARCHITECTURE.md section 4.8 — Arcane Spell Failure mechanic reference
       'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'Arcane Spell Failure', fr: "Risque d'échec des sorts arcaniques" }, 0),
+
+      // --- MAX DEX BONUS TO AC (`combatStats.max_dex_bonus`) ---
+      //
+      // The maximum Dexterity modifier a character may apply to their Armor Class
+      // while wearing armor, carrying a shield with a restriction, or under encumbrance.
+      //
+      // D&D 3.5 SRD rule: "If your armor has a maximum Dexterity bonus, this is the
+      //   highest Dexterity modifier you can add to your Armor Class while wearing it."
+      //
+      // STACKING MODEL (MINIMUM-WINS per Phase 3 special handling):
+      //   Armor and conditions impose a CAP via `type: "max_dex_cap"` modifiers.
+      //   Multiple `max_dex_cap` sources → MINIMUM value applies (most restrictive wins).
+      //   Additive bonuses (e.g., Mithral +2) use `type: "untyped"` and are applied AFTER
+      //   the cap is determined. See Phase 3 special case in phase3_combatStats.
+      //
+      // BASE VALUE = 99:
+      //   An unarmored character (no active `max_dex_cap` modifier) has a cap of 99,
+      //   which effectively means "no restriction — full DEX applies to AC".
+      //
+      // CONTENT AUTHORING:
+      //   Armor/shield restricting DEX:
+      //     { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 3 }
+      //   Heavy Load condition (cap of +1):
+      //     { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 1 }
+      //   Mithral special material (+2 to the cap):
+      //     { type: "untyped", targetId: "combatStats.max_dex_bonus", value: 2 }
+      //
+      // UI CONTRACT:
+      //   The ArmorClass panel reads `combatStats.max_dex_bonus.totalValue` and caps
+      //   the DEX modifier contribution to AC at that value. A totalValue of 99 means
+      //   "no cap" (full DEX applies). The pipeline value is also displayed in the
+      //   ArmorClass breakdown for player transparency.
+      //
+      // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
+      // @see primitives.ts ModifierType: "max_dex_cap" for the new minimum-wins type
+      'combatStats.max_dex_bonus': makePipeline('combatStats.max_dex_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
     },
     saves: {
       'saves.fort': makePipeline('saves.fort', { en: 'Fortitude', fr: 'Vigueur' }, 0),
@@ -1282,6 +1318,64 @@ export class GameEngine {
         const sumDiceRolls = Object.values(this.character.hitDieResults)
           .reduce((total, roll) => total + roll, 0);
         effectiveBaseValue = sumDiceRolls + conHpContrib;
+      }
+
+      // --- Max DEX Bonus to AC: minimum-wins among armor/condition caps ---
+      //
+      // `combatStats.max_dex_bonus` uses a special stacking model:
+      //   - `max_dex_cap` modifiers represent CONSTRAINTS (armor, encumbrance, conditions).
+      //     The most restrictive cap wins: if chain mail (cap=2) and tower shield (cap=2)
+      //     are both active, the effective cap is min(2, 2) = 2.
+      //   - Other modifier types (e.g., `untyped` +2 from Mithral, or enhancement bonuses
+      //     from magical items) are applied AFTER the cap is established via normal stacking.
+      //
+      // WHY NOT setAbsolute?
+      //   Using setAbsolute for armor caps prevents additive bonuses (like Mithral's +2)
+      //   from stacking on top. The `max_dex_cap` type solves this by separating the
+      //   "cap from armor" from "bonus to cap from special material".
+      //
+      //   Example: mithral chainmail
+      //     - chain mail max_dex_cap = 2  → effectiveBaseValue = 2
+      //     - mithral untyped = +2        → totalValue = 2 + 2 = 4
+      //     Combined: "max DEX bonus to AC is +4" (chainmail base 2, mithral adds 2).
+      //
+      // BASE VALUE = 99:
+      //   No armor worn → no max_dex_cap modifiers → effectiveBaseValue = 99 (no restriction).
+      //   Additive bonuses on an unarmored character (unusual but possible) still stack.
+      //
+      // @see primitives.ts — ModifierType "max_dex_cap" documentation
+      // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
+      if (pipelineId === 'combatStats.max_dex_bonus') {
+        // Separate the cap-imposing modifiers from additive bonuses
+        const capMods = activeMods.filter(m => m.type === 'max_dex_cap');
+        // After we extract capMods, only the non-cap modifiers go through normal stacking
+        // (we reassign activeMods below — TypeScript requires a local override)
+        const remainingMods = activeMods.filter(m => m.type !== 'max_dex_cap');
+
+        if (capMods.length > 0) {
+          // MINIMUM-WINS: most restrictive armor/condition cap applies
+          effectiveBaseValue = Math.min(...capMods.map(m => Number(m.value)));
+        } else {
+          // No armor / no condition restricting DEX → use base of 99 (no cap)
+          effectiveBaseValue = basePipeline.baseValue; // 99
+        }
+
+        // Apply non-cap modifiers (e.g., Mithral's untyped +2) via normal stacking.
+        // Gestalt mode has no effect on this pipeline (it's not BAB/saves).
+        const stackingResult = applyStackingRules(remainingMods, effectiveBaseValue);
+
+        result[pipelineId] = {
+          ...basePipeline,
+          // Expose ALL source modifiers in activeModifiers for the UI breakdown:
+          // cap mods + applied non-cap mods, so the player can see what imposed the cap
+          // and what bonuses were added on top.
+          activeModifiers: [...capMods, ...stackingResult.appliedModifiers],
+          situationalModifiers: situationalMods,
+          totalBonus: stackingResult.totalBonus,
+          totalValue: stackingResult.totalValue,
+          derivedModifier: 0,
+        };
+        continue; // Skip the general processing loop for this pipeline
       }
 
        // GESTALT MODE (Phase 3.7):
