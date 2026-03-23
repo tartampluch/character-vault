@@ -1079,6 +1079,58 @@ export interface ItemFeature extends Feature {
     };
 
    /**
+    * Whether this item is a unique item that can only exist once in the world.
+    *
+    * D&D 3.5 SRD — MAJOR ARTIFACTS:
+    *   "Major artifacts are unique items — only one of each such item exists.
+    *   These are the most potent of magic items, capable of altering the balance
+    *   of a campaign."
+    *
+    * ENGINE CONTRACT:
+    *   This is a METADATA field. It has NO effect on the DAG computation pipeline,
+    *   modifier stacking, dice engine, or ability activation flows. All artifact
+    *   effects (modifiers, activated abilities, charges, weapon stats) are modelled
+    *   using the same primitives as non-unique items.
+    *
+    *   The field exists exclusively for the GM Campaign Layer (Phase 21+) to:
+    *   - Prevent duplicate instances of the same major artifact from being added
+    *     to the campaign world inventory.
+    *   - Display a special UI badge ("Unique — Only One Exists") in the item detail.
+    *   - Warn the GM when trading, looting, or copying a unique item.
+    *
+    * CONTENT AUTHORING:
+    *   - All major artifacts: `isUnique: true`
+    *   - Minor artifacts: omit (they are NOT necessarily unique — "minor artifacts
+    *     are not necessarily unique items")
+    *   - All non-artifact items: omit
+    *
+    * @see artifactTier — whether this is a minor or major artifact
+    */
+   isUnique?: boolean;
+
+   /**
+    * Artifact tier — distinguishes minor artifacts from major artifacts.
+    *
+    * D&D 3.5 SRD:
+    *   - **Minor artifacts**: "not necessarily unique items. Even so, they are
+    *     magic items that no longer can be created, at least by common mortal means."
+    *     Examples: Book of Infinite Spells, Deck of Many Things, Sphere of Annihilation.
+    *   - **Major artifacts**: "unique items — only one of each such item exists."
+    *     Examples: The Shadowstaff, The Shield of the Sun, The Orbs of Dragonkind.
+    *
+    * ENGINE CONTRACT:
+    *   Metadata only — affects no engine computation.
+    *   The `artifact` tag in `tags[]` identifies an item as an artifact;
+    *   `artifactTier` further classifies it for display and campaign management.
+    *
+    * CONTENT AUTHORING:
+    *   Artifacts carry tags: `["item", "artifact", "magic_item"]`.
+    *   Major artifacts additionally have `isUnique: true`.
+    *   `artifactTier` should always be set when `tags` includes `"artifact"`.
+    */
+   artifactTier?: 'minor' | 'major';
+
+   /**
     * Scroll spell list — present ONLY on scrolls.
     *
     * D&D 3.5 SRD — SCROLL MECHANICS:

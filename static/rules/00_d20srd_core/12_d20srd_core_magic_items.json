@@ -57492,5 +57492,1144 @@
     ],
     "grantedModifiers": [],
     "grantedFeatures": []
+  },
+  {
+    "id": "item_artifact_book_of_infinite_spells",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Book of Infinite Spells",
+      "fr": "Livre des Sorts Infinis"
+    },
+    "description": {
+      "en": "Contains 1d8+22 pages. Each page holds one spell (01-50 arcane, 51-100 divine) determined as major scroll spells. Owner can cast the current spell once/day (4×/day if on their class list). Non-casters gain one negative level while possessing/using it. Each cast: chance of page turning (10-30%). Cannot go back, cannot copy spells. Book vanishes when last page is turned. Treat each use as a scroll for casting time, spell failure, etc. (Strong all schools; CL 18).",
+      "fr": "Contient 1d8+22 pages. Chaque page détient un sort (01-50 arcanique, 51-100 divin). Le propriétaire peut lancer le sort actuel 1×/jour (4×/jour si sur sa liste de classe). Les non-lanceurs gagnent un niveau négatif. Chaque utilisation : risque de tournée de page (10-30%). Impossible de revenir en arrière ou de copier. Le livre disparaît quand la dernière page est tournée. Traiter comme un parchemin pour le temps d'incantation et l'échec (Fort tous les arcanes; NLS 18)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 1
+  },
+  {
+    "id": "item_artifact_deck_of_many_things",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things",
+      "fr": "Jeu des Nombreuses Choses"
+    },
+    "description": {
+      "en": "22-card deck of ivory or vellum. Each card produces a powerful immediate effect (from beneficial to catastrophic) when drawn. The drawer must announce how many cards to draw before starting. Notable effects: Balance (alignment change), Star (+2 inherent ability score), Euryale (-1 permanent penalty to all saves), Moon (1d4 wishes), Throne (+6 Diplomacy + keep), Sun (medium wondrous item + 50,000 XP), Talons (lose all magic items), Void (soul imprisoned). See SRD for full card table. (Strong all schools; CL 20).",
+      "fr": "22 cartes d'ivoire. Chaque carte produit un effet immédiat puissant (bénéfique à catastrophique). Le tireur doit annoncer combien de cartes il tirera avant de commencer. Effets notables : Balance (changement d'alignement), Étoile (+2 bonus inné), Euryale (-1 permanent à tous les jets), Lune (1d4 souhaits), Trône (+6 Diplomatie + château), Soleil (objet merveilleux + 50 000 PX), Serres (perdre tous les objets magiques), Vide (âme emprisonnée). (Fort tous les arcanes; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 1
+  },
+  {
+    "id": "item_artifact_hammer_of_thunderbolts",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Hammer of Thunderbolts",
+      "fr": "Marteau des Coups de Tonnerre"
+    },
+    "description": {
+      "en": "+3 Large returning warhammer, 4d6 damage. If the wielder also wears a Belt of Giant Strength AND Gauntlets of Ogre Power and knows the hammer's identity: becomes +5, belt/gauntlet bonuses stack, slays giants on hit (Fort DC 20 negates death but not damage). When thrown: all within 90 ft stunned 1 round (Fort DC 15 negates). Range increment 30 ft. (Strong evocation, necromancy, transmutation; CL 20).",
+      "fr": "+3 gros marteau de guerre retournant, 4d6 dégâts. Si le porteur porte aussi une Ceinture de Force de Géant ET des Gantelets de Puissance d'Ogre et connaît l'identité du marteau : devient +5, les bonus se cumulent, tue les géants au toucher (Vigueur DD 20 annule). Lancé : toutes les créatures à moins de 27 m sont étourdies 1 round (Vigueur DD 15). Facteur de portée 9 m. (Fort évocation, nécromancie, transmutation; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "returning"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 15,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [
+      {
+        "id": "item_artifact_hammer_of_thunderbolts_combatStats_attack_bonus",
+        "sourceId": "item_artifact_hammer_of_thunderbolts",
+        "sourceName": {
+          "en": "Hammer of Thunderbolts",
+          "fr": "Marteau des Coups de Tonnerre"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_artifact_hammer_of_thunderbolts_combatStats_damage_bonus",
+        "sourceId": "item_artifact_hammer_of_thunderbolts",
+        "sourceName": {
+          "en": "Hammer of Thunderbolts",
+          "fr": "Marteau des Coups de Tonnerre"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "hardness": 20,
+    "hpMax": 50,
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "4d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 5,
+      "rangeIncrementFt": 30
+    }
+  },
+  {
+    "id": "item_artifact_philosophers_stone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Philosopher's Stone",
+      "fr": "Pierre Philosophale"
+    },
+    "description": {
+      "en": "Appears as sooty blackish rock. Broken open (DC 20): magical quicksilver inside. An arcane spellcaster can transmute up to 5,000 lb iron→silver or 1,000 lb lead→gold. The quicksilver loses potency within 24 hours. Alternatively: mixed into any cure potion creates oil of life acting as true resurrection. Single use (consumed once opened). (Strong transmutation; CL 20).",
+      "fr": "Semble un rocher noir suie. Ouvert (DD 20) : vif-argent magique à l'intérieur. Un lanceur de sorts arcanique peut transmuter jusqu'à 2 500 kg de fer en argent ou 500 kg de plomb en or. Le vif-argent perd sa puissance en 24 heures. Alternative : mélangé à une potion de soins, crée une huile de vie agissant comme résurrection véritable. Utilisation unique. (Transmutation forte; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 1,
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single use (loses potency in 24 hrs)"
+    }
+  },
+  {
+    "id": "item_artifact_sphere_of_annihilation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sphere of Annihilation",
+      "fr": "Sphère d'Annihilation"
+    },
+    "description": {
+      "en": "2-ft diameter globe of absolute blackness — a hole in the multiverse's fabric. Any matter touching it is instantly and utterly destroyed. Controlled by mental effort: control check 1d20+level+INT mod vs DC 30 (move action), up to 40 ft range. Success: move sphere as free action. Failure: sphere slides 10 ft toward character. Speed: 10 ft + 5 ft/5 pts above DC 30. Gate spell: 50% destroys sphere, 35% nothing, 15% opens a planar rift 180-ft radius catapulting all to another plane. Rod of Cancellation + Sphere: explosion dealing 2d6×10 in 60-ft radius. Dispel magic and mage's disjunction have no effect. Only divine intervention can restore an annihilated character. (Strong transmutation; CL 20).",
+      "fr": "Globe de noirceur absolue de 60 cm — un trou dans le tissu du multivers. Toute matière au contact est instantanément et totalement détruite. Contrôlé par effort mental : test de contrôle 1d20+niveau+mod INT contre DD 30 (action de déplacement), jusqu'à 12 m. Succès : déplacer la sphère en action libre. Échec : la sphère glisse vers le personnage. Sort de portail : 50% détruit la sphère, 35% rien, 15% ouvre une fissure planaire de 54 m catapultant tout vers un autre plan. Tige d'annulation + Sphère : explosion 2d6×10 dans 18 m. Intervention divine seulement pour restaurer les annihilés. (Transmutation forte; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "move"
+    }
+  },
+  {
+    "id": "item_artifact_staff_of_the_magi",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of the Magi",
+      "fr": "Bâton des Mages"
+    },
+    "description": {
+      "en": "50-charge artifact staff. Chargeless powers: detect magic, enlarge person, hold portal, light, mage armor, mage hand. 1-charge powers: dispel magic, fireball (10d6), ice storm, invisibility, knock, lightning bolt (10d6), passwall, pyrotechnics, wall of fire, web. 2-charge powers: summon monster IX, plane shift, telekinesis (400 lb). Grants SR 23 to wielder. If SR willingly lowered: absorbs arcane spells as charges (no communication of how many — risky: if charges exceed 50, retributive strike automatically triggers). Retributive strike: break staff → 8×charges in 10 ft, 6×charges 11-20 ft, 4×charges 21-30 ft (Reflex DC 17 half); 50% wielder plane-shifted, else destroyed. (Strong all schools; CL 20).",
+      "fr": "Bâton artefact de 50 charges. Pouvoirs sans charge : détection de la magie, agrandissement, verrouiller portail, lumière, armure de mage, main du mage. 1 charge : dissipation, boule de feu (10d6), tempête de glace, invisibilité, déblocage, éclair (10d6), passage dans les murs, pyrotechnie, mur de feu, toile. 2 charges : invocation de monstres IX, voyage planaire, télékinésie (200 kg). Accorde RM 23 au porteur. Si RM volontairement abaissée : absorbe les sorts arcaniques (risque : >50 charges → frappe rétributive automatique). Frappe rétributive : 8×charges à 3 m, 6×charges à 3-6 m, 4×charges à 6-9 m (Réflexes DD 17 moitié). (Fort tous les arcanes; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [
+      {
+        "id": "item_artifact_staff_of_the_magi_combatStats_spell_resistance",
+        "sourceId": "item_artifact_staff_of_the_magi",
+        "sourceName": {
+          "en": "Staff of the Magi",
+          "fr": "Bâton des Mages"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 23,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_dispel_magic",
+        "chargeCost": 1,
+        "spellLevel": 3
+      },
+      {
+        "spellId": "spell_fireball",
+        "chargeCost": 1,
+        "spellLevel": 3
+      },
+      {
+        "spellId": "spell_ice_storm",
+        "chargeCost": 1,
+        "spellLevel": 4
+      },
+      {
+        "spellId": "spell_invisibility",
+        "chargeCost": 1,
+        "spellLevel": 2
+      },
+      {
+        "spellId": "spell_knock",
+        "chargeCost": 1,
+        "spellLevel": 2
+      },
+      {
+        "spellId": "spell_lightning_bolt",
+        "chargeCost": 1,
+        "spellLevel": 3
+      },
+      {
+        "spellId": "spell_passwall",
+        "chargeCost": 1,
+        "spellLevel": 5
+      },
+      {
+        "spellId": "spell_pyrotechnics",
+        "chargeCost": 1,
+        "spellLevel": 2
+      },
+      {
+        "spellId": "spell_wall_of_fire",
+        "chargeCost": 1,
+        "spellLevel": 4
+      },
+      {
+        "spellId": "spell_web",
+        "chargeCost": 1,
+        "spellLevel": 2
+      },
+      {
+        "spellId": "spell_summon_monster_ix",
+        "chargeCost": 2,
+        "spellLevel": 9
+      },
+      {
+        "spellId": "spell_plane_shift",
+        "chargeCost": 2,
+        "spellLevel": 7
+      },
+      {
+        "spellId": "spell_telekinesis",
+        "chargeCost": 2,
+        "spellLevel": 5
+      }
+    ],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_talisman_of_pure_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Talisman of Pure Good",
+      "fr": "Talisman de Pur Bien"
+    },
+    "description": {
+      "en": "Good divine spellcasters only. Causes a flaming crack under an evil divine spellcaster's feet up to 100 ft away (swallowed forever, sent to earth's core). Wielder must be good; if not exceptionally pure, evil target gets Reflex DC 19 to leap away. 6 charges total (never recharge). Neutral divine spellcaster touching it: 6d6 damage. Evil divine spellcaster touching it: 8d6 damage. (Strong evocation [good]; CL 18).",
+      "fr": "Lanceurs de sorts divins bons uniquement. Crée une fissure enflammée sous les pieds d'un lanceur de sorts divin mauvais jusqu'à 30 m (englouti à jamais). 6 charges totales (ne se rechargent jamais). Contact avec un lanceur divin neutre : 6d6 dégâts. Contact avec un lanceur divin mauvais : 8d6 dégâts. (Évocation forte [bon]; NLS 18)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "good"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 5,
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Talisman Charges (6)",
+          "fr": "Charges de talisman (6)"
+        },
+        "maxPipelineId": "combatStats.talisman_charges_max",
+        "defaultCurrent": 6,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_talisman_of_the_sphere",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Talisman of the Sphere",
+      "fr": "Talisman de la Sphère"
+    },
+    "description": {
+      "en": "Useless to non-arcane casters; picking it up deals 5d6 damage to them. When held by an arcane caster concentrating on a Sphere of Annihilation: doubles all control check modifiers (doubling both INT bonus and character level for control checks). With control established: only check to maintain every other round. Made of adamantine. (Strong transmutation; CL 16).",
+      "fr": "Inutile aux non-lanceurs arcaniques ; le ramasser inflige 5d6 dégâts. Quand tenu par un lanceur arcanique concentré sur une Sphère d'Annihilation : double tous les modificateurs au test de contrôle (dobule le bonus d'INT et le niveau). Avec contrôle établi : vérifier seulement 1 round sur 2. En adamantium. (Transmutation forte; NLS 16)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 20,
+    "hpMax": 5
+  },
+  {
+    "id": "item_artifact_talisman_of_reluctant_wishes",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Talisman of Reluctant Wishes",
+      "fr": "Talisman des Souhaits Réticents"
+    },
+    "description": {
+      "en": "Appears as a stone of controlling earth elementals. CHA check DC 15 when touched: Fail → functions as stone of weight (discarding: 5d6 damage, disappears). Success → stays 5d6 hours or until a wish is made, then disappears. Natural 20 → bonded for CHA-score months; grants 1 wish per 6 pts of CHA; also warns of traps within 20 ft (throbs if held). Always leaves behind a 10,000 gp diamond when time expires. (Strong conjuration; CL 20).",
+      "fr": "Ressemble à une pierre de contrôle des élémentaires de terre. Test de Charisme DD 15 au toucher : Échec → pierre de poids. Succès → reste 5d6 heures ou jusqu'à souhait. 20 naturel → lié pour des mois égaux au Charisme ; 1 souhait par 6 points de CHA ; avertit des pièges à moins de 6 m. Laisse toujours un diamant de 10 000 po à la disparition. (Conjuration forte; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 5
+  },
+  {
+    "id": "item_artifact_talisman_of_ultimate_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Talisman of Ultimate Evil",
+      "fr": "Talisman du Mal Absolu"
+    },
+    "description": {
+      "en": "Evil divine spellcasters only. Causes a flaming crack under a good divine spellcaster's feet up to 100 ft away (swallowed forever). Wielder must be evil; if not exceptionally foul, good target gets Reflex DC 19 to leap away. 6 charges total (never recharge). Neutral divine spellcaster touching it: 6d6 damage. Good divine spellcaster touching it: 8d6 damage. (Strong evocation [evil]; CL 18).",
+      "fr": "Lanceurs de sorts divins mauvais uniquement. Crée une fissure enflammée sous les pieds d'un lanceur de sorts divin bon jusqu'à 30 m. 6 charges totales. Contact avec un lanceur divin neutre : 6d6. Contact avec lanceur divin bon : 8d6. (Évocation forte [mauvais]; NLS 18)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "evil"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "hardness": 0,
+    "hpMax": 5,
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Talisman Charges (6)",
+          "fr": "Charges de talisman (6)"
+        },
+        "maxPipelineId": "combatStats.talisman_charges_max",
+        "defaultCurrent": 6,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_moaning_diamond",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "The Moaning Diamond",
+      "fr": "Le Diamant Gémissant"
+    },
+    "description": {
+      "en": "Constantly emits a baleful moaning sound. 3×/day: stone shape affecting 5,000 cubic feet of earth/stone. Once (after previous is slain, not before 24 hr): summon elder earth elemental (maximum HP) that serves until slain. Not evil. (Major artifact; unique).",
+      "fr": "Émet constamment un son lugubre. 3×/jour : façonnage de la pierre affectant 4 600 m³ de terre/pierre. Une fois (après que le précédent est tué, délai de 24 h) : invoque un élémentaire de terre ancien (PV maximum) servant jusqu'à la mort. Non mauvais. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 20,
+    "hpMax": 5,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "stone_shape_uses",
+        "label": {
+          "en": "Stone Shape (3/day)",
+          "fr": "Façonnage de pierre (3/jour)"
+        },
+        "maxPipelineId": "combatStats.stone_shape_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_black",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Black Dragon)",
+      "fr": "Orbe des Dragons (Black)"
+    },
+    "description": {
+      "en": "Dominate black dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to black dragon's breath weapon. Can use black dragon breath weapon 3×/day. Individual power (1/round at CL 10): Fly (Will DC 17 negates). Detects dragons within 10 miles (100 miles for black variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons black à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon black. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Vol (Volonté DD 17 annule). Détecte les dragons à moins de 16 km (160 km pour les black ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_blue",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Blue Dragon)",
+      "fr": "Orbe des Dragons (Blue)"
+    },
+    "description": {
+      "en": "Dominate blue dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to blue dragon's breath weapon. Can use blue dragon breath weapon 3×/day. Individual power (1/round at CL 10): Haste (Fort DC 17 negates). Detects dragons within 10 miles (100 miles for blue variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons blue à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon blue. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Accélération (Vigueur DD 17 annule). Détecte les dragons à moins de 16 km (160 km pour les blue ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_brass",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Brass Dragon)",
+      "fr": "Orbe des Dragons (Brass)"
+    },
+    "description": {
+      "en": "Dominate brass dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to brass dragon's breath weapon. Can use brass dragon breath weapon 3×/day. Individual power (1/round at CL 10): Teleport (Will DC 19 negates). Detects dragons within 10 miles (100 miles for brass variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons brass à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon brass. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Téléportation (Volonté DD 19 annule). Détecte les dragons à moins de 16 km (160 km pour les brass ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_bronze",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Bronze Dragon)",
+      "fr": "Orbe des Dragons (Bronze)"
+    },
+    "description": {
+      "en": "Dominate bronze dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to bronze dragon's breath weapon. Can use bronze dragon breath weapon 3×/day. Individual power (1/round at CL 10): Scrying (Will DC 18 negates). Detects dragons within 10 miles (100 miles for bronze variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons bronze à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon bronze. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Scrutation (Volonté DD 18 annule). Détecte les dragons à moins de 16 km (160 km pour les bronze ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_copper",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Copper Dragon)",
+      "fr": "Orbe des Dragons (Copper)"
+    },
+    "description": {
+      "en": "Dominate copper dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to copper dragon's breath weapon. Can use copper dragon breath weapon 3×/day. Individual power (1/round at CL 10): Suggestion (Will DC 17 negates). Detects dragons within 10 miles (100 miles for copper variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons copper à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon copper. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Suggestion (Volonté DD 17 annule). Détecte les dragons à moins de 16 km (160 km pour les copper ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_gold",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Gold Dragon)",
+      "fr": "Orbe des Dragons (Gold)"
+    },
+    "description": {
+      "en": "Dominate gold dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to gold dragon's breath weapon. Can use gold dragon breath weapon 3×/day. Individual power (1/round at CL 10): All other Orb powers (1×/day each; dominate any Orb possessor Will DC 23). Detects dragons within 10 miles (100 miles for gold variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons gold à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon gold. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Tous les autres pouvoirs d'Orbe (1×/jour chacun; dominer tout possesseur d'Orbe Volonté DD 23). Détecte les dragons à moins de 16 km (160 km pour les gold ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_green",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Green Dragon)",
+      "fr": "Orbe des Dragons (Green)"
+    },
+    "description": {
+      "en": "Dominate green dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to green dragon's breath weapon. Can use green dragon breath weapon 3×/day. Individual power (1/round at CL 10): Spectral Hand. Detects dragons within 10 miles (100 miles for green variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons green à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon green. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Main spectrale. Détecte les dragons à moins de 16 km (160 km pour les green ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_red",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Red Dragon)",
+      "fr": "Orbe des Dragons (Red)"
+    },
+    "description": {
+      "en": "Dominate red dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to red dragon's breath weapon. Can use red dragon breath weapon 3×/day. Individual power (1/round at CL 10): Wall of Fire. Detects dragons within 10 miles (100 miles for red variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons red à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon red. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Mur de feu. Détecte les dragons à moins de 16 km (160 km pour les red ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_silver",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (Silver Dragon)",
+      "fr": "Orbe des Dragons (Silver)"
+    },
+    "description": {
+      "en": "Dominate silver dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to silver dragon's breath weapon. Can use silver dragon breath weapon 3×/day. Individual power (1/round at CL 10): Cure Critical Wounds (Will DC 18 half). Detects dragons within 10 miles (100 miles for silver variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons silver à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon silver. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Soins critiques (Volonté DD 18 moitié). Détecte les dragons à moins de 16 km (160 km pour les silver ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_orb_of_dragonkind_white",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Orb of Dragonkind (White Dragon)",
+      "fr": "Orbe des Dragons (White)"
+    },
+    "description": {
+      "en": "Dominate white dragons within 500 ft (Will DC 25). Wielder gains that dragon variety's AC and saving throw bonuses (replacing existing, non-modifiable). Immune to white dragon's breath weapon. Can use white dragon breath weapon 3×/day. Individual power (1/round at CL 10): Protection from Energy (cold) (Fort DC 17 negates). Detects dragons within 10 miles (100 miles for white variety; pinpoints within 1 mile). Communicate with other Orb owners. Owner earns enmity of all dragonkind. (Major artifact; unique).",
+      "fr": "Dominer les dragons white à moins de 150 m (Volonté DD 25). Le porteur gagne les bonus de CA et jets de sauvegarde du dragon (remplace les valeurs existantes, non modifiables). Immunité au souffle du dragon white. Peut utiliser le souffle 3×/jour. Pouvoir individuel (1/round au NLS 10) : Protection contre l'énergie (froid) (Vigueur DD 17 annule). Détecte les dragons à moins de 16 km (160 km pour les white ; localise à moins de 1,5 km). Communique avec les autres détenteurs d'Orbes. Ennemis de toute vie draconique. (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 10,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "breath_weapon_uses",
+        "label": {
+          "en": "Dragon Breath (3/day)",
+          "fr": "Souffle draconique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.breath_weapon_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_saints_mace",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "The Saint's Mace",
+      "fr": "La Masse du Saint"
+    },
+    "description": {
+      "en": "+5 heavy mace with holy, lawful, and disruption special abilities. Project searing light at will (CL 20). (Major artifact; unique).",
+      "fr": "+5 masse lourde avec les propriétés sainte, loyale et disruption. Projeter lumière brûlante à volonté (NLS 20). (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "good",
+      "lawful"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 8,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [
+      {
+        "id": "item_artifact_saints_mace_combatStats_attack_bonus",
+        "sourceId": "item_artifact_saints_mace",
+        "sourceName": {
+          "en": "The Saint's Mace",
+          "fr": "La Masse du Saint"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 5,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_artifact_saints_mace_combatStats_damage_bonus",
+        "sourceId": "item_artifact_saints_mace",
+        "sourceName": {
+          "en": "The Saint's Mace",
+          "fr": "La Masse du Saint"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 5,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 20,
+    "hpMax": 50,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning",
+        "good",
+        "lawful"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "activation": {
+      "actionType": "standard"
+    }
+  },
+  {
+    "id": "item_artifact_shadowstaff",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "The Shadowstaff",
+      "fr": "Le Bâton des Ombres"
+    },
+    "description": {
+      "en": "+4 deflection bonus to AC and Reflex saves (stacks with all other bonuses). In bright light or absolute darkness: -2 penalty to all attack rolls, saves, and checks. Powers: Summon Shadows 3×/day (2d4 shadows, CL 20); Summon Nightshade 1×/month (nightcrawler, CL 20); Shadow Form 3×/day (as gaseous form); Shadow Bolt 3×/day (ray, 10d6 cold, 100 ft range). (Major artifact; unique).",
+      "fr": "+4 parade à la CA et aux jets de Réflexes (cumulable). En pleine lumière ou obscurité totale : -2 à tous les jets d'attaque, jets de sauvegarde et tests. Pouvoirs : Invoquer des Ombres 3×/jour (2d4 ombres, NLS 20) ; Invoquer Ombre de nuit 1×/mois (rampante, NLS 20) ; Forme d'Ombre 3×/jour (comme forme gazeuse) ; Éclair d'Ombre 3×/jour (rayon, 10d6 froid, 30 m). (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "evil"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [
+      {
+        "id": "item_artifact_shadowstaff_combatStats_ac_normal",
+        "sourceId": "item_artifact_shadowstaff",
+        "sourceName": {
+          "en": "The Shadowstaff",
+          "fr": "Le Bâton des Ombres"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "deflection"
+      },
+      {
+        "id": "item_artifact_shadowstaff_saves_ref",
+        "sourceId": "item_artifact_shadowstaff",
+        "sourceName": {
+          "en": "The Shadowstaff",
+          "fr": "Le Bâton des Ombres"
+        },
+        "targetId": "saves.ref",
+        "value": 4,
+        "type": "deflection"
+      },
+      {
+        "id": "item_artifact_shadowstaff_combatStats_attack_bonus",
+        "sourceId": "item_artifact_shadowstaff",
+        "sourceName": {
+          "en": "The Shadowstaff",
+          "fr": "Le Bâton des Ombres"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "in_bright_or_absolute_darkness"
+      },
+      {
+        "id": "item_artifact_shadowstaff_saves_fort",
+        "sourceId": "item_artifact_shadowstaff",
+        "sourceName": {
+          "en": "The Shadowstaff",
+          "fr": "Le Bâton des Ombres"
+        },
+        "targetId": "saves.fort",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "in_bright_or_absolute_darkness"
+      },
+      {
+        "id": "item_artifact_shadowstaff_saves_will",
+        "sourceId": "item_artifact_shadowstaff",
+        "sourceName": {
+          "en": "The Shadowstaff",
+          "fr": "Le Bâton des Ombres"
+        },
+        "targetId": "saves.will",
+        "value": -2,
+        "type": "untyped",
+        "situationalContext": "in_bright_or_absolute_darkness"
+      }
+    ],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 5,
+    "hpMax": 20,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "summon_shadow_uses",
+        "label": {
+          "en": "Summon Shadows (3/day)",
+          "fr": "Invoquer ombres (3/jour)"
+        },
+        "maxPipelineId": "combatStats.summon_shadow_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "shadow_form_uses",
+        "label": {
+          "en": "Shadow Form (3/day)",
+          "fr": "Forme d'Ombre (3/jour)"
+        },
+        "maxPipelineId": "combatStats.shadow_form_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "shadow_bolt_uses",
+        "label": {
+          "en": "Shadow Bolt (3/day)",
+          "fr": "Éclair d'Ombre (3/jour)"
+        },
+        "maxPipelineId": "combatStats.shadow_bolt_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "summon_nightshade_uses",
+        "label": {
+          "en": "Summon Nightshade (1/month)",
+          "fr": "Invoquer Ombre de nuit (1/mois)"
+        },
+        "maxPipelineId": "combatStats.summon_nightshade_max",
+        "defaultCurrent": 1,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_artifact_shield_of_the_sun",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "The Shield of the Sun",
+      "fr": "Le Bouclier du Soleil"
+    },
+    "description": {
+      "en": "+5 large shield. Allows wielder to cast spells as a 20th-level paladin (WIS 20); these stack with any existing spells/day. SR 15. Absorbs first 10 HP of damage from any energy attack (fire, cold, acid, electricity, sonic). Once/year: the shield's owner must undertake a quest at the behest of a lawful good deity (no save). Evil or chaotic characters: 4 negative levels while holding (not permanent loss; disappear when stowed). (Major artifact; unique).",
+      "fr": "+5 grand bouclier. Permet au porteur de lancer des sorts comme un paladin de niveau 20 (SAG 20) ; ces sorts se cumulent avec les existants. RM 15. Absorbe les 10 premiers PV de dégâts de tout type d'énergie. Une fois/an : quête imposée par une divinité loyale bonne (sans jet). Personnages mauvais ou chaotiques : 4 niveaux négatifs pendant le port (non permanents, disparaissent à la pose). (Artefact majeur; unique)."
+    },
+    "tags": [
+      "item",
+      "artifact",
+      "magic_item",
+      "good",
+      "lawful"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 10,
+    "costGp": 0,
+    "artifactTier": "major",
+    "grantedModifiers": [
+      {
+        "id": "item_artifact_shield_of_the_sun_combatStats_ac_normal",
+        "sourceId": "item_artifact_shield_of_the_sun",
+        "sourceName": {
+          "en": "The Shield of the Sun",
+          "fr": "Le Bouclier du Soleil"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "shield"
+      },
+      {
+        "id": "item_artifact_shield_of_the_sun_combatStats_spell_resistance",
+        "sourceId": "item_artifact_shield_of_the_sun",
+        "sourceName": {
+          "en": "The Shield of the Sun",
+          "fr": "Le Bouclier du Soleil"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 15,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "isUnique": true,
+    "hardness": 20,
+    "hpMax": 50,
+    "armorData": {
+      "armorBonus": 5,
+      "maxDex": 99,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    }
   }
 ]

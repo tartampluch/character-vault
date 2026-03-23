@@ -611,4 +611,8 @@ _Pre-conversion engine gap identified during C-14u analysis. 728 scroll entries 
 
 - [x] **E-12c Documentation:** `ARCHITECTURE.md` section 4.14 (Scrolls — all 3 unique rules, comparison table, CastingPanel 4-step contract). `CHECKPOINTS.md` updated with 9 items.
 
+### Artifact Engine Analysis (pre-C-14v)
+
+_All 18 artifacts (11 minor, 5 major + 10 Orb variants) were analysed against the engine. No computation gap found. All effects map to existing primitives: `grantedModifiers`, `resourcePoolTemplates`, `staffSpells`, `weaponData`, `conditionNode`, `situationalContext`, `setAbsolute`, `type:"inherent"`. Two metadata-only fields were added: `ItemFeature.isUnique` and `ItemFeature.artifactTier`. These are GM campaign layer fields with no engine pipeline effect — no tests needed. Zero new failing tests after addition._
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.
