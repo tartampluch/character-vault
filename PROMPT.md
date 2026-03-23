@@ -528,6 +528,25 @@ _Entry point: triggered by observation that the existing engine had no consumabl
 
 **Total test count after Phase E: 681 tests (all passing).**
 
+## Phase E-6: Magic Armor Engine Prerequisites — Fortification & Arcane Spell Failure
+
+_Goal: Resolve two engine gaps identified during C-14k (Magic Armor) analysis before generating the JSON. Without these changes, Fortification (25/75/100% crit negation) has no dice-engine hook, and Arcane Spell Failure has no pipeline to accumulate toward._
+
+_Entry point: pre-conversion analysis of `magicArmor.html` revealed that no `combatStats.fortification` or `combatStats.arcane_spell_failure` pipelines existed, and the Dice Engine had no Fortification check path._
+
+- [x] **E-6a Pipeline initialization:** Added `combatStats.fortification` (baseValue 0) and `combatStats.arcane_spell_failure` (baseValue 0) to the default `combatStats` map in `GameEngine.svelte.ts`. Both include exhaustive inline documentation explaining content authoring conventions, stacking rules (untyped additive for ASF), and their role in the Dice Engine / UI contract.
+
+- [x] **E-6b Dice Engine — `defenderFortificationPct` + `RollResult.fortification`:** Added optional 8th parameter `defenderFortificationPct: number = 0` to `parseAndRoll()`. When a crit is confirmed AND pct > 0: rolls 1d100; if ≤ pct → `critNegated: true`, else `critNegated: false`. New `RollResult.fortification` block carries `{ roll, pct, critNegated }`. Fortification-negated crits route to `res_vitality` in V/WP mode (not `res_wound_points`). ASF left to the CastingPanel UI (pre-cast check), not handled in `parseAndRoll()`.
+
+- [x] **E-6c Tests (`src/tests/fortificationAndASF.test.ts`):** 20 new Vitest tests (701 total, all passing):
+  - Fortification mechanic (14 tests): no-pct → absent; non-crit → no check; boundary values 25%/75%/100%; `roll`/`pct` fields; `isCriticalThreat` unchanged; V/WP routing; `context.isCriticalHit` trigger; pct=1 boundary.
+  - Pipeline verification (4 tests): fortification baseValue=0, ASF baseValue=0, single-armor ASF=20, two-piece additive ASF=35.
+  - Fortification stacking (2 tests): Light=25 and Moderate=75 produce correct `totalValue`.
+
+- [x] **E-6d Documentation:** New sections 4.7 (Fortification) and 4.8 (Arcane Spell Failure) in `ARCHITECTURE.md` — full tables, content-authoring JSON examples, engine contract, caller contract, V/WP interaction note. `CHECKPOINTS.md` Checkpoint #4 updated with 11 new Fortification/ASF verification items.
+
+**Total test count after Phase E-6: 701 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

@@ -534,4 +534,19 @@ _Consumable item lifecycle: potions/oils create temporary active effects; "Expir
 
 - [x] **E-5 Tests:** `src/tests/ephemeralEffects.test.ts` — 28 new Vitest tests (681 total, all passing). Covers: type soundness, `consumeItem()` lifecycle (11 scenarios including all guard paths), `expireEffect()` safety, `getEphemeralEffects()` sorting, full Fighter scenario integration test.
 
+### Phase E-6: Magic Armor Engine Prerequisites — Fortification & Arcane Spell Failure
+
+_Pre-conversion engine gaps identified during C-14k analysis. Resolved before JSON generation._
+
+- [x] **E-6a Pipeline initialization:** Added `combatStats.fortification` (baseValue 0) and `combatStats.arcane_spell_failure` (baseValue 0) to the default `combatStats` map in `GameEngine.svelte.ts`. Both documented with content-authoring notes, stacking rules, and engine/UI contracts.
+
+- [x] **E-6b Dice Engine fortification check:** Added optional 8th parameter `defenderFortificationPct: number = 0` to `parseAndRoll()`. On confirmed crit with pct > 0: rolls 1d100; if ≤ pct → `critNegated: true`. New `RollResult.fortification?: { roll, pct, critNegated }` transparency field. V/WP mode: negated crit routes to `res_vitality`. ASF left to CastingPanel UI (pre-cast check). Removed duplicate `isVWPMode` declaration that the refactor introduced (0 compile errors).
+
+- [x] **E-6c Tests (`src/tests/fortificationAndASF.test.ts`):** 20 new Vitest tests (701 total, all passing):
+  - Fortification (14 tests): no-pct absent; non-crit no-check; boundary at 25%/75%/100%; field recording; `isCriticalThreat` unchanged; V/WP routing (negated→vitality, stands→wounds); `isCriticalHit` trigger; pct=1 boundary.
+  - Pipeline verification (4 tests): both pipelines baseValue=0, single ASF 20%, two-piece additive ASF 35%.
+  - Fortification stacking (2 tests): Light=25 and Moderate=75.
+
+- [x] **E-6d Documentation:** `ARCHITECTURE.md` sections 4.7 (Fortification — full table, engine contract, V/WP interaction, caller contract note) and 4.8 (Arcane Spell Failure — stacking rule, data model, UI contract, immune-class pattern). `CHECKPOINTS.md` Checkpoint Review #4 updated with 11 new Fortification/ASF verification items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

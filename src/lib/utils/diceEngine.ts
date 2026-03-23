@@ -315,6 +315,55 @@ export interface RollResult {
    * @see Modifier.targetId — the `"attacker."` prefix convention
    */
   attackerPenaltiesApplied?: Modifier[];
+
+  /**
+   * Result of the Fortification critical-negation roll (Enhancement E-6b).
+   *
+   * D&D 3.5 SRD — FORTIFICATION MECHANIC:
+   *   When a critical hit or sneak attack is scored against a creature wearing
+   *   armor or a shield with the Fortification special ability, there is a
+   *   percentage chance that the crit is negated and damage is instead rolled
+   *   normally (as a non-critical hit).
+   *
+   *   | Fortification Type | Negation Chance |
+   *   |--------------------|-----------------|
+   *   | Light              | 25%             |
+   *   | Moderate           | 75%             |
+   *   | Heavy              | 100%            |
+   *
+   * ROLL-TIME ALGORITHM (in parseAndRoll):
+   *   1. Only evaluated when `isCriticalThreat === true` AND the crit is
+   *      confirmed (see `isConfirmedCrit` logic).
+   *   2. Reads `defenderFortificationPct` parameter (0 = no fortification).
+   *   3. If pct > 0: rolls 1d100 using the same PRNG.
+   *      - If 1d100 result <= pct → crit negated → `critNegatedByFortification: true`
+   *        and `finalTotal` is re-computed as a normal (non-critical) damage roll.
+   *      - If 1d100 result > pct  → crit stands → `critNegatedByFortification: false`
+   *   4. The `fortificationRoll` records the raw 1d100 result for transparency.
+   *
+   * PRESENT only when `defenderFortificationPct > 0` AND `isCriticalThreat === true`.
+   * ABSENT for non-critical rolls, or when the defender has no fortification.
+   *
+   * UI DISPLAY:
+   *   The DiceRollModal should display, when present:
+   *     "Fortification roll: 23 vs 25% → NEGATED" (green, crit cancelled)
+   *     "Fortification roll: 63 vs 25% → CRITICAL STANDS" (red, crit confirmed)
+   *
+   * @see defenderFortificationPct — the 8th parameter of parseAndRoll()
+   * @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
+   */
+  fortification?: {
+    /** Raw 1d100 roll result (1–100). */
+    roll: number;
+    /** The fortification percentage checked against (from defenderFortificationPct). */
+    pct: number;
+    /**
+     * True when the roll was <= pct, meaning the critical hit was negated.
+     * When true, the damage in this RollResult was computed as a normal hit.
+     * When false, the critical hit stands and damage uses the weapon's critMultiplier.
+     */
+    critNegated: boolean;
+  };
 }
 
 // =============================================================================
@@ -510,6 +559,14 @@ function resolveAttackerMods(
   return { totalBonus, applied };
 }
 
+/**
+ * @param defenderFortificationPct  Optional. The defender's `combatStats.fortification.totalValue`
+ *   (0–100). When > 0 and a critical hit is confirmed, the engine rolls 1d100.
+ *   If the 1d100 result <= pct, the crit is negated (damage rolled normally).
+ *   Absent / 0 = no fortification check performed.
+ *   @see RollResult.fortification — result field carrying the roll detail
+ *   @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
+ */
 export function parseAndRoll(
   formula: string,
   pipeline: StatisticPipeline,
@@ -517,7 +574,8 @@ export function parseAndRoll(
   settings: CampaignSettings,
   rng: (faces: number) => number = defaultRng,
   critRange: string = '20',
-  defenderAttackerMods?: Modifier[]
+  defenderAttackerMods?: Modifier[],
+  defenderFortificationPct: number = 0
 ): RollResult {
   const groups = parseDiceExpression(formula);
 
@@ -654,7 +712,48 @@ export function parseAndRoll(
   const isAutomaticHit = isD20Roll && effectiveFirstRoll >= 20;
   const isAutomaticMiss = isD20Roll && firstD20Roll === 1;
 
-  // --- Step 6: Determine damage target pool (Vitality/Wound Points variant) ---
+  // Use context.isCriticalHit if provided (damage roll for a confirmed crit).
+  // Fall back to isCriticalThreat for simple cases (combined attack+damage rolls).
+  const isConfirmedCrit = context.isCriticalHit ?? isCriticalThreat;
+
+  // --- Step 6b: Fortification critical-negation check (Enhancement E-6b) ---
+  //
+  // D&D 3.5 SRD — FORTIFICATION (ARCHITECTURE.md section 4.7):
+  //   Armor with the Fortification special ability gives the wearer a percentage
+  //   chance to negate a confirmed critical hit or sneak attack. The 1d100 roll
+  //   is made by the DEFENDER's combat system at the moment the crit is confirmed.
+  //
+  // ALGORITHM:
+  //   1. Only runs when `isConfirmedCrit === true` AND `defenderFortificationPct > 0`.
+  //   2. Roll 1d100 using the same injectable RNG (consistent with test seeding).
+  //   3. If 1d100 result <= pct → crit is negated:
+  //        - `isCriticalThreat` stays true (the attack was still a threatening roll)
+  //        - `critNegated: true` in the fortification result field
+  //        - `finalTotal` is NOT changed — this function computes the initial roll.
+  //          The CALLER (DiceRollModal / combat system) is responsible for applying
+  //          damage WITHOUT the crit multiplier when `fortification.critNegated === true`.
+  //   4. If 1d100 result > pct → crit stands normally.
+  //
+  // WHY NOT CHANGE finalTotal HERE?
+  //   The function doesn't know the weapon's critMultiplier — that's a combat system
+  //   concern. The damage roll is a SEPARATE call. `critNegated` signals to the caller
+  //   that the follow-up damage roll should use a normal (non-crit) multiplier.
+  //   For combined attack+damage formulas (rare), the caller must interpret the flag.
+  //
+  // 1d100 IMPLEMENTATION NOTE:
+  //   We use rng(100) which gives a uniform integer in [1, 100], matching the SRD
+  //   "roll d%" convention.
+  let fortificationResult: RollResult['fortification'] | undefined;
+  if (isConfirmedCrit && defenderFortificationPct > 0) {
+    const fortRoll = rng(100);
+    fortificationResult = {
+      roll: fortRoll,
+      pct: defenderFortificationPct,
+      critNegated: fortRoll <= defenderFortificationPct,
+    };
+  }
+
+  // --- Step 7: Determine damage target pool (Vitality/Wound Points variant) ---
   //
   // VITALITY/WOUND POINTS VARIANT (ARCHITECTURE.md section 8.3):
   //   When `settings.variantRules?.vitalityWoundPoints` is true, damage rolls are
@@ -663,6 +762,11 @@ export function parseAndRoll(
   //     - Critical hit: → res_wound_points (represents a telling blow bypassing VP)
   //
   //   In standard mode (flag false/absent), ALL damage routes to res_hp.
+  //
+  //   FORTIFICATION INTERACTION:
+  //   If fortification negated the crit (`fortificationResult?.critNegated === true`),
+  //   a crit-that-was-negated routes to `res_vitality` (treated as a normal hit),
+  //   not `res_wound_points`. The negation is the whole point of fortification.
   //
   //   NOTE: This field is meaningful primarily for DAMAGE rolls. For attack rolls
   //   (and saves/skills), the targetPool is set but ignored by the Combat UI.
@@ -674,14 +778,12 @@ export function parseAndRoll(
   // @see DamageTargetPool — the enum type
   // @see ARCHITECTURE.md section 8.3 — full V/WP rules
   const isVWPMode = settings.variantRules?.vitalityWoundPoints === true;
-  // Use context.isCriticalHit if provided (damage roll for a confirmed crit).
-  // Fall back to isCriticalThreat for simple cases (combined attack+damage rolls).
-  const isConfirmedCrit = context.isCriticalHit ?? isCriticalThreat;
-
+  // A fortification-negated crit is treated as a normal hit for damage routing.
+  const isEffectiveCrit = isConfirmedCrit && !(fortificationResult?.critNegated);
   let targetPool: DamageTargetPool;
   if (!isVWPMode) {
     targetPool = 'res_hp';
-  } else if (isConfirmedCrit) {
+  } else if (isEffectiveCrit) {
     targetPool = 'res_wound_points';
   } else {
     targetPool = 'res_vitality';
@@ -701,6 +803,8 @@ export function parseAndRoll(
     targetPool,
     // E-5: only include if attacker penalties were actually applied
     ...(attackerPenaltiesApplied ? { attackerPenaltiesApplied } : {}),
+    // E-6b: only include if a fortification check was performed
+    ...(fortificationResult ? { fortification: fortificationResult } : {}),
   };
 }
 

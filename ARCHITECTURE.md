@@ -476,6 +476,118 @@ The wearer's attack bonus pipeline (`combatStats.attack_bonus`) is **unchanged**
 
 ---
 
+### 4.7. Fortification — Critical Hit Negation
+
+The **Fortification** armor special ability (D&D 3.5 SRD, Magic Armor section) gives the wearer a percentage chance to negate a confirmed critical hit or sneak attack. When negated, damage is instead rolled normally (no crit multiplier, no sneak attack dice).
+
+#### Fortification Percentages
+
+| Type | Negation Chance | Base Price Modifier |
+|---|---|---|
+| Light | 25% | +1 bonus |
+| Moderate | 75% | +3 bonus |
+| Heavy | 100% | +5 bonus |
+
+#### Data Model — `combatStats.fortification`
+
+Fortification is represented as a `StatisticPipeline` initialized at baseValue 0. Items grant fortification via `grantedModifiers`:
+
+```json
+{ "targetId": "combatStats.fortification", "value": 25, "type": "untyped" }
+```
+
+`type: "untyped"` is correct because multiple fortification sources would stack — although in practice a character cannot wear two suits of armor simultaneously (only one source is active at a time). The pipeline holds the current effective fortification percentage as `totalValue` (0–100).
+
+#### Dice Engine Contract
+
+`parseAndRoll()` accepts an optional **8th parameter**:
+
+```typescript
+parseAndRoll(
+  formula, pipeline, context, settings, rng, critRange,
+  defenderAttackerMods?,
+  defenderFortificationPct: number = 0   // ← Enhancement E-6b
+): RollResult
+```
+
+When `defenderFortificationPct > 0` AND a crit is confirmed (`isConfirmedCrit === true`):
+
+1. Roll 1d100 using the same injectable RNG (for test determinism).
+2. If `1d100 ≤ pct` → crit is negated; `RollResult.fortification.critNegated = true`.
+3. If `1d100 > pct` → crit stands; `RollResult.fortification.critNegated = false`.
+4. The `RollResult.fortification` block always records the raw roll and pct used.
+
+**`RollResult.fortification` block:**
+```typescript
+fortification?: {
+    roll: number;          // Raw 1d100 result (1–100)
+    pct: number;           // Defender's fortification percentage (1–100)
+    critNegated: boolean;  // true → crit negated (normal damage); false → crit stands
+};
+```
+
+Present ONLY when `defenderFortificationPct > 0` AND `isConfirmedCrit === true`. Absent on all other rolls.
+
+#### Vitality/Wound Points Interaction
+
+When both Fortification and the Vitality/Wound Points variant rule are active:
+- A **fortification-negated crit** is treated as a normal hit → damage routes to `res_vitality`.
+- A **non-negated crit** still routes to `res_wound_points`.
+
+The `targetPool` on `RollResult` already accounts for this: it checks `isEffectiveCrit = isConfirmedCrit && !(fortification?.critNegated)` before routing.
+
+#### Caller Contract
+
+The fortification pct comes from the **defender's** `combatStats.fortification.totalValue`. The combat system retrieves this from the defender's `GameEngine` instance and passes it as the 8th argument to `parseAndRoll()` when resolving an incoming attack:
+
+```typescript
+// In the combat UI / dice roll modal:
+const fortPct = defenderEngine.phase3_combatStats['combatStats.fortification']?.totalValue ?? 0;
+const result = parseAndRoll(damageFormula, attackPipeline, ctx, settings, rng, critRange, undefined, fortPct);
+if (result.fortification?.critNegated) {
+  // Re-roll damage without crit multiplier, or display "Crit negated by fortification"
+}
+```
+
+> **Note:** The dice engine does NOT modify `finalTotal` when a crit is negated — it only sets `fortification.critNegated = true`. The calling system is responsible for applying non-critical damage. For most use cases, the combat tab will simply re-prompt for a normal damage roll when `critNegated === true`.
+
+---
+
+### 4.8. Arcane Spell Failure — `combatStats.arcane_spell_failure`
+
+Arcane spellcasters wearing armor or carrying shields risk spell failure. When casting an arcane spell, the caster rolls 1d100; if the result is ≤ the armor's ASF percentage, the spell fails (spell slot or prepared spell is expended without effect).
+
+#### Stacking Rule — Additive (SRD)
+
+**ASF percentages ADD across all equipped armor and shield pieces.** This is modeled with `type: "untyped"` modifiers, which always stack in the engine:
+
+```json
+{ "targetId": "combatStats.arcane_spell_failure", "value": 20, "type": "untyped" }  // chain shirt
+{ "targetId": "combatStats.arcane_spell_failure", "value": 15, "type": "untyped" }  // heavy shield
+```
+→ `combatStats.arcane_spell_failure.totalValue = 35%`
+
+#### Data Model
+
+`combatStats.arcane_spell_failure` is a `StatisticPipeline` initialized at baseValue 0. It accumulates contributions from all equipped armor/shield items. An unarmored character has 0% ASF.
+
+Content authoring: every magic armor/shield with arcane spell failure includes a `grantedModifier` targeting this pipeline. The `armorData.arcaneSpellFailure` field on `ItemFeature` is the display-only shadow of this value (for the Inventory UI tooltip) — the pipeline is the mechanical source of truth.
+
+#### Dice Engine Contract
+
+ASF is **not** handled inside `parseAndRoll()` — it is a **pre-cast check** in the Spells & Powers UI (Phase 12.3). Before executing a spell cast action:
+
+1. Read `engine.phase3_combatStats['combatStats.arcane_spell_failure']?.totalValue ?? 0`.
+2. If > 0: roll 1d100.
+3. If roll ≤ ASF%: spell fails (deduct spell slot, display failure message).
+4. If roll > ASF%: proceed with casting normally.
+
+This is entirely a UI / combat-tab concern; the DAG engine simply maintains the accumulated percentage.
+
+> **Classes immune to ASF:** Bards, some prestige classes, and classes with "Light armor casting" features add a `grantedModifier` with `value: -N` (negative) to `combatStats.arcane_spell_failure` targeting the ACP pipeline. For example, a Bard at level 4 gains "Armored Casting (light)" which adds `{ value: -10, type: "untyped" }` — bringing chain shirt (20%) down to 10%. This is already handled correctly by the existing modifier accumulation logic.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

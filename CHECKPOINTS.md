@@ -362,6 +362,19 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
 - Is `isAutomaticHit` (natural 20) tested?
 - Is `isAutomaticMiss` (natural 1) tested?
 - Is `isCriticalThreat` tested with a weapon crit range (e.g., 19-20)?
+- **Fortification (Enhancement E-6b / Architecture section 4.7):**
+  - Is `defenderFortificationPct=0` → `fortification` field absent tested?
+  - Is `defenderFortificationPct=25`, d100=25 → `critNegated: true` (boundary) tested?
+  - Is `defenderFortificationPct=25`, d100=26 → `critNegated: false` tested?
+  - Is `defenderFortificationPct=100` → always negated tested?
+  - Is non-crit roll with pct > 0 → no fortification check tested?
+  - Is `isCriticalThreat: true` maintained even when crit is negated tested?
+  - Is V/WP interaction tested (negated crit → `res_vitality`, non-negated → `res_wound_points`)?
+  - Is `context.isCriticalHit=true` (separate damage roll) triggering fortification check tested?
+- **Pipeline initialization (Enhancement E-6a / Architecture sections 4.7–4.8):**
+  - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
+  - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
+  - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
 
 # 6. Vitest — DAG Integration (Phase 17.5)
 - Is the Belt of Constitution cascade test present (CON → Fort save → HP)?

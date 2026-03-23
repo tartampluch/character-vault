@@ -5252,5 +5252,3339 @@
       "isConsumable": true,
       "durationHint": "10 min"
     }
+  },
+  {
+    "id": "item_magic_armor_enhancement_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Armor Enhancement +1",
+      "fr": "Armure magique, amélioration +1"
+    },
+    "description": {
+      "en": "Armor's enhancement bonus to AC is +1. All magic armor is also masterwork (ACP reduced by 1). Enhancement stacks with base armor bonus and shield enhancement (CL 3).",
+      "fr": "Bonus d'altération de l'armure à la CA de +1. Toute armure magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus d'armure de base (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "hardness": 12,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_armor_enhancement_1_combatStats_ac_normal",
+        "sourceId": "item_magic_armor_enhancement_1",
+        "sourceName": {
+          "en": "Magic Armor Enhancement +1",
+          "fr": "Armure magique, amélioration +1"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_armor_enhancement_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Armor Enhancement +2",
+      "fr": "Armure magique, amélioration +2"
+    },
+    "description": {
+      "en": "Armor's enhancement bonus to AC is +2. All magic armor is also masterwork (ACP reduced by 1). Enhancement stacks with base armor bonus and shield enhancement (CL 6).",
+      "fr": "Bonus d'altération de l'armure à la CA de +2. Toute armure magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus d'armure de base (NLS 6)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "hardness": 14,
+    "hpMax": 40,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_armor_enhancement_2_combatStats_ac_normal",
+        "sourceId": "item_magic_armor_enhancement_2",
+        "sourceName": {
+          "en": "Magic Armor Enhancement +2",
+          "fr": "Armure magique, amélioration +2"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_armor_enhancement_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Armor Enhancement +3",
+      "fr": "Armure magique, amélioration +3"
+    },
+    "description": {
+      "en": "Armor's enhancement bonus to AC is +3. All magic armor is also masterwork (ACP reduced by 1). Enhancement stacks with base armor bonus and shield enhancement (CL 9).",
+      "fr": "Bonus d'altération de l'armure à la CA de +3. Toute armure magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus d'armure de base (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "hardness": 16,
+    "hpMax": 50,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_armor_enhancement_3_combatStats_ac_normal",
+        "sourceId": "item_magic_armor_enhancement_3",
+        "sourceName": {
+          "en": "Magic Armor Enhancement +3",
+          "fr": "Armure magique, amélioration +3"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_armor_enhancement_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Armor Enhancement +4",
+      "fr": "Armure magique, amélioration +4"
+    },
+    "description": {
+      "en": "Armor's enhancement bonus to AC is +4. All magic armor is also masterwork (ACP reduced by 1). Enhancement stacks with base armor bonus and shield enhancement (CL 12).",
+      "fr": "Bonus d'altération de l'armure à la CA de +4. Toute armure magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus d'armure de base (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 16000,
+    "hardness": 18,
+    "hpMax": 60,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_armor_enhancement_4_combatStats_ac_normal",
+        "sourceId": "item_magic_armor_enhancement_4",
+        "sourceName": {
+          "en": "Magic Armor Enhancement +4",
+          "fr": "Armure magique, amélioration +4"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_armor_enhancement_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Armor Enhancement +5",
+      "fr": "Armure magique, amélioration +5"
+    },
+    "description": {
+      "en": "Armor's enhancement bonus to AC is +5. All magic armor is also masterwork (ACP reduced by 1). Enhancement stacks with base armor bonus and shield enhancement (CL 15).",
+      "fr": "Bonus d'altération de l'armure à la CA de +5. Toute armure magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus d'armure de base (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "hardness": 20,
+    "hpMax": 70,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_armor_enhancement_5_combatStats_ac_normal",
+        "sourceId": "item_magic_armor_enhancement_5",
+        "sourceName": {
+          "en": "Magic Armor Enhancement +5",
+          "fr": "Armure magique, amélioration +5"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_shield_enhancement_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Shield Enhancement +1",
+      "fr": "Bouclier magique, amélioration +1"
+    },
+    "description": {
+      "en": "Shield's enhancement bonus to AC is +1. All magic shields are masterwork (ACP reduced by 1). Stacks with base shield bonus and armor enhancement (CL 3).",
+      "fr": "Bonus d'altération du bouclier à la CA de +1. Tout bouclier magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus de bouclier de base (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "hardness": 12,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_shield_enhancement_1_combatStats_ac_normal",
+        "sourceId": "item_magic_shield_enhancement_1",
+        "sourceName": {
+          "en": "Magic Shield Enhancement +1",
+          "fr": "Bouclier magique, amélioration +1"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_shield_enhancement_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Shield Enhancement +2",
+      "fr": "Bouclier magique, amélioration +2"
+    },
+    "description": {
+      "en": "Shield's enhancement bonus to AC is +2. All magic shields are masterwork (ACP reduced by 1). Stacks with base shield bonus and armor enhancement (CL 6).",
+      "fr": "Bonus d'altération du bouclier à la CA de +2. Tout bouclier magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus de bouclier de base (NLS 6)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "hardness": 14,
+    "hpMax": 40,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_shield_enhancement_2_combatStats_ac_normal",
+        "sourceId": "item_magic_shield_enhancement_2",
+        "sourceName": {
+          "en": "Magic Shield Enhancement +2",
+          "fr": "Bouclier magique, amélioration +2"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_shield_enhancement_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Shield Enhancement +3",
+      "fr": "Bouclier magique, amélioration +3"
+    },
+    "description": {
+      "en": "Shield's enhancement bonus to AC is +3. All magic shields are masterwork (ACP reduced by 1). Stacks with base shield bonus and armor enhancement (CL 9).",
+      "fr": "Bonus d'altération du bouclier à la CA de +3. Tout bouclier magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus de bouclier de base (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "hardness": 16,
+    "hpMax": 50,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_shield_enhancement_3_combatStats_ac_normal",
+        "sourceId": "item_magic_shield_enhancement_3",
+        "sourceName": {
+          "en": "Magic Shield Enhancement +3",
+          "fr": "Bouclier magique, amélioration +3"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_shield_enhancement_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Shield Enhancement +4",
+      "fr": "Bouclier magique, amélioration +4"
+    },
+    "description": {
+      "en": "Shield's enhancement bonus to AC is +4. All magic shields are masterwork (ACP reduced by 1). Stacks with base shield bonus and armor enhancement (CL 12).",
+      "fr": "Bonus d'altération du bouclier à la CA de +4. Tout bouclier magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus de bouclier de base (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 16000,
+    "hardness": 18,
+    "hpMax": 60,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_shield_enhancement_4_combatStats_ac_normal",
+        "sourceId": "item_magic_shield_enhancement_4",
+        "sourceName": {
+          "en": "Magic Shield Enhancement +4",
+          "fr": "Bouclier magique, amélioration +4"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_shield_enhancement_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Shield Enhancement +5",
+      "fr": "Bouclier magique, amélioration +5"
+    },
+    "description": {
+      "en": "Shield's enhancement bonus to AC is +5. All magic shields are masterwork (ACP reduced by 1). Stacks with base shield bonus and armor enhancement (CL 15).",
+      "fr": "Bonus d'altération du bouclier à la CA de +5. Tout bouclier magique est de maîtrise (MAT réduit de 1). Se cumule avec le bonus de bouclier de base (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "hardness": 20,
+    "hpMax": 70,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_shield_enhancement_5_combatStats_ac_normal",
+        "sourceId": "item_magic_shield_enhancement_5",
+        "sourceName": {
+          "en": "Magic Shield Enhancement +5",
+          "fr": "Bouclier magique, amélioration +5"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_acid_resistance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Acid Resistance",
+      "fr": "Armure : résistance acid (10)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 10 points of acid damage per attack (CL 3).",
+      "fr": "Armure ou bouclier absorbant les 10 premiers points de dégâts d'acide par attaque (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_acid_resistance_combatStats_resist_acid",
+        "sourceId": "item_armor_special_acid_resistance",
+        "sourceName": {
+          "en": "Armor: Acid Resistance",
+          "fr": "Armure : résistance acid (10)"
+        },
+        "targetId": "combatStats.resist_acid",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_acid_resistance_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Acid Resistance Improved",
+      "fr": "Armure : résistance acid (20)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 20 points of acid damage per attack (CL 7).",
+      "fr": "Armure ou bouclier absorbant les 20 premiers points de dégâts d'acide par attaque (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 42000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_acid_resistance_improved_combatStats_resist_acid",
+        "sourceId": "item_armor_special_acid_resistance_improved",
+        "sourceName": {
+          "en": "Armor: Acid Resistance Improved",
+          "fr": "Armure : résistance acid (20)"
+        },
+        "targetId": "combatStats.resist_acid",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_acid_resistance_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Acid Resistance Greater",
+      "fr": "Armure : résistance acid (30)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 30 points of acid damage per attack (CL 11).",
+      "fr": "Armure ou bouclier absorbant les 30 premiers points de dégâts d'acide par attaque (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_acid"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 66000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_acid_resistance_greater_combatStats_resist_acid",
+        "sourceId": "item_armor_special_acid_resistance_greater",
+        "sourceName": {
+          "en": "Armor: Acid Resistance Greater",
+          "fr": "Armure : résistance acid (30)"
+        },
+        "targetId": "combatStats.resist_acid",
+        "value": 30,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_cold_resistance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Cold Resistance",
+      "fr": "Armure : résistance cold (10)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 10 points of cold damage per attack (CL 3).",
+      "fr": "Armure ou bouclier absorbant les 10 premiers points de dégâts d'froid par attaque (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_cold_resistance_combatStats_resist_cold",
+        "sourceId": "item_armor_special_cold_resistance",
+        "sourceName": {
+          "en": "Armor: Cold Resistance",
+          "fr": "Armure : résistance cold (10)"
+        },
+        "targetId": "combatStats.resist_cold",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_cold_resistance_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Cold Resistance Improved",
+      "fr": "Armure : résistance cold (20)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 20 points of cold damage per attack (CL 7).",
+      "fr": "Armure ou bouclier absorbant les 20 premiers points de dégâts d'froid par attaque (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 42000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_cold_resistance_improved_combatStats_resist_cold",
+        "sourceId": "item_armor_special_cold_resistance_improved",
+        "sourceName": {
+          "en": "Armor: Cold Resistance Improved",
+          "fr": "Armure : résistance cold (20)"
+        },
+        "targetId": "combatStats.resist_cold",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_cold_resistance_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Cold Resistance Greater",
+      "fr": "Armure : résistance cold (30)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 30 points of cold damage per attack (CL 11).",
+      "fr": "Armure ou bouclier absorbant les 30 premiers points de dégâts d'froid par attaque (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_cold"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 66000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_cold_resistance_greater_combatStats_resist_cold",
+        "sourceId": "item_armor_special_cold_resistance_greater",
+        "sourceName": {
+          "en": "Armor: Cold Resistance Greater",
+          "fr": "Armure : résistance cold (30)"
+        },
+        "targetId": "combatStats.resist_cold",
+        "value": 30,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_electricity_resistance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Electricity Resistance",
+      "fr": "Armure : résistance electricity (10)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 10 points of electricity damage per attack (CL 3).",
+      "fr": "Armure ou bouclier absorbant les 10 premiers points de dégâts d'électricité par attaque (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_electricity_resistance_combatStats_resist_electricity",
+        "sourceId": "item_armor_special_electricity_resistance",
+        "sourceName": {
+          "en": "Armor: Electricity Resistance",
+          "fr": "Armure : résistance electricity (10)"
+        },
+        "targetId": "combatStats.resist_electricity",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_electricity_resistance_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Electricity Resistance Improved",
+      "fr": "Armure : résistance electricity (20)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 20 points of electricity damage per attack (CL 7).",
+      "fr": "Armure ou bouclier absorbant les 20 premiers points de dégâts d'électricité par attaque (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 42000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_electricity_resistance_improved_combatStats_resist_electricity",
+        "sourceId": "item_armor_special_electricity_resistance_improved",
+        "sourceName": {
+          "en": "Armor: Electricity Resistance Improved",
+          "fr": "Armure : résistance electricity (20)"
+        },
+        "targetId": "combatStats.resist_electricity",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_electricity_resistance_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Electricity Resistance Greater",
+      "fr": "Armure : résistance electricity (30)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 30 points of electricity damage per attack (CL 11).",
+      "fr": "Armure ou bouclier absorbant les 30 premiers points de dégâts d'électricité par attaque (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_electricity"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 66000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_electricity_resistance_greater_combatStats_resist_electricity",
+        "sourceId": "item_armor_special_electricity_resistance_greater",
+        "sourceName": {
+          "en": "Armor: Electricity Resistance Greater",
+          "fr": "Armure : résistance electricity (30)"
+        },
+        "targetId": "combatStats.resist_electricity",
+        "value": 30,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fire_resistance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fire Resistance",
+      "fr": "Armure : résistance fire (10)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 10 points of fire damage per attack (CL 3).",
+      "fr": "Armure ou bouclier absorbant les 10 premiers points de dégâts d'feu par attaque (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fire_resistance_combatStats_resist_fire",
+        "sourceId": "item_armor_special_fire_resistance",
+        "sourceName": {
+          "en": "Armor: Fire Resistance",
+          "fr": "Armure : résistance fire (10)"
+        },
+        "targetId": "combatStats.resist_fire",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fire_resistance_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fire Resistance Improved",
+      "fr": "Armure : résistance fire (20)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 20 points of fire damage per attack (CL 7).",
+      "fr": "Armure ou bouclier absorbant les 20 premiers points de dégâts d'feu par attaque (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 42000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fire_resistance_improved_combatStats_resist_fire",
+        "sourceId": "item_armor_special_fire_resistance_improved",
+        "sourceName": {
+          "en": "Armor: Fire Resistance Improved",
+          "fr": "Armure : résistance fire (20)"
+        },
+        "targetId": "combatStats.resist_fire",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fire_resistance_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fire Resistance Greater",
+      "fr": "Armure : résistance fire (30)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 30 points of fire damage per attack (CL 11).",
+      "fr": "Armure ou bouclier absorbant les 30 premiers points de dégâts d'feu par attaque (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_fire"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 66000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fire_resistance_greater_combatStats_resist_fire",
+        "sourceId": "item_armor_special_fire_resistance_greater",
+        "sourceName": {
+          "en": "Armor: Fire Resistance Greater",
+          "fr": "Armure : résistance fire (30)"
+        },
+        "targetId": "combatStats.resist_fire",
+        "value": 30,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_sonic_resistance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Sonic Resistance",
+      "fr": "Armure : résistance sonic (10)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 10 points of sonic damage per attack (CL 3).",
+      "fr": "Armure ou bouclier absorbant les 10 premiers points de dégâts d'son par attaque (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_sonic_resistance_combatStats_resist_sonic",
+        "sourceId": "item_armor_special_sonic_resistance",
+        "sourceName": {
+          "en": "Armor: Sonic Resistance",
+          "fr": "Armure : résistance sonic (10)"
+        },
+        "targetId": "combatStats.resist_sonic",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_sonic_resistance_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Sonic Resistance Improved",
+      "fr": "Armure : résistance sonic (20)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 20 points of sonic damage per attack (CL 7).",
+      "fr": "Armure ou bouclier absorbant les 20 premiers points de dégâts d'son par attaque (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 42000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_sonic_resistance_improved_combatStats_resist_sonic",
+        "sourceId": "item_armor_special_sonic_resistance_improved",
+        "sourceName": {
+          "en": "Armor: Sonic Resistance Improved",
+          "fr": "Armure : résistance sonic (20)"
+        },
+        "targetId": "combatStats.resist_sonic",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_sonic_resistance_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Sonic Resistance Greater",
+      "fr": "Armure : résistance sonic (30)"
+    },
+    "description": {
+      "en": "Armor or shield absorbs the first 30 points of sonic damage per attack (CL 11).",
+      "fr": "Armure ou bouclier absorbant les 30 premiers points de dégâts d'son par attaque (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "energy_resistance_sonic"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 66000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_sonic_resistance_greater_combatStats_resist_sonic",
+        "sourceId": "item_armor_special_sonic_resistance_greater",
+        "sourceName": {
+          "en": "Armor: Sonic Resistance Greater",
+          "fr": "Armure : résistance sonic (30)"
+        },
+        "targetId": "combatStats.resist_sonic",
+        "value": 30,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fortification_light",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fortification (Light)",
+      "fr": "Armure : fortification (light)"
+    },
+    "description": {
+      "en": "When a critical hit or sneak attack is scored on the wearer, there is a 25% chance the critical is negated and damage is rolled normally. Requires at least +1 enhancement bonus (CL 13).",
+      "fr": "Lorsqu'un coup critique ou une attaque en traître est porté sur le porteur, 25% de chance que le coup critique soit annulé et les dégâts lancés normalement. Nécessite au moins +1 d'altération (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "fortification_light"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fortification_light_combatStats_fortification",
+        "sourceId": "item_armor_special_fortification_light",
+        "sourceName": {
+          "en": "Armor: Fortification (Light)",
+          "fr": "Armure : fortification (light)"
+        },
+        "targetId": "combatStats.fortification",
+        "value": 25,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fortification_moderate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fortification (Moderate)",
+      "fr": "Armure : fortification (moderate)"
+    },
+    "description": {
+      "en": "When a critical hit or sneak attack is scored on the wearer, there is a 75% chance the critical is negated and damage is rolled normally. Requires at least +1 enhancement bonus (CL 13).",
+      "fr": "Lorsqu'un coup critique ou une attaque en traître est porté sur le porteur, 75% de chance que le coup critique soit annulé et les dégâts lancés normalement. Nécessite au moins +1 d'altération (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "fortification_moderate"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fortification_moderate_combatStats_fortification",
+        "sourceId": "item_armor_special_fortification_moderate",
+        "sourceName": {
+          "en": "Armor: Fortification (Moderate)",
+          "fr": "Armure : fortification (moderate)"
+        },
+        "targetId": "combatStats.fortification",
+        "value": 75,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_fortification_heavy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Fortification (Heavy)",
+      "fr": "Armure : fortification (heavy)"
+    },
+    "description": {
+      "en": "When a critical hit or sneak attack is scored on the wearer, there is a 100% chance the critical is negated and damage is rolled normally. Requires at least +1 enhancement bonus (CL 13).",
+      "fr": "Lorsqu'un coup critique ou une attaque en traître est porté sur le porteur, 100% de chance que le coup critique soit annulé et les dégâts lancés normalement. Nécessite au moins +1 d'altération (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "fortification_heavy"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_fortification_heavy_combatStats_fortification",
+        "sourceId": "item_armor_special_fortification_heavy",
+        "sourceName": {
+          "en": "Armor: Fortification (Heavy)",
+          "fr": "Armure : fortification (heavy)"
+        },
+        "targetId": "combatStats.fortification",
+        "value": 100,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_spell_resistance_13",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Spell Resistance (13)",
+      "fr": "Armure : résistance à la magie (13)"
+    },
+    "description": {
+      "en": "Grants spell resistance 13 to the armor's wearer while worn (CL 15).",
+      "fr": "Accorde une résistance à la magie de 13 au porteur tant que l'armure est portée (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_spell_resistance_13_combatStats_spell_resistance",
+        "sourceId": "item_armor_special_spell_resistance_13",
+        "sourceName": {
+          "en": "Armor: Spell Resistance (13)",
+          "fr": "Armure : résistance à la magie (13)"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 13,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_spell_resistance_15",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Spell Resistance (15)",
+      "fr": "Armure : résistance à la magie (15)"
+    },
+    "description": {
+      "en": "Grants spell resistance 15 to the armor's wearer while worn (CL 15).",
+      "fr": "Accorde une résistance à la magie de 15 au porteur tant que l'armure est portée (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_spell_resistance_15_combatStats_spell_resistance",
+        "sourceId": "item_armor_special_spell_resistance_15",
+        "sourceName": {
+          "en": "Armor: Spell Resistance (15)",
+          "fr": "Armure : résistance à la magie (15)"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 15,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_spell_resistance_17",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Spell Resistance (17)",
+      "fr": "Armure : résistance à la magie (17)"
+    },
+    "description": {
+      "en": "Grants spell resistance 17 to the armor's wearer while worn (CL 15).",
+      "fr": "Accorde une résistance à la magie de 17 au porteur tant que l'armure est portée (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 16000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_spell_resistance_17_combatStats_spell_resistance",
+        "sourceId": "item_armor_special_spell_resistance_17",
+        "sourceName": {
+          "en": "Armor: Spell Resistance (17)",
+          "fr": "Armure : résistance à la magie (17)"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 17,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_spell_resistance_19",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Spell Resistance (19)",
+      "fr": "Armure : résistance à la magie (19)"
+    },
+    "description": {
+      "en": "Grants spell resistance 19 to the armor's wearer while worn (CL 15).",
+      "fr": "Accorde une résistance à la magie de 19 au porteur tant que l'armure est portée (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_spell_resistance_19_combatStats_spell_resistance",
+        "sourceId": "item_armor_special_spell_resistance_19",
+        "sourceName": {
+          "en": "Armor: Spell Resistance (19)",
+          "fr": "Armure : résistance à la magie (19)"
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 19,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_slick",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Slick",
+      "fr": "Armure : glissant"
+    },
+    "description": {
+      "en": "+5 competence bonus on Escape Artist checks. Armor check penalty still applies (CL 5).",
+      "fr": "+5 en compétence aux tests de Escape Artist. Le malus d'armure s'applique normalement (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 3750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_slick_skill_escape_artist",
+        "sourceId": "item_armor_special_slick",
+        "sourceName": {
+          "en": "Armor: Slick",
+          "fr": "Armure : glissant"
+        },
+        "targetId": "skill_escape_artist",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_slick_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Slick Improved",
+      "fr": "Armure : glissant improved"
+    },
+    "description": {
+      "en": "+10 competence bonus on Escape Artist checks. Armor check penalty still applies (CL 10).",
+      "fr": "+10 en compétence aux tests de Escape Artist. Le malus d'armure s'applique normalement (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_slick_improved_skill_escape_artist",
+        "sourceId": "item_armor_special_slick_improved",
+        "sourceName": {
+          "en": "Armor: Slick Improved",
+          "fr": "Armure : glissant improved"
+        },
+        "targetId": "skill_escape_artist",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_slick_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Slick Greater",
+      "fr": "Armure : glissant greater"
+    },
+    "description": {
+      "en": "+15 competence bonus on Escape Artist checks. Armor check penalty still applies (CL 15).",
+      "fr": "+15 en compétence aux tests de Escape Artist. Le malus d'armure s'applique normalement (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 33750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_slick_greater_skill_escape_artist",
+        "sourceId": "item_armor_special_slick_greater",
+        "sourceName": {
+          "en": "Armor: Slick Greater",
+          "fr": "Armure : glissant greater"
+        },
+        "targetId": "skill_escape_artist",
+        "value": 15,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_shadow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Shadow",
+      "fr": "Armure : ombre"
+    },
+    "description": {
+      "en": "+5 competence bonus on Hide checks. Armor check penalty still applies (CL 5).",
+      "fr": "+5 en compétence aux tests de Hide. Le malus d'armure s'applique normalement (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 3750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_shadow_skill_hide",
+        "sourceId": "item_armor_special_shadow",
+        "sourceName": {
+          "en": "Armor: Shadow",
+          "fr": "Armure : ombre"
+        },
+        "targetId": "skill_hide",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_shadow_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Shadow Improved",
+      "fr": "Armure : ombre improved"
+    },
+    "description": {
+      "en": "+10 competence bonus on Hide checks. Armor check penalty still applies (CL 10).",
+      "fr": "+10 en compétence aux tests de Hide. Le malus d'armure s'applique normalement (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_shadow_improved_skill_hide",
+        "sourceId": "item_armor_special_shadow_improved",
+        "sourceName": {
+          "en": "Armor: Shadow Improved",
+          "fr": "Armure : ombre improved"
+        },
+        "targetId": "skill_hide",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_shadow_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Shadow Greater",
+      "fr": "Armure : ombre greater"
+    },
+    "description": {
+      "en": "+15 competence bonus on Hide checks. Armor check penalty still applies (CL 15).",
+      "fr": "+15 en compétence aux tests de Hide. Le malus d'armure s'applique normalement (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 33750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_shadow_greater_skill_hide",
+        "sourceId": "item_armor_special_shadow_greater",
+        "sourceName": {
+          "en": "Armor: Shadow Greater",
+          "fr": "Armure : ombre greater"
+        },
+        "targetId": "skill_hide",
+        "value": 15,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_silent_moves",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Silent Moves",
+      "fr": "Armure : mouvements silencieux"
+    },
+    "description": {
+      "en": "+5 competence bonus on Move Silently checks. Armor check penalty still applies (CL 5).",
+      "fr": "+5 en compétence aux tests de Move Silently. Le malus d'armure s'applique normalement (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 3750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_silent_moves_skill_move_silently",
+        "sourceId": "item_armor_special_silent_moves",
+        "sourceName": {
+          "en": "Armor: Silent Moves",
+          "fr": "Armure : mouvements silencieux"
+        },
+        "targetId": "skill_move_silently",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_silent_moves_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Silent Moves Improved",
+      "fr": "Armure : mouvements silencieux improved"
+    },
+    "description": {
+      "en": "+10 competence bonus on Move Silently checks. Armor check penalty still applies (CL 10).",
+      "fr": "+10 en compétence aux tests de Move Silently. Le malus d'armure s'applique normalement (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_silent_moves_improved_skill_move_silently",
+        "sourceId": "item_armor_special_silent_moves_improved",
+        "sourceName": {
+          "en": "Armor: Silent Moves Improved",
+          "fr": "Armure : mouvements silencieux improved"
+        },
+        "targetId": "skill_move_silently",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_silent_moves_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Silent Moves Greater",
+      "fr": "Armure : mouvements silencieux greater"
+    },
+    "description": {
+      "en": "+15 competence bonus on Move Silently checks. Armor check penalty still applies (CL 15).",
+      "fr": "+15 en compétence aux tests de Move Silently. Le malus d'armure s'applique normalement (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 33750,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_silent_moves_greater_skill_move_silently",
+        "sourceId": "item_armor_special_silent_moves_greater",
+        "sourceName": {
+          "en": "Armor: Silent Moves Greater",
+          "fr": "Armure : mouvements silencieux greater"
+        },
+        "targetId": "skill_move_silently",
+        "value": 15,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_glamered",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Glamered",
+      "fr": "Armure : glamourisée"
+    },
+    "description": {
+      "en": "Upon command, armor changes shape to appear as normal clothing. Retains all properties (including weight). True seeing reveals the true nature (CL 10).",
+      "fr": "Sur commande, l'armure change de forme pour ressembler à des vêtements normaux. Conserve toutes ses propriétés (y compris le poids). Vision lucide révèle sa vraie nature (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 2700,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_invulnerability",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Invulnerability",
+      "fr": "Armure : invulnérabilité"
+    },
+    "description": {
+      "en": "Grants the wearer damage reduction 5/magic while the armor is worn (CL 18).",
+      "fr": "Accorde au porteur une RD 5/magie tant que l'armure est portée (NLS 18)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_special_invulnerability_dr",
+        "sourceId": "item_armor_special_invulnerability",
+        "sourceName": {
+          "en": "Armor: Invulnerability",
+          "fr": "Armure : invulnérabilité"
+        },
+        "targetId": "combatStats.damage_reduction",
+        "value": 5,
+        "type": "damage_reduction",
+        "drBypassTags": [
+          "magic"
+        ]
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_ghost_touch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor/Shield: Ghost Touch",
+      "fr": "Armure/bouclier : contact fantomatique"
+    },
+    "description": {
+      "en": "Enhancement and armor bonus count against incorporeal creatures. Incorporeal creatures can wear it and gain the enhancement bonus against both corporeal and incorporeal attacks (CL 15).",
+      "fr": "Les bonus d'altération et d'armure comptent contre les créatures intangibles. Les créatures intangibles peuvent la porter et bénéficient du bonus d'altération contre les attaques corporelles et intangibles (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor",
+      "ghost_touch"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_wild",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor/Shield: Wild",
+      "fr": "Armure/bouclier : sauvage"
+    },
+    "description": {
+      "en": "Preserves the armor bonus (and enhancement bonus) while in a wild shape. While in wild shape, the armor cannot be seen (CL 9).",
+      "fr": "Conserve le bonus d'armure (et d'altération) sous forme sauvage. Sous forme sauvage, l'armure est invisible (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_etherealness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor: Etherealness",
+      "fr": "Armure : éthéréalité"
+    },
+    "description": {
+      "en": "Once per day on command, allows the wearer to become ethereal (as ethereal jaunt). May remain ethereal indefinitely; cannot use again that day after returning (CL 13).",
+      "fr": "Une fois par jour sur commande, permet au porteur de devenir éthéré (comme voyage éthéré). Peut rester éthéré indéfiniment ; ne peut pas être réutilisé ce jour après retour (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 49000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "etherealness_uses",
+        "label": {
+          "en": "Etherealness (1/day)",
+          "fr": "Éthéréalité (1/jour)"
+        },
+        "maxPipelineId": "combatStats.etherealness_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_special_undead_controlling",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor/Shield: Undead Controlling",
+      "fr": "Armure/bouclier : contrôle des morts-vivants"
+    },
+    "description": {
+      "en": "May control up to 26 HD of undead per day (as control undead spell). At dawn each day, all controlled undead are released (CL 13).",
+      "fr": "Peut contrôler jusqu'à 26 DV de morts-vivants par jour (comme contrôle des morts-vivants). À l'aube chaque jour, tous les morts-vivants contrôlés sont libérés (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 0,
+    "costGp": 49000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "undead_control_uses",
+        "label": {
+          "en": "Undead Controlling (1/day)",
+          "fr": "Contrôle des morts-vivants (1/jour)"
+        },
+        "maxPipelineId": "combatStats.undead_control_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_arrow_catching",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Arrow Catching",
+      "fr": "Bouclier : capture de flèches"
+    },
+    "description": {
+      "en": "+1 deflection bonus vs. ranged weapons. Any projectile targeting someone within 5 ft diverts to the shield bearer. Command word activates/deactivates (CL 8).",
+      "fr": "+1 parade contre les armes à distance. Tout projectile visant quelqu'un à moins de 1,5 m se détourne vers le porteur. Mot de commande active/désactive (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_shield_special_arrow_catching_deflection",
+        "sourceId": "item_shield_special_arrow_catching",
+        "sourceName": {
+          "en": "Shield: Arrow Catching",
+          "fr": "Bouclier : capture de flèches"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "deflection",
+        "situationalContext": "vs_ranged_attacks"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_arrow_deflection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Arrow Deflection",
+      "fr": "Bouclier : déviation de flèches"
+    },
+    "description": {
+      "en": "Once per round when struck by a ranged weapon, make a DC 20 Reflex save to deflect it (DC increases by ranged weapon enhancement bonus). Must be aware and not flat-footed (CL 5).",
+      "fr": "Une fois par round lors d'un tir réussi, jet de Réflexes DD 20 pour dévier (DD augmenté du bonus d'altération de l'arme). Doit être conscient et ne pas être pris au dépourvu (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_animated",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Animated",
+      "fr": "Bouclier : animé"
+    },
+    "description": {
+      "en": "On command, the shield floats within 2 ft of the wielder, protecting as if used normally but freeing both hands. Shield use penalties (ACP, ASF, non-proficiency) still apply (CL 12).",
+      "fr": "Sur commande, le bouclier flotte à moins de 60 cm du porteur, protégeant normalement mais libérant les deux mains. Les malus d'utilisation du bouclier s'appliquent toujours (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_bashing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Bashing",
+      "fr": "Bouclier : frappe"
+    },
+    "description": {
+      "en": "Deals damage as if two size categories larger (medium light shield: 1d6; medium heavy shield: 1d8). Acts as a +1 weapon when bashing. Light and heavy shields only (CL 8).",
+      "fr": "Inflige des dégâts comme deux catégories de taille plus grande (bouclier léger M : 1d6 ; grand bouclier M : 1d8). Agit comme une arme +1 lors de frappes. Boucliers légers et lourds uniquement (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_special_bashing_attack",
+        "sourceId": "item_shield_special_bashing",
+        "sourceName": {
+          "en": "Shield: Bashing",
+          "fr": "Bouclier : frappe"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement",
+        "situationalContext": "shield_bash"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_blinding",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Blinding",
+      "fr": "Bouclier : aveuglement"
+    },
+    "description": {
+      "en": "Twice per day on command, flashes brilliant light. All within 20 ft except the wielder make DC 14 Reflex save or are blinded for 1d4 rounds (CL 7).",
+      "fr": "Deux fois par jour sur commande, éclate d'une lumière brillante. Toutes les créatures à moins de 6 m sauf le porteur font un jet de Réflexes DD 14 ou sont aveuglées 1d4 rounds (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "blinding_uses",
+        "label": {
+          "en": "Blinding (2/day)",
+          "fr": "Aveuglement (2/jour)"
+        },
+        "maxPipelineId": "combatStats.blinding_max",
+        "defaultCurrent": 2,
+        "resetCondition": "per_day"
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_shield_special_reflecting",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shield: Reflecting",
+      "fr": "Bouclier : réflexion"
+    },
+    "description": {
+      "en": "Once per day on command, reflects a spell back at its caster exactly as the spell turning spell (CL 14).",
+      "fr": "Une fois par jour sur commande, renvoie un sort à son lanceur exactement comme le sort renvoi de sorts (NLS 14)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item",
+      "magic_armor"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "reflecting_uses",
+        "label": {
+          "en": "Reflecting (1/day)",
+          "fr": "Réflexion (1/jour)"
+        },
+        "maxPipelineId": "combatStats.reflecting_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_armor_specific_adamantine_breastplate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Adamantine Breastplate",
+      "fr": "Plastron en adamantium"
+    },
+    "description": {
+      "en": "Nonmagical breastplate of adamantine. Grants DR 2/—. Breastplate stats: AC +5, max DEX +3, ACP −4, ASF 25%, medium, 30 lb.",
+      "fr": "Plastron non magique en adamantium. Accorde RD 2/—. Plastron : CA +5, DEX max +3, MAT −4, Échec 25%, intermédiaire, 14 kg."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 30,
+    "costGp": 10200,
+    "hardness": 20,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_adamantine_breastplate_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_adamantine_breastplate",
+        "sourceName": {
+          "en": "Adamantine Breastplate",
+          "fr": "Plastron en adamantium"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "armor"
+      },
+      {
+        "id": "item_armor_specific_adamantine_breastplate_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_adamantine_breastplate",
+        "sourceName": {
+          "en": "Adamantine Breastplate",
+          "fr": "Plastron en adamantium"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -4,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_adamantine_breastplate_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_adamantine_breastplate",
+        "sourceName": {
+          "en": "Adamantine Breastplate",
+          "fr": "Plastron en adamantium"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 25,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_adamantine_breastplate_combatStats_damage_reduction",
+        "sourceId": "item_armor_specific_adamantine_breastplate",
+        "sourceName": {
+          "en": "Adamantine Breastplate",
+          "fr": "Plastron en adamantium"
+        },
+        "targetId": "combatStats.damage_reduction",
+        "value": 2,
+        "type": "damage_reduction",
+        "drBypassTags": []
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 5,
+      "maxDex": 3,
+      "armorCheckPenalty": -4,
+      "arcaneSpellFailure": 25
+    }
+  },
+  {
+    "id": "item_armor_specific_banded_mail_of_luck",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Banded Mail of Luck",
+      "fr": "Cotte à bandes de chance"
+    },
+    "description": {
+      "en": "+3 banded mail adorned with ten 100-gp gems. Once per week, the wearer may require that one attack roll against them be rerolled (Strong enchantment; CL 12).",
+      "fr": "+3 cotte à bandes ornée de dix gemmes de 100 po. Une fois par semaine, le porteur peut exiger qu'un jet d'attaque le ciblant soit relancé (Enchantement fort; NLS 12)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 35,
+    "costGp": 18900,
+    "hardness": 18,
+    "hpMax": 35,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_banded_mail_of_luck_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_banded_mail_of_luck",
+        "sourceName": {
+          "en": "Banded Mail of Luck",
+          "fr": "Cotte à bandes de chance"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_banded_mail_of_luck_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_banded_mail_of_luck",
+        "sourceName": {
+          "en": "Banded Mail of Luck",
+          "fr": "Cotte à bandes de chance"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_banded_mail_of_luck_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_banded_mail_of_luck",
+        "sourceName": {
+          "en": "Banded Mail of Luck",
+          "fr": "Cotte à bandes de chance"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": 1,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_banded_mail_of_luck_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_banded_mail_of_luck",
+        "sourceName": {
+          "en": "Banded Mail of Luck",
+          "fr": "Cotte à bandes de chance"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 35,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 3,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    },
+    "activation": {
+      "actionType": "reaction"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "luck_reroll",
+        "label": {
+          "en": "Reroll (1/week)",
+          "fr": "Relance (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.luck_reroll_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      }
+    ]
+  },
+  {
+    "id": "item_armor_specific_celestial_armor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Celestial Armor",
+      "fr": "Armure céleste"
+    },
+    "description": {
+      "en": "+3 mithral chainmail. Fine and light enough to wear under clothing. Max DEX +8, ACP −2, ASF 15%, light armor, 20 lb. Once per day, fly (as spell) on command (Faint transmutation [good]; CL 5).",
+      "fr": "+3 cotte de mailles en mithral. Assez fine pour être portée sous des vêtements normaux. DEX max +8, MAT −2, Échec 15%, légère, 9 kg. Une fois par jour, vol sur commande (Transmutation faible [bon]; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 20,
+    "costGp": 22400,
+    "hardness": 18,
+    "hpMax": 55,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_celestial_armor_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_celestial_armor",
+        "sourceName": {
+          "en": "Celestial Armor",
+          "fr": "Armure céleste"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_celestial_armor_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_celestial_armor",
+        "sourceName": {
+          "en": "Celestial Armor",
+          "fr": "Armure céleste"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_celestial_armor_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_celestial_armor",
+        "sourceName": {
+          "en": "Celestial Armor",
+          "fr": "Armure céleste"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 15,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 3,
+      "maxDex": 8,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    },
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "fly_uses",
+        "label": {
+          "en": "Fly (1/day)",
+          "fr": "Vol (1/jour)"
+        },
+        "maxPipelineId": "combatStats.fly_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_armor_specific_demon_armor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Demon Armor",
+      "fr": "Armure démoniaque"
+    },
+    "description": {
+      "en": "+4 full plate styled as a demon. Claw attacks: 1d10, +1 weapon, Fort DC 14 or disease (contagion). Inflicts one negative level on any nonevil wearer (persists while worn, no level loss) (Strong necromancy [evil]; CL 13).",
+      "fr": "+4 armure de plates style démoniaque. Griffes : 1d10, arme +1, Vigueur DD 14 ou maladie (contagion). Inflige un niveau négatif à tout porteur non-mauvais (persiste tant que portée) (Nécromancie forte [mauvais]; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item",
+      "evil"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 52260,
+    "hardness": 20,
+    "hpMax": 55,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_demon_armor_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_demon_armor",
+        "sourceName": {
+          "en": "Demon Armor",
+          "fr": "Armure démoniaque"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_demon_armor_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_demon_armor",
+        "sourceName": {
+          "en": "Demon Armor",
+          "fr": "Armure démoniaque"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_demon_armor_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_demon_armor",
+        "sourceName": {
+          "en": "Demon Armor",
+          "fr": "Armure démoniaque"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": 1,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_demon_armor_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_demon_armor",
+        "sourceName": {
+          "en": "Demon Armor",
+          "fr": "Armure démoniaque"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 35,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 4,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_armor_specific_dragonhide_plate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dragonhide Plate",
+      "fr": "Armure de plates en cuir de dragon"
+    },
+    "description": {
+      "en": "Full plate made of dragonhide instead of metal (druids can wear). Identical to masterwork full plate otherwise: AC +8, max DEX +1, ACP −5, ASF 35%, heavy, 50 lb. Nonmagical.",
+      "fr": "Armure de plates en cuir de dragon (les druides peuvent la porter). Identique à une armure de plates de maîtrise : CA +8, DEX max +1, MAT −5, Échec 35%, lourde, 23 kg. Non magique."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 3300,
+    "hardness": 10,
+    "hpMax": 45,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_dragonhide_plate_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_dragonhide_plate",
+        "sourceName": {
+          "en": "Dragonhide Plate",
+          "fr": "Armure de plates en cuir de dragon"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 8,
+        "type": "armor"
+      },
+      {
+        "id": "item_armor_specific_dragonhide_plate_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_dragonhide_plate",
+        "sourceName": {
+          "en": "Dragonhide Plate",
+          "fr": "Armure de plates en cuir de dragon"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_dragonhide_plate_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_dragonhide_plate",
+        "sourceName": {
+          "en": "Dragonhide Plate",
+          "fr": "Armure de plates en cuir de dragon"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 35,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 8,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_armor_specific_dwarven_plate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dwarven Plate",
+      "fr": "Armure de plates naine"
+    },
+    "description": {
+      "en": "Full plate of adamantine. Grants DR 3/—. Full plate: AC +8, max DEX +1, ACP −5, ASF 35%, heavy, 50 lb. Nonmagical.",
+      "fr": "Armure de plates en adamantium. Accorde RD 3/—. Armure de plates : CA +8, DEX max +1, MAT −5, Échec 35%, lourde, 23 kg. Non magique."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 16500,
+    "hardness": 20,
+    "hpMax": 55,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_dwarven_plate_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_dwarven_plate",
+        "sourceName": {
+          "en": "Dwarven Plate",
+          "fr": "Armure de plates naine"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 8,
+        "type": "armor"
+      },
+      {
+        "id": "item_armor_specific_dwarven_plate_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_dwarven_plate",
+        "sourceName": {
+          "en": "Dwarven Plate",
+          "fr": "Armure de plates naine"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_dwarven_plate_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_dwarven_plate",
+        "sourceName": {
+          "en": "Dwarven Plate",
+          "fr": "Armure de plates naine"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 35,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_dwarven_plate_combatStats_damage_reduction",
+        "sourceId": "item_armor_specific_dwarven_plate",
+        "sourceName": {
+          "en": "Dwarven Plate",
+          "fr": "Armure de plates naine"
+        },
+        "targetId": "combatStats.damage_reduction",
+        "value": 3,
+        "type": "damage_reduction",
+        "drBypassTags": []
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 8,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_armor_specific_elven_chain",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Elven Chain",
+      "fr": "Cotte de mailles elfique"
+    },
+    "description": {
+      "en": "Extremely light chainmail of fine mithral links. Speed 30 ft (Medium). ASF 20%, max DEX +4, ACP −2, light armor, 20 lb. Nonmagical.",
+      "fr": "Cotte de mailles légère en mithral fin. Vitesse 9 m (M). Échec 20%, DEX max +4, MAT −2, légère, 9 kg. Non magique."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 20,
+    "costGp": 4150,
+    "hardness": 15,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_elven_chain_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_elven_chain",
+        "sourceName": {
+          "en": "Elven Chain",
+          "fr": "Cotte de mailles elfique"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "armor"
+      },
+      {
+        "id": "item_armor_specific_elven_chain_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_elven_chain",
+        "sourceName": {
+          "en": "Elven Chain",
+          "fr": "Cotte de mailles elfique"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_elven_chain_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_elven_chain",
+        "sourceName": {
+          "en": "Elven Chain",
+          "fr": "Cotte de mailles elfique"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 4,
+      "maxDex": 4,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 20
+    }
+  },
+  {
+    "id": "item_armor_specific_mithral_full_plate_of_speed",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mithral Full Plate of Speed",
+      "fr": "Armure de plates en mithral de vitesse"
+    },
+    "description": {
+      "en": "+1 mithral full plate. Free action: activate haste (as spell) for up to 10 rounds/day (non-consecutive allowed). Speed 20 ft, ASF 25%, max DEX +3, ACP −3, medium, 25 lb (Faint transmutation; CL 5).",
+      "fr": "+1 armure de plates en mithral. Action libre : activer accélération jusqu'à 10 rounds/jour (pas forcément consécutifs). Vitesse 6 m, Échec 25%, DEX max +3, MAT −3, intermédiaire, 11,5 kg (Transmutation faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 25,
+    "costGp": 26500,
+    "hardness": 20,
+    "hpMax": 45,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_mithral_full_plate_of_speed_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_mithral_full_plate_of_speed",
+        "sourceName": {
+          "en": "Mithral Full Plate of Speed",
+          "fr": "Armure de plates en mithral de vitesse"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_mithral_full_plate_of_speed_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_mithral_full_plate_of_speed",
+        "sourceName": {
+          "en": "Mithral Full Plate of Speed",
+          "fr": "Armure de plates en mithral de vitesse"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -3,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_mithral_full_plate_of_speed_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_mithral_full_plate_of_speed",
+        "sourceName": {
+          "en": "Mithral Full Plate of Speed",
+          "fr": "Armure de plates en mithral de vitesse"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 25,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 3,
+      "armorCheckPenalty": -3,
+      "arcaneSpellFailure": 25
+    },
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "haste_rounds",
+        "label": {
+          "en": "Haste (10 rounds/day)",
+          "fr": "Accélération (10 rounds/jour)"
+        },
+        "maxPipelineId": "combatStats.haste_rounds_max",
+        "defaultCurrent": 10,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_armor_specific_mithral_shirt",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mithral Shirt",
+      "fr": "Chemise de mithral"
+    },
+    "description": {
+      "en": "Extremely light chain shirt of fine mithral links. Speed 30 ft. ASF 10%, max DEX +6, no ACP, light armor, 10 lb. Nonmagical.",
+      "fr": "Chemise de mailles légère en mithral fin. Vitesse 9 m. Échec 10%, DEX max +6, sans MAT, légère, 4,5 kg. Non magique."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_light",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 10,
+    "costGp": 1100,
+    "hardness": 15,
+    "hpMax": 20,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_mithral_shirt_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_mithral_shirt",
+        "sourceName": {
+          "en": "Mithral Shirt",
+          "fr": "Chemise de mithral"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "armor"
+      },
+      {
+        "id": "item_armor_specific_mithral_shirt_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_mithral_shirt",
+        "sourceName": {
+          "en": "Mithral Shirt",
+          "fr": "Chemise de mithral"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 3,
+      "maxDex": 6,
+      "armorCheckPenalty": 0,
+      "arcaneSpellFailure": 10
+    }
+  },
+  {
+    "id": "item_armor_specific_plate_armor_of_the_deep",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Plate Armor of the Deep",
+      "fr": "Armure de plates des profondeurs"
+    },
+    "description": {
+      "en": "+1 full plate with wave/fish motif. Treated as unarmored for Swim checks. Can breathe underwater. Can converse with any water-breathing creature with a language (Moderate abjuration; CL 11).",
+      "fr": "+1 armure de plates avec motifs de vagues et de poissons. Traité sans armure pour les tests de Natation. Peut respirer sous l'eau. Peut converser avec toute créature respirant l'eau (Abjuration modérée; NLS 11)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 24650,
+    "hardness": 20,
+    "hpMax": 55,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_plate_armor_of_the_deep_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_plate_armor_of_the_deep",
+        "sourceName": {
+          "en": "Plate Armor of the Deep",
+          "fr": "Armure de plates des profondeurs"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_plate_armor_of_the_deep_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_plate_armor_of_the_deep",
+        "sourceName": {
+          "en": "Plate Armor of the Deep",
+          "fr": "Armure de plates des profondeurs"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_plate_armor_of_the_deep_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_plate_armor_of_the_deep",
+        "sourceName": {
+          "en": "Plate Armor of the Deep",
+          "fr": "Armure de plates des profondeurs"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": 1,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_plate_armor_of_the_deep_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_plate_armor_of_the_deep",
+        "sourceName": {
+          "en": "Plate Armor of the Deep",
+          "fr": "Armure de plates des profondeurs"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 35,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_armor_specific_rhino_hide",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rhino Hide",
+      "fr": "Cuir de rhinocéros"
+    },
+    "description": {
+      "en": "+2 hide armor from rhinoceros hide. ACP only −1. Deals an extra 2d6 damage on any successful charge attack (including mounted charge) (Moderate transmutation; CL 9).",
+      "fr": "+2 armure de cuir de rhinocéros. MAT seulement −1. Inflige 2d6 dégâts supplémentaires sur toute charge réussie (y compris montée) (Transmutation modérée; NLS 9)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 25,
+    "costGp": 5165,
+    "hardness": 5,
+    "hpMax": 25,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_rhino_hide_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_rhino_hide",
+        "sourceName": {
+          "en": "Rhino Hide",
+          "fr": "Cuir de rhinocéros"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_rhino_hide_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_rhino_hide",
+        "sourceName": {
+          "en": "Rhino Hide",
+          "fr": "Cuir de rhinocéros"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -1,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_rhino_hide_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_rhino_hide",
+        "sourceName": {
+          "en": "Rhino Hide",
+          "fr": "Cuir de rhinocéros"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 4,
+      "armorCheckPenalty": -1,
+      "arcaneSpellFailure": 20
+    }
+  },
+  {
+    "id": "item_armor_specific_breastplate_of_command",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Breastplate of Command",
+      "fr": "Plastron de commandement"
+    },
+    "description": {
+      "en": "+2 breastplate radiating a commanding aura. +2 competence bonus on all Charisma checks and +2 to Leadership score. Friendly troops within 360 ft become braver. Wearer cannot hide while effect is active (Strong enchantment; CL 15).",
+      "fr": "+2 plastron irradiant une aura de commandement. +2 en compétence aux tests de Charisme et +2 au score de Leadership. Les troupes amies à 110 m deviennent plus courageuses. Le porteur ne peut pas se cacher (Enchantement fort; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_medium",
+      "metal_armor",
+      "wearing_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 30,
+    "costGp": 25400,
+    "hardness": 18,
+    "hpMax": 38,
+    "grantedModifiers": [
+      {
+        "id": "item_armor_specific_breastplate_of_command_combatStats_ac_normal",
+        "sourceId": "item_armor_specific_breastplate_of_command",
+        "sourceName": {
+          "en": "Breastplate of Command",
+          "fr": "Plastron de commandement"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_armor_specific_breastplate_of_command_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_breastplate_of_command",
+        "sourceName": {
+          "en": "Breastplate of Command",
+          "fr": "Plastron de commandement"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -3,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_breastplate_of_command_combatStats_armor_check_penalty",
+        "sourceId": "item_armor_specific_breastplate_of_command",
+        "sourceName": {
+          "en": "Breastplate of Command",
+          "fr": "Plastron de commandement"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": 1,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_breastplate_of_command_combatStats_arcane_spell_failure",
+        "sourceId": "item_armor_specific_breastplate_of_command",
+        "sourceName": {
+          "en": "Breastplate of Command",
+          "fr": "Plastron de commandement"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 25,
+        "type": "untyped"
+      },
+      {
+        "id": "item_armor_specific_breastplate_of_command_attributes_stat_cha",
+        "sourceId": "item_armor_specific_breastplate_of_command",
+        "sourceName": {
+          "en": "Breastplate of Command",
+          "fr": "Plastron de commandement"
+        },
+        "targetId": "attributes.stat_cha",
+        "value": 2,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 3,
+      "armorCheckPenalty": -3,
+      "arcaneSpellFailure": 25
+    }
+  },
+  {
+    "id": "item_shield_specific_absorbing_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Absorbing Shield",
+      "fr": "Bouclier absorbant"
+    },
+    "description": {
+      "en": "+1 heavy steel shield, flat black. Once every two days on command, disintegrates an object it touches (as disintegrate, requires melee touch attack) (Strong transmutation; CL 17).",
+      "fr": "+1 grand bouclier d'acier, noir mat. Toutes les deux jours sur commande, désintègre un objet touché (comme désintégration, nécessite attaque de contact) (Transmutation forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "metal_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 15,
+    "costGp": 50170,
+    "hardness": 18,
+    "hpMax": 30,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_absorbing_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_absorbing_shield",
+        "sourceName": {
+          "en": "Absorbing Shield",
+          "fr": "Bouclier absorbant"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_shield_specific_absorbing_shield_combatStats_armor_check_penalty",
+        "sourceId": "item_shield_specific_absorbing_shield",
+        "sourceName": {
+          "en": "Absorbing Shield",
+          "fr": "Bouclier absorbant"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 99,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    },
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "disintegrate_uses",
+        "label": {
+          "en": "Disintegrate (1/2 days)",
+          "fr": "Désintégration (1/2 jours)"
+        },
+        "maxPipelineId": "combatStats.disintegrate_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_shield_specific_casters_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Caster's Shield",
+      "fr": "Bouclier du lanceur de sorts"
+    },
+    "description": {
+      "en": "+1 light wooden shield with a leather strip on the back for scribing a single spell as a scroll (max 3rd level, half raw material cost, reusable). 5% arcane spell failure (Moderate abjuration; CL 6).",
+      "fr": "+1 bouclier léger en bois avec bandelette pour inscrire un sort comme un parchemin (max 3e niveau, coût réduit de moitié, réutilisable). Échec 5% (Abjuration modérée; NLS 6)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 5,
+    "costGp": 3153,
+    "hardness": 5,
+    "hpMax": 15,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_casters_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_casters_shield",
+        "sourceName": {
+          "en": "Caster's Shield",
+          "fr": "Bouclier du lanceur de sorts"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_shield_specific_casters_shield_combatStats_arcane_spell_failure",
+        "sourceId": "item_shield_specific_casters_shield",
+        "sourceName": {
+          "en": "Caster's Shield",
+          "fr": "Bouclier du lanceur de sorts"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 5,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 99,
+      "armorCheckPenalty": 0,
+      "arcaneSpellFailure": 5
+    }
+  },
+  {
+    "id": "item_shield_specific_darkwood_buckler",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Darkwood Buckler",
+      "fr": "Boucle en bois sombre"
+    },
+    "description": {
+      "en": "Nonmagical light wooden shield made of darkwood. Lighter than normal: 2.5 lb, no ACP. No enhancement bonus.",
+      "fr": "Bouclier léger en bois sombre non magique. Plus léger que la normale : 1 kg, sans MAT. Pas de bonus d'altération."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 2.5,
+    "costGp": 205,
+    "hardness": 5,
+    "hpMax": 10,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_darkwood_buckler_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_darkwood_buckler",
+        "sourceName": {
+          "en": "Darkwood Buckler",
+          "fr": "Boucle en bois sombre"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "shield"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 99,
+      "armorCheckPenalty": 0,
+      "arcaneSpellFailure": 5
+    }
+  },
+  {
+    "id": "item_shield_specific_darkwood_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Darkwood Shield",
+      "fr": "Grand bouclier en bois sombre"
+    },
+    "description": {
+      "en": "Nonmagical heavy wooden shield made of darkwood. Lighter than normal: 5 lb, no ACP. No enhancement bonus.",
+      "fr": "Grand bouclier en bois sombre non magique. Plus léger que la normale : 2 kg, sans MAT. Pas de bonus d'altération."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 5,
+    "costGp": 257,
+    "hardness": 5,
+    "hpMax": 15,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_darkwood_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_darkwood_shield",
+        "sourceName": {
+          "en": "Darkwood Shield",
+          "fr": "Grand bouclier en bois sombre"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "shield"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 99,
+      "armorCheckPenalty": 0,
+      "arcaneSpellFailure": 15
+    }
+  },
+  {
+    "id": "item_shield_specific_mithral_heavy_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mithral Heavy Shield",
+      "fr": "Grand bouclier en mithral"
+    },
+    "description": {
+      "en": "Heavy shield of mithral, lighter than steel. 5% ASF, no ACP, 5 lb. No enhancement bonus. Nonmagical.",
+      "fr": "Grand bouclier en mithral, plus léger que l'acier. Échec 5%, sans MAT, 2 kg. Pas de bonus d'altération. Non magique."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "metal_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 5,
+    "costGp": 1020,
+    "hardness": 15,
+    "hpMax": 20,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_mithral_heavy_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_mithral_heavy_shield",
+        "sourceName": {
+          "en": "Mithral Heavy Shield",
+          "fr": "Grand bouclier en mithral"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "shield"
+      },
+      {
+        "id": "item_shield_specific_mithral_heavy_shield_combatStats_arcane_spell_failure",
+        "sourceId": "item_shield_specific_mithral_heavy_shield",
+        "sourceName": {
+          "en": "Mithral Heavy Shield",
+          "fr": "Grand bouclier en mithral"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 5,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 99,
+      "armorCheckPenalty": 0,
+      "arcaneSpellFailure": 5
+    }
+  },
+  {
+    "id": "item_shield_specific_lions_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Lion's Shield",
+      "fr": "Bouclier du lion"
+    },
+    "description": {
+      "en": "+2 heavy steel shield shaped as a roaring lion. Three times per day (free action), the lion bites independently using the wielder's full BAB for 2d6 damage (Moderate conjuration; CL 10).",
+      "fr": "+2 grand bouclier d'acier en tête de lion rugissant. Trois fois par jour (action libre), le lion mord indépendamment avec le BBA complet du porteur pour 2d6 dégâts (Invocation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "metal_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 15,
+    "costGp": 9170,
+    "hardness": 14,
+    "hpMax": 28,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_lions_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_lions_shield",
+        "sourceName": {
+          "en": "Lion's Shield",
+          "fr": "Bouclier du lion"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_shield_specific_lions_shield_combatStats_armor_check_penalty",
+        "sourceId": "item_shield_specific_lions_shield",
+        "sourceName": {
+          "en": "Lion's Shield",
+          "fr": "Bouclier du lion"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 2,
+      "maxDex": 99,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    },
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "lions_bite_uses",
+        "label": {
+          "en": "Lion Bite (3/day)",
+          "fr": "Morsure du lion (3/jour)"
+        },
+        "maxPipelineId": "combatStats.lions_bite_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_shield_specific_spined_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spined Shield",
+      "fr": "Bouclier hérissé"
+    },
+    "description": {
+      "en": "+1 heavy steel shield covered in spines (acts as spiked shield). Up to 3 times/day, fire a spine (+1 enhancement, 120 ft range increment, 1d10 damage 19-20/×2). Spines regenerate daily (Moderate evocation; CL 6).",
+      "fr": "+1 grand bouclier d'acier couvert de piquants (agit comme bouclier hérissé). Jusqu'à 3 fois/jour, tirer un piquant (+1 altération, facteur de portée 36 m, 1d10 dégâts 19-20/×2). Les piquants se régénèrent chaque jour (Évocation modérée; NLS 6)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "metal_armor",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 15,
+    "costGp": 5580,
+    "hardness": 14,
+    "hpMax": 25,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_spined_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_spined_shield",
+        "sourceName": {
+          "en": "Spined Shield",
+          "fr": "Bouclier hérissé"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_shield_specific_spined_shield_combatStats_armor_check_penalty",
+        "sourceId": "item_shield_specific_spined_shield",
+        "sourceName": {
+          "en": "Spined Shield",
+          "fr": "Bouclier hérissé"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 99,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    },
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "spine_shots",
+        "label": {
+          "en": "Spine Shot (3/day)",
+          "fr": "Tir de piquant (3/jour)"
+        },
+        "maxPipelineId": "combatStats.spine_shots_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_shield_specific_winged_shield",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Winged Shield",
+      "fr": "Bouclier ailé"
+    },
+    "description": {
+      "en": "+3 round heavy wooden shield with small feathered wings. Once per day on command, fly (as spell): up to 133 lb at 60 ft/round or up to 266 lb at 40 ft/round (Faint transmutation; CL 5).",
+      "fr": "+3 grand bouclier rond en bois avec petites ailes emplumées. Une fois par jour sur commande, voler (comme sort) : jusqu'à 60 kg à 18 m/round ou jusqu'à 120 kg à 12 m/round (Transmutation faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "shield",
+      "magic_item"
+    ],
+    "equipmentSlot": "off_hand",
+    "weightLbs": 10,
+    "costGp": 17257,
+    "hardness": 7,
+    "hpMax": 22,
+    "grantedModifiers": [
+      {
+        "id": "item_shield_specific_winged_shield_combatStats_ac_normal",
+        "sourceId": "item_shield_specific_winged_shield",
+        "sourceName": {
+          "en": "Winged Shield",
+          "fr": "Bouclier ailé"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_shield_specific_winged_shield_combatStats_armor_check_penalty",
+        "sourceId": "item_shield_specific_winged_shield",
+        "sourceName": {
+          "en": "Winged Shield",
+          "fr": "Bouclier ailé"
+        },
+        "targetId": "combatStats.armor_check_penalty",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 3,
+      "maxDex": 99,
+      "armorCheckPenalty": -2,
+      "arcaneSpellFailure": 15
+    },
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "fly_uses",
+        "label": {
+          "en": "Fly (1/day)",
+          "fr": "Vol (1/jour)"
+        },
+        "maxPipelineId": "combatStats.fly_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
   }
 ]

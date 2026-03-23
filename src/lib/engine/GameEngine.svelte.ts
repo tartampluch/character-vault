@@ -447,6 +447,53 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       'combatStats.speed_swim': makePipeline('combatStats.speed_swim', { en: 'Swim Speed', fr: 'Vitesse de nage' }, 0),
       'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'Armor Check Penalty', fr: "Malus d'armure aux tests" }, 0),
       'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'Max Hit Points', fr: 'Points de vie maximum' }, 0),
+
+      // --- FORTIFICATION (SRD: Magic Armor special ability) ---
+      // Percentage chance to negate a critical hit or sneak attack.
+      // Light = 25%, Moderate = 75%, Heavy = 100%.
+      // D&D 3.5 SRD: "When a critical hit or sneak attack is scored on the wearer,
+      //   there is a chance that the critical hit or sneak attack is negated and
+      //   damage is instead rolled normally."
+      //
+      // CONTENT AUTHORING:
+      //   Items grant fortification via a grantedModifier:
+      //     { targetId: "combatStats.fortification", value: 25, type: "untyped" }
+      //   Multiple sources stack (unusual — but two Fortification items never appear
+      //   on the same character; the SRD says "if you roll a special ability twice,
+      //   use the better"). In practice only one value is active. Stored as percentage
+      //   integer (0–100). baseValue = 0 (no fortification by default).
+      //
+      // DICE ENGINE CONTRACT:
+      //   When parseAndRoll() confirms a critical hit, it reads the defender's
+      //   combatStats.fortification.totalValue. If > 0, it rolls 1d100:
+      //   if the roll <= fortificationPct, the crit is negated (damage rolled normally).
+      //   @see diceEngine.ts — defenderFortificationPct parameter
+      //   @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
+      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'Fortification', fr: 'Fortification' }, 0),
+
+      // --- ARCANE SPELL FAILURE (SRD: Armor & Shields) ---
+      // Percentage chance that an arcane spell fails when cast while wearing armor.
+      // D&D 3.5 SRD: armor with arcane spell failure chance requires an arcane
+      //   spellcaster to roll 1d100 before casting; if the roll <= ASF%, the spell
+      //   fails and the spell slot is expended.
+      //
+      // STACKING RULE (SRD):
+      //   ASF percentages from multiple pieces of armor ADD together (not best-wins).
+      //   A character wearing a chain shirt (20%) and carrying a heavy steel shield (15%)
+      //   has a total ASF of 35%. This is why type "untyped" is used — untyped modifiers
+      //   always stack, correctly modeling additive ASF.
+      //
+      // CONTENT AUTHORING:
+      //   Each armor/shield item contributes via grantedModifier:
+      //     { targetId: "combatStats.arcane_spell_failure", value: 20, type: "untyped" }
+      //   Masterwork and mithral items reduce ASF separately via additional modifiers.
+      //   baseValue = 0 (no spell failure by default — unarmored character).
+      //
+      // DICE ENGINE CONTRACT:
+      //   The CastingPanel UI (Phase 12.3) reads combatStats.arcane_spell_failure.totalValue
+      //   and rolls 1d100 before every arcane spell cast. If roll <= ASF%, the spell fails.
+      //   @see ARCHITECTURE.md section 4.8 — Arcane Spell Failure mechanic reference
+      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'Arcane Spell Failure', fr: "Risque d'échec des sorts arcaniques" }, 0),
     },
     saves: {
       'saves.fort': makePipeline('saves.fort', { en: 'Fortitude', fr: 'Vigueur' }, 0),
