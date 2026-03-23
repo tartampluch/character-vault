@@ -1590,7 +1590,7 @@ All C-15 tasks use `"ruleSource": "srd_psionics"`.
 
 ### C-16 — NPC Classes (`14_d20srd_core_npc_classes.json`)
 
-- [ ] **C-16** — Convert the 5 NPC classes
+- [x] **C-16** — Convert the 5 NPC classes
 
 **Source files:** `d20srd/www.d20srd.org/srd/npcClasses/` — all 5 files:
 `adept.html`, `aristocrat.html`, `commoner.html`, `expert.html`, `warrior.html`
