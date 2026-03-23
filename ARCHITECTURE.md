@@ -932,9 +932,92 @@ When the player selects a staff spell in `CastingPanel.svelte`:
 | CL used | Wielder's if higher | Item's fixed CL | Item's fixed CL |
 | Max charges | 50 (never resets) | 50 (never resets) | Varies |
 | Spell level limit | Any | 4th max | N/A |
-| Data field | `staffSpells` | description only | resource pools |
+| Data field | `staffSpells` | `wandSpell` | resource pools |
 
 > **AI Implementation Note:** When reading `staffSpells` in `CastingPanel.svelte`, look up each `spellId` via `dataLoader.getFeature(spellId)` to populate the spell name, school icon, and description. Use `entry.spellLevel ?? feature.level` as the effective level for all level-dependent calculations. The `chargeCost` should be displayed prominently next to each spell option so the player can manage their charge budget.
+
+---
+
+### 4.13. Wands — `ItemFeature.wandSpell`
+
+Wands are the simplest spell-storing item in D&D 3.5:
+
+> **"All wands are simply storage devices for spells and thus have no special descriptions."** — SRD
+
+Every wand has exactly one mechanic: hold a single spell at a fixed caster level, with 50 charges that are never refilled. The `wandSpell` field provides the two pieces of data the CastingPanel needs that cannot be inferred from the price alone: **which spell** and **at what caster level**.
+
+#### D&D 3.5 SRD Rules
+
+- A wand holds **exactly one spell** (≤ 4th level).
+- Each activation costs **exactly 1 charge** (never varies, unlike staves).
+- Wands use the item's **own fixed caster level** — not the wielder's level. This is critically different from staves: the wielder's CL confers no benefit on a wand.
+- Some wands store **heightened spells** (a 1st-level spell stored at a higher effective level to improve its DC).
+- 50 charges; empty wand = useless stick.
+
+#### Why CL Matters — The Magic Missile Example
+
+| Wand | CL | Missiles | Price |
+|---|---|---|---|
+| Wand of Magic Missile (CL 1) | 1 | 1 missile | 750 gp |
+| Wand of Magic Missile (CL 3) | 3 | 2 missiles | 2,250 gp |
+| Wand of Magic Missile (CL 5) | 5 | 3 missiles | 3,750 gp |
+| Wand of Magic Missile (CL 7) | 7 | 4 missiles | 5,250 gp |
+| Wand of Magic Missile (CL 9) | 9 | 5 missiles | 6,750 gp |
+
+Same spell — but the CL determines everything. A CastingPanel that doesn't know the wand's CL cannot compute the correct missile count (or fireball dice, range, duration, etc.).
+
+#### Data Model — `ItemFeature.wandSpell`
+
+```typescript
+wandSpell?: {
+    spellId: ID;         // The spell stored in the wand
+    casterLevel: number; // The wand's fixed CL (used for all level-dependent effects)
+    spellLevel?: number; // Only for heightened spells (see below)
+};
+```
+
+Content authoring example — Wand of Fireball (CL 5):
+```json
+{
+  "id": "item_wand_fireball_cl5",
+  "wandSpell": {
+    "spellId": "spell_fireball",
+    "casterLevel": 5
+  },
+  "resourcePoolTemplates": [{
+    "poolId": "charges",
+    "label": { "en": "Wand Charges (50)", "fr": "Charges de baguette (50)" },
+    "maxPipelineId": "combatStats.wand_charges_max",
+    "defaultCurrent": 50,
+    "resetCondition": "never"
+  }]
+}
+```
+
+#### Heightened Wands (`spellLevel`)
+
+Four wands in the SRD table hold spells at a higher effective level to improve their save DCs:
+
+| Wand | spellId | casterLevel | spellLevel | Price |
+|---|---|---|---|---|
+| Charm person (heightened 3rd) | `spell_charm_person` | 5 | **3** | 11,250 gp |
+| Hold person (heightened 4th) | `spell_hold_person` | 7 | **4** | 21,000 gp |
+| Ray of enfeeblement (heightened 4th) | `spell_ray_of_enfeeblement` | 7 | **4** | 21,000 gp |
+| Suggestion (heightened 4th) | `spell_suggestion` | 7 | **4** | 21,000 gp |
+
+When `spellLevel` is present: `saveDC = 10 + spellLevel + abilityModifier`. When absent: use the spell's base level from its Feature definition.
+
+#### CastingPanel Contract
+
+When the player activates a wand:
+1. Read `wandSpell.spellId` to identify the spell.
+2. Validate `instance.itemResourcePools['charges'] >= 1`.
+3. Call `engine.spendItemPoolCharge(instanceId, 'charges', 1)`.
+4. Apply the spell using `wandSpell.casterLevel` as the CL (overrides wielder's CL — wands are fixed).
+5. Compute save DC: `10 + (wandSpell.spellLevel ?? spell.level) + abilityModifier`.
+6. Compute all variable effects (damage dice, range, area, duration) from `wandSpell.casterLevel`.
+
+> **AI Implementation Note:** For wands, ALWAYS use `wandSpell.casterLevel` — never the wielder's CL. This is the fundamental rule that distinguishes wands from staves (staves use the wielder's CL if higher). For heightened wands, use `wandSpell.spellLevel` only for DC calculation; the actual spell effect still uses `wandSpell.casterLevel` for number-of-dice scaling.
 
 ---
 

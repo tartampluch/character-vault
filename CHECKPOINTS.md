@@ -375,6 +375,14 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Wand Spell field (Enhancement E-11 / Architecture section 4.13):**
+  - Is `ItemFeature.wandSpell` optional (non-wands compile without it)?
+  - Is `casterLevel` a plain `number` (not a limited enum)?
+  - Does `spellLevel` support heightened wands (charm person 3rd, hold person 4th, etc.)?
+  - Are 5 Magic Missile CL variants (CL 1/3/5/7/9) representable as distinct items?
+  - Is `spellLevel` absent for non-heightened wands?
+  - Does `wandSpell` coexist correctly with `resourcePoolTemplates` (50 charges)?
+  - Does `ARCHITECTURE.md section 4.13` document that wands use item CL (not wielder's)?
 - **Staff Spell Lists (Enhancement E-10 / Architecture section 4.12):**
   - Is `ItemFeature.staffSpells` optional (non-staves compile without it)?
   - Are `chargeCost` values restricted to `1 | 2 | 3 | 4 | 5`?

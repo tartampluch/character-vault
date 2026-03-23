@@ -25775,5 +25775,3330 @@
     "activation": {
       "actionType": "standard"
     }
+  },
+  {
+    "id": "item_wand_detect_magic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Detect Magic",
+      "fr": "Baguette de détection de la magie"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Detect magic at CL 1. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Détection de la magie au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 375,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_detect_magic",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_light",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Light",
+      "fr": "Baguette de lumière"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Light at CL 1. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Lumière au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 375,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_light",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_burning_hands",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Burning Hands",
+      "fr": "Baguette de mains brûlantes"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Burning hands at CL 1. 50 charges, 1 charge per use, never recharges. 1d4 fire per CL (max 5d4).",
+      "fr": "Action standard (déclencheur de sort). Mains brûlantes au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. 1d4 feu par NLS (max 5d4)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_burning_hands",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_charm_animal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Charm Animal",
+      "fr": "Baguette de charme-animal"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Charm animal at CL 1. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Charme-animal au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_charm_animal",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_charm_person",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Charm Person",
+      "fr": "Baguette de charme-personne"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Charm person at CL 1. 50 charges, 1 charge per use, never recharges. Will DC 11 negates.",
+      "fr": "Action standard (déclencheur de sort). Charme-personne au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 11 annule."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_charm_person",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_color_spray",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Color Spray",
+      "fr": "Baguette de rayon coloré"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Color spray at CL 1. 50 charges, 1 charge per use, never recharges. Fort DC 11 negates.",
+      "fr": "Action standard (déclencheur de sort). Rayon coloré au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. Vigueur DD 11 annule."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_color_spray",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_cure_light_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Cure Light Wounds",
+      "fr": "Baguette de soins légers"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Cure light wounds at CL 1. 50 charges, 1 charge per use, never recharges. Heals 1d8+1.",
+      "fr": "Action standard (déclencheur de sort). Soins légers au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. Soigne 1d8+1."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_cure_light_wounds",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_detect_secret_doors",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Detect Secret Doors",
+      "fr": "Baguette de détection des portes secrètes"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Detect secret doors at CL 1. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Détection des portes secrètes au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_detect_secret_doors",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_enlarge_person",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Enlarge Person",
+      "fr": "Baguette d'agrandissement de personne"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Enlarge person at CL 1. 50 charges, 1 charge per use, never recharges. Fort DC 11 negates.",
+      "fr": "Action standard (déclencheur de sort). Agrandissement de personne au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. Vigueur DD 11 annule."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_enlarge_person",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_magic_missile_cl1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Magic Missile (CL 1)",
+      "fr": "Baguette de projectile magique (NLS 1)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Magic missile at CL 1. 50 charges, 1 charge per use, never recharges. 1 missile.",
+      "fr": "Action standard (déclencheur de sort). Projectile magique au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. 1 projectile."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_magic_missile",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_magic_missile_cl3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Magic Missile (CL 3)",
+      "fr": "Baguette de projectile magique (NLS 3)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Magic missile at CL 3. 50 charges, 1 charge per use, never recharges. 2 missiles.",
+      "fr": "Action standard (déclencheur de sort). Projectile magique au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. 2 projectiles."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 2250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_magic_missile",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_magic_missile_cl5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Magic Missile (CL 5)",
+      "fr": "Baguette de projectile magique (NLS 5)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Magic missile at CL 5. 50 charges, 1 charge per use, never recharges. 3 missiles.",
+      "fr": "Action standard (déclencheur de sort). Projectile magique au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. 3 projectiles."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 3750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_magic_missile",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_magic_missile_cl7",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Magic Missile (CL 7)",
+      "fr": "Baguette de projectile magique (NLS 7)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Magic missile at CL 7. 50 charges, 1 charge per use, never recharges. 4 missiles.",
+      "fr": "Action standard (déclencheur de sort). Projectile magique au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. 4 projectiles."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 5250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_magic_missile",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_magic_missile_cl9",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Magic Missile (CL 9)",
+      "fr": "Baguette de projectile magique (NLS 9)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Magic missile at CL 9. 50 charges, 1 charge per use, never recharges. 5 missiles.",
+      "fr": "Action standard (déclencheur de sort). Projectile magique au NLS 9. 50 charges, 1 charge par utilisation, ne se recharge jamais. 5 projectiles."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 6750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_magic_missile",
+      "casterLevel": 9
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_shocking_grasp",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Shocking Grasp",
+      "fr": "Baguette de contact électrisant"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Shocking grasp at CL 1. 50 charges, 1 charge per use, never recharges. 1d6 electricity per CL (max 5d6).",
+      "fr": "Action standard (déclencheur de sort). Contact électrisant au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais. 1d6 électricité par NLS (max 5d6)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_shocking_grasp",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_summon_monster_i",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Summon Monster I",
+      "fr": "Baguette d'invocation de monstres I"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Summon monster I at CL 1. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Invocation de monstres I au NLS 1. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_summon_monster_i",
+      "casterLevel": 1
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_bears_endurance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Bear's Endurance",
+      "fr": "Baguette de force de l'ours"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Bear's Endurance at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to CON for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Force de l'ours au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération à la CON pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_bears_endurance",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_bulls_strength",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Bull's Strength",
+      "fr": "Baguette de force du taureau"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Bull's Strength at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to STR for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Force du taureau au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération à la Force pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_bulls_strength",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_cats_grace",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Cat's Grace",
+      "fr": "Baguette de grâce du chat"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Cat's Grace at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to DEX for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Grâce du chat au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération à la DEX pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_cats_grace",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_cure_moderate_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Cure Moderate Wounds",
+      "fr": "Baguette de soins modérés"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Cure Moderate Wounds at CL 3. 50 charges, 1 charge per use, never recharges. Heals 2d8+3.",
+      "fr": "Action standard (déclencheur de sort). Soins modérés au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Soigne 2d8+3."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_cure_moderate_wounds",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_darkness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Darkness",
+      "fr": "Baguette de ténèbres"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Darkness at CL 3. 50 charges, 1 charge per use, never recharges. Object sheds magical darkness.",
+      "fr": "Action standard (déclencheur de sort). Ténèbres au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Objet émet des ténèbres magiques."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_darkness",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_daze_monster",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Daze Monster",
+      "fr": "Baguette de hébétement de monstre"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Daze Monster at CL 3. 50 charges, 1 charge per use, never recharges. Will DC 13; dazed 1 round (8 HD or less).",
+      "fr": "Action standard (déclencheur de sort). Hébétement de monstre au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 13; hébété 1 round (DV 8 ou moins)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_daze_monster",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_delay_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Delay Poison",
+      "fr": "Baguette de retardement du poison"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Delay Poison at CL 3. 50 charges, 1 charge per use, never recharges. Delays poison 3 hours.",
+      "fr": "Action standard (déclencheur de sort). Retardement du poison au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Retarde le poison 3 heures."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_delay_poison",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_eagles_splendor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Eagle's Splendor",
+      "fr": "Baguette de splendeur de l'aigle"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Eagle's Splendor at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to CHA for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Splendeur de l'aigle au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération au CHA pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_eagles_splendor",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_false_life",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of False Life",
+      "fr": "Baguette de faux semblant de vie"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). False Life at CL 3. 50 charges, 1 charge per use, never recharges. 1d10+3 temporary HP.",
+      "fr": "Action standard (déclencheur de sort). Faux semblant de vie au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. 1d10+3 PV temporaires."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_false_life",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_foxs_cunning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fox's Cunning",
+      "fr": "Baguette de ruse du renard"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fox's Cunning at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to INT for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Ruse du renard au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération à l'INT pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_foxs_cunning",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_ghoul_touch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Ghoul Touch",
+      "fr": "Baguette de contact goule"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Ghoul Touch at CL 3. 50 charges, 1 charge per use, never recharges. Fort DC 13 or paralyzed 1d6+2 rounds.",
+      "fr": "Action standard (déclencheur de sort). Contact goule au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Vigueur DD 13 ou paralysé 1d6+2 rounds."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_ghoul_touch",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_hold_person",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Hold Person",
+      "fr": "Baguette de immobilisation de personne"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Hold Person at CL 3. 50 charges, 1 charge per use, never recharges. Will DC 13; paralyzed.",
+      "fr": "Action standard (déclencheur de sort). Immobilisation de personne au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 13 ; paralysé."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_hold_person",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_invisibility",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Invisibility",
+      "fr": "Baguette de invisibilité"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Invisibility at CL 3. 50 charges, 1 charge per use, never recharges. Subject invisible until attacks.",
+      "fr": "Action standard (déclencheur de sort). Invisibilité au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Sujet invisible jusqu'à l'attaque."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_invisibility",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_knock",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Knock",
+      "fr": "Baguette de ouverture"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Knock at CL 3. 50 charges, 1 charge per use, never recharges. Opens locked or stuck doors.",
+      "fr": "Action standard (déclencheur de sort). Ouverture au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Ouvre portes fermées/coincées."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_knock",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_levitate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Levitate",
+      "fr": "Baguette de lévitation"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Levitate at CL 3. 50 charges, 1 charge per use, never recharges. Subject moves vertically 20 ft/round.",
+      "fr": "Action standard (déclencheur de sort). Lévitation au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Le sujet se déplace verticalement à 6 m/round."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_levitate",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_acid_arrow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Acid Arrow",
+      "fr": "Baguette de flèche d'acide"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Acid Arrow at CL 3. 50 charges, 1 charge per use, never recharges. Ranged touch; 2d4 acid per round for 1 round.",
+      "fr": "Action standard (déclencheur de sort). Flèche d'acide au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Contact à distance ; 2d4 acide/round pendant 1 round."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_acid_arrow",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_mirror_image",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Mirror Image",
+      "fr": "Baguette de image miroir"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Mirror Image at CL 3. 50 charges, 1 charge per use, never recharges. 1d4+1 illusory duplicates (CL 3 = 2 dupes).",
+      "fr": "Action standard (déclencheur de sort). Image miroir au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. 1d4+1 doubles illusoires (NLS 3 = 2 copies)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_mirror_image",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_owls_wisdom",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Owl's Wisdom",
+      "fr": "Baguette de sagesse du hibou"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Owl's Wisdom at CL 3. 50 charges, 1 charge per use, never recharges. +4 enhancement to WIS for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Sagesse du hibou au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. +4 altération à la SAG pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_owls_wisdom",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_shatter",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Shatter",
+      "fr": "Baguette de fracassement"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Shatter at CL 3. 50 charges, 1 charge per use, never recharges. Damages a crystalline/britttle object or creature.",
+      "fr": "Action standard (déclencheur de sort). Fracassement au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Endommage un objet/créature cristallin(e) ou fragile."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_shatter",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_silence",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Silence",
+      "fr": "Baguette de silence"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Silence at CL 3. 50 charges, 1 charge per use, never recharges. No sound in 15-ft radius for 3 min.",
+      "fr": "Action standard (déclencheur de sort). Silence au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Pas de son dans un rayon de 4,5 m pendant 3 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_silence",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_summon_monster_ii",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Summon Monster II",
+      "fr": "Baguette de invocation de monstres ii"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Summon Monster II at CL 3. 50 charges, 1 charge per use, never recharges. Summons a CR 1-2 creature for 3 rounds.",
+      "fr": "Action standard (déclencheur de sort). Invocation de monstres II au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Invoque une créature IPC 1-2 pendant 3 rounds."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_summon_monster_ii",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_web",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Web",
+      "fr": "Baguette de toile d'araignée"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Web at CL 3. 50 charges, 1 charge per use, never recharges. Creates a webs in 20-ft-radius spread.",
+      "fr": "Action standard (déclencheur de sort). Toile d'araignée au NLS 3. 50 charges, 1 charge par utilisation, ne se recharge jamais. Crée des toiles dans un rayon de 6 m."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 4500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_web",
+      "casterLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_call_lightning_cl5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Call Lightning (CL 5)",
+      "fr": "Baguette d'appel de foudre (NLS 5)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Call lightning at CL 5. 50 charges, 1 charge per use, never recharges. 3d6 lightning per bolt; 5 bolts total.",
+      "fr": "Action standard (déclencheur de sort). Appel de foudre au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. 3d6 foudre par éclair ; 5 éclairs au total."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_call_lightning",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_call_lightning_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Call Lightning (CL 8)",
+      "fr": "Baguette d'appel de foudre (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Call lightning at CL 8. 50 charges, 1 charge per use, never recharges. 3d6 lightning per bolt; 8 bolts total.",
+      "fr": "Action standard (déclencheur de sort). Appel de foudre au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 3d6 foudre par éclair ; 8 éclairs au total."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 18000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_call_lightning",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_charm_person_heightened_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Charm Person (Heightened, 3rd)",
+      "fr": "Baguette de charme-personne (amplifié, 3e)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Charm person (heightened to 3rd level) at CL 5. 50 charges, 1 charge per use, never recharges. Will DC 13 negates.",
+      "fr": "Action standard (déclencheur de sort). Charme-personne (amplifié au niveau 3) au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 13 annule."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_charm_person",
+      "casterLevel": 5,
+      "spellLevel": 3
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_contagion",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Contagion",
+      "fr": "Baguette de contagion"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Contagion at CL 5. 50 charges, 1 charge per use, never recharges. Fort DC 15 or infected with disease.",
+      "fr": "Action standard (déclencheur de sort). Contagion au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Vigueur DD 15 ou infecté."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_contagion",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_cure_serious_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Cure Serious Wounds",
+      "fr": "Baguette de soins importants"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Cure serious wounds at CL 5. 50 charges, 1 charge per use, never recharges. Heals 3d8+5.",
+      "fr": "Action standard (déclencheur de sort). Soins importants au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Soigne 3d8+5."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_cure_serious_wounds",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_dispel_magic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Dispel Magic",
+      "fr": "Baguette de dissipation de la magie"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Dispel magic at CL 5. 50 charges, 1 charge per use, never recharges. Dispel check +5 vs. DC 11+CL.",
+      "fr": "Action standard (déclencheur de sort). Dissipation de la magie au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Test de dissipation +5 contre DD 11+NLS."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_dispel_magic",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_fireball_cl5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fireball (CL 5)",
+      "fr": "Baguette de boule de feu (NLS 5)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fireball at CL 5. 50 charges, 1 charge per use, never recharges. 5d6 fire damage (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Boule de feu au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. 5d6 dégâts de feu (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_fireball",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_fireball_cl6",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fireball (CL 6)",
+      "fr": "Baguette de boule de feu (NLS 6)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fireball at CL 6. 50 charges, 1 charge per use, never recharges. 6d6 fire damage (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Boule de feu au NLS 6. 50 charges, 1 charge par utilisation, ne se recharge jamais. 6d6 dégâts de feu (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 13500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_fireball",
+      "casterLevel": 6
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_fireball_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fireball (CL 8)",
+      "fr": "Baguette de boule de feu (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fireball at CL 8. 50 charges, 1 charge per use, never recharges. 8d6 fire damage (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Boule de feu au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 8d6 dégâts de feu (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 18000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_fireball",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_fireball_cl10",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fireball (CL 10)",
+      "fr": "Baguette de boule de feu (NLS 10)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fireball at CL 10. 50 charges, 1 charge per use, never recharges. 10d6 fire damage (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Boule de feu au NLS 10. 50 charges, 1 charge par utilisation, ne se recharge jamais. 10d6 dégâts de feu (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 22500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_fireball",
+      "casterLevel": 10
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_keen_edge",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Keen Edge",
+      "fr": "Baguette de lame acérée"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Keen edge at CL 5. 50 charges, 1 charge per use, never recharges. Doubles threat range of a slashing weapon for 50 min.",
+      "fr": "Action standard (déclencheur de sort). Lame acérée au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Double la zone de menace d'une arme tranchante pendant 50 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_keen_edge",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_lightning_bolt_cl5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Lightning Bolt (CL 5)",
+      "fr": "Baguette d'éclair (NLS 5)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Lightning bolt at CL 5. 50 charges, 1 charge per use, never recharges. 5d6 electricity (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Éclair au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. 5d6 électricité (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_lightning_bolt",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_lightning_bolt_cl6",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Lightning Bolt (CL 6)",
+      "fr": "Baguette d'éclair (NLS 6)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Lightning bolt at CL 6. 50 charges, 1 charge per use, never recharges. 6d6 electricity (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Éclair au NLS 6. 50 charges, 1 charge par utilisation, ne se recharge jamais. 6d6 électricité (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 13500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_lightning_bolt",
+      "casterLevel": 6
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_lightning_bolt_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Lightning Bolt (CL 8)",
+      "fr": "Baguette d'éclair (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Lightning bolt at CL 8. 50 charges, 1 charge per use, never recharges. 8d6 electricity (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Éclair au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 8d6 électricité (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 18000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_lightning_bolt",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_lightning_bolt_cl10",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Lightning Bolt (CL 10)",
+      "fr": "Baguette d'éclair (NLS 10)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Lightning bolt at CL 10. 50 charges, 1 charge per use, never recharges. 10d6 electricity (Reflex DC 15 half).",
+      "fr": "Action standard (déclencheur de sort). Éclair au NLS 10. 50 charges, 1 charge par utilisation, ne se recharge jamais. 10d6 électricité (Réflexes DD 15 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 22500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_lightning_bolt",
+      "casterLevel": 10
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_major_image",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Major Image",
+      "fr": "Baguette d'image majeure"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Major image at CL 5. 50 charges, 1 charge per use, never recharges. Visual/auditory/olfactory/thermal illusion, 5 min.",
+      "fr": "Action standard (déclencheur de sort). Image majeure au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Illusion visuelle/auditive/olfactive/thermique, 5 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_major_image",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_slow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Slow",
+      "fr": "Baguette de lenteur"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Slow at CL 5. 50 charges, 1 charge per use, never recharges. Will DC 15; 5 targets slow 5 rounds.",
+      "fr": "Action standard (déclencheur de sort). Lenteur au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 15 ; 5 cibles ralenties 5 rounds."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_slow",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_suggestion",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Suggestion",
+      "fr": "Baguette de suggestion"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Suggestion at CL 5. 50 charges, 1 charge per use, never recharges. Will DC 15 negates.",
+      "fr": "Action standard (déclencheur de sort). Suggestion au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 15 annule."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_suggestion",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_summon_monster_iii",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Summon Monster III",
+      "fr": "Baguette d'invocation de monstres III"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Summon monster III at CL 5. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Invocation de monstres III au NLS 5. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 11250,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_summon_monster_iii",
+      "casterLevel": 5
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_searing_light_cl6",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Searing Light (CL 6)",
+      "fr": "Baguette de lumière brûlante (NLS 6)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Searing light at CL 6. 50 charges, 1 charge per use, never recharges. 3d8 damage vs. undead; 1d8/2 levels vs. constructs; 1d8/2 CL vs. others.",
+      "fr": "Action standard (déclencheur de sort). Lumière brûlante au NLS 6. 50 charges, 1 charge par utilisation, ne se recharge jamais. 3d8 contre morts-vivants ; 1d8/2 niveaux vs automates ; 1d8/2 NLS vs autres."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 13500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_searing_light",
+      "casterLevel": 6
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_charm_monster",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Charm Monster",
+      "fr": "Baguette de charme-monstre"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Charm monster at CL 7. 50 charges, 1 charge per use, never recharges. Will DC 17 negates; any creature.",
+      "fr": "Action standard (déclencheur de sort). Charme-monstre au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 17 annule ; toute créature."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_charm_monster",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_cure_critical_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Cure Critical Wounds",
+      "fr": "Baguette de soins critiques"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Cure critical wounds at CL 7. 50 charges, 1 charge per use, never recharges. Heals 4d8+7.",
+      "fr": "Action standard (déclencheur de sort). Soins critiques au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Soigne 4d8+7."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_cure_critical_wounds",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_dimensional_anchor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Dimensional Anchor",
+      "fr": "Baguette d'ancre dimensionnelle"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Dimensional anchor at CL 7. 50 charges, 1 charge per use, never recharges. Ranged touch; prevents extradimensional travel for 7 min.",
+      "fr": "Action standard (déclencheur de sort). Ancre dimensionnelle au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Contact à distance ; empêche les voyages extradimensionnels 7 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_dimensional_anchor",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_fear",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Fear",
+      "fr": "Baguette de peur"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Fear at CL 7. 50 charges, 1 charge per use, never recharges. Will DC 17 partial; cone of fear 7 rounds.",
+      "fr": "Action standard (déclencheur de sort). Peur au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 17 partiel ; cône de peur 7 rounds."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_fear",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_greater_invisibility",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Greater Invisibility",
+      "fr": "Baguette d'invisibilité supérieure"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Greater invisibility at CL 7. 50 charges, 1 charge per use, never recharges. Subject invisible even when attacking; 7 rounds.",
+      "fr": "Action standard (déclencheur de sort). Invisibilité supérieure au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Sujet invisible même en attaquant ; 7 rounds."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_greater_invisibility",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_hold_person_heightened_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Hold Person (Heightened, 4th)",
+      "fr": "Baguette d'immobilisation de personne (amplifiée, 4e)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Hold person (heightened to 4th level) at CL 7. 50 charges, 1 charge per use, never recharges. Will DC 14 negates; improved DC from heightening.",
+      "fr": "Action standard (déclencheur de sort). Immobilisation de personne (amplifiée au niveau 4) au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 14 annule; DD amélioré par amplification."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_hold_person",
+      "casterLevel": 7,
+      "spellLevel": 4
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_ice_storm",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Ice Storm",
+      "fr": "Baguette de tempête de glace"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Ice storm at CL 7. 50 charges, 1 charge per use, never recharges. 3d6 bludgeoning + 2d6 cold in 20-ft radius; lasts 1 round.",
+      "fr": "Action standard (déclencheur de sort). Tempête de glace au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. 3d6 contondant + 2d6 froid dans un rayon de 6 m ; dure 1 round."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_ice_storm",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_inflict_critical_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Inflict Critical Wounds",
+      "fr": "Baguette de blessures critiques"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Inflict critical wounds at CL 7. 50 charges, 1 charge per use, never recharges. Touch; 4d8+7 damage (Will DC 17 half).",
+      "fr": "Action standard (déclencheur de sort). Blessures critiques au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Contact ; 4d8+7 dégâts (Volonté DD 17 moitié)."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_inflict_critical_wounds",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_neutralize_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Neutralize Poison",
+      "fr": "Baguette de neutralisation du poison"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Neutralize poison at CL 7. 50 charges, 1 charge per use, never recharges. Detoxifies poison; heals 1d4 ability damage from poison.",
+      "fr": "Action standard (déclencheur de sort). Neutralisation du poison au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Détoxifie le poison ; soigne 1d4 dégâts de caractéristique dus au poison."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_neutralize_poison",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Poison",
+      "fr": "Baguette de poison"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Poison at CL 7. 50 charges, 1 charge per use, never recharges. Touch; Fort DC 17 or 1d10 CON immediately and 1d10 CON in 1 min.",
+      "fr": "Action standard (déclencheur de sort). Poison au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Contact ; Vigueur DD 17 ou 1d10 CON immédiatement et 1d10 CON dans 1 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_poison",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_polymorph",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Polymorph",
+      "fr": "Baguette de polymorphie"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Polymorph at CL 7. 50 charges, 1 charge per use, never recharges. Subject transforms into any creature up to 7 HD; 7 min.",
+      "fr": "Action standard (déclencheur de sort). Polymorphie au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Le sujet se transforme en toute créature jusqu'à 7 DV ; 7 min."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_polymorph",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_ray_of_enfeeblement_heightened_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Ray of Enfeeblement (Heightened, 4th)",
+      "fr": "Baguette de rayon d'affaiblissement (amplifié, 4e)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Ray of enfeeblement (heightened to 4th level) at CL 7. 50 charges, 1 charge per use, never recharges. Ray touch; 1d6+3 STR damage; improved DC.",
+      "fr": "Action standard (déclencheur de sort). Rayon d'affaiblissement (amplifié au niveau 4) au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Rayon de contact ; 1d6+3 dégâts de Force ; DD amélioré."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_ray_of_enfeeblement",
+      "casterLevel": 7,
+      "spellLevel": 4
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_suggestion_heightened_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Suggestion (Heightened, 4th)",
+      "fr": "Baguette de suggestion (amplifiée, 4e)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Suggestion (heightened to 4th level) at CL 7. 50 charges, 1 charge per use, never recharges. Will DC 14 negates; improved DC from heightening.",
+      "fr": "Action standard (déclencheur de sort). Suggestion (amplifiée au niveau 4) au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Volonté DD 14 annule ; DD amélioré par amplification."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_suggestion",
+      "casterLevel": 7,
+      "spellLevel": 4
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_summon_monster_iv",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Summon Monster IV",
+      "fr": "Baguette d'invocation de monstres IV"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Summon monster IV at CL 7. 50 charges, 1 charge per use, never recharges.",
+      "fr": "Action standard (déclencheur de sort). Invocation de monstres IV au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_summon_monster_iv",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_wall_of_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Wall of Fire",
+      "fr": "Baguette de mur de feu"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Wall of fire at CL 7. 50 charges, 1 charge per use, never recharges. 2d4 fire to adjacent; 2d6+7 to those passing through.",
+      "fr": "Action standard (déclencheur de sort). Mur de feu au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. 2d4 feu aux adjacents ; 2d6+7 à ceux qui traversent."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_wall_of_fire",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_wall_of_ice",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Wall of Ice",
+      "fr": "Baguette de mur de glace"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Wall of ice at CL 7. 50 charges, 1 charge per use, never recharges. 7 inches thick; 3d4 cold to those who breach it.",
+      "fr": "Action standard (déclencheur de sort). Mur de glace au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. 18 cm d'épaisseur ; 3d4 froid à ceux qui le franchissent."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 21000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_wall_of_ice",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_dispel_magic_cl10",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Dispel Magic (CL 10)",
+      "fr": "Baguette de dissipation de la magie (NLS 10)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Dispel magic at CL 10. 50 charges, 1 charge per use, never recharges. Dispel check +10 vs. DC 11+CL.",
+      "fr": "Action standard (déclencheur de sort). Dissipation de la magie au NLS 10. 50 charges, 1 charge par utilisation, ne se recharge jamais. Test de dissipation +10 contre DD 11+NLS."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 22500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_dispel_magic",
+      "casterLevel": 10
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_chaos_hammer_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Chaos Hammer (CL 8)",
+      "fr": "Baguette de marteau du chaos (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Chaos Hammer at CL 8. 50 charges, 1 charge per use, never recharges. 4d8 damage to lawful (Will DC 18 half/8d8 if very lawful); 2d8 slows.",
+      "fr": "Action standard (déclencheur de sort). Marteau du chaos au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 4d8 dégâts aux loyaux (Volonté DD 18 moitié/8d8 si très loyal) ; 2d8 ralentit."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 24000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_chaos_hammer",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_holy_smite_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Holy Smite (CL 8)",
+      "fr": "Baguette de smite sacré (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Holy Smite at CL 8. 50 charges, 1 charge per use, never recharges. 4d8 damage to evil (Will DC 18 half); blinds evil for 1 round.",
+      "fr": "Action standard (déclencheur de sort). Smite sacré au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 4d8 dégâts aux mauvais (Volonté DD 18 moitié) ; aveugle les mauvais 1 round."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 24000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_holy_smite",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_orders_wrath_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Order's Wrath (CL 8)",
+      "fr": "Baguette de courroux de la loi (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Order's Wrath at CL 8. 50 charges, 1 charge per use, never recharges. 4d8 damage to chaotic (Will DC 18 half/8d8 if very chaotic); 2d8 dazed.",
+      "fr": "Action standard (déclencheur de sort). Courroux de la loi au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 4d8 dégâts aux chaotiques (Volonté DD 18 moitié/8d8 si très chaotique) ; 2d8 hébété."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 24000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_orders_wrath",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_unholy_blight_cl8",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Unholy Blight (CL 8)",
+      "fr": "Baguette de flétrissure impie (NLS 8)"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Unholy Blight at CL 8. 50 charges, 1 charge per use, never recharges. 4d8 damage to good (Will DC 18 half/8d8 if very good); 2d8 sickened.",
+      "fr": "Action standard (déclencheur de sort). Flétrissure impie au NLS 8. 50 charges, 1 charge par utilisation, ne se recharge jamais. 4d8 dégâts aux bons (Volonté DD 18 moitié/8d8 si très bon) ; 2d8 nauséeux."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 24000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_unholy_blight",
+      "casterLevel": 8
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_restoration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Restoration",
+      "fr": "Baguette de restauration"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Restoration at CL 7. 50 charges, 1 charge per use, never recharges. Restores levels, abilities, conditions. Note: 5,000 gp in material components per use needed.",
+      "fr": "Action standard (déclencheur de sort). Restauration au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. Restaure les niveaux, caractéristiques, conditions. Note : 5 000 po de composantes matérielles par utilisation nécessaires."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 26000,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_restoration",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_wand_stoneskin",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Wand of Stoneskin",
+      "fr": "Baguette de peau de pierre"
+    },
+    "description": {
+      "en": "Standard action (spell trigger). Stoneskin at CL 7. 50 charges, 1 charge per use, never recharges. DR 10/adamantine; absorbs up to 140 points damage. Note: 250 gp material component per use.",
+      "fr": "Action standard (déclencheur de sort). Peau de pierre au NLS 7. 50 charges, 1 charge par utilisation, ne se recharge jamais. RD 10/adamantium ; absorbe jusqu'à 140 points de dégâts. Note : 250 po de composante matérielle par utilisation."
+    },
+    "tags": [
+      "item",
+      "wand",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 33500,
+    "hardness": 5,
+    "hpMax": 5,
+    "wandSpell": {
+      "spellId": "spell_stoneskin",
+      "casterLevel": 7
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Wand Charges (50)",
+          "fr": "Charges de baguette (50)"
+        },
+        "maxPipelineId": "combatStats.wand_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
   }
 ]

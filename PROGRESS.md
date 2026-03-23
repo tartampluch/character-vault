@@ -591,4 +591,14 @@ _Pre-conversion engine gap identified during C-14s analysis. Staves store 2–6 
 
 - [x] **E-10c Documentation:** `ARCHITECTURE.md` section 4.12 (Staves — SRD rules, charge table, JSON example, heightened spells, CastingPanel contract, staff vs. wand vs. ring comparison). `CHECKPOINTS.md` updated with 7 items.
 
+### Phase E-11: Wand Engine Prerequisites — Wand Spell field
+
+_Pre-conversion engine gap identified during C-14t analysis. Wands hold a single spell at a fixed item CL (never the wielder's). 5 Magic Missile CL variants + 4 heightened wands require explicit CL/spellLevel storage._
+
+- [x] **E-11a Type Extension:** Added `ItemFeature.wandSpell?: { spellId, casterLevel, spellLevel? }` to `feature.ts`. Plain `number` for CL (no enum restriction). `spellLevel` for 4 heightened SRD wands. "Wands use item CL, not wielder's" rule documented inline.
+
+- [x] **E-11b Tests (`src/tests/wandSpell.test.ts`):** 16 new Vitest tests (780 total, all passing). CL variant tests (5 MM variants CL 1–9), heightened wand tests (4 types), coexistence with resourcePoolTemplates.
+
+- [x] **E-11c Documentation:** `ARCHITECTURE.md` section 4.13 (Wands — critical CL rule, MM CL-variant table, 4 heightened wands, JSON example, 6-step CastingPanel contract). `CHECKPOINTS.md` updated with 7 items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

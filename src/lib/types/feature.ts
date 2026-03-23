@@ -1165,6 +1165,112 @@ export interface ItemFeature extends Feature {
    }[];
 
    /**
+    * Wand spell definition — present ONLY on wands.
+    *
+    * D&D 3.5 SRD — WAND MECHANICS:
+    *   "A wand is a thin baton that contains a single spell of 4th level or lower.
+    *   Each wand has 50 charges when created, and each charge expended allows the
+    *   user to use the wand's spell one time. A wand that runs out of charges is
+    *   just a stick."
+    *
+    *   Key rules:
+    *   - Wands always contain EXACTLY ONE spell (not a menu like staves).
+    *   - Each activation costs EXACTLY ONE charge (no variation).
+    *   - Wands use the item's OWN FIXED CASTER LEVEL, not the wielder's.
+    *     This is critical: a Wand of Magic Missile (CL 1) fires 1 missile;
+    *     a Wand of Magic Missile (CL 9) fires 5 missiles. Same table entry,
+    *     very different effect.
+    *   - Some wands store heightened spells (e.g., "Charm person, heightened
+    *     (3rd-level spell)" = charm person treated as a 3rd-level spell for
+    *     DC and other level-dependent calculations).
+    *   - Wands can only hold spells up to 4th level.
+    *   - All wands in the table use the minimum caster level for the spell's
+    *     class level, EXCEPT for explicitly higher-CL variants
+    *     (e.g., Magic Missile appears at CL 1, CL 3, CL 5, CL 7, CL 9).
+    *
+    * WHY A DEDICATED FIELD (not reusing `staffSpells`):
+    *   1. Wands have exactly ONE spell — not an array.
+    *   2. The charge cost is always 1 — no `chargeCost` field needed.
+    *   3. Wands use their OWN FIXED `casterLevel` — staves use the wielder's CL.
+    *      The item's CL is data that must be stored explicitly (cannot be inferred
+    *      from price, since the SRD table shows prices at fixed CLs).
+    *   4. The CastingPanel reads `wandSpell.casterLevel` to compute damage dice,
+    *      range, duration, and area — critical for variants of the same spell.
+    *
+    * CONTENT AUTHORING — Wand of Magic Missile (CL 9) example:
+    *   ```json
+    *   {
+    *     "id": "item_wand_magic_missile_cl9",
+    *     "wandSpell": {
+    *       "spellId": "spell_magic_missile",
+    *       "casterLevel": 9
+    *     },
+    *     "resourcePoolTemplates": [{
+    *       "poolId": "charges",
+    *       "label": { "en": "Wand Charges (50)", "fr": "Charges de baguette (50)" },
+    *       "maxPipelineId": "combatStats.wand_charges_max",
+    *       "defaultCurrent": 50,
+    *       "resetCondition": "never"
+    *     }]
+    *   }
+    *   ```
+    *
+    * HEIGHTENED WANDS:
+    *   The `spellLevel` field overrides the spell's effective level for DC
+    *   and restriction purposes. Only needed for wands where the SRD
+    *   explicitly stores the spell at a higher level:
+    *   - "Charm person, heightened (3rd-level spell)" → `spellLevel: 3`
+    *   - "Hold person, heightened (4th level)"       → `spellLevel: 4`
+    *   - "Ray of enfeeblement, heightened (4th level)"→ `spellLevel: 4`
+    *   - "Suggestion, heightened (4th level)"        → `spellLevel: 4`
+    *
+    * CASTING PANEL CONTRACT:
+    *   When the player activates a wand:
+    *   1. Read `wandSpell.spellId` to identify the spell to cast.
+    *   2. Use `wandSpell.casterLevel` as the CL for all level-dependent effects.
+    *   3. If `wandSpell.spellLevel` is set, use it as the effective spell level
+    *      (for DC = 10 + spellLevel + ability modifier).
+    *   4. Validate `instance.itemResourcePools['charges'] >= 1`.
+    *   5. Call `engine.spendItemPoolCharge(instanceId, 'charges', 1)`.
+    *   6. Apply the spell effect with the wand's fixed CL.
+    *
+    * @see staffSpells             — the analogous field for staves (array of spells)
+    * @see resourcePoolTemplates   — tracks the 50-charge pool separately
+    * @see ARCHITECTURE.md section 4.13 — Wand Spell contract
+    */
+   wandSpell?: {
+     /**
+      * The ID of the spell stored in the wand.
+      * Must match a Feature with `category: "magic"` in the DataLoader.
+      * Example: "spell_magic_missile", "spell_fireball"
+      */
+     spellId: ID;
+     /**
+      * The wand's fixed caster level.
+      *
+      * Wands use their own CL regardless of the wielder's caster level.
+      * This distinguishes variants like Wand of Magic Missile at CL 1
+      * (1 missile) vs. CL 9 (5 missiles).
+      *
+      * Minimum CL = the minimum caster level to cast the spell
+      * (e.g., fireball level 3 → minimum CL 5).
+      */
+     casterLevel: number;
+     /**
+      * Effective spell level if the wand holds a heightened spell.
+      *
+      * Only present for the 4 heightened wands in the SRD table:
+      * - Charm person heightened (3rd-level spell):  `spellLevel: 3`
+      * - Hold person heightened (4th level):          `spellLevel: 4`
+      * - Ray of enfeeblement heightened (4th level):  `spellLevel: 4`
+      * - Suggestion heightened (4th level):           `spellLevel: 4`
+      *
+      * When absent, use the spell's base level for DC calculations.
+      */
+     spellLevel?: number;
+   };
+
+   /**
     * Metamagic rod effect — present only on rods (and similar items) that grant
     * the ability to apply a metamagic feat to a spell without occupying a higher
     * spell slot.

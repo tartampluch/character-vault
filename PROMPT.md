@@ -621,6 +621,24 @@ _Entry point: pre-conversion analysis of `staffs.html`. All 21 staves map to exi
 
 **Total test count after Phase E-10: 764 tests (all passing).**
 
+## Phase E-11: Wand Engine Prerequisites — Wand Spell field
+
+_Goal: Resolve the one engine gap identified during C-14t (Wands) analysis. Wands hold a single spell at a fixed item caster level (not the wielder's). The SRD table has 5 variants of Magic Missile (CL 1–9) and 4 heightened wands. Without a typed `wandSpell` field the CastingPanel cannot identify the spell, apply the correct CL, or compute accurate damage/DCs._
+
+_Entry point: pre-conversion analysis of `wands.html`. The SRD itself says: "All wands are simply storage devices for spells and thus have no special descriptions." Every effect maps to `resourcePoolTemplates` (50 finite charges) + the new `wandSpell` field. No engine computation change needed._
+
+- [x] **E-11a Type Extension:** Added `ItemFeature.wandSpell?: { spellId: ID, casterLevel: number, spellLevel?: number }` to `feature.ts`. `casterLevel` is a plain `number` (not an enum — wand CLs range freely based on spell minimum CL). `spellLevel` is optional, only for the 4 heightened wands in the SRD table. Extensive inline documentation: SRD rules, the "wands use item CL not wielder's CL" critical distinction vs. staves, Magic Missile CL-variant table, and CastingPanel 6-step contract.
+
+- [x] **E-11b Tests (`src/tests/wandSpell.test.ts`):** 16 new Vitest tests (780 total, all passing):
+  - Type soundness (4 tests): required fields only, heightened compiles, optional on non-wand items, casterLevel accepts any number.
+  - CL variants (5 tests): MM CL1 vs CL9 distinct, Fireball CL5 vs CL10 distinct, min CL=1, max CL=10, 5 MM variants all distinct.
+  - Heightened spells (4 tests): charm person→3, hold person→4, ray of enfeeblement→4, suggestion→4.
+  - Coexistence (3 tests): coexists with resourcePoolTemplates, spellLevel absent on normal wands, 5 MM variants all valid ItemFeature objects with correct missile counts.
+
+- [x] **E-11c Documentation:** `ARCHITECTURE.md` section 4.13 (Wands — "wands use item CL, not wielder's CL" rule, Magic Missile CL-variant table, heightened wand table with 4 entries, JSON example, CastingPanel 6-step contract, AI implementation note on CL). Updated 4.12 comparison table to show `wandSpell` in the Wand column. `CHECKPOINTS.md` updated with 7 new wand verification items.
+
+**Total test count after Phase E-11: 780 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.
