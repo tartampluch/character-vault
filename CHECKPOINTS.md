@@ -375,6 +375,16 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Scroll Spell List (Enhancement E-12 / Architecture section 4.14):**
+  - Is `ItemFeature.scrollSpells` optional (non-scrolls compile without it)?
+  - Is `spellType` a `'arcane' | 'divine'` union (not just a string)?
+  - Is `spellLevel` REQUIRED (not optional) on each scroll spell entry?
+  - Is `casterLevel` required per entry?
+  - Are scrolls authored with `consumable.isConsumable: true` and NO `resourcePoolTemplates`?
+  - Does CL check DC = `entry.casterLevel + 1` compute correctly?
+  - Is the arcane/divine restriction validated before activation?
+  - Can same spell appear as both arcane and divine scroll (distinct items)?
+  - `ARCHITECTURE.md section 4.14` shows the Wands vs Staves vs Scrolls comparison table?
 - **Wand Spell field (Enhancement E-11 / Architecture section 4.13):**
   - Is `ItemFeature.wandSpell` optional (non-wands compile without it)?
   - Is `casterLevel` a plain `number` (not a limited enum)?

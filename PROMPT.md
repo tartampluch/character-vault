@@ -639,6 +639,25 @@ _Entry point: pre-conversion analysis of `wands.html`. The SRD itself says: "All
 
 **Total test count after Phase E-11: 780 tests (all passing).**
 
+## Phase E-12: Scroll Engine Prerequisites — Scroll Spell List field
+
+_Goal: Resolve the one engine gap identified during C-14u (Scrolls) analysis. Scrolls have three unique mechanics absent from `wandSpell` and `staffSpells`: (1) mandatory `spellType: 'arcane' | 'divine'` class restriction, (2) required `spellLevel` for CL check DC computation, (3) single-use consumable with no charge pool._
+
+_Entry point: pre-conversion analysis of `scrolls.html`. The SRD table has 728 spell entries across arcane (0–9th) and divine (0–9th) sections. All map to `scrollSpells` + `consumable.isConsumable: true` — no computation change needed._
+
+- [x] **E-12a Type Extension:** Added `ItemFeature.scrollSpells?: { spellId, casterLevel, spellLevel, spellType: 'arcane'|'divine' }[]` to `feature.ts`. `spellLevel` is required (unlike `wandSpell` where it was optional). `spellType` is a strict union. Full CL check DC formula, standard CL table (CL 1/1/3/5/7/9/11/13/15/17 for levels 0–9), price formula, and CastingPanel 4-step contract documented inline.
+
+- [x] **E-12b Tests (`src/tests/scrollSpells.test.ts`):** 17 new Vitest tests (797 total, all passing):
+  - Type soundness (5 tests): all required fields, 'arcane' valid, 'divine' valid, optional on non-scrolls, spellLevel always present.
+  - CL check mechanics (4 tests): DC = casterLevel+1, no check when wielder CL≥scroll CL, check required when lower, standard CL table verified.
+  - Arcane/divine restriction (3 tests): arcane blocks divine, divine blocks arcane, same spell as both types.
+  - Price formula (2 tests): standard CL×SL×25 for levels 1–9, 0th level = 12.5 gp special.
+  - Coexistence (3 tests): coexists with consumable, multi-spell valid, no resourcePoolTemplates.
+
+- [x] **E-12c Documentation:** `ARCHITECTURE.md` section 4.14 (Scrolls — SRD rules, typed model, CL checker, arcane/divine restriction, multi-spell, comprehensive Wands vs Staves vs Scrolls comparison table). `CHECKPOINTS.md` updated with 9 new scroll verification items.
+
+**Total test count after Phase E-12: 797 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

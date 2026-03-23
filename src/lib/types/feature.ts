@@ -1076,7 +1076,135 @@ export interface ItemFeature extends Feature {
      * Examples: "3 min", "10 rounds", "1 hour", "until discharged"
      */
      durationHint?: string;
-   };
+    };
+
+   /**
+    * Scroll spell list — present ONLY on scrolls.
+    *
+    * D&D 3.5 SRD — SCROLL MECHANICS:
+    *   "A scroll is a spell (or collection of spells) that has been stored in
+    *   written form. A spell on a scroll can be used only once. The writing
+    *   vanishes from the scroll when the spell is activated."
+    *
+    *   Key rules that distinguish scrolls from wands and staves:
+    *
+    *   1. SPELL TYPE RESTRICTION (unique to scrolls — not wands or staves):
+    *      "Arcane spellcasters (wizards, sorcerers, and bards) can only use
+    *      scrolls containing arcane spells, and divine spellcasters (clerics,
+    *      druids, paladins, and rangers) can only use scrolls containing divine
+    *      spells."
+    *      → `spellType: 'arcane' | 'divine'` is REQUIRED on each entry.
+    *
+    *   2. FIXED CASTER LEVEL (same as wands — NOT the wielder's CL):
+    *      The scroll uses the original scribe's CL. The SRD's standard CL per
+    *      spell level is: CL = 2 × spellLevel − 1 (minimum CL to cast that level).
+    *      → `casterLevel` is REQUIRED per entry.
+    *
+    *   3. CL CHECK WHEN WIELDER'S CL < SCROLL'S CL:
+    *      If the user's own CL is lower than the scroll's CL, she must make a
+    *      caster level check (DC = scroll's CL + 1) to cast the spell successfully.
+    *      On failure: DC 5 Wisdom save or mishap.
+    *      → The CastingPanel computes: `checkRequired = wielder.casterLevel < entry.casterLevel`
+    *      → `checkDC = entry.casterLevel + 1`
+    *      `spellLevel` is REQUIRED (not optional) to compute this DC.
+    *
+    *   4. MULTI-SPELL (same as staves — unlike wands which hold only one):
+    *      A scroll can hold 1d3 (minor), 1d4 (medium), or 1d6 (major) spells.
+    *      The market table lists individual single-spell scrolls; authored items
+    *      will each have `scrollSpells.length === 1`.
+    *      → `scrollSpells` is an ARRAY (not a single object like `wandSpell`).
+    *
+    *   5. SINGLE-USE CONSUMABLE (combined with `consumable.isConsumable: true`):
+    *      Unlike wands (50 charges) and staves (50 charges), a scroll spell is
+    *      destroyed when cast. Model as `consumable: { isConsumable: true }`.
+    *      No `resourcePoolTemplates` needed — the scroll is just used and gone.
+    *
+    * WHY A DEDICATED FIELD (not reusing `wandSpell` or `staffSpells`):
+    *   - `wandSpell`: single object, no `spellType`, not consumed permanently
+    *   - `staffSpells`: has `chargeCost` (irrelevant for scrolls), no `spellType`,
+    *     uses wielder's CL, not consumed permanently
+    *   - `scrollSpells`: array, `spellType` required, `spellLevel` required for
+    *     CL check DC, uses item's fixed CL, combined with `consumable`
+    *
+    * CONTENT AUTHORING — Scroll of Fireball example:
+    *   ```json
+    *   {
+    *     "id": "item_scroll_arcane_fireball",
+    *     "consumable": { "isConsumable": true },
+    *     "scrollSpells": [{
+    *       "spellId": "spell_fireball",
+    *       "casterLevel": 5,
+    *       "spellLevel": 3,
+    *       "spellType": "arcane"
+    *     }]
+    *   }
+    *   ```
+    *   Note: no `resourcePoolTemplates` — the scroll is consumed on use.
+    *
+    * CONTENT AUTHORING — Standard CL per Spell Level (SRD defaults):
+    *   | Spell Level | Min CL | Cost Formula (CL × SL × 25 gp) | Price |
+    *   |-------------|--------|----------------------------------|-------|
+    *   | 0th         | 1      | special: 12.5 gp                | 12.5 gp |
+    *   | 1st         | 1      | 1 × 1 × 25                      | 25 gp |
+    *   | 2nd         | 3      | 3 × 2 × 25                      | 150 gp |
+    *   | 3rd         | 5      | 5 × 3 × 25                      | 375 gp |
+    *   | 4th         | 7      | 7 × 4 × 25                      | 700 gp |
+    *   | 5th         | 9      | 9 × 5 × 25                      | 1,125 gp |
+    *   | 6th         | 11     | 11 × 6 × 25                     | 1,650 gp |
+    *   | 7th         | 13     | 13 × 7 × 25                     | 2,275 gp |
+    *   | 8th         | 15     | 15 × 8 × 25                     | 3,000 gp |
+    *   | 9th         | 17     | 17 × 9 × 25                     | 3,825 gp |
+    *
+    * CASTING PANEL CONTRACT:
+    *   When the player activates a scroll spell:
+    *   1. Read `scrollSpells[i].spellType` — validate it matches wielder's type.
+    *   2. Validate spell is on wielder's class list (UMD check if not).
+    *   3. If `wielder.casterLevel < entry.casterLevel`:
+    *        → CL check required: `checkDC = entry.casterLevel + 1`
+    *        → On failure: DC 5 Wisdom check or mishap.
+    *   4. Remove `scrollSpells[i]` from the scroll (or consume entire item if array
+    *      is now empty, via `engine.consumeItem()` or `engine.expireEffect()`).
+    *   5. Apply the spell using `entry.casterLevel` as the CL.
+    *   6. Save DC = `10 + entry.spellLevel + abilityModifier`.
+    *
+    * @see wandSpell            — single-spell, item CL, wand-specific
+    * @see staffSpells          — multi-spell, wielder CL, charge-based
+    * @see consumable           — MUST be paired with `{ isConsumable: true }`
+    * @see ARCHITECTURE.md section 4.14 — Scroll Spell List contract
+    */
+   scrollSpells?: {
+     /**
+      * The ID of the spell on the scroll.
+      * Matches a Feature with `category: "magic"` in the DataLoader.
+      */
+     spellId: ID;
+     /**
+      * The scroll's fixed caster level.
+      * Unlike staves, scrolls use this CL regardless of the wielder's level.
+      * Standard SRD values: CL 1/1/3/5/7/9/11/13/15/17 for levels 0–9.
+      */
+     casterLevel: number;
+     /**
+      * The spell's level on this scroll (REQUIRED — not optional).
+      * Needed to compute the CL check DC: `checkDC = casterLevel + 1`
+      * and the save DC: `10 + spellLevel + abilityModifier`.
+      * Also enforces the 4th-level-maximum rule (scrolls can hold any level,
+      * but the CastingPanel should validate the spell exists at the intended level).
+      */
+     spellLevel: number;
+     /**
+      * Whether this spell is arcane or divine.
+      *
+      * This is a HARD class-restriction requirement unique to scrolls.
+      * Arcane scrolls → wizards, sorcerers, bards only.
+      * Divine scrolls → clerics, druids, paladins, rangers only.
+      *
+      * The CastingPanel checks `spellType` against the wielder's class before
+      * allowing activation. Activating the wrong type requires a Use Magic Device
+      * check (DC = 20 + spell level) — future enhancement.
+      */
+     spellType: 'arcane' | 'divine';
+   }[];
 
    /**
     * Staff spell list — present only on staves. Each entry describes one spell

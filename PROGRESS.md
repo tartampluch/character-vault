@@ -601,4 +601,14 @@ _Pre-conversion engine gap identified during C-14t analysis. Wands hold a single
 
 - [x] **E-11c Documentation:** `ARCHITECTURE.md` section 4.13 (Wands — critical CL rule, MM CL-variant table, 4 heightened wands, JSON example, 6-step CastingPanel contract). `CHECKPOINTS.md` updated with 7 items.
 
+### Phase E-12: Scroll Engine Prerequisites — Scroll Spell List field
+
+_Pre-conversion engine gap identified during C-14u analysis. 728 scroll entries need `scrollSpells` with mandatory `spellType` and `spellLevel`._
+
+- [x] **E-12a Type Extension:** Added `ItemFeature.scrollSpells?: { spellId, casterLevel, spellLevel, spellType: 'arcane'|'divine' }[]` to `feature.ts`. `spellLevel` required. `spellType` strict union. Scrolls use `consumable` + no `resourcePoolTemplates`.
+
+- [x] **E-12b Tests (`src/tests/scrollSpells.test.ts`):** 17 new tests (797 total, all passing). CL check DC formula, arcane/divine restriction, price formula, multi-spell validity.
+
+- [x] **E-12c Documentation:** `ARCHITECTURE.md` section 4.14 (Scrolls — all 3 unique rules, comparison table, CastingPanel 4-step contract). `CHECKPOINTS.md` updated with 9 items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

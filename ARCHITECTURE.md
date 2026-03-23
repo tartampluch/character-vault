@@ -1021,6 +1021,99 @@ When the player activates a wand:
 
 ---
 
+### 4.14. Scrolls — `ItemFeature.scrollSpells`
+
+Scrolls are single-use spell-storing items with three unique mechanical properties compared to wands and staves:
+
+1. **Spell type restriction** — arcane scrolls can only be used by arcane casters; divine only by divine casters.
+2. **CL check requirement** — if the user's CL is lower than the scroll's CL, they need a CL check (DC = scroll CL + 1) or risk a mishap.
+3. **Single-use, not charged** — a scroll spell is destroyed when cast (combined with `consumable.isConsumable: true`), with no charge pool at all.
+
+#### Data Model — `ItemFeature.scrollSpells`
+
+```typescript
+scrollSpells?: {
+    spellId: ID;                       // Spell Feature ID from DataLoader
+    casterLevel: number;               // Scroll's fixed CL (item's, not wielder's)
+    spellLevel: number;                // REQUIRED (not optional — needed for DC calculation)
+    spellType: 'arcane' | 'divine';   // Hard class restriction
+}[];
+```
+
+**Standard CL per Spell Level (SRD defaults — for min-CL scrolls):**
+
+| Spell Level | Min CL | Price (SRD formula: CL × SL × 25 gp) |
+|---|---|---|
+| 0th | 1 | 12.5 gp (special) |
+| 1st | 1 | 25 gp |
+| 2nd | 3 | 150 gp |
+| 3rd | 5 | 375 gp |
+| 4th | 7 | 700 gp |
+| 5th | 9 | 1,125 gp |
+| 6th | 11 | 1,650 gp |
+| 7th | 13 | 2,275 gp |
+| 8th | 15 | 3,000 gp |
+| 9th | 17 | 3,825 gp |
+
+#### Content Authoring — Scroll of Fireball
+
+```json
+{
+  "id": "item_scroll_arcane_fireball",
+  "consumable": { "isConsumable": true },
+  "scrollSpells": [{
+    "spellId": "spell_fireball",
+    "casterLevel": 5,
+    "spellLevel": 3,
+    "spellType": "arcane"
+  }]
+}
+```
+
+Note: **no `resourcePoolTemplates`** — scrolls are consumed once and gone, unlike wands/staves which have a 50-charge pool.
+
+#### Caster Level Check
+
+When the wielder's CL < scroll's CL:
+- **CL check required**: `checkDC = entry.casterLevel + 1`
+- **On failure**: DC 5 Wisdom save or scroll mishap occurs
+- **On natural 1**: always fails regardless of modifiers
+
+The CastingPanel computes: `checkRequired = wielder.casterLevel < entry.casterLevel`.
+
+#### Arcane/Divine Restriction
+
+`spellType` is a hard restriction enforced at activation time:
+- Arcane scroll (`spellType: 'arcane'`) → only wizards, sorcerers, bards can use
+- Divine scroll (`spellType: 'divine'`) → only clerics, druids, paladins, rangers can use
+
+A character can attempt to use the wrong type via **Use Magic Device** (DC 20 + spell level) — this is a CastingPanel UI concern handled by the skill check, not modelled here.
+
+#### Multi-Spell Scrolls
+
+The market table lists single-spell scrolls (each row = one scroll). The `scrollSpells` field is an array to support multi-spell scrolls (minor: 1d3 spells, medium: 1d4, major: 1d6) authored as custom items. All standard SRD scroll items have `scrollSpells.length === 1`.
+
+#### Comparison: Wands vs. Staves vs. Scrolls
+
+| Feature | Wands | Staves | Scrolls |
+|---|---|---|---|
+| Data field | `wandSpell` (object) | `staffSpells` (array) | `scrollSpells` (array) |
+| Single-use | ❌ 50 charges | ❌ 50 charges | **✅ consumed** |
+| resourcePoolTemplates | ✅ required | ✅ required | **❌ not needed** |
+| CL used | Item's fixed | Wielder's if higher | **Item's fixed** |
+| `spellLevel` | optional (heightened) | optional (heightened) | **required** |
+| `spellType` | ❌ | ❌ | **✅ required** |
+| Multi-spell | ❌ | ✅ (charge costs vary) | ✅ (same CL for all) |
+| CL check | ❌ | ❌ | **✅ if wielder CL < scroll CL** |
+
+> **AI Implementation Note:** When reading `scrollSpells` in `CastingPanel.svelte`:
+> 1. First check `spellType` against the wielder's class — reject if mismatch (or route to UMD).
+> 2. Then check `entry.casterLevel` against `wielder.casterLevel` — if lower, trigger CL check `(DC = entry.casterLevel + 1)`.
+> 3. On success (or if CL check not needed): call `engine.consumeItem(instanceId)` to destroy the scroll.
+> 4. Apply spell with `entry.casterLevel` as the CL and `10 + entry.spellLevel + abilityMod` as the save DC.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.
