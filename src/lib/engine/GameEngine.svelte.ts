@@ -3143,8 +3143,121 @@ export class GameEngine {
     this.character.activeFeatures.push(instance);
   }
 
-  /** Removes an ActiveFeatureInstance by instanceId. */
+  /**
+   * Removes an ActiveFeatureInstance by instanceId.
+   *
+   * CURSED ITEM GUARD (Enhancement E-14):
+   *   If the item's Feature definition has `removalPrevention.isCursed === true`,
+   *   this method REFUSES to remove it and logs a warning instead.
+   *
+   *   The rationale: cursed items in D&D 3.5 cannot be voluntarily removed.
+   *   Allowing `removeFeature()` to succeed would bypass the curse mechanic.
+   *   The correct removal path is `tryRemoveCursedItem(instanceId, dispelMethod)`.
+   *
+   *   EXCEPTION: This guard is bypassed when called from `tryRemoveCursedItem()`.
+   *   The private `#removeFeatureUnchecked()` method provides the bypass.
+   *
+   * @param instanceId - The instanceId of the feature to remove.
+   */
   removeFeature(instanceId: ID): void {
+    // --- Cursed item guard ---
+    const instance = this.character.activeFeatures.find(f => f.instanceId === instanceId);
+    if (instance) {
+      const feature = dataLoader.getFeature(instance.featureId);
+      const itemFeature = feature as (typeof feature & { removalPrevention?: { isCursed: boolean; removableBy: string[]; preventionNote?: string } });
+      if (itemFeature?.removalPrevention?.isCursed) {
+        console.warn(
+          `[GameEngine] removeFeature: "${instanceId}" (featureId: "${instance.featureId}") ` +
+          `is a cursed item and cannot be removed normally. ` +
+          `Use tryRemoveCursedItem(instanceId, dispelMethod) instead. ` +
+          `Removable by: ${itemFeature.removalPrevention.removableBy.join(', ')}.`
+        );
+        return; // Refuse removal
+      }
+    }
+    this.#removeFeatureUnchecked(instanceId);
+  }
+
+  /**
+   * Attempts to remove a cursed item from the character's active features
+   * by applying a specific dispel method.
+   *
+   * D&D 3.5 CONTEXT:
+   *   Cursed items cannot be removed by normal means. They can only be dispelled
+   *   by specific magical interventions listed in their `removalPrevention.removableBy`
+   *   array. When a cleric casts remove curse, or a wizard casts wish, this method
+   *   is called with the appropriate dispel method string.
+   *
+   * ALGORITHM:
+   *   1. Find the source instance.
+   *   2. Load the Feature definition to get `removalPrevention`.
+   *   3. If the item is not cursed (no `removalPrevention`): log a warning
+   *      (use `removeFeature()` instead for non-cursed items).
+   *   4. If `dispelMethod` is NOT in `removableBy`: return `false` (insufficient magic).
+   *   5. If `dispelMethod` IS in `removableBy`: call `#removeFeatureUnchecked()` and
+   *      return `true` (curse successfully broken).
+   *
+   * RETURN VALUE:
+   *   `true` — curse was successfully broken, item removed.
+   *   `false` — insufficient magic (dispelMethod not in removableBy), item stays.
+   *   `null` — instance not found or item not cursed (wrong method called).
+   *
+   * EXAMPLE USAGE:
+   *   ```typescript
+   *   // Cleric casts remove curse on the player's ring of clumsiness:
+   *   const removed = engine.tryRemoveCursedItem(ringInstanceId, 'remove_curse');
+   *   if (removed) {
+   *     ui.showMessage("The curse is broken! You remove the ring.");
+   *   } else {
+   *     ui.showMessage("The remove curse spell was insufficient for this curse.");
+   *   }
+   *   ```
+   *
+   * @param instanceId    - The instanceId of the cursed item.
+   * @param dispelMethod  - The magic used: 'remove_curse' | 'limited_wish' | 'wish' | 'miracle'
+   * @returns `true` (removed), `false` (insufficient magic), or `null` (not found / not cursed)
+   *
+   * @see removeFeature() — blocked for cursed items; use this method instead
+   * @see ARCHITECTURE.md section 4.15 — Cursed Item Removal contract
+   */
+  tryRemoveCursedItem(
+    instanceId: ID,
+    dispelMethod: 'remove_curse' | 'limited_wish' | 'wish' | 'miracle'
+  ): boolean | null {
+    const instance = this.character.activeFeatures.find(f => f.instanceId === instanceId);
+    if (!instance) {
+      console.warn(`[GameEngine] tryRemoveCursedItem: instance "${instanceId}" not found.`);
+      return null;
+    }
+
+    const feature = dataLoader.getFeature(instance.featureId);
+    const itemFeature = feature as (typeof feature & { removalPrevention?: { isCursed: boolean; removableBy: string[]; preventionNote?: string } });
+
+    if (!itemFeature?.removalPrevention?.isCursed) {
+      console.warn(
+        `[GameEngine] tryRemoveCursedItem: "${instance.featureId}" is not a cursed item. ` +
+        `Use removeFeature() to remove non-cursed items.`
+      );
+      return null;
+    }
+
+    // Check if the dispel method is sufficient
+    if (!itemFeature.removalPrevention.removableBy.includes(dispelMethod)) {
+      // Insufficient magic — curse stands
+      return false;
+    }
+
+    // Sufficient magic — remove the item
+    this.#removeFeatureUnchecked(instanceId);
+    return true;
+  }
+
+  /**
+   * Internal unchecked removal — bypasses the cursed item guard.
+   * Called by: removeFeature() (after guard passes), tryRemoveCursedItem() (after magic check),
+   * expireEffect() (ephemeral effects are never cursed), consumeItem() (same).
+   */
+  #removeFeatureUnchecked(instanceId: ID): void {
     const index = this.character.activeFeatures.findIndex(f => f.instanceId === instanceId);
     if (index !== -1) {
       this.character.activeFeatures.splice(index, 1);
@@ -3256,8 +3369,9 @@ export class GameEngine {
     //
     // Order matters: push first, then splice. This ensures the DAG never sees a
     // frame with NEITHER the item NOR the effect (avoids a one-tick gap in buffs).
+    // Use unchecked removal — potions/consumables are NEVER cursed items.
     this.character.activeFeatures.push(ephemeralInstance);
-    this.removeFeature(sourceInstanceId);
+    this.#removeFeatureUnchecked(sourceInstanceId);
 
     return ephemeralInstanceId;
   }
@@ -3296,7 +3410,8 @@ export class GameEngine {
       return;
     }
 
-    this.removeFeature(instanceId);
+    // Ephemeral effects are NEVER cursed items — safe to use unchecked removal.
+    this.#removeFeatureUnchecked(instanceId);
   }
 
   /**

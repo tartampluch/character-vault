@@ -611,6 +611,16 @@ _Pre-conversion engine gap identified during C-14u analysis. 728 scroll entries 
 
 - [x] **E-12c Documentation:** `ARCHITECTURE.md` section 4.14 (Scrolls — all 3 unique rules, comparison table, CastingPanel 4-step contract). `CHECKPOINTS.md` updated with 9 items.
 
+### Phase E-14: Cursed Item Engine Prerequisites — Removal Prevention
+
+_Pre-conversion engine gap identified during C-14w analysis. The one genuine gap: `removeFeature()` allowed unconditional removal of any item, bypassing the curse mechanic._
+
+- [x] **E-14a Type + Engine:** Added `ItemFeature.removalPrevention?: { isCursed, removableBy, preventionNote? }`. Updated `removeFeature()` to guard against cursed items. Added `#removeFeatureUnchecked()` for trusted internal callers. Added `tryRemoveCursedItem(instanceId, dispelMethod)` → true/false/null.
+
+- [x] **E-14b Tests (`src/tests/cursedItemRemoval.test.ts`):** 15 tests (812 total). Guard blocks cursed items, allows non-cursed and ephemeral, logs warning. tryRemoveCursedItem returns correct values. consumeItem/expireEffect unaffected.
+
+- [x] **E-14c Documentation:** `ARCHITECTURE.md` section 4.15 (guard pseudocode, tryRemoveCursedItem table, UI contract). `CHECKPOINTS.md` updated with 9 items.
+
 ### Artifact Engine Analysis (pre-C-14v)
 
 _All 18 artifacts (11 minor, 5 major + 10 Orb variants) were analysed against the engine. No computation gap found. All effects map to existing primitives: `grantedModifiers`, `resourcePoolTemplates`, `staffSpells`, `weaponData`, `conditionNode`, `situationalContext`, `setAbsolute`, `type:"inherent"`. Two metadata-only fields were added: `ItemFeature.isUnique` and `ItemFeature.artifactTier`. These are GM campaign layer fields with no engine pipeline effect — no tests needed. Zero new failing tests after addition._

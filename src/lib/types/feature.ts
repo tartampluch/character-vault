@@ -1079,6 +1079,100 @@ export interface ItemFeature extends Feature {
     };
 
    /**
+    * Cursed item removal prevention — present on cursed items that cannot be
+    * voluntarily unequipped or removed without specific magical intervention.
+    *
+    * D&D 3.5 SRD — CURSED ITEM REMOVAL:
+    *   Most specific cursed items carry language like:
+    *   - "can be removed only with a remove curse spell"
+    *   - "can be gotten rid of only by limited wish, wish, or miracle"
+    *   - "cannot be removed by any means short of a wish/miracle"
+    *   - "remains clasped around the victim's throat even after his death"
+    *
+    *   This is a hard mechanical constraint. Without this field, `removeFeature()`
+    *   would allow any item to be removed unconditionally, which is incorrect for
+    *   cursed items — the whole point of a curse is that you can't just take it off.
+    *
+    * ENGINE CONTRACT:
+    *   When `removalPrevention.isCursed === true`:
+    *   1. `removeFeature(instanceId)` checks this field and REFUSES to remove the
+    *      instance, logging a warning instead.
+    *   2. `tryRemoveCursedItem(instanceId, dispelMethod)` is the safe bypass path.
+    *      It succeeds only if `dispelMethod` is in `removableBy`, and then calls
+    *      the internal `removeFeature()` via a trusted path.
+    *   3. The Inventory UI reads this field to:
+    *      - Grey out the Remove/Unequip button with a tooltip explaining the curse.
+    *      - Show which dispel methods can remove it.
+    *
+    * UI CONTRACT:
+    *   `InventoryTab.svelte`:
+    *   - If `removalPrevention.isCursed === true` → show a red "Cursed" badge.
+    *   - The Unequip/Remove button is replaced with the tooltip:
+    *     "Cannot be removed [until remove curse / wish / miracle is cast]."
+    *   - Optionally show `removalPrevention.preventionNote` as a sub-tooltip.
+    *
+    * `isCursed`:
+    *   Discriminant — always `true` when the block is present. Used to distinguish
+    *   voluntary "cursed item" behavior from other removal-prevention concepts.
+    *
+    * `removableBy`:
+    *   The list of in-game methods that CAN remove this item.
+    *   The caller must pass one of these strings to `tryRemoveCursedItem()`.
+    *   Standard SRD values:
+    *   - `"remove_curse"`: Standard remove curse spell (cleric 3, bard 3, etc.)
+    *   - `"limited_wish"`: Limited wish (requires access to 7th-level spell)
+    *   - `"wish"`: Wish spell (9th level)
+    *   - `"miracle"`: Miracle spell (9th level)
+    *   Some items require combinations or ordered sequences — document those in
+    *   `preventionNote` rather than modelling the order in the type system.
+    *
+    * `preventionNote`:
+    *   Optional human-readable note for the UI. Explains special removal
+    *   conditions that the `removableBy` array alone cannot express.
+    *   Examples:
+    *   - "Must be cast by a caster of at least 12th level"
+    *   - "Remove curse followed by heal to restore ability scores"
+    *   - "Requires neutralize poison THEN raise dead"
+    *
+    * CONTENT AUTHORING — Necklace of Strangulation (never drops off):
+    *   ```json
+    *   "removalPrevention": {
+    *     "isCursed": true,
+    *     "removableBy": ["limited_wish", "wish", "miracle"],
+    *     "preventionNote": "Cannot be removed by any means short of limited wish, wish, or miracle. Remains clasped even after death."
+    *   }
+    *   ```
+    *
+    * CONTENT AUTHORING — Ring of Clumsiness (remove curse works):
+    *   ```json
+    *   "removalPrevention": {
+    *     "isCursed": true,
+    *     "removableBy": ["remove_curse", "wish", "miracle"]
+    *   }
+    *   ```
+    *
+    * @see GameEngine.removeFeature()         — blocked for cursed items
+    * @see GameEngine.tryRemoveCursedItem()   — the bypass method
+    * @see InventoryTab.svelte                — reads this to render the curse UI
+    * @see ARCHITECTURE.md section 4.15      — Cursed Item Removal contract
+    */
+   removalPrevention?: {
+     /** Discriminant — always true when this block is present. */
+     isCursed: true;
+     /**
+      * Which in-game methods can remove this item.
+      * At least one method must be provided.
+      * Pass one of these strings to `GameEngine.tryRemoveCursedItem()`.
+      */
+     removableBy: ('remove_curse' | 'limited_wish' | 'wish' | 'miracle')[];
+     /**
+      * Optional human-readable note displayed to the player/GM.
+      * Use for multi-step removal sequences or unusual conditions.
+      */
+     preventionNote?: string;
+   };
+
+   /**
     * Whether this item is a unique item that can only exist once in the world.
     *
     * D&D 3.5 SRD — MAJOR ARTIFACTS:

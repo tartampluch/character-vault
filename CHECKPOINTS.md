@@ -375,6 +375,16 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Cursed Item Removal Prevention (Enhancement E-14 / Architecture section 4.15):**
+  - Is `ItemFeature.removalPrevention` optional (non-cursed items omit it)?
+  - Is `isCursed: true` a discriminant (not `boolean`)?
+  - Does `removableBy` accept all four methods: `remove_curse`, `limited_wish`, `wish`, `miracle`?
+  - Does `removeFeature()` BLOCK removal when `isCursed === true`?
+  - Does `removeFeature()` log a warning when blocked?
+  - Does `tryRemoveCursedItem()` return `true` when dispelMethod is in `removableBy`?
+  - Does `tryRemoveCursedItem()` return `false` when method is NOT in `removableBy`?
+  - Does `tryRemoveCursedItem()` return `null` for non-existent or non-cursed items?
+  - Are `consumeItem()` and `expireEffect()` unaffected (they use `#removeFeatureUnchecked`)?
 - **Scroll Spell List (Enhancement E-12 / Architecture section 4.14):**
   - Is `ItemFeature.scrollSpells` optional (non-scrolls compile without it)?
   - Is `spellType` a `'arcane' | 'divine'` union (not just a string)?

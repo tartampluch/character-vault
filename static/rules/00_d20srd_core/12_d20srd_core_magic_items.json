@@ -58631,5 +58631,1375 @@
       "armorCheckPenalty": -2,
       "arcaneSpellFailure": 15
     }
+  },
+  {
+    "id": "item_cursed_amulet_of_inescapable_location",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Amulet of Inescapable Location",
+      "fr": "Amulette de Localisation Inévitable"
+    },
+    "description": {
+      "en": "Appears to be an amulet of proof against detection and location. Instead, gives the wearer a -10 penalty on all saving throws against divination spells. (Moderate abjuration; CL 10).",
+      "fr": "Semble être une amulette de protection contre la détection et la localisation. À la place, inflige un malus de -10 à tous les jets de sauvegarde contre les sorts de divination. (Abjuration modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "neck",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_amulet_of_inescapable_location_saves_fort",
+        "sourceId": "item_cursed_amulet_of_inescapable_location",
+        "sourceName": {
+          "en": "Amulet of Inescapable Location",
+          "fr": "Amulette de Localisation Inévitable"
+        },
+        "targetId": "saves.fort",
+        "value": -10,
+        "type": "untyped",
+        "situationalContext": "vs_divination"
+      },
+      {
+        "id": "item_cursed_amulet_of_inescapable_location_saves_ref",
+        "sourceId": "item_cursed_amulet_of_inescapable_location",
+        "sourceName": {
+          "en": "Amulet of Inescapable Location",
+          "fr": "Amulette de Localisation Inévitable"
+        },
+        "targetId": "saves.ref",
+        "value": -10,
+        "type": "untyped",
+        "situationalContext": "vs_divination"
+      },
+      {
+        "id": "item_cursed_amulet_of_inescapable_location_saves_will",
+        "sourceId": "item_cursed_amulet_of_inescapable_location",
+        "sourceName": {
+          "en": "Amulet of Inescapable Location",
+          "fr": "Amulette de Localisation Inévitable"
+        },
+        "targetId": "saves.will",
+        "value": -10,
+        "type": "untyped",
+        "situationalContext": "vs_divination"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_armor_of_arrow_attraction",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor of Arrow Attraction",
+      "fr": "Armure d'Attraction des Flèches"
+    },
+    "description": {
+      "en": "Appears as +3 full plate. Functions normally vs. melee attacks but applies a -15 AC penalty against any ranged weapon attacks. True nature revealed only upon first ranged attack against wearer in earnest. (Strong abjuration; CL 16).",
+      "fr": "Semble être une armure de plates +3. Fonctionne normalement contre les attaques de corps à corps mais inflige un malus de -15 à la CA contre toutes les armes à distance. La vraie nature se révèle lors de la première attaque à distance sérieuse. (Abjuration forte; NLS 16)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 9000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_armor_of_arrow_attraction_combatStats_ac_normal",
+        "sourceId": "item_cursed_armor_of_arrow_attraction",
+        "sourceName": {
+          "en": "Armor of Arrow Attraction",
+          "fr": "Armure d'Attraction des Flèches"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "armor"
+      },
+      {
+        "id": "item_cursed_armor_of_arrow_attraction_combatStats_ac_normal",
+        "sourceId": "item_cursed_armor_of_arrow_attraction",
+        "sourceName": {
+          "en": "Armor of Arrow Attraction",
+          "fr": "Armure d'Attraction des Flèches"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": -15,
+        "type": "untyped",
+        "situationalContext": "vs_ranged_attacks"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 3,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_cursed_armor_of_rage",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Armor of Rage",
+      "fr": "Armure de Rage"
+    },
+    "description": {
+      "en": "Appears as +1 full plate. While worn, causes the character to take a -4 penalty to Charisma. All unfriendly characters within 300 ft gain a +1 morale bonus on attack rolls against her. Effects not immediately noticed. (Strong necromancy; CL 16).",
+      "fr": "Semble être une armure de plates +1. Portée, inflige un malus de -4 au Charisme. Tous les personnages inamicaux à moins de 90 m gagnent un bonus de moral de +1 aux jets d'attaque contre elle. Effets non remarqués immédiatement. (Nécromancie forte; NLS 16)."
+    },
+    "tags": [
+      "item",
+      "armor",
+      "armor_heavy",
+      "metal_armor",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "torso",
+    "weightLbs": 50,
+    "costGp": 1600,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_armor_of_rage_combatStats_ac_normal",
+        "sourceId": "item_cursed_armor_of_rage",
+        "sourceName": {
+          "en": "Armor of Rage",
+          "fr": "Armure de Rage"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "armor"
+      },
+      {
+        "id": "item_cursed_armor_of_rage_attributes_stat_cha",
+        "sourceId": "item_cursed_armor_of_rage",
+        "sourceName": {
+          "en": "Armor of Rage",
+          "fr": "Armure de Rage"
+        },
+        "targetId": "attributes.stat_cha",
+        "value": -4,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "armorData": {
+      "armorBonus": 1,
+      "maxDex": 1,
+      "armorCheckPenalty": -5,
+      "arcaneSpellFailure": 35
+    }
+  },
+  {
+    "id": "item_cursed_bag_of_devouring",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Bag of Devouring",
+      "fr": "Sac Dévoreur"
+    },
+    "description": {
+      "en": "Appears as a bag of holding type I. Actually a lure used by an extradimensional creature. Animal/vegetable matter thrust inside: 90% ignored initially, then 60% chance of swallowing any flesh sensed inside. The bag has a +8 grapple bonus to pull victims in. Creatures consumed in 1 round — body destroyed, cannot be raised (50% chance wish/miracle/true resurrection works). Contents: 5% cumulative hourly chance of being swallowed and expelled to another plane. Cannot be created by mortal means. (Moderate conjuration; CL 17).",
+      "fr": "Semble être un sac de portage type I. En réalité une bouche nourricière extradimensionnelle. Ignore 90% les premières insertions, puis 60% de chance de saisir toute chair. +8 lutte pour attirer les victimes. Créatures consumées en 1 round — corps détruit, impossible à ressusciter (50% de chance avec souhait/miracle/résurrection véritable). Contenu : 5% cumulatif toutes les heures d'être avalé et expulsé sur un autre plan. Impossible à créer. (Invocation modérée; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Cannot be created by any known means. Destruction requires wish or miracle."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_boots_of_dancing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Boots of Dancing",
+      "fr": "Bottes Dansantes"
+    },
+    "description": {
+      "en": "Initially appear and function as other magical boots. When in (or fleeing from) melee combat, the wearer is affected as if by irresistible dance, unable to take normal actions. (Strong enchantment; CL 16).",
+      "fr": "Apparaissent et fonctionnent initialement comme d'autres bottes magiques. Lors d'un corps à corps (ou en fuite), le porteur est affecté comme par danse irrésistible, incapable d'agir normalement. (Enchantement fort; NLS 16)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "feet",
+    "weightLbs": 1,
+    "costGp": 30000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_bracers_of_defenselessness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Bracers of Defenselessness",
+      "fr": "Brassards de Vulnérabilité"
+    },
+    "description": {
+      "en": "Appear and function as bracers of armor +5 until the wearer is attacked in earnest by an enemy of CR ≥ wearer's level. At that point (and thereafter), the bracers impose a -5 penalty to AC. Once activated, can only be removed by remove curse. (Moderate conjuration; CL 16).",
+      "fr": "Semblent et fonctionnent comme des brassards d'armure +5 jusqu'à ce que le porteur soit attaqué sérieusement par un ennemi de IPC ≥ niveau. Ensuite, infligent un malus de -5 à la CA. Une fois activés, ne peuvent être retirés que par désenvoûtement. (Invocation modérée; NLS 16)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "wrists",
+    "weightLbs": 1,
+    "costGp": 1200,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_bracers_of_defenselessness_combatStats_ac_normal",
+        "sourceId": "item_cursed_bracers_of_defenselessness",
+        "sourceName": {
+          "en": "Bracers of Defenselessness",
+          "fr": "Brassards de Vulnérabilité"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": -5,
+        "type": "armor",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "curse_activated"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_broom_of_animated_attack",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Broom of Animated Attack",
+      "fr": "Balai à Attaque Animée"
+    },
+    "description": {
+      "en": "Identical to a broom of flying by all tests. When a command is spoken: dumps the rider from 1d4+5 ft, then attacks them. 4 attacks/round (+5 each): 2 straw (blinds 1 round), 2 handle (1d6). AC 13, 18 HP, hardness 4. (Moderate transmutation; CL 10).",
+      "fr": "Identique à un balai volant à tous les tests. Lorsqu'une commande est prononcée : projette le cavalier de 1d4+5 pi, puis l'attaque. 4 attaques/round (+5 chacune) : 2 paille (aveugle 1 round), 2 manche (1d6). CA 13, 18 PV, solidité 4. (Transmutation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 5200,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Once revealed, cannot be gotten rid of by normal means."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_cloak_of_poisonousness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Cloak of Poisonousness",
+      "fr": "Manteau Empoisonné"
+    },
+    "description": {
+      "en": "Can be handled safely. The instant it is donned, the wearer must make a DC 28 Fortitude save or die instantly. Once donned, can only be removed with remove curse (which destroys the cloak's power). Then neutralize poison, followed by raise dead or resurrection. (Strong abjuration; CL 15).",
+      "fr": "Peut être manipulé sans danger. Dès qu'il est porté, le porteur doit réussir un jet de Vigueur DD 28 ou mourir instantanément. Une fois enfilé, ne peut être retiré qu'avec désenvoûtement (qui détruit la propriété magique du manteau). Puis neutralisation du poison, suivi de résurrection des morts. (Abjuration forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "shoulders",
+    "weightLbs": 1,
+    "costGp": 62000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Remove curse followed by neutralize poison, then raise dead or resurrection."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_crystal_hypnosis_ball",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Crystal Hypnosis Ball",
+      "fr": "Boule de Cristal d'Hypnose"
+    },
+    "description": {
+      "en": "Indistinguishable from a normal crystal ball. Anyone attempting to use it becomes fascinated for 1d6 minutes; a telepathic suggestion is implanted (Will DC 19 negates). User believes the desired scrying happened but is actually being controlled by a powerful wizard, lich, or extraplanar being. Further uses deepen subjugation. A minor artifact; cannot be created. (Moderate divination; CL 17).",
+      "fr": "Indiscernable d'une boule de cristal normale. Quiconque tente de l'utiliser est fasciné 1d6 minutes ; une suggestion télépathique est implantée (Volonté DD 19 annule). L'utilisateur croit avoir réussi la scrutation mais est contrôlé par un puissant magicien, liche ou être extraplanaire. Utilized davantage approfondit la sujétion. Artefact mineur ; ne peut pas être créé. (Divination modérée; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item",
+      "artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 7,
+    "costGp": 0,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Minor artifact — cannot be created. Only wish or miracle can free the victim."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "artifactTier": "minor"
+  },
+  {
+    "id": "item_cursed_dust_of_sneezing_and_choking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dust of Sneezing and Choking",
+      "fr": "Poussière d'Éternuements et d'Étouffements"
+    },
+    "description": {
+      "en": "Appears as dust of appearance. When cast into the air: Fort DC 15 or take 2d6 CON damage; Fort DC 15 1 min later or take 1d6 CON damage. All within 20-ft spread (including those who save) are stunned for 5d4 rounds. Single use, consumable. (Faint conjuration; CL 7).",
+      "fr": "Semble être de la poussière d'apparition. Lancée dans l'air : Vigueur DD 15 ou 2d6 dégâts de CON ; Vigueur DD 15 1 min après ou 1d6 CON. Toutes les créatures dans la zone de 6 m (y compris celles qui réussissent) sont étourdies 5d4 rounds. Utilisation unique. (Conjuration faible; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2400,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single use (thrown)"
+    }
+  },
+  {
+    "id": "item_cursed_flask_of_curses",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Flask of Curses",
+      "fr": "Flasque de Malédictions"
+    },
+    "description": {
+      "en": "When first unstoppered: all within 30 ft must make Will DC 17 or take a -2 penalty on attack rolls, saves, and skill checks until remove curse is cast upon them. (Moderate conjuration; CL 7).",
+      "fr": "Lors du premier débouchage : toutes les créatures à moins de 9 m doivent réussir un jet de Volonté DD 17 ou subir un malus de -2 aux jets d'attaque, jets de sauvegarde et tests de compétence jusqu'à l'application d'un désenvoûtement. (Invocation modérée; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 2100,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_gauntlets_of_fumbling",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Gauntlets of Fumbling",
+      "fr": "Gantelets de Maladresse"
+    },
+    "description": {
+      "en": "Appear as gloves of Dexterity or gauntlets of ogre power. When in mortal danger, the curse activates: -2 DEX and 50% chance of dropping held items each round. Can only be removed by remove curse, wish, or miracle once activated. (Moderate transmutation; CL 7).",
+      "fr": "Semblent être des gants de dextérité ou des gantelets de puissance d'ogre. En cas de danger mortel, la malédiction s'active : -2 DEX et 50% de chance de lâcher les objets tenus chaque round. Ne peuvent être retirés que par désenvoûtement, souhait, ou miracle une fois activés. (Transmutation modérée; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "hands",
+    "weightLbs": 0,
+    "costGp": 1300,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_gauntlets_of_fumbling_attributes_stat_dex",
+        "sourceId": "item_cursed_gauntlets_of_fumbling",
+        "sourceName": {
+          "en": "Gauntlets of Fumbling",
+          "fr": "Gantelets de Maladresse"
+        },
+        "targetId": "attributes.stat_dex",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "curse_activated"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_helm_of_opposite_alignment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Helm of Opposite Alignment",
+      "fr": "Heaume d'Alignement Opposé"
+    },
+    "description": {
+      "en": "When placed on the head: Will DC 15 or alignment instantly changes to the most opposite alignment. The change is mental and moral — the character enjoys the new outlook. Only works once per character. Only wish or miracle (+ atonement if class-dependent) can restore former alignment. Once used, loses magical properties. (Strong transmutation; CL 12).",
+      "fr": "Lorsque mis sur la tête : Volonté DD 15 ou l'alignement change instantanément vers l'alignement le plus opposé. Le changement est mental et moral — le personnage apprécie sa nouvelle perspective. Ne fonctionne qu'une fois. Seuls souhait ou miracle (+ rédemption si dépendant de la classe) peuvent restaurer. Perd ses propriétés magiques après utilisation. (Transmutation forte; NLS 12)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "head",
+    "weightLbs": 3,
+    "costGp": 4000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_incense_of_obsession",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Incense of Obsession",
+      "fr": "Encens d'Obsession"
+    },
+    "description": {
+      "en": "Appears as incense of meditation. When burned during spellcasting prayer, user becomes totally convinced of superior spell ability and must use spells at every opportunity, even when useless. Lasts until all spells used or 24 hours have elapsed. (Moderate enchantment; CL 6).",
+      "fr": "Semble être de l'encens de méditation. Brûlé lors d'une préparation de sorts, l'utilisateur devient totalement convaincu de sa supériorité et doit utiliser ses sorts à chaque occasion, même inutilement. Dure jusqu'à l'épuisement de tous les sorts ou 24 heures. (Enchantement modéré; NLS 6)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.5,
+    "costGp": 200,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "until spells exhausted or 24 hours"
+    }
+  },
+  {
+    "id": "item_cursed_mace_of_blood",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mace of Blood",
+      "fr": "Masse de Sang"
+    },
+    "description": {
+      "en": "+3 heavy mace. Must be coated in blood every day or its +3 bonus fades (until re-coated). Character possessing it must make DC 13 Will save each day or become chaotic evil. (Moderate abjuration; CL 8).",
+      "fr": "+3 masse lourde. Doit être enduite de sang chaque jour ou son bonus +3 disparaît (jusqu'au re-enduisage). Le personnage la possédant doit réussir un jet de Volonté DD 13 chaque jour ou devenir chaotique mauvais. (Abjuration modérée; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cursed",
+      "magic_item",
+      "evil"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 8,
+    "costGp": 16000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Requires daily blood coating — failing to do so suspends the +3 bonus temporarily."
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_mace_of_blood_combatStats_attack_bonus",
+        "sourceId": "item_cursed_mace_of_blood",
+        "sourceName": {
+          "en": "Mace of Blood",
+          "fr": "Masse de Sang"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_cursed_mace_of_blood_combatStats_damage_bonus",
+        "sourceId": "item_cursed_mace_of_blood",
+        "sourceName": {
+          "en": "Mace of Blood",
+          "fr": "Masse de Sang"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+  {
+    "id": "item_cursed_medallion_of_thought_projection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Medallion of Thought Projection",
+      "fr": "Médaillon de Projection des Pensées"
+    },
+    "description": {
+      "en": "Appears to work as a medallion of thoughts (overhear thoughts within range). In reality, the thoughts heard are illusory figments that mislead the user, while the cursed medallion broadcasts the user's own thoughts to creatures in its beam. Will DC 15 to sort out the false thoughts. (Faint divination; CL 7).",
+      "fr": "Semble fonctionner comme un médaillon de la pensée. En réalité, les pensées entendues sont des illusions qui induisent en erreur, tandis que le médaillon maudit diffuse les propres pensées de l'utilisateur aux créatures dans son faisceau. Volonté DD 15 pour démêler les fausses pensées. (Divination faible; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "neck",
+    "weightLbs": 0,
+    "costGp": 1800,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_necklace_of_strangulation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Necklace of Strangulation",
+      "fr": "Collier d'Étranglement"
+    },
+    "description": {
+      "en": "Appears to be a rare and valuable piece of jewelry. When placed around a character's neck, it instantly constricts dealing 6 HP per round. Cannot be removed by any means short of limited wish, wish, or miracle. Remains clasped even after the victim's death. Only loosens after approximately one month (reduced to dry skeleton). (Strong conjuration; CL 18).",
+      "fr": "Semble être un bijou rare et précieux. Quand il est mis autour du cou, il se resserre immédiatement infligeant 6 PV par round. Ne peut être retiré que par souhait limité, souhait ou miracle. Reste attaché même après la mort. Ne se détache qu'après environ un mois. (Conjuration forte; NLS 18)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "neck",
+    "weightLbs": 0,
+    "costGp": 60000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "limited_wish",
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Cannot be removed by any means short of limited wish, wish, or miracle. Remains clasped even after death."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_net_of_snaring",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Net of Snaring",
+      "fr": "Filet d'Enchevêtrement"
+    },
+    "description": {
+      "en": "+3 bonus on attack rolls with the net, but it can ONLY be used underwater. Above water, it is useless. On command, it can shoot forth up to 30 ft to trap a creature underwater. (Moderate evocation; CL 8).",
+      "fr": "+3 aux jets d'attaque avec le filet, mais il ne peut être utilisé QUE sous l'eau. Hors de l'eau, il est inutile. Sur commande, il peut s'élancer jusqu'à 9 m pour piéger une créature sous l'eau. (Évocation modérée; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 10,
+    "costGp": 10000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_net_of_snaring_combatStats_attack_bonus",
+        "sourceId": "item_cursed_net_of_snaring",
+        "sourceName": {
+          "en": "Net of Snaring",
+          "fr": "Filet d'Enchevêtrement"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement",
+        "situationalContext": "underwater"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_periapt_of_foul_rotting",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Periapt of Foul Rotting",
+      "fr": "Périapte de la Pourriture Immonde"
+    },
+    "description": {
+      "en": "Appears to be a gem of little value. After 24 hours in possession, character contracts a rotting affliction permanently draining 1 DEX, 1 CON, and 1 CHA per week. Removal requires: remove curse, then remove disease, then heal/miracle/limited wish/wish. Alternatively: crush a periapt of health and sprinkle its dust on the afflicted character (full-round action). (Faint abjuration; CL 10).",
+      "fr": "Semble être une gemme de peu de valeur. Après 24 heures en possession, le personnage contracte une affliction de pourriture draînant en permanence 1 DEX, 1 CON et 1 CHA par semaine. Retrait : désenvoûtement, puis guérison des maladies, puis soins intensifs/miracle/souhait limité/souhait. Alternativement : écraser un périapte de santé et en saupoudrer le personnage. (Abjuration faible; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 17000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Remove curse + remove disease + heal/limited wish/wish/miracle (in sequence). Or: crush a periapt of health on the afflicted character."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_potion_of_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Poison",
+      "fr": "Potion de Poison"
+    },
+    "description": {
+      "en": "Appears as a beneficial potion but contains potent poison instead. The imbiber must make Fort DC 16 or take 1d10 CON damage. 1 minute later, must save again (DC 16) or take another 1d10 CON damage. Single use. (Moderate conjuration; CL 12).",
+      "fr": "Semble être une potion bénéfique mais contient un poison puissant. Le buveur doit réussir un jet de Vigueur DD 16 ou subir 1d10 dégâts de CON. 1 minute plus tard, sauvegarder à nouveau (DD 16) ou encore 1d10 CON. Utilisation unique. (Invocation modérée; NLS 12)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "cursed",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 5000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant (CON damage)"
+    }
+  },
+  {
+    "id": "item_cursed_ring_of_clumsiness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Clumsiness",
+      "fr": "Anneau de Maladresse"
+    },
+    "description": {
+      "en": "Operates exactly like a ring of feather falling but also makes the wearer clumsy: -4 DEX penalty, and 20% spell failure on arcane spells with somatic components (stacks with other arcane spell failure). (Strong transmutation; CL 15).",
+      "fr": "Fonctionne exactement comme un anneau de chute lente mais rend aussi le porteur maladroit : -4 à la DEX et 20% d'échec des sorts arcaniques avec composante gestuelle (se cumule avec les autres). (Transmutation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_ring_of_clumsiness_attributes_stat_dex",
+        "sourceId": "item_cursed_ring_of_clumsiness",
+        "sourceName": {
+          "en": "Ring of Clumsiness",
+          "fr": "Anneau de Maladresse"
+        },
+        "targetId": "attributes.stat_dex",
+        "value": -4,
+        "type": "untyped"
+      },
+      {
+        "id": "item_cursed_ring_of_clumsiness_combatStats_arcane_spell_failure",
+        "sourceId": "item_cursed_ring_of_clumsiness",
+        "sourceName": {
+          "en": "Ring of Clumsiness",
+          "fr": "Anneau de Maladresse"
+        },
+        "targetId": "combatStats.arcane_spell_failure",
+        "value": 20,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_robe_of_powerlessness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Robe of Powerlessness",
+      "fr": "Robe de l'Impuissance"
+    },
+    "description": {
+      "en": "Appears as a magic robe of another sort. When donned: -10 penalty to both STR and INT, forgetting spells and magic knowledge accordingly. Can be removed anytime, but to restore mind and body: remove curse followed by heal. (Moderate transmutation; CL 13).",
+      "fr": "Semble être une robe magique d'un autre type. Portée : -10 à la Force et à l'Intelligence, oubliant les sorts et connaissances magiques. Peut être retirée normalement, mais pour restaurer l'esprit : désenvoûtement suivi de soins intensifs. (Transmutation modérée; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "body",
+    "weightLbs": 1,
+    "costGp": 5500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_robe_of_powerlessness_attributes_stat_str",
+        "sourceId": "item_cursed_robe_of_powerlessness",
+        "sourceName": {
+          "en": "Robe of Powerlessness",
+          "fr": "Robe de l'Impuissance"
+        },
+        "targetId": "attributes.stat_str",
+        "value": -10,
+        "type": "untyped"
+      },
+      {
+        "id": "item_cursed_robe_of_powerlessness_attributes_stat_int",
+        "sourceId": "item_cursed_robe_of_powerlessness",
+        "sourceName": {
+          "en": "Robe of Powerlessness",
+          "fr": "Robe de l'Impuissance"
+        },
+        "targetId": "attributes.stat_int",
+        "value": -10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_robe_of_vermin",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Robe of Vermin",
+      "fr": "Robe des Vermine"
+    },
+    "description": {
+      "en": "Offers initial great defense (as cloak of resistance +4). When in serious combat, magical pests infest the garment: wearer must scratch constantly, taking -5 initiative, -2 to all attacks/saves/skill checks. Casting requires Concentration DC 20+spell level. (Moderate abjuration; CL 13).",
+      "fr": "Offre initialement une grande défense (comme cape de résistance +4). En combat sérieux, des nuisibles magiques infestent le vêtement : le porteur doit se gratter sans cesse, subissant -5 à l'initiative, -2 à tous les jets d'attaque/sauvegarde/compétences. Lancer un sort nécessite une Concentration DD 20+niveau. (Abjuration modérée; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "body",
+    "weightLbs": 1,
+    "costGp": 16500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_robe_of_vermin_combatStats_init",
+        "sourceId": "item_cursed_robe_of_vermin",
+        "sourceName": {
+          "en": "Robe of Vermin",
+          "fr": "Robe des Vermine"
+        },
+        "targetId": "combatStats.init",
+        "value": -5,
+        "type": "untyped"
+      },
+      {
+        "id": "item_cursed_robe_of_vermin_combatStats_attack_bonus",
+        "sourceId": "item_cursed_robe_of_vermin",
+        "sourceName": {
+          "en": "Robe of Vermin",
+          "fr": "Robe des Vermine"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "in_combat"
+        }
+      },
+      {
+        "id": "item_cursed_robe_of_vermin_saves_fort",
+        "sourceId": "item_cursed_robe_of_vermin",
+        "sourceName": {
+          "en": "Robe of Vermin",
+          "fr": "Robe des Vermine"
+        },
+        "targetId": "saves.fort",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "in_combat"
+        }
+      },
+      {
+        "id": "item_cursed_robe_of_vermin_saves_ref",
+        "sourceId": "item_cursed_robe_of_vermin",
+        "sourceName": {
+          "en": "Robe of Vermin",
+          "fr": "Robe des Vermine"
+        },
+        "targetId": "saves.ref",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "in_combat"
+        }
+      },
+      {
+        "id": "item_cursed_robe_of_vermin_saves_will",
+        "sourceId": "item_cursed_robe_of_vermin",
+        "sourceName": {
+          "en": "Robe of Vermin",
+          "fr": "Robe des Vermine"
+        },
+        "targetId": "saves.will",
+        "value": -2,
+        "type": "untyped",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@activeTags",
+          "operator": "has_tag",
+          "value": "in_combat"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_scarab_of_death",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Scarab of Death",
+      "fr": "Scarabée de la Mort"
+    },
+    "description": {
+      "en": "Appears as a beneficial scarab/amulet. Held > 1 round or carried > 1 minute: transforms into a beetle that burrows to the wearer's heart in 1 round, causing instant death. Reflex DC 25 to tear it away before burrowing (but still takes 3d6 damage). Returns to scarab form after attacking. Store in wood/ceramic/bone/ivory/metal container to prevent activation. (Strong abjuration; CL 19).",
+      "fr": "Semble être un scarabée/amulette bénéfique. Tenu > 1 round ou porté > 1 minute : se transforme en scarabée perforant atteignant le cœur en 1 round, causant la mort instantanée. Réflexes DD 25 pour l'arracher dès le début (mais subit quand même 3d6 dégâts). Revient à la forme scarabée après. Stocker dans un contenant en bois/céramique/os/ivoire/métal pour désactiver. (Abjuration forte; NLS 19)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 80000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_spear_backbiter",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Spear, Cursed Backbiter",
+      "fr": "Lance Maudite Retournée"
+    },
+    "description": {
+      "en": "+2 shortspear. On a natural roll of 1 in melee, it curls around to strike the wielder's back, dealing the normal spear damage automatically. When thrown and a natural 1 is rolled, the self-damage dealt to the hurler is doubled. (Moderate evocation; CL 10).",
+      "fr": "+2 courte lance. Sur un jet naturel de 1 en mêlée, elle se retourne et touche automatiquement le dos du manieur pour les dégâts normaux. Lancée avec un 1 naturel, les dégâts auto-infligés sont doublés. (Évocation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 3,
+    "costGp": 7500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_spear_backbiter_combatStats_attack_bonus",
+        "sourceId": "item_cursed_spear_backbiter",
+        "sourceName": {
+          "en": "Spear, Cursed Backbiter",
+          "fr": "Lance Maudite Retournée"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_cursed_spear_backbiter_combatStats_damage_bonus",
+        "sourceId": "item_cursed_spear_backbiter",
+        "sourceName": {
+          "en": "Spear, Cursed Backbiter",
+          "fr": "Lance Maudite Retournée"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "rangeIncrementFt": 20
+    }
+  },
+  {
+    "id": "item_cursed_stone_of_weight",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Stone of Weight (Loadstone)",
+      "fr": "Pierre de Poids (Pierre Plomb)"
+    },
+    "description": {
+      "en": "Appears as a smooth dark stone. Reduces possessor's base land speed to one-half normal. Once picked up, cannot be disposed of by ANY nonmagical means—appears back on the person if thrown away or smashed. Remove curse allows it to be discarded normally. (Faint transmutation; CL 5).",
+      "fr": "Semble être une pierre lisse et sombre. Réduit la vitesse terrestre de base du possesseur de moitié. Une fois ramassée, ne peut pas être jetée par des moyens non magiques — réapparaît sur la personne si lancée ou brisée. Le désenvoûtement permet de la jeter normalement. (Transmutation faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 1000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_stone_of_weight_combatStats_speed_land",
+        "sourceId": "item_cursed_stone_of_weight",
+        "sourceName": {
+          "en": "Stone of Weight",
+          "fr": "Pierre de Poids"
+        },
+        "targetId": "combatStats.speed_land",
+        "value": 0,
+        "type": "setAbsolute",
+        "conditionNode": {
+          "type": "CONDITION",
+          "path": "@combatStats.speed_land.totalValue",
+          "operator": "set_to",
+          "value": "@combatStats.speed_land.totalValue/2"
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_cursed_sword_minus_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "-2 Sword, Cursed",
+      "fr": "Épée -2, Maudite"
+    },
+    "description": {
+      "en": "Appears and performs well in practice. In actual combat against a foe: -2 penalty on all attack rolls. All damage dealt is also reduced by 2 (minimum 1). After one week in a character's possession the sword forces the character to always draw and use it rather than any other weapon —even when meant to use something else. Only limited wish, wish, or miracle can rid the character of it. (Strong evocation; CL 15).",
+      "fr": "Semble et performe bien à l'entraînement. En combat réel : -2 malus à tous les jets d'attaque. Tous les dégâts infligés sont réduits de 2 (minimum 1). Après une semaine en possession, l'épée force à toujours la sortir et l'utiliser plutôt que toute autre arme. Seuls souhait limité, souhait ou miracle peuvent s'en débarrasser. (Évocation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 1500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "limited_wish",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_sword_minus_2_combatStats_attack_bonus",
+        "sourceId": "item_cursed_sword_minus_2",
+        "sourceName": {
+          "en": "-2 Sword, Cursed",
+          "fr": "Épée -2, Maudite"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": -2,
+        "type": "untyped"
+      },
+      {
+        "id": "item_cursed_sword_minus_2_combatStats_damage_bonus",
+        "sourceId": "item_cursed_sword_minus_2",
+        "sourceName": {
+          "en": "-2 Sword, Cursed",
+          "fr": "Épée -2, Maudite"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": -2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+  {
+    "id": "item_cursed_sword_berserking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sword, Berserking",
+      "fr": "Épée Furieuse"
+    },
+    "description": {
+      "en": "Appears as a +2 greatsword. Whenever used in battle, the wielder goes berserk (as barbarian rage): attacks nearest creature and fights until unconscious/dead or no living thing within 30 ft remains. Cannot control targets or stop. Many see this as either curse or boon. (Moderate evocation; CL 8).",
+      "fr": "Semble être une grande épée +2. Chaque fois qu'elle est utilisée en combat, le manieur entre en rage (comme la rage du barbare) : attaque la créature la plus proche et combat jusqu'à être inconscient/mort ou qu'il n'y ait plus rien de vivant dans 9 m. Considérée par certains comme malédiction ou bénédiction. (Évocation modérée; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 8,
+    "costGp": 17500,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "remove_curse",
+        "wish",
+        "miracle"
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_cursed_sword_berserking_combatStats_attack_bonus",
+        "sourceId": "item_cursed_sword_berserking",
+        "sourceName": {
+          "en": "Sword, Berserking",
+          "fr": "Épée Furieuse"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_cursed_sword_berserking_combatStats_damage_bonus",
+        "sourceId": "item_cursed_sword_berserking",
+        "sourceName": {
+          "en": "Sword, Berserking",
+          "fr": "Épée Furieuse"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "2d6",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+  {
+    "id": "item_cursed_vacuous_grimoire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Vacuous Grimoire",
+      "fr": "Grimoire du Vide"
+    },
+    "description": {
+      "en": "Looks like a normal book. Any character who opens it and reads even one word must make two Will DC 15 saves: first to avoid 1 pt permanent INT drain, second to avoid 2 pts permanent WIS drain. To destroy the book, burn it while casting remove curse. Mimics the appearance of nearby books. (Strong enchantment; CL 20).",
+      "fr": "Ressemble à un livre normal. Quiconque l'ouvre et lit même un mot doit réussir deux jets de Volonté DD 15 : d'abord pour éviter 1 point de drain d'INT permanent, ensuite 2 points de drain de SAG permanent. Pour détruire : brûler en lançant désenvoûtement. Change d'apparence selon les livres proches. (Enchantement fort; NLS 20)."
+    },
+    "tags": [
+      "item",
+      "wondrous_item",
+      "cursed",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 6000,
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": [
+        "wish",
+        "miracle"
+      ],
+      "preventionNote": "Book itself can only be destroyed by burning it while casting remove curse. Victims need wish/miracle to restore drained stats."
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
   }
 ]

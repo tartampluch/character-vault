@@ -1114,6 +1114,89 @@ The market table lists single-spell scrolls (each row = one scroll). The `scroll
 
 ---
 
+### 4.15. Cursed Items — `ItemFeature.removalPrevention`
+
+Cursed items in D&D 3.5 carry a defining mechanical rule: **they cannot be voluntarily removed**. The SRD states for most specific cursed items: *"The item can be removed only with a remove curse spell"* or *"can be gotten rid of only by limited wish, wish, or miracle."*
+
+Without a prevention mechanism, `removeFeature()` would allow any item to be removed unconditionally, bypassing the entire curse mechanic. The `removalPrevention` field + guarded `removeFeature()` enforce the SRD rule.
+
+#### Data Model — `ItemFeature.removalPrevention`
+
+```typescript
+removalPrevention?: {
+    isCursed: true;                    // Discriminant — always true when present
+    removableBy: (                     // Which magic can break the curse
+      'remove_curse' | 'limited_wish' | 'wish' | 'miracle'
+    )[];
+    preventionNote?: string;           // Human-readable tooltip for the GM/player
+};
+```
+
+Examples from SRD:
+```json
+// Ring of Clumsiness — remove curse works:
+"removalPrevention": {
+  "isCursed": true,
+  "removableBy": ["remove_curse", "wish", "miracle"]
+}
+
+// Necklace of Strangulation — only stronger magic:
+"removalPrevention": {
+  "isCursed": true,
+  "removableBy": ["limited_wish", "wish", "miracle"],
+  "preventionNote": "Remains clasped even after death. Limited wish, wish, or miracle only."
+}
+```
+
+#### Engine Contract — `removeFeature()` Guard
+
+`GameEngine.removeFeature(instanceId)` was updated:
+1. Looks up the feature from DataLoader.
+2. If `removalPrevention.isCursed === true`: **refuses removal**, logs a warning, and returns without changing state.
+3. If the item is not cursed (normal item): removes unconditionally (original behaviour).
+
+```typescript
+// removeFeature() now has this guard:
+const rp = feature?.removalPrevention;
+if (rp?.isCursed) {
+  console.warn(`[Guard] Cursed item — use tryRemoveCursedItem() instead.`);
+  return;  // Blocked
+}
+```
+
+**Internal removal bypass**: The private `#removeFeatureUnchecked()` method bypasses the guard and is called by:
+- `tryRemoveCursedItem()` after the magic check passes
+- `consumeItem()` (potions are never cursed)
+- `expireEffect()` (ephemeral buffs are never cursed)
+
+#### Engine Contract — `tryRemoveCursedItem(instanceId, dispelMethod)`
+
+The only legitimate way to remove a cursed item:
+
+| Return | Meaning | State |
+|---|---|---|
+| `true` | Curse broken — item removed | Item gone from `activeFeatures` |
+| `false` | Insufficient magic | Item stays |
+| `null` | instanceId not found, or item not cursed | Use `removeFeature()` instead |
+
+```typescript
+// Cleric casts remove curse:
+const result = engine.tryRemoveCursedItem(ringInstanceId, 'remove_curse');
+if (result === true)  { ui.show("Curse broken!"); }
+if (result === false) { ui.show("Insufficient magic for this curse."); }
+```
+
+#### UI Contract — `InventoryTab.svelte`
+
+Items with `removalPrevention.isCursed === true`:
+- Show a red **"Cursed"** badge next to the item name.
+- Replace the Unequip/Remove button with a greyed-out button showing `preventionNote` as a tooltip.
+- Show a "Which magic removes this?" hint listing `removableBy`.
+
+> **AI Implementation Note:** Check `(feature as ItemFeature).removalPrevention?.isCursed` in the inventory row render. The `removableBy` array should be displayed as human-readable labels: `'remove_curse'` → "Remove Curse", `'limited_wish'` → "Limited Wish", `'wish'` → "Wish", `'miracle'` → "Miracle".
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

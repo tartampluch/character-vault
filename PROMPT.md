@@ -658,6 +658,29 @@ _Entry point: pre-conversion analysis of `scrolls.html`. The SRD table has 728 s
 
 **Total test count after Phase E-12: 797 tests (all passing).**
 
+## Phase E-14: Cursed Item Engine Prerequisites — Removal Prevention
+
+_Goal: Resolve the one engine gap identified during C-14w (Cursed Items) analysis. Cursed items in D&D 3.5 cannot be voluntarily removed — they require remove curse/wish/miracle. Without a guard, `removeFeature()` would unconditionally remove any item, bypassing the curse mechanic entirely._
+
+_Entry point: pre-conversion analysis of `cursedItems.html` (946 lines, 28 specific cursed items + curse type tables). Every mechanical penalty (negative modifiers, conditional effects) maps to existing `grantedModifiers` primitives. The one genuine gap is removal prevention._
+
+- [x] **E-14a Type Extension + Engine Guard:**
+  - Added `ItemFeature.removalPrevention?: { isCursed: true, removableBy: ('remove_curse'|'limited_wish'|'wish'|'miracle')[], preventionNote? }` to `feature.ts`
+  - Updated `GameEngine.removeFeature(instanceId)` to check `removalPrevention.isCursed` and refuse removal with a warning when true.
+  - Added private `GameEngine.#removeFeatureUnchecked(instanceId)` for internal trusted callers (consumeItem, expireEffect, tryRemoveCursedItem).
+  - Added public `GameEngine.tryRemoveCursedItem(instanceId, dispelMethod)` → `true` (removed), `false` (insufficient magic), `null` (not found/not cursed).
+  - Updated `consumeItem()` and `expireEffect()` to call `#removeFeatureUnchecked()` (potions and ephemeral effects are never cursed).
+
+- [x] **E-14b Tests (`src/tests/cursedItemRemoval.test.ts`):** 15 new Vitest tests (812 total, all passing):
+  - Type soundness (3 tests): isCursed=true compiles, all 4 methods valid, optional on non-cursed items.
+  - `removeFeature()` guard (4 tests): blocks cursed item, allows non-cursed, allows ephemeral, logs warning when blocked.
+  - `tryRemoveCursedItem()` (6 tests): returns true (sufficient magic), false (insufficient), null (not found), null (not cursed), item gone after success, item stays after failure.
+  - Interaction (2 tests): ephemeral expiry unaffected, selective removal works across cursed+non-cursed.
+
+- [x] **E-14c Documentation:** `ARCHITECTURE.md` section 4.15 (Cursed Items — full data model, `removeFeature` guard pseudocode, `tryRemoveCursedItem` return table, UI contract for InventoryTab). `CHECKPOINTS.md` updated with 9 new cursed item verification items.
+
+**Total test count after Phase E-14: 812 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.
