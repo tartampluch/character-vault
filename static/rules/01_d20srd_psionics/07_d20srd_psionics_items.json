@@ -1,0 +1,1166 @@
+[
+  {
+    "id": "item_cognizance_crystal_1pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (1 PP)", "fr": "Cristal de clairvoyance (1 PP)" },
+    "description": {
+      "en": "A cognizance crystal stores 1 power point for use by a psionic character. It must be attuned (10 minutes of contact) before its stored points can be accessed. The owner can spend personal PP to replenish the crystal (1-for-1). Cannot draw from more than one PP source per manifestation.",
+      "fr": "Un cristal de clairvoyance stocke 1 point de pouvoir utilisable par un personnage psionique. Il doit être accordé (10 minutes de contact) avant que ses points stockés puissent être utilisés."
+    },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 1000,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "cognizance_crystal",
+      "maxPP": 1,
+      "storedPP": 1,
+      "attuned": false
+    }
+  },
+  {
+    "id": "item_cognizance_crystal_3pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (3 PP)", "fr": "Cristal de clairvoyance (3 PP)" },
+    "description": {
+      "en": "A cognizance crystal that stores up to 3 power points. Must be attuned before use. Rechargeable at 1 PP in = 1 PP stored.",
+      "fr": "Un cristal de clairvoyance stockant jusqu'à 3 points de pouvoir. Doit être accordé avant utilisation."
+    },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 4000,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "cognizance_crystal",
+      "maxPP": 3,
+      "storedPP": 3,
+      "attuned": false
+    }
+  },
+  {
+    "id": "item_cognizance_crystal_5pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (5 PP)", "fr": "Cristal de clairvoyance (5 PP)" },
+    "description": {
+      "en": "A cognizance crystal that stores up to 5 power points.",
+      "fr": "Un cristal de clairvoyance stockant jusqu'à 5 points de pouvoir."
+    },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 9000,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "cognizance_crystal",
+      "maxPP": 5,
+      "storedPP": 5,
+      "attuned": false
+    }
+  },
+  {
+    "id": "item_cognizance_crystal_7pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (7 PP)", "fr": "Cristal de clairvoyance (7 PP)" },
+    "description": {
+      "en": "A cognizance crystal that stores up to 7 power points.",
+      "fr": "Un cristal de clairvoyance stockant jusqu'à 7 points de pouvoir."
+    },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 16000,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "cognizance_crystal",
+      "maxPP": 7,
+      "storedPP": 7,
+      "attuned": false
+    }
+  },
+  {
+    "id": "item_cognizance_crystal_9pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (9 PP)", "fr": "Cristal de clairvoyance (9 PP)" },
+    "description": { "en": "A cognizance crystal that stores up to 9 power points.", "fr": "Un cristal de clairvoyance stockant jusqu'à 9 points de pouvoir." },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none", "weightLbs": 1, "costGp": 25000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "cognizance_crystal", "maxPP": 9, "storedPP": 9, "attuned": false }
+  },
+  {
+    "id": "item_cognizance_crystal_11pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (11 PP)", "fr": "Cristal de clairvoyance (11 PP)" },
+    "description": { "en": "A cognizance crystal that stores up to 11 power points.", "fr": "Un cristal de clairvoyance stockant jusqu'à 11 points de pouvoir." },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none", "weightLbs": 1, "costGp": 36000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "cognizance_crystal", "maxPP": 11, "storedPP": 11, "attuned": false }
+  },
+  {
+    "id": "item_cognizance_crystal_13pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (13 PP)", "fr": "Cristal de clairvoyance (13 PP)" },
+    "description": { "en": "A cognizance crystal that stores up to 13 power points.", "fr": "Un cristal de clairvoyance stockant jusqu'à 13 points de pouvoir." },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none", "weightLbs": 1, "costGp": 49000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "cognizance_crystal", "maxPP": 13, "storedPP": 13, "attuned": false }
+  },
+  {
+    "id": "item_cognizance_crystal_15pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (15 PP)", "fr": "Cristal de clairvoyance (15 PP)" },
+    "description": { "en": "A cognizance crystal that stores up to 15 power points.", "fr": "Un cristal de clairvoyance stockant jusqu'à 15 points de pouvoir." },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none", "weightLbs": 1, "costGp": 64000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "cognizance_crystal", "maxPP": 15, "storedPP": 15, "attuned": false }
+  },
+  {
+    "id": "item_cognizance_crystal_17pp",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cognizance Crystal (17 PP)", "fr": "Cristal de clairvoyance (17 PP)" },
+    "description": { "en": "A cognizance crystal that stores up to 17 power points (maximum).", "fr": "Un cristal de clairvoyance stockant jusqu'à 17 points de pouvoir (maximum)." },
+    "tags": ["item", "psionic_item", "cognizance_crystal"],
+    "equipmentSlot": "none", "weightLbs": 1, "costGp": 81000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "cognizance_crystal", "maxPP": 17, "storedPP": 17, "attuned": false }
+  },
+  {
+    "id": "item_dorje_1st_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (1st-level power)", "fr": "Dorje (pouvoir de 1er niveau)" },
+    "description": {
+      "en": "A slender crystal rod containing 50 charges of a 1st-level psionic power manifested at minimum manifester level 1. The specific power stored must be determined when the dorje is created. Activation: standard action, power-trigger. User must have the power on their class list. Cannot be augmented beyond the stored ML.",
+      "fr": "Un bâton cristallin effilé contenant 50 charges d'un pouvoir psionique de 1er niveau manifesté au niveau de manifestation minimum 1. L'utilisateur doit avoir le pouvoir sur sa liste de classe."
+    },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0.25,
+    "costGp": 750,
+    "hardness": 8,
+    "hpMax": 7,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "dorje",
+      "powerStored": "power_placeholder_1st_level",
+      "charges": 50,
+      "manifesterLevel": 1
+    }
+  },
+  {
+    "id": "item_dorje_2nd_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (2nd-level power)", "fr": "Dorje (pouvoir de 2ème niveau)" },
+    "description": {
+      "en": "A dorje containing 50 charges of a 2nd-level psionic power manifested at ML 3.",
+      "fr": "Un dorje contenant 50 charges d'un pouvoir psionique de 2ème niveau manifesté au NM 3."
+    },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 4500, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_2nd_level", "charges": 50, "manifesterLevel": 3 }
+  },
+  {
+    "id": "item_dorje_3rd_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (3rd-level power)", "fr": "Dorje (pouvoir de 3ème niveau)" },
+    "description": { "en": "A dorje containing 50 charges of a 3rd-level psionic power manifested at ML 5.", "fr": "Un dorje contenant 50 charges d'un pouvoir psionique de 3ème niveau manifesté au NM 5." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 11250, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_3rd_level", "charges": 50, "manifesterLevel": 5 }
+  },
+  {
+    "id": "item_dorje_4th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (4th-level power)", "fr": "Dorje (pouvoir de 4ème niveau)" },
+    "description": { "en": "A dorje containing 50 charges of a 4th-level psionic power manifested at ML 7.", "fr": "Un dorje contenant 50 charges d'un pouvoir psionique de 4ème niveau manifesté au NM 7." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 21000, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_4th_level", "charges": 50, "manifesterLevel": 7 }
+  },
+  {
+    "id": "item_dorje_5th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (5th-level power)", "fr": "Dorje (pouvoir de 5ème niveau)" },
+    "description": { "en": "A dorje containing 50 charges of a 5th-level psionic power manifested at ML 9.", "fr": "Un dorje contenant 50 charges d'un pouvoir psionique de 5ème niveau manifesté au NM 9." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 33750, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_5th_level", "charges": 50, "manifesterLevel": 9 }
+  },
+  {
+    "id": "item_dorje_6th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (6th-level power)", "fr": "Dorje (pouvoir de 6ème niveau)" },
+    "description": { "en": "A dorje containing 50 charges of a 6th-level power manifested at ML 11.", "fr": "Un dorje contenant 50 charges d'un pouvoir de 6ème niveau manifesté au NM 11." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 49500, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_6th_level", "charges": 50, "manifesterLevel": 11 }
+  },
+  {
+    "id": "item_dorje_7th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (7th-level power)", "fr": "Dorje (pouvoir de 7ème niveau)" },
+    "description": { "en": "A dorje with 50 charges of a 7th-level power at ML 13.", "fr": "Un dorje avec 50 charges d'un pouvoir de 7ème niveau au NM 13." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 68250, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_7th_level", "charges": 50, "manifesterLevel": 13 }
+  },
+  {
+    "id": "item_dorje_8th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (8th-level power)", "fr": "Dorje (pouvoir de 8ème niveau)" },
+    "description": { "en": "A dorje with 50 charges of an 8th-level power at ML 15.", "fr": "Un dorje avec 50 charges d'un pouvoir de 8ème niveau au NM 15." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 90000, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_8th_level", "charges": 50, "manifesterLevel": 15 }
+  },
+  {
+    "id": "item_dorje_9th_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dorje (9th-level power)", "fr": "Dorje (pouvoir de 9ème niveau)" },
+    "description": { "en": "A dorje with 50 charges of a 9th-level power at ML 17.", "fr": "Un dorje avec 50 charges d'un pouvoir de 9ème niveau au NM 17." },
+    "tags": ["item", "psionic_item", "dorje"],
+    "equipmentSlot": "main_hand", "weightLbs": 0.25, "costGp": 114750, "hardness": 8, "hpMax": 7,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": { "psionicItemType": "dorje", "powerStored": "power_placeholder_9th_level", "charges": 50, "manifesterLevel": 17 }
+  },
+  {
+    "id": "item_psionic_tattoo_1st_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Tattoo (1st-level power)", "fr": "Tatouage psionique (pouvoir de 1er niveau)" },
+    "description": {
+      "en": "A psionic tattoo containing a 1st-level power that affects the wearer. Activated by tapping (standard action, provokes AoO). Single-use — fades after activation. Maximum 20 tattoos; if a 21st is applied, all activate simultaneously. The specific power must be determined at creation.",
+      "fr": "Un tatouage psionique contenant un pouvoir de 1er niveau qui affecte son porteur. Activé en tapotant (action simple, provoque AoO). Usage unique — disparaît après l'activation. Maximum 20 tatouages."
+    },
+    "tags": ["item", "psionic_item", "psionic_tattoo"],
+    "equipmentSlot": "body",
+    "weightLbs": 0,
+    "costGp": 50,
+    "hardness": 0,
+    "hpMax": 1,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": { "isConsumable": true },
+    "psionicItemData": {
+      "psionicItemType": "psionic_tattoo",
+      "powerStored": "power_placeholder_1st_level",
+      "manifesterLevel": 1,
+      "activated": false
+    }
+  },
+  {
+    "id": "item_psionic_tattoo_2nd_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Tattoo (2nd-level power)", "fr": "Tatouage psionique (pouvoir de 2ème niveau)" },
+    "description": { "en": "A psionic tattoo containing a 2nd-level power.", "fr": "Un tatouage psionique contenant un pouvoir de 2ème niveau." },
+    "tags": ["item", "psionic_item", "psionic_tattoo"],
+    "equipmentSlot": "body", "weightLbs": 0, "costGp": 300,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "consumable": { "isConsumable": true },
+    "psionicItemData": { "psionicItemType": "psionic_tattoo", "powerStored": "power_placeholder_2nd_level", "manifesterLevel": 3, "activated": false }
+  },
+  {
+    "id": "item_psionic_tattoo_3rd_level",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Tattoo (3rd-level power)", "fr": "Tatouage psionique (pouvoir de 3ème niveau)" },
+    "description": { "en": "A psionic tattoo containing a 3rd-level power (maximum level for tattoos).", "fr": "Un tatouage psionique contenant un pouvoir de 3ème niveau (niveau maximum pour les tatouages)." },
+    "tags": ["item", "psionic_item", "psionic_tattoo"],
+    "equipmentSlot": "body", "weightLbs": 0, "costGp": 750,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "consumable": { "isConsumable": true },
+    "psionicItemData": { "psionicItemType": "psionic_tattoo", "powerStored": "power_placeholder_3rd_level", "manifesterLevel": 5, "activated": false }
+  },
+  {
+    "id": "item_psicrown_dominator",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Dominator", "fr": "Psicouronne du dominateur" },
+    "description": {
+      "en": "This metallic crown is decorated with mind-affecting crystals. It stores 450 PP and grants access to psionic charm, psionic dominate, and psionic suggestion. The wearer can augment these powers using the crown's PP pool, but cannot supplement with personal PP.",
+      "fr": "Cette couronne métallique est décorée de cristaux affectant l'esprit. Elle stocke 450 PP et donne accès à charme psionique, domination psionique et suggestion psionique."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head",
+    "weightLbs": 0.5,
+    "costGp": 20250,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 9,
+      "maxPP": 450,
+      "storedPP": 450,
+      "powersKnown": ["power_charm_person_psionic", "power_dominate_psionic", "power_psionic_suggestion"]
+    }
+  },
+  {
+    "id": "item_psicrown_evader",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Evader", "fr": "Psicouronne de l'esquiveur" },
+    "description": {
+      "en": "A psicrown granting 400 PP and psychoportation powers for mobility: catfall, hustle, psionic fly, psionic freedom of movement, and wall walker.",
+      "fr": "Une psicouronne accordant 400 PP et des pouvoirs de psychoportation pour la mobilité : chute de félin, hâte, vol psionique, liberté de mouvement psionique et marcheur des murs."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head",
+    "weightLbs": 0.5,
+    "costGp": 28500,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 8,
+      "maxPP": 400,
+      "storedPP": 400,
+      "powersKnown": ["power_catfall", "power_hustle", "power_fly_psionic", "power_freedom_of_movement_psionic", "power_wall_walker"]
+    }
+  },
+  {
+    "id": "item_psicrown_cautious_warrior",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Cautious Warrior", "fr": "Psicouronne du guerrier prudent" },
+    "description": {
+      "en": "A psicrown granting 450 PP and defensive psychometabolism powers: adapt body, body adjustment, defensive precognition, and inertial barrier.",
+      "fr": "Une psicouronne accordant 450 PP et des pouvoirs défensifs de psychométabolisme : adaptation du corps, réajustement corporel, précognition défensive et barrière inertielle."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 32063, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 9,
+      "maxPP": 450,
+      "storedPP": 450,
+      "powersKnown": ["power_adapt_body", "power_body_adjustment", "power_defensive_precognition", "power_inertial_barrier"]
+    }
+  },
+  {
+    "id": "item_psicrown_beast",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Beast", "fr": "Psicouronne de la bête" },
+    "description": {
+      "en": "A psicrown granting 450 PP and combat-focused psychometabolism powers: claw of energy, duodimensional claw, prevenom, psionic lion's charge, truevenom.",
+      "fr": "Une psicouronne accordant 450 PP et des pouvoirs de psychométabolisme axés sur le combat."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 33750, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 9,
+      "maxPP": 450,
+      "storedPP": 450,
+      "powersKnown": ["power_claw_of_energy", "power_duodimensional_claw", "power_prevenom", "power_psionic_lions_charge", "power_truevenom"]
+    }
+  },
+  {
+    "id": "item_psicrown_great_dominator",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Great Dominator", "fr": "Psicouronne du grand dominateur" },
+    "description": {
+      "en": "A superior dominator psicrown with 750 PP, allowing psionic charm, psionic suggestion, and psionic dominate at ML 15.",
+      "fr": "Une psicouronne de dominateur supérieure avec 750 PP, permettant charme psionique, suggestion psionique et domination psionique au NM 15."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 45000, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 15,
+      "maxPP": 750,
+      "storedPP": 750,
+      "powersKnown": ["power_charm_person_psionic", "power_psionic_suggestion", "power_dominate_psionic"]
+    }
+  },
+  {
+    "id": "item_psicrown_astral_legion",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Astral Legion", "fr": "Psicouronne de la légion astrale" },
+    "description": {
+      "en": "A powerful metacreativity psicrown with 900 PP at ML 18, focused entirely on astral construct manifestation.",
+      "fr": "Une puissante psicouronne de métacréativité avec 900 PP au NM 18, focalisée entièrement sur la manifestation de constructions astrales."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 47250, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 18,
+      "maxPP": 900,
+      "storedPP": 900,
+      "powersKnown": ["power_astral_construct"]
+    }
+  },
+  {
+    "id": "item_psicrown_discerning_watcher",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Discerning Watcher", "fr": "Psicouronne de l'observateur perspicace" },
+    "description": {
+      "en": "A clairsentience psicrown with 450 PP granting extraordinary sensory powers: aura sight, clairtangent hand, clairvoyant sense, psionic darkvision, remote viewing, psionic true seeing.",
+      "fr": "Une psicouronne de clairsentience avec 450 PP accordant des pouvoirs sensoriels extraordinaires."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 51469, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 9,
+      "maxPP": 450,
+      "storedPP": 450,
+      "powersKnown": ["power_aura_sight", "power_clairtangent_hand", "power_clairvoyant_sense", "power_psionic_darkvision", "power_remote_viewing", "power_true_seeing_psionic"]
+    }
+  },
+  {
+    "id": "item_psicrown_fiery_ruin",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of Fiery Ruin", "fr": "Psicouronne de la ruine ardente" },
+    "description": {
+      "en": "A destructive psychokinesis psicrown with 750 PP at ML 15: energy ball, energy cone, energy missile, energy stun, fiery discorporation.",
+      "fr": "Une psicouronne psychocinétique destructive avec 750 PP au NM 15."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 67500, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 15,
+      "maxPP": 750,
+      "storedPP": 750,
+      "powersKnown": ["power_energy_ball", "power_energy_cone", "power_energy_missile", "power_energy_stun", "power_fiery_discorporation"]
+    }
+  },
+  {
+    "id": "item_psicrown_traveler",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Traveler", "fr": "Psicouronne du voyageur" },
+    "description": {
+      "en": "A teleportation-focused psicrown with 750 PP at ML 15: astral traveler, psionic dimension door, psionic greater teleport, psionic teleport.",
+      "fr": "Une psicouronne axée sur la téléportation avec 750 PP au NM 15."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 80156, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 15,
+      "maxPP": 750,
+      "storedPP": 750,
+      "powersKnown": ["power_astral_traveler", "power_dimension_door_psionic", "power_psionic_greater_teleport", "power_psionic_teleport"]
+    }
+  },
+  {
+    "id": "item_psicrown_temporal_juggler",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Temporal Juggler", "fr": "Psicouronne du jongleur temporel" },
+    "description": {
+      "en": "A time-manipulation psicrown with 850 PP at ML 17: temporal acceleration, time hop, timeless body.",
+      "fr": "Une psicouronne de manipulation temporelle avec 850 PP au NM 17."
+    },
+    "tags": ["item", "psionic_item", "psicrown"],
+    "equipmentSlot": "head", "weightLbs": 0.5, "costGp": 95625, "hardness": 8, "hpMax": 10,
+    "grantedModifiers": [], "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 17,
+      "maxPP": 850,
+      "storedPP": 850,
+      "powersKnown": ["power_temporal_acceleration", "power_time_hop", "power_timeless_body"]
+    }
+  },
+  {
+    "id": "item_boots_of_stomping",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Boots of Stomping", "fr": "Bottes de piétinement" },
+    "description": {
+      "en": "These thick-soled boots allow the wearer to stomp the ground with great force. Three times per day, as a standard action, the wearer can use the stomp power (Reflex DC 13 or targets in a 5-foot cone are knocked prone and take 1d4 nonlethal damage).",
+      "fr": "Ces bottes à semelle épaisse permettent au porteur de frapper le sol avec force. Trois fois par jour, par une action simple, le porteur peut utiliser le pouvoir de piétinement (Réflexes DD 13 ou les cibles dans un cône de 1,5m tombent à plat ventre)."
+    },
+    "tags": ["item", "psionic_item", "boots"],
+    "equipmentSlot": "feet",
+    "weightLbs": 1,
+    "costGp": 600,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "stomping_uses",
+        "label": { "en": "Stomping (3/day)", "fr": "Piétinement (3/jour)" },
+        "maxPipelineId": "combatStats.stomping_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_boots_of_landing",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Boots of Landing", "fr": "Bottes d'atterrissage" },
+    "description": {
+      "en": "These boots ensure the wearer always lands on their feet and reduce fall damage. The wearer always lands on their feet (as catfall) and once per day can reduce fall damage by 2 dice as an immediate action.",
+      "fr": "Ces bottes garantissent que le porteur atterrit toujours sur ses pieds. Une fois par jour, le porteur peut réduire les dégâts de chute de 2 dés."
+    },
+    "tags": ["item", "psionic_item", "boots"],
+    "equipmentSlot": "feet",
+    "weightLbs": 1,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_boots_of_skating",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Boots of Skating", "fr": "Bottes de patin" },
+    "description": {
+      "en": "These boots grant the skate power at will, allowing the wearer to move across level surfaces at twice normal speed without any risk of slipping.",
+      "fr": "Ces bottes accordent le pouvoir du patin à volonté, permettant au porteur de se déplacer sur des surfaces planes à deux fois la vitesse normale sans risque de glisser."
+    },
+    "tags": ["item", "psionic_item", "boots"],
+    "equipmentSlot": "feet",
+    "weightLbs": 1,
+    "costGp": 7000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_boots_of_temporal_acceleration",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Boots of Temporal Acceleration", "fr": "Bottes d'accélération temporelle" },
+    "description": {
+      "en": "These ornate boots grant the wearer the temporal acceleration power once per day for 2 rounds, allowing them to act in fast-time while the world appears frozen.",
+      "fr": "Ces bottes ornées accordent au porteur le pouvoir d'accélération temporelle une fois par jour pendant 2 rounds."
+    },
+    "tags": ["item", "psionic_item", "boots"],
+    "equipmentSlot": "feet",
+    "weightLbs": 1,
+    "costGp": 43200,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "temporal_accel_uses",
+        "label": { "en": "Temporal Acceleration (1/day)", "fr": "Accélération temporelle (1/jour)" },
+        "maxPipelineId": "combatStats.temporal_accel_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_crystal_mask_knowledge",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Crystal Mask of Knowledge", "fr": "Masque cristallin de la connaissance" },
+    "description": {
+      "en": "This crystal mask fits over the eyes and provides a +5 competence bonus on one Knowledge skill checks. The specific Knowledge skill is determined when the mask is created.",
+      "fr": "Ce masque cristallin se porte sur les yeux et donne un bonus de compétence de +5 aux tests d'une compétence de Connaissance."
+    },
+    "tags": ["item", "psionic_item", "crystal_mask"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0.5,
+    "costGp": 2500,
+    "grantedModifiers": [
+      {
+        "id": "crystal_mask_knowledge_bonus",
+        "sourceId": "item_crystal_mask_knowledge",
+        "sourceName": { "en": "Crystal Mask of Knowledge", "fr": "Masque cristallin de la connaissance" },
+        "targetId": "skills.skill_knowledge_psionics",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_crystal_mask_languages",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Crystal Mask of Languages", "fr": "Masque cristallin des langues" },
+    "description": {
+      "en": "This crystal mask allows the wearer to speak and write five different languages (determined when the mask is created).",
+      "fr": "Ce masque cristallin permet au porteur de parler et d'écrire cinq langues différentes (déterminées lors de la création du masque)."
+    },
+    "tags": ["item", "psionic_item", "crystal_mask"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0.5,
+    "costGp": 2500,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_crystal_mask_mindarmor",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Crystal Mask of Mindarmor", "fr": "Masque cristallin de l'armure mentale" },
+    "description": {
+      "en": "This crystal mask provides a +4 insight bonus on all Will saving throws against mind-affecting and compulsion effects.",
+      "fr": "Ce masque cristallin donne un bonus de perspicacité de +4 à tous les jets de sauvegarde de Volonté contre les effets affectant l'esprit et les contraintes."
+    },
+    "tags": ["item", "psionic_item", "crystal_mask"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0.5,
+    "costGp": 10667,
+    "grantedModifiers": [
+      {
+        "id": "crystal_mask_mindarmor_will",
+        "sourceId": "item_crystal_mask_mindarmor",
+        "sourceName": { "en": "Crystal Mask of Mindarmor", "fr": "Masque cristallin de l'armure mentale" },
+        "targetId": "saves.will",
+        "value": 4,
+        "type": "insight",
+        "situationalContext": "vs_mind_affecting_and_compulsion"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_eyes_of_expanded_vision",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Eyes of Expanded Vision", "fr": "Yeux de vision élargie" },
+    "description": {
+      "en": "These glassy crystal lenses cause flanking opponents to gain only a +1 bonus on attacks (instead of the normal +2) but also grant the wearer a −2 penalty against gaze attacks. Provides a +1 enhancement bonus on Spot checks.",
+      "fr": "Ces lentilles cristallines font que les adversaires prenant en tenaille n'obtiennent qu'un bonus de +1 aux attaques (au lieu de +2 normal), mais donnent aussi au porteur un malus de −2 contre les attaques de regard."
+    },
+    "tags": ["item", "psionic_item", "eyes"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0,
+    "costGp": 3000,
+    "grantedModifiers": [
+      {
+        "id": "eyes_expanded_vision_spot",
+        "sourceId": "item_eyes_of_expanded_vision",
+        "sourceName": { "en": "Eyes of Expanded Vision", "fr": "Yeux de vision élargie" },
+        "targetId": "skills.skill_spot",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_gloves_of_object_reading",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Gloves of Object Reading", "fr": "Gants de lecture d'objets" },
+    "description": {
+      "en": "These thin gloves provide the continuous ability to use the object reading power on any item handled. The visions come automatically when the gloves are worn and an item is handled.",
+      "fr": "Ces gants fins donne la capacité continue d'utiliser le pouvoir de lecture d'objet sur tout objet manipulé."
+    },
+    "tags": ["item", "psionic_item", "gloves"],
+    "equipmentSlot": "hands",
+    "weightLbs": 0,
+    "costGp": 3000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_gloves_of_titans_grip",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Gloves of Titan's Grip", "fr": "Gants de la poigne du titan" },
+    "description": {
+      "en": "These gloves enhance grappling ability. Three times per day, the wearer can activate them (free action) to gain a +8 enhancement bonus on grapple checks for 7 rounds.",
+      "fr": "Ces gants améliorent les capacités de lutte. Trois fois par jour, le porteur peut les activer (action gratuite) pour recevoir un bonus d'altération de +8 aux tests de lutte pendant 7 rounds."
+    },
+    "tags": ["item", "psionic_item", "gloves"],
+    "equipmentSlot": "hands",
+    "weightLbs": 0,
+    "costGp": 14000,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "titans_grip_uses",
+        "label": { "en": "Titan's Grip (3/day)", "fr": "Poigne du titan (3/jour)" },
+        "maxPipelineId": "combatStats.titans_grip_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_ring_of_self_sufficiency",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Ring of Self-Sufficiency", "fr": "Anneau d'autosuffisance" },
+    "description": {
+      "en": "This crystalline ring confers a +10 competence bonus on Autohypnosis checks, helping the wearer master their own mind and body reactions.",
+      "fr": "Cet anneau cristallin confère un bonus de compétence de +10 aux tests d'Autohypnose, aidant le porteur à maîtriser ses propres réactions mentales et corporelles."
+    },
+    "tags": ["item", "psionic_item", "ring"],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "grantedModifiers": [
+      {
+        "id": "ring_self_suf_autohypnosis",
+        "sourceId": "item_ring_of_self_sufficiency",
+        "sourceName": { "en": "Ring of Self-Sufficiency", "fr": "Anneau d'autosuffisance" },
+        "targetId": "skills.skill_autohypnosis",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_torc_of_free_will",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Torc of Free Will", "fr": "Torque de la libre volonté" },
+    "description": {
+      "en": "This metallic torc (worn around neck or upper arm) makes the wearer immune to brain lock and crystal anchor effects.",
+      "fr": "Ce torque métallique (porté autour du cou ou du haut du bras) rend le porteur immunisé contre les effets de blocage cérébral et d'ancre cristalline."
+    },
+    "tags": ["item", "psionic_item", "torc", "neck"],
+    "equipmentSlot": "neck",
+    "weightLbs": 2,
+    "costGp": 6000,
+    "grantedModifiers": [],
+    "grantedFeatures": ["trait_immunity_brain_lock", "trait_immunity_crystal_anchor"]
+  },
+  {
+    "id": "item_torc_of_power_preservation",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Torc of Power Preservation", "fr": "Torque de préservation des pouvoirs" },
+    "description": {
+      "en": "This ornate torc allows the wearer to manifest all known powers at 1 power point less than normal (minimum 1 PP). This reduction applies to the base cost only, not to augmentation.",
+      "fr": "Ce torque orné permet au porteur de manifester tous les pouvoirs connus avec 1 point de pouvoir de moins que normalement (minimum 1 PP). Cette réduction s'applique uniquement au coût de base."
+    },
+    "tags": ["item", "psionic_item", "torc", "neck"],
+    "equipmentSlot": "neck",
+    "weightLbs": 2,
+    "costGp": 36000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_third_eye_aware",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Third Eye Aware", "fr": "Troisième œil de la vigilance" },
+    "description": {
+      "en": "This crystalline adornment affixes to the wearer's forehead and grants a +10 competence bonus on all Spot checks.",
+      "fr": "Cette décoration cristalline s'attache au front du porteur et accorde un bonus de compétence de +10 à tous les tests d'Observation."
+    },
+    "tags": ["item", "psionic_item", "third_eye"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "grantedModifiers": [
+      {
+        "id": "third_eye_aware_spot",
+        "sourceId": "item_third_eye_aware",
+        "sourceName": { "en": "Third Eye Aware", "fr": "Troisième œil de la vigilance" },
+        "targetId": "skills.skill_spot",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_third_eye_dominate",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Third Eye Dominate", "fr": "Troisième œil de la domination" },
+    "description": {
+      "en": "This powerful third eye allows the wearer to dominate any creature, regardless of type, once per day (DC 18 Will negates).",
+      "fr": "Ce puissant troisième œil permet au porteur de dominer n'importe quelle créature, quel que soit son type, une fois par jour (Volonté DD 18 pour annuler)."
+    },
+    "tags": ["item", "psionic_item", "third_eye"],
+    "equipmentSlot": "eyes",
+    "weightLbs": 0,
+    "costGp": 120000,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "dominate_uses",
+        "label": { "en": "Dominate (1/day)", "fr": "Domination (1/jour)" },
+        "maxPipelineId": "combatStats.dominate_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_amulet_of_catapsi",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Amulet of Catapsi", "fr": "Amulette de catapsie" },
+    "description": {
+      "en": "This amulet allows the wearer to generate a field of disruptive psionic static once per day. Catapsi affect all manifesters within 30 ft for 9 rounds (DC 17 Will or power point cost increase by +4 pp).",
+      "fr": "Cette amulette permet au porteur de générer un champ de statique psionique perturbatrice une fois par jour. Catapsi affecte tous les manifestateurs dans un rayon de 9m pendant 9 rounds (Volonté DD 17 ou coût en PP augmenté de +4 PP)."
+    },
+    "tags": ["item", "psionic_item", "amulet", "neck"],
+    "equipmentSlot": "neck",
+    "weightLbs": 0,
+    "costGp": 16200,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "catapsi_uses",
+        "label": { "en": "Catapsi (1/day)", "fr": "Catapsi (1/jour)" },
+        "maxPipelineId": "combatStats.catapsi_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_psionic_restraints_damping",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Restraints, Damping", "fr": "Entraves psioniques, amortissement" },
+    "description": {
+      "en": "These iron cuffs completely block the use of psionics by the wearer. While worn, the wearer cannot spend any power points or use any psionic ability. Open Lock DC 27 to remove. ML 16.",
+      "fr": "Ces menottes en fer bloquent complètement l'utilisation de la psionique par le porteur. Tant qu'elles sont portées, le porteur ne peut dépenser aucun point de pouvoir ni utiliser aucune capacité psionique."
+    },
+    "tags": ["item", "psionic_item", "restraints"],
+    "equipmentSlot": "hands",
+    "weightLbs": 1,
+    "costGp": 24000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_psychoactive_skin_chameleon",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psychoactive Skin of the Chameleon", "fr": "Peau psychoactive du caméléon" },
+    "description": {
+      "en": "This skin-tight body covering provides a +10 enhancement bonus on Hide checks. The wearer can blend into surroundings with remarkable effectiveness. Only the outermost of up to 3 worn skins is active at a time.",
+      "fr": "Ce vêtement moulant donne un bonus d'altération de +10 aux tests de Discrétion. Seule la peau la plus extérieure (jusqu'à 3 peuvent être portées) est active à la fois."
+    },
+    "tags": ["item", "psionic_item", "psychoactive_skin"],
+    "equipmentSlot": "body",
+    "weightLbs": 2,
+    "costGp": 18000,
+    "grantedModifiers": [
+      {
+        "id": "skin_chameleon_hide",
+        "sourceId": "item_psychoactive_skin_chameleon",
+        "sourceName": { "en": "Skin of the Chameleon", "fr": "Peau du caméléon" },
+        "targetId": "skills.skill_hide",
+        "value": 10,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_psychoactive_skin_defender",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psychoactive Skin of the Defender", "fr": "Peau psychoactive du défenseur" },
+    "description": {
+      "en": "This skin provides a +4 natural armor bonus to Armor Class, hardening the wearer's skin with psionic energy.",
+      "fr": "Cette peau fournit un bonus d'armure naturelle de +4 à la Classe d'armure, renforçant la peau du porteur avec de l'énergie psionique."
+    },
+    "tags": ["item", "psionic_item", "psychoactive_skin"],
+    "equipmentSlot": "body",
+    "weightLbs": 2,
+    "costGp": 32000,
+    "grantedModifiers": [
+      {
+        "id": "skin_defender_nat_armor",
+        "sourceId": "item_psychoactive_skin_defender",
+        "sourceName": { "en": "Skin of the Defender", "fr": "Peau du défenseur" },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "natural_armor"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_psychoactive_skin_psion",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psychoactive Skin of the Psion", "fr": "Peau psychoactive du psion" },
+    "description": {
+      "en": "This skin is tailored specifically for psionic characters. It grants +7 bonus power points per day and power resistance 21.",
+      "fr": "Cette peau est conçue spécifiquement pour les personnages psioniques. Elle accorde +7 points de pouvoir bonus par jour et une résistance aux pouvoirs 21."
+    },
+    "tags": ["item", "psionic_item", "psychoactive_skin"],
+    "equipmentSlot": "body",
+    "weightLbs": 2,
+    "costGp": 151000,
+    "grantedModifiers": [
+      {
+        "id": "skin_psion_pp",
+        "sourceId": "item_psychoactive_skin_psion",
+        "sourceName": { "en": "Skin of the Psion", "fr": "Peau du psion" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 7,
+        "type": "enhancement"
+      },
+      {
+        "id": "skin_psion_pr",
+        "sourceId": "item_psychoactive_skin_psion",
+        "sourceName": { "en": "Skin of the Psion", "fr": "Peau du psion" },
+        "targetId": "combatStats.spell_resistance",
+        "value": 21,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_clairsentience",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Clairsentience", "fr": "Psionatrix de clairsentience" },
+    "description": {
+      "en": "This amulet-like item adds +1 to the save DC of all clairsentience powers manifested by the wearer.",
+      "fr": "Cet objet semblable à une amulette ajoute +1 au DD de sauvegarde de tous les pouvoirs de clairsentience manifestés par le porteur."
+    },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck",
+    "weightLbs": 0,
+    "costGp": 8000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_metacreativity",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Metacreativity", "fr": "Psionatrix de métacréativité" },
+    "description": { "en": "Adds +1 to save DC of all metacreativity powers.", "fr": "Ajoute +1 au DD de sauvegarde de tous les pouvoirs de métacréativité." },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck", "weightLbs": 0, "costGp": 8000,
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_psychokinesis",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Psychokinesis", "fr": "Psionatrix de psychocinèse" },
+    "description": { "en": "Adds +1 to save DC of all psychokinesis powers.", "fr": "Ajoute +1 au DD de sauvegarde de tous les pouvoirs de psychocinèse." },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck", "weightLbs": 0, "costGp": 8000,
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_psychometabolism",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Psychometabolism", "fr": "Psionatrix de psychométabolisme" },
+    "description": { "en": "Adds +1 to save DC of all psychometabolism powers.", "fr": "Ajoute +1 au DD de sauvegarde de tous les pouvoirs de psychométabolisme." },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck", "weightLbs": 0, "costGp": 8000,
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_psychoportation",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Psychoportation", "fr": "Psionatrix de psychoportation" },
+    "description": { "en": "Adds +1 to save DC of all psychoportation powers.", "fr": "Ajoute +1 au DD de sauvegarde de tous les pouvoirs de psychoportation." },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck", "weightLbs": 0, "costGp": 8000,
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "item_psionatrix_telepathy",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionatrix of Telepathy", "fr": "Psionatrix de télépathie" },
+    "description": { "en": "Adds +1 to save DC of all telepathy powers.", "fr": "Ajoute +1 au DD de sauvegarde de tous les pouvoirs de télépathie." },
+    "tags": ["item", "psionic_item", "psionatrix", "neck"],
+    "equipmentSlot": "neck", "weightLbs": 0, "costGp": 8000,
+    "grantedModifiers": [], "grantedFeatures": []
+  },
+  {
+    "id": "item_special_material_deep_crystal",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Deep Crystal (weapon)", "fr": "Cristal des profondeurs (arme)" },
+    "description": {
+      "en": "Deep crystal is a psionic material that replaces metal in weapons. For druids, it counts as metal for the prohibition on metal. Weapons made of deep crystal are similar to masterwork weapons but carry an important psionic property: a wielder who is psionically focused can pay 2 power points (free action) to cause the weapon to deal +2d6 points of damage for 1 minute. The weapon retains this potency even if the wielder becomes unfocused.",
+      "fr": "Le cristal des profondeurs est un matériau psionique remplaçant le métal dans les armes. Un manieur qui est concentré psioniquement peut payer 2 points de pouvoir (action gratuite) pour que l'arme inflige +2d6 points de dégâts pendant 1 minute."
+    },
+    "tags": ["item", "special_material", "special_material_deep_crystal", "psionic"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "hardness": 10,
+    "hpMax": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_special_material_mundane_crystal",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Mundane Crystal (weapon/armor)", "fr": "Cristal ordinaire (arme/armure)" },
+    "description": {
+      "en": "An ordinary crystal suitable for crafting weapons and armor. Lighter than metal but otherwise same stats as masterwork steel. Can be used instead of metal, satisfying druid prohibitions. Hardness 8, HP 25/inch. Cost same as masterwork steel equivalent.",
+      "fr": "Un cristal ordinaire utilisable pour fabriquer des armes et des armures. Plus léger que le métal mais sinon identiques aux équivalents en acier de maître. Pas de restriction pour les druides. Solidité 8, PV 25/pouce."
+    },
+    "tags": ["item", "special_material", "special_material_mundane_crystal"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "hardness": 8,
+    "hpMax": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_artifact_sutra_of_tranquil_thought",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Sutra of Tranquil Thought", "fr": "Soutra de la pensée sereine" },
+    "description": {
+      "en": "A minor psionic artifact. Any nongood or nonneutral psionic character who reads this tome loses 5d6 × 1,000 XP. A good or neutral psionic character who reads it gains 17 bonus power points permanently plus experience equal to half a level. The book vanishes once read, transported to the Astral Plane.",
+      "fr": "Un artefact psionique mineur. Tout personnage psionique non bon ou non neutre qui lit ce tome perd 5d6 × 1 000 PX. Un personnage psionique bon ou neutre qui le lit gagne 17 points de pouvoir bonus permanents plus de l'expérience équivalente à la moitié d'un niveau. Le livre disparaît une fois lu, transporté sur le Plan Astral."
+    },
+    "tags": ["item", "psionic_item", "artifact", "minor_artifact"],
+    "equipmentSlot": "none",
+    "weightLbs": 3,
+    "costGp": 0,
+    "isUnique": true,
+    "artifactTier": "minor",
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_artifact_annulus",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Annulus", "fr": "Annulus" },
+    "description": {
+      "en": "A major psionic artifact — a small ring of dark metal that radiates nullifying psionics. Continuous: catapsi 100-ft radius. 3 times/day: target all within 50 ft with dimensional anchor (psionic). 1/day: ultrablast (DC 18 Will or stunned 1d4 hours; 1d3 + 9 damage). +4 bonus on saves vs ability damage. Once per year: can be used to completely nullify any psionic target (destroys annulus if used on demigod+ or another artifact).",
+      "fr": "Un artefact psionique majeur — un petit anneau de métal sombre qui rayonne de la psionique nullificatrice. Continu : catapsi dans un rayon de 30m. Le bris de l'annulus génère une ultraexplosion."
+    },
+    "tags": ["item", "psionic_item", "artifact", "major_artifact"],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "isUnique": true,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_artifact_psicrown_of_crystal_mind",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrown of the Crystal Mind", "fr": "Psicouronne de l'esprit cristallin" },
+    "description": {
+      "en": "This legendary major artifact psicrown holds 1,000 power points (recharges 1 PP/day) and can manifest 17 powers at ML 20. It also grants power resistance = 10 + manifester level. Once per lifetime, discharging all PP as AoE damage (half PP × 2 as HP in a 20-ft radius, Reflex DC 18 half) is possible.",
+      "fr": "Cette légendaire psicouronne artefactielle majeure contient 1 000 points de pouvoir (se recharge de 1 PP/jour) et peut manifester 17 pouvoirs au NM 20. Elle accorde aussi une résistance aux pouvoirs = 10 + niveau de manifestation."
+    },
+    "tags": ["item", "psionic_item", "artifact", "major_artifact", "psicrown"],
+    "equipmentSlot": "head",
+    "weightLbs": 0.5,
+    "costGp": 0,
+    "isUnique": true,
+    "artifactTier": "major",
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "psionicItemData": {
+      "psionicItemType": "psicrown",
+      "manifesterLevel": 20,
+      "maxPP": 1000,
+      "storedPP": 1000,
+      "powersKnown": [
+        "power_burst", "power_catfall", "power_concealing_amorpha_greater",
+        "power_concussion_blast", "power_psionic_daze", "power_detect_psionics",
+        "power_dominate_psionic", "power_far_hand", "power_float",
+        "power_mindlink", "power_inertial_barrier", "power_telekinetic_force",
+        "power_telekinetic_maneuver", "power_telekinetic_thrust",
+        "power_psionic_teleport", "power_thicken_skin", "power_true_metabolism"
+      ]
+    }
+  },
+  {
+    "id": "item_reverse_capacitor",
+    "category": "item",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Reverse Capacitor", "fr": "Condensateur inversé" },
+    "description": {
+      "en": "This item appears to be a cognizance crystal (50% chance of false identification). However, when mentally attuned or used to draw power points, it instead drains 1d6 power points per round for 7 rounds. It may be dropped to end this effect (if dropped more than 40 ft from the user, it stops). Cannot be identified without magical means. Requires remove curse, limited wish, wish, or miracle to remove once attuned.",
+      "fr": "Cet objet semble être un cristal de clairvoyance (50% de chances de fausse identification). Cependant, lorsqu'il est accordé mentalement ou utilisé pour extraire des points de pouvoir, il draine plutôt 1d6 points de pouvoir par round pendant 7 rounds."
+    },
+    "tags": ["item", "psionic_item", "cognizance_crystal", "cursed"],
+    "equipmentSlot": "none",
+    "weightLbs": 1,
+    "costGp": 112000,
+    "hardness": 8,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "removalPrevention": {
+      "isCursed": true,
+      "removableBy": ["remove_curse", "limited_wish", "wish", "miracle"],
+      "preventionNote": "Appears as a cognizance crystal; drains 1d6 PP/round for 7 rounds when used. Remove curse or stronger magic required to break the bond."
+    }
+  }
+]

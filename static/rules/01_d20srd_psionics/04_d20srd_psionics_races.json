@@ -1,0 +1,441 @@
+[
+  {
+    "id": "race_dromite",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Dromite", "fr": "Dromite" },
+    "description": {
+      "en": "Dromites are Small, insectoid monstrous humanoids with a hive-like society and innate psionic ability. They are hardened by chitin almost like an exoskeleton, have antennae granting scent and Blind-Fight, and compound eyes for exceptional spotting ability. Each dromite belongs to one of four castes based on their energy resistance.",
+      "fr": "Les dromites sont de petites créatures insectoïdes monstrueuses humanoides ayant une société de type ruche et des capacités psioniques innées. Ils sont dotés d'une chitine quasi exosquelettique, d'antennes accordant l'odorat et Frapper dans le noir, et d'yeux composés pour une capacité d'observation exceptionnelle."
+    },
+    "tags": ["race", "monstrous_humanoid", "size_small", "race_dromite", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "dromite_cha_bonus",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Dromite", "fr": "Dromite" },
+        "targetId": "attributes.stat_cha",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "dromite_str_penalty",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Dromite", "fr": "Dromite" },
+        "targetId": "attributes.stat_str",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "dromite_wis_penalty",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Dromite", "fr": "Dromite" },
+        "targetId": "attributes.stat_wis",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "dromite_size_ac",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Small Size", "fr": "Petite taille" },
+        "targetId": "combatStats.ac_normal",
+        "value": 1,
+        "type": "size"
+      },
+      {
+        "id": "dromite_size_attack",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Small Size", "fr": "Petite taille" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "size"
+      },
+      {
+        "id": "dromite_size_hide",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Small Size", "fr": "Petite taille" },
+        "targetId": "skills.skill_hide",
+        "value": 4,
+        "type": "size"
+      },
+      {
+        "id": "dromite_speed",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Dromite Speed", "fr": "Vitesse dromite" },
+        "targetId": "attributes.speed_land",
+        "value": 20,
+        "type": "base"
+      },
+      {
+        "id": "dromite_natural_armor",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Chitin (Natural Armor)", "fr": "Chitine (armure naturelle)" },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "natural_armor"
+      },
+      {
+        "id": "dromite_bonus_pp",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "dromite_spot_bonus",
+        "sourceId": "race_dromite",
+        "sourceName": { "en": "Compound Eyes", "fr": "Yeux composés" },
+        "targetId": "skills.skill_spot",
+        "value": 2,
+        "type": "racial"
+      }
+    ],
+    "grantedFeatures": [
+      "feat_blind_fight",
+      "sense_scent",
+      "psi_like_energy_ray",
+      "language_common"
+    ],
+    "choices": [
+      {
+        "choiceId": "chitin_energy_type",
+        "label": { "en": "Chitin Energy Resistance Type", "fr": "Type de résistance énergétique de la chitine" },
+        "optionsQuery": "tag:dromite_energy_type",
+        "maxSelections": 1
+      }
+    ]
+  },
+  {
+    "id": "race_duergar",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Duergar (Gray Dwarf)", "fr": "Duergar (Nain gris)" },
+    "description": {
+      "en": "Duergar are medium-sized humanoids related to dwarves but dwelling deep underground. They are harsh and unpleasant beings with a psionic heritage. They are resistant to magic, immune to paralysis and poison, and can become invisible or expand in size at will.",
+      "fr": "Les duergars sont des humanoïdes de taille Moyenne apparentés aux nains mais habitant au plus profond des souterrains. Ils résistent à la magie, sont immunisés contre la paralysie et le poison, et peuvent devenir invisibles ou s'agrandir à volonté."
+    },
+    "tags": ["race", "humanoid", "size_medium", "race_duergar", "psionic", "dwarf_subtype"],
+    "grantedModifiers": [
+      {
+        "id": "duergar_con_bonus",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar", "fr": "Duergar" },
+        "targetId": "attributes.stat_con",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_cha_penalty",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar", "fr": "Duergar" },
+        "targetId": "attributes.stat_cha",
+        "value": -4,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_speed",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar Speed", "fr": "Vitesse duergar" },
+        "targetId": "attributes.speed_land",
+        "value": 20,
+        "type": "base"
+      },
+      {
+        "id": "duergar_bonus_pp",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 3,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_save_spells",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Psionic Heritage vs Magic", "fr": "Héritage psionique contre magie" },
+        "targetId": "saves.fort",
+        "value": 2,
+        "type": "racial",
+        "situationalContext": "vs_spells_and_spell_like_effects"
+      },
+      {
+        "id": "duergar_stability_bull_rush",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Stability", "fr": "Stabilité" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "racial",
+        "situationalContext": "vs_bull_rush_or_trip"
+      },
+      {
+        "id": "duergar_attack_orcs",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Hatred", "fr": "Haine" },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "racial",
+        "situationalContext": "vs_orcs_and_goblinoids"
+      },
+      {
+        "id": "duergar_dodge_giants",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Defensive Training", "fr": "Entraînement défensif" },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "dodge",
+        "situationalContext": "vs_giant_type"
+      },
+      {
+        "id": "duergar_move_silently",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar Stealth", "fr": "Furtivité duergar" },
+        "targetId": "skills.skill_move_silently",
+        "value": 4,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_listen",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar Senses", "fr": "Sens duergar" },
+        "targetId": "skills.skill_listen",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_spot",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Duergar Senses", "fr": "Sens duergar" },
+        "targetId": "skills.skill_spot",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "duergar_search_stone",
+        "sourceId": "race_duergar",
+        "sourceName": { "en": "Stonecunning", "fr": "Instinct de la roche" },
+        "targetId": "skills.skill_search",
+        "value": 2,
+        "type": "racial",
+        "situationalContext": "vs_unusual_stonework"
+      }
+    ],
+    "grantedFeatures": [
+      "sense_darkvision_120",
+      "trait_immunity_paralysis",
+      "trait_immunity_poison",
+      "trait_immunity_phantasms",
+      "psi_like_expansion_1_per_day",
+      "psi_like_invisibility_1_per_day",
+      "trait_light_sensitivity",
+      "language_common",
+      "language_dwarven",
+      "language_undercommon"
+    ]
+  },
+  {
+    "id": "race_elan",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Elan", "fr": "Élan" },
+    "description": {
+      "en": "Elans are aberrations that look exactly like humans. They are former humans who were transformed into a new type of being through a secret psionic process performed by existing elans. Unlike most aberrations, elans do not have darkvision. Their unique psionic nature gives them the ability to spend power points for defensive effects: resistance to attacks, damage reduction, and sustenance.",
+      "fr": "Les élans sont des aberrations qui ressemblent exactement à des humains. Ce sont d'anciens humains transformés en un nouveau type d'être par un processus psionique secret. Leur nature psionique unique leur permet de dépenser des points de pouvoir pour des effets défensifs : résistance aux attaques, réduction des dégâts et sustentation."
+    },
+    "tags": ["race", "aberration", "size_medium", "race_elan", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "elan_cha_penalty",
+        "sourceId": "race_elan",
+        "sourceName": { "en": "Elan", "fr": "Élan" },
+        "targetId": "attributes.stat_cha",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "elan_speed",
+        "sourceId": "race_elan",
+        "sourceName": { "en": "Elan Speed", "fr": "Vitesse élan" },
+        "targetId": "attributes.speed_land",
+        "value": 30,
+        "type": "base"
+      },
+      {
+        "id": "elan_bonus_pp",
+        "sourceId": "race_elan",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 2,
+        "type": "racial"
+      }
+    ],
+    "grantedFeatures": [
+      "race_feature_elan_resistance",
+      "race_feature_elan_resilience",
+      "race_feature_elan_repletion",
+      "language_common"
+    ]
+  },
+  {
+    "id": "race_half_giant",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Half-Giant", "fr": "Demi-géant" },
+    "description": {
+      "en": "Half-giants are the product of giant and humanoid heritage. Despite their Large-sized appearance suggesting themselves as Medium-sized creatures, they can function in many ways as one size category larger. They are fire acclimated, have low-light vision, and possess a psionic heritage.",
+      "fr": "Les demi-géants sont le produit d'un héritage géant et humanoïde. Malgré leur apparence suggestive de grande taille, ils fonctionnent comme une créature de taille Moyenne mais peuvent agir dans bien des cas comme s'ils étaient d'une catégorie de taille supérieure."
+    },
+    "tags": ["race", "giant", "size_medium", "race_half_giant", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "half_giant_str_bonus",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
+        "targetId": "attributes.stat_str",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "half_giant_con_bonus",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
+        "targetId": "attributes.stat_con",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "half_giant_dex_penalty",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
+        "targetId": "attributes.stat_dex",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "half_giant_speed",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Half-Giant Speed", "fr": "Vitesse demi-géant" },
+        "targetId": "attributes.speed_land",
+        "value": 30,
+        "type": "base"
+      },
+      {
+        "id": "half_giant_bonus_pp",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "half_giant_fire_save",
+        "sourceId": "race_half_giant",
+        "sourceName": { "en": "Fire Acclimated", "fr": "Acclimaté au feu" },
+        "targetId": "saves.fort",
+        "value": 2,
+        "type": "racial",
+        "situationalContext": "vs_fire_spells_and_effects"
+      }
+    ],
+    "grantedFeatures": [
+      "sense_low_light_vision",
+      "race_feature_half_giant_powerful_build",
+      "psi_like_stomp_1_per_day",
+      "language_common"
+    ]
+  },
+  {
+    "id": "race_maenad",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Maenad", "fr": "Ménade" },
+    "description": {
+      "en": "Maenads are a race of Medium humanoids with no ability score modifiers. They are characterized by intense waves of emotion alternating with periods of detached calm, and have a natural affinity for psionics. Maenads have a psi-like ability to release a burst of sonic energy, and can subject their mentality to gain brief bursts of physical strength.",
+      "fr": "Les ménades sont une race d'humanoïdes de taille Moyenne sans modificateurs de caractéristiques. Elles se caractérisent par des vagues d'émotions intenses alternant avec des périodes de calme détaché, et ont une affinité naturelle pour la psionique."
+    },
+    "tags": ["race", "humanoid", "size_medium", "race_maenad", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "maenad_speed",
+        "sourceId": "race_maenad",
+        "sourceName": { "en": "Maenad Speed", "fr": "Vitesse ménade" },
+        "targetId": "attributes.speed_land",
+        "value": 30,
+        "type": "base"
+      },
+      {
+        "id": "maenad_bonus_pp",
+        "sourceId": "race_maenad",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 2,
+        "type": "racial"
+      }
+    ],
+    "grantedFeatures": [
+      "psi_like_energy_ray_sonic_1_per_day",
+      "race_feature_maenad_outburst",
+      "language_common",
+      "language_maenad"
+    ]
+  },
+  {
+    "id": "race_xeph",
+    "category": "race",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Xeph", "fr": "Xeph" },
+    "description": {
+      "en": "Xephs are Medium humanoids with a natural resistance to psionics and magic. They have dark vision and can channel their psionic nature into brief bursts of extraordinary speed. They are quick and nimble rather than strong.",
+      "fr": "Les xephs sont des humanoïdes de taille Moyenne avec une résistance naturelle à la psionique et à la magie. Ils ont la vision dans le noir et peuvent canaliser leur nature psionique en brèves rafales d'une vitesse extraordinaire."
+    },
+    "tags": ["race", "humanoid", "size_medium", "race_xeph", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "xeph_dex_bonus",
+        "sourceId": "race_xeph",
+        "sourceName": { "en": "Xeph", "fr": "Xeph" },
+        "targetId": "attributes.stat_dex",
+        "value": 2,
+        "type": "racial"
+      },
+      {
+        "id": "xeph_str_penalty",
+        "sourceId": "race_xeph",
+        "sourceName": { "en": "Xeph", "fr": "Xeph" },
+        "targetId": "attributes.stat_str",
+        "value": -2,
+        "type": "racial"
+      },
+      {
+        "id": "xeph_speed",
+        "sourceId": "race_xeph",
+        "sourceName": { "en": "Xeph Speed", "fr": "Vitesse xeph" },
+        "targetId": "attributes.speed_land",
+        "value": 30,
+        "type": "base"
+      },
+      {
+        "id": "xeph_bonus_pp",
+        "sourceId": "race_xeph",
+        "sourceName": { "en": "Naturally Psionic", "fr": "Psionique naturel" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 1,
+        "type": "racial"
+      },
+      {
+        "id": "xeph_save_psionic",
+        "sourceId": "race_xeph",
+        "sourceName": { "en": "Resistance (Psionic)", "fr": "Résistance (psionique)" },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "racial",
+        "situationalContext": "vs_powers_spells_and_spell_like_effects"
+      }
+    ],
+    "grantedFeatures": [
+      "sense_darkvision_60",
+      "race_feature_xeph_burst",
+      "language_common",
+      "language_xeph"
+    ]
+  }
+]

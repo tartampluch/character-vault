@@ -782,7 +782,15 @@ Walk through every section of ARCHITECTURE.md (sections 1-20) and verify the imp
 
 25. **E-5 Attacker Modifiers:** Does `resolveAttackerMods` correctly strip the `"attacker."` prefix before pipeline comparison? Does it handle a modifier with NO `situationalContext` (unconditional — applies to all attackers)? Does it correctly skip modifiers whose stripped targetId doesn't match the rolled pipeline? Does it skip non-`"attacker.*"` modifiers entirely? Is `attackerPenaltiesApplied` absent (not an empty array) from `RollResult` when no penalties apply? Is the defender's static `totalBonus` provably unaffected by attacker modifier resolution?
 
-26. **SRD JSON Conformance for Engine Enhancements:** Do the following rings in `12_d20srd_core_magic_items.json` have the correct new fields?
+26. **Enhancement E-16 — AugmentationRule.effectDescription (Phase E-16a/b/c):**
+    - Does `AugmentationRule` have `effectDescription?: LocalizedString` as an optional field per ARCHITECTURE.md section 5.2.2 / Phase E-16a?
+    - Is `effectDescription` backward-compatible (optional — existing augmentations without it compile correctly)?
+    - For qualitative augmentations (`grantedModifiers: []`), is `effectDescription` the only description channel?
+    - Does ARCHITECTURE.md section 5.2.2 document: fields table, two authoring patterns (mechanical + qualitative), 6-step CastingPanel contract, transient-vs-static design note?
+    - Does `augmentationRule.test.ts` cover: backward compatibility (undefined is valid), mechanical augmentation with effectDescription, qualitative augmentation (grantedModifiers empty), mixed array (3-entry), CastingPanel fallback logic (effectDescription wins over sourceName, fr locale, both-absent → "Unknown augmentation"), full MagicFeature integration?
+    - Is the test count 841 (825 prior + 16 new)?
+
+27. **SRD JSON Conformance for Engine Enhancements:** Do the following rings in `12_d20srd_core_magic_items.json` have the correct new fields?
     - Ring of the Ram: `resourcePoolTemplates[0].resetCondition === "never"`, `activation.tieredResourceCosts` length 3, tier costs 1/2/3.
     - Ring of Spell Turning: `resourcePoolTemplates[0].resetCondition === "per_day"`, `defaultCurrent === 3`.
     - Ring of Djinni Calling: `resourcePoolTemplates[0].resetCondition === "per_day"`, `defaultCurrent === 1`.

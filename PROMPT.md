@@ -700,6 +700,18 @@ _Why metadata only: Ego computation (sum of dozens of coefficients) is complex t
 
 **Total test count after Phase E-15: 825 tests (all passing).**
 
+## Phase E-16: Psionic System Engine Analysis + AugmentationRule.effectDescription
+
+_Goal: Pre-conversion engine gap analysis for the full C-15 psionic pipeline (C-15a–k). The psionic system is handled by existing engine primitives in all but one case: `AugmentationRule` is missing an `effectDescription?: LocalizedString` field required by D20SRD_CONVERSION.md C-15c/d for qualitative augmentations (energy type choices, swift-action upgrades, targeting modifications) where `grantedModifiers: []` — the CastingPanel needs a human-readable description to display._
+
+_All other psionic mechanics confirmed as covered: PP pools via ResourcePool, discipline/displays on MagicFeature (§5.2.1), psionic item data via psionicItemData (§5.1.1), metapsionic feats via tags, prestige class PP advancement via levelProgression modifiers, manifester level as a standard pipeline accumulation._
+
+- [x] **E-16a Type Extension:** Added `effectDescription?: LocalizedString` to `AugmentationRule` in `src/lib/types/feature.ts`. Two authoring patterns documented: (1) mechanical augmentation (has grantedModifiers + effectDescription for fuller UI text), (2) qualitative augmentation (grantedModifiers: [] + effectDescription required for the picker label). CastingPanel contract: display effectDescription first; fall back to grantedModifiers[0].sourceName. Key design note: augmentation grantedModifiers are transient cast-time only — they do NOT enter the static DAG. Backward compatible (optional field).
+
+- [x] **E-16b Documentation:** `ARCHITECTURE.md` section 5.2.2 (new subsection — AugmentationRule fields table, two JSON authoring examples, CastingPanel 6-step contract, transient-vs-static design note).
+
+- [ ] **E-16c Tests (`src/tests/augmentationRule.test.ts`):** New Vitest test file. Tests: (1) effectDescription is optional (backward compat), (2) mechanical augmentation with both fields, (3) qualitative augmentation with grantedModifiers: [], (4) multiple augmentation entries mixed (mechanical + qualitative), (5) effectDescription with both en+fr languages, (6) CastingPanel fallback logic (effectDescription absent, use modifier sourceName).
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

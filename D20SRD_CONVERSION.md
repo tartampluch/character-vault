@@ -1521,65 +1521,65 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 All C-15 tasks use `"ruleSource": "srd_psionics"`.
 
-- [ ] **C-15a** — Psionic classes → `00_d20srd_psionics_classes.json`
+- [x] **C-15a** — Psionic classes → `00_d20srd_psionics_classes.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/classes/` — all `.html` files
   **Classes:** Psion (`psion.html`), Psychic Warrior (`psychicWarrior.html`), Soulknife (`soulknife.html`), Wilder (`wilder.html`)
   Same format as C-04. Key mechanic: Power Points pool as `ResourcePool` on `resources.power_points`.
 
-- [ ] **C-15b** — Psionic class features → `01_d20srd_psionics_class_features.json`
+- [x] **C-15b** — Psionic class features → `01_d20srd_psionics_class_features.json`
 
   **Source:** Same as C-15a.
   **Context:** Read `ANNEXES.md` section A.7 before starting.
   Key mechanics: Power Point pool, Discipline choices as `FeatureChoice` with `optionsQuery: "tag:psionic_discipline"`, Psychic Strike dynamic formula.
 
-- [ ] **C-15c** — Psionic powers A–M → `02_d20srd_psionics_powers.json` (part 1)
+- [x] **C-15c** — Psionic powers A–M → `02_d20srd_psionics_powers.json` (part 1)
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/powers/` — all files whose name starts with a–m alphabetically
   **Context:** Read `ANNEXES.md` section A.12 before starting.
   Multi-batch: C-15c creates the file; C-15d appends.
   Powers use `MagicFeature` with `magicType: "psionic"` and `augmentations[]`. Each augmentation: `costIncrement`, `effectDescription.en`, `effectDescription.fr`, `isRepeatable`.
 
-- [ ] **C-15d** — Psionic powers N–Z → `02_d20srd_psionics_powers.json` (part 2)
+- [x] **C-15d** — Psionic powers N–Z → `02_d20srd_psionics_powers.json` (part 2)
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/powers/` — all files whose name starts with n–z alphabetically
 
-- [ ] **C-15e** — Psionic feats → `03_d20srd_psionics_feats.json`
+- [x] **C-15e** — Psionic feats → `03_d20srd_psionics_feats.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/psionicFeats.html`
   Same format as C-06. Include `"psionic"` in tags. Metapsionic feats: add `"metapsionic"` tag.
 
-- [ ] **C-15f** — Psionic races → `04_d20srd_psionics_races.json`
+- [x] **C-15f** — Psionic races → `04_d20srd_psionics_races.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/psionicRaces.html`
   **Context:** Read `ANNEXES.md` section A.3.4 before starting.
   Same format as C-03. Psionic races often grant a Power Point pool and a set of known powers at level 1.
 
-- [ ] **C-15g** — Psionic skills → append to `04_d20srd_core_skills_config.json`
+- [x] **C-15g** — Psionic skills → append to `04_d20srd_core_skills_config.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/skills/` — all 6 files:
   `autohypnosis.html`, `concentration.html` (psionic variant), `knowledgePsionics.html`, `psicraft.html`, `usePsionicDevice.html`, `overview.html`
   Same format as C-02 (append new skill entries to the existing `config_skill_definitions` table).
   Note: `concentration.html` is already covered by C-02 (core version); only add psionic-specific notes in the description, do not duplicate the skill entry.
 
-- [ ] **C-15h** — Psionic prestige classes → `05_d20srd_psionics_prestige_classes.json`
+- [x] **C-15h** — Psionic prestige classes → `05_d20srd_psionics_prestige_classes.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/prestigeClasses/` — all 9 files:
   `cerebremancer.html`, `elocater.html`, `metamind.html`, `psionUncarnate.html`, `psionicFist.html`, `pyrokineticist.html`, `slayer.html`, `thrallherd.html`, `warMind.html`
   Same format as C-11 (prestige class structure). Each has a 10-level `levelProgression`.
 
-- [ ] **C-15i** — Psionic prestige class features → `06_d20srd_psionics_prestige_class_features.json`
+- [x] **C-15i** — Psionic prestige class features → `06_d20srd_psionics_prestige_class_features.json`
 
   **Source:** Same as C-15h.
   Same format as C-12 (prestige class features).
 
-- [ ] **C-15j** — Psionic items → `07_d20srd_psionics_items.json`
+- [x] **C-15j** — Psionic items → `07_d20srd_psionics_items.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/items/` — all item files (exclude `basics.html`, `creatingPsionicItems.html` which are rules text):
   `armorAndShields.html`, `cognizanceCrystals.html`, `cursedItems.html`, `dorjes.html`, `powerStones.html`, `psicrowns.html`, `psionicArtifacts.html`, `psionicItems.html`, `psionicTattoos.html`, `specialMaterials.html`, `universalItems.html`, `weapons.html`
   Same format as C-14. Use `"ruleSource": "srd_psionics"`.
 
-- [ ] **C-15k** — Psionic spells (arcane/divine) → append to `05_d20srd_core_spells.json`
+- [x] **C-15k** — Psionic spells (arcane/divine) → append to `05_d20srd_core_spells.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/spells/` — all 9 files:
   `brainSpider.html`, `dweomerOfTransference.html`, `glossolalia.html`, `mentalPinnacle.html`, `probeThoughts.html`, `psychicTurmoil.html`, `psychicTurmoilGreater.html`, `telepathicBondLesser.html`

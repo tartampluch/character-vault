@@ -1759,9 +1759,19 @@ Keeping expiry manual trades automation for simplicity and avoids bugs caused by
 ```typescript
 // 5.2 Magic (Spells & Psionic Powers unified)
 export interface AugmentationRule {
-    costIncrement: number; // E.g.: +1 Psi Point
-    grantedModifiers: Modifier[]; // What the augmentation provides
-    isRepeatable: boolean; 
+    costIncrement: number;         // Additional PP cost for this augmentation step
+
+    // Human-readable description of the augmentation's effect (both languages).
+    // REQUIRED when grantedModifiers is empty (qualitative augmentations — energy type
+    // change, swift-action targeting, area-of-effect upgrade, etc.).
+    // OPTIONAL when grantedModifiers[0].sourceName already describes the effect clearly.
+    // CastingPanel: display this text in the augmentation picker; fall back to
+    // grantedModifiers[0].sourceName if absent.
+    // @see ARCHITECTURE.md section 5.2.2 — AugmentationRule fields
+    effectDescription?: LocalizedString;
+
+    grantedModifiers: Modifier[];  // Transient cast-time modifiers (NOT added to static DAG)
+    isRepeatable: boolean;         // true = spend multiple increments; false = once per cast
 }
 
 export interface MagicFeature extends Feature {
@@ -1905,6 +1915,75 @@ A manifester can suppress ALL of a power's displays by succeeding on a Concentra
   ]
 }
 ```
+
+### 5.2.2. `AugmentationRule` — Fields and CastingPanel Contract
+
+`AugmentationRule` describes one augmentation option on a psionic power. The `augmentations` array on `MagicFeature` holds 1–N of these.
+
+#### Fields
+
+| Field | Type | Required? | Purpose |
+|---|---|---|---|
+| `costIncrement` | `number` | Required | Additional PP added to the power's base cost for this augmentation |
+| `effectDescription` | `LocalizedString` | Optional* | Human-readable description displayed in the augmentation picker UI |
+| `grantedModifiers` | `Modifier[]` | Required | Transient mechanical modifiers applied **only at cast time** (NOT in static DAG) |
+| `isRepeatable` | `boolean` | Required | `true` = player may apply multiple increments; `false` = once per cast |
+
+*`effectDescription` is **effectively required** whenever `grantedModifiers` is empty (qualitative augmentations). When both are absent, the augmentation has no UI label.
+
+#### Two Authoring Patterns
+
+**Pattern 1 — Mechanical augmentation** (numeric effect with pipeline modifier):
+
+```json
+{
+  "costIncrement": 2,
+  "effectDescription": {
+    "en": "For every 2 additional power points you spend, this power's damage increases by 1d10.",
+    "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, les dégâts augmentent de 1d10."
+  },
+  "grantedModifiers": [{
+    "id": "aug_mind_thrust_damage",
+    "sourceId": "power_mind_thrust",
+    "sourceName": { "en": "Mind Thrust (augmented)", "fr": "Assaut mental (augmenté)" },
+    "targetId": "combatStats.power_damage_bonus",
+    "value": "1d10",
+    "type": "untyped"
+  }],
+  "isRepeatable": true
+}
+```
+
+**Pattern 2 — Qualitative augmentation** (no pipeline modifier; description-only):
+
+```json
+{
+  "costIncrement": 4,
+  "effectDescription": {
+    "en": "If you spend 4 additional power points, you can manifest this power as a swift action.",
+    "fr": "Si vous dépensez 4 points de pouvoir supplémentaires, vous pouvez manifester ce pouvoir par une action rapide."
+  },
+  "grantedModifiers": [],
+  "isRepeatable": false
+}
+```
+
+#### CastingPanel UI Contract
+
+1. For each augmentation entry, display `effectDescription` (if present) as the augmentation's label. If absent, fall back to `grantedModifiers[0].sourceName`.
+2. Show `costIncrement` as the PP cost badge next to each option.
+3. If `isRepeatable: true`, show a stepper (0–N) capped to `floor((manifesterLevel - baseCost) / costIncrement)`.
+4. If `isRepeatable: false`, show a checkbox (0 or 1).
+5. Total cost = `baseCost + Σ(selected augmentations × timesApplied × costIncrement)`. Must not exceed manifester level.
+6. When the player commits to cast, the CastingPanel reads `grantedModifiers` from selected augmentations and applies them transiently to the roll context. These modifiers do NOT enter the static DAG.
+
+#### Key Design Note — Augmentations Are NOT Pipeline Modifiers
+
+Augmentation `grantedModifiers` are applied **transiently at cast time only**. They are NOT added to `phase0_flatModifiers` by the GameEngine. The GameEngine has no awareness of which augmentations were chosen. This is entirely a CastingPanel / DiceEngine concern at roll time.
+
+This means `targetId` values like `"combatStats.power_damage_bonus"` are **roll-context paths**, not static character-sheet pipelines, unless the same ID is also targeted by a static modifier from the character (in which case the values add up at roll time).
+
+---
 
 ### 5.3. The `FeatureChoice.optionsQuery` Mechanism
 

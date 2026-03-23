@@ -1,0 +1,1896 @@
+[
+  {
+    "id": "feat_aligned_attack",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Aligned Attack", "fr": "Attaque alignée" },
+    "description": {
+      "en": "[Psionic] When you take this feat, choose chaos, good, evil or law (must match one alignment component). Expend psionic focus to deal +1d6 damage and treat attack as aligned for overcoming damage reduction. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Lors de la prise de ce don, choisissez chaos, bien, mal ou loi (doit correspondre à un composant d'alignement). Dépensez la concentration psionique pour infliger +1d6 dégâts et traiter l'attaque comme alignée pour franchir la réduction des dégâts."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 6,
+      "errorMessage": "Requires Base Attack Bonus +6"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_antipsionic_magic",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Antipsionic Magic", "fr": "Magie antipsionique" },
+    "description": {
+      "en": "[General] You get a +2 bonus on caster level checks to overcome a psionic creature's power resistance. When a psionic creature tries to dispel a spell you cast, it makes its manifester level check against DC 13 + its manifester level. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Vous obtenez un bonus de +2 aux tests de niveau de lanceur de sorts pour franchir la résistance aux pouvoirs d'une créature psionique. Ne peut être pris si vous avez une réserve de points de pouvoir ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@skills.skill_spellcraft.ranks",
+      "operator": ">=",
+      "value": 5,
+      "errorMessage": "Requires 5 ranks in Spellcraft"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_autonomous",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Autonomous", "fr": "Autonome" },
+    "description": {
+      "en": "[General] You get a +2 bonus on all Autohypnosis checks and Knowledge (psionics) checks.",
+      "fr": "[Général] Vous obtenez un bonus de +2 à tous les tests d'Autohypnose et aux tests de Connaissance (psionique)."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "feat_autonomous_autohypnosis",
+        "sourceId": "feat_autonomous",
+        "sourceName": { "en": "Autonomous", "fr": "Autonome" },
+        "targetId": "skills.skill_autohypnosis",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_autonomous_knowledge_psionics",
+        "sourceId": "feat_autonomous",
+        "sourceName": { "en": "Autonomous", "fr": "Autonome" },
+        "targetId": "skills.skill_knowledge_psionics",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_body_fuel",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Body Fuel", "fr": "Carburant corporel" },
+    "description": {
+      "en": "[Psionic] You can recover 2 power points by taking 1 point of ability burn damage to each of Strength, Dexterity, and Constitution. You can recover additional power points for a proportional cost. Only living creatures can use this feat. Only usable while in your own body.",
+      "fr": "[Psionique] Vous pouvez récupérer 2 points de pouvoir en prenant 1 point de dommage d'altération de caractéristique à la Force, la Dextérité et la Constitution. Vous pouvez récupérer des points de pouvoir supplémentaires pour un coût proportionnel."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_boost_construct",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Boost Construct", "fr": "Amélioration de construction" },
+    "description": {
+      "en": "[Psionic] When you create an astral construct, you can give it one additional special ability from any menu that the construct currently has an ability from.",
+      "fr": "[Psionique] Lorsque vous créez une construction astrale, vous pouvez lui donner une capacité spéciale supplémentaire de tout menu dont la construction possède déjà une capacité."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_burrowing_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Burrowing Power", "fr": "Pouvoir perçant" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to attempt to manifest a power against targets sheltered behind a wall or force effect. Make a Psicraft check (DC 10 + barrier hardness + 1/ft thickness). Increases power point cost by 2.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour tenter de manifester un pouvoir contre des cibles abritées derrière un mur ou un effet de force. Effectuez un test de Science psionique (DD 10 + solidité de la barrière + 1/pied d'épaisseur). Augmente le coût en points de pouvoir de 2."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_chain_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Chain Power", "fr": "Pouvoir en chaîne" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to chain any single-target power dealing acid/cold/electricity/fire/sonic damage. Arcs to manifester level secondary targets (max 20) within 30 ft of primary, dealing half damage. Increases power point cost by 6.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour enchaîner un pouvoir à cible unique infligeant des dégâts d'acide/froid/électricité/feu/son. Se propage vers un nombre de cibles secondaires égal au niveau de manifestation (max 20) à 9m de la cible principale, infligeant la moitié des dégâts. Augmente le coût en PP de 6."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_chaotic_mind",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Chaotic Mind", "fr": "Esprit chaotique" },
+    "description": {
+      "en": "[General] Creatures with insight bonuses from psionic powers/psi-like abilities do not gain those bonuses against you. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Les créatures bénéficiant de bonus de perspicacité issus de pouvoirs psioniques ou de capacités analogue à la psionique ne bénéficient pas de ces bonus contre vous. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "alignment_chaotic",
+          "errorMessage": "Requires Chaotic alignment"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_cha.totalValue",
+          "operator": ">=",
+          "value": 15,
+          "errorMessage": "Requires Charisma 15+"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_cloak_dance",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Cloak Dance", "fr": "Danse de l'ombre" },
+    "description": {
+      "en": "[General] Take a move action to gain concealment until your next turn. Or take a full-round action to gain total concealment until your next action.",
+      "fr": "[Général] Effectuez une action de mouvement pour obtenir un camouflage jusqu'à votre prochain tour. Ou effectuez une action complexe pour obtenir un camouflage total jusqu'à votre prochaine action."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_hide.ranks",
+          "operator": ">=",
+          "value": 10,
+          "errorMessage": "Requires 10 ranks in Hide"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_perform.ranks",
+          "operator": ">=",
+          "value": 2,
+          "errorMessage": "Requires 2 ranks in Perform (dance)"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_closed_mind",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Closed Mind", "fr": "Esprit fermé" },
+    "description": {
+      "en": "[General] You get a +2 bonus on all saving throws to resist psionic powers and psi-like abilities. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Vous obtenez un bonus de +2 à tous les jets de sauvegarde pour résister aux pouvoirs psioniques et aux capacités analogue à la psionique. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_combat_manifestation",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Combat Manifestation", "fr": "Manifestation en combat" },
+    "description": {
+      "en": "[Psionic] You get a +4 bonus on Concentration checks made to manifest a power or use a psi-like ability while on the defensive or while grappling or pinned.",
+      "fr": "[Psionique] Vous obtenez un bonus de +4 aux tests de Concentration effectués pour manifester un pouvoir ou utiliser une capacité analogue à la psionique en défensive ou lors d'une lutte ou immobilisation."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "feat_combat_manifestation_conc",
+        "sourceId": "feat_combat_manifestation",
+        "sourceName": { "en": "Combat Manifestation", "fr": "Manifestation en combat" },
+        "targetId": "skills.skill_concentration",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "manifesting_on_defensive_or_grappling"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_cognizance_crystal",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Cognizance Crystal", "fr": "Création de cristal de clairvoyance" },
+    "description": {
+      "en": "[Item Creation] You can create a cognizance crystal. Takes one day per 1,000 gp in base price. Base price = highest power level it could manifest with all stored PP, squared, × 1,000 gp. Costs 1/25 base price in XP and half base price in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer un cristal de clairvoyance. Prend un jour par tranche de 1 000 po de prix de base. Prix de base = niveau du pouvoir le plus élevé qu'il pourrait manifester avec tous ses PP stockés, au carré, × 1 000 po."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires Manifester Level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_dorje",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Dorje", "fr": "Création de dorje" },
+    "description": {
+      "en": "[Item Creation] You can create a dorje of any psionic power you know. Takes one day per 1,000 gp. Base price = manifester level × power level × 750 gp. Cost: 1/25 base in XP, half base in materials. Newly created dorje has 50 charges.",
+      "fr": "[Création d'objets] Vous pouvez créer un dorje pour tout pouvoir psionique que vous connaissez. Prend un jour par tranche de 1 000 po. Prix de base = niveau de manifestation × niveau du pouvoir × 750 po."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 5,
+      "errorMessage": "Requires Manifester Level 5th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_psicrown",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Psicrown", "fr": "Création de psicouronne" },
+    "description": {
+      "en": "[Item Creation] You can create any psicrown whose prerequisites you meet. Takes one day per 1,000 gp. Cost: 1/25 base price in XP, half in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer toute psicouronne dont vous remplissez les conditions. Prend un jour par tranche de 1 000 po."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 12,
+      "errorMessage": "Requires Manifester Level 12th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_psionic_arms_and_armor",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Psionic Arms and Armor", "fr": "Création d'armes et armures psioniques" },
+    "description": {
+      "en": "[Item Creation] You can create any psionic weapon, armor, or shield whose prerequisites you meet. Enhancing takes one day per 1,000 gp. Cost: 1/25 features price in XP, half in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer toute arme, armure ou bouclier psionique dont vous remplissez les conditions."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 5,
+      "errorMessage": "Requires Manifester Level 5th"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_psionic_construct",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Psionic Construct", "fr": "Création de construction psionique" },
+    "description": {
+      "en": "[Item Creation] You can create any psionic construct whose prerequisites you meet. Takes one day per 1,000 gp. Cost: 1/25 base price in XP, half in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer toute construction psionique dont vous remplissez les conditions."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_craft_psionic_arms_and_armor",
+          "errorMessage": "Requires Craft Psionic Arms and Armor"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_craft_universal_item",
+          "errorMessage": "Requires Craft Universal Item"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_craft_universal_item",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Craft Universal Item", "fr": "Création d'objet universel" },
+    "description": {
+      "en": "[Item Creation] You can create any universal psionic item whose prerequisites you meet. Takes one day per 1,000 gp. Cost: 1/25 base price in XP, half in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer tout objet psionique universel dont vous remplissez les conditions."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires Manifester Level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_deadly_precision",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Deadly Precision", "fr": "Précision mortelle" },
+    "description": {
+      "en": "[General] You have deadly accuracy with sneak attacks. You can reroll any result of 1 on sneak attack extra dice (must keep result).",
+      "fr": "[Général] Vous avez une précision mortelle avec vos attaques sournoises. Vous pouvez relancer tout résultat de 1 sur les dés de dégâts supplémentaires d'attaque sournoise (devez garder le résultat)."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 15,
+          "errorMessage": "Requires Dexterity 15+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_deep_impact",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Deep Impact", "fr": "Impact profond" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to resolve a melee weapon attack as a touch attack. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour résoudre une attaque d'arme de mêlée comme une attaque de contact. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_weapon",
+          "errorMessage": "Requires Psionic Weapon feat"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_delay_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Delay Power", "fr": "Pouvoir retardé" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to manifest a delayed power. Choose trigger: (1) standard action to activate, (2) creature enters area, or (3) activates after 5 rounds. Only area and personal powers can be delayed. Increases power point cost by 2.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour manifester un pouvoir retardé. Choisissez le déclencheur : (1) action simple pour activer, (2) une créature entre dans la zone, ou (3) s'active après 5 rounds. Augmente le coût en PP de 2."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_empower_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Empower Power", "fr": "Pouvoir amplifié" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to empower a power. All variable numeric effects are increased by one-half. Augmented powers can also be empowered. Increases power point cost by 2.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour amplifier un pouvoir. Tous les effets numériques variables sont augmentés d'une moitié. Les pouvoirs augmentés peuvent aussi être amplifiés. Augmente le coût en PP de 2."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_enlarge_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Enlarge Power", "fr": "Pouvoir agrandi" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to increase a power's range by 100% (close, medium, or long range powers only). Does not increase power point cost.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour augmenter la portée d'un pouvoir de 100% (pouvoirs à portée courte, moyenne ou longue uniquement). N'augmente pas le coût en points de pouvoir."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_expanded_knowledge",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Expanded Knowledge", "fr": "Connaissance élargie" },
+    "description": {
+      "en": "[Psionic] Add one power to your powers known, up to one level lower than your highest. Can choose from any discipline or class list. Can be taken multiple times, each time adding one new power.",
+      "fr": "[Psionique] Ajoutez un pouvoir à votre liste de pouvoirs connus, jusqu'à un niveau en dessous de votre maximum. Peut être pris plusieurs fois, ajoutant un nouveau pouvoir à chaque fois."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires Manifester Level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_extend_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Extend Power", "fr": "Pouvoir prolongé" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to double the duration of a power. Powers with concentration, instantaneous, or permanent duration are unaffected. Increases power point cost by 2.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour doubler la durée d'un pouvoir. Les pouvoirs à durée de concentration, instantanée ou permanente ne sont pas affectés. Augmente le coût en PP de 2."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_fell_shot",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Fell Shot", "fr": "Tir foudroyant" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to resolve a ranged attack as a ranged touch attack. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour résoudre une attaque à distance comme une attaque de contact à distance. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_shot",
+          "errorMessage": "Requires Psionic Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_focused_sunder",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Focused Sunder", "fr": "Bris concentré" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus when striking an opponent's weapon or hard construction to ignore half of its total hardness (round down).",
+      "fr": "[Psionique] Dépensez la concentration psionique en frappant l'arme d'un adversaire ou une construction dure pour ignorer la moitié de sa solidité totale (arrondi à l'inférieur)."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_attack",
+          "errorMessage": "Requires Power Attack"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_improved_sunder",
+          "errorMessage": "Requires Improved Sunder"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_force_of_will",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Force of Will", "fr": "Force de volonté" },
+    "description": {
+      "en": "[General] Once per round, when targeted by a psionic effect requiring a Reflex or Fortitude save, you can make a Will save instead. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Une fois par round, lorsque vous êtes ciblé par un effet psionique nécessitant un jet de Réflexes ou de Vigueur, vous pouvez effectuer un jet de Volonté à la place. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_iron_will",
+      "errorMessage": "Requires Iron Will"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_ghost_attack",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Ghost Attack", "fr": "Attaque spectrale" },
+    "description": {
+      "en": "[Psionic] While psionically focused, when attacking an incorporeal creature, make two rolls to check miss chance. If either succeeds, treat as if attacking with a ghost touch weapon.",
+      "fr": "[Psionique] Tant que vous êtes concentré psioniquement, lorsque vous attaquez une créature intangible, effectuez deux jets pour vérifier la chance de rater. Si l'un réussit, traitez comme si vous attaquiez avec une arme fantôme."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires Base Attack Bonus +3"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_manyshot",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Manyshot", "fr": "Tir multiple supérieur" },
+    "description": {
+      "en": "[General, Fighter Bonus Feat] When using Manyshot, you can fire each arrow at a different target. Make a separate attack roll for each arrow. Precision-based damage applies to each. Multiple critical hits each deal critical damage.",
+      "fr": "[Général, don supplémentaire guerrier] Lors de l'utilisation du Tir multiple, vous pouvez tirer chaque flèche sur une cible différente. Effectuez un jet d'attaque séparé pour chaque flèche."
+    },
+    "tags": ["feat", "general", "fighter_bonus_feat"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 17,
+          "errorMessage": "Requires Dexterity 17+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_manyshot",
+          "errorMessage": "Requires Manyshot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_rapid_shot",
+          "errorMessage": "Requires Rapid Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 6,
+          "errorMessage": "Requires Base Attack Bonus +6"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_power_penetration",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Power Penetration", "fr": "Pénétration des pouvoirs supérieure" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to get a +8 bonus on manifester level checks to overcome power resistance. This overlaps (doesn't stack) with Power Penetration's +4 bonus.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour obtenir un bonus de +8 aux tests de niveau de manifestation pour franchir la résistance aux pouvoirs. Ce bonus se chevauche (ne s'accumule pas) avec le bonus de +4 de Pénétration des pouvoirs."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_power_penetration",
+      "errorMessage": "Requires Power Penetration"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_power_specialization",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Power Specialization", "fr": "Spécialisation des pouvoirs supérieure" },
+    "description": {
+      "en": "[Psionic] Your powers that deal damage deal an extra 2 points of damage (stacks with Power Specialization). Target must be within 30 feet.",
+      "fr": "[Psionique] Vos pouvoirs infligeant des dégâts infligent 2 points de dégâts supplémentaires (s'accumule avec Spécialisation des pouvoirs). La cible doit être à moins de 9 mètres."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_power_specialization",
+          "errorMessage": "Requires Power Specialization"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_focus",
+          "errorMessage": "Requires Weapon Focus (ray)"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.manifester_level.totalValue",
+          "operator": ">=",
+          "value": 12,
+          "errorMessage": "Requires Manifester Level 12th"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_psionic_endowment",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Psionic Endowment", "fr": "Don psionique supérieur" },
+    "description": {
+      "en": "[Psionic] When you use Psionic Endowment, you add +2 to the save DC of a manifested power instead of +1.",
+      "fr": "[Psionique] Lorsque vous utilisez le don Don psionique, vous ajoutez +2 au DD de sauvegarde d'un pouvoir manifesté au lieu de +1."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_psionic_endowment",
+      "errorMessage": "Requires Psionic Endowment"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_psionic_fist",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Psionic Fist", "fr": "Poing psionique supérieur" },
+    "description": {
+      "en": "[Psionic] When using Psionic Fist, your unarmed strike or natural weapon attack deals an extra 4d6 damage instead of 2d6.",
+      "fr": "[Psionique] Lors de l'utilisation du Poing psionique, votre attaque à mains nues ou avec une arme naturelle inflige 4d6 dégâts supplémentaires au lieu de 2d6."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_fist",
+          "errorMessage": "Requires Psionic Fist"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_psionic_shot",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Psionic Shot", "fr": "Tir psionique supérieur" },
+    "description": {
+      "en": "[Psionic] When using Psionic Shot, your ranged attack deals an extra 4d6 damage instead of 2d6.",
+      "fr": "[Psionique] Lors de l'utilisation du Tir psionique, votre attaque à distance inflige 4d6 dégâts supplémentaires au lieu de 2d6."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_shot",
+          "errorMessage": "Requires Psionic Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_greater_psionic_weapon",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Greater Psionic Weapon", "fr": "Arme psionique supérieure" },
+    "description": {
+      "en": "[Psionic] When using Psionic Weapon, your melee weapon attack deals an extra 4d6 damage instead of 2d6.",
+      "fr": "[Psionique] Lors de l'utilisation de l'Arme psionique, votre attaque d'arme de mêlée inflige 4d6 dégâts supplémentaires au lieu de 2d6."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_weapon",
+          "errorMessage": "Requires Psionic Weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_hostile_mind",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Hostile Mind", "fr": "Esprit hostile" },
+    "description": {
+      "en": "[General] When subject to a telepathy power, the manifester must succeed on a Will save (DC 10 + ½ your level + your Cha bonus) or take 2d6 damage. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Quand vous êtes soumis à un pouvoir de télépathie, le manifestateur doit réussir un jet de Volonté (DD 10 + ½ votre niveau + votre bonus de Charisme) ou subir 2d6 dégâts. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_cha.totalValue",
+      "operator": ">=",
+      "value": 15,
+      "errorMessage": "Requires Charisma 15+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_imprint_stone",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Imprint Stone", "fr": "Empreinte sur pierre" },
+    "description": {
+      "en": "[Item Creation] You can create a power stone of any power you know. Takes one day per 1,000 gp. Base price = power level × manifester level × 25 gp. Cost: 1/25 base price in XP, half in materials.",
+      "fr": "[Création d'objets] Vous pouvez créer une pierre de pouvoir pour tout pouvoir que vous connaissez. Prend un jour par tranche de 1 000 po. Prix de base = niveau du pouvoir × niveau de manifestation × 25 po."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Manifester Level 1st"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_improved_psicrystal",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Improved Psicrystal", "fr": "Amélioration du psicristal" },
+    "description": {
+      "en": "[Psionic] Implant another personality fragment in your psicrystal, gaining benefits of both personalities. Treat manifester level as one higher for determining psicrystal abilities. Can be taken multiple times, each time adding a new personality and +1 effective level.",
+      "fr": "[Psionique] Implantez un autre fragment de personnalité dans votre psicristal, bénéficiant des deux personnalités. Traitez votre niveau de manifestation comme un de plus pour déterminer les capacités du psicristal. Peut être pris plusieurs fois."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_psicrystal_affinity",
+      "errorMessage": "Requires Psicrystal Affinity"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_inquisitor",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Inquisitor", "fr": "Inquisiteur" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to gain a +10 bonus on a Sense Motive check to oppose a Bluff check. Declare before the check; focus lost if check fails or opponent isn't lying.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour obtenir un bonus de +10 à un test de Psychologie pour contrer un test de Bluff. Déclarez avant le test ; la concentration est perdue si le test échoue ou si l'adversaire ne ment pas."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_wis.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Wisdom 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_maximize_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Maximize Power", "fr": "Pouvoir maximisé" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. All variable numeric effects of the power are maximized. Augmented powers can be maximized. Increases power point cost by 4.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Tous les effets numériques variables du pouvoir sont maximisés. Les pouvoirs augmentés peuvent être maximisés. Augmente le coût en PP de 4."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mental_leap",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Mental Leap", "fr": "Bond mental" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to gain a +10 bonus on a Jump check.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour obtenir un bonus de +10 à un test de Saut."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_jump.ranks",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires 5 ranks in Jump"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mental_resistance",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Mental Resistance", "fr": "Résistance mentale" },
+    "description": {
+      "en": "[General] Against psionic attacks dealing non-energy damage, gain DR 3/-. Against ability damage (not drain or burn) from psionic attacks, take 3 less. Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Contre les attaques psioniques infligeant des dégâts non-énergétiques, obtenez RD 3/-. Contre les dégâts de caractéristiques (pas altération ou entaille) des attaques psioniques, prenez 3 de moins. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@saves.will.totalValue",
+      "operator": ">=",
+      "value": 2,
+      "errorMessage": "Requires base Will save bonus +2"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_metamorphic_transfer",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Metamorphic Transfer", "fr": "Transfert métamorphique" },
+    "description": {
+      "en": "[Psionic] Each time you assume a new form (such as via metamorphosis), gain one of the new form's supernatural abilities (3 uses/day maximum regardless of creature's limit). Save DC = 10 + Cha mod + ½ HD. Can be taken multiple times.",
+      "fr": "[Psionique] Chaque fois que vous assumez une nouvelle forme (comme via métamorphose), gagnez une des capacités surnaturelles de la nouvelle forme (maximum 3 utilisations/jour). DD = 10 + mod Cha + ½ DV. Peut être pris plusieurs fois."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_wis.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Wisdom 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.manifester_level.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Manifester Level 5th"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_mind_over_body",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Mind Over Body", "fr": "Maîtrise du corps par l'esprit" },
+    "description": {
+      "en": "[General] You heal ability damage and ability burn damage more quickly. Heal a number of ability points per day equal to 1 + your Constitution bonus.",
+      "fr": "[Général] Vous soignez les dégâts de caractéristique et l'entaille de caractéristique plus rapidement. Soignez un nombre de points de caractéristique par jour égal à 1 + votre bonus de Constitution."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_con.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Constitution 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_narrow_mind",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Narrow Mind", "fr": "Esprit concentré" },
+    "description": {
+      "en": "[Psionic] You gain a +4 bonus on Concentration checks made to become psionically focused.",
+      "fr": "[Psionique] Vous obtenez un bonus de +4 aux tests de Concentration effectués pour devenir concentré psioniquement."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_wis.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Wisdom 13+"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_narrow_mind_conc",
+        "sourceId": "feat_narrow_mind",
+        "sourceName": { "en": "Narrow Mind", "fr": "Esprit concentré" },
+        "targetId": "skills.skill_concentration",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "becoming_psionically_focused"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_open_minded",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Open Minded", "fr": "Esprit ouvert" },
+    "description": {
+      "en": "[General] Immediately gain 5 skill points spent as normal. Can be taken multiple times, each time gaining 5 more skill points.",
+      "fr": "[Général] Gagnez immédiatement 5 points de compétences à dépenser normalement. Peut être pris plusieurs fois, gagnant 5 points de compétences supplémentaires à chaque fois."
+    },
+    "tags": ["feat", "general"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_opportunity_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Opportunity Power", "fr": "Pouvoir d'opportunité" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. When making an attack of opportunity with a free hand, manifest a touch power (manifesting time ≤ 1 round) as an immediate action. Increases power point cost by 6.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Lors d'une attaque d'opportunité avec une main libre, manifestez un pouvoir de contact (temps ≤ 1 round) par une action immédiate. Augmente le coût en PP de 6."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_overchannel",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Overchannel", "fr": "Surcharge" },
+    "description": {
+      "en": "[Psionic] While manifesting a power, increase your effective manifester level by 1 (take 1d8 damage), 2 (at 8th level, take 3d8), or 3 (at 15th level, take 5d8). Increases ML-dependent effects and PP ceiling.",
+      "fr": "[Psionique] Lors de la manifestation d'un pouvoir, augmentez votre niveau de manifestation effectif de 1 (subissez 1d8 dégâts), 2 (au niveau 8, subissez 3d8) ou 3 (au niveau 15, subissez 5d8)."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_power_penetration",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Power Penetration", "fr": "Pénétration des pouvoirs" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to get a +4 bonus on manifester level checks to overcome a creature's power resistance.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour obtenir un bonus de +4 aux tests de niveau de manifestation pour franchir la résistance aux pouvoirs d'une créature."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_power_specialization",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Power Specialization", "fr": "Spécialisation des pouvoirs" },
+    "description": {
+      "en": "[Psionic] With rays and ranged touch attack powers dealing damage, deal +2 damage. If you expend psionic focus when manifesting, add your key ability bonus to damage instead.",
+      "fr": "[Psionique] Avec les rayons et les pouvoirs d'attaque de contact à distance infligeant des dégâts, infligez +2 dégâts. Si vous dépensez la concentration psionique lors de la manifestation, ajoutez votre bonus de caractéristique clé aux dégâts à la place."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_weapon_focus",
+          "errorMessage": "Requires Weapon Focus (ray)"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.manifester_level.totalValue",
+          "operator": ">=",
+          "value": 4,
+          "errorMessage": "Requires Manifester Level 4th"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psicrystal_affinity",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrystal Affinity", "fr": "Affinité de psicristal" },
+    "description": {
+      "en": "[Psionic] This feat allows you to gain a psicrystal — a fragment of your psionic self given physical form, which serves as a familiar would for a wizard.",
+      "fr": "[Psionique] Ce don vous permet d'obtenir un psicristal — un fragment de votre moi psionique incarné dans une forme physique, qui sert comme un familier pour un magicien."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Manifester Level 1st"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psicrystal_containment",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psicrystal Containment", "fr": "Confinement de psicristal" },
+    "description": {
+      "en": "[Psionic] Spend a full-round action to psionically focus your psicrystal. You can expend your psicrystal's psionic focus (if within 5 feet) in place of your own focus.",
+      "fr": "[Psionique] Dépensez une action complexe pour concentrer psioniquement votre psicristal. Vous pouvez dépenser la concentration psionique de votre psicristal (s'il est à moins de 1,5m) à la place de la vôtre."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psicrystal_affinity",
+          "errorMessage": "Requires Psicrystal Affinity"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.manifester_level.totalValue",
+          "operator": ">=",
+          "value": 3,
+          "errorMessage": "Requires Manifester Level 3rd"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_affinity",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Affinity", "fr": "Affinité psionique" },
+    "description": {
+      "en": "[General] You get a +2 bonus on all Psicraft checks and Use Psionic Device checks.",
+      "fr": "[Général] Vous obtenez un bonus de +2 à tous les tests de Science psionique et d'Utilisation d'objet psionique."
+    },
+    "tags": ["feat", "general"],
+    "grantedModifiers": [
+      {
+        "id": "feat_psionic_affinity_psicraft",
+        "sourceId": "feat_psionic_affinity",
+        "sourceName": { "en": "Psionic Affinity", "fr": "Affinité psionique" },
+        "targetId": "skills.skill_psicraft",
+        "value": 2,
+        "type": "untyped"
+      },
+      {
+        "id": "feat_psionic_affinity_upd",
+        "sourceId": "feat_psionic_affinity",
+        "sourceName": { "en": "Psionic Affinity", "fr": "Affinité psionique" },
+        "targetId": "skills.skill_use_psionic_device",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_body",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Body", "fr": "Corps psionique" },
+    "description": {
+      "en": "[Psionic] Gain 2 hit points for each psionic feat you have (including this one). Gain 2 more HP whenever you take a new psionic feat.",
+      "fr": "[Psionique] Gagnez 2 points de vie pour chaque don psionique que vous possédez (y compris celui-ci). Gagnez 2 PV supplémentaires chaque fois que vous prenez un nouveau don psionique."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_charge",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Charge", "fr": "Charge psionique" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. When charging, make one 90-degree turn during your movement. All other charge restrictions still apply. Must have line of sight at start of turn.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Lors d'une charge, effectuez un virage de 90 degrés au cours de votre déplacement. Toutes les autres restrictions de charge s'appliquent toujours."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_speed_of_thought",
+          "errorMessage": "Requires Speed of Thought"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_dodge",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Dodge", "fr": "Esquive psionique" },
+    "description": {
+      "en": "[Psionic] While psionically focused, receive a +1 dodge bonus to AC. Stacks with the Dodge feat (but only against the designated opponent).",
+      "fr": "[Psionique] Tant que vous êtes concentré psioniquement, recevez un bonus d'esquive de +1 à la CA. S'accumule avec le don Esquive (mais seulement contre l'adversaire désigné)."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_endowment",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Endowment", "fr": "Don psionique" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus to add +1 to the save DC of a power you manifest.",
+      "fr": "[Psionique] Dépensez la concentration psionique pour ajouter +1 au DD de sauvegarde d'un pouvoir que vous manifestez."
+    },
+    "tags": ["feat", "psionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_fist",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Fist", "fr": "Poing psionique" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. Your unarmed strike or natural weapon attack deals +2d6 damage. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Votre attaque à mains nues ou avec une arme naturelle inflige +2d6 dégâts. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_hole",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Hole", "fr": "Trou psionique" },
+    "description": {
+      "en": "[General] When struck in melee, foe loses psionic focus. Powers targeting you cost manifester Wis-bonus extra PP (or fail if insufficient). Cannot be taken if you have a power point reserve or psi-like abilities.",
+      "fr": "[Général] Lorsque vous êtes frappé en mêlée, l'adversaire perd sa concentration psionique. Les pouvoirs vous ciblant coûtent au manifestateur un nombre de PP supplémentaires égal à votre bonus de Sagesse. Ne peut être pris si vous avez une réserve de PP ou des capacités analogue à la psionique."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_con.totalValue",
+      "operator": ">=",
+      "value": 15,
+      "errorMessage": "Requires Constitution 15+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_meditation",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Meditation", "fr": "Méditation psionique" },
+    "description": {
+      "en": "[Psionic] You can take a move action to become psionically focused (normally requires a full-round action).",
+      "fr": "[Psionique] Vous pouvez effectuer une action de mouvement pour être concentré psioniquement (nécessite normalement une action complexe)."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_wis.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Wisdom 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_concentration.ranks",
+          "operator": ">=",
+          "value": 7,
+          "errorMessage": "Requires 7 ranks in Concentration"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_shot",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Shot", "fr": "Tir psionique" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. Your ranged attack deals +2d6 damage. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Votre attaque à distance inflige +2d6 dégâts. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_point_blank_shot",
+      "errorMessage": "Requires Point Blank Shot"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_talent",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Talent", "fr": "Talent psionique" },
+    "description": {
+      "en": "[Psionic] Gain 2 power points when first taken. Subsequent times increase gain by 1. Can be taken multiple times.",
+      "fr": "[Psionique] Gagnez 2 points de pouvoir lors de la première prise. Les prises suivantes augmentent le gain de 1. Peut être pris plusieurs fois."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "psionic_manifester",
+      "errorMessage": "Requires a power point reserve"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_psionic_talent_pp",
+        "sourceId": "feat_psionic_talent",
+        "sourceName": { "en": "Psionic Talent", "fr": "Talent psionique" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_psionic_weapon",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Psionic Weapon", "fr": "Arme psionique" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. Your melee weapon attack deals +2d6 damage. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Votre attaque d'arme de mêlée inflige +2d6 dégâts. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_quicken_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Quicken Power", "fr": "Pouvoir accéléré" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. Manifest a power as a free action (no AoO). Manifesting time must be ≤ 1 round. One quickened power per round maximum. Increases PP cost by 6.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Manifestez un pouvoir par une action gratuite (sans attaque d'opportunité). Le temps de manifestation doit être ≤ 1 round. Maximum un pouvoir accéléré par round. Augmente le coût en PP de 6."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_rapid_metabolism",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Rapid Metabolism", "fr": "Métabolisme rapide" },
+    "description": {
+      "en": "[General] Naturally heal hit points per day equal to standard healing + double Constitution bonus, even without rest. If tended successfully by a Healer, regain double normal + double Con bonus.",
+      "fr": "[Général] Soignez naturellement des points de vie par jour égal à la guérison standard + double du bonus de Constitution, même sans repos."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_con.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Constitution 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_reckless_offense",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Reckless Offense", "fr": "Attaque téméraire" },
+    "description": {
+      "en": "[General] When using attack or full attack action in melee, take -4 AC penalty and gain +2 melee attack bonus. Lasts until beginning of your next turn.",
+      "fr": "[Général] Lors d'une action d'attaque ou attaque complète au corps à corps, prenez une pénalité de -4 à la CA et gagnez un bonus de +2 aux jets d'attaque au corps à corps. Dure jusqu'au début de votre prochain tour."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 1,
+      "errorMessage": "Requires Base Attack Bonus +1"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_return_shot",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Return Shot", "fr": "Tir de retour" },
+    "description": {
+      "en": "[Psionic] Expend focus and have free hand. Once per round, deflect a projectile/thrown weapon (≤1 size larger than you) as a free action, taking no damage. The attack is reflected back at the attacker using the original attack bonus.",
+      "fr": "[Psionique] Dépensez la concentration et ayez une main libre. Une fois par round, déviez un projectile/arme de jet (≤1 catégorie de taille plus grand que vous) comme action gratuite, sans prendre de dégâts. L'attaque est renvoyée à l'attaquant."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_point_blank_shot",
+          "errorMessage": "Requires Point Blank Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_shot",
+          "errorMessage": "Requires Psionic Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_fell_shot",
+          "errorMessage": "Requires Fell Shot"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 3,
+          "errorMessage": "Requires Base Attack Bonus +3"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_scribe_tattoo",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Scribe Tattoo", "fr": "Inscription de tatouage" },
+    "description": {
+      "en": "[Item Creation] Create a psionic tattoo of any power of 3rd level or lower that targets creatures. Takes one day. Base price = power level × manifester level × 50 gp. Cost: 1/25 base in XP, half in materials.",
+      "fr": "[Création d'objets] Créez un tatouage psionique pour tout pouvoir de niveau 3 ou moins ciblant des créatures. Prend un jour. Prix de base = niveau du pouvoir × niveau de manifestation × 50 po."
+    },
+    "tags": ["feat", "psionic_item_creation"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.manifester_level.totalValue",
+      "operator": ">=",
+      "value": 3,
+      "errorMessage": "Requires Manifester Level 3rd"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_sidestep_charge",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Sidestep Charge", "fr": "Esquive de charge" },
+    "description": {
+      "en": "[General] +4 dodge bonus to AC against charge attacks. If a charging opponent fails to hit you, you gain an immediate attack of opportunity.",
+      "fr": "[Général] Bonus d'esquive de +4 à la CA contre les attaques de charge. Si un adversaire qui charge échoue à vous toucher, vous gagnez une attaque d'opportunité immédiate."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_dex.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Dexterity 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_dodge",
+          "errorMessage": "Requires Dodge"
+        }
+      ]
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_sidestep_charge_ac",
+        "sourceId": "feat_sidestep_charge",
+        "sourceName": { "en": "Sidestep Charge", "fr": "Esquive de charge" },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "dodge",
+        "situationalContext": "vs_charge_attacks"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_speed_of_thought",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Speed of Thought", "fr": "Vitesse de la pensée" },
+    "description": {
+      "en": "[Psionic] While psionically focused and not wearing heavy armor, gain a +10 ft insight bonus to speed.",
+      "fr": "[Psionique] Tant que vous êtes concentré psioniquement et ne portez pas d'armure lourde, gagnez un bonus de perspicacité de 3 m à votre vitesse."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_wis.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Wisdom 13+"
+    },
+    "grantedModifiers": [
+      {
+        "id": "feat_speed_of_thought_move",
+        "sourceId": "feat_speed_of_thought",
+        "sourceName": { "en": "Speed of Thought", "fr": "Vitesse de la pensée" },
+        "targetId": "attributes.speed_land",
+        "value": 10,
+        "type": "insight",
+        "conditionNode": {
+          "logic": "NOT",
+          "node": {
+            "logic": "CONDITION",
+            "targetPath": "@activeTags",
+            "operator": "has_tag",
+            "value": "heavy_armor"
+          }
+        }
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_split_psionic_ray",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Split Psionic Ray", "fr": "Rayon psionique divisé" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus to split a psionic ray to affect two targets within range and within 30 ft of each other. Each takes full damage. Increases PP cost by 2.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique pour diviser un rayon psionique affectant deux cibles à portée et à moins de 9m l'une de l'autre. Chacune subit les dégâts complets. Augmente le coût en PP de 2."
+    },
+    "tags": ["feat", "metapsionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "metapsionic",
+      "errorMessage": "Requires any other metapsionic feat"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_stand_still",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Stand Still", "fr": "Immobilisation" },
+    "description": {
+      "en": "[General] When a foe's movement grants an AoO, give up the AoO and instead attempt to halt the foe. Hit forces a Reflex save (DC = 10 + damage rolled) or the foe's movement halts.",
+      "fr": "[Général] Lorsqu'un adversaire vous accorde une attaque d'opportunité par son déplacement, renoncez à l'AoO et tentez plutôt d'immobiliser l'adversaire. Un toucher force un jet de Réflexes (DD = 10 + dégâts roller) ou le déplacement de l'adversaire s'arrête."
+    },
+    "tags": ["feat", "general"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_str.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Strength 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_talented",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Talented", "fr": "Talentueux" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. When manifesting a power of 3rd level or lower, you do not take damage from overchanneling.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Lors de la manifestation d'un pouvoir de niveau 3 ou moins, vous ne subissez pas de dégâts dus à la surcharge."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@activeTags",
+      "operator": "has_tag",
+      "value": "feat_overchannel",
+      "errorMessage": "Requires Overchannel"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_twin_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Twin Power", "fr": "Pouvoir jumeau" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. Manifest a power twice on the same target/area simultaneously. All variables are the same for both. Target makes two saving throws if applicable. Increases PP cost by 6.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Manifestez un pouvoir deux fois sur la même cible/zone simultanément. Toutes les variables sont identiques. La cible effectue deux jets de sauvegarde si applicable. Augmente le coût en PP de 6."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_unavoidable_strike",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Unavoidable Strike", "fr": "Frappe inévitable" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. Resolve unarmed strike or natural weapon attack as a touch attack. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Résolvez une attaque à mains nues ou avec une arme naturelle comme une attaque de contact. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@attributes.stat_str.totalValue",
+          "operator": ">=",
+          "value": 13,
+          "errorMessage": "Requires Strength 13+"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "feat_psionic_fist",
+          "errorMessage": "Requires Psionic Fist"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 5,
+          "errorMessage": "Requires Base Attack Bonus +5"
+        }
+      ]
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_unconditional_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Unconditional Power", "fr": "Pouvoir inconditionnel" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. Manifest personal powers or powers affecting yourself while dazed, confused, nauseated, or stunned. Increases PP cost by 8.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Manifestez des pouvoirs personnels ou affectant vous-même lorsque vous êtes hébété, confus, écœuré ou étourdi. Augmente le coût en PP de 8."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_up_the_walls",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Up the Walls", "fr": "Ascension des murs" },
+    "description": {
+      "en": "[Psionic] While psionically focused, traverse vertical surfaces during movement if you begin and end on a horizontal surface. If you fail to end on a horizontal surface, you fall prone.",
+      "fr": "[Psionique] Tant que vous êtes concentré psioniquement, traversez des surfaces verticales pendant votre déplacement si vous commencez et terminez sur une surface horizontale. Si vous échouez à terminer sur une surface horizontale, vous tombez à plat ventre."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@attributes.stat_wis.totalValue",
+      "operator": ">=",
+      "value": 13,
+      "errorMessage": "Requires Wisdom 13+"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_widen_power",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Widen Power", "fr": "Pouvoir élargi" },
+    "description": {
+      "en": "[Metapsionic] Expend psionic focus. Increase numeric measurements of burst, emanation, line, or spread-shaped power's area by 100%. Increases PP cost by 4.",
+      "fr": "[Métapsionique] Dépensez la concentration psionique. Augmentez de 100% les mesures numériques de la zone d'un pouvoir en forme d'éclatement, d'émanation, de ligne ou de cône. Augmente le coût en PP de 4."
+    },
+    "tags": ["feat", "metapsionic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_wild_talent",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Wild Talent", "fr": "Talent sauvage" },
+    "description": {
+      "en": "[General] Your latent psionics flare to life. Gain a reserve of 2 power points and the designation of a psionic character. Does not grant the ability to manifest powers.",
+      "fr": "[Général] Vos capacités psioniques latentes s'éveillent. Gagnez une réserve de 2 points de pouvoir et la désignation de personnage psionique. N'accorde pas la capacité de manifester des pouvoirs."
+    },
+    "tags": ["feat", "general", "psionic"],
+    "grantedModifiers": [
+      {
+        "id": "feat_wild_talent_pp",
+        "sourceId": "feat_wild_talent",
+        "sourceName": { "en": "Wild Talent", "fr": "Talent sauvage" },
+        "targetId": "resources.power_points.maxValue",
+        "value": 2,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "feat_wounding_attack",
+    "category": "feat",
+    "ruleSource": "srd_psionics",
+    "label": { "en": "Wounding Attack", "fr": "Attaque blessante" },
+    "description": {
+      "en": "[Psionic] Expend psionic focus. Your attack deals 1 point of Constitution damage to the target in addition to normal damage. Declare before attacking; focus lost on miss.",
+      "fr": "[Psionique] Dépensez la concentration psionique. Votre attaque inflige 1 point de dégâts de Constitution à la cible en plus des dégâts normaux. Déclarez avant d'attaquer ; la concentration est perdue en cas d'échec."
+    },
+    "tags": ["feat", "psionic"],
+    "prerequisitesNode": {
+      "logic": "CONDITION",
+      "targetPath": "@combatStats.bab.totalValue",
+      "operator": ">=",
+      "value": 8,
+      "errorMessage": "Requires Base Attack Bonus +8"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  }
+]

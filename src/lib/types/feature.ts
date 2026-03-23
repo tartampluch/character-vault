@@ -2348,29 +2348,96 @@ export type PsionicDisplay =
  * spending additional Power Points. Each augmentation level costs more PP and
  * provides an additional effect (extra damage dice, extended duration, etc.).
  *
+ * D20SRD CONVERSION NOTE (C-15c/d):
+ *   The conversion pipeline specifies `effectDescription.en/fr` on each augmentation
+ *   to describe the effect in human-readable terms. This is required for two scenarios:
+ *   1. MECHANICAL augmentations (e.g., +1d10 damage): the description supplements
+ *      the `grantedModifiers[].sourceName` with a full sentence explanation.
+ *   2. QUALITATIVE augmentations (e.g., "change energy type", "manifest as swift
+ *      action"): `grantedModifiers` may be empty or contain a flag-only modifier;
+ *      `effectDescription` carries the only human-readable description of the effect.
+ *
+ * CastingPanel UI contract:
+ *   - Display `effectDescription` (if present) as the augmentation's label/tooltip.
+ *   - If absent, fall back to the first `grantedModifiers[0].sourceName`.
+ *   - Never error if both are absent (some augmentations are description-only placeholders).
+ *
  * Example: "Mind Thrust" (1d10 base) can be augmented for +1d10 per 2 extra PP.
- * This would be represented as:
  * ```json
- * { "costIncrement": 2, "grantedModifiers": [{...damage+1d10...}], "isRepeatable": true }
+ * {
+ *   "costIncrement": 2,
+ *   "effectDescription": {
+ *     "en": "For every 2 additional power points you spend, this power's damage increases by 1d10.",
+ *     "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, les dégâts augmentent de 1d10."
+ *   },
+ *   "grantedModifiers": [{ "targetId": "combatStats.power_damage_bonus", "value": "1d10", ... }],
+ *   "isRepeatable": true
+ * }
  * ```
+ *
+ * Example: qualitative-only augmentation (no pipeline modifier):
+ * ```json
+ * {
+ *   "costIncrement": 4,
+ *   "effectDescription": {
+ *     "en": "You may change the energy type to cold, electricity, fire, or sonic.",
+ *     "fr": "Vous pouvez changer le type d'énergie en froid, électricité, feu ou son."
+ *   },
+ *   "grantedModifiers": [],
+ *   "isRepeatable": false
+ * }
+ * ```
+ *
+ * @see ARCHITECTURE.md section 5.2.2 — AugmentationRule fields and CastingPanel contract
+ * @see D20SRD_CONVERSION.md C-15c/d — conversion spec for psionic powers
  */
 export interface AugmentationRule {
   /**
    * The additional Power Point cost for this augmentation step.
    * Added on top of the power's base cost.
+   * Total cost (base + all applied increments) is capped at the manifester's level.
    */
   costIncrement: number;
 
   /**
+   * Human-readable description of the augmentation's effect, in both languages.
+   *
+   * REQUIRED for qualitative augmentations (energy type changes, action type changes,
+   * targeting changes) where `grantedModifiers` is empty or contains only flag-like
+   * pipeline modifications that are not self-explanatory.
+   *
+   * OPTIONAL for purely mechanical augmentations where `grantedModifiers[0].sourceName`
+   * already clearly describes the effect (e.g., "+1d10 fire damage").
+   *
+   * The CastingPanel displays this text verbatim in the augmentation picker UI.
+   *
+   * Must be present if `grantedModifiers` is empty — otherwise augmentation has no
+   * description at all and would appear as a blank entry in the UI.
+   */
+  effectDescription?: LocalizedString;
+
+  /**
    * The modifiers granted by this augmentation level.
-   * These are added to the power's base effect when the augmentation is applied.
+   *
+   * For mechanical effects (damage, range, duration increases):
+   *   Use StandardModifier objects targeting appropriate combat stat pipelines.
+   *   E.g.: `{ "targetId": "combatStats.power_damage_bonus", "value": "1d6", ... }`
+   *
+   * For qualitative effects (change targeting, energy type, spell-like behaviour):
+   *   May be empty `[]`. The `effectDescription` field carries the description.
+   *
+   * These modifiers are NOT processed by the static DAG pipeline. Instead, the
+   * CastingPanel reads them at manifestion time and applies them transiently to
+   * the current cast context only. They do NOT appear in the character sheet.
    */
   grantedModifiers: Modifier[];
 
   /**
    * Whether this augmentation can be applied multiple times.
-   * `true`: The manifester can spend multiple increments (e.g., +1d10 per 2 PP, up to manifester level).
-   * `false`: This augmentation can only be applied once.
+   * `true`: The manifester can spend multiple increments (e.g., +1d10 per 2 PP,
+   *         spending up to manifester level total PP across all augmentations).
+   * `false`: This augmentation can only be applied once per manifestation.
+   *          Example: "Spend 6 extra PP to treat this as a Greater power" — once is enough.
    */
   isRepeatable: boolean;
 }

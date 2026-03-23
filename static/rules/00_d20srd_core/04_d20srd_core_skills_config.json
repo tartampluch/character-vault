@@ -5,7 +5,10 @@
     "data": {
       "skill_appraise": {
         "id": "skill_appraise",
-        "label": { "en": "Appraise", "fr": "Estimation" },
+        "label": {
+          "en": "Appraise",
+          "fr": "Estimation"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -26,7 +29,10 @@
       },
       "skill_balance": {
         "id": "skill_balance",
-        "label": { "en": "Balance", "fr": "Équilibre" },
+        "label": {
+          "en": "Balance",
+          "fr": "Équilibre"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -46,7 +52,10 @@
       },
       "skill_bluff": {
         "id": "skill_bluff",
-        "label": { "en": "Bluff", "fr": "Bluff" },
+        "label": {
+          "en": "Bluff",
+          "fr": "Bluff"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -88,7 +97,10 @@
       },
       "skill_climb": {
         "id": "skill_climb",
-        "label": { "en": "Climb", "fr": "Escalade" },
+        "label": {
+          "en": "Climb",
+          "fr": "Escalade"
+        },
         "keyAbility": "stat_str",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -109,24 +121,56 @@
       },
       "skill_concentration": {
         "id": "skill_concentration",
-        "label": { "en": "Concentration", "fr": "Concentration" },
+        "label": {
+          "en": "Concentration",
+          "fr": "Concentration"
+        },
         "keyAbility": "stat_con",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
-          "en": "You must make a Concentration check whenever you might potentially be distracted while engaged in some action that requires your full attention, such as casting a spell, concentrating on an active spell, directing a spell, using a spell-like ability, or using a skill that would provoke an attack of opportunity. If the check fails, the action automatically fails and is wasted.",
+          "en": "You must make a Concentration check whenever you might potentially be distracted while engaged in some action that requires your full attention, such as casting a spell, concentrating on an active spell, directing a spell, using a spell-like ability, or using a skill that would provoke an attack of opportunity. If the check fails, the action automatically fails and is wasted. [Psionic additions: Gain psionic focus (DC 20, full-round action provokes AoO); manifest without display (DC 15 + power level); manifest defensively without AoO (DC 15 + power level). Failure wastes power points. 5 ranks grants +2 to Autohypnosis checks. Combat Manifestation feat grants +4 when manifesting defensively or while grappling.]",
           "fr": "Vous devez effectuer un test de Concentration chaque fois que vous pourriez être distrait(e) lors d'une action nécessitant toute votre attention, comme lancer un sort, vous concentrer sur un sort actif, diriger un sort, utiliser une capacité de sort ou utiliser une compétence qui provoquerait une attaque d'opportunité. Si le test échoue, l'action échoue automatiquement et est gaspillée."
         },
-        "synergies": []
+        "synergies": [
+          {
+            "sourceSkillId": "skill_concentration",
+            "minRanks": 5,
+            "targetSkillId": "skill_autohypnosis",
+            "bonus": 2,
+            "type": "synergy"
+          }
+        ]
       },
       "skill_craft": {
         "id": "skill_craft",
-        "label": { "en": "Craft", "fr": "Artisanat" },
+        "label": {
+          "en": "Craft",
+          "fr": "Artisanat"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
-        "variants": ["skill_craft_alchemy", "skill_craft_armorsmithing", "skill_craft_bowmaking", "skill_craft_calligraphy", "skill_craft_carpentry", "skill_craft_cobbling", "skill_craft_gemcutting", "skill_craft_leatherworking", "skill_craft_locksmithing", "skill_craft_painting", "skill_craft_pottery", "skill_craft_sculpting", "skill_craft_shipmaking", "skill_craft_stonemasonry", "skill_craft_trapmaking", "skill_craft_weaponsmithing", "skill_craft_weaving"],
+        "variants": [
+          "skill_craft_alchemy",
+          "skill_craft_armorsmithing",
+          "skill_craft_bowmaking",
+          "skill_craft_calligraphy",
+          "skill_craft_carpentry",
+          "skill_craft_cobbling",
+          "skill_craft_gemcutting",
+          "skill_craft_leatherworking",
+          "skill_craft_locksmithing",
+          "skill_craft_painting",
+          "skill_craft_pottery",
+          "skill_craft_sculpting",
+          "skill_craft_shipmaking",
+          "skill_craft_stonemasonry",
+          "skill_craft_trapmaking",
+          "skill_craft_weaponsmithing",
+          "skill_craft_weaving"
+        ],
         "description": {
           "en": "Like Knowledge, Perform, and Profession, Craft is actually a number of separate skills. A Craft skill is focused on creating something. You can practice your trade and make a decent living, earning about half your check result in gold pieces per week of dedicated work. The basic function is to allow you to make an item of the appropriate type.",
           "fr": "Comme Connaissance, Représentation et Profession, Artisanat représente en réalité plusieurs compétences distinctes. Une compétence d'Artisanat est axée sur la création d'un objet. Vous pouvez pratiquer votre métier et gagner décemment votre vie, gagnant environ la moitié du résultat de votre test en pièces d'or par semaine de travail."
@@ -144,7 +188,10 @@
       },
       "skill_craft_alchemy": {
         "id": "skill_craft_alchemy",
-        "label": { "en": "Craft (Alchemy)", "fr": "Artisanat (Alchimie)" },
+        "label": {
+          "en": "Craft (Alchemy)",
+          "fr": "Artisanat (Alchimie)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -166,7 +213,10 @@
       },
       "skill_craft_weaponsmithing": {
         "id": "skill_craft_weaponsmithing",
-        "label": { "en": "Craft (Weaponsmithing)", "fr": "Artisanat (Armurerie)" },
+        "label": {
+          "en": "Craft (Weaponsmithing)",
+          "fr": "Artisanat (Armurerie)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -188,7 +238,10 @@
       },
       "skill_craft_armorsmithing": {
         "id": "skill_craft_armorsmithing",
-        "label": { "en": "Craft (Armorsmithing)", "fr": "Artisanat (Fabrication d'armures)" },
+        "label": {
+          "en": "Craft (Armorsmithing)",
+          "fr": "Artisanat (Fabrication d'armures)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -210,7 +263,10 @@
       },
       "skill_craft_bowmaking": {
         "id": "skill_craft_bowmaking",
-        "label": { "en": "Craft (Bowmaking)", "fr": "Artisanat (Fabrication d'arcs)" },
+        "label": {
+          "en": "Craft (Bowmaking)",
+          "fr": "Artisanat (Fabrication d'arcs)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -232,7 +288,10 @@
       },
       "skill_craft_trapmaking": {
         "id": "skill_craft_trapmaking",
-        "label": { "en": "Craft (Trapmaking)", "fr": "Artisanat (Fabrication de pièges)" },
+        "label": {
+          "en": "Craft (Trapmaking)",
+          "fr": "Artisanat (Fabrication de pièges)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -245,7 +304,10 @@
       },
       "skill_decipher_script": {
         "id": "skill_decipher_script",
-        "label": { "en": "Decipher Script", "fr": "Déchiffrage" },
+        "label": {
+          "en": "Decipher Script",
+          "fr": "Déchiffrage"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -266,7 +328,10 @@
       },
       "skill_diplomacy": {
         "id": "skill_diplomacy",
-        "label": { "en": "Diplomacy", "fr": "Diplomatie" },
+        "label": {
+          "en": "Diplomacy",
+          "fr": "Diplomatie"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -300,7 +365,10 @@
       },
       "skill_disable_device": {
         "id": "skill_disable_device",
-        "label": { "en": "Disable Device", "fr": "Sabotage" },
+        "label": {
+          "en": "Disable Device",
+          "fr": "Sabotage"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -312,7 +380,10 @@
       },
       "skill_disguise": {
         "id": "skill_disguise",
-        "label": { "en": "Disguise", "fr": "Déguisement" },
+        "label": {
+          "en": "Disguise",
+          "fr": "Déguisement"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -333,7 +404,10 @@
       },
       "skill_escape_artist": {
         "id": "skill_escape_artist",
-        "label": { "en": "Escape Artist", "fr": "Évasion" },
+        "label": {
+          "en": "Escape Artist",
+          "fr": "Évasion"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -362,7 +436,10 @@
       },
       "skill_forgery": {
         "id": "skill_forgery",
-        "label": { "en": "Forgery", "fr": "Contrefaçon" },
+        "label": {
+          "en": "Forgery",
+          "fr": "Contrefaçon"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -374,7 +451,10 @@
       },
       "skill_gather_information": {
         "id": "skill_gather_information",
-        "label": { "en": "Gather Information", "fr": "Collecte d'informations" },
+        "label": {
+          "en": "Gather Information",
+          "fr": "Collecte d'informations"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -394,7 +474,10 @@
       },
       "skill_handle_animal": {
         "id": "skill_handle_animal",
-        "label": { "en": "Handle Animal", "fr": "Dressage" },
+        "label": {
+          "en": "Handle Animal",
+          "fr": "Dressage"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -414,7 +497,10 @@
       },
       "skill_heal": {
         "id": "skill_heal",
-        "label": { "en": "Heal", "fr": "Art de la guérison" },
+        "label": {
+          "en": "Heal",
+          "fr": "Art de la guérison"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -426,7 +512,10 @@
       },
       "skill_hide": {
         "id": "skill_hide",
-        "label": { "en": "Hide", "fr": "Discrétion" },
+        "label": {
+          "en": "Hide",
+          "fr": "Discrétion"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -438,7 +527,10 @@
       },
       "skill_intimidate": {
         "id": "skill_intimidate",
-        "label": { "en": "Intimidate", "fr": "Intimidation" },
+        "label": {
+          "en": "Intimidate",
+          "fr": "Intimidation"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -458,7 +550,10 @@
       },
       "skill_jump": {
         "id": "skill_jump",
-        "label": { "en": "Jump", "fr": "Saut" },
+        "label": {
+          "en": "Jump",
+          "fr": "Saut"
+        },
         "keyAbility": "stat_str",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -485,7 +580,10 @@
       },
       "skill_knowledge_arcana": {
         "id": "skill_knowledge_arcana",
-        "label": { "en": "Knowledge (Arcana)", "fr": "Connaissance (Arcanes)" },
+        "label": {
+          "en": "Knowledge (Arcana)",
+          "fr": "Connaissance (Arcanes)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -506,7 +604,10 @@
       },
       "skill_knowledge_architecture": {
         "id": "skill_knowledge_architecture",
-        "label": { "en": "Knowledge (Architecture and Engineering)", "fr": "Connaissance (Architecture et Génie)" },
+        "label": {
+          "en": "Knowledge (Architecture and Engineering)",
+          "fr": "Connaissance (Architecture et Génie)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -528,7 +629,10 @@
       },
       "skill_knowledge_dungeoneering": {
         "id": "skill_knowledge_dungeoneering",
-        "label": { "en": "Knowledge (Dungeoneering)", "fr": "Connaissance (Exploration souterraine)" },
+        "label": {
+          "en": "Knowledge (Dungeoneering)",
+          "fr": "Connaissance (Exploration souterraine)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -550,7 +654,10 @@
       },
       "skill_knowledge_geography": {
         "id": "skill_knowledge_geography",
-        "label": { "en": "Knowledge (Geography)", "fr": "Connaissance (Géographie)" },
+        "label": {
+          "en": "Knowledge (Geography)",
+          "fr": "Connaissance (Géographie)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -572,7 +679,10 @@
       },
       "skill_knowledge_history": {
         "id": "skill_knowledge_history",
-        "label": { "en": "Knowledge (History)", "fr": "Connaissance (Histoire)" },
+        "label": {
+          "en": "Knowledge (History)",
+          "fr": "Connaissance (Histoire)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -585,7 +695,10 @@
       },
       "skill_knowledge_local": {
         "id": "skill_knowledge_local",
-        "label": { "en": "Knowledge (Local)", "fr": "Connaissance (Région)" },
+        "label": {
+          "en": "Knowledge (Local)",
+          "fr": "Connaissance (Région)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -606,7 +719,10 @@
       },
       "skill_knowledge_nature": {
         "id": "skill_knowledge_nature",
-        "label": { "en": "Knowledge (Nature)", "fr": "Connaissance (Nature)" },
+        "label": {
+          "en": "Knowledge (Nature)",
+          "fr": "Connaissance (Nature)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -635,7 +751,10 @@
       },
       "skill_knowledge_nobility": {
         "id": "skill_knowledge_nobility",
-        "label": { "en": "Knowledge (Nobility and Royalty)", "fr": "Connaissance (Noblesse et Royauté)" },
+        "label": {
+          "en": "Knowledge (Nobility and Royalty)",
+          "fr": "Connaissance (Noblesse et Royauté)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -656,7 +775,10 @@
       },
       "skill_knowledge_planes": {
         "id": "skill_knowledge_planes",
-        "label": { "en": "Knowledge (The Planes)", "fr": "Connaissance (Les Plans)" },
+        "label": {
+          "en": "Knowledge (The Planes)",
+          "fr": "Connaissance (Les Plans)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -678,7 +800,10 @@
       },
       "skill_knowledge_religion": {
         "id": "skill_knowledge_religion",
-        "label": { "en": "Knowledge (Religion)", "fr": "Connaissance (Religion)" },
+        "label": {
+          "en": "Knowledge (Religion)",
+          "fr": "Connaissance (Religion)"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -691,7 +816,10 @@
       },
       "skill_listen": {
         "id": "skill_listen",
-        "label": { "en": "Listen", "fr": "Écoute" },
+        "label": {
+          "en": "Listen",
+          "fr": "Écoute"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -703,7 +831,10 @@
       },
       "skill_move_silently": {
         "id": "skill_move_silently",
-        "label": { "en": "Move Silently", "fr": "Déplacement silencieux" },
+        "label": {
+          "en": "Move Silently",
+          "fr": "Déplacement silencieux"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -715,7 +846,10 @@
       },
       "skill_open_lock": {
         "id": "skill_open_lock",
-        "label": { "en": "Open Lock", "fr": "Crochetage" },
+        "label": {
+          "en": "Open Lock",
+          "fr": "Crochetage"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -727,12 +861,25 @@
       },
       "skill_perform": {
         "id": "skill_perform",
-        "label": { "en": "Perform", "fr": "Représentation" },
+        "label": {
+          "en": "Perform",
+          "fr": "Représentation"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
-        "variants": ["skill_perform_act", "skill_perform_comedy", "skill_perform_dance", "skill_perform_keyboard_instruments", "skill_perform_oratory", "skill_perform_percussion_instruments", "skill_perform_sing", "skill_perform_string_instruments", "skill_perform_wind_instruments"],
+        "variants": [
+          "skill_perform_act",
+          "skill_perform_comedy",
+          "skill_perform_dance",
+          "skill_perform_keyboard_instruments",
+          "skill_perform_oratory",
+          "skill_perform_percussion_instruments",
+          "skill_perform_sing",
+          "skill_perform_string_instruments",
+          "skill_perform_wind_instruments"
+        ],
         "description": {
           "en": "Like Craft and Knowledge, Perform is actually a number of separate skills. You can impress audiences with your talent and skill. An audience evaluates your performance on a scale of 1 to 30. You can earn money from your performances as a musician, storyteller, or other entertainer.",
           "fr": "Comme Artisanat et Connaissance, Représentation représente en réalité plusieurs compétences distinctes. Vous pouvez impressionner le public avec votre talent et vos compétences. Un public évalue votre performance sur une échelle de 1 à 30. Vous pouvez gagner de l'argent grâce à vos représentations en tant que musicien, conteur ou autre artiste."
@@ -741,7 +888,10 @@
       },
       "skill_perform_act": {
         "id": "skill_perform_act",
-        "label": { "en": "Perform (Act)", "fr": "Représentation (Comédie)" },
+        "label": {
+          "en": "Perform (Act)",
+          "fr": "Représentation (Comédie)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -754,7 +904,10 @@
       },
       "skill_perform_dance": {
         "id": "skill_perform_dance",
-        "label": { "en": "Perform (Dance)", "fr": "Représentation (Danse)" },
+        "label": {
+          "en": "Perform (Dance)",
+          "fr": "Représentation (Danse)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -767,7 +920,10 @@
       },
       "skill_perform_oratory": {
         "id": "skill_perform_oratory",
-        "label": { "en": "Perform (Oratory)", "fr": "Représentation (Oratoire)" },
+        "label": {
+          "en": "Perform (Oratory)",
+          "fr": "Représentation (Oratoire)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -780,7 +936,10 @@
       },
       "skill_perform_sing": {
         "id": "skill_perform_sing",
-        "label": { "en": "Perform (Sing)", "fr": "Représentation (Chant)" },
+        "label": {
+          "en": "Perform (Sing)",
+          "fr": "Représentation (Chant)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -793,7 +952,10 @@
       },
       "skill_perform_string_instruments": {
         "id": "skill_perform_string_instruments",
-        "label": { "en": "Perform (String Instruments)", "fr": "Représentation (Instruments à cordes)" },
+        "label": {
+          "en": "Perform (String Instruments)",
+          "fr": "Représentation (Instruments à cordes)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -806,7 +968,10 @@
       },
       "skill_perform_wind_instruments": {
         "id": "skill_perform_wind_instruments",
-        "label": { "en": "Perform (Wind Instruments)", "fr": "Représentation (Instruments à vent)" },
+        "label": {
+          "en": "Perform (Wind Instruments)",
+          "fr": "Représentation (Instruments à vent)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -819,7 +984,10 @@
       },
       "skill_perform_percussion_instruments": {
         "id": "skill_perform_percussion_instruments",
-        "label": { "en": "Perform (Percussion Instruments)", "fr": "Représentation (Instruments à percussion)" },
+        "label": {
+          "en": "Perform (Percussion Instruments)",
+          "fr": "Représentation (Instruments à percussion)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -832,7 +1000,10 @@
       },
       "skill_perform_keyboard_instruments": {
         "id": "skill_perform_keyboard_instruments",
-        "label": { "en": "Perform (Keyboard Instruments)", "fr": "Représentation (Instruments à clavier)" },
+        "label": {
+          "en": "Perform (Keyboard Instruments)",
+          "fr": "Représentation (Instruments à clavier)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -845,7 +1016,10 @@
       },
       "skill_perform_comedy": {
         "id": "skill_perform_comedy",
-        "label": { "en": "Perform (Comedy)", "fr": "Représentation (Comédie bouffonne)" },
+        "label": {
+          "en": "Perform (Comedy)",
+          "fr": "Représentation (Comédie bouffonne)"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -858,12 +1032,28 @@
       },
       "skill_profession": {
         "id": "skill_profession",
-        "label": { "en": "Profession", "fr": "Profession" },
+        "label": {
+          "en": "Profession",
+          "fr": "Profession"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
-        "variants": ["skill_profession_herbalist", "skill_profession_sailor", "skill_profession_soldier", "skill_profession_scribe", "skill_profession_merchant", "skill_profession_cook", "skill_profession_farmer", "skill_profession_hunter", "skill_profession_miner", "skill_profession_shepherd", "skill_profession_tanner", "skill_profession_woodcutter"],
+        "variants": [
+          "skill_profession_herbalist",
+          "skill_profession_sailor",
+          "skill_profession_soldier",
+          "skill_profession_scribe",
+          "skill_profession_merchant",
+          "skill_profession_cook",
+          "skill_profession_farmer",
+          "skill_profession_hunter",
+          "skill_profession_miner",
+          "skill_profession_shepherd",
+          "skill_profession_tanner",
+          "skill_profession_woodcutter"
+        ],
         "description": {
           "en": "Like Craft, Knowledge, and Perform, Profession is actually a number of separate skills. Unlike Craft, Profession does not cover the creation of goods (that's covered by Craft). Instead, Profession covers an occupation. You can earn half your check result in gold pieces per week from practicing your Profession.",
           "fr": "Comme Artisanat, Connaissance et Représentation, Profession représente en réalité plusieurs compétences distinctes. Contrairement à Artisanat, Profession ne couvre pas la création de marchandises (c'est la compétence Artisanat). La Profession couvre une occupation. Vous pouvez gagner la moitié du résultat de votre test en pièces d'or par semaine en pratiquant votre Profession."
@@ -872,7 +1062,10 @@
       },
       "skill_ride": {
         "id": "skill_ride",
-        "label": { "en": "Ride", "fr": "Équitation" },
+        "label": {
+          "en": "Ride",
+          "fr": "Équitation"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -892,7 +1085,10 @@
       },
       "skill_search": {
         "id": "skill_search",
-        "label": { "en": "Search", "fr": "Fouille" },
+        "label": {
+          "en": "Search",
+          "fr": "Fouille"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -921,7 +1117,10 @@
       },
       "skill_sense_motive": {
         "id": "skill_sense_motive",
-        "label": { "en": "Sense Motive", "fr": "Psychologie" },
+        "label": {
+          "en": "Sense Motive",
+          "fr": "Psychologie"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -941,7 +1140,10 @@
       },
       "skill_sleight_of_hand": {
         "id": "skill_sleight_of_hand",
-        "label": { "en": "Sleight of Hand", "fr": "Escamotage" },
+        "label": {
+          "en": "Sleight of Hand",
+          "fr": "Escamotage"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": true,
@@ -961,7 +1163,10 @@
       },
       "skill_speak_language": {
         "id": "skill_speak_language",
-        "label": { "en": "Speak Language", "fr": "Langues" },
+        "label": {
+          "en": "Speak Language",
+          "fr": "Langues"
+        },
         "keyAbility": null,
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -973,7 +1178,10 @@
       },
       "skill_spellcraft": {
         "id": "skill_spellcraft",
-        "label": { "en": "Spellcraft", "fr": "Art de la magie" },
+        "label": {
+          "en": "Spellcraft",
+          "fr": "Art de la magie"
+        },
         "keyAbility": "stat_int",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -1009,7 +1217,10 @@
       },
       "skill_spot": {
         "id": "skill_spot",
-        "label": { "en": "Spot", "fr": "Observation" },
+        "label": {
+          "en": "Spot",
+          "fr": "Observation"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -1021,7 +1232,10 @@
       },
       "skill_survival": {
         "id": "skill_survival",
-        "label": { "en": "Survival", "fr": "Survie" },
+        "label": {
+          "en": "Survival",
+          "fr": "Survie"
+        },
         "keyAbility": "stat_wis",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -1081,7 +1295,10 @@
       },
       "skill_swim": {
         "id": "skill_swim",
-        "label": { "en": "Swim", "fr": "Natation" },
+        "label": {
+          "en": "Swim",
+          "fr": "Natation"
+        },
         "keyAbility": "stat_str",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
@@ -1093,7 +1310,10 @@
       },
       "skill_tumble": {
         "id": "skill_tumble",
-        "label": { "en": "Tumble", "fr": "Acrobaties" },
+        "label": {
+          "en": "Tumble",
+          "fr": "Acrobaties"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": true,
@@ -1127,7 +1347,10 @@
       },
       "skill_use_magic_device": {
         "id": "skill_use_magic_device",
-        "label": { "en": "Use Magic Device", "fr": "Utilisation d'objets magiques" },
+        "label": {
+          "en": "Use Magic Device",
+          "fr": "Utilisation d'objets magiques"
+        },
         "keyAbility": "stat_cha",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
@@ -1164,7 +1387,10 @@
       },
       "skill_use_rope": {
         "id": "skill_use_rope",
-        "label": { "en": "Use Rope", "fr": "Utilisation de cordes" },
+        "label": {
+          "en": "Use Rope",
+          "fr": "Utilisation de cordes"
+        },
         "keyAbility": "stat_dex",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
@@ -1196,6 +1422,126 @@
             "bonus": 2,
             "type": "synergy",
             "condition": "binding_someone"
+          }
+        ]
+      },
+      "skill_autohypnosis": {
+        "id": "skill_autohypnosis",
+        "label": {
+          "en": "Autohypnosis",
+          "fr": "Autohypnose"
+        },
+        "keyAbility": "stat_wis",
+        "canBeUsedUntrained": false,
+        "appliesArmorCheckPenalty": false,
+        "description": {
+          "en": "You have trained your mind to gain mastery over your body and the mind's own deepest capabilities. Check uses: Ignore caltrop wound (DC 18), Memorize information (DC 15), Resist dying (DC 20), Resist fear (fear effect DC), Tolerate poison (poison DC), Willpower at 0 HP (DC 20). If you have the Autonomous feat, you get a +2 bonus on Autohypnosis checks.",
+          "fr": "Vous avez entraîné votre esprit pour maîtriser votre corps et les capacités les plus profondes de l'esprit. Utilisations : Ignorer une blessure de crapaudine (DD 18), Mémoriser des informations (DD 15), Résister à la mort (DD 20), Résister à la peur (DD de l'effet), Tolérer un poison (DD du poison), Force de volonté à 0 PV (DD 20)."
+        },
+        "synergies": [
+          {
+            "sourceSkillId": "skill_autohypnosis",
+            "minRanks": 5,
+            "targetSkillId": "skill_knowledge_psionics",
+            "bonus": 2,
+            "type": "synergy"
+          },
+          {
+            "sourceSkillId": "skill_concentration",
+            "minRanks": 5,
+            "targetSkillId": "skill_autohypnosis",
+            "bonus": 2,
+            "type": "synergy"
+          }
+        ]
+      },
+      "skill_knowledge_psionics": {
+        "id": "skill_knowledge_psionics",
+        "label": {
+          "en": "Knowledge (Psionics)",
+          "fr": "Connaissance (psionique)"
+        },
+        "keyAbility": "stat_int",
+        "canBeUsedUntrained": true,
+        "appliesArmorCheckPenalty": false,
+        "description": {
+          "en": "Knowledge (psionics) covers ancient mysteries, psionic traditions, psychic symbols, cryptic phrases, astral constructs, and psionic races. You can use this skill to identify psionic monsters and their special powers or vulnerabilities. An untrained check is simply an Intelligence check — you know only common knowledge (DC 10 or lower) without training. If you have the Autonomous feat, you get a +2 bonus.",
+          "fr": "La Connaissance (psionique) couvre les mystères anciens, les traditions psioniques, les symboles psychiques, les phrases cryptiques, les constructions astrales et les races psioniques. Vous pouvez utiliser cette compétence pour identifier les monstres psioniques et leurs capacités ou vulnérabilités spéciales."
+        },
+        "synergies": [
+          {
+            "sourceSkillId": "skill_knowledge_psionics",
+            "minRanks": 5,
+            "targetSkillId": "skill_psicraft",
+            "bonus": 2,
+            "type": "synergy"
+          },
+          {
+            "sourceSkillId": "skill_autohypnosis",
+            "minRanks": 5,
+            "targetSkillId": "skill_knowledge_psionics",
+            "bonus": 2,
+            "type": "synergy"
+          }
+        ]
+      },
+      "skill_psicraft": {
+        "id": "skill_psicraft",
+        "label": {
+          "en": "Psicraft",
+          "fr": "Science psionique"
+        },
+        "keyAbility": "stat_int",
+        "canBeUsedUntrained": false,
+        "appliesArmorCheckPenalty": false,
+        "description": {
+          "en": "Use this skill to identify powers as they are manifested or powers already in place. DC table: 15 + power level (identify power being manifested; identify discipline of detected aura; address power stone); 20 + power level (identify power already in effect; identify psionic materials); 25 + power level (identify power after making saving throw against it); 25 (identify psionic tattoo, 1 min); 20 (draw diagram for psionic dimensional anchor). A psion gets +2 on checks within their discipline. Psionic Affinity feat grants +2.",
+          "fr": "Utilisez cette compétence pour identifier les pouvoirs lors de leur manifestation ou des pouvoirs déjà en place. DD : 15 + niveau du pouvoir (identifier un pouvoir en cours de manifestation; identifier la discipline d'une aura détectée; déchiffrer une pierre de pouvoir); 20 + niveau du pouvoir (identifier un pouvoir déjà en place). Un psion gagne +2 pour les tests liés à sa discipline. Le don Affinité psionique accorde +2."
+        },
+        "synergies": [
+          {
+            "sourceSkillId": "skill_knowledge_psionics",
+            "minRanks": 5,
+            "targetSkillId": "skill_psicraft",
+            "bonus": 2,
+            "type": "synergy"
+          },
+          {
+            "sourceSkillId": "skill_psicraft",
+            "minRanks": 5,
+            "targetSkillId": "skill_use_psionic_device",
+            "bonus": 2,
+            "type": "synergy"
+          }
+        ]
+      },
+      "skill_use_psionic_device": {
+        "id": "skill_use_psionic_device",
+        "label": {
+          "en": "Use Psionic Device",
+          "fr": "Utilisation d'objet psionique"
+        },
+        "keyAbility": "stat_cha",
+        "canBeUsedUntrained": false,
+        "appliesArmorCheckPenalty": false,
+        "description": {
+          "en": "Use this skill to activate psionic devices including power stones and dorjes that you otherwise could not activate. DC table: 25 (activate blindly); 25 + power level (address power stone); see text (emulate ability score); 30 (emulate alignment); 20 (emulate class feature); 25 (emulate race); 20 (use dorje); 20 + manifester level (use power stone). Cannot take 10 with this skill. Cannot aid another. Psionic Affinity feat grants +2.",
+          "fr": "Utilisez cette compétence pour activer des objets psioniques, notamment des pierres de pouvoir et des dorjes, que vous ne pourriez pas activer autrement. DD : 25 (activation aveugle); 25 + niveau du pouvoir (déchiffrer une pierre de pouvoir); selon contexte (émuler une valeur de caractéristique); 30 (émuler un alignement); 20 (émuler une aptitude de classe); 25 (émuler une race); 20 (utiliser un dorje); 20 + niveau de manifestation (utiliser une pierre de pouvoir)."
+        },
+        "synergies": [
+          {
+            "sourceSkillId": "skill_psicraft",
+            "minRanks": 5,
+            "targetSkillId": "skill_use_psionic_device",
+            "bonus": 2,
+            "type": "synergy"
+          },
+          {
+            "sourceSkillId": "skill_use_psionic_device",
+            "minRanks": 5,
+            "targetSkillId": "skill_psicraft",
+            "bonus": 2,
+            "type": "synergy"
           }
         ]
       }

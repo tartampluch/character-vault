@@ -635,4 +635,30 @@ _Pre-conversion engine gap identified during C-14x analysis. INT/WIS/CHA scores,
 
 _All 18 artifacts (11 minor, 5 major + 10 Orb variants) were analysed against the engine. No computation gap found. All effects map to existing primitives: `grantedModifiers`, `resourcePoolTemplates`, `staffSpells`, `weaponData`, `conditionNode`, `situationalContext`, `setAbsolute`, `type:"inherent"`. Two metadata-only fields were added: `ItemFeature.isUnique` and `ItemFeature.artifactTier`. These are GM campaign layer fields with no engine pipeline effect — no tests needed. Zero new failing tests after addition._
 
+### Phase E-16: Psionic System Engine Analysis + AugmentationRule.effectDescription
+
+_Pre-conversion engine gap analysis for C-15a–k. The psionic system is largely handled by existing engine primitives. One genuine type gap identified: `AugmentationRule` was missing an `effectDescription?: LocalizedString` field required by D20SRD_CONVERSION.md (C-15c/d). This field is needed for qualitative augmentations (energy type changes, action type upgrades, targeting modifications) where `grantedModifiers: []` — the CastingPanel needs a human-readable description to display. All other psionic mechanics (PP pools, disciplines, displays, psionic items, manifester level, metapsionic feats, prestige class PP advancement) are handled by existing primitives._
+
+- [x] **E-16a Type Extension:** Added `effectDescription?: LocalizedString` to `AugmentationRule` in `src/lib/types/feature.ts`. Fully documented with two authoring patterns (mechanical vs qualitative), CastingPanel UI contract (5-step: show description, show cost badge, stepper/checkbox, total cost cap, transient-only modifier application), and the critical "augmentations are NOT pipeline modifiers" design note. Backward compatible (optional field).
+
+- [x] **E-16b Documentation:** `ARCHITECTURE.md` section 5.2.2 (new subsection after §5.2.1) — AugmentationRule fields table, two JSON authoring examples (mechanical + qualitative), complete CastingPanel contract, key design note on transient vs static modifiers.
+
+- [x] **E-16c Tests (`src/tests/augmentationRule.test.ts`):** 16 new Vitest tests (841 total, all passing). 6 sections: (1) backward compatibility — effectDescription optional, existing data unaffected; (2) mechanical augmentation with effectDescription; (3) qualitative augmentation (grantedModifiers: [], description-only: swift action, energy type, object targeting); (4) mixed array (mechanical + qualitative + non-repeatable); (5) CastingPanel fallback logic — effectDescription wins over sourceName, fr locale, both-absent returns "Unknown augmentation"; (6) full MagicFeature integration (Energy Missile with two augmentations).
+
+### D20SRD Psionic Conversion (C-15a through C-15k)
+
+_Full psionic system conversion for Character Vault. All 11 sub-tasks completed. Pre-conversion engine gap analysis confirmed that one genuine type gap existed (AugmentationRule.effectDescription) which was addressed in Phase E-16 before the JSON conversion began. All output files created in static/rules/01_d20srd_psionics/._
+
+- [x] **C-15a** — 4 psionic classes (Psion, Psychic Warrior, Soulknife, Wilder) → `01_d20srd_psionics/00_d20srd_psionics_classes.json`
+- [x] **C-15b** — 60 psionic class features → `01_d20srd_psionics/01_d20srd_psionics_class_features.json`
+- [x] **C-15c** — 194 psionic powers A–M → `01_d20srd_psionics/02_d20srd_psionics_powers.json` (part 1, file created)
+- [x] **C-15d** — 93 psionic powers N–Z → `01_d20srd_psionics/02_d20srd_psionics_powers.json` (part 2, appended; total 287 powers)
+- [x] **C-15e** — 80 psionic feats (general, metapsionic, item creation) → `01_d20srd_psionics/03_d20srd_psionics_feats.json`
+- [x] **C-15f** — 6 psionic races (Dromite, Duergar, Elan, Half-Giant, Maenad, Xeph) → `01_d20srd_psionics/04_d20srd_psionics_races.json`
+- [x] **C-15g** — 4 psionic skills (Autohypnosis, Knowledge(Psionics), Psicraft, Use Psionic Device) + psionic Concentration additions → appended to `00_d20srd_core/04_d20srd_core_skills_config.json`
+- [x] **C-15h** — 9 psionic prestige classes (Cerebremancer, Elocater, Metamind, Psion Uncarnate, Psionic Fist, Pyrokineticist, Slayer, Thrallherd, War Mind) → `01_d20srd_psionics/05_d20srd_psionics_prestige_classes.json`
+- [x] **C-15i** — 97 psionic prestige class features + racial features (Elan, Half-Giant, Maenad, Xeph) → `01_d20srd_psionics/06_d20srd_psionics_prestige_class_features.json`
+- [x] **C-15j** — 63 psionic items (9 cognizance crystals, 9 dorje tiers, 3 tattoo tiers, 10 psicrowns, ~30 universal items, 2 special materials, 3 artifacts, 1 cursed item) → `01_d20srd_psionics/07_d20srd_psionics_items.json`
+- [x] **C-15k** — 8 psionic spells (arcane/divine that interact with psionics, ruleSource: srd_core) → appended to `00_d20srd_core/05_d20srd_core_spells.json` (total: 618 spells)
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.
