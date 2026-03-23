@@ -137,6 +137,54 @@ export interface ActiveFeatureInstance {
   isStashed?: boolean;
 
   /**
+   * Ephemeral activation data — present on feature instances created by consuming
+   * a potion, oil, or any one-shot / duration-limited item.
+   *
+   * DESIGN — WHY A DEDICATED FIELD:
+   *   When a character drinks a Potion of Bull's Strength, the engine creates a new
+   *   `ActiveFeatureInstance` (isActive: true) carrying the +4 STR enhancement modifier.
+   *   This instance is "ephemeral" — it has a finite life and is not part of the
+   *   character's permanent equipment. Without a separate field, there is no way to
+   *   distinguish a permanent ring effect from a temporary potion effect in the UI.
+   *
+   *   `ephemeral: true` signals the UI to:
+   *   1. Display the instance in the "Active Effects" panel (not in Inventory).
+   *   2. Show an "Expire" button that the player can click to end the effect early.
+   *   3. Show a visual countdown if `appliedAtRound` is provided.
+   *
+   * LIFECYCLE:
+   *   - Created by `GameEngine.consumeItem()` when a consumable is used.
+   *   - Removed by `GameEngine.expireEffect()` when:
+   *       (a) The player clicks the "Expire" button.
+   *       (b) The session manager auto-expires based on in-game time (future feature).
+   *   - Never written to permanent equipment storage.
+   *
+   * `appliedAtRound`:
+   *   The in-game combat round (or 0 for out-of-combat) when the effect was applied.
+   *   Used by the UI to display "applied N rounds ago" for time-tracking.
+   *   Absent for effects applied outside combat.
+   *
+   * `sourceItemInstanceId`:
+   *   The `instanceId` of the originating item (if consumed from inventory).
+   *   Used for traceability in the UI ("from Potion of Bull's Strength").
+   *   Absent for effects created without a corresponding inventory item.
+   *
+   * @see GameEngine.consumeItem() — creates ephemeral instances
+   * @see GameEngine.expireEffect() — removes ephemeral instances
+   * @see EphemeralEffectsPanel.svelte — the "Active Effects" UI panel
+   */
+  ephemeral?: {
+    /** Whether this instance was created by consuming a one-shot item. */
+    isEphemeral: true;
+    /** Combat round when the effect was applied (0 = out of combat). */
+    appliedAtRound?: number;
+    /** instanceId of the source item (for display traceability). */
+    sourceItemInstanceId?: ID;
+    /** Human-readable duration hint from the item description (e.g. "3 minutes"). */
+    durationHint?: string;
+  };
+
+  /**
    * Instance-scoped resource pool current values for charged items.
    *
    * D&D 3.5 CONTEXT — WHY INSTANCE-SCOPED:

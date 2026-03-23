@@ -3106,6 +3106,175 @@ export class GameEngine {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // CONSUMABLE ITEM METHODS — Two-phase consumption for potions, oils, scrolls
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Consumes a single-use item (potion, oil, scroll) and creates an ephemeral
+   * `ActiveFeatureInstance` carrying its effects.
+   *
+   * D&D 3.5 CONTEXT:
+   *   When a character drinks a Potion of Bull's Strength, two things happen
+   *   simultaneously:
+   *   1. The potion is destroyed (disappears from inventory).
+   *   2. The character gains +4 STR enhancement for the duration.
+   *
+   *   This method handles BOTH steps atomically.
+   *
+   * ALGORITHM:
+   *   1. Find the source `ActiveFeatureInstance` by `instanceId`.
+   *   2. Load the associated `ItemFeature` from the DataLoader.
+   *   3. Validate the feature is consumable (`feature.consumable?.isConsumable`).
+   *   4. Create a new ephemeral `ActiveFeatureInstance`:
+   *      - `featureId`: same as the consumed item (so the same modifiers apply)
+   *      - `isActive: true` (effect is immediately active)
+   *      - `ephemeral.isEphemeral: true` (signals the EphemeralEffectsPanel)
+   *      - `ephemeral.sourceItemInstanceId`: the consumed item's instanceId (for display)
+   *      - `ephemeral.appliedAtRound`: the current combat round (0 if out of combat)
+   *      - `ephemeral.durationHint`: copied from the feature's `consumable.durationHint`
+   *   5. Push the ephemeral instance into `activeFeatures`.
+   *   6. Remove the source item instance (the potion is now consumed).
+   *
+   * RETURN VALUE:
+   *   The `instanceId` of the created ephemeral effect, or `null` on failure.
+   *   The caller can use this to highlight the new effect in the UI.
+   *
+   * FAILURE MODES (returns `null` and logs a warning):
+   *   - Source instance not found.
+   *   - Feature data not found in DataLoader.
+   *   - Feature is not consumable (`consumable.isConsumable` is absent/false).
+   *
+   * @param sourceInstanceId - The `instanceId` of the item to consume.
+   * @param currentRound     - The current in-game combat round (default 0).
+   * @returns The new ephemeral effect's `instanceId`, or `null` on failure.
+   *
+   * @see expireEffect() — removes the ephemeral instance when the effect ends
+   * @see EphemeralEffectsPanel.svelte — displays active ephemeral effects
+   */
+  consumeItem(sourceInstanceId: ID, currentRound = 0): ID | null {
+    // --- Step 1: Find the source item instance ---
+    const sourceInstance = this.character.activeFeatures.find(
+      f => f.instanceId === sourceInstanceId
+    );
+    if (!sourceInstance) {
+      console.warn(`[GameEngine] consumeItem: instance "${sourceInstanceId}" not found.`);
+      return null;
+    }
+
+    // --- Step 2: Load the feature definition ---
+    const feature = dataLoader.getFeature(sourceInstance.featureId);
+    if (!feature) {
+      console.warn(`[GameEngine] consumeItem: feature "${sourceInstance.featureId}" not found in DataLoader.`);
+      return null;
+    }
+
+    // --- Step 3: Validate the item is consumable ---
+    // We use a type guard pattern: check for the `consumable.isConsumable` flag.
+    // Non-consumable items (rings, armour) must NOT be destroyed by this method.
+    const itemFeature = feature as (typeof feature & { consumable?: { isConsumable: true; durationHint?: string } });
+    if (!itemFeature.consumable?.isConsumable) {
+      console.warn(
+        `[GameEngine] consumeItem: feature "${sourceInstance.featureId}" is not consumable. ` +
+        `Add consumable.isConsumable: true to the item's JSON definition.`
+      );
+      return null;
+    }
+
+    // --- Step 4: Create the ephemeral effect instance ---
+    //
+    // The ephemeral instance references the SAME featureId as the consumed item.
+    // This means the same `grantedModifiers` from the potion's JSON will be applied
+    // to the character's DAG. The effect is active immediately.
+    //
+    // The instanceId uses a timestamp to ensure uniqueness even if the same item
+    // type is consumed multiple times (e.g., two Potions of Cure Light Wounds).
+    const ephemeralInstanceId: ID = `eph_${sourceInstance.featureId}_${Date.now()}`;
+
+    const ephemeralInstance: ActiveFeatureInstance = {
+      instanceId: ephemeralInstanceId,
+      featureId: sourceInstance.featureId,
+      isActive: true,
+      // Copy any selections from the source (e.g., if a potion had a choice)
+      selections: sourceInstance.selections ? { ...sourceInstance.selections } : undefined,
+      ephemeral: {
+        isEphemeral: true,
+        appliedAtRound: currentRound,
+        sourceItemInstanceId: sourceInstanceId,
+        durationHint: itemFeature.consumable.durationHint,
+      },
+    };
+
+    // --- Step 5: Push the ephemeral instance and remove the source ---
+    //
+    // Order matters: push first, then splice. This ensures the DAG never sees a
+    // frame with NEITHER the item NOR the effect (avoids a one-tick gap in buffs).
+    this.character.activeFeatures.push(ephemeralInstance);
+    this.removeFeature(sourceInstanceId);
+
+    return ephemeralInstanceId;
+  }
+
+  /**
+   * Expires (ends) an ephemeral effect by removing it from `activeFeatures`.
+   *
+   * Called when:
+   *   (a) The player clicks the "Expire" button on an effect card in `EphemeralEffectsPanel`.
+   *   (b) A future session manager auto-expires an effect after N rounds/minutes.
+   *
+   * SAFETY:
+   *   This method will ONLY remove instances that have `ephemeral.isEphemeral: true`.
+   *   Attempting to expire a non-ephemeral instance (a race, feat, or equipment item)
+   *   is blocked with a warning. This prevents accidental data loss via misuse.
+   *
+   * @param instanceId - The ephemeral `ActiveFeatureInstance.instanceId` to remove.
+   *
+   * @see consumeItem() — creates ephemeral instances
+   * @see EphemeralEffectsPanel.svelte — the UI that calls this method
+   */
+  expireEffect(instanceId: ID): void {
+    const instance = this.character.activeFeatures.find(f => f.instanceId === instanceId);
+    if (!instance) {
+      console.warn(`[GameEngine] expireEffect: instance "${instanceId}" not found.`);
+      return;
+    }
+
+    // Guard: only remove truly ephemeral instances.
+    // This prevents the "Expire" button from accidentally deleting permanent features.
+    if (!instance.ephemeral?.isEphemeral) {
+      console.warn(
+        `[GameEngine] expireEffect: instance "${instanceId}" (featureId: "${instance.featureId}") ` +
+        `is not ephemeral. Use removeFeature() to remove permanent instances.`
+      );
+      return;
+    }
+
+    this.removeFeature(instanceId);
+  }
+
+  /**
+   * Returns all currently active ephemeral effect instances on this character.
+   *
+   * This is a pure helper — it does not trigger any DAG recomputation.
+   * Used by `EphemeralEffectsPanel` to build the active effects list.
+   *
+   * Note: The returned array is a filtered VIEW of `activeFeatures`.
+   * Mutating it does NOT affect the character state — use `expireEffect()` to remove.
+   *
+   * @returns Array of ephemeral `ActiveFeatureInstance`s sorted by `appliedAtRound`
+   *          (most recently applied first).
+   */
+  getEphemeralEffects(): ActiveFeatureInstance[] {
+    return this.character.activeFeatures
+      .filter(afi => afi.ephemeral?.isEphemeral === true)
+      .sort((a, b) => {
+        // Most recently applied effects appear first in the panel.
+        const aRound = a.ephemeral?.appliedAtRound ?? 0;
+        const bRound = b.ephemeral?.appliedAtRound ?? 0;
+        return bRound - aRound;
+      });
+  }
+
   /** Updates campaign settings. Partial updates are merged with Object.assign. */
   updateSettings(newSettings: Partial<CampaignSettings>): void {
     Object.assign(this.settings, newSettings);

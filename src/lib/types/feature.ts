@@ -1026,6 +1026,59 @@ export interface ItemFeature extends Feature {
   hpMax?: number;
 
   /**
+   * Whether this item is consumed (removed from inventory) when used.
+   *
+   * D&D 3.5 CONTEXT:
+   *   Potions, oils, scrolls, and one-shot wands are "single-use" consumables.
+   *   When a character drinks a potion, the item disappears from their inventory
+   *   and its magical effect begins. The effect persists until it expires naturally
+   *   or the player manually dismisses it via the "Expire" button.
+   *
+   * ENGINE CONTRACT — TWO-PHASE CONSUMPTION:
+   *   When `consumable: true` and the player clicks "Use" on this item:
+   *   1. `GameEngine.consumeItem(instanceId)` is called.
+   *   2. The engine creates a NEW ephemeral `ActiveFeatureInstance` carrying the
+   *      item's `grantedModifiers` (so the buff becomes active on the character).
+   *   3. The source item instance is REMOVED from `activeFeatures` (consumed).
+   *   4. The ephemeral instance appears in `EphemeralEffectsPanel` with an
+   *      "Expire" button to end the effect early.
+   *
+   * OILS vs POTIONS:
+   *   Both are consumable. Potions affect the drinker; oils affect an object.
+   *   Mechanically, both follow the same consumption pattern in the engine.
+   *   The distinction is purely descriptive (in `label` and `description`).
+   *
+   * NON-CONSUMABLE ITEMS:
+   *   Rings, amulets, armour — set `consumable: false` or omit this field entirely.
+   *   Charged items (Ring of the Ram, wand with 50 charges) use `resourcePoolTemplates`
+   *   instead. They are NOT consumable — they deplete a charge pool but stay in inventory.
+   *
+   * POTION DURATION HINT:
+   *   The human-readable duration (e.g., "3 minutes", "10 rounds") comes from the
+   *   item's `description` field. The engine does NOT enforce duration mechanically;
+   *   the player is trusted to expire the effect at the right time.
+   *
+   * `durationHint`:
+   *   Optional short string displayed in the EphemeralEffectsPanel timer badge.
+   *   Example: "3 min", "10 rounds", "1 hour"
+   *
+   * @see GameEngine.consumeItem() — the consumption handler
+   * @see GameEngine.expireEffect() — removes an expired ephemeral instance
+   * @see ActiveFeatureInstance.ephemeral — marks the generated effect instance
+   * @see EphemeralEffectsPanel.svelte — the "Active Effects" UI panel
+   */
+  consumable?: {
+    /** Whether this item is consumed on use (true for potions, oils, single-shot scrolls). */
+    isConsumable: true;
+    /**
+     * Human-readable duration displayed in the EphemeralEffectsPanel badge.
+     * Purely cosmetic — the engine does NOT auto-expire after this duration.
+     * Examples: "3 min", "10 rounds", "1 hour", "until discharged"
+     */
+    durationHint?: string;
+  };
+
+  /**
    * Weapon-specific data. Present only for weapons.
    *
    * Note: A weapon's attack and damage MODIFIERS (like +2 enhancement) are stored

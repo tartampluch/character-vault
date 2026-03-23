@@ -30,7 +30,9 @@
   import {
     IconTabInventory, IconAttacks, IconInfo,
     IconEquip, IconUnequip, IconDelete,
+    IconPotion, IconOil,
   } from '$lib/components/ui/icons';
+  import { ui } from '$lib/i18n/ui-strings';
   import { Package } from 'lucide-svelte';
 
   let modalItemId = $state<ID | null>(null);
@@ -83,6 +85,51 @@
 
   function unequipItem(instanceId: ID) {
     engine.setFeatureActive(instanceId, false);
+  }
+
+  /**
+   * Consumes a potion, oil, or other single-use item.
+   *
+   * Calls GameEngine.consumeItem() which:
+   *   1. Removes the item from inventory (it's gone — consumed!).
+   *   2. Creates an ephemeral ActiveFeatureInstance with the item's modifiers.
+   *   3. The effect appears in EphemeralEffectsPanel with an "Expire" button.
+   *
+   * The `currentRound` argument is always 0 here because we don't track
+   * combat round numbers in the inventory UI. The combat tab would pass the
+   * actual round number if this button were available in-combat (future work).
+   */
+  function useConsumable(instanceId: ID) {
+    engine.consumeItem(instanceId, 0);
+  }
+
+  /**
+   * Returns the correct label for the "Use" button based on item tags.
+   * Potions → "Drink", Oils → "Apply", anything else → "Use".
+   */
+  function getUseLabel(feature: ItemFeature): string {
+    if (feature.tags?.includes('potion')) {
+      return ui('inventory.drink_potion', engine.settings.language);
+    }
+    if (feature.tags?.includes('oil')) {
+      return ui('inventory.apply_oil', engine.settings.language);
+    }
+    return ui('inventory.use_item', engine.settings.language);
+  }
+
+  /**
+   * Type-safe check whether an item is a consumable (potion/oil/one-shot).
+   *
+   * WHY A HELPER:
+   *   The `ItemFeature.consumable` field was added in Phase E-1.
+   *   The InventoryTab receives items as plain `ItemFeature` objects. To access
+   *   the `consumable` field from the template, we need to cast — but inline
+   *   `as` casts in Svelte templates are not always supported cleanly.
+   *   A typed helper function is cleaner and keeps the template readable.
+   */
+  function isConsumable(feature: ItemFeature): boolean {
+    return !!(feature as ItemFeature & { consumable?: { isConsumable: boolean } })
+      .consumable?.isConsumable;
   }
 </script>
 
@@ -236,7 +283,36 @@
                     type="button"
                   ><IconInfo size={14} aria-hidden="true" /></button>
 
-                  {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
+                  <!--
+                    CONSUMABLE ITEMS (potions, oils):
+                    Show a "Drink" / "Apply" / "Use" button instead of (or in addition to)
+                    the Equip button. Clicking this calls engine.consumeItem() which:
+                      1. Removes the item from inventory permanently.
+                      2. Creates an ephemeral ActiveFeatureInstance with the effect.
+                      3. The effect shows in EphemeralEffectsPanel with an Expire button.
+                  -->
+                  {#if isConsumable(item.feature)}
+                    <button
+                      class="flex items-center gap-1 px-2 py-1 rounded-md
+                             text-[11px] font-medium
+                             bg-amber-100 text-amber-800
+                             dark:bg-amber-900/30 dark:text-amber-300
+                             hover:bg-amber-200 dark:hover:bg-amber-900/50
+                             transition-colors"
+                      onclick={() => useConsumable(item.instanceId)}
+                      title="Consume this item — it will be removed from inventory"
+                      aria-label="{getUseLabel(item.feature)} {engine.t(item.feature.label)}"
+                      type="button"
+                    >
+                      {#if item.feature.tags?.includes('potion')}
+                        <IconPotion size={12} aria-hidden="true" />
+                      {:else if item.feature.tags?.includes('oil')}
+                        <IconOil size={12} aria-hidden="true" />
+                      {/if}
+                      {getUseLabel(item.feature)}
+                    </button>
+                  {:else if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
+                    <!-- Non-consumable equippable items: show standard Equip button -->
                     <button
                       class="btn-ghost p-1.5 text-green-500 dark:text-green-400 hover:bg-green-500/10
                              disabled:opacity-30 disabled:cursor-not-allowed"

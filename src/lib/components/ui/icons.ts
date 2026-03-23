@@ -121,6 +121,14 @@ export { Code         as IconJsonEditor   } from 'lucide-svelte'; // GM JSON ove
 export { Weight       as IconEncumbrance  } from 'lucide-svelte'; // Encumbrance / carry weight
 export { Gem          as IconMagicItem    } from 'lucide-svelte';
 
+// ─── EPHEMERAL EFFECTS ICONS ─────────────────────────────────────────────────
+// Used in EphemeralEffectsPanel and consumable item flows (Phase E-3)
+export { Hourglass    as IconEphemeral    } from 'lucide-svelte'; // Active (ephemeral) effect
+export { TimerOff     as IconExpire       } from 'lucide-svelte'; // Expire / dismiss effect button
+export { FlaskRound   as IconPotion       } from 'lucide-svelte'; // Potion / consumable item
+export { Droplets     as IconOil          } from 'lucide-svelte'; // Oil (applied externally)
+export { Bolt         as IconActiveEffect } from 'lucide-svelte'; // Active effect / buff indicator
+
 // ─── ELEMENT / RESISTANCE ICONS ──────────────────────────────────────────────
 // Used in the Resistances panel (Phase 10.6)
 export { Flame        as IconFire         } from 'lucide-svelte'; // Fire resistance

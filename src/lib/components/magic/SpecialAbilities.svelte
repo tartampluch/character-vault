@@ -22,6 +22,45 @@
 
   let modalId = $state<ID | null>(null);
 
+  /**
+   * Handles the "Use" button click for a special ability.
+   *
+   * D&D 3.5 CONTEXT:
+   *   Class features and domain powers that have a resource cost (e.g., Turn Undead
+   *   costs one use from `resources.turn_undead_uses`, Rage costs one use from
+   *   `resources.barbarian_rage_uses`) are decremented here when the player clicks "Use".
+   *
+   * ALGORITHM:
+   *   1. Look up the Feature definition to get `activation.resourceCost`.
+   *   2. If present, find the ResourcePool in `character.resources` by `targetId`.
+   *   3. Decrement `currentValue` by the cost, floored at 0.
+   *
+   * SIMPLE COST RESOLUTION:
+   *   If `cost` is a number, use it directly.
+   *   If `cost` is a formula string (e.g., "2"), parse the integer.
+   *   Full formula evaluation (e.g., "1 + @classLevels.class_druid") is deferred
+   *   to a future phase — most D&D 3.5 resource costs are simple integers.
+   *
+   * NO-OP CASES (not a bug — just safely ignored):
+   *   - Ability has no `resourceCost` (passive / unlimited uses).
+   *   - Pool not found on character (ability not yet set up).
+   *   - Pool is already at 0 (can't go negative).
+   */
+  function handleUseAbility(instanceId: ID, featureId: ID) {
+    const feature = dataLoader.getFeature(featureId);
+    if (!feature?.activation?.resourceCost) return; // No resource to deduct
+
+    const { targetId, cost } = feature.activation.resourceCost;
+    const pool = engine.character.resources[targetId];
+    if (!pool) {
+      console.warn(`[SpecialAbilities] Resource pool "${targetId}" not found.`);
+      return;
+    }
+
+    const resolvedCost = typeof cost === 'number' ? cost : (parseFloat(String(cost)) || 1);
+    pool.currentValue = Math.max(0, pool.currentValue - resolvedCost);
+  }
+
   const specialAbilities = $derived.by(() =>
     engine.character.activeFeatures
       .filter(afi => {
@@ -81,6 +120,7 @@
             ><IconInfo size={14} aria-hidden="true" /></button>
             <button
               class="flex-1 btn-primary text-xs py-1.5"
+              onclick={() => handleUseAbility(instanceId, feature.id)}
               aria-label="Use {engine.t(feature.label)}"
               type="button"
             >{ui('magic.abilities.use', engine.settings.language)}</button>

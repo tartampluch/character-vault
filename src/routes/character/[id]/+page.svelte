@@ -90,6 +90,7 @@
   import Resistances           from '$lib/components/combat/Resistances.svelte';
   import DamageReduction       from '$lib/components/combat/DamageReduction.svelte';
   import ActionBudgetBar       from '$lib/components/combat/ActionBudgetBar.svelte';
+  import EphemeralEffectsPanel from '$lib/components/combat/EphemeralEffectsPanel.svelte';
 
   // ── Feats tab components (Phase 11) ───────────────────────────────────────
   import FeatsTab              from '$lib/components/feats/FeatsTab.svelte';
@@ -401,6 +402,13 @@
         <div class="flex flex-col gap-4">
           <!-- Action Budget Bar — shown only when conditions restrict actions (Extension F) -->
           <ActionBudgetBar />
+          <!--
+            Ephemeral Effects Panel (Phase E-3):
+            Shows active effects from consumed potions/oils/one-shot items.
+            Each card has an "Expire" button to dismiss the effect manually.
+            Placed above HealthAndXP because active buffs are combat-critical info.
+          -->
+          <EphemeralEffectsPanel />
           <HealthAndXP />
           <ArmorClass />
           <CoreCombat />

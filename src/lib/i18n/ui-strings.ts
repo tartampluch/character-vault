@@ -378,6 +378,26 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'feat_catalog.cannot_select':   { en: 'Cannot select: prerequisites not met', fr: 'Impossible : prérequis non remplis' },
 
   // ==========================================================================
+  // EPHEMERAL EFFECTS PANEL (Phase E-3)
+  // Active effects created by consuming potions, oils, and one-shot items.
+  // ==========================================================================
+  'effects.panel.title':          { en: 'Active Effects', fr: 'Effets actifs' },
+  'effects.panel.empty':          { en: 'No active effects. Drink a potion or use an ability to see effects here.', fr: 'Aucun effet actif. Buvez une potion ou utilisez une capacité pour voir les effets ici.' },
+  'effects.panel.expire':         { en: 'Expire', fr: 'Dissiper' },
+  'effects.panel.expire_tooltip': { en: 'End this effect early', fr: 'Terminer cet effet prématurément' },
+  'effects.panel.duration':       { en: 'Duration:', fr: 'Durée :' },
+  'effects.panel.applied_round':  { en: 'Applied at round', fr: 'Appliqué au round' },
+  'effects.panel.source':         { en: 'Source:', fr: 'Source :' },
+  'effects.panel.active_badge':   { en: 'Active', fr: 'Actif' },
+  'effects.panel.confirm_expire': { en: 'End this effect?', fr: 'Terminer cet effet ?' },
+
+  // Inventory "Use" button for consumables
+  'inventory.use_item':           { en: 'Use', fr: 'Utiliser' },
+  'inventory.drink_potion':       { en: 'Drink', fr: 'Boire' },
+  'inventory.apply_oil':          { en: 'Apply', fr: 'Appliquer' },
+  'inventory.consumable_badge':   { en: 'Consumable', fr: 'Consommable' },
+
+  // ==========================================================================
   // MAGIC TAB
   // ==========================================================================
   'magic.abilities.title':        { en: 'Special Abilities', fr: 'Capacités spéciales' },

@@ -645,6 +645,19 @@ export interface ItemFeature extends Feature {
     costGp: number;    // Stored in Gold Pieces
     hardness?: number; 
     hpMax?: number;
+
+    // Consumable items (potions, oils, scrolls) — see section 5.1.2 for full reference.
+    // When present, the item is destroyed on use and its modifiers become a temporary
+    // ephemeral ActiveFeatureInstance. Absent = permanent item (ring, armour, weapon).
+    consumable?: {
+        isConsumable: true;       // Discriminant — always true when this block is present
+        durationHint?: string;    // Human-readable duration: "3 min", "10 rounds", "1 hour"
+        // Notes:
+        //   • durationHint is COSMETIC ONLY — the engine does NOT auto-expire effects.
+        //   • The player manually expires effects via the EphemeralEffectsPanel "Expire" button.
+        //   • Charged items (Ring of the Ram, wands) use resourcePoolTemplates instead.
+        //     They are NOT consumable — charges deplete but the item persists in inventory.
+    };
     
     // Weapon-specific
     weaponData?: {
@@ -855,6 +868,84 @@ A single-use psionic power inscribed on the body. Only 1st–3rd level powers. M
 | `activated` | — | — | — | — | ✓ |
 
 > **Mutable vs immutable**: `storedPP`, `charges`, `powersImprinted[].usedUp`, and `activated` change during play (deplete as the item is used). `maxPP`, `powerStored`, `powersImprinted[].powerId`, `powersImprinted[].manifesterLevel`, `powersKnown`, and `manifesterLevel` are immutable static configuration set at item creation time.
+
+### 5.1.2. Consumable Items — `consumable` and the Ephemeral Effect Lifecycle
+
+Potions, oils, and other one-shot items have a fundamentally different lifecycle from permanent equipment (rings, armour, weapons). When *used*, they are destroyed — but their magical effect persists on the character for a duration.
+
+This is modelled as a **two-phase atomic operation** triggered by `GameEngine.consumeItem()`:
+
+#### The `consumable` Field (on `ItemFeature`)
+
+```typescript
+consumable?: {
+    isConsumable: true;          // Discriminant — always true when the block is present
+    durationHint?: string;       // Cosmetic duration label: "3 min", "10 rounds", "1 hour"
+};
+```
+
+- **Present** on potions, oils, single-shot scrolls — any item that is destroyed on use.
+- **Absent** on rings, armour, weapons, and *charged items* (Ring of the Ram uses `resourcePoolTemplates` instead; charges deplete but the item persists).
+- `durationHint` is **purely cosmetic**. The engine does not enforce duration; the player dismisses the effect manually via the "Expire" button. This matches table-top play: the GM tells the player "your Bull's Strength ends in 3 minutes" and the player removes it when appropriate.
+
+#### The Two-Phase Consumption Algorithm
+
+When the player clicks **"Drink"** / **"Apply"** / **"Use"** on a consumable item in the Inventory tab, `GameEngine.consumeItem(sourceInstanceId, currentRound)` executes atomically:
+
+1. **Validate** — looks up the source `ActiveFeatureInstance` and its `ItemFeature`. Returns `null` (no-op) if the instance is missing, the feature is not found, or `consumable.isConsumable` is absent.
+2. **Create ephemeral effect** — pushes a new `ActiveFeatureInstance` into `activeFeatures` with:
+   - Same `featureId` as the consumed item → same `grantedModifiers` apply to the DAG immediately.
+   - `isActive: true` — effect is live from the next DAG cycle.
+   - `ephemeral.isEphemeral: true` — marks the instance for `EphemeralEffectsPanel`.
+   - `ephemeral.appliedAtRound` — the current combat round (for display).
+   - `ephemeral.durationHint` — copied from `consumable.durationHint`.
+3. **Remove source item** — calls `removeFeature(sourceInstanceId)`. The potion bottle is now gone.
+
+> **Order matters:** step 2 (push) executes *before* step 3 (splice). This ensures the DAG never sees a frame where *neither* the item *nor* the effect is present (a one-tick buff gap would briefly show incorrect stats).
+
+#### Expiring Effects — `GameEngine.expireEffect(instanceId)`
+
+When the player clicks **"Expire"** in `EphemeralEffectsPanel`:
+
+1. Looks up the `ActiveFeatureInstance` by `instanceId`.
+2. Checks `ephemeral.isEphemeral === true` — **refuses to remove non-ephemeral instances** (safety guard that prevents accidentally deleting races, feats, or equipped items).
+3. Calls `removeFeature(instanceId)` — modifiers are removed from the DAG in the next reactive cycle.
+
+#### Querying Active Effects — `GameEngine.getEphemeralEffects()`
+
+Returns a filtered, sorted (newest-first by `appliedAtRound`) view of all ephemeral instances on the character. Used by `EphemeralEffectsPanel` to build the active effect list.
+
+#### The `ephemeral` Block (on `ActiveFeatureInstance`)
+
+```typescript
+ephemeral?: {
+    isEphemeral: true;                 // Discriminant — always true when the block is present
+    appliedAtRound?: number;           // Combat round when the effect was applied (0 = out of combat)
+    sourceItemInstanceId?: ID;         // Traceability: which item was consumed (now gone)
+    durationHint?: string;             // Displayed in the effect card badge ("3 min", etc.)
+};
+```
+
+> See section 6.5 for the complete `ActiveFeatureInstance.ephemeral` field reference.
+
+#### Design — Why Not Auto-Expire?
+
+The engine is a **stateless character-sheet engine** (section 4, Engine Contract). It does not track wall-clock time or combat rounds in persistent state. Auto-expiry would require:
+- A global in-game clock (not modelled).
+- The engine to call `triggerRoundTick()` at the right time (responsibility of the combat UI).
+
+Keeping expiry manual trades automation for simplicity and avoids bugs caused by clock desynchronisation (e.g., paused combat, out-of-combat use). A future combat tracker could call `expireEffect()` automatically via a scheduled event — the engine contract is already compatible.
+
+#### Consumable vs Charged Items — Comparison Table
+
+| Aspect | `consumable.isConsumable: true` | `resourcePoolTemplates` (charged) |
+|---|---|---|
+| **Examples** | Potion of Bull's Strength, Oil of Magic Weapon | Ring of the Ram (50 charges), Wand of Lightning |
+| **On use** | Item removed from inventory; ephemeral effect created | Item stays; pool decrements by 1+ |
+| **Effect duration** | Until player expires it (cosmetic hint only) | Immediate (no persistent effect instance) |
+| **Item persistence** | Item destroyed | Item persists until all charges depleted |
+| **DAG contribution** | Via ephemeral `ActiveFeatureInstance` | Directly via the permanent `ActiveFeatureInstance` |
+| **Reset** | N/A (one-shot) | `triggerDawnReset()` / `triggerWeeklyReset()` |
 
 ```typescript
 // 5.2 Magic (Spells & Psionic Powers unified)
@@ -1483,9 +1574,26 @@ export interface ActiveFeatureInstance {
     featureId: ID;       // Reference to the Feature JSON
     isActive: boolean;   // Allows "unequipping" or ending a buff
     customName?: string; // If the player renames the item
+    isStashed?: boolean; // True = item is in remote storage (no weight, no modifiers)
     
     // Choices made by the player (e.g.: "weapon_focus" -> choiceId: "weapon_choice", selected: ["item_longsword"])
-    selections?: Record<ID, string[]>; 
+    selections?: Record<ID, string[]>;
+
+    // Instance-scoped charge/use counts for charged items (rings, wands, staves).
+    // See section 5.7 — charges travel with the item instance on transfer.
+    // Key = poolId (from Feature.resourcePoolTemplates). Value = current charge count.
+    itemResourcePools?: Record<string, number>;
+
+    // Ephemeral data — present ONLY on instances created by GameEngine.consumeItem().
+    // Marks the instance as a temporary effect from a consumed potion, oil, or one-shot item.
+    // The EphemeralEffectsPanel reads this to show "Active Effects" with an Expire button.
+    // See section 5.1.2 and section 6.5 for the full ephemeral effect lifecycle.
+    ephemeral?: {
+        isEphemeral: true;               // Discriminant — always true when this block is present
+        appliedAtRound?: number;         // Combat round when the effect started (0 = out of combat)
+        sourceItemInstanceId?: ID;       // Which item was consumed (for display traceability)
+        durationHint?: string;           // Cosmetic hint: "3 min", "10 rounds", "1 hour"
+    };
 }
 
 // Represents a linked entity (familiar, animal companion, mount, summoned creature).
@@ -1674,6 +1782,79 @@ To force an absolute value (e.g., an NPC with exactly 200 HP), the GM uses a mod
 
 - Use `@characterLevel` everywhere **except** XP calculations (feats, HP, skills, class features).
 - Use `@eclForXp` only when looking up XP thresholds or initial wealth.
+
+### 6.5. Ephemeral Effects — `ActiveFeatureInstance.ephemeral`
+
+Ephemeral instances are temporary `ActiveFeatureInstance`s created by `GameEngine.consumeItem()` when a consumable item (potion, oil, one-shot scroll) is used. They carry the item's `grantedModifiers` into the DAG, making the buff active immediately, and are displayed in the `EphemeralEffectsPanel` where the player can dismiss them with the **"Expire"** button.
+
+#### The `ephemeral` Block
+
+```typescript
+// Added to the existing ActiveFeatureInstance interface (section 6 typedef)
+ephemeral?: {
+    isEphemeral: true;                 // Discriminant — always true when the block is present
+    appliedAtRound?: number;           // Combat round when the effect was applied (0 = out of combat)
+    sourceItemInstanceId?: ID;         // Which consumed item generated this effect (for UI traceability)
+    durationHint?: string;             // Cosmetic duration label copied from ItemFeature.consumable
+};
+```
+
+**Field semantics:**
+
+| Field | Mutable? | Purpose |
+|---|---|---|
+| `isEphemeral` | No | Identifies the instance as temporary. Guards in `expireEffect()` check this. |
+| `appliedAtRound` | No | Recorded once at creation. Used by the panel to sort effects (newest first) and display "applied at round N". |
+| `sourceItemInstanceId` | No | Traceability — the `instanceId` of the consumed item (which no longer exists). Displayed as "from Potion of Bull's Strength" in the panel. |
+| `durationHint` | No | Cosmetic hint. Displayed as an amber badge in the panel ("3 min", "10 rounds"). Never enforced by the engine. |
+
+#### Engine Contract
+
+| Method | Description |
+|---|---|
+| `consumeItem(sourceInstanceId, currentRound?)` | Creates ephemeral instance + removes source; returns new `instanceId` or `null` on failure |
+| `expireEffect(instanceId)` | Removes ONLY ephemeral instances; refuses non-ephemeral with a warning |
+| `getEphemeralEffects()` | Returns sorted (newest-first) array of all ephemeral instances |
+
+#### Ephemeral vs Permanent Instances — Identification
+
+| Instance type | `ephemeral` field | Removable by `expireEffect()`? |
+|---|---|---|
+| Race feature | absent | No — warning logged |
+| Class feature | absent | No — warning logged |
+| Equipped item | absent | No — warning logged |
+| Active condition (from DR Builder) | absent | No — use `removeFeature()` instead |
+| **Consumed potion / oil effect** | `{ isEphemeral: true, ... }` | **Yes** |
+
+#### Complete Runtime Example
+
+A Fighter at round 4 drinks a **Potion of Bull's Strength** (+4 STR, "3 min"):
+
+```json
+// Character's activeFeatures AFTER consumeItem():
+[
+  { "instanceId": "afi_race_human", "featureId": "race_human", "isActive": true },
+  { "instanceId": "afi_class_fighter_001", "featureId": "class_fighter", "isActive": true },
+  { "instanceId": "afi_ring_prot_2", "featureId": "item_ring_protection_2", "isActive": true },
+  {
+    "instanceId": "eph_item_potion_bulls_strength_1711123456789",
+    "featureId": "item_potion_bulls_strength",
+    "isActive": true,
+    "ephemeral": {
+      "isEphemeral": true,
+      "appliedAtRound": 4,
+      "sourceItemInstanceId": "afi_potion_bulls_str_001",
+      "durationHint": "3 min"
+    }
+  }
+]
+```
+
+The source item `afi_potion_bulls_str_001` is no longer in `activeFeatures`. The ephemeral instance's `grantedModifiers` (the +4 STR enhancement from `item_potion_bulls_strength`) flow into the DAG and appear in `phase2_attributes.stat_str.activeModifiers`. When the player clicks "Expire" in `EphemeralEffectsPanel`, `expireEffect("eph_item_potion_bulls_strength_1711123456789")` removes the instance and the DAG recalculates without the bonus.
+
+> **AI Implementation Note:** `expireEffect()` MUST check `ephemeral.isEphemeral === true` before removing. This is the ONLY mechanism preventing the "Expire" button from accidentally wiping a character's race, class, or equipped items if somehow misrouted. The guard is non-negotiable.
+
+> **Content Authoring Note:** Only `ItemFeature` definitions with `consumable.isConsumable: true` can generate ephemeral instances. Do NOT add the `consumable` block to rings, armour, weapons, or any item that persists after use. For items with per-day or finite charges, use `resourcePoolTemplates` (section 5.7) — they are NOT consumable.
 
 ---
 

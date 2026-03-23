@@ -517,4 +517,21 @@ _Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-c
 
 - [x] **Checkpoint Review #7a** (after Phase 20): Run the leveling progression review from `CHECKPOINTS.md`. Covers: per-class SP budget (`phase4_skillPointsBudget` — per-class independence, first-level 4× bonus on first class only, INT minimum floor, racial bonus SP per total level), minimum rank enforcement (`minimumSkillRanks` optional field, `setSkillRanks` clamping, `lockSkillRanksMin` max-merge), `SkillsMatrix.svelte` budget display and locked rank UI, `LevelingJournalModal` SP formula display and XP penalty warning, `phase4_levelingJournal` derived correctness, i18n completeness, Vitest Scenarios 7–9, SRD accuracy cross-check (first-level 4×, INT retroactivity, XP penalty boundary, favored class exemption, cross-class max ranks). Resolve all CRITICAL and MAJOR issues before proceeding.
 
+### Phase E: Ephemeral Effects — Consumable Items, Active Buffs & Expire Button
+
+_Consumable item lifecycle: potions/oils create temporary active effects; "Expire" button for manual dismissal; SpecialAbilities "Use" button wired._
+
+- [x] **E-1 Type Extensions:** Added `ActiveFeatureInstance.ephemeral` (isEphemeral, appliedAtRound, sourceItemInstanceId, durationHint) to `character.ts`. Added `ItemFeature.consumable` (isConsumable, durationHint) to `feature.ts`. Both fields are optional, backward-compatible additions — zero regressions.
+
+- [x] **E-2 GameEngine methods:** Added three public methods to `GameEngine.svelte.ts`:
+  - `consumeItem(sourceInstanceId, currentRound?)` — atomic two-phase: push ephemeral effect → remove source item. Guards: unknown instanceId (null), missing feature (null), non-consumable feature (null, logged warning).
+  - `expireEffect(instanceId)` — safety-guarded removal: blocks removing non-ephemeral instances, warns on missing id.
+  - `getEphemeralEffects()` — returns all ephemeral instances sorted newest-round-first.
+
+- [x] **E-3 `EphemeralEffectsPanel.svelte`:** New component at `src/lib/components/combat/`. Two-click "Expire" confirmation pattern (single misclick prevention). Duration badge (amber), "Active" badge (green), round info. Integrated into Combat tab left column above HealthAndXP. New icons: `IconEphemeral` (Hourglass), `IconExpire` (TimerOff), `IconPotion` (FlaskRound), `IconOil` (Droplets), `IconActiveEffect` (Bolt) in `icons.ts`. New i18n keys: `effects.panel.*` and `inventory.*` in `ui-strings.ts`.
+
+- [x] **E-4 UI Wiring:** `InventoryTab.svelte` — consumable items show "Drink"/"Apply"/"Use" button (amber) calling `engine.consumeItem()`; non-consumables retain Equip button. `SpecialAbilities.svelte` — "Use" button now calls `handleUseAbility()` which deducts from the feature's `activation.resourceCost` pool.
+
+- [x] **E-5 Tests:** `src/tests/ephemeralEffects.test.ts` — 28 new Vitest tests (681 total, all passing). Covers: type soundness, `consumeItem()` lifecycle (11 scenarios including all guard paths), `expireEffect()` safety, `getEphemeralEffects()` sorting, full Fighter scenario integration test.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

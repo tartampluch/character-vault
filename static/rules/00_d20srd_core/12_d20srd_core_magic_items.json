@@ -28,229 +28,6 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_ring_blinking",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Blinking",
-      "fr": "Anneau de clignotement"
-    },
-    "description": {
-      "en": "On command, this ring makes the wearer blink, as with the blink spell (CL 7th).",
-      "fr": "Sur commande, cet anneau fait clignoter le porteur, comme avec le sort clignotement (NLS 7)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 27000,
-    "hardness": 10,
-    "hpMax": 2,
-    "activation": {
-      "actionType": "standard"
-    },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "item_ring_chameleon_power",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Chameleon Power",
-      "fr": "Anneau de camouflage"
-    },
-    "description": {
-      "en": "As a free action, the wearer can magically blend in with surroundings, granting a +10 competence bonus on Hide checks. As a standard action, she can command the ring to use disguise self as often as desired (CL 3rd).",
-      "fr": "Par une action libre, le porteur peut se fondre magiquement dans son environnement, accordant un bonus de compétence de +10 aux tests de Discrétion. Par une action normale, il peut ordonner à l'anneau d'utiliser déguisement à volonté (NLS 3)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 12700,
-    "hardness": 10,
-    "hpMax": 2,
-    "grantedModifiers": [
-      {
-        "id": "item_ring_chameleon_power_hide",
-        "sourceId": "item_ring_chameleon_power",
-        "sourceName": {
-          "en": "Ring of Chameleon Power",
-          "fr": "Anneau de camouflage"
-        },
-        "targetId": "skills.skill_hide",
-        "value": 10,
-        "type": "competence",
-        "conditionNode": {
-          "logic": "CONDITION",
-          "targetPath": "@activeTags",
-          "operator": "has_tag",
-          "value": "chameleon_power_active"
-        }
-      }
-    ],
-    "grantedFeatures": [],
-    "activation": {
-      "actionType": "free"
-    }
-  },
-  {
-    "id": "item_ring_climbing",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Climbing",
-      "fr": "Anneau d'escalade"
-    },
-    "description": {
-      "en": "This ring is actually a magic leather cord that ties around a finger. It continually grants the wearer a +5 competence bonus on Climb checks (CL 5th).",
-      "fr": "Cet anneau est en réalité un cordon de cuir magique qui s'enroule autour d'un doigt. Il accorde en permanence au porteur un bonus de compétence de +5 aux tests d'Escalade (NLS 5)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 2500,
-    "hardness": 10,
-    "hpMax": 2,
-    "grantedModifiers": [
-      {
-        "id": "item_ring_climbing_bonus",
-        "sourceId": "item_ring_climbing",
-        "sourceName": {
-          "en": "Ring of Climbing",
-          "fr": "Anneau d'escalade"
-        },
-        "targetId": "skills.skill_climb",
-        "value": 5,
-        "type": "competence"
-      }
-    ],
-    "grantedFeatures": [],
-    "activation": {
-      "actionType": "passive"
-    }
-  },
-  {
-    "id": "item_ring_climbing_improved",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Climbing, Improved",
-      "fr": "Anneau d'escalade amélioré"
-    },
-    "description": {
-      "en": "As a ring of climbing, except it grants a +10 competence bonus on its wearer's Climb checks (CL 5th).",
-      "fr": "Comme l'anneau d'escalade, mais il accorde un bonus de compétence de +10 aux tests d'Escalade de son porteur (NLS 5)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 10000,
-    "hardness": 10,
-    "hpMax": 2,
-    "grantedModifiers": [
-      {
-        "id": "item_ring_climbing_improved_bonus",
-        "sourceId": "item_ring_climbing_improved",
-        "sourceName": {
-          "en": "Ring of Climbing, Improved",
-          "fr": "Anneau d'escalade amélioré"
-        },
-        "targetId": "skills.skill_climb",
-        "value": 10,
-        "type": "competence"
-      }
-    ],
-    "grantedFeatures": [],
-    "activation": {
-      "actionType": "passive"
-    }
-  },
-  {
-    "id": "item_ring_counterspells",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Counterspells",
-      "fr": "Anneau de contre-sort"
-    },
-    "description": {
-      "en": "This ring allows a single spell of 1st through 6th level to be stored within it. Rather than casting the spell out, when that spell is cast upon the wearer, it is immediately countered as a counterspell action requiring no action on the wearer's part. Once used, the stored spell is lost. A new spell may then be stored (CL 11th).",
-      "fr": "Cet anneau permet de stocker un sort de niveau 1 à 6. Plutôt qu'être lancé, si ce sort est lancé contre le porteur, il est immédiatement contré comme une action de contre-sort sans nécessiter d'action de la part du porteur. Une fois utilisé, le sort stocké est perdu. Un nouveau sort peut alors être stocké (NLS 11)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 4000,
-    "hardness": 10,
-    "hpMax": 2,
-    "grantedModifiers": [],
-    "grantedFeatures": [],
-    "activation": {
-      "actionType": "reaction",
-      "triggerEvent": "on_spell_targeted"
-    }
-  },
-  {
-    "id": "item_ring_djinni_calling",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Ring of Djinni Calling",
-      "fr": "Anneau d'invocation du djinn"
-    },
-    "description": {
-      "en": "When rubbed (a standard action), this ring calls a specific djinni from the Elemental Plane of Air, which appears the next round and faithfully serves the wearer for up to 1 hour per day. If the djinni is ever killed, the ring becomes nonmagical (CL 17th).",
-      "fr": "Quand il est frotté (une action normale), cet anneau appelle un djinn spécifique du Plan élémentaire de l'Air, qui apparaît au round suivant et sert loyalement le porteur jusqu'à 1 heure par jour. Si le djinn est tué, l'anneau perd ses pouvoirs (NLS 17)."
-    },
-    "tags": [
-      "item",
-      "ring",
-      "magic_item"
-    ],
-    "equipmentSlot": "ring",
-    "weightLbs": 0,
-    "costGp": 125000,
-    "hardness": 10,
-    "hpMax": 2,
-    "activation": {
-      "actionType": "standard"
-    },
-    "grantedModifiers": [],
-    "grantedFeatures": [],
-    "resourcePoolTemplates": [
-      {
-        "poolId": "djinni_call",
-        "label": {
-          "en": "Djinni Call (1/day)",
-          "fr": "Appel du djinn (1/jour)"
-        },
-        "maxPipelineId": "combatStats.djinni_call_max",
-        "defaultCurrent": 1,
-        "resetCondition": "per_day"
-      }
-    ]
-  },
-  {
     "id": "item_ring_elemental_command_air",
     "category": "item",
     "ruleSource": "srd_core",
@@ -2446,5 +2223,3034 @@
     },
     "grantedModifiers": [],
     "grantedFeatures": []
+  },
+  {
+    "id": "item_potion_aid",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Aid",
+      "fr": "Potion d'aide"
+    },
+    "description": {
+      "en": "Grants +1d8+3 temporary hit points and a +1 morale bonus on attack rolls and saving throws against fear for 3 minutes (cleric 2, CL 3).",
+      "fr": "Accorde +1d8+3 points de vie temporaires et un bonus de moral de +1 aux jets d'attaque et jets de sauvegarde contre la peur pendant 3 minutes (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_barkskin_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Barkskin +2",
+      "fr": "Potion de peau d'écorce +2"
+    },
+    "description": {
+      "en": "Grants a +2 enhancement bonus to natural armor for 3 minutes (druid 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +2 à l'armure naturelle pendant 3 minutes (druide 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_barkskin_2_ac",
+        "sourceId": "item_potion_barkskin_2",
+        "sourceName": {
+          "en": "Potion of Barkskin +2",
+          "fr": "Potion de peau d'écorce +2"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "natural_armor"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_potion_barkskin_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Barkskin +3",
+      "fr": "Potion de peau d'écorce +3"
+    },
+    "description": {
+      "en": "Grants a +3 enhancement bonus to natural armor for 6 minutes (druid 2, CL 6).",
+      "fr": "Accorde un bonus d'altération de +3 à l'armure naturelle pendant 6 minutes (druide 2, NLS 6)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 600,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_barkskin_3_ac",
+        "sourceId": "item_potion_barkskin_3",
+        "sourceName": {
+          "en": "Potion of Barkskin +3",
+          "fr": "Potion de peau d'écorce +3"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "natural_armor"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "60 min"
+    }
+  },
+  {
+    "id": "item_potion_barkskin_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Barkskin +4",
+      "fr": "Potion de peau d'écorce +4"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to natural armor for 9 minutes (druid 2, CL 9).",
+      "fr": "Accorde un bonus d'altération de +4 à l'armure naturelle pendant 9 minutes (druide 2, NLS 9)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 900,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_barkskin_4_ac",
+        "sourceId": "item_potion_barkskin_4",
+        "sourceName": {
+          "en": "Potion of Barkskin +4",
+          "fr": "Potion de peau d'écorce +4"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "natural_armor"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "90 min"
+    }
+  },
+  {
+    "id": "item_potion_barkskin_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Barkskin +5",
+      "fr": "Potion de peau d'écorce +5"
+    },
+    "description": {
+      "en": "Grants a +5 enhancement bonus to natural armor for 12 minutes (druid 2, CL 12).",
+      "fr": "Accorde un bonus d'altération de +5 à l'armure naturelle pendant 12 minutes (druide 2, NLS 12)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1200,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_barkskin_5_ac",
+        "sourceId": "item_potion_barkskin_5",
+        "sourceName": {
+          "en": "Potion of Barkskin +5",
+          "fr": "Potion de peau d'écorce +5"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "natural_armor"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "120 min"
+    }
+  },
+  {
+    "id": "item_potion_bears_endurance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Bear's Endurance",
+      "fr": "Potion d'endurance de l'ours"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Constitution for 3 minutes (cleric 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 à la Constitution pendant 3 minutes (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_bears_endurance_con",
+        "sourceId": "item_potion_bears_endurance",
+        "sourceName": {
+          "en": "Potion of Bear's Endurance",
+          "fr": "Potion d'endurance de l'ours"
+        },
+        "targetId": "attributes.stat_con",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_oil_bless_weapon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Bless Weapon",
+      "fr": "Huile de bénédiction d'arme"
+    },
+    "description": {
+      "en": "Applied to a melee weapon, makes it treated as a good-aligned weapon for the purpose of bypassing DR. Against evil creatures, all attacks automatically confirm critical threats. Lasts until the weapon scores a hit (or 1 minute per level if not used in combat) (paladin 1, CL 1).",
+      "fr": "Appliquée sur une arme de corps à corps, elle la traite comme une arme d'alignement bon pour contourner la RD. Contre les créatures mauvaises, toutes les attaques confirment automatiquement les menaces de coup critique. Dure jusqu'à ce que l'arme touche (ou 1 minute par niveau hors combat) (paladin 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 100,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "until hit"
+    }
+  },
+  {
+    "id": "item_potion_blur",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Blur",
+      "fr": "Potion de flou"
+    },
+    "description": {
+      "en": "The drinker's outline becomes blurry, granting a 20% miss chance against all attacks for 3 rounds (bard 2/sorcerer 2/wizard 2, CL 3).",
+      "fr": "Le contour du buveur become flou, accordant une probabilité de 20% de rater toutes les attaques pendant 3 rounds (barde 2/ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 rounds"
+    }
+  },
+  {
+    "id": "item_potion_bulls_strength",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Bull's Strength",
+      "fr": "Potion de force du taureau"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Strength for 3 minutes (cleric 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 à la Force pendant 3 minutes (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_bulls_strength_str",
+        "sourceId": "item_potion_bulls_strength",
+        "sourceName": {
+          "en": "Potion of Bull's Strength",
+          "fr": "Potion de force du taureau"
+        },
+        "targetId": "attributes.stat_str",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_cats_grace",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Cat's Grace",
+      "fr": "Potion de grâce du chat"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Dexterity for 3 minutes (bard 2/druid 1/sorcerer 2/wizard 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 à la Dextérité pendant 3 minutes (barde 2/druide 1/ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_cats_grace_dex",
+        "sourceId": "item_potion_cats_grace",
+        "sourceName": {
+          "en": "Potion of Cat's Grace",
+          "fr": "Potion de grâce du chat"
+        },
+        "targetId": "attributes.stat_dex",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_cure_light_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Cure Light Wounds",
+      "fr": "Potion de soins légers"
+    },
+    "description": {
+      "en": "Heals 1d8+1 hit points (cleric 1, CL 1). Harms undead instead of healing them.",
+      "fr": "Soigne 1d8+1 points de vie (clerc 1, NLS 1). Blesse les morts-vivants au lieu de les soigner."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_cure_moderate_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Cure Moderate Wounds",
+      "fr": "Potion de soins modérés"
+    },
+    "description": {
+      "en": "Heals 2d8+3 hit points (cleric 2, CL 3). Harms undead instead of healing them.",
+      "fr": "Soigne 2d8+3 points de vie (clerc 2, NLS 3). Blesse les morts-vivants au lieu de les soigner."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_cure_serious_wounds",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Cure Serious Wounds",
+      "fr": "Potion de soins importants"
+    },
+    "description": {
+      "en": "Heals 3d8+5 hit points (cleric 3, CL 5). Harms undead instead of healing them.",
+      "fr": "Soigne 3d8+5 points de vie (clerc 3, NLS 5). Blesse les morts-vivants au lieu de les soigner."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_oil_darkness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Darkness",
+      "fr": "Huile de ténèbres"
+    },
+    "description": {
+      "en": "Applied to an object, causes it to shed darkness in a 20-foot radius, negating normal light sources. Lasts 30 minutes (cleric 2, CL 3).",
+      "fr": "Appliquée sur un objet, le fait émettre des ténèbres dans un rayon de 6 m, annulant les sources de lumière ordinaire. Dure 30 minutes (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_potion_darkvision",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Darkvision",
+      "fr": "Potion de vision dans le noir"
+    },
+    "description": {
+      "en": "Grants darkvision out to 60 feet for 3 hours (ranger 1, CL 3).",
+      "fr": "Accorde la vision dans le noir jusqu'à 18 m pendant 3 heures (rôdeur 1, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 hours"
+    }
+  },
+  {
+    "id": "item_oil_daylight",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Daylight",
+      "fr": "Huile de lumière du jour"
+    },
+    "description": {
+      "en": "Applied to an object, causes it to shed bright light in a 60-foot radius (and shadowy light for a further 60 feet) for 50 minutes. Dispels darkness spells of 2nd level or lower (cleric 3, CL 5).",
+      "fr": "Appliquée sur un objet, le fait émettre une vive lumière dans un rayon de 18 m (et une lumière ténue sur 18 m supplémentaires) pendant 50 minutes. Dissipe les sorts de ténèbres de niveau 2 ou inférieur (clerc 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "50 min"
+    }
+  },
+  {
+    "id": "item_potion_delay_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Delay Poison",
+      "fr": "Potion de retardement du poison"
+    },
+    "description": {
+      "en": "Suppresses the effects of any poison in the drinker's body for 3 hours. Poison does not run its course during this time, but acts normally when the delay expires (cleric 2, CL 3).",
+      "fr": "Supprime les effets de tout poison présent dans le corps du buveur pendant 3 heures. Le poison ne suit pas son cours pendant ce laps de temps, mais agit normalement à l'expiration du délai (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 hours"
+    }
+  },
+  {
+    "id": "item_potion_displacement",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Displacement",
+      "fr": "Potion de déplacement"
+    },
+    "description": {
+      "en": "The drinker appears to be about 2 feet from their actual location, causing all melee and ranged attacks against them to miss 50% of the time for 5 rounds (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Le buveur semble se trouver à environ 60 cm de sa position réelle, entraînant un taux d'échec de 50% pour toutes les attaques au corps à corps et à distance le ciblant pendant 5 rounds (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 rounds"
+    }
+  },
+  {
+    "id": "item_potion_eagles_splendor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Eagle's Splendor",
+      "fr": "Potion de splendeur de l'aigle"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Charisma for 3 minutes (bard 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 au Charisme pendant 3 minutes (barde 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_eagles_splendor_cha",
+        "sourceId": "item_potion_eagles_splendor",
+        "sourceName": {
+          "en": "Potion of Eagle's Splendor",
+          "fr": "Potion de splendeur de l'aigle"
+        },
+        "targetId": "attributes.stat_cha",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_endure_elements",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Endure Elements",
+      "fr": "Potion de résistance aux éléments"
+    },
+    "description": {
+      "en": "The drinker can exist comfortably in conditions between -50°F and 140°F without having to make Fortitude saves, for 24 hours (cleric 1, CL 1).",
+      "fr": "Le buveur peut survivre confortablement dans des températures entre -45°C et 60°C sans avoir à effectuer de jets de Vigueur, pendant 24 heures (clerc 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "24 hours"
+    }
+  },
+  {
+    "id": "item_potion_enlarge_person",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Enlarge Person",
+      "fr": "Potion d'agrandissement de personne"
+    },
+    "description": {
+      "en": "Causes one humanoid to double in size (increase one size category): +2 Strength, -2 Dexterity, -1 attack rolls, -1 AC, reach increases by 5 ft. Lasts 9 minutes (sorcerer 1/wizard 1, CL 1).",
+      "fr": "Fait doubler la taille d'un humanoïde (augmentation d'une catégorie de taille) : +2 en Force, -2 en Dextérité, -1 aux jets d'attaque, -1 en CA, l'allonge augmente de 1,5 m. Dure 9 minutes (ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 250,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "9 min"
+    }
+  },
+  {
+    "id": "item_oil_flame_arrow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Flame Arrow",
+      "fr": "Huile de flèche ardente"
+    },
+    "description": {
+      "en": "Applied to up to 50 projectiles (arrows, bolts, or stones), each treated weapon deals an extra 1d6 points of fire damage on a successful hit. Lasts until each projectile is used or 10 minutes have passed (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Appliquée sur jusqu'à 50 projectiles (flèches, carreaux ou pierres), chaque arme traitée inflige 1d6 points de dégâts de feu supplémentaires en cas de touche. Dure jusqu'à l'utilisation de chaque projectile ou 10 minutes (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "10 min"
+    }
+  },
+  {
+    "id": "item_potion_fly",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Fly",
+      "fr": "Potion de vol"
+    },
+    "description": {
+      "en": "Grants a fly speed of 60 feet (good maneuverability) for 5 minutes (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Accorde une vitesse de vol de 18 m (maniabilité bonne) pendant 5 minutes (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_foxs_cunning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Fox's Cunning",
+      "fr": "Potion de ruse du renard"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Intelligence for 3 minutes (sorcerer 2/wizard 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 à l'Intelligence pendant 3 minutes (ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_foxs_cunning_int",
+        "sourceId": "item_potion_foxs_cunning",
+        "sourceName": {
+          "en": "Potion of Fox's Cunning",
+          "fr": "Potion de ruse du renard"
+        },
+        "targetId": "attributes.stat_int",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_gaseous_form",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Gaseous Form",
+      "fr": "Potion de forme gazeuse"
+    },
+    "description": {
+      "en": "The drinker and all gear become insubstantial, misty, and translucent. Fly speed 10 ft (perfect maneuverability). Cannot attack or use spell-like or supernatural abilities. DR 10/magic, immune to poison and critical hits. Lasts 5 minutes (bard 3/sorcerer 3/wizard 3, CL 5).",
+      "fr": "Le buveur et tout son équipement deviennent inconsistants, brumeux et translucides. Vitesse de vol 3 m (maniabilité parfaite). Ne peut pas attaquer ni utiliser de capacités magiques ou surnaturelles. RD 10/magie, immunisé contre les poisons et les coups critiques. Dure 5 minutes (barde 3/ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_good_hope",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Good Hope",
+      "fr": "Potion de bonne espérance"
+    },
+    "description": {
+      "en": "Grants a +2 morale bonus on saving throws, attack rolls, ability checks, skill checks, and weapon damage rolls for 9 minutes (bard 3, CL 5).",
+      "fr": "Accorde un bonus de moral de +2 aux jets de sauvegarde, jets d'attaque, tests de caractéristique, tests de compétence et jets de dégâts pendant 9 minutes (barde 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1050,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "9 min"
+    }
+  },
+  {
+    "id": "item_potion_greater_magic_fang_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Greater Magic Fang +1",
+      "fr": "Potion de grand croc magique +1"
+    },
+    "description": {
+      "en": "Applied (drunk) by a creature, grants a +1 enhancement bonus on attack rolls and damage rolls made with natural weapons for 5 minutes (druid 3, CL 5).",
+      "fr": "Prise par une créature, accorde un bonus d'altération de +1 aux jets d'attaque et de dégâts effectués avec des armes naturelles pendant 5 minutes (druide 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_greater_magic_fang_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Greater Magic Fang +2",
+      "fr": "Potion de grand croc magique +2"
+    },
+    "description": {
+      "en": "Grants a +2 enhancement bonus on attack rolls and damage rolls made with natural weapons for 8 minutes (druid 3, CL 8).",
+      "fr": "Accorde un bonus d'altération de +2 aux jets d'attaque et de dégâts effectués avec des armes naturelles pendant 8 minutes (druide 3, NLS 8)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1200,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "8 min"
+    }
+  },
+  {
+    "id": "item_potion_greater_magic_fang_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Greater Magic Fang +3",
+      "fr": "Potion de grand croc magique +3"
+    },
+    "description": {
+      "en": "Grants a +3 enhancement bonus on attack rolls and damage rolls made with natural weapons for 12 minutes (druid 3, CL 12).",
+      "fr": "Accorde un bonus d'altération de +3 aux jets d'attaque et de dégâts effectués avec des armes naturelles pendant 12 minutes (druide 3, NLS 12)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1800,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "12 min"
+    }
+  },
+  {
+    "id": "item_potion_greater_magic_fang_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Greater Magic Fang +4",
+      "fr": "Potion de grand croc magique +4"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus on attack rolls and damage rolls made with natural weapons for 16 minutes (druid 3, CL 16).",
+      "fr": "Accorde un bonus d'altération de +4 aux jets d'attaque et de dégâts effectués avec des armes naturelles pendant 16 minutes (druide 3, NLS 16)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 2400,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "16 min"
+    }
+  },
+  {
+    "id": "item_potion_greater_magic_fang_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Greater Magic Fang +5",
+      "fr": "Potion de grand croc magique +5"
+    },
+    "description": {
+      "en": "Grants a +5 enhancement bonus on attack rolls and damage rolls made with natural weapons for 20 minutes (druid 3, CL 20).",
+      "fr": "Accorde un bonus d'altération de +5 aux jets d'attaque et de dégâts effectués avec des armes naturelles pendant 20 minutes (druide 3, NLS 20)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 3000,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "20 min"
+    }
+  },
+  {
+    "id": "item_oil_greater_magic_weapon_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Greater Magic Weapon +1",
+      "fr": "Huile de grande arme magique +1"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +1 enhancement bonus on attack rolls and damage rolls made with that weapon for 5 minutes (cleric 4/paladin 3/sorcerer 3/wizard 3, CL 5).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +1 aux jets d'attaque et de dégâts effectués avec cette arme pendant 5 minutes (clerc 4/paladin 3/ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_oil_greater_magic_weapon_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Greater Magic Weapon +2",
+      "fr": "Huile de grande arme magique +2"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +2 enhancement bonus on attack rolls and damage rolls made with that weapon for 8 minutes (cleric 4/paladin 3/sorcerer 3/wizard 3, CL 8).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +2 aux jets d'attaque et de dégâts effectués avec cette arme pendant 8 minutes (clerc 4/paladin 3/ensorceleur 3/magicien 3, NLS 8)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1200,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "8 min"
+    }
+  },
+  {
+    "id": "item_oil_greater_magic_weapon_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Greater Magic Weapon +3",
+      "fr": "Huile de grande arme magique +3"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +3 enhancement bonus on attack rolls and damage rolls made with that weapon for 12 minutes (cleric 4/paladin 3/sorcerer 3/wizard 3, CL 12).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +3 aux jets d'attaque et de dégâts effectués avec cette arme pendant 12 minutes (clerc 4/paladin 3/ensorceleur 3/magicien 3, NLS 12)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1800,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "12 min"
+    }
+  },
+  {
+    "id": "item_oil_greater_magic_weapon_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Greater Magic Weapon +4",
+      "fr": "Huile de grande arme magique +4"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +4 enhancement bonus on attack rolls and damage rolls made with that weapon for 16 minutes (cleric 4/paladin 3/sorcerer 3/wizard 3, CL 16).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +4 aux jets d'attaque et de dégâts effectués avec cette arme pendant 16 minutes (clerc 4/paladin 3/ensorceleur 3/magicien 3, NLS 16)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 2400,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "16 min"
+    }
+  },
+  {
+    "id": "item_oil_greater_magic_weapon_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Greater Magic Weapon +5",
+      "fr": "Huile de grande arme magique +5"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +5 enhancement bonus on attack rolls and damage rolls made with that weapon for 20 minutes (cleric 4/paladin 3/sorcerer 3/wizard 3, CL 20).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +5 aux jets d'attaque et de dégâts effectués avec cette arme pendant 20 minutes (clerc 4/paladin 3/ensorceleur 3/magicien 3, NLS 20)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 3000,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "20 min"
+    }
+  },
+  {
+    "id": "item_potion_haste",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Haste",
+      "fr": "Potion d'accélération"
+    },
+    "description": {
+      "en": "The drinker moves and acts faster than normal: +30 ft enhancement to speed, +1 bonus on attack rolls, +1 dodge bonus to AC and Reflex saves, and an extra attack at full BAB on a full attack action. Lasts 5 rounds (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Le buveur se déplace et agit plus vite que la normale : +9 m d'altération à la vitesse, +1 aux jets d'attaque, +1 bonus de parade à la CA et aux jets de Réflexes, et une attaque supplémentaire au BBA maximum lors d'une attaque complète. Dure 5 rounds (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 rounds"
+    }
+  },
+  {
+    "id": "item_potion_heroism",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Heroism",
+      "fr": "Potion d'héroïsme"
+    },
+    "description": {
+      "en": "Grants a +2 morale bonus on attack rolls, saving throws, and skill checks for 5 minutes (bard 2/sorcerer 3/wizard 3, CL 5).",
+      "fr": "Accorde un bonus de moral de +2 aux jets d'attaque, jets de sauvegarde et tests de compétence pendant 5 minutes (barde 2/ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_hide_from_animals",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Hide from Animals",
+      "fr": "Potion de passage inaperçu devant les animaux"
+    },
+    "description": {
+      "en": "Animals cannot sense the drinker (or up to one touched creature per level): not seen, heard, or smelled. Lasts 10 minutes (druid 1, CL 1).",
+      "fr": "Les animaux ne peuvent pas détecter le buveur (ou jusqu'à une créature touchée par niveau) : non vu, non entendu et non reniflé. Dure 10 minutes (druide 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "10 min"
+    }
+  },
+  {
+    "id": "item_potion_hide_from_undead",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Hide from Undead",
+      "fr": "Potion de passage inaperçu devant les morts-vivants"
+    },
+    "description": {
+      "en": "Undead creatures cannot see, hear, or smell the drinker. If undead are nonintelligent they cannot detect the subject; intelligent undead get a Will save (DC 11). Lasts 10 minutes (cleric 1, CL 1).",
+      "fr": "Les morts-vivants ne peuvent pas voir, entendre ou sentir le buveur. S'ils sont non intelligents, ils ne peuvent pas détecter le sujet ; les morts-vivants intelligents ont droit à un jet de Volonté (DD 11). Dure 10 minutes (clerc 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "10 min"
+    }
+  },
+  {
+    "id": "item_potion_invisibility",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Invisibility",
+      "fr": "Potion d'invisibilité"
+    },
+    "description": {
+      "en": "The drinker and gear become invisible. The invisibility ends if the drinker attacks or casts a spell. Lasts 3 minutes (sorcerer 2/wizard 2, CL 3).",
+      "fr": "Le buveur et son équipement deviennent invisibles. L'invisibilité se termine si le buveur attaque ou lance un sort. Dure 3 minutes (ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_jump",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Jump",
+      "fr": "Potion de saut"
+    },
+    "description": {
+      "en": "Grants a +10 competence bonus on all Jump checks for 1 minute (druid 1/sorcerer 1/wizard 1, CL 1).",
+      "fr": "Accorde un bonus de compétence de +10 à tous les tests de Saut pendant 1 minute (druide 1/ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_oil_keen_edge",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Keen Edge",
+      "fr": "Huile de lame acérée"
+    },
+    "description": {
+      "en": "Applied to a slashing weapon, doubles its threat range for 5 minutes. A longsword (19–20 threat) becomes 17–20. Does not stack with Improved Critical or similar effects (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Appliquée sur une arme tranchante, double sa zone de menace pendant 5 minutes. Une épée longue (19–20) devient 17–20. Ne se cumule pas avec Critique amélioré ni les effets similaires (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_lesser_restoration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Lesser Restoration",
+      "fr": "Potion de guérison mineure"
+    },
+    "description": {
+      "en": "Dispels any magical effects reducing one ability score, or heals 1d4 points of temporary ability damage. Does not restore permanent ability drain (cleric 2/druid 2, CL 3).",
+      "fr": "Dissipe tout effet magique qui réduit un score de caractéristique, ou soigne 1d4 points de dégâts temporaires d'une caractéristique. Ne restaure pas les drains permanents de caractéristique (clerc 2/druide 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_levitate",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Levitate",
+      "fr": "Potion de lévitation"
+    },
+    "description": {
+      "en": "The drinker can move directly up or down at a speed of 20 ft with no risk of falling. Cannot move horizontally but can pull along a wall or rope. Lasts 3 minutes (sorcerer 2/wizard 2, CL 3).",
+      "fr": "Le buveur peut se déplacer directement vers le haut ou vers le bas à une vitesse de 6 m sans risque de chute. Ne peut pas se déplacer horizontalement mais peut se déplacer le long d'un mur ou d'une corde. Dure 3 minutes (ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_mage_armor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Mage Armor",
+      "fr": "Potion d'armure de mage"
+    },
+    "description": {
+      "en": "An invisible but tangible field of force surrounds the drinker, granting a +4 armor bonus to AC for 1 hour (sorcerer 1/wizard 1, CL 1).",
+      "fr": "Un champ de force invisible mais tangible entoure le buveur, accordant un bonus d'armure de +4 à la CA pendant 1 heure (ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_mage_armor_ac",
+        "sourceId": "item_potion_mage_armor",
+        "sourceName": {
+          "en": "Potion of Mage Armor",
+          "fr": "Potion d'armure de mage"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "armor"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 hour"
+    }
+  },
+  {
+    "id": "item_potion_magic_circle_against_alignment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Magic Circle Against Alignment",
+      "fr": "Potion de cercle magique contre l'alignement"
+    },
+    "description": {
+      "en": "Creates a 10-foot-radius emanation around the drinker: +2 deflection bonus to AC and +2 resistance bonus on saves against creatures of the specified alignment; blocks mental control; prevents bodily contact by summoned/conjured creatures. Lasts 5 minutes (cleric 3, CL 5).",
+      "fr": "Crée une émanation de 3 m de rayon autour du buveur : +2 en parade à la CA et +2 en résistance aux jets de sauvegarde contre les créatures de l'alignement spécifié ; bloque le contrôle mental ; empêche le contact corporel des créatures invoquées. Dure 5 minutes (clerc 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_magic_fang",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Magic Fang",
+      "fr": "Potion de croc magique"
+    },
+    "description": {
+      "en": "Grants a +1 enhancement bonus on attack rolls and damage rolls made with one natural weapon of the drinker for 1 minute (druid 1, CL 1).",
+      "fr": "Accorde un bonus d'altération de +1 aux jets d'attaque et de dégâts effectués avec une arme naturelle du buveur pendant 1 minute (druide 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_stone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Stone",
+      "fr": "Huile de pierre magique"
+    },
+    "description": {
+      "en": "The oil is applied to up to three pebbles, making each a +1 magic weapon when used in a sling or thrown (1d6+1 damage, range increment 20 ft). Lasts 30 minutes (cleric 1/druid 1, CL 1).",
+      "fr": "L'huile est appliquée sur jusqu'à trois cailloux, les rendant chacun une arme magique +1 utilisée dans une fronde ou lancée (1d6+1 dégâts, facteur de portée 6 m). Dure 30 minutes (clerc 1/druide 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_vestment_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Vestment +1",
+      "fr": "Huile de vêtement magique +1"
+    },
+    "description": {
+      "en": "Applied to a suit of armor, shield, or clothing, grants a +1 enhancement bonus to its armor or shield bonus for 5 minutes (cleric 3, CL 5).",
+      "fr": "Appliquée sur une armure, un bouclier ou un vêtement, accorde un bonus d'altération de +1 à son bonus d'armure ou de bouclier pendant 5 minutes (clerc 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_vestment_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Vestment +2",
+      "fr": "Huile de vêtement magique +2"
+    },
+    "description": {
+      "en": "Applied to a suit of armor, shield, or clothing, grants a +2 enhancement bonus to its armor or shield bonus for 8 minutes (cleric 3, CL 8).",
+      "fr": "Appliquée sur une armure, un bouclier ou un vêtement, accorde un bonus d'altération de +2 à son bonus d'armure ou de bouclier pendant 8 minutes (clerc 3, NLS 8)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1200,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "8 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_vestment_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Vestment +3",
+      "fr": "Huile de vêtement magique +3"
+    },
+    "description": {
+      "en": "Applied to a suit of armor, shield, or clothing, grants a +3 enhancement bonus to its armor or shield bonus for 12 minutes (cleric 3, CL 12).",
+      "fr": "Appliquée sur une armure, un bouclier ou un vêtement, accorde un bonus d'altération de +3 à son bonus d'armure ou de bouclier pendant 12 minutes (clerc 3, NLS 12)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1800,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "12 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_vestment_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Vestment +4",
+      "fr": "Huile de vêtement magique +4"
+    },
+    "description": {
+      "en": "Applied to a suit of armor, shield, or clothing, grants a +4 enhancement bonus to its armor or shield bonus for 16 minutes (cleric 3, CL 16).",
+      "fr": "Appliquée sur une armure, un bouclier ou un vêtement, accorde un bonus d'altération de +4 à son bonus d'armure ou de bouclier pendant 16 minutes (clerc 3, NLS 16)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 2400,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "16 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_vestment_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Vestment +5",
+      "fr": "Huile de vêtement magique +5"
+    },
+    "description": {
+      "en": "Applied to a suit of armor, shield, or clothing, grants a +5 enhancement bonus to its armor or shield bonus for 20 minutes (cleric 3, CL 20).",
+      "fr": "Appliquée sur une armure, un bouclier ou un vêtement, accorde un bonus d'altération de +5 à son bonus d'armure ou de bouclier pendant 20 minutes (clerc 3, NLS 20)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 3000,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "20 min"
+    }
+  },
+  {
+    "id": "item_oil_magic_weapon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Magic Weapon",
+      "fr": "Huile d'arme magique"
+    },
+    "description": {
+      "en": "Applied to one weapon, grants a +1 enhancement bonus on attack rolls and damage rolls made with that weapon for 1 minute (paladin 1/sorcerer 1/wizard 1, CL 1).",
+      "fr": "Appliquée sur une arme, accorde un bonus d'altération de +1 aux jets d'attaque et de dégâts effectués avec cette arme pendant 1 minute (paladin 1/ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_potion_misdirection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Misdirection",
+      "fr": "Potion de détournement"
+    },
+    "description": {
+      "en": "By concentrating, the drinker can misdirect divination spells targeting them (detect alignment, detect magic, discern lies, and similar effects) so they detect a designated other creature or place. Lasts 3 minutes (bard 2/sorcerer 2/wizard 2, CL 3).",
+      "fr": "En se concentrant, le buveur peut détourner les sorts de divination le ciblant (détection de l'alignement, détection de la magie, discernement des mensonges et effets similaires) pour faire croire qu'ils détectent une autre créature ou un autre lieu désigné. Dure 3 minutes (barde 2/ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_neutralize_poison",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Neutralize Poison",
+      "fr": "Potion de neutralisation du poison"
+    },
+    "description": {
+      "en": "Detoxifies all venom in the drinker's system. Heals 1d4 points of ability score damage caused by poison. If drank before being exposed to poison, the drinker gains immunity to that one poison for 10 minutes (cleric 4/druid 3, CL 5).",
+      "fr": "Détoxifie tous les venins présents dans le système du buveur. Soigne 1d4 points de dégâts d'une caractéristique causés par le poison. Si bue avant l'exposition au poison, le buveur gagne l'immunité contre ce poison unique pendant 10 minutes (clerc 4/druide 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_nondetection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Nondetection",
+      "fr": "Potion de non-détection"
+    },
+    "description": {
+      "en": "Hides the drinker from divinatory and scrying magic for 3 minutes. Any divination (scrying or otherwise) targeting the drinker must succeed on a caster level check (DC 11) to work (sorcerer 3/wizard 3, CL 5).",
+      "fr": "Cache le buveur de la magie de divination et de scrutation pendant 3 minutes. Toute divination (scrutation ou autre) ciblant le buveur doit réussir un test de niveau de lanceur (DD 11) pour fonctionner (ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_owls_wisdom",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Owl's Wisdom",
+      "fr": "Potion de sagesse du hibou"
+    },
+    "description": {
+      "en": "Grants a +4 enhancement bonus to Wisdom for 3 minutes (cleric 2/druid 2/paladin 2/ranger 2, CL 3).",
+      "fr": "Accorde un bonus d'altération de +4 à la Sagesse pendant 3 minutes (clerc 2/druide 2/paladin 2/rôdeur 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_owls_wisdom_wis",
+        "sourceId": "item_potion_owls_wisdom",
+        "sourceName": {
+          "en": "Potion of Owl's Wisdom",
+          "fr": "Potion de sagesse du hibou"
+        },
+        "targetId": "attributes.stat_wis",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "3 min"
+    }
+  },
+  {
+    "id": "item_potion_pass_without_trace",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Pass Without Trace",
+      "fr": "Potion de passage sans trace"
+    },
+    "description": {
+      "en": "The drinker leaves no tracks whatsoever and cannot be tracked by nonmagical means. Lasts 1 hour (druid 1/ranger 1, CL 1).",
+      "fr": "Le buveur ne laisse aucune trace et ne peut pas être pistée par des moyens non magiques. Dure 1 heure (druide 1/rôdeur 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 hour"
+    }
+  },
+  {
+    "id": "item_potion_protection_from_alignment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Protection from Alignment",
+      "fr": "Potion de protection contre l'alignement"
+    },
+    "description": {
+      "en": "Grants a +2 deflection bonus to AC and a +2 resistance bonus on saving throws against creatures of the chosen alignment (evil, good, chaos, or law). Also blocks mental control (enchantment (charm) and enchantment (compulsion) effects) and prevents bodily contact by summoned creatures of that alignment. Lasts 1 minute (cleric 1/sorcerer 1/wizard 1, CL 1).",
+      "fr": "Accorde un bonus de parade de +2 à la CA et un bonus de résistance de +2 aux jets de sauvegarde contre les créatures de l'alignement choisi (mauvais, bon, chaotique ou loyal). Bloque également le contrôle mental (effets d'enchantement (charme) et enchantement (contrainte)) et empêche le contact corporel de créatures invoquées de cet alignement. Dure 1 minute (clerc 1/ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_protection_from_alignment_deflection",
+        "sourceId": "item_potion_protection_from_alignment",
+        "sourceName": {
+          "en": "Potion of Protection from Alignment",
+          "fr": "Potion de protection contre l'alignement"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_potion_protection_from_arrows_10",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Protection from Arrows 10/magic",
+      "fr": "Potion de protection contre les projectiles 10/magie"
+    },
+    "description": {
+      "en": "Grants DR 10/magic against ranged weapons for 1 hour. Once the potion has absorbed a total of 10 points of damage per caster level (30 points at CL 3), it is discharged (sorcerer 2/wizard 2, CL 3).",
+      "fr": "Accorde RD 10/magie contre les armes à distance pendant 1 heure. Une fois que la potion a absorbé un total de 10 points de dégâts par niveau de lanceur (30 points au NLS 3), elle est épuisée (ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_protection_from_arrows_10_dr",
+        "sourceId": "item_potion_protection_from_arrows_10",
+        "sourceName": {
+          "en": "Potion of Protection from Arrows 10/magic",
+          "fr": "Potion de protection contre les projectiles 10/magie"
+        },
+        "targetId": "combatStats.damage_reduction",
+        "value": 10,
+        "type": "damage_reduction",
+        "drBypassTags": [
+          "magic"
+        ],
+        "situationalContext": "vs_ranged_attacks"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 hour"
+    }
+  },
+  {
+    "id": "item_potion_protection_from_arrows_15",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Protection from Arrows 15/magic",
+      "fr": "Potion de protection contre les projectiles 15/magie"
+    },
+    "description": {
+      "en": "Grants DR 15/magic against ranged weapons for 1 hour. Once the potion has absorbed a total of 10 points of damage per caster level (150 points at CL 10, when this is accessible at 1,500 gp), it is discharged (sorcerer 2/wizard 2, CL 10).",
+      "fr": "Accorde RD 15/magie contre les armes à distance pendant 1 heure. Une fois que la potion a absorbé un total de 10 points de dégâts par niveau de lanceur (150 points au NLS 10), elle est épuisée (ensorceleur 2/magicien 2, NLS 10)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1500,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_protection_from_arrows_15_dr",
+        "sourceId": "item_potion_protection_from_arrows_15",
+        "sourceName": {
+          "en": "Potion of Protection from Arrows 15/magic",
+          "fr": "Potion de protection contre les projectiles 15/magie"
+        },
+        "targetId": "combatStats.damage_reduction",
+        "value": 15,
+        "type": "damage_reduction",
+        "drBypassTags": [
+          "magic"
+        ],
+        "situationalContext": "vs_ranged_attacks"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 hour"
+    }
+  },
+  {
+    "id": "item_potion_protection_from_energy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Protection from Energy",
+      "fr": "Potion de protection contre l'énergie"
+    },
+    "description": {
+      "en": "Absorbs up to 120 points of damage from one specified energy type (acid, cold, electricity, fire, or sonic) before the effect is discharged. Lasts 5 minutes (cleric 3/druid 3, CL 5).",
+      "fr": "Absorbe jusqu'à 120 points de dégâts d'un type d'énergie spécifié (acide, froid, électricité, feu ou son) avant l'épuisement de l'effet. Dure 5 minutes (clerc 3/druide 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_rage",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Rage",
+      "fr": "Potion de furie"
+    },
+    "description": {
+      "en": "The drinker enters a battle rage: +2 morale bonus to Strength and Constitution, +1 morale bonus on Will saving throws, -2 penalty to AC, for 5 rounds. At the end, the drinker is fatigued (cannot run or charge, -2 penalty to Strength and Dexterity) for the remainder of the encounter (bard 2, CL 5).",
+      "fr": "Le buveur entre dans une rage de combat : +2 en moral à la Force et à la Constitution, +1 en moral aux jets de Volonté, -2 à la CA, pendant 5 rounds. À la fin, le buveur est fatigué (ne peut pas courir ni charger, -2 à la Force et à la Dextérité) pour le reste de la rencontre (barde 2, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 rounds"
+    }
+  },
+  {
+    "id": "item_potion_reduce_person",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Reduce Person",
+      "fr": "Potion de rapetissement de personne"
+    },
+    "description": {
+      "en": "Reduces one humanoid by one size category: -2 Strength, +2 Dexterity, +1 bonus on attack rolls and AC, reach decreases by 5 ft. Lasts 9 minutes (sorcerer 1/wizard 1, CL 1).",
+      "fr": "Réduit un humanoïde d'une catégorie de taille : -2 en Force, +2 en Dextérité, +1 aux jets d'attaque et à la CA, l'allonge diminue de 1,5 m. Dure 9 minutes (ensorceleur 1/magicien 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 250,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "9 min"
+    }
+  },
+  {
+    "id": "item_potion_remove_blindness_deafness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Remove Blindness/Deafness",
+      "fr": "Potion de suppression de la cécité/surdité"
+    },
+    "description": {
+      "en": "Cures normal or magical blindness or deafness of the drinker (cleric 3, CL 5).",
+      "fr": "Soigne la cécité ou la surdité normale ou magique du buveur (clerc 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_remove_curse",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Remove Curse",
+      "fr": "Potion de désenvoûtement"
+    },
+    "description": {
+      "en": "Frees the drinker from all curses. It does not remove the curse from a cursed shield, weapon, or suit of armor, although it temporarily suppresses the curse's effect on the wearer (cleric 3/sorcerer 4/wizard 4, CL 5).",
+      "fr": "Libère le buveur de toutes les malédictions. Cette potion ne supprime pas la malédiction d'un bouclier, d'une arme ou d'une armure maudite, bien qu'elle supprime temporairement l'effet de la malédiction sur le porteur (clerc 3/ensorceleur 4/magicien 4, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_remove_disease",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Remove Disease",
+      "fr": "Potion de guérison des maladies"
+    },
+    "description": {
+      "en": "Cures all diseases afflicting the drinker, including supernatural and magical diseases (cleric 3, CL 5).",
+      "fr": "Soigne toutes les maladies qui affectent le buveur, y compris les maladies surnaturelles et magiques (clerc 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_remove_fear",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Remove Fear",
+      "fr": "Potion de suppression de la peur"
+    },
+    "description": {
+      "en": "Suppresses the shaken, frightened, panicked, and cowering conditions from the drinker, granting a +4 morale bonus on saves against fear for 10 minutes. If used while the drinker is already affected by one of these conditions, it suppresses that condition for 10 minutes (cleric 1, CL 1).",
+      "fr": "Supprime les états ébranlé, effrayé, paniqué et apeuré du buveur, accordant un bonus de moral de +4 aux jets de sauvegarde contre la peur pendant 10 minutes. Si utilisée alors que le buveur est déjà affecté par l'un de ces états, elle le supprime pendant 10 minutes (clerc 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "10 min"
+    }
+  },
+  {
+    "id": "item_potion_remove_paralysis",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Remove Paralysis",
+      "fr": "Potion de guérison des paralysies"
+    },
+    "description": {
+      "en": "Frees the drinker from paralysis or slow effects. If only one creature is affected, it is freed regardless of the number of HD; if two or more are affected, those of 5 or fewer HD are freed (cleric 2, CL 3).",
+      "fr": "Libère le buveur des effets de paralysie ou de lenteur. Si une seule créature est affectée, elle est libérée quel que soit son nombre de DV ; si deux créatures ou plus sont affectées, celles de 5 DV ou moins sont libérées (clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "instant"
+    }
+  },
+  {
+    "id": "item_potion_resist_energy_10",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Resist Energy (10)",
+      "fr": "Potion de résistance à l'énergie 10"
+    },
+    "description": {
+      "en": "Grants energy resistance 10 against one specified energy type (acid, cold, electricity, fire, or sonic) for 30 minutes (cleric 2/druid 2, CL 3).",
+      "fr": "Accorde une résistance à l'énergie de 10 contre un type d'énergie spécifié (acide, froid, électricité, feu ou son) pendant 30 minutes (clerc 2/druide 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_potion_resist_energy_20",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Resist Energy (20)",
+      "fr": "Potion de résistance à l'énergie 20"
+    },
+    "description": {
+      "en": "Grants energy resistance 20 against one specified energy type for 70 minutes (cleric 2/druid 2, CL 7).",
+      "fr": "Accorde une résistance à l'énergie de 20 contre un type d'énergie spécifié pendant 70 minutes (clerc 2/druide 2, NLS 7)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 700,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "70 min"
+    }
+  },
+  {
+    "id": "item_potion_resist_energy_30",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Resist Energy (30)",
+      "fr": "Potion de résistance à l'énergie 30"
+    },
+    "description": {
+      "en": "Grants energy resistance 30 against one specified energy type for 110 minutes (cleric 2/druid 2, CL 11).",
+      "fr": "Accorde une résistance à l'énergie de 30 contre un type d'énergie spécifié pendant 110 minutes (clerc 2/druide 2, NLS 11)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 1100,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "110 min"
+    }
+  },
+  {
+    "id": "item_potion_sanctuary",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Sanctuary",
+      "fr": "Potion de sanctuaire"
+    },
+    "description": {
+      "en": "Any opponent that tries to attack or target the drinker with a hostile spell must succeed on a Will saving throw (DC 11) or be unable to attack. The protection ends if the drinker attacks or casts a harmful spell. Lasts 1 minute (cleric 1, CL 1).",
+      "fr": "Tout adversaire qui tente d'attaquer ou de cibler le buveur avec un sort hostile doit réussir un jet de Volonté (DD 11) ou être incapable d'attaquer. La protection prend fin si le buveur attaque ou lance un sort nuisible. Dure 1 minute (clerc 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_potion_shield_of_faith_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Shield of Faith +2",
+      "fr": "Potion de bouclier de la foi +2"
+    },
+    "description": {
+      "en": "Grants a +2 deflection bonus to AC for 1 minute (cleric 1, CL 1).",
+      "fr": "Accorde un bonus de parade de +2 à la CA pendant 1 minute (clerc 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_shield_of_faith_2_deflection",
+        "sourceId": "item_potion_shield_of_faith_2",
+        "sourceName": {
+          "en": "Potion of Shield of Faith +2",
+          "fr": "Potion de bouclier de la foi +2"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_potion_shield_of_faith_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Shield of Faith +3",
+      "fr": "Potion de bouclier de la foi +3"
+    },
+    "description": {
+      "en": "Grants a +3 deflection bonus to AC for 5 minutes (cleric 1, CL 5).",
+      "fr": "Accorde un bonus de parade de +3 à la CA pendant 5 minutes (clerc 1, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_shield_of_faith_3_deflection",
+        "sourceId": "item_potion_shield_of_faith_3",
+        "sourceName": {
+          "en": "Potion of Shield of Faith +3",
+          "fr": "Potion de bouclier de la foi +3"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 3,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "5 min"
+    }
+  },
+  {
+    "id": "item_potion_shield_of_faith_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Shield of Faith +4",
+      "fr": "Potion de bouclier de la foi +4"
+    },
+    "description": {
+      "en": "Grants a +4 deflection bonus to AC for 11 minutes (cleric 1, CL 11).",
+      "fr": "Accorde un bonus de parade de +4 à la CA pendant 11 minutes (clerc 1, NLS 11)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 600,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_shield_of_faith_4_deflection",
+        "sourceId": "item_potion_shield_of_faith_4",
+        "sourceName": {
+          "en": "Potion of Shield of Faith +4",
+          "fr": "Potion de bouclier de la foi +4"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 4,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "11 min"
+    }
+  },
+  {
+    "id": "item_potion_shield_of_faith_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Shield of Faith +5",
+      "fr": "Potion de bouclier de la foi +5"
+    },
+    "description": {
+      "en": "Grants a +5 deflection bonus to AC for 17 minutes (cleric 1, CL 17).",
+      "fr": "Accorde un bonus de parade de +5 à la CA pendant 17 minutes (clerc 1, NLS 17)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 900,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_potion_shield_of_faith_5_deflection",
+        "sourceId": "item_potion_shield_of_faith_5",
+        "sourceName": {
+          "en": "Potion of Shield of Faith +5",
+          "fr": "Potion de bouclier de la foi +5"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 5,
+        "type": "deflection"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "17 min"
+    }
+  },
+  {
+    "id": "item_oil_shillelagh",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oil of Shillelagh",
+      "fr": "Huile de gourdin sacré"
+    },
+    "description": {
+      "en": "Applied to a normal oak club or staff, makes the weapon deal 2d6 points of bludgeoning damage (instead of normal), attack as a +1 magic weapon, and deal double damage against plant creatures. Lasts 1 minute (druid 1, CL 1).",
+      "fr": "Appliquée sur un gourdin ou un bâton en chêne ordinaire, rend l'arme capable d'infliger 2d6 points de dégâts contondants (au lieu de la normale), fait que l'arme attaque comme une arme magique +1, et inflige des dégâts doublés contre les créatures plantes. Dure 1 minute (druide 1, NLS 1)."
+    },
+    "tags": [
+      "item",
+      "oil",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 50,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "1 min"
+    }
+  },
+  {
+    "id": "item_potion_spider_climb",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Spider Climb",
+      "fr": "Potion de pattes d'araignée"
+    },
+    "description": {
+      "en": "Grants the ability to climb and travel on vertical surfaces or even traverse ceilings as well as a spider does. Climb speed 20 ft, no Climb checks needed. Lasts 30 minutes (sorcerer 2/wizard 2, CL 3).",
+      "fr": "Accorde la capacité de grimper et de se déplacer sur des surfaces verticales ou même de traverser des plafonds aussi bien qu'une araignée. Vitesse d'escalade 6 m, aucun test d'Escalade nécessaire. Dure 30 minutes (ensorceleur 2/magicien 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_potion_tongues",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Tongues",
+      "fr": "Potion de langues"
+    },
+    "description": {
+      "en": "Gives the drinker the ability to speak and understand the language of any intelligent creature (but not to impart that ability to others). Lasts 30 minutes (bard 2/cleric 4/sorcerer 3/wizard 3, CL 5).",
+      "fr": "Donne au buveur la capacité de parler et de comprendre la langue de toute créature intelligente (sans pouvoir transmettre cette capacité à d'autres). Dure 30 minutes (barde 2/clerc 4/ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "30 min"
+    }
+  },
+  {
+    "id": "item_potion_undetectable_alignment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Undetectable Alignment",
+      "fr": "Potion d'alignement indétectable"
+    },
+    "description": {
+      "en": "Conceals the drinker's alignment from detection. Any attempt to magically detect their alignment fails. Lasts 24 hours (bard 1/cleric 2, CL 3).",
+      "fr": "Dissimule l'alignement du buveur à la détection. Toute tentative de détecter magiquement son alignement échoue. Dure 24 heures (barde 1/clerc 2, NLS 3)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 300,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "24 hours"
+    }
+  },
+  {
+    "id": "item_potion_water_breathing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Water Breathing",
+      "fr": "Potion de respiration aquatique"
+    },
+    "description": {
+      "en": "The drinker can breathe water freely. Lasts 2 hours (cleric 3/druid 3/sorcerer 3/wizard 3, CL 5).",
+      "fr": "Le buveur peut respirer librement sous l'eau. Dure 2 heures (clerc 3/druide 3/ensorceleur 3/magicien 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "2 hours"
+    }
+  },
+  {
+    "id": "item_potion_water_walk",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Potion of Water Walk",
+      "fr": "Potion de marche sur l'eau"
+    },
+    "description": {
+      "en": "The drinker can walk, run, or otherwise move across any liquid as if it were firm ground. Lasts 10 minutes (cleric 3/druid 3, CL 5).",
+      "fr": "Le buveur peut marcher, courir ou se déplacer sur tout liquide comme si c'était un sol ferme. Dure 10 minutes (clerc 3/druide 3, NLS 5)."
+    },
+    "tags": [
+      "item",
+      "potion",
+      "magic_item",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0.1,
+    "costGp": 750,
+    "hardness": 1,
+    "hpMax": 1,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "10 min"
+    }
   }
 ]

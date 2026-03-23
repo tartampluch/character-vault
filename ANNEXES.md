@@ -15,6 +15,7 @@ The following examples are provided (see the full Annex A document for complete 
 | A.3.1-3.4 | Human, Elf, Gnome, Dromite                 | Attribute modifiers (racial), size bonuses, bonus feats/skills, situational modifiers (vs_enchantment, vs_illusion, vs_giant), FeatureChoice (energy type), psionic traits                                                                                                                          |
 | A.4.1-4.6 | 6 Feats                                    | Prerequisite chain (Heavy Armor Prof), conditional prerequisites + choice (Exotic Weapon Prof), simple skill bonus (Self-Sufficient), caster level prerequisite (Craft Wand), metamagic (Maximize Spell), metapsionic (Burrowing Power)                                                             |
 | A.5.1-5.9 | 9 Items                                    | Heavy armor (Full Plate with ACP, max Dex, ASF), light armor (Chain Shirt), wondrous item (Bracers of Armor), ring (Feather Falling), container (Bag of Holding), exotic two-handed weapon (Repeating Crossbow), simple ranged (Sling), cursed item (Scarab of Death), clothing (Explorer's Outfit) |
+| A.5.10    | Consumable Potion (Ephemeral Effect)       | `consumable.isConsumable`, `durationHint`, `ActiveFeatureInstance.ephemeral` lifecycle — BEFORE/AFTER states, contrast with non-consumable ring |
 | A.6.1-6.5 | 5 Spells                                   | Divine with costly component (Raise Dead), multi-list (Speak with Plants), arcane scaling damage with formula (Chain Lightning), buff transmutation (Darkvision with granted feature), multi-list material component (Stone Shape)                                                                  |
 | A.7       | Soulknife (6 levels)                       | Psionic class, Mind Blade (manifested weapon), Psychic Strike with dynamic damage formula `floor(@classLevels.class_soulknife / 4)d8`, conditional on target not being mindless                                                                                                                     |
 | A.8       | Druid (5 levels + companion)               | forbiddenTags (metal_armor, metal_shield), Animal Companion (LinkedEntity via FeatureChoice), spellcasting progression                                                                                                                                                                              |
@@ -1820,6 +1821,120 @@ The following examples are provided (see the full Annex A document for complete 
   "grantedFeatures": []
 }
 ```
+
+### A.5.10. Potion of Bull's Strength (Consumable Item + Ephemeral Effect)
+
+> _Demonstrates: the `consumable` block (`isConsumable: true`, `durationHint`), a `grantedModifiers` entry providing the buff, and the `equipmentSlot: "none"` + `"consumable"` tag pattern. Also shows what the runtime `ActiveFeatureInstance` looks like BEFORE and AFTER the potion is drunk._
+>
+> _Key mechanic: when the player clicks "Drink" in the Inventory tab, `GameEngine.consumeItem()` atomically removes the item and creates an ephemeral `ActiveFeatureInstance` carrying the +4 STR modifier. The player sees the buff in `EphemeralEffectsPanel`. Clicking "Expire" calls `GameEngine.expireEffect()` and the +4 STR disappears from the DAG._
+>
+> _See ARCHITECTURE.md sections 5.1.2 and 6.5 for the full design specification._
+
+**Item JSON (authored in `static/rules/`):**
+
+```json
+{
+  "id": "item_potion_bulls_strength",
+  "category": "item",
+  "ruleSource": "srd_core",
+  "label": {
+    "en": "Potion of Bull's Strength",
+    "fr": "Potion de force du taureau"
+  },
+  "description": {
+    "en": "Grants a +4 enhancement bonus to Strength for 3 minutes (cleric 2, CL 3).",
+    "fr": "Accorde un bonus d'altération de +4 à la Force pendant 3 minutes (clerc 2, NLS 3)."
+  },
+  "tags": ["item", "potion", "magic_item", "consumable"],
+  "equipmentSlot": "none",
+  "weightLbs": 0.1,
+  "costGp": 300,
+  "hardness": 1,
+  "hpMax": 1,
+  "consumable": {
+    "isConsumable": true,
+    "durationHint": "3 min"
+  },
+  "grantedModifiers": [
+    {
+      "id": "item_potion_bulls_strength_str",
+      "sourceId": "item_potion_bulls_strength",
+      "sourceName": { "en": "Potion of Bull's Strength", "fr": "Potion de force du taureau" },
+      "targetId": "attributes.stat_str",
+      "value": 4,
+      "type": "enhancement"
+    }
+  ],
+  "grantedFeatures": []
+}
+```
+
+**Character state BEFORE drinking (potion in backpack):**
+
+```json
+{
+  "activeFeatures": [
+    { "instanceId": "afi_race_human", "featureId": "race_human", "isActive": true },
+    { "instanceId": "afi_class_fighter", "featureId": "class_fighter", "isActive": true },
+    {
+      "instanceId": "afi_potion_bulls_str_001",
+      "featureId": "item_potion_bulls_strength",
+      "isActive": false
+    }
+  ]
+}
+```
+
+**After `engine.consumeItem("afi_potion_bulls_str_001", 4)` (round 4 of combat):**
+
+```json
+{
+  "activeFeatures": [
+    { "instanceId": "afi_race_human", "featureId": "race_human", "isActive": true },
+    { "instanceId": "afi_class_fighter", "featureId": "class_fighter", "isActive": true },
+    {
+      "instanceId": "eph_item_potion_bulls_strength_1711123456789",
+      "featureId": "item_potion_bulls_strength",
+      "isActive": true,
+      "ephemeral": {
+        "isEphemeral": true,
+        "appliedAtRound": 4,
+        "sourceItemInstanceId": "afi_potion_bulls_str_001",
+        "durationHint": "3 min"
+      }
+    }
+  ]
+}
+```
+
+Note: `afi_potion_bulls_str_001` is gone (potion consumed). The ephemeral instance's `grantedModifiers` (the +4 STR enhancement) are now active in the DAG. The player sees a card in `EphemeralEffectsPanel` titled "Potion of Bull's Strength" with an amber "3 min" badge and a red "Expire" button.
+
+**Contrast with a non-consumable item (Ring of Protection +2):**
+
+```json
+{
+  "id": "item_ring_protection_2",
+  "category": "item",
+  "ruleSource": "srd_core",
+  "tags": ["item", "ring", "magic_item"],
+  "equipmentSlot": "ring",
+  "weightLbs": 0,
+  "costGp": 8000,
+  "grantedModifiers": [
+    {
+      "id": "item_ring_protection_2_deflection",
+      "sourceId": "item_ring_protection_2",
+      "sourceName": { "en": "Ring of Protection +2", "fr": "Anneau de protection +2" },
+      "targetId": "combatStats.ac_normal",
+      "value": 2,
+      "type": "deflection"
+    }
+  ],
+  "grantedFeatures": []
+}
+```
+
+No `consumable` block. The ring is equipped (`isActive: true`) and stays in inventory permanently. Its +2 deflection is always in the DAG while equipped. Calling `engine.consumeItem()` on a ring instance returns `null` (blocked by the consumable guard).
 
 ---
 

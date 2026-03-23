@@ -498,6 +498,36 @@ _Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-c
 
 - [ ] **Checkpoint Review #7a** (after Phase 20): Run the leveling progression review from `CHECKPOINTS.md`. Covers: per-class SP budget (`phase4_skillPointsBudget` — per-class independence, first-level 4× bonus on first class only, INT minimum floor, racial bonus SP per total level), minimum rank enforcement (`minimumSkillRanks` optional field, `setSkillRanks` clamping, `lockSkillRanksMin` max-merge), `SkillsMatrix.svelte` budget display and locked rank UI, `LevelingJournalModal` SP formula display and XP penalty warning, `phase4_levelingJournal` derived correctness, i18n completeness, Vitest Scenarios 7–9, SRD accuracy cross-check (first-level 4×, INT retroactivity, XP penalty boundary, favored class exemption, cross-class max ranks). Resolve all CRITICAL and MAJOR issues before proceeding.
 
+## Phase E: Ephemeral Effects — Consumable Items, Active Buffs & Expire Button
+
+_Goal: Implement the full consumable item lifecycle: potions and oils can be drunk/applied from inventory, generating temporary active effects visible in a dedicated "Active Effects" panel on the Combat tab. Each effect card shows the source, duration hint, and an "Expire" button for manual dismissal. Special abilities in the Magic tab are wired to spend their resource pool on use._
+
+_Entry point: triggered by observation that the existing engine had no consumable abstraction despite `grantedModifiers` on potions, and the "Use" button in SpecialAbilities was unwired._
+
+- [x] **E-1 Type Extensions:** Add `ephemeral?: { isEphemeral, appliedAtRound, sourceItemInstanceId, durationHint }` to `ActiveFeatureInstance` in `character.ts`. Add `consumable?: { isConsumable, durationHint }` to `ItemFeature` in `feature.ts`. These fields signal the two-phase consumption lifecycle without breaking existing types.
+
+- [x] **E-2 GameEngine — `consumeItem()` / `expireEffect()` / `getEphemeralEffects()`:** Three new public methods in `GameEngine.svelte.ts`.
+  - `consumeItem(sourceInstanceId, currentRound?)`: validates consumability, creates ephemeral instance (same featureId → same modifiers), removes source item, returns new instanceId.
+  - `expireEffect(instanceId)`: safety-guarded remove — refuses to remove non-ephemeral instances.
+  - `getEphemeralEffects()`: filter + sort (newest-round-first) view of ephemeral effects.
+
+- [x] **E-3 `EphemeralEffectsPanel.svelte`:** New component at `src/lib/components/combat/EphemeralEffectsPanel.svelte`. Displays all active ephemeral effects as a collapsible list. Each card shows: effect name, duration badge, "Active" badge, round info, Info button (opens FeatureModal), and two-click "Expire" button (first click = confirm prompt, second click = expire). Placed in Combat tab left column above HealthAndXP. Collapses to a single-line "no effects" message when empty.
+  - Icons added to `icons.ts`: `IconEphemeral` (Hourglass), `IconExpire` (TimerOff), `IconPotion` (FlaskRound), `IconOil` (Droplets), `IconActiveEffect` (Bolt).
+  - i18n keys added to `ui-strings.ts`: `effects.panel.*`, `inventory.*`.
+
+- [x] **E-4 UI Wiring — Inventory & SpecialAbilities:**
+  - `InventoryTab.svelte`: Added `isConsumable()` helper, `useConsumable()` function, `getUseLabel()` function. Consumable items in the Backpack section show a "Drink" / "Apply" / "Use" button (amber-styled) instead of the Equip button. Non-consumable items retain the Equip button.
+  - `SpecialAbilities.svelte`: Wired the existing "Use" button to `handleUseAbility()` which deducts 1 use from the feature's `activation.resourceCost.targetId` pool. No more stub — abilities with a resource cost are now functional.
+
+- [x] **E-5 Tests (`src/tests/ephemeralEffects.test.ts`):** 28 new Vitest tests across 5 suites:
+  - Type soundness (5 tests): fields compile, ephemeral is optional, consumable is optional, durationHint optional.
+  - `consumeItem()` lifecycle (11 tests): removes source, creates effect, isActive=true, same featureId, isEphemeral=true, durationHint, round recorded, non-consumable guard (returns null), missing instanceId guard (returns null), unique IDs on double-consume, selections copied.
+  - `expireEffect()` lifecycle (5 tests): removes instance, blocks non-ephemeral (safety guard), handles missing id, leaves zero effects, does not affect siblings.
+  - `getEphemeralEffects()` sorting (5 tests): only ephemeral, empty array, descending round sort, out-of-combat last, isEphemeral=false excluded.
+  - Full integration scenario (1 test): Fighter drinks Bull's Strength in round 4, effect is active, ring/feat untouched, player expires at round 7.
+
+**Total test count after Phase E: 681 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.
