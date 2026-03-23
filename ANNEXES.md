@@ -1898,7 +1898,7 @@ Annex A provides complete JSON examples conforming to the architecture described
 >
 > _Key mechanic: when the player clicks "Drink" in the Inventory tab, `GameEngine.consumeItem()` atomically removes the item and creates an ephemeral `ActiveFeatureInstance` carrying the +4 STR modifier. The player sees the buff in `EphemeralEffectsPanel`. Clicking "Expire" calls `GameEngine.expireEffect()` and the +4 STR disappears from the DAG._
 >
-> _See ARCHITECTURE.md sections 5.1.2 and 6.5 for the full design specification._
+> _See ARCHITECTURE.md section 6.5 (Ephemeral Effects lifecycle) and the `Feature.consumable` field documentation in section 5 (the `ItemFeature` TypeScript block) for the full design specification._
 
 **Item JSON (authored in `static/rules/`):**
 

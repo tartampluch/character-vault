@@ -1857,7 +1857,15 @@ The flattening phase (Phase 0) processes each `ActiveFeatureInstance` via `#coll
 7. **`levelProgression` gating:** For `category: "class"` Features only. Each `levelProgression` entry is included only if `entry.level <= character.classLevels[featureId]`.
 8. **Recursive `grantedFeatures` expansion:** Each referenced Feature ID is collected as a synthetic `ActiveFeatureInstance` and recursively processed at `depth + 1`. Parent `selections` are inherited by the synthetic instance.
 
-The output is `phase0_flatModifiers: FlatModifierEntry[]` where each entry carries `{ modifier, sourceInstanceId, sourceFeatureId }` for UI attribution.
+The output is `phase0_flatModifiers: FlatModifierEntry[]`. Each entry carries:
+```typescript
+interface FlatModifierEntry {
+  modifier:          Modifier;  // Resolved modifier with numeric value (formulas already evaluated)
+  sourceInstanceId:  ID;        // Which ActiveFeatureInstance granted this modifier
+  sourceFeatureId:   ID;        // Which Feature definition contains this modifier
+}
+```
+The `sourceInstanceId` and `sourceFeatureId` are used by the UI breakdown modal to show "This +2 comes from your Ring of Protection" in a per-modifier attribution panel.
 
 ### 9.4. Phase 0 Detail — Modifier Routing (`#processModifierList`)
 
@@ -2222,7 +2230,7 @@ Ring of Protection +2 (deflection) + Shield of Faith +3 (deflection) + Dodge fea
 
 ### Example E: Indomitable Will — Dual Gating
 
-Barbarian Indomitable Will: "+4 Will vs Enchantment while Raging". This modifier has BOTH a `conditionNode` (must be raging) AND a `situationalContext` (vs enchantment):
+Barbarian Indomitable Will: "+4 Will vs Enchantment while Raging". This modifier has BOTH a `conditionNode` (must be raging) AND a `situationalContext` (vs enchantment). See **Annex A, section A.1.1** (`class_feature_barbarian_indomitable_will`) for the full Feature definition in context.
 
 ```json
 {
@@ -2264,6 +2272,8 @@ Stage 2 (roll time): if raging, modifier routes to `situationalModifiers` and ap
 ```
 
 The same modifier structure applies to `combatStats.ac_touch`. `combatStats.ac_flat_footed` does NOT receive this bonus (you lose WIS to AC when flat-footed). The `value` is a formula string; the Math Parser resolves it at sheet-computation time from `context.attributes["stat_wis"].derivedModifier`.
+
+See **Annex A, section A.1.3** for the complete Monk AC Bonus Feature with both the `ac_normal` and `ac_touch` modifiers, the four-condition `conditionNode`, and the correct use of `"@attributes.stat_wis.derivedModifier"` as value.
 
 ### Example G: Multiclass BAB and Save Resolution
 

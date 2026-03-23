@@ -96,6 +96,83 @@
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
+		// Run all Vitest unit tests (no coverage)
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Test: Run all tests",
+			"type": "shell",
+			"command": "npm test",
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"label": "Tests"
+			},
+			"problemMatcher": []
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// Run all Vitest unit tests WITH v8 coverage report
+		//
+		// Generates an HTML + console coverage report under coverage/.
+		// Open coverage/index.html in a browser to browse the annotated source.
+		//
+		// Coverage is measured for:
+		//   src/lib/utils/     — mathParser, diceEngine, stackingRules, …
+		//   src/lib/engine/    — DataLoader, GameEngine, …
+		//   src/lib/types/     — i18n, settings (always 100%)
+		//
+		// Files excluded from coverage (UI components, SvelteKit routes):
+		//   See vite.config.ts coverage.exclude for the full exclude list.
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Test: Coverage report",
+			"type": "shell",
+			"command": "npm test -- --coverage",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"label": "Coverage"
+			},
+			"problemMatcher": []
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
+		// Run Vitest in watch mode (re-runs affected tests on file save)
+		//
+		// Use during active development: tests re-run within ~200 ms of any
+		// change in src/lib/ or src/tests/. The terminal stays alive.
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Test: Watch mode",
+			"type": "shell",
+			"command": "npm test -- --watch",
+			"isBackground": true,
+			"group": "test",
+			"problemMatcher": {
+				"owner": "vitest-watch",
+				"pattern": { "regexp": "^$" },
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "VITE",
+					"endsPattern": "watching for file changes"
+				}
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"label": "Test Watch"
+			}
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
 		// Run the built artifact locally
 		// ─────────────────────────────────────────────────────────────────────
 		{
