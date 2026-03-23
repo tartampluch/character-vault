@@ -1137,6 +1137,79 @@ export interface ItemFeature extends Feature {
      * Each additional range increment beyond the first adds -2 to attack rolls.
      */
     rangeIncrementFt?: number;
+
+    /**
+     * Additional dice rolled ONLY on a confirmed critical hit (Enhancement E-7).
+     *
+     * D&D 3.5 SRD — "BURST" WEAPON ABILITIES:
+     *   Flaming Burst, Icy Burst, and Shocking Burst weapons deal their base elemental
+     *   damage on every hit (1d6, from the Flaming/Frost/Shock property), PLUS extra
+     *   dice on a confirmed critical hit only:
+     *     - ×2 crit multiplier:  +1d10 of the element
+     *     - ×3 crit multiplier:  +2d10 of the element
+     *     - ×4 crit multiplier:  +3d10 of the element
+     *
+     *   Thundering similarly adds 1d8/2d8/3d8 sonic damage on crits.
+     *
+     *   The SRD explicitly states: "Additional dice of damage are NOT multiplied when
+     *   the attacker scores a critical hit." This means these burst dice are added ONCE
+     *   on a crit, not multiplied by critMultiplier — even though they only trigger on crits.
+     *
+     * CONTENT AUTHORING:
+     *   Set `baseDiceFormula` to the ×2 value (e.g., "1d10" for Flaming Burst).
+     *   Set `scalesWithCritMultiplier: true` to indicate the engine should scale the
+     *   formula by (critMultiplier - 1):
+     *     - critMultiplier = 2 → 1 × baseDiceFormula  (e.g., "1d10")
+     *     - critMultiplier = 3 → 2 × baseDiceFormula  (e.g., "2d10")
+     *     - critMultiplier = 4 → 3 × baseDiceFormula  (e.g., "3d10")
+     *   Set `scalesWithCritMultiplier: false` for fixed crit bonus dice (rare, non-SRD).
+     *
+     *   `damageType`: the energy type of the on-crit bonus dice.
+     *   Examples: "fire" (Flaming Burst), "cold" (Icy Burst), "electricity" (Shocking Burst),
+     *             "sonic" (Thundering).
+     *
+     * ENGINE CONTRACT:
+     *   `parseAndRoll()` accepts `weaponOnCritDice?: OnCritDiceSpec` as a 9th parameter.
+     *   When `isConfirmedCrit === true` AND `weaponOnCritDice` is provided:
+     *   1. Compute the actual dice formula:
+     *        if scalesWithCritMultiplier: diceCount = critMultiplier - 1; formula = `${diceCount}d${faces}`
+     *        else: use baseDiceFormula directly
+     *   2. Roll the formula using the same injected RNG.
+     *   3. Store the result in `RollResult.onCritDiceRolled`.
+     *   4. Add the total to `RollResult.finalTotal` (the burst damage is part of the total).
+     *
+     *   If Fortification negates the crit (`fortification.critNegated === true`), the
+     *   on-crit dice are NOT rolled (Fortification negates ALL crit effects).
+     *
+     * NOTE: This field is on `weaponData`, not on `grantedModifiers`, because it is a
+     * dice-roll side-effect rather than a static pipeline modifier. The combat system
+     * passes the value when constructing the roll call for a confirmed crit.
+     *
+     * @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic
+     * @see RollResult.onCritDiceRolled — the result field
+     * @see parseAndRoll() — 9th parameter: weaponOnCritDice
+     */
+    onCritDice?: {
+      /**
+       * Base dice formula for a ×2 crit multiplier weapon.
+       * Examples: "1d10" (Flaming/Icy/Shocking Burst), "1d8" (Thundering)
+       * Parsed by the dice expression parser.
+       */
+      baseDiceFormula: string;
+      /**
+       * The energy / damage type of these bonus dice.
+       * Examples: "fire", "cold", "electricity", "sonic"
+       * Used by the UI to display "1d10 fire (on crit)" in the roll breakdown.
+       */
+      damageType: string;
+      /**
+       * When true, multiply baseDiceFormula by (critMultiplier - 1).
+       * ×2 → 1×formula, ×3 → 2×formula, ×4 → 3×formula.
+       * Set false for fixed bonus (e.g., always 2d6 regardless of crit multiplier).
+       * Should be true for all SRD burst weapons.
+       */
+      scalesWithCritMultiplier: boolean;
+    };
   };
 
   /**

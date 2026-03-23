@@ -588,6 +588,130 @@ This is entirely a UI / combat-tab concern; the DAG engine simply maintains the 
 
 ---
 
+### 4.9. On-Crit Burst Dice — `ItemFeature.weaponData.onCritDice`
+
+The **Burst** weapon special abilities (Flaming Burst, Icy Burst, Shocking Burst, Thundering) deal additional elemental / sonic dice **only on a confirmed critical hit**, in addition to their base on-hit bonus damage (which comes from a `situationalContext:"on_hit"` modifier).
+
+#### D&D 3.5 SRD Rule
+
+> "Unlike other modifiers to damage, additional dice of damage are **not multiplied** when the attacker scores a critical hit."
+
+This means the burst dice are NOT subject to the weapon's critMultiplier — they are a flat extra rolled once on a crit. However, the *count* of those bonus dice does scale with the weapon's critMultiplier:
+
+| Crit Multiplier | Burst Dice (Flaming Burst) | Burst Dice (Thundering) |
+|---|---|---|
+| ×2 (most weapons) | +1d10 fire | +1d8 sonic |
+| ×3 (battleaxe, greataxe) | +2d10 fire | +2d8 sonic |
+| ×4 (scythe, lance) | +3d10 fire | +3d8 sonic |
+
+#### Data Model — `ItemFeature.weaponData.onCritDice`
+
+```typescript
+onCritDice?: {
+    baseDiceFormula: string;          // "1d10" for Flaming/Icy/Shocking Burst, "1d8" for Thundering
+    damageType: string;               // "fire", "cold", "electricity", "sonic"
+    scalesWithCritMultiplier: boolean; // true for all SRD burst weapons
+};
+```
+
+This field lives on `weaponData` (not in `grantedModifiers`) because it is a **dice-roll side-effect at roll time**, not a static pipeline accumulation. The combat system reads it from the equipped weapon when calling `parseAndRoll()` for a damage roll on a confirmed crit.
+
+#### Dice Engine Contract
+
+`parseAndRoll()` accepts two additional parameters (9th and 10th) for burst dice:
+
+```typescript
+parseAndRoll(
+  formula, pipeline, context, settings, rng, critRange,
+  defenderAttackerMods?,   // E-5
+  defenderFortificationPct?,  // E-6b
+  weaponOnCritDice?: OnCritDiceSpec,   // ← E-7 (9th)
+  critMultiplier: number = 2            // ← E-7 (10th)
+): RollResult
+```
+
+**`OnCritDiceSpec`** (exported from `diceEngine.ts`):
+```typescript
+export interface OnCritDiceSpec {
+    baseDiceFormula: string;
+    damageType: string;
+    scalesWithCritMultiplier: boolean;
+}
+```
+
+**Algorithm (inside `parseAndRoll`, Step 6c):**
+
+1. Guard: only when `isEffectiveCrit === true` (confirmed AND not negated by Fortification) AND `weaponOnCritDice` is provided.
+2. Parse `baseDiceFormula` → extract `(baseDiceCount, diceFaces)`.
+3. Compute actual dice count:
+   - `scalesWithCritMultiplier === true`: `actualCount = baseDiceCount × (critMultiplier - 1)`
+   - `scalesWithCritMultiplier === false`: `actualCount = baseDiceCount`
+4. Roll `actualCount` dice of `diceFaces` using the same injectable RNG.
+5. **Add the burst total to `finalTotal`** (burst IS part of the crit damage).
+6. Store result in `RollResult.onCritDiceRolled`.
+
+**Fortification Interaction:**
+If `fortificationResult.critNegated === true`, no burst dice are rolled. Fortification negates ALL crit effects.
+
+**`RollResult.onCritDiceRolled` block:**
+```typescript
+onCritDiceRolled?: {
+    formula: string;      // Actual rolled formula (e.g., "2d10" for ×3 weapon)
+    rolls: number[];      // Individual die results
+    totalAdded: number;   // Sum — already included in finalTotal
+    damageType: string;   // "fire", "cold", etc. (for UI display)
+};
+```
+
+Present only when burst dice were actually rolled. Absent on non-crit hits, fort-negated crits, or weapons without `onCritDice`.
+
+#### Content Authoring — Flaming Burst Longsword Example
+
+A +1 Flaming Burst longsword is authored as:
+
+```json
+{
+  "id": "item_weapon_flaming_burst_longsword_1",
+  "category": "item",
+  "tags": ["item", "weapon", "magic_item", "magic_weapon"],
+  "weaponData": {
+    "wieldCategory": "one_handed",
+    "damageDice": "1d8",
+    "damageType": ["slashing"],
+    "critRange": "19-20",
+    "critMultiplier": 2,
+    "reachFt": 5,
+    "onCritDice": {
+      "baseDiceFormula": "1d10",
+      "damageType": "fire",
+      "scalesWithCritMultiplier": true
+    }
+  },
+  "grantedModifiers": [
+    { "targetId": "combatStats.attack_bonus", "value": 1, "type": "enhancement" },
+    { "targetId": "combatStats.damage_bonus", "value": 1, "type": "enhancement" },
+    { "targetId": "combatStats.damage_bonus", "value": "1d6",
+      "type": "untyped", "situationalContext": "on_hit",
+      "sourceName": { "en": "Flaming Burst (on hit)", "fr": "Explosion ardente (au toucher)" }
+    }
+  ]
+}
+```
+
+The `situationalContext:"on_hit"` modifier handles the +1d6 fire on **every** hit. The `onCritDice` handles the **additional** +1d10 fire on **confirmed crits only**. Both are rolled separately; neither affects the other.
+
+#### `Keen` — Crit Range Doubling (Content Authoring Only, No Engine Change)
+
+The **Keen** special ability doubles the threat range of a slashing or piercing weapon. A Keen longsword (base 19–20) becomes 17–20.
+
+This is encoded directly in `weaponData.critRange`. The Dice Engine already reads `critRange` as a string and parses the minimum from "MIN-MAX" notation. No engine change is needed — content authors simply set the correct `critRange` on the keened weapon's definition. A "+1 Keen Longsword" has `"critRange": "17-20"` baked into its JSON.
+
+#### `Vicious` — Self-Damage on Hit (Tag + Description)
+
+The **Vicious** special ability deals 2d6 to the target AND 1d6 to the wielder on every hit. The self-damage is modeled as a tag `"vicious"` on the weapon plus a note in the description. The combat UI is responsible for prompting the wielder to take 1d6 damage when they hit with a Vicious weapon. This follows the same pattern as real table-top play and avoids overengineering a `selfDamageOnHit` pipeline for a single rare effect.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

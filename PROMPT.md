@@ -547,6 +547,27 @@ _Entry point: pre-conversion analysis of `magicArmor.html` revealed that no `com
 
 **Total test count after Phase E-6: 701 tests (all passing).**
 
+## Phase E-7: Magic Weapon Engine Prerequisites — On-Crit Burst Dice
+
+_Goal: Resolve the one engine gap identified during C-14l (Magic Weapons) analysis before generating the JSON. Flaming Burst / Icy Burst / Shocking Burst / Thundering weapons deal extra elemental/sonic dice on confirmed critical hits only. This cannot be modeled as a static pipeline modifier — it is a dice-roll side-effect that must fire at roll time._
+
+_Entry point: pre-conversion analysis of `magicWeapons.html`. The only true engine gap was the burst-on-crit mechanism. Keen (doubled crit range) is a content-authoring decision (set `critRange` directly). Vicious (self-damage) is modeled as a tag + description._
+
+- [x] **E-7a Type Extensions:** Added `ItemFeature.weaponData.onCritDice?: { baseDiceFormula, damageType, scalesWithCritMultiplier }` to `feature.ts`. Added `RollResult.onCritDiceRolled?: { formula, rolls, totalAdded, damageType }` to `diceEngine.ts`. Added exported `OnCritDiceSpec` interface to `diceEngine.ts`.
+
+- [x] **E-7b Dice Engine — 9th+10th parameters to `parseAndRoll()`:** Added `weaponOnCritDice?: OnCritDiceSpec` (9th) and `critMultiplier: number = 2` (10th). Step 6c in the algorithm: when `isEffectiveCrit` (confirmed AND not fort-negated) AND spec provided: parse `baseDiceFormula`, compute dice count (`baseDiceCount × (critMultiplier - 1)` when scaling), roll burst dice via injectable RNG, add to `finalTotal`, store in `onCritDiceRolled`. Changed `finalTotal` from `const` to `let` to allow mutation. Removed duplicate `isEffectiveCrit` declaration.
+
+- [x] **E-7c Tests (`src/tests/onCritBurstDice.test.ts`):** 22 new Vitest tests (723 total, all passing):
+  - Happy path (12 tests): non-crit absent, no-spec absent, ×2/×3/×4 scaling, Thundering, totalAdded in finalTotal, damageType, individual rolls, scalesWithCritMultiplier=false fixed, ×3 non-scaling.
+  - Fortification interaction (2 tests): negated crit → no burst; non-negated → burst present.
+  - V/WP interaction (2 tests): effective crit → res_wound_points; fort-negated → res_vitality.
+  - Parsing edge cases (4 tests): "d10" no-prefix, "2d6" ×3 scaling, malformed → no crash, critMultiplier=2 → 1 die.
+  - Combined fields (2 tests): burst + attackerPenalties; burst + fortification non-negated.
+
+- [x] **E-7d Documentation:** `ARCHITECTURE.md` section 4.9 (On-Crit Burst Dice — full SRD table, data model, algorithm, Fortification interaction, content authoring Flaming Burst example, Keen and Vicious design decisions). `CHECKPOINTS.md` Checkpoint #4 updated with 14 new on-crit burst dice verification items.
+
+**Total test count after Phase E-7: 723 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

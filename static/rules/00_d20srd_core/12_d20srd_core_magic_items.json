@@ -8586,5 +8586,3852 @@
         "resetCondition": "per_day"
       }
     ]
+  },
+  {
+    "id": "item_magic_weapon_enhancement_1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Weapon Enhancement +1",
+      "fr": "Arme magique, amélioration +1"
+    },
+    "description": {
+      "en": "The weapon's enhancement bonus on attack and damage rolls is +1. All magic weapons are masterwork (masterwork bonus on attack rolls does not stack with enhancement). Enhancement bonuses on ranged weapons do not stack with enhancement bonuses on ammunition (CL 3).",
+      "fr": "Le bonus d'altération de l'arme aux jets d'attaque et de dégâts est de +1. Toutes les armes magiques sont de maîtrise (le bonus de maîtrise ne se cumule pas avec le bonus d'altération). Les bonus d'altération des armes à distance ne se cumulent pas avec ceux des munitions (NLS 3)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "hardness": 12,
+    "hpMax": 15,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_weapon_enhancement_1_combatStats_attack_bonus",
+        "sourceId": "item_magic_weapon_enhancement_1",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +1",
+          "fr": "Arme magique, amélioration +1"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_magic_weapon_enhancement_1_combatStats_damage_bonus",
+        "sourceId": "item_magic_weapon_enhancement_1",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +1",
+          "fr": "Arme magique, amélioration +1"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_weapon_enhancement_2",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Weapon Enhancement +2",
+      "fr": "Arme magique, amélioration +2"
+    },
+    "description": {
+      "en": "The weapon's enhancement bonus on attack and damage rolls is +2. All magic weapons are masterwork (masterwork bonus on attack rolls does not stack with enhancement). Enhancement bonuses on ranged weapons do not stack with enhancement bonuses on ammunition (CL 6).",
+      "fr": "Le bonus d'altération de l'arme aux jets d'attaque et de dégâts est de +2. Toutes les armes magiques sont de maîtrise (le bonus de maîtrise ne se cumule pas avec le bonus d'altération). Les bonus d'altération des armes à distance ne se cumulent pas avec ceux des munitions (NLS 6)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 8000,
+    "hardness": 14,
+    "hpMax": 25,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_weapon_enhancement_2_combatStats_attack_bonus",
+        "sourceId": "item_magic_weapon_enhancement_2",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +2",
+          "fr": "Arme magique, amélioration +2"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_magic_weapon_enhancement_2_combatStats_damage_bonus",
+        "sourceId": "item_magic_weapon_enhancement_2",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +2",
+          "fr": "Arme magique, amélioration +2"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_weapon_enhancement_3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Weapon Enhancement +3",
+      "fr": "Arme magique, amélioration +3"
+    },
+    "description": {
+      "en": "The weapon's enhancement bonus on attack and damage rolls is +3. All magic weapons are masterwork (masterwork bonus on attack rolls does not stack with enhancement). Enhancement bonuses on ranged weapons do not stack with enhancement bonuses on ammunition (CL 9).",
+      "fr": "Le bonus d'altération de l'arme aux jets d'attaque et de dégâts est de +3. Toutes les armes magiques sont de maîtrise (le bonus de maîtrise ne se cumule pas avec le bonus d'altération). Les bonus d'altération des armes à distance ne se cumulent pas avec ceux des munitions (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 18000,
+    "hardness": 16,
+    "hpMax": 35,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_weapon_enhancement_3_combatStats_attack_bonus",
+        "sourceId": "item_magic_weapon_enhancement_3",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +3",
+          "fr": "Arme magique, amélioration +3"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_magic_weapon_enhancement_3_combatStats_damage_bonus",
+        "sourceId": "item_magic_weapon_enhancement_3",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +3",
+          "fr": "Arme magique, amélioration +3"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_weapon_enhancement_4",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Weapon Enhancement +4",
+      "fr": "Arme magique, amélioration +4"
+    },
+    "description": {
+      "en": "The weapon's enhancement bonus on attack and damage rolls is +4. All magic weapons are masterwork (masterwork bonus on attack rolls does not stack with enhancement). Enhancement bonuses on ranged weapons do not stack with enhancement bonuses on ammunition (CL 12).",
+      "fr": "Le bonus d'altération de l'arme aux jets d'attaque et de dégâts est de +4. Toutes les armes magiques sont de maîtrise (le bonus de maîtrise ne se cumule pas avec le bonus d'altération). Les bonus d'altération des armes à distance ne se cumulent pas avec ceux des munitions (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 32000,
+    "hardness": 18,
+    "hpMax": 45,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_weapon_enhancement_4_combatStats_attack_bonus",
+        "sourceId": "item_magic_weapon_enhancement_4",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +4",
+          "fr": "Arme magique, amélioration +4"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_magic_weapon_enhancement_4_combatStats_damage_bonus",
+        "sourceId": "item_magic_weapon_enhancement_4",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +4",
+          "fr": "Arme magique, amélioration +4"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_magic_weapon_enhancement_5",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Magic Weapon Enhancement +5",
+      "fr": "Arme magique, amélioration +5"
+    },
+    "description": {
+      "en": "The weapon's enhancement bonus on attack and damage rolls is +5. All magic weapons are masterwork (masterwork bonus on attack rolls does not stack with enhancement). Enhancement bonuses on ranged weapons do not stack with enhancement bonuses on ammunition (CL 15).",
+      "fr": "Le bonus d'altération de l'arme aux jets d'attaque et de dégâts est de +5. Toutes les armes magiques sont de maîtrise (le bonus de maîtrise ne se cumule pas avec le bonus d'altération). Les bonus d'altération des armes à distance ne se cumulent pas avec ceux des munitions (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 50000,
+    "hardness": 20,
+    "hpMax": 55,
+    "grantedModifiers": [
+      {
+        "id": "item_magic_weapon_enhancement_5_combatStats_attack_bonus",
+        "sourceId": "item_magic_weapon_enhancement_5",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +5",
+          "fr": "Arme magique, amélioration +5"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 5,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_magic_weapon_enhancement_5_combatStats_damage_bonus",
+        "sourceId": "item_magic_weapon_enhancement_5",
+        "sourceName": {
+          "en": "Magic Weapon Enhancement +5",
+          "fr": "Arme magique, amélioration +5"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 5,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_bane",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Bane",
+      "fr": "Arme : fléau"
+    },
+    "description": {
+      "en": "A bane weapon excels against one designated creature type or subtype. Against the foe: +2 effective enhancement bonus (stacks with the weapon's base enhancement) and +2d6 damage. Bows/crossbows/slings bestow the bane quality upon ammunition (CL 8).",
+      "fr": "Une arme fléau excelle contre un type ou sous-type de créature désigné. Contre ce foe : +2 de bonus d'altération effectif (cumule avec le bonus d'altération de base) et +2d6 dégâts. Arcs, arbalètes et frondes transmettent la propriété fléau à leurs munitions (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_bane_combatStats_attack_bonus",
+        "sourceId": "item_weapon_special_bane",
+        "sourceName": {
+          "en": "Weapon: Bane",
+          "fr": "Arme : fléau"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement",
+        "situationalContext": "vs_designated_foe"
+      },
+      {
+        "id": "item_weapon_special_bane_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_bane",
+        "sourceName": {
+          "en": "Weapon: Bane",
+          "fr": "Arme : fléau"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_designated_foe"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_defending",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Defending",
+      "fr": "Arme : défensivité"
+    },
+    "description": {
+      "en": "A defending weapon allows the wielder to transfer some or all of the weapon's enhancement bonus to AC as a bonus that stacks with all others. As a free action, the wielder allocates the bonus at the start of their turn; the effect lasts until their next turn (CL 8).",
+      "fr": "Une arme défensive permet au porteur de transférer tout ou partie du bonus d'altération de l'arme à la CA comme bonus se cumulant avec tous les autres. En action libre, le porteur alloue le bonus au début de son tour ; l'effet dure jusqu'à son prochain tour (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "defending"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "free"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_flaming",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Flaming",
+      "fr": "Arme : enflammée"
+    },
+    "description": {
+      "en": "Upon command, the weapon is sheathed in fire (harmless to the wielder). Deals +1d6 fire damage on a successful hit. Effect remains until another command is given. Bows/crossbows/slings bestow fire upon their ammunition (CL 10).",
+      "fr": "Sur commande, l'arme est enveloppée de flammes (inoffensif pour le porteur). Inflige +1d6 dégâts de feu lors d'un toucher. L'effet persiste jusqu'à une nouvelle commande. Arcs/arbalètes/frondes transmettent l'énergie de feu aux munitions (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "flaming"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_flaming_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_flaming",
+        "sourceName": {
+          "en": "Weapon: Flaming",
+          "fr": "Arme : enflammée"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_fire"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_flaming_burst",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Flaming Burst",
+      "fr": "Arme : explosion ardente"
+    },
+    "description": {
+      "en": "Functions as a flaming weapon (+1d6 fire on every hit) that also explodes with flame on a confirmed critical hit: +1d10 fire (×2 crit), +2d10 fire (×3 crit), +3d10 fire (×4 crit). Even if the flaming ability is inactive, the weapon still deals its extra crit fire damage. Bows/crossbows/slings bestow fire energy upon ammunition (CL 12).",
+      "fr": "Fonctionne comme une arme enflammée (+1d6 feu à chaque toucher) et explose avec des flammes sur un coup critique confirmé : +1d10 feu (×2), +2d10 feu (×3), +3d10 feu (×4). Même si la propriété enflammée est inactive, les dégâts critiques de feu s'appliquent quand même. Arcs/arbalètes/frondes transmettent l'énergie de feu (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "flaming",
+      "burst"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "0",
+      "damageType": [
+        "fire"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "onCritDice": {
+        "baseDiceFormula": "1d10",
+        "damageType": "fire",
+        "scalesWithCritMultiplier": true
+      }
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_flaming_burst_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_flaming_burst",
+        "sourceName": {
+          "en": "Weapon: Flaming Burst",
+          "fr": "Arme : explosion ardente"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_fire"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_frost",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Frost",
+      "fr": "Arme : glaciale"
+    },
+    "description": {
+      "en": "Upon command, the weapon is sheathed in icy cold (harmless to wielder). Deals +1d6 cold damage on hit. Effect remains until another command is given. Bows/crossbows/slings bestow cold upon ammunition (CL 8).",
+      "fr": "Sur commande, l'arme est enveloppée de froid glacial (inoffensif). Inflige +1d6 dégâts de froid au toucher. L'effet persiste jusqu'à nouvelle commande. Arcs/arbalètes/frondes transmettent le froid aux munitions (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "frost"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_frost_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_frost",
+        "sourceName": {
+          "en": "Weapon: Frost",
+          "fr": "Arme : glaciale"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_cold"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_icy_burst",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Icy Burst",
+      "fr": "Arme : explosion glaciale"
+    },
+    "description": {
+      "en": "Functions as a frost weapon (+1d6 cold on hit) that also explodes with frost on a confirmed critical hit: +1d10 cold (×2), +2d10 cold (×3), +3d10 cold (×4). Even if frost is inactive, still deals crit cold damage. Bows/crossbows/slings bestow cold energy upon ammunition (CL 10).",
+      "fr": "Fonctionne comme une arme glaciale (+1d6 froid) et explose sur un coup critique confirmé : +1d10 froid (×2), +2d10 froid (×3), +3d10 froid (×4). Même si glaciale est inactive, les dégâts critiques s'appliquent (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "frost",
+      "burst"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "0",
+      "damageType": [
+        "cold"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "onCritDice": {
+        "baseDiceFormula": "1d10",
+        "damageType": "cold",
+        "scalesWithCritMultiplier": true
+      }
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_icy_burst_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_icy_burst",
+        "sourceName": {
+          "en": "Weapon: Icy Burst",
+          "fr": "Arme : explosion glaciale"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_cold"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_shock",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Shock",
+      "fr": "Arme : choquante"
+    },
+    "description": {
+      "en": "Upon command, the weapon is sheathed in crackling electricity (harmless to wielder). Deals +1d6 electricity damage on hit. Effect remains until another command. Bows/crossbows/slings bestow electricity upon ammunition (CL 8).",
+      "fr": "Sur commande, l'arme est enveloppée d'électricité crépitante (inoffensif). Inflige +1d6 dégâts d'électricité au toucher. L'effet persiste jusqu'à nouvelle commande (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "shock"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_shock_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_shock",
+        "sourceName": {
+          "en": "Weapon: Shock",
+          "fr": "Arme : choquante"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_electricity"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_shocking_burst",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Shocking Burst",
+      "fr": "Arme : explosion électrique"
+    },
+    "description": {
+      "en": "Functions as a shock weapon (+1d6 electricity on hit) that also explodes on a confirmed crit: +1d10 electricity (×2), +2d10 (×3), +3d10 (×4). Even if shock is inactive, still deals crit electricity damage. Bows/crossbows/slings bestow electricity upon ammunition (CL 10).",
+      "fr": "Fonctionne comme une arme choquante (+1d6 électricité) et explose sur critique confirmé : +1d10 élec (×2), +2d10 (×3), +3d10 (×4). Même si choquante est inactive, les dégâts critiques s'appliquent (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "shock",
+      "burst"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "0",
+      "damageType": [
+        "electricity"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "onCritDice": {
+        "baseDiceFormula": "1d10",
+        "damageType": "electricity",
+        "scalesWithCritMultiplier": true
+      }
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_shocking_burst_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_shocking_burst",
+        "sourceName": {
+          "en": "Weapon: Shocking Burst",
+          "fr": "Arme : explosion électrique"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_electricity"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_ghost_touch",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Ghost Touch",
+      "fr": "Arme : contact fantomatique"
+    },
+    "description": {
+      "en": "Deals damage normally against incorporeal creatures (ignores 50% miss chance). Can be picked up and moved by incorporeal creatures. A manifesting ghost can wield it against corporeal foes. Counts as either corporeal or incorporeal, whichever benefits the wielder more (CL 9).",
+      "fr": "Inflige des dégâts normalement aux créatures intangibles (ignore le 50% d'esquive). Peut être ramassée et maniée par des créatures intangibles. Compte comme corporelle ou intangible, selon ce qui avantage le manieur (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "ghost_touch"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_keen",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Keen",
+      "fr": "Arme : acérée"
+    },
+    "description": {
+      "en": "Doubles the threat range of a piercing or slashing weapon. A longsword (normally 19-20) becomes 17-20. Does not stack with Improved Critical feat or keen edge spell. Content authoring: encode as the doubled critRange directly on the weapon (e.g., critRange: '17-20') (CL 10).",
+      "fr": "Double la zone de menace d'une arme perforante ou tranchante. Une épée longue (normalement 19-20) devient 17-20. Ne se cumule pas avec Critique amélioré ni sort lame acérée. Auteur de contenu : encoder directement le critRange doublé sur l'arme (p. ex. '17-20') (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "keen"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_ki_focus",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Ki Focus",
+      "fr": "Arme : canal de ki"
+    },
+    "description": {
+      "en": "Serves as a channel for the wielder's ki, allowing monk special ki attacks (stunning attack, ki strike, quivering palm, Stunning Fist feat) through the weapon as if they were unarmed attacks. Only melee weapons can have this ability (CL 8).",
+      "fr": "Canal pour le ki du porteur, permettant l'utilisation des attaques spéciales de ki du moine (attaque étourdissante, frappe de ki, paume tremblante, Poing étourdissant) via l'arme comme si c'était des attaques à mains nues. Armes de corps à corps uniquement (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "ki_focus"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_merciful",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Merciful",
+      "fr": "Arme : miséricordieuse"
+    },
+    "description": {
+      "en": "Deals an extra 1d6 damage on hit; all damage dealt is nonlethal. On command, suppresses this ability until commanded to resume. Bows/crossbows/slings bestow merciful effect upon ammunition (CL 5).",
+      "fr": "Inflige +1d6 dégâts au toucher ; tous les dégâts infligés sont non létaux. Sur commande, supprime cette propriété jusqu'à nouvelle commande. Arcs/arbalètes/frondes transmettent l'effet miséricordieux aux munitions (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "merciful"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_merciful_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_merciful",
+        "sourceName": {
+          "en": "Weapon: Merciful",
+          "fr": "Arme : miséricordieuse"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_nonlethal"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_mighty_cleaving",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Mighty Cleaving",
+      "fr": "Arme : fente puissante"
+    },
+    "description": {
+      "en": "Allows a wielder with the Cleave feat to make one additional cleave attempt in a round (CL 8).",
+      "fr": "Permet à un manieur possédant Fente de tenter une fente supplémentaire par round (NLS 8)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "mighty_cleaving"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_spell_storing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Spell Storing",
+      "fr": "Arme : stockage de sort"
+    },
+    "description": {
+      "en": "A spellcaster can store a single targeted spell of up to 3rd level (casting time 1 standard action) in the weapon. When the weapon strikes a creature, the stored spell can be cast on that creature as a free action. Once used, a new spell can be stored. 50% chance a randomly found weapon already has a spell stored (CL 12).",
+      "fr": "Un lanceur de sorts peut stocker un sort ciblé de niveau 1 à 3 (temps d'incantation 1 action standard) dans l'arme. Lorsque l'arme touche une créature, le sort peut être lancé sur cette créature en action libre. Une fois utilisé, un nouveau sort peut être stocké. 50% de chance qu'une arme trouvée au hasard contienne déjà un sort (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "spell_storing"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_throwing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Throwing",
+      "fr": "Arme : de lancer"
+    },
+    "description": {
+      "en": "A melee weapon with this ability gains a 10-foot range increment and can be thrown by a proficient wielder. Only melee weapons can have this ability (CL 5).",
+      "fr": "Une arme de corps à corps avec cette propriété gagne un facteur de portée de 3 m et peut être lancée par un manieur compétent (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "throwing"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_thundering",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Thundering",
+      "fr": "Arme : tonnante"
+    },
+    "description": {
+      "en": "Creates a cacophonous roar on a confirmed critical hit. Deals +1d8 sonic (×2 crit), +2d8 (×3), +3d8 (×4). Not multiplied by critMultiplier. Subject must succeed on a DC 14 Fortitude save or be permanently deafened. Bows/crossbows/slings bestow sonic energy upon ammunition (CL 5).",
+      "fr": "Crée un vacarme assourdissant sur un coup critique confirmé. Inflige +1d8 sonique (×2), +2d8 (×3), +3d8 (×4). Non multiplié par le multiplicateur de critique. Le sujet doit réussir un jet de Vigueur DD 14 ou être définitivement assourdi. Arcs/arbalètes/frondes transmettent l'énergie sonique (NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "thundering",
+      "burst"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "0",
+      "damageType": [
+        "sonic"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "onCritDice": {
+        "baseDiceFormula": "1d8",
+        "damageType": "sonic",
+        "scalesWithCritMultiplier": true
+      }
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_vicious",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Vicious",
+      "fr": "Arme : vicieuse"
+    },
+    "description": {
+      "en": "When striking, creates a flash of disruptive energy: deals +2d6 to the opponent AND 1d6 to the wielder. The wielder's self-damage applies each time the weapon hits. Only melee weapons can be vicious. Note: the wielder's 1d6 self-damage is a narrative/UI effect — the player applies it each hit (CL 9).",
+      "fr": "Lors d'un toucher, crée un éclair d'énergie : inflige +2d6 à l'adversaire ET 1d6 au manieur. Le manieur subit 1d6 dégâts à chaque toucher. Armes de corps à corps uniquement. Note : le 1d6 auto-dégâts est un effet narratif — le joueur l'applique à chaque toucher (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "vicious"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_vicious_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_vicious",
+        "sourceName": {
+          "en": "Weapon: Vicious",
+          "fr": "Arme : vicieuse"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "on_hit"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_disruption",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Disruption",
+      "fr": "Arme : disruption"
+    },
+    "description": {
+      "en": "The bane of all undead. Any undead struck must succeed on a DC 14 Will save or be destroyed. Must be a bludgeoning weapon (CL 14).",
+      "fr": "Le fléau de tous les morts-vivants. Tout mort-vivant touché doit réussir un jet de Volonté DD 14 ou être détruit. Doit être une arme contondante (NLS 14)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "disruption"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_anarchic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Anarchic",
+      "fr": "Arme : anarchique"
+    },
+    "description": {
+      "en": "The weapon is anarchic-aligned, bypassing corresponding DR. Deals +2d6 against lawful-aligned creatures. Bestows one negative level on any lawful creature wielding it (persists while held, never causes actual level loss). Bows/crossbows/slings bestow the alignment upon ammunition (CL 7).",
+      "fr": "L'arme est alignée anarchique, contournant la RD correspondante. Inflige +2d6 contre les créatures d'alignement loyal. Inflige un niveau négatif à tout manieur d'alignement loyal (persiste en main, jamais de perte réelle). Arcs/arbalètes/frondes transmettent l'alignement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "anarchic"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_anarchic_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_anarchic",
+        "sourceName": {
+          "en": "Weapon: Anarchic",
+          "fr": "Arme : anarchique"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_lawful"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_axiomatic",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Axiomatic",
+      "fr": "Arme : axiomatique"
+    },
+    "description": {
+      "en": "The weapon is axiomatic-aligned, bypassing corresponding DR. Deals +2d6 against chaotic-aligned creatures. Bestows one negative level on any chaotic creature wielding it (persists while held, never causes actual level loss). Bows/crossbows/slings bestow the alignment upon ammunition (CL 7).",
+      "fr": "L'arme est alignée axiomatique, contournant la RD correspondante. Inflige +2d6 contre les créatures d'alignement chaotique. Inflige un niveau négatif à tout manieur d'alignement chaotique (persiste en main, jamais de perte réelle). Arcs/arbalètes/frondes transmettent l'alignement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "axiomatic"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_axiomatic_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_axiomatic",
+        "sourceName": {
+          "en": "Weapon: Axiomatic",
+          "fr": "Arme : axiomatique"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_chaotic"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_holy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Holy",
+      "fr": "Arme : sainte"
+    },
+    "description": {
+      "en": "The weapon is holy-aligned, bypassing corresponding DR. Deals +2d6 against evil-aligned creatures. Bestows one negative level on any evil creature wielding it (persists while held, never causes actual level loss). Bows/crossbows/slings bestow the alignment upon ammunition (CL 7).",
+      "fr": "L'arme est alignée sainte, contournant la RD correspondante. Inflige +2d6 contre les créatures d'alignement mauvais. Inflige un niveau négatif à tout manieur d'alignement mauvais (persiste en main, jamais de perte réelle). Arcs/arbalètes/frondes transmettent l'alignement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "holy"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_holy_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_holy",
+        "sourceName": {
+          "en": "Weapon: Holy",
+          "fr": "Arme : sainte"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_evil"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_unholy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Unholy",
+      "fr": "Arme : impie"
+    },
+    "description": {
+      "en": "The weapon is unholy-aligned, bypassing corresponding DR. Deals +2d6 against good-aligned creatures. Bestows one negative level on any good creature wielding it (persists while held, never causes actual level loss). Bows/crossbows/slings bestow the alignment upon ammunition (CL 7).",
+      "fr": "L'arme est alignée impie, contournant la RD correspondante. Inflige +2d6 contre les créatures d'alignement bon. Inflige un niveau négatif à tout manieur d'alignement bon (persiste en main, jamais de perte réelle). Arcs/arbalètes/frondes transmettent l'alignement (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "unholy"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_unholy_combatStats_damage_bonus",
+        "sourceId": "item_weapon_special_unholy",
+        "sourceName": {
+          "en": "Weapon: Unholy",
+          "fr": "Arme : impie"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_good"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_wounding",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Wounding",
+      "fr": "Arme : blessante"
+    },
+    "description": {
+      "en": "Deals 1 point of Constitution damage from blood loss on a successful hit. Crit does not multiply the CON damage. Creatures immune to critical hits are immune to the CON damage (CL 10).",
+      "fr": "Inflige 1 point de dégâts de Constitution dus à la perte de sang lors d'un toucher. Le coup critique ne multiplie pas les dégâts de CON. Les créatures immunisées aux critiques sont immunisées aux dégâts de CON (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "wounding"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_special_wounding_attributes_stat_con",
+        "sourceId": "item_weapon_special_wounding",
+        "sourceName": {
+          "en": "Weapon: Wounding",
+          "fr": "Arme : blessante"
+        },
+        "targetId": "attributes.stat_con",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "on_hit"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_speed",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Speed",
+      "fr": "Arme : rapidité"
+    },
+    "description": {
+      "en": "On a full attack action, the wielder may make one extra attack using the weapon at their full base attack bonus, plus appropriate modifiers. Does not stack with haste or similar effects (CL 7).",
+      "fr": "Lors d'une attaque complète, le manieur peut effectuer une attaque supplémentaire avec cette arme à son BBA maximum, plus les modificateurs applicables. Ne se cumule pas avec accélération ni effets similaires (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "speed_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_brilliant_energy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Brilliant Energy",
+      "fr": "Arme : énergie brillante"
+    },
+    "description": {
+      "en": "The weapon ignores nonliving matter. Armor and shield bonuses to AC (including enhancement) do not count against it; DEX, deflection, dodge, natural armor, and other bonuses still apply. Cannot harm undead, constructs, and objects. Always gives off light as a torch. Melee, thrown, and ammunition only (CL 16).",
+      "fr": "L'arme ignore la matière non vivante. Les bonus d'armure et de bouclier à la CA (y compris d'altération) ne comptent pas ; DEX, parade, esquive, armure naturelle et autres bonus s'appliquent. Ne peut pas blesser les morts-vivants, les automates ou les objets. Émet toujours une lumière de torche. Corps à corps, lancer et munitions uniquement (NLS 16)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "brilliant_energy"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 16000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_dancing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Dancing",
+      "fr": "Arme : dansante"
+    },
+    "description": {
+      "en": "As a standard action, the weapon can be loosed to attack on its own for 4 rounds using the activator's base attack bonus. After 4 rounds, it drops. While dancing: no AoOs, activator is not considered armed. After dancing, cannot dance again for 4 rounds (CL 15).",
+      "fr": "En action standard, l'arme peut être lancée pour attaquer seule pendant 4 rounds avec le BBA du lanceur. Après 4 rounds, elle tombe. Pendant la danse : pas de frappe d'opportunité, le lanceur n'est plus considéré armé. Après la danse, ne peut plus danser pendant 4 rounds (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "dancing"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 16000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "dance_rounds",
+        "label": {
+          "en": "Dance (4 rounds, 1/4 rounds)",
+          "fr": "Danse (4 rounds, 1/4 rounds)"
+        },
+        "maxPipelineId": "combatStats.dance_rounds_max",
+        "defaultCurrent": 1,
+        "resetCondition": "never"
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_vorpal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Vorpal",
+      "fr": "Arme : vorpale"
+    },
+    "description": {
+      "en": "On a natural 20 followed by a successful crit confirmation roll, the weapon severs the opponent's head (if it has one), instantly killing most creatures. Creatures without heads, golems, undead (except vampires), oozes are not affected. Slashing weapons only (CL 18).",
+      "fr": "Sur un 20 naturel suivi d'une confirmation de critique réussie, l'arme tranche la tête de l'adversaire (s'il en a une), tuant instantanément la plupart des créatures. Sans effet sur les créatures sans tête, les golems, les morts-vivants (sauf les vampires) et les vases. Armes tranchantes uniquement (NLS 18)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "vorpal"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 25000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_distance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Distance",
+      "fr": "Arme : longue portée"
+    },
+    "description": {
+      "en": "Ranged weapons only. The weapon has double the range increment of other weapons of its kind (CL 6).",
+      "fr": "Armes à distance uniquement. L'arme a le double du facteur de portée des autres armes du même type (NLS 6)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "ranged",
+      "distance"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_returning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Returning",
+      "fr": "Arme : retour automatique"
+    },
+    "description": {
+      "en": "Thrown weapons only. Returns to the thrower just before their next turn. Catching it is a free action. If they can't catch it or have moved, it drops at the throw location (CL 7).",
+      "fr": "Armes de lancer uniquement. Revient au lanceur juste avant son prochain tour. Attraper l'arme est une action libre. En cas d'échec ou de déplacement, l'arme tombe à l'endroit du lancer (NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "returning"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_special_seeking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Weapon: Seeking",
+      "fr": "Arme : guidée"
+    },
+    "description": {
+      "en": "Ranged weapons only. Veers toward its target, negating any miss chances (such as concealment). The wielder still aims at the correct square — it doesn't auto-find invisible creatures in empty squares (CL 12).",
+      "fr": "Armes à distance uniquement. Se dirige vers sa cible, annulant toute probabilité d'échec (comme la dissimulation). Le manieur doit toujours viser la bonne case — elle ne trouve pas automatiquement les créatures invisibles dans des cases vides (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "ranged",
+      "seeking"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_sleep_arrow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sleep Arrow",
+      "fr": "Flèche de sommeil"
+    },
+    "description": {
+      "en": "+1 arrow painted white. If it would deal damage, instead deals nonlethal damage and forces the target to make a DC 11 Will save or fall asleep (faint enchantment; CL 5).",
+      "fr": "Flèche +1 peinte en blanc. Si elle inflige des dégâts, inflige des dégâts non létaux et force la cible à réussir un jet de Volonté DD 11 ou s'endormir (enchantement faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "ammunition",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 132,
+    "hardness": 12,
+    "hpMax": 1,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 0,
+      "rangeIncrementFt": 110
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sleep_arrow_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sleep_arrow",
+        "sourceName": {
+          "en": "Sleep Arrow",
+          "fr": "Flèche de sommeil"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sleep_arrow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sleep_arrow",
+        "sourceName": {
+          "en": "Sleep Arrow",
+          "fr": "Flèche de sommeil"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_screaming_bolt",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Screaming Bolt",
+      "fr": "Carreau hurlant"
+    },
+    "description": {
+      "en": "+2 bolt that screams when fired, forcing all enemies of the wielder within 20 feet of its path to make a DC 14 Will save or become shaken (mind-affecting fear; faint enchantment; CL 5).",
+      "fr": "+2 carreau qui hurle lorsqu'il est tiré, forçant tous les ennemis du porteur à moins de 6 m de sa trajectoire à réussir un jet de Volonté DD 14 ou être ébranlés (peur mentale; enchantement faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "ammunition",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 267,
+    "hardness": 12,
+    "hpMax": 1,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d8",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 0,
+      "rangeIncrementFt": 120
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_screaming_bolt_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_screaming_bolt",
+        "sourceName": {
+          "en": "Screaming Bolt",
+          "fr": "Carreau hurlant"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_screaming_bolt_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_screaming_bolt",
+        "sourceName": {
+          "en": "Screaming Bolt",
+          "fr": "Carreau hurlant"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_silver_dagger_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Silver Dagger, Masterwork",
+      "fr": "Dague en argent alchimique de maîtrise"
+    },
+    "description": {
+      "en": "Nonmagical masterwork alchemical silver dagger. +1 enhancement bonus on attack rolls (masterwork). Silver bypasses DR/silver (No aura, nonmagical).",
+      "fr": "Dague en argent alchimique de maîtrise non magique. +1 bonus de maîtrise aux jets d'attaque. L'argent contourne la RD/argent (Pas d'aura, non magique)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "silver",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 1,
+    "costGp": 322,
+    "hardness": 8,
+    "hpMax": 5,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d4",
+      "damageType": [
+        "piercing",
+        "slashing",
+        "silver"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_silver_dagger_masterwork_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_silver_dagger_masterwork",
+        "sourceName": {
+          "en": "Silver Dagger, Masterwork",
+          "fr": "Dague en argent alchimique de maîtrise"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_cold_iron_longsword_masterwork",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Cold Iron Longsword, Masterwork",
+      "fr": "Épée longue en fer froid de maîtrise"
+    },
+    "description": {
+      "en": "Nonmagical masterwork cold iron longsword. +1 enhancement bonus on attack rolls (masterwork). Cold iron bypasses DR/cold iron (No aura, nonmagical).",
+      "fr": "Épée longue en fer froid de maîtrise non magique. +1 bonus de maîtrise aux jets d'attaque. Le fer froid contourne la RD/fer froid (Pas d'aura, non magique)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cold_iron",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 330,
+    "hardness": 10,
+    "hpMax": 10,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "cold_iron"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_cold_iron_longsword_masterwork_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_cold_iron_longsword_masterwork",
+        "sourceName": {
+          "en": "Cold Iron Longsword, Masterwork",
+          "fr": "Épée longue en fer froid de maîtrise"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_adamantine_dagger",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Adamantine Dagger",
+      "fr": "Dague en adamantium"
+    },
+    "description": {
+      "en": "Nonmagical adamantine dagger. +1 enhancement bonus on attack rolls (masterwork). Adamantine bypasses DR/adamantine and DR/— (No aura, nonmagical).",
+      "fr": "Dague en adamantium non magique. +1 bonus de maîtrise aux jets d'attaque. L'adamantium contourne la RD/adamantium et la RD/— (Pas d'aura, non magique)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "adamantine",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 1,
+    "costGp": 3002,
+    "hardness": 20,
+    "hpMax": 5,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d4",
+      "damageType": [
+        "piercing",
+        "slashing",
+        "adamantine"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_adamantine_dagger_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_adamantine_dagger",
+        "sourceName": {
+          "en": "Adamantine Dagger",
+          "fr": "Dague en adamantium"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_adamantine_battleaxe",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Adamantine Battleaxe",
+      "fr": "Hache de guerre en adamantium"
+    },
+    "description": {
+      "en": "Nonmagical adamantine battleaxe. +1 enhancement bonus on attack rolls (masterwork). Adamantine bypasses DR/adamantine and DR/— (No aura, nonmagical).",
+      "fr": "Hache de guerre en adamantium non magique. +1 bonus de maîtrise aux jets d'attaque. L'adamantium contourne la RD/adamantium et la RD/— (Pas d'aura, non magique)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "adamantine",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 6,
+    "costGp": 3010,
+    "hardness": 20,
+    "hpMax": 12,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "adamantine"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_adamantine_battleaxe_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_adamantine_battleaxe",
+        "sourceName": {
+          "en": "Adamantine Battleaxe",
+          "fr": "Hache de guerre en adamantium"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_javelin_of_lightning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Javelin of Lightning",
+      "fr": "Javeline de foudre"
+    },
+    "description": {
+      "en": "This javelin becomes a 5d6 lightning bolt when thrown (Reflex DC 14 for half). It is consumed on use (faint evocation; CL 5). Single-use consumable.",
+      "fr": "Cette javeline devient un éclair de 5d6 lorsqu'elle est lancée (jet de Réflexes DD 14 pour moitié). Elle est détruite à l'usage (évocation faible; NLS 5). Consommable unique."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "consumable"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 1500,
+    "hardness": 8,
+    "hpMax": 3,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 0,
+      "rangeIncrementFt": 30
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_javelin_of_lightning_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_javelin_of_lightning",
+        "sourceName": {
+          "en": "Javelin of Lightning",
+          "fr": "Javeline de foudre"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_javelin_of_lightning_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_javelin_of_lightning",
+        "sourceName": {
+          "en": "Javelin of Lightning",
+          "fr": "Javeline de foudre"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single throw"
+    }
+  },
+  {
+    "id": "item_weapon_specific_slaying_arrow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Slaying Arrow",
+      "fr": "Flèche tueuse"
+    },
+    "description": {
+      "en": "+1 arrow keyed to a specific creature type or subtype. If it strikes such a creature, the target must make a DC 20 Fort save or die (undead/constructs included). Living creatures: death effect (death ward helps). Consumed on use (strong necromancy; CL 13).",
+      "fr": "+1 flèche ciblant un type de créature. Si elle touche une telle créature, la cible doit réussir un jet de Vigueur DD 20 ou mourir (morts-vivants/automates inclus). Effet de mort pour les vivants (nécro forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "ammunition",
+      "magic_item",
+      "magic_weapon",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2282,
+    "hardness": 12,
+    "hpMax": 1,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 0,
+      "rangeIncrementFt": 110
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_slaying_arrow_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_slaying_arrow",
+        "sourceName": {
+          "en": "Slaying Arrow",
+          "fr": "Flèche tueuse"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_slaying_arrow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_slaying_arrow",
+        "sourceName": {
+          "en": "Slaying Arrow",
+          "fr": "Flèche tueuse"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single shot"
+    }
+  },
+  {
+    "id": "item_weapon_specific_slaying_arrow_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Slaying Arrow (Greater)",
+      "fr": "Flèche tueuse (supérieure)"
+    },
+    "description": {
+      "en": "+1 arrow keyed to a specific creature type or subtype. If it strikes such a creature, the target must make a DC 23 Fort save or die (undead/constructs included). Living creatures: death effect (death ward helps). Consumed on use (strong necromancy; CL 13).",
+      "fr": "+1 flèche ciblant un type de créature. Si elle touche une telle créature, la cible doit réussir un jet de Vigueur DD 23 ou mourir (morts-vivants/automates inclus). Effet de mort pour les vivants (nécro forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "ammunition",
+      "magic_item",
+      "magic_weapon",
+      "consumable"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4057,
+    "hardness": 12,
+    "hpMax": 1,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 0,
+      "rangeIncrementFt": 110
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_slaying_arrow_greater_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_slaying_arrow_greater",
+        "sourceName": {
+          "en": "Slaying Arrow (Greater)",
+          "fr": "Flèche tueuse (supérieure)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_slaying_arrow_greater_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_slaying_arrow_greater",
+        "sourceName": {
+          "en": "Slaying Arrow (Greater)",
+          "fr": "Flèche tueuse (supérieure)"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single shot"
+    }
+  },
+  {
+    "id": "item_weapon_specific_shatterspike",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shatterspike",
+      "fr": "Brise-acier"
+    },
+    "description": {
+      "en": "+1 longsword. With the Improved Sunder feat, adds +4 to the opposed roll and deals 1d8+4 + STR mod damage to the target weapon (hardness still applies). Can damage weapons with enhancement bonus +4 or lower (strong evocation; CL 13).",
+      "fr": "+1 épée longue. Avec Démantèlement amélioré, ajoute +4 au test opposé et inflige 1d8+4 + mod FOR à l'arme cible (la solidité s'applique quand même). Peut endommager les armes avec un bonus d'altération +4 ou moins (évocation forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 4315,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_shatterspike_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_shatterspike",
+        "sourceName": {
+          "en": "Shatterspike",
+          "fr": "Brise-acier"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_shatterspike_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_shatterspike",
+        "sourceName": {
+          "en": "Shatterspike",
+          "fr": "Brise-acier"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_dagger_of_venom",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dagger of Venom",
+      "fr": "Dague de venom"
+    },
+    "description": {
+      "en": "+1 black serrated dagger. Once per day as a free action (declared after hitting), can use a poison effect (as spell, Fort DC 14) on the struck creature. Must be used in the same round (faint necromancy; CL 5).",
+      "fr": "+1 dague noire dentelée. Une fois par jour en action libre (déclaré après le toucher), peut appliquer un effet de poison (comme le sort, Vigueur DD 14) sur la créature touchée. Doit être utilisé dans le même round (nécromancie faible; NLS 5)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 1,
+    "costGp": 8302,
+    "hardness": 10,
+    "hpMax": 5,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d4",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_dagger_of_venom_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_dagger_of_venom",
+        "sourceName": {
+          "en": "Dagger of Venom",
+          "fr": "Dague de venom"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_dagger_of_venom_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_dagger_of_venom",
+        "sourceName": {
+          "en": "Dagger of Venom",
+          "fr": "Dague de venom"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "poison_uses",
+        "label": {
+          "en": "Poison (1/day)",
+          "fr": "Poison (1/jour)"
+        },
+        "maxPipelineId": "combatStats.poison_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_trident_of_warning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Trident of Warning",
+      "fr": "Trident d'avertissement"
+    },
+    "description": {
+      "en": "+2 trident. When grasped and pointed, enables its wielder to determine the location, depth, kind, and number of aquatic predators within 680 feet. Takes 1 round to scan a hemisphere (moderate divination; CL 7).",
+      "fr": "+2 trident. Lorsqu'il est saisi et pointé, permet au porteur de déterminer l'emplacement, la profondeur, le type et le nombre de prédateurs aquatiques à moins de 200 m. Prend 1 round pour balayer un hémisphère (divination modérée; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 10115,
+    "hardness": 10,
+    "hpMax": 10,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "rangeIncrementFt": 10
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_trident_of_warning_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_trident_of_warning",
+        "sourceName": {
+          "en": "Trident of Warning",
+          "fr": "Trident d'avertissement"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_trident_of_warning_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_trident_of_warning",
+        "sourceName": {
+          "en": "Trident of Warning",
+          "fr": "Trident d'avertissement"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_assassins_dagger",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Assassin's Dagger",
+      "fr": "Dague de l'assassin"
+    },
+    "description": {
+      "en": "+2 curved dagger. Provides a +1 bonus to the DC of a Fortitude save forced by the death attack of an assassin (moderate necromancy; CL 9).",
+      "fr": "+2 dague recourbée. Accorde un bonus de +1 au DD du jet de Vigueur contre l'attaque mortelle d'un assassin (nécromancie modérée; NLS 9)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 1,
+    "costGp": 10302,
+    "hardness": 12,
+    "hpMax": 5,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d4",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_assassins_dagger_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_assassins_dagger",
+        "sourceName": {
+          "en": "Assassin's Dagger",
+          "fr": "Dague de l'assassin"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_assassins_dagger_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_assassins_dagger",
+        "sourceName": {
+          "en": "Assassin's Dagger",
+          "fr": "Dague de l'assassin"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_shifters_sorrow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Shifter's Sorrow",
+      "fr": "Chagrin du métamorphe"
+    },
+    "description": {
+      "en": "+1/+1 two-bladed sword of alchemical silver. Deals +2d6 against any creature with the shapechanger subtype. When a shapechanger or polymorphed creature is struck, DC 15 Will save or revert to natural form (strong transmutation; CL 15).",
+      "fr": "+1/+1 épée à deux lames en argent alchimique. Inflige +2d6 contre tout être avec le sous-type métamorphe. Lorsqu'un métamorphe ou une créature polymorphée est touchée, jet de Volonté DD 15 ou reprend sa forme naturelle (transmutation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "silver",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 10,
+    "costGp": 12780,
+    "hardness": 10,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "silver"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_shifters_sorrow_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_shifters_sorrow",
+        "sourceName": {
+          "en": "Shifter's Sorrow",
+          "fr": "Chagrin du métamorphe"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_shifters_sorrow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_shifters_sorrow",
+        "sourceName": {
+          "en": "Shifter's Sorrow",
+          "fr": "Chagrin du métamorphe"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_shifters_sorrow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_shifters_sorrow",
+        "sourceName": {
+          "en": "Shifter's Sorrow",
+          "fr": "Chagrin du métamorphe"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_shapechanger"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_trident_of_fish_command",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Trident of Fish Command",
+      "fr": "Trident de commandement des poissons"
+    },
+    "description": {
+      "en": "+1 trident. Up to 3x/day: charm up to 14 HD of aquatic animals (Will DC 16 negates; +5 bonus if currently under attack). Can communicate with charmed animals as speak with animals. Charmed range: no two more than 30 ft apart (moderate enchantment; CL 7).",
+      "fr": "+1 trident. Jusqu'à 3×/jour : charme jusqu'à 14 DV d'animaux aquatiques (Volonté DD 16 annule ; +5 si actuellement attaqués). Peut communiquer avec les animaux charmés comme parler avec les animaux (enchantement modéré; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 18650,
+    "hardness": 10,
+    "hpMax": 10,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "rangeIncrementFt": 10
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_trident_of_fish_command_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_trident_of_fish_command",
+        "sourceName": {
+          "en": "Trident of Fish Command",
+          "fr": "Trident de commandement des poissons"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_trident_of_fish_command_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_trident_of_fish_command",
+        "sourceName": {
+          "en": "Trident of Fish Command",
+          "fr": "Trident de commandement des poissons"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "fish_command_uses",
+        "label": {
+          "en": "Fish Command (3/day)",
+          "fr": "Commandement des poissons (3/jour)"
+        },
+        "maxPipelineId": "combatStats.fish_command_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_flame_tongue",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Flame Tongue",
+      "fr": "Langue de feu"
+    },
+    "description": {
+      "en": "+1 flaming burst longsword. Once per day, blasts a fiery ray at any target within 30 feet as a ranged touch attack dealing 4d6 fire damage (moderate evocation; CL 12).",
+      "fr": "+1 épée longue à explosion ardente. Une fois par jour, projette un rayon de feu à moins de 9 m comme une attaque de contact à distance infligeant 4d6 dégâts de feu (évocation modérée; NLS 12)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "flaming",
+      "burst"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 20715,
+    "hardness": 14,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "fire"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5,
+      "onCritDice": {
+        "baseDiceFormula": "1d10",
+        "damageType": "fire",
+        "scalesWithCritMultiplier": true
+      }
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_flame_tongue_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_flame_tongue",
+        "sourceName": {
+          "en": "Flame Tongue",
+          "fr": "Langue de feu"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_flame_tongue_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_flame_tongue",
+        "sourceName": {
+          "en": "Flame Tongue",
+          "fr": "Langue de feu"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_flame_tongue_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_flame_tongue",
+        "sourceName": {
+          "en": "Flame Tongue",
+          "fr": "Langue de feu"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_fire"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "fire_ray_uses",
+        "label": {
+          "en": "Fiery Ray (1/day)",
+          "fr": "Rayon de feu (1/jour)"
+        },
+        "maxPipelineId": "combatStats.fire_ray_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_luck_blade_0w",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Luck Blade (0 wishes)",
+      "fr": "Lame de chance (0 souhaits)"
+    },
+    "description": {
+      "en": "+2 short sword. Grants +1 luck bonus on all saving throws. Once per day: reroll one roll (must take the new result). Contains 0 wish(es) — even at 0 wishes, still +2 sword with luck bonus and reroll (strong evocation; CL 17).",
+      "fr": "+2 épée courte. Accorde +1 chance à tous les jets de sauvegarde. Une fois par jour : relancer un jet (doit accepter le nouveau résultat). Contient 0 souhait(s) — même à 0, toujours une +2 avec chance et relance (évocation forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 22060,
+    "hardness": 14,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_luck_blade_0w_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_0w",
+        "sourceName": {
+          "en": "Luck Blade (0 wishes)",
+          "fr": "Lame de chance (0 souhaits)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_0w_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_0w",
+        "sourceName": {
+          "en": "Luck Blade (0 wishes)",
+          "fr": "Lame de chance (0 souhaits)"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_0w_saves_fort",
+        "sourceId": "item_weapon_specific_luck_blade_0w",
+        "sourceName": {
+          "en": "Luck Blade (0 wishes)",
+          "fr": "Lame de chance (0 souhaits)"
+        },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_0w_saves_ref",
+        "sourceId": "item_weapon_specific_luck_blade_0w",
+        "sourceName": {
+          "en": "Luck Blade (0 wishes)",
+          "fr": "Lame de chance (0 souhaits)"
+        },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_0w_saves_will",
+        "sourceId": "item_weapon_specific_luck_blade_0w",
+        "sourceName": {
+          "en": "Luck Blade (0 wishes)",
+          "fr": "Lame de chance (0 souhaits)"
+        },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "luck"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    }
+  },
+  {
+    "id": "item_weapon_specific_luck_blade_1w",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Luck Blade (1 wish)",
+      "fr": "Lame de chance (1 souhait)"
+    },
+    "description": {
+      "en": "+2 short sword. Grants +1 luck bonus on all saving throws. Once per day: reroll one roll (must take the new result). Contains 1 wish(es) — even at 0 wishes, still +2 sword with luck bonus and reroll (strong evocation; CL 17).",
+      "fr": "+2 épée courte. Accorde +1 chance à tous les jets de sauvegarde. Une fois par jour : relancer un jet (doit accepter le nouveau résultat). Contient 1 souhait(s) — même à 0, toujours une +2 avec chance et relance (évocation forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 62360,
+    "hardness": 14,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_luck_blade_1w_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_1w",
+        "sourceName": {
+          "en": "Luck Blade (1 wish)",
+          "fr": "Lame de chance (1 souhait)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_1w_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_1w",
+        "sourceName": {
+          "en": "Luck Blade (1 wish)",
+          "fr": "Lame de chance (1 souhait)"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_1w_saves_fort",
+        "sourceId": "item_weapon_specific_luck_blade_1w",
+        "sourceName": {
+          "en": "Luck Blade (1 wish)",
+          "fr": "Lame de chance (1 souhait)"
+        },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_1w_saves_ref",
+        "sourceId": "item_weapon_specific_luck_blade_1w",
+        "sourceName": {
+          "en": "Luck Blade (1 wish)",
+          "fr": "Lame de chance (1 souhait)"
+        },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_1w_saves_will",
+        "sourceId": "item_weapon_specific_luck_blade_1w",
+        "sourceName": {
+          "en": "Luck Blade (1 wish)",
+          "fr": "Lame de chance (1 souhait)"
+        },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "luck"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "wishes",
+        "label": {
+          "en": "Wishes (1)",
+          "fr": "Souhaits (1)"
+        },
+        "maxPipelineId": "combatStats.wishes_max",
+        "defaultCurrent": 1,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_luck_blade_2w",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Luck Blade (2 wishes)",
+      "fr": "Lame de chance (2 souhaits)"
+    },
+    "description": {
+      "en": "+2 short sword. Grants +1 luck bonus on all saving throws. Once per day: reroll one roll (must take the new result). Contains 2 wish(es) — even at 0 wishes, still +2 sword with luck bonus and reroll (strong evocation; CL 17).",
+      "fr": "+2 épée courte. Accorde +1 chance à tous les jets de sauvegarde. Une fois par jour : relancer un jet (doit accepter le nouveau résultat). Contient 2 souhait(s) — même à 0, toujours une +2 avec chance et relance (évocation forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 102660,
+    "hardness": 14,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_luck_blade_2w_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_2w",
+        "sourceName": {
+          "en": "Luck Blade (2 wishes)",
+          "fr": "Lame de chance (2 souhaits)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_2w_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_2w",
+        "sourceName": {
+          "en": "Luck Blade (2 wishes)",
+          "fr": "Lame de chance (2 souhaits)"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_2w_saves_fort",
+        "sourceId": "item_weapon_specific_luck_blade_2w",
+        "sourceName": {
+          "en": "Luck Blade (2 wishes)",
+          "fr": "Lame de chance (2 souhaits)"
+        },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_2w_saves_ref",
+        "sourceId": "item_weapon_specific_luck_blade_2w",
+        "sourceName": {
+          "en": "Luck Blade (2 wishes)",
+          "fr": "Lame de chance (2 souhaits)"
+        },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_2w_saves_will",
+        "sourceId": "item_weapon_specific_luck_blade_2w",
+        "sourceName": {
+          "en": "Luck Blade (2 wishes)",
+          "fr": "Lame de chance (2 souhaits)"
+        },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "luck"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "wishes",
+        "label": {
+          "en": "Wishes (2)",
+          "fr": "Souhaits (2)"
+        },
+        "maxPipelineId": "combatStats.wishes_max",
+        "defaultCurrent": 2,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_luck_blade_3w",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Luck Blade (3 wishes)",
+      "fr": "Lame de chance (3 souhaits)"
+    },
+    "description": {
+      "en": "+2 short sword. Grants +1 luck bonus on all saving throws. Once per day: reroll one roll (must take the new result). Contains 3 wish(es) — even at 0 wishes, still +2 sword with luck bonus and reroll (strong evocation; CL 17).",
+      "fr": "+2 épée courte. Accorde +1 chance à tous les jets de sauvegarde. Une fois par jour : relancer un jet (doit accepter le nouveau résultat). Contient 3 souhait(s) — même à 0, toujours une +2 avec chance et relance (évocation forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 142960,
+    "hardness": 14,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_luck_blade_3w_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_3w",
+        "sourceName": {
+          "en": "Luck Blade (3 wishes)",
+          "fr": "Lame de chance (3 souhaits)"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_3w_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_luck_blade_3w",
+        "sourceName": {
+          "en": "Luck Blade (3 wishes)",
+          "fr": "Lame de chance (3 souhaits)"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_3w_saves_fort",
+        "sourceId": "item_weapon_specific_luck_blade_3w",
+        "sourceName": {
+          "en": "Luck Blade (3 wishes)",
+          "fr": "Lame de chance (3 souhaits)"
+        },
+        "targetId": "saves.fort",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_3w_saves_ref",
+        "sourceId": "item_weapon_specific_luck_blade_3w",
+        "sourceName": {
+          "en": "Luck Blade (3 wishes)",
+          "fr": "Lame de chance (3 souhaits)"
+        },
+        "targetId": "saves.ref",
+        "value": 1,
+        "type": "luck"
+      },
+      {
+        "id": "item_weapon_specific_luck_blade_3w_saves_will",
+        "sourceId": "item_weapon_specific_luck_blade_3w",
+        "sourceName": {
+          "en": "Luck Blade (3 wishes)",
+          "fr": "Lame de chance (3 souhaits)"
+        },
+        "targetId": "saves.will",
+        "value": 1,
+        "type": "luck"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "wishes",
+        "label": {
+          "en": "Wishes (3)",
+          "fr": "Souhaits (3)"
+        },
+        "maxPipelineId": "combatStats.wishes_max",
+        "defaultCurrent": 3,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_sword_of_subtlety",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sword of Subtlety",
+      "fr": "Épée de subtilité"
+    },
+    "description": {
+      "en": "+1 short sword with thin, dull gray blade. Grants +4 bonus on attack and damage rolls when making a sneak attack with it (moderate illusion; CL 7).",
+      "fr": "+1 épée courte à lame fine et gris terne. Accorde +4 aux jets d'attaque et de dégâts lors d'une attaque en traître (illusion modérée; NLS 7)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 22310,
+    "hardness": 12,
+    "hpMax": 10,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing",
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sword_of_subtlety_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_subtlety",
+        "sourceName": {
+          "en": "Sword of Subtlety",
+          "fr": "Épée de subtilité"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_subtlety_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sword_of_subtlety",
+        "sourceName": {
+          "en": "Sword of Subtlety",
+          "fr": "Épée de subtilité"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_subtlety_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_subtlety",
+        "sourceName": {
+          "en": "Sword of Subtlety",
+          "fr": "Épée de subtilité"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "sneak_attack"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_subtlety_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sword_of_subtlety",
+        "sourceName": {
+          "en": "Sword of Subtlety",
+          "fr": "Épée de subtilité"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 4,
+        "type": "untyped",
+        "situationalContext": "sneak_attack"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_sword_of_the_planes",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sword of the Planes",
+      "fr": "Épée des Plans"
+    },
+    "description": {
+      "en": "+1 longsword (Material Plane) / +2 on any Elemental Plane or vs. elementals / +3 on Astral or Ethereal Plane or vs. natives / +4 against any outsider or on any other plane (strong evocation; CL 15).",
+      "fr": "+1 épée longue (Plan Matériel) / +2 sur tout Plan Élémentaire ou contre les élémentaires / +3 sur le Plan Astral ou Éthéré ou contre les natifs / +4 contre tout Extérieur ou sur tout autre plan (évocation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 22315,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sword_of_the_planes_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_the_planes",
+        "sourceName": {
+          "en": "Sword of the Planes",
+          "fr": "Épée des Plans"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_the_planes_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sword_of_the_planes",
+        "sourceName": {
+          "en": "Sword of the Planes",
+          "fr": "Épée des Plans"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_the_planes_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_the_planes",
+        "sourceName": {
+          "en": "Sword of the Planes",
+          "fr": "Épée des Plans"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement",
+        "situationalContext": "vs_elemental"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_the_planes_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_the_planes",
+        "sourceName": {
+          "en": "Sword of the Planes",
+          "fr": "Épée des Plans"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement",
+        "situationalContext": "vs_outsider"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_nine_lives_stealer",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Nine Lives Stealer",
+      "fr": "Voleuse de neuf vies"
+    },
+    "description": {
+      "en": "+2 longsword. On a confirmed critical hit vs. a creature subject to crits: DC 20 Fort save or die (9 uses, then remains a +2 longsword). Evil weapon — good wearers gain 2 negative levels (strong necromancy [evil]; CL 13).",
+      "fr": "+2 épée longue. Sur un critique confirmé vs. une créature sensible aux critiques : jet de Vigueur DD 20 ou mort (9 utilisations, reste ensuite une +2). Arme mauvaise — les manieurs bons gagnent 2 niveaux négatifs (nécromancie forte [mauvais]; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "evil"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 23057,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_nine_lives_stealer_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_nine_lives_stealer",
+        "sourceName": {
+          "en": "Nine Lives Stealer",
+          "fr": "Voleuse de neuf vies"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_nine_lives_stealer_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_nine_lives_stealer",
+        "sourceName": {
+          "en": "Nine Lives Stealer",
+          "fr": "Voleuse de neuf vies"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "death_strikes",
+        "label": {
+          "en": "Death Strike (9 charges)",
+          "fr": "Frappe mortelle (9 charges)"
+        },
+        "maxPipelineId": "combatStats.death_strikes_max",
+        "defaultCurrent": 9,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_sword_of_life_stealing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sword of Life Stealing",
+      "fr": "Épée voleuse de vie"
+    },
+    "description": {
+      "en": "+2 black iron longsword. On a confirmed critical hit: bestows one negative level. Wielder gains 1d6 temporary HP per negative level bestowed (last 24 hours). Day after being struck: DC 16 Fort save per negative level or lose a character level (strong necromancy; CL 17).",
+      "fr": "+2 épée longue en fer noir. Sur un critique confirmé : inflige un niveau négatif. Le manieur gagne 1d6 PV temporaires par niveau négatif infligé (durent 24 heures). Le lendemain : jet de Vigueur DD 16 par niveau négatif ou perte d'un niveau de personnage (nécromancie forte; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 25715,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sword_of_life_stealing_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sword_of_life_stealing",
+        "sourceName": {
+          "en": "Sword of Life Stealing",
+          "fr": "Épée voleuse de vie"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sword_of_life_stealing_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sword_of_life_stealing",
+        "sourceName": {
+          "en": "Sword of Life Stealing",
+          "fr": "Épée voleuse de vie"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_oathbow",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Oathbow",
+      "fr": "Arc du serment"
+    },
+    "description": {
+      "en": "Elven +2 composite longbow (+2 Str). Once per day (free action), swear to slay a target: becomes +5, +2d6 damage, ×4 on crit vs. the sworn enemy (lasts 7 days or until enemy is slain). Against all others: treated as masterwork only, and wielder takes -1 on attacks with other weapons. Can only have one sworn enemy at a time (strong evocation; CL 15).",
+      "fr": "Arc composite elfique +2 (bonus FOR +2). Une fois par jour (action libre), jurer de tuer une cible : devient +5, +2d6 dégâts, ×4 sur critique contre l'ennemi juré (dure 7 jours ou jusqu'à sa mort). Contre les autres : seulement de maîtrise, et -1 aux attaques avec d'autres armes. Un seul ennemi juré à la fois (évocation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 3,
+    "costGp": 25600,
+    "hardness": 10,
+    "hpMax": 10,
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 0,
+      "rangeIncrementFt": 100
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_oathbow_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_oathbow",
+        "sourceName": {
+          "en": "Oathbow",
+          "fr": "Arc du serment"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_oathbow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_oathbow",
+        "sourceName": {
+          "en": "Oathbow",
+          "fr": "Arc du serment"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_oathbow_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_oathbow",
+        "sourceName": {
+          "en": "Oathbow",
+          "fr": "Arc du serment"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement",
+        "situationalContext": "vs_sworn_enemy"
+      },
+      {
+        "id": "item_weapon_specific_oathbow_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_oathbow",
+        "sourceName": {
+          "en": "Oathbow",
+          "fr": "Arc du serment"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_sworn_enemy"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "free"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "oath_uses",
+        "label": {
+          "en": "Oath (1/day)",
+          "fr": "Serment (1/jour)"
+        },
+        "maxPipelineId": "combatStats.oath_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_mace_of_terror",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mace of Terror",
+      "fr": "Masse de terreur"
+    },
+    "description": {
+      "en": "+2 heavy mace. On command (up to 3×/day): creatures in a 30-foot cone become panicked as if by fear (Will DC 16 partial — take -2 morale penalty on saves and flee). (Strong necromancy; CL 13).",
+      "fr": "+2 masse lourde. Sur commande (jusqu'à 3×/jour) : les créatures dans un cône de 9 m sont paniquées comme par peur (Volonté DD 16 partiel — malus de moral -2 aux jets et fuient). (Nécromancie forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 8,
+    "costGp": 38552,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_mace_of_terror_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_mace_of_terror",
+        "sourceName": {
+          "en": "Mace of Terror",
+          "fr": "Masse de terreur"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_mace_of_terror_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_mace_of_terror",
+        "sourceName": {
+          "en": "Mace of Terror",
+          "fr": "Masse de terreur"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "terror_uses",
+        "label": {
+          "en": "Terror (3/day)",
+          "fr": "Terreur (3/jour)"
+        },
+        "maxPipelineId": "combatStats.terror_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_life_drinker",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Life-Drinker",
+      "fr": "Buveuse de vie"
+    },
+    "description": {
+      "en": "+1 greataxe favored by undead and constructs. Each hit bestows 2 negative levels on target (DC 16 Fort or lose level after 1 day) AND 1 negative level on wielder (lasts 1 hour). Undead/constructs are unaffected by wielder drawback (strong necromancy; CL 13).",
+      "fr": "+1 hache d'armes favorie des morts-vivants et des automates. Chaque toucher inflige 2 niveaux négatifs à la cible (Vigueur DD 16 ou perte de niveau après 1 jour) ET 1 niveau négatif au manieur (dure 1 heure). Morts-vivants/automates exempts du malus (nécromancie forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 12,
+    "costGp": 40320,
+    "hardness": 14,
+    "hpMax": 25,
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d12",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_life_drinker_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_life_drinker",
+        "sourceName": {
+          "en": "Life-Drinker",
+          "fr": "Buveuse de vie"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 1,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_life_drinker_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_life_drinker",
+        "sourceName": {
+          "en": "Life-Drinker",
+          "fr": "Buveuse de vie"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 1,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_sylvan_scimitar",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sylvan Scimitar",
+      "fr": "Cimeterre sylvain"
+    },
+    "description": {
+      "en": "+3 scimitar. When used outdoors in a temperate climate, grants the Cleave feat and deals +1d6 damage (moderate evocation; CL 11).",
+      "fr": "+3 cimeterre. Lorsqu'il est utilisé en extérieur dans un climat tempéré, accorde le don Fente et inflige +1d6 dégâts supplémentaires (évocation modérée; NLS 11)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 47315,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "18-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sylvan_scimitar_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sylvan_scimitar",
+        "sourceName": {
+          "en": "Sylvan Scimitar",
+          "fr": "Cimeterre sylvain"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sylvan_scimitar_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sylvan_scimitar",
+        "sourceName": {
+          "en": "Sylvan Scimitar",
+          "fr": "Cimeterre sylvain"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sylvan_scimitar_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sylvan_scimitar",
+        "sourceName": {
+          "en": "Sylvan Scimitar",
+          "fr": "Cimeterre sylvain"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "outdoors_temperate"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_rapier_of_puncturing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rapier of Puncturing",
+      "fr": "Rapière perforante"
+    },
+    "description": {
+      "en": "+2 wounding rapier. Three times per day: make a touch attack dealing 1d6 CON damage (blood drain). Creatures immune to critical hits are immune to CON damage (strong necromancy; CL 13).",
+      "fr": "+2 rapière blessante. Trois fois par jour : attaque de contact infligeant 1d6 dégâts de Constitution (drain de sang). Créatures immunisées aux critiques immunisées aux dégâts de CON (nécromancie forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "wounding"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 50320,
+    "hardness": 12,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "piercing"
+      ],
+      "critRange": "18-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_rapier_of_puncturing_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_rapier_of_puncturing",
+        "sourceName": {
+          "en": "Rapier of Puncturing",
+          "fr": "Rapière perforante"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_rapier_of_puncturing_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_rapier_of_puncturing",
+        "sourceName": {
+          "en": "Rapier of Puncturing",
+          "fr": "Rapière perforante"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_con",
+        "sourceId": "item_weapon_specific_rapier_of_puncturing",
+        "sourceName": {
+          "en": "Rapier of Puncturing",
+          "fr": "Rapière perforante"
+        },
+        "targetId": "attributes.stat_con",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "on_hit"
+      },
+      {
+        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_con",
+        "sourceId": "item_weapon_specific_rapier_of_puncturing",
+        "sourceName": {
+          "en": "Rapier of Puncturing",
+          "fr": "Rapière perforante"
+        },
+        "targetId": "attributes.stat_con",
+        "value": -1,
+        "type": "untyped",
+        "situationalContext": "puncture_touch_attack"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "puncture_uses",
+        "label": {
+          "en": "Puncture Touch (3/day)",
+          "fr": "Toucher perforant (3/jour)"
+        },
+        "maxPipelineId": "combatStats.puncture_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_sun_blade",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Sun Blade",
+      "fr": "Lame de soleil"
+    },
+    "description": {
+      "en": "Bastard-sword-sized weapon wielded as a short sword (+2 vs. all). Against evil: +4 enhancement. Against undead or Negative Energy Plane creatures: double damage (×3 on crit). Once per day: sunlight globe in 60-ft radius (grows 5 ft/round for 10 rounds). Good-aligned — evil wielders gain 1 negative level (moderate evocation; CL 10).",
+      "fr": "Arme de taille épée bâtarde maniée comme une épée courte (+2 contre tous). Contre le mal : +4 d'altération. Contre les morts-vivants ou créatures du Plan Négatif : dégâts doublés (×3 sur critique). Une fois par jour : globe de lumière solaire de 18 m de rayon (grandit de 1,5 m/round pendant 10 rounds). Alignée bon — les manieurs mauvais gagnent 1 niveau négatif (évocation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "good"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 2,
+    "costGp": 50335,
+    "hardness": 12,
+    "hpMax": 15,
+    "weaponData": {
+      "wieldCategory": "light",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "good"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_sun_blade_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sun_blade",
+        "sourceName": {
+          "en": "Sun Blade",
+          "fr": "Lame de soleil"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sun_blade_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sun_blade",
+        "sourceName": {
+          "en": "Sun Blade",
+          "fr": "Lame de soleil"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_sun_blade_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_sun_blade",
+        "sourceName": {
+          "en": "Sun Blade",
+          "fr": "Lame de soleil"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement",
+        "situationalContext": "vs_evil"
+      },
+      {
+        "id": "item_weapon_specific_sun_blade_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_sun_blade",
+        "sourceName": {
+          "en": "Sun Blade",
+          "fr": "Lame de soleil"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement",
+        "situationalContext": "vs_evil"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "sunlight_uses",
+        "label": {
+          "en": "Sunlight (1/day)",
+          "fr": "Lumière solaire (1/jour)"
+        },
+        "maxPipelineId": "combatStats.sunlight_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_weapon_specific_frost_brand",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Frost Brand",
+      "fr": "Marque de givre"
+    },
+    "description": {
+      "en": "+3 frost greatsword. Protects wielder from fire (absorbs first 10 HP of fire damage/round). Extinguishes nonmagical fires in area. As a standard action: dispel lasting fire spells (1d20+14 vs. DC 11+CL). Sheds light in arctic conditions (strong evocation; CL 14).",
+      "fr": "+3 grande épée glaciale. Protège le manieur contre le feu (absorbe les 10 premiers PV de dégâts de feu par round). Éteint les feux non magiques dans la zone. En action standard : dissiper les sorts de feu persistants (1d20+14 contre DD 11+NLS). Éclaire dans des conditions arctiques (évocation forte; NLS 14)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "frost"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 8,
+    "costGp": 54475,
+    "hardness": 14,
+    "hpMax": 25,
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "2d6",
+      "damageType": [
+        "slashing",
+        "cold"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_frost_brand_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_frost_brand",
+        "sourceName": {
+          "en": "Frost Brand",
+          "fr": "Marque de givre"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_frost_brand_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_frost_brand",
+        "sourceName": {
+          "en": "Frost Brand",
+          "fr": "Marque de givre"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_frost_brand_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_frost_brand",
+        "sourceName": {
+          "en": "Frost Brand",
+          "fr": "Marque de givre"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "1d6",
+        "type": "untyped",
+        "situationalContext": "on_hit_cold"
+      },
+      {
+        "id": "item_weapon_specific_frost_brand_combatStats_resist_fire",
+        "sourceId": "item_weapon_specific_frost_brand",
+        "sourceName": {
+          "en": "Frost Brand",
+          "fr": "Marque de givre"
+        },
+        "targetId": "combatStats.resist_fire",
+        "value": 10,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_dwarven_thrower",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Dwarven Thrower",
+      "fr": "Lance-marteau nain"
+    },
+    "description": {
+      "en": "+2 warhammer (non-dwarf) or +3 warhammer with returning (dwarf only). When thrown: 30-ft range increment, +2d8 extra vs. giants, +1d8 vs. others. (Moderate evocation; CL 10).",
+      "fr": "+2 marteau de guerre (non-nain) ou +3 avec retour automatique (nain uniquement). Lorsqu'il est lancé : facteur de portée 9 m, +2d8 supplémentaires contre les géants, +1d8 contre les autres. (Évocation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "magic_item",
+      "magic_weapon",
+      "returning"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 5,
+    "costGp": 60312,
+    "hardness": 12,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 3,
+      "reachFt": 5,
+      "rangeIncrementFt": 30
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_dwarven_thrower_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_dwarven_thrower",
+        "sourceName": {
+          "en": "Dwarven Thrower",
+          "fr": "Lance-marteau nain"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_dwarven_thrower_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_dwarven_thrower",
+        "sourceName": {
+          "en": "Dwarven Thrower",
+          "fr": "Lance-marteau nain"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_dwarven_thrower_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_dwarven_thrower",
+        "sourceName": {
+          "en": "Dwarven Thrower",
+          "fr": "Lance-marteau nain"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d8",
+        "type": "untyped",
+        "situationalContext": "vs_giant"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_mace_of_smiting",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Mace of Smiting",
+      "fr": "Masse de fracassement"
+    },
+    "description": {
+      "en": "+3 adamantine heavy mace (+5 vs. constructs). Critical hit vs. a construct: completely destroys it (no save). Critical hit vs. an outsider: ×4 damage instead of ×2 (moderate transmutation; CL 11).",
+      "fr": "+3 masse lourde en adamantium (+5 contre les automates). Coup critique contre un automate : le détruit complètement (sans sauvegarde). Coup critique contre un Extérieur : dégâts ×4 au lieu de ×2 (transmutation modérée; NLS 11)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "adamantine",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 8,
+    "costGp": 75312,
+    "hardness": 20,
+    "hpMax": 25,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning",
+        "adamantine"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_mace_of_smiting_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_mace_of_smiting",
+        "sourceName": {
+          "en": "Mace of Smiting",
+          "fr": "Masse de fracassement"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_mace_of_smiting_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_mace_of_smiting",
+        "sourceName": {
+          "en": "Mace of Smiting",
+          "fr": "Masse de fracassement"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_mace_of_smiting_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_mace_of_smiting",
+        "sourceName": {
+          "en": "Mace of Smiting",
+          "fr": "Masse de fracassement"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement",
+        "situationalContext": "vs_construct"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_weapon_specific_holy_avenger",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Holy Avenger",
+      "fr": "Vengeur saint"
+    },
+    "description": {
+      "en": "+2 cold iron longsword. In paladin's hands: becomes +5 holy cold iron. Provides SR (5 + paladin level) to wielder and adjacent allies. Greater dispel magic once per round as a standard action (area dispel only). (Strong abjuration; CL 18).",
+      "fr": "+2 épée longue en fer froid. Entre les mains d'un paladin : devient +5 sainte en fer froid. Accorde RM (5 + niveau de paladin) au manieur et aux alliés adjacents. Dissipation de magie supérieure une fois par round en action standard (dissipation de zone uniquement). (Abjuration forte; NLS 18)."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "cold_iron",
+      "good",
+      "magic_item",
+      "magic_weapon"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 120630,
+    "hardness": 14,
+    "hpMax": 20,
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "cold_iron",
+        "good"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_weapon_specific_holy_avenger_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_holy_avenger",
+        "sourceName": {
+          "en": "Holy Avenger",
+          "fr": "Vengeur saint"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_holy_avenger_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_holy_avenger",
+        "sourceName": {
+          "en": "Holy Avenger",
+          "fr": "Vengeur saint"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_weapon_specific_holy_avenger_combatStats_attack_bonus",
+        "sourceId": "item_weapon_specific_holy_avenger",
+        "sourceName": {
+          "en": "Holy Avenger",
+          "fr": "Vengeur saint"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement",
+        "situationalContext": "wielded_by_paladin"
+      },
+      {
+        "id": "item_weapon_specific_holy_avenger_combatStats_damage_bonus",
+        "sourceId": "item_weapon_specific_holy_avenger",
+        "sourceName": {
+          "en": "Holy Avenger",
+          "fr": "Vengeur saint"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": "2d6",
+        "type": "untyped",
+        "situationalContext": "vs_evil"
+      }
+    ],
+    "grantedFeatures": []
   }
 ]

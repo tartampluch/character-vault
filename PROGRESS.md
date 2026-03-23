@@ -549,4 +549,16 @@ _Pre-conversion engine gaps identified during C-14k analysis. Resolved before JS
 
 - [x] **E-6d Documentation:** `ARCHITECTURE.md` sections 4.7 (Fortification — full table, engine contract, V/WP interaction, caller contract note) and 4.8 (Arcane Spell Failure — stacking rule, data model, UI contract, immune-class pattern). `CHECKPOINTS.md` Checkpoint Review #4 updated with 11 new Fortification/ASF verification items.
 
+### Phase E-7: Magic Weapon Engine Prerequisites — On-Crit Burst Dice
+
+_Pre-conversion engine gap identified during C-14l analysis. Resolved before JSON generation._
+
+- [x] **E-7a Type Extensions:** Added `ItemFeature.weaponData.onCritDice?: { baseDiceFormula, damageType, scalesWithCritMultiplier }` to `feature.ts`. Added `RollResult.onCritDiceRolled?: { formula, rolls, totalAdded, damageType }` to `diceEngine.ts`. Added exported `OnCritDiceSpec` interface.
+
+- [x] **E-7b Dice Engine — 9th+10th parameters to `parseAndRoll()`:** `weaponOnCritDice?: OnCritDiceSpec` (9th) and `critMultiplier: number = 2` (10th). Step 6c: when confirmed crit AND not fort-negated AND spec present: parse formula, scale dice count by (critMultiplier-1) when `scalesWithCritMultiplier=true`, roll via injectable RNG, add to `finalTotal`, store in `onCritDiceRolled`. `finalTotal` changed from `const` to `let`. Duplicate `isEffectiveCrit` declaration removed.
+
+- [x] **E-7c Tests (`src/tests/onCritBurstDice.test.ts`):** 22 new Vitest tests (723 total, all passing). Covers: happy path (×2/×3/×4 scaling, Thundering, finalTotal mutation, damageType), fortification interaction (negated → no burst, not negated → burst), V/WP routing, edge cases (no-prefix formula, 2d6 scaling, malformed → no crash, critMult=2).
+
+- [x] **E-7d Documentation:** `ARCHITECTURE.md` section 4.9 (On-Crit Burst Dice full reference: SRD table, data model, algorithm, Fortification interaction, content authoring Flaming Burst example, Keen/Vicious design decisions). `CHECKPOINTS.md` Checkpoint Review #4 updated with 14 new on-crit burst dice checks.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

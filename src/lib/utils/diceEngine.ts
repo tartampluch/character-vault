@@ -85,6 +85,34 @@ export type DamageTargetPool =
   | 'res_wound_points';
 
 // =============================================================================
+// ON-CRIT DICE SPEC — Burst weapon data passed to parseAndRoll (Enhancement E-7)
+// =============================================================================
+
+/**
+ * Specification for additional dice rolled only on a confirmed critical hit.
+ * Mirrors `ItemFeature.weaponData.onCritDice` but exported for use at roll-call sites.
+ *
+ * The caller (combat UI) extracts this from the equipped weapon's `weaponData.onCritDice`
+ * and passes it as the 9th argument to `parseAndRoll()` when rolling damage for a
+ * confirmed critical hit.
+ *
+ * @see ItemFeature.weaponData.onCritDice — the source field on weapon definitions
+ * @see RollResult.onCritDiceRolled — where the result is stored
+ * @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference
+ */
+export interface OnCritDiceSpec {
+  /** Base dice formula for a ×2 crit. E.g., "1d10" for Flaming Burst, "1d8" for Thundering. */
+  baseDiceFormula: string;
+  /** Damage type label (for display). E.g., "fire", "cold", "electricity", "sonic". */
+  damageType: string;
+  /**
+   * When true, the count of base dice is multiplied by (critMultiplier - 1).
+   * False = always roll `baseDiceFormula` exactly once, regardless of critMultiplier.
+   */
+  scalesWithCritMultiplier: boolean;
+}
+
+// =============================================================================
 // ROLL CONTEXT — Target information for situational bonuses
 // =============================================================================
 
@@ -315,6 +343,48 @@ export interface RollResult {
    * @see Modifier.targetId — the `"attacker."` prefix convention
    */
   attackerPenaltiesApplied?: Modifier[];
+
+  /**
+   * Result of on-crit burst dice (Enhancement E-7 — Flaming Burst, Icy Burst, etc.).
+   *
+   * D&D 3.5 SRD — "BURST" WEAPON ABILITIES:
+   *   Flaming Burst / Icy Burst / Shocking Burst / Thundering weapons deal extra dice
+   *   of elemental damage ONLY on a confirmed critical hit. The burst dice are NOT
+   *   multiplied by the weapon's critMultiplier (they are a fixed extra, not a base roll
+   *   that gets multiplied). They are in addition to the on-hit bonus damage (e.g., a
+   *   Flaming Burst weapon deals 1d6 fire on every hit, PLUS 1d10 fire on a confirmed crit).
+   *
+   * SCALING WITH CRIT MULTIPLIER (SRD rule):
+   *   When `scalesWithCritMultiplier: true` on the weapon's `onCritDice` spec:
+   *     - ×2 (most weapons): +1d10 (or 1d8 for Thundering)
+   *     - ×3 (greataxe, falchion): +2d10 (or 2d8)
+   *     - ×4 (scythe, lance): +3d10 (or 3d8)
+   *
+   * FORTIFICATION INTERACTION:
+   *   If `fortification.critNegated === true`, no on-crit dice are rolled.
+   *   Fortification negates ALL crit effects, including burst damage.
+   *
+   * PRESENT when: `isConfirmedCrit === true` AND `weaponOnCritDice` parameter is provided
+   *   AND (fortification did not negate the crit).
+   * ABSENT for: non-critical hits, or when the weapon has no onCritDice spec.
+   *
+   * `totalAdded` is already included in `RollResult.finalTotal`.
+   * The UI should display this separately for transparency (e.g., "burst: 7 fire damage on crit").
+   *
+   * @see ItemFeature.weaponData.onCritDice — the spec on the weapon definition
+   * @see parseAndRoll() — 9th parameter: weaponOnCritDice
+   * @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic
+   */
+  onCritDiceRolled?: {
+    /** The actual dice formula that was rolled (e.g., "2d10" for a ×3 weapon). */
+    formula: string;
+    /** Individual die results from the burst roll. */
+    rolls: number[];
+    /** Sum of all burst dice. Already included in finalTotal. */
+    totalAdded: number;
+    /** Damage type of the burst (e.g., "fire", "cold", "electricity", "sonic"). */
+    damageType: string;
+  };
 
   /**
    * Result of the Fortification critical-negation roll (Enhancement E-6b).
@@ -566,6 +636,18 @@ function resolveAttackerMods(
  *   Absent / 0 = no fortification check performed.
  *   @see RollResult.fortification — result field carrying the roll detail
  *   @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
+ *
+ * @param weaponOnCritDice  Optional. The equipped weapon's `weaponData.onCritDice` spec.
+ *   When provided AND the crit is confirmed (and not negated by fortification):
+ *   extra dice are rolled and added to `finalTotal`.
+ *   The result is stored in `RollResult.onCritDiceRolled`.
+ *   @see OnCritDiceSpec — the type definition
+ *   @see RollResult.onCritDiceRolled — result field
+ *   @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference
+ *
+ * @param critMultiplier    Optional. The weapon's critical hit damage multiplier (2/3/4).
+ *   Required when `weaponOnCritDice.scalesWithCritMultiplier === true`. Default: 2.
+ *   Used to compute scaled burst dice: ×3 weapon → 2d10 instead of 1d10.
  */
 export function parseAndRoll(
   formula: string,
@@ -575,7 +657,9 @@ export function parseAndRoll(
   rng: (faces: number) => number = defaultRng,
   critRange: string = '20',
   defenderAttackerMods?: Modifier[],
-  defenderFortificationPct: number = 0
+  defenderFortificationPct: number = 0,
+  weaponOnCritDice?: OnCritDiceSpec,
+  critMultiplier: number = 2
 ): RollResult {
   const groups = parseDiceExpression(formula);
 
@@ -687,7 +771,8 @@ export function parseAndRoll(
 
   // --- Step 4: Compute final total ---
   // Incorporates situational bonuses + attacker penalties (E-5).
-  const finalTotal = naturalTotal + staticBonus + situationalBonusApplied + attackerPenaltyTotal;
+  // Declared as `let` so on-crit burst dice (E-7, Step 6c) can add to it.
+  let finalTotal = naturalTotal + staticBonus + situationalBonusApplied + attackerPenaltyTotal;
 
   // --- Step 5: Detect crits and fumbles (d20 only) ---
   // Parse the critRange string to determine the minimum roll for a critical threat.
@@ -753,6 +838,77 @@ export function parseAndRoll(
     };
   }
 
+  // --- Step 6c: On-Crit Burst Dice (Enhancement E-7) ---
+  //
+  // D&D 3.5 SRD — BURST WEAPON ABILITIES (Flaming Burst, Icy Burst, Shocking Burst, Thundering):
+  //   On a confirmed critical hit, burst weapons deal extra elemental / sonic dice.
+  //   These extra dice are NOT multiplied by the weapon's critical multiplier — they
+  //   are a flat addition on top of the critical damage.
+  //
+  //   The dice formula scales with crit multiplier (when `scalesWithCritMultiplier === true`):
+  //     - ×2 crit (most weapons):  1 × baseDiceFormula  (e.g., 1d10 fire for Flaming Burst)
+  //     - ×3 crit (battleaxe):     2 × baseDiceFormula  (e.g., 2d10 fire)
+  //     - ×4 crit (scythe):        3 × baseDiceFormula  (e.g., 3d10 fire)
+  //
+  // FORTIFICATION INTERACTION:
+  //   If Fortification negated the crit (`fortificationResult?.critNegated`), no burst
+  //   dice are rolled. Fortification negates ALL crit effects including burst damage.
+  //
+  // ALGORITHM:
+  //   1. Guard: only when `isEffectiveCrit` (confirmed AND not negated) and spec provided.
+  //   2. Parse the baseDiceFormula to extract faces (e.g., "1d10" → faces=10, count=1).
+  //   3. If scalesWithCritMultiplier: total dice count = (critMultiplier - 1).
+  //      Otherwise: use the exact baseDiceFormula as-is.
+  //   4. Roll each die using the same injectable RNG.
+  //   5. Sum the rolls, add to `finalTotal`, store in `onCritDiceRolled`.
+  //
+  // NOTE: `finalTotal` is already computed above (Step 4). We mutate it here because
+  // the burst dice ARE part of the total damage on a critical hit.
+  let onCritDiceRolled: RollResult['onCritDiceRolled'] | undefined;
+
+  // `isEffectiveCrit` is computed in Step 7 below. We define it here early for E-7:
+  const isEffectiveCrit = isConfirmedCrit && !(fortificationResult?.critNegated);
+
+  if (isEffectiveCrit && weaponOnCritDice) {
+    const spec = weaponOnCritDice;
+
+    // Parse the base formula to get die faces and base count
+    // Format: "NdF" where N is optional (defaults to 1), F is die faces
+    const match = spec.baseDiceFormula.match(/^(\d+)?d(\d+)$/i);
+    if (match) {
+      const baseDiceCount = parseInt(match[1] ?? '1', 10);
+      const diceFaces = parseInt(match[2], 10);
+
+      // Compute actual dice count — scale if needed
+      const actualDiceCount = spec.scalesWithCritMultiplier
+        ? baseDiceCount * Math.max(1, critMultiplier - 1)
+        : baseDiceCount;
+
+      // Build the actual formula string for display
+      const actualFormula = `${actualDiceCount}d${diceFaces}`;
+
+      // Roll the burst dice
+      const burstRolls: number[] = [];
+      let burstTotal = 0;
+      for (let i = 0; i < actualDiceCount; i++) {
+        const roll = rng(diceFaces);
+        burstRolls.push(roll);
+        burstTotal += roll;
+      }
+
+      // Add burst total to finalTotal (it IS part of the crit damage)
+      finalTotal += burstTotal;
+
+      onCritDiceRolled = {
+        formula: actualFormula,
+        rolls: burstRolls,
+        totalAdded: burstTotal,
+        damageType: spec.damageType,
+      };
+    }
+    // If parse fails (malformed formula), skip silently — no crash
+  }
+
   // --- Step 7: Determine damage target pool (Vitality/Wound Points variant) ---
   //
   // VITALITY/WOUND POINTS VARIANT (ARCHITECTURE.md section 8.3):
@@ -778,8 +934,7 @@ export function parseAndRoll(
   // @see DamageTargetPool — the enum type
   // @see ARCHITECTURE.md section 8.3 — full V/WP rules
   const isVWPMode = settings.variantRules?.vitalityWoundPoints === true;
-  // A fortification-negated crit is treated as a normal hit for damage routing.
-  const isEffectiveCrit = isConfirmedCrit && !(fortificationResult?.critNegated);
+  // isEffectiveCrit was already computed in Step 6c (on-crit burst dice).
   let targetPool: DamageTargetPool;
   if (!isVWPMode) {
     targetPool = 'res_hp';
@@ -805,6 +960,8 @@ export function parseAndRoll(
     ...(attackerPenaltiesApplied ? { attackerPenaltiesApplied } : {}),
     // E-6b: only include if a fortification check was performed
     ...(fortificationResult ? { fortification: fortificationResult } : {}),
+    // E-7: only include if on-crit burst dice were rolled
+    ...(onCritDiceRolled ? { onCritDiceRolled } : {}),
   };
 }
 

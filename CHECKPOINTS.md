@@ -375,6 +375,21 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **On-Crit Burst Dice (Enhancement E-7 / Architecture section 4.9):**
+  - Is non-crit → no `onCritDiceRolled` tested?
+  - Is Flaming Burst ×2 crit → 1d10 formula tested?
+  - Is Flaming Burst ×3 crit → 2d10 scaling tested?
+  - Is Flaming Burst ×4 crit → 3d10 scaling tested?
+  - Is Thundering (1d8 sonic) tested?
+  - Is `totalAdded` included in `finalTotal` verified?
+  - Is `scalesWithCritMultiplier=false` → no scaling tested?
+  - Is Fortification negation → no burst dice tested?
+  - Is Fortification non-negation → burst dice present tested?
+  - Is V/WP interaction (negated crit → res_vitality) tested?
+  - Is malformed baseDiceFormula → no crash tested?
+  - Is `"d10"` (no count prefix) → parsed as 1d10 tested?
+  - Is `OnCritDiceSpec` exported from `diceEngine.ts`?
+  - Is `ItemFeature.weaponData.onCritDice` field documented in `feature.ts`?
 
 # 6. Vitest — DAG Integration (Phase 17.5)
 - Is the Belt of Constitution cascade test present (CON → Fort save → HP)?
