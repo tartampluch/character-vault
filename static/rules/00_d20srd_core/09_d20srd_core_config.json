@@ -3,35 +3,151 @@
     "tableId": "config_carrying_capacity",
     "ruleSource": "srd_core",
     "data": {
-      "1":  { "lightLbs": 3,   "mediumLbs": 6,   "heavyLbs": 10 },
-      "2":  { "lightLbs": 6,   "mediumLbs": 13,  "heavyLbs": 20 },
-      "3":  { "lightLbs": 10,  "mediumLbs": 20,  "heavyLbs": 30 },
-      "4":  { "lightLbs": 13,  "mediumLbs": 26,  "heavyLbs": 40 },
-      "5":  { "lightLbs": 16,  "mediumLbs": 33,  "heavyLbs": 50 },
-      "6":  { "lightLbs": 20,  "mediumLbs": 40,  "heavyLbs": 60 },
-      "7":  { "lightLbs": 23,  "mediumLbs": 46,  "heavyLbs": 70 },
-      "8":  { "lightLbs": 26,  "mediumLbs": 53,  "heavyLbs": 80 },
-      "9":  { "lightLbs": 30,  "mediumLbs": 60,  "heavyLbs": 90 },
-      "10": { "lightLbs": 33,  "mediumLbs": 66,  "heavyLbs": 100 },
-      "11": { "lightLbs": 38,  "mediumLbs": 76,  "heavyLbs": 115 },
-      "12": { "lightLbs": 43,  "mediumLbs": 86,  "heavyLbs": 130 },
-      "13": { "lightLbs": 50,  "mediumLbs": 100, "heavyLbs": 150 },
-      "14": { "lightLbs": 58,  "mediumLbs": 116, "heavyLbs": 175 },
-      "15": { "lightLbs": 66,  "mediumLbs": 133, "heavyLbs": 200 },
-      "16": { "lightLbs": 76,  "mediumLbs": 153, "heavyLbs": 230 },
-      "17": { "lightLbs": 86,  "mediumLbs": 173, "heavyLbs": 260 },
-      "18": { "lightLbs": 100, "mediumLbs": 200, "heavyLbs": 300 },
-      "19": { "lightLbs": 116, "mediumLbs": 233, "heavyLbs": 350 },
-      "20": { "lightLbs": 133, "mediumLbs": 266, "heavyLbs": 400 },
-      "21": { "lightLbs": 153, "mediumLbs": 306, "heavyLbs": 460 },
-      "22": { "lightLbs": 173, "mediumLbs": 346, "heavyLbs": 520 },
-      "23": { "lightLbs": 200, "mediumLbs": 400, "heavyLbs": 600 },
-      "24": { "lightLbs": 233, "mediumLbs": 466, "heavyLbs": 700 },
-      "25": { "lightLbs": 266, "mediumLbs": 533, "heavyLbs": 800 },
-      "26": { "lightLbs": 306, "mediumLbs": 613, "heavyLbs": 920 },
-      "27": { "lightLbs": 346, "mediumLbs": 693, "heavyLbs": 1040 },
-      "28": { "lightLbs": 400, "mediumLbs": 800, "heavyLbs": 1200 },
-      "29": { "lightLbs": 466, "mediumLbs": 933, "heavyLbs": 1400 }
+      "1": {
+        "lightLbs": 3,
+        "mediumLbs": 6,
+        "heavyLbs": 10
+      },
+      "2": {
+        "lightLbs": 6,
+        "mediumLbs": 13,
+        "heavyLbs": 20
+      },
+      "3": {
+        "lightLbs": 10,
+        "mediumLbs": 20,
+        "heavyLbs": 30
+      },
+      "4": {
+        "lightLbs": 13,
+        "mediumLbs": 26,
+        "heavyLbs": 40
+      },
+      "5": {
+        "lightLbs": 16,
+        "mediumLbs": 33,
+        "heavyLbs": 50
+      },
+      "6": {
+        "lightLbs": 20,
+        "mediumLbs": 40,
+        "heavyLbs": 60
+      },
+      "7": {
+        "lightLbs": 23,
+        "mediumLbs": 46,
+        "heavyLbs": 70
+      },
+      "8": {
+        "lightLbs": 26,
+        "mediumLbs": 53,
+        "heavyLbs": 80
+      },
+      "9": {
+        "lightLbs": 30,
+        "mediumLbs": 60,
+        "heavyLbs": 90
+      },
+      "10": {
+        "lightLbs": 33,
+        "mediumLbs": 66,
+        "heavyLbs": 100
+      },
+      "11": {
+        "lightLbs": 38,
+        "mediumLbs": 76,
+        "heavyLbs": 115
+      },
+      "12": {
+        "lightLbs": 43,
+        "mediumLbs": 86,
+        "heavyLbs": 130
+      },
+      "13": {
+        "lightLbs": 50,
+        "mediumLbs": 100,
+        "heavyLbs": 150
+      },
+      "14": {
+        "lightLbs": 58,
+        "mediumLbs": 116,
+        "heavyLbs": 175
+      },
+      "15": {
+        "lightLbs": 66,
+        "mediumLbs": 133,
+        "heavyLbs": 200
+      },
+      "16": {
+        "lightLbs": 76,
+        "mediumLbs": 153,
+        "heavyLbs": 230
+      },
+      "17": {
+        "lightLbs": 86,
+        "mediumLbs": 173,
+        "heavyLbs": 260
+      },
+      "18": {
+        "lightLbs": 100,
+        "mediumLbs": 200,
+        "heavyLbs": 300
+      },
+      "19": {
+        "lightLbs": 116,
+        "mediumLbs": 233,
+        "heavyLbs": 350
+      },
+      "20": {
+        "lightLbs": 133,
+        "mediumLbs": 266,
+        "heavyLbs": 400
+      },
+      "21": {
+        "lightLbs": 153,
+        "mediumLbs": 306,
+        "heavyLbs": 460
+      },
+      "22": {
+        "lightLbs": 173,
+        "mediumLbs": 346,
+        "heavyLbs": 520
+      },
+      "23": {
+        "lightLbs": 200,
+        "mediumLbs": 400,
+        "heavyLbs": 600
+      },
+      "24": {
+        "lightLbs": 233,
+        "mediumLbs": 466,
+        "heavyLbs": 700
+      },
+      "25": {
+        "lightLbs": 266,
+        "mediumLbs": 533,
+        "heavyLbs": 800
+      },
+      "26": {
+        "lightLbs": 306,
+        "mediumLbs": 613,
+        "heavyLbs": 920
+      },
+      "27": {
+        "lightLbs": 346,
+        "mediumLbs": 693,
+        "heavyLbs": 1040
+      },
+      "28": {
+        "lightLbs": 400,
+        "mediumLbs": 800,
+        "heavyLbs": 1200
+      },
+      "29": {
+        "lightLbs": 466,
+        "mediumLbs": 933,
+        "heavyLbs": 1400
+      }
     },
     "notes": {
       "en": "Values are for Medium bipedal creatures. For Strength 30+, find the matching ones digit in the 20-29 range and multiply by 4 for every 10 points above. Size multipliers: Fine x1/8, Diminutive x1/4, Tiny x1/2, Small x3/4, Medium x1, Large x2, Huge x4, Gargantuan x8, Colossal x16 (bipedal). Quadrupeds use different multipliers.",
@@ -42,26 +158,146 @@
     "tableId": "config_xp_table",
     "ruleSource": "srd_core",
     "data": {
-      "1":  { "xpRequired": 0,       "classSkillMaxRanks": 4,  "crossClassSkillMaxRanks": 2,   "feats": 1, "abilityScoreIncrease": 0 },
-      "2":  { "xpRequired": 1000,    "classSkillMaxRanks": 5,  "crossClassSkillMaxRanks": 2,   "feats": 0, "abilityScoreIncrease": 0 },
-      "3":  { "xpRequired": 3000,    "classSkillMaxRanks": 6,  "crossClassSkillMaxRanks": 3,   "feats": 1, "abilityScoreIncrease": 0 },
-      "4":  { "xpRequired": 6000,    "classSkillMaxRanks": 7,  "crossClassSkillMaxRanks": 3,   "feats": 0, "abilityScoreIncrease": 1 },
-      "5":  { "xpRequired": 10000,   "classSkillMaxRanks": 8,  "crossClassSkillMaxRanks": 4,   "feats": 0, "abilityScoreIncrease": 0 },
-      "6":  { "xpRequired": 15000,   "classSkillMaxRanks": 9,  "crossClassSkillMaxRanks": 4,   "feats": 1, "abilityScoreIncrease": 0 },
-      "7":  { "xpRequired": 21000,   "classSkillMaxRanks": 10, "crossClassSkillMaxRanks": 5,   "feats": 0, "abilityScoreIncrease": 0 },
-      "8":  { "xpRequired": 28000,   "classSkillMaxRanks": 11, "crossClassSkillMaxRanks": 5,   "feats": 0, "abilityScoreIncrease": 1 },
-      "9":  { "xpRequired": 36000,   "classSkillMaxRanks": 12, "crossClassSkillMaxRanks": 6,   "feats": 1, "abilityScoreIncrease": 0 },
-      "10": { "xpRequired": 45000,   "classSkillMaxRanks": 13, "crossClassSkillMaxRanks": 6,   "feats": 0, "abilityScoreIncrease": 0 },
-      "11": { "xpRequired": 55000,   "classSkillMaxRanks": 14, "crossClassSkillMaxRanks": 7,   "feats": 0, "abilityScoreIncrease": 0 },
-      "12": { "xpRequired": 66000,   "classSkillMaxRanks": 15, "crossClassSkillMaxRanks": 7,   "feats": 1, "abilityScoreIncrease": 1 },
-      "13": { "xpRequired": 78000,   "classSkillMaxRanks": 16, "crossClassSkillMaxRanks": 8,   "feats": 0, "abilityScoreIncrease": 0 },
-      "14": { "xpRequired": 91000,   "classSkillMaxRanks": 17, "crossClassSkillMaxRanks": 8,   "feats": 0, "abilityScoreIncrease": 0 },
-      "15": { "xpRequired": 105000,  "classSkillMaxRanks": 18, "crossClassSkillMaxRanks": 9,   "feats": 1, "abilityScoreIncrease": 0 },
-      "16": { "xpRequired": 120000,  "classSkillMaxRanks": 19, "crossClassSkillMaxRanks": 9,   "feats": 0, "abilityScoreIncrease": 1 },
-      "17": { "xpRequired": 136000,  "classSkillMaxRanks": 20, "crossClassSkillMaxRanks": 10,  "feats": 0, "abilityScoreIncrease": 0 },
-      "18": { "xpRequired": 153000,  "classSkillMaxRanks": 21, "crossClassSkillMaxRanks": 10,  "feats": 1, "abilityScoreIncrease": 0 },
-      "19": { "xpRequired": 171000,  "classSkillMaxRanks": 22, "crossClassSkillMaxRanks": 11,  "feats": 0, "abilityScoreIncrease": 0 },
-      "20": { "xpRequired": 190000,  "classSkillMaxRanks": 23, "crossClassSkillMaxRanks": 11,  "feats": 0, "abilityScoreIncrease": 1 }
+      "1": {
+        "xpRequired": 0,
+        "classSkillMaxRanks": 4,
+        "crossClassSkillMaxRanks": 2,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "2": {
+        "xpRequired": 1000,
+        "classSkillMaxRanks": 5,
+        "crossClassSkillMaxRanks": 2,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "3": {
+        "xpRequired": 3000,
+        "classSkillMaxRanks": 6,
+        "crossClassSkillMaxRanks": 3,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "4": {
+        "xpRequired": 6000,
+        "classSkillMaxRanks": 7,
+        "crossClassSkillMaxRanks": 3,
+        "feats": 0,
+        "abilityScoreIncrease": 1
+      },
+      "5": {
+        "xpRequired": 10000,
+        "classSkillMaxRanks": 8,
+        "crossClassSkillMaxRanks": 4,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "6": {
+        "xpRequired": 15000,
+        "classSkillMaxRanks": 9,
+        "crossClassSkillMaxRanks": 4,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "7": {
+        "xpRequired": 21000,
+        "classSkillMaxRanks": 10,
+        "crossClassSkillMaxRanks": 5,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "8": {
+        "xpRequired": 28000,
+        "classSkillMaxRanks": 11,
+        "crossClassSkillMaxRanks": 5,
+        "feats": 0,
+        "abilityScoreIncrease": 1
+      },
+      "9": {
+        "xpRequired": 36000,
+        "classSkillMaxRanks": 12,
+        "crossClassSkillMaxRanks": 6,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "10": {
+        "xpRequired": 45000,
+        "classSkillMaxRanks": 13,
+        "crossClassSkillMaxRanks": 6,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "11": {
+        "xpRequired": 55000,
+        "classSkillMaxRanks": 14,
+        "crossClassSkillMaxRanks": 7,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "12": {
+        "xpRequired": 66000,
+        "classSkillMaxRanks": 15,
+        "crossClassSkillMaxRanks": 7,
+        "feats": 1,
+        "abilityScoreIncrease": 1
+      },
+      "13": {
+        "xpRequired": 78000,
+        "classSkillMaxRanks": 16,
+        "crossClassSkillMaxRanks": 8,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "14": {
+        "xpRequired": 91000,
+        "classSkillMaxRanks": 17,
+        "crossClassSkillMaxRanks": 8,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "15": {
+        "xpRequired": 105000,
+        "classSkillMaxRanks": 18,
+        "crossClassSkillMaxRanks": 9,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "16": {
+        "xpRequired": 120000,
+        "classSkillMaxRanks": 19,
+        "crossClassSkillMaxRanks": 9,
+        "feats": 0,
+        "abilityScoreIncrease": 1
+      },
+      "17": {
+        "xpRequired": 136000,
+        "classSkillMaxRanks": 20,
+        "crossClassSkillMaxRanks": 10,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "18": {
+        "xpRequired": 153000,
+        "classSkillMaxRanks": 21,
+        "crossClassSkillMaxRanks": 10,
+        "feats": 1,
+        "abilityScoreIncrease": 0
+      },
+      "19": {
+        "xpRequired": 171000,
+        "classSkillMaxRanks": 22,
+        "crossClassSkillMaxRanks": 11,
+        "feats": 0,
+        "abilityScoreIncrease": 0
+      },
+      "20": {
+        "xpRequired": 190000,
+        "classSkillMaxRanks": 23,
+        "crossClassSkillMaxRanks": 11,
+        "feats": 0,
+        "abilityScoreIncrease": 1
+      }
     },
     "notes": {
       "en": "classSkillMaxRanks = character level + 3. crossClassSkillMaxRanks = (character level + 3) / 2, rounded down. Feats are gained at levels 1, 3, 6, 9, 12, 15, 18. Ability score increases at levels 4, 8, 12, 16, 20.",
@@ -72,17 +308,39 @@
     "tableId": "config_point_buy_costs",
     "ruleSource": "srd_core",
     "data": {
-      "8":  { "cost": 0 },
-      "9":  { "cost": 1 },
-      "10": { "cost": 2 },
-      "11": { "cost": 3 },
-      "12": { "cost": 4 },
-      "13": { "cost": 5 },
-      "14": { "cost": 6 },
-      "15": { "cost": 8 },
-      "16": { "cost": 10 },
-      "17": { "cost": 13 },
-      "18": { "cost": 16 }
+      "8": {
+        "cost": 0
+      },
+      "9": {
+        "cost": 1
+      },
+      "10": {
+        "cost": 2
+      },
+      "11": {
+        "cost": 3
+      },
+      "12": {
+        "cost": 4
+      },
+      "13": {
+        "cost": 5
+      },
+      "14": {
+        "cost": 6
+      },
+      "15": {
+        "cost": 8
+      },
+      "16": {
+        "cost": 10
+      },
+      "17": {
+        "cost": 13
+      },
+      "18": {
+        "cost": 16
+      }
     },
     "defaultBudget": 25,
     "notes": {
@@ -94,17 +352,39 @@
     "tableId": "config_ability_score_costs",
     "ruleSource": "srd_core",
     "data": {
-      "8":  { "cost": 0 },
-      "9":  { "cost": 1 },
-      "10": { "cost": 2 },
-      "11": { "cost": 3 },
-      "12": { "cost": 4 },
-      "13": { "cost": 5 },
-      "14": { "cost": 6 },
-      "15": { "cost": 8 },
-      "16": { "cost": 10 },
-      "17": { "cost": 13 },
-      "18": { "cost": 16 }
+      "8": {
+        "cost": 0
+      },
+      "9": {
+        "cost": 1
+      },
+      "10": {
+        "cost": 2
+      },
+      "11": {
+        "cost": 3
+      },
+      "12": {
+        "cost": 4
+      },
+      "13": {
+        "cost": 5
+      },
+      "14": {
+        "cost": 6
+      },
+      "15": {
+        "cost": 8
+      },
+      "16": {
+        "cost": 10
+      },
+      "17": {
+        "cost": 13
+      },
+      "18": {
+        "cost": 16
+      }
     },
     "defaultBudget": 25,
     "notes": {
@@ -113,12 +393,15 @@
     }
   },
   {
-    "tableId": "config_size_categories",
+    "tableId": "config_size_modifiers",
     "ruleSource": "srd_core",
     "data": {
       "fine": {
         "id": "size_fine",
-        "label": { "en": "Fine", "fr": "Infime" },
+        "label": {
+          "en": "Fine",
+          "fr": "Infime"
+        },
         "attackAcModifier": 8,
         "grappleModifier": -16,
         "hideModifier": 16,
@@ -129,7 +412,10 @@
       },
       "diminutive": {
         "id": "size_diminutive",
-        "label": { "en": "Diminutive", "fr": "Minuscule" },
+        "label": {
+          "en": "Diminutive",
+          "fr": "Minuscule"
+        },
         "attackAcModifier": 4,
         "grappleModifier": -12,
         "hideModifier": 12,
@@ -140,7 +426,10 @@
       },
       "tiny": {
         "id": "size_tiny",
-        "label": { "en": "Tiny", "fr": "Très petit" },
+        "label": {
+          "en": "Tiny",
+          "fr": "Très petit"
+        },
         "attackAcModifier": 2,
         "grappleModifier": -8,
         "hideModifier": 8,
@@ -151,7 +440,10 @@
       },
       "small": {
         "id": "size_small",
-        "label": { "en": "Small", "fr": "Petit" },
+        "label": {
+          "en": "Small",
+          "fr": "Petit"
+        },
         "attackAcModifier": 1,
         "grappleModifier": -4,
         "hideModifier": 4,
@@ -162,7 +454,10 @@
       },
       "medium": {
         "id": "size_medium",
-        "label": { "en": "Medium", "fr": "Moyen" },
+        "label": {
+          "en": "Medium",
+          "fr": "Moyen"
+        },
         "attackAcModifier": 0,
         "grappleModifier": 0,
         "hideModifier": 0,
@@ -173,7 +468,10 @@
       },
       "large": {
         "id": "size_large",
-        "label": { "en": "Large", "fr": "Grand" },
+        "label": {
+          "en": "Large",
+          "fr": "Grand"
+        },
         "attackAcModifier": -1,
         "grappleModifier": 4,
         "hideModifier": -4,
@@ -184,7 +482,10 @@
       },
       "huge": {
         "id": "size_huge",
-        "label": { "en": "Huge", "fr": "Très grand" },
+        "label": {
+          "en": "Huge",
+          "fr": "Très grand"
+        },
         "attackAcModifier": -2,
         "grappleModifier": 8,
         "hideModifier": -8,
@@ -195,7 +496,10 @@
       },
       "gargantuan": {
         "id": "size_gargantuan",
-        "label": { "en": "Gargantuan", "fr": "Gigantesque" },
+        "label": {
+          "en": "Gargantuan",
+          "fr": "Gigantesque"
+        },
         "attackAcModifier": -4,
         "grappleModifier": 12,
         "hideModifier": -12,
@@ -206,7 +510,10 @@
       },
       "colossal": {
         "id": "size_colossal",
-        "label": { "en": "Colossal", "fr": "Colossal" },
+        "label": {
+          "en": "Colossal",
+          "fr": "Colossal"
+        },
         "attackAcModifier": -8,
         "grappleModifier": 16,
         "hideModifier": -16,
@@ -219,6 +526,410 @@
     "notes": {
       "en": "attackAcModifier applies to attack rolls and Armor Class (size bonus/penalty). grappleModifier applies to grapple checks. hideModifier applies to Hide skill checks. spaceFt is the creature's space in feet. reachFt is the natural reach in feet. carryingCapacityMultiplierBiped and carryingCapacityMultiplierQuadruped are multipliers applied to the base carrying capacity from config_carrying_capacity.",
       "fr": "attackAcModifier s'applique aux jets d'attaque et à la Classe d'armure (bonus/malus de taille). grappleModifier s'applique aux tests d'empoignade. hideModifier s'applique aux tests de Discrétion. spaceFt est l'espace occupé par la créature en pieds. reachFt est l'allonge naturelle en pieds. carryingCapacityMultiplierBiped et carryingCapacityMultiplierQuadruped sont les multiplicateurs appliqués à la capacité de charge de base issue de config_carrying_capacity."
+    }
+  },
+  {
+    "tableId": "config_bonus_spell_slots",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Bonus Spell Slots by Ability Modifier",
+      "fr": "Sorts supplémentaires par jour par modificateur de caractéristique"
+    },
+    "description": {
+      "en": "Bonus spell slots per spell level granted by a high ability score modifier. Key: ability score modifier (-5 to 20). Value: array of 10 integers indexed by spell level 0–9.",
+      "fr": "Sorts supplémentaires par niveau de sort accordés par un modificateur de caractéristique élevé. Clé : modificateur de caractéristique (-5 à 20). Valeur : tableau de 10 entiers indexés par niveau de sort 0–9."
+    },
+    "data": {
+      "-5": {
+        "canCast": false,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-4": {
+        "canCast": false,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-3": {
+        "canCast": false,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-2": {
+        "canCast": false,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-1": {
+        "canCast": false,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "0": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "1": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "2": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "3": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "4": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "5": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          2,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "6": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "7": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "8": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "9": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          3,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "10": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1
+        ]
+      },
+      "11": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          1,
+          1
+        ]
+      },
+      "12": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2,
+          1
+        ]
+      },
+      "13": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          4,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "14": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2,
+          2
+        ]
+      },
+      "15": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ]
+      },
+      "16": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          2
+        ]
+      },
+      "17": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          5,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "18": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          5,
+          5,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3
+        ]
+      },
+      "19": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          5,
+          5,
+          5,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3
+        ]
+      },
+      "20": {
+        "canCast": true,
+        "bonusSlots": [
+          0,
+          5,
+          5,
+          5,
+          5,
+          4,
+          4,
+          4,
+          4,
+          3
+        ]
+      }
     }
   }
 ]
