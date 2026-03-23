@@ -1197,6 +1197,94 @@ Items with `removalPrevention.isCursed === true`:
 
 ---
 
+### 4.16. Intelligent Items — `ItemFeature.intelligentItemData`
+
+Intelligent items are permanent magic items imbued with sentience — INT/WIS/CHA scores, personality, alignment, communication modes, senses, languages, and an Ego score that determines the item's will relative to its wielder.
+
+#### Engine Contract
+
+`intelligentItemData` is a **metadata block** — no DAG pipeline changes. All actual mechanical effects use existing primitives:
+
+| Effect | Engine mechanism |
+|---|---|
+| Lesser powers (spells 3/day) | `resourcePoolTemplates per_day` |
+| Greater powers (spells 1/day, at-will) | `activation` + `resourcePoolTemplates per_day` |
+| Dedicated powers (purpose-conditional) | `conditionNode` + `resourcePoolTemplates` |
+| Item skill ranks (10 in Intimidate) | `grantedModifiers type:"competence"` value 10 |
+| Luck bonus (dedicated power) | `grantedModifiers type:"luck"` |
+| Alignment penalty for misaligned wielder | `grantedModifiers` with `conditionNode` on alignment tag |
+
+The `intelligentItemData` block is read by GM tools and the Item Detail modal to display the item's personality sheet.
+
+#### Data Model — `ItemFeature.intelligentItemData`
+
+```typescript
+intelligentItemData?: {
+    intelligenceScore: number;    // 10–19 per SRD distribution table
+    wisdomScore: number;
+    charismaScore: number;
+    egoScore: number;             // Pre-computed; used as Will DC for dominance
+    alignment: 'lawful_good' | 'lawful_neutral' | 'lawful_evil'
+               | 'neutral_good' | 'true_neutral' | 'neutral_evil'
+               | 'chaotic_good' | 'chaotic_neutral' | 'chaotic_evil';
+    communication: 'empathy' | 'speech' | 'telepathy';
+    senses: {
+        visionFt: 0 | 30 | 60 | 120;      // Normal vision range
+        darkvisionFt: 0 | 60 | 120;       // Darkvision range
+        blindsense: boolean;               // Highest-tier items only
+    };
+    languages: string[];                  // Always starts with 'Common'
+    lesserPowers: number;                 // 1–4
+    greaterPowers: number;                // 0–3
+    specialPurpose: string | null;        // e.g., "Defeat undead"
+    dedicatedPower: string | null;        // Only when specialPurpose is non-null
+};
+```
+
+#### Ego Score Formula
+
+| Component | Ego contribution |
+|---|---|
+| Each +1 of item's enhancement bonus | +1 |
+| Each lesser power | +1 |
+| Each greater power | +2 |
+| Special purpose + dedicated power | +4 |
+| Telepathic communication | +1 |
+| Read languages ability | +1 |
+| Read magic ability | +1 |
+| Each +1 of INT bonus | +1 |
+| Each +1 of WIS bonus | +1 |
+| Each +1 of CHA bonus | +1 |
+
+Content authors compute Ego from the item's full profile and store it in `egoScore`. The engine does NOT recompute it dynamically.
+
+#### Dominance and Ego (GM-Layer Rule)
+
+**Will DC = egoScore.** When personality conflict occurs (misaligned wielder, or Ego ≥ 20 in any contest):
+- SUCCESS: owner dominant for 1 day.
+- FAILURE: item dominant — makes demands, may refuse to cooperate.
+
+Negative levels for misaligned wielders:
+| Ego range | Negative levels |
+|---|---|
+| 1–19 | 1 |
+| 20–29 | 2 |
+| 30+ | 3 |
+
+These negative levels are modelled via `grantedModifiers` with a `conditionNode` comparing the character's alignment tags against `intelligentItemData.alignment`.
+
+#### Communication Tiers (SRD Table)
+
+| Communication | INT/WIS/CHA | Cost modifier |
+|---|---|---|
+| Empathy (urges, emotions) | Two at 12–13, one at 10 | +1,000–2,000 gp |
+| Speech (Common + INT-bonus languages) | Two at 14–16, one at 10 | +4,000–6,000 gp |
+| Speech + Telepathy | Two at 17–19, one at 10 | +9,000–15,000 gp |
+
+> **AI Implementation Note:** When rendering the Item Detail modal for an intelligent item, check `intelligentItemData` and display a "Personality" tab with the item's ability scores, Ego score (formatted as "Will DC = egoScore for dominance"), alignment, communication mode, senses, and language list. The `specialPurpose` and `dedicatedPower` fields should be displayed prominently when non-null — they define the item's core motivation.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

@@ -681,6 +681,25 @@ _Entry point: pre-conversion analysis of `cursedItems.html` (946 lines, 28 speci
 
 **Total test count after Phase E-14: 812 tests (all passing).**
 
+## Phase E-15: Intelligent Items Engine Prerequisites — Intelligent Item Data block
+
+_Goal: Resolve the one engine gap identified during C-14x (Intelligent Items) analysis. Intelligent items carry INT/WIS/CHA scores, Ego, alignment, communication mode, senses, languages, and optional special purpose. Without a typed metadata block, the GM tools and Item Detail UI have no structured data to read._
+
+_Entry point: pre-conversion analysis of `intelligentItems.html` (888 lines). All mechanical effects (powers, skill ranks, alignment penalties) use existing engine primitives. The gap is purely in the metadata layer — no computation changes needed._
+
+_Why metadata only: Ego computation (sum of dozens of coefficients) is complex to re-derive dynamically; storing the pre-computed value matches how artifact prices and scroll CLs are stored. The engine does NOT need to recompute Ego — content authors compute it at authoring time._
+
+- [x] **E-15a Type Extension:** Added `ItemFeature.intelligentItemData?: { intelligenceScore, wisdomScore, charismaScore, egoScore, alignment (9-value union), communication (3-value union), senses { visionFt, darkvisionFt, blindsense }, languages, lesserPowers, greaterPowers, specialPurpose, dedicatedPower }` to `feature.ts`. Full inline documentation: Ego formula, dominance rules, communication tiers, SRD table references, content authoring example.
+
+- [x] **E-15b Tests (`src/tests/intelligentItems.test.ts`):** 13 new Vitest tests (825 total, all passing):
+  - Type soundness (5 tests): all required fields compile, all 9 alignments valid, all 3 communication modes valid, senses.visionFt discrete values, optional on non-intelligent items.
+  - Ego formula (4 tests): INT/WIS/CHA bonus contribution, greater powers × 2 vs lesser × 1, special purpose +4, dominance DC = stored egoScore.
+  - Field contract (4 tests): minimal item (row 01-34), high-tier item (row 99), language count = Common + INT bonus, specialPurpose/dedicatedPower null when absent.
+
+- [x] **E-15c Documentation:** `ARCHITECTURE.md` section 4.16 (Intelligent Items — data model, Ego table, dominance/negative-level rules, communication tier table, mechanical effects mapped to engine primitives, AI implementation note). `CHECKPOINTS.md` updated with 9 new intelligent item verification items.
+
+**Total test count after Phase E-15: 825 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

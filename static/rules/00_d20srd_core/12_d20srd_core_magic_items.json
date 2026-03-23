@@ -60001,5 +60001,3645 @@
     },
     "grantedModifiers": [],
     "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Lawful Good)",
+      "fr": "Objet intelligent niveau 1 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Lawful Good). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; lawful good). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "lawful_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 1 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Lawful Neutral). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; lawful neutral). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "lawful_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 1 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Lawful Evil). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; lawful evil). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "lawful_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Neutral Good)",
+      "fr": "Objet intelligent niveau 1 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Neutral Good). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; neutral good). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "neutral_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (True Neutral)",
+      "fr": "Objet intelligent niveau 1 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; True Neutral). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; true neutral). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "true_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 1 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Neutral Evil). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; neutral evil). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "neutral_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 1 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Chaotic Good). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; chaotic good). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "chaotic_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 1 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Chaotic Neutral). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; chaotic neutral). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "chaotic_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_1_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 1 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 1 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (01-34 on d%; Chaotic Evil). INT 12, WIS 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Powers and senses per SRD table row 01-34. Base price modifier: +1,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (01-34 au d% ; chaotic evil). INT 12, SAG 12, CHA 10. Ego 3. Empathy; 30-ft vision; one lesser power. Pouvoirs et sens selon la table NLS ligne 01-34. Modificateur de prix de base : +1,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 1000,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 3,
+      "alignment": "chaotic_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Lawful Good)",
+      "fr": "Objet intelligent niveau 2 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Lawful Good). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; lawful good). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "lawful_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 2 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Lawful Neutral). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; lawful neutral). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "lawful_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 2 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Lawful Evil). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; lawful evil). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "lawful_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Neutral Good)",
+      "fr": "Objet intelligent niveau 2 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Neutral Good). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; neutral good). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "neutral_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (True Neutral)",
+      "fr": "Objet intelligent niveau 2 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; True Neutral). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; true neutral). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "true_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 2 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Neutral Evil). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; neutral evil). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "neutral_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 2 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Chaotic Good). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; chaotic good). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "chaotic_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 2 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Chaotic Neutral). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; chaotic neutral). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "chaotic_neutral",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_2_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 2 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 2 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (35-59 on d%; Chaotic Evil). INT 13, WIS 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Powers and senses per SRD table row 35-59. Base price modifier: +2,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (35-59 au d% ; chaotic evil). INT 13, SAG 13, CHA 10. Ego 4. Empathy; 60-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 35-59. Modificateur de prix de base : +2,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 2000,
+    "intelligentItemData": {
+      "intelligenceScore": 13,
+      "wisdomScore": 13,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "chaotic_evil",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Lawful Good)",
+      "fr": "Objet intelligent niveau 3 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Lawful Good). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; lawful good). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "lawful_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 3 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Lawful Neutral). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; lawful neutral). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "lawful_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 3 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Lawful Evil). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; lawful evil). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "lawful_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Neutral Good)",
+      "fr": "Objet intelligent niveau 3 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Neutral Good). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; neutral good). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "neutral_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (True Neutral)",
+      "fr": "Objet intelligent niveau 3 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; True Neutral). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; true neutral). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "true_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 3 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Neutral Evil). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; neutral evil). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "neutral_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 3 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Chaotic Good). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; chaotic good). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "chaotic_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 3 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Chaotic Neutral). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; chaotic neutral). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "chaotic_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_3_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 3 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 3 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (60-79 on d%; Chaotic Evil). INT 14, WIS 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Powers and senses per SRD table row 60-79. Base price modifier: +4,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (60-79 au d% ; chaotic evil). INT 14, SAG 14, CHA 10. Ego 6. Speech; 120-ft vision; two lesser powers. Pouvoirs et sens selon la table NLS ligne 60-79. Modificateur de prix de base : +4,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "chaotic_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Lawful Good)",
+      "fr": "Objet intelligent niveau 4 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Lawful Good). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; lawful good). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "lawful_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 4 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Lawful Neutral). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; lawful neutral). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "lawful_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 4 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Lawful Evil). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; lawful evil). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "lawful_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Neutral Good)",
+      "fr": "Objet intelligent niveau 4 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Neutral Good). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; neutral good). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "neutral_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (True Neutral)",
+      "fr": "Objet intelligent niveau 4 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; True Neutral). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; true neutral). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "true_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 4 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Neutral Evil). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; neutral evil). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "neutral_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 4 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Chaotic Good). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; chaotic good). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "chaotic_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 4 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Chaotic Neutral). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; chaotic neutral). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "chaotic_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_4_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 4 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 4 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (80-91 on d%; Chaotic Evil). INT 15, WIS 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 80-91. Base price modifier: +5,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (80-91 au d% ; chaotic evil). INT 15, SAG 15, CHA 10. Ego 7. Speech; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 80-91. Modificateur de prix de base : +5,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 5000,
+    "intelligentItemData": {
+      "intelligenceScore": 15,
+      "wisdomScore": 15,
+      "charismaScore": 10,
+      "egoScore": 7,
+      "alignment": "chaotic_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Lawful Good)",
+      "fr": "Objet intelligent niveau 5 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Lawful Good). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; lawful good). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "lawful_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 5 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Lawful Neutral). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; lawful neutral). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "lawful_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 5 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Lawful Evil). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; lawful evil). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "lawful_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Neutral Good)",
+      "fr": "Objet intelligent niveau 5 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Neutral Good). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; neutral good). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "neutral_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (True Neutral)",
+      "fr": "Objet intelligent niveau 5 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; True Neutral). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; true neutral). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "true_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 5 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Neutral Evil). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; neutral evil). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "neutral_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 5 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Chaotic Good). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; chaotic good). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "chaotic_good",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 5 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Chaotic Neutral). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; chaotic neutral). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "chaotic_neutral",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_5_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 5 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 5 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (92-97 on d%; Chaotic Evil). INT 16, WIS 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Powers and senses per SRD table row 92-97. Base price modifier: +6,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (92-97 au d% ; chaotic evil). INT 16, SAG 16, CHA 10. Ego 9. Speech+reads languages; 60-ft darkvision; three lesser powers. Pouvoirs et sens selon la table NLS ligne 92-97. Modificateur de prix de base : +6,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 6000,
+    "intelligentItemData": {
+      "intelligenceScore": 16,
+      "wisdomScore": 16,
+      "charismaScore": 10,
+      "egoScore": 9,
+      "alignment": "chaotic_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 60,
+        "darkvisionFt": 60,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Lawful Good)",
+      "fr": "Objet intelligent niveau 6 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Lawful Good). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; lawful good). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "lawful_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 6 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Lawful Neutral). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; lawful neutral). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "lawful_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 6 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Lawful Evil). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; lawful evil). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "lawful_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Neutral Good)",
+      "fr": "Objet intelligent niveau 6 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Neutral Good). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; neutral good). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "neutral_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (True Neutral)",
+      "fr": "Objet intelligent niveau 6 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; True Neutral). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; true neutral). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "true_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 6 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Neutral Evil). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; neutral evil). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "neutral_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 6 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Chaotic Good). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; chaotic good). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "chaotic_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 6 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Chaotic Neutral). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; chaotic neutral). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "chaotic_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_6_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 6 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 6 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (98 on d%; Chaotic Evil). INT 17, WIS 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Powers and senses per SRD table row 98. Base price modifier: +9,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (98 au d% ; chaotic evil). INT 17, SAG 17, CHA 10. Ego 12. Speech+Telepathy; 120-ft darkvision; three lesser + one greater power. Pouvoirs et sens selon la table NLS ligne 98. Modificateur de prix de base : +9,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 9000,
+    "intelligentItemData": {
+      "intelligenceScore": 17,
+      "wisdomScore": 17,
+      "charismaScore": 10,
+      "egoScore": 12,
+      "alignment": "chaotic_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 1,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Lawful Good)",
+      "fr": "Objet intelligent niveau 7 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Lawful Good). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; lawful good). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "lawful_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 7 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Lawful Neutral). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; lawful neutral). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "lawful_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 7 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Lawful Evil). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; lawful evil). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "lawful_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Neutral Good)",
+      "fr": "Objet intelligent niveau 7 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Neutral Good). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; neutral good). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "neutral_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (True Neutral)",
+      "fr": "Objet intelligent niveau 7 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; True Neutral). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; true neutral). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "true_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 7 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Neutral Evil). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; neutral evil). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "neutral_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 7 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Chaotic Good). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; chaotic good). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "chaotic_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 7 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Chaotic Neutral). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; chaotic neutral). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "chaotic_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_7_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 7 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 7 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (99 on d%; Chaotic Evil). INT 18, WIS 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Powers and senses per SRD table row 99. Base price modifier: +12,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (99 au d% ; chaotic evil). INT 18, SAG 18, CHA 10. Ego 16. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; three lesser + two greater. Pouvoirs et sens selon la table NLS ligne 99. Modificateur de prix de base : +12,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 12000,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 16,
+      "alignment": "chaotic_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 3,
+      "greaterPowers": 2,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_lawful_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Lawful Good)",
+      "fr": "Objet intelligent niveau 8 (lawful good)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Lawful Good). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; lawful good). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "lawful_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_lawful_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Lawful Neutral)",
+      "fr": "Objet intelligent niveau 8 (lawful neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Lawful Neutral). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; lawful neutral). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "lawful_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_lawful_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Lawful Evil)",
+      "fr": "Objet intelligent niveau 8 (lawful evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Lawful Evil). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; lawful evil). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "lawful_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_neutral_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Neutral Good)",
+      "fr": "Objet intelligent niveau 8 (neutral good)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Neutral Good). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; neutral good). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "neutral_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_true_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (True Neutral)",
+      "fr": "Objet intelligent niveau 8 (true neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; True Neutral). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; true neutral). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "true_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_neutral_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Neutral Evil)",
+      "fr": "Objet intelligent niveau 8 (neutral evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Neutral Evil). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; neutral evil). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "neutral_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_chaotic_good",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Chaotic Good)",
+      "fr": "Objet intelligent niveau 8 (chaotic good)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Chaotic Good). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; chaotic good). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "chaotic_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_chaotic_neutral",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Chaotic Neutral)",
+      "fr": "Objet intelligent niveau 8 (chaotic neutral)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Chaotic Neutral). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; chaotic neutral). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "chaotic_neutral",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_tier_8_chaotic_evil",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Item Tier 8 (Chaotic Evil)",
+      "fr": "Objet intelligent niveau 8 (chaotic evil)"
+    },
+    "description": {
+      "en": "Intelligent item template (100 on d%; Chaotic Evil). INT 19, WIS 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Powers and senses per SRD table row 100. Base price modifier: +15,000 gp (applied on top of base item price). Misaligned possessor gains 1 negative level (2 if Ego 20-29; 3 if Ego 30+).",
+      "fr": "Gabarit d'objet intelligent (100 au d% ; chaotic evil). INT 19, SAG 19, CHA 10. Ego 19. Speech+Telepathy+reads magic; 120-ft darkvision+blindsense; four lesser + three greater. Pouvoirs et sens selon la table NLS ligne 100. Modificateur de prix de base : +15,000 po (à ajouter au prix de l'objet de base). Possesseur d'alignement inadapté : 1 niveau négatif (2 si Ego 20-29 ; 3 si Ego 30+)."
+    },
+    "tags": [
+      "item",
+      "intelligent",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 15000,
+    "intelligentItemData": {
+      "intelligenceScore": 19,
+      "wisdomScore": 19,
+      "charismaScore": 10,
+      "egoScore": 19,
+      "alignment": "chaotic_evil",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Elvish",
+        "Dwarven",
+        "Gnomish",
+        "Sylvan"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 3,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_intelligent_longsword_lg_tier1",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "+2 Intelligent Longsword (Lawful Good, Tier 1)",
+      "fr": "+2 Épée longue intelligente (Loyal Bon, Niveau 1)"
+    },
+    "description": {
+      "en": "A +2 longsword with gentle empathic communication (urges and emotions). Communicates Lawful Good convictions. Locate object 3/day (item's own power). Misaligned wielder: 1 negative level. Ego 4 (Will DC 4 for dominance). INT 12, WIS 12, CHA 10.",
+      "fr": "Épée longue +2 avec communication empathique douce. Communique des convictions Loyal Bon. Localisation d'objet 3/jour (pouvoir propre de l'objet). Porteur d'alignement contraire : 1 niveau négatif. Ego 4 (Volonté DD 4 pour dominance). INT 12, SAG 12, CHA 10."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "intelligent",
+      "magic_item",
+      "lawful",
+      "good"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 9315,
+    "intelligentItemData": {
+      "intelligenceScore": 12,
+      "wisdomScore": 12,
+      "charismaScore": 10,
+      "egoScore": 4,
+      "alignment": "lawful_good",
+      "communication": "empathy",
+      "senses": {
+        "visionFt": 30,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Celestial"
+      ],
+      "lesserPowers": 1,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_intelligent_longsword_lg_tier1_combatStats_attack_bonus",
+        "sourceId": "item_intelligent_longsword_lg_tier1",
+        "sourceName": {
+          "en": "+2 Int Longsword LG",
+          "fr": "Épée longue int. LB"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_intelligent_longsword_lg_tier1_combatStats_damage_bonus",
+        "sourceId": "item_intelligent_longsword_lg_tier1",
+        "sourceName": {
+          "en": "+2 Int Longsword LG",
+          "fr": "Épée longue int. LB"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "locate_object_uses",
+        "label": {
+          "en": "Locate Object (3/day)",
+          "fr": "Localisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.locate_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_intelligent_greatsword_ce_tier3",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "+3 Intelligent Greatsword (Chaotic Evil, Tier 3)",
+      "fr": "+3 Grande épée intelligente (Chaotique Mauvais, Niveau 3)"
+    },
+    "description": {
+      "en": "A +3 greatsword that speaks Common, Infernal, and Abyssal. Chaotic Evil personality — wants to cause strife and death. Bless allies 3/day (enemies bless only CE creatures), hold person 3/day. Lawful or Good wielder: 1 negative level. Ego 6 (Will DC 6). INT 14, WIS 14, CHA 10.",
+      "fr": "Grande épée +3 parlant commun, infernal et abyssal. Personnalité Chaotique Mauvaise. Bénédiction 3/jour (sur créatures CM uniquement), immobilisation de personne 3/jour. Porteur loyal ou bon : 1 niveau négatif. Ego 6 (Volonté DD 6). INT 14, SAG 14, CHA 10."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "intelligent",
+      "magic_item",
+      "chaotic",
+      "evil"
+    ],
+    "equipmentSlot": "two_hands",
+    "weightLbs": 8,
+    "costGp": 22304,
+    "intelligentItemData": {
+      "intelligenceScore": 14,
+      "wisdomScore": 14,
+      "charismaScore": 10,
+      "egoScore": 6,
+      "alignment": "chaotic_evil",
+      "communication": "speech",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 0,
+        "blindsense": false
+      },
+      "languages": [
+        "Common",
+        "Infernal",
+        "Abyssal"
+      ],
+      "lesserPowers": 2,
+      "greaterPowers": 0,
+      "specialPurpose": null,
+      "dedicatedPower": null
+    },
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "2d6",
+      "damageType": [
+        "slashing"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_intelligent_greatsword_ce_tier3_combatStats_attack_bonus",
+        "sourceId": "item_intelligent_greatsword_ce_tier3",
+        "sourceName": {
+          "en": "+3 Int Greatsword CE",
+          "fr": "Grande épée int. CM"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 3,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_intelligent_greatsword_ce_tier3_combatStats_damage_bonus",
+        "sourceId": "item_intelligent_greatsword_ce_tier3",
+        "sourceName": {
+          "en": "+3 Int Greatsword CE",
+          "fr": "Grande épée int. CM"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 3,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "bless_uses",
+        "label": {
+          "en": "Bless (3/day)",
+          "fr": "Bénédiction (3/jour)"
+        },
+        "maxPipelineId": "combatStats.bless_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "hold_person_uses",
+        "label": {
+          "en": "Hold Person (3/day)",
+          "fr": "Immobilisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.hold_person_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_intelligent_holy_avenger_special_purpose",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Intelligent Holy Avenger (Special Purpose: Defeat Undead)",
+      "fr": "Vengeur saint intelligent (But spécial : vaincre les morts-vivants)"
+    },
+    "description": {
+      "en": "The Holy Avenger imbued with full sentience. Telepathy; speech in all languages; reads magic. Four lesser powers, two greater powers. Special purpose: Defeat/slay undead. Dedicated power: True resurrection on wielder once per month. INT 18, WIS 18, CHA 10. Ego 41 (Will DC 41 — this item ALWAYS dominates). Blindsense 120 ft.",
+      "fr": "Vengeur saint doté de pleine conscience. Télépathie ; parole en toutes langues ; lecture de la magie. Quatre pouvoirs mineurs, deux pouvoirs majeurs. But spécial : vaincre les morts-vivants. Pouvoir dédié : résurrection véritable sur le porteur une fois par mois. INT 18, SAG 18, CHA 10. Ego 41 (Volonté DD 41 — cet objet DOMINE toujours). Vision aveugle 120 pi."
+    },
+    "tags": [
+      "item",
+      "weapon",
+      "intelligent",
+      "magic_item",
+      "good",
+      "lawful",
+      "cold_iron"
+    ],
+    "equipmentSlot": "main_hand",
+    "weightLbs": 4,
+    "costGp": 220630,
+    "intelligentItemData": {
+      "intelligenceScore": 18,
+      "wisdomScore": 18,
+      "charismaScore": 10,
+      "egoScore": 41,
+      "alignment": "lawful_good",
+      "communication": "telepathy",
+      "senses": {
+        "visionFt": 120,
+        "darkvisionFt": 120,
+        "blindsense": true
+      },
+      "languages": [
+        "Common",
+        "Celestial",
+        "Elvish",
+        "Dwarven",
+        "Draconic"
+      ],
+      "lesserPowers": 4,
+      "greaterPowers": 2,
+      "specialPurpose": "Defeat/slay undead",
+      "dedicatedPower": "Cast true resurrection on wielder once per month"
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "slashing",
+        "cold_iron",
+        "good"
+      ],
+      "critRange": "19-20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "grantedModifiers": [
+      {
+        "id": "item_intelligent_holy_avenger_special_purpose_combatStats_attack_bonus",
+        "sourceId": "item_intelligent_holy_avenger_special_purpose",
+        "sourceName": {
+          "en": "Intelligent Holy Avenger",
+          "fr": "Vengeur saint int."
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 5,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_intelligent_holy_avenger_special_purpose_combatStats_damage_bonus",
+        "sourceId": "item_intelligent_holy_avenger_special_purpose",
+        "sourceName": {
+          "en": "Intelligent Holy Avenger",
+          "fr": "Vengeur saint int."
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 5,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_intelligent_holy_avenger_special_purpose_combatStats_spell_resistance",
+        "sourceId": "item_intelligent_holy_avenger_special_purpose",
+        "sourceName": {
+          "en": "Intelligent Holy Avenger",
+          "fr": "Vengeur saint int."
+        },
+        "targetId": "combatStats.spell_resistance",
+        "value": 18,
+        "type": "untyped"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "lesser_p1",
+        "label": {
+          "en": "Bless Allies (3/day)",
+          "fr": "Bénédiction (3/jour)"
+        },
+        "maxPipelineId": "combatStats.lp1_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "lesser_p2",
+        "label": {
+          "en": "Detect Magic (at will)",
+          "fr": "Détection (à volonté)"
+        },
+        "maxPipelineId": "combatStats.lp2_max",
+        "defaultCurrent": 99,
+        "resetCondition": "never"
+      },
+      {
+        "poolId": "lesser_p3",
+        "label": {
+          "en": "Locate Object (3/day)",
+          "fr": "Localisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.lp3_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "lesser_p4",
+        "label": {
+          "en": "Cure Moderate Wounds (3/day)",
+          "fr": "Soins modérés (3/jour)"
+        },
+        "maxPipelineId": "combatStats.lp4_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "greater_p1",
+        "label": {
+          "en": "Detect Undead (at will)",
+          "fr": "Détection morts-vivants (à volonté)"
+        },
+        "maxPipelineId": "combatStats.gp1_max",
+        "defaultCurrent": 99,
+        "resetCondition": "never"
+      },
+      {
+        "poolId": "greater_p2",
+        "label": {
+          "en": "Dismiss (1/day)",
+          "fr": "Renvoi (1/jour)"
+        },
+        "maxPipelineId": "combatStats.gp2_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "true_resurrection",
+        "label": {
+          "en": "True Resurrection (1/month)",
+          "fr": "Résurrection véritable (1/mois)"
+        },
+        "maxPipelineId": "combatStats.true_res_max",
+        "defaultCurrent": 1,
+        "resetCondition": "never"
+      }
+    ]
   }
 ]

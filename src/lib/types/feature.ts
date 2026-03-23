@@ -1079,6 +1079,148 @@ export interface ItemFeature extends Feature {
     };
 
    /**
+    * Intelligent item personality data — present only on items imbued with sentience.
+    *
+    * D&D 3.5 SRD — INTELLIGENT ITEMS:
+    *   "Magic items sometimes have intelligence of their own. Magically imbued with
+    *   sentience, these items think and feel the same way characters do and should
+    *   be treated as NPCs. Intelligent items have extra abilities and sometimes
+    *   extraordinary powers and special purposes. Only permanent magic items (as
+    *   opposed to single-use items or those with charges) can be intelligent."
+    *
+    * ENGINE CONTRACT:
+    *   This is a METADATA block. It has NO effect on the DAG computation pipeline.
+    *   All mechanical effects of intelligent item powers (spells 3/day, skill ranks,
+    *   luck bonuses, etc.) are modelled using existing engine primitives:
+    *   - Lesser/greater powers → `resourcePoolTemplates` (per_day) + `activation`
+    *   - Dedicated powers → `conditionNode` + `resourcePoolTemplates`
+    *   - Skill ranks → `grantedModifiers type:"competence"` with value 10
+    *   - Alignment penalties (mismatched wielder) → `conditionNode` on alignment tag
+    *
+    *   `intelligentItemData` provides the GM layer with:
+    *   - The item's INT/WIS/CHA ability scores (needed to compute languages, Ego)
+    *   - The Ego score (pre-computed, used for dominance Will DC = Ego)
+    *   - The alignment of the item (for personality conflict logic)
+    *   - Communication mode (empathy, speech, telepathy)
+    *   - Senses range and type (30-ft vision, darkvision 60 ft, blindsense)
+    *   - Language list (Common + 1 per INT bonus)
+    *   - Special purpose (if any) and dedicated power description
+    *
+    * EGO SCORE FORMULA (from SRD):
+    *   Ego = (sum of all enhancement bonus points)
+    *       + (1 per lesser power)
+    *       + (2 per greater power)
+    *       + (4 if special purpose + dedicated power)
+    *       + (1 if telepathic)
+    *       + (1 if read languages)
+    *       + (1 if read magic)
+    *       + (INT bonus)
+    *       + (WIS bonus)
+    *       + (CHA bonus)
+    *   where ability bonus = (score - 10) / 2 (rounded down)
+    *
+    *   Content authors COMPUTE Ego from the item's total profile and store it here.
+    *   The engine does NOT recompute it dynamically — the stored value is canonical.
+    *
+    * EGO-BASED DOMINANCE (GM-layer rule, not engine-computed):
+    *   When personality conflict occurs: owner makes Will save DC = Ego score.
+    *   - Success: owner is dominant for 1 day (or until critical situation).
+    *   - Failure: item is dominant — demands concessions; may resist commands.
+    *   This is handled by the GM using the stored Ego score. No engine pipeline needed.
+    *
+    * NEGATIVE LEVELS FOR MISALIGNED WIELDERS:
+    *   Items with Ego 1-19: 1 negative level for misaligned possessor.
+    *   Items with Ego 20-29: 2 negative levels.
+    *   Items with Ego 30+:   3 negative levels.
+    *   These are modelled via `grantedModifiers` with `conditionNode` checking if the
+    *   character's alignment matches `intelligentItemData.alignment`.
+    *
+    * CONTENT AUTHORING EXAMPLE — Intelligent +2 Longsword (Lawful Good, Ego 6):
+    *   ```json
+    *   {
+    *     "intelligentItemData": {
+    *       "intelligenceScore": 12,
+    *       "wisdomScore": 12,
+    *       "charismaScore": 10,
+    *       "egoScore": 6,
+    *       "alignment": "lawful_good",
+    *       "communication": "empathy",
+    *       "senses": { "visionFt": 30, "darkvisionFt": 0, "blindsense": false },
+    *       "languages": ["Common", "Celestial"],
+    *       "lesserPowers": 2,
+    *       "greaterPowers": 0,
+    *       "specialPurpose": null,
+    *       "dedicatedPower": null
+    *     }
+    *   }
+    *   ```
+    *
+    * @see ARCHITECTURE.md section 4.16 — Intelligent Item Data contract
+    */
+   intelligentItemData?: {
+     /** Intelligence score of the item (10–19 per SRD distribution table). */
+     intelligenceScore: number;
+     /** Wisdom score of the item (10–19 per SRD distribution table). */
+     wisdomScore: number;
+     /** Charisma score of the item (10–19 per SRD distribution table). */
+     charismaScore: number;
+     /**
+      * Pre-computed Ego score (see formula in doc block above).
+      * Used as the Will DC for dominance checks (GM layer).
+      * Items with Ego 20+ always attempt dominance; 30+ grant 3 negative levels.
+      */
+     egoScore: number;
+     /**
+      * The item's alignment (determines personality, purpose, and wielder restrictions).
+      * Kebab-case SRD alignment identifiers.
+      */
+     alignment: 'lawful_good' | 'lawful_neutral' | 'lawful_evil'
+                | 'neutral_good' | 'true_neutral' | 'neutral_evil'
+                | 'chaotic_good' | 'chaotic_neutral' | 'chaotic_evil';
+     /**
+      * How the item communicates with its wielder.
+      * - `"empathy"`: urges and emotional impressions only (no actual words).
+      * - `"speech"`: speaks Common plus INT-bonus languages.
+      * - `"telepathy"`: projects thoughts directly into wielder's mind.
+      */
+     communication: 'empathy' | 'speech' | 'telepathy';
+     /**
+      * Senses of the item. Vision and darkvision are measured in feet (0 = absent).
+      * Blindsense is a boolean — present at the highest intelligence tiers.
+      */
+     senses: {
+       /** Normal vision range in feet (0, 30, 60, or 120). */
+       visionFt: 0 | 30 | 60 | 120;
+       /** Darkvision range in feet (0 or 60 or 120). */
+       darkvisionFt: 0 | 60 | 120;
+       /** Whether the item has blindsense (highest-tier intelligence items only). */
+       blindsense: boolean;
+     };
+     /**
+      * Languages the item speaks (and can read if speech or telepathy tier).
+      * Always includes Common; additional languages equal to INT bonus.
+      */
+     languages: string[];
+     /** Number of lesser powers (1–4). Each contributes 1 Ego point. */
+     lesserPowers: number;
+     /** Number of greater powers (0–3). Each contributes 2 Ego points. */
+     greaterPowers: number;
+     /**
+      * The item's special purpose (from SRD special purpose table), or null.
+      * When set, the item has a dedicated power that operates ONLY in pursuit of this purpose.
+      * A special purpose + dedicated power contributes 4 Ego points.
+      * Examples: "Defeat arcane spellcasters", "Defend elves", "Slay undead"
+      */
+     specialPurpose: string | null;
+     /**
+      * Description of the dedicated power (from SRD dedicated power table), or null.
+      * Only set when `specialPurpose` is non-null.
+      * Examples: "Cast lightning bolt 10d6", "+2 luck on all attacks/saves/checks"
+      */
+     dedicatedPower: string | null;
+   };
+
+   /**
     * Cursed item removal prevention — present on cursed items that cannot be
     * voluntarily unequipped or removed without specific magical intervention.
     *

@@ -375,6 +375,16 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Intelligent Item Data (Enhancement E-15 / Architecture section 4.16):**
+  - Is `intelligentItemData` optional (non-intelligent items compile without it)?
+  - Are all 9 alignment values valid union members?
+  - Are all 3 communication values valid (`empathy`, `speech`, `telepathy`)?
+  - Does `senses.visionFt` accept `0 | 30 | 60 | 120`?
+  - Is `egoScore` stored (not computed dynamically)?
+  - Is Ego formula documented: lesser×1, greater×2, special purpose×4, ability bonuses?
+  - Is `specialPurpose: null` when absent; `dedicatedPower: null` when no purpose?
+  - Is `languages[0]` always `'Common'` + (INTBonus) extras?
+  - `ARCHITECTURE.md section 4.16` shows the Ego table and dominance rules?
 - **Cursed Item Removal Prevention (Enhancement E-14 / Architecture section 4.15):**
   - Is `ItemFeature.removalPrevention` optional (non-cursed items omit it)?
   - Is `isCursed: true` a discriminant (not `boolean`)?

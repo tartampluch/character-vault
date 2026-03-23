@@ -1509,7 +1509,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - [x] **C-14u** — Scrolls (`scrolls.html`)
 - [x] **C-14v** — Artifacts (`artifacts.html`)
 - [x] **C-14w** — Cursed Items (`cursedItems.html`)
-- [ ] **C-14x** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
+- [x] **C-14x** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
 
 > **Artifacts** (`artifacts.html`): Convert minor and major artifacts. Use `"category": "item"` with `"equipmentSlot": "none"` for non-wearable artifacts. See `ANNEXES.md` section A.9 for the Sphere of Annihilation example.
 > **Cursed items** (`cursedItems.html`): Add `forbiddenTags` (e.g., `["cursed_identified"]`) to prevent removal and model curse effects as permanent `grantedModifiers`.

@@ -621,6 +621,16 @@ _Pre-conversion engine gap identified during C-14w analysis. The one genuine gap
 
 - [x] **E-14c Documentation:** `ARCHITECTURE.md` section 4.15 (guard pseudocode, tryRemoveCursedItem table, UI contract). `CHECKPOINTS.md` updated with 9 items.
 
+### Phase E-15: Intelligent Items Engine Prerequisites — Intelligent Item Data block
+
+_Pre-conversion engine gap identified during C-14x analysis. INT/WIS/CHA scores, Ego, alignment, communication, senses, languages, and purpose need structured metadata._
+
+- [x] **E-15a Type Extension:** Added `ItemFeature.intelligentItemData?` to `feature.ts`. 9-value alignment union. 3-value communication union. senses with discrete `visionFt (0|30|60|120)`, `darkvisionFt (0|60|120)`, `blindsense`. Ego formula and dominance rules documented inline.
+
+- [x] **E-15b Tests:** 13 tests (825 total). Type soundness (5), Ego formula (4), field contract (4).
+
+- [x] **E-15c Documentation:** `ARCHITECTURE.md` section 4.16 (Ego table, dominance rules, communication tiers). `CHECKPOINTS.md` updated with 9 items.
+
 ### Artifact Engine Analysis (pre-C-14v)
 
 _All 18 artifacts (11 minor, 5 major + 10 Orb variants) were analysed against the engine. No computation gap found. All effects map to existing primitives: `grantedModifiers`, `resourcePoolTemplates`, `staffSpells`, `weaponData`, `conditionNode`, `situationalContext`, `setAbsolute`, `type:"inherent"`. Two metadata-only fields were added: `ItemFeature.isUnique` and `ItemFeature.artifactTier`. These are GM campaign layer fields with no engine pipeline effect — no tests needed. Zero new failing tests after addition._
