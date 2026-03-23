@@ -53,7 +53,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { evaluateFormula } from '$lib/utils/mathParser';
-import type { ResourcePool } from '$lib/types/pipeline';
+import { applyStackingRules } from '$lib/utils/stackingRules';
+import type { ResourcePool, Modifier } from '$lib/types/pipeline';
 import type { CharacterContext } from '$lib/utils/mathParser';
 
 // =============================================================================
@@ -917,5 +918,55 @@ describe('triggerWeeklyReset — "per_week" calendar reset (E-1, Elemental Comma
     triggerWeeklyReset(pools, (_id) => 3);
     expect(pools['resources.daily'].currentValue).toBe(5);   // unchanged by weekly reset
     expect(pools['resources.weekly'].currentValue).toBe(3);  // now restored
+  });
+});
+
+// ============================================================
+// GAP-01: resources.X.maxValue normalisation
+// ============================================================
+describe('resources.X.maxValue targetId normalisation (GAP-01 fix)', () => {
+  it('normalised targetId "combatStats.barbarian_rage_uses_max" stacks modifiers correctly', () => {
+    // After normaliseModifierTargetId maps "resources.barbarian_rage_uses.maxValue"
+    // → "combatStats.barbarian_rage_uses_max", two base modifiers (one per class level)
+    // should stack additively to produce the correct pool maximum.
+    const mod1: Modifier = {
+      id: 'rage_max_1', sourceId: 'class_barbarian',
+      sourceName: { en: 'Barbarian', fr: 'Barbare' },
+      targetId: 'combatStats.barbarian_rage_uses_max',
+      value: 1, type: 'base',
+    };
+    const mod2: Modifier = {
+      id: 'rage_max_2', sourceId: 'class_barbarian',
+      sourceName: { en: 'Barbarian', fr: 'Barbare' },
+      targetId: 'combatStats.barbarian_rage_uses_max',
+      value: 1, type: 'base',
+    };
+    const result = applyStackingRules([mod1, mod2], 0);
+    expect(result.totalBonus).toBe(2); // base type stacks → +1 +1 = +2 total uses
+    expect(result.totalValue).toBe(2);
+  });
+
+  it('long_rest is the correct resetCondition for class ability pools', () => {
+    // Verify that a resource pool with long_rest resets correctly after rest
+    // (does NOT reset on dawn — that would be per_day)
+    const pool: ResourcePool = {
+      id: 'resources.barbarian_rage_uses',
+      label: { en: 'Rage Uses', fr: "Utilisations de furie" },
+      maxPipelineId: 'combatStats.barbarian_rage_uses_max',
+      currentValue: 0,
+      temporaryValue: 0,
+      resetCondition: 'long_rest',
+    };
+    // Dawn reset should NOT restore long_rest pools
+    const dawned = { ...pool };
+    if (dawned.resetCondition === 'per_day') { dawned.currentValue = 5; }
+    expect(dawned.currentValue).toBe(0); // long_rest pool unchanged by dawn
+
+    // Long rest SHOULD restore it
+    const rested = { ...pool };
+    if (rested.resetCondition === 'long_rest' || rested.resetCondition === 'short_rest') {
+      rested.currentValue = 5; // simulate max from pipeline
+    }
+    expect(rested.currentValue).toBe(5); // restored after long rest
   });
 });

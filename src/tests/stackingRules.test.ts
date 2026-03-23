@@ -660,3 +660,31 @@ describe('DR — Barbarian class-progression DR (type: "base" pattern)', () => {
     expect(result.drEntries![0].bypassTags).toEqual(['fire']);
   });
 });
+
+// ============================================================
+// RESISTANCE BONUS STACKING (GAP-09 fix)
+// ============================================================
+
+describe('resistance bonus stacking (save bonuses)', () => {
+  it('two resistance bonuses to saves: only highest applies', () => {
+    // Cloak of Resistance +3 AND another item giving +2 resistance → only +3 applies
+    const mods: Modifier[] = [
+      makeModifier('cloak_resistance_3', 3, 'resistance'),
+      makeModifier('other_resistance_2', 2, 'resistance'),
+    ];
+    const result = applyStackingRules(mods, 0);
+    expect(result.totalBonus).toBe(3);
+    expect(result.appliedModifiers).toHaveLength(1);
+    expect(result.suppressedModifiers).toHaveLength(1);
+    expect(result.appliedModifiers[0].id).toBe('cloak_resistance_3');
+  });
+
+  it('resistance bonus does not stack with morale bonus (different types — both apply)', () => {
+    const mods: Modifier[] = [
+      makeModifier('resistance_2', 2, 'resistance'),
+      makeModifier('morale_2', 2, 'morale'),
+    ];
+    const result = applyStackingRules(mods, 0);
+    expect(result.totalBonus).toBe(4); // Different types — both apply
+  });
+});

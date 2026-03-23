@@ -66,7 +66,10 @@ export type ModifierType =
     | "morale" | "luck" | "insight" | "sacred" | "profane" 
     | "dodge" | "armor" | "shield" | "natural_armor" | "deflection" 
     | "competence" | "circumstance" | "synergy" | "size" | "setAbsolute"
-    | "damage_reduction"; // Best-wins per bypass-tag group. See Modifier.drBypassTags + section 4.5.
+    | "damage_reduction"  // Best-wins per bypass-tag group. See Modifier.drBypassTags + section 4.5.
+    | "resistance"        // Resistance bonus to saves (non-stacking). See section 4 content guide.
+    | "inherent"          // Permanent ability gains from tomes/wish/miracle. See section 4.10.
+    | "max_dex_cap";      // Minimum-wins cap on DEX-to-AC (armor/encumbrance). See section 4.17.
     // "setAbsolute" forces the value (e.g.: Wild Shape); "base" defines the additive foundation.
 
 // Operators for the logic engine
@@ -232,6 +235,37 @@ When the Math Parser encounters `@` prefixed paths in formula strings, it reso
 > **AI Implementation Note:** The Math Parser MUST handle nested paths by splitting on `.` and walking the object tree. For example, `@attributes.stat_str.derivedModifier` splits into `["attributes", "stat_str", "derivedModifier"]` and resolves by looking up `character.attributes["stat_str"].derivedModifier`. Paths that don't resolve should return `0` and log a warning, not crash.
 >
 > **Special path distinction — `@characterLevel` vs `@eclForXp`:** Always use `@characterLevel` for game-mechanical calculations (feats, HP, skill max ranks, caster level, class feature gating). Use `@eclForXp` ONLY when consulting the XP threshold table (`config_xp_table`) for level-up checks, starting wealth, and encounter budgeting. For standard PC races with `levelAdjustment = 0`, both paths return the same value.
+
+### 4.3b. `Modifier.targetId` Normalisation and Canonical Pipeline IDs
+
+The engine's `normaliseModifierTargetId()` function in `GameEngine.svelte.ts` accepts **two equivalent forms** for the same pipeline. Content authors may use either form freely:
+
+| Namespaced form (readable) | Bare form (canonical map key) | Pipeline namespace |
+|---|---|---|
+| `"attributes.stat_str"` | `"stat_str"` | `Character.attributes` |
+| `"skills.skill_climb"` | `"skill_climb"` | `Character.skills` |
+
+All other namespaces (`"combatStats.*"`, `"saves.*"`, `"resources.*"`) are used verbatim as map keys — no normalisation needed.
+
+**Rule for content authors:** Either form is correct. The engine resolves both identically.
+
+#### Canonical `saves.*` Pipeline IDs
+
+| Canonical ID | Ability | Do NOT use |
+|---|---|---|
+| `saves.fort` | Constitution | `saves.fortitude`, `saves.save_fort` |
+| `saves.ref` | Dexterity | `saves.reflex`, `saves.save_ref` |
+| `saves.will` | Wisdom | `saves.save_will` |
+| `saves.all` | (broadcast) | — fans out to fort + ref + will in `#processModifierList` |
+
+#### Canonical Caster/Manifester Level Pipeline IDs
+
+| Canonical ID | Notes |
+|---|---|
+| `stat_caster_level` | Lives in `Character.attributes`; targeted by class level progression |
+| `stat_manifester_level` | Psionic equivalent; lives in `Character.attributes` |
+
+Do NOT use `combatStats.caster_level` or `attributes.caster_level` — neither is a valid pipeline path.
 
 ### 4.4. ResourcePool `resetCondition` — Full Reference
 
@@ -1580,13 +1614,23 @@ export interface ItemFeature extends Feature {
     
     // Weapon-specific
     weaponData?: {
-        wieldCategory: "light" | "one_handed" | "two_handed";
+        wieldCategory: "light" | "one_handed" | "two_handed" | "double";
+        // "double": two-ended weapon (quarterstaff, two-bladed sword, dire flail, etc.)
+        // Primary end uses damageDice/damageType/critRange/critMultiplier.
+        // Secondary end uses secondaryWeaponData (absent = identical to primary).
         damageDice: string;    // E.g.: "1d8"
         damageType: string[];  // E.g.: ["slashing", "magic"]
         critRange: string;     // E.g.: "19-20"
         critMultiplier: number;// E.g.: 2
         reachFt: number;       // E.g.: 5 (standard melee) or 10 (reach)
         rangeIncrementFt?: number; // E.g.: 30 for a bow
+        // Secondary end data for double weapons. Absent = identical to primary end.
+        secondaryWeaponData?: {
+            damageDice: string;
+            damageType: string[];
+            critRange: string;
+            critMultiplier: number;
+        };
     };
     
     // Armor-specific
@@ -1914,7 +1958,7 @@ export interface MagicFeature extends Feature {
     resistanceType: "spell_resistance" | "power_resistance" | "none";
     components: string[]; // Magic (V, S, M) or Psionic (A, M, O, V)
     
-    range: string;       // Formula (e.g.: "25 + floor(@attributes.caster_level.totalValue / 2) * 5")
+    range: string;       // Formula (e.g.: "25 + floor(@attributes.stat_caster_level.totalValue / 2) * 5")
     targetArea: LocalizedString;
     duration: string;    
     savingThrow: "fort_half" | "ref_negates" | "will_disbelieves" | "none" | string;

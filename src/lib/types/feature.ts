@@ -1785,14 +1785,22 @@ export interface ItemFeature extends Feature {
      *   this describes wielding category for the purpose of damage/feats; slot binding
      *   is handled by `equipmentSlot`).
      */
-    wieldCategory: 'light' | 'one_handed' | 'two_handed';
+     wieldCategory:
+       | 'light'       // One-handed; can be used off-hand without penalty
+       | 'one_handed'  // Standard one-hand weapon; 2-handed grants 1.5× STR mod
+       | 'two_handed'  // Always requires both hands (large weapons)
+       | 'double';     // Has two ends — each end can be attacked with independently.
+                       // D&D 3.5 SRD: "A character can fight with both ends of a double weapon
+                       // as if fighting with two weapons, but incurs all TWF attack penalties."
+                       // The PRIMARY end uses damageDice/damageType/critRange/critMultiplier.
+                       // The SECONDARY end uses the `secondaryWeaponData` field below.
 
-    /**
-     * Base damage dice expression.
-     * Examples: "1d4", "1d8", "2d6"
-     * Actual damage formula appended by the engine: "1d8 + @attributes.stat_str.derivedModifier"
-     */
-    damageDice: string;
+     /**
+      * Base damage dice expression (PRIMARY end for double weapons).
+      * Examples: "1d4", "1d8", "2d6"
+      * Actual damage formula appended by the engine: "1d8 + @attributes.stat_str.derivedModifier"
+      */
+     damageDice: string;
 
     /**
      * Array of damage types dealt.
@@ -1822,15 +1830,40 @@ export interface ItemFeature extends Feature {
      */
     reachFt: number;
 
-    /**
-     * Range increment in FEET for ranged weapons. Absent for melee weapons.
-     * Examples: 30 (shortbow first range increment), 60 (longbow), 10 (throwing axe)
-     * Each additional range increment beyond the first adds -2 to attack rolls.
-     */
-    rangeIncrementFt?: number;
+     /**
+      * Range increment in FEET for ranged weapons. Absent for melee weapons.
+      * Examples: 30 (shortbow first range increment), 60 (longbow), 10 (throwing axe)
+      * Each additional range increment beyond the first adds -2 to attack rolls.
+      */
+     rangeIncrementFt?: number;
 
-    /**
-     * Additional dice rolled ONLY on a confirmed critical hit (Enhancement E-7).
+     /**
+      * Secondary end data for double weapons (`wieldCategory: "double"`).
+      *
+      * D&D 3.5 SRD: Double weapons (quarterstaff, dire flail, two-bladed sword, etc.)
+      * have two attack ends. The primary end is described by the top-level
+      * `damageDice`/`damageType`/`critRange`/`critMultiplier` fields.
+      * The secondary end is described here when it differs.
+      *
+      * CASES:
+      *   - Quarterstaff: both ends identical (1d6 bludgeoning, ×2). Secondary may be omitted.
+      *   - Two-bladed sword: primary 1d8 slashing (19–20/×2), secondary 1d6 piercing (19–20/×2).
+      *   - Dwarven urgrosh: primary 1d8 piercing ×3, secondary 1d6 slashing ×3.
+      *   - Gnome hooked hammer: primary 1d8 bludgeoning ×3, secondary 1d6 piercing ×4.
+      *   - Orc double axe: primary 1d8 slashing ×3, secondary 1d8 slashing ×3.
+      *   - Dire flail: primary 1d8 bludgeoning ×2, secondary 1d8 bludgeoning ×2.
+      *
+      * When absent: the secondary end is identical to the primary end.
+      */
+     secondaryWeaponData?: {
+       damageDice: string;
+       damageType: string[];
+       critRange: string;
+       critMultiplier: number;
+     };
+
+     /**
+      * Additional dice rolled ONLY on a confirmed critical hit (Enhancement E-7).
      *
      * D&D 3.5 SRD — "BURST" WEAPON ABILITIES:
      *   Flaming Burst, Icy Burst, and Shocking Burst weapons deal their base elemental

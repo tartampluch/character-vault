@@ -88,7 +88,7 @@
       {
         "id": "dwarf_save_vs_poison",
         "sourceId": "race_dwarf",
-        "targetId": "saves.fortitude",
+        "targetId": "saves.fort",
         "value": 2,
         "type": "racial",
         "sourceName": { "en": "Dwarf Poison Resistance", "fr": "Résistance naine au poison" },
@@ -206,7 +206,7 @@
       {
         "id": "elf_enchantment_save_fort",
         "sourceId": "race_elf",
-        "targetId": "saves.fortitude",
+        "targetId": "saves.fort",
         "value": 2,
         "type": "racial",
         "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
@@ -215,7 +215,7 @@
       {
         "id": "elf_enchantment_save_ref",
         "sourceId": "race_elf",
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 2,
         "type": "racial",
         "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
@@ -430,7 +430,7 @@
       {
         "id": "half_elf_enchantment_save_fort",
         "sourceId": "race_half_elf",
-        "targetId": "saves.fortitude",
+        "targetId": "saves.fort",
         "value": 2,
         "type": "racial",
         "sourceName": { "en": "Half-Elf Enchantment Resistance", "fr": "Résistance demi-elfique aux enchantements" },
@@ -439,7 +439,7 @@
       {
         "id": "half_elf_enchantment_save_ref",
         "sourceId": "race_half_elf",
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 2,
         "type": "racial",
         "sourceName": { "en": "Half-Elf Enchantment Resistance", "fr": "Résistance demi-elfique aux enchantements" },
@@ -670,7 +670,7 @@
       {
         "id": "halfling_save_all",
         "sourceId": "race_halfling",
-        "targetId": "saves.fortitude",
+        "targetId": "saves.fort",
         "value": 1,
         "type": "racial",
         "sourceName": { "en": "Halfling Lucky", "fr": "Chance halfeline" }
@@ -678,7 +678,7 @@
       {
         "id": "halfling_save_all_ref",
         "sourceId": "race_halfling",
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "racial",
         "sourceName": { "en": "Halfling Lucky", "fr": "Chance halfeline" }

@@ -87,7 +87,7 @@
         "id": "domain_chaos_caster_level_bonus",
         "sourceId": "domain_chaos",
         "sourceName": { "en": "Chaos Domain", "fr": "Domaine du Chaos" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_chaos_spells"
@@ -228,7 +228,7 @@
         "id": "domain_evil_caster_level_bonus",
         "sourceId": "domain_evil",
         "sourceName": { "en": "Evil Domain", "fr": "Domaine du Mal" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_evil_spells"
@@ -297,7 +297,7 @@
         "id": "domain_good_caster_level_bonus",
         "sourceId": "domain_good",
         "sourceName": { "en": "Good Domain", "fr": "Domaine du Bien" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_good_spells"
@@ -330,7 +330,7 @@
         "id": "domain_healing_caster_level_bonus",
         "sourceId": "domain_healing",
         "sourceName": { "en": "Healing Domain", "fr": "Domaine de la Guérison" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_healing_spells"
@@ -375,7 +375,7 @@
         "id": "domain_knowledge_caster_level_bonus",
         "sourceId": "domain_knowledge",
         "sourceName": { "en": "Knowledge Domain", "fr": "Domaine de la Connaissance" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_divination_spells"
@@ -408,7 +408,7 @@
         "id": "domain_law_caster_level_bonus",
         "sourceId": "domain_law",
         "sourceName": { "en": "Law Domain", "fr": "Domaine de la Loi" },
-        "targetId": "combatStats.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped",
         "situationalContext": "when_casting_law_spells"

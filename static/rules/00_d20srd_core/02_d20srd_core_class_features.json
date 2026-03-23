@@ -217,7 +217,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -303,7 +303,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -401,7 +401,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -575,7 +575,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -694,7 +694,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -813,7 +813,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1352,7 +1352,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1439,7 +1439,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1546,7 +1546,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1642,7 +1642,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1758,7 +1758,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1854,7 +1854,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.reflex",
+        "targetId": "saves.ref",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -3325,7 +3325,7 @@
         },
         "targetId": "combatStats.ac_normal",
         "value": "@attributes.stat_wis.derivedModifier",
-        "type": "wisdom",
+        "type": "untyped",
         "conditionNode": {
           "logic": "AND",
           "nodes": [
@@ -3377,7 +3377,7 @@
         },
         "targetId": "combatStats.ac_touch",
         "value": "@attributes.stat_wis.derivedModifier",
-        "type": "wisdom",
+        "type": "untyped",
         "conditionNode": {
           "logic": "AND",
           "nodes": [
@@ -5566,7 +5566,7 @@
           "en": "Inspire Greatness",
           "fr": "Inspiration de grandeur"
         },
-        "targetId": "saves.fortitude",
+        "targetId": "saves.fort",
         "value": 1,
         "type": "competence"
       }

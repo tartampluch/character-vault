@@ -406,7 +406,7 @@ All IDs use strict `kebab-case` with a category prefix:
 | `BAB +6` | `{ "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue", "operator": ">=", "value": 6, "errorMessage": "Requires BAB +6" }` |
 | `Power Attack feat` | `{ "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_power_attack", "errorMessage": "Requires Power Attack" }` |
 | `5 ranks in Spot` | `{ "logic": "CONDITION", "targetPath": "@skills.skill_spot.ranks", "operator": ">=", "value": 5, "errorMessage": "Requires 5 ranks in Spot" }` |
-| `Caster level 3` | `{ "logic": "CONDITION", "targetPath": "@attributes.caster_level.totalValue", "operator": ">=", "value": 3, "errorMessage": "Requires caster level 3" }` |
+| `Caster level 3` | `{ "logic": "CONDITION", "targetPath": "@attributes.stat_caster_level.totalValue", "operator": ">=", "value": 3, "errorMessage": "Requires caster level 3" }` |
 | Multiple requirements (AND) | `{ "logic": "AND", "nodes": [ … ] }` |
 | Alternative requirements (OR) | `{ "logic": "OR", "nodes": [ … ] }` |
 

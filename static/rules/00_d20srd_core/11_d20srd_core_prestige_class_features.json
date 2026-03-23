@@ -666,7 +666,7 @@
         "id": "archmage_spell_power_caster_level",
         "sourceId": "class_feature_archmage_spell_power",
         "sourceName": { "en": "Spell Power", "fr": "Puissance des sorts" },
-        "targetId": "attributes.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1,
         "type": "untyped"
       }
@@ -2431,7 +2431,7 @@
         "id": "hierophant_spell_power_caster_level",
         "sourceId": "class_feature_hierophant_spell_power",
         "sourceName": { "en": "Spell Power", "fr": "Puissance des sorts" },
-        "targetId": "attributes.caster_level",
+        "targetId": "stat_caster_level",
         "value": 1, "type": "untyped"
       }
     ],

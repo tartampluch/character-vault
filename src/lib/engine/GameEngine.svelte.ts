@@ -248,14 +248,43 @@ export interface SkillPointsBudget {
  * @returns The normalised pipeline key used as a map key in `Character.attributes`.
  */
 function normaliseModifierTargetId(targetId: ID): ID {
-  // Strip the "attributes." namespace prefix if present.
-  // This maps "attributes.stat_str" → "stat_str" (the actual Character.attributes key).
+  // Strip namespace prefixes to produce the canonical map key used internally.
   //
-  // Note: strings like "combatStats.bab", "saves.fort", "slots.ring", "skill_climb"
-  // do NOT start with "attributes." (they start with "combatStats.", "saves.", "slots.",
-  // "skill_", or "resources.") and are returned unchanged.
+  // SUPPORTED NORMALISATIONS:
+  //   "attributes.stat_str"          → "stat_str"                (Character.attributes key)
+  //   "skills.skill_climb"           → "skill_climb"             (Character.skills key)
+  //   "resources.X.maxValue"         → "combatStats.X_max"       (virtual max pipeline)
+  //
+  // WHY TWO FORMS EXIST IN JSON:
+  //   Content authors have historically used two conventions:
+  //     - Bare form:       "stat_str",   "skill_climb"   (matches the map key directly)
+  //     - Namespaced form: "attributes.stat_str", "skills.skill_climb"  (more readable)
+  //   Both are valid; this function normalises both to the map-key form so that all
+  //   downstream comparisons work regardless of which convention the JSON uses.
+  //
+  // "resources.X.maxValue" CONVENTION (GAP-01 fix):
+  //   Content authors use "resources.barbarian_rage_uses.maxValue" to target the
+  //   maximum capacity of a resource pool — a natural and readable convention.
+  //   The engine does NOT have a pipeline keyed "resources.X.maxValue"; instead,
+  //   each pool's max is looked up from the pipeline pointed to by its `maxPipelineId`.
+  //   To bridge this, we normalise "resources.X.maxValue" → "combatStats.X_max".
+  //   The `#getEffectiveMax()` method has been updated to look up "combatStats.X_max"
+  //   as the fallback pipeline when the pool's `maxPipelineId` resolves to nothing.
+  //   This lets modifiers like "+1 per 4 Barbarian levels" accumulate in the
+  //   combatStats pipeline and be read back as the pool's effective maximum.
+  //
+  // OTHER NAMESPACES are returned unchanged — they ARE the map key already:
+  //   "combatStats.bab", "saves.fort", "resources.hp", "slots.ring"
   if (targetId.startsWith('attributes.')) {
     return targetId.slice('attributes.'.length);
+  }
+  if (targetId.startsWith('skills.')) {
+    return targetId.slice('skills.'.length);
+  }
+  // "resources.X.maxValue" → "combatStats.X_max"
+  if (targetId.startsWith('resources.') && targetId.endsWith('.maxValue')) {
+    const poolId = targetId.slice('resources.'.length, -'.maxValue'.length);
+    return `combatStats.${poolId}_max`;
   }
   return targetId;
 }
@@ -818,6 +847,70 @@ export class GameEngine {
   readonly #autoSaveActiveIdEffect = $effect.root(() => {
     $effect(() => {
       storageManager.saveActiveCharacterId(this.activeCharacterId);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // CLASS RESOURCE POOL SYNC — Phase 0.5 (GAP-02 fix)
+  // ---------------------------------------------------------------------------
+  //
+  // Problem: Class features (Rage, Turn Undead, Spell Slots, etc.) declare their
+  // resource pools via `activation.resourceCost.targetId` but do NOT use
+  // `resourcePoolTemplates` like item pools do. This means `character.resources`
+  // never has a `ResourcePool` entry for "resources.barbarian_rage_uses", and the
+  // engine cannot track current uses, max uses, or reset them.
+  //
+  // Fix: This effect scans all active feature definitions for `resourcePoolTemplates`
+  // entries whose `poolId` starts with "resources." (class resource convention).
+  // For each such pool, if `character.resources[poolId]` does not yet exist,
+  // the pool is created with `defaultCurrent` from the template and the pool is
+  // registered in `character.resources`. This is idempotent — already-initialised
+  // pools (with a potentially depleted currentValue) are never overwritten.
+  //
+  // NOTE: Item pools (instance-scoped, stored in ActiveFeatureInstance.itemResourcePools)
+  // are NOT affected here. Only `character.resources` (character-scoped) pools are synced.
+  //
+  // resetCondition: GAP-03 fix — class ability pools use "long_rest" (requires sleep),
+  // NOT "per_day" (resets at dawn without sleep). Per the SRD and ARCHITECTURE.md:
+  //   - Spell slots, Rage, Turn Undead, Bardic Music, etc.: "long_rest"
+  //   - Dawn-reset magic item abilities: "per_day"
+  // JSON files must declare the correct resetCondition on each template.
+  // This sync effect respects whatever `resetCondition` the template declares.
+
+  readonly #classResourcePoolSyncEffect = $effect.root(() => {
+    $effect(() => {
+      // React to changes in active features
+      const activeFeatures = this.character.activeFeatures;
+
+      for (const instance of activeFeatures) {
+        if (!instance.isActive) continue;
+        const feature = dataLoader.getFeature(instance.featureId);
+        if (!feature?.resourcePoolTemplates) continue;
+
+        for (const template of feature.resourcePoolTemplates) {
+          const fullPoolId = `resources.${template.poolId}`;
+
+          // Skip item-scoped pools (handled by initItemResourcePools)
+          // Class resource pools have poolId that matches their resource key
+          if (Object.prototype.hasOwnProperty.call(this.character.resources, fullPoolId)) {
+            continue; // Already initialised — never overwrite (preserve depleted counts)
+          }
+
+          // Create the pool entry in character.resources
+          const label: import('../types/i18n').LocalizedString = template.label;
+          const maxPipelineId = template.maxPipelineId;
+          const newPool: ResourcePool = {
+            id: fullPoolId,
+            label,
+            maxPipelineId,
+            currentValue: template.defaultCurrent,
+            temporaryValue: 0,
+            resetCondition: template.resetCondition,
+            rechargeAmount: template.rechargeAmount,
+          };
+          this.character.resources[fullPoolId] = newPool;
+        }
+      }
     });
   });
 
@@ -3176,6 +3269,18 @@ export class GameEngine {
     if (pipeline) {
       return pipeline.totalValue;
     }
+    // GAP-01 auto-convention: if no explicit pipeline is found, check if modifiers
+    // targeting "resources.<poolId>.maxValue" have accumulated in combatStats.<poolId>_max.
+    // This is the virtual pipeline created by normaliseModifierTargetId().
+    // Example: pool.id = "resources.barbarian_rage_uses" → check "combatStats.barbarian_rage_uses_max"
+    if (pool.id.startsWith('resources.')) {
+      const poolKey = pool.id.slice('resources.'.length);
+      const autoMaxPipelineId = `combatStats.${poolKey}_max`;
+      const autoPipeline = this.character.combatStats[autoMaxPipelineId];
+      if (autoPipeline && autoPipeline.totalValue > 0) {
+        return autoPipeline.totalValue;
+      }
+    }
     // Fallback: use current value (prevents accidental zero-cap during init)
     return pool.currentValue;
   }
@@ -3804,8 +3909,27 @@ export class GameEngine {
       // --- Normalise the targetId convention ---
       // Strips the optional "attributes." prefix so both "stat_str" and
       // "attributes.stat_str" target the same Character.attributes pipeline.
+      // Also strips the "skills." prefix: "skills.skill_climb" → "skill_climb".
       // This is a non-destructive normalisation — the original JSON is not mutated.
       const normalisedTargetId = normaliseModifierTargetId(mod.targetId);
+
+      // --- saves.all fan-out ---
+      // "saves.all" is a broadcast shorthand: apply this modifier to ALL three saves.
+      // Used by Divine Grace, Resistance spells, Cloaks of Resistance, etc.
+      // Fan out into three independent modifier entries targeting saves.fort/ref/will.
+      if (normalisedTargetId === 'saves.all') {
+        const saveTargets = ['saves.fort', 'saves.ref', 'saves.will'] as const;
+        for (const saveTarget of saveTargets) {
+          const suffix = saveTarget.split('.')[1]; // "fort" | "ref" | "will"
+          let fanMod: Modifier = { ...mod, targetId: saveTarget, id: `${mod.id}_${suffix}` };
+          if (typeof fanMod.value === 'string') {
+            const resolved = evaluateFormula(fanMod.value, instanceContext, this.settings.language);
+            fanMod = { ...fanMod, value: typeof resolved === 'number' ? resolved : parseFloat(String(resolved)) || 0 };
+          }
+          result.push({ modifier: fanMod, sourceInstanceId: instance.instanceId, sourceFeatureId: feature.id });
+        }
+        continue; // Already pushed fan-out entries; skip the default push below
+      }
 
       // --- Resolve string value formulas to numbers ---
       // Build the resolved modifier with the normalised targetId and numeric value.

@@ -102,6 +102,10 @@ export type ModifierType =
                        // incremental DR that ADDS, use "base" instead (it always stacks).
                        // @see Modifier.drBypassTags in pipeline.ts
                        // @see ARCHITECTURE.md section 4.5 — Damage Reduction reference
+  | "resistance"       // Resistance bonus to saving throws (Cloak of Resistance, etc.).
+                       // Non-stacking: only the highest resistance bonus to the same save applies.
+                       // D&D 3.5 SRD: common on cloaks, rings, and class features.
+                       // Example: Cloak of Resistance +3 + another resistance +2 → only +3 applies.
   | "max_dex_cap";     // Maximum-DEX-to-AC cap imposed by armor, shield, or conditions.
                        // MINIMUM-WINS STACKING: when multiple max_dex_cap modifiers are
                        // active simultaneously, the engine applies only the LOWEST value

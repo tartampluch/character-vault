@@ -93,7 +93,7 @@
               "en": "Barbarian 1",
               "fr": "Barbare 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           },
@@ -104,7 +104,7 @@
               "en": "Barbarian 1",
               "fr": "Barbare 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 0,
             "type": "base"
           },
@@ -145,7 +145,7 @@
               "en": "Barbarian 2",
               "fr": "Barbare 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -175,7 +175,7 @@
               "en": "Barbarian 3",
               "fr": "Barbare 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -216,7 +216,7 @@
               "en": "Barbarian 4",
               "fr": "Barbare 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -265,7 +265,7 @@
               "en": "Barbarian 6",
               "fr": "Barbare 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -276,7 +276,7 @@
               "en": "Barbarian 6",
               "fr": "Barbare 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -336,7 +336,7 @@
               "en": "Barbarian 8",
               "fr": "Barbare 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -366,7 +366,7 @@
               "en": "Barbarian 9",
               "fr": "Barbare 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -407,7 +407,7 @@
               "en": "Barbarian 10",
               "fr": "Barbare 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -457,7 +457,7 @@
               "en": "Barbarian 12",
               "fr": "Barbare 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -468,7 +468,7 @@
               "en": "Barbarian 12",
               "fr": "Barbare 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -528,7 +528,7 @@
               "en": "Barbarian 14",
               "fr": "Barbare 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -558,7 +558,7 @@
               "en": "Barbarian 15",
               "fr": "Barbare 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -600,7 +600,7 @@
               "en": "Barbarian 16",
               "fr": "Barbare 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -649,7 +649,7 @@
               "en": "Barbarian 18",
               "fr": "Barbare 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -660,7 +660,7 @@
               "en": "Barbarian 18",
               "fr": "Barbare 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -721,7 +721,7 @@
               "en": "Barbarian 20",
               "fr": "Barbare 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -857,7 +857,7 @@
               "en": "Bard 1",
               "fr": "Barde 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 2,
             "type": "base"
           },
@@ -907,7 +907,7 @@
               "en": "Bard 2",
               "fr": "Barde 2"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -970,7 +970,7 @@
               "en": "Bard 3",
               "fr": "Barde 3"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1009,7 +1009,7 @@
               "en": "Bard 4",
               "fr": "Barde 4"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1111,7 +1111,7 @@
               "en": "Bard 6",
               "fr": "Barde 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1122,7 +1122,7 @@
               "en": "Bard 6",
               "fr": "Barde 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1202,7 +1202,7 @@
               "en": "Bard 8",
               "fr": "Barde 8"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1265,7 +1265,7 @@
               "en": "Bard 9",
               "fr": "Barde 9"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1304,7 +1304,7 @@
               "en": "Bard 10",
               "fr": "Barde 10"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1395,7 +1395,7 @@
               "en": "Bard 12",
               "fr": "Barde 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1406,7 +1406,7 @@
               "en": "Bard 12",
               "fr": "Barde 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1486,7 +1486,7 @@
               "en": "Bard 14",
               "fr": "Barde 14"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1560,7 +1560,7 @@
               "en": "Bard 15",
               "fr": "Barde 15"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1610,7 +1610,7 @@
               "en": "Bard 16",
               "fr": "Barde 16"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1723,7 +1723,7 @@
               "en": "Bard 18",
               "fr": "Barde 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -1734,7 +1734,7 @@
               "en": "Bard 18",
               "fr": "Barde 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1836,7 +1836,7 @@
               "en": "Bard 20",
               "fr": "Barde 20"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -1978,7 +1978,7 @@
               "en": "Cleric 1",
               "fr": "Clerc 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           },
@@ -1989,7 +1989,7 @@
               "en": "Cleric 1",
               "fr": "Clerc 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 0,
             "type": "base"
           },
@@ -2061,7 +2061,7 @@
               "en": "Cleric 2",
               "fr": "Clerc 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2122,7 +2122,7 @@
               "en": "Cleric 3",
               "fr": "Clerc 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -2172,7 +2172,7 @@
               "en": "Cleric 4",
               "fr": "Clerc 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2272,7 +2272,7 @@
               "en": "Cleric 6",
               "fr": "Clerc 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2283,7 +2283,7 @@
               "en": "Cleric 6",
               "fr": "Clerc 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -2405,7 +2405,7 @@
               "en": "Cleric 8",
               "fr": "Clerc 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2455,7 +2455,7 @@
               "en": "Cleric 9",
               "fr": "Clerc 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -2516,7 +2516,7 @@
               "en": "Cleric 10",
               "fr": "Clerc 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2638,7 +2638,7 @@
               "en": "Cleric 12",
               "fr": "Clerc 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2649,7 +2649,7 @@
               "en": "Cleric 12",
               "fr": "Clerc 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -2760,7 +2760,7 @@
               "en": "Cleric 14",
               "fr": "Clerc 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -2821,7 +2821,7 @@
               "en": "Cleric 15",
               "fr": "Clerc 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -2893,7 +2893,7 @@
               "en": "Cleric 16",
               "fr": "Clerc 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3004,7 +3004,7 @@
               "en": "Cleric 18",
               "fr": "Clerc 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3015,7 +3015,7 @@
               "en": "Cleric 18",
               "fr": "Clerc 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -3126,7 +3126,7 @@
               "en": "Cleric 20",
               "fr": "Clerc 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3277,7 +3277,7 @@
               "en": "Druid 1",
               "fr": "Druide 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           },
@@ -3288,7 +3288,7 @@
               "en": "Druid 1",
               "fr": "Druide 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 0,
             "type": "base"
           },
@@ -3351,7 +3351,7 @@
               "en": "Druid 2",
               "fr": "Druide 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3414,7 +3414,7 @@
               "en": "Druid 3",
               "fr": "Druide 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -3455,7 +3455,7 @@
               "en": "Druid 4",
               "fr": "Druide 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3548,7 +3548,7 @@
               "en": "Druid 6",
               "fr": "Druide 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3559,7 +3559,7 @@
               "en": "Druid 6",
               "fr": "Druide 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -3674,7 +3674,7 @@
               "en": "Druid 8",
               "fr": "Druide 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3726,7 +3726,7 @@
               "en": "Druid 9",
               "fr": "Druide 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -3778,7 +3778,7 @@
               "en": "Druid 10",
               "fr": "Druide 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3893,7 +3893,7 @@
               "en": "Druid 12",
               "fr": "Druide 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -3904,7 +3904,7 @@
               "en": "Druid 12",
               "fr": "Druide 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4008,7 +4008,7 @@
               "en": "Druid 14",
               "fr": "Druide 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4072,7 +4072,7 @@
               "en": "Druid 15",
               "fr": "Druide 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4135,7 +4135,7 @@
               "en": "Druid 16",
               "fr": "Druide 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4238,7 +4238,7 @@
               "en": "Druid 18",
               "fr": "Druide 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4249,7 +4249,7 @@
               "en": "Druid 18",
               "fr": "Druide 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4363,7 +4363,7 @@
               "en": "Druid 20",
               "fr": "Druide 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4491,7 +4491,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           }
@@ -4521,7 +4521,7 @@
               "en": "Fighter 2",
               "fr": "Guerrier 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -4549,7 +4549,7 @@
               "en": "Fighter 3",
               "fr": "Guerrier 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4590,7 +4590,7 @@
               "en": "Fighter 4",
               "fr": "Guerrier 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -4637,7 +4637,7 @@
               "en": "Fighter 6",
               "fr": "Guerrier 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4648,7 +4648,7 @@
               "en": "Fighter 6",
               "fr": "Guerrier 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4706,7 +4706,7 @@
               "en": "Fighter 8",
               "fr": "Guerrier 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -4734,7 +4734,7 @@
               "en": "Fighter 9",
               "fr": "Guerrier 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4775,7 +4775,7 @@
               "en": "Fighter 10",
               "fr": "Guerrier 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -4822,7 +4822,7 @@
               "en": "Fighter 12",
               "fr": "Guerrier 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -4833,7 +4833,7 @@
               "en": "Fighter 12",
               "fr": "Guerrier 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4891,7 +4891,7 @@
               "en": "Fighter 14",
               "fr": "Guerrier 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -4919,7 +4919,7 @@
               "en": "Fighter 15",
               "fr": "Guerrier 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -4960,7 +4960,7 @@
               "en": "Fighter 16",
               "fr": "Guerrier 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -5007,7 +5007,7 @@
               "en": "Fighter 18",
               "fr": "Guerrier 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5018,7 +5018,7 @@
               "en": "Fighter 18",
               "fr": "Guerrier 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5076,7 +5076,7 @@
               "en": "Fighter 20",
               "fr": "Guerrier 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -5185,7 +5185,7 @@
               "en": "Monk 1",
               "fr": "Moine 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           },
@@ -5196,7 +5196,7 @@
               "en": "Monk 1",
               "fr": "Moine 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 2,
             "type": "base"
           },
@@ -5249,7 +5249,7 @@
               "en": "Monk 2",
               "fr": "Moine 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5260,7 +5260,7 @@
               "en": "Monk 2",
               "fr": "Moine 2"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5332,7 +5332,7 @@
               "en": "Monk 4",
               "fr": "Moine 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5343,7 +5343,7 @@
               "en": "Monk 4",
               "fr": "Moine 4"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5472,7 +5472,7 @@
               "en": "Monk 6",
               "fr": "Moine 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5483,7 +5483,7 @@
               "en": "Monk 6",
               "fr": "Moine 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5554,7 +5554,7 @@
               "en": "Monk 8",
               "fr": "Moine 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5565,7 +5565,7 @@
               "en": "Monk 8",
               "fr": "Moine 8"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5637,7 +5637,7 @@
               "en": "Monk 10",
               "fr": "Moine 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5648,7 +5648,7 @@
               "en": "Monk 10",
               "fr": "Moine 10"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5778,7 +5778,7 @@
               "en": "Monk 12",
               "fr": "Moine 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5789,7 +5789,7 @@
               "en": "Monk 12",
               "fr": "Moine 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -5859,7 +5859,7 @@
               "en": "Monk 14",
               "fr": "Moine 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -5870,7 +5870,7 @@
               "en": "Monk 14",
               "fr": "Moine 14"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6010,7 +6010,7 @@
               "en": "Monk 16",
               "fr": "Moine 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6021,7 +6021,7 @@
               "en": "Monk 16",
               "fr": "Moine 16"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6081,7 +6081,7 @@
               "en": "Monk 18",
               "fr": "Moine 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6092,7 +6092,7 @@
               "en": "Monk 18",
               "fr": "Moine 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6164,7 +6164,7 @@
               "en": "Monk 20",
               "fr": "Moine 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6175,7 +6175,7 @@
               "en": "Monk 20",
               "fr": "Moine 20"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6370,7 +6370,7 @@
               "en": "Paladin 1",
               "fr": "Paladin 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           }
@@ -6401,7 +6401,7 @@
               "en": "Paladin 2",
               "fr": "Paladin 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           }
@@ -6432,7 +6432,7 @@
               "en": "Paladin 3",
               "fr": "Paladin 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6474,7 +6474,7 @@
               "en": "Paladin 4",
               "fr": "Paladin 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6535,7 +6535,7 @@
               "en": "Paladin 6",
               "fr": "Paladin 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6546,7 +6546,7 @@
               "en": "Paladin 6",
               "fr": "Paladin 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6613,7 +6613,7 @@
               "en": "Paladin 8",
               "fr": "Paladin 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6654,7 +6654,7 @@
               "en": "Paladin 9",
               "fr": "Paladin 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6695,7 +6695,7 @@
               "en": "Paladin 10",
               "fr": "Paladin 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6764,7 +6764,7 @@
               "en": "Paladin 12",
               "fr": "Paladin 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6775,7 +6775,7 @@
               "en": "Paladin 12",
               "fr": "Paladin 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6842,7 +6842,7 @@
               "en": "Paladin 14",
               "fr": "Paladin 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -6895,7 +6895,7 @@
               "en": "Paladin 15",
               "fr": "Paladin 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -6945,7 +6945,7 @@
               "en": "Paladin 16",
               "fr": "Paladin 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7014,7 +7014,7 @@
               "en": "Paladin 18",
               "fr": "Paladin 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7025,7 +7025,7 @@
               "en": "Paladin 18",
               "fr": "Paladin 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7127,7 +7127,7 @@
               "en": "Paladin 20",
               "fr": "Paladin 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7249,7 +7249,7 @@
               "en": "Ranger 1",
               "fr": "Rôdeur 1"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 2,
             "type": "base"
           },
@@ -7260,7 +7260,7 @@
               "en": "Ranger 1",
               "fr": "Rôdeur 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 2,
             "type": "base"
           }
@@ -7290,7 +7290,7 @@
               "en": "Ranger 2",
               "fr": "Rôdeur 2"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7301,7 +7301,7 @@
               "en": "Ranger 2",
               "fr": "Rôdeur 2"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -7362,7 +7362,7 @@
               "en": "Ranger 4",
               "fr": "Rôdeur 4"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7373,7 +7373,7 @@
               "en": "Ranger 4",
               "fr": "Rôdeur 4"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7433,7 +7433,7 @@
               "en": "Ranger 6",
               "fr": "Rôdeur 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7444,7 +7444,7 @@
               "en": "Ranger 6",
               "fr": "Rôdeur 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7515,7 +7515,7 @@
               "en": "Ranger 8",
               "fr": "Rôdeur 8"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7526,7 +7526,7 @@
               "en": "Ranger 8",
               "fr": "Rôdeur 8"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7597,7 +7597,7 @@
               "en": "Ranger 10",
               "fr": "Rôdeur 10"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7608,7 +7608,7 @@
               "en": "Ranger 10",
               "fr": "Rôdeur 10"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7677,7 +7677,7 @@
               "en": "Ranger 12",
               "fr": "Rôdeur 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7688,7 +7688,7 @@
               "en": "Ranger 12",
               "fr": "Rôdeur 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7757,7 +7757,7 @@
               "en": "Ranger 14",
               "fr": "Rôdeur 14"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7768,7 +7768,7 @@
               "en": "Ranger 14",
               "fr": "Rôdeur 14"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7859,7 +7859,7 @@
               "en": "Ranger 16",
               "fr": "Rôdeur 16"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7870,7 +7870,7 @@
               "en": "Ranger 16",
               "fr": "Rôdeur 16"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -7939,7 +7939,7 @@
               "en": "Ranger 18",
               "fr": "Rôdeur 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -7950,7 +7950,7 @@
               "en": "Ranger 18",
               "fr": "Rôdeur 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -8052,7 +8052,7 @@
               "en": "Ranger 20",
               "fr": "Rôdeur 20"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8063,7 +8063,7 @@
               "en": "Ranger 20",
               "fr": "Rôdeur 20"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -8193,7 +8193,7 @@
               "en": "Rogue 1",
               "fr": "Roublard 1"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 2,
             "type": "base"
           }
@@ -8223,7 +8223,7 @@
               "en": "Rogue 2",
               "fr": "Roublard 2"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8254,7 +8254,7 @@
               "en": "Rogue 3",
               "fr": "Roublard 3"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8295,7 +8295,7 @@
               "en": "Rogue 4",
               "fr": "Roublard 4"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8344,7 +8344,7 @@
               "en": "Rogue 6",
               "fr": "Roublard 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8355,7 +8355,7 @@
               "en": "Rogue 6",
               "fr": "Roublard 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -8415,7 +8415,7 @@
               "en": "Rogue 8",
               "fr": "Roublard 8"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8446,7 +8446,7 @@
               "en": "Rogue 9",
               "fr": "Roublard 9"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8487,7 +8487,7 @@
               "en": "Rogue 10",
               "fr": "Roublard 10"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8536,7 +8536,7 @@
               "en": "Rogue 12",
               "fr": "Roublard 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8547,7 +8547,7 @@
               "en": "Rogue 12",
               "fr": "Roublard 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -8606,7 +8606,7 @@
               "en": "Rogue 14",
               "fr": "Roublard 14"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8637,7 +8637,7 @@
               "en": "Rogue 15",
               "fr": "Roublard 15"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8678,7 +8678,7 @@
               "en": "Rogue 16",
               "fr": "Roublard 16"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8727,7 +8727,7 @@
               "en": "Rogue 18",
               "fr": "Roublard 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8738,7 +8738,7 @@
               "en": "Rogue 18",
               "fr": "Roublard 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -8797,7 +8797,7 @@
               "en": "Rogue 20",
               "fr": "Roublard 20"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           }
@@ -8979,7 +8979,7 @@
               "en": "Sorcerer 3",
               "fr": "Ensorceleur 3"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -8990,7 +8990,7 @@
               "en": "Sorcerer 3",
               "fr": "Ensorceleur 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9096,7 +9096,7 @@
               "en": "Sorcerer 6",
               "fr": "Ensorceleur 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9107,7 +9107,7 @@
               "en": "Sorcerer 6",
               "fr": "Ensorceleur 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9235,7 +9235,7 @@
               "en": "Sorcerer 9",
               "fr": "Ensorceleur 9"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9246,7 +9246,7 @@
               "en": "Sorcerer 9",
               "fr": "Ensorceleur 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9374,7 +9374,7 @@
               "en": "Sorcerer 12",
               "fr": "Ensorceleur 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9385,7 +9385,7 @@
               "en": "Sorcerer 12",
               "fr": "Ensorceleur 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9513,7 +9513,7 @@
               "en": "Sorcerer 15",
               "fr": "Ensorceleur 15"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9524,7 +9524,7 @@
               "en": "Sorcerer 15",
               "fr": "Ensorceleur 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9652,7 +9652,7 @@
               "en": "Sorcerer 18",
               "fr": "Ensorceleur 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9663,7 +9663,7 @@
               "en": "Sorcerer 18",
               "fr": "Ensorceleur 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -9971,7 +9971,7 @@
               "en": "Wizard 3",
               "fr": "Magicien 3"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -9982,7 +9982,7 @@
               "en": "Wizard 3",
               "fr": "Magicien 3"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -10090,7 +10090,7 @@
               "en": "Wizard 6",
               "fr": "Magicien 6"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -10101,7 +10101,7 @@
               "en": "Wizard 6",
               "fr": "Magicien 6"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -10229,7 +10229,7 @@
               "en": "Wizard 9",
               "fr": "Magicien 9"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -10240,7 +10240,7 @@
               "en": "Wizard 9",
               "fr": "Magicien 9"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -10370,7 +10370,7 @@
               "en": "Wizard 12",
               "fr": "Magicien 12"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -10381,7 +10381,7 @@
               "en": "Wizard 12",
               "fr": "Magicien 12"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -10511,7 +10511,7 @@
               "en": "Wizard 15",
               "fr": "Magicien 15"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -10522,7 +10522,7 @@
               "en": "Wizard 15",
               "fr": "Magicien 15"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },
@@ -10650,7 +10650,7 @@
               "en": "Wizard 18",
               "fr": "Magicien 18"
             },
-            "targetId": "saves.fortitude",
+            "targetId": "saves.fort",
             "value": 1,
             "type": "base"
           },
@@ -10661,7 +10661,7 @@
               "en": "Wizard 18",
               "fr": "Magicien 18"
             },
-            "targetId": "saves.reflex",
+            "targetId": "saves.ref",
             "value": 1,
             "type": "base"
           },

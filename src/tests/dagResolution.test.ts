@@ -1182,3 +1182,56 @@ describe('Choice-derived sub-tags (Phase 1.3d — choiceGrantedTagPrefix)', () =
     });
   });
 });
+
+// ============================================================
+// saves.all FAN-OUT stacking (GAP-04 fix)
+// Verifies that modifiers fanned out from saves.all correctly
+// interact with other save modifiers via stacking rules.
+// ============================================================
+describe('saves.all fan-out stacking simulation', () => {
+  it('Divine Grace +3 untyped: each save receives +3 independently after fan-out', () => {
+    // After engine fan-out, each save has its own copy of the modifier.
+    // Simulate the per-save stacking resolution.
+    const makeSaveMod = (saveId: string): Modifier => ({
+      id: `divine_grace_${saveId}`,
+      sourceId: 'class_feature_paladin_divine_grace',
+      sourceName: { en: 'Divine Grace', fr: 'Grâce divine' },
+      targetId: `saves.${saveId}`,
+      value: 3,
+      type: 'untyped',
+    });
+    for (const save of ['fort', 'ref', 'will']) {
+      expect(applyStackingRules([makeSaveMod(save)], 0).totalBonus).toBe(3);
+    }
+  });
+
+  it('Resistance +3 (Cloak) + untyped +3 (Divine Grace) on Fortitude = +6 total (different types)', () => {
+    const cloakFort: Modifier = {
+      id: 'cloak_fort', sourceId: 'item_cloak_resistance_3',
+      sourceName: { en: 'Cloak of Resistance +3', fr: 'Cape de résistance +3' },
+      targetId: 'saves.fort', value: 3, type: 'resistance',
+    };
+    const graceFort: Modifier = {
+      id: 'grace_fort', sourceId: 'class_feature_paladin_divine_grace',
+      sourceName: { en: 'Divine Grace', fr: 'Grâce divine' },
+      targetId: 'saves.fort', value: 3, type: 'untyped',
+    };
+    expect(applyStackingRules([cloakFort, graceFort], 0).totalBonus).toBe(6);
+  });
+
+  it('Two resistance bonuses to same save: only highest applies after fan-out', () => {
+    const cloak3: Modifier = {
+      id: 'cloak3_fort', sourceId: 'item_cloak_3',
+      sourceName: { en: 'Cloak +3', fr: 'Cape +3' },
+      targetId: 'saves.fort', value: 3, type: 'resistance',
+    };
+    const cloak2: Modifier = {
+      id: 'cloak2_fort', sourceId: 'item_cloak_2',
+      sourceName: { en: 'Cloak +2', fr: 'Cape +2' },
+      targetId: 'saves.fort', value: 2, type: 'resistance',
+    };
+    const result = applyStackingRules([cloak3, cloak2], 0);
+    expect(result.totalBonus).toBe(3); // Only highest resistance applies
+    expect(result.suppressedModifiers).toHaveLength(1);
+  });
+});

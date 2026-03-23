@@ -1425,7 +1425,7 @@
       {
         "id": "hierophant_caster_level_stacking",
         "sourceId": "class_hierophant",
-        "targetId": "attributes.caster_level",
+        "targetId": "stat_caster_level",
         "value": "@classLevels.class_hierophant",
         "type": "untyped",
         "sourceName": { "en": "Hierophant Caster Level", "fr": "Niveau de lanceur de sorts du hiérophante" }

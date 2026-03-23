@@ -6477,7 +6477,7 @@
           "en": "Armor: Slick",
           "fr": "Armure : glissant"
         },
-        "targetId": "skill_escape_artist",
+        "targetId": "skills.skill_escape_artist",
         "value": 5,
         "type": "competence"
       }
@@ -6513,7 +6513,7 @@
           "en": "Armor: Slick Improved",
           "fr": "Armure : glissant improved"
         },
-        "targetId": "skill_escape_artist",
+        "targetId": "skills.skill_escape_artist",
         "value": 10,
         "type": "competence"
       }
@@ -6549,7 +6549,7 @@
           "en": "Armor: Slick Greater",
           "fr": "Armure : glissant greater"
         },
-        "targetId": "skill_escape_artist",
+        "targetId": "skills.skill_escape_artist",
         "value": 15,
         "type": "competence"
       }
@@ -6585,7 +6585,7 @@
           "en": "Armor: Shadow",
           "fr": "Armure : ombre"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 5,
         "type": "competence"
       }
@@ -6621,7 +6621,7 @@
           "en": "Armor: Shadow Improved",
           "fr": "Armure : ombre improved"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 10,
         "type": "competence"
       }
@@ -6657,7 +6657,7 @@
           "en": "Armor: Shadow Greater",
           "fr": "Armure : ombre greater"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 15,
         "type": "competence"
       }
@@ -6693,7 +6693,7 @@
           "en": "Armor: Silent Moves",
           "fr": "Armure : mouvements silencieux"
         },
-        "targetId": "skill_move_silently",
+        "targetId": "skills.skill_move_silently",
         "value": 5,
         "type": "competence"
       }
@@ -6729,7 +6729,7 @@
           "en": "Armor: Silent Moves Improved",
           "fr": "Armure : mouvements silencieux improved"
         },
-        "targetId": "skill_move_silently",
+        "targetId": "skills.skill_move_silently",
         "value": 10,
         "type": "competence"
       }
@@ -6765,7 +6765,7 @@
           "en": "Armor: Silent Moves Greater",
           "fr": "Armure : mouvements silencieux greater"
         },
-        "targetId": "skill_move_silently",
+        "targetId": "skills.skill_move_silently",
         "value": 15,
         "type": "competence"
       }
@@ -13317,8 +13317,8 @@
         "value": 2,
         "type": "enhancement",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "missing_tag",
           "value": "race_dwarf"
         }
@@ -13506,7 +13506,7 @@
           "en": "Boots of Elvenkind",
           "fr": "Bottes elfiques"
         },
-        "targetId": "skill_move_silently",
+        "targetId": "skills.skill_move_silently",
         "value": 5,
         "type": "competence"
       }
@@ -13616,7 +13616,7 @@
           "en": "Boots of Striding and Springing",
           "fr": "Bottes de marche et de saut"
         },
-        "targetId": "skill_jump",
+        "targetId": "skills.skill_jump",
         "value": 5,
         "type": "competence"
       }
@@ -14657,7 +14657,7 @@
           "en": "Circlet of Persuasion",
           "fr": "Cercle de persuasion"
         },
-        "targetId": "skill_bluff",
+        "targetId": "skills.skill_bluff",
         "value": 3,
         "type": "competence"
       },
@@ -14668,7 +14668,7 @@
           "en": "Circlet of Persuasion",
           "fr": "Cercle de persuasion"
         },
-        "targetId": "skill_diplomacy",
+        "targetId": "skills.skill_diplomacy",
         "value": 3,
         "type": "competence"
       },
@@ -14679,7 +14679,7 @@
           "en": "Circlet of Persuasion",
           "fr": "Cercle de persuasion"
         },
-        "targetId": "skill_intimidate",
+        "targetId": "skills.skill_intimidate",
         "value": 3,
         "type": "competence"
       }
@@ -14765,7 +14765,7 @@
           "en": "Cloak of the Bat",
           "fr": "Cape de la chauve-souris"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 5,
         "type": "competence"
       }
@@ -14969,7 +14969,7 @@
           "en": "Cloak of Elvenkind",
           "fr": "Cape elfique"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 5,
         "type": "competence"
       }
@@ -16056,7 +16056,7 @@
           "en": "Elixir of Hiding",
           "fr": "Élixir de dissimulation"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 10,
         "type": "competence"
       }
@@ -16096,7 +16096,7 @@
           "en": "Elixir of Sneaking",
           "fr": "Élixir de déplacement silencieux"
         },
-        "targetId": "skill_move_silently",
+        "targetId": "skills.skill_move_silently",
         "value": 10,
         "type": "competence"
       }
@@ -16136,7 +16136,7 @@
           "en": "Elixir of Swimming",
           "fr": "Élixir de natation"
         },
-        "targetId": "skill_swim",
+        "targetId": "skills.skill_swim",
         "value": 10,
         "type": "competence"
       }
@@ -16176,7 +16176,7 @@
           "en": "Elixir of Vision",
           "fr": "Élixir de vision"
         },
-        "targetId": "skill_spot",
+        "targetId": "skills.skill_spot",
         "value": 10,
         "type": "competence"
       }
@@ -16361,7 +16361,7 @@
           "en": "Eyes of the Eagle",
           "fr": "Yeux de l'aigle"
         },
-        "targetId": "skill_spot",
+        "targetId": "skills.skill_spot",
         "value": 5,
         "type": "competence"
       }
@@ -17167,7 +17167,7 @@
           "en": "Gloves of Swimming and Climbing",
           "fr": "Gants de natation et d'escalade"
         },
-        "targetId": "skill_swim",
+        "targetId": "skills.skill_swim",
         "value": 5,
         "type": "competence"
       },
@@ -17178,7 +17178,7 @@
           "en": "Gloves of Swimming and Climbing",
           "fr": "Gants de natation et d'escalade"
         },
-        "targetId": "skill_climb",
+        "targetId": "skills.skill_climb",
         "value": 5,
         "type": "competence"
       }
@@ -17213,7 +17213,7 @@
           "en": "Goggles of Minute Seeing",
           "fr": "Lunettes de vision minutieuse"
         },
-        "targetId": "skill_search",
+        "targetId": "skills.skill_search",
         "value": 5,
         "type": "competence"
       }
@@ -17687,7 +17687,7 @@
           "en": "Helm of Comprehend Languages and Read Magic",
           "fr": "Heaume de compréhension des langues et lecture de la magie"
         },
-        "targetId": "skill_decipher_script",
+        "targetId": "skills.skill_decipher_script",
         "value": 5,
         "type": "competence"
       }
@@ -18866,7 +18866,7 @@
           "en": "Lens of Detection",
           "fr": "Lentille de détection"
         },
-        "targetId": "skill_search",
+        "targetId": "skills.skill_search",
         "value": 5,
         "type": "competence"
       },
@@ -18877,7 +18877,7 @@
           "en": "Lens of Detection",
           "fr": "Lentille de détection"
         },
-        "targetId": "skill_survival",
+        "targetId": "skills.skill_survival",
         "value": 5,
         "type": "competence",
         "situationalContext": "tracking"
@@ -21839,7 +21839,7 @@
           "en": "Robe of Blending",
           "fr": "Robe de camouflage"
         },
-        "targetId": "skill_hide",
+        "targetId": "skills.skill_hide",
         "value": 10,
         "type": "competence"
       }
@@ -21913,7 +21913,7 @@
           "en": "Robe of Eyes",
           "fr": "Robe des yeux"
         },
-        "targetId": "skill_search",
+        "targetId": "skills.skill_search",
         "value": 10,
         "type": "competence"
       },
@@ -21924,7 +21924,7 @@
           "en": "Robe of Eyes",
           "fr": "Robe des yeux"
         },
-        "targetId": "skill_spot",
+        "targetId": "skills.skill_spot",
         "value": 10,
         "type": "competence"
       }
@@ -22144,7 +22144,7 @@
           "en": "Salve of Slipperiness",
           "fr": "Onguent de glissance"
         },
-        "targetId": "skill_escape_artist",
+        "targetId": "skills.skill_escape_artist",
         "value": 20,
         "type": "competence"
       }
@@ -22787,7 +22787,7 @@
           "en": "Vest of Escape",
           "fr": "Veste d'évasion"
         },
-        "targetId": "skill_open_lock",
+        "targetId": "skills.skill_open_lock",
         "value": 4,
         "type": "competence"
       },
@@ -22798,7 +22798,7 @@
           "en": "Vest of Escape",
           "fr": "Veste d'évasion"
         },
-        "targetId": "skill_escape_artist",
+        "targetId": "skills.skill_escape_artist",
         "value": 6,
         "type": "competence"
       }
@@ -58933,8 +58933,8 @@
         "value": -5,
         "type": "armor",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "curse_activated"
         }
@@ -59149,8 +59149,8 @@
         "value": -2,
         "type": "untyped",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "curse_activated"
         }
@@ -59633,8 +59633,8 @@
         "value": -2,
         "type": "untyped",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "in_combat"
         }
@@ -59650,8 +59650,8 @@
         "value": -2,
         "type": "untyped",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "in_combat"
         }
@@ -59667,8 +59667,8 @@
         "value": -2,
         "type": "untyped",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "in_combat"
         }
@@ -59684,8 +59684,8 @@
         "value": -2,
         "type": "untyped",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@activeTags",
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "in_combat"
         }
@@ -59831,8 +59831,8 @@
         "value": 0,
         "type": "setAbsolute",
         "conditionNode": {
-          "type": "CONDITION",
-          "path": "@combatStats.speed_land.totalValue",
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.speed_land.totalValue",
           "operator": "set_to",
           "value": "@combatStats.speed_land.totalValue/2"
         }

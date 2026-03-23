@@ -22,7 +22,7 @@
         "id": "class_adept_hit_die",
         "sourceId": "class_adept",
         "sourceName": { "en": "Adept", "fr": "Adepte" },
-        "targetId": "combatStats.hit_die",
+        "targetId": "combatStats.hit_die_type",
         "value": 6,
         "type": "base"
       },
@@ -30,7 +30,7 @@
         "id": "class_adept_skill_points",
         "sourceId": "class_adept",
         "sourceName": { "en": "Adept", "fr": "Adepte" },
-        "targetId": "combatStats.skill_points_per_level",
+        "targetId": "attributes.skill_points_per_level",
         "value": "2 + @attributes.stat_int.derivedModifier",
         "type": "base"
       }
@@ -266,7 +266,7 @@
         "id": "class_aristocrat_hit_die",
         "sourceId": "class_aristocrat",
         "sourceName": { "en": "Aristocrat", "fr": "Aristocrate" },
-        "targetId": "combatStats.hit_die",
+        "targetId": "combatStats.hit_die_type",
         "value": 8,
         "type": "base"
       },
@@ -274,7 +274,7 @@
         "id": "class_aristocrat_skill_points",
         "sourceId": "class_aristocrat",
         "sourceName": { "en": "Aristocrat", "fr": "Aristocrate" },
-        "targetId": "combatStats.skill_points_per_level",
+        "targetId": "attributes.skill_points_per_level",
         "value": "4 + @attributes.stat_int.derivedModifier",
         "type": "base"
       }
@@ -455,7 +455,7 @@
         "id": "class_commoner_hit_die",
         "sourceId": "class_commoner",
         "sourceName": { "en": "Commoner", "fr": "Roturier" },
-        "targetId": "combatStats.hit_die",
+        "targetId": "combatStats.hit_die_type",
         "value": 4,
         "type": "base"
       },
@@ -463,7 +463,7 @@
         "id": "class_commoner_skill_points",
         "sourceId": "class_commoner",
         "sourceName": { "en": "Commoner", "fr": "Roturier" },
-        "targetId": "combatStats.skill_points_per_level",
+        "targetId": "attributes.skill_points_per_level",
         "value": "2 + @attributes.stat_int.derivedModifier",
         "type": "base"
       }
@@ -595,7 +595,7 @@
         "id": "class_expert_hit_die",
         "sourceId": "class_expert",
         "sourceName": { "en": "Expert", "fr": "Expert" },
-        "targetId": "combatStats.hit_die",
+        "targetId": "combatStats.hit_die_type",
         "value": 6,
         "type": "base"
       },
@@ -603,7 +603,7 @@
         "id": "class_expert_skill_points",
         "sourceId": "class_expert",
         "sourceName": { "en": "Expert", "fr": "Expert" },
-        "targetId": "combatStats.skill_points_per_level",
+        "targetId": "attributes.skill_points_per_level",
         "value": "6 + @attributes.stat_int.derivedModifier",
         "type": "base"
       }
@@ -838,7 +838,7 @@
         "id": "class_warrior_hit_die",
         "sourceId": "class_warrior",
         "sourceName": { "en": "Warrior", "fr": "Guerrier" },
-        "targetId": "combatStats.hit_die",
+        "targetId": "combatStats.hit_die_type",
         "value": 8,
         "type": "base"
       },
@@ -846,7 +846,7 @@
         "id": "class_warrior_skill_points",
         "sourceId": "class_warrior",
         "sourceName": { "en": "Warrior", "fr": "Guerrier" },
-        "targetId": "combatStats.skill_points_per_level",
+        "targetId": "attributes.skill_points_per_level",
         "value": "2 + @attributes.stat_int.derivedModifier",
         "type": "base"
       }

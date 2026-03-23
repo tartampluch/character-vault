@@ -1345,7 +1345,7 @@
           "en": "Great Fortitude",
           "fr": "Grande vigueur"
         },
-        "targetId": "saves.save_fort",
+        "targetId": "saves.fort",
         "value": 2,
         "type": "untyped"
       }
@@ -2297,7 +2297,7 @@
           "en": "Iron Will",
           "fr": "Volonté de fer"
         },
-        "targetId": "saves.save_will",
+        "targetId": "saves.will",
         "value": 2,
         "type": "untyped"
       }
@@ -2356,7 +2356,7 @@
           "en": "Lightning Reflexes",
           "fr": "Réflexes éclair"
         },
-        "targetId": "saves.save_ref",
+        "targetId": "saves.ref",
         "value": 2,
         "type": "untyped"
       }
