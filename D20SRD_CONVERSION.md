@@ -9,15 +9,15 @@
 
 **When this command is received, execute exactly the following steps — no more, no less:**
 
-1. Scan the **CONVERSION TASK CHECKLIST** section of this file for the **first `- [ ]`** checkbox. That is the task to execute. Note its ID (e.g., `C-01`, `C-10a`, `C-15b`).
+1. Scan the **CONVERSION TASK CHECKLIST** section of this file for the **first `- [ ]`** checkbox. That is the task to execute. Note its ID (e.g., `1`, `35`, `102`).
 2. Load context files (see **CONTEXT FILES** section).
 3. Read the source HTML file(s) listed for that task.
 4. **If an output file for this task already exists:** validate it using the **STANDARD VALIDATION CHECKLIST**. If valid, skip to step 7 (mark complete, stop). If invalid, delete the file and continue.
 5. Execute the conversion, applying all rules in this document.
 6. Run the **STANDARD VALIDATION CHECKLIST**. Fix any issues before continuing.
 7. **On completion, do ALL of the following:**
-   - Update **this file**: change `- [ ] **C-XX**` → `- [x] **C-XX**` for the completed task.
-   - End your response with: _"Task [C-XX] complete. [N] entities written to [filename]. Ready for the next task."_
+   - Update **this file**: change `- [ ] **N**` → `- [x] **N**` for the completed task number.
+   - End your response with: _"Task [N] complete. [N] entities written to [filename]. Ready for the next task."_
 8. **STOP.** Do not begin the next task until the user repeats the command.
 
 **If all checkboxes are `- [x]`:** reply _"All conversion tasks are complete."_
@@ -29,9 +29,9 @@
 | Command | Effect |
 |---|---|
 | `Status` | Count `- [x]` vs. `- [ ]` checkboxes in this file and print a structured summary. |
-| `Validate C-XX` | Validate the output file for the specified task without re-converting. Report all issues found. |
+| `Validate N` | Validate the output file for task number N without re-converting. Report all issues found. |
 | `Validate all` | Validate all output files whose task is marked `- [x]`. |
-| `Re-execute C-XX` | Force re-execution: clear its checkbox to `- [ ]`, delete its output file, re-convert, update. |
+| `Re-execute N` | Force re-execution: clear its checkbox to `- [ ]`, delete its output file, re-convert, update. |
 
 ---
 
@@ -56,31 +56,31 @@ All paths are relative to the project root.
 ```
 static/rules/
   00_d20srd_core/
-    00_d20srd_core_races.json                    ← C-03
-    01_d20srd_core_classes.json                  ← C-04a … C-04k (multi-batch)
-    02_d20srd_core_class_features.json           ← C-05a … C-05k (multi-batch)
-    03_d20srd_core_feats.json                    ← C-06a … C-06f (multi-batch)
-    04_d20srd_core_skills_config.json            ← C-02
-    05_d20srd_core_spells.json                   ← C-10a … C-10ae + C-15k (multi-batch)
-    06_d20srd_core_equipment_weapons.json        ← C-07
-    07_d20srd_core_equipment_armor.json          ← C-08
-    08_d20srd_core_equipment_goods.json          ← C-09
-    09_d20srd_core_config.json                   ← C-01
-    10_d20srd_core_prestige_classes.json         ← C-11a … C-11e (multi-batch)
-    11_d20srd_core_prestige_class_features.json  ← C-12a … C-12e (multi-batch)
-    12_d20srd_core_magic_items.json              ← C-14a … C-14e (multi-batch)
-    13_d20srd_core_domains.json                  ← C-13
-    14_d20srd_core_npc_classes.json              ← C-16
-    15_d20srd_core_special_materials.json        ← C-17
+    00_d20srd_core_races.json                    ← 3
+    01_d20srd_core_classes.json                  ← 4 … 24 (multi-batch)
+    02_d20srd_core_class_features.json           ← 5 … 25 (multi-batch)
+    03_d20srd_core_feats.json                    ← 26 … 31 (multi-batch)
+    04_d20srd_core_skills_config.json            ← 2
+    05_d20srd_core_spells.json                   ← 35 … 65 + 111 (multi-batch)
+    06_d20srd_core_equipment_weapons.json        ← 32
+    07_d20srd_core_equipment_armor.json          ← 33
+    08_d20srd_core_equipment_goods.json          ← 34
+    09_d20srd_core_config.json                   ← 1
+    10_d20srd_core_prestige_classes.json         ← 66 … 74 (multi-batch)
+    11_d20srd_core_prestige_class_features.json  ← 67 … 75 (multi-batch)
+    12_d20srd_core_magic_items.json              ← 77 … 100 (multi-batch)
+    13_d20srd_core_cleric_domains.json           ← 76
+    14_d20srd_core_npc_classes.json              ← 112
+    15_d20srd_core_special_materials.json        ← 113
   01_d20srd_psionics/
-    00_d20srd_psionics_classes.json              ← C-15a
-    01_d20srd_psionics_class_features.json       ← C-15b
-    02_d20srd_psionics_powers.json               ← C-15c … C-15d (multi-batch)
-    03_d20srd_psionics_feats.json                ← C-15e
-    04_d20srd_psionics_races.json                ← C-15f
-    05_d20srd_psionics_prestige_classes.json     ← C-15h
-    06_d20srd_psionics_prestige_class_features.json ← C-15i
-    07_d20srd_psionics_items.json                ← C-15j
+    00_d20srd_psionics_classes.json              ← 101
+    01_d20srd_psionics_class_features.json       ← 102
+    02_d20srd_psionics_powers.json               ← 103 … 104 (multi-batch)
+    03_d20srd_psionics_feats.json                ← 105
+    04_d20srd_psionics_races.json                ← 106
+    05_d20srd_psionics_prestige_classes.json     ← 108
+    06_d20srd_psionics_prestige_class_features.json ← 109
+    07_d20srd_psionics_items.json                ← 110
 ```
 
 ---
@@ -98,19 +98,19 @@ Both files are at the project root.
 
 | Section | Example | Most useful for |
 |---|---|---|
-| A.1.1 | Barbarian 20-level class | C-04a/C-05a, C-04b/C-05b, C-04e/C-05e, C-04h/C-05h, C-04i/C-05i, C-04j/C-05j, C-04k/C-05k |
-| A.1.2 | Cleric 5 levels + Turn Undead | C-04c/C-05c, C-04g/C-05g |
-| A.1.3 | Monk 5 levels + conditional AC | C-04f/C-05f |
-| A.2.1 | Dragon Disciple (prestige class) | C-11, C-12 |
-| A.3.1–3.3 | Human, Elf, Gnome races | C-03 |
-| A.3.4 | Dromite (psionic race) | C-15f |
-| A.4.1–4.6 | 6 Feats (prereq chain, choices, metamagic, metapsionic) | C-06, C-15e |
-| A.5.1–5.9 | 9 Items (armor, magic, exotic weapons, cursed) | C-07, C-08, C-09, C-14 |
-| A.6.1–6.5 | 5 Spells (divine, multi-list, scaling formula) | C-10 |
-| A.7 | Soulknife psionic class + Mind Blade | C-15a, C-15b |
-| A.8 | Druid + Animal Companion | C-04d/C-05d, C-04h/C-05h |
-| A.9 | Sphere of Annihilation (artifact) | C-14 |
-| A.12 | Energy Missile + Metamorphosis (psionic powers with augmentations) | C-15c, C-15d |
+| A.1.1 | Barbarian 20-level class | 4/5, 6/7, 12/13, 18/19, 20/21, 22/23, 24/25 |
+| A.1.2 | Cleric 5 levels + Turn Undead | 8/9, 16/17 |
+| A.1.3 | Monk 5 levels + conditional AC | 14/15 |
+| A.2.1 | Dragon Disciple (prestige class) | 66–74, 67–75 |
+| A.3.1–3.3 | Human, Elf, Gnome races | 3 |
+| A.3.4 | Dromite (psionic race) | 106 |
+| A.4.1–4.6 | 6 Feats (prereq chain, choices, metamagic, metapsionic) | 26–31, 105 |
+| A.5.1–5.9 | 9 Items (armor, magic, exotic weapons, cursed) | 32, 33, 34, 77 |
+| A.6.1–6.5 | 5 Spells (divine, multi-list, scaling formula) | 35 |
+| A.7 | Soulknife psionic class + Mind Blade | 101, 102 |
+| A.8 | Druid + Animal Companion | 10/11, 18/19 |
+| A.9 | Sphere of Annihilation (artifact) | 77 |
+| A.12 | Energy Missile + Metamorphosis (psionic powers with augmentations) | 103, 104 |
 
 ---
 
@@ -454,21 +454,21 @@ Several tasks build a single output file across multiple sub-tasks:
 
 | Sub-tasks | Shared output file |
 |---|---|
-| C-04a through C-04k | `01_d20srd_core_classes.json` |
-| C-05a through C-05k | `02_d20srd_core_class_features.json` |
-| C-06a through C-06f | `03_d20srd_core_feats.json` |
-| C-10a through C-10ae + C-15k | `05_d20srd_core_spells.json` |
-| C-11a through C-11e | `10_d20srd_core_prestige_classes.json` |
-| C-12a through C-12e | `11_d20srd_core_prestige_class_features.json` |
-| C-14a through C-14e | `12_d20srd_core_magic_items.json` |
-| C-15c and C-15d | `02_d20srd_psionics_powers.json` |
-| C-15h and C-15i | `05_d20srd_psionics_prestige_classes.json` and `06_d20srd_psionics_prestige_class_features.json` |
+| 4 through 24 | `01_d20srd_core_classes.json` |
+| 5 through 25 | `02_d20srd_core_class_features.json` |
+| 26 through 31 | `03_d20srd_core_feats.json` |
+| 35 through 65 + 111 | `05_d20srd_core_spells.json` |
+| 66 through 74 | `10_d20srd_core_prestige_classes.json` |
+| 67 through 75 | `11_d20srd_core_prestige_class_features.json` |
+| 77 through 100 | `12_d20srd_core_magic_items.json` |
+| 103 and 104 | `02_d20srd_psionics_powers.json` |
+| 108 and 109 | `05_d20srd_psionics_prestige_classes.json` and `06_d20srd_psionics_prestige_class_features.json` |
 
 **Rules:**
-- **First sub-task** (e.g., C-04a, C-05a, C-10a): create the file as a top-level JSON array `[…]` with that batch's entries.
+- **First sub-task** (e.g., 4, 5, 35): create the file as a top-level JSON array `[…]` with that batch's entries.
 - **Subsequent sub-tasks**: read the existing file, parse the array, append the new entries, write back. Never overwrite the whole file from scratch.
 - **Re-executing one sub-task**: remove that batch's entries by ID range, then re-add them.
-- **Full-file validation** is only required after the final sub-task of each group (C-04k, C-05k, C-10ae, C-14e, C-15d).
+- **Full-file validation** is only required after the final sub-task of each group (24, 25, 31, 65, 74, 75, 100, 104).
 
 ---
 
@@ -478,9 +478,9 @@ Several tasks build a single output file across multiple sub-tasks:
 
 ---
 
-### C-01 — Configuration Tables (`09_d20srd_core_config.json`)
+### 1 — Configuration Tables (`09_d20srd_core_config.json`)
 
-- [x] **C-01** — Convert configuration tables
+- [x] **1** — Convert configuration tables
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/carryingCapacity.html`
@@ -517,9 +517,9 @@ Several tasks build a single output file across multiple sub-tasks:
 
 ---
 
-### C-02 — Skill Definitions (`04_d20srd_core_skills_config.json`)
+### 2 — Skill Definitions (`04_d20srd_core_skills_config.json`)
 
-- [x] **C-02** — Convert all skill definitions
+- [x] **2** — Convert all skill definitions
 
 **Source files:** `d20srd/www.d20srd.org/srd/skills/` — all `.html` files except `index*.html`
 
@@ -558,9 +558,9 @@ Several tasks build a single output file across multiple sub-tasks:
 
 ---
 
-### C-03 — Races (`00_d20srd_core_races.json`)
+### 3 — Races (`00_d20srd_core_races.json`)
 
-- [x] **C-03** — Convert the 7 core races
+- [x] **3** — Convert the 7 core races
 
 **Source files:** `d20srd/www.d20srd.org/srd/races.html`
 **Context:** Read `ANNEXES.md` sections A.3.1–3.3 before starting.
@@ -580,16 +580,16 @@ Several tasks build a single output file across multiple sub-tasks:
 
 ---
 
-### C-04a — Base Class: Barbarian (`01_d20srd_core_classes.json`)
+### 4 — Base Class: Barbarian (`01_d20srd_core_classes.json`)
 
-- [x] **C-04a** — Convert Barbarian (structure only — features in C-05a)
+- [x] **4** — Convert Barbarian (structure only — features in 5)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/barbarian.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
 **Output:** Create `01_d20srd_core_classes.json` as a top-level JSON array with this one entry.
 
 Capture:
-- Full 20-level `levelProgression` (BAB/save **increments**; list feature IDs — full feature objects go in C-05a)
+- Full 20-level `levelProgression` (BAB/save **increments**; list feature IDs — full feature objects go in 5)
 - `classSkills` array
 - `grantedModifiers`: hit die (d12, type `"base"`), skill points per level (4 + INT, type `"base"`)
 - `grantedFeatures`: `proficiency_all_martial`, `proficiency_armor_light`, `proficiency_armor_medium`, `proficiency_shields`
@@ -599,9 +599,9 @@ Capture:
 
 ---
 
-### C-05a — Base Class Features: Barbarian (`02_d20srd_core_class_features.json`)
+### 5 — Base Class Features: Barbarian (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05a** — Convert Barbarian class features
+- [x] **5** — Convert Barbarian class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/barbarian.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -623,9 +623,9 @@ Key mechanics:
 
 ---
 
-### C-04b — Base Class: Bard (`01_d20srd_core_classes.json`)
+### 6 — Base Class: Bard (`01_d20srd_core_classes.json`)
 
-- [x] **C-04b** — Convert Bard (structure only — features in C-05b)
+- [x] **6** — Convert Bard (structure only — features in 7)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/bard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -641,9 +641,9 @@ Capture:
 
 ---
 
-### C-05b — Base Class Features: Bard (`02_d20srd_core_class_features.json`)
+### 7 — Base Class Features: Bard (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05b** — Convert Bard class features
+- [x] **7** — Convert Bard class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/bard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -663,9 +663,9 @@ Key mechanics:
 
 ---
 
-### C-04c — Base Class: Cleric (`01_d20srd_core_classes.json`)
+### 8 — Base Class: Cleric (`01_d20srd_core_classes.json`)
 
-- [x] **C-04c** — Convert Cleric (structure only — features in C-05c)
+- [x] **8** — Convert Cleric (structure only — features in 9)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/cleric.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -682,9 +682,9 @@ Capture:
 
 ---
 
-### C-05c — Base Class Features: Cleric (`02_d20srd_core_class_features.json`)
+### 9 — Base Class Features: Cleric (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05c** — Convert Cleric class features
+- [x] **9** — Convert Cleric class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/cleric.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -699,13 +699,13 @@ Key mechanics:
 | Turn Undead | `activation` (standard action) + `ResourcePool` `resources.turn_undead_uses` max = `"3 + @attributes.stat_cha.derivedModifier"` |
 | Rebuke Undead | Evil clerics only — same pool/pattern as Turn Undead; different effect description |
 | Spontaneous Casting | Tag-based flag: good/neutral clerics swap any prepared spell for a Cure spell of equal or lower level; evil clerics swap for Inflict — model as a `situationalContext` note in description, no `grantedModifiers` needed |
-| Spellcasting (divine, prepared) | `ResourcePool` per slot level 0–9 on `resources.spell_slots_cleric_<n>`; domain spell slots are handled by C-13 domain features |
+| Spellcasting (divine, prepared) | `ResourcePool` per slot level 0–9 on `resources.spell_slots_cleric_<n>`; domain spell slots are handled by 76 domain features |
 
 ---
 
-### C-04d — Base Class: Druid (`01_d20srd_core_classes.json`)
+### 10 — Base Class: Druid (`01_d20srd_core_classes.json`)
 
-- [x] **C-04d** — Convert Druid (structure only — features in C-05d)
+- [x] **10** — Convert Druid (structure only — features in 11)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/druid.html`
 **Context:** Read `ANNEXES.md` section A.8 only.
@@ -722,9 +722,9 @@ Capture:
 
 ---
 
-### C-05d — Base Class Features: Druid (`02_d20srd_core_class_features.json`)
+### 11 — Base Class Features: Druid (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05d** — Convert Druid class features
+- [x] **11** — Convert Druid class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/druid.html`
 **Context:** Read `ANNEXES.md` section A.8 only.
@@ -748,9 +748,9 @@ Key mechanics:
 
 ---
 
-### C-04e — Base Class: Fighter (`01_d20srd_core_classes.json`)
+### 12 — Base Class: Fighter (`01_d20srd_core_classes.json`)
 
-- [x] **C-04e** — Convert Fighter (structure only — features in C-05e)
+- [x] **12** — Convert Fighter (structure only — features in 13)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/fighter.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -766,9 +766,9 @@ Capture:
 
 ---
 
-### C-05e — Base Class Features: Fighter (`02_d20srd_core_class_features.json`)
+### 13 — Base Class Features: Fighter (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05e** — Convert Fighter class features
+- [x] **13** — Convert Fighter class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/fighter.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -787,9 +787,9 @@ Each bonus feat choice is a separate feature entity so the engine can track whic
 
 ---
 
-### C-04f — Base Class: Monk (`01_d20srd_core_classes.json`)
+### 14 — Base Class: Monk (`01_d20srd_core_classes.json`)
 
-- [x] **C-04f** — Convert Monk (structure only — features in C-05f)
+- [x] **14** — Convert Monk (structure only — features in 15)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/monk.html`
 **Context:** Read `ANNEXES.md` section A.1.3 only.
@@ -806,9 +806,9 @@ Capture:
 
 ---
 
-### C-05f — Base Class Features: Monk (`02_d20srd_core_class_features.json`)
+### 15 — Base Class Features: Monk (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05f** — Convert Monk class features
+- [x] **15** — Convert Monk class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/monk.html`
 **Context:** Read `ANNEXES.md` section A.1.3 only.
@@ -837,9 +837,9 @@ Key mechanics:
 
 ---
 
-### C-04g — Base Class: Paladin (`01_d20srd_core_classes.json`)
+### 16 — Base Class: Paladin (`01_d20srd_core_classes.json`)
 
-- [x] **C-04g** — Convert Paladin (structure only — features in C-05g)
+- [x] **16** — Convert Paladin (structure only — features in 17)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/paladin.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -856,9 +856,9 @@ Capture:
 
 ---
 
-### C-05g — Base Class Features: Paladin (`02_d20srd_core_class_features.json`)
+### 17 — Base Class Features: Paladin (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05g** — Convert Paladin class features
+- [x] **17** — Convert Paladin class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/paladin.html`
 **Context:** Read `ANNEXES.md` section A.1.2 only.
@@ -884,9 +884,9 @@ Key mechanics:
 
 ---
 
-### C-04h — Base Class: Ranger (`01_d20srd_core_classes.json`)
+### 18 — Base Class: Ranger (`01_d20srd_core_classes.json`)
 
-- [x] **C-04h** — Convert Ranger (structure only — features in C-05h)
+- [x] **18** — Convert Ranger (structure only — features in 19)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/ranger.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -902,9 +902,9 @@ Capture:
 
 ---
 
-### C-05h — Base Class Features: Ranger (`02_d20srd_core_class_features.json`)
+### 19 — Base Class Features: Ranger (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05h** — Convert Ranger class features
+- [x] **19** — Convert Ranger class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/ranger.html`
 **Context:** Read `ANNEXES.md` sections A.1.1 and A.8 only.
@@ -929,9 +929,9 @@ Key mechanics:
 
 ---
 
-### C-04i — Base Class: Rogue (`01_d20srd_core_classes.json`)
+### 20 — Base Class: Rogue (`01_d20srd_core_classes.json`)
 
-- [x] **C-04i** — Convert Rogue (structure only — features in C-05i)
+- [x] **20** — Convert Rogue (structure only — features in 21)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/rogue.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -947,9 +947,9 @@ Capture:
 
 ---
 
-### C-05i — Base Class Features: Rogue (`02_d20srd_core_class_features.json`)
+### 21 — Base Class Features: Rogue (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05i** — Convert Rogue class features
+- [x] **21** — Convert Rogue class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/rogue.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -971,9 +971,9 @@ Key mechanics:
 
 ---
 
-### C-04j — Base Class: Sorcerer (`01_d20srd_core_classes.json`)
+### 22 — Base Class: Sorcerer (`01_d20srd_core_classes.json`)
 
-- [x] **C-04j** — Convert Sorcerer (structure only — features in C-05j)
+- [x] **22** — Convert Sorcerer (structure only — features in 23)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -989,9 +989,9 @@ Capture:
 
 ---
 
-### C-05j — Base Class Features: Sorcerer (`02_d20srd_core_class_features.json`)
+### 23 — Base Class Features: Sorcerer (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05j** — Convert Sorcerer class features
+- [x] **23** — Convert Sorcerer class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -1008,9 +1008,9 @@ Key mechanics:
 
 ---
 
-### C-04k — Base Class: Wizard (`01_d20srd_core_classes.json`)
+### 24 — Base Class: Wizard (`01_d20srd_core_classes.json`)
 
-- [x] **C-04k** — Convert Wizard (structure only — features in C-05k)
+- [x] **24** — Convert Wizard (structure only — features in 25)
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -1027,9 +1027,9 @@ Capture:
 
 ---
 
-### C-05k — Base Class Features: Wizard (`02_d20srd_core_class_features.json`)
+### 25 — Base Class Features: Wizard (`02_d20srd_core_class_features.json`)
 
-- [x] **C-05k** — Convert Wizard class features
+- [x] **25** — Convert Wizard class features
 
 **Source file:** `d20srd/www.d20srd.org/srd/classes/sorcererWizard.html`
 **Context:** Read `ANNEXES.md` section A.1.1 only.
@@ -1049,13 +1049,13 @@ Key mechanics:
 
 ---
 
-### C-06 — Feats (`03_d20srd_core_feats.json`) — SPLIT INTO C-06a … C-06f
+### 26–31 — Feats (`03_d20srd_core_feats.json`) — SPLIT INTO 26 … 31
 
 > **Shared output file:** `static/rules/00_d20srd_core/03_d20srd_core_feats.json`
 > **Source file (all sub-tasks):** `d20srd/www.d20srd.org/srd/feats.html`
 > **Context (all sub-tasks):** Read `ANNEXES.md` sections A.4.1–4.6 before starting.
-> **Output file:** C-06a creates the file as `[…]`; C-06b–C-06f append to it.
-> **Full-file validation** required only after C-06f (the final sub-task).
+> **Output file:** 26 creates the file as `[…]`; 27–31 append to it.
+> **Full-file validation** required only after 31 (the final sub-task).
 
 **For each feat, capture:**
 - `id`: `feat_<camelCase_id_from_html_anchor>` in kebab-case (e.g. `feat_power_attack`)
@@ -1102,9 +1102,9 @@ Key mechanics:
 
 ---
 
-### C-06a — Feats batch 1/6: Acrobatic → Diehard (24 feats)
+### 26 — Feats batch 1/6: Acrobatic → Diehard (24 feats)
 
-- [x] **C-06a** — Convert feats: Acrobatic → Diehard
+- [x] **26** — Convert feats: Acrobatic → Diehard
 
 **Feats to convert (24 total):**
 Acrobatic, Agile, Alertness, Animal Affinity, Armor Proficiency (Heavy), Armor Proficiency (Light), Armor Proficiency (Medium), Athletic, Augment Summoning, Blind-Fight, Brew Potion, Cleave, Combat Casting, Combat Expertise, Combat Reflexes, Craft Magic Arms and Armor, Craft Rod, Craft Staff, Craft Wand, Craft Wondrous Item, Deceitful, Deflect Arrows, Deft Hands, Diehard
@@ -1113,9 +1113,9 @@ Acrobatic, Agile, Alertness, Animal Affinity, Armor Proficiency (Heavy), Armor P
 
 ---
 
-### C-06b — Feats batch 2/6: Diligent → Greater Weapon Specialization (18 feats)
+### 27 — Feats batch 2/6: Diligent → Greater Weapon Specialization (18 feats)
 
-- [x] **C-06b** — Convert feats: Diligent → Greater Weapon Specialization
+- [x] **27** — Convert feats: Diligent → Greater Weapon Specialization
 
 **Feats to convert (18 total):**
 Diligent, Dodge, Empower Spell, Endurance, Enlarge Spell, Eschew Materials, Exotic Weapon Proficiency, Extend Spell, Extra Turning, Far Shot, Forge Ring, Great Cleave, Great Fortitude, Greater Spell Focus, Greater Spell Penetration, Greater Two-Weapon Fighting, Greater Weapon Focus, Greater Weapon Specialization
@@ -1124,9 +1124,9 @@ Diligent, Dodge, Empower Spell, Endurance, Enlarge Spell, Eschew Materials, Exot
 
 ---
 
-### C-06c — Feats batch 3/6: Heighten Spell → Improved Unarmed Strike (17 feats)
+### 28 — Feats batch 3/6: Heighten Spell → Improved Unarmed Strike (17 feats)
 
-- [x] **C-06c** — Convert feats: Heighten Spell → Improved Unarmed Strike
+- [x] **28** — Convert feats: Heighten Spell → Improved Unarmed Strike
 
 **Feats to convert (17 total):**
 Heighten Spell, Improved Bull Rush, Improved Counterspell, Improved Critical, Improved Disarm, Improved Familiar, Improved Feint, Improved Grapple, Improved Initiative, Improved Overrun, Improved Precise Shot, Improved Shield Bash, Improved Sunder, Improved Trip, Improved Turning, Improved Two-Weapon Fighting, Improved Unarmed Strike
@@ -1135,9 +1135,9 @@ Heighten Spell, Improved Bull Rush, Improved Counterspell, Improved Critical, Im
 
 ---
 
-### C-06d — Feats batch 4/6: Investigator → Precise Shot (18 feats)
+### 29 — Feats batch 4/6: Investigator → Precise Shot (18 feats)
 
-- [x] **C-06d** — Convert feats: Investigator → Precise Shot
+- [x] **29** — Convert feats: Investigator → Precise Shot
 
 **Feats to convert (18 total):**
 Investigator, Iron Will, Leadership, Lightning Reflexes, Magical Aptitude, Manyshot, Martial Weapon Proficiency, Maximize Spell, Mobility, Mounted Archery, Mounted Combat, Natural Spell, Negotiator, Nimble Fingers, Persuasive, Point Blank Shot, Power Attack, Precise Shot
@@ -1146,9 +1146,9 @@ Investigator, Iron Will, Leadership, Lightning Reflexes, Magical Aptitude, Manys
 
 ---
 
-### C-06e — Feats batch 5/6: Quick Draw → Spell Penetration (17 feats)
+### 30 — Feats batch 5/6: Quick Draw → Spell Penetration (17 feats)
 
-- [x] **C-06e** — Convert feats: Quick Draw → Spell Penetration
+- [x] **30** — Convert feats: Quick Draw → Spell Penetration
 
 **Feats to convert (17 total):**
 Quick Draw, Quicken Spell, Rapid Reload, Rapid Shot, Ride-By Attack, Run, Scribe Scroll, Self-Sufficient, Shield Proficiency, Shot on the Run, Silent Spell, Simple Weapon Proficiency, Skill Focus, Snatch Arrows, Spell Focus, Spell Mastery, Spell Penetration
@@ -1157,9 +1157,9 @@ Quick Draw, Quicken Spell, Rapid Reload, Rapid Shot, Ride-By Attack, Run, Scribe
 
 ---
 
-### C-06f — Feats batch 6/6: Spirited Charge → Widen Spell (16 feats) + full validation
+### 31 — Feats batch 6/6: Spirited Charge → Widen Spell (16 feats) + full validation
 
-- [x] **C-06f** — Convert feats: Spirited Charge → Widen Spell — **run full-file validation after writing**
+- [x] **31** — Convert feats: Spirited Charge → Widen Spell — **run full-file validation after writing**
 
 **Feats to convert (16 total):**
 Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness, Tower Shield Proficiency, Track, Trample, Two-Weapon Defense, Two-Weapon Fighting, Weapon Finesse, Weapon Focus, Weapon Specialization, Whirlwind Attack, Widen Spell
@@ -1168,9 +1168,9 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ---
 
-### C-07 — Weapons (`06_d20srd_core_equipment_weapons.json`)
+### 32 — Weapons (`06_d20srd_core_equipment_weapons.json`)
 
-- [x] **C-07** — Convert all weapons (simple, martial, exotic)
+- [x] **32** — Convert all weapons (simple, martial, exotic)
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/weapons.html`
 **Context:** Read `ANNEXES.md` section A.5 (item examples) before starting.
@@ -1210,9 +1210,9 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ---
 
-### C-08 — Armor & Shields (`07_d20srd_core_equipment_armor.json`)
+### 33 — Armor & Shields (`07_d20srd_core_equipment_armor.json`)
 
-- [x] **C-08** — Convert all armors and shields
+- [x] **33** — Convert all armors and shields
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/armor.html`
 
@@ -1268,9 +1268,9 @@ Spirited Charge, Spring Attack, Stealthy, Still Spell, Stunning Fist, Toughness,
 
 ---
 
-### C-09 — Goods & Services (`08_d20srd_core_equipment_goods.json`)
+### 34 — Goods & Services (`08_d20srd_core_equipment_goods.json`)
 
-- [x] **C-09** — Convert adventuring gear, tools, and general goods
+- [x] **34** — Convert adventuring gear, tools, and general goods
 
 **Source files:** `d20srd/www.d20srd.org/srd/equipment/goodsAndServices.html`
 
@@ -1278,7 +1278,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-### C-10 — Spells (`05_d20srd_core_spells.json`)
+### 35 — Spells (`05_d20srd_core_spells.json`)
 
 **Source files:** `d20srd/www.d20srd.org/srd/spells/` — one `.html` file per spell, named in camelCase (e.g., `fireball.html`, `acidArrow.html`). List the directory to enumerate all files; filter by alphabetical range for each sub-task.
 **Context:** Read `ANNEXES.md` sections A.6.1–6.5 before the first sub-task.
@@ -1316,66 +1316,65 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 **Spells with persistent mechanical effects** (e.g., Bull's Strength +4 STR, Mage Armor +4 AC): add `grantedModifiers` with the appropriate type and `conditionNode` that checks the spell is active. Area damage spells describe their effect in `description` only — no `grantedModifiers`.
 
-- [x] **C-10a** — Spells: Acid Arrow → Antipathy (files `acidArrow.html` through `antipathy.html`)
-- [x] **C-10b** — Spells: Antiplant Shell → Blade Barrier (files `antiplantShell.html` through `bladeBarrier.html`)
-- [x] **C-10c** — Spells: Blasphemy → Chain Lightning (files `blasphemy.html` through `chainLightning.html`)
-- [x] **C-10d** — Spells: Changestaff → Commune (files `changestaff.html` through `commune.html`)
-- [x] **C-10e** — Spells: Commune with Nature → Creeping Doom (files `communeWithNature.html` through `creepingDoom.html`)
-- [x] **C-10f** — Spells: Crushing Despair → Death Ward (files `crushingDespair.html` through `deathWard.html`)
-- [x] **C-10g** — Spells: Deathwatch → Detect Undead (files `deathwatch.html` through `detectUndead.html`)
-- [x] **C-10h** — Spells: Dictum → Disrupting Weapon (files `dictum.html` through `disruptingWeapon.html`)
-- [x] **C-10i** — Spells: Divination → Entropic Shield (files `divination.html` through `entropicShield.html`)
-- [x] **C-10j** — Spells: Erase → Fire Trap (files `erase.html` through `fireTrap.html`)
-- [x] **C-10k** — Spells: Fireball → Gaseous Form (files `fireball.html` through `gaseousForm.html`)
-- [x] **C-10l** — Spells: Gate → Guidance (files `gate.html` through `guidance.html`)
-- [x] **C-10m** — Spells: Gust of Wind → Hold Monster (Mass) (files `gustOfWind.html` through `holdMonsterMass.html`)
-- [x] **C-10n** — Spells: Hold Person → Inflict Critical Wounds (Mass) (files `holdPerson.html` through `inflictCriticalWoundsMass.html`)
-- [x] **C-10o** — Spells: Inflict Light Wounds → Jump (files `inflictLightWounds.html` through `jump.html`)
-- [x] **C-10p** — Spells: Keen Edge → Mage's Lucubration (files `keenEdge.html` through `magesLucubration.html`)
-- [x] **C-10q** — Spells: Mage's Magnificent Mansion → Make Whole (files `magesMagnificentMansion.html` through `makeWhole.html`)
-- [x] **C-10r** — Spells: Mark of Justice → Mount (files `markOfJustice.html` through `mount.html`)
-- [x] **C-10s** — Spells: Move Earth → Phase Door (files `moveEarth.html` through `phaseDoor.html`)
-- [x] **C-10t** — Spells: Planar Ally → Prismatic Wall (files `planarAlly.html` through `prismaticWall.html`)
-- [x] **C-10u** — Spells: Produce Flame → Ray of Exhaustion (files `produceFlame.html` through `rayOfExhaustion.html`)
-- [x] **C-10v** — Spells: Ray of Frost → Resistance (files `rayOfFrost.html` through `resistance.html`)
-- [x] **C-10w** — Spells: Restoration → Secure Shelter (files `restoration.html` through `secureShelter.html`)
-- [x] **C-10x** — Spells: See Invisibility → Shocking Grasp (files `seeInvisibility.html` through `shockingGrasp.html`)
-- [x] **C-10y** — Spells: Shout → Spectral Hand (files `shout.html` through `spectralHand.html`)
-- [x] **C-10z** — Spells: Spell Immunity → Summon Instrument (files `spellImmunity.html` through `summonInstrument.html`)
-- [x] **C-10aa** — Spells: Summon Monster I → Sunbeam (files `summonMonsterI.html` through `sunbeam.html`)
-- [x] **C-10ab** — Spells: Sunburst → Time Stop (files `sunburst.html` through `timeStop.html`)
-- [x] **C-10ac** — Spells: Tiny Hut → Unholy Blight (files `tinyHut.html` through `unholyBlight.html`)
-- [x] **C-10ad** — Spells: Unseen Servant → Weird (files `unseenServant.html` through `weird.html`)
-- [x] **C-10ae** — Spells: Whirlwind → Zone of Truth (files `whirlwind.html` through `zoneOfTruth.html`) — **run full-file validation after writing**
+- [x] **35** — Spells: Acid Arrow → Antipathy (files `acidArrow.html` through `antipathy.html`)
+- [x] **36** — Spells: Antiplant Shell → Blade Barrier (files `antiplantShell.html` through `bladeBarrier.html`)
+- [x] **37** — Spells: Blasphemy → Chain Lightning (files `blasphemy.html` through `chainLightning.html`)
+- [x] **38** — Spells: Changestaff → Commune (files `changestaff.html` through `commune.html`)
+- [x] **39** — Spells: Commune with Nature → Creeping Doom (files `communeWithNature.html` through `creepingDoom.html`)
+- [x] **40** — Spells: Crushing Despair → Death Ward (files `crushingDespair.html` through `deathWard.html`)
+- [x] **41** — Spells: Deathwatch → Detect Undead (files `deathwatch.html` through `detectUndead.html`)
+- [x] **42** — Spells: Dictum → Disrupting Weapon (files `dictum.html` through `disruptingWeapon.html`)
+- [x] **43** — Spells: Divination → Entropic Shield (files `divination.html` through `entropicShield.html`)
+- [x] **44** — Spells: Erase → Fire Trap (files `erase.html` through `fireTrap.html`)
+- [x] **45** — Spells: Fireball → Gaseous Form (files `fireball.html` through `gaseousForm.html`)
+- [x] **46** — Spells: Gate → Guidance (files `gate.html` through `guidance.html`)
+- [x] **47** — Spells: Gust of Wind → Hold Monster (Mass) (files `gustOfWind.html` through `holdMonsterMass.html`)
+- [x] **48** — Spells: Hold Person → Inflict Critical Wounds (Mass) (files `holdPerson.html` through `inflictCriticalWoundsMass.html`)
+- [x] **49** — Spells: Inflict Light Wounds → Jump (files `inflictLightWounds.html` through `jump.html`)
+- [x] **50** — Spells: Keen Edge → Mage's Lucubration (files `keenEdge.html` through `magesLucubration.html`)
+- [x] **51** — Spells: Mage's Magnificent Mansion → Make Whole (files `magesMagnificentMansion.html` through `makeWhole.html`)
+- [x] **52** — Spells: Mark of Justice → Mount (files `markOfJustice.html` through `mount.html`)
+- [x] **53** — Spells: Move Earth → Phase Door (files `moveEarth.html` through `phaseDoor.html`)
+- [x] **54** — Spells: Planar Ally → Prismatic Wall (files `planarAlly.html` through `prismaticWall.html`)
+- [x] **55** — Spells: Produce Flame → Ray of Exhaustion (files `produceFlame.html` through `rayOfExhaustion.html`)
+- [x] **56** — Spells: Ray of Frost → Resistance (files `rayOfFrost.html` through `resistance.html`)
+- [x] **57** — Spells: Restoration → Secure Shelter (files `restoration.html` through `secureShelter.html`)
+- [x] **58** — Spells: See Invisibility → Shocking Grasp (files `seeInvisibility.html` through `shockingGrasp.html`)
+- [x] **59** — Spells: Shout → Spectral Hand (files `shout.html` through `spectralHand.html`)
+- [x] **60** — Spells: Spell Immunity → Summon Instrument (files `spellImmunity.html` through `summonInstrument.html`)
+- [x] **61** — Spells: Summon Monster I → Sunbeam (files `summonMonsterI.html` through `sunbeam.html`)
+- [x] **62** — Spells: Sunburst → Time Stop (files `sunburst.html` through `timeStop.html`)
+- [x] **63** — Spells: Tiny Hut → Unholy Blight (files `tinyHut.html` through `unholyBlight.html`)
+- [x] **64** — Spells: Unseen Servant → Weird (files `unseenServant.html` through `weird.html`)
+- [x] **65** — Spells: Whirlwind → Zone of Truth (files `whirlwind.html` through `zoneOfTruth.html`) — **run full-file validation after writing**
 
 ---
 
-### C-11 — Prestige Classes (`10_d20srd_core_prestige_classes.json`) — SPLIT INTO C-11a … C-11e
-### C-12 — Prestige Class Features (`11_d20srd_core_prestige_class_features.json`) — SPLIT INTO C-12a … C-12e
+### 66–74 / 67–75 — Prestige Classes & Features (`10_d20srd_core_prestige_classes.json` / `11_d20srd_core_prestige_class_features.json`) — SPLIT INTO 66…74 / 67…75
 
 > **Shared output files:**
 > - Structure: `static/rules/00_d20srd_core/10_d20srd_core_prestige_classes.json`
 > - Features: `static/rules/00_d20srd_core/11_d20srd_core_prestige_class_features.json`
 >
 > **Context (all sub-tasks):** Read `ANNEXES.md` section A.2.1 before starting.
-> **Output files:** C-11a/C-12a create their respective files as `[…]`; subsequent batches append.
-> **Full-file validation** required only after C-11e and C-12e (the final sub-tasks).
-> **Execute interleaved:** C-11a → C-12a → C-11b → C-12b → … (same pattern as C-04x/C-05x).
-> **Note:** The SRD mirror also contains `giftedOfTheTraveler.html` and `shadowcrafter.html` in the `prestigeClasses/` directory. These are **not** part of the standard d20 SRD — they are supplemental/site-specific content. Do **not** convert them in C-11x. They are intentionally excluded.
+> **Output files:** 66/67 create their respective files as `[…]`; subsequent batches append.
+> **Full-file validation** required only after 74 and 75 (the final sub-tasks).
+> **Execute interleaved:** 66 → 67 → 68 → 69 → … (class structure first, then features for same batch).
+> **Note:** The SRD mirror also contains `giftedOfTheTraveler.html` and `shadowcrafter.html` in the `prestigeClasses/` directory. These are **not** part of the standard d20 SRD — they are supplemental/site-specific content. Do **not** convert them in tasks 66–74. They are intentionally excluded.
 
 **General rules for all prestige class batches:**
-- Same format as C-04/C-05 but with `"prestige_class"` in `tags` instead of `"base_class"`.
+- Same format as tasks 4–25 (base classes) but with `"prestige_class"` in `tags` instead of `"base_class"`.
 - Each class has a **10-level** `levelProgression`.
 - Each class requires a `prerequisitesNode` at the class level (entry requirements), using the prerequisites table in this document.
 - **Spellcasting advancement** (Mystic Theurge, Archmage, Eldritch Knight, Arcane Trickster, Loremaster, Thaumaturgist, Hierophant): model as modifiers incrementing the **existing** base class spell slot `ResourcePool` (e.g., add to `resources.spell_slots_wizard_3`). Do not create new pools.
 - **Dragon Disciple ability score increases**: `type: "untyped"` on `attributes.stat_str`, `stat_con`, `stat_int` at the specified levels.
-- **Blackguard**: Paladin-mirror abilities — use same pool/modifier patterns as C-05g.
+- **Blackguard**: Paladin-mirror abilities — use same pool/modifier patterns as 17.
 
 ---
 
-### C-11a / C-12a — Prestige Classes batch 1/5: Arcane Archer, Arcane Trickster, Archmage
+### 66 / 67 — Prestige Classes batch 1/5: Arcane Archer, Arcane Trickster, Archmage
 
-- [x] **C-11a** — Convert structure: Arcane Archer, Arcane Trickster, Archmage (creates `10_d20srd_core_prestige_classes.json`)
+- [x] **66** — Convert structure: Arcane Archer, Arcane Trickster, Archmage (creates `10_d20srd_core_prestige_classes.json`)
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/arcaneArcher.html`
@@ -1384,15 +1383,15 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [x] **C-12a** — Convert features for: Arcane Archer, Arcane Trickster, Archmage (creates `11_d20srd_core_prestige_class_features.json`)
+- [x] **67** — Convert features for: Arcane Archer, Arcane Trickster, Archmage (creates `11_d20srd_core_prestige_class_features.json`)
 
-**Source files:** Same as C-11a.
+**Source files:** Same as 66.
 
 ---
 
-### C-11b / C-12b — Prestige Classes batch 2/5: Assassin, Blackguard, Dragon Disciple
+### 68 / 69 — Prestige Classes batch 2/5: Assassin, Blackguard, Dragon Disciple
 
-- [x] **C-11b** — Convert structure: Assassin, Blackguard, Dragon Disciple
+- [x] **68** — Convert structure: Assassin, Blackguard, Dragon Disciple
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/assassin.html`
@@ -1401,15 +1400,15 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [x] **C-12b** — Convert features for: Assassin, Blackguard, Dragon Disciple
+- [x] **69** — Convert features for: Assassin, Blackguard, Dragon Disciple
 
-**Source files:** Same as C-11b.
+**Source files:** Same as 68.
 
 ---
 
-### C-11c / C-12c — Prestige Classes batch 3/5: Duelist, Dwarven Defender, Eldritch Knight
+### 70 / 71 — Prestige Classes batch 3/5: Duelist, Dwarven Defender, Eldritch Knight
 
-- [x] **C-11c** — Convert structure: Duelist, Dwarven Defender, Eldritch Knight
+- [x] **70** — Convert structure: Duelist, Dwarven Defender, Eldritch Knight
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/duelist.html`
@@ -1418,15 +1417,15 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [x] **C-12c** — Convert features for: Duelist, Dwarven Defender, Eldritch Knight
+- [x] **71** — Convert features for: Duelist, Dwarven Defender, Eldritch Knight
 
-**Source files:** Same as C-11c.
+**Source files:** Same as 70.
 
 ---
 
-### C-11d / C-12d — Prestige Classes batch 4/5: Hierophant, Horizon Walker, Loremaster
+### 72 / 73 — Prestige Classes batch 4/5: Hierophant, Horizon Walker, Loremaster
 
-- [x] **C-11d** — Convert structure: Hierophant, Horizon Walker, Loremaster
+- [x] **72** — Convert structure: Hierophant, Horizon Walker, Loremaster
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/hierophant.html`
@@ -1435,15 +1434,15 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [x] **C-12d** — Convert features for: Hierophant, Horizon Walker, Loremaster
+- [x] **73** — Convert features for: Hierophant, Horizon Walker, Loremaster
 
-**Source files:** Same as C-11d.
+**Source files:** Same as 72.
 
 ---
 
-### C-11e / C-12e — Prestige Classes batch 5/5: Mystic Theurge, Shadowdancer, Thaumaturgist + full validation
+### 74 / 75 — Prestige Classes batch 5/5: Mystic Theurge, Shadowdancer, Thaumaturgist + full validation
 
-- [x] **C-11e** — Convert structure: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
+- [x] **74** — Convert structure: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
 
 **Source files:**
 - `d20srd/www.d20srd.org/srd/prestigeClasses/mysticTheurge.html`
@@ -1452,15 +1451,15 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-- [x] **C-12e** — Convert features for: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
+- [x] **75** — Convert features for: Mystic Theurge, Shadowdancer, Thaumaturgist — **run full-file validation after writing**
 
-**Source files:** Same as C-11e.
+**Source files:** Same as 74.
 
 ---
 
-### C-13 — Cleric Domains (`13_d20srd_core_cleric_domains.json`)
+### 76 — Cleric Domains (`13_d20srd_core_cleric_domains.json`)
 
-- [x] **C-13** — Convert all 22 core cleric domains
+- [x] **76** — Convert all 22 core cleric domains
 
 **Source files:** `d20srd/www.d20srd.org/srd/spellLists/clericDomains.html`
 
@@ -1469,12 +1468,12 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 **For each domain:**
 - Tags: `["domain", "domain_<name>"]`
 - Domain granted power (1/day ability) → Feature with `activation` block and dedicated `ResourcePool`
-- Domain spell list (levels 1–9) → `grantedFeatures` referencing spell IDs from C-10
+- Domain spell list (levels 1–9) → `grantedFeatures` referencing spell IDs from 35
 - `classSkills` granted by the domain (e.g., Knowledge domain grants all Knowledge skills as class skills)
 
 ---
 
-### C-14 — Magic Items (`12_d20srd_core_magic_items.json`)
+### 77 — Magic Items (`12_d20srd_core_magic_items.json`)
 
 **Source files:** `d20srd/www.d20srd.org/srd/magicItems/`
 **Context:** Read `ANNEXES.md` sections A.5.1–5.9 and A.9 before the first sub-task.
@@ -1486,30 +1485,30 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - Activated abilities: `activation` block with `ResourcePool` for charges/uses
 - Cursed items: `forbiddenTags` preventing removal, or `conditionNode` on the removal action
 
-- [x] **C-14a** — Rings A-E (`rings.html`)
-- [x] **C-14b** — Rings F-J (`rings.html`)
-- [x] **C-14c** — Rings K-O (`rings.html`)
-- [x] **C-14d** — Rings P-T (`rings.html`)
-- [x] **C-14e** — Rings U-Z (`rings.html`) — **run full-file validation after writing**
-- [x] **C-14f** — Potions & Oils A-E (`potionsAndOils.html`)
-- [x] **C-14g** — Potions & Oils F-J (`potionsAndOils.html`)
-- [x] **C-14h** — Potions & Oils K-O (`potionsAndOils.html`)
-- [x] **C-14i** — Potions & Oils P-T (`potionsAndOils.html`)
-- [x] **C-14j** — Potions & Oils U-Z (`potionsAndOils.html`) — **run full-file validation after writing**
-- [x] **C-14k** — Magic Armor (`magicArmor.html`)
-- [x] **C-14l** — Magic Weapons (`magicWeapons.html`)
-- [x] **C-14m** — Wondrous Items A–E (`wondrousItems.html`)
-- [x] **C-14n** — Wondrous Items F–J (`wondrousItems.html`)
-- [x] **C-14o** — Wondrous Items K–O (`wondrousItems.html`)
-- [x] **C-14p** — Wondrous Items P–T (`wondrousItems.html`)
-- [x] **C-14q** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
-- [x] **C-14r** — Rods (`rods.html`)
-- [x] **C-14s** — Staves (`staffs.html`)
-- [x] **C-14t** — Wands (`wands.html`)
-- [x] **C-14u** — Scrolls (`scrolls.html`)
-- [x] **C-14v** — Artifacts (`artifacts.html`)
-- [x] **C-14w** — Cursed Items (`cursedItems.html`)
-- [x] **C-14x** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
+- [x] **77** — Rings A-E (`rings.html`)
+- [x] **78** — Rings F-J (`rings.html`)
+- [x] **79** — Rings K-O (`rings.html`)
+- [x] **80** — Rings P-T (`rings.html`)
+- [x] **81** — Rings U-Z (`rings.html`) — **run full-file validation after writing**
+- [x] **82** — Potions & Oils A-E (`potionsAndOils.html`)
+- [x] **83** — Potions & Oils F-J (`potionsAndOils.html`)
+- [x] **84** — Potions & Oils K-O (`potionsAndOils.html`)
+- [x] **85** — Potions & Oils P-T (`potionsAndOils.html`)
+- [x] **86** — Potions & Oils U-Z (`potionsAndOils.html`) — **run full-file validation after writing**
+- [x] **87** — Magic Armor (`magicArmor.html`)
+- [x] **88** — Magic Weapons (`magicWeapons.html`)
+- [x] **89** — Wondrous Items A–E (`wondrousItems.html`)
+- [x] **90** — Wondrous Items F–J (`wondrousItems.html`)
+- [x] **91** — Wondrous Items K–O (`wondrousItems.html`)
+- [x] **92** — Wondrous Items P–T (`wondrousItems.html`)
+- [x] **93** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
+- [x] **94** — Rods (`rods.html`)
+- [x] **95** — Staves (`staffs.html`)
+- [x] **96** — Wands (`wands.html`)
+- [x] **97** — Scrolls (`scrolls.html`)
+- [x] **98** — Artifacts (`artifacts.html`)
+- [x] **99** — Cursed Items (`cursedItems.html`)
+- [x] **100** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
 
 > **Artifacts** (`artifacts.html`): Convert minor and major artifacts. Use `"category": "item"` with `"equipmentSlot": "none"` for non-wearable artifacts. See `ANNEXES.md` section A.9 for the Sphere of Annihilation example.
 > **Cursed items** (`cursedItems.html`): Add `forbiddenTags` (e.g., `["cursed_identified"]`) to prevent removal and model curse effects as permanent `grantedModifiers`.
@@ -1517,85 +1516,84 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 
 ---
 
-### C-15 — Psionic System (`static/rules/01_d20srd_psionics/`)
+### 101 — Psionic System (`static/rules/01_d20srd_psionics/`)
 
-All C-15 tasks use `"ruleSource": "srd_psionics"`.
+All 101 tasks use `"ruleSource": "srd_psionics"`.
 
-- [x] **C-15a** — Psionic classes → `00_d20srd_psionics_classes.json`
+- [x] **101** — Psionic classes → `00_d20srd_psionics_classes.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/classes/` — all `.html` files
   **Classes:** Psion (`psion.html`), Psychic Warrior (`psychicWarrior.html`), Soulknife (`soulknife.html`), Wilder (`wilder.html`)
-  Same format as C-04. Key mechanic: Power Points pool as `ResourcePool` on `resources.power_points`.
+  Same format as tasks 4–25 (base classes). Key mechanic: Power Points pool as `ResourcePool` on `resources.power_points`.
 
-- [x] **C-15b** — Psionic class features → `01_d20srd_psionics_class_features.json`
+- [x] **102** — Psionic class features → `01_d20srd_psionics_class_features.json`
 
-  **Source:** Same as C-15a.
+  **Source:** Same as 101.
   **Context:** Read `ANNEXES.md` section A.7 before starting.
   Key mechanics: Power Point pool, Discipline choices as `FeatureChoice` with `optionsQuery: "tag:psionic_discipline"`, Psychic Strike dynamic formula.
 
-- [x] **C-15c** — Psionic powers A–M → `02_d20srd_psionics_powers.json` (part 1)
+- [x] **103** — Psionic powers A–M → `02_d20srd_psionics_powers.json` (part 1)
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/powers/` — all files whose name starts with a–m alphabetically
   **Context:** Read `ANNEXES.md` section A.12 before starting.
-  Multi-batch: C-15c creates the file; C-15d appends.
+  Multi-batch: 103 creates the file; 104 appends.
   Powers use `MagicFeature` with `magicType: "psionic"` and `augmentations[]`. Each augmentation: `costIncrement`, `effectDescription.en`, `effectDescription.fr`, `isRepeatable`.
 
-- [x] **C-15d** — Psionic powers N–Z → `02_d20srd_psionics_powers.json` (part 2)
+- [x] **104** — Psionic powers N–Z → `02_d20srd_psionics_powers.json` (part 2)
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/powers/` — all files whose name starts with n–z alphabetically
 
-- [x] **C-15e** — Psionic feats → `03_d20srd_psionics_feats.json`
+- [x] **105** — Psionic feats → `03_d20srd_psionics_feats.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/psionicFeats.html`
-  Same format as C-06. Include `"psionic"` in tags. Metapsionic feats: add `"metapsionic"` tag.
+  Same format as tasks 26–31 (feats). Include `"psionic"` in tags. Metapsionic feats: add `"metapsionic"` tag.
 
-- [x] **C-15f** — Psionic races → `04_d20srd_psionics_races.json`
+- [x] **106** — Psionic races → `04_d20srd_psionics_races.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/psionicRaces.html`
   **Context:** Read `ANNEXES.md` section A.3.4 before starting.
-  Same format as C-03. Psionic races often grant a Power Point pool and a set of known powers at level 1.
+  Same format as 3. Psionic races often grant a Power Point pool and a set of known powers at level 1.
 
-- [x] **C-15g** — Psionic skills → append to `04_d20srd_core_skills_config.json`
+- [x] **107** — Psionic skills → append to `04_d20srd_core_skills_config.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/skills/` — all 6 files:
   `autohypnosis.html`, `concentration.html` (psionic variant), `knowledgePsionics.html`, `psicraft.html`, `usePsionicDevice.html`, `overview.html`
-  Same format as C-02 (append new skill entries to the existing `config_skill_definitions` table).
-  Note: `concentration.html` is already covered by C-02 (core version); only add psionic-specific notes in the description, do not duplicate the skill entry.
+  Same format as 2 (append new skill entries to the existing `config_skill_definitions` table).
+  Note: `concentration.html` is already covered by 2 (core version); only add psionic-specific notes in the description, do not duplicate the skill entry.
 
-- [x] **C-15h** — Psionic prestige classes → `05_d20srd_psionics_prestige_classes.json`
+- [x] **108** — Psionic prestige classes → `05_d20srd_psionics_prestige_classes.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/prestigeClasses/` — all 9 files:
   `cerebremancer.html`, `elocater.html`, `metamind.html`, `psionUncarnate.html`, `psionicFist.html`, `pyrokineticist.html`, `slayer.html`, `thrallherd.html`, `warMind.html`
-  Same format as C-11 (prestige class structure). Each has a 10-level `levelProgression`.
+  Same format as tasks 66–74 (prestige class structure). Each has a 10-level `levelProgression`.
 
-- [x] **C-15i** — Psionic prestige class features → `06_d20srd_psionics_prestige_class_features.json`
+- [x] **109** — Psionic prestige class features → `06_d20srd_psionics_prestige_class_features.json`
 
-  **Source:** Same as C-15h.
-  Same format as C-12 (prestige class features).
+  **Source:** Same as 108.
+  Same format as tasks 67–75 (prestige class features).
 
-- [x] **C-15j** — Psionic items → `07_d20srd_psionics_items.json`
+- [x] **110** — Psionic items → `07_d20srd_psionics_items.json`
 
   **Source:** `d20srd/www.d20srd.org/srd/psionic/items/` — all item files (exclude `basics.html`, `creatingPsionicItems.html` which are rules text):
   `armorAndShields.html`, `cognizanceCrystals.html`, `cursedItems.html`, `dorjes.html`, `powerStones.html`, `psicrowns.html`, `psionicArtifacts.html`, `psionicItems.html`, `psionicTattoos.html`, `specialMaterials.html`, `universalItems.html`, `weapons.html`
-  Same format as C-14. Use `"ruleSource": "srd_psionics"`.
+  Same format as 77. Use `"ruleSource": "srd_psionics"`.
 
-- [x] **C-15k** — Psionic spells (arcane/divine) → append to `05_d20srd_core_spells.json`
+- [x] **111** — Psionic spells (arcane/divine) → append to `05_d20srd_core_spells.json`
 
-  **Source:** `d20srd/www.d20srd.org/srd/psionic/spells/` — all 9 files:
+  **Source:** `d20srd/www.d20srd.org/srd/psionic/spells/` — 8 spell files (directory has 9 files total; `overview.html` is rules text only, excluded):
   `brainSpider.html`, `dweomerOfTransference.html`, `glossolalia.html`, `mentalPinnacle.html`, `probeThoughts.html`, `psychicTurmoil.html`, `psychicTurmoilGreater.html`, `telepathicBondLesser.html`
-  (Exclude `overview.html` — rules text only.)
   These are arcane/divine spells that interact with psionics. Use `"ruleSource": "srd_core"` (they appear on standard spell lists). Append to the core spells file.
 
 ---
 
-### C-16 — NPC Classes (`14_d20srd_core_npc_classes.json`)
+### 112 — NPC Classes (`14_d20srd_core_npc_classes.json`)
 
-- [x] **C-16** — Convert the 5 NPC classes
+- [x] **112** — Convert the 5 NPC classes
 
 **Source files:** `d20srd/www.d20srd.org/srd/npcClasses/` — all 5 files:
 `adept.html`, `aristocrat.html`, `commoner.html`, `expert.html`, `warrior.html`
 
-Same format as C-04. NPC classes have 20-level `levelProgression`. Key differences:
+Same format as tasks 4–25 (base classes). NPC classes have 20-level `levelProgression`. Key differences:
 - Tags: `["class", "npc_class", "class_<name>"]` (not `"base_class"`)
 - Adept casts spells (divine, prepared); model spell slots per the Adept table.
 - Expert: bonus to any 10 class skills of the player's choice — model as `FeatureChoice` at level 1.
@@ -1603,9 +1601,9 @@ Same format as C-04. NPC classes have 20-level `levelProgression`. Key differenc
 
 ---
 
-### C-17 — Special Materials (`15_d20srd_core_special_materials.json`)
+### 113 — Special Materials (`15_d20srd_core_special_materials.json`)
 
-- [x] **C-17** — Convert special materials (adamantine, cold iron, darkwood, mithral, etc.)
+- [x] **113** — Convert special materials (adamantine, cold iron, darkwood, mithral, etc.)
 
 **Source files:** `d20srd/www.d20srd.org/srd/specialMaterials.html`
 
@@ -1617,83 +1615,44 @@ Each material is a Feature of `category: "item"` or `category: "condition"` that
 
 ---
 
-## RECOMMENDED EXECUTION ORDER
-
-```
-C-01 → C-02 → C-03
-→ C-04a → C-05a → C-04b → C-05b → C-04c → C-05c → C-04d → C-05d
-→ C-04e → C-05e → C-04f → C-05f → C-04g → C-05g → C-04h → C-05h
-→ C-04i → C-05i → C-04j → C-05j → C-04k → C-05k
-→ C-06a → C-06b → C-06c → C-06d → C-06e → C-06f
-→ C-07 → C-08 → C-09 → C-17
-→ C-10a → C-10b → C-10c → C-10d → C-10e → C-10f → C-10g → C-10h
-→ C-10i → C-10j → C-10k → C-10l → C-10m → C-10n → C-10o → C-10p
-→ C-10q → C-10r → C-10s → C-10t → C-10u → C-10v → C-10w → C-10x
-→ C-10y → C-10z → C-10aa → C-10ab → C-10ac → C-10ad → C-10ae
-→ C-11a → C-12a → C-11b → C-12b → C-11c → C-12c
-→ C-11d → C-12d → C-11e → C-12e
-→ C-13 → C-16
-→ C-14a → C-14b → C-14c → C-14d → C-14e
-→ C-15a → C-15b → C-15c → C-15d → C-15e → C-15f → C-15g
-→ C-15h → C-15i → C-15j → C-15k
-```
-
-**Rationale:**
-- **C-01/C-02 first:** subsequent files reference skill IDs and config tables.
-- **C-03 before C-04:** races reference skills from C-02.
-- **C-04x/C-05x interleaved per class:** each C-05x can reference the feature IDs just written by its paired C-04x, minimizing cross-task lookups and reducing per-task context load.
-- **C-06a–C-06f after C-05k:** feats reference class feature tags that are now fully defined. Alphabetical batches of ~17–24 feats; C-06a creates the file, C-06f validates.
-- **C-07–C-09 before spells:** weapon and armor tags are referenced in spell condition nodes.
-- **C-17 (special materials) after C-07–C-09:** materials modify weapon/armor entries; easier to reference after those are complete.
-- **C-10a–C-10ae:** 610 individual HTML files spread across 31 batches of 20 (last batch has 10), alphabetically by filename. High volume but architecturally independent.
-- **C-11x/C-12x interleaved per batch:** same pattern as C-04x/C-05x — structure first, features immediately after for each group of 3 classes. C-11a/C-12a create their files; C-11e/C-12e validate.
-- **C-13 after C-12e:** domain spell lists reference spell IDs from C-10.
-- **C-16 (NPC classes) after C-13:** NPC classes reference skills and no spell IDs.
-- **C-14a–C-14e:** magic items reference weapon/armor/feat tags from C-06–C-09. C-14e also covers artifacts, cursed items, and intelligent items.
-- **C-15a–C-15g (psionic base):** separate `ruleSource: "srd_psionics"`. C-15g (psionic skills) appends to the existing skills config. C-15k (psionic arcane/divine spells) appends to the core spells file.
-- **C-15h–C-15j (psionic prestige + items):** after psionic base classes and powers are defined.
-- **C-15k last:** psionic spells appended to core spells file after all powers are done.
-
----
-
 ## SOURCE FILE COVERAGE
 
 The d20srd mirror at `d20srd/www.d20srd.org/srd/` contains ~1400 HTML files. The table below documents which categories are covered by conversion tasks and which are **intentionally excluded** with justification.
 
 | Directory / File | Status | Task(s) | Reason if excluded |
 |---|---|---|---|
-| `carryingCapacity.html`, `xp.html`, `theBasics.html`, `description.html` | Covered | C-01 | — |
-| `skills/` (36 files) | Covered | C-02 | — |
-| `races.html` | Covered | C-03 | — |
-| `classes/` (11 base class files) | Covered | C-04a–C-05k | — |
+| `carryingCapacity.html`, `xp.html`, `theBasics.html`, `description.html` | Covered | 1 | — |
+| `skills/` (36 files) | Covered | 2 | — |
+| `races.html` | Covered | 3 | — |
+| `classes/` (11 base class files) | Covered | 4–25 | — |
 | `classes/multiclass.html` | **Excluded** | — | Rules text only; no JSON entities needed |
-| `feats.html` | Covered | C-06a–C-06f | — |
+| `feats.html` | Covered | 26–31 | — |
 | `monsterFeats.html` | **Excluded** | — | Monster-only feats; not player-accessible |
-| `equipment/weapons.html` | Covered | C-07 | — |
-| `equipment/armor.html` | Covered | C-08 | — |
-| `equipment/goodsAndServices.html` | Partially covered | C-09 | **Excluded from C-09** (not physical items): inn stay, meals, banquet, coach cab, hireling (trained/untrained), messenger, road/gate toll, ship's passage, spellcasting-for-hire costs — these are services with no weight/slot and belong in a future **C-09b (Services & Prices)** reference task. Barding (cost-multiplier table) and all mounts/animals (horse, pony, warhorse, warpony, donkey/mule, guard dog, riding dog) belong in a future **C-09c (Mounts & Animals)** creature/vehicle task. |
+| `equipment/weapons.html` | Covered | 32 | — |
+| `equipment/armor.html` | Covered | 33 | — |
+| `equipment/goodsAndServices.html` | Partially covered | 34 | **Excluded from 34** (not physical items): inn stay, meals, banquet, coach cab, hireling (trained/untrained), messenger, road/gate toll, ship's passage, spellcasting-for-hire costs — these are services with no weight/slot and belong in a future **34b (Services & Prices)** reference task. Barding (cost-multiplier table) and all mounts/animals (horse, pony, warhorse, warpony, donkey/mule, guard dog, riding dog) belong in a future **34c (Mounts & Animals)** creature/vehicle task. |
 | `equipment/wealthAndMoney.html` | **Excluded** | — | Price/coinage reference; no game entities |
-| `spells/` (610 files) | Covered | C-10a–C-10ae | — |
+| `spells/` (610 files) | Covered | 35–65 | — |
 | `spellLists/` (8 files) | **Excluded** | — | Summary reference pages; spell list membership is captured in each spell's `spellLists` field |
-| `prestigeClasses/` (15 SRD classes) | Covered | C-11a–C-11e, C-12a–C-12e | — |
+| `prestigeClasses/` (15 SRD classes) | Covered | 66–74, 67–75 | — |
 | `prestigeClasses/giftedOfTheTraveler.html` | **Excluded** | — | Not part of standard d20 SRD; site-specific content in the mirror |
 | `prestigeClasses/shadowcrafter.html` | **Excluded** | — | Not part of standard d20 SRD; site-specific content in the mirror |
-| `divine/domains.html` | Covered | C-13 | — |
+| `divine/domains.html` | Covered | 76 | — |
 | `divine/divineAbilitiesFeats.html` | **Excluded** | — | Deific-rank content; out of player-character scope |
 | `divine/divineMinions.html`, `divine/divineRanksAndPowers.html` | **Excluded** | — | GM/narrative deific content; no player-facing entities |
 | `divine/spells/` (12 files) | **Excluded** | — | Deific-only spells; not on any player spell list |
-| `magicItems/` (8 item files) | Covered | C-14a–C-14e | Includes artifacts, cursed items, intelligent items |
+| `magicItems/` (14 item files) | Covered | 77–100 | Includes rings, potions, magic armor/weapons, wondrous items, rods, staves, wands, scrolls, artifacts, cursed items, intelligent items |
 | `magicItems/creatingMagicItems.html`, `magicItems/magicItemBasics.html` | **Excluded** | — | Rules text; no item entities |
-| `npcClasses/` (5 files) | Covered | C-16 | — |
-| `specialMaterials.html` | Covered | C-17 | — |
-| `psionic/classes/` (4 files) | Covered | C-15a–C-15b | — |
-| `psionic/powers/` (~200 files) | Covered | C-15c–C-15d | — |
-| `psionic/psionicFeats.html` | Covered | C-15e | — |
-| `psionic/psionicRaces.html` | Covered | C-15f | — |
-| `psionic/skills/` (6 files) | Covered | C-15g | — |
-| `psionic/prestigeClasses/` (9 files) | Covered | C-15h–C-15i | — |
-| `psionic/items/` (12 item files) | Covered | C-15j | — |
-| `psionic/spells/` (9 files) | Covered | C-15k | Appended to core spells file |
+| `npcClasses/` (5 files) | Covered | 112 | — |
+| `specialMaterials.html` | Covered | 113 | — |
+| `psionic/classes/` (4 files) | Covered | 101–102 | — |
+| `psionic/powers/` (~200 files) | Covered | 103–104 | — |
+| `psionic/psionicFeats.html` | Covered | 105 | — |
+| `psionic/psionicRaces.html` | Covered | 106 | — |
+| `psionic/skills/` (6 files) | Covered | 107 | — |
+| `psionic/prestigeClasses/` (9 files) | Covered | 108–109 | — |
+| `psionic/items/` (12 item files) | Covered | 110 | — |
+| `psionic/spells/` (8 spell files + overview.html) | Covered | 111 | 8 spells appended to core spells file; `overview.html` excluded (rules text) |
 | `psionic/monsters/`, `psionic/psionicPowersOverview.html`, `psionic/powerList.html` | **Excluded** | — | Monster stat blocks / overview text; no player entities |
 | `monsters/` (~250 files) | **Excluded (future)** | — | Large volume; monster stat blocks are a separate future pipeline |
 | `epic/` (~142 files) | **Excluded (future)** | — | Epic level rules; separate future pipeline |
@@ -1705,16 +1664,88 @@ The d20srd mirror at `d20srd/www.d20srd.org/srd/` contains ~1400 HTML files. The
 
 ## STANDARD VALIDATION CHECKLIST
 
-Run after generating any output file:
+Run after generating any output file. Validation is **bidirectional**: first check from the JSON outward to the SRD (completeness), then from the SRD inward to the JSON (accuracy). Both directions must pass.
 
+---
+
+### Direction A — JSON → SRD (Completeness: does the JSON cover everything the SRD defines?)
+
+**Structure**
 - [ ] JSON is syntactically valid (no trailing commas, balanced brackets, correct quoting)
 - [ ] The file is a top-level JSON array `[…]` for Feature lists, or an array of config objects for config files
-- [ ] Every Feature entity has: `id`, `category`, `ruleSource`, `label.en`, `label.fr`, `description.en`, `description.fr`, `tags`, `grantedModifiers`, `grantedFeatures`
-- [ ] All IDs are unique within the file and follow the kebab-case prefix convention
-- [ ] All IDs referenced in `grantedFeatures` exist in this file or in a previously completed file
+- [ ] All IDs are unique within the file and follow the kebab-case prefix convention (`race_`, `class_`, `feat_`, `spell_`, `item_`, `skill_`, `domain_`, `cf_`, etc.)
+- [ ] All IDs referenced in `grantedFeatures` or `prerequisitesNode` exist either in this file or in a previously completed task's output file
+
+**Entity completeness**
+- [ ] Every entity present in the SRD source file has a corresponding entry in the JSON — no SRD entity was silently omitted
+- [ ] For **classes/prestige classes**: every level in the `levelProgression` table is represented (1–20 for base classes, 1–10 for prestige classes); no level is missing
+- [ ] For **spells**: every spell listed in the SRD `spells/` directory for the current batch has a JSON entry
+- [ ] For **feats**: every feat in `feats.html` for the current batch has a JSON entry, including all sub-feats (e.g. Weapon Focus (longsword) is a separate entry from Weapon Focus (greataxe))
+- [ ] For **magic items**: every named item in the SRD table for the current batch (rings, potions, wondrous, etc.) has a JSON entry
+- [ ] For **skills**: all 36 core skills + 6 psionic skills have entries; Speak Language is included (special: no ability, unlimited ranks, grants a language FeatureChoice per rank)
+- [ ] For **domains**: all 21 cleric domains have entries including their granted spells and domain powers
+- [ ] For **config tables** (task 1): all required tables are present — `config_xp_table`, `config_ability_score_costs`, `config_carrying_capacity`, `config_bonus_spell_slots`, `config_multiclass_xp_penalty`, `config_size_modifiers`
+
+**Mechanical coverage**
+- [ ] Every mechanical effect stated in the SRD for the entity is modelled as a `grantedModifier`, `grantedFeature`, `activation`, `resourcePoolTemplate`, `FeatureChoice`, or `actionBudget` entry — nothing left as "description only" unless it is genuinely narrative
+- [ ] Conditional effects use `conditionNode` (not hard-coded assumptions)
+- [ ] Situational bonuses (vs. specific creature types, in specific terrain, etc.) use `situationalContext` — they are NOT added to static pipelines
+- [ ] Resources (Rage rounds, Turn Undead uses, spell slots, power points, ki, bardic music, etc.) are modelled as `resourcePoolTemplates` with the correct `resetCondition`
+- [ ] Scaling formulas use Math Parser paths (`@characterLevel`, `@classLevels.<id>`, `@attributes.<id>.derivedModifier`) — no hardcoded level-dependent values
+- [ ] Iterative BAB notation (e.g. "+6/+1") is NOT stored; only the per-level BAB increment is stored in `levelProgression`; the combat UI derives iterative attacks from the total
+- [ ] DR uses `type: "damage_reduction"` with correct `drBypassTags` (or `type: "base"` for additive class DR like Barbarian)
+- [ ] Items with charges use `resourcePoolTemplates` with `resetCondition: "never"`; items with X/day abilities use `resetCondition: "per_day"`; X/week use `"per_week"`
+- [ ] Cursed items include `removalPrevention.isCursed: true` and `removableBy` array
+- [ ] Intelligent items include the full `intelligentItemData` block
+- [ ] Metamagic rods include `metamagicEffect.feat` and `metamagicEffect.maxSpellLevel`
+- [ ] Staves include `staffSpells[]` with `chargeCost` per spell
+- [ ] Wands include `wandSpell.spellId` and `wandSpell.casterLevel`
+- [ ] Scrolls include `scrollSpells[]` with `spellId`, `casterLevel`, `spellLevel`, and `spellType`
+- [ ] Psionic powers include `augmentations[]` for every augmentation option listed in the SRD, `discipline`, and `displays[]`
+- [ ] Psionic items include the full `psionicItemData` block with all type-appropriate fields
+
+---
+
+### Direction B — SRD → JSON (Accuracy: does every value in the JSON exactly match the SRD?)
+
+**Values**
+- [ ] All numeric values (BAB increments, save bonuses, AC bonus, damage dice, crit range, crit multiplier, weight, cost, spell level, range, area, duration, DC) match the SRD tables exactly — no off-by-one errors
+- [ ] `levelProgression` entries use **increments** (delta per level), not cumulative totals — spot-check BAB and save progression against the official D&D 3.5 tables
+- [ ] Spell lists (`spellLists` field) contain every class list and level the SRD assigns to the spell; no list is missing and no incorrect levels are present
+- [ ] Feat prerequisites exactly replicate the SRD text in the `prerequisitesNode` logic tree (ability score minimums, BAB minimums, other feat requirements)
+- [ ] Item prices, weights, and bonus values match the SRD tables row for row
+- [ ] Save DCs, spell school, sub-school, and descriptors are correct for every spell
+- [ ] Resistance type (`spell_resistance`, `power_resistance`, `none`) is correct per SRD
+- [ ] Class skill lists (`classSkills`) match the SRD class description exactly — no skills added or removed
+- [ ] Armor values (`armorBonus`, `maxDex`, `armorCheckPenalty`, `arcaneSpellFailure`) match the SRD armor table exactly
+
+**Texts (English)**
+- [ ] `label.en` matches the official SRD name exactly (capitalisation, hyphenation, articles)
+- [ ] `description.en` is a complete and faithful rendering of the SRD text — no paragraphs or sentences omitted, no paraphrasing that changes meaning
+- [ ] `sourceName.en` on every `Modifier` correctly identifies the source feature
+- [ ] Activation descriptions (`activation.actionType`) reflect the SRD action type exactly (standard, move, swift, free, full-round, etc.)
+
+**Texts (French)**
+- [ ] `label.fr` uses the official WotC French D&D 3.5 term from the FRENCH TRANSLATION REFERENCE table (not a generic dictionary translation)
+- [ ] `description.fr` is a complete translation of `description.en` — no sentences omitted, no English text left untranslated
+- [ ] `sourceName.fr` on every `Modifier` is translated (not left in English)
+- [ ] Spell school names, creature type names, condition names, action type names all use the official French SRD terminology
+
+**Modifiers**
 - [ ] Every `Modifier` object has: `id`, `sourceId`, `sourceName.en`, `sourceName.fr`, `targetId`, `value`, `type`
-- [ ] `levelProgression` entries use **increments** not totals — spot-check BAB and save values against the D&D 3.5 progression tables
-- [ ] Every `FeatureChoice` has a valid `optionsQuery` format: `"tag:<name>"` or `"category:<name>"`
-- [ ] Config files: each table object has `tableId`, `ruleSource`, and a `data` object
-- [ ] All French translations use terms from the **FRENCH TRANSLATION REFERENCE** table, not generic dictionary translations
-- [ ] The checkbox in this file (`D20SRD_CONVERSION.md`) has been updated from `- [ ]` to `- [x]` for the completed task
+- [ ] `type` is one of the valid `ModifierType` values: `"base"`, `"multiplier"`, `"untyped"`, `"racial"`, `"enhancement"`, `"morale"`, `"luck"`, `"insight"`, `"sacred"`, `"profane"`, `"dodge"`, `"armor"`, `"shield"`, `"natural_armor"`, `"deflection"`, `"competence"`, `"circumstance"`, `"synergy"`, `"size"`, `"setAbsolute"`, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`, `"resistance"`
+- [ ] Stacking rules are respected: two `"enhancement"` bonuses to the same pipeline do NOT both appear; use the correct type so the engine can enforce non-stacking
+- [ ] `targetId` paths are valid pipeline paths (`attributes.stat_str`, `combatStats.attack_bonus`, `skills.skill_hide`, etc.) — no typos, no invented paths
+
+**Choices and options**
+- [ ] Every `FeatureChoice` has a valid `optionsQuery` (`"tag:<name>"`, `"category:<name>"`, or `"discipline:<name>"`)
+- [ ] `maxSelections` matches the SRD (e.g. Weapon Focus allows 1 selection per feat instance)
+
+**Config files**
+- [ ] Each config table object has `tableId`, `ruleSource`, and a `data` object
+- [ ] Config table values (XP thresholds, carrying capacity breakpoints, bonus spell slots per ability modifier) match the SRD tables exactly
+
+---
+
+### Final step
+- [ ] The checkbox in this file (`D20SRD_CONVERSION.md`) has been updated from `- [ ] **N**` to `- [x] **N**` for the completed task number
