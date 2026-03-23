@@ -1498,11 +1498,11 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - [x] **C-14j** — Potions & Oils U-Z (`potionsAndOils.html`) — **run full-file validation after writing**
 - [x] **C-14k** — Magic Armor (`magicArmor.html`)
 - [x] **C-14l** — Magic Weapons (`magicWeapons.html`)
-- [ ] **C-14m** — Wondrous Items A–E (`wondrousItems.html`)
-- [ ] **C-14n** — Wondrous Items F–J (`wondrousItems.html`)
-- [ ] **C-14o** — Wondrous Items K–O (`wondrousItems.html`)
-- [ ] **C-14p** — Wondrous Items P–T (`wondrousItems.html`)
-- [ ] **C-14q** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
+- [x] **C-14m** — Wondrous Items A–E (`wondrousItems.html`)
+- [x] **C-14n** — Wondrous Items F–J (`wondrousItems.html`)
+- [x] **C-14o** — Wondrous Items K–O (`wondrousItems.html`)
+- [x] **C-14p** — Wondrous Items P–T (`wondrousItems.html`)
+- [x] **C-14q** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
 - [ ] **C-14r** — Rods (`rods.html`)
 - [ ] **C-14s** — Staves (`staffs.html`)
 - [ ] **C-14t** — Wands (`wands.html`)

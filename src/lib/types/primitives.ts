@@ -82,6 +82,19 @@ export type ModifierType =
   | "circumstance"     // Circumstance bonus; ALWAYS STACKS (explicit SRD exception)
   | "synergy"          // Skill-synergy bonus; ALWAYS STACKS (explicit SRD exception)
   | "size"             // Size modifier to attack rolls and AC; non-stacking
+  | "inherent"         // Inherent bonus (from Tomes, Manuals, Wish, Miracle — permanent gains).
+                       // STACKING RULES: Non-stacking within the same type (highest wins),
+                       // but STACKS with enhancement and all other bonus types.
+                       // D&D 3.5 SRD: A character may only benefit from a maximum +5 inherent
+                       // bonus to any given ability score. Reading a second tome of the same
+                       // stat only benefits the character if the new inherent bonus exceeds the
+                       // existing one. The "highest wins" behavior of applyStackingRules()
+                       // for non-stacking types correctly implements this rule automatically.
+                       // CONTENT AUTHORING: Tome/Manual items use `consumable.isConsumable: true`.
+                       // When consumed, they create a permanent (non-ephemeral) ActiveFeatureInstance
+                       // whose grantedModifier has `type: "inherent"`. The player cannot remove
+                       // this effect via "Expire" — it's a permanent character improvement.
+                       // @see ARCHITECTURE.md section 4.10 — Inherent Bonus reference
   | "setAbsolute"      // Forces an absolute value; overrides everything on the pipeline
   | "damage_reduction";// D&D 3.5 DR — special stacking: BEST-WINS per bypass-tag group.
                        // Modifier.value = DR amount; Modifier.drBypassTags = material type.

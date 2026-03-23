@@ -375,6 +375,14 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Inherent Bonus (Enhancement E-8 / Architecture section 4.10):**
+  - Is `"inherent"` a valid member of `ModifierType`?
+  - Does a single `"inherent"` modifier apply correctly?
+  - Do two `"inherent"` modifiers for the same stat → highest wins (non-stacking)?
+  - Does `"inherent"` stack with `"enhancement"` of the same value → both apply?
+  - Does `"inherent"` stack with `"luck"` → both apply?
+  - Does the weaker inherent appear in `suppressedModifiers`?
+  - Is `"inherent"` absent from `ALWAYS_STACKING_TYPES` in `stackingRules.ts`?
 - **On-Crit Burst Dice (Enhancement E-7 / Architecture section 4.9):**
   - Is non-crit → no `onCritDiceRolled` tested?
   - Is Flaming Burst ×2 crit → 1d10 formula tested?

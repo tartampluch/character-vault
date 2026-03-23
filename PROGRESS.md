@@ -561,4 +561,14 @@ _Pre-conversion engine gap identified during C-14l analysis. Resolved before JSO
 
 - [x] **E-7d Documentation:** `ARCHITECTURE.md` section 4.9 (On-Crit Burst Dice full reference: SRD table, data model, algorithm, Fortification interaction, content authoring Flaming Burst example, Keen/Vicious design decisions). `CHECKPOINTS.md` Checkpoint Review #4 updated with 14 new on-crit burst dice checks.
 
+### Phase E-8: Wondrous Items Engine Prerequisites — Inherent Bonus Type
+
+_Pre-conversion engine gap identified during C-14m–q analysis. Resolved before JSON generation._
+
+- [x] **E-8a Type Extension:** Added `"inherent"` to `ModifierType` union in `primitives.ts`. Full inline documentation with SRD rules (max +5 per score), content authoring pattern (tome as consumable creating permanent non-ephemeral feature), cross-reference to `ARCHITECTURE.md section 4.10`.
+
+- [x] **E-8b Tests (`src/tests/inherentBonus.test.ts`):** 14 new Vitest tests (737 total, all passing). Covers: type soundness (2), within-type stacking — highest wins (5), cross-type stacking — inherent + enhancement/luck/morale all apply (5), suppressed list accuracy (2).
+
+- [x] **E-8c Documentation:** `ARCHITECTURE.md` section 4.10 (Inherent Bonuses — SRD rules, data model, stacking engine behavior, Tome content authoring pattern). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new inherent bonus verification items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

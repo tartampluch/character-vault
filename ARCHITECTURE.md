@@ -712,6 +712,61 @@ The **Vicious** special ability deals 2d6 to the target AND 1d6 to the wielder o
 
 ---
 
+### 4.10. Inherent Bonuses — `type: "inherent"` (Tomes, Manuals, Wish, Miracle)
+
+**Inherent bonuses** are permanent ability score improvements granted by exceptional means: reading a Tome/Manual (Manual of Gainful Exercise, Tome of Clear Thought, etc.), or by Wish or Miracle spells. They are fundamentally different from other bonus types in two ways:
+
+1. **Permanence**: An inherent bonus is never suppressed by dispel magic, antimagic field, or death. It becomes part of the character's base ability score for life.
+2. **Stacking**: Inherent bonuses stack with all other bonus types (enhancement, luck, morale, etc.) but do NOT stack with each other — only the highest inherent bonus to a given score applies.
+
+#### D&D 3.5 SRD Rules
+
+- Maximum inherent bonus to any ability score: **+5** (from any source).
+- If a character benefits from two inherent bonuses to the same score, only the higher applies.
+- Reading a second tome of the same type only benefits the character if the new inherent bonus **exceeds** the existing one.
+
+#### Data Model — `type: "inherent"` in `ModifierType`
+
+Inherent bonuses use `type: "inherent"` in `Modifier`:
+
+```json
+{
+  "id": "effect_manual_str_4",
+  "sourceId": "item_manual_of_gainful_exercise_4",
+  "sourceName": { "en": "Manual of Gainful Exercise (+4)", "fr": "Manuel d'exercice profitable (+4)" },
+  "targetId": "attributes.stat_str",
+  "value": 4,
+  "type": "inherent"
+}
+```
+
+#### Stacking Rules Engine Behavior
+
+`"inherent"` is NOT in `ALWAYS_STACKING_TYPES`. The existing `applyStackingRules()` function uses "highest wins among bonuses of the same non-stacking type":
+- Two `"inherent"` modifiers of +2 and +4 → +4 applies, +2 is suppressed.
+- `"inherent"` +4 + `"enhancement"` +4 → both apply (different types) = +8 total.
+
+No changes to `stackingRules.ts` were needed — the existing generic non-stacking logic is correct.
+
+#### Content Authoring — Tomes and Manuals
+
+Tomes and Manuals are modeled as `consumable: { isConsumable: true }` items. When consumed via `GameEngine.consumeItem()`, instead of creating a removable ephemeral effect, they create a **permanent non-ephemeral `ActiveFeatureInstance`** (no `ephemeral` block). This means the inherent bonus appears in the character sheet like a permanent feature and cannot be dismissed via the "Expire" button.
+
+```json
+{
+  "id": "item_manual_of_gainful_exercise_4",
+  "category": "item",
+  "consumable": { "isConsumable": true },
+  "grantedModifiers": [
+    { "targetId": "attributes.stat_str", "value": 4, "type": "inherent" }
+  ]
+}
+```
+
+The item's `consumable.isConsumable: true` triggers the consumption flow; the absence of `ephemeral` on the created instance means the GM/player must deliberately remove the feature (not via "Expire") — which is correct, since permanent ability gains are not dismissible.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

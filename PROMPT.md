@@ -568,6 +568,24 @@ _Entry point: pre-conversion analysis of `magicWeapons.html`. The only true engi
 
 **Total test count after Phase E-7: 723 tests (all passing).**
 
+## Phase E-8: Wondrous Items Engine Prerequisites — Inherent Bonus Type
+
+_Goal: Resolve the one engine gap identified during C-14m–q (Wondrous Items) analysis before generating the JSON. Tomes (Manual of Bodily Health, Tome of Clear Thought, etc.) grant inherent bonuses to ability scores — a bonus type absent from `ModifierType` that has unique stacking semantics._
+
+_Entry point: pre-conversion analysis of `wondrousItems.html` identified only one gap: the `"inherent"` modifier type. All other wondrous item effects (ability score enhancements, skill competence bonuses, save resistances, speed enhancements, spell resistance, damage reduction, per-day activated abilities, consumables) map directly to existing engine primitives._
+
+- [x] **E-8a Type Extension:** Added `"inherent"` to the `ModifierType` union in `primitives.ts`. Inherent bonuses are non-stacking within the same type (highest wins — correct SRD behavior: only the best of multiple tomes applies) but stack with all other bonus types (enhancement, luck, morale, etc.). Added extensive inline documentation explaining the SRD rule (max +5 per score), the content authoring pattern (tome as consumable creating a permanent non-ephemeral feature instance), and the cross-reference to `ARCHITECTURE.md section 4.10`.
+
+- [x] **E-8b Tests (`src/tests/inherentBonus.test.ts`):** 14 new Vitest tests (737 total, all passing):
+  - Type soundness (2 tests): `"inherent"` compiles as ModifierType, full Modifier object type-checks.
+  - Within-type stacking (5 tests): single +2 applies, +2 and +4 → only +4, two +2 → only one, +5 maximum, three bonuses → only highest with two suppressed.
+  - Cross-type stacking (5 tests): inherent + enhancement both apply (+4+4=8), inherent + luck both apply, inherent + morale both apply, two inherent + enhancement → highest inherent + full enhancement.
+  - Suppressed list (2 tests): weaker inherent in suppressedModifiers, single inherent has no suppressed items.
+
+- [x] **E-8c Documentation:** `ARCHITECTURE.md` section 4.10 (Inherent Bonuses — SRD rules table, data model example, stacking engine behavior, content authoring pattern for Tomes). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new inherent bonus verification items.
+
+**Total test count after Phase E-8: 737 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.
