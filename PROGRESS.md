@@ -571,4 +571,14 @@ _Pre-conversion engine gap identified during C-14m–q analysis. Resolved before
 
 - [x] **E-8c Documentation:** `ARCHITECTURE.md` section 4.10 (Inherent Bonuses — SRD rules, data model, stacking engine behavior, Tome content authoring pattern). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new inherent bonus verification items.
 
+### Phase E-9: Rod Engine Prerequisites — Metamagic Rod field
+
+_Pre-conversion engine gap identified during C-14r analysis. All 22 rod types map to existing primitives except metamagic rods, which need a typed `metamagicEffect` field._
+
+- [x] **E-9a Type Extension:** Added `ItemFeature.metamagicEffect?: { feat, maxSpellLevel }` to `feature.ts`. `feat` union: 6 SRD metamagic feats. `maxSpellLevel`: strict `3 | 6 | 9` (lesser/normal/greater). Full CastingPanel contract documented inline.
+
+- [x] **E-9b Tests (`src/tests/metamagicRods.test.ts`):** 12 new Vitest tests (749 total, all passing). Type soundness for all 6 feats and 3 levels, tier discrimination, realistic rod with resourcePoolTemplates.
+
+- [x] **E-9c Documentation:** `ARCHITECTURE.md` section 4.11 (Metamagic Rods — SRD rules, typed data model, JSON example, CastingPanel 5-step integration contract, 6-feat table). `CHECKPOINTS.md` updated with 6 items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

@@ -375,6 +375,13 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Metamagic Rods (Enhancement E-9 / Architecture section 4.11):**
+  - Is `ItemFeature.metamagicEffect` optional (non-rods compile without it)?
+  - Are all 6 feat values (`feat_empower_spell`, etc.) valid union members?
+  - Are all 3 `maxSpellLevel` values (3, 6, 9) valid?
+  - Does a rod with `metamagicEffect` and `resourcePoolTemplates` compile together?
+  - Can `maxSpellLevel` distinguish lesser (3) / normal (6) / greater (9)?
+  - `ARCHITECTURE.md section 4.11` documents the CastingPanel contract?
 - **Inherent Bonus (Enhancement E-8 / Architecture section 4.10):**
   - Is `"inherent"` a valid member of `ModifierType`?
   - Does a single `"inherent"` modifier apply correctly?

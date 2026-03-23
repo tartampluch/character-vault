@@ -22914,5 +22914,1540 @@
     "activation": {
       "actionType": "standard"
     }
+  },
+  {
+    "id": "item_rod_metamagic_empower_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Empower (Lesser)",
+      "fr": "Baguette de sort amplification (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Empower Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. All variable numeric effects of the spell are increased by 50%. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de amplification à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont augmentés de 50%. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 9000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_empower_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Empower Spell Uses (3/day)",
+          "fr": "Utilisations amplification (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_empower_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Empower",
+      "fr": "Baguette de sort amplification"
+    },
+    "description": {
+      "en": "3 uses per day: apply Empower Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. All variable numeric effects of the spell are increased by 50%. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de amplification à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont augmentés de 50%. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 32500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_empower_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Empower Spell Uses (3/day)",
+          "fr": "Utilisations amplification (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_empower_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Empower (Greater)",
+      "fr": "Baguette de sort amplification (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Empower Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. All variable numeric effects of the spell are increased by 50%. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de amplification à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont augmentés de 50%. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 73000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_empower_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Empower Spell Uses (3/day)",
+          "fr": "Utilisations amplification (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_enlarge_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Enlarge (Lesser)",
+      "fr": "Baguette de sort extension de zone (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Enlarge Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. The spell's range is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de zone à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. La portée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 3000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_enlarge_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Enlarge Spell Uses (3/day)",
+          "fr": "Utilisations extension de zone (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_enlarge_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Enlarge",
+      "fr": "Baguette de sort extension de zone"
+    },
+    "description": {
+      "en": "3 uses per day: apply Enlarge Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. The spell's range is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de zone à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. La portée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 11000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_enlarge_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Enlarge Spell Uses (3/day)",
+          "fr": "Utilisations extension de zone (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_enlarge_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Enlarge (Greater)",
+      "fr": "Baguette de sort extension de zone (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Enlarge Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. The spell's range is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de zone à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. La portée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 24500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_enlarge_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Enlarge Spell Uses (3/day)",
+          "fr": "Utilisations extension de zone (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_extend_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Extend (Lesser)",
+      "fr": "Baguette de sort extension de durée (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Extend Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. The spell's duration is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de durée à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. La durée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 3000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_extend_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Extend Spell Uses (3/day)",
+          "fr": "Utilisations extension de durée (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_extend_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Extend",
+      "fr": "Baguette de sort extension de durée"
+    },
+    "description": {
+      "en": "3 uses per day: apply Extend Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. The spell's duration is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de durée à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. La durée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 11000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_extend_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Extend Spell Uses (3/day)",
+          "fr": "Utilisations extension de durée (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_extend_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Extend (Greater)",
+      "fr": "Baguette de sort extension de durée (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Extend Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. The spell's duration is doubled. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de extension de durée à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. La durée du sort est doublée. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 24500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_extend_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Extend Spell Uses (3/day)",
+          "fr": "Utilisations extension de durée (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_maximize_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Maximize (Lesser)",
+      "fr": "Baguette de sort maximisation (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Maximize Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. All variable, numeric effects of the spell are maximized (no rolls needed). One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de maximisation à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont maximisés (pas de jets nécessaires). Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 14000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_maximize_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Maximize Spell Uses (3/day)",
+          "fr": "Utilisations maximisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_maximize_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Maximize",
+      "fr": "Baguette de sort maximisation"
+    },
+    "description": {
+      "en": "3 uses per day: apply Maximize Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. All variable, numeric effects of the spell are maximized (no rolls needed). One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de maximisation à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont maximisés (pas de jets nécessaires). Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 54000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_maximize_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Maximize Spell Uses (3/day)",
+          "fr": "Utilisations maximisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_maximize_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Maximize (Greater)",
+      "fr": "Baguette de sort maximisation (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Maximize Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. All variable, numeric effects of the spell are maximized (no rolls needed). One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de maximisation à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. Tous les effets numériques variables du sort sont maximisés (pas de jets nécessaires). Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 121500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_maximize_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Maximize Spell Uses (3/day)",
+          "fr": "Utilisations maximisation (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_quicken_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Quicken (Lesser)",
+      "fr": "Baguette de sort accélération (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Quicken Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. The spell is cast as a free action, without increasing the spell slot used. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de accélération à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. Le sort est lancé en action libre, sans augmenter l'emplacement de sort utilisé. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 35000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_quicken_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Quicken Spell Uses (3/day)",
+          "fr": "Utilisations accélération (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_quicken_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Quicken",
+      "fr": "Baguette de sort accélération"
+    },
+    "description": {
+      "en": "3 uses per day: apply Quicken Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. The spell is cast as a free action, without increasing the spell slot used. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de accélération à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. Le sort est lancé en action libre, sans augmenter l'emplacement de sort utilisé. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 75500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_quicken_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Quicken Spell Uses (3/day)",
+          "fr": "Utilisations accélération (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_quicken_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Quicken (Greater)",
+      "fr": "Baguette de sort accélération (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Quicken Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. The spell is cast as a free action, without increasing the spell slot used. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de accélération à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. Le sort est lancé en action libre, sans augmenter l'emplacement de sort utilisé. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 170000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_quicken_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Quicken Spell Uses (3/day)",
+          "fr": "Utilisations accélération (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_silent_lesser",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Silent (Lesser)",
+      "fr": "Baguette de sort silence (inférieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Silent Spell metamagic feat to any spell of 3rd level or lower without increasing its spell slot. The spell requires no verbal component. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de silence à n'importe quel sort de niveau 3 ou inférieur sans augmenter son emplacement. Le sort ne nécessite pas de composante verbale. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 3000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_silent_spell",
+      "maxSpellLevel": 3
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Silent Spell Uses (3/day)",
+          "fr": "Utilisations silence (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_silent_normal",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Silent",
+      "fr": "Baguette de sort silence"
+    },
+    "description": {
+      "en": "3 uses per day: apply Silent Spell metamagic feat to any spell of 6th level or lower without increasing its spell slot. The spell requires no verbal component. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de silence à n'importe quel sort de niveau 6 ou inférieur sans augmenter son emplacement. Le sort ne nécessite pas de composante verbale. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 11000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_silent_spell",
+      "maxSpellLevel": 6
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Silent Spell Uses (3/day)",
+          "fr": "Utilisations silence (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_metamagic_silent_greater",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metamagic Silent (Greater)",
+      "fr": "Baguette de sort silence (supérieure)"
+    },
+    "description": {
+      "en": "3 uses per day: apply Silent Spell metamagic feat to any spell of 9th level or lower without increasing its spell slot. The spell requires no verbal component. One metamagic rod per spell; can combine with wielder's own feats (only wielder's feats adjust spell slot). Sorcerers still take a full-round action (CL 17).",
+      "fr": "3 utilisations par jour : appliquer le don de métamagie Sort de silence à n'importe quel sort de niveau 9 ou inférieur sans augmenter son emplacement. Le sort ne nécessite pas de composante verbale. Une seule baguette de métamagie par sort ; peut être combinée avec les dons du manieur (seuls ses dons modifient l'emplacement). Les ensorceleurs prennent quand même une action complète (NLS 17)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 24500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "metamagicEffect": {
+      "feat": "feat_silent_spell",
+      "maxSpellLevel": 9
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "metamagic_uses",
+        "label": {
+          "en": "Silent Spell Uses (3/day)",
+          "fr": "Utilisations silence (3/jour)"
+        },
+        "maxPipelineId": "combatStats.metamagic_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_absorption",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Absorption",
+      "fr": "Baguette d'absorption"
+    },
+    "description": {
+      "en": "Absorbs single-target spells or rays directed at the wielder or gear. Stored energy can be used to cast any prepared spell (no slot expended) at equal or lower level than stored. Maximum 50 spell levels total, never recharges. Wielder knows remaining absorbing potential and stored energy (CL 15).",
+      "fr": "Absorbe les sorts à cible unique ou les rayons dirigés contre le porteur ou son équipement. L'énergie stockée peut être utilisée pour lancer n'importe quel sort préparé (sans dépenser d'emplacement) de niveau inférieur ou égal aux niveaux stockés. Maximum 50 niveaux de sorts au total, ne se recharge jamais. Le porteur connaît le potentiel d'absorption restant et l'énergie stockée (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "absorption_levels",
+        "label": {
+          "en": "Spell Level Absorption (50 max)",
+          "fr": "Absorption de niveaux de sorts (50 max)"
+        },
+        "maxPipelineId": "combatStats.absorption_levels_max",
+        "defaultCurrent": 25,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_alertness",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Alertness",
+      "fr": "Baguette de vigilance"
+    },
+    "description": {
+      "en": "+1 insight bonus to initiative checks. Grasped: use detect evil/good/chaos/law, detect magic, discern lies, light, or see invisibility (each a standard action). Once/day: planted in ground — senses hostile intent in 120 ft, prayer effect on 20-ft radius friendlies for 10 min, animate objects (11 Small objects for 11 rounds) (CL 11).",
+      "fr": "+1 perspicacité aux jets d'initiative. Tenu : utiliser détection du mal/bien/chaos/loi, détection de la magie, discernement des mensonges, lumière ou vision de l'invisible (chacun une action standard). Une fois/jour : planté en sol — détecte les intentions hostiles à moins de 36 m, effet de prière sur amis dans 6 m pour 10 min, animation des objets (11 petits objets pendant 11 rounds) (NLS 11)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 85000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [
+      {
+        "id": "item_rod_of_alertness_combatStats_init",
+        "sourceId": "item_rod_of_alertness",
+        "sourceName": {
+          "en": "Rod of Alertness",
+          "fr": "Baguette de vigilance"
+        },
+        "targetId": "combatStats.init",
+        "value": 1,
+        "type": "insight"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "alertness_daily",
+        "label": {
+          "en": "Alertness Mode (1/day)",
+          "fr": "Mode de vigilance (1/jour)"
+        },
+        "maxPipelineId": "combatStats.alertness_daily_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_cancellation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Cancellation",
+      "fr": "Baguette d'annulation"
+    },
+    "description": {
+      "en": "Touch drains a magic item of all magical properties (Will DC 23). Creature holding the item may use its Will save instead. After draining one item, the rod becomes brittle and cannot be used again. Only Wish/Miracle can restore a drained item (CL 17). Single use.",
+      "fr": "Le contact draine un objet magique de toutes ses propriétés (Volonté DD 23). La créature tenant l'objet peut utiliser son jet de Volonté à la place. Après avoir drainé un objet, la baguette se fragilise et ne peut plus être utilisée. Seuls Souhait/Miracle peuvent restaurer un objet drainé (NLS 17). Utilisation unique."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 11000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "consumable": {
+      "isConsumable": true,
+      "durationHint": "single use, then brittle"
+    }
+  },
+  {
+    "id": "item_rod_of_enemy_detection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Enemy Detection",
+      "fr": "Baguette de détection des ennemis"
+    },
+    "description": {
+      "en": "Pulses and points at hostile creatures (nearest first) within 60 ft — invisible, ethereal, hidden, or disguised. With full round of concentration: pinpoints nearest enemy and counts total enemies in range. 3×/day, each use up to 10 minutes (CL 10).",
+      "fr": "Pulse et pointe vers les créatures hostiles (plus proches en premier) à moins de 18 m — invisibles, éthérées, cachées ou déguisées. Avec un round de concentration : localise le plus proche et compte le total dans la portée. 3×/jour, chaque utilisation jusqu'à 10 minutes (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 23500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "detection_uses",
+        "label": {
+          "en": "Enemy Detection (3/day)",
+          "fr": "Détection d'ennemis (3/jour)"
+        },
+        "maxPipelineId": "combatStats.detection_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_flailing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Flailing",
+      "fr": "Baguette du fléau"
+    },
+    "description": {
+      "en": "Transforms into a +3 dire flail on command (move action). Extra attack with second head at -2 to all attacks (as Two-Weapon Fighting feat). Once/day: +4 deflection AC and +4 resistance saves for 10 min (rod form or weapon form). Transform back: move action (CL 9).",
+      "fr": "Se transforme en fléau géant +3 sur commande (action de déplacement). Attaque supplémentaire avec la seconde tête à -2 à toutes les attaques (comme Ambidextrie). Une fois/jour : +4 parade CA et +4 résistance aux jets de sauvegarde pendant 10 min (forme baguette ou arme). Retour en baguette : action de déplacement (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 50000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "move"
+    },
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "flailing_defense",
+        "label": {
+          "en": "Deflection/Resistance (1/day)",
+          "fr": "Parade/Résistance (1/jour)"
+        },
+        "maxPipelineId": "combatStats.flailing_defense_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_flame_extinguishing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Flame Extinguishing",
+      "fr": "Baguette d'extinction des flammes"
+    },
+    "description": {
+      "en": "Free: extinguish Medium or smaller nonmagical fires (no charge). 1 charge: Large+ nonmagical fire or medium/smaller magic fire (suppresses 6 rounds). 2 charges: Large+ magic fire (fireball, wall of fire, etc.). 3 charges: touch attack vs. fire creature (6d6 damage). 10 charges/day (renewed each day) (CL 12).",
+      "fr": "Gratuit : éteindre les feux non magiques de taille M ou plus petits. 1 charge : feux non magiques G+ ou magiques de taille M- (supprime 6 rounds). 2 charges : feux magiques G+ (boule de feu, mur de feu, etc.). 3 charges : attaque de contact vs. créature de feu (6d6 dégâts). 10 charges/jour (renouvelées chaque jour) (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 15000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "flame_charges",
+        "label": {
+          "en": "Flame Extinguishing Charges (10/day)",
+          "fr": "Charges d'extinction (10/jour)"
+        },
+        "maxPipelineId": "combatStats.flame_charges_max",
+        "defaultCurrent": 10,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_immovable",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Immovable Rod",
+      "fr": "Baguette immobile"
+    },
+    "description": {
+      "en": "Push a button (move action): the rod fixes itself in space — gravity-defying. Supports up to 8,000 lb. DC 30 Strength check to push it 10 ft. Useful as a ladder rung, climbing aid, or door brace. Deactivates (same button). No charges (CL 10).",
+      "fr": "Appuyer le bouton (action de déplacement) : la baguette se fixe dans l'espace — défiant la gravité. Supporte jusqu'à 4 000 kg. Test de Force DD 30 pour la pousser de 3 m. Utile comme barreau d'échelle, aide à l'escalade ou cale de porte. Désactivation (même bouton). Pas de charges (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 5000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "move"
+    }
+  },
+  {
+    "id": "item_rod_of_lordly_might",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Lordly Might",
+      "fr": "Baguette de majesté puissante"
+    },
+    "description": {
+      "en": "+2 light mace base (10 lb). 6 buttons: Button 1 → +1 flaming longsword; Button 2 → +4 battleaxe; Button 3 → +3 shortspear/longspear (5–15 ft). Spell-like (1/day each): hold person (Will DC 14), fear (Will DC 16 partial, 10-ft range), drain 2d4 HP / heal self equal amount (Will DC 17 half). Buttons 4–6: climbing pole, compass/depth sensor. Only for non-evil. (CL 19).",
+      "fr": "+2 masse légère de base (5 kg). 6 boutons : Bouton 1 → épée longue enflammée +1 ; Bouton 2 → hache de bataille +4 ; Bouton 3 → courte/longue lance +3 (1,5–4,5 m). Pseudo-magiques (1/jour chacun) : immobiliser la personne (Volonté DD 14), peur (Volonté DD 16 partiel, portée 3 m), drain 2d4 PV / soigner équivalent (Volonté DD 17 moitié). Boutons 4–6 : perche d'escalade, compas/capteur de profondeur. Pour non-mauvais uniquement. (NLS 19)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 70000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "move"
+    },
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "hold_person_uses",
+        "label": {
+          "en": "Hold Person (1/day)",
+          "fr": "Immobiliser la personne (1/jour)"
+        },
+        "maxPipelineId": "combatStats.hold_person_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "fear_uses",
+        "label": {
+          "en": "Fear (1/day)",
+          "fr": "Peur (1/jour)"
+        },
+        "maxPipelineId": "combatStats.fear_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "drain_heal_uses",
+        "label": {
+          "en": "Drain/Heal (1/day)",
+          "fr": "Drain/Soins (1/jour)"
+        },
+        "maxPipelineId": "combatStats.drain_heal_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_metal_mineral_detection",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Metal and Mineral Detection",
+      "fr": "Baguette de détection des métaux et minéraux"
+    },
+    "description": {
+      "en": "Pulses and points toward the largest metal mass within 30 ft. Concentrate on a specific metal or mineral: the rod points to all locations and indicates approximate quantity within 30 ft (full-round action each use, unlimited) (CL 9).",
+      "fr": "Pulse et pointe vers la plus grande masse métallique à moins de 9 m. Se concentrer sur un métal ou minéral spécifique : la baguette pointe vers tous les emplacements et indique la quantité approximative à moins de 9 m (action de round complet par utilisation, illimité) (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 10500,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "full_round"
+    }
+  },
+  {
+    "id": "item_rod_of_negation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Negation",
+      "fr": "Baguette de négation"
+    },
+    "description": {
+      "en": "Pale gray beam (ranged touch attack): functions as greater dispel magic but only affects magic items (no saving throw, can't negate artifacts). Rod's caster level 15 for dispel check. Readied action required for instantaneous effects. 3×/day (CL 15).",
+      "fr": "Rayon gris pâle (attaque de contact à distance) : fonctionne comme dissipation de magie supérieure mais uniquement sur les objets magiques (pas de jet de sauvegarde, ne peut pas neutraliser les artefacts). NLS de la baguette 15 pour les tests de dissipation. Action préparée requise pour les effets instantanés. 3×/jour (NLS 15)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 37000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "negation_uses",
+        "label": {
+          "en": "Negate Magic Item (3/day)",
+          "fr": "Négation d'objet magique (3/jour)"
+        },
+        "maxPipelineId": "combatStats.negation_uses_max",
+        "defaultCurrent": 3,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_python",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Python",
+      "fr": "Baguette du python"
+    },
+    "description": {
+      "en": "+1/+1 quarterstaff (4 ft, 10 lb). Command (standard action): throw down and it becomes a giant constrictor snake for 1 round. Snake obeys all commands (+1 enhancement retained). Returns to rod form on command or if >100 ft from owner (full-round action). If slain in snake form: rod form, inactive for 3 days. Good-aligned wielders only (CL 10).",
+      "fr": "+1/+1 bâton de combat (1,2 m, 5 kg). Commande (action standard) : lancer à terre et il devient un grand serpent constricteur pendant 1 round. Le serpent obéit (+1 d'altération conservé). Revient en baguette sur commande ou si > 30 m du propriétaire (action de round complet). Si tué en forme serpent : forme baguette, inactive 3 jours. Porteurs d'alignement bon uniquement (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 13000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+  {
+    "id": "item_rod_of_rulership",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Rulership",
+      "fr": "Baguette du commandement"
+    },
+    "description": {
+      "en": "Activating (standard action): command up to 300 HD of creatures within 120 ft as if absolute sovereign. Int 12+ get Will DC 16 save. Ruled creatures obey absolutely; contradicting commands break the magic. Only 500 total minutes before crumbling. Duration need not be continuous (CL 20).",
+      "fr": "Activation (action standard) : commander jusqu'à 300 DV de créatures à moins de 36 m comme souverain absolu. Créatures Int 12+ ont un jet de Volonté DD 16. Les commandées obéissent absolument ; des ordres contradictoires brisent la magie. Seulement 500 minutes totales avant de se désintégrer. La durée n'a pas à être consécutive (NLS 20)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 60000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "rulership_minutes",
+        "label": {
+          "en": "Rulership (500 min total)",
+          "fr": "Commandement (500 min au total)"
+        },
+        "maxPipelineId": "combatStats.rulership_minutes_max",
+        "defaultCurrent": 500,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_security",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Security",
+      "fr": "Baguette de sécurité"
+    },
+    "description": {
+      "en": "Activating (standard action): wielder and up to 199 touching creatures transported to a pocket paradise. Duration: 200 / number of creatures (rounded down). In paradise: no aging, 2× healing, abundant fresh food and water. Unwilling creatures: Will DC 17 save. On expiry: all reappear at original location. 1×/week only (CL 20).",
+      "fr": "Activation (action standard) : le porteur et jusqu'à 199 créatures le touchant sont transportés dans un paradis privé. Durée : 200 / nombre de créatures (arrondi). Dans le paradis : pas de vieillissement, guérison ×2, nourriture et eau abondantes. Créatures réticentes : Volonté DD 17. À l'expiration : tous réapparaissent à l'emplacement original. 1×/semaine uniquement (NLS 20)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 61000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "security_uses",
+        "label": {
+          "en": "Pocket Paradise (1/week)",
+          "fr": "Paradis privé (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.security_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_splendor",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Splendor",
+      "fr": "Baguette de splendeur"
+    },
+    "description": {
+      "en": "Passive: +4 enhancement to Charisma while held or carried. 1/day: create fine clothing and adornments (12 hr, disappears if sold/given/used for spell components or forcibly taken). 1/week: create a palatial tent 60 ft across with furnishings and food for 100 persons (lasts 1 day) (CL 12).",
+      "fr": "Passif : +4 altération au Charisme lorsqu'elle est tenue ou portée. 1/jour : créer des vêtements fins et des ornements (12 h, disparaissent si vendus/donnés/utilisés comme composantes ou pris de force). 1/semaine : créer une tente palatiale de 18 m avec mobilier et nourriture pour 100 personnes (dure 1 jour) (NLS 12)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 25000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [
+      {
+        "id": "item_rod_of_splendor_attributes_stat_cha",
+        "sourceId": "item_rod_of_splendor",
+        "sourceName": {
+          "en": "Rod of Splendor",
+          "fr": "Baguette de splendeur"
+        },
+        "targetId": "attributes.stat_cha",
+        "value": 4,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "clothing_uses",
+        "label": {
+          "en": "Fine Clothing (1/day)",
+          "fr": "Vêtements fins (1/jour)"
+        },
+        "maxPipelineId": "combatStats.clothing_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "tent_uses",
+        "label": {
+          "en": "Palatial Tent (1/week)",
+          "fr": "Tente palatiale (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.tent_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_thunder_and_lightning",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Thunder and Lightning",
+      "fr": "Baguette du tonnerre et de la foudre"
+    },
+    "description": {
+      "en": "+2 light mace. Daily powers: Thunder (1/day, free action, +3 mace, stun target Fort DC 16); Lightning (1/day, free action, +2 mace + 2d6 electricity, works on touch attack); Thunderclap (1/day, standard action, shout effect 2d6 sonic Fort DC 16 deafen 2d6 rounds); Lightning Stroke (1/day, standard action, lightning bolt 9d6 Reflex DC 16 half, 200 ft). Thunder and Lightning (1/week, combined effect) (CL 9).",
+      "fr": "+2 masse légère. Pouvoirs journaliers : Tonnerre (1/jour, action libre, +3 masse, étourdit Vigueur DD 16) ; Foudre (1/jour, action libre, +2 masse + 2d6 électricité, fonctionne sur attaque de contact) ; Coup de tonnerre (1/jour, action standard, effet cri 2d6 sonique Vigueur DD 16 sourd 2d6 rounds) ; Éclair (1/jour, action standard, éclair 9d6 Réflexes DD 16 moitié, 60 m). Tonnerre et Foudre (1/semaine, effet combiné) (NLS 9)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 33000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "thunder_uses",
+        "label": {
+          "en": "Thunder (1/day)",
+          "fr": "Tonnerre (1/jour)"
+        },
+        "maxPipelineId": "combatStats.thunder_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "lightning_uses",
+        "label": {
+          "en": "Lightning (1/day)",
+          "fr": "Foudre (1/jour)"
+        },
+        "maxPipelineId": "combatStats.lightning_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "thunderclap_uses",
+        "label": {
+          "en": "Thunderclap (1/day)",
+          "fr": "Coup de tonnerre (1/jour)"
+        },
+        "maxPipelineId": "combatStats.thunderclap_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "lightning_stroke_uses",
+        "label": {
+          "en": "Lightning Stroke (1/day)",
+          "fr": "Éclair (1/jour)"
+        },
+        "maxPipelineId": "combatStats.lightning_stroke_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      },
+      {
+        "poolId": "thunder_lightning_uses",
+        "label": {
+          "en": "Thunder & Lightning (1/week)",
+          "fr": "Tonnerre & Foudre (1/semaine)"
+        },
+        "maxPipelineId": "combatStats.thunder_lightning_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_week"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_viper",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Viper",
+      "fr": "Baguette de la vipère"
+    },
+    "description": {
+      "en": "+2 heavy mace. Once/day on command: rod head becomes a serpent head for 10 min. During this period, successful strikes deal normal damage plus poison: 1d10 CON immediately (Fort DC 14 negates) + 1d10 CON in 1 min (Fort DC 14 negates). Only evil-aligned possessors (CL 10).",
+      "fr": "+2 masse lourde. Une fois/jour sur commande : la tête de la baguette devient une tête de serpent pendant 10 min. Pendant cette période, les touches réussies infligent les dégâts normaux plus poison : 1d10 CON immédiatement (Vigueur DD 14 annule) + 1d10 CON dans 1 min (Vigueur DD 14 annule). Possesseurs d'alignement mauvais uniquement (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 19000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "1d8",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "activation": {
+      "actionType": "standard"
+    },
+    "resourcePoolTemplates": [
+      {
+        "poolId": "viper_uses",
+        "label": {
+          "en": "Serpent Head (1/day)",
+          "fr": "Tête de serpent (1/jour)"
+        },
+        "maxPipelineId": "combatStats.viper_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_rod_of_withering",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Withering",
+      "fr": "Baguette du dépérissement"
+    },
+    "description": {
+      "en": "+1 light mace that deals NO hit point damage. Instead: each melee touch attack deals 1d4 STR damage + 1d4 CON damage (Fort DC 17 negates). If a critical hit is scored, damage is permanent ability drain instead of ability damage (CL 13).",
+      "fr": "+1 masse légère n'infligeant AUCUN dégât aux PV. À la place : chaque attaque de contact inflige 1d4 dégâts de Force + 1d4 dégâts de Constitution (Vigueur DD 17 annule). Sur un coup critique, les dégâts sont permanents (drains de caractéristique) au lieu de simples dégâts (NLS 13)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 25000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "weaponData": {
+      "wieldCategory": "one_handed",
+      "damageDice": "0",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    }
+  },
+  {
+    "id": "item_rod_of_wonder",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Rod of Wonder",
+      "fr": "Baguette des merveilles"
+    },
+    "description": {
+      "en": "Each activation (standard action) produces a random magical effect from the d% table: slow, faerie fire, gust of wind, detect thoughts, stinking cloud, rain, animal summon, lightning bolt, enlarge person, darkness, fireball, invisibility, gems, scintillating colors, flesh to stone, and many more. Unlimited uses (CL 10).",
+      "fr": "Chaque activation (action standard) produit un effet magique aléatoire selon la table de d% : lenteur, feu des fées, bourrasque, détection des pensées, nuage nauséabond, pluie, invocation animale, éclair, agrandissement, ténèbres, boule de feu, invisibilité, gemmes, couleurs scintillantes, chair de pierre, et bien plus. Utilisations illimitées (NLS 10)."
+    },
+    "tags": [
+      "item",
+      "rod",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 12000,
+    "hardness": 10,
+    "hpMax": 10,
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "activation": {
+      "actionType": "standard"
+    }
   }
 ]

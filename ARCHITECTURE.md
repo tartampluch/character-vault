@@ -767,6 +767,83 @@ The item's `consumable.isConsumable: true` triggers the consumption flow; the ab
 
 ---
 
+### 4.11. Metamagic Rods — `ItemFeature.metamagicEffect`
+
+Metamagic rods allow a spellcaster to apply a metamagic feat to a spell **without occupying a higher spell slot** — the defining mechanic that sets them apart from possessing the feat itself. This requires a dedicated field on `ItemFeature` that the `CastingPanel` can read to present the metamagic option at cast time.
+
+#### D&D 3.5 SRD Rules
+
+> "Metamagic rods hold the essence of a metamagic feat but do not change the spell slot of the altered spell. A caster may only use one metamagic rod on any given spell."
+
+- Each rod provides **3 uses per day** (tracked via `resourcePoolTemplates`).
+- **Lesser** rods: spells up to **3rd level**.
+- **Normal** rods: spells up to **6th level**.
+- **Greater** rods: spells up to **9th level**.
+- A sorcerer using a metamagic rod still takes a **full-round action** (same as using a metamagic feat).
+- Only one metamagic rod may be used per spell, but it can be combined with metamagic feats the caster possesses (only the caster's feats adjust the spell slot).
+
+#### Data Model — `ItemFeature.metamagicEffect`
+
+```typescript
+metamagicEffect?: {
+    feat: 'feat_empower_spell'
+          | 'feat_enlarge_spell'
+          | 'feat_extend_spell'
+          | 'feat_maximize_spell'
+          | 'feat_quicken_spell'
+          | 'feat_silent_spell';
+    maxSpellLevel: 3 | 6 | 9;   // 3 = lesser, 6 = normal, 9 = greater
+};
+```
+
+This field coexists with `resourcePoolTemplates` (which tracks the 3 uses/day pool independently):
+
+```json
+{
+  "id": "item_rod_metamagic_empower_lesser",
+  "category": "item",
+  "equipmentSlot": "none",
+  "metamagicEffect": {
+    "feat": "feat_empower_spell",
+    "maxSpellLevel": 3
+  },
+  "resourcePoolTemplates": [{
+    "poolId": "metamagic_uses",
+    "label": { "en": "Empower Uses (3/day)", "fr": "Utilisations d'amplification (3/jour)" },
+    "maxPipelineId": "combatStats.metamagic_uses_max",
+    "defaultCurrent": 3,
+    "resetCondition": "per_day"
+  }]
+}
+```
+
+#### CastingPanel Contract
+
+`CastingPanel.svelte` scans the character's equipped items for any `ItemFeature` with `metamagicEffect` set. For each such rod, the panel:
+
+1. Lists it as an available metamagic option for the current spell cast.
+2. Checks that `spell.level ≤ metamagicEffect.maxSpellLevel` before offering it.
+3. Checks that the rod's `itemResourcePools['metamagic_uses']` is ≥ 1 (charge available).
+4. If the player activates the rod: decrements the pool charge by 1 and applies the metamagic to the cast.
+5. Displays the metamagic applied in the roll history for transparency.
+
+**One rod per spell**: The UI enforces that only one rod can be selected per cast (matching the SRD restriction). Multiple metamagic feats from the character's own feat pool still stack normally.
+
+#### The 6 SRD Metamagic Effects
+
+| Rod feat ID | Effect |
+|---|---|
+| `feat_empower_spell` | All variable numeric effects × 1.5 |
+| `feat_enlarge_spell` | Doubles spell range |
+| `feat_extend_spell` | Doubles spell duration |
+| `feat_maximize_spell` | All variable numeric effects maximized |
+| `feat_quicken_spell` | Spell cast as a free action (once per round) |
+| `feat_silent_spell` | No verbal component required |
+
+> **AI Implementation Note (CastingPanel integration):** When building the metamagic rod picker in `CastingPanel.svelte`, read `metamagicEffect.feat` to determine the *effect to apply* and `metamagicEffect.maxSpellLevel` to *filter eligibility*. Decrement charges via `engine.spendItemPoolCharge(instanceId, 'metamagic_uses')`. The `feat` string can be used as a display key to look up the feat's label from the data loader for the UI label.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

@@ -1065,9 +1065,9 @@ export interface ItemFeature extends Feature {
    * @see GameEngine.consumeItem() — the consumption handler
    * @see GameEngine.expireEffect() — removes an expired ephemeral instance
    * @see ActiveFeatureInstance.ephemeral — marks the generated effect instance
-   * @see EphemeralEffectsPanel.svelte — the "Active Effects" UI panel
-   */
-  consumable?: {
+    * @see EphemeralEffectsPanel.svelte — the "Active Effects" UI panel
+    */
+   consumable?: {
     /** Whether this item is consumed on use (true for potions, oils, single-shot scrolls). */
     isConsumable: true;
     /**
@@ -1075,17 +1075,100 @@ export interface ItemFeature extends Feature {
      * Purely cosmetic — the engine does NOT auto-expire after this duration.
      * Examples: "3 min", "10 rounds", "1 hour", "until discharged"
      */
-    durationHint?: string;
-  };
+     durationHint?: string;
+   };
 
-  /**
-   * Weapon-specific data. Present only for weapons.
-   *
-   * Note: A weapon's attack and damage MODIFIERS (like +2 enhancement) are stored
-   * in `grantedModifiers`. This `weaponData` block holds the STATIC properties
-   * that define the weapon's base capabilities.
-   */
-  weaponData?: {
+   /**
+    * Metamagic rod effect — present only on rods (and similar items) that grant
+    * the ability to apply a metamagic feat to a spell without occupying a higher
+    * spell slot.
+    *
+    * D&D 3.5 SRD — METAMAGIC RODS:
+    *   "Metamagic rods hold the essence of a metamagic feat but do not change the
+    *   spell slot of the altered spell. A caster may only use one metamagic rod on
+    *   any given spell."
+    *
+    *   Each rod grants 3 uses per day (tracked via `resourcePoolTemplates`).
+    *   Lesser rods work on spells up to 3rd level; normal rods up to 6th level;
+    *   greater rods up to 9th level.
+    *
+    * ENGINE CONTRACT:
+    *   This field is the **type declaration** for the metamagic effect. The actual
+    *   usage limit (3/day) is tracked via `resourcePoolTemplates` with
+    *   `resetCondition: "per_day"`.
+    *
+    *   The `CastingPanel.svelte` reads `metamagicEffect` on the character's equipped
+    *   rods to offer a metamagic upgrade option at the moment of casting. If a rod
+    *   with matching `feat` is equipped and the player selects it, the panel:
+    *   1. Checks that the spell's level is ≤ `maxSpellLevel`.
+    *   2. Decrements the rod's ResourcePool charge by 1.
+    *   3. Applies the metamagic effect to the cast spell (e.g., doubles variable
+    *      numeric effects for Empower, extends duration for Extend, etc.).
+    *   4. The spell slot used is NOT increased (unlike the feat itself).
+    *
+    * `feat`:
+    *   The SRD metamagic feat identifier. Maps to a known feat ID in the data.
+    *   Valid values (all SRD metamagic rods):
+    *     - "feat_empower_spell"   — All variable numeric effects × 1.5
+    *     - "feat_enlarge_spell"   — Doubles range
+    *     - "feat_extend_spell"    — Doubles duration
+    *     - "feat_maximize_spell"  — All variable numeric effects are maximum
+    *     - "feat_quicken_spell"   — Free action casting (once/round max)
+    *     - "feat_silent_spell"    — No verbal component required
+    *
+    * `maxSpellLevel`:
+    *   Maximum spell level this rod can affect.
+    *   - Lesser:  3 (rods labeled "lesser")
+    *   - Normal:  6 (standard rods)
+    *   - Greater: 9 (rods labeled "greater")
+    *
+    * CONTENT AUTHORING:
+    *   A lesser metamagic empower rod is authored as:
+    *   ```json
+    *   {
+    *     "id": "item_rod_metamagic_empower_lesser",
+    *     "metamagicEffect": {
+    *       "feat": "feat_empower_spell",
+    *       "maxSpellLevel": 3
+    *     },
+    *     "resourcePoolTemplates": [{
+    *       "poolId": "metamagic_uses",
+    *       "resetCondition": "per_day",
+    *       "defaultCurrent": 3
+    *     }]
+    *   }
+    *   ```
+    *
+    * @see CastingPanel.svelte       — reads this field to offer metamagic option
+    * @see resourcePoolTemplates     — tracks the 3 uses/day separately
+    * @see ARCHITECTURE.md section 4.11 — Metamagic Rod contract
+    */
+   metamagicEffect?: {
+     /**
+      * The feat this rod applies at no spell slot cost.
+      * One of the 6 SRD metamagic feats available on rods.
+      */
+     feat: 'feat_empower_spell'
+           | 'feat_enlarge_spell'
+           | 'feat_extend_spell'
+           | 'feat_maximize_spell'
+           | 'feat_quicken_spell'
+           | 'feat_silent_spell';
+     /**
+      * Maximum spell level this rod can affect.
+      * Lesser = 3, Normal = 6, Greater = 9.
+      */
+     maxSpellLevel: 3 | 6 | 9;
+   };
+
+   /**
+    * Weapon-specific data. Present only for weapons.
+    *
+    * Note: A weapon's attack and damage MODIFIERS (like +2 enhancement) are stored
+    * in `grantedModifiers`. This `weaponData` block holds the STATIC properties
+    * that define the weapon's base capabilities.
+    */
+   weaponData?: {
     /**
      * How the weapon is wielded relative to character size.
      * "light": One-handed. Can be used off-hand without penalty.

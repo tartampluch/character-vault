@@ -586,6 +586,23 @@ _Entry point: pre-conversion analysis of `wondrousItems.html` identified only on
 
 **Total test count after Phase E-8: 737 tests (all passing).**
 
+## Phase E-9: Rod Engine Prerequisites — Metamagic Rod field
+
+_Goal: Resolve the one engine gap identified during C-14r (Rods) analysis. Metamagic rods allow spellcasters to apply a metamagic feat without occupying a higher spell slot — a unique mechanic absent from ItemFeature. Adding `metamagicEffect` pre-wires the contract for the CastingPanel (Phase 12.3) integration._
+
+_Entry point: pre-conversion analysis of `rods.html`. All 22 rod entries (37 items across tiers) map to existing engine primitives EXCEPT metamagic rods, which need a typed `metamagicEffect` field so the CastingPanel can identify which feat to apply and what the spell level limit is._
+
+- [x] **E-9a Type Extension:** Added `ItemFeature.metamagicEffect?: { feat: '...' | ..., maxSpellLevel: 3 | 6 | 9 }` to `feature.ts`. The `feat` union covers all 6 SRD metamagic feats (empower, enlarge, extend, maximize, quicken, silent). `maxSpellLevel` is a strict `3 | 6 | 9` union (lesser/normal/greater). Extensive inline documentation covers the SRD rule (no spell slot increase), the CastingPanel contract (eligible check, charge decrement, one-rod-per-spell), and a complete JSON example of a lesser empower rod.
+
+- [x] **E-9b Tests (`src/tests/metamagicRods.test.ts`):** 12 new Vitest tests (749 total, all passing):
+  - Type soundness (6 tests): all 6 feats compile, all 3 levels compile, lesser empower, greater quicken, non-rod has no field, metamagicEffect + no weaponData/armorData compiles.
+  - Field contract (4 tests): feat preserved, maxSpellLevel preserved, tier distinguished by level, realistic rod with both metamagicEffect and resourcePoolTemplates.
+  - All 6 SRD feats (2 tests): all distinct, two rods same tier different feats.
+
+- [x] **E-9c Documentation:** `ARCHITECTURE.md` section 4.11 (Metamagic Rods — SRD rules, data model with JSON example, CastingPanel 5-step contract, 6-feat table, AI implementation note). `CHECKPOINTS.md` Checkpoint Review #4 updated with 6 new metamagic rod verification items.
+
+**Total test count after Phase E-9: 749 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.
