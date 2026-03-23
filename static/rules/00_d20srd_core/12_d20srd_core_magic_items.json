@@ -63641,5 +63641,725 @@
         "resetCondition": "never"
       }
     ]
+  },
+  {
+    "id": "item_ring_blinking",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Blinking",
+      "fr": "Anneau de clignotement"
+    },
+    "description": {
+      "en": "On command, this ring makes the wearer blink, as with the blink spell.",
+      "fr": "Sur commande, cet anneau fait clignoter le porteur, comme avec le sort clignotement."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 27000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_chameleon_power",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Chameleon Power",
+      "fr": "Anneau de camouflage"
+    },
+    "description": {
+      "en": "As a free action, the wearer can gain a +10 competence bonus on Hide checks. As a standard action, she can also command the ring to use the spell disguise self as often as desired.",
+      "fr": "En action libre, le porteur obtient un bonus de compétence de +10 aux tests de Discrétion. En action simple, il peut utiliser le sort déguisement autant que désiré."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 12700,
+    "grantedModifiers": [
+      {
+        "id": "ring_chameleon_hide",
+        "sourceId": "item_ring_chameleon_power",
+        "sourceName": {
+          "en": "Ring of Chameleon Power",
+          "fr": "Anneau de camouflage"
+        },
+        "targetId": "skills.skill_hide",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_climbing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Climbing",
+      "fr": "Anneau d'escalade"
+    },
+    "description": {
+      "en": "This ring is actually a magic leather cord that ties around a finger. It continually grants the wearer a +5 competence bonus on Climb checks.",
+      "fr": "Cet anneau est un cordon de cuir magique noué autour d'un doigt. Il accorde en permanence un bonus de compétence de +5 aux tests d'Escalade."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 2500,
+    "grantedModifiers": [
+      {
+        "id": "ring_climbing_climb",
+        "sourceId": "item_ring_climbing",
+        "sourceName": {
+          "en": "Ring of Climbing",
+          "fr": "Anneau d'escalade"
+        },
+        "targetId": "skills.skill_climb",
+        "value": 5,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_climbing_improved",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Climbing, Improved",
+      "fr": "Anneau d'escalade amélioré"
+    },
+    "description": {
+      "en": "As ring of climbing, except it grants a +10 competence bonus on Climb checks.",
+      "fr": "Comme l'anneau d'escalade, mais accorde un bonus de compétence de +10 aux tests d'Escalade."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 10000,
+    "grantedModifiers": [
+      {
+        "id": "ring_climbing_improved_climb",
+        "sourceId": "item_ring_climbing_improved",
+        "sourceName": {
+          "en": "Ring of Climbing, Improved",
+          "fr": "Anneau d'escalade amélioré"
+        },
+        "targetId": "skills.skill_climb",
+        "value": 10,
+        "type": "competence"
+      }
+    ],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_counterspells",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Counterspells",
+      "fr": "Anneau de contresort"
+    },
+    "description": {
+      "en": "This ring allows a single spell of 1st through 6th level to be stored within it. That stored spell cannot be cast from the ring; instead, should that exact spell ever be cast upon the wearer, it is immediately countered as a counterspell action requiring no action from the wearer. Once used, the stored spell is gone and a new spell may be placed in the ring.",
+      "fr": "Cet anneau permet de stocker un sort de niveau 1 à 6. Ce sort ne peut être lancé depuis l'anneau ; si ce sort exact est lancé contre le porteur, il est immédiatement contré sans action requise. Une fois utilisé, le sort stocké disparaît et un nouveau peut être inscrit."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 4000,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_ring_djinni_calling",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Ring of Djinni Calling",
+      "fr": "Anneau d'invocation du djinn"
+    },
+    "description": {
+      "en": "When the ring is rubbed (a standard action), a specific djinni is called from the Elemental Plane of Air and appears on the next round. The djinni faithfully obeys and serves the wearer, but never for more than 1 hour per day. If the djinni is ever killed, the ring becomes nonmagical and worthless.",
+      "fr": "Quand l'anneau est frotté (action simple), un djinn spécifique est appelé depuis le Plan Élémentaire de l'Air et apparaît au round suivant. Le djinn sert fidèlement le porteur, mais jamais plus d'une heure par jour. Si le djinn est tué, l'anneau perd ses propriétés magiques."
+    },
+    "tags": [
+      "item",
+      "ring",
+      "magic_item"
+    ],
+    "equipmentSlot": "ring",
+    "weightLbs": 0,
+    "costGp": 125000,
+    "activation": {
+      "actionType": "standard"
+    },
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "djinni_service",
+        "label": {
+          "en": "Djinni Service (1 hour/day)",
+          "fr": "Service du djinn (1 heure/jour)"
+        },
+        "maxPipelineId": "combatStats.djinni_service_max",
+        "defaultCurrent": 1,
+        "resetCondition": "per_day"
+      }
+    ]
+  },
+  {
+    "id": "item_domt_card_balance",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Balance",
+      "fr": "Jeu des Mille Destins — Balance"
+    },
+    "description": {
+      "en": "**Effect:** The character must change to a radically different alignment. If the character fails to act according to the new alignment, she gains a negative level.\n\n**Tarot card:** XI. Justice | **Playing card substitute:** Two of spades",
+      "fr": "**Effet :** Le personnage doit adopter un alignement radicalement différent. S'il n'agit pas selon ce nouvel alignement, il gagne un niveau négatif.\n\n**Carte de tarot :** XI. Justice | **Substitut de carte à jouer :** Two of spades"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_comet",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Comet",
+      "fr": "Jeu des Mille Destins — Comète"
+    },
+    "description": {
+      "en": "**Effect:** The character must single-handedly defeat the next hostile monster or monsters encountered, or the benefit is lost. If successful, the character gains enough XP to attain the next experience level.\n\n**Tarot card:** Two of swords | **Playing card substitute:** Two of diamonds",
+      "fr": "**Effet :** Le personnage doit vaincre seul le ou les prochains monstres hostiles rencontrés, sinon le bénéfice est perdu. En cas de succès, il gagne suffisamment de PX pour atteindre le niveau d'expérience suivant.\n\n**Carte de tarot :** Two of swords | **Substitut de carte à jouer :** Two of diamonds"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_donjon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Donjon",
+      "fr": "Jeu des Mille Destins — Donjon"
+    },
+    "description": {
+      "en": "**Effect:** This card signifies imprisonment — either by the imprisonment spell or by some powerful being. All gear and spells are stripped from the victim. Draw no more cards.\n\n**Tarot card:** Four of swords | **Playing card substitute:** Ace of spades",
+      "fr": "**Effet :** Cette carte signifie l'emprisonnement — par le sort d'emprisonnement ou par un être puissant. Tout l'équipement et les sorts sont retirés à la victime. Ne tirez plus de cartes.\n\n**Carte de tarot :** Four of swords | **Substitut de carte à jouer :** Ace of spades"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_euryale",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Euryale",
+      "fr": "Jeu des Mille Destins — Euryale"
+    },
+    "description": {
+      "en": "**Effect:** The medusalike visage of this card brings a curse that only the Fates card or a deity can remove. The -1 penalty on all saving throws is otherwise permanent.\n\n**Tarot card:** Ten of swords | **Playing card substitute:** Queen of spades",
+      "fr": "**Effet :** Le visage de méduse de cette carte apporte une malédiction que seule la carte des Destins ou une divinité peut supprimer. La pénalité de -1 à tous les jets de sauvegarde est autrement permanente.\n\n**Carte de tarot :** Ten of swords | **Substitut de carte à jouer :** Queen of spades"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_fates",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — The Fates",
+      "fr": "Jeu des Mille Destins — Les Destins"
+    },
+    "description": {
+      "en": "**Effect:** This card enables the character to avoid even an instantaneous occurrence if so desired, for the fabric of reality is unraveled and respun. It does not enable something to happen — only stops something or reverses a past occurrence.\n\n**Tarot card:** Three of cups | **Playing card substitute:** Ace of hearts",
+      "fr": "**Effet :** Cette carte permet au personnage d'éviter n'importe quel événement, même instantané, car le tissu de la réalité est démêlé et retissé. Elle ne permet pas de provoquer un événement — seulement d'en arrêter un ou d'en inverser un passé.\n\n**Carte de tarot :** Three of cups | **Substitut de carte à jouer :** Ace of hearts"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_flames",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Flames",
+      "fr": "Jeu des Mille Destins — Flammes"
+    },
+    "description": {
+      "en": "**Effect:** Hot anger, jealousy, and envy are possible motivational forces for the enmity. The enmity of the outsider can't be ended until one of the parties has been slain. Determine the outsider randomly and assume it attacks the character within 1d20 days.\n\n**Tarot card:** XV. The Devil | **Playing card substitute:** Queen of clubs",
+      "fr": "**Effet :** La colère brûlante, la jalousie et l'envie motivent l'inimitié. L'inimitié de l'Extérieur ne peut être terminée avant que l'une des parties soit tuée. Déterminez l'Extérieur aléatoirement ; il attaque le personnage dans 1d20 jours.\n\n**Carte de tarot :** XV. The Devil | **Substitut de carte à jouer :** Queen of clubs"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_fool",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Fool",
+      "fr": "Jeu des Mille Destins — Fou"
+    },
+    "description": {
+      "en": "**Effect:** The payment of XP and the redraw are mandatory. This card is always discarded when drawn, unlike all others except the Jester.\n\n**Tarot card:** 0. The Fool | **Playing card substitute:** Joker (with trademark)",
+      "fr": "**Effet :** La perte de PX et le nouveau tirage sont obligatoires. Cette carte est toujours éliminée lorsqu'elle est tirée, comme la Bouffon.\n\n**Carte de tarot :** 0. The Fool | **Substitut de carte à jouer :** Joker (with trademark)"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_gem",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Gem",
+      "fr": "Jeu des Mille Destins — Gemme"
+    },
+    "description": {
+      "en": "**Effect:** This card indicates wealth. The jewelry is all gold set with gems, each piece worth 2,000 gp, the gems 1,000 gp value each.\n\n**Tarot card:** Seven of cups | **Playing card substitute:** Two of hearts",
+      "fr": "**Effet :** Cette carte indique la richesse. Les joyaux sont tous en or serti de gemmes, chaque pièce valant 2 000 po, les gemmes 1 000 po chacune.\n\n**Carte de tarot :** Seven of cups | **Substitut de carte à jouer :** Two of hearts"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_idiot",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Idiot",
+      "fr": "Jeu des Mille Destins — Idiot"
+    },
+    "description": {
+      "en": "**Effect:** This card causes the drain of 1d4+1 points of Intelligence immediately. The additional draw is optional.\n\n**Tarot card:** Two of pentacles | **Playing card substitute:** Two of clubs",
+      "fr": "**Effet :** Cette carte provoque la perte immédiate de 1d4+1 points d'Intelligence. Le tirage supplémentaire est facultatif.\n\n**Carte de tarot :** Two of pentacles | **Substitut de carte à jouer :** Two of clubs"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_jester",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Jester",
+      "fr": "Jeu des Mille Destins — Bouffon"
+    },
+    "description": {
+      "en": "**Effect:** This card is always discarded when drawn, unlike all others except the Fool. The redraws are optional.\n\n**Tarot card:** XII. The Hanged Man | **Playing card substitute:** Joker (without trademark)",
+      "fr": "**Effet :** Cette carte est toujours éliminée lorsqu'elle est tirée, comme le Fou. Les nouveaux tirages sont facultatifs.\n\n**Carte de tarot :** XII. The Hanged Man | **Substitut de carte à jouer :** Joker (without trademark)"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_key",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Key",
+      "fr": "Jeu des Mille Destins — Clé"
+    },
+    "description": {
+      "en": "**Effect:** The magic weapon granted must be one usable by the character. It suddenly appears out of nowhere in the character's hand.\n\n**Tarot card:** V. The Hierophant | **Playing card substitute:** Queen of hearts",
+      "fr": "**Effet :** L'arme magique accordée doit être utilisable par le personnage. Elle apparaît soudainement dans la main du personnage.\n\n**Carte de tarot :** V. The Hierophant | **Substitut de carte à jouer :** Queen of hearts"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_knight",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Knight",
+      "fr": "Jeu des Mille Destins — Chevalier"
+    },
+    "description": {
+      "en": "**Effect:** The fighter appears out of nowhere and serves loyally until death. He or she is of the same race and gender as the character.\n\n**Tarot card:** Page of swords | **Playing card substitute:** Jack of hearts",
+      "fr": "**Effet :** Le guerrier apparaît de nulle part et sert fidèlement jusqu'à la mort. Il est de la même race et du même sexe que le personnage.\n\n**Carte de tarot :** Page of swords | **Substitut de carte à jouer :** Jack of hearts"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_moon",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Moon",
+      "fr": "Jeu des Mille Destins — Lune"
+    },
+    "description": {
+      "en": "**Effect:** This card grants 1d4 wishes (same as the 9th-level wizard spell) which must be used within a number of minutes equal to the number received.\n\n**Tarot card:** XVIII. The Moon | **Playing card substitute:** Queen of diamonds",
+      "fr": "**Effet :** Cette carte accorde 1d4 souhaits (comme le sort de magicien de niveau 9) qui doivent être utilisés en un nombre de minutes égal au nombre accordé.\n\n**Carte de tarot :** XVIII. The Moon | **Substitut de carte à jouer :** Queen of diamonds"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_rogue",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Rogue",
+      "fr": "Jeu des Mille Destins — Coquin"
+    },
+    "description": {
+      "en": "**Effect:** When this card is drawn, one of the character's NPC friends is totally alienated and becomes hostile. If the character has no NPC friends, the card has no effect.\n\n**Tarot card:** Five of swords | **Playing card substitute:** Jack of spades",
+      "fr": "**Effet :** Lorsque cette carte est tirée, l'un des amis PNJ du personnage est totalement aliéné et devient hostile. Si le personnage n'a pas d'amis PNJ, la carte n'a aucun effet.\n\n**Carte de tarot :** Five of swords | **Substitut de carte à jouer :** Jack of spades"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_ruin",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Ruin",
+      "fr": "Jeu des Mille Destins — Ruine"
+    },
+    "description": {
+      "en": "**Effect:** As implied, when this card is drawn, all nonmagical treasures owned by the character are lost.\n\n**Tarot card:** XVI. The Tower | **Playing card substitute:** King of spades",
+      "fr": "**Effet :** Comme le nom l'indique, lorsque cette carte est tirée, tous les trésors non magiques du personnage sont perdus.\n\n**Carte de tarot :** XVI. The Tower | **Substitut de carte à jouer :** King of spades"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_skull",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Skull",
+      "fr": "Jeu des Mille Destins — Crâne"
+    },
+    "description": {
+      "en": "**Effect:** A dread wraith appears and the character must fight it. If the character is slain, she is slain forever and cannot be revived. No magic short of a deity's personal intervention can restore the character to life.\n\n**Tarot card:** XIII. Death | **Playing card substitute:** Jack of clubs",
+      "fr": "**Effet :** Un spectre redouté apparaît et le personnage doit le combattre. Si le personnage est tué, il l'est définitivement et ne peut être ramené à la vie.\n\n**Carte de tarot :** XIII. Death | **Substitut de carte à jouer :** Jack of clubs"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_star",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Star",
+      "fr": "Jeu des Mille Destins — Étoile"
+    },
+    "description": {
+      "en": "**Effect:** The character immediately gains a +2 inherent bonus to one ability score of her choice.\n\n**Tarot card:** XVII. The Star | **Playing card substitute:** Jack of diamonds",
+      "fr": "**Effet :** Le personnage obtient immédiatement un bonus naturel de +2 à une valeur de caractéristique de son choix.\n\n**Carte de tarot :** XVII. The Star | **Substitut de carte à jouer :** Jack of diamonds"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_sun",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Sun",
+      "fr": "Jeu des Mille Destins — Soleil"
+    },
+    "description": {
+      "en": "**Effect:** The character gains 50,000 XP and a beneficial medium wondrous item.\n\n**Tarot card:** XIX. The Sun | **Playing card substitute:** King of diamonds",
+      "fr": "**Effet :** Le personnage gagne 50 000 PX et un objet merveilleux moyen bénéfique.\n\n**Carte de tarot :** XIX. The Sun | **Substitut de carte à jouer :** King of diamonds"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_talons",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Talons",
+      "fr": "Jeu des Mille Destins — Serres"
+    },
+    "description": {
+      "en": "**Effect:** When this card is drawn, every magic item owned or possessed by the character disappears permanently.\n\n**Tarot card:** Queen of pentacles | **Playing card substitute:** Ace of clubs",
+      "fr": "**Effet :** Lorsque cette carte est tirée, chaque objet magique possédé par le personnage disparaît définitivement.\n\n**Carte de tarot :** Queen of pentacles | **Substitut de carte à jouer :** Ace of clubs"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_throne",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Throne",
+      "fr": "Jeu des Mille Destins — Trône"
+    },
+    "description": {
+      "en": "**Effect:** The character gains a +6 competence bonus on Diplomacy checks. In addition, a small keep appears somewhere in the world.\n\n**Tarot card:** Four of staves | **Playing card substitute:** King of hearts",
+      "fr": "**Effet :** Le personnage obtient un bonus de compétence de +6 aux tests de Diplomatie. De plus, un petit château apparaît quelque part dans le monde.\n\n**Carte de tarot :** Four of staves | **Substitut de carte à jouer :** King of hearts"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_vizier",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — Vizier",
+      "fr": "Jeu des Mille Destins — Vizir"
+    },
+    "description": {
+      "en": "**Effect:** This card empowers the character with the ability to know the answer to one dilemma of his choosing. The answer comes either before or after the question is asked, at the DM's option.\n\n**Tarot card:** IX. The Hermit | **Playing card substitute:** Ace of diamonds",
+      "fr": "**Effet :** Cette carte confère au personnage la capacité de connaître la réponse à un dilemme de son choix. La réponse vient avant ou après la question, au choix du MD.\n\n**Carte de tarot :** IX. The Hermit | **Substitut de carte à jouer :** Ace of diamonds"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "item_domt_card_the_void",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Deck of Many Things — The Void",
+      "fr": "Jeu des Mille Destins — Le Vide"
+    },
+    "description": {
+      "en": "**Effect:** This black card spells immediate disaster. The character's body continues to function, but the character's soul is immediately drawn out and trapped in a gem, a magic item, or the realm of a powerful deity.\n\n**Tarot card:** Eight of swords | **Playing card substitute:** King of clubs",
+      "fr": "**Effet :** Cette carte noire annonce un désastre immédiat. Le corps du personnage continue de fonctionner, mais son âme est immédiatement attirée et piégée dans une gemme, un objet magique ou le domaine d'une divinité puissante.\n\n**Carte de tarot :** Eight of swords | **Substitut de carte à jouer :** King of clubs"
+    },
+    "tags": [
+      "item",
+      "deck_of_many_things_card",
+      "artifact",
+      "minor_artifact"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 0,
+    "costGp": 0,
+    "grantedModifiers": [],
+    "grantedFeatures": []
   }
 ]

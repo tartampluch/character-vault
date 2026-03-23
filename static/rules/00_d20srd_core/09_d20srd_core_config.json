@@ -931,5 +931,30 @@
         ]
       }
     }
+  },
+  {
+    "tableId": "config_multiclass_xp_penalty",
+    "ruleSource": "srd_core",
+    "data": {
+      "rule": {
+        "label": { "en": "Multiclass XP Penalty", "fr": "Pénalité d'XP multiclasse" },
+        "description": {
+          "en": "A character with two or more classes whose levels are not within 1 level of each other suffers a -20% XP penalty. Classes that are within 1 level of the highest-level class are not penalized. The character's favored class (listed per race) does not count when determining the penalty. If a character has no favored class, or all relevant classes are within 1 level of each other, there is no penalty.",
+          "fr": "Un personnage ayant deux classes ou plus dont les niveaux ne sont pas dans un écart de 1 niveau subit une pénalité de -20% sur les XP gagnés. Les classes dans un écart de 1 niveau de la classe la plus haute ne sont pas pénalisées. La classe de prédilection de la race du personnage ne compte pas pour déterminer la pénalité."
+        },
+        "penaltyPercent": 20,
+        "maxLevelGap": 1,
+        "favoredClassExemption": true
+      },
+      "racesFavoredClasses": {
+        "race_human":    "any",
+        "race_dwarf":    "class_fighter",
+        "race_elf":      "class_wizard",
+        "race_gnome":    "class_bard",
+        "race_half_elf": "any",
+        "race_half_orc": "class_barbarian",
+        "race_halfling": "class_rogue"
+      }
+    }
   }
 ]

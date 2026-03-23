@@ -1510,7 +1510,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - [x] **99** — Cursed Items (`cursedItems.html`)
 - [x] **100** — Intelligent Items (`intelligentItems.html`) — **run full-file validation after writing**
 
-> **Artifacts** (`artifacts.html`): Convert minor and major artifacts. Use `"category": "item"` with `"equipmentSlot": "none"` for non-wearable artifacts. See `ANNEXES.md` section A.9 for the Sphere of Annihilation example.
+> **Artifacts** (`artifacts.html`): Convert minor and major artifacts. Use `"category": "item"` with `"equipmentSlot": "none"` for non-wearable artifacts. See `ANNEXES.md` section A.9 for the Sphere of Annihilation example. **Deck of Many Things:** In addition to the deck item itself (`item_artifact_deck_of_many_things`), each of the 22 cards is a separate item entry with ID `item_domt_card_<name>` and tags `["deck_of_many_things_card", "artifact", "minor_artifact"]`. This allows GMs to grant or encounter individual drawn cards as items.
 > **Cursed items** (`cursedItems.html`): Add `forbiddenTags` (e.g., `["cursed_identified"]`) to prevent removal and model curse effects as permanent `grantedModifiers`.
 > **Intelligent items** (`intelligentItems.html`): Model as standard items with additional `grantedModifiers` for the item's powers and a `choices` entry for the item's alignment/purpose if variable.
 
@@ -1682,7 +1682,7 @@ Run after generating any output file. Validation is **bidirectional**: first che
 - [ ] For **spells**: every spell listed in the SRD `spells/` directory for the current batch has a JSON entry
 - [ ] For **feats**: every feat in `feats.html` for the current batch has a JSON entry, including all sub-feats (e.g. Weapon Focus (longsword) is a separate entry from Weapon Focus (greataxe))
 - [ ] For **magic items**: every named item in the SRD table for the current batch (rings, potions, wondrous, etc.) has a JSON entry
-- [ ] For **skills**: all 36 core skills + 6 psionic skills have entries; Speak Language is included (special: no ability, unlimited ranks, grants a language FeatureChoice per rank)
+- [ ] For **skills**: all 36 core skills + 4 psionic skills have entries; Speak Language is included (special: no ability, unlimited ranks, grants a language FeatureChoice per rank). The psionic skills directory contains 5 files; `concentration.html` is already a core skill (only psionic notes are appended). The 4 distinct new psionic skills are: `skill_autohypnosis`, `skill_knowledge_psionics`, `skill_psicraft`, `skill_use_psionic_device`.
 - [ ] For **domains**: all 21 cleric domains have entries including their granted spells and domain powers
 - [ ] For **config tables** (task 1): all required tables are present — `config_xp_table`, `config_ability_score_costs`, `config_carrying_capacity`, `config_bonus_spell_slots`, `config_multiclass_xp_penalty`, `config_size_modifiers`
 

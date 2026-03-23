@@ -2176,7 +2176,7 @@ The `optionsQuery` field uses a simple declarative format that the `DataLoader` 
 - **Archmage** prerequisite: `has_tag "feat_skill_focus_skill_spellcraft"` — exactly checks for Skill Focus (Spellcraft). The "two Spell Focus feats" condition still uses the `feat_spell_focus` + `feat_greater_spell_focus` proxy (no count operator exists in the current `LogicOperator` set).
 - **Thaumaturgist** prerequisite: `has_tag "feat_spell_focus_arcane_school_conjuration"` — exactly checks for Spell Focus (Conjuration).
 
-**Arcane School features:** Eight `arcane_school_*` features (one per school) are defined in `03_d20srd_core_feats.json` with `tag: "arcane_school"`. They serve as the selection pool for `feat_spell_focus` and `feat_greater_spell_focus`.
+**Arcane School features:** Eight `arcane_school_*` features (one per school) are defined in `02_d20srd_core_class_features.json` with `tag: "arcane_school"` (not in `03_d20srd_core_feats.json` — they are Wizard class-specific features). They serve as the selection pool for `feat_spell_focus` and `feat_greater_spell_focus`. Since `optionsQuery: "tag:arcane_school"` searches **all** loaded rule files, the cross-file placement is functionally correct.
 
 **Concrete example (Weapon Focus with sub-tag):**
 
