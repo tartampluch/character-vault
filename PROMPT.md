@@ -2,15 +2,15 @@
 
 You are an expert developer in Svelte 5 and TypeScript. We are developing a Virtual Tabletop (VTT) RPG engine for D&D 3.5 based on a "Data-Driven" Entity-Component-System (ECS) architecture. All rules are defined in JSONs; the engine only resolves logic trees and mathematical pipelines.
 
-I have provided the complete Architecture Document in your context. Your goal is to strictly and sequentially follow the checklist below.
+I have provided the complete Architecture Document and Annexes in your context. Your goal is to strictly and sequentially follow the checklist below.
 
-Create a `PROGRESS.md` file at the root of the workspace. Extract the entire "Checklist" section (all phases, including all sub-tasks) and format it exactly as a GitHub-flavored markdown task list with unchecked boxes `- [ ]`. Add and check off a setup task at the top: `- [ ] Initialize Project & PROGRESS.md`. At the very top of the `PROGRESS.md` file, copy the entire CRITICAL CODING GUIDELINES section to make sure it stays in the context the whole time.
+Create a `PROGRESS.md` file at the root of the workspace. Extract the entire "Checklist" section (all phases, including all sub-tasks) and format it exactly as a GitHub-flavored markdown task list with unchecked boxes `- [ ]`. Add and check off a setup task at the top: `- [x] Initialize Project & PROGRESS.md`. At the very top of the `PROGRESS.md` file, copy the entire CRITICAL CODING GUIDELINES section to make sure it stays in the context the whole time.
 
 Once the `PROGRESS.md` file is successfully created and saved, apply the Pause & Acknowledge Protocol. Confirm that the file is ready, and **stop completely**. Wait for my explicit command to begin the first coding task.
 
 **CRITICAL CODING GUIDELINES:**
 
-0. **Context Loading:** The architecture is split into two files. `ARCHITECTURE.md` must be loaded for EVERY task. `ANNEXES.md` (JSON examples and config tables) should only be loaded when the current task requires reference data (Phases 1, 5, 17, or when explicitly instructed).
+0. **Context Loading:** The architecture is split into two files. `ARCHITECTURE.md` must be loaded for EVERY task. `ANNEXES.md` (complete JSON examples and config tables) should be loaded when the current task requires reference data (Phases 1, 5, 17, or when explicitly instructed).
 1. **Language:** All code, variables, and comments MUST be in English.
 2. **Comments:** Comments must be exhaustive, educational, and explain the _why_ behind complex logic (especially for D&D 3.5 specificities like DAG resolution, stacking rules, or Exploding Dice mechanics).
 3. **Quality:** Prioritize extreme readability, modularity, and strict TypeScript typing. Apply software engineering best practices so any other developer or AI can easily onboard and scale the project.
@@ -26,708 +26,305 @@ Once the `PROGRESS.md` file is successfully created and saved, apply the Pause &
 
 # Checklist
 
-## Phase 1: Typed Foundations (Data Models)
+### Phase 1: Typed Foundations (Data Models)
 
-- [ ] **1.1 Primitives & i18n:** Create `src/lib/types/primitives.ts` (ID, ModifierType, LogicOperator) and `src/lib/types/i18n.ts` (LocalizedString, I18N_CONFIG).
-- [ ] **1.2 Logic & Math Engine:** Create `src/lib/types/logic.ts` (Recursive LogicNode) and `src/lib/types/pipeline.ts` (Modifier with `situationalContext`, StatisticPipeline with computed `derivedModifier`, separating active/situational, SkillPipeline, ResourcePool).
-- [ ] **1.3 Unified Feature Model:** Create `src/lib/types/feature.ts` (Feature with `levelProgression`, ItemFeature with `two_hands` slot, MagicFeature, FeatureChoice, AugmentationRule). Ensure every JSON entity carries a `ruleSource` field and an optional `merge` field for the Data Override system.
-- [ ] **1.3a MagicFeature psionic fields (`discipline` + `displays`):** Add two psionic-specific optional fields to `MagicFeature` in `src/lib/types/feature.ts`: `discipline?: PsionicDiscipline` (typed union of the 6 SRD disciples: clairsentience, metacreativity, psychokinesis, psychometabolism, psychoportation, telepathy) and `displays?: PsionicDisplay[]` (typed array of the 5 SRD display types: auditory, material, mental, olfactory, visual). Export both types (`PsionicDiscipline`, `PsionicDisplay`) from `feature.ts`. Document psionic fields (relationship to `school`, DataLoader query format `discipline:<d>`, display suppression mechanic, complete JSON example) in `ARCHITECTURE.md` section 5.2.1. Required for: all psionic power JSON data (D20SRD_CONVERSION.md C-15a–k), Psicraft skill checks, Psionic Powers panel UI (Phase 12).
-- [ ] **1.3b ItemFeature psionic item subtypes (`psionicItemData`):** Add `PsionicItemType` union type, `PowerStoneEntry` interface, and optional `psionicItemData` block to `ItemFeature` in `src/lib/types/feature.ts`. Covers all five D&D 3.5 psionic item types: Cognizance Crystals (`storedPP`, `maxPP`, `attuned`), Dorjes (`powerStored`, `charges`, `manifesterLevel`), Power Stones (`powersImprinted: PowerStoneEntry[]` with Brainburn ML tracking), Psicrowns (`storedPP`, `maxPP`, `powersKnown[]`, `manifesterLevel`), Psionic Tattoos (`powerStored`, `manifesterLevel`, `activated`). Document the full per-type field-to-type matrix, mutable vs immutable fields, JSON examples, and SRD mechanical details in `ARCHITECTURE.md` section 5.1.1. Required for: all psionic item JSON data (D20SRD_CONVERSION.md C-15g–k), Inventory tab psionic item display (Phase 13), PP management from cognizance crystals.
-- [ ] **1.3d `FeatureChoice.choiceGrantedTagPrefix` — choice-derived sub-tags:** Add optional `choiceGrantedTagPrefix?: string` field to `FeatureChoice` in `feature.ts`. The GameEngine `#computeActiveTags()` emits `<prefix><selectedId>` for each selected item, making parameterised feat selections checkable via standard `has_tag` prerequisites. Add `choiceGrantedTagPrefix` to `feat_weapon_focus` (`"feat_weapon_focus_"`), `feat_skill_focus` (`"feat_skill_focus_"`), `feat_spell_focus` (`"feat_spell_focus_"`). Add eight `arcane_school_*` features to `03_d20srd_core_feats.json`. Update prestige class prerequisites: Arcane Archer uses exact longbow/shortbow sub-tags; Archmage uses `feat_skill_focus_skill_spellcraft`; Thaumaturgist uses `feat_spell_focus_arcane_school_conjuration`. Document in `ARCHITECTURE.md` section 5.3.1. Tests in `dagResolution.test.ts` and `logicEvaluator.test.ts`.
-- [ ] **1.3c Feature `actionBudget` field (condition action restrictions):** Add optional `actionBudget?: { standard?; move?; swift?; immediate?; free?; full_round? }` field to the base `Feature` interface in `src/lib/types/feature.ts`. Each key = max of that action type per round (0 = blocked, absent = unlimited). The Combat UI takes the minimum across all active features per category. Documents the full SRD condition table (Staggered, Disabled, Nauseated, Stunned, Cowering, Dazed, Paralyzed, Fascinated, Dying, Unconscious), the "standard OR move not both" XOR rule (signalled by `action_budget_xor` tag), and the UI resolution algorithm in `ARCHITECTURE.md` section 5.6. Required for: Combat Tab (Phase 10.1) to automatically enforce action restrictions from conditions without GM manual intervention; all condition Features in JSON (conditionSummary.html).
-- [ ] **1.4 Global State & Campaign Settings:** Create `src/lib/types/character.ts` (ActiveFeatureInstance, LinkedEntity with serialization guard, Character with `classLevels` record and `gmOverrides` array) and `src/lib/types/settings.ts` (CampaignSettings with language, point buy budget, reroll 1s, exploding 20s rules, and `enabledRuleSources`). Create `src/lib/types/campaign.ts` (Campaign, Chapter, SceneState).
-- [ ] **1.5 Character ECL & XP fields (monster PC support):** Add `levelAdjustment: number` and `xp: number` fields to the `Character` interface in `src/lib/types/character.ts`. Document both fields and the `@characterLevel` vs `@eclForXp` distinction in `ARCHITECTURE.md` (sections 4.3 and 6, new subsection 6.4). Required for: monster PCs with racial Level Adjustment, the "Reducing Level Adjustments" SRD variant, correct XP-table lookups when LA > 0.
-- [ ] **1.6 ResourcePool reset conditions — full set (incremental + calendar):** Extend `ResourcePool.resetCondition` in `src/lib/types/pipeline.ts` from a 4-value union to an **8-value union** covering all D&D 3.5 recovery cadences: `"short_rest"`, `"long_rest"`, `"encounter"`, `"never"` (full resets); `"per_turn"`, `"per_round"` (incremental ticks); `"per_day"`, `"per_week"` (calendar resets). Add optional `rechargeAmount?: number | string` field (formula-capable) for the amount restored per tick (incremental modes only). Document the full reference table in `ARCHITECTURE.md` section 4.4 — including Fast Healing vs Regeneration design notes, and the critical distinction between `"per_day"` (dawn reset, no sleep required) and `"long_rest"` (requires 8 hours of sleep). Engine trigger methods: `triggerTurnTick()`, `triggerRoundTick()`, `triggerEncounterReset()`, `triggerShortRest()`, `triggerLongRest()` are Phase 3.6; `triggerDawnReset()` and `triggerWeeklyReset()` are also Phase 3.6. Required for: Fast Healing, Regeneration, per-round hazards, X/day ring abilities, X/week ring abilities, finite item charges.
-- [ ] **1.3e Feature model extensions — item mechanics & activation variants:** Extend `src/lib/types/feature.ts` with four additions that complete the SRD item and activation model. (a) **`ResourcePoolTemplate` interface** (exported): `poolId`, `label`, `maxPipelineId`, `defaultCurrent`, `resetCondition`, optional `rechargeAmount` — the static schema for per-instance item charges. Add `Feature.resourcePoolTemplates?: ResourcePoolTemplate[]` to the base `Feature` interface. (b) **`ActivationTier` interface** (exported): `label`, `targetPoolId`, `cost` (number or formula), `grantedModifiers` — one option in a variable-cost activation. Add `Feature.activation.tieredResourceCosts?: ActivationTier[]`. (c) **`activation.actionType` union extension**: add `"passive"` (always active, no button) and `"reaction"` (fires automatically). (d) **`activation.triggerEvent?: string`** — the event string that fires a reaction feature (`"on_fall"`, `"on_spell_targeted"`, `"on_damage_taken"`, `"on_attack_received"`). Document in `ARCHITECTURE.md` section 5.7 (pool template lifecycle) and section 5.5b (passive/reaction with standard trigger-event table). Required for: Ring of the Ram tiered charges, Elemental Command per-day/per-week abilities, Ring of Feather Falling (`on_fall`), Ring of Counterspells (`on_spell_targeted`), passive skill-ring modelling.
-- [ ] **1.4a `ActiveFeatureInstance` — instance-scoped item resource pools:** Extend `ActiveFeatureInstance` in `src/lib/types/character.ts` with optional `itemResourcePools?: Record<string, number>` — stores the *current* charge / use count per pool declared in `Feature.resourcePoolTemplates`. Travels with the item instance on trade/transfer; remaining charges belong to the item, not the character. Document in `ARCHITECTURE.md` section 5.7 lifecycle table. Required for: all charged SRD items (Ring of the Ram 50 charges, Ring of Three Wishes 3 rubies, Ring of Spell Turning 3/day).
+_Goal: Define the complete TypeScript type system up-front. All interfaces — including every sub-type extension — are established here so subsequent phases can build on a stable contract._
 
-## Phase 2: Pure Functions & Dice Engine (The Brain)
+- [ ] **1.1 Primitives & i18n:** Create `src/lib/types/primitives.ts` with `ID` (string alias), complete `ModifierType` union (enhancement, deflection, natural_armor, armor, shield, luck, morale, competence, racial, insight, sacred, profane, circumstance, dodge, synergy, untyped, resistance, base, setAbsolute, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`), and `LogicOperator`. Create `src/lib/types/i18n.ts` (`LocalizedString`, `I18N_CONFIG`). Per `ARCHITECTURE.md` §2.
 
-- [ ] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (Localization and unit conversion based on CampaignSettings).
-- [ ] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts` (Evaluate formulas, replace `@` placeholders, and handle `|distance` / `|weight` pipes).
-- [ ] **2.3 Logic Evaluator:** Create `src/lib/utils/logicEvaluator.ts` (Recursive evaluation of `LogicNode`).
-- [ ] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts` (Ignore stacking for identical modifier types unless exceptions apply).
-- [ ] **2.4a Damage Reduction stacking & `drBypassTags`:** Add `"damage_reduction"` to `ModifierType` in `primitives.ts`. Add `drBypassTags?: string[]` field to `Modifier` in `pipeline.ts` — holds the material/condition tags that bypass a DR entry (e.g., `["magic"]`, `["silver"]`, `[]` for DR/—). Add `DREntry` result type to `stackingRules.ts`. Implement best-wins-per-bypass-group DR resolution in `applyStackingRules()`: group DR modifiers by sorted `drBypassTags` signature; within each group keep only the highest value; return as `StackingResult.drEntries[]`. Document two DR authoring modes ("base" for additive class-progression DR, "damage_reduction" for innate/racial DR) in `ARCHITECTURE.md` section 4.5.
-- [ ] **2.5 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings)`. It MUST accept `CampaignSettings` to handle "Exploding 20s" (recursive reroll and add) and "Reroll 1s" (for stat generation). Return a strict `RollResult` type handling crits, fumbles, explosions count, and applying situational buffs.
-- [ ] **2.5a Gestalt variant rule (`variantRules.gestalt` + `gestaltRules.ts` + Phase 3.7):** Add `variantRules: { gestalt: boolean }` block to `CampaignSettings` in `src/lib/types/settings.ts` (default `false`). Create `src/lib/utils/gestaltRules.ts` with pure functions `computeGestaltBase()` and `groupBaseModifiersByClass()` implementing the max-per-level algorithm, plus `GESTALT_AFFECTED_PIPELINES` Set and `isGestaltAffectedPipeline()` helper. Update `GameEngine.svelte.ts` Phase 3 (DAG Phase 3.7): when `settings.variantRules.gestalt === true`, separate "base" type modifiers from non-"base" on affected pipelines (BAB + saves.fort/ref/will), call `computeGestaltBase()` to get the gestalt total, and inject it as `effectiveBaseValue` into `applyStackingRules()`. Document the gestalt algorithm, affected vs unaffected pipelines, standard vs gestalt comparison tables, and DAG integration in `ARCHITECTURE.md` sections 8.1 and 8.2.
-- [ ] **2.5b Vitality/Wound Points variant (`variantRules.vitalityWoundPoints` + `RollResult.targetPool`):** Add `vitalityWoundPoints: boolean` to the `variantRules` block in `CampaignSettings` (default `false`, before `gestalt`). Add `DamageTargetPool` exported type (`"res_hp" | "res_vitality" | "res_wound_points"`) to `diceEngine.ts`. Add `targetPool: DamageTargetPool` required field to `RollResult` interface. Add optional `isCriticalHit?: boolean` to `RollContext` for two-roll combat flow (attack roll then separate damage roll). In `parseAndRoll()`: when `settings.variantRules.vitalityWoundPoints === true`, set `targetPool` to `"res_wound_points"` on confirmed crits (`context.isCriticalHit` or `isCriticalThreat`) else `"res_vitality"`; when flag false, always `"res_hp"`. Document V/WP rules (two resource pools, critical hit routing, overflow handling, required content JSON, Combat Tab impl note) in `ARCHITECTURE.md` section 8.3. Updated `variantRules` table in section 8.1.
-- [ ] **2.5c `attacker.*` modifier target namespace:** Add support for modifiers that impose penalties on the *attacker* rather than on the modifier owner — required for features like Ring of Elemental Command ("creatures from the associated plane attacking the wearer take −1 to attack rolls"). (a) Document the `"attacker."` prefix convention on `Modifier.targetId` in `src/lib/types/pipeline.ts` JSDoc: these modifiers are never included in the owner's static pipeline totals; they are collected at roll time and applied to the incoming attacker's roll. (b) Add `resolveAttackerMods(defenderMods, targetTags, targetPipeline)` internal helper to `diceEngine.ts`: strips the `"attacker."` prefix, matches stripped target to the rolled pipeline, applies `situationalContext` filtering, returns total bonus and applied modifier list. (c) Add optional `defenderAttackerMods?: Modifier[]` 7th parameter to `parseAndRoll()`. (d) Add `RollResult.attackerPenaltiesApplied?: Modifier[]` transparency field (absent when no penalties apply). (e) Import `Modifier` in `diceEngine.ts`. Document in `ARCHITECTURE.md` section 4.6 — roll-time only (never pipeline), stacking rules for attacker mods, Ring of Elemental Command authoring example. Required for: all four Elemental Command rings (−1 attack penalty on associated-plane attackers).
+- [ ] **1.2 Logic & Pipeline Types:** Create `src/lib/types/logic.ts` (recursive `LogicNode` — AND, OR, NOT, CONDITION node types with all 8 `LogicOperator` values). Create `src/lib/types/pipeline.ts`: `Modifier` (required `sourceId`, `sourceName`, `targetId`, `value`, `type`; optional `drBypassTags?: string[]`, `situationalContext?`, JSDoc for the `"attacker.*"` target prefix convention); `StatisticPipeline` with `derivedModifier`; `SkillPipeline`; `ResourcePool` with 8-value `resetCondition` union: `"short_rest"`, `"long_rest"`, `"encounter"`, `"never"`, `"per_turn"`, `"per_round"`, `"per_day"`, `"per_week"` and optional `rechargeAmount?: number | string`. Per `ARCHITECTURE.md` §3–4.4.
 
-## Phase 3: Svelte 5 Reactive Engine (The DAG)
+- [ ] **1.3 Unified Feature Model:** Create `src/lib/types/feature.ts` as the complete feature type system per `ARCHITECTURE.md` §5–5.7 and `ANNEXES.md` A.1–A.12. Base `Feature`: `levelProgression`, `resourcePoolTemplates?: ResourcePoolTemplate[]` (export `ResourcePoolTemplate` with `poolId`, `label`, `maxPipelineId`, `defaultCurrent`, `resetCondition`, `rechargeAmount?`), `actionBudget?` (6 optional numeric keys: standard, move, swift, immediate, free, full_round), `recommendedAttributes?`. `activation`: 10-value `actionType` union (standard, move, swift, immediate, free, full_round, passive, reaction), `triggerEvent?`, `tieredResourceCosts?: ActivationTier[]` (export `ActivationTier` with `label`, `targetPoolId`, `cost`, `grantedModifiers`). `ItemFeature`: `two_hands` slot; `psionicItemData?` (export `PsionicItemType` — 5-value union, `PowerStoneEntry` with `powerId`/`manifesterLevel`/`usedUp`); `weaponData.onCritDice?` (export `OnCritDiceSpec` with `baseDiceFormula`, `damageType`, `scalesWithCritMultiplier`); `metamagicEffect?` (6-feat union, `maxSpellLevel: 3|6|9`); `staffSpells?` (`chargeCost: 1|2|3|4|5`); `wandSpell?` (`casterLevel`, optional `spellLevel`); `scrollSpells?` (required `spellLevel`, `spellType: "arcane"|"divine"`); `removalPrevention?` (`isCursed: true`, `removableBy`); `intelligentItemData?` (INT/WIS/CHA scores, egoScore, 9-value alignment, 3-value communication, senses with discrete vision ranges); `isUnique?`; `artifactTier?`. `MagicFeature`: `discipline?: PsionicDiscipline` (export 6-value union), `displays?: PsionicDisplay[]` (export 5-value union). `AugmentationRule`: `effectDescription?: LocalizedString`. `FeatureChoice`: `choiceGrantedTagPrefix?`. All fields exhaustively documented with SRD authoring patterns per `ARCHITECTURE.md` §4.9–4.17, 5.1.1, 5.2.1, 5.3.1, 5.5b, 5.6, 5.7.
 
-- [ ] **3.1 Store Skeleton:** Create `src/lib/engine/GameEngine.svelte.ts` (Initialize global state, including `CampaignSettings` and active `Character`).
-- [ ] **3.2 Flattening & Filtering:** Create Step 0 `$derived` (Flat list of valid modifiers after checking prerequisites, forbidden tags, `classLevel` gating from `levelProgression`, and applying the full Data Override resolution chain including `gmOverrides`).
-- [ ] **3.3 DAG - Base Attributes:** Create Step 1 & 2 `$derived` (Calculate 6 main stats and their `derivedModifier`, isolating situational modifiers).
-- [ ] **3.4 DAG - Combat Stats & Skills:** Create Step 3 & 4 `$derived` (Calculate AC, BAB, Saves, Max HP, and Skills using results from previous derivations to prevent infinite loops).
-- [ ] **3.5 DAG - ECL derivation (`@eclForXp`):** Add `phase0_eclForXp` `$derived` to `GameEngine.svelte.ts` (formula: `phase0_characterLevel + character.levelAdjustment`). Expose as `eclForXp` in the `CharacterContext` snapshot so the Math Parser can resolve `@eclForXp`. Add `eclForXp` field to `CharacterContext` in `src/lib/utils/mathParser.ts`. Add `resolvePath` case for `@eclForXp`. Required by: XP-threshold lookups for monster PCs, Level Up UI, config_xp_table formula references.
-- [ ] **3.6 GameEngine tick, rest & calendar action methods:** Add `triggerTurnTick()`, `triggerRoundTick()`, `triggerEncounterReset()`, `triggerShortRest()`, and `triggerLongRest()` public methods to `GameEngine.svelte.ts`. Add private helper `#getEffectiveMax()` and `#applyIncrementalTick()`. Also add `triggerDawnReset()` — resets all `"per_day"` character-level pools AND calls `#resetItemPoolsByCondition("per_day")` for item instance pools (Phase 1.3e/1.4a integration); and `triggerWeeklyReset()` — same for `"per_week"`. All tick/rest/calendar methods drive the `resetCondition` lifecycle from Phase 1.6. `rechargeAmount` formulas are evaluated via the Math Parser using `phase0_context`. Required by: Fast Healing, Regeneration, Combat Tab "New Encounter" button (Phase 10.1), Long Rest button, X/day and X/week item ability tracking.
-- [ ] **3.7 DAG Phase 3 — Gestalt mode integration:** In `GameEngine.svelte.ts` Phase 3 `$derived`, read `settings.variantRules?.gestalt ?? false`. For each affected pipeline (`combatStats.bab`, `saves.fort/ref/will`): when gestalt is true, separate `"base"` type modifiers, call `computeGestaltBase()`, inject result as `effectiveBaseValue` into `applyStackingRules()` with only non-"base" mods. When gestalt is false, standard path unchanged. HP is unaffected (always additive). Non-"base" modifier types always use standard stacking in both modes. Import from `gestaltRules.ts` (Phase 2.5a).
-- [ ] **3.8 GameEngine item mechanics & activation dispatch methods:** Add the following methods to `GameEngine.svelte.ts`, all relating to the Phase 1.3e/1.4a item pool and activation model. (a) `initItemResourcePools(instance, feature)` — idempotent: populates `instance.itemResourcePools` for any `resourcePoolTemplates` entry whose `poolId` is not yet present; never overwrites an existing (even zero) value. (b) `getItemPoolValue(instanceId, poolId)` — returns current charge count from instance pool, falling back to `template.defaultCurrent` for uninitialised pools. (c) `spendItemPoolCharge(instanceId, poolId, amount?)` — atomically decrements the named pool, floored at 0. (d) `#resetItemPoolsByCondition(condition)` — private: iterates all active instances, resets matching item pools; called by `triggerDawnReset()` / `triggerWeeklyReset()`. (e) `activateWithTier(instanceId, tierIndex)` — validates the chosen tier index, resolves tier `cost` (number or Math Parser formula), checks pool balance, deducts charges, returns the tier's transient `grantedModifiers` (for the Dice Engine roll context), or `null` on any validation failure. (f) `getReactionFeaturesByTrigger(triggerEvent)` — returns all active features with `actionType: "reaction"` and matching `triggerEvent`; used by the combat event dispatcher. Required by: Inventory tab equip flow (Phase 13.3), Special Abilities panel (Phase 12.4), combat event dispatch (Phase 10.1).
+- [ ] **1.4 Global State & Campaign Settings:** Create `src/lib/types/character.ts`: `ActiveFeatureInstance` with `itemResourcePools?: Record<string, number>` and `ephemeral?: { isEphemeral: true; appliedAtRound?: number; sourceItemInstanceId?: string; durationHint?: string }`; `LinkedEntity` with serialization guard; `Character` with `classLevels`, `gmOverrides`, `minimumSkillRanks?: Record<ID, number>`, `levelAdjustment: number`, `xp: number`, and all UI metadata fields (`campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerRealName`, `customSubtitle`). Create `src/lib/types/settings.ts`: `CampaignSettings` with `language`, `statGeneration`, `diceRules`, `enabledRuleSources`, `variantRules: { vitalityWoundPoints: boolean; gestalt: boolean }`. Create `src/lib/types/campaign.ts`: `Campaign` (with `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`), `Chapter`, `SceneState`. Per `ARCHITECTURE.md` §6–8.
 
-## Phase 4: Persistence & I/O
+### Phase 2: Pure Functions & Dice Engine (The Brain)
 
-- [ ] **4.1 Multi-Character & Settings Storage:** Create `src/lib/engine/StorageManager.ts`. Implement logic to store multiple characters AND the `CampaignSettings` in `localStorage` (CRUD operations). Connect this to the `GameEngine` via `$effect`. Implement `LinkedEntity` serialization guard (no back-references).
-- [ ] **4.2 Data Dictionary (Data Loader & Merge Engine):** Create `src/lib/engine/DataLoader.ts`. Fetch JSON rules from `static/rules/`, cache them in memory, and respect `CampaignSettings.enabledRuleSources` ordering. Implement the **Merge Engine**: process the `merge` field on each JSON entity (`"replace"` by default, `"partial"` for additive/subtractive merge with `-prefix` convention for deletions).
+_Goal: Build all pure, stateless utility functions. These have no Svelte dependencies and can be tested in isolation._
 
-## Phase 5: Test UI (Validation)
+- [ ] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (localization helpers and unit conversion based on `CampaignSettings` locale).
 
-- [ ] **5.1 Mock Data:** Create `static/rules/test_mock.json` (Race, Class with `levelProgression`, Item, Condition, and an Orc Enemy). Create a second file `static/rules/test_override.json` to test `merge: "partial"` and `merge: "replace"` overrides.
-- [ ] **5.2 Settings & Character Sheet Component:** Create `src/routes/+page.svelte`. Add a toggle for "Exploding 20s" and display Total Strength and Total AC.
-- [ ] **5.3 Graph & Context Testing:** Add a button "Attack the Orc" to trigger the Dice Engine. Prove the "+2 vs Orcs" situational modifier applies ONLY to the roll. Prove that turning on "Exploding 20s" properly rerolls and adds consecutive 20s.
-- [ ] **5.4 Merge Engine Testing:** Prove that enabling `test_override.json` as a rule source correctly merges/replaces Features, including `-prefix` deletions.
+- [ ] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts`. Evaluate formula strings, replace `@` placeholders with character context values. Support all paths per `ARCHITECTURE.md` §4.3: `@characterLevel`, `@eclForXp`, `@classLevels.<id>`, `@activeTags`, `@selection.<choiceId>`, `@constant.<id>`, `@master.classLevels.<id>`. Handle `|distance` and `|weight` pipes. Return 0 and log warning for unresolved paths. Export `CharacterContext` type with `eclForXp` field.
 
-- [ ] **Checkpoint Review #1** (after Phases 1–5): Run the conformance review from `CHECKPOINTS.md`. Covers: TypeScript type conformance (Feature, Character, Pipeline, Settings, all Phase 1.x extensions including 1.3e `ResourcePoolTemplate`/`ActivationTier`/`passive`+`reaction` actionTypes/`triggerEvent`, 1.4a `itemResourcePools`, 1.6 all 8 `resetCondition` values), `attacker.*` modifier prefix convention (2.5c) and `parseAndRoll()` `defenderAttackerMods` parameter, Math Parser `@`-paths, Logic Evaluator, Stacking Rules (incl. DR best-wins), Dice Engine (incl. V/WP routing, Gestalt, attacker penalty resolution), DAG resolution phases 0–4, Resource tick/rest/calendar methods (3.6 incl. `triggerDawnReset`/`triggerWeeklyReset`), item mechanics methods (3.8), DataLoader & Merge Engine, Test UI. Resolve all CRITICAL and MAJOR issues before proceeding.
+- [ ] **2.3 Logic Evaluator:** Create `src/lib/utils/logicEvaluator.ts`. Recursive evaluation of `LogicNode` trees (AND, OR, NOT, CONDITION). Support all 8 `LogicOperator` values (`==`, `>=`, `<=`, `!=`, `includes`, `not_includes`, `has_tag`, `missing_tag`). Return `errorMessage` from failing CONDITION nodes.
 
-## Phase 6: Campaign Management & User Context
+- [ ] **2.4 Stacking Rules:** Create `src/lib/utils/stackingRules.ts`. Standard stacking: `dodge`, `circumstance`, `synergy`, `untyped` stack additively; all other types keep highest only. `setAbsolute` overrides all (last wins). `"damage_reduction"` handled as a separate pass: group by sorted `drBypassTags` signature, keep highest per group, return `StackingResult.drEntries[]` with `amount`, `bypassTags`, `sourceModifier`, `suppressedModifiers`. Note: `"max_dex_cap"` is intercepted at DAG level (Phase 3.5), not subject to this function. Per `ARCHITECTURE.md` §4.2 and 4.5.
 
-_Goal: Establish the overarching container for characters. A Campaign groups characters, tracks story progression via Acts/Chapters, and handles Game Master (GM) vs Player visibility._
+- [ ] **2.5 Gestalt Rules:** Create `src/lib/utils/gestaltRules.ts`. Export `computeGestaltBase(modifiers, classLevels, characterLevel)` (max-per-level from each contributing class, then sum), `groupBaseModifiersByClass()`, `GESTALT_AFFECTED_PIPELINES` Set (`combatStats.bab`, `saves.fort`, `saves.ref`, `saves.will` — NOT `combatStats.max_hp`), `isGestaltAffectedPipeline()`. Per `ARCHITECTURE.md` §8.1–8.2.
 
-- [ ] **6.1 User Context & Roles:** Create `src/lib/engine/SessionContext.svelte.ts` to mock a user session. It must include `currentUserId`, `isGameMaster` (boolean), and `activeCampaignId`. Design it so it can later be replaced by a real PHP-backed auth session.
-- [ ] **6.2 Character Model Updates:** Update `src/lib/types/character.ts` to include meta-data for the UI: `campaignId`, `ownerId` (to link to the user), `isNPC` (boolean), `posterUrl`, `playerRealName`, and `customSubtitle`.
-- [ ] **6.3 Campaign Hub UI:** Create `src/routes/campaigns/+page.svelte`. Display a grid of available campaigns using their `posterUrl` and `bannerUrl`. Add a "Create Campaign" button (visible only if GM).
-- [ ] **6.4 Campaign Details & Acts UI:** Create `src/routes/campaigns/[id]/+page.svelte`. Display the campaign banner and summary. Render the list of Chapters/Acts. If `isGameMaster` is true, allow checking/unchecking the `isCompleted` status of chapters.
+- [ ] **2.6 Dice Engine (RNG):** Create `src/lib/utils/diceEngine.ts`. Implement `parseAndRoll(formula, pipeline, context, settings, rng?, situationalModifiers?, defenderAttackerMods?, defenderFortificationPct?, weaponOnCritDice?, critMultiplier?)` per `ARCHITECTURE.md` §17. Export `DamageTargetPool` (`"res_hp" | "res_vitality" | "res_wound_points"`), `OnCritDiceSpec` (re-export from feature.ts), `RollResult` (with required `targetPool`, optional `fortification?: { roll, pct, critNegated }`, `onCritDiceRolled?: { formula, rolls, totalAdded, damageType }`, `attackerPenaltiesApplied?: Modifier[]`), `RollContext` (with optional `isCriticalHit?`). Implement: injectable `rng` for deterministic tests; Exploding 20s (recursive reroll + accumulate); Reroll 1s; V/WP routing (`"res_wound_points"` on confirmed crit, `"res_vitality"` otherwise, `"res_hp"` when V/WP disabled); `attacker.*` modifier resolution (strip prefix, match pipeline, apply `situationalContext` filtering, add to `finalTotal`); fortification crit negation (roll 1d100 ≤ pct → `critNegated: true`, negated crits route to `"res_vitality"` in V/WP mode); on-crit burst dice (parse `baseDiceFormula`, scale by `(critMultiplier − 1)` when `scalesWithCritMultiplier`, add to `finalTotal`, absent when crit negated). Per `ARCHITECTURE.md` §4.6–4.7, 4.9, 8.3.
 
-## Phase 7: The Character Vault
+### Phase 3: Svelte 5 Reactive Engine (The DAG)
 
-_Goal: Build the character selection screen (Your Adventurers) based on the current active campaign, respecting visibility rules._
+_Goal: Build the reactive game engine as a Svelte 5 store. Each DAG phase is a `$derived` rune that builds on the previous, forming a topological dependency graph._
 
-- [ ] **7.1 Visibility Logic (The Filter):** In `GameEngine` or a dedicated `VaultStore`, create a `$derived` array called `visibleCharacters`.
-    - _Rule:_ Filter characters by `activeCampaignId`.
-    - _Rule:_ If `isGameMaster` is true, return all characters, NPCs, and monsters in the campaign.
-    - _Rule:_ If `isGameMaster` is false, return ONLY characters where `ownerId === currentUserId`, plus any `LinkedEntity` belonging to those characters.
-- [ ] **7.2 Character Card Component:** Create `src/lib/components/vault/CharacterCard.svelte`. It must accept a `Character` object as a prop.
-    - _Layout:_ Display the `posterUrl` at the top (fallback to a placeholder 300x200 if undefined). Display the Character Name.
-    - _Subtitle Logic:_ If `customSubtitle` exists, display it. Otherwise, if `isNPC`, display the Race label. If it's a Player Character, display `playerRealName`.
-    - _Level Badge:_ Display the Overall Effective Level (sum of all class levels from `classLevels`).
-- [ ] **7.3 Character Vault Page:** Create `src/routes/campaigns/[id]/vault/+page.svelte`. Implement the layout from the design mockup. Display the `visibleCharacters` array using the `CharacterCard` component in a responsive grid.
-- [ ] **7.4 Empty State & Creation Actions:** Inside the Vault Page, implement the empty state ("No adventurers yet!"). Add the "Create New Character" button. If `isGameMaster` is true, also add an "Add NPC/Monster" button. Both should initialize a blank/mock Character in the `StorageManager` and navigate to the Phase 8 (Core Tab) editor.
+- [ ] **3.1 Store Skeleton & Default Pipelines:** Create `src/lib/engine/GameEngine.svelte.ts`. Initialize global Svelte 5 `$state` for `CampaignSettings` and active `Character`. Initialize all default pipeline maps: 6 ability score pipelines, full `combatStats` map including `combatStats.fortification` (baseValue 0), `combatStats.arcane_spell_failure` (baseValue 0), `combatStats.max_dex_bonus` (baseValue 99 = uncapped), `combatStats.ac_normal/touch/flat_footed`, `combatStats.bab`, `combatStats.initiative`, `combatStats.grapple`, `combatStats.max_hp`; `saves.fort/ref/will`; all skill pipelines; feat slot pipeline; equipment slot pipelines (`slots.ring = 2`, `slots.head = 1`, etc.); character resource pools. Per `ARCHITECTURE.md` §9, 4.7–4.17.
 
-## Phase 8: UI Construction - "Core" Tab (Summary View)
+- [ ] **3.2 Flattening & Filtering (DAG Phase 0):** `$derived` producing flat validated modifier list. Per feature instance: check `prerequisitesNode` via Logic Evaluator against current context, check `forbiddenTags`, apply `classLevel` gating from `levelProgression`. Apply full Data Override resolution chain (rule files in `enabledRuleSources` order → `Campaign.gmGlobalOverrides` → `Character.gmOverrides`), respecting `merge` semantics. Implement `#computeActiveTags()` emitting `<choiceGrantedTagPrefix><selectedId>` for each active `FeatureChoice` selection. Derive `phase0_characterLevel` (sum of `classLevels`, excludes `levelAdjustment`) and `phase0_eclForXp` (`phase0_characterLevel + (character.levelAdjustment ?? 0)`). Expose both in `CharacterContext` snapshot. Per `ARCHITECTURE.md` §9.2–9.4, 5.3.1, 6.4.
 
-_Goal: Build the fundamental character sheet summary interface. These components are simplified, read-only overviews. The full interactive editors are built in Phase 9+. The UI must be "dumb": it should only read `$derived` data from the `GameEngine` and dispatch intents/actions back to it. No game logic should reside in `.svelte` files._
+- [ ] **3.3 Base Attributes (DAG Phases 1–2):** `$derived` pipelines for the 6 ability scores using `applyStackingRules()`. Compute `derivedModifier = floor((totalValue − 10) / 2)` for all 6 stats. Route modifiers with `situationalContext` to `situationalModifiers` array. Implement infinite loop detection (depth counter, cut at 3). Per `ARCHITECTURE.md` §9.6.
 
-- [ ] **8.1 Tab Navigation & Layout Skeleton:** Create the main layout `src/routes/character/[id]/+page.svelte`. Implement a tabbed navigation system (Core, Abilities, Combat, Feats, Inventory). Ensure the `GameEngine` correctly loads the character ID from the URL using the `StorageManager`.
-- [ ] **8.2 Generic Feature Modal (Data Display):** Create a highly reusable component `src/lib/components/ui/FeatureModal.svelte`. This modal takes a `Feature` ID as a prop, fetches it from the `DataLoader`, and displays its localized description, prerequisites, granted modifiers (translated into readable text like "+2 Strength"), and granted features.
-- [ ] **8.3 Basic Information Component (Feature Selectors):** Create `src/lib/components/core/BasicInfo.svelte`. Implement dropdowns for Race, Class, Deity, Alignment, and Size.
-    - _Requirement:_ Selecting a Race/Class must trigger the `GameEngine` to add the corresponding `ActiveFeatureInstance` to the character, including initializing a `classLevels` entry for new classes.
-    - _Requirement:_ Implement dynamic badges (e.g., showing `+2 DEX` next to the Elf selection by reading the feature's modifiers).
-- [ ] **8.4 Dynamic Feature Choices (Sub-selections):** Update `BasicInfo.svelte` to handle `FeatureChoice` arrays. If the active Class feature has choices (e.g., Cleric Domains), dynamically render additional dropdowns below it based on the `optionsQuery` (e.g., fetching features with `tag: "domain"`). Bind the selection to the `selections` record of the `ActiveFeatureInstance`.
-- [ ] **8.5 Ability Scores Summary:** Create `src/lib/components/core/AbilityScoresSummary.svelte`. Display a compact read-only view of the 6 main stats showing `totalValue` and `derivedModifier`. Include a link/button to navigate to the full Abilities tab (Phase 9).
-- [ ] **8.6 Saving Throws Summary:** Create `src/lib/components/core/SavingThrowsSummary.svelte`. Display Fortitude, Reflex, and Will total modifiers in a compact read-only format.
-- [ ] **8.7 Skills Summary:** Create `src/lib/components/core/SkillsSummary.svelte`. Display a condensed skills list (skill name + total bonus). No editing capability — link to Phase 9 for full editing.
-- [ ] **8.8 Languages & Lore Component:** Create `src/lib/components/core/LoreAndLanguages.svelte`. Bind text areas for Personal Story, Appearance (Height, Weight, etc.). Implement the Language selection system: calculate available languages (INT mod + Speak Language ranks), display automatically granted languages (from Race/Class features), and provide a dropdown to add new languages until the limit is reached.
+- [ ] **3.4 Combat Stats & Skills (DAG Phases 3–4):** `$derived` pipelines for AC variants (normal/touch/flat-footed), BAB, initiative, grapple, save totals, max HP (CON mod × `phase0_characterLevel`, not ECL). `$derived` for all skill pipelines. Auto-generate synergy modifier entries from `config_skill_synergies` config table. Per `ARCHITECTURE.md` §9.7–9.8.
 
-## Phase 9: UI Construction - "Abilities & Skills" Tab (Full Interactive Editor)
+- [ ] **3.5 Max DEX Bonus Special Case (DAG Phase 3 intercept):** In Phase 3 `$derived`, intercept `combatStats.max_dex_bonus`: (1) separate all `"max_dex_cap"` modifiers, (2) `effectiveBaseValue = Math.min(...caps)` (99 when no caps), (3) remaining untyped additive modifiers through `applyStackingRules()` with this base, (4) `continue` to skip general loop. Per `ARCHITECTURE.md` §4.17.
 
-_Goal: Build the complete interactive Abilities, Saving Throws, and Skills interfaces. These are the full editors with calculation breakdowns, dice rolling modals, and stat generation logic._
+- [ ] **3.6 Gestalt Mode Integration (DAG Phase 3.7):** When `settings.variantRules.gestalt === true`, for each pipeline in `GESTALT_AFFECTED_PIPELINES`: separate `"base"` modifiers by class, call `computeGestaltBase()`, inject as `effectiveBaseValue` with only non-`"base"` mods. HP always additive. Standard path when `false`. Per `ARCHITECTURE.md` §8.1–8.2.
 
-- [ ] **9.1 Data Model Extensions:** Update `src/lib/types/feature.ts`. Add `recommendedAttributes?: ID[]` to the `Feature` interface (used by the Point Buy UI to highlight class-preferred stats). Ensure the `SkillPipeline` and `Feature` logic correctly handles "Synergy" modifiers triggered by skill ranks.
-- [ ] **9.2 Breakdown & Dice Roll Modals (Shared UI):**
-    - Create `src/lib/components/ui/ModifierBreakdownModal.svelte`. It reads a pipeline's `activeModifiers` and displays the math (Base + Modifiers = Final).
-    - Create `src/lib/components/ui/DiceRollModal.svelte`. It takes a target pipeline (e.g., Strength, Jump), calls the `DiceEngine.parseAndRoll()` function, and displays the `RollResult` (Natural Roll + Total Bonus = Final Result, highlighting Critical Failures/Successes).
-- [ ] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. Display the 6 main stats (STR to CHA). Show the Final Modifier (`derivedModifier`), Base Score (editable), and Temporary Modifier. Add the "i" button (opens Breakdown) and the "Dice" button (opens Roll Modal) for each stat.
-- [ ] **9.4 Stat Generation Wizards (Point Buy & Roll):**
-    - Create `PointBuyModal.svelte`. Implement the 3.5 point buy math. Read `recommendedAttributes` from the character's active Class feature to color-code (green/orange/red) the stats. Restrict spending based on `CampaignSettings.statGeneration.pointBuyBudget`.
-    - Create `RollStatsModal.svelte`. Implement the 4d6 drop lowest logic. Automatically reroll 1s if `CampaignSettings.statGeneration.rerollOnes` is true. Allow assigning the 6 rolled values to the desired attributes.
-- [ ] **9.5 Saving Throws Panel:** Create `src/lib/components/abilities/SavingThrows.svelte`. Display Fortitude, Reflex, and Will. For each, display the Final Modifier, the related Ability Modifier block (color-coded, e.g., CON for Fortitude), Misc Modifiers, and an editable Temporary Modifier input. Include Breakdown and Dice Roll buttons.
-- [ ] **9.6 Skills Matrix Panel:** Create `src/lib/components/abilities/SkillsMatrix.svelte`.
-    - Create the header calculating "Skill Points Available" vs "Skill Points Spent".
-    - Render the table of skills. For each skill: show a checkbox for "Class Skill" (read-only, derived from active classes), Skill Name, Total Bonus, Key Ability label, User Misc input, Ranks input, Cost per rank (1 or 2), and Max allowed ranks (Level + 3, or half for cross-class).
-    - _Requirement:_ Typing in the "Ranks" input must directly update the `ranks` property of the specific `SkillPipeline` in the `GameEngine`.
-    - _Requirement:_ Ensure Synergy bonuses granted by other skills appear correctly in the Breakdown modal when the "i" button is clicked.
+- [ ] **3.7 Resource Pools, Action & Ephemeral Methods:** Add all runtime methods to `GameEngine.svelte.ts`. _Resource ticks & rests:_ `triggerTurnTick()`, `triggerRoundTick()`, `triggerEncounterReset()`, `triggerShortRest()`, `triggerLongRest()`, `triggerDawnReset()` (resets `"per_day"` pools + `#resetItemPoolsByCondition("per_day")`), `triggerWeeklyReset()`. _Item pool management:_ `initItemResourcePools()` (idempotent), `getItemPoolValue()` (fallback to `defaultCurrent`), `spendItemPoolCharge()` (floor at 0), `#resetItemPoolsByCondition()`. _Activation:_ `activateWithTier(instanceId, tierIndex)` (validates, resolves cost via Math Parser, checks pool, returns `grantedModifiers` or `null`). _Trigger dispatch:_ `getReactionFeaturesByTrigger(triggerEvent)` (excludes `"passive"`, inactive). _Consumables & ephemeral:_ `consumeItem()` (two-phase atomic), `expireEffect()` (blocks non-ephemeral), `getEphemeralEffects()` (sorted newest-first). _Removal guard:_ `removeFeature()` (blocks cursed), `#removeFeatureUnchecked()`, `tryRemoveCursedItem()` (returns true/false/null). Per `ARCHITECTURE.md` §4.4, 5.5b, 5.7, 6.5, 4.15.
 
-## Phase 10: UI Construction - "Combat" Tab
+- [ ] **3.8 Feat Slots & Leveling Analytics (DAG Phase 4b):** Add `phase4_featSlots` `$derived` (base = `1 + floor(@characterLevel / 3)` + bonus slots from features). Add `phase4_skillPointsBudget` `$derived`: per-class `max(1, spPerLevel + intMod) × classLevel`; first class gets 4× first-level bonus; racial/feat bonus SP per total character level. Export `ClassSkillPointsEntry` and `SkillPointsBudget` types. Add `phase4_levelingJournal` `$derived` (per-class BAB/save totals, XP penalty). Export `LevelingJournalClassEntry` and `LevelingJournal` types. Methods: `setSkillRanks()` with `minimumSkillRanks` floor clamping, `lockSkillRanksMin()`, `lockAllSkillRanks()`. Per `ARCHITECTURE.md` §9.8.
 
-_Goal: Build the Combat tab containing Health, Experience, Armor Class, Offense (Attacks), Movement, and Defenses. Rely entirely on the DAG pipelines calculated in Phase 3._
+### Phase 4: Persistence & I/O
 
-- [ ] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`.
-    - **Health:** Bind to the `resources.hp` pool. Create the visual HP bar (Current, Temporary, Nonlethal). Implement the "Heal" and "Damage" buttons that open a small prompt to add/subtract from `currentValue` and `temporaryValue` correctly (damage depletes temp HP first). Display the base HP and CON modifier breakdown.
-    - **Experience:** Create the XP progress bar. XP thresholds per level are defined in the configuration JSON lookup table (not hardcoded). Add the "Level Up" button.
-- [ ] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`.
-    - Read from three distinct pipelines: `combatStats.ac_normal`, `combatStats.ac_touch`, and `combatStats.ac_flat_footed`.
-    - _Requirement:_ Include the `ModifierBreakdownModal` (from Phase 9) on the "i" icons so the user can see exactly why their Touch AC ignores Armor/Shield modifiers. Bind the "Temporary Modifier" input to a generic untyped modifier applied to all three AC pipelines.
-- [ ] **10.3 Core Combat Stats:** Create `src/lib/components/combat/CoreCombat.svelte`. Display Base Attack Bonus (BAB), Initiative, and Grapple Modifier pipelines. Include the "Dice Roll" and "Breakdown" buttons for Initiative and Grapple.
-- [ ] **10.4 Weapons & Attacks Panel:** Create `src/lib/components/combat/Attacks.svelte`.
-    - Create dropdowns for Main Hand, Off Hand, and Ranged Weapon. These dropdowns must read from the character's `Inventory` (filtering for `ItemFeature` with weapon tags) plus a default "Unarmed" option.
-    - _Requirement:_ Dynamically calculate and display the Total Attack Bonus and Damage Bonus based on the selected weapon (factoring in Weapon Enhancement, STR/DEX modifiers, BAB, and Size). Include "Dice Roll" buttons that pass the weapon's damage dice to the `DiceEngine`.
-- [ ] **10.5 Movement Speeds Panel:** Create `src/lib/components/combat/MovementSpeeds.svelte`. Display Land, Burrow, Climb, Fly, and Swim speed pipelines. Explicitly show the "Armor Penalty Effect" and "Load Penalty Effect" pipelines so the player understands why their speed is reduced.
-- [ ] **10.6 Energy & Special Resistances:** Create `src/lib/components/combat/Resistances.svelte`. Display pipelines for Fire, Cold, Acid, Electricity, Sonic, Spell Resistance (SR), Power Resistance (PR), and Fortification. Allow user-inputted "Misc Modifiers".
-- [ ] **10.7 Damage Reduction (DR) Builder:** Create `src/lib/components/combat/DamageReduction.svelte`.
-    - Implement the UI to construct a DR rule (Value, Rule: Bypassed/Excepted, Type: Adamantine/Magic/Slashing).
-    - _Requirement:_ When "Add Damage Reduction" is clicked, it should generate a custom `ActiveFeatureInstance` (category: condition/trait) containing the DR modifier and push it to the `GameEngine`. Display the list of active DRs with a delete button.
+- [ ] **4.1 Multi-Character & Settings Storage:** Create `src/lib/engine/StorageManager.ts`. CRUD for multiple `Character` objects and `CampaignSettings` in `localStorage`. Connect to `GameEngine` via `$effect`. `LinkedEntity` serialization guard.
 
-## Phase 11: UI Construction - "Feats" Tab
+- [ ] **4.2 Data Dictionary (DataLoader & Merge Engine):** Create `src/lib/engine/DataLoader.ts`. Fetch JSON rule files from `static/rules/` recursively (alphabetical order). Memory cache. Filter by `enabledRuleSources`. Distinguish `Feature` entities from config tables (`tableId`). **Merge Engine:** `"replace"` (full overwrite), `"partial"` (append arrays, merge `levelProgression` by level, `choices` by `choiceId`, `-prefix` deletions). Chain: base rule files → `gmGlobalOverrides` → `gmOverrides`. Config tables: always replaced entirely.
 
-_Goal: Build the Feats management interface. This involves tracking available feat slots, distinguishing between automatically granted features and player-selected feats, and building a catalog modal that rigorously enforces D&D 3.5 prerequisites using the Logic Engine._
+### Phase 5: Test UI (Validation)
 
-- [ ] **11.1 Feat Capacity Pipeline:** In `GameEngine`, establish a specific pipeline/resource to calculate `Feat Slots`.
-    - _Base logic:_ `1 + floor(character_level / 3)`.
-    - _Bonus logic:_ Add bonus slots granted by other features (e.g., Human bonus feat, Fighter bonus feats). Calculate "Feats Left" by subtracting the number of manually selected feats from this total.
-- [ ] **11.2 Feats Tab Layout & Lists:** Create `src/lib/components/feats/FeatsTab.svelte`.
-    - Render the header showing "Feats Available" and "Feats Left" dynamically.
-    - Create a `Granted Feats` section: Loop through `activeFeatures` to find features automatically granted by a parent feature (like Class or Race). Display them as read-only (no delete button). Show the source tag (e.g., "Druid" or "Gnome").
-    - Create a `Selected Feats` section: List the feats manually chosen by the player, with a "Delete" button to free up the slot.
-- [ ] **11.3 Feat Catalog Modal (Search & Filter):** Create `src/lib/components/feats/FeatSelectionModal.svelte`.
-    - Fetch all features with `category: "feat"` from the `DataLoader`.
-    - Implement a text search bar (filtering by title and description).
-    - Implement visual tags (e.g., reading the `tags` array to display badges like "Fighter Bonus Feat" or "Metamagic").
-- [ ] **11.4 Prerequisite Evaluation UI:** Inside the `FeatSelectionModal`, implement the logic constraint UI.
-    - For each feat in the list, run its `prerequisitesNode` through the `logicEvaluator`.
-    - If the evaluation fails, disable the "Select" button/row for that feat.
-    - _Requirement:_ Extract the specific `errorMessage` from the failing `LogicNode`s (e.g., "Dexterity 19", "BAB +11") and display them in red. Met prerequisites should be displayed in a neutral/green color.
+_Goal: Minimal test harness validating the core engine pipeline end-to-end._
 
-## Phase 12: UI Construction - "Spells & Powers" Tab
+- [ ] **5.1 Mock Data:** Create `static/rules/test_mock.json` (Race, Class with `levelProgression`, Armor with `"max_dex_cap"` modifier, Condition, Orc Enemy with `"attacker.*"` modifier). Create `static/rules/test_override.json` (tests `merge: "partial"` + `-prefix` deletion and `merge: "replace"`).
 
-_Goal: Build the Magic, Psionics, and Special Abilities interface. This tab manages Spellbooks, Power Points, Domain Powers, and daily casting limits using the `MagicFeature` and `ResourcePool` models._
+- [ ] **5.2 Settings & Character Sheet Component:** Create `src/routes/+page.svelte`. Toggles for "Exploding 20s", "Reroll 1s", "Vitality/WP Mode", "Gestalt Mode". Display Total Strength and Total AC.
 
-- [ ] **12.1 Magic Resources & Limits:** In `GameEngine`, derive the spellcasting/manifesting limits.
-    - Calculate `Caster Level` and `Manifester Level` pipelines based on active classes.
-    - Calculate available `Spell Slots` (per level) or `Power Points` (PP) max by reading the class JSON formulas and the relevant key ability modifier (e.g., INT for Wizards, WIS for Clerics).
-- [ ] **12.2 Spells/Powers Catalog (The Grimoire):** Create `src/lib/components/magic/Grimoire.svelte`.
-    - Build an interface allowing the player to "Learn" or "Add" spells to their spellbook.
-    - _Filter Logic:_ Fetch `MagicFeature` items from `DataLoader`. Filter them so the UI only shows spells/powers corresponding to the character's active `spellLists` (e.g., if Cleric level 3, only show Cleric spells up to level 2).
-- [ ] **12.3 Preparation & Casting Panel:** Create `src/lib/components/magic/CastingPanel.svelte`.
-    - _Layout:_ Group known spells by Level (0 to 9).
-    - _Interaction:_ Add a "Prepare" counter (for Vancian magic like Wizards/Clerics) or a "Cast/Manifest" button (for Sorcerers/Psions).
-    - _Breakdown UI:_ Clicking a spell opens a modal displaying its School, Components, Range, Duration, and a "Dice Roll" button for damage/healing. Calculate the Spell Save DC dynamically (`10 + Spell Level + Key Ability Mod`).
-- [ ] **12.4 Special & Domain Abilities Panel:** Create `src/lib/components/magic/SpecialAbilities.svelte`.
-    - Filter the character's `activeFeatures` for abilities categorized as `class_feature` or `domain` that have an `activation` type (e.g., "Standard Action", "3/Day").
-    - Display these as distinct cards. Tie their daily uses to localized `ResourcePool`s so the player can tick off uses (e.g., Turn Undead uses per day).
+- [ ] **5.3 Graph & Context Testing:** "Attack the Orc" button. Prove: situational modifier applies ONLY at roll time; Exploding 20s works; V/WP routes crit to `"res_wound_points"`; Orc `"attacker.*"` modifier penalizes the attacker.
 
-## Phase 13: UI Construction - "Inventory" Tab
+- [ ] **5.4 Merge Engine Testing:** Prove `test_override.json` correctly applies partial merge (append, `-prefix`) and replace. Verify resolution chain order (base → GM global → GM per-character).
 
-_Goal: Manage equipment, slots, encumbrance, and wealth. The UI must enforce equipment slot limits dynamically based on the engine's pipelines, and calculate weight penalties accurately._
+- [ ] **Checkpoint #1 — Engine & Foundation Conformance** (requires Phases 1–5): Run from `CHECKPOINTS.md`. Verify TypeScript interfaces, Math Parser, Logic Evaluator, Stacking Rules, Dice Engine (incl. V/WP, fortification, on-crit burst, attacker mods), DAG phases 0–4b, all resource/action/ephemeral methods, DataLoader & Merge Engine, Test UI. Resolve all CRITICAL and MAJOR issues before proceeding.
 
-- [ ] **13.1 Equipment Slot Pipelines:** In `GameEngine`, establish base pipelines for body slots (e.g., `slots.head`, `slots.ring`, `slots.body`, `slots.main_hand`). Set default base values (e.g., `slots.ring` = 2, `slots.head` = 1). This ensures exotic races can simply apply modifiers to these pipelines to gain extra slots.
-- [ ] **13.2 Inventory Sections & Layout:** Create `src/lib/components/inventory/InventoryTab.svelte`. Divide the layout into three distinct visual containers:
-    1. **Equipped / Readied:** Items actively worn or held.
-    2. **Backpack / Carried:** Items on the character's person but not granting active stats (contributes to weight).
-    3. **Storage / Stashed:** Items kept in a wagon, mount, or home (does not contribute to weight).
-- [ ] **13.3 Equip & Slot Enforcement Logic:** Create the item interaction logic.
-    - When a user clicks "Equip" on an item in the Backpack, the UI must check the item's `equipmentSlot` tag (e.g., "ring").
-    - It then checks the `slots.ring` pipeline. If the number of currently equipped rings equals the max allowed, the UI blocks the action and shows a warning ("Ring slots full. Unequip an item first.").
-    - _Action:_ If successful, toggle the `isActive` boolean on the `ActiveFeatureInstance`. The `GameEngine` will automatically inject its modifiers (like Armor AC or Sword Damage) into the DAG.
-    - _Two-Handed Weapons:_ If `equipmentSlot` is `two_hands`, the engine must check that both `slots.main_hand` and `slots.off_hand` are free, and occupy both when equipped.
-- [ ] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`.
-    - _Weight Calculation:_ Create a `$derived` that sums the `weightLbs` of all items in the "Equipped" and "Backpack" categories.
-    - _Encumbrance Tiers:_ Compare total weight against the character's Strength carrying capacity (thresholds loaded from a configuration JSON lookup table, not hardcoded). If the load is Medium or Heavy, automatically dispatch a situational `condition_encumbered` feature to the engine to apply speed and armor check penalties.
-    - _Wealth:_ Add simple input fields for CP, SP, GP, PP, and calculate their total weight (standard rule: 50 coins = 1 lb).
+### Phase 6: Campaign Management & User Context
 
-- [ ] **Checkpoint Review #2** (after Phases 6–13): Run the UI conformance review from `CHECKPOINTS.md`. Covers: zero game logic in `.svelte` files, zero hardcoding, Campaign & Session context, Character Vault visibility rules, Core/Abilities/Combat/Feats/Spells/Inventory tab implementations, Navigation & Routes. Resolve all CRITICAL and MAJOR issues before proceeding.
+_Goal: Establish the overarching container for characters, respecting GM vs. Player visibility._
 
-## Phase 14: PHP Backend & Frontend Integration
+- [ ] **6.1 User Context & Roles:** Create `src/lib/engine/SessionContext.svelte.ts` — mock session with `currentUserId`, `isGameMaster`, `activeCampaignId`. Replaceable by real PHP-backed auth later.
 
-_Goal: Replace the local storage mock with a PHP backend using PDO and SQLite. The backend will serve as a REST API to persist Campaigns, Users, and Character states. Designed for cheap shared hosting (e.g., OVH shared hosting)._
+- [ ] **6.2 Character Model UI Updates:** Update `Character` in `character.ts` with UI metadata: `campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerRealName`, `customSubtitle`.
 
-- [ ] **14.1 Database Configuration & PDO Setup:** Create the backend folder structure (`/api`). Create `api/config.php` containing DB path for SQLite and an environment mode toggle (`production` / `development`). Create a singleton `api/Database.php` wrapper using PDO with SQLite as the sole driver. Ensure it supports falling back to an in-memory SQLite DB (`sqlite::memory:`) if a test environment variable is detected.
-- [ ] **14.2 Authentication System:** Create `api/auth.php`. Implement a simple session-based authentication using PHP sessions:
-    - `POST /api/auth/login` (username + password, verified against bcrypt hash in DB).
-    - `POST /api/auth/logout` (destroy session).
-    - `GET /api/auth/me` (return current user info and `isGameMaster` flag).
-    - Create a middleware helper `requireAuth()` that guards protected endpoints and returns `401 Unauthorized` if no valid session exists.
-- [ ] **14.3 CORS & Security Middleware:** Create `api/middleware.php`.
-    - Implement CORS headers allowing the SvelteKit dev server origin (configurable).
-    - Implement CSRF protection for state-changing requests (POST/PUT/DELETE).
-    - Add rate limiting (simple in-memory or file-based counter) to prevent abuse.
-- [ ] **14.4 Database Schema & Migrations:** Create a setup script `api/migrate.php` to generate the tables: `users` (id, username, password_hash, display_name, is_game_master), `campaigns` (id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at), and `characters` (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at).
-    - _Crucial:_ The `characters` table stores the core ECS state (the `activeFeatures` array, `classLevels`, base attribute scores, temporary modifiers, and `resources` like current HP) as a single `character_json` TEXT field. The `gm_overrides_json` field stores the GM's per-character overrides separately. The backend does _not_ process D&D rules; it just persists the GameEngine's state.
-- [ ] **14.5 REST API Endpoints:** Create basic RESTful controllers returning JSON payloads:
-    - `GET /api/campaigns` & `POST /api/campaigns`
-    - `GET /api/campaigns/{id}` (includes chapters; if GM, includes `gmGlobalOverrides`)
-    - `PUT /api/campaigns/{id}` (update campaign settings, sources, GM overrides; updates `updated_at`)
-    - `GET /api/campaigns/{id}/sync-status` (returns `campaignUpdatedAt` and per-character `updatedAt` timestamps for polling)
-    - `GET /api/characters?campaignId=X` (Applies visibility rules: GM gets all + raw `gmOverrides`; players get theirs with overrides already merged invisibly).
-    - `POST /api/characters` (Create new character)
-    - `PUT /api/characters/{id}` (Save character sheet state — must verify ownership or GM status; updates `updated_at`)
-    - `PUT /api/characters/{id}/gm-overrides` (GM-only: save per-character overrides; updates character's `updated_at`)
-    - `DELETE /api/characters/{id}` (Must verify ownership or GM status).
-- [ ] **14.6 Frontend Integration (StorageManager):** Refactor `src/lib/engine/StorageManager.ts` (from Phase 4.1). Replace the `localStorage` logic with asynchronous `fetch()` calls to the new PHP API. Ensure the `GameEngine`'s `$effect` auto-save debounces these API calls (e.g., waits 2 seconds after the user stops making changes before sending the `PUT` request to avoid spamming the server). Implement graceful fallback to `localStorage` if the API is unreachable (offline mode). Implement the **polling mechanism**: check `GET /api/campaigns/{id}/sync-status` every 5-10 seconds, compare timestamps, and selectively re-fetch only changed data.
-- [ ] **14.7 SvelteKit Proxy Configuration:** Configure `vite.config.ts` to proxy `/api` requests to the PHP development server (e.g., `php -S localhost:8080`) during local development, avoiding CORS issues in dev mode.
+- [ ] **6.3 Campaign Hub UI:** Create `src/routes/campaigns/+page.svelte`. Campaign grid with `posterUrl`/`bannerUrl`. "Create Campaign" GM-only.
 
-## Phase 15: GM Tools - Rule Sources & Override Screens
+- [ ] **6.4 Campaign Details & Acts UI:** Create `src/routes/campaigns/[id]/+page.svelte`. Banner, summary, Chapter list. GM can toggle `isCompleted` on chapters.
 
-_Goal: Build the GM-exclusive interfaces for managing rule sources, global overrides, and per-character secret overrides._
+### Phase 7: The Character Vault
 
-- [ ] **15.1 Rule Source Manager UI:** Create `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only).
-    - Display the list of available JSON rule source files (read from a manifest or directory listing).
-    - Allow the GM to **enable/disable** sources and **reorder** them via drag-and-drop (order determines override priority: last wins).
-    - Display a summary of what each source provides (number of Features, classes, items, etc.).
-    - Save the ordered list to `CampaignSettings.enabledRuleSources`.
-- [ ] **15.2 Global Override Text Area:** On the same settings page, add a large JSON text area for `gmGlobalOverrides`.
-    - Include a JSON validator with clear error messages (red highlight on the offending line).
-    - The content is a JSON array of Feature-like objects (any category). Each entry must have a `category` field to identify what it overrides.
-    - This override layer is applied **after** all rule source files in the DataLoader resolution chain.
-    - Save to `Campaign.gmGlobalOverrides` on the backend.
-- [ ] **15.3 GM Entity Dashboard:** Create `src/routes/campaigns/[id]/gm-dashboard/+page.svelte` (GM-only).
-    - Display a list of all characters, NPCs, and monsters in the campaign.
-    - Clicking an entity shows a **read-only summary** of their character sheet (key stats, active effects, current HP, etc.).
-    - Below the summary, display a JSON text area for **per-character GM overrides** (`gmOverrides`).
-    - This override is stored on the `Character` model and applied **last** in the resolution chain (after global overrides).
-    - Include the same JSON validator as in 15.2.
-- [ ] **15.4 Override Resolution Chain Documentation:** Ensure the DataLoader and GameEngine implement the following strict resolution order:
-    1. Base rule source files (in `enabledRuleSources` order, last wins)
-    2. `Campaign.gmGlobalOverrides` (applied after all files)
-    3. `Character.gmOverrides` (applied last, per-character)
-    
-    Each layer respects `merge` semantics: `"replace"` (default) overwrites entirely, `"partial"` merges additively with `-prefix` deletion support.
+_Goal: Character selection screen respecting visibility rules._
 
-- [ ] **Checkpoint Review #3** (after Phases 14–15): Run the PHP backend & GM tools review from `CHECKPOINTS.md`. Covers: authentication & bcrypt, CSRF protection, SQL injection audit, database schema (separate `character_json`/`gm_overrides_json`), visibility rules (GM vs player), sync timestamps, GM override system (Feature + config table objects), Vite proxy config, Rule Source discovery endpoint. Resolve all CRITICAL and MAJOR issues before proceeding.
+- [ ] **7.1 Visibility Logic:** `$derived` `visibleCharacters` — filter by `activeCampaignId`; GM sees all; player sees own + `LinkedEntity` companions.
 
-## Phase 16: Backend Unit Testing (PHPUnit)
+- [ ] **7.2 Character Card Component:** Create `src/lib/components/vault/CharacterCard.svelte`. Poster image, name, level badge (sum of `classLevels`). Subtitle: `customSubtitle` → Race label (NPC) → `playerRealName` (PC).
 
-_Goal: Ensure the PHP API is secure, handles data correctly, and respects the SQLite database._
+- [ ] **7.3 Character Vault Page:** Create `src/routes/campaigns/[id]/vault/+page.svelte`. Responsive grid of `CharacterCard` from `visibleCharacters`.
 
-- [ ] **16.1 PHPUnit & Memory DB Setup:** Install PHPUnit. Create a `phpunit.xml` configuring the test environment. Ensure the `Database.php` class connects to `sqlite::memory:` during tests so no actual files are created or corrupted.
-- [ ] **16.2 Character Persistence Tests:** Create `tests/CharacterControllerTest.php`.
-    - Create a mock JSON string representing a complex character state (with nested arrays of `activeFeatures` and `classLevels`).
-    - Test `POST`: Ensure the JSON is correctly saved to the DB.
-    - Test `GET`: Ensure the retrieved JSON exactly matches the stored data without corruption or encoding issues.
-- [ ] **16.3 Visibility & Authorization Tests:** Create `tests/VisibilityTest.php`. Mock a session where `isGameMaster = false`. Attempt to fetch a character belonging to another `ownerId`. Assert that the API returns a `403 Forbidden` or filters the character out of the list.
-- [ ] **16.4 Authentication Tests:** Create `tests/AuthTest.php`. Test login with valid/invalid credentials. Test that protected endpoints reject unauthenticated requests with `401`. Test that session persists across requests.
-- [ ] **16.5 GM Override Visibility Tests:** Create `tests/GmOverrideTest.php`. Test that a player fetching their own character receives the merged result (with GM overrides applied invisibly). Test that a GM fetching the same character receives both the base data and the raw `gmOverrides` separately.
-- [ ] **16.6 Sync Timestamp Tests:** Create `tests/SyncTest.php`. Test that modifying a character updates its `updated_at`. Test that `GET /api/campaigns/{id}/sync-status` returns correct timestamps. Test that modifying GM overrides also updates the character's `updated_at`.
+- [ ] **7.4 Empty State & Creation Actions:** Empty state. "Create New Character" button. GM: "Add NPC/Monster" button. Both initialize blank `Character` via `StorageManager` and navigate to Phase 8 editor.
 
-## Phase 17: Frontend Engine & Rules Unit Testing (Vitest)
+### Phase 8: UI Construction — "Core" Tab (Summary View)
 
-_Goal: Exhaustively test the "Brain" of the VTT. Use Vitest to ensure the mathematical parser, stacking rules, logic trees, and DAG resolve complex D&D 3.5 scenarios perfectly using raw JSON strings as inputs._
+_Goal: Simplified read-only overview components. No game logic in .svelte files._
 
-- [ ] **17.1 Math & Placeholder Tests:** Create `src/tests/mathParser.test.ts`.
-    - Provide a mock `characterContext` object.
-    - Assert that `evaluateFormula("floor(@attributes.stat_str.totalValue / 2)", context)` correctly extracts the variable and applies the math.
-    - Assert complex order of operations: `"(10 + 2) * 1.5"`.
-    - Assert pipe resolution: `"@attributes.speed_land.totalValue|distance"` correctly calls the formatter.
-- [ ] **17.2 Logic Node (Prerequisite) Tests:** Create `src/tests/logicEvaluator.test.ts`.
-    - Construct a JSON string of a deeply nested `LogicNode` (e.g., an `AND` node requiring `BAB >= 8`, `tag: weapon_focus`, and a `NOT` node forbidding `tag: heavy_armor`).
-    - Assert it returns `true` when the mock context meets all conditions.
-    - Assert it returns `false` (and the correct `errorMessage`) when a specific condition fails.
-- [ ] **17.3 Stacking Rules Tests:** Create `src/tests/stackingRules.test.ts`.
-    - Pass an array of `Modifier` objects: `+2 enhancement`, `+4 enhancement`, `+1 dodge`, `+1 dodge`, `+2 deflection`.
-    - Assert the total is exactly `+8` (Takes the highest enhancement (4) + stacks both dodges (2) + deflection (2)).
-- [ ] **17.4 Dice Engine Tests:** Create `src/tests/diceEngine.test.ts`.
-    - Mock the RNG to force specific dice rolls.
-    - _Context Test:_ Pass a situational context `["orc"]`. Assert a modifier with `situationalContext: "orc"` is added to the `RollResult`, but one with `"goblin"` is ignored.
-    - _Exploding Dice Test:_ Mock a `CampaignSettings` with `explodingTwenties: true`. Force the RNG to roll `20, 20, 5`. Assert the `naturalTotal` is `45` and `numberOfExplosions` is `2`.
-- [ ] **17.5 DAG Integration Test (The Infinite Loop Check):** Create `src/tests/dagResolution.test.ts`.
-    - _The Scenario:_ Provide a JSON `Feature` of a "Belt of Constitution +2".
-    - Assert that injecting this feature into the `GameEngine` updates the `stat_con` pipeline (Phase 2), which _automatically_ cascades to update the Fortitude save (Phase 3) and increases the `resources.hp.maxPipelineId` (Phase 4).
-    - _Loop Test:_ Inject a malicious custom feature that grants +1 CON based on Max HP. Assert the engine resolves it safely or throws a handled circular dependency error without crashing the test runner.
-- [ ] **17.6 Multiclass & Level Progression Tests:** Create `src/tests/multiclass.test.ts`.
-    - _The Scenario:_ Provide a mock character with `classLevels: { "class_fighter": 5, "class_wizard": 3 }`.
-    - Assert that `character_level` resolves to 8.
-    - Assert that Fighter's BAB progression (full) contributes +5 and Wizard's (half) contributes +1, for a total BAB of +6.
-    - Assert that level-gated features (e.g., Fighter Bonus Feat at level 2 and 4) are correctly granted, while level 6 Fighter Bonus Feat is not (since Fighter level is only 5).
-- [ ] **17.7 Merge Engine Tests:** Create `src/tests/mergeEngine.test.ts`.
-    - _Replace Test:_ Load a base Feature, then load an override with `merge: "replace"`. Assert the original is fully replaced.
-    - _Partial Merge Test:_ Load a base Feature, then load a partial with `merge: "partial"` adding new tags, a new `levelProgression` entry, and a new modifier. Assert they are appended correctly while existing data is preserved.
-    - _Deletion Test:_ Load a partial with `"-feat_wild_shape"` in `grantedFeatures`. Assert that `feat_wild_shape` is removed from the merged result.
-    - _Resolution Chain Test:_ Load a base source, a partial override source, a GM global override, and a GM per-character override. Assert the final resolution follows the correct priority order.
+- [ ] **8.1 Tab Navigation & Layout Skeleton:** Create `src/routes/character/[id]/+page.svelte`. Tabbed navigation (Core, Abilities, Combat, Feats, Magic, Inventory). `GameEngine` loads character from URL.
 
-- [ ] **17.8 Engine enhancement tests — resource pools, item charges, tiered activation, trigger dispatch, attacker modifiers:** Five new / extended test files covering the Phase 1.3e/1.4a/1.6/2.5c/3.6/3.8 engine additions.
-    - _`resourcePool.test.ts` extended (Phase 1.6):_ Type-soundness for all 8 `resetCondition` values. `triggerDawnReset` resets only `"per_day"` (not `"long_rest"`, `"per_week"`, `"never"`). `triggerWeeklyReset` resets only `"per_week"`. Both are mutually independent. `triggerLongRest` unaffected by calendar pools.
-    - _`itemResourcePools.test.ts` (new — Phases 1.3e, 1.4a, 3.8):_ `initItemResourcePools` idempotency (never resets an existing 0-valued pool). `spendItemPoolCharge` floor at 0. Cross-instance independence (two copies of the same ring item have separate charge pools). Calendar reset with stashed (`isActive: false`) instances excluded.
-    - _`tieredActivation.test.ts` (new — Phase 3.8):_ `activateWithTier` charge deduction per tier (0/1/2). Tier-specific transient modifier return. Guards: out-of-range index → `null`, insufficient charges → `null`, `null` guard never throws.
-    - _`triggerActivation.test.ts` (new — Phases 1.3e, 3.8):_ `getReactionFeaturesByTrigger` returns matching `"reaction"` features. Excludes `"passive"` features even with a stray `triggerEvent`. Excludes inactive instances.
-    - _`attackerModifiers.test.ts` (new — Phase 2.5c):_ `parseAndRoll` with `defenderAttackerMods` applies penalty to `finalTotal`. Situational context filtering. Wrong-pipeline mods excluded. Defender own pipeline `totalBonus` provably unchanged. `attackerPenaltiesApplied` absent (not empty array) when no penalties applied.
+- [ ] **8.2 Generic Feature Modal:** Create `src/lib/components/ui/FeatureModal.svelte`. Feature ID → fetch from `DataLoader` → display localized description, prerequisites, modifiers as readable text, granted features.
 
-- [ ] **Checkpoint Review #4** (after Phases 16–17): Run the test exhaustiveness review from `CHECKPOINTS.md`. Covers: PHPUnit coverage (persistence, visibility, auth, GM overrides, sync), Vitest coverage (Math Parser paths, Logic Evaluator, Stacking Rules incl. DR groups, Dice Engine incl. V/WP and attacker modifier resolution, DAG integration, Multiclass/ECL/LA, Merge Engine, Psionic Item subtypes, Phase 17.8 new test files), missing test categories (forbiddenTags, conditionNode, dual-gated modifiers, formula-as-value, setAbsolute string values, skill synergies, classSkills union, `initItemResourcePools` idempotency, tiered activation guards, reaction feature discovery). Resolve all CRITICAL and MAJOR gaps before proceeding.
+- [ ] **8.3 Basic Information Component:** Create `src/lib/components/core/BasicInfo.svelte`. Race/Class/Deity/Alignment/Size dropdowns. Selecting triggers engine `ActiveFeatureInstance` creation + `classLevels` init. Modifier badges read from feature data.
 
-## Phase 18: Tooling, Build Pipeline & Developer Experience
+- [ ] **8.4 Dynamic Feature Choices:** Update `BasicInfo.svelte` for `FeatureChoice` arrays. Per choice: dropdown from `optionsQuery` via `DataLoader`. Bind to `ActiveFeatureInstance.selections`.
 
-_Goal: Create a complete, zero-dependency build and deployment pipeline, VS Code debug integration, environment variable management, and local runner scripts. All tooling must work both natively (macOS/Linux) and inside Docker containers. The developer should be able to clone, build, test, debug, and deploy without installing global dependencies beyond Node.js._
+- [ ] **8.5 Ability Scores Summary:** Create `src/lib/components/core/AbilityScoresSummary.svelte`. Compact read-only 6-stat grid (`totalValue` + `derivedModifier`). Link to Abilities tab.
 
-- [ ] **18.1 Docker Build Pipeline:** Create `Dockerfile` (multi-stage: node-deps → type-check → test → build → php-deps → php-test → artifact) and `docker-compose.yml` (single `builder` service with configurable `APP_VERSION`, `NODE_VERSION`, `PHP_VERSION`, `OUTPUT_DIR`). The final stage must produce a compressed tarball containing the SvelteKit build, PHP API, static assets, and an Apache `.htaccess`.
-- [ ] **18.2 Native Build Script:** Create `scripts/build.sh`. It must bootstrap portable tools in `.build-tools/` (download a static PHP binary if system PHP < 8.1, download Composer PHAR), then execute the full pipeline: npm install → Composer install → svelte-check → Vitest → PHPUnit → Vite build → artifact assembly → tarball. Support `--env`, `--output`, `--deploy`, `--tag`, `--skip-tests`, and `--no-clean` options.
-- [ ] **18.3 Docker Build Wrapper:** Create `scripts/build-docker.sh`. It must detect Docker/docker-compose availability, export `APP_VERSION` and `OUTPUT_DIR`, then run the Docker multi-stage build. Support `--tag`, `--output`, `--no-cache`, `--push`, and `--registry` options. Verify the output tarball after build.
-- [ ] **18.4 Local Run Script (Native):** Create `run.sh`. It must auto-locate the latest artifact in `dist/`, resolve the PHP binary (portable or system), load `.env` with priority resolution (shell env > `--env-file` > project root `.env` > artifact `.env`), write a PHP router script (handle `/api/*` → PHP, static files → build/, SPA fallback → `build/index.html`), and auto-run `migrate.php` on first launch. Support `--port`, `--dir`, `--env-file` options.
-- [ ] **18.5 Local Run Script (Docker):** Create `run-docker.sh`. It must build a minimal `php:8.3-apache` run image (install `pdo_sqlite`, enable `mod_rewrite`), mount the artifact read-only at `/var/www/html`, persist the SQLite DB in a named Docker volume (`character-vault-db`). Support `--port`, `--dir`, `--env-file`, `--no-cache` options.
-- [ ] **18.6 VS Code Debug Configurations:** Create `.vscode/launch.json` with configurations for: Chrome, Edge, Firefox (frontend on port 5173), PHP/Xdebug (backend on port 9003), compound full-stack sessions (Vite + PHP + browser). Create `.vscode/tasks.json` with background tasks for Vite dev server, PHP dev server, DB migrations, native build, and local server. All PHP configs must use `scripts/php-dev.sh` as runtime. Organize configurations in presentation groups (fullstack → frontend → backend → tests → artifact).
-- [ ] **18.7 VS Code Extensions:** Create/update `.vscode/extensions.json` with recommendations for Svelte, PHP IntelliSense, Xdebug, ESLint, Prettier, and browser debug tools (Chrome/Edge DevTools, Firefox Debugger).
-- [ ] **18.8 PHP Binary Resolver:** Create `scripts/php-dev.sh`. Resolution priority: (1) `CHAR_VAULT_PHP` env var override, (2) system PHP with Xdebug when `XDEBUG_MODE` is set, (3) `.build-tools/bin/php` portable binary, (4) system PHP >= 8.1. Print clear warning if Xdebug is requested but not found. Forward all arguments via `exec`.
-- [ ] **18.9 Environment Variable Support:** Create `.env.example` documenting all supported variables (`APP_ENV`, `DB_PATH`, `CORS_ORIGIN`) with usage instructions for shared hosting, local development, and Docker. Update `api/config.php` to load `.env` files with priority resolution (process env > .env file > built-in defaults). Update `run.sh` and `run-docker.sh` with `--env-file` option and `.env` loading logic.
-- [ ] **18.10 Version Control & Documentation:** Update `.gitignore` to exclude build artifacts (`dist/`, `dist-pkg/`, `.build-tools/`), portable tools, and sensitive files (`.env`, `*.sqlite*`). Rewrite `README.md` with comprehensive sections: project structure, prerequisites, quick start, development setup, testing, VS Code debugging, building & packaging (native + Docker), running locally, environment variables, and production deployment.
+- [ ] **8.6 Saving Throws Summary:** Create `src/lib/components/core/SavingThrowsSummary.svelte`. Compact Fort/Ref/Will. Read-only.
 
-- [ ] **Checkpoint Review #5** (after Phase 18): Run the tooling & DX review from `CHECKPOINTS.md`. Covers: native build pipeline (`build.sh` — portable tools bootstrap, full pipeline order, `--skip-tests`/`--deploy` flags, artifact structure), Docker build (multi-stage, pinnable versions, BuildKit cache), local run scripts (`run.sh`/`run-docker.sh` — port/dir/env-file options, migration on first launch, DB volume), VS Code launch/tasks configs (full-stack compound, PHP/Xdebug, background tasks, path mappings), PHP binary resolver priority chain, `.env` priority semantics, `.gitignore` completeness, README accuracy. Resolve all CRITICAL and MAJOR issues before proceeding.
+- [ ] **8.7 Skills Summary:** Create `src/lib/components/core/SkillsSummary.svelte`. Condensed skill name + total bonus. Read-only, link to Abilities tab.
 
-## Phase 19: UI Excellence — Tailwind CSS, Theming, Responsive Design & Iconography
+- [ ] **8.8 Languages & Lore Component:** Create `src/lib/components/core/LoreAndLanguages.svelte`. Personal Story / Appearance text areas. Language system: INT mod + Speak Language ranks, auto-granted languages, dropdown to add more.
 
-_Goal: Elevate the entire UI to professional-grade quality. Replace all hand-written scoped CSS with Tailwind CSS utility classes. Implement a robust light/dark theme system with system preference detection and cookie persistence. Integrate Lucide Icons to replace all emoji placeholders. Build a responsive layout that works seamlessly on desktop (widescreen), tablet (landscape/portrait), and mobile. Ensure the character sheet uses a full-height layout where tabs are always visible and only the content scrolls. Long data lists (skills, feats, spells) must support horizontal scrolling on narrow viewports. All interactive elements must be properly sized for both mouse and touch input. The migration palette shifts from raw purple (#7c3aed) to a more refined indigo/blue-violet accent. The navigation system uses a collapsible sidebar (icons-only on collapsed desktop, drawer on mobile)._
+### Phase 9: UI Construction — "Abilities & Skills" Tab (Full Interactive Editor)
 
-**Design Decisions (locked in):**
-- **CSS Framework:** Tailwind CSS (v4+) with PostCSS
-- **Icon Library:** Lucide Icons via `lucide-svelte` (tree-shakable SVG components)
-- **Accent Color:** Indigo/blue-violet (Tailwind's `indigo` scale as primary, replacing the raw purple)
-- **Theme Strategy:** CSS class-based (`dark` class on `<html>`), Tailwind `darkMode: 'class'`, system preference via `prefers-color-scheme`, user choice persisted in a cookie
-- **Navigation:** Collapsible sidebar (full on desktop, icons-only when collapsed, slide-out drawer on mobile)
-- **Tab Behavior:** Full-viewport-height layout — tabs are always visible, only tab content scrolls internally
-- **Touch Targets:** Minimum 44px on touch devices, adaptive via `@media (pointer: coarse)`
+- [ ] **9.1 Data Model Extensions:** Add `recommendedAttributes?: ID[]` to `Feature` interface in `feature.ts`. Confirm synergy bonuses auto-appear via DAG Phase 4 synergy generation (Phase 3.4).
+
+- [ ] **9.2 Breakdown & Dice Roll Modals:** Create `ModifierBreakdownModal.svelte` (pipeline `activeModifiers` → "Base + Modifiers = Final" math). Create `DiceRollModal.svelte` (`parseAndRoll()`, crit/fumble highlighting; V/WP mode: `→ WOUND POINTS` / `→ Vitality Points` routing row).
+
+- [ ] **9.3 Ability Scores Panel:** Create `src/lib/components/abilities/AbilityScores.svelte`. 6 stat panels: `derivedModifier`, editable base score, temporary modifier. Breakdown and Roll buttons per stat.
+
+- [ ] **9.4 Stat Generation Wizards:** Create `PointBuyModal.svelte` (D&D 3.5 math, `pointBuyBudget` from settings, `recommendedAttributes` color-coding). Create `RollStatsModal.svelte` (4d6 drop lowest, `rerollOnes` setting, assign values to attributes).
+
+- [ ] **9.5 Saving Throws Panel:** Create `src/lib/components/abilities/SavingThrows.svelte`. Fort/Ref/Will: final modifier, ability block (color-coded), misc modifier, editable temp. Breakdown and Roll buttons.
+
+- [ ] **9.6 Skills Matrix Panel:** Create `src/lib/components/abilities/SkillsMatrix.svelte`. Header: SP Available (from `engine.phase4_skillPointsBudget.totalAvailable`) vs. Spent. Table: class-skill, name, total, key ability, misc, ranks (clamped `[minimumRanks, maxRanks]`, "Min" badge), cost, max ranks. Ranks input calls `engine.setSkillRanks()`. "Journal" button opens Leveling Journal modal.
+
+### Phase 10: UI Construction — "Combat" Tab
+
+_Goal: Full Combat tab. Engine handles all calculations._
+
+- [ ] **10.1 Health & Experience Panel:** Create `src/lib/components/combat/HealthAndXP.svelte`. HP bar (Current/Temporary/Nonlethal), Heal/Damage buttons (temp HP depletes first). XP bar using `@eclForXp` from `config_xp_table`. LA/ECL badges, "Reduce LA" button. Turn/Encounter/Long Rest buttons call engine methods. V/WP mode: dual VP/WP bars.
+
+- [ ] **10.2 Armor Class Panel:** Create `src/lib/components/combat/ArmorClass.svelte`. Three pipelines (`ac_normal`, `ac_touch`, `ac_flat_footed`). Breakdown modals. Effective DEX to AC = `min(dexMod, combatStats.max_dex_bonus.totalValue)`.
+
+- [ ] **10.3 Core Combat Stats:** Create `src/lib/components/combat/CoreCombat.svelte`. BAB (iterative attacks), Initiative, Grapple. Roll and Breakdown buttons.
+
+- [ ] **10.4 Weapons & Attacks Panel:** Create `src/lib/components/combat/Attacks.svelte`. Main Hand, Off Hand, Ranged dropdowns from Inventory + Unarmed. Dynamic Attack Bonus and Damage calculation. Roll buttons.
+
+- [ ] **10.5 Movement Speeds Panel:** Create `src/lib/components/combat/MovementSpeeds.svelte`. Land/Burrow/Climb/Fly/Swim pipelines. Armor and Load penalty pipeline display.
+
+- [ ] **10.6 Energy & Special Resistances:** Create `src/lib/components/combat/Resistances.svelte`. Fire/Cold/Acid/Electricity/Sonic/SR/PR/Fortification/ASF pipelines. Misc modifier inputs.
+
+- [ ] **10.7 Damage Reduction Builder:** Create `src/lib/components/combat/DamageReduction.svelte`. DR builder (Value, bypass tags, Innate vs. Class type). "Add DR" → custom `ActiveFeatureInstance` pushed to engine. `drEntries` from `StackingResult` with suppressed DRs shown with strikethrough.
+
+- [ ] **10.8 Action Budget Bar & Ephemeral Effects Panel:** Create `src/lib/components/combat/ActionBudgetBar.svelte` (min-wins per action category, spent counter, XOR exclusion via `action_budget_xor` tag, "Reset Turn"). Create `src/lib/components/combat/EphemeralEffectsPanel.svelte` (active ephemeral effect cards, two-click "Expire"). Both in Combat tab left column. Per `ARCHITECTURE.md` §5.6, 6.5.
+
+### Phase 11: UI Construction — "Feats" Tab
+
+- [ ] **11.1 Feat Capacity Pipeline:** `phase4_featSlots` from Phase 3.8. "Feats Left" = slots − manually selected count.
+
+- [ ] **11.2 Feats Tab Layout & Lists:** Create `src/lib/components/feats/FeatsTab.svelte`. Header counters. Granted Feats (read-only, source tag). Selected Feats (Delete button).
+
+- [ ] **11.3 Feat Catalog Modal:** Create `src/lib/components/feats/FeatSelectionModal.svelte`. All `category: "feat"` features. Text search. Tag badges.
+
+- [ ] **11.4 Prerequisite Evaluation UI:** Run `prerequisitesNode` through `logicEvaluator` per feat. Failed: row disabled, `errorMessage`s in red. Met: green.
+
+### Phase 12: UI Construction — "Spells & Powers" Tab
+
+- [ ] **12.1 Magic Resources & Limits:** In `GameEngine`, derive Caster Level, Manifester Level. Derive Spell Slots (per level) and Power Points max.
+
+- [ ] **12.2 Spells/Powers Catalog (The Grimoire):** Create `src/lib/components/magic/Grimoire.svelte`. Learn/add spells. Filter by active `spellLists` and class level.
+
+- [ ] **12.3 Preparation & Casting Panel:** Create `src/lib/components/magic/CastingPanel.svelte`. Spells by level (0–9). Psionic: `discipline` tab bar. Prepare counter (Vancian) or Cast/Manifest button. Spell detail: School, Components, Range, Duration, Roll, Save DC. Psionic: `displays` badges, augmentation picker with `effectDescription`. Metamagic rods, staff variable charge costs, wand item CL, scroll arcane/divine restriction + CL check.
+
+- [ ] **12.4 Special & Domain Abilities Panel:** Create `src/lib/components/magic/SpecialAbilities.svelte`. `class_feature`/`domain` features with `activation`. Resource pool tracking. "Use" button calls engine pool spend.
+
+### Phase 13: UI Construction — "Inventory" Tab
+
+- [ ] **13.1 Equipment Slot Pipelines:** Use slot pipelines from Phase 3.1 (`slots.ring`, `slots.head`, etc.).
+
+- [ ] **13.2 Inventory Sections & Layout:** Create `src/lib/components/inventory/InventoryTab.svelte`. Three sections: Equipped/Readied, Backpack/Carried, Storage/Stashed.
+
+- [ ] **13.3 Equip, Slot Enforcement & Psionic Item Cards:** "Equip" checks slot count vs. pipeline total; blocks if full. `two_hands` checks both hands. Consumables: "Drink"/"Apply"/"Use" button → `engine.consumeItem()`. Create `src/lib/components/inventory/PsionicItemCard.svelte` (Cognizance Crystal PP bar, Dorje charge bar, Power Stone Brainburn warning, Psicrown PP/Manifest, Tattoo activate). Psionic tattoo 20-limit. Cursed items: no Unequip button. Per `ARCHITECTURE.md` §5.1.1, 4.15.
+
+- [ ] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`. `$derived` weight sum. STR carrying capacity from `config_carrying_capacity`. Medium/Heavy → dispatch `condition_encumbered`. CP/SP/GP/PP inputs (50 coins = 1 lb).
+
+- [ ] **Checkpoint #2 — UI Layer Conformance** (requires Phases 1–13): Run from `CHECKPOINTS.md`. Verify zero game logic in .svelte files, zero hardcoding, Campaign/Vault visibility, all six tab implementations, Navigation & Routes. Resolve all CRITICAL and MAJOR issues before proceeding.
+
+### Phase 14: PHP Backend & Frontend Integration
+
+_Goal: PHP/SQLite REST API for shared hosting._
+
+- [ ] **14.1 Database Configuration & PDO Setup:** `api/config.php`, singleton `api/Database.php` (PDO/SQLite, `sqlite::memory:` for tests).
+
+- [ ] **14.2 Authentication System:** `api/auth.php`. Login/logout/me endpoints. `requireAuth()` middleware (401 on unauthenticated).
+
+- [ ] **14.3 CORS & Security Middleware:** `api/middleware.php`. Configurable CORS. CSRF protection on POST/PUT/DELETE. Rate limiting.
+
+- [ ] **14.4 Database Schema & Migrations:** `api/migrate.php`. Tables: `users`, `campaigns` (with `gm_global_overrides_text`, `updated_at`), `characters` (with separate `character_json`, `gm_overrides_json`, `updated_at`).
+
+- [ ] **14.5 REST API Endpoints:** Campaigns CRUD, `sync-status`, Characters CRUD with visibility rules (GM vs. player), GM override endpoint. All with ownership/GM checks and `updated_at` tracking.
+
+- [ ] **14.6 Frontend Integration (StorageManager):** Refactor `StorageManager.ts` with async `fetch()`. Debounced auto-save (2s). Offline fallback to localStorage. Polling `sync-status` every 5–10s.
+
+- [ ] **14.7 SvelteKit Proxy Configuration:** `vite.config.ts` proxies `/api` to PHP dev server (configurable target).
+
+### Phase 15: GM Tools — Rule Sources & Override Screens
+
+- [ ] **15.1 Rule Source Manager UI:** `src/routes/campaigns/[id]/settings/+page.svelte` (GM-only). Enable/disable/reorder rule sources (drag-and-drop). Variant Rules section: Gestalt and V/WP checkboxes.
+
+- [ ] **15.2 Global Override Text Area:** JSON textarea for `gmGlobalOverrides`. JSON validator with line-error highlighting.
+
+- [ ] **15.3 GM Entity Dashboard:** `src/routes/campaigns/[id]/gm-dashboard/+page.svelte` (GM-only). Character list + read-only summary + per-character `gmOverrides` textarea.
+
+- [ ] **15.4 Override Resolution Chain:** Enforce strict order in `DataLoader`: rule files → `gmGlobalOverrides` → `gmOverrides`. Both `merge` modes supported at every layer.
+
+- [ ] **Checkpoint #3 — Backend & GM Tools** (requires Phases 1–15): Run from `CHECKPOINTS.md`. Verify auth/bcrypt, CSRF, SQL injection audit, schema, visibility rules, sync timestamps, GM override system, Vite proxy, rule source discovery. Resolve all CRITICAL and MAJOR issues before proceeding.
+
+### Phase 16: Backend Unit Testing (PHPUnit)
+
+- [ ] **16.1 PHPUnit & Memory DB Setup:** PHPUnit + `phpunit.xml` with `sqlite::memory:`.
+- [ ] **16.2 Character Persistence Tests:** `tests/CharacterControllerTest.php` — save/load round-trip of deeply nested character JSON.
+- [ ] **16.3 Visibility & Authorization Tests:** `tests/VisibilityTest.php` — non-GM accessing another's character → 403.
+- [ ] **16.4 Authentication Tests:** `tests/AuthTest.php` — valid/invalid login, 401 without session, session persistence.
+- [ ] **16.5 GM Override Visibility Tests:** `tests/GmOverrideTest.php` — player gets merged data; GM gets base + raw overrides separately.
+- [ ] **16.6 Sync Timestamp Tests:** `tests/SyncTest.php` — `updated_at` on character edit and GM override edit, `sync-status` accuracy.
+
+### Phase 17: Frontend Engine & Rules Unit Testing (Vitest)
+
+_Goal: Exhaustively test the engine with deterministic tests._
+
+- [ ] **17.1 Math & Placeholder Tests:** `src/tests/mathParser.test.ts`. All `@`-paths, order-of-operations, `|distance`/`|weight` pipes (both locales), `@eclForXp` vs `@characterLevel`, formula-as-value, unresolved path → 0.
+
+- [ ] **17.2 Logic Evaluator Tests:** `src/tests/logicEvaluator.test.ts`. Nested AND > OR > NOT > CONDITION. `has_tag`/`missing_tag`. All 8 operators. `choiceGrantedTagPrefix` sub-tag emission. `errorMessage` from failing nodes.
+
+- [ ] **17.3 Stacking Rules Tests:** `src/tests/stackingRules.test.ts`. All 4 stackable types. `setAbsolute` override + last-wins. Negative modifier. DR best-wins grouping (same-bypass suppression, independent bypass coexistence, AND-bypass distinct group, sort-order consistency, `drEntries` absent when no DR). `"inherent"` best-wins + cross-type stacking.
+
+- [ ] **17.4 Dice Engine Tests:** `src/tests/diceEngine.test.ts`. Injectable RNG. Situational context match/no-match. Exploding 20s. Crit range. V/WP routing scenarios. Attacker mod resolution (correct pipeline, filter, defender `totalBonus` unchanged). Fortification boundaries. On-crit burst dice (scaling, Thundering, fort-negated → no burst, malformed formula → no crash).
+
+- [ ] **17.5 DAG Integration Tests:** `src/tests/dagResolution.test.ts`. Belt of CON cascade (CON → Fort → HP). Formula-as-value (Monk WIS to AC). `forbiddenTags`. `conditionNode`. Dual-gated modifier. Synergy auto-generation. Circular dependency guard.
+
+- [ ] **17.6 Multiclass & Level Progression Tests:** `src/tests/multiclass.test.ts`. `characterLevel` sum. Multi-class BAB. Level-gated feature granting. `@eclForXp` for monster PC (Drow Rogue 3 LA+2 → `eclForXp=5`, `@characterLevel=3`).
+
+- [ ] **17.7 Merge Engine Tests:** `src/tests/mergeEngine.test.ts`. Full replace. Partial merge (array append, `levelProgression`, `choices`). `-prefix` deletion. 3-layer chain. Config table replacement.
+
+- [ ] **17.8 Engine Enhancement & Edge Case Tests:** Create/extend: `resourcePool.test.ts` (all 8 conditions, reset isolation), `itemResourcePools.test.ts` (idempotency, floor, cross-instance, stashed excluded), `tieredActivation.test.ts` (guards → null), `triggerActivation.test.ts` (reaction vs. passive, inactive excluded), `ephemeralEffects.test.ts` (lifecycle, sorting), `inherentBonus.test.ts` (within-type/cross-type), `metamagicRods.test.ts`, `staffSpells.test.ts`, `wandSpell.test.ts`, `scrollSpells.test.ts`, `cursedItemRemoval.test.ts`, `intelligentItems.test.ts`, `augmentationRule.test.ts` (backward compat, qualitative, fallback), `maxDexBonus.test.ts` (no armor=99, cap+Mithral, multi-cap min-wins).
+
+- [ ] **Checkpoint #4 — Test Suite Exhaustiveness** (requires Phases 1–17): Run from `CHECKPOINTS.md`. Verify PHPUnit coverage and Vitest coverage (all engine paths, all extension types, all edge cases). Resolve all CRITICAL and MAJOR gaps before proceeding.
+
+### Phase 18: Tooling, Build Pipeline & Developer Experience
+
+- [ ] **18.1 Docker Build Pipeline:** Multi-stage `Dockerfile` + `docker-compose.yml`. Final artifact: tarball with SvelteKit build + PHP API + static assets + `.htaccess`.
+- [ ] **18.2 Native Build Script:** `scripts/build.sh`. Portable tools bootstrap. Full pipeline. Options: `--env`, `--output`, `--deploy`, `--tag`, `--skip-tests`, `--no-clean`.
+- [ ] **18.3 Docker Build Wrapper:** `scripts/build-docker.sh`. Options: `--tag`, `--output`, `--no-cache`, `--push`, `--registry`.
+- [ ] **18.4 Local Run Script (Native):** `run.sh`. Auto-locate artifact, PHP resolver, `.env` priority, PHP router, auto-migrate. Options: `--port`, `--dir`, `--env-file`.
+- [ ] **18.5 Local Run Script (Docker):** `run-docker.sh`. Minimal Apache+PHP image. Named DB volume. Options: `--port`, `--dir`, `--env-file`, `--no-cache`.
+- [ ] **18.6 VS Code Debug Configurations:** `.vscode/launch.json` (Chrome/Edge/Firefox frontend, PHP/Xdebug, compound full-stack). `.vscode/tasks.json` (background server tasks). Groups: fullstack → frontend → backend → tests → artifact.
+- [ ] **18.7 VS Code Extensions:** `.vscode/extensions.json` (Svelte, PHP, Xdebug, ESLint, Prettier, browser debuggers).
+- [ ] **18.8 PHP Binary Resolver:** `scripts/php-dev.sh`. Priority: `CHAR_VAULT_PHP` → Xdebug PHP → portable → system PHP ≥ 8.1.
+- [ ] **18.9 Environment Variable Support:** `.env.example` (APP_ENV, DB_PATH, CORS_ORIGIN). `api/config.php` priority loader. `run.sh`/`run-docker.sh` `--env-file` option.
+- [ ] **18.10 Version Control & Documentation:** `.gitignore` completeness. Comprehensive `README.md`.
+
+- [ ] **Checkpoint #5 — Tooling & DX** (requires Phase 18): Run from `CHECKPOINTS.md`. Verify build pipeline, Docker, run scripts, VS Code configs, PHP resolver, `.env` priority, `.gitignore`, README. Resolve all CRITICAL and MAJOR issues before proceeding.
+
+### Phase 19: UI Excellence — Tailwind CSS, Theming, Responsive Design & Iconography
+
+_Design decisions: Tailwind CSS v4+, `lucide-svelte`, indigo accent palette, CSS class-based dark mode, collapsible sidebar, full-viewport-height character sheet, 44px touch targets._
+
+- [ ] **19.1 Tailwind CSS & PostCSS Setup:** Install Tailwind v4+, PostCSS, autoprefixer. `tailwind.config.ts`, `postcss.config.js`, `src/app.css`. Custom palette, semantic aliases, breakpoints, `darkMode: 'class'`.
+- [ ] **19.2 Theme Engine & Cookie Persistence:** `ThemeManager.svelte.ts` (3-state: system/light/dark, cookie persistence). FOWT prevention script in `app.html`. `ThemeToggle.svelte`. CSS custom properties for all theme colors.
+- [ ] **19.3 Lucide Icons Integration:** Install `lucide-svelte`. Replace ALL emoji. Sizes: 16px/20px/24px. `currentColor`. Icon mapping documented.
+- [ ] **19.4 Global Layout Shell & Sidebar Navigation:** `AppShell.svelte` + `Sidebar.svelte`. Desktop: expanded/collapsible (cookie). Tablet: icon-only. Mobile: slide-in drawer. Cookie-persisted state.
+- [ ] **19.5 Design System — Base Component Classes:** `.card`, button variants (Primary/Secondary/Danger/Ghost), input style, badge variants, `Modal.svelte` (desktop centered / mobile bottom sheet), `HorizontalScroll.svelte`.
+- [ ] **19.6 Character Sheet Full-Height Layout:** `100vh` − sidebar. Fixed tab bar (always visible). Scrollable content. Desktop ≥1280px: multi-column.
+- [ ] **19.7 Core Tab Migration:** Migrate `BasicInfo`, `AbilityScoresSummary`, `SavingThrowsSummary`, `SkillsSummary`, `LoreAndLanguages`. Remove all `<style>` blocks.
+- [ ] **19.8 Abilities & Skills Tab Migration:** Migrate `AbilityScores`, `SavingThrows`, `SkillsMatrix` (sticky column + `HorizontalScroll`), `PointBuyModal`, `RollStatsModal`, modals.
+- [ ] **19.9 Combat Tab Migration:** Migrate all Combat components including `ActionBudgetBar`, `EphemeralEffectsPanel`. Desktop ≥1280px: 2-column layout.
+- [ ] **19.10 Feats & Magic Tabs Migration:** Migrate `FeatsTab`, `FeatSelectionModal`, `Grimoire`, `CastingPanel`, `SpecialAbilities`.
+- [ ] **19.11 Inventory Tab Migration:** Migrate `InventoryTab`, `PsionicItemCard`, `Encumbrance`. Mobile: swipe/action sheet.
+- [ ] **19.12 Campaign Hub, Vault & GM Tools Migration:** Migrate all non-character-sheet pages.
+- [ ] **19.13 Touch Adaptation, Accessibility & Cross-Device Polish:** `pointer: coarse` 44px targets. `:focus-visible` rings. `prefers-reduced-motion`. Test at 320/375/414/768/1024/1280/1536/1920px — zero overflow.
+- [ ] **19.14 Legacy CSS Cleanup & Final QA:** Remove all remaining `<style>` blocks. WCAG AA contrast. Smoke-test full user flow.
+
+- [ ] **Checkpoint #6 — UI Excellence** (requires Phase 19): Run from `CHECKPOINTS.md`. Verify Tailwind migration, theme system, Lucide coverage, sidebar, full-height layout, breakpoints, touch targets, design system consistency. Resolve all CRITICAL and MAJOR issues before proceeding.
+
+### Phase 20: Leveling Progression & Skill Points (SRD-Accurate)
+
+_Goal: Leveling UI and dedicated SRD-accurate tests. Engine analytics already implemented in Phase 3.8._
+
+- [ ] **20.1 SkillsMatrix Update:** Use `engine.phase4_skillPointsBudget.totalAvailable`. Rank input min = `getMinRanks()`. "Min" badge on locked ranks. "Journal" button.
+
+- [ ] **20.2 Leveling Journal Modal:** Create `src/lib/components/abilities/LevelingJournalModal.svelte`. Overview table (classes × BAB/saves/SP). Per-class SP formula with first-level bonus annotation. Lock/Unlock controls. XP penalty warning.
+
+- [ ] **20.3 i18n Strings:** Add `journal.*` and `skills.rank_locked*` / `skills.journal_*` keys to `src/lib/i18n/ui-strings.ts` (EN + FR).
+
+- [ ] **20.4 Vitest — Per-Class SP Budget Tests:** Extend `src/tests/multiclass.test.ts`. First-level 4× on first class only, INT floor, racial bonus, three-class scenario, proof of broken unified formula.
+
+- [ ] **20.5 Vitest — Minimum Rank Enforcement Tests:** Extend `src/tests/multiclass.test.ts`. Floor clamping, max-merge (never lowers), absent = 0, cross-class cost.
+
+- [ ] **20.6 Vitest — Character Build Integration Scenario:** Create `src/tests/characterBuildScenario.test.ts`. Fighter 3/Monk 3/Psion 1/Wizard 1 — 100+ assertions covering BAB, saves, HP, SP budget, AC, XP penalty, feats, spells, PP.
+
+- [ ] **Checkpoint #7 — Leveling Progression** (requires Phase 20): Run from `CHECKPOINTS.md`. Verify per-class SP budget, rank enforcement, SkillsMatrix, LevelingJournalModal, i18n, test scenarios. Resolve all CRITICAL and MAJOR issues before proceeding.
+
+### Phase 21: Custom Content Editors
+
+- [ ] **21.1+ To be determined.** (Scope not yet defined — see `ARCHITECTURE.md` for future direction notes.)
 
 ---
 
-- [ ] **19.1 Tailwind CSS & PostCSS Setup:** Install Tailwind CSS (v4), PostCSS, and autoprefixer. Create `src/app.css` with Tailwind directives (`@import "tailwindcss"`). Configure `tailwind.config.ts` (or CSS-based config for v4) with the custom theme: extend the color palette with an `accent` scale mapped to Tailwind's `indigo` (replacing the old purple), define semantic color aliases (`surface`, `surface-alt`, `border`, `text-primary`, `text-secondary`, `text-muted`), configure responsive breakpoints (`sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`, `2xl: 1536px`), and set `darkMode: 'class'`. Update `svelte.config.js` and `vite.config.ts` if necessary for PostCSS integration. Import `src/app.css` in the root `+layout.svelte`. Verify the build still compiles and Tailwind utilities are available.
-    - _Deliverables:_ `tailwind.config.ts` (or equivalent), `postcss.config.js`, `src/app.css`, updated `+layout.svelte`, updated `package.json`.
+### Final Review
 
-- [ ] **19.2 Theme Engine & Cookie Persistence:** Create `src/lib/stores/ThemeManager.svelte.ts`. Implement a reactive theme store using Svelte 5 runes with three states: `'system'`, `'light'`, `'dark'`. On initialization, read the user's preference from a `theme` cookie (using `document.cookie` parsing). If no cookie exists, default to `'system'`. When the resolved theme is `'system'`, detect the OS preference via `window.matchMedia('(prefers-color-scheme: dark)')` and listen for changes. Apply the resolved theme by toggling the `dark` class on `document.documentElement`. When the user changes their preference, persist it in a cookie with `path=/`, `max-age=31536000` (1 year), and `SameSite=Lax`. Create a `<ThemeToggle />` component (`src/lib/components/ui/ThemeToggle.svelte`) with three-state cycling: System → Light → Dark → System, using Lucide icons (`Monitor`, `Sun`, `Moon`).
-    - _Requirement:_ The theme must be applied **before** the first paint to prevent flash-of-wrong-theme (FOWT). Use a `<script>` block in `src/app.html` `<head>` that reads the cookie and applies the `dark` class synchronously.
-    - _Requirement:_ Define all theme-aware colors as CSS custom properties in `src/app.css` (e.g., `--color-surface`, `--color-surface-alt`, `--color-border`, `--color-text-primary`, `--color-text-muted`, `--color-accent`), with separate values under `.dark` and default (light). Map these to Tailwind's `theme.extend.colors` so utilities like `bg-surface`, `text-primary`, `border-border` work.
-
-- [ ] **19.3 Lucide Icons Integration & Icon Mapping:** Install `lucide-svelte`. Define an icon mapping convention for the project (documented in a comment block or a small mapping file). Replace ALL emoji characters in the codebase with appropriate Lucide icon components. Apply consistent icon sizing: `16px` inline with text, `20px` in buttons and nav items, `24px` in section headers. Ensure icons inherit the current text color via `currentColor`.
-    - _Icon mapping (minimum):_
-      - **Tabs:** Core → `FileText`, Abilities → `Dumbbell` or `BicepsFlexed`, Combat → `Swords`, Feats → `Star`, Magic → `Sparkles`, Inventory → `Backpack`
-      - **Sections:** Settings → `Settings`, Stats → `BarChart3`, Skills → `GraduationCap`, Saves → `Shield`, Health → `Heart`, XP → `TrendingUp`, AC → `ShieldCheck`, Attacks → `Sword`, Movement → `Footprints`, Resistances → `Flame`, DR → `ShieldAlert`, Spells → `BookOpen`, Abilities → `Zap`, Languages → `Languages`, Lore → `Scroll`
-      - **Actions:** Add → `Plus`, Delete → `Trash2`, Edit → `Pencil`, Info/Breakdown → `Info`, Dice Roll → `Dices`, Search → `Search`, Filter → `Filter`, Equip → `ArrowUpToLine`, Unequip → `ArrowDownToLine`, Heal → `HeartPulse`, Damage → `Skull`
-      - **Navigation:** Campaign → `Map`, Vault → `Users`, Character → `User`, GM Dashboard → `Crown`, Back → `ArrowLeft`, Menu → `Menu`, Close → `X`
-      - **Theme:** System → `Monitor`, Light → `Sun`, Dark → `Moon`
-      - **Status:** Success → `Check`, Error → `AlertCircle`, Warning → `AlertTriangle`, Locked → `Lock`
-    - _Requirement:_ Icons must be used as Svelte components, not as raw SVG strings. This ensures tree-shaking works correctly.
-
-- [ ] **19.4 Global Layout Shell & Sidebar Navigation:** Refactor `src/routes/+layout.svelte` to implement the application shell layout. Create `src/lib/components/layout/AppShell.svelte` as the main wrapper providing:
-    - **Sidebar** (`src/lib/components/layout/Sidebar.svelte`): Rendered on the left side. On desktop (≥1024px): default to expanded (showing icon + label), with a collapse toggle button that shrinks it to icon-only mode (persisted in a cookie). On tablet (768px-1023px): default to icon-only. On mobile (<768px): hidden by default, slides in as an overlay drawer when the hamburger button is tapped, with a semi-transparent backdrop.
-      - _Content:_ App logo/title at the top, navigation links (Campaigns, Vault — contextual to active campaign, Character Sheet — if a character is loaded), a divider, then the Theme Toggle and a user/session indicator at the bottom.
-      - _Active state:_ Current route highlighted with accent background and left border indicator.
-    - **Main content area:** Takes the remaining width. Has a thin top bar on mobile showing the hamburger menu button, the current page title, and breadcrumb navigation (e.g., "Reign of Winter > Vault > Aldric").
-    - _Requirement:_ The sidebar state (expanded/collapsed) must be persisted in a cookie.
-    - _Requirement:_ Use Tailwind `transition-all` with `duration-200` for smooth sidebar expand/collapse and drawer animations.
-
-- [ ] **19.5 Design System: Base Component Classes & Patterns:** Define a set of reusable Tailwind-based component patterns. These are NOT new Svelte components for simple cases — they are documented utility class combinations applied via Tailwind's `@apply` in `src/app.css` or used directly. For complex interactive patterns, create minimal Svelte wrapper components in `src/lib/components/ui/`.
-    - **Cards/Panels:** `.card` class — `bg-surface rounded-lg border border-border shadow-sm` with dark variant. Used for all content sections.
-    - **Section Headers:** Consistent pattern: Lucide icon (20px) + label text (`text-sm font-semibold uppercase tracking-wider text-muted`) + optional action buttons aligned right.
-    - **Buttons:** Primary (`bg-accent text-white hover:bg-accent-600`), Secondary (`bg-surface-alt border border-border hover:bg-surface`), Danger (`bg-red-600`), Ghost (`hover:bg-surface-alt`). All with `rounded-md px-3 py-2 text-sm font-medium transition-colors`. Touch: minimum `h-11` on `pointer: coarse`.
-    - **Inputs:** `bg-surface border border-border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-accent/50 focus:border-accent`. Consistent height matching buttons.
-    - **Badges:** Small pills for tags, modifiers, sources. `px-2 py-0.5 rounded-full text-xs font-medium`. Color variants: accent, green (met prerequisite), red (failed), yellow (warning), gray (neutral).
-    - **Modals:** Create `src/lib/components/ui/Modal.svelte` — a unified modal wrapper. On desktop: centered overlay with backdrop blur, max-width configurable (sm/md/lg/xl/full). On mobile (<768px): slides up from bottom as a sheet, or goes full-screen for complex modals (feat catalog, grimoire). Includes focus trap, Escape to close, backdrop click to close. Smooth enter/exit transitions.
-    - **Horizontal Scroll Container:** Create `src/lib/components/ui/HorizontalScroll.svelte` — a wrapper that enables horizontal scrolling with scroll-snap, fade-out edge shadows (left/right gradients) indicating scrollable content, and optional scroll indicator dots or arrows. Uses `overflow-x: auto`, `scroll-snap-type: x mandatory`, and `scrollbar-width: thin` (or hidden on mobile).
-    - **Data Tables:** Define a pattern for tabular data with `overflow-x: auto` wrapper, sticky first column on mobile, alternating row colors in light theme, subtle hover highlight.
-
-- [ ] **19.6 Character Sheet Full-Height Layout & Tab Redesign:** Refactor `src/routes/character/[id]/+page.svelte` to implement a full-viewport-height layout:
-    - _Structure:_ The character sheet occupies `100vh` minus the sidebar/top-bar height. Inside, the layout is split: a fixed tab navigation bar at the top, and a scrollable content area below that fills the remaining height (`flex-1 overflow-y-auto`).
-    - _Tab bar:_ Horizontal row of tab buttons. Each tab shows a Lucide icon (20px) + label text. On mobile (<768px): labels are hidden, only icons shown (with tooltip on long-press or title attribute). The tab bar has `overflow-x: auto` with scroll-snap for swipe navigation between tabs on mobile. Active tab: bold text + accent underline (2px bottom border) + subtle accent background tint.
-    - _Content area:_ Uses `overflow-y: auto` with smooth scrolling. Padded appropriately (`p-4` on mobile, `p-6` on desktop).
-    - _Requirement:_ The user must NEVER need to scroll the page to reach the tabs. Tabs are always accessible.
-    - _Requirement:_ On desktop wide screens (≥1280px), the content area should intelligently use the horizontal space by arranging panels in a multi-column grid (2 or 3 columns), avoiding excessively long single-column layouts.
-
-- [ ] **19.7 Core Tab Migration:** Migrate all Core tab components to Tailwind CSS and add Lucide icons:
-    - `BasicInfo.svelte`: Redesign the feature selectors (Race, Class, Deity, Alignment, Size) as a clean card with icon-labeled dropdowns. Dynamic badges (e.g., "+2 DEX") use the badge component pattern. Feature choices render as a sub-card with indented styling.
-    - `AbilityScoresSummary.svelte`: Compact 6-stat grid. Each stat as a mini-card with the stat icon, value, and modifier. On desktop: horizontal row. On mobile: 3×2 grid or 2×3 grid.
-    - `SavingThrowsSummary.svelte`: Three inline stat blocks (Fortitude/Reflex/Will) with Shield icons.
-    - `SkillsSummary.svelte`: Condensed list with horizontal scroll on mobile. Use the `HorizontalScroll` container.
-    - `LoreAndLanguages.svelte`: Two-column on desktop (story left, languages right), stacked on mobile. Text areas with proper Tailwind styling.
-    - _Requirement:_ Remove ALL scoped `<style>` CSS from these components. All styling via Tailwind utility classes only.
-
-- [ ] **19.8 Abilities & Skills Tab Migration:** Migrate all Abilities tab components to Tailwind CSS:
-    - `AbilityScores.svelte`: 6 ability score panels in a responsive grid (3×2 on desktop, 2×3 on tablet, 1 column on mobile). Each panel: stat name with icon, base score (editable input), modifier display (large prominent number), and action buttons (Info `Info` icon, Roll `Dices` icon). The editable fields must be properly sized for touch.
-    - `SavingThrows.svelte`: Three save panels with breakdown display, ability modifier block (color-coded), and action buttons. Responsive grid.
-    - `SkillsMatrix.svelte`: This is the most critical component for horizontal scrolling.
-      - _Desktop (≥1024px):_ Full table layout with all columns visible. Alternating row styling.
-      - _Tablet/Mobile (<1024px):_ The skill table becomes a horizontally scrollable container using the `HorizontalScroll` component. The skill name column is **sticky** (pinned left) while the data columns (ranks, bonus, ability, misc, cost, max) scroll horizontally. This prevents a kilometer-long vertical list.
-      - _Header:_ Skill points available/spent displayed as a progress-bar-style indicator.
-    - `PointBuyModal.svelte` and `RollStatsModal.svelte`: Redesign as full-screen sheets on mobile, centered modals on desktop. Touch-friendly increment/decrement buttons (≥44px).
-    - `ModifierBreakdownModal.svelte` and `DiceRollModal.svelte`: Use the unified `Modal` component. Clean math breakdown layout. Dice results with animated roll display (optional, subtle).
-
-- [ ] **19.9 Combat Tab Migration:** Migrate all Combat tab components to Tailwind CSS:
-    - `HealthAndXP.svelte`: HP bar redesigned as a full-width visual bar with gradient colors (green → yellow → red). Touch-friendly Heal (`HeartPulse`) and Damage (`Skull`) buttons. XP progress bar with level indicator. Level Up button prominent with `TrendingUp` icon.
-    - `ArmorClass.svelte`: Three AC values (Normal, Touch, Flat-Footed) displayed as prominent number cards in a row. Each with breakdown icon. Temp modifier input styled consistently.
-    - `CoreCombat.svelte`: BAB, Initiative, Grapple displayed as stat blocks with action buttons. Responsive grid.
-    - `Attacks.svelte`: Weapon selection dropdowns with weapon icon. Attack/damage summary as card. Roll buttons prominent.
-    - `MovementSpeeds.svelte`: Speed values with `Footprints` icon. Penalty indicators with warning styling.
-    - `Resistances.svelte`: Grid of resistance values with element-themed icons (`Flame` for fire, `Snowflake` for cold, etc.).
-    - `DamageReduction.svelte`: DR list as cards with delete action. Builder form as a compact inline form.
-    - _Layout:_ On desktop (≥1280px), arrange in a 2-column grid: left column (Health, AC, Core Combat), right column (Attacks, Movement, Resistances, DR). On mobile: single column stacked.
-
-- [ ] **19.10 Feats & Magic Tabs Migration:** Migrate Feats and Magic tab components to Tailwind CSS:
-    - **Feats Tab:**
-      - `FeatsTab.svelte`: Header with feat counter (available/left) as badge indicators. Granted feats section with `Lock` icon (read-only). Selected feats with `Trash2` delete action. Responsive card grid.
-      - `FeatSelectionModal.svelte`: On mobile: full-screen modal with sticky search bar at top. On desktop: large centered modal. Search input with `Search` icon. Tag badges for feat categories. Prerequisites: `Check` (green) for met, `X` (red) for unmet, with `errorMessage` tooltip. Scrollable feat list.
-    - **Magic Tab:**
-      - `Grimoire.svelte`: Spell catalog with search and filter. Horizontal scroll by spell level on mobile.
-      - `CastingPanel.svelte`: Spells grouped by level in collapsible sections. Prepare counters as touch-friendly stepper buttons. Spell detail modal with school icon and roll button.
-      - `SpecialAbilities.svelte`: Ability cards with activation info and resource tracking (uses/day as tappable pips or stepper).
-
-- [ ] **19.11 Inventory Tab Migration:** Migrate Inventory tab components to Tailwind CSS:
-    - `InventoryTab.svelte`: Three sections (Equipped, Backpack, Storage) as collapsible card groups with distinct visual treatment (Equipped: accent-tinted header, Backpack: neutral, Storage: muted). Each item row: icon (`Package` or weapon/armor icon), name, weight, equip/unequip action button. Slot indicator badges on equipped items.
-    - `Encumbrance.svelte`: Full-width encumbrance bar with three tier markers (Light/Medium/Heavy). Current weight displayed numerically. Wealth section as a compact inline form (CP/SP/GP/PP inputs with coin icons).
-    - _Mobile:_ Item actions accessible via swipe-to-reveal or action menu (tap → action sheet). Equipment slot validation warnings as toast-style notifications.
-
-- [ ] **19.12 Campaign Hub, Vault & GM Tools Migration:** Migrate all non-character-sheet pages to Tailwind CSS:
-    - **Campaign Hub** (`/campaigns`): Campaign cards as large image-topped cards in a responsive grid. "Create Campaign" button with `Plus` icon, visible only for GM.
-    - **Campaign Details** (`/campaigns/[id]`): Banner image full-width. Chapter list with `Check` icons for completion status. GM controls for chapter management.
-    - **Character Vault** (`/campaigns/[id]/vault`): Character cards in responsive grid. Poster image with fallback avatar (Lucide `User` icon). Level badge. Class/race subtitle. Empty state with illustration and CTA buttons.
-    - **GM Settings** (`/campaigns/[id]/settings`): Rule source manager with drag-and-drop reorder (styled list with grip handles `GripVertical` icon). JSON text area with monospace font, line numbers, and syntax error highlighting. Light/dark appropriate code editor styling.
-    - **GM Dashboard** (`/campaigns/[id]/gm-dashboard`): Entity list as a sidebar list on desktop (responsive split view), drawer on mobile. Read-only character summary as stat cards. Per-character override text area.
-    - _Requirement:_ All pages must have smooth theme transitions and consistent card/panel styling.
-
-- [ ] **19.13 Touch Adaptation, Accessibility & Cross-Device Polish:** Ensure the entire UI works flawlessly on touch devices and all screen sizes:
-    - **Touch targets:** Add a global CSS rule: `@media (pointer: coarse)` increases minimum interactive element height to `44px` (buttons, links, inputs, tab buttons, dropdown options, list items). Increase spacing between adjacent interactive elements to prevent mis-taps.
-    - **Focus management:** All interactive elements must have visible focus rings (`ring-2 ring-accent/50 ring-offset-2`) for keyboard navigation. Focus rings hidden for mouse users (`:focus-visible` only).
-    - **Responsive spacing:** Define a Tailwind plugin or utility pattern where padding/gaps increase on `pointer: coarse` (e.g., `gap-2` on desktop, `gap-3` on touch).
-    - **Scrollbar styling:** Thin scrollbars on desktop (via `scrollbar-width: thin`), hidden scrollbars on mobile (via `scrollbar-width: none` or WebKit pseudo-elements).
-    - **Viewport consistency:** Test at: 320px (small phone), 375px (iPhone), 414px (large phone), 768px (tablet portrait), 1024px (tablet landscape), 1280px (laptop), 1536px (desktop), 1920px (widescreen). Ensure no horizontal overflow at any breakpoint.
-    - **Animations:** Use `prefers-reduced-motion: reduce` to disable transitions/animations for users who prefer reduced motion.
-
-- [ ] **19.14 Legacy CSS Cleanup, Performance Audit & Final QA:** Complete the migration by removing all legacy styles and verifying quality:
-    - Remove ALL `<style>` blocks from every `.svelte` component that has been migrated to Tailwind. No scoped CSS should remain except for truly component-specific animation keyframes or pseudo-element hacks that cannot be expressed in Tailwind.
-    - Audit `src/app.css` to ensure the `@apply` directives (if used) are minimal and justified. Prefer direct utility classes in templates.
-    - Run `npx tailwindcss --content` analysis to verify unused styles are purged. Check final CSS bundle size.
-    - Verify that the dark and light themes are visually consistent across ALL pages and components. Check contrast ratios meet WCAG AA (4.5:1 for normal text, 3:1 for large text).
-    - Verify the theme cookie is correctly read before first paint (no flash of wrong theme).
-    - Verify the sidebar cookie persistence works (collapsed state survives page reload).
-    - Smoke-test the complete user flow: landing → campaign hub → vault → character sheet → all 6 tabs → back to vault. Ensure no visual glitches, no broken layouts, no orphaned old styles.
-
-- [ ] **Checkpoint Review #6** (after Phase 19): Run the UI Excellence review from `CHECKPOINTS.md`. Covers: Tailwind migration completeness (no remaining scoped CSS, no hardcoded hex colors), theme system (3-state cycle, cookie persistence, FOWT prevention script, live media query listener), Lucide icon sizing and coverage (no remaining emoji), sidebar responsiveness (desktop/tablet/mobile, cookie persistence), character sheet full-height layout (always-visible tabs), responsive breakpoints (320px–1920px, no horizontal overflow), touch targets (min 44px, focus rings, `prefers-reduced-motion`), design system consistency (cards/buttons/inputs/badges/modals), zero regressions on full user flow. Resolve all CRITICAL and MAJOR issues before proceeding.
-
-## Phase 20: Leveling Progression & Skill Points (SRD-Accurate Engine Corrections)
-
-_Goal: Implement fully SRD-accurate D&D 3.5 leveling mechanics — correct per-class skill point budgets (including the first-level 4× bonus), minimum rank enforcement (permanently spent SP cannot be refunded), and a Leveling Journal UI that makes all per-class contributions transparent. All mechanics documented in ARCHITECTURE.md section 9.6._
-
-- [ ] **20.1 Per-class skill point budget (`phase4_skillPointsBudget`):** Add `SkillPointsBudget` `$derived` to `GameEngine`. Compute skill points independently per class using `max(1, spPerLevel + intMod) × classLevel` for each class. Apply the SRD first-level 4× bonus to the first class added (identified by JS key insertion order). Track racial/feat bonus SP (`attributes.bonus_skill_points_per_level`) separately, applied per total character level. Export `ClassSkillPointsEntry` (with `firstLevelBonus` and `totalPoints`) and `SkillPointsBudget` types.
-
-- [ ] **20.2 Minimum skill rank enforcement:** Add `minimumSkillRanks?: Record<ID, number>` to `Character` interface. Add `lockSkillRanksMin(skillId)`, `lockAllSkillRanks()` to `GameEngine`. Update `setSkillRanks()` to clamp to `max(minimumFloor, 0)`. Absent field = all floors 0 = free editing during character creation.
-
-- [ ] **20.3 `SkillsMatrix.svelte` updated:** Use `engine.phase4_skillPointsBudget` for budget display. Clamp rank inputs to `[minimumRanks, maxRanks]`. Show "Min" badge on locked rank floors. Add "Journal" button linking to the Leveling Journal modal.
-
-- [ ] **20.4 Leveling Journal Modal (`LevelingJournalModal.svelte`):** Create `src/lib/components/abilities/LevelingJournalModal.svelte`. Show overview table (all classes × BAB/Fort/Ref/Will/SP + totals row), per-class detail cards (SP formula with first-level bonus annotation, class skill badges, granted features), Lock/Unlock rank controls, first-level 4× info note, multiclass XP penalty warning with favored-class exemption. Add `IconJournal` (`BookOpen`) to `icons.ts`.
-
-- [ ] **20.5 `phase4_levelingJournal` derived:** Add `LevelingJournal` `$derived` to `GameEngine`. Collect per-class BAB/save totals from `phase0_flatModifiers` filtered by `modifier.sourceId`. Export `LevelingJournalClassEntry` and `LevelingJournal` types.
-
-- [ ] **20.6 i18n strings:** Add `journal.*` namespace and `skills.rank_locked*` / `skills.journal_*` keys to `src/lib/i18n/ui-strings.ts` (EN + FR).
-
-- [ ] **20.7 Vitest — Scenario 7 (per-class SP budget):** Extend `src/tests/multiclass.test.ts`. Add `computeCorrectSkillPointBudget()` (with `isFirstClass` flag) and `firstLevelBonus()` helpers. Test: first-level 4× on first class only, INT minimum floor, racial bonus per total level, three-class multiclass, proof that the pre-fix unified formula over-counts.
-
-- [ ] **20.8 Vitest — Scenario 8 (minimum rank enforcement):** Extend `src/tests/multiclass.test.ts`. Test: `setSkillRanks` floor clamping, `lockSkillRanksMin` max-merge, absent `minimumSkillRanks` defaults to 0, cross-class skill cost (2 SP/rank).
-
-- [ ] **20.9 Vitest — Character build scenario (`characterBuildScenario.test.ts`):** Create `src/tests/characterBuildScenario.test.ts`. Validate a complete Fighter 3 / Monk 3 / Psion 1 / Wizard 1 multiclass build verifying: character level (8), ECL (8), ability scores and ASI tracking (CON 17→19), BAB (+5), saves (Fort +10 / Ref +7 / Will +10), SP budget (50 SP RAW), feat slots (5), HP (75 with fixed dice, max at L1 then half+1), AC (15 unarmored with WIS Monk bonus), Wizard spells/day (3 cantrips / 2 first-level), psionic PP (3), class skill union, level-gated feature granting, multiclass XP penalty with favored-class exemption, caster/manifester level independence.
-
-- [ ] **Checkpoint Review #7a** (after Phase 20): Run the leveling progression review from `CHECKPOINTS.md`. Covers: per-class SP budget (`phase4_skillPointsBudget` — per-class independence, first-level 4× bonus on first class only, INT minimum floor, racial bonus SP per total level), minimum rank enforcement (`minimumSkillRanks` optional field, `setSkillRanks` clamping, `lockSkillRanksMin` max-merge), `SkillsMatrix.svelte` budget display and locked rank UI, `LevelingJournalModal` SP formula display and XP penalty warning, `phase4_levelingJournal` derived correctness, i18n completeness, Vitest Scenarios 7–9, SRD accuracy cross-check (first-level 4×, INT retroactivity, XP penalty boundary, favored class exemption, cross-class max ranks). Resolve all CRITICAL and MAJOR issues before proceeding.
-
-## Phase E: Ephemeral Effects — Consumable Items, Active Buffs & Expire Button
-
-_Goal: Implement the full consumable item lifecycle: potions and oils can be drunk/applied from inventory, generating temporary active effects visible in a dedicated "Active Effects" panel on the Combat tab. Each effect card shows the source, duration hint, and an "Expire" button for manual dismissal. Special abilities in the Magic tab are wired to spend their resource pool on use._
-
-_Entry point: triggered by observation that the existing engine had no consumable abstraction despite `grantedModifiers` on potions, and the "Use" button in SpecialAbilities was unwired._
-
-- [x] **E-1 Type Extensions:** Add `ephemeral?: { isEphemeral, appliedAtRound, sourceItemInstanceId, durationHint }` to `ActiveFeatureInstance` in `character.ts`. Add `consumable?: { isConsumable, durationHint }` to `ItemFeature` in `feature.ts`. These fields signal the two-phase consumption lifecycle without breaking existing types.
-
-- [x] **E-2 GameEngine — `consumeItem()` / `expireEffect()` / `getEphemeralEffects()`:** Three new public methods in `GameEngine.svelte.ts`.
-  - `consumeItem(sourceInstanceId, currentRound?)`: validates consumability, creates ephemeral instance (same featureId → same modifiers), removes source item, returns new instanceId.
-  - `expireEffect(instanceId)`: safety-guarded remove — refuses to remove non-ephemeral instances.
-  - `getEphemeralEffects()`: filter + sort (newest-round-first) view of ephemeral effects.
-
-- [x] **E-3 `EphemeralEffectsPanel.svelte`:** New component at `src/lib/components/combat/EphemeralEffectsPanel.svelte`. Displays all active ephemeral effects as a collapsible list. Each card shows: effect name, duration badge, "Active" badge, round info, Info button (opens FeatureModal), and two-click "Expire" button (first click = confirm prompt, second click = expire). Placed in Combat tab left column above HealthAndXP. Collapses to a single-line "no effects" message when empty.
-  - Icons added to `icons.ts`: `IconEphemeral` (Hourglass), `IconExpire` (TimerOff), `IconPotion` (FlaskRound), `IconOil` (Droplets), `IconActiveEffect` (Bolt).
-  - i18n keys added to `ui-strings.ts`: `effects.panel.*`, `inventory.*`.
-
-- [x] **E-4 UI Wiring — Inventory & SpecialAbilities:**
-  - `InventoryTab.svelte`: Added `isConsumable()` helper, `useConsumable()` function, `getUseLabel()` function. Consumable items in the Backpack section show a "Drink" / "Apply" / "Use" button (amber-styled) instead of the Equip button. Non-consumable items retain the Equip button.
-  - `SpecialAbilities.svelte`: Wired the existing "Use" button to `handleUseAbility()` which deducts 1 use from the feature's `activation.resourceCost.targetId` pool. No more stub — abilities with a resource cost are now functional.
-
-- [x] **E-5 Tests (`src/tests/ephemeralEffects.test.ts`):** 28 new Vitest tests across 5 suites:
-  - Type soundness (5 tests): fields compile, ephemeral is optional, consumable is optional, durationHint optional.
-  - `consumeItem()` lifecycle (11 tests): removes source, creates effect, isActive=true, same featureId, isEphemeral=true, durationHint, round recorded, non-consumable guard (returns null), missing instanceId guard (returns null), unique IDs on double-consume, selections copied.
-  - `expireEffect()` lifecycle (5 tests): removes instance, blocks non-ephemeral (safety guard), handles missing id, leaves zero effects, does not affect siblings.
-  - `getEphemeralEffects()` sorting (5 tests): only ephemeral, empty array, descending round sort, out-of-combat last, isEphemeral=false excluded.
-  - Full integration scenario (1 test): Fighter drinks Bull's Strength in round 4, effect is active, ring/feat untouched, player expires at round 7.
-
-**Total test count after Phase E: 681 tests (all passing).**
-
-## Phase E-6: Magic Armor Engine Prerequisites — Fortification & Arcane Spell Failure
-
-_Goal: Resolve two engine gaps identified during C-14k (Magic Armor) analysis before generating the JSON. Without these changes, Fortification (25/75/100% crit negation) has no dice-engine hook, and Arcane Spell Failure has no pipeline to accumulate toward._
-
-_Entry point: pre-conversion analysis of `magicArmor.html` revealed that no `combatStats.fortification` or `combatStats.arcane_spell_failure` pipelines existed, and the Dice Engine had no Fortification check path._
-
-- [x] **E-6a Pipeline initialization:** Added `combatStats.fortification` (baseValue 0) and `combatStats.arcane_spell_failure` (baseValue 0) to the default `combatStats` map in `GameEngine.svelte.ts`. Both include exhaustive inline documentation explaining content authoring conventions, stacking rules (untyped additive for ASF), and their role in the Dice Engine / UI contract.
-
-- [x] **E-6b Dice Engine — `defenderFortificationPct` + `RollResult.fortification`:** Added optional 8th parameter `defenderFortificationPct: number = 0` to `parseAndRoll()`. When a crit is confirmed AND pct > 0: rolls 1d100; if ≤ pct → `critNegated: true`, else `critNegated: false`. New `RollResult.fortification` block carries `{ roll, pct, critNegated }`. Fortification-negated crits route to `res_vitality` in V/WP mode (not `res_wound_points`). ASF left to the CastingPanel UI (pre-cast check), not handled in `parseAndRoll()`.
-
-- [x] **E-6c Tests (`src/tests/fortificationAndASF.test.ts`):** 20 new Vitest tests (701 total, all passing):
-  - Fortification mechanic (14 tests): no-pct → absent; non-crit → no check; boundary values 25%/75%/100%; `roll`/`pct` fields; `isCriticalThreat` unchanged; V/WP routing; `context.isCriticalHit` trigger; pct=1 boundary.
-  - Pipeline verification (4 tests): fortification baseValue=0, ASF baseValue=0, single-armor ASF=20, two-piece additive ASF=35.
-  - Fortification stacking (2 tests): Light=25 and Moderate=75 produce correct `totalValue`.
-
-- [x] **E-6d Documentation:** New sections 4.7 (Fortification) and 4.8 (Arcane Spell Failure) in `ARCHITECTURE.md` — full tables, content-authoring JSON examples, engine contract, caller contract, V/WP interaction note. `CHECKPOINTS.md` Checkpoint #4 updated with 11 new Fortification/ASF verification items.
-
-**Total test count after Phase E-6: 701 tests (all passing).**
-
-## Phase E-7: Magic Weapon Engine Prerequisites — On-Crit Burst Dice
-
-_Goal: Resolve the one engine gap identified during C-14l (Magic Weapons) analysis before generating the JSON. Flaming Burst / Icy Burst / Shocking Burst / Thundering weapons deal extra elemental/sonic dice on confirmed critical hits only. This cannot be modeled as a static pipeline modifier — it is a dice-roll side-effect that must fire at roll time._
-
-_Entry point: pre-conversion analysis of `magicWeapons.html`. The only true engine gap was the burst-on-crit mechanism. Keen (doubled crit range) is a content-authoring decision (set `critRange` directly). Vicious (self-damage) is modeled as a tag + description._
-
-- [x] **E-7a Type Extensions:** Added `ItemFeature.weaponData.onCritDice?: { baseDiceFormula, damageType, scalesWithCritMultiplier }` to `feature.ts`. Added `RollResult.onCritDiceRolled?: { formula, rolls, totalAdded, damageType }` to `diceEngine.ts`. Added exported `OnCritDiceSpec` interface to `diceEngine.ts`.
-
-- [x] **E-7b Dice Engine — 9th+10th parameters to `parseAndRoll()`:** Added `weaponOnCritDice?: OnCritDiceSpec` (9th) and `critMultiplier: number = 2` (10th). Step 6c in the algorithm: when `isEffectiveCrit` (confirmed AND not fort-negated) AND spec provided: parse `baseDiceFormula`, compute dice count (`baseDiceCount × (critMultiplier - 1)` when scaling), roll burst dice via injectable RNG, add to `finalTotal`, store in `onCritDiceRolled`. Changed `finalTotal` from `const` to `let` to allow mutation. Removed duplicate `isEffectiveCrit` declaration.
-
-- [x] **E-7c Tests (`src/tests/onCritBurstDice.test.ts`):** 22 new Vitest tests (723 total, all passing):
-  - Happy path (12 tests): non-crit absent, no-spec absent, ×2/×3/×4 scaling, Thundering, totalAdded in finalTotal, damageType, individual rolls, scalesWithCritMultiplier=false fixed, ×3 non-scaling.
-  - Fortification interaction (2 tests): negated crit → no burst; non-negated → burst present.
-  - V/WP interaction (2 tests): effective crit → res_wound_points; fort-negated → res_vitality.
-  - Parsing edge cases (4 tests): "d10" no-prefix, "2d6" ×3 scaling, malformed → no crash, critMultiplier=2 → 1 die.
-  - Combined fields (2 tests): burst + attackerPenalties; burst + fortification non-negated.
-
-- [x] **E-7d Documentation:** `ARCHITECTURE.md` section 4.9 (On-Crit Burst Dice — full SRD table, data model, algorithm, Fortification interaction, content authoring Flaming Burst example, Keen and Vicious design decisions). `CHECKPOINTS.md` Checkpoint #4 updated with 14 new on-crit burst dice verification items.
-
-**Total test count after Phase E-7: 723 tests (all passing).**
-
-## Phase E-8: Wondrous Items Engine Prerequisites — Inherent Bonus Type
-
-_Goal: Resolve the one engine gap identified during C-14m–q (Wondrous Items) analysis before generating the JSON. Tomes (Manual of Bodily Health, Tome of Clear Thought, etc.) grant inherent bonuses to ability scores — a bonus type absent from `ModifierType` that has unique stacking semantics._
-
-_Entry point: pre-conversion analysis of `wondrousItems.html` identified only one gap: the `"inherent"` modifier type. All other wondrous item effects (ability score enhancements, skill competence bonuses, save resistances, speed enhancements, spell resistance, damage reduction, per-day activated abilities, consumables) map directly to existing engine primitives._
-
-- [x] **E-8a Type Extension:** Added `"inherent"` to the `ModifierType` union in `primitives.ts`. Inherent bonuses are non-stacking within the same type (highest wins — correct SRD behavior: only the best of multiple tomes applies) but stack with all other bonus types (enhancement, luck, morale, etc.). Added extensive inline documentation explaining the SRD rule (max +5 per score), the content authoring pattern (tome as consumable creating a permanent non-ephemeral feature instance), and the cross-reference to `ARCHITECTURE.md section 4.10`.
-
-- [x] **E-8b Tests (`src/tests/inherentBonus.test.ts`):** 14 new Vitest tests (737 total, all passing):
-  - Type soundness (2 tests): `"inherent"` compiles as ModifierType, full Modifier object type-checks.
-  - Within-type stacking (5 tests): single +2 applies, +2 and +4 → only +4, two +2 → only one, +5 maximum, three bonuses → only highest with two suppressed.
-  - Cross-type stacking (5 tests): inherent + enhancement both apply (+4+4=8), inherent + luck both apply, inherent + morale both apply, two inherent + enhancement → highest inherent + full enhancement.
-  - Suppressed list (2 tests): weaker inherent in suppressedModifiers, single inherent has no suppressed items.
-
-- [x] **E-8c Documentation:** `ARCHITECTURE.md` section 4.10 (Inherent Bonuses — SRD rules table, data model example, stacking engine behavior, content authoring pattern for Tomes). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new inherent bonus verification items.
-
-**Total test count after Phase E-8: 737 tests (all passing).**
-
-## Phase E-9: Rod Engine Prerequisites — Metamagic Rod field
-
-_Goal: Resolve the one engine gap identified during C-14r (Rods) analysis. Metamagic rods allow spellcasters to apply a metamagic feat without occupying a higher spell slot — a unique mechanic absent from ItemFeature. Adding `metamagicEffect` pre-wires the contract for the CastingPanel (Phase 12.3) integration._
-
-_Entry point: pre-conversion analysis of `rods.html`. All 22 rod entries (37 items across tiers) map to existing engine primitives EXCEPT metamagic rods, which need a typed `metamagicEffect` field so the CastingPanel can identify which feat to apply and what the spell level limit is._
-
-- [x] **E-9a Type Extension:** Added `ItemFeature.metamagicEffect?: { feat: '...' | ..., maxSpellLevel: 3 | 6 | 9 }` to `feature.ts`. The `feat` union covers all 6 SRD metamagic feats (empower, enlarge, extend, maximize, quicken, silent). `maxSpellLevel` is a strict `3 | 6 | 9` union (lesser/normal/greater). Extensive inline documentation covers the SRD rule (no spell slot increase), the CastingPanel contract (eligible check, charge decrement, one-rod-per-spell), and a complete JSON example of a lesser empower rod.
-
-- [x] **E-9b Tests (`src/tests/metamagicRods.test.ts`):** 12 new Vitest tests (749 total, all passing):
-  - Type soundness (6 tests): all 6 feats compile, all 3 levels compile, lesser empower, greater quicken, non-rod has no field, metamagicEffect + no weaponData/armorData compiles.
-  - Field contract (4 tests): feat preserved, maxSpellLevel preserved, tier distinguished by level, realistic rod with both metamagicEffect and resourcePoolTemplates.
-  - All 6 SRD feats (2 tests): all distinct, two rods same tier different feats.
-
-- [x] **E-9c Documentation:** `ARCHITECTURE.md` section 4.11 (Metamagic Rods — SRD rules, data model with JSON example, CastingPanel 5-step contract, 6-feat table, AI implementation note). `CHECKPOINTS.md` Checkpoint Review #4 updated with 6 new metamagic rod verification items.
-
-**Total test count after Phase E-9: 749 tests (all passing).**
-
-## Phase E-10: Staff Engine Prerequisites — Staff Spell List field
-
-_Goal: Resolve the one engine gap identified during C-14s (Staves) analysis. Staves hold 2–6 spells at charge costs of 1–5 each. Without a typed `staffSpells` array on `ItemFeature`, the CastingPanel has no structured data to display the spell menu or deduct the correct number of charges._
-
-_Entry point: pre-conversion analysis of `staffs.html`. All 21 staves map to existing engine primitives EXCEPT the per-spell charge cost metadata, which requires a new array `staffSpells: [{ spellId, chargeCost, spellLevel? }]`. The `spendItemPoolCharge(instanceId, poolId, N)` method already accepts variable amounts — no computation change needed._
-
-- [x] **E-10a Type Extension:** Added `ItemFeature.staffSpells?: { spellId: ID, chargeCost: 1 | 2 | 3 | 4 | 5, spellLevel?: number }[]` to `feature.ts`. `chargeCost` is a strict `1|2|3|4|5` literal union (prevents authoring errors like `chargeCost: 12`). `spellLevel` is optional — only needed for heightened spells on the Staff of Power (fireball/lightning bolt/ray of enfeeblement stored at 5th level). Extensive inline documentation with SRD charge cost table, CastingPanel 7-step contract, and a full Staff of Healing JSON example.
-
-- [x] **E-10b Tests (`src/tests/staffSpells.test.ts`):** 15 new Vitest tests (764 total, all passing):
-  - Type soundness (4 tests): all 5 charge costs valid, staffSpells optional, all-fields entry, spellLevel optional.
-  - Field contract (5 tests): Staff of Healing [1,1,2,3], Staff of Life resurrection=5, Staff of Woodlands animate plants=4, Staff of Power heightened fireball spellLevel=5, empty array valid.
-  - Charge cost range (3 tests): min=1, max=5, all 5 values in one staff sum correctly.
-  - Real-world combinations (3 tests): coexists with resourcePoolTemplates, coexists with weaponData, coexists with grantedModifiers.
-
-- [x] **E-10c Documentation:** `ARCHITECTURE.md` section 4.12 (Staves — SRD rules, variable charge table, data model, heightened spell handling, Staff of Healing JSON example, CastingPanel 7-step contract, staff vs. wand vs. ring comparison table). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new staff spell verification items.
-
-**Total test count after Phase E-10: 764 tests (all passing).**
-
-## Phase E-11: Wand Engine Prerequisites — Wand Spell field
-
-_Goal: Resolve the one engine gap identified during C-14t (Wands) analysis. Wands hold a single spell at a fixed item caster level (not the wielder's). The SRD table has 5 variants of Magic Missile (CL 1–9) and 4 heightened wands. Without a typed `wandSpell` field the CastingPanel cannot identify the spell, apply the correct CL, or compute accurate damage/DCs._
-
-_Entry point: pre-conversion analysis of `wands.html`. The SRD itself says: "All wands are simply storage devices for spells and thus have no special descriptions." Every effect maps to `resourcePoolTemplates` (50 finite charges) + the new `wandSpell` field. No engine computation change needed._
-
-- [x] **E-11a Type Extension:** Added `ItemFeature.wandSpell?: { spellId: ID, casterLevel: number, spellLevel?: number }` to `feature.ts`. `casterLevel` is a plain `number` (not an enum — wand CLs range freely based on spell minimum CL). `spellLevel` is optional, only for the 4 heightened wands in the SRD table. Extensive inline documentation: SRD rules, the "wands use item CL not wielder's CL" critical distinction vs. staves, Magic Missile CL-variant table, and CastingPanel 6-step contract.
-
-- [x] **E-11b Tests (`src/tests/wandSpell.test.ts`):** 16 new Vitest tests (780 total, all passing):
-  - Type soundness (4 tests): required fields only, heightened compiles, optional on non-wand items, casterLevel accepts any number.
-  - CL variants (5 tests): MM CL1 vs CL9 distinct, Fireball CL5 vs CL10 distinct, min CL=1, max CL=10, 5 MM variants all distinct.
-  - Heightened spells (4 tests): charm person→3, hold person→4, ray of enfeeblement→4, suggestion→4.
-  - Coexistence (3 tests): coexists with resourcePoolTemplates, spellLevel absent on normal wands, 5 MM variants all valid ItemFeature objects with correct missile counts.
-
-- [x] **E-11c Documentation:** `ARCHITECTURE.md` section 4.13 (Wands — "wands use item CL, not wielder's CL" rule, Magic Missile CL-variant table, heightened wand table with 4 entries, JSON example, CastingPanel 6-step contract, AI implementation note on CL). Updated 4.12 comparison table to show `wandSpell` in the Wand column. `CHECKPOINTS.md` updated with 7 new wand verification items.
-
-**Total test count after Phase E-11: 780 tests (all passing).**
-
-## Phase E-12: Scroll Engine Prerequisites — Scroll Spell List field
-
-_Goal: Resolve the one engine gap identified during C-14u (Scrolls) analysis. Scrolls have three unique mechanics absent from `wandSpell` and `staffSpells`: (1) mandatory `spellType: 'arcane' | 'divine'` class restriction, (2) required `spellLevel` for CL check DC computation, (3) single-use consumable with no charge pool._
-
-_Entry point: pre-conversion analysis of `scrolls.html`. The SRD table has 728 spell entries across arcane (0–9th) and divine (0–9th) sections. All map to `scrollSpells` + `consumable.isConsumable: true` — no computation change needed._
-
-- [x] **E-12a Type Extension:** Added `ItemFeature.scrollSpells?: { spellId, casterLevel, spellLevel, spellType: 'arcane'|'divine' }[]` to `feature.ts`. `spellLevel` is required (unlike `wandSpell` where it was optional). `spellType` is a strict union. Full CL check DC formula, standard CL table (CL 1/1/3/5/7/9/11/13/15/17 for levels 0–9), price formula, and CastingPanel 4-step contract documented inline.
-
-- [x] **E-12b Tests (`src/tests/scrollSpells.test.ts`):** 17 new Vitest tests (797 total, all passing):
-  - Type soundness (5 tests): all required fields, 'arcane' valid, 'divine' valid, optional on non-scrolls, spellLevel always present.
-  - CL check mechanics (4 tests): DC = casterLevel+1, no check when wielder CL≥scroll CL, check required when lower, standard CL table verified.
-  - Arcane/divine restriction (3 tests): arcane blocks divine, divine blocks arcane, same spell as both types.
-  - Price formula (2 tests): standard CL×SL×25 for levels 1–9, 0th level = 12.5 gp special.
-  - Coexistence (3 tests): coexists with consumable, multi-spell valid, no resourcePoolTemplates.
-
-- [x] **E-12c Documentation:** `ARCHITECTURE.md` section 4.14 (Scrolls — SRD rules, typed model, CL checker, arcane/divine restriction, multi-spell, comprehensive Wands vs Staves vs Scrolls comparison table). `CHECKPOINTS.md` updated with 9 new scroll verification items.
-
-**Total test count after Phase E-12: 797 tests (all passing).**
-
-## Phase E-14: Cursed Item Engine Prerequisites — Removal Prevention
-
-_Goal: Resolve the one engine gap identified during C-14w (Cursed Items) analysis. Cursed items in D&D 3.5 cannot be voluntarily removed — they require remove curse/wish/miracle. Without a guard, `removeFeature()` would unconditionally remove any item, bypassing the curse mechanic entirely._
-
-_Entry point: pre-conversion analysis of `cursedItems.html` (946 lines, 28 specific cursed items + curse type tables). Every mechanical penalty (negative modifiers, conditional effects) maps to existing `grantedModifiers` primitives. The one genuine gap is removal prevention._
-
-- [x] **E-14a Type Extension + Engine Guard:**
-  - Added `ItemFeature.removalPrevention?: { isCursed: true, removableBy: ('remove_curse'|'limited_wish'|'wish'|'miracle')[], preventionNote? }` to `feature.ts`
-  - Updated `GameEngine.removeFeature(instanceId)` to check `removalPrevention.isCursed` and refuse removal with a warning when true.
-  - Added private `GameEngine.#removeFeatureUnchecked(instanceId)` for internal trusted callers (consumeItem, expireEffect, tryRemoveCursedItem).
-  - Added public `GameEngine.tryRemoveCursedItem(instanceId, dispelMethod)` → `true` (removed), `false` (insufficient magic), `null` (not found/not cursed).
-  - Updated `consumeItem()` and `expireEffect()` to call `#removeFeatureUnchecked()` (potions and ephemeral effects are never cursed).
-
-- [x] **E-14b Tests (`src/tests/cursedItemRemoval.test.ts`):** 15 new Vitest tests (812 total, all passing):
-  - Type soundness (3 tests): isCursed=true compiles, all 4 methods valid, optional on non-cursed items.
-  - `removeFeature()` guard (4 tests): blocks cursed item, allows non-cursed, allows ephemeral, logs warning when blocked.
-  - `tryRemoveCursedItem()` (6 tests): returns true (sufficient magic), false (insufficient), null (not found), null (not cursed), item gone after success, item stays after failure.
-  - Interaction (2 tests): ephemeral expiry unaffected, selective removal works across cursed+non-cursed.
-
-- [x] **E-14c Documentation:** `ARCHITECTURE.md` section 4.15 (Cursed Items — full data model, `removeFeature` guard pseudocode, `tryRemoveCursedItem` return table, UI contract for InventoryTab). `CHECKPOINTS.md` updated with 9 new cursed item verification items.
-
-**Total test count after Phase E-14: 812 tests (all passing).**
-
-## Phase E-15: Intelligent Items Engine Prerequisites — Intelligent Item Data block
-
-_Goal: Resolve the one engine gap identified during C-14x (Intelligent Items) analysis. Intelligent items carry INT/WIS/CHA scores, Ego, alignment, communication mode, senses, languages, and optional special purpose. Without a typed metadata block, the GM tools and Item Detail UI have no structured data to read._
-
-_Entry point: pre-conversion analysis of `intelligentItems.html` (888 lines). All mechanical effects (powers, skill ranks, alignment penalties) use existing engine primitives. The gap is purely in the metadata layer — no computation changes needed._
-
-_Why metadata only: Ego computation (sum of dozens of coefficients) is complex to re-derive dynamically; storing the pre-computed value matches how artifact prices and scroll CLs are stored. The engine does NOT need to recompute Ego — content authors compute it at authoring time._
-
-- [x] **E-15a Type Extension:** Added `ItemFeature.intelligentItemData?: { intelligenceScore, wisdomScore, charismaScore, egoScore, alignment (9-value union), communication (3-value union), senses { visionFt, darkvisionFt, blindsense }, languages, lesserPowers, greaterPowers, specialPurpose, dedicatedPower }` to `feature.ts`. Full inline documentation: Ego formula, dominance rules, communication tiers, SRD table references, content authoring example.
-
-- [x] **E-15b Tests (`src/tests/intelligentItems.test.ts`):** 13 new Vitest tests (825 total, all passing):
-  - Type soundness (5 tests): all required fields compile, all 9 alignments valid, all 3 communication modes valid, senses.visionFt discrete values, optional on non-intelligent items.
-  - Ego formula (4 tests): INT/WIS/CHA bonus contribution, greater powers × 2 vs lesser × 1, special purpose +4, dominance DC = stored egoScore.
-  - Field contract (4 tests): minimal item (row 01-34), high-tier item (row 99), language count = Common + INT bonus, specialPurpose/dedicatedPower null when absent.
-
-- [x] **E-15c Documentation:** `ARCHITECTURE.md` section 4.16 (Intelligent Items — data model, Ego table, dominance/negative-level rules, communication tier table, mechanical effects mapped to engine primitives, AI implementation note). `CHECKPOINTS.md` updated with 9 new intelligent item verification items.
-
-**Total test count after Phase E-15: 825 tests (all passing).**
-
-## Phase E-16: Psionic System Engine Analysis + AugmentationRule.effectDescription
-
-_Goal: Pre-conversion engine gap analysis for the full C-15 psionic pipeline (C-15a–k). The psionic system is handled by existing engine primitives in all but one case: `AugmentationRule` is missing an `effectDescription?: LocalizedString` field required by D20SRD_CONVERSION.md C-15c/d for qualitative augmentations (energy type choices, swift-action upgrades, targeting modifications) where `grantedModifiers: []` — the CastingPanel needs a human-readable description to display._
-
-_All other psionic mechanics confirmed as covered: PP pools via ResourcePool, discipline/displays on MagicFeature (§5.2.1), psionic item data via psionicItemData (§5.1.1), metapsionic feats via tags, prestige class PP advancement via levelProgression modifiers, manifester level as a standard pipeline accumulation._
-
-- [x] **E-16a Type Extension:** Added `effectDescription?: LocalizedString` to `AugmentationRule` in `src/lib/types/feature.ts`. Two authoring patterns documented: (1) mechanical augmentation (has grantedModifiers + effectDescription for fuller UI text), (2) qualitative augmentation (grantedModifiers: [] + effectDescription required for the picker label). CastingPanel contract: display effectDescription first; fall back to grantedModifiers[0].sourceName. Key design note: augmentation grantedModifiers are transient cast-time only — they do NOT enter the static DAG. Backward compatible (optional field).
-
-- [x] **E-16b Documentation:** `ARCHITECTURE.md` section 5.2.2 (new subsection — AugmentationRule fields table, two JSON authoring examples, CastingPanel 6-step contract, transient-vs-static design note).
-
-- [ ] **E-16c Tests (`src/tests/augmentationRule.test.ts`):** New Vitest test file. Tests: (1) effectDescription is optional (backward compat), (2) mechanical augmentation with both fields, (3) qualitative augmentation with grantedModifiers: [], (4) multiple augmentation entries mixed (mechanical + qualitative), (5) effectDescription with both en+fr languages, (6) CastingPanel fallback logic (effectDescription absent, use modifier sourceName).
-
-## Phase E-17: Special Materials Engine Gap Analysis + `combatStats.max_dex_bonus` Pipeline
-
-_Goal: Pre-conversion engine gap analysis for D20SRD_CONVERSION.md task C-17 (Special Materials). Analyse all 6 SRD special materials (Adamantine, Darkwood, Dragonhide, Cold Iron, Mithral, Alchemical Silver) and determine whether the game engine can express every effect as JSON-only `grantedModifiers`. Implement any engine changes BEFORE creating the C-17 JSON file._
-
-_Gap identified: The `combatStats.max_dex_bonus` pipeline existed in C-08 item data but was never initialized in GameEngine, making its `setAbsolute` modifiers silently ignored. Mithral's "+2 maximum Dex bonus" requires a dynamic pipeline, not a per-item override. Resolution: new `"max_dex_cap"` modifier type (minimum-wins) + Phase 3 special-case algorithm. The "one armor category lighter" movement effect is handled via a tag for future engine integration._
-
-- [x] **E-17a Engine Change:** Added `"max_dex_cap"` to `ModifierType` (minimum-wins stacking, only for `combatStats.max_dex_bonus`). Added `combatStats.max_dex_bonus` pipeline (`baseValue=99`) to GameEngine initial combatStats. Added Phase 3 special-case: extracts `max_dex_cap` mods first (min→effectiveBase), then applies remaining (untyped) mods normally via `applyStackingRules`. Updated all 13 armor/shield items in `07_d20srd_core_equipment_armor.json` + `test_mock.json` from `"setAbsolute"` → `"max_dex_cap"` for their `combatStats.max_dex_bonus` modifiers.
-
-- [x] **E-17b Tests (`src/tests/maxDexBonus.test.ts`):** 22 new Vitest tests (863 total, all passing). 4 sections: stacking rules treatment, Phase 3 computation, content authoring contracts, edge cases.
-
-- [x] **E-17c Documentation:** `ARCHITECTURE.md` section 4.17 (two-layer model, algorithm, 6-row example table, JSON examples, UI contract). `CHECKPOINTS.md` updated with 8 new verification items.
-
-## Phase 21: Editors to Create Custom Content
-
-To be determined.
-
-## Final Review
-
-- [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.
+- [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — Architecture §1–20 sweep; Part B — cross-cutting concerns (zero hardcoding, i18n, error handling, TypeScript strictness, PHP security); Part C — ANNEXES.md examples A.1–A.12 traced end-to-end, Annex B tables B.1–B.12 verified; Part D — test coverage gap analysis; Part E — UI Excellence validation. All CRITICAL issues must be zero before release.

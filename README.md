@@ -5,11 +5,20 @@
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-1147_tests-6E9F18?logo=vitest&logoColor=white)
+![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
+![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
+![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?logo=creativecommons&logoColor=white)](LICENSE.txt)
 
 A data-driven D&D 3.5 character sheet and campaign management application built with **Svelte 5**, **TypeScript**, and **PHP/SQLite**.
 
 The engine has **zero hardcoded rules**: every race, class, feat, spell, item, and condition is a plain JSON file. Rules can be added, overridden, or removed without touching any code. A homebrew splat is as simple as dropping a JSON file into `static/rules/`. See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the complete system specification.
+
+---
+
+## AI-Assisted Engineering
+
+This project was architected and developed in collaboration with **Google Gemini Pro**, **Anthropic Claude Sonnet**, and **Anthropic Claude Opus**. The complete development prompt — including architecture guidelines, coding rules, and the full phase checklist — lives in [`PROMPT.md`](PROMPT.md). This document is the primary context fed to the AI at the start of each coding session to generate or extend the codebase from scratch.
 
 ---
 

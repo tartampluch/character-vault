@@ -105,7 +105,7 @@ Both files are at the project root.
 | A.3.1–3.3 | Human, Elf, Gnome races | 3 |
 | A.3.4 | Dromite (psionic race) | 106 |
 | A.4.1–4.6 | 6 Feats (prereq chain, choices, metamagic, metapsionic) | 26–31, 105 |
-| A.5.1–5.9 | 9 Items (armor, magic, exotic weapons, cursed) | 32, 33, 34, 77 |
+| A.5.1–5.10 | 10 Items (armor, magic, exotic weapons, cursed, consumable potion) | 32, 33, 34, 77, 82–86 |
 | A.6.1–6.5 | 5 Spells (divine, multi-list, scaling formula) | 35 |
 | A.7 | Soulknife psionic class + Mind Blade | 101, 102 |
 | A.8 | Druid + Animal Companion | 10/11, 18/19 |
@@ -1476,7 +1476,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 ### 77 — Magic Items (`12_d20srd_core_magic_items.json`)
 
 **Source files:** `d20srd/www.d20srd.org/srd/magicItems/`
-**Context:** Read `ANNEXES.md` sections A.5.1–5.9 and A.9 before the first sub-task.
+**Context:** Read `ANNEXES.md` sections A.5.1–5.10 and A.9 before the first sub-task.
 
 **Multi-batch task** — all sub-tasks append to `12_d20srd_core_magic_items.json`. See MULTI-BATCH FILE HANDLING.
 
