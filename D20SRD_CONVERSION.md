@@ -1504,7 +1504,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - [x] **C-14p** — Wondrous Items P–T (`wondrousItems.html`)
 - [x] **C-14q** — Wondrous Items U–Z (`wondrousItems.html`) — **run full-file validation after writing**
 - [x] **C-14r** — Rods (`rods.html`)
-- [ ] **C-14s** — Staves (`staffs.html`)
+- [x] **C-14s** — Staves (`staffs.html`)
 - [ ] **C-14t** — Wands (`wands.html`)
 - [ ] **C-14u** — Scrolls (`scrolls.html`)
 - [ ] **C-14v** — Artifacts (`artifacts.html`)

@@ -844,6 +844,100 @@ This field coexists with `resourcePoolTemplates` (which tracks the 3 uses/day po
 
 ---
 
+### 4.12. Staves — `ItemFeature.staffSpells`
+
+Staves store **multiple spells at varying charge costs**. Unlike wands (single spell, 1 charge per use) or rings (single effect, no charges), a staff presents a *menu* of spells where the player chooses which to cast and the charge cost differs per choice. The `staffSpells` field provides the structured data the `CastingPanel` needs to display this menu correctly.
+
+#### D&D 3.5 SRD Rules
+
+> "A staff has 50 charges when created. … the wielder can use his caster level when activating the power of a staff if it's higher than the caster level of the staff."
+
+Key distinctions from wands and rings:
+- **Variable charge cost per spell**: 1–5 charges per activation (staffs only; wands always cost 1).
+- **Wielder's caster level**: Staves use the wielder's own caster level (and ability modifier for DCs) if it exceeds the staff's default — making staffs more powerful in experienced hands.
+- **Heightened spells**: The Staff of Power stores fireball, ray of enfeeblement, and lightning bolt at 5th level (heightened), not their base level.
+- **Persistence after depletion**: Some staves (Staff of Woodlands, Staff of Power) retain weapon functionality or passive bonuses after all charges are spent — modelled via `weaponData` and `grantedModifiers`.
+
+#### Data Model — `ItemFeature.staffSpells`
+
+```typescript
+staffSpells?: {
+    spellId: ID;           // Feature ID of the stored spell
+    chargeCost: 1 | 2 | 3 | 4 | 5;  // Charges consumed per cast
+    spellLevel?: number;   // Effective level if heightened (only for Staff of Power)
+}[];
+```
+
+Charge costs across all SRD staves:
+| Cost | Examples |
+|---|---|
+| 1 | Charm person, Fireball, Heal, Magic missile, most 1-charge spells |
+| 2 | Remove blindness/deafness, Wall of fire, Phase door, Greater teleport |
+| 3 | Remove disease, Repulsion, Summon monster VI, Circle of death |
+| 4 | Animate plants (Staff of Woodlands only) |
+| 5 | Resurrection (Staff of Life only) |
+
+#### Content Authoring Example — Staff of Healing
+
+```json
+{
+  "id": "item_staff_healing",
+  "category": "item",
+  "staffSpells": [
+    { "spellId": "spell_lesser_restoration",       "chargeCost": 1 },
+    { "spellId": "spell_cure_serious_wounds",      "chargeCost": 1 },
+    { "spellId": "spell_remove_blindness_deafness","chargeCost": 2 },
+    { "spellId": "spell_remove_disease",           "chargeCost": 3 }
+  ],
+  "resourcePoolTemplates": [{
+    "poolId": "charges",
+    "label": { "en": "Staff Charges (50)", "fr": "Charges de bâton (50)" },
+    "maxPipelineId": "combatStats.staff_charges_max",
+    "defaultCurrent": 50,
+    "resetCondition": "never"
+  }]
+}
+```
+
+#### Heightened Spells (Staff of Power)
+
+The `spellLevel` field overrides the spell's base level for all level-dependent effects (DC, damage dice, dispel resistance). Only the Staff of Power uses this in the SRD:
+
+```json
+{ "spellId": "spell_fireball",        "chargeCost": 1, "spellLevel": 5 }
+{ "spellId": "spell_lightning_bolt",  "chargeCost": 1, "spellLevel": 5 }
+{ "spellId": "spell_ray_of_enfeeblement", "chargeCost": 1, "spellLevel": 5 }
+```
+
+#### CastingPanel Contract
+
+When the player selects a staff spell in `CastingPanel.svelte`:
+
+1. Read `staffSpells` on the equipped staff's `ItemFeature`.
+2. Display each spell as a castable option with its `chargeCost` shown.
+3. Filter options: only show spells the wielder can cast (i.e., the spell is on their class list — this matches the spell-trigger activation rule).
+4. Validate `instance.itemResourcePools['charges'] >= entry.chargeCost` before allowing activation.
+5. On activation: call `engine.spendItemPoolCharge(instanceId, 'charges', entry.chargeCost)`.
+6. Apply the spell effect using the wielder's caster level and ability modifier.
+7. If `entry.spellLevel` is set: use that as the effective spell level for DC, area, duration, and damage calculations.
+
+**Variable charge deduction**: `spendItemPoolCharge(instanceId, poolId, amount)` already accepts a variable `amount` parameter — no engine computation change was needed.
+
+#### Staff vs. Wand vs. Ring — Comparison
+
+| Feature | Staff | Wand | Ring |
+|---|---|---|---|
+| Spells stored | 2–6 (at varying costs) | 1 | N/A (passive or 1 ability) |
+| Charge cost | 1–5 per spell | Always 1 | N/A or custom |
+| CL used | Wielder's if higher | Item's fixed CL | Item's fixed CL |
+| Max charges | 50 (never resets) | 50 (never resets) | Varies |
+| Spell level limit | Any | 4th max | N/A |
+| Data field | `staffSpells` | description only | resource pools |
+
+> **AI Implementation Note:** When reading `staffSpells` in `CastingPanel.svelte`, look up each `spellId` via `dataLoader.getFeature(spellId)` to populate the spell name, school icon, and description. Use `entry.spellLevel ?? feature.level` as the effective level for all level-dependent calculations. The `chargeCost` should be displayed prominently next to each spell option so the player can manage their charge budget.
+
+---
+
 ## 5. The Unified Feature Model and Its Sub-Types
 
 The central data block. To handle equipment, magic (divine, arcane, psionic), and monsters, the base `Feature` interface is extended into specific sub-types.

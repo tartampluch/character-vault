@@ -581,4 +581,14 @@ _Pre-conversion engine gap identified during C-14r analysis. All 22 rod types ma
 
 - [x] **E-9c Documentation:** `ARCHITECTURE.md` section 4.11 (Metamagic Rods — SRD rules, typed data model, JSON example, CastingPanel 5-step integration contract, 6-feat table). `CHECKPOINTS.md` updated with 6 items.
 
+### Phase E-10: Staff Engine Prerequisites — Staff Spell List field
+
+_Pre-conversion engine gap identified during C-14s analysis. Staves store 2–6 spells at variable charge costs (1–5). Adding `staffSpells` pre-wires the CastingPanel contract — no computation change needed since `spendItemPoolCharge(N)` already accepts variable amounts._
+
+- [x] **E-10a Type Extension:** Added `ItemFeature.staffSpells?: { spellId, chargeCost: 1|2|3|4|5, spellLevel? }[]` to `feature.ts`. Strict literal union for chargeCost. `spellLevel` optional for heightened spells (Staff of Power only). Full CastingPanel 7-step contract documented inline.
+
+- [x] **E-10b Tests (`src/tests/staffSpells.test.ts`):** 15 new Vitest tests (764 total, all passing). Type soundness (4), field contract per actual SRD staves (5), charge cost range 1-5 (3), real-world combinations with resourcePoolTemplates/weaponData/grantedModifiers (3).
+
+- [x] **E-10c Documentation:** `ARCHITECTURE.md` section 4.12 (Staves — SRD rules, charge table, JSON example, heightened spells, CastingPanel contract, staff vs. wand vs. ring comparison). `CHECKPOINTS.md` updated with 7 items.
+
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — complete Architecture sections 1–20 sweep, Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security), Part C — Annex A examples traced end-to-end + all 13 Annex B config tables verified, Part D — test coverage gap analysis (incl. Phase 17.8 engine enhancement tests), Part E — UI Excellence Phase 19 validation. All CRITICAL issues must be zero before release.

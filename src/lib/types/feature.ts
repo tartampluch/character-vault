@@ -1079,6 +1079,92 @@ export interface ItemFeature extends Feature {
    };
 
    /**
+    * Staff spell list — present only on staves. Each entry describes one spell
+    * available from the staff and the number of charges it costs to cast.
+    *
+    * D&D 3.5 SRD — STAFF MECHANICS:
+    *   "A staff has 50 charges when created." Each spell stored in a staff can be
+    *   activated via spell trigger (standard action). The charge cost varies by
+    *   spell: common staffs use 1–3 charges; the Staff of Life uses 5 charges for
+    *   Resurrection; the Staff of Woodlands uses 4 for Animate Plants.
+    *
+    *   Key rules:
+    *   - Staffs use the WIELDER'S caster level (if higher than the staff's own CL)
+    *     and the wielder's ability modifier to set saving throw DCs.
+    *   - A staff can hold spells of any level (unlike wands which max at 4th).
+    *   - Minimum CL for a staff is 8th.
+    *   - Some staves also function as +N weapons after charges are depleted
+    *     (modelled separately via `weaponData` and `grantedModifiers`).
+    *
+    * ENGINE CONTRACT — CHARGE DEDUCTION:
+    *   When the player activates a staff spell from `CastingPanel.svelte`:
+    *   1. Look up `staffSpells` on the equipped staff's `ItemFeature`.
+    *   2. Find the entry matching the selected spell.
+    *   3. Check `instance.itemResourcePools['charges']` >= entry.chargeCost.
+    *   4. Call `engine.spendItemPoolCharge(instanceId, 'charges', entry.chargeCost)`.
+    *   5. Apply the spell effect (using the wielder's caster level and ability mod).
+    *
+    *   `spendItemPoolCharge()` already accepts a variable `amount` parameter, so
+    *   no engine computation change is needed for variable charge costs.
+    *
+    * THE `spellLevel` FIELD (heightened spells):
+    *   The Staff of Power stores fireball, ray of enfeeblement, and lightning bolt
+    *   at a heightened level (5th). When the CastingPanel resolves the spell, it
+    *   should use this effective level for DC and other level-dependent effects,
+    *   overriding the spell's base level. Absent for non-heightened spells.
+    *
+    * CONTENT AUTHORING — Staff of Healing example:
+    *   ```json
+    *   "staffSpells": [
+    *     { "spellId": "spell_lesser_restoration",  "chargeCost": 1 },
+    *     { "spellId": "spell_cure_serious_wounds", "chargeCost": 1 },
+    *     { "spellId": "spell_remove_blindness_deafness", "chargeCost": 2 },
+    *     { "spellId": "spell_remove_disease",      "chargeCost": 3 }
+    *   ],
+    *   "resourcePoolTemplates": [{
+    *     "poolId": "charges",
+    *     "label": { "en": "Staff Charges (50)", "fr": "Charges de bâton (50)" },
+    *     "maxPipelineId": "combatStats.staff_charges_max",
+    *     "defaultCurrent": 50,
+    *     "resetCondition": "never"
+    *   }]
+    *   ```
+    *
+    * @see CastingPanel.svelte              — reads this field to show spell options
+    * @see GameEngine.spendItemPoolCharge() — deducts chargeCost charges
+    * @see resourcePoolTemplates            — tracks the charge pool separately
+    * @see ARCHITECTURE.md section 4.12    — Staff Spell List contract
+    */
+   staffSpells?: {
+     /**
+      * The ID of the spell stored in the staff.
+      * Must match a Feature entry with `category: "magic"` in the DataLoader.
+      * Example: "spell_fireball", "spell_charm_monster"
+      */
+     spellId: ID;
+     /**
+      * Number of charges consumed to cast this spell from the staff.
+      * Range: 1 (cheap spell) to 5 (resurrection on Staff of Life).
+      * The SRD uses 1–4 for standard staves, with 5 only for Resurrection.
+      */
+     chargeCost: 1 | 2 | 3 | 4 | 5;
+     /**
+      * Effective spell level for this entry, if the spell is heightened.
+      *
+      * ONLY set when the staff stores a spell at a DIFFERENT level than its
+      * base spell level. Currently used only by the Staff of Power, which
+      * stores fireball (base 3rd) at 5th level, ray of enfeeblement (base 1st)
+      * at 5th level, and lightning bolt (base 3rd) at 5th level.
+      *
+      * When present, the CastingPanel uses THIS value instead of the spell's
+      * base level to determine: save DCs, damage dice count, and enemy SR checks.
+      *
+      * Absent for: all non-heightened spells (the vast majority of staff spells).
+      */
+     spellLevel?: number;
+   }[];
+
+   /**
     * Metamagic rod effect — present only on rods (and similar items) that grant
     * the ability to apply a metamagic feat to a spell without occupying a higher
     * spell slot.

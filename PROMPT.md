@@ -603,6 +603,24 @@ _Entry point: pre-conversion analysis of `rods.html`. All 22 rod entries (37 ite
 
 **Total test count after Phase E-9: 749 tests (all passing).**
 
+## Phase E-10: Staff Engine Prerequisites — Staff Spell List field
+
+_Goal: Resolve the one engine gap identified during C-14s (Staves) analysis. Staves hold 2–6 spells at charge costs of 1–5 each. Without a typed `staffSpells` array on `ItemFeature`, the CastingPanel has no structured data to display the spell menu or deduct the correct number of charges._
+
+_Entry point: pre-conversion analysis of `staffs.html`. All 21 staves map to existing engine primitives EXCEPT the per-spell charge cost metadata, which requires a new array `staffSpells: [{ spellId, chargeCost, spellLevel? }]`. The `spendItemPoolCharge(instanceId, poolId, N)` method already accepts variable amounts — no computation change needed._
+
+- [x] **E-10a Type Extension:** Added `ItemFeature.staffSpells?: { spellId: ID, chargeCost: 1 | 2 | 3 | 4 | 5, spellLevel?: number }[]` to `feature.ts`. `chargeCost` is a strict `1|2|3|4|5` literal union (prevents authoring errors like `chargeCost: 12`). `spellLevel` is optional — only needed for heightened spells on the Staff of Power (fireball/lightning bolt/ray of enfeeblement stored at 5th level). Extensive inline documentation with SRD charge cost table, CastingPanel 7-step contract, and a full Staff of Healing JSON example.
+
+- [x] **E-10b Tests (`src/tests/staffSpells.test.ts`):** 15 new Vitest tests (764 total, all passing):
+  - Type soundness (4 tests): all 5 charge costs valid, staffSpells optional, all-fields entry, spellLevel optional.
+  - Field contract (5 tests): Staff of Healing [1,1,2,3], Staff of Life resurrection=5, Staff of Woodlands animate plants=4, Staff of Power heightened fireball spellLevel=5, empty array valid.
+  - Charge cost range (3 tests): min=1, max=5, all 5 values in one staff sum correctly.
+  - Real-world combinations (3 tests): coexists with resourcePoolTemplates, coexists with weaponData, coexists with grantedModifiers.
+
+- [x] **E-10c Documentation:** `ARCHITECTURE.md` section 4.12 (Staves — SRD rules, variable charge table, data model, heightened spell handling, Staff of Healing JSON example, CastingPanel 7-step contract, staff vs. wand vs. ring comparison table). `CHECKPOINTS.md` Checkpoint Review #4 updated with 7 new staff spell verification items.
+
+**Total test count after Phase E-10: 764 tests (all passing).**
+
 ## Phase 21: Editors to Create Custom Content
 
 To be determined.

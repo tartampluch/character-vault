@@ -24449,5 +24449,1331 @@
     "activation": {
       "actionType": "standard"
     }
+  },
+  {
+    "id": "item_staff_abjuration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Abjuration",
+      "fr": "Bâton d'abjuration"
+    },
+    "description": {
+      "en": "Carved from ancient oak heartwood. Spells: shield (1), resist energy (1), dispel magic (1), lesser globe of invulnerability (2), dismissal (2), repulsion (3) (Strong abjuration; CL 13).",
+      "fr": "Sculpté dans le cœur d'un chêne ancien. Sorts : bouclier (1), résistance à l'énergie (1), dissipation de la magie (1), globe d'invulnérabilité mineur (2), congédiement (2), répulsion (3) (Abjuration forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_shield",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_resist_energy",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_dispel_magic",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_globe_of_invulnerability_lesser",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_dismissal",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_repulsion",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_charming",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Charming",
+      "fr": "Bâton de charme"
+    },
+    "description": {
+      "en": "Made of twisting ornate wood. Spells: charm person (1), charm monster (2) (Moderate enchantment; CL 8).",
+      "fr": "Fait de bois torsadé et orné. Sorts : charme-personne (1), charme-monstre (2) (Enchantement modéré; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 16500,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_charm_person",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_charm_monster",
+        "chargeCost": 2
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_conjuration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Conjuration",
+      "fr": "Bâton de conjuration"
+    },
+    "description": {
+      "en": "Ash or walnut with creature carvings. Spells: unseen servant (1), summon swarm (1), stinking cloud (1), minor creation (2), cloudkill (2), summon monster VI (3) (Strong conjuration; CL 13).",
+      "fr": "Frêne ou noyer avec des sculptures de créatures. Sorts : serviteur invisible (1), convocation de nuée (1), nuage nauséabond (1), création mineure (2), nuage mortel (2), invocation de monstres VI (3) (Conjuration forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_unseen_servant",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_summon_swarm",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_stinking_cloud",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_minor_creation",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_cloudkill",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_summon_monster_vi",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_defense",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Defense",
+      "fr": "Bâton de défense"
+    },
+    "description": {
+      "en": "Simple staff that throbs with power when held defensively. Spells: shield (1), shield of faith (1), shield other (1), shield of law (3). Creator must be lawful (Strong abjuration; CL 15).",
+      "fr": "Bâton simple qui pulse de pouvoir lorsqu'il est tenu défensivement. Sorts : bouclier (1), bouclier de la foi (1), bouclier d'autrui (1), bouclier de la loi (3). Créateur doit être loyal (Abjuration forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 58250,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_shield",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_shield_of_faith",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_shield_other",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_shield_of_law",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_divination",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Divination",
+      "fr": "Bâton de divination"
+    },
+    "description": {
+      "en": "Supple willow with forked tip. Spells: detect secret doors (1), locate object (1), tongues (1), locate creature (2), prying eyes (2), true seeing (3) (Strong divination; CL 13).",
+      "fr": "Saule souple à bout fourchu. Sorts : détection des portes secrètes (1), localisation d'objet (1), langues (1), localisation de créature (2), yeux espions (2), vision lucide (3) (Divination forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 73500,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_detect_secret_doors",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_locate_object",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_tongues",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_locate_creature",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_prying_eyes",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_true_seeing",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_earth_and_stone",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Earth and Stone",
+      "fr": "Bâton de la terre et de la pierre"
+    },
+    "description": {
+      "en": "Topped with a fist-sized emerald. Spells: passwall (1), move earth (1) (Moderate transmutation; CL 11).",
+      "fr": "Surmonté d'une émeraude de la taille d'un poing. Sorts : passage dans les murs (1), déplacer la terre (1) (Transmutation modérée; NLS 11)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 80500,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_passwall",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_move_earth",
+        "chargeCost": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_enchantment",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Enchantment",
+      "fr": "Bâton d'enchantement"
+    },
+    "description": {
+      "en": "Applewood topped with clear crystal. Spells: sleep (1), hideous laughter (1), suggestion (1), crushing despair (2), mind fog (2), mass suggestion (3) (Strong enchantment; CL 13).",
+      "fr": "Bois de pommier surmonté d'un cristal clair. Sorts : sommeil (1), rire irrésistible (1), suggestion (1), désespoir écrasant (2), brouillard mental (2), suggestion de groupe (3) (Enchantement fort; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_sleep",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_hideous_laughter",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_suggestion",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_crushing_despair",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_mind_fog",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_suggestion_mass",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_evocation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Evocation",
+      "fr": "Bâton d'évocation"
+    },
+    "description": {
+      "en": "Very smooth hickory, willow, or yew. Spells: magic missile (1), shatter (1), fireball (1), ice storm (2), wall of force (2), chain lightning (3) (Strong evocation; CL 13).",
+      "fr": "Très lisse en caryer, saule ou if. Sorts : projectile magique (1), fracassement (1), boule de feu (1), tempête de glace (2), mur de force (2), foudre en chaîne (3) (Évocation forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_magic_missile",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_shatter",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_fireball",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_ice_storm",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_wall_of_force",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_chain_lightning",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_fire",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Fire",
+      "fr": "Bâton de feu"
+    },
+    "description": {
+      "en": "Crafted from bronzewood with brass bindings. Spells: burning hands (1), fireball (1), wall of fire (2) (Moderate evocation; CL 8).",
+      "fr": "Fabriqué en bois di bronze avec des reliures en laiton. Sorts : mains brûlantes (1), boule de feu (1), mur de feu (2) (Évocation modérée; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 28500,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_burning_hands",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_fireball",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_wall_of_fire",
+        "chargeCost": 2
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_frost",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Frost",
+      "fr": "Bâton du givre"
+    },
+    "description": {
+      "en": "Tipped with diamonds, covered in runes. Spells: ice storm (1), wall of ice (1), cone of cold (2) (Moderate evocation; CL 10).",
+      "fr": "Diamants à chaque extrémité, couvert de runes. Sorts : tempête de glace (1), mur de glace (1), cône de froid (2) (Évocation modérée; NLS 10)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 56250,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_ice_storm",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_wall_of_ice",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_cone_of_cold",
+        "chargeCost": 2
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_healing",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Healing",
+      "fr": "Bâton de guérison"
+    },
+    "description": {
+      "en": "White ash with inlaid silver runes. Spells: lesser restoration (1), cure serious wounds (1), remove blindness/deafness (2), remove disease (3) (Moderate conjuration; CL 8).",
+      "fr": "Frêne blanc avec runes en argent incrustées. Sorts : guérison moindre (1), soins importants (1), suppression de la cécité/surdité (2), guérison des maladies (3) (Invocation modérée; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 27750,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_lesser_restoration",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_cure_serious_wounds",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_remove_blindness_deafness",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_remove_disease",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_illumination",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Illumination",
+      "fr": "Bâton d'illumination"
+    },
+    "description": {
+      "en": "Sheathed in silver with sunbursts. Spells: dancing lights (1), flare (1), daylight (2), sunburst (3) (Strong evocation; CL 15).",
+      "fr": "Gainé d'argent avec motifs de rayons de soleil. Sorts : feux dansants (1), éblouissement (1), lumière du jour (2), rayon de soleil (3) (Évocation forte; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 48250,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_dancing_lights",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_flare",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_daylight",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_sunburst",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_illusion",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Illusion",
+      "fr": "Bâton d'illusion"
+    },
+    "description": {
+      "en": "Dark wood intricately twisted, fluted, or spiral. Spells: disguise self (1), mirror image (1), major image (1), rainbow pattern (2), persistent image (2), mislead (3) (Strong illusion; CL 13).",
+      "fr": "Bois sombre finement torsadé, cannelé ou spiralé. Sorts : déguisement (1), image miroir (1), image majeure (1), motif arc-en-ciel (2), image persistante (2), illusion trompeuse (3) (Illusion forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_disguise_self",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_mirror_image",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_major_image",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_rainbow_pattern",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_persistent_image",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_mislead",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_life",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Life",
+      "fr": "Bâton de la vie"
+    },
+    "description": {
+      "en": "Thick oak shod in gold. Spells: heal (1 charge), resurrection (5 charges) (Moderate conjuration; CL 13).",
+      "fr": "Chêne épais serti d'or. Sorts : soins intensifs (1 charge), résurrection (5 charges) (Invocation modérée; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 155750,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_heal",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_resurrection",
+        "chargeCost": 5
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_necromancy",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Necromancy",
+      "fr": "Bâton de nécromancie"
+    },
+    "description": {
+      "en": "Dark wood carved with bones and skulls. Spells: cause fear (1), ghoul touch (1), halt undead (1), enervation (2), waves of fatigue (2), circle of death (3) (Strong necromancy; CL 13).",
+      "fr": "Bois sombre sculpté d'os et de crânes. Sorts : peur (1), contact goule (1), arrêt des morts-vivants (1), épuisement (2), vagues de fatigue (2), cercle de mort (3) (Nécromancie forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_cause_fear",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_ghoul_touch",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_halt_undead",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_enervation",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_waves_of_fatigue",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_circle_of_death",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_passage",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Passage",
+      "fr": "Bâton du passage"
+    },
+    "description": {
+      "en": "This potent staff allows: dimension door (1), passwall (1), phase door (2), greater teleport (2), astral projection (2) (Strong varied; CL 17).",
+      "fr": "Ce puissant bâton permet : porte dimensionnelle (1), passage dans les murs (1), porte de phase (2), téléportation supérieure (2), projection astrale (2) (Varié fort; NLS 17)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 170500,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_dimension_door",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_passwall",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_phase_door",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_greater_teleport",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_astral_projection",
+        "chargeCost": 2
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_power",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Power",
+      "fr": "Bâton de puissance"
+    },
+    "description": {
+      "en": "Glistening gem on straight smooth shaft. Spells (fireball/lightning bolt/ray of enfeeblement heightened to 5th): magic missile (1), heightened ray of enfeeblement (1; lv5), continual flame (1), levitate (1), heightened lightning bolt (1; lv5), heightened fireball (1; lv5), cone of cold (2), hold monster (2), wall of force hemisphere (2), globe of invulnerability (2). Passive: +2 luck to AC and saves. +2 quarterstaff. Smite: spend 1 charge (free action) → double damage (×3 on crit) for 1 round. Retributive strike: break staff → releases 8/6/4 points × charges by distance in 30-ft radius (DC 17 Reflex half). Remains a +2 staff after all charges spent (Strong varied; CL 15).",
+      "fr": "Gemme brillante sur tige droite et lisse. Sorts (boule de feu/éclair/rayon d'affaiblissement amplifiés au niveau 5) : projectile magique (1), rayon d'affaiblissement amplif. (1; nv5), flamme continue (1), lévitation (1), éclair amplifié (1; nv5), boule de feu amplif. (1; nv5), cône de froid (2), immobilisation de monstre (2), mur de force hémisphère (2), globe d'invulnérabilité (2). Passif : +2 chance CA et jets. +2 bâton de combat. Frappe : dépenser 1 charge (action libre) → dégâts doublés (×3 critique) 1 round. Frappe rétributive : briser le bâton → libère 8/6/4 points × charges par distance dans un rayon de 9 m (Réflexes DD 17 moitié). Reste un +2 bâton sans charges (Varié fort; NLS 15)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 211000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_magic_missile",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_ray_of_enfeeblement",
+        "chargeCost": 1,
+        "spellLevel": 5
+      },
+      {
+        "spellId": "spell_continual_flame",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_levitate",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_lightning_bolt",
+        "chargeCost": 1,
+        "spellLevel": 5
+      },
+      {
+        "spellId": "spell_fireball",
+        "chargeCost": 1,
+        "spellLevel": 5
+      },
+      {
+        "spellId": "spell_cone_of_cold",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_hold_monster",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_wall_of_force",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_globe_of_invulnerability",
+        "chargeCost": 2
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "item_staff_power_combatStats_ac_normal",
+        "sourceId": "item_staff_power",
+        "sourceName": {
+          "en": "Staff of Power",
+          "fr": "Bâton de puissance"
+        },
+        "targetId": "combatStats.ac_normal",
+        "value": 2,
+        "type": "luck"
+      },
+      {
+        "id": "item_staff_power_saves_fort",
+        "sourceId": "item_staff_power",
+        "sourceName": {
+          "en": "Staff of Power",
+          "fr": "Bâton de puissance"
+        },
+        "targetId": "saves.fort",
+        "value": 2,
+        "type": "luck"
+      },
+      {
+        "id": "item_staff_power_saves_ref",
+        "sourceId": "item_staff_power",
+        "sourceName": {
+          "en": "Staff of Power",
+          "fr": "Bâton de puissance"
+        },
+        "targetId": "saves.ref",
+        "value": 2,
+        "type": "luck"
+      },
+      {
+        "id": "item_staff_power_saves_will",
+        "sourceId": "item_staff_power",
+        "sourceName": {
+          "en": "Staff of Power",
+          "fr": "Bâton de puissance"
+        },
+        "targetId": "saves.will",
+        "value": 2,
+        "type": "luck"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      },
+      {
+        "poolId": "smite_uses",
+        "label": {
+          "en": "Smite (1 charge/use)",
+          "fr": "Frappe (1 charge/utilisation)"
+        },
+        "maxPipelineId": "combatStats.smite_uses_max",
+        "defaultCurrent": 1,
+        "resetCondition": "never"
+      }
+    ],
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "activation": {
+      "actionType": "free"
+    }
+  },
+  {
+    "id": "item_staff_size_alteration",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Size Alteration",
+      "fr": "Bâton d'altération de taille"
+    },
+    "description": {
+      "en": "Stout dark wood staff. Spells: enlarge person (1), reduce person (1), shrink item (1), enlarge person mass (1), reduce person mass (1) (Faint conjuration; CL 8).",
+      "fr": "Bâton solide en bois sombre. Sorts : agrandissement de personne (1), rapetissement de personne (1), réduction d'objet (1), agrandissement de groupe (1), rapetissement de groupe (1) (Invocation faible; NLS 8)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 29000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_enlarge_person",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_reduce_person",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_shrink_item",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_enlarge_person_mass",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_reduce_person_mass",
+        "chargeCost": 1
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_swarming_insects",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Swarming Insects",
+      "fr": "Bâton des insectes grouillants"
+    },
+    "description": {
+      "en": "Twisted dark wood with dark spots. Spells: summon swarm (1), insect plague (3) (Moderate conjuration; CL 9).",
+      "fr": "Bois sombre torsadé avec des taches sombres. Sorts : convocation de nuée (1), fléau d'insectes (3) (Invocation modérée; NLS 9)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 24750,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_summon_swarm",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_insect_plague",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_transmutation",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Transmutation",
+      "fr": "Bâton de transmutation"
+    },
+    "description": {
+      "en": "Carved from or decorated with petrified wood. Spells: expeditious retreat (1), alter self (1), blink (1), polymorph (2), baleful polymorph (2), disintegrate (3) (Strong transmutation; CL 13).",
+      "fr": "Sculpté ou décoré de bois pétrifié. Sorts : retraite rapide (1), alter ego (1), clignotement (1), polymorphie (2), polymorphie balafarde (2), désintégration (3) (Transmutation forte; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 65000,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_expeditious_retreat",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_alter_self",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_blink",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_polymorph",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_baleful_polymorph",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_disintegrate",
+        "chargeCost": 3
+      }
+    ],
+    "grantedModifiers": [],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ]
+  },
+  {
+    "id": "item_staff_woodlands",
+    "category": "item",
+    "ruleSource": "srd_core",
+    "label": {
+      "en": "Staff of Woodlands",
+      "fr": "Bâton des forêts"
+    },
+    "description": {
+      "en": "Appears to have grown into its shape naturally (oak, ash, or yew). Spells: charm animal (1), speak with animals (1), barkskin (2), wall of thorns (3), summon nature's ally VI (3), animate plants (4). Pass without trace: at will, no charge. Functions as a +2 quarterstaff (both persist after all charges spent) (Moderate varied; CL 13).",
+      "fr": "Semble avoir poussé naturellement dans cette forme (chêne, frêne ou if). Sorts : charme-animal (1), parole aux animaux (1), peau d'écorce (2), mur de ronces (3), convocation d'alliés naturels VI (3), animation des plantes (4). Passage sans trace : à volonté, sans charge. Fonctionne comme un +2 bâton de combat (les deux propriétés persistent même sans charges) (Varié modéré; NLS 13)."
+    },
+    "tags": [
+      "item",
+      "staff",
+      "magic_item"
+    ],
+    "equipmentSlot": "none",
+    "weightLbs": 5,
+    "costGp": 101250,
+    "hardness": 5,
+    "hpMax": 10,
+    "staffSpells": [
+      {
+        "spellId": "spell_charm_animal",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_speak_with_animals",
+        "chargeCost": 1
+      },
+      {
+        "spellId": "spell_barkskin",
+        "chargeCost": 2
+      },
+      {
+        "spellId": "spell_wall_of_thorns",
+        "chargeCost": 3
+      },
+      {
+        "spellId": "spell_summon_natures_ally_vi",
+        "chargeCost": 3
+      },
+      {
+        "spellId": "spell_animate_plants",
+        "chargeCost": 4
+      }
+    ],
+    "grantedModifiers": [
+      {
+        "id": "item_staff_woodlands_combatStats_attack_bonus",
+        "sourceId": "item_staff_woodlands",
+        "sourceName": {
+          "en": "Staff of Woodlands",
+          "fr": "Bâton des forêts"
+        },
+        "targetId": "combatStats.attack_bonus",
+        "value": 2,
+        "type": "enhancement"
+      },
+      {
+        "id": "item_staff_woodlands_combatStats_damage_bonus",
+        "sourceId": "item_staff_woodlands",
+        "sourceName": {
+          "en": "Staff of Woodlands",
+          "fr": "Bâton des forêts"
+        },
+        "targetId": "combatStats.damage_bonus",
+        "value": 2,
+        "type": "enhancement"
+      }
+    ],
+    "grantedFeatures": [],
+    "resourcePoolTemplates": [
+      {
+        "poolId": "charges",
+        "label": {
+          "en": "Staff Charges (50)",
+          "fr": "Charges de bâton (50)"
+        },
+        "maxPipelineId": "combatStats.staff_charges_max",
+        "defaultCurrent": 50,
+        "resetCondition": "never"
+      }
+    ],
+    "weaponData": {
+      "wieldCategory": "two_handed",
+      "damageDice": "1d6",
+      "damageType": [
+        "bludgeoning"
+      ],
+      "critRange": "20",
+      "critMultiplier": 2,
+      "reachFt": 5
+    },
+    "activation": {
+      "actionType": "standard"
+    }
   }
 ]

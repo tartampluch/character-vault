@@ -375,6 +375,14 @@ Your job is to verify that the test suite is **exhaustive** relative to the arch
   - Is `combatStats.fortification` initialized at baseValue=0 confirmed?
   - Is `combatStats.arcane_spell_failure` initialized at baseValue=0 confirmed?
   - Is additive ASF stacking (two "untyped" modifiers sum correctly) tested?
+- **Staff Spell Lists (Enhancement E-10 / Architecture section 4.12):**
+  - Is `ItemFeature.staffSpells` optional (non-staves compile without it)?
+  - Are `chargeCost` values restricted to `1 | 2 | 3 | 4 | 5`?
+  - Is `spellLevel` optional (only for heightened spells on Staff of Power)?
+  - Can `staffSpells` coexist with `resourcePoolTemplates`, `weaponData`, and `grantedModifiers`?
+  - Is `chargeCost: 5` valid (Staff of Life, Resurrection)?
+  - Is `chargeCost: 4` valid (Staff of Woodlands, Animate Plants)?
+  - `ARCHITECTURE.md section 4.12` documents the CastingPanel variable-charge contract?
 - **Metamagic Rods (Enhancement E-9 / Architecture section 4.11):**
   - Is `ItemFeature.metamagicEffect` optional (non-rods compile without it)?
   - Are all 6 feat values (`feat_empower_spell`, etc.) valid union members?
