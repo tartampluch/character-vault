@@ -2,37 +2,31 @@
 
 ### Annex A: JSON Rule File Schemas — Complete Examples
 
-Annex A provides complete JSON examples conforming to the architecture described in this document. These examples serve as canonical reference for content creation. Each JSON entity respects the TypeScript interfaces defined in sections 2-6.
+Annex A provides complete JSON examples conforming to the architecture described in ARCHITECTURE.md. These serve as canonical reference for content creation and as test fixtures for the GameEngine.
 
-The following examples are provided (see the full Annex A document for complete JSON):
+> **Convention — Speed pipelines:** The engine stores speed in `Character.combatStats` keyed as `"combatStats.speed_land"`, `"combatStats.speed_fly"`, etc. The actual D20SRD rule files use `"attributes.speed_land"` as the modifier `targetId` (which the normaliser strips to `"speed_land"`). Content authors following existing SRD conventions may use either form; be aware that `"combatStats.speed_land"` is the canonical form that routes correctly to the pipeline without relying on normaliser pass-through. In formula strings and description pipes, always use `@combatStats.speed_land.totalValue`.
 
-| Section   | Content                                    | Key Mechanics Demonstrated                                                                                                                                                                                                                                                                          |
-| --------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A.1.1     | Barbarian (20 levels complete)             | Full BAB progression, Rage (ResourcePool + conditional modifiers), DR progression, Greater/Mighty Rage upgrades, conditional Fast Movement                                                                                                                                                          |
-| A.1.2     | Cleric (5 levels + features)               | 3/4 BAB, divine spellcasting (spell slots per level), Turn Undead (ResourcePool with formula), FeatureChoice (domains), deity selection                                                                                                                                                             |
-| A.1.3     | Monk (5 levels + features)                 | All-good saves, conditional AC bonus (WIS to AC when unarmored), progressive unarmed damage (setAbsolute), speed bonus, alignment restrictions                                                                                                                                                      |
-| A.2.1     | Dragon Disciple (10 levels)                | Prestige class with complex prerequisitesNode, ability score increases at specific levels, natural armor progression, Wings (fly speed formula), Dragon Apotheosis                                                                                                                                  |
-| A.3.1-3.4 | Human, Elf, Gnome, Dromite                 | Attribute modifiers (racial), size bonuses, bonus feats/skills, situational modifiers (vs_enchantment, vs_illusion, vs_giant), FeatureChoice (energy type), psionic traits                                                                                                                          |
-| A.4.1-4.6 | 6 Feats                                    | Prerequisite chain (Heavy Armor Prof), conditional prerequisites + choice (Exotic Weapon Prof), simple skill bonus (Self-Sufficient), caster level prerequisite (Craft Wand), metamagic (Maximize Spell), metapsionic (Burrowing Power)                                                             |
-| A.5.1-5.9 | 9 Items                                    | Heavy armor (Full Plate with ACP, max Dex, ASF), light armor (Chain Shirt), wondrous item (Bracers of Armor), ring (Feather Falling), container (Bag of Holding), exotic two-handed weapon (Repeating Crossbow), simple ranged (Sling), cursed item (Scarab of Death), clothing (Explorer's Outfit) |
-| A.5.10    | Consumable Potion (Ephemeral Effect)       | `consumable.isConsumable`, `durationHint`, `ActiveFeatureInstance.ephemeral` lifecycle — BEFORE/AFTER states, contrast with non-consumable ring |
-| A.6.1-6.5 | 5 Spells                                   | Divine with costly component (Raise Dead), multi-list (Speak with Plants), arcane scaling damage with formula (Chain Lightning), buff transmutation (Darkvision with granted feature), multi-list material component (Stone Shape)                                                                  |
-| A.7       | Soulknife (6 levels)                       | Psionic class, Mind Blade (manifested weapon), Psychic Strike with dynamic damage formula `floor(@classLevels.class_soulknife / 4)d8`, conditional on target not being mindless                                                                                                                     |
-| A.8       | Druid (5 levels + companion)               | forbiddenTags (metal_armor, metal_shield), Animal Companion (LinkedEntity via FeatureChoice), spellcasting progression                                                                                                                                                                              |
-| A.9       | Sphere of Annihilation                     | Artifact with no standard stats, equipmentSlot: "none"                                                                                                                                                                                                                                              |
-| A.10      | Orc Warrior 1 (complete monster)           | Race (Orc with +4 STR, darkvision, light sensitivity as situational), NPC class (Warrior), complete Character JSON with equipment, step-by-step resolution walkthrough                                                                                                                              |
-| A.11      | Extreme Heat + Underwater                  | Environment Features as Global Auras, conditionNode blocking via Endure Elements tag, heavy armor penalty, swim speed check, Freedom of Movement interaction                                                                                                                                        |
-| A.12      | Energy Missile, Energy Push, Metamorphosis | Psionic powers with augmentations (repeatable and non-repeatable), energy type choice, manifester level cost cap explanation, augmentation resolution walkthrough                                                                                                                                   |
+> **Convention — Level progression increments:** BAB and save values in `grantedModifiers` are **per-level increments** (not cumulative). The engine sums all increments for levels ≤ `classLevels[classId]`. Good save: +2 at level 1, +1 every 2 levels thereafter. Poor save: +0 at level 1, +1 every 3 levels thereafter.
 
-> **AI Implementation Note:** When implementing the DataLoader and GameEngine, use these examples as your primary test fixtures. Every mechanic shown here (conditional modifiers, situational contexts, formulas, `setAbsolute`, `forbiddenTags`, `levelProgression`, `augmentations`, etc.) MUST be handled by the engine. If your engine cannot process one of these examples, the implementation is incomplete.
+> **Convention — Caster level path:** The canonical pipeline ID for arcane/divine caster level is `"stat_caster_level"` (in `Character.attributes`). In prerequisite or formula paths, use `@attributes.stat_caster_level.totalValue`. Do NOT use `@attributes.caster_level.totalValue` (missing `stat_` prefix).
 
-> **Convention:** In the `grantedModifiers` of `levelProgression`, BAB and save values represent **per-level increments** (not cumulative totals). The engine sums all increments for levels ≤ `classLevels[classId]`.
-
-> **Convention:** Base save values follow D&D 3.5 progressions:
-> - **Good:** +2 at level 1, then +1 every 2 levels (cumulative: 2, 3, 3, 4, 4, 5, 5, ...)
-> - **Poor:** +0 at level 1, then +1 every 3 levels (cumulative: 0, 0, 1, 1, 1, 2, 2, 2, 3, ...)
->
-> The increments in `levelProgression` represent the **difference** between the total at this level and the total at the previous level.
+| Section   | Content                                    | Key Mechanics Demonstrated                                                                                                                                                                  |
+| --------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A.1.1     | Barbarian (20 levels complete)             | Full BAB progression, Rage (ResourcePool + conditional modifiers), DR progression, Greater/Mighty Rage, Indomitable Will (dual conditionNode + situationalContext), Fast Movement             |
+| A.1.2     | Cleric (5 levels + features)               | 3/4 BAB, divine spell slots as ResourcePool modifiers, Turn Undead (formula-based pool max), FeatureChoice (domains, deity)                                                                   |
+| A.1.3     | Monk (5 levels + features)                 | All-good saves, WIS to AC (formula value `"@attributes.stat_wis.derivedModifier"`, conditionNode, targets ac_normal + ac_touch), unarmed damage via setAbsolute, speed bonus                  |
+| A.2.1     | Dragon Disciple (10 levels)                | Prestige class, complex prerequisitesNode, staged ability score increases, natural armor, Wings (fly speed via `"combatStats.speed_fly"`)                                                     |
+| A.3.1–3.4 | Human, Elf, Gnome, Dromite                 | Racial modifiers, size bonuses (all AC types), saves.all broadcast, situational modifiers (vs_enchantment, vs_illusion, vs_giant), FeatureChoice (energy type)                                |
+| A.4.1–4.6 | 6 Feats                                    | Prerequisite chain, compound choice (Exotic Weapon Prof), skill bonus (Self-Sufficient), caster level prerequisite using canonical `@attributes.stat_caster_level.totalValue`, metamagic       |
+| A.5.1–5.9 | 9 Items                                    | Full Plate (type `max_dex_cap` — canonical id `item_armor_full_plate`), Chain Shirt, Bracers, Ring of Feather Falling, Bag of Holding, crossbow, sling, cursed item, clothing                 |
+| A.5.10    | Potion of Bull's Strength                  | `consumable.isConsumable`, ephemeral effect lifecycle (BEFORE/AFTER), contrast with permanent ring                                                                                            |
+| A.6.1–6.5 | 5 Spells                                   | Raise Dead (costly component), Speak with Plants (multi-list), Chain Lightning (scaling formula), Darkvision (buff + granted feature), Stone Shape (domain list)                              |
+| A.7       | Soulknife (6 levels)                       | Psionic class, Mind Blade, Psychic Strike formula `"floor(@classLevels.class_soulknife / 4)d8"`, roll-time conditionNode on `@targetTags`                                                     |
+| A.8       | Druid (5 levels + companion)               | forbiddenTags (metal_armor, metal_shield), Animal Companion (LinkedEntity via FeatureChoice), divine spells                                                                                   |
+| A.9       | Sphere of Annihilation                     | Major artifact, equipmentSlot: "none", no mechanical stats                                                                                                                                    |
+| A.10      | Orc Warrior 1 (complete monster)           | Race + NPC class + equipment, complete Character JSON, step-by-step resolution walkthrough                                                                                                    |
+| A.11      | Extreme Heat + Underwater                  | Environment Features as Global Auras, conditionNode blocking via Endure Elements tag, Freedom of Movement interaction                                                                         |
+| A.12      | Energy Missile, Energy Push, Metamorphosis | Psionic augmentations (repeatable and non-repeatable), manifester level cap                                                                                                                   |
 
 ---
 
@@ -252,7 +246,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 #### Barbarian Class Features (Selection of the Most Architecturally Interesting)
 
-> _These class features demonstrate key engine mechanics: conditional modifiers via `conditionNode`, activated abilities with `ResourcePool` costs, rage upgrade stacking, situational + conditional dual-gating (Indomitable Will), and progressive DR._
+> _These class features demonstrate key engine mechanics: conditional modifiers via `conditionNode`, activated abilities with `ResourcePool` costs, rage upgrade stacking, situational + conditional dual-gating (Indomitable Will), and progressive DR. Note that Fast Movement checks for `"armor_heavy"` (the canonical armor tag from item definitions) not `"heavy_armor"`._
 
 ```json
 [
@@ -270,7 +264,7 @@ The following examples are provided (see the full Annex A document for complete 
       {
         "id": "barbarian_fast_movement_speed",
         "sourceId": "class_feature_barbarian_fast_movement",
-        "targetId": "attributes.speed_land",
+        "targetId": "combatStats.speed_land",
         "value": 10,
         "type": "enhancement",
         "sourceName": { "en": "Fast Movement", "fr": "Deplacement accelere" },
@@ -283,7 +277,8 @@ The following examples are provided (see the full Annex A document for complete 
                 "logic": "CONDITION",
                 "targetPath": "@activeTags",
                 "operator": "has_tag",
-                "value": "heavy_armor"
+                "value": "armor_heavy",
+                "errorMessage": "Fast Movement does not apply while wearing heavy armor"
               }
             },
             {
@@ -292,7 +287,8 @@ The following examples are provided (see the full Annex A document for complete 
                 "logic": "CONDITION",
                 "targetPath": "@activeTags",
                 "operator": "has_tag",
-                "value": "heavy_load"
+                "value": "heavy_load",
+                "errorMessage": "Fast Movement does not apply while carrying a heavy load"
               }
             }
           ]
@@ -711,7 +707,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_monk_still_mind"],
       "grantedModifiers": [
         { "id": "monk_3_bab", "sourceId": "class_monk", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Monk 3", "fr": "Moine 3" } },
-        { "id": "monk_3_speed", "sourceId": "class_monk", "targetId": "attributes.speed_land", "value": 10, "type": "enhancement", "sourceName": { "en": "Monk 3", "fr": "Moine 3" } }
+        { "id": "monk_3_speed", "sourceId": "class_monk", "targetId": "combatStats.speed_land", "value": 10, "type": "enhancement", "sourceName": { "en": "Monk 3", "fr": "Moine 3" } }
       ]
     },
     {
@@ -729,12 +725,37 @@ The following examples are provided (see the full Annex A document for complete 
       "level": 5,
       "grantedFeatures": ["class_feature_monk_purity_of_body"],
       "grantedModifiers": [
-        { "id": "monk_5_ac", "sourceId": "class_monk", "targetId": "combatStats.ac_normal", "value": 1, "type": "untyped", "sourceName": { "en": "Monk AC Bonus", "fr": "Bonus CA Moine" },
+        {
+          "id": "monk_5_ac_normal",
+          "sourceId": "class_monk",
+          "targetId": "combatStats.ac_normal",
+          "value": "@attributes.stat_wis.derivedModifier",
+          "type": "untyped",
+          "sourceName": { "en": "Monk AC Bonus (WIS)", "fr": "Bonus CA Moine (SAG)" },
           "conditionNode": {
             "logic": "AND",
             "nodes": [
               { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
-              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } }
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } },
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "heavy_load" } },
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "medium_load" } }
+            ]
+          }
+        },
+        {
+          "id": "monk_5_ac_touch",
+          "sourceId": "class_monk",
+          "targetId": "combatStats.ac_touch",
+          "value": "@attributes.stat_wis.derivedModifier",
+          "type": "untyped",
+          "sourceName": { "en": "Monk AC Bonus (WIS)", "fr": "Bonus CA Moine (SAG)" },
+          "conditionNode": {
+            "logic": "AND",
+            "nodes": [
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "wearing_armor" } },
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "carrying_shield" } },
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "heavy_load" } },
+              { "logic": "NOT", "node": { "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "medium_load" } }
             ]
           }
         }
@@ -744,9 +765,9 @@ The following examples are provided (see the full Annex A document for complete 
 }
 ```
 
-> **AI Implementation Note — Monk AC Bonus:** The `value` field is a formula string `"@attributes.stat_wis.derivedModifier"`, not a number. The Math Parser MUST resolve this formula against the character's current Wisdom score. This means the Monk's AC updates automatically when Wisdom changes, without any hardcoded logic. This is a critical test case for the formula resolution system.
+> **AI Implementation Note — Monk AC Bonus:** The `value` field is `"@attributes.stat_wis.derivedModifier"` — a formula string, NOT a number. The Math Parser resolves this against the character's current Wisdom derivedModifier. The Monk's AC updates automatically whenever Wisdom changes. The modifier targets both `combatStats.ac_normal` and `combatStats.ac_touch` — flat-footed AC does NOT receive this bonus (Monks lose WIS to AC when flat-footed). The conditionNode blocks the bonus when wearing armor, carrying a shield, or under medium/heavy load. This is a critical test case for formula-as-value resolution.
 
-> **AI Implementation Note — Unarmed Damage with setAbsolute:** At Monk level 1, unarmed damage is set to "1d6" via `setAbsolute`. At level 4, it's overridden to "1d8". The engine must handle `setAbsolute` with string values (dice expressions), not just numbers. The last `setAbsolute` in level order wins.
+> **AI Implementation Note — Unarmed Damage with setAbsolute:** At Monk level 1, `"value": "1d6"` with `"type": "setAbsolute"` sets the base unarmed damage die. At level 4, `"value": "1d8"` with `"type": "setAbsolute"` overrides it. The engine must handle `setAbsolute` with string (dice expression) values, not just numbers. The last `setAbsolute` in resolution order wins.
 
 ---
 
@@ -754,7 +775,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.2.1. Dragon Disciple (10 Levels)
 
-> _This class demonstrates: prestige class with complex `prerequisitesNode` (NOT dragon + NOT half-dragon + skill ranks + spontaneous arcane caster tag), ability score increases at specific levels (not via racial type — these are untyped bonuses that stack), progressive natural armor, Wings granting fly speed via formula (`@attributes.speed_land.totalValue`), Dragon Apotheosis as a capstone transformation, FeatureChoice for dragon variety, and bonus spells._
+> _This class demonstrates: prestige class with complex `prerequisitesNode` (NOT dragon + NOT half-dragon + skill ranks + spontaneous arcane caster tag), ability score increases at specific levels (untyped, stacking), progressive natural armor, Wings granting fly speed via formula `"@combatStats.speed_land.totalValue"` targeting `"combatStats.speed_fly"`, Dragon Apotheosis as capstone, FeatureChoice for dragon variety, and bonus spells._
 
 ```json
 {
@@ -916,7 +937,7 @@ The following examples are provided (see the full Annex A document for complete 
       "grantedFeatures": ["class_feature_dd_wings", "class_feature_dd_bonus_spell"],
       "grantedModifiers": [
         { "id": "dd_9_ref", "sourceId": "class_dragon_disciple", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Dragon Disciple 9", "fr": "Disciple Draconique 9" } },
-        { "id": "dd_9_fly_speed", "sourceId": "class_dragon_disciple", "targetId": "attributes.speed_fly", "value": "@attributes.speed_land.totalValue", "type": "base", "sourceName": { "en": "Dragon Wings", "fr": "Ailes draconiques" } }
+        { "id": "dd_9_fly_speed", "sourceId": "class_dragon_disciple", "targetId": "combatStats.speed_fly", "value": "@combatStats.speed_land.totalValue", "type": "base", "sourceName": { "en": "Dragon Wings", "fr": "Ailes draconiques" } }
       ]
     },
     {
@@ -941,7 +962,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.3.1. Human
 
-> _Demonstrates: no ability score modifiers (unique among core races), bonus skill points (both 1st level ×4 and per-level), bonus feat slot as a racial modifier targeting a custom pipeline, and base land speed._
+> _Demonstrates: no ability score modifiers (unique among core races), bonus skill points (both 1st-level ×4 and per-level), bonus feat slot as a racial modifier targeting a custom pipeline, and base land speed. Tag `"size_medium"` is the canonical size tag for medium creatures (not just `"medium"`)._
 
 ```json
 {
@@ -953,12 +974,12 @@ The following examples are provided (see the full Annex A document for complete 
     "en": "Humans are the most adaptable, flexible, and ambitious people among the common races.",
     "fr": "Les humains sont les plus adaptables, flexibles et ambitieux parmi les races courantes."
   },
-  "tags": ["race", "humanoid", "medium", "race_human"],
+  "tags": ["race", "humanoid", "size_medium", "race_human"],
   "grantedModifiers": [
     {
       "id": "human_speed",
       "sourceId": "race_human",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": 30,
       "type": "base",
       "sourceName": { "en": "Human", "fr": "Humain" }
@@ -995,7 +1016,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.3.2. Elf
 
-> _Demonstrates: racial ability score modifiers (+2 DEX, -2 CON), situational modifier (enchantment save bonus with `situationalContext: "vs_enchantment"`), racial skill bonuses, granted features (immunities, senses, weapon proficiencies, languages), and no FeatureChoice._
+> _Demonstrates: racial ability score modifiers (+2 DEX, −2 CON), enchantment resistance as three separate situational save modifiers (fort, ref, will — each `situationalContext: "vs_enchantment"`), racial skill bonuses, granted features (immunities, senses, weapon proficiencies, languages). Using three separate modifiers instead of `saves.all` allows the engine to show distinct attribution for each save in the breakdown modal._
 
 ```json
 {
@@ -1007,7 +1028,7 @@ The following examples are provided (see the full Annex A document for complete 
     "en": "Elves are known for their poetry, song, and magical arts, but when danger threatens they show great skill with weapons and strategy.",
     "fr": "Les elfes sont connus pour leur poésie, leur chant et leurs arts magiques, mais lorsque le danger menace, ils montrent une grande habileté avec les armes et la stratégie."
   },
-  "tags": ["race", "humanoid", "medium", "race_elf"],
+  "tags": ["race", "humanoid", "size_medium", "race_elf"],
   "grantedModifiers": [
     {
       "id": "elf_dex_bonus",
@@ -1028,13 +1049,31 @@ The following examples are provided (see the full Annex A document for complete 
     {
       "id": "elf_speed",
       "sourceId": "race_elf",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": 30,
       "type": "base",
       "sourceName": { "en": "Elf", "fr": "Elfe" }
     },
     {
-      "id": "elf_enchantment_save",
+      "id": "elf_enchantment_save_fort",
+      "sourceId": "race_elf",
+      "targetId": "saves.fort",
+      "value": 2,
+      "type": "racial",
+      "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
+      "situationalContext": "vs_enchantment"
+    },
+    {
+      "id": "elf_enchantment_save_ref",
+      "sourceId": "race_elf",
+      "targetId": "saves.ref",
+      "value": 2,
+      "type": "racial",
+      "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
+      "situationalContext": "vs_enchantment"
+    },
+    {
+      "id": "elf_enchantment_save_will",
       "sourceId": "race_elf",
       "targetId": "saves.will",
       "value": 2,
@@ -1048,7 +1087,7 @@ The following examples are provided (see the full Annex A document for complete 
       "targetId": "skills.skill_listen",
       "value": 2,
       "type": "racial",
-      "sourceName": { "en": "Elf", "fr": "Elfe" }
+      "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aigusés elfiques" }
     },
     {
       "id": "elf_search",
@@ -1056,7 +1095,7 @@ The following examples are provided (see the full Annex A document for complete 
       "targetId": "skills.skill_search",
       "value": 2,
       "type": "racial",
-      "sourceName": { "en": "Elf", "fr": "Elfe" }
+      "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aigusés elfiques" }
     },
     {
       "id": "elf_spot",
@@ -1064,7 +1103,7 @@ The following examples are provided (see the full Annex A document for complete 
       "targetId": "skills.skill_spot",
       "value": 2,
       "type": "racial",
-      "sourceName": { "en": "Elf", "fr": "Elfe" }
+      "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aigusés elfiques" }
     }
   ],
   "grantedFeatures": [
@@ -1075,15 +1114,18 @@ The following examples are provided (see the full Annex A document for complete 
     "proficiency_longbow",
     "proficiency_shortbow",
     "language_common",
-    "language_elven"
+    "language_elven",
+    "racial_feature_elf_secret_door_detection"
   ],
   "choices": []
 }
 ```
 
+> **Note on saves.all shorthand:** You may also express the three enchantment modifiers as a single modifier with `"targetId": "saves.all"`. The engine's `#processModifierList` fan-out automatically broadcasts it to `saves.fort`, `saves.ref`, and `saves.will`. The three-modifier form shown above is more explicit and matches the actual `00_d20srd_core_races.json` data file.
+
 ### A.3.3. Gnome
 
-> _Demonstrates Small size: size bonuses to AC, attack, and Hide (as `size` type modifiers), reduced speed (20 ft), situational combat bonuses (vs kobolds/goblinoids for attack, vs giants for dodge AC), racial saving throw bonus vs illusions, spell DC bonus for illusion school, and spell-like abilities as granted features._
+> _Demonstrates Small size: size bonuses applied to ALL THREE AC pipelines (ac_normal, ac_touch, ac_flat_footed), attack bonus, and Hide skill. Illusion save bonus uses `saves.all` broadcast shorthand to target all three saves simultaneously. Also shows situational combat bonuses (vs kobolds, vs giants as dodge), alchemy skill bonus, and spell-like abilities._
 
 ```json
 {
@@ -1095,7 +1137,7 @@ The following examples are provided (see the full Annex A document for complete 
     "en": "Gnomes are welcome everywhere as technicians, alchemists, and inventors.",
     "fr": "Les gnomes sont les bienvenus partout en tant que techniciens, alchimistes et inventeurs."
   },
-  "tags": ["race", "humanoid", "small", "race_gnome"],
+  "tags": ["race", "humanoid", "size_small", "race_gnome"],
   "grantedModifiers": [
     {
       "id": "gnome_con_bonus",
@@ -1122,6 +1164,22 @@ The following examples are provided (see the full Annex A document for complete 
       "sourceName": { "en": "Small Size", "fr": "Petite taille" }
     },
     {
+      "id": "gnome_size_ac_touch",
+      "sourceId": "race_gnome",
+      "targetId": "combatStats.ac_touch",
+      "value": 1,
+      "type": "size",
+      "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+    },
+    {
+      "id": "gnome_size_ac_flat",
+      "sourceId": "race_gnome",
+      "targetId": "combatStats.ac_flat_footed",
+      "value": 1,
+      "type": "size",
+      "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+    },
+    {
       "id": "gnome_size_attack",
       "sourceId": "race_gnome",
       "targetId": "combatStats.attack_bonus",
@@ -1140,7 +1198,7 @@ The following examples are provided (see the full Annex A document for complete 
     {
       "id": "gnome_speed",
       "sourceId": "race_gnome",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": 20,
       "type": "base",
       "sourceName": { "en": "Gnome", "fr": "Gnome" }
@@ -1148,7 +1206,7 @@ The following examples are provided (see the full Annex A document for complete 
     {
       "id": "gnome_illusion_save",
       "sourceId": "race_gnome",
-      "targetId": "saves.will",
+      "targetId": "saves.all",
       "value": 2,
       "type": "racial",
       "sourceName": { "en": "Gnome Illusion Resistance", "fr": "Résistance gnome aux illusions" },
@@ -1186,7 +1244,7 @@ The following examples are provided (see the full Annex A document for complete 
       "targetId": "skills.skill_listen",
       "value": 2,
       "type": "racial",
-      "sourceName": { "en": "Gnome", "fr": "Gnome" }
+      "sourceName": { "en": "Gnome Keen Hearing", "fr": "Ouïe aiguisée gnomique" }
     },
     {
       "id": "gnome_craft_alchemy",
@@ -1194,7 +1252,7 @@ The following examples are provided (see the full Annex A document for complete 
       "targetId": "skills.skill_craft_alchemy",
       "value": 2,
       "type": "racial",
-      "sourceName": { "en": "Gnome", "fr": "Gnome" }
+      "sourceName": { "en": "Gnome Alchemy", "fr": "Alchimie gnomique" }
     }
   ],
   "grantedFeatures": [
@@ -1207,6 +1265,8 @@ The following examples are provided (see the full Annex A document for complete 
   "choices": []
 }
 ```
+
+> **`saves.all` fan-out:** The `"targetId": "saves.all"` shorthand is broadcast by `#processModifierList` in the engine to three independent modifiers targeting `saves.fort`, `saves.ref`, and `saves.will`. This is the preferred concise form when the same modifier applies to all three saves. The engine's `StackingResult` and breakdown modal correctly attribute each fan-out entry to the same source.
 
 ### A.3.4. Dromite (Psionic Race)
 
@@ -1275,7 +1335,7 @@ The following examples are provided (see the full Annex A document for complete 
     {
       "id": "dromite_speed",
       "sourceId": "race_dromite",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": 20,
       "type": "base",
       "sourceName": { "en": "Dromite", "fr": "Dromite" }
@@ -1439,7 +1499,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.4.4. Craft Wand — Item Creation Feat
 
-> _Demonstrates: caster level prerequisite (referencing a computed pipeline `@attributes.caster_level.totalValue`). The caster level pipeline is itself derived from class levels and is not a simple base attribute._
+> _Demonstrates: caster level prerequisite using the canonical pipeline path `@attributes.stat_caster_level.totalValue`. The `stat_caster_level` pipeline lives in `Character.attributes` and is accumulated from class level progression modifiers._
 
 ```json
 {
@@ -1454,7 +1514,7 @@ The following examples are provided (see the full Annex A document for complete 
   "tags": ["feat", "item_creation", "feat_craft_wand"],
   "prerequisitesNode": {
     "logic": "CONDITION",
-    "targetPath": "@attributes.caster_level.totalValue",
+    "targetPath": "@attributes.stat_caster_level.totalValue",
     "operator": ">=",
     "value": 5,
     "errorMessage": "Requires caster level 5th"
@@ -1463,6 +1523,8 @@ The following examples are provided (see the full Annex A document for complete 
   "grantedFeatures": []
 }
 ```
+
+> **Caster level path:** The canonical pipeline ID is `stat_caster_level` (with `stat_` prefix), which lives in `Character.attributes`. The Math Parser path is `@attributes.stat_caster_level.totalValue`. Using `@attributes.caster_level.totalValue` (without `stat_` prefix) resolves to undefined and returns 0 — the prerequisite would always fail. See ARCHITECTURE.md section 4.3b.
 
 ### A.4.5. Maximize Spell — Metamagic Feat
 
@@ -1510,19 +1572,23 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.5.1. Armor — Full Plate (Heavy)
 
-> _Demonstrates: heavy armor with all standard armor properties (AC bonus as `armor` type, armor check penalty, max Dex as `setAbsolute`, arcane spell failure), the `metal_armor` tag (which triggers the Druid's `forbiddenTags` conflict), and the `heavy_armor` tag (which disables the Barbarian's Fast Movement)._
+> _Demonstrates: heavy armor with all standard armor properties. Key points:_
+> - _AC bonus uses `"type": "armor"` (non-stacking with other armor bonuses)_
+> - _Max DEX cap uses `"type": "max_dex_cap"` — NOT `"setAbsolute"`. This allows Mithral (+2 untyped) to stack on top of the cap._
+> - _Arcane spell failure uses `"type": "base"` (stacks because multiple armor pieces can't normally be worn simultaneously, but additive behavior is correct)_
+> - _Tags include `"armor_heavy"` (triggers Barbarian Fast Movement suppression), `"metal_armor"` (triggers Druid forbiddenTags conflict), and `"wearing_armor"` (triggers Monk AC bonus suppression)_
 
 ```json
 {
-  "id": "item_full_plate",
+  "id": "item_armor_full_plate",
   "category": "item",
   "ruleSource": "srd_core",
   "label": { "en": "Full Plate", "fr": "Harnois" },
   "description": {
-    "en": "This armor consists of shaped, interlocking metal plates that cover the entire body.",
-    "fr": "Cette armure consiste en des plaques de métal imbriquées qui couvrent tout le corps."
+    "en": "Full plate armor consists of shaped, interlocking metal plates that cover the entire body. When running, you move only triple your speed.",
+    "fr": "Le harnois est composé de plaques de métal façonnées et imbriquées qui couvrent tout le corps. En courant, vous vous déplacez seulement au triple de votre vitesse."
   },
-  "tags": ["item", "armor", "heavy_armor", "metal_armor"],
+  "tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_full_plate"],
   "equipmentSlot": "body",
   "weightLbs": 50,
   "costGp": 1500,
@@ -1536,32 +1602,32 @@ The following examples are provided (see the full Annex A document for complete 
   },
   "grantedModifiers": [
     {
-      "id": "full_plate_ac",
-      "sourceId": "item_full_plate",
+      "id": "armor_full_plate_ac",
+      "sourceId": "item_armor_full_plate",
       "targetId": "combatStats.ac_normal",
       "value": 8,
       "type": "armor",
       "sourceName": { "en": "Full Plate", "fr": "Harnois" }
     },
     {
-      "id": "full_plate_acp",
-      "sourceId": "item_full_plate",
+      "id": "armor_full_plate_acp",
+      "sourceId": "item_armor_full_plate",
       "targetId": "combatStats.armor_check_penalty",
       "value": -6,
       "type": "base",
       "sourceName": { "en": "Full Plate", "fr": "Harnois" }
     },
     {
-      "id": "full_plate_max_dex",
-      "sourceId": "item_full_plate",
+      "id": "armor_full_plate_max_dex",
+      "sourceId": "item_armor_full_plate",
       "targetId": "combatStats.max_dex_bonus",
       "value": 1,
-      "type": "setAbsolute",
+      "type": "max_dex_cap",
       "sourceName": { "en": "Full Plate", "fr": "Harnois" }
     },
     {
-      "id": "full_plate_asf",
-      "sourceId": "item_full_plate",
+      "id": "armor_full_plate_asf",
+      "sourceId": "item_armor_full_plate",
       "targetId": "combatStats.arcane_spell_failure",
       "value": 35,
       "type": "base",
@@ -1572,24 +1638,28 @@ The following examples are provided (see the full Annex A document for complete 
 }
 ```
 
+> **`max_dex_cap` vs `setAbsolute`:** The max DEX modifier MUST use `"type": "max_dex_cap"` (not `"setAbsolute"`). The `max_dex_cap` type allows Phase 3 to first apply the minimum-wins logic across all cap modifiers, then let additive bonuses (like Mithral's `+2 untyped`) stack on top. `"setAbsolute"` would force the pipeline to exactly 1 and block any Mithral enhancement.
+
 ### A.5.2. Armor — Chain Shirt (Light)
 
-> _Demonstrates light armor with less restrictive values. Note: still has `metal_armor` tag, so Druids can't wear it either._
+> _Demonstrates light armor. Still has `metal_armor` and `wearing_armor` tags. Uses `"type": "max_dex_cap"` for max DEX restriction (same pattern as Full Plate)._
 
 ```json
 {
-  "id": "item_chain_shirt",
+  "id": "item_armor_chain_shirt",
   "category": "item",
   "ruleSource": "srd_core",
   "label": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
   "description": {
-    "en": "A chain shirt protects the wearer's torso while leaving the limbs free.",
-    "fr": "Une chemise de mailles protège le torse du porteur tout en laissant les membres libres."
+    "en": "A chain shirt protects the wearer's torso while leaving the limbs free and comes with a steel cap. It is the heaviest of all light armors.",
+    "fr": "Une chemise de mailles protège le torse du porteur tout en laissant les membres libres et est accompagnée d'une calotte en acier."
   },
-  "tags": ["item", "armor", "light_armor", "metal_armor"],
+  "tags": ["item", "armor", "armor_light", "metal_armor", "wearing_armor", "item_armor_chain_shirt"],
   "equipmentSlot": "body",
   "weightLbs": 25,
   "costGp": 100,
+  "hardness": 10,
+  "hpMax": 10,
   "armorData": {
     "armorBonus": 4,
     "maxDex": 4,
@@ -1598,32 +1668,32 @@ The following examples are provided (see the full Annex A document for complete 
   },
   "grantedModifiers": [
     {
-      "id": "chain_shirt_ac",
-      "sourceId": "item_chain_shirt",
+      "id": "armor_chain_shirt_ac",
+      "sourceId": "item_armor_chain_shirt",
       "targetId": "combatStats.ac_normal",
       "value": 4,
       "type": "armor",
       "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" }
     },
     {
-      "id": "chain_shirt_acp",
-      "sourceId": "item_chain_shirt",
+      "id": "armor_chain_shirt_acp",
+      "sourceId": "item_armor_chain_shirt",
       "targetId": "combatStats.armor_check_penalty",
       "value": -2,
       "type": "base",
       "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" }
     },
     {
-      "id": "chain_shirt_max_dex",
-      "sourceId": "item_chain_shirt",
+      "id": "armor_chain_shirt_max_dex",
+      "sourceId": "item_armor_chain_shirt",
       "targetId": "combatStats.max_dex_bonus",
       "value": 4,
-      "type": "setAbsolute",
+      "type": "max_dex_cap",
       "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" }
     },
     {
-      "id": "chain_shirt_asf",
-      "sourceId": "item_chain_shirt",
+      "id": "armor_chain_shirt_asf",
+      "sourceId": "item_armor_chain_shirt",
       "targetId": "combatStats.arcane_spell_failure",
       "value": 20,
       "type": "base",
@@ -1778,7 +1848,7 @@ The following examples are provided (see the full Annex A document for complete 
 
 ### A.5.8. Scarab of Death (Cursed Item)
 
-> _Demonstrates: cursed item that appears beneficial. The `neck` equipment slot means it occupies the amulet slot. The actual curse effect is referenced as a granted feature (`curse_scarab_death_effect`) — the mechanical resolution of the curse (death after 1 minute) would be handled by a separate Feature with its own logic._
+> _Demonstrates: cursed item that appears beneficial. The `neck` slot occupies the amulet slot. The actual curse effect is referenced as a granted feature. In a full implementation, add `removalPrevention: { isCursed: true, removableBy: ["limited_wish", "wish", "miracle"] }` to enforce that only the highest magic can remove it — `remove_curse` is insufficient per SRD. The example below shows the minimal form; real data would include `removalPrevention`._
 
 ```json
 {
@@ -2003,7 +2073,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
 
 ### A.6.3. Chain Lightning (Arcane, Scaling Damage)
 
-> _Demonstrates: formula-based range (`400 + 40 * floor(@attributes.caster_level.totalValue)`), scaling damage description using the `{@...}` placeholder syntax, and the `electricity` descriptor (used for energy resistance checks)._
+> _Demonstrates: formula-based range using canonical caster level path `@attributes.stat_caster_level.totalValue`, scaling damage description using `{@...}` placeholder, and the `electricity` descriptor (used for energy resistance checks)._
 
 ```json
 {
@@ -2012,8 +2082,8 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
   "ruleSource": "srd_core",
   "label": { "en": "Chain Lightning", "fr": "Éclair multiple" },
   "description": {
-    "en": "This spell creates an electrical discharge that strikes one object or creature initially, then arcs to secondary targets. Deals {@attributes.caster_level.totalValue}d6 electricity damage (max 20d6) to primary target, half to secondary targets.",
-    "fr": "Ce sort crée une décharge électrique qui frappe un objet ou une créature initialement, puis rebondit vers des cibles secondaires. Inflige {@attributes.caster_level.totalValue}d6 dégâts d'électricité (max 20d6) à la cible primaire, la moitié aux cibles secondaires."
+    "en": "This spell creates an electrical discharge that strikes one object or creature initially, then arcs to secondary targets. Deals {@attributes.stat_caster_level.totalValue}d6 electricity damage (max 20d6) to primary target, half to secondary targets.",
+    "fr": "Ce sort crée une décharge électrique qui frappe un objet ou une créature initialement, puis rebondit vers des cibles secondaires. Inflige {@attributes.stat_caster_level.totalValue}d6 dégâts d'électricité (max 20d6) à la cible primaire, la moitié aux cibles secondaires."
   },
   "tags": ["magic", "spell", "arcane", "evocation", "electricity"],
   "magicType": "arcane",
@@ -2022,7 +2092,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
   "descriptors": ["electricity"],
   "resistanceType": "spell_resistance",
   "components": ["V", "S", "F"],
-  "range": "400 + 40 * floor(@attributes.caster_level.totalValue)",
+  "range": "400 + 40 * floor(@attributes.stat_caster_level.totalValue)",
   "targetArea": {
     "en": "One primary target, plus one secondary target/level (each within 30 ft. of the primary)",
     "fr": "Une cible primaire, plus une cible secondaire/niveau (chacune à 9 m de la cible primaire)"
@@ -2474,7 +2544,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
     {
       "id": "orc_speed",
       "sourceId": "race_orc",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": 30,
       "type": "base",
       "sourceName": { "en": "Orc", "fr": "Orque" }
@@ -2710,7 +2780,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
     {
       "id": "extreme_heat_speed_penalty",
       "sourceId": "environment_extreme_heat",
-      "targetId": "attributes.speed_land",
+      "targetId": "combatStats.speed_land",
       "value": -5,
       "type": "untyped",
       "sourceName": { "en": "Heat Exhaustion", "fr": "Épuisement dû à la chaleur" },
@@ -2855,8 +2925,8 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
     {
       "id": "underwater_speed_penalty",
       "sourceId": "environment_underwater",
-      "targetId": "attributes.speed_land",
-      "value": "0 - @attributes.speed_land.totalValue + floor(@attributes.speed_land.totalValue / 4)",
+      "targetId": "combatStats.speed_land",
+      "value": "0 - @combatStats.speed_land.totalValue + floor(@combatStats.speed_land.totalValue / 4)",
       "type": "untyped",
       "sourceName": { "en": "Underwater Movement (Quarter Speed)", "fr": "Déplacement sous-marin (Vitesse divisée par 4)" },
       "conditionNode": {
@@ -2889,7 +2959,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
 }
 ```
 
-> **AI Implementation Note — Underwater speed formula:** The `value` field is `"0 - @attributes.speed_land.totalValue + floor(@attributes.speed_land.totalValue / 4)"`. This is a mathematical trick: it subtracts the current speed and adds back a quarter, effectively setting speed to 25% of normal. The Math Parser must handle this negative-then-add pattern correctly. For a character with speed 30: `0 - 30 + floor(30/4)` = `-30 + 7` = `-23`, making final speed `30 + (-23)` = `7` (approximately quarter speed).
+> **AI Implementation Note — Underwater speed formula:** The `value` field is `"0 - @combatStats.speed_land.totalValue + floor(@combatStats.speed_land.totalValue / 4)"`. This is a mathematical trick: it subtracts the current speed and adds back a quarter, effectively setting speed to 25% of normal. The Math Parser handles this via the recursive descent parser. For a character with speed 30: `0 - 30 + floor(30/4)` = `-30 + 7` = `-23`, making final speed `30 + (-23)` = `7 ft.` (approximately quarter speed). Note: the canonical targetId for speed is `"combatStats.speed_land"` — use the full namespace for combat stat pipelines.
 
 ---
 
@@ -2918,7 +2988,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
   "descriptors": ["cold", "electricity", "fire", "sonic"],
   "resistanceType": "power_resistance",
   "components": ["V", "S"],
-  "range": "200 + 20 * floor(@attributes.manifester_level.totalValue)",
+  "range": "200 + 20 * floor(@attributes.stat_manifester_level.totalValue)",
   "targetArea": { "en": "Up to five creatures or objects, no two of which can be more than 15 ft. apart", "fr": "Jusqu'à cinq créatures ou objets, dont aucun ne peut être distant de plus de 4,5 m d'un autre" },
   "duration": "instantaneous",
   "savingThrow": "ref_half",
@@ -2990,7 +3060,7 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
   "descriptors": ["cold", "electricity", "fire", "sonic"],
   "resistanceType": "power_resistance",
   "components": ["V", "S"],
-  "range": "200 + 20 * floor(@attributes.manifester_level.totalValue)",
+  "range": "200 + 20 * floor(@attributes.stat_manifester_level.totalValue)",
   "targetArea": { "en": "One creature or object", "fr": "Une créature ou un objet" },
   "duration": "instantaneous",
   "savingThrow": "ref_half",
@@ -3094,9 +3164,9 @@ No `consumable` block. The ring is equipped (`isActive: true`) and stays in inve
 
 This annex provides the reference data tables required by the engine for calculations that cannot be derived from simple formulas. These tables are stored as JSON configuration files loaded by the `DataLoader` and are **never hardcoded** in TypeScript or Svelte logic.
 
-> **AI Implementation Note:** These tables are loaded once at startup and cached in memory. They are referenced by the engine's DAG phases (particularly Phase 3 for HP/BAB/Saves and Phase 4 for Skills). The engine accesses them via the `DataLoader.getConfigTable(tableId)` method. All values use imperial units (feet, pounds) as the internal reference — the i18n layer converts them for display.
+ > **AI Implementation Note:** These tables are loaded once at startup and cached in memory. They are referenced by the engine's DAG phases (Phase 3 for HP/BAB/Saves, Phase 4 for skills). The engine accesses them via `DataLoader.getConfigTable(tableId)`. All values use imperial units (feet, pounds) as the internal reference — the i18n layer converts for display.
 
-> **Convention:** Each configuration file is a JSON object with a `tableId` field and a `data` field. The `data` field structure varies by table type (lookup array, key-value map, etc.).
+> **Convention:** Each configuration entry is a JSON object with a `tableId` field and a `data` field. The `data` field structure varies by table type (array, map, etc.). Config tables always use "replace" merge semantics — partial merge is not supported for config tables. GMs may override any config table in `Campaign.gmGlobalOverrides` (e.g., to change the XP progression).
 
 ---
 
@@ -3288,7 +3358,7 @@ This annex provides the reference data tables required by the engine for calcula
 }
 ```
 
-> **AI Implementation Note:** The encumbrance system (Phase 13.4) uses this table when injecting the `condition_medium_load` or `condition_heavy_load` Features. These condition Features contain a modifier that references this table to compute the correct speed reduction. Alternatively, the condition Feature can use a formula: `"0 - @attributes.speed_land.baseValue + floor(@attributes.speed_land.baseValue * 2 / 3 / 5) * 5"`.
+> **AI Implementation Note:** The encumbrance system (Phase 13.4) uses this table when injecting `condition_medium_load` or `condition_heavy_load` Features. Condition Features contain a modifier that looks up the correct reduction. Alternatively, use a formula: `"0 - @combatStats.speed_land.totalValue + floor(@combatStats.speed_land.totalValue * 2 / 3 / 5) * 5"` targeting `"combatStats.speed_land"`.
 
 ---
 

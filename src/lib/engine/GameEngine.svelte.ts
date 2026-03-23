@@ -1112,16 +1112,23 @@ export class GameEngine {
       };
     }
 
-    // Build combatStats snapshot
+    // Build combatStats snapshot — strip "combatStats." prefix so path resolution works.
+    // CharacterContext.combatStats uses FLAT keys (e.g., "bab", not "combatStats.bab").
+    // The path @combatStats.bab.totalValue splits into ["combatStats","bab","totalValue"]
+    // and indexes context.combatStats["bab"] — which requires the flat key.
+    // @see ARCHITECTURE.md section 9.10 — CharacterContext key conventions
     const combatStats: CharacterContext['combatStats'] = {};
     for (const [id, stat] of Object.entries(char.combatStats)) {
-      combatStats[id] = { totalValue: stat.totalValue };
+      const flatKey = id.startsWith('combatStats.') ? id.slice('combatStats.'.length) : id;
+      combatStats[flatKey] = { totalValue: stat.totalValue };
     }
 
-    // Build saves snapshot
+    // Build saves snapshot — strip "saves." prefix for the same reason.
+    // @saves.fort.totalValue requires context.saves["fort"], not context.saves["saves.fort"].
     const saves: CharacterContext['saves'] = {};
     for (const [id, save] of Object.entries(char.saves)) {
-      saves[id] = { totalValue: save.totalValue };
+      const flatKey = id.startsWith('saves.') ? id.slice('saves.'.length) : id;
+      saves[flatKey] = { totalValue: save.totalValue };
     }
 
     return {
@@ -1562,15 +1569,21 @@ export class GameEngine {
   phase3_context: CharacterContext = $derived.by(() => {
     const base = this.phase2_context;
 
+    // Strip "combatStats." prefix — see phase0_context for the full rationale.
     const combatStats: CharacterContext['combatStats'] = {};
     for (const [id, stat] of Object.entries(this.phase3_combatStats)) {
-      combatStats[id] = { totalValue: stat.totalValue };
+      if (!id.startsWith('saves.')) {
+        const flatKey = id.startsWith('combatStats.') ? id.slice('combatStats.'.length) : id;
+        combatStats[flatKey] = { totalValue: stat.totalValue };
+      }
     }
 
+    // Strip "saves." prefix — @saves.fort.totalValue needs context.saves["fort"].
     const saves: CharacterContext['saves'] = {};
     for (const [id, save] of Object.entries(this.phase3_combatStats)) {
       if (id.startsWith('saves.')) {
-        saves[id] = { totalValue: save.totalValue };
+        const flatKey = id.slice('saves.'.length);
+        saves[flatKey] = { totalValue: save.totalValue };
       }
     }
 
@@ -1662,9 +1675,10 @@ export class GameEngine {
    *   RAW D&D 3.5 grants 4× SP at character level 1. Since the current data model does not
    *   track class level-up ORDER (only final classLevels counts), the first-level quadrupling
    *   must be acknowledged but cannot be precisely attributed without a level history.
-   *   THIS IMPLEMENTATION does NOT apply the 4× multiplier automatically. It is the
-   *   responsibility of the Level Journal UI to display this rule and let the GM/player
-   *   account for it manually (or a future "Level History" feature can automate it).
+    *   This implementation DOES apply the 4× multiplier automatically for the class
+    *   identified as the first class (Object.keys(classLevels)[0]).
+    *   `firstLevelBonus = 3 × pointsPerLevel` is added to that class's total points.
+    *   The Leveling Journal displays this as a separate "First Level Bonus" line item.
    *
    * HOW CLASS SP ARE IDENTIFIED:
    *   Class features grant a modifier to `attributes.skill_points_per_level`.
