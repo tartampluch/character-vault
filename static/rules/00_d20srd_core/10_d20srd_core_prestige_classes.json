@@ -584,7 +584,7 @@
           "targetPath": "@activeTags",
           "operator": "has_tag",
           "value": "sneak_attack",
-          "errorMessage": "Requires Sneak Attack +2d6"
+          "errorMessage": "Requires sneak attack +2d6 (at least 2d6 sneak attack dice)"
         }
       ]
     },
@@ -1041,8 +1041,8 @@
           "logic": "CONDITION",
           "targetPath": "@activeTags",
           "operator": "has_tag",
-          "value": "feat_greater_spell_focus",
-          "errorMessage": "Requires Spell Focus in a second school — Greater Spell Focus used as proxy for investment in a second school; enforce exact two-school requirement at the table"
+          "value": "feat_spell_focus",
+          "errorMessage": "Requires Spell Focus in two different schools (two separate Spell Focus feats)"
         },
         {
           "logic": "CONDITION",
@@ -1304,6 +1304,13 @@
           "operator": ">=",
           "value": 8,
           "errorMessage": "Requires 8 ranks in Move Silently"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "assassin_kill_to_join",
+          "errorMessage": "Special: must have killed someone for no other reason than to join the assassins (GM discretion)"
         }
       ]
     },
@@ -1722,17 +1729,6 @@
             }
           },
           {
-            "id": "assassin_7_ref",
-            "sourceId": "class_assassin",
-            "targetId": "saves.ref",
-            "value": 1,
-            "type": "base",
-            "sourceName": {
-              "en": "Assassin 7",
-              "fr": "Assassin 7"
-            }
-          },
-          {
             "id": "assassin_7_slots_3",
             "sourceId": "class_assassin",
             "targetId": "resources.spell_slots_assassin_3",
@@ -1775,17 +1771,6 @@
             }
           },
           {
-            "id": "assassin_8_fort",
-            "sourceId": "class_assassin",
-            "targetId": "saves.fort",
-            "value": 1,
-            "type": "base",
-            "sourceName": {
-              "en": "Assassin 8",
-              "fr": "Assassin 8"
-            }
-          },
-          {
             "id": "assassin_8_slots_3",
             "sourceId": "class_assassin",
             "targetId": "resources.spell_slots_assassin_3",
@@ -1806,6 +1791,17 @@
               "en": "Assassin 8",
               "fr": "Assassin 8"
             }
+          },
+          {
+            "id": "class_assassin_8_ref",
+            "sourceId": "class_assassin",
+            "sourceName": {
+              "en": "Assassin",
+              "fr": "Assassin"
+            },
+            "targetId": "saves.ref",
+            "value": 1,
+            "type": "base"
           }
         ]
       },
@@ -1963,6 +1959,13 @@
           "operator": "has_tag",
           "value": "feat_power_attack",
           "errorMessage": "Requires the Power Attack feat"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "blackguard_outsider_contact",
+          "errorMessage": "Special: must have made peaceful contact with an evil outsider (GM discretion)"
         }
       ]
     },
@@ -5182,6 +5185,13 @@
     "prerequisitesNode": {
       "logic": "AND",
       "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@skills.skill_knowledge_arcana.ranks",
+          "operator": ">=",
+          "value": 10,
+          "errorMessage": "Requires 10 ranks in at least two different Knowledge skills"
+        },
         {
           "logic": "CONDITION",
           "targetPath": "@activeTags",

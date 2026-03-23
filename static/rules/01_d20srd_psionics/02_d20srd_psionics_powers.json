@@ -16,8 +16,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -65,8 +65,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -170,8 +170,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -229,8 +229,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -279,8 +279,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -495,8 +495,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -542,8 +542,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -601,8 +601,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -650,8 +650,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -883,8 +883,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -932,8 +932,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -991,8 +991,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1048,8 +1048,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1097,8 +1097,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1154,8 +1154,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1201,8 +1201,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1258,8 +1258,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1325,7 +1325,10 @@
     "spellLists": {
       "list_psion_telepathy": 2
     },
-    "displays": [],
+    "displays": [
+      "material",
+      "visual"
+    ],
     "resistanceType": "power_resistance",
     "components": [
       "M"
@@ -1339,7 +1342,26 @@
     "savingThrow": "will_negates",
     "grantedModifiers": [],
     "grantedFeatures": [],
-    "augmentations": [],
+    "augmentations": [
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "If you spend 2 additional power points, this power also affects animals, fey, giants, magical beasts, and monstrous humanoids.",
+          "fr": "Si vous dépensez 2 points de pouvoir supplémentaires, ce pouvoir affecte aussi les animaux, fées, géants, bêtes magiques et humanoïdes monstrueux."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": false
+      },
+      {
+        "costIncrement": 4,
+        "effectDescription": {
+          "en": "If you spend 4 additional power points, this power also affects aberrations, dragons, elementals, and outsiders.",
+          "fr": "Si vous dépensez 4 points de pouvoir supplémentaires, ce pouvoir affecte aussi les aberrations, dragons, élémentaires et Extérieurs."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": false
+      }
+    ],
     "activation": {
       "actionType": "standard",
       "resourceCost": {
@@ -1365,8 +1387,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1424,8 +1446,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1473,8 +1495,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1532,8 +1554,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1581,8 +1603,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1638,8 +1660,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1697,8 +1719,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1875,7 +1897,10 @@
     "spellLists": {
       "list_psion_clairsentience": 2
     },
-    "displays": [],
+    "displays": [
+      "auditory",
+      "visual"
+    ],
     "resistanceType": "none",
     "components": [
       "M"
@@ -1915,8 +1940,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -1964,8 +1989,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2019,8 +2044,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2066,8 +2091,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2113,8 +2138,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2160,8 +2185,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2209,8 +2234,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2258,8 +2283,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2307,8 +2332,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2357,8 +2382,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2404,8 +2429,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2427,7 +2452,26 @@
     "savingThrow": "none",
     "grantedModifiers": [],
     "grantedFeatures": [],
-    "augmentations": [],
+    "augmentations": [
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "For every 2 additional power points you spend, this power's damage increases by 1d6 points.",
+          "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, les dégâts augmentent de 1d6."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      },
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "For every 2 additional power points you spend, this power can affect one additional target.",
+          "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, ce pouvoir peut affecter une cible supplémentaire."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      }
+    ],
     "activation": {
       "actionType": "standard",
       "resourceCost": {
@@ -2453,8 +2497,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2622,8 +2666,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2671,8 +2715,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2770,8 +2814,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2820,8 +2864,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -2869,8 +2913,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3039,8 +3083,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3146,8 +3190,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3205,8 +3249,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3254,8 +3298,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3311,8 +3355,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3370,8 +3414,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3427,8 +3471,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3476,8 +3520,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3535,8 +3579,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3640,8 +3684,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3689,8 +3733,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3736,8 +3780,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3843,12 +3887,13 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
-      "list_psywar": 4
+      "list_psywar": 4,
+      "list_psion_wilder": 4
     },
     "displays": [
       "visual"
@@ -3902,8 +3947,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -3961,8 +4006,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4070,8 +4115,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4129,8 +4174,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4189,8 +4234,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4286,8 +4331,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4345,8 +4390,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4392,8 +4437,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4449,8 +4494,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4508,8 +4553,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4557,8 +4602,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4606,8 +4651,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4655,8 +4700,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4732,6 +4777,33 @@
         "effectDescription": {
           "en": "for every 2 additional power points you spend to achieve any of these effects, this power’s save DC increases by 1.",
           "fr": "for every 2 additional power points you spend to achieve any of these effects, this power’s save DC increases by 1."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      },
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "If you spend 2 additional power points, this power also affects animals, fey, giants, magical beasts, and monstrous humanoids.",
+          "fr": "Si vous dépensez 2 points de pouvoir supplémentaires, ce pouvoir affecte aussi les animaux, fées, géants, bêtes magiques et humanoïdes monstrueux."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": false
+      },
+      {
+        "costIncrement": 4,
+        "effectDescription": {
+          "en": "If you spend 4 additional power points, this power also affects aberrations, dragons, elementals, and outsiders.",
+          "fr": "Si vous dépensez 4 points de pouvoir supplémentaires, ce pouvoir affecte aussi les aberrations, dragons, élémentaires et Extérieurs."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": false
+      },
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "For every 2 additional power points you spend, you can affect one additional target.",
+          "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, vous pouvez affecter une cible supplémentaire."
         },
         "grantedModifiers": [],
         "isRepeatable": true
@@ -4822,8 +4894,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -4871,8 +4943,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5036,8 +5108,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5085,8 +5157,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5136,8 +5208,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5195,8 +5267,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5244,8 +5316,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5301,8 +5373,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5358,8 +5430,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5405,8 +5477,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5454,8 +5526,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5513,8 +5585,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5572,8 +5644,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5689,8 +5761,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5709,12 +5781,12 @@
       "fr": "120-ft. line"
     },
     "duration": "Instantaneous",
-    "savingThrow": "fort_half",
+    "savingThrow": "reflex_half",
     "grantedModifiers": [],
     "grantedFeatures": [],
     "augmentations": [
       {
-        "costIncrement": 2,
+        "costIncrement": 1,
         "effectDescription": {
           "en": "For every additional power point you spend, this power’s damage increases by one die (d6). For each extra two dice of damage, this power’s save DC increases by 1.",
           "fr": "For every additional power point you spend, this power’s damage increases by one die (d6). For each extra two dice of damage, this power’s save DC increases by 1."
@@ -5748,8 +5820,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5867,8 +5939,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -5987,12 +6059,12 @@
       "fr": "Up to five creatures or objects; no two targets can be more than 15 ft. apart."
     },
     "duration": "Instantaneous",
-    "savingThrow": "fort_half",
+    "savingThrow": "reflex_half",
     "grantedModifiers": [],
     "grantedFeatures": [],
     "augmentations": [
       {
-        "costIncrement": 2,
+        "costIncrement": 1,
         "effectDescription": {
           "en": "For every additional power point you spend, this power’s damage increases by one die (d6) and its save DC increases by 1.",
           "fr": "For every additional power point you spend, this power’s damage increases by one die (d6) and its save DC increases by 1."
@@ -6026,8 +6098,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6083,8 +6155,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6108,7 +6180,7 @@
     "grantedFeatures": [],
     "augmentations": [
       {
-        "costIncrement": 2,
+        "costIncrement": 1,
         "effectDescription": {
           "en": "For every additional power point you spend, this power’s damage increases by one die (d6).",
           "fr": "For every additional power point you spend, this power’s damage increases by one die (d6)."
@@ -6142,8 +6214,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6201,8 +6273,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6260,8 +6332,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6309,8 +6381,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6368,8 +6440,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6425,8 +6497,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6484,8 +6556,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6581,8 +6653,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6628,8 +6700,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6687,8 +6759,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6746,8 +6818,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -6953,8 +7025,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7110,8 +7182,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7277,8 +7349,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7376,8 +7448,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7435,8 +7507,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7494,8 +7566,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7543,8 +7615,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7703,8 +7775,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7752,8 +7824,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7799,8 +7871,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7916,8 +7988,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -7973,8 +8045,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8072,8 +8144,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8131,8 +8203,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8178,8 +8250,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8237,8 +8309,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8286,8 +8358,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8345,8 +8417,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8392,8 +8464,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8451,8 +8523,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8510,8 +8582,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8569,8 +8641,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8618,8 +8690,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8667,8 +8739,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8716,8 +8788,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8765,8 +8837,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8833,8 +8905,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8882,8 +8954,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8929,8 +9001,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -8976,14 +9048,17 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
       "list_psion_wilder": 8
     },
-    "displays": [],
+    "displays": [
+      "auditory",
+      "mental"
+    ],
     "resistanceType": "power_resistance",
     "components": [
       "M"
@@ -9023,8 +9098,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9072,8 +9147,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9121,8 +9196,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9239,7 +9314,10 @@
     "spellLists": {
       "list_psion_psychometabolism": 4
     },
-    "displays": [],
+    "displays": [
+      "material",
+      "olfactory"
+    ],
     "resistanceType": "none",
     "components": [
       "M"
@@ -9327,8 +9405,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9395,8 +9473,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9405,7 +9483,7 @@
     "displays": [
       "auditory"
     ],
-    "resistanceType": "none",
+    "resistanceType": "power_resistance",
     "components": [
       "M"
     ],
@@ -9463,8 +9541,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9522,8 +9600,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9571,8 +9649,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9829,8 +9907,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9854,7 +9932,7 @@
     "grantedFeatures": [],
     "augmentations": [
       {
-        "costIncrement": 2,
+        "costIncrement": 1,
         "effectDescription": {
           "en": "For every additional power point you spend, this power’s damage increases by 1d10 points. For each extra 2d10 points of damage, this power’s save DC increases by 1.",
           "fr": "For every additional power point you spend, this power’s damage increases by 1d10 points. For each extra 2d10 points of damage, this power’s save DC increases by 1."
@@ -9888,8 +9966,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -9958,7 +10036,7 @@
     "displays": [
       "mental"
     ],
-    "resistanceType": "none",
+    "resistanceType": "power_resistance",
     "components": [
       "M"
     ],
@@ -9971,7 +10049,26 @@
     "savingThrow": "none",
     "grantedModifiers": [],
     "grantedFeatures": [],
-    "augmentations": [],
+    "augmentations": [
+      {
+        "costIncrement": 4,
+        "effectDescription": {
+          "en": "If you spend 4 additional power points, you can manifest this power on an unwilling target (Will save negates).",
+          "fr": "Si vous dépensez 4 points de pouvoir supplémentaires, vous pouvez manifester ce pouvoir sur une cible non consentante (jet de Volonté pour annuler)."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": false
+      },
+      {
+        "costIncrement": 1,
+        "effectDescription": {
+          "en": "For every additional power point you spend, you can add one more target to the mindlink.",
+          "fr": "Pour chaque point de pouvoir supplémentaire dépensé, vous pouvez ajouter une cible supplémentaire au lien mental."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      }
+    ],
     "activation": {
       "actionType": "standard",
       "resourceCost": {
@@ -10055,8 +10152,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10155,8 +10252,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10214,8 +10311,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10323,8 +10420,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10372,8 +10469,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10477,8 +10574,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10594,8 +10691,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10643,8 +10740,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10700,8 +10797,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10747,8 +10844,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10796,8 +10893,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10845,8 +10942,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10894,8 +10991,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -10991,8 +11088,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11086,8 +11183,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11133,8 +11230,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11180,8 +11277,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11239,8 +11336,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11286,8 +11383,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11335,8 +11432,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11394,8 +11491,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11453,8 +11550,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11608,8 +11705,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11708,8 +11805,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11728,7 +11825,7 @@
       "fr": "One creature"
     },
     "duration": "Instantaneous",
-    "savingThrow": "will_negates",
+    "savingThrow": "will_partial",
     "grantedModifiers": [],
     "grantedFeatures": [],
     "augmentations": [
@@ -11767,8 +11864,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11817,8 +11914,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -11876,8 +11973,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12026,8 +12123,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12073,8 +12170,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12132,8 +12229,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12230,8 +12327,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12427,8 +12524,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12584,8 +12681,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12633,8 +12730,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12728,8 +12825,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12775,8 +12872,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12824,8 +12921,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12871,8 +12968,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12928,8 +13025,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -12977,8 +13074,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13024,8 +13121,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13083,8 +13180,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13132,8 +13229,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13189,8 +13286,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13298,8 +13395,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13347,8 +13444,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13396,8 +13493,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13455,8 +13552,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13504,8 +13601,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13563,8 +13660,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13672,8 +13769,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13731,8 +13828,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13801,7 +13898,7 @@
       "fr": "One creature"
     },
     "duration": "Instantaneous",
-    "savingThrow": "will_negates",
+    "savingThrow": "none",
     "grantedModifiers": [],
     "grantedFeatures": [],
     "augmentations": [],
@@ -13830,8 +13927,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -13977,8 +14074,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14034,8 +14131,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14081,8 +14178,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14140,14 +14237,17 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
       "list_psion_wilder": 3
     },
-    "displays": [],
+    "displays": [
+      "auditory",
+      "visual"
+    ],
     "resistanceType": "power_resistance",
     "components": [
       "M"
@@ -14161,7 +14261,26 @@
     "savingThrow": "will_negates",
     "grantedModifiers": [],
     "grantedFeatures": [],
-    "augmentations": [],
+    "augmentations": [
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "For every 2 additional power points you spend, the mass of the creature sent forward in time increases by one size category (or an object doubles in weight).",
+          "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, la masse de la créature envoyée dans le futur augmente d'une catégorie de taille (ou un objet double de poids)."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      },
+      {
+        "costIncrement": 2,
+        "effectDescription": {
+          "en": "For every 2 additional power points you spend, this power can affect one additional target.",
+          "fr": "Pour chaque 2 points de pouvoir supplémentaires dépensés, ce pouvoir peut affecter une cible supplémentaire."
+        },
+        "grantedModifiers": [],
+        "isRepeatable": true
+      }
+    ],
     "activation": {
       "actionType": "standard",
       "resourceCost": {
@@ -14293,8 +14412,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14342,8 +14461,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14449,8 +14568,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14508,8 +14627,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14567,8 +14686,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14674,8 +14793,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14723,8 +14842,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14772,8 +14891,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14822,8 +14941,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14869,8 +14988,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "clairsentience",
+    "discipline": "clairsentience",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14918,8 +15037,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "telepathy",
+    "discipline": "telepathy",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -14978,8 +15097,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -15025,14 +15144,18 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychometabolism",
+    "discipline": "psychometabolism",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
-      "list_psywar": 1
+      "list_psywar": 1,
+      "list_psion_wilder": 1
     },
-    "displays": [],
+    "displays": [
+      "material",
+      "olfactory"
+    ],
     "resistanceType": "none",
     "components": [
       "M"
@@ -15048,7 +15171,7 @@
     "grantedFeatures": [],
     "augmentations": [
       {
-        "costIncrement": 2,
+        "costIncrement": 1,
         "effectDescription": {
           "en": "For every additional power point you spend, the number of temporary hit points you gain increases by 5.",
           "fr": "For every additional power point you spend, the number of temporary hit points you gain increases by 5."
@@ -15082,8 +15205,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychoportation",
+    "discipline": "psychoportation",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -15131,8 +15254,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "metacreativity",
+    "discipline": "metacreativity",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {
@@ -15180,8 +15303,8 @@
       "psionic"
     ],
     "magicType": "psionic",
-    "school": "general",
-    "discipline": null,
+    "school": "psychokinesis",
+    "discipline": "psychokinesis",
     "subSchool": null,
     "descriptors": [],
     "spellLists": {

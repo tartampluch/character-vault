@@ -492,6 +492,14 @@
             "targetSkillId": "skill_ride",
             "bonus": 2,
             "type": "synergy"
+          },
+          {
+            "sourceSkillId": "skill_handle_animal",
+            "minRanks": 5,
+            "targetSkillId": "wild_empathy_check",
+            "bonus": 2,
+            "type": "synergy",
+            "note": "Bonus on wild empathy checks (non-skill target)"
           }
         ]
       },
@@ -691,7 +699,16 @@
           "en": "Knowledge (history) covers wars, colonies, migrations, and the founding of cities.",
           "fr": "Connaissance (histoire) couvre les guerres, les colonies, les migrations et la fondation des cités."
         },
-        "synergies": []
+        "synergies": [
+          {
+            "sourceSkillId": "skill_knowledge_history",
+            "minRanks": 5,
+            "targetSkillId": "bardic_knowledge",
+            "bonus": 2,
+            "type": "synergy",
+            "note": "Bonus on bardic knowledge checks (non-skill target)"
+          }
+        ]
       },
       "skill_knowledge_local": {
         "id": "skill_knowledge_local",
@@ -812,7 +829,16 @@
           "en": "Knowledge (religion) covers gods and goddesses, mythic history, ecclesiastic tradition, holy symbols, and undead.",
           "fr": "Connaissance (religion) couvre les dieux et déesses, l'histoire mythique, les traditions ecclésiastiques, les symboles sacrés et les morts-vivants."
         },
-        "synergies": []
+        "synergies": [
+          {
+            "sourceSkillId": "skill_knowledge_religion",
+            "minRanks": 5,
+            "targetSkillId": "turning_undead_check",
+            "bonus": 2,
+            "type": "synergy",
+            "note": "Bonus on turning checks against undead (non-skill target)"
+          }
+        ]
       },
       "skill_listen": {
         "id": "skill_listen",
@@ -1462,7 +1488,7 @@
           "fr": "Connaissance (psionique)"
         },
         "keyAbility": "stat_int",
-        "canBeUsedUntrained": true,
+        "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
           "en": "Knowledge (psionics) covers ancient mysteries, psionic traditions, psychic symbols, cryptic phrases, astral constructs, and psionic races. You can use this skill to identify psionic monsters and their special powers or vulnerabilities. An untrained check is simply an Intelligence check — you know only common knowledge (DC 10 or lower) without training. If you have the Autonomous feat, you get a +2 bonus.",

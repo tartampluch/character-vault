@@ -552,7 +552,7 @@
     "id": "spell_animate_dead",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "divine",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Animate Dead",
       "fr": "Animation de mort-vivant"
@@ -1720,7 +1720,7 @@
       "fr": "Créatures non mauvaises dans un rayon de 12 m centré sur vous"
     },
     "duration": "instantaneous",
-    "savingThrow": "none",
+    "savingThrow": "none_or_will_negates",
     "grantedModifiers": [],
     "grantedFeatures": []
   },
@@ -5952,7 +5952,7 @@
       "fr": "Créatures non loyales dans un rayon de 12 m centré sur vous"
     },
     "duration": "instantaneous",
-    "savingThrow": "none",
+    "savingThrow": "none_or_will_negates",
     "grantedModifiers": [],
     "grantedFeatures": []
   },
@@ -6285,7 +6285,7 @@
     "id": "spell_disintegrate",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "arcane",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Disintegrate",
       "fr": "Désintégration"
@@ -6310,7 +6310,7 @@
     "components": [
       "V",
       "S",
-      "M"
+      "M/DF"
     ],
     "range": "medium",
     "targetArea": {
@@ -9330,7 +9330,7 @@
     "id": "spell_gate",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "divine",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Gate",
       "fr": "Portail"
@@ -9344,7 +9344,7 @@
       "spell_conjuration"
     ],
     "school": "conjuration",
-    "subSchool": "creation",
+    "subSchool": "creation_or_calling",
     "descriptors": [],
     "spellLists": {
       "list_cleric": 9,
@@ -11282,7 +11282,7 @@
       "fr": "Créatures non bonnes dans un rayon de 12 m centré sur vous"
     },
     "duration": "instantaneous",
-    "savingThrow": "none",
+    "savingThrow": "none_or_will_negates",
     "grantedModifiers": [],
     "grantedFeatures": []
   },
@@ -12259,7 +12259,7 @@
     "id": "spell_invisibility",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "arcane",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Invisibility",
       "fr": "Invisibilité"
@@ -12285,7 +12285,7 @@
     "components": [
       "V",
       "S",
-      "M"
+      "M/DF"
     ],
     "range": "personal or touch",
     "targetArea": {
@@ -14571,7 +14571,7 @@
     "id": "spell_mind_blank",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "arcane",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Mind Blank",
       "fr": "Écran mental"
@@ -15814,7 +15814,7 @@
       "fr": "Une créature vivante"
     },
     "duration": "instantaneous",
-    "savingThrow": "will_disbelief",
+    "savingThrow": "will_disbelief_then_fort_partial",
     "grantedModifiers": [],
     "grantedFeatures": []
   },
@@ -16383,7 +16383,7 @@
     "id": "spell_polymorph_any_object",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "arcane",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Polymorph Any Object",
       "fr": "Métamorphose intégrale"
@@ -16408,7 +16408,7 @@
     "components": [
       "V",
       "S",
-      "M"
+      "M/DF"
     ],
     "range": "close",
     "targetArea": {
@@ -19731,7 +19731,7 @@
     "id": "spell_shapechange",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "arcane",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "Shapechange",
       "fr": "Changement de forme"
@@ -23932,7 +23932,7 @@
     "id": "spell_true_seeing",
     "category": "magic",
     "ruleSource": "srd_core",
-    "magicType": "divine",
+    "magicType": "arcane_and_divine",
     "label": {
       "en": "True Seeing",
       "fr": "Vision totale"
@@ -25342,7 +25342,7 @@
       "fr": "Créatures non chaotiques dans un rayon de 12 m centré sur vous"
     },
     "duration": "instantaneous",
-    "savingThrow": "none",
+    "savingThrow": "none_or_will_negates",
     "grantedModifiers": [],
     "grantedFeatures": []
   },

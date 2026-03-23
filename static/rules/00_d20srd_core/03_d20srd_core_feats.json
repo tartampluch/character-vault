@@ -1349,6 +1349,13 @@
           "logic": "CONDITION",
           "targetPath": "@activeTags",
           "operator": "has_tag",
+          "value": "@selection.weapon_choice",
+          "errorMessage": "Requires proficiency with the selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
           "value": "feat_weapon_focus",
           "errorMessage": "Requires Weapon Focus with selected weapon"
         },
@@ -1414,6 +1421,13 @@
     "prerequisitesNode": {
       "logic": "AND",
       "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "@selection.weapon_choice",
+          "errorMessage": "Requires proficiency with the selected weapon"
+        },
         {
           "logic": "CONDITION",
           "targetPath": "@activeTags",
@@ -1577,6 +1591,13 @@
     "prerequisitesNode": {
       "logic": "AND",
       "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "@selection.weapon_choice",
+          "errorMessage": "Requires proficiency with the selected weapon"
+        },
         {
           "logic": "CONDITION",
           "targetPath": "@combatStats.bab.totalValue",
@@ -3785,11 +3806,23 @@
       "feat_weapon_focus"
     ],
     "prerequisitesNode": {
-      "logic": "CONDITION",
-      "targetPath": "@combatStats.bab.totalValue",
-      "operator": ">=",
-      "value": 1,
-      "errorMessage": "Requires Base Attack Bonus +1"
+      "logic": "AND",
+      "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "@selection.weapon_choice",
+          "errorMessage": "Requires proficiency with the selected weapon"
+        },
+        {
+          "logic": "CONDITION",
+          "targetPath": "@combatStats.bab.totalValue",
+          "operator": ">=",
+          "value": 1,
+          "errorMessage": "Requires Base Attack Bonus +1"
+        }
+      ]
     },
     "choices": [
       {
@@ -3845,6 +3878,13 @@
     "prerequisitesNode": {
       "logic": "AND",
       "nodes": [
+        {
+          "logic": "CONDITION",
+          "targetPath": "@activeTags",
+          "operator": "has_tag",
+          "value": "@selection.weapon_choice",
+          "errorMessage": "Requires proficiency with the selected weapon"
+        },
         {
           "logic": "CONDITION",
           "targetPath": "@activeTags",

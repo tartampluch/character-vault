@@ -3,12 +3,20 @@
     "id": "race_human",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Human", "fr": "Humain" },
+    "label": {
+      "en": "Human",
+      "fr": "Humain"
+    },
     "description": {
       "en": "Humans are the most adaptable, flexible, and ambitious people among the common races. They have widely varying tastes, morals, and customs in the many different lands where they have settled.",
       "fr": "Les humains sont les plus adaptables, flexibles et ambitieux parmi les races courantes. Leurs goûts, mœurs et coutumes varient considérablement dans les nombreuses terres où ils se sont installés."
     },
-    "tags": ["race", "humanoid", "size_medium", "race_human"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_medium",
+      "race_human"
+    ],
     "grantedModifiers": [
       {
         "id": "human_speed",
@@ -16,7 +24,10 @@
         "targetId": "attributes.speed_land",
         "value": 30,
         "type": "base",
-        "sourceName": { "en": "Human", "fr": "Humain" }
+        "sourceName": {
+          "en": "Human",
+          "fr": "Humain"
+        }
       },
       {
         "id": "human_bonus_skill_1st",
@@ -24,7 +35,10 @@
         "targetId": "attributes.bonus_skill_points_1st_level",
         "value": 4,
         "type": "racial",
-        "sourceName": { "en": "Human Versatility", "fr": "Polyvalence humaine" }
+        "sourceName": {
+          "en": "Human Versatility",
+          "fr": "Polyvalence humaine"
+        }
       },
       {
         "id": "human_bonus_skill_per_level",
@@ -32,7 +46,10 @@
         "targetId": "attributes.bonus_skill_points_per_level",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Human Versatility", "fr": "Polyvalence humaine" }
+        "sourceName": {
+          "en": "Human Versatility",
+          "fr": "Polyvalence humaine"
+        }
       },
       {
         "id": "human_bonus_feat",
@@ -40,7 +57,10 @@
         "targetId": "attributes.bonus_feat_slots",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Human Bonus Feat", "fr": "Don supplémentaire humain" }
+        "sourceName": {
+          "en": "Human Bonus Feat",
+          "fr": "Don supplémentaire humain"
+        }
       }
     ],
     "grantedFeatures": [
@@ -49,17 +69,24 @@
     "favoredClass": "any",
     "choices": []
   },
-
   {
     "id": "race_dwarf",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Dwarf", "fr": "Nain" },
+    "label": {
+      "en": "Dwarf",
+      "fr": "Nain"
+    },
     "description": {
       "en": "Dwarves are known for their skill in warfare, their ability to withstand physical and magical punishment, their hard work, and their capacity for drinking ale. Dwarves are slow to joke around with those they do not know well.",
       "fr": "Les nains sont connus pour leur habileté au combat, leur capacité à résister aux punitions physiques et magiques, leur travail acharné et leur aptitude à boire de la bière. Les nains sont lents à plaisanter avec ceux qu'ils ne connaissent pas bien."
     },
-    "tags": ["race", "humanoid", "size_medium", "race_dwarf"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_medium",
+      "race_dwarf"
+    ],
     "grantedModifiers": [
       {
         "id": "dwarf_con_bonus",
@@ -67,7 +94,10 @@
         "targetId": "attributes.stat_con",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf", "fr": "Nain" }
+        "sourceName": {
+          "en": "Dwarf",
+          "fr": "Nain"
+        }
       },
       {
         "id": "dwarf_cha_penalty",
@@ -75,7 +105,10 @@
         "targetId": "attributes.stat_cha",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf", "fr": "Nain" }
+        "sourceName": {
+          "en": "Dwarf",
+          "fr": "Nain"
+        }
       },
       {
         "id": "dwarf_speed",
@@ -83,24 +116,33 @@
         "targetId": "attributes.speed_land",
         "value": 20,
         "type": "base",
-        "sourceName": { "en": "Dwarf", "fr": "Nain" }
+        "sourceName": {
+          "en": "Dwarf",
+          "fr": "Nain"
+        }
       },
       {
         "id": "dwarf_save_vs_poison",
         "sourceId": "race_dwarf",
-        "targetId": "saves.fort",
+        "targetId": "saves.all",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Poison Resistance", "fr": "Résistance naine au poison" },
+        "sourceName": {
+          "en": "Dwarf Poison Resistance",
+          "fr": "Résistance naine au poison"
+        },
         "situationalContext": "vs_poison"
       },
       {
         "id": "dwarf_save_vs_spells",
         "sourceId": "race_dwarf",
-        "targetId": "saves.will",
+        "targetId": "saves.all",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Spell Resistance", "fr": "Résistance naine aux sorts" },
+        "sourceName": {
+          "en": "Dwarf Spell Resistance",
+          "fr": "Résistance naine aux sorts"
+        },
         "situationalContext": "vs_spells_and_spell_like"
       },
       {
@@ -109,7 +151,10 @@
         "targetId": "combatStats.attack_bonus",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Enmity", "fr": "Inimitié naine" },
+        "sourceName": {
+          "en": "Dwarf Enmity",
+          "fr": "Inimitié naine"
+        },
         "situationalContext": "vs_orc_goblinoid"
       },
       {
@@ -118,7 +163,10 @@
         "targetId": "combatStats.ac_normal",
         "value": 4,
         "type": "dodge",
-        "sourceName": { "en": "Dwarf vs Giants", "fr": "Nain vs Géants" },
+        "sourceName": {
+          "en": "Dwarf vs Giants",
+          "fr": "Nain vs Géants"
+        },
         "situationalContext": "vs_giant"
       },
       {
@@ -127,7 +175,10 @@
         "targetId": "skills.skill_appraise",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Stonecunning", "fr": "Sens de la pierre nain" },
+        "sourceName": {
+          "en": "Dwarf Stonecunning",
+          "fr": "Sens de la pierre nain"
+        },
         "situationalContext": "appraise_stone_metal_items"
       },
       {
@@ -136,7 +187,10 @@
         "targetId": "skills.skill_craft",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Stonecunning", "fr": "Sens de la pierre nain" },
+        "sourceName": {
+          "en": "Dwarf Stonecunning",
+          "fr": "Sens de la pierre nain"
+        },
         "situationalContext": "craft_stone_metal_items"
       },
       {
@@ -145,7 +199,10 @@
         "targetId": "skills.skill_search",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Stonecunning", "fr": "Sens de la pierre nain" },
+        "sourceName": {
+          "en": "Dwarf Stonecunning",
+          "fr": "Sens de la pierre nain"
+        },
         "situationalContext": "unusual_stonework"
       },
       {
@@ -154,7 +211,10 @@
         "targetId": "combatStats.stability_check",
         "value": 4,
         "type": "racial",
-        "sourceName": { "en": "Dwarf Stability", "fr": "Stabilité naine" },
+        "sourceName": {
+          "en": "Dwarf Stability",
+          "fr": "Stabilité naine"
+        },
         "situationalContext": "vs_bull_rush_or_trip_on_ground"
       }
     ],
@@ -162,22 +222,30 @@
       "sense_darkvision_60ft",
       "racial_feature_dwarf_weapon_familiarity",
       "language_common",
-      "language_dwarven"
+      "language_dwarven",
+      "racial_feature_dwarf_stonecunning_passive"
     ],
     "favoredClass": "class_fighter",
     "choices": []
   },
-
   {
     "id": "race_elf",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Elf", "fr": "Elfe" },
+    "label": {
+      "en": "Elf",
+      "fr": "Elfe"
+    },
     "description": {
       "en": "Elves are known for their poetry, song, and magical arts, but when danger threatens they show great skill with weapons and strategy. Elves can live to be over 700 years old, and by human standards they are slow to make friends and enemies.",
       "fr": "Les elfes sont connus pour leur poésie, leur chant et leurs arts magiques, mais lorsque le danger menace, ils montrent une grande habileté avec les armes et la stratégie. Les elfes peuvent vivre plus de 700 ans, et selon les standards humains, ils sont lents à se faire des amis et des ennemis."
     },
-    "tags": ["race", "humanoid", "size_medium", "race_elf"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_medium",
+      "race_elf"
+    ],
     "grantedModifiers": [
       {
         "id": "elf_dex_bonus",
@@ -185,7 +253,10 @@
         "targetId": "attributes.stat_dex",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf", "fr": "Elfe" }
+        "sourceName": {
+          "en": "Elf",
+          "fr": "Elfe"
+        }
       },
       {
         "id": "elf_con_penalty",
@@ -193,7 +264,10 @@
         "targetId": "attributes.stat_con",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Elf", "fr": "Elfe" }
+        "sourceName": {
+          "en": "Elf",
+          "fr": "Elfe"
+        }
       },
       {
         "id": "elf_speed",
@@ -201,7 +275,10 @@
         "targetId": "attributes.speed_land",
         "value": 30,
         "type": "base",
-        "sourceName": { "en": "Elf", "fr": "Elfe" }
+        "sourceName": {
+          "en": "Elf",
+          "fr": "Elfe"
+        }
       },
       {
         "id": "elf_enchantment_save_fort",
@@ -209,7 +286,10 @@
         "targetId": "saves.fort",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
+        "sourceName": {
+          "en": "Elf Enchantment Resistance",
+          "fr": "Résistance elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -218,7 +298,10 @@
         "targetId": "saves.ref",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
+        "sourceName": {
+          "en": "Elf Enchantment Resistance",
+          "fr": "Résistance elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -227,7 +310,10 @@
         "targetId": "saves.will",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Enchantment Resistance", "fr": "Résistance elfique aux enchantements" },
+        "sourceName": {
+          "en": "Elf Enchantment Resistance",
+          "fr": "Résistance elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -236,7 +322,10 @@
         "targetId": "skills.skill_listen",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aiguisés elfiques" }
+        "sourceName": {
+          "en": "Elf Keen Senses",
+          "fr": "Sens aiguisés elfiques"
+        }
       },
       {
         "id": "elf_search",
@@ -244,7 +333,10 @@
         "targetId": "skills.skill_search",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aiguisés elfiques" }
+        "sourceName": {
+          "en": "Elf Keen Senses",
+          "fr": "Sens aiguisés elfiques"
+        }
       },
       {
         "id": "elf_spot",
@@ -252,7 +344,10 @@
         "targetId": "skills.skill_spot",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Elf Keen Senses", "fr": "Sens aiguisés elfiques" }
+        "sourceName": {
+          "en": "Elf Keen Senses",
+          "fr": "Sens aiguisés elfiques"
+        }
       }
     ],
     "grantedFeatures": [
@@ -263,22 +358,30 @@
       "proficiency_longbow",
       "proficiency_shortbow",
       "language_common",
-      "language_elven"
+      "language_elven",
+      "racial_feature_elf_secret_door_detection"
     ],
     "favoredClass": "class_wizard",
     "choices": []
   },
-
   {
     "id": "race_gnome",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Gnome", "fr": "Gnome" },
+    "label": {
+      "en": "Gnome",
+      "fr": "Gnome"
+    },
     "description": {
       "en": "Gnomes are welcome everywhere as technicians, alchemists, and inventors. Despite the demand for their skills, most gnomes prefer to remain among their own kind, living in comfortable burrows beneath rolling, wooded hills where animals and magical folk are drawn by their mysterious affinity for illusion magic.",
       "fr": "Les gnomes sont les bienvenus partout en tant que techniciens, alchimistes et inventeurs. Malgré la demande pour leurs compétences, la plupart des gnomes préfèrent rester entre eux, vivant dans des terriers confortables sous des collines boisées ondulantes où les animaux et les gens magiques sont attirés par leur affinité mystérieuse avec la magie des illusions."
     },
-    "tags": ["race", "humanoid", "size_small", "race_gnome"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_small",
+      "race_gnome"
+    ],
     "grantedModifiers": [
       {
         "id": "gnome_con_bonus",
@@ -286,7 +389,10 @@
         "targetId": "attributes.stat_con",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Gnome", "fr": "Gnome" }
+        "sourceName": {
+          "en": "Gnome",
+          "fr": "Gnome"
+        }
       },
       {
         "id": "gnome_str_penalty",
@@ -294,7 +400,10 @@
         "targetId": "attributes.stat_str",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Gnome", "fr": "Gnome" }
+        "sourceName": {
+          "en": "Gnome",
+          "fr": "Gnome"
+        }
       },
       {
         "id": "gnome_size_ac",
@@ -302,7 +411,10 @@
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "gnome_size_ac_touch",
@@ -310,7 +422,10 @@
         "targetId": "combatStats.ac_touch",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "gnome_size_ac_flat",
@@ -318,7 +433,10 @@
         "targetId": "combatStats.ac_flat_footed",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "gnome_size_attack",
@@ -326,7 +444,10 @@
         "targetId": "combatStats.attack_bonus",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "gnome_size_hide",
@@ -334,7 +455,10 @@
         "targetId": "skills.skill_hide",
         "value": 4,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "gnome_speed",
@@ -342,15 +466,21 @@
         "targetId": "attributes.speed_land",
         "value": 20,
         "type": "base",
-        "sourceName": { "en": "Gnome", "fr": "Gnome" }
+        "sourceName": {
+          "en": "Gnome",
+          "fr": "Gnome"
+        }
       },
       {
         "id": "gnome_illusion_save",
         "sourceId": "race_gnome",
-        "targetId": "saves.will",
+        "targetId": "saves.all",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Gnome Illusion Resistance", "fr": "Résistance gnome aux illusions" },
+        "sourceName": {
+          "en": "Gnome Illusion Resistance",
+          "fr": "Résistance gnome aux illusions"
+        },
         "situationalContext": "vs_illusion"
       },
       {
@@ -359,7 +489,10 @@
         "targetId": "attributes.spell_dc_illusion",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Gnome Illusion Mastery", "fr": "Maîtrise gnome des illusions" }
+        "sourceName": {
+          "en": "Gnome Illusion Mastery",
+          "fr": "Maîtrise gnome des illusions"
+        }
       },
       {
         "id": "gnome_attack_kobolds",
@@ -367,7 +500,10 @@
         "targetId": "combatStats.attack_bonus",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Gnome vs Kobolds/Goblinoids", "fr": "Gnome vs Kobolds/Gobelinoïdes" },
+        "sourceName": {
+          "en": "Gnome vs Kobolds/Goblinoids",
+          "fr": "Gnome vs Kobolds/Gobelinoïdes"
+        },
         "situationalContext": "vs_kobold_goblinoid"
       },
       {
@@ -376,7 +512,10 @@
         "targetId": "combatStats.ac_normal",
         "value": 4,
         "type": "dodge",
-        "sourceName": { "en": "Gnome vs Giants", "fr": "Gnome vs Géants" },
+        "sourceName": {
+          "en": "Gnome vs Giants",
+          "fr": "Gnome vs Géants"
+        },
         "situationalContext": "vs_giant"
       },
       {
@@ -385,7 +524,10 @@
         "targetId": "skills.skill_listen",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Gnome Keen Hearing", "fr": "Ouïe aiguisée gnomique" }
+        "sourceName": {
+          "en": "Gnome Keen Hearing",
+          "fr": "Ouïe aiguisée gnomique"
+        }
       },
       {
         "id": "gnome_craft_alchemy",
@@ -393,7 +535,10 @@
         "targetId": "skills.skill_craft_alchemy",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Gnome Alchemy", "fr": "Alchimie gnomique" }
+        "sourceName": {
+          "en": "Gnome Alchemy",
+          "fr": "Alchimie gnomique"
+        }
       }
     ],
     "grantedFeatures": [
@@ -407,17 +552,24 @@
     "favoredClass": "class_bard",
     "choices": []
   },
-
   {
     "id": "race_half_elf",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Half-Elf", "fr": "Demi-elfe" },
+    "label": {
+      "en": "Half-Elf",
+      "fr": "Demi-elfe"
+    },
     "description": {
       "en": "Wherever humans and elves interact, half-elves come into being. Half-elves have the curiosity and ambition of their human ancestry, while the elven part of their heritage gives them finely honed senses, taste for beauty, and love of art and song.",
       "fr": "Partout où les humains et les elfes interagissent, les demi-elfes naissent. Les demi-elfes ont la curiosité et l'ambition de leur ascendance humaine, tandis que la partie elfique de leur héritage leur confère des sens finement aiguisés, un goût pour la beauté et un amour de l'art et de la chanson."
     },
-    "tags": ["race", "humanoid", "size_medium", "race_half_elf"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_medium",
+      "race_half_elf"
+    ],
     "grantedModifiers": [
       {
         "id": "half_elf_speed",
@@ -425,7 +577,10 @@
         "targetId": "attributes.speed_land",
         "value": 30,
         "type": "base",
-        "sourceName": { "en": "Half-Elf", "fr": "Demi-elfe" }
+        "sourceName": {
+          "en": "Half-Elf",
+          "fr": "Demi-elfe"
+        }
       },
       {
         "id": "half_elf_enchantment_save_fort",
@@ -433,7 +588,10 @@
         "targetId": "saves.fort",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf Enchantment Resistance", "fr": "Résistance demi-elfique aux enchantements" },
+        "sourceName": {
+          "en": "Half-Elf Enchantment Resistance",
+          "fr": "Résistance demi-elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -442,7 +600,10 @@
         "targetId": "saves.ref",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf Enchantment Resistance", "fr": "Résistance demi-elfique aux enchantements" },
+        "sourceName": {
+          "en": "Half-Elf Enchantment Resistance",
+          "fr": "Résistance demi-elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -451,7 +612,10 @@
         "targetId": "saves.will",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf Enchantment Resistance", "fr": "Résistance demi-elfique aux enchantements" },
+        "sourceName": {
+          "en": "Half-Elf Enchantment Resistance",
+          "fr": "Résistance demi-elfique aux enchantements"
+        },
         "situationalContext": "vs_enchantment"
       },
       {
@@ -460,7 +624,10 @@
         "targetId": "skills.skill_listen",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf", "fr": "Demi-elfe" }
+        "sourceName": {
+          "en": "Half-Elf",
+          "fr": "Demi-elfe"
+        }
       },
       {
         "id": "half_elf_search",
@@ -468,7 +635,10 @@
         "targetId": "skills.skill_search",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf", "fr": "Demi-elfe" }
+        "sourceName": {
+          "en": "Half-Elf",
+          "fr": "Demi-elfe"
+        }
       },
       {
         "id": "half_elf_spot",
@@ -476,7 +646,10 @@
         "targetId": "skills.skill_spot",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf", "fr": "Demi-elfe" }
+        "sourceName": {
+          "en": "Half-Elf",
+          "fr": "Demi-elfe"
+        }
       },
       {
         "id": "half_elf_diplomacy",
@@ -484,7 +657,10 @@
         "targetId": "skills.skill_diplomacy",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf Social Grace", "fr": "Grâce sociale demi-elfique" }
+        "sourceName": {
+          "en": "Half-Elf Social Grace",
+          "fr": "Grâce sociale demi-elfique"
+        }
       },
       {
         "id": "half_elf_gather_information",
@@ -492,7 +668,10 @@
         "targetId": "skills.skill_gather_information",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Elf Social Grace", "fr": "Grâce sociale demi-elfique" }
+        "sourceName": {
+          "en": "Half-Elf Social Grace",
+          "fr": "Grâce sociale demi-elfique"
+        }
       }
     ],
     "grantedFeatures": [
@@ -505,17 +684,24 @@
     "favoredClass": "any",
     "choices": []
   },
-
   {
     "id": "race_half_orc",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Half-Orc", "fr": "Demi-orc" },
+    "label": {
+      "en": "Half-Orc",
+      "fr": "Demi-orc"
+    },
     "description": {
       "en": "In the wild frontiers, tribes of human and orc barbarians live in uneasy balance, fighting in times of war and trading in times of peace. Half-orcs who are born in the frontier may live with either human or orc parents, but they are nevertheless exposed to both cultures.",
       "fr": "Dans les frontières sauvages, des tribus de barbares humains et orcs vivent dans un équilibre précaire, se battant en temps de guerre et commerçant en temps de paix. Les demi-orcs nés à la frontière peuvent vivre avec des parents humains ou orcs, mais ils sont néanmoins exposés aux deux cultures."
     },
-    "tags": ["race", "humanoid", "size_medium", "race_half_orc"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_medium",
+      "race_half_orc"
+    ],
     "grantedModifiers": [
       {
         "id": "half_orc_str_bonus",
@@ -523,7 +709,10 @@
         "targetId": "attributes.stat_str",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Half-Orc", "fr": "Demi-orc" }
+        "sourceName": {
+          "en": "Half-Orc",
+          "fr": "Demi-orc"
+        }
       },
       {
         "id": "half_orc_int_penalty",
@@ -531,7 +720,10 @@
         "targetId": "attributes.stat_int",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Half-Orc", "fr": "Demi-orc" }
+        "sourceName": {
+          "en": "Half-Orc",
+          "fr": "Demi-orc"
+        }
       },
       {
         "id": "half_orc_cha_penalty",
@@ -539,7 +731,10 @@
         "targetId": "attributes.stat_cha",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Half-Orc", "fr": "Demi-orc" }
+        "sourceName": {
+          "en": "Half-Orc",
+          "fr": "Demi-orc"
+        }
       },
       {
         "id": "half_orc_speed",
@@ -547,7 +742,10 @@
         "targetId": "attributes.speed_land",
         "value": 30,
         "type": "base",
-        "sourceName": { "en": "Half-Orc", "fr": "Demi-orc" }
+        "sourceName": {
+          "en": "Half-Orc",
+          "fr": "Demi-orc"
+        }
       }
     ],
     "grantedFeatures": [
@@ -559,17 +757,24 @@
     "favoredClass": "class_barbarian",
     "choices": []
   },
-
   {
     "id": "race_halfling",
     "category": "race",
     "ruleSource": "srd_core",
-    "label": { "en": "Halfling", "fr": "Halfelin" },
+    "label": {
+      "en": "Halfling",
+      "fr": "Halfelin"
+    },
     "description": {
       "en": "Halflings are clever, capable, and resourceful survivors. They are notoriously curious and show a daring that many larger people can't match. Halflings are practical jokers, and they like nothing better than scaring the wits out of people by hiding in inconvenient places.",
       "fr": "Les halfelins sont des survivants intelligents, capables et ingénieux. Ils sont notoirement curieux et font preuve d'une audace que de nombreuses créatures plus grandes ne peuvent égaler. Les halfelins sont des plaisantins pratiques, et ils adorent par-dessus tout effrayer les gens en se cachant dans des endroits inconfortables."
     },
-    "tags": ["race", "humanoid", "size_small", "race_halfling"],
+    "tags": [
+      "race",
+      "humanoid",
+      "size_small",
+      "race_halfling"
+    ],
     "grantedModifiers": [
       {
         "id": "halfling_dex_bonus",
@@ -577,7 +782,10 @@
         "targetId": "attributes.stat_dex",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Halfling", "fr": "Halfelin" }
+        "sourceName": {
+          "en": "Halfling",
+          "fr": "Halfelin"
+        }
       },
       {
         "id": "halfling_str_penalty",
@@ -585,7 +793,10 @@
         "targetId": "attributes.stat_str",
         "value": -2,
         "type": "racial",
-        "sourceName": { "en": "Halfling", "fr": "Halfelin" }
+        "sourceName": {
+          "en": "Halfling",
+          "fr": "Halfelin"
+        }
       },
       {
         "id": "halfling_size_ac",
@@ -593,7 +804,10 @@
         "targetId": "combatStats.ac_normal",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "halfling_size_ac_touch",
@@ -601,7 +815,10 @@
         "targetId": "combatStats.ac_touch",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "halfling_size_ac_flat",
@@ -609,7 +826,10 @@
         "targetId": "combatStats.ac_flat_footed",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "halfling_size_attack",
@@ -617,7 +837,10 @@
         "targetId": "combatStats.attack_bonus",
         "value": 1,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "halfling_size_hide",
@@ -625,7 +848,10 @@
         "targetId": "skills.skill_hide",
         "value": 4,
         "type": "size",
-        "sourceName": { "en": "Small Size", "fr": "Petite taille" }
+        "sourceName": {
+          "en": "Small Size",
+          "fr": "Petite taille"
+        }
       },
       {
         "id": "halfling_speed",
@@ -633,7 +859,10 @@
         "targetId": "attributes.speed_land",
         "value": 20,
         "type": "base",
-        "sourceName": { "en": "Halfling", "fr": "Halfelin" }
+        "sourceName": {
+          "en": "Halfling",
+          "fr": "Halfelin"
+        }
       },
       {
         "id": "halfling_climb",
@@ -641,7 +870,10 @@
         "targetId": "skills.skill_climb",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Halfling Agility", "fr": "Agilité halfeline" }
+        "sourceName": {
+          "en": "Halfling Agility",
+          "fr": "Agilité halfeline"
+        }
       },
       {
         "id": "halfling_jump",
@@ -649,7 +881,10 @@
         "targetId": "skills.skill_jump",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Halfling Agility", "fr": "Agilité halfeline" }
+        "sourceName": {
+          "en": "Halfling Agility",
+          "fr": "Agilité halfeline"
+        }
       },
       {
         "id": "halfling_listen",
@@ -657,7 +892,10 @@
         "targetId": "skills.skill_listen",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Halfling Keen Senses", "fr": "Sens aiguisés halfelins" }
+        "sourceName": {
+          "en": "Halfling Keen Senses",
+          "fr": "Sens aiguisés halfelins"
+        }
       },
       {
         "id": "halfling_move_silently",
@@ -665,7 +903,10 @@
         "targetId": "skills.skill_move_silently",
         "value": 2,
         "type": "racial",
-        "sourceName": { "en": "Halfling Agility", "fr": "Agilité halfeline" }
+        "sourceName": {
+          "en": "Halfling Agility",
+          "fr": "Agilité halfeline"
+        }
       },
       {
         "id": "halfling_save_all",
@@ -673,7 +914,10 @@
         "targetId": "saves.fort",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Halfling Lucky", "fr": "Chance halfeline" }
+        "sourceName": {
+          "en": "Halfling Lucky",
+          "fr": "Chance halfeline"
+        }
       },
       {
         "id": "halfling_save_all_ref",
@@ -681,7 +925,10 @@
         "targetId": "saves.ref",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Halfling Lucky", "fr": "Chance halfeline" }
+        "sourceName": {
+          "en": "Halfling Lucky",
+          "fr": "Chance halfeline"
+        }
       },
       {
         "id": "halfling_save_all_will",
@@ -689,7 +936,10 @@
         "targetId": "saves.will",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Halfling Lucky", "fr": "Chance halfeline" }
+        "sourceName": {
+          "en": "Halfling Lucky",
+          "fr": "Chance halfeline"
+        }
       },
       {
         "id": "halfling_save_vs_fear",
@@ -697,7 +947,10 @@
         "targetId": "saves.will",
         "value": 2,
         "type": "morale",
-        "sourceName": { "en": "Halfling Fearless", "fr": "Absence de peur halfeline" },
+        "sourceName": {
+          "en": "Halfling Fearless",
+          "fr": "Absence de peur halfeline"
+        },
         "situationalContext": "vs_fear"
       },
       {
@@ -706,7 +959,10 @@
         "targetId": "combatStats.attack_bonus",
         "value": 1,
         "type": "racial",
-        "sourceName": { "en": "Halfling Thrown Weapons", "fr": "Armes de jet halfelines" },
+        "sourceName": {
+          "en": "Halfling Thrown Weapons",
+          "fr": "Armes de jet halfelines"
+        },
         "situationalContext": "thrown_weapons_and_slings"
       }
     ],
