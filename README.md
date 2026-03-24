@@ -85,6 +85,8 @@ character-vault/
 │   └── extensions.json         # Recommended extensions
 ├── ARCHITECTURE.md             # Complete engine specification (types, DAG phases, data model)
 ├── ANNEXES.md                  # JSON rule file examples and config table reference
+├── CONTENT_AUTHORING_GUIDE.md  # Human tutorial: how to write JSON rule content
+├── AI_MIGRATION_GUIDE.md       # AI protocol: how to migrate data from PCGen/Hero Lab/SRD HTML
 ├── run.sh                      # Serve the built artifact with PHP's built-in server
 ├── run-docker.sh               # Serve the built artifact with Docker (Apache + PHP)
 ├── docker-compose.yml
@@ -520,12 +522,51 @@ The `d20srd/` folder in this repository is a **mirror of content from [d20srd.or
 
 ---
 
+## Authoring Content & Migrating Data
+
+Character Vault is built around an open content model — every rule is a JSON file in `static/rules/`. Two dedicated documents explain how to create and migrate content:
+
+### For humans — writing new content
+
+**[`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md)** is a 24-section progressive tutorial covering everything you need to author valid JSON rule files:
+
+- Start at **Section 1–5** to understand the core concepts (Features, Tags, Modifiers).
+- Jump to the relevant section for the content type you are creating (Races, Classes, Feats, Spells, Items, Conditions…).
+- Use **Section 24** as a quick-reference cheat sheet (all modifier types, all target IDs, all formula paths).
+
+A good entry point is the [Feature base template](CONTENT_AUTHORING_GUIDE.md#3-the-feature-object--base-template) — once you understand the shape of a Feature, everything else is a variation on that pattern.
+
+```
+Races       → Section 11    Classes     → Section 12
+Feats       → Section 14    Spells      → Section 15
+Weapons     → Section 16    Magic Items → Section 17
+Consumables → Section 18    Conditions  → Section 19
+```
+
+### For AI agents — bulk data migration
+
+**[`AI_MIGRATION_GUIDE.md`](AI_MIGRATION_GUIDE.md)** is a 20-section operational protocol for AI agents converting large data sets from external sources (PCGen `.lst` files, Hero Lab XML, d20 SRD HTML, PDFs):
+
+- **Section 1** defines the 6-step migration protocol that must be followed for every task.
+- **Section 2** is the validation checklist — run it on every converted entity before writing output.
+- **Section 3** is a decision tree for identifying the correct `category` value.
+- **Sections 4–12** provide per-entity field-mapping tables (race → JSON, class → JSON, spell → JSON, etc.).
+- **Section 16** covers the PCGen LST format token-by-token mapping.
+- **Section 17** covers d20 SRD HTML extraction heuristics with URL patterns.
+- **Section 20** defines hard blockers — situations where the AI must stop and report rather than guess.
+
+Both documents are also read by AI coding assistants at the start of each content-generation session. Feed them alongside [`ARCHITECTURE.md`](ARCHITECTURE.md) for full context.
+
+---
+
 ## Further reading
 
 | Document | Contents |
 |----------|----------|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Full engine specification: ECS philosophy, all 19 sections covering primitives, logic engine, mathematical pipelines, feature model, character entity, campaign data model, DAG phases, dice engine, i18n, data override system |
 | [`ANNEXES.md`](ANNEXES.md) | Complete JSON rule file examples (races, classes, feats, spells, items, psionics, environments) and configuration table reference |
+| [`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md) | Progressive tutorial for humans writing new JSON rule content — all field types, modifier stacking rules, examples for every entity category |
+| [`AI_MIGRATION_GUIDE.md`](AI_MIGRATION_GUIDE.md) | Operational migration protocol for AI agents converting from PCGen, Hero Lab, SRD HTML, PDF, or any structured source into engine-compatible JSON |
 | [`D20SRD_CONVERSION.md`](D20SRD_CONVERSION.md) | Prompt used to convert `d20srd/` HTML files into valid JSON rule files for this application |
 
 ---
