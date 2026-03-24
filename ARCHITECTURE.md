@@ -867,7 +867,7 @@ import type { Modifier } from './pipeline';
 
 export type FeatureCategory = "race" | "class" | "class_feature" | "feat" | "deity" | "domain" | "magic" | "item" | "condition" | "monster_type" | "environment";
 
-// "replace" (default if absent): full overwrite. "partial": additive merge per section 17.
+// "replace" (default if absent): full overwrite. "partial": additive merge per section 18.
 export type MergeStrategy = "replace" | "partial";
 
 export interface FeatureChoice {
@@ -877,7 +877,7 @@ export interface FeatureChoice {
     optionsQuery: string;
     maxSelections: number;
     // When set, emits <prefix><selectedId> into @activeTags for each selection.
-    // Enables precise parameterised feat prerequisites (see section 5.3.1).
+    // Enables precise parameterised feat prerequisites (see section 5.3).
     choiceGrantedTagPrefix?: string;
 }
 
@@ -925,7 +925,7 @@ export interface Feature {
     resourcePoolTemplates?: ResourcePoolTemplate[];
 }
 
-// Psionic item type discriminant (section 5.1.1)
+// Psionic item type discriminant (section 15.3)
 export type PsionicItemType =
     "cognizance_crystal" | "dorje" | "power_stone" | "psicrown" | "psionic_tattoo";
 
@@ -945,7 +945,7 @@ export interface ItemFeature extends Feature {
     hardness?: number;
     hpMax?: number;
 
-    // Consumable items: potion, oil, scroll. See section 5.1.2 for lifecycle.
+    // Consumable items: potion, oil, scroll. See section 6.5 for lifecycle.
     consumable?: {
         isConsumable: true;
         durationHint?: string; // COSMETIC ONLY — engine does NOT auto-expire
@@ -977,7 +977,7 @@ export interface ItemFeature extends Feature {
         arcaneSpellFailure: number;  // Display-only shadow — engine uses combatStats.arcane_spell_failure
     };
 
-    // Psionic item data (section 5.1.1)
+    // Psionic item data (section 15.3)
     psionicItemData?: {
         psionicItemType: PsionicItemType;
         storedPP?: number;       // cognizance_crystal + psicrown
@@ -1556,7 +1556,7 @@ The source item is gone. The ephemeral modifier (+4 STR enhancement) flows into 
 
 **Why not auto-expire?** The engine is a **stateless character-sheet engine**. It does not track wall-clock time or combat rounds in persistent state. Keeping expiry manual avoids bugs caused by clock desynchronisation (e.g., paused combat, out-of-combat use). A future combat tracker could call `expireEffect()` on a schedule — the engine contract is already compatible.
 
-### 6.4. LinkedEntity
+### 6.6. LinkedEntity
 
 ```typescript
 export interface LinkedEntity {
@@ -1806,10 +1806,10 @@ flowchart TD
    **Phase 3.7 — Gestalt Mode:** When `settings.variantRules.gestalt === true`, Phase 3 replaces the standard "sum all base modifiers" path for BAB and saves with `computeGestaltBase()` (max per level across classes, then sum). See section 8.1 and `src/lib/utils/gestaltRules.ts`.
 
 5. **Phase 4 (Skills & Abilities):**
-   A `$derived` computes skills (which depend on Phase 2 Attributes and Phase 3 Armor Check Penalty). Determines which skills are "class skills" by combining the tags of all active classes. Also derives the full skill point budget and the leveling journal. See **section 9.5** for the complete specification.
+   A `$derived` computes skills (which depend on Phase 2 Attributes and Phase 3 Armor Check Penalty). Determines which skills are "class skills" by combining the tags of all active classes. Also derives the full skill point budget and the leveling journal. See **section 9.8** for the complete specification.
 
    **Phase 4.5 — Skill Point Budget (`phase4_skillPointsBudget`):**
-   A dedicated `$derived` computes the per-class skill point budget using the SRD RAW formula (section 9.5.1). Exported as `SkillPointsBudget`.
+   A dedicated `$derived` computes the per-class skill point budget using the SRD RAW formula (section 9.8.1). Exported as `SkillPointsBudget`.
 
    **Phase 4.6 — Leveling Journal (`phase4_levelingJournal`):**
    A dedicated `$derived` produces per-class breakdowns of BAB, saves, SP, class skills, and granted features. Exported as `LevelingJournal`. Consumed by `LevelingJournalModal.svelte`.
@@ -2635,7 +2635,7 @@ These are Features loaded via `enabledRuleSources`, not engine code branches. Th
 
 ### 16.1. Data Overrides
 
-If a custom JSON loads an item with `"id": "item_chainmail"`, it silently overwrites the base SRD version. Loading order is determined by alphabetical file order (last wins). See section 17.1 for the full override chain.
+If a custom JSON loads an item with `"id": "item_chainmail"`, it silently overwrites the base SRD version. Loading order is determined by alphabetical file order (last wins). See section 18.1 for the full override chain.
 
 ### 16.2. Custom Pipelines
 
@@ -2784,9 +2784,9 @@ export function parseAndRoll(
 
 ---
 
-## 17. The Rule Source Management System (Data Override Engine)
+## 18. The Rule Source Management System (Data Override Engine)
 
-### 17.1. File Discovery and Loading Order
+### 18.1. File Discovery and Loading Order
 
 All JSON rule files in `static/rules/` (recursively) are loaded in **alphabetical order** by full relative path. Files loaded later override files loaded earlier. Numeric prefixes give content creators deterministic control:
 
@@ -2823,13 +2823,13 @@ Each JSON rule file is an **array of mixed-type entities**. A single file can co
 
 **Loading and priority for config tables:** Configuration tables follow the same alphabetical file loading order as Features. If multiple files provide a table with the same `tableId`, only the last one loaded is kept. This allows a campaign-specific file (e.g., `90_campaign_reign_of_winter/00_reign_custom_rules.json`) to override the default XP table from `00_srd_core/09_srd_core_config.json`.
 
-**GM Global Overrides for config tables:** The GM's global override text area (section 17.4) can also contain configuration table objects alongside Feature objects. The DataLoader distinguishes them by checking for the presence of `tableId` (config table) vs `id` + `category` (Feature). Config tables in the GM override layer replace any previously loaded table with the same `tableId`.
+**GM Global Overrides for config tables:** The GM's global override text area (section 18.4) can also contain configuration table objects alongside Feature objects. The DataLoader distinguishes them by checking for the presence of `tableId` (config table) vs `id` + `category` (Feature). Config tables in the GM override layer replace any previously loaded table with the same `tableId`.
 
 **Per-character overrides:** Configuration tables are **campaign-wide** and cannot be overridden per-character. The `Character.gmOverrides` field only accepts `ActiveFeatureInstance` entries, not config tables.
 
 > **AI Implementation Note:** The PHP backend serves a `GET /api/rules/list` endpoint that returns the sorted list of available rule source files and their metadata (extracted from the first entity's `ruleSource` field, or from a top-level `_meta` object if present). The SvelteKit frontend in dev mode reads directly from `static/rules/` via filesystem. In production, the PHP backend reads the directory and returns the file contents.
 
-### 17.2. The `merge` Field
+### 18.2. The `merge` Field
 
 | `merge` value | Behavior |
 |---|---|
@@ -2856,7 +2856,7 @@ Each JSON rule file is an **array of mixed-type entities**. A single file can co
 }
 ```
 
-### 17.2b. Deletion Convention (`-prefix`)
+### 18.2b. Deletion Convention (`-prefix`)
 
 To remove an element from an array during partial merge, prefix the element with a dash `-`.
 
@@ -2886,7 +2886,7 @@ To remove an element from an array during partial merge, prefix the element with
 - After applying the Winter Circle partial: `wild_shape` removed, `ice_form` added.
 - All other base Druid fields (`levelProgression`, `classSkills`, `choices`, etc.) are preserved.
 
-### 17.3. Complete Resolution Chain
+### 18.3. Complete Resolution Chain
 
 ```
 ┌──────────────────────────────────────────────────────┐
@@ -2942,7 +2942,7 @@ flowchart LR
 
 Config tables (`tableId` entities) always use replace semantics; partial merge is not supported for config tables. Config tables ARE overridable in Layer 2 (GM global override allows replacing any config table).
 
-### 17.4. GM Text Area Format (Layers 2 and 3)
+### 18.4. GM Text Area Format (Layers 2 and 3)
 
 The GM's JSON text area accepts a **JSON array** containing a mix of:
 - **Feature-like objects** (identified by `id` + `category`): processed by the merge engine with the same rules as regular files.
@@ -2979,13 +2979,13 @@ The GM's JSON text area accepts a **JSON array** containing a mix of:
 ]
 ```
 
-### 17.5. Client-Side JSON Validation
+### 18.5. Client-Side JSON Validation
 
 1. **Syntactic validation:** Must be valid JSON. On error, highlight the offending line in red.
 2. **Structural validation:** Each entry must have either (`id` + `category`) for Features, or `tableId` for config tables.
 3. **Preview:** Display a summary of changes ("2 Features added, 1 Feature modified (partial), 1 config table overridden").
 
-### 17.6. `FeatureChoice.optionsQuery` — DataLoader Support
+### 18.6. `FeatureChoice.optionsQuery` — DataLoader Support
 
 The DataLoader supports these query formats for `FeatureChoice.optionsQuery`:
 
@@ -2999,15 +2999,15 @@ The DataLoader supports these query formats for `FeatureChoice.optionsQuery`:
 
 ---
 
-## 18. Client-Server Synchronization (Polling)
+## 19. Client-Server Synchronization (Polling)
 
-### 18.1. Timestamp Mechanism
+### 19.1. Timestamp Mechanism
 
 Each modifiable entity has an `updated_at` (Unix timestamp) in the database:
 - `campaigns.updated_at`: Updated when campaign settings, chapters, rule sources, or GM global overrides change.
 - `characters.updated_at`: Updated when the character is modified (by the player OR by the GM via overrides).
 
-### 18.2. Sync Endpoint
+### 19.2. Sync Endpoint
 
 ```
 GET /api/campaigns/{id}/sync-status
@@ -3026,20 +3026,20 @@ Returns a minimal payload:
 
 The client stores its last known timestamps locally. On each poll, it compares and re-fetches only changed data.
 
-### 18.3. Polling Intervals
+### 19.3. Polling Intervals
 
 - **Recommended interval:** 5 to 10 seconds.
 - **Estimated load:** For 10 simultaneous tables of 10 players (100 players + 10 GMs): 11–22 requests/second. Lightweight for shared PHP hosting.
 - **Polling payload size:** ~100–500 bytes per `sync-status` request.
 - **Full re-fetch size:** ~50 KB (campaign) + ~200 KB (average character). Images are cached via HTTP headers and are not re-downloaded.
 
-### 18.4. Client-Side Cache
+### 19.4. Client-Side Cache
 
 The client uses `localStorage` or `IndexedDB` to store data between sessions. On reconnect, it only fetches data that has changed. Images are cached by the browser via standard HTTP headers (`Cache-Control`, `ETag`).
 
 ---
 
-## 19. Application Navigation Plan (Routes)
+## 20. Application Navigation Plan (Routes)
 
 ```
 /                                        → Redirect to /campaigns

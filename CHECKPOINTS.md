@@ -779,7 +779,7 @@ Your job is to verify Phase 20 is **SRD-accurate** and correctly integrated. Do 
 ---
 
 Output format: A numbered markdown checklist. For each issue:
-- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what §9.6/SRD requires.
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what §9.8/SRD requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
 ```
@@ -814,13 +814,13 @@ Walk through every section of `ARCHITECTURE.md` (§1–20) and verify the implem
 3. **§3 (Logic Engine):** All 4 `LogicNode` types and all 8 `LogicOperator` values handled?
 4. **§4 (Pipelines):** `Modifier`, `StatisticPipeline`, `SkillPipeline`, `ResourcePool` match? `derivedModifier` correct? `setAbsolute` behavior (§4.2)? All Math Parser paths (§4.3)? All 8 `resetCondition` values (§4.4)? `drBypassTags` (§4.5)? `attacker.*` prefix (§4.6)? Fortification (§4.7)? ASF (§4.8)? On-crit burst (§4.9)? Inherent bonuses (§4.10)? Metamagic rods (§4.11)? Staves (§4.12)? Wands (§4.13)? Scrolls (§4.14)? Cursed items (§4.15)? Intelligent items (§4.16)? Max DEX bonus (§4.17)?
 5. **§5 (Features):** Complete `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice` match? `classSkills` (§5.5)? `optionsQuery` parsing (§5.3)? `actionBudget` (§5.6)? Instance-scoped pools (§5.7)? Trigger-based activation (§5.5b)?
-6. **§5.1.1 (Psionic items):** All 5 item types with correct field matrices?
-7. **§5.2.1 (Psionic power fields):** `discipline` and `displays` present? `AugmentationRule.effectDescription` present?
+6. **§15.3 (Psionic items):** All 5 item types with correct field matrices?
+7. **§15.1 (Psionic power fields):** `discipline` and `displays` present? `AugmentationRule.effectDescription` present?
 8. **§6 (Character):** `Character` interface complete? `ActiveFeatureInstance` with `itemResourcePools` and `ephemeral`? `LinkedEntity` serialization guard?
 9. **§7 (Campaign):** `Campaign` with `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
 10. **§8 (Settings & Variants):** `variantRules.gestalt` and `variantRules.vitalityWoundPoints`? Gestalt (§8.1) and V/WP (§8.2) implementations correct?
 11. **§9 (DAG):** All phases (0–4b) implemented in order? Gestalt Phase 3.7? Max DEX bonus intercept? Infinite loop detection? HP uses `characterLevel` not ECL?
-12. **§10 (Examples A–H):** Can the engine resolve all examples? Especially Example F (Monk WIS AC formula-as-value) and Example H (Indomitable Will dual-gated modifier).
+12. **§10 (Examples A–G):** Can the engine resolve all examples? Especially Example F (Monk WIS AC formula-as-value) and Example E (Indomitable Will dual-gated modifier).
 13. **§11–17 (i18n, Monsters, Environment, Epic, Psionics, Variants, Dice):** Structurally supported?
 14. **§18 (Data Override Engine):** Complete resolution chain? Partial merge and `-prefix` deletion? Config table replacement? GM override layers?
 15. **§19–20 (Polling, Routes):** Routes match §20? Polling (§19) implemented in `StorageManager`?
