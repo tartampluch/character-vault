@@ -372,7 +372,7 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 - [x] **21.2.2 FeaturePickerModal:** Create `src/lib/components/content-editor/FeaturePickerModal.svelte`. Searchable list of all Feature IDs from `DataLoader` (SRD + homebrew). Filter by category (multi-select checkboxes) and free-text search on `id` / `label`. Each row shows ID, category badge, label. Clicking a row previews the feature description in a side pane. Supports single-select and multi-select modes via a `multiple` prop. Emits `feature-picked` with `ID[]`.
 
-- [ ] **21.2.3 TagPickerModal:** Create `src/lib/components/content-editor/TagPickerModal.svelte`. Shows all tags in use across loaded features, grouped by prefix (e.g., `feat_*`, `item_*`, `weapon_*`), each with a usage count badge. GM can add a new custom tag. Emits `tags-picked` with `string[]`.
+- [x] **21.2.3 TagPickerModal:** Create `src/lib/components/content-editor/TagPickerModal.svelte`. Shows all tags in use across loaded features, grouped by prefix (e.g., `feat_*`, `item_*`, `weapon_*`), each with a usage count badge. GM can add a new custom tag. Emits `tags-picked` with `string[]`.
 
 - [ ] **21.2.4 EntitySearchModal:** Create `src/lib/components/content-editor/EntitySearchModal.svelte`. Full-text search across all loaded entities (SRD + homebrew). Debounced 200 ms. Results show ID, category badge, `ruleSource`, and one-line description excerpt. Clicking a result opens a preview card. "Clone this entity" emits `entity-clone-selected` with the complete `Feature` object. Keyboard navigation (↑↓ + Enter) required.
 
