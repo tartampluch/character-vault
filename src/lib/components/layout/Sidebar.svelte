@@ -68,6 +68,7 @@
     IconVault,
     IconCharacter,
     IconGMDashboard,
+    IconEdit,
     IconSettings,
     IconCollapse,
     IconExpand,
@@ -441,7 +442,19 @@
         {/if}
       </a>
 
-      <!-- 5. CAMPAIGN SETTINGS -->
+      <!-- 5. CONTENT EDITOR — Phase 21 (homebrew authoring) -->
+      <a
+        href="/campaigns/{campaignId}/content-editor"
+        class={navLinkClass('/campaigns/' + campaignId + '/content-editor')}
+        title="Content Editor"
+      >
+        <IconEdit size={20} class="shrink-0" aria-hidden="true" />
+        {#if !collapsed}
+          <span class="truncate">Content Editor</span>
+        {/if}
+      </a>
+
+      <!-- 6. CAMPAIGN SETTINGS -->
       <a
         href="/campaigns/{campaignId}/settings"
         class={navLinkClass('/campaigns/' + campaignId + '/settings')}

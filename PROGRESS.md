@@ -418,7 +418,7 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 - [x] **21.5.2 NewEntityPage:** Create `src/routes/campaigns/[id]/content-editor/new/+page.svelte` and `+page.ts`. Step 1: `EntityTypeSelector.svelte` — card grid of all 11 `FeatureCategory` values with Lucide icons and one-line D&D descriptions. Step 2: "Start from Scratch" vs "Clone an existing entity" toggle. Cloning opens `EntitySearchModal` and pre-populates `EntityForm`. Step 3: Full `EntityForm` for the chosen category.
 
-- [ ] **21.5.3 EditEntityPage:** Create `src/routes/campaigns/[id]/content-editor/[entityId]/+page.svelte`. Loads entity from `HomebrewStore`. Renders `EntityForm` in `mode: 'edit'`. Save → `HomebrewStore.update()`. Delete → confirmation dialog → `HomebrewStore.remove()` → redirect to library.
+- [x] **21.5.3 EditEntityPage:** Create `src/routes/campaigns/[id]/content-editor/[entityId]/+page.svelte`. Loads entity from `HomebrewStore`. Renders `EntityForm` in `mode: 'edit'`. Save → `HomebrewStore.update()`. Delete → confirmation dialog → `HomebrewStore.remove()` → redirect to library.
 
 - [x] **21.5.4 EntityForm (orchestrator):** Create `src/lib/components/content-editor/EntityForm.svelte` and `src/lib/components/content-editor/editorContext.ts`. The context module exports `EDITOR_CONTEXT_KEY` and the `EditorContext` interface (see `ARCHITECTURE.md §21.3`). `EntityForm` creates the context object with `$state` for the `Feature` draft and calls `setContext(EDITOR_CONTEXT_KEY, ctx)` — all child sub-forms read and mutate state via `getContext(EDITOR_CONTEXT_KEY)` with no prop-drilling. Props: `category: FeatureCategory`, `initialData?: Partial<Feature>`, `mode: 'create' | 'edit'`. Renders in order: `CoreFieldsSection` (sticky "Override Warning" banner when `ctx.hasOverrideWarning`), `ConditionNodeBuilder` (prerequisitesNode; collapsed when undefined), `ModifierListEditor`, `GrantedFeaturesEditor`, `ChoicesEditor`, then conditional sections — `LevelProgressionEditor` (class only), `ActivationEditor`, `ResourcePoolEditor`, `ActionBudgetEditor`, `ItemDataEditor` (item only), `MagicDataEditor` (magic only), `RaceClassExtrasEditor` (race/class only) — and finally `RawJsonPanel`. Save button validates required fields (id non-empty, category set) and calls `ctx.store.add/update()`. Shows `ctx.store.isSaving` spinner on the button.
 
@@ -426,7 +426,7 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 #### 21.6 — Sidebar Navigation Link
 
-- [ ] **21.6.1 Sidebar Link:** Add "Content Editor" item to `Sidebar.svelte`. Visible only when `sessionContext.isGameMaster === true` and a campaign is active. Lucide `Pencil` icon (20 px). Route: `/campaigns/[activeCampaignId]/content-editor`. Positioned after "GM Dashboard" in the GM tools group.
+- [x] **21.6.1 Sidebar Link:** Add "Content Editor" item to `Sidebar.svelte`. Visible only when `sessionContext.isGameMaster === true` and a campaign is active. Lucide `Pencil` icon (20 px). Route: `/campaigns/[activeCampaignId]/content-editor`. Positioned after "GM Dashboard" in the GM tools group.
 
 #### 21.7 — Tests
 
