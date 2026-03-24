@@ -46,8 +46,10 @@ composer.lock
 .phpunit.cache/
 
 # Build artefacts
-/dist-pkg/           # compressed tarballs
-/dist/               # extracted deployment artifacts (used by run.sh)
+# compressed tarballs
+/dist-pkg/
+# extracted deployment artifacts (used by run.sh)
+/dist/
 # BuildKit local cache directories (may be created in the project root by some
 # CI environments or manual docker buildx invocations).
 # Note: the system /tmp/.buildx-cache* paths are outside the repository and
