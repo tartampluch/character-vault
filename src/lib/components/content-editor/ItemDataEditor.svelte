@@ -15,9 +15,10 @@
                             armorCheckPenalty, arcaneSpellFailure
     §4  CONSUMABLE         — collapse-toggle; isConsumable, durationHint
 
-    §5  CHARGED ITEMS      — TODO 21.4.4 placeholder (compiles clean)
-    §6  CURSED             — TODO 21.4.4 placeholder
-    §7  INTELLIGENT ITEM   — TODO 21.4.4 placeholder
+    §5  CHARGED ITEMS      — Wand, Staff, Scroll, Metamagic Rod (21.4.4)
+    §6  CURSED             — removalPrevention, removableBy chips, note (21.4.4)
+    §7  INTELLIGENT ITEM   — INT/WIS/CHA, egoScore, alignment, comms,
+                             senses, languages, powers, purpose (21.4.4)
 
   ────────────────────────────────────────────────────────────────────────────
   CONTEXT USAGE
@@ -38,6 +39,7 @@
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import type { ItemFeature } from '$lib/types/feature';
   import TagPickerModal from './TagPickerModal.svelte';
+  import FeaturePickerModal from './FeaturePickerModal.svelte';
 
   // ===========================================================================
   // CONTEXT
@@ -134,6 +136,135 @@
   // Unique uid for label->input ids
   const uid = Math.random().toString(36).slice(2, 7);
   const fid = (name: string) => `ide-${uid}-${name}`;
+
+  // ===========================================================================
+  // 21.4.4 — CHARGED ITEMS toggle helpers / state
+  // ===========================================================================
+
+  const METAMAGIC_FEATS = [
+    { value: 'feat_empower_spell',  label: 'Empower Spell',  hint: 'All variable numeric effects ×1.5' },
+    { value: 'feat_enlarge_spell',  label: 'Enlarge Spell',  hint: 'Doubles range' },
+    { value: 'feat_extend_spell',   label: 'Extend Spell',   hint: 'Doubles duration' },
+    { value: 'feat_maximize_spell', label: 'Maximize Spell', hint: 'All variable effects are maximum' },
+    { value: 'feat_quicken_spell',  label: 'Quicken Spell',  hint: 'Free-action casting (once/round)' },
+    { value: 'feat_silent_spell',   label: 'Silent Spell',   hint: 'No verbal component required' },
+  ];
+
+  function toggleWand(on: boolean): void {
+    (ctx.feature as ItemFeature).wandSpell = on
+      ? { spellId: '', casterLevel: 1 }
+      : undefined;
+  }
+  function toggleStaff(on: boolean): void {
+    (ctx.feature as ItemFeature).staffSpells = on ? [] : undefined;
+  }
+  function toggleScroll(on: boolean): void {
+    (ctx.feature as ItemFeature).scrollSpells = on ? [] : undefined;
+  }
+  function toggleRod(on: boolean): void {
+    (ctx.feature as ItemFeature).metamagicEffect = on
+      ? { feat: 'feat_empower_spell', maxSpellLevel: 3 }
+      : undefined;
+  }
+
+  // Staff spell management
+  function addStaffSpell(): void {
+    const item2 = ctx.feature as ItemFeature;
+    item2.staffSpells = [...(item2.staffSpells ?? []), { spellId: '', chargeCost: 1 }];
+  }
+  function removeStaffSpell(i: number): void {
+    const item2 = ctx.feature as ItemFeature;
+    item2.staffSpells = (item2.staffSpells ?? []).filter((_, k) => k !== i);
+  }
+  function patchStaffSpell(i: number, patch: Partial<{ spellId: string; chargeCost: 1|2|3|4|5; spellLevel?: number }>): void {
+    const item2 = ctx.feature as ItemFeature;
+    const arr = [...(item2.staffSpells ?? [])];
+    arr[i] = { ...arr[i], ...patch } as typeof arr[0];
+    item2.staffSpells = arr;
+  }
+
+  // Scroll spell management
+  type ScrollEntry = NonNullable<ItemFeature['scrollSpells']>[number];
+  function addScrollSpell(): void {
+    const item2 = ctx.feature as ItemFeature;
+    const blank: ScrollEntry = { spellId: '', casterLevel: 1, spellLevel: 1, spellType: 'arcane' };
+    item2.scrollSpells = [...(item2.scrollSpells ?? [] as ScrollEntry[]), blank];
+  }
+  function removeScrollSpell(i: number): void {
+    const item2 = ctx.feature as ItemFeature;
+    item2.scrollSpells = ((item2.scrollSpells ?? []) as ScrollEntry[]).filter((_, k) => k !== i);
+  }
+  function patchScrollSpell(i: number, patch: Partial<ScrollEntry>): void {
+    const item2 = ctx.feature as ItemFeature;
+    const arr = [...((item2.scrollSpells ?? []) as ScrollEntry[])];
+    arr[i] = { ...arr[i], ...patch } as ScrollEntry;
+    item2.scrollSpells = arr;
+  }
+
+  // Spell picker state for Staff / Scroll pickers
+  type SpellPickerTarget = { kind: 'wand' } | { kind: 'staff'; index: number } | { kind: 'scroll'; index: number } | null;
+  let spellPickerTarget = $state<SpellPickerTarget>(null);
+
+  // ===========================================================================
+  // 21.4.4 — CURSED toggle
+  // ===========================================================================
+
+  function toggleCursed(on: boolean): void {
+    (ctx.feature as ItemFeature).removalPrevention = on
+      ? { isCursed: true, removableBy: [], preventionNote: '' }
+      : undefined;
+  }
+
+  let showCursedTagPicker = $state(false);
+
+  // ===========================================================================
+  // 21.4.4 — INTELLIGENT ITEM toggle + ego
+  // ===========================================================================
+
+  function toggleIntelligent(on: boolean): void {
+    (ctx.feature as ItemFeature).intelligentItemData = on
+      ? {
+          intelligenceScore: 10, wisdomScore: 10, charismaScore: 10,
+          egoScore: 0, alignment: 'true_neutral', communication: 'empathy',
+          senses: { visionFt: 30, darkvisionFt: 0, blindsense: false },
+          languages: [], lesserPowers: 0, greaterPowers: 0,
+          specialPurpose: null, dedicatedPower: null,
+        }
+      : undefined;
+  }
+
+  /** Whether the GM is manually overriding the auto-computed ego score. */
+  let egoManualOverride = $state(false);
+
+  /** Auto-computed Ego score from the intelligent item stats (SRD formula). */
+  const autoEgo = $derived.by((): number => {
+    const d = (ctx.feature as ItemFeature).intelligentItemData;
+    if (!d) return 0;
+    const intBonus  = Math.floor((d.intelligenceScore - 10) / 2);
+    const wisBonus  = Math.floor((d.wisdomScore       - 10) / 2);
+    const chaBonus  = Math.floor((d.charismaScore     - 10) / 2);
+    const teleBonus = d.communication === 'telepathy' ? 1 : 0;
+    const purposeBonus = (d.specialPurpose && d.dedicatedPower) ? 4 : 0;
+    return Math.max(0,
+      (d.lesserPowers  * 1)
+      + (d.greaterPowers * 2)
+      + purposeBonus
+      + teleBonus
+      + intBonus + wisBonus + chaBonus
+    );
+  });
+
+  const ALIGNMENT_OPTIONS = [
+    { value: 'lawful_good',    label: 'Lawful Good' },
+    { value: 'lawful_neutral', label: 'Lawful Neutral' },
+    { value: 'lawful_evil',    label: 'Lawful Evil' },
+    { value: 'neutral_good',   label: 'Neutral Good' },
+    { value: 'true_neutral',   label: 'True Neutral' },
+    { value: 'neutral_evil',   label: 'Neutral Evil' },
+    { value: 'chaotic_good',   label: 'Chaotic Good' },
+    { value: 'chaotic_neutral',label: 'Chaotic Neutral' },
+    { value: 'chaotic_evil',   label: 'Chaotic Evil' },
+  ];
 </script>
 
 <!-- Damage type pickers -->
@@ -623,14 +754,490 @@
 </details>
 
 <!-- ======================================================================= -->
-<!-- TODO 21.4.4 — CHARGED ITEMS, CURSED, INTELLIGENT ITEM                    -->
-<!-- These sections are implemented in task 21.4.4.                            -->
-<!-- The placeholders below ensure the file compiles cleanly.                  -->
+<!-- SECTION 5 — CHARGED ITEMS (Wand / Staff / Scroll / Metamagic Rod)        -->
 <!-- ======================================================================= -->
 
-<!-- TODO 21.4.4: Charged Items section (Wand / Staff / Scroll / Metamagic Rod tabs) -->
+<!-- Spell pickers for Wand / Staff / Scroll -->
+{#if spellPickerTarget !== null}
+  {@const target = spellPickerTarget}
+  <FeaturePickerModal
+    filterCategory="magic"
+    onFeaturePicked={(ids) => {
+      const id = ids[0] ?? '';
+      if (target.kind === 'wand') {
+        const wd = (ctx.feature as ItemFeature).wandSpell;
+        if (wd) wd.spellId = id;
+      } else if (target.kind === 'staff') {
+        patchStaffSpell(target.index, { spellId: id });
+      } else if (target.kind === 'scroll') {
+        patchScrollSpell(target.index, { spellId: id });
+      }
+      spellPickerTarget = null;
+    }}
+    onclose={() => (spellPickerTarget = null)}
+  />
+{/if}
 
-<!-- TODO 21.4.4: Cursed section (isCursed, removableBy chip list, preventionNote) -->
+<details class="group/chg rounded-lg border border-border overflow-hidden">
+  <summary class="flex items-center justify-between px-4 py-2 bg-surface-alt cursor-pointer
+                  select-none list-none hover:bg-accent/5 text-sm font-semibold text-text-primary">
+    Charged Items (Wand / Staff / Scroll / Metamagic Rod)
+    <svg class="h-4 w-4 text-text-muted transition-transform group-open/chg:rotate-180"
+         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </summary>
 
-<!-- TODO 21.4.4: Intelligent Item section (INT/WIS/CHA, egoScore, alignment,
-     communication, senses, languages, specialPurpose, dedicatedPower) -->
+  <div class="p-4 flex flex-col gap-4">
+
+    <!-- ── WAND ─────────────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-2 rounded border border-border p-3">
+      <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold select-none">
+        <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
+               checked={!!(ctx.feature as ItemFeature).wandSpell}
+               onchange={(e) => toggleWand((e.currentTarget as HTMLInputElement).checked)}
+               onclick={(e) => e.stopPropagation()}/>
+        Wand (single spell, fixed CL)
+      </label>
+      {#if (ctx.feature as ItemFeature).wandSpell}
+        {@const ws = (ctx.feature as ItemFeature).wandSpell!}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-1">
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <label for={fid('wand-spell')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Spell</label>
+            <button id={fid('wand-spell')} type="button"
+                    class="input text-xs text-left font-mono {ws.spellId ? 'text-text-primary' : 'text-text-muted italic'}"
+                    onclick={() => (spellPickerTarget = { kind: 'wand' })}>
+              {ws.spellId || 'Click to pick spell…'}
+            </button>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for={fid('wand-cl')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Caster Level</label>
+            <input id={fid('wand-cl')} type="number" class="input text-xs" min="1" max="20"
+                   value={ws.casterLevel}
+                   oninput={(e) => { ws.casterLevel = parseInt((e.currentTarget as HTMLInputElement).value) || 1; }}/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for={fid('wand-sl')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              Spell Level override <span class="font-normal text-[9px]">(heightened only)</span>
+            </label>
+            <input id={fid('wand-sl')} type="number" class="input text-xs" min="1" max="9"
+                   value={ws.spellLevel ?? ''}
+                   placeholder="blank = base level"
+                   oninput={(e) => {
+                     const v = (e.currentTarget as HTMLInputElement).value.trim();
+                     ws.spellLevel = v ? parseInt(v) : undefined;
+                   }}/>
+          </div>
+        </div>
+      {/if}
+    </div>
+
+    <!-- ── STAFF ─────────────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-2 rounded border border-border p-3">
+      <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold select-none">
+        <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
+               checked={!!(ctx.feature as ItemFeature).staffSpells}
+               onchange={(e) => toggleStaff((e.currentTarget as HTMLInputElement).checked)}
+               onclick={(e) => e.stopPropagation()}/>
+        Staff (multiple spells, wielder CL, charge-based)
+      </label>
+      {#if (ctx.feature as ItemFeature).staffSpells}
+        {@const ss = (ctx.feature as ItemFeature).staffSpells!}
+        <div class="flex flex-col gap-2">
+          {#each ss as entry, i (i)}
+            <div class="flex items-center gap-2 p-2 rounded border border-border/50 bg-surface">
+              <button type="button"
+                      class="input text-xs font-mono flex-1 text-left {entry.spellId ? 'text-text-primary' : 'text-text-muted italic'}"
+                      onclick={() => (spellPickerTarget = { kind: 'staff', index: i })}>
+                {entry.spellId || 'Pick spell…'}
+              </button>
+              <div class="flex flex-col gap-0.5 shrink-0 w-20">
+                <label for={fid(`ss-cost-${i}`)} class="text-[9px] text-text-muted">Charges</label>
+                <select id={fid(`ss-cost-${i}`)} class="input text-xs py-0.5"
+                        value={entry.chargeCost}
+                        onchange={(e) => patchStaffSpell(i, { chargeCost: parseInt((e.currentTarget as HTMLSelectElement).value) as 1|2|3|4|5 })}>
+                  {#each [1,2,3,4,5] as c (c)}<option value={c}>{c}</option>{/each}
+                </select>
+              </div>
+              <button type="button" class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger shrink-0"
+                      onclick={() => removeStaffSpell(i)} aria-label="Remove staff spell {i+1}">
+                <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          {/each}
+          <button type="button" class="btn-ghost text-xs py-0.5" onclick={addStaffSpell}>+ Add Spell</button>
+        </div>
+      {/if}
+    </div>
+
+    <!-- ── SCROLL ────────────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-2 rounded border border-border p-3">
+      <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold select-none">
+        <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
+               checked={!!(ctx.feature as ItemFeature).scrollSpells}
+               onchange={(e) => toggleScroll((e.currentTarget as HTMLInputElement).checked)}
+               onclick={(e) => e.stopPropagation()}/>
+        Scroll (spell array, fixed CL per entry, arcane/divine type)
+      </label>
+      {#if (ctx.feature as ItemFeature).scrollSpells}
+        {@const scr = (ctx.feature as ItemFeature).scrollSpells!}
+        <div class="flex flex-col gap-2">
+          {#each scr as entry, i (i)}
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-2 p-2 rounded border border-border/50 bg-surface items-end">
+              <div class="flex flex-col gap-0.5 md:col-span-2">
+                <label for={fid(`sc-spell-${i}`)} class="text-[9px] text-text-muted">Spell</label>
+                <button id={fid(`sc-spell-${i}`)} type="button"
+                        class="input text-xs font-mono text-left {entry.spellId ? 'text-text-primary' : 'text-text-muted italic'}"
+                        onclick={() => (spellPickerTarget = { kind: 'scroll', index: i })}>
+                  {entry.spellId || 'Pick spell…'}
+                </button>
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <label for={fid(`sc-cl-${i}`)} class="text-[9px] text-text-muted">CL</label>
+                <input id={fid(`sc-cl-${i}`)} type="number" class="input text-xs" min="1" max="20"
+                       value={entry.casterLevel}
+                       oninput={(e) => patchScrollSpell(i, { casterLevel: parseInt((e.currentTarget as HTMLInputElement).value) || 1 })}/>
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <label for={fid(`sc-sl-${i}`)} class="text-[9px] text-text-muted">Spell Lvl</label>
+                <input id={fid(`sc-sl-${i}`)} type="number" class="input text-xs" min="0" max="9"
+                       value={entry.spellLevel}
+                       oninput={(e) => patchScrollSpell(i, { spellLevel: parseInt((e.currentTarget as HTMLInputElement).value) || 0 })}/>
+              </div>
+              <div class="flex items-end gap-1">
+                <div class="flex flex-col gap-0.5 flex-1">
+                  <label for={fid(`sc-type-${i}`)} class="text-[9px] text-text-muted">Type</label>
+                  <select id={fid(`sc-type-${i}`)} class="input text-xs"
+                          value={entry.spellType}
+                          onchange={(e) => patchScrollSpell(i, { spellType: (e.currentTarget as HTMLSelectElement).value as 'arcane'|'divine' })}>
+                    <option value="arcane">Arcane</option>
+                    <option value="divine">Divine</option>
+                  </select>
+                </div>
+                <button type="button" class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger mb-0.5 shrink-0"
+                        onclick={() => removeScrollSpell(i)} aria-label="Remove scroll spell {i+1}">
+                  <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          {/each}
+          <button type="button" class="btn-ghost text-xs py-0.5" onclick={addScrollSpell}>+ Add Spell</button>
+        </div>
+      {/if}
+    </div>
+
+    <!-- ── METAMAGIC ROD ─────────────────────────────────────────────────── -->
+    <div class="flex flex-col gap-2 rounded border border-border p-3">
+      <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold select-none">
+        <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
+               checked={!!(ctx.feature as ItemFeature).metamagicEffect}
+               onchange={(e) => toggleRod((e.currentTarget as HTMLInputElement).checked)}
+               onclick={(e) => e.stopPropagation()}/>
+        Metamagic Rod (grants a metamagic feat at no slot cost, 3/day)
+      </label>
+      {#if (ctx.feature as ItemFeature).metamagicEffect}
+        {@const me = (ctx.feature as ItemFeature).metamagicEffect!}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div class="flex flex-col gap-1">
+            <label for={fid('rod-feat')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Metamagic Feat</label>
+            <select id={fid('rod-feat')} class="input text-sm"
+                    value={me.feat}
+                    onchange={(e) => { me.feat = (e.currentTarget as HTMLSelectElement).value as typeof me.feat; }}>
+              {#each METAMAGIC_FEATS as mf (mf.value)}
+                <option value={mf.value}>{mf.label} — {mf.hint}</option>
+              {/each}
+            </select>
+          </div>
+          <fieldset class="flex flex-col gap-1">
+            <legend class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Max Spell Level</legend>
+            <div class="flex gap-3">
+              {#each [[3,'Lesser (3rd)'],[6,'Normal (6th)'],[9,'Greater (9th)']] as [lvl, lbl] (lvl)}
+                <label class="flex items-center gap-1 text-xs cursor-pointer">
+                  <input type="radio" class="accent-accent"
+                         name={fid('rod-ml')}
+                         value={lvl}
+                         checked={me.maxSpellLevel === lvl}
+                         onchange={() => { me.maxSpellLevel = lvl as 3|6|9; }}/>
+                  {lbl}
+                </label>
+              {/each}
+            </div>
+          </fieldset>
+        </div>
+      {/if}
+    </div>
+
+  </div>
+</details>
+
+<!-- ======================================================================= -->
+<!-- SECTION 6 — CURSED                                                        -->
+<!-- ======================================================================= -->
+
+{#if showCursedTagPicker}
+  <TagPickerModal
+    initialSelected={((ctx.feature as ItemFeature).removalPrevention?.removableBy ?? []) as string[]}
+    onTagsPicked={(tags) => {
+      const rp = (ctx.feature as ItemFeature).removalPrevention;
+      if (rp) rp.removableBy = tags as ('remove_curse'|'limited_wish'|'wish'|'miracle')[];
+      showCursedTagPicker = false;
+    }}
+    onclose={() => (showCursedTagPicker = false)}
+  />
+{/if}
+
+<details class="group/crs rounded-lg border border-border overflow-hidden">
+  <summary class="flex items-center justify-between px-4 py-2 bg-surface-alt cursor-pointer
+                  select-none list-none hover:bg-accent/5 text-sm font-semibold text-text-primary">
+    <label class="flex items-center gap-3 cursor-pointer select-none">
+      <input type="checkbox" class="h-4 w-4 accent-accent"
+             checked={!!(ctx.feature as ItemFeature).removalPrevention}
+             onchange={(e) => toggleCursed((e.currentTarget as HTMLInputElement).checked)}
+             onclick={(e) => e.stopPropagation()}/>
+      Cursed (cannot be voluntarily removed)
+    </label>
+    <svg class="h-4 w-4 text-text-muted transition-transform group-open/crs:rotate-180"
+         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </summary>
+  {#if (ctx.feature as ItemFeature).removalPrevention}
+    {@const rp = (ctx.feature as ItemFeature).removalPrevention!}
+    <div class="p-4 flex flex-col gap-3">
+      <!-- Removable By chip list -->
+      <div class="flex flex-col gap-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Removable By (tags)
+          </span>
+          <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
+                  onclick={() => (showCursedTagPicker = true)}>Edit</button>
+        </div>
+        <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
+          {#each (rp.removableBy ?? []) as tag (tag)}
+            <span class="badge font-mono text-[10px] bg-red-900/20 text-red-300 border-red-700/30">{tag}</span>
+          {:else}
+            <span class="text-xs text-text-muted italic">Nothing — cannot be removed by any means.</span>
+          {/each}
+        </div>
+        <p class="text-[10px] text-text-muted">
+          SRD methods: <code class="font-mono">remove_curse</code>, <code class="font-mono">limited_wish</code>,
+          <code class="font-mono">wish</code>, <code class="font-mono">miracle</code>
+        </p>
+      </div>
+      <!-- Prevention note -->
+      <div class="flex flex-col gap-1">
+        <label for={fid('crs-note')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          Prevention Note <span class="font-normal text-[9px]">(optional flavour text)</span>
+        </label>
+        <input id={fid('crs-note')} type="text" class="input text-sm"
+               value={rp.preventionNote ?? ''}
+               placeholder="e.g. Remains clasped even after death."
+               oninput={(e) => {
+                 rp.preventionNote = (e.currentTarget as HTMLInputElement).value || undefined;
+               }}/>
+      </div>
+    </div>
+  {:else}
+    <div class="px-4 py-3 text-xs text-text-muted italic">
+      Enable for items that cannot be voluntarily unequipped (Necklace of Strangulation, etc.).
+    </div>
+  {/if}
+</details>
+
+<!-- ======================================================================= -->
+<!-- SECTION 7 — INTELLIGENT ITEM                                              -->
+<!-- ======================================================================= -->
+
+<details class="group/int rounded-lg border border-border overflow-hidden">
+  <summary class="flex items-center justify-between px-4 py-2 bg-surface-alt cursor-pointer
+                  select-none list-none hover:bg-accent/5 text-sm font-semibold text-text-primary">
+    <label class="flex items-center gap-3 cursor-pointer select-none">
+      <input type="checkbox" class="h-4 w-4 accent-accent"
+             checked={!!(ctx.feature as ItemFeature).intelligentItemData}
+             onchange={(e) => toggleIntelligent((e.currentTarget as HTMLInputElement).checked)}
+             onclick={(e) => e.stopPropagation()}/>
+      Intelligent Item
+    </label>
+    <svg class="h-4 w-4 text-text-muted transition-transform group-open/int:rotate-180"
+         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </summary>
+  {#if (ctx.feature as ItemFeature).intelligentItemData}
+    {@const id = (ctx.feature as ItemFeature).intelligentItemData!}
+    <div class="p-4 flex flex-col gap-4">
+
+      <!-- Ability scores + Ego -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {#each [['int','intelligenceScore','INT'],['wis','wisdomScore','WIS'],['cha','charismaScore','CHA']] as [k, field, lbl] (k)}
+          <div class="flex flex-col gap-1">
+            <label for={fid(`ii-${k}`)} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{lbl}</label>
+            <input id={fid(`ii-${k}`)} type="number" class="input text-xs text-center" min="10" max="19"
+                   value={(id as unknown as Record<string,number>)[field]}
+                   oninput={(e) => {
+                     (id as unknown as Record<string,number>)[field] = parseInt((e.currentTarget as HTMLInputElement).value) || 10;
+                     if (!egoManualOverride) id.egoScore = autoEgo;
+                   }}/>
+          </div>
+        {/each}
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-1">
+            <label for={fid('ii-ego')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Ego</label>
+            <label class="flex items-center gap-1 text-[9px] text-text-muted cursor-pointer">
+              <input type="checkbox" class="h-2.5 w-2.5 accent-accent"
+                     checked={egoManualOverride}
+                     onchange={(e) => {
+                       egoManualOverride = (e.currentTarget as HTMLInputElement).checked;
+                       if (!egoManualOverride) id.egoScore = autoEgo;
+                     }}/>
+              manual
+            </label>
+          </div>
+          <input id={fid('ii-ego')} type="number" class="input text-xs text-center" min="0"
+                 value={egoManualOverride ? id.egoScore : autoEgo}
+                 disabled={!egoManualOverride}
+                 oninput={(e) => { if (egoManualOverride) id.egoScore = parseInt((e.currentTarget as HTMLInputElement).value) || 0; }}/>
+          {#if !egoManualOverride}
+            <p class="text-[9px] text-text-muted">auto = {autoEgo}</p>
+          {/if}
+        </div>
+      </div>
+
+      <!-- Alignment + Communication -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-align')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Alignment</label>
+          <select id={fid('ii-align')} class="input text-sm"
+                  value={id.alignment}
+                  onchange={(e) => { id.alignment = (e.currentTarget as HTMLSelectElement).value as typeof id.alignment; }}>
+            {#each ALIGNMENT_OPTIONS as ao (ao.value)}
+              <option value={ao.value}>{ao.label}</option>
+            {/each}
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-comm')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Communication</label>
+          <select id={fid('ii-comm')} class="input text-sm"
+                  value={id.communication}
+                  onchange={(e) => { id.communication = (e.currentTarget as HTMLSelectElement).value as typeof id.communication; }}>
+            <option value="empathy">Empathy — emotional impressions only</option>
+            <option value="speech">Speech — speaks Common + INT-bonus languages</option>
+            <option value="telepathy">Telepathy — projects thoughts directly</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Senses -->
+      <fieldset class="flex flex-col gap-2">
+        <legend class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Senses</legend>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for={fid('ii-vis')} class="text-[10px] text-text-muted">Vision (ft.)</label>
+            <select id={fid('ii-vis')} class="input text-xs"
+                    value={id.senses.visionFt}
+                    onchange={(e) => { id.senses.visionFt = parseInt((e.currentTarget as HTMLSelectElement).value) as 0|30|60|120; }}>
+              <option value="0">None</option>
+              <option value="30">30 ft.</option>
+              <option value="60">60 ft.</option>
+              <option value="120">120 ft.</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for={fid('ii-dv')} class="text-[10px] text-text-muted">Darkvision (ft.)</label>
+            <select id={fid('ii-dv')} class="input text-xs"
+                    value={id.senses.darkvisionFt}
+                    onchange={(e) => { id.senses.darkvisionFt = parseInt((e.currentTarget as HTMLSelectElement).value) as 0|60|120; }}>
+              <option value="0">None</option>
+              <option value="60">60 ft.</option>
+              <option value="120">120 ft.</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2 pt-4">
+            <input type="checkbox" id={fid('ii-blind')} class="h-4 w-4 accent-accent"
+                   checked={id.senses.blindsense}
+                   onchange={(e) => { id.senses.blindsense = (e.currentTarget as HTMLInputElement).checked; }}/>
+            <label for={fid('ii-blind')} class="text-xs cursor-pointer">Blindsense</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Powers -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-lp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Lesser Powers <span class="font-normal text-[9px]">(+1 Ego each)</span>
+          </label>
+          <input id={fid('ii-lp')} type="number" class="input text-xs" min="0" max="10"
+                 value={id.lesserPowers}
+                 oninput={(e) => { id.lesserPowers = parseInt((e.currentTarget as HTMLInputElement).value) || 0; if(!egoManualOverride) id.egoScore = autoEgo; }}/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-gp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Greater Powers <span class="font-normal text-[9px]">(+2 Ego each)</span>
+          </label>
+          <input id={fid('ii-gp')} type="number" class="input text-xs" min="0" max="10"
+                 value={id.greaterPowers}
+                 oninput={(e) => { id.greaterPowers = parseInt((e.currentTarget as HTMLInputElement).value) || 0; if(!egoManualOverride) id.egoScore = autoEgo; }}/>
+        </div>
+      </div>
+
+      <!-- Languages (comma-separated) -->
+      <div class="flex flex-col gap-1">
+        <label for={fid('ii-lang')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          Languages <span class="font-normal text-[9px]">(comma-separated)</span>
+        </label>
+        <input id={fid('ii-lang')} type="text" class="input text-sm"
+               value={(id.languages ?? []).join(', ')}
+               placeholder="e.g. Common, Elvish, Draconic"
+               oninput={(e) => {
+                 id.languages = (e.currentTarget as HTMLInputElement).value
+                   .split(',').map(s => s.trim()).filter(Boolean);
+               }}/>
+      </div>
+
+      <!-- Special Purpose + Dedicated Power -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-sp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Special Purpose <span class="font-normal text-[9px]">(+4 Ego if set)</span>
+          </label>
+          <input id={fid('ii-sp')} type="text" class="input text-sm"
+                 value={id.specialPurpose ?? ''}
+                 placeholder="e.g. Defeat arcane spellcasters"
+                 oninput={(e) => {
+                   id.specialPurpose = (e.currentTarget as HTMLInputElement).value || null;
+                   if(!egoManualOverride) id.egoScore = autoEgo;
+                 }}/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for={fid('ii-dp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Dedicated Power</label>
+          <input id={fid('ii-dp')} type="text" class="input text-sm"
+                 value={id.dedicatedPower ?? ''}
+                 placeholder="e.g. Cast lightning bolt 10d6"
+                 oninput={(e) => {
+                   id.dedicatedPower = (e.currentTarget as HTMLInputElement).value || null;
+                   if(!egoManualOverride) id.egoScore = autoEgo;
+                 }}/>
+        </div>
+      </div>
+
+    </div>
+  {:else}
+    <div class="px-4 py-3 text-xs text-text-muted italic">
+      Enable for sentient magic items (intelligent swords, orbs of dragonkind, etc.).
+    </div>
+  {/if}
+</details>
