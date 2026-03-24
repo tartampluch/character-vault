@@ -530,17 +530,19 @@ Character Vault is built around an open content model — every rule is a JSON f
 
 **[`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md)** is a 24-section progressive tutorial covering everything you need to author valid JSON rule files:
 
-- Start at **Section 1–5** to understand the core concepts (Features, Tags, Modifiers).
+- Start at **Sections 1–5** to understand core concepts (Features, Tags, Modifiers, IDs, stacking rules).
 - Jump to the relevant section for the content type you are creating (Races, Classes, Feats, Spells, Items, Conditions…).
-- Use **Section 24** as a quick-reference cheat sheet (all modifier types, all target IDs, all formula paths).
+- Use **Section 24** as the main quick-reference cheat sheet (all modifier types, formula paths, category overview).
+- Key reference tables are also distributed across earlier sections: **Section 6** (canonical `situationalContext` values), **Section 8** (complete skill ID list, all combat stat pipelines, energy resistance targets), **Section 9** (supported math functions, dice formula rules).
 
 A good entry point is the [Feature base template](CONTENT_AUTHORING_GUIDE.md#3-the-feature-object--base-template) — once you understand the shape of a Feature, everything else is a variation on that pattern.
 
 ```
 Races       → Section 11    Classes     → Section 12
-Feats       → Section 14    Spells      → Section 15
-Weapons     → Section 16    Magic Items → Section 17
-Consumables → Section 18    Conditions  → Section 19
+Class Feats → Section 13    Feats       → Section 14
+Spells      → Section 15    Weapons     → Section 16
+Magic Items → Section 17    Consumables → Section 18
+Conditions  → Section 19    Environments→ Section 20
 ```
 
 ### For AI agents — bulk data migration
@@ -555,7 +557,12 @@ Consumables → Section 18    Conditions  → Section 19
 - **Section 17** covers d20 SRD HTML extraction heuristics with URL patterns.
 - **Section 20** defines hard blockers — situations where the AI must stop and report rather than guess.
 
-Both documents are also read by AI coding assistants at the start of each content-generation session. Feed them alongside [`ARCHITECTURE.md`](ARCHITECTURE.md) for full context.
+Both documents are also read by AI coding assistants at the start of each content-generation session. The recommended reading order for a full conversion context is:
+
+1. [`ARCHITECTURE.md`](ARCHITECTURE.md) — engine internals and TypeScript interfaces
+2. [`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md) — all canonical field values, ID tables, and examples
+3. [`AI_MIGRATION_GUIDE.md`](AI_MIGRATION_GUIDE.md) — conversion protocol and field-mapping tables
+4. [`ANNEXES.md`](ANNEXES.md) — additional complete worked examples for complex entity types
 
 ---
 
@@ -565,8 +572,8 @@ Both documents are also read by AI coding assistants at the start of each conten
 |----------|----------|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Full engine specification: ECS philosophy, all 19 sections covering primitives, logic engine, mathematical pipelines, feature model, character entity, campaign data model, DAG phases, dice engine, i18n, data override system |
 | [`ANNEXES.md`](ANNEXES.md) | Complete JSON rule file examples (races, classes, feats, spells, items, psionics, environments) and configuration table reference |
-| [`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md) | Progressive tutorial for humans writing new JSON rule content — all field types, modifier stacking rules, examples for every entity category |
-| [`AI_MIGRATION_GUIDE.md`](AI_MIGRATION_GUIDE.md) | Operational migration protocol for AI agents converting from PCGen, Hero Lab, SRD HTML, PDF, or any structured source into engine-compatible JSON |
+| [`CONTENT_AUTHORING_GUIDE.md`](CONTENT_AUTHORING_GUIDE.md) | Progressive tutorial for humans and AI writing new JSON rule content — all field types, complete skill/pipeline ID tables, canonical tag and situationalContext values, modifier stacking rules, math function reference, and worked examples for every entity category |
+| [`AI_MIGRATION_GUIDE.md`](AI_MIGRATION_GUIDE.md) | Operational migration protocol for AI agents converting from PCGen, Hero Lab, SRD HTML, PDF, or any structured source — includes corrected BAB/save increment tables, complete armor tag matrix, `saves.all` vs `combatStats.saving_throw_bonus` disambiguation, and a hard-blockers checklist |
 | [`D20SRD_CONVERSION.md`](D20SRD_CONVERSION.md) | Prompt used to convert `d20srd/` HTML files into valid JSON rule files for this application |
 
 ---
