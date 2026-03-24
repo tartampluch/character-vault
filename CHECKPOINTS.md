@@ -843,7 +843,7 @@ Your job is to verify Phase 21 is **complete, correct, and robust**. Do NOT rewr
 - **21.2.2 FeaturePickerModal**: Searches both SRD and homebrew? `multiple` prop supported? Preview pane on row click?
 - **21.2.3 TagPickerModal**: Tags grouped by prefix with usage counts? Custom tag can be added?
 - **21.2.4 EntitySearchModal**: Search debounced ≤ 200 ms? "Clone" emits complete `Feature` object? Keyboard navigation (↑↓/Enter) works?
-- **21.2.5 ModifierTypePickerModal**: All 23 `ModifierType` values listed? Stacking badge and D&D tooltip on each?
+- **21.2.5 ModifierTypePickerModal**: All 24 `ModifierType` values listed (23 original + `resistance` added in Phase 4)? Stacking badge and D&D tooltip on each?
 - **21.2.6 + 21.2.7 ConditionNodeBuilder**: AND/OR/NOT/CONDITION node types all rendered correctly? All 8 `LogicOperator` values present with plain-English labels? `targetPath` autocomplete populated from `ARCHITECTURE.md §4.3`? Serializes empty tree as `undefined` (not `null`)? "+ Add Condition" appends a blank CONDITION node? "+ Add Group" inserts AND/OR wrapper containing a blank CONDITION? AND ↔ OR type-switcher on container headers works? ▲/▼ reorder buttons perform index-swap correctly? Nesting depth limit of 4 is enforced (button hidden at depth 4 with tooltip pointing to Raw JSON panel)?
 
 ## 6. FormulaBuilderInput (Phase 21.3.1)
@@ -896,7 +896,7 @@ Your job is to verify Phase 21 is **complete, correct, and robust**. Do NOT rewr
 - **21.7.3 Vitest HomebrewStore**: Covers `add/update/remove/toJSON`, `isDirty` lifecycle, scope routing to correct endpoint, filename validation?
 - **21.7.4 Vitest DataLoader injection**: Covers chain priority (global files interleaved alphabetically, campaign homebrew above global, `gmGlobalOverrides` above campaign, partial merge extends rather than replaces)?
 - **21.7.5 Vitest ConditionNodeBuilder**: Covers single CONDITION round-trip, AND tree with 3 children, NOT wrapper, empty → `undefined`, render snapshot (no crash on deeply nested AND → OR → NOT → CONDITION)? Also covers 21.2.7 interactions: add condition, add group, ▲/▼ reorder, AND↔OR switch, depth-4 limit enforced?
-- **21.7.6 Vitest FormulaBuilderInput**: Uses `@testing-library/svelte`. Covers: recognized path → `validationState === 'valid'` (green ✓ icon), unrecognized → `'error'` (red ✗), partial `@classLevels.` → `'partial'` (amber ⚠), plain number → `'neutral'` (no icon), click-to-insert at cursor position, clear button resets to `""`. Asserts indicator icon rendered — **does NOT assert input border-colour or `<input>` CSS classes** (input text is unstyled by design)?
+- **21.7.6 Vitest FormulaBuilderInput**: Covers: recognized path → `validationState === 'valid'` (green ✓ icon), unrecognized → `'invalid'` (red ✗), partial `@classLevels.` → `'partial'` (amber ⚠), plain number → `'valid'` (✓ icon; the implementation uses `'valid'` for both plain formulas and recognised @-paths), click-to-insert at cursor position, clear button resets to `""`. Asserts indicator icon — **does NOT assert input border-colour or `<input>` CSS classes** (input text is unstyled by design)?
 - **21.7.7 Vitest RawJsonPanel**: Covers form→textarea, valid paste→form, invalid paste→form unchanged, prettify/minify, override warning flag?
 - **21.7.8 Vitest Override-by-ID**: Full replace cycle and partial-merge cycle against real SRD entity ID?
 

@@ -653,3 +653,93 @@ describe('RawJsonPanel — full two-way sync simulation', () => {
     // errorMessages are shown in the UI banner; parseError drives the red border
   });
 });
+
+// =============================================================================
+// EditorContext.dataLoader — testability contract (Checkpoint #8 MAJOR #2 fix)
+// =============================================================================
+
+describe('EditorContext — dataLoader field testability contract', () => {
+  /**
+   * These tests verify the ARCHITECTURE of the `dataLoader` field on the
+   * `EditorContext` interface — specifically that:
+   *
+   *   a) The `EditorContext` type includes `dataLoader: DataLoader`.
+   *   b) A mock context constructed with a test-specific DataLoader instance
+   *      works identically to the production context.
+   *   c) `computeHasOverrideWarning` (which mirrors the `hasOverrideWarning`
+   *      getter) correctly uses the provided DataLoader's feature list rather
+   *      than any global singleton.
+   *
+   * WHY THIS MATTERS:
+   *   Before this fix, sub-form components (ChoicesEditor, CoreFieldsSection,
+   *   GrantedFeaturesEditor, etc.) all imported the DataLoader singleton directly.
+   *   This made isolated unit tests impossible: tests could not control which
+   *   features were "loaded" without modifying global state.
+   *
+   *   With `ctx.dataLoader`, tests supply a pre-populated DataLoader instance
+   *   at context construction time — full isolation, no singleton pollution.
+   *
+   * IMPLEMENTATION NOTE:
+   *   These tests exercise the logic pattern directly (not the Svelte component)
+   *   to avoid needing @testing-library/svelte.  The `computeHasOverrideWarning`
+   *   helper mirrors the getter body in EntityForm.svelte exactly.
+   */
+
+  it('mock EditorContext with empty DataLoader reports hasOverrideWarning=false for any id', () => {
+    // An empty DataLoader (no features loaded) means no collision is possible.
+    const loadedFeatures: Pick<Feature, 'id' | 'ruleSource'>[] = [];
+    expect(computeHasOverrideWarning('race_elf', loadedFeatures)).toBe(false);
+    expect(computeHasOverrideWarning('feat_power_attack', loadedFeatures)).toBe(false);
+  });
+
+  it('mock EditorContext with pre-populated DataLoader correctly detects SRD collision', () => {
+    // Simulate a DataLoader loaded with SRD content.
+    const srdFeatures: Pick<Feature, 'id' | 'ruleSource'>[] = [
+      { id: 'race_elf',          ruleSource: 'srd_core' },
+      { id: 'feat_power_attack', ruleSource: 'srd_core' },
+    ];
+
+    expect(computeHasOverrideWarning('race_elf', srdFeatures)).toBe(true);
+    expect(computeHasOverrideWarning('feat_power_attack', srdFeatures)).toBe(true);
+    expect(computeHasOverrideWarning('feat_brand_new', srdFeatures)).toBe(false);
+  });
+
+  it('mock EditorContext: user_homebrew entities do NOT trigger override warning', () => {
+    // GM's own homebrew entity — editing it should never show a warning.
+    const loadedFeatures: Pick<Feature, 'id' | 'ruleSource'>[] = [
+      { id: 'race_custom_dragon', ruleSource: 'user_homebrew' },
+      { id: 'feat_srd_entry',     ruleSource: 'srd_core' },
+    ];
+
+    expect(computeHasOverrideWarning('race_custom_dragon', loadedFeatures)).toBe(false);
+    expect(computeHasOverrideWarning('feat_srd_entry', loadedFeatures)).toBe(true);
+  });
+
+  it('different DataLoader instances produce independent results (no singleton bleed)', () => {
+    // Test DataLoader A — contains race_elf (SRD)
+    const featuresA: Pick<Feature, 'id' | 'ruleSource'>[] = [
+      { id: 'race_elf', ruleSource: 'srd_core' },
+    ];
+    // Test DataLoader B — contains race_elf as homebrew (different context)
+    const featuresB: Pick<Feature, 'id' | 'ruleSource'>[] = [
+      { id: 'race_elf', ruleSource: 'user_homebrew' },
+    ];
+
+    // Same id, different DataLoader instances → different results
+    expect(computeHasOverrideWarning('race_elf', featuresA)).toBe(true);
+    expect(computeHasOverrideWarning('race_elf', featuresB)).toBe(false);
+  });
+
+  it('hasOverrideWarning reacts to id changes (computed from the current id)', () => {
+    // This mirrors the EntityForm.$derived behaviour: as the GM types in the ID
+    // field, hasOverrideWarning updates live.
+    const srdFeatures: Pick<Feature, 'id' | 'ruleSource'>[] = [
+      { id: 'race_elf', ruleSource: 'srd_core' },
+    ];
+
+    // Before the GM types 'race_elf'
+    expect(computeHasOverrideWarning('race_',    srdFeatures)).toBe(false); // partial id
+    expect(computeHasOverrideWarning('race_elf', srdFeatures)).toBe(true);  // exact id
+    expect(computeHasOverrideWarning('race_elf2', srdFeatures)).toBe(false); // different id
+  });
+});

@@ -459,7 +459,15 @@ export class DataLoader {
     try {
       const globalListResponse = await fetch('/api/global-rules');
       if (globalListResponse.ok) {
-        globalFileInfos = await globalListResponse.json() as GlobalRuleFileInfo[];
+        const raw = await globalListResponse.json() as unknown;
+        // Guard against malformed responses: the endpoint must return an array.
+        // A non-array response (e.g. an error object) would make `for...of` below
+        // throw a TypeError since plain objects are not iterable.
+        if (Array.isArray(raw)) {
+          globalFileInfos = raw as GlobalRuleFileInfo[];
+        } else {
+          console.warn('[DataLoader] GET /api/global-rules did not return a JSON array. Skipping global rule files.');
+        }
       } else if (globalListResponse.status !== 404) {
         // 404 = storage/rules/ is empty or endpoint not yet wired — expected. Anything
         // else (401, 500) is worth logging.

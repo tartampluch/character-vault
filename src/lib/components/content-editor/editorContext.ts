@@ -15,12 +15,14 @@
  * ```typescript
  * import { setContext } from 'svelte';
  * import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+ * import { dataLoader } from '$lib/engine/DataLoader';
  *
  * const feature = $state(structuredClone(initialData ?? defaultFeature('feat')));
  * const ctx: EditorContext = {
  *   feature,
  *   mode,
  *   store,
+ *   dataLoader,
  *   get hasOverrideWarning() {
  *     return dataLoader.getAllFeatures()
  *       .some(f => f.id === feature.id && f.ruleSource !== 'user_homebrew');
@@ -35,8 +37,25 @@
  * import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
  *
  * const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
- * // Read: ctx.feature.id
+ * // Read: ctx.feature.id, ctx.dataLoader.getFeature('race_elf')
  * // Mutate: ctx.feature.tags = [...ctx.feature.tags, 'new_tag'];
+ * ```
+ *
+ * TESTABILITY:
+ *   Because all DataLoader access goes through `ctx.dataLoader`, tests can
+ *   supply a mock DataLoader instance when constructing a mock context:
+ *
+ * ```typescript
+ * const mockLoader = new DataLoader();
+ * mockLoader.cacheFeature(myFeature);
+ * const mockCtx: EditorContext = {
+ *   feature: defaultFeature('feat'),
+ *   mode: 'create',
+ *   store: new HomebrewStore(),
+ *   dataLoader: mockLoader,
+ *   get hasOverrideWarning() { return false; },
+ * };
+ * setContext(EDITOR_CONTEXT_KEY, mockCtx);
  * ```
  *
  * @see ARCHITECTURE.md §21.3 for the full EditorContext specification.
@@ -44,6 +63,7 @@
 
 import type { Feature, FeatureCategory, MergeStrategy } from '$lib/types/feature';
 import type { HomebrewStore } from '$lib/engine/HomebrewStore.svelte';
+import type { DataLoader } from '$lib/engine/DataLoader';
 
 // =============================================================================
 // CONTEXT KEY
@@ -88,6 +108,26 @@ export interface EditorContext {
   store: HomebrewStore;
 
   /**
+   * The DataLoader instance used to look up existing features for validation,
+   * label resolution, and autocomplete.
+   *
+   * WHY ON THE CONTEXT INSTEAD OF IMPORTED DIRECTLY?
+   *   Placing `dataLoader` on the context enables full isolation in tests:
+   *   a test can supply a pre-populated `new DataLoader()` instance without
+   *   touching the application-level singleton.  Sub-forms that currently
+   *   `import { dataLoader }` directly should migrate to `ctx.dataLoader`
+   *   to benefit from this testability contract.
+   *
+   *   In production, EntityForm sets this to the application singleton:
+   *   `import { dataLoader } from '$lib/engine/DataLoader'`.
+   *
+   * USAGE IN SUB-FORMS:
+   *   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+   *   const feature = ctx.dataLoader.getFeature('race_elf');
+   */
+  dataLoader: DataLoader;
+
+  /**
    * True when `feature.id` matches an existing SRD or rule-source entity ID
    * and `feature.ruleSource !== 'user_homebrew'`.
    *
@@ -97,6 +137,7 @@ export interface EditorContext {
    *   needing to import DataLoader themselves.
    *
    *   CoreFieldsSection reads this to show the amber "⚠ Override Warning" banner.
+   *   EntityForm shows a sticky top banner via `ctx.hasOverrideWarning`.
    *
    * NOTE: Must read `feature.id` internally so Svelte's dependency tracking
    * fires when the id changes.

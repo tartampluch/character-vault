@@ -405,38 +405,117 @@ describe('HomebrewStore — toJSON()', () => {
 });
 
 // =============================================================================
-// 16–18. importJSON()
+// 16–18. importJSON() — merge-by-id semantics
 // =============================================================================
 
 describe('HomebrewStore — importJSON()', () => {
   /**
-   * Test 16: Replaces the entire entity list from a JSON string.
+   * Test 16a: New entities are APPENDED (upsert — add path).
    *
-   * importJSON() is the "Import JSON" feature in ContentLibraryPage (Phase 21.5.1).
-   * It replaces ALL current entities with the parsed array and marks isDirty.
+   * importJSON() merges by id (upsert semantics), per ARCHITECTURE.md §21.5.1.
+   * Entities whose ids are NOT in the import are left untouched in the store.
+   *
+   * WHY MERGE INSTEAD OF REPLACE?
+   *   A replace-all import would silently destroy entities the GM authored
+   *   whenever they import a partial file (e.g., only race entities while
+   *   also having feats stored).  Merge lets the GM safely import additions
+   *   and updates without losing unrelated content.
    */
-  it('replaces entity list with the parsed JSON array', () => {
+  it('appends new entities whose ids do not already exist in the store', () => {
     const store = new HomebrewStore();
-    store.add(makeFeature('feat_old_feat')); // Pre-existing entity.
+    store.add(makeFeature('feat_pre_existing')); // in store, NOT in import
 
-    const newEntities: Feature[] = [
+    const imported: Feature[] = [
       makeFeature('feat_imported_1'),
       makeFeature('feat_imported_2'),
     ];
-    store.importJSON(JSON.stringify(newEntities));
+    store.importJSON(JSON.stringify(imported));
 
-    expect(store.entities).toHaveLength(2);
-    expect(store.getById('feat_old_feat')).toBeUndefined(); // Old entity replaced.
+    // 3 entities total: 1 pre-existing + 2 newly imported
+    expect(store.entities).toHaveLength(3);
+    // Pre-existing entity PRESERVED (key invariant of merge semantics)
+    expect(store.getById('feat_pre_existing')).toBeDefined();
+    // Imported entities added
     expect(store.getById('feat_imported_1')).toBeDefined();
+    expect(store.getById('feat_imported_2')).toBeDefined();
     expect(store.isDirty).toBe(true);
+  });
+
+  /**
+   * Test 16b: Existing entities with matching ids are REPLACED (upsert — update path).
+   *
+   * If the imported array contains an entity with the same id as one already
+   * in the store, the imported version WINS (treated as an update/override).
+   * Other stored entities are untouched.
+   */
+  it('replaces existing entities whose ids match an imported entity', () => {
+    const store = new HomebrewStore();
+    store.add(makeFeature('race_elf',     { label: { en: 'Elf (original)' } }));
+    store.add(makeFeature('feat_unrelated'));
+
+    const imported: Feature[] = [
+      makeFeature('race_elf', { label: { en: 'Elf (imported update)' } }),
+    ];
+    store.importJSON(JSON.stringify(imported));
+
+    // Count unchanged (1 replacement + 1 untouched)
+    expect(store.entities).toHaveLength(2);
+    // race_elf updated to imported version
+    expect(store.getById('race_elf')!.label['en']).toBe('Elf (imported update)');
+    // Unrelated entity preserved
+    expect(store.getById('feat_unrelated')).toBeDefined();
+    expect(store.isDirty).toBe(true);
+  });
+
+  /**
+   * Test 16c: Mixed import — some new ids, some existing ids.
+   *
+   * The merge must handle both update and append in a single call, and must
+   * never discard entities that are absent from the import.
+   */
+  it('handles mixed import: appends new ids and updates matching ids simultaneously', () => {
+    const store = new HomebrewStore();
+    store.add(makeFeature('feat_alpha', { label: { en: 'Alpha v1' } }));
+    store.add(makeFeature('feat_beta'));    // not in import → must survive
+    store.add(makeFeature('feat_gamma', { label: { en: 'Gamma v1' } }));
+
+    const imported: Feature[] = [
+      makeFeature('feat_alpha', { label: { en: 'Alpha v2' } }),   // update existing
+      makeFeature('feat_gamma', { label: { en: 'Gamma v2' } }),   // update existing
+      makeFeature('feat_delta'),                                    // new → append
+    ];
+    store.importJSON(JSON.stringify(imported));
+
+    expect(store.entities).toHaveLength(4); // 3 pre-existing + 1 new
+    expect(store.getById('feat_alpha')!.label['en']).toBe('Alpha v2');  // updated
+    expect(store.getById('feat_beta')).toBeDefined();                    // preserved
+    expect(store.getById('feat_gamma')!.label['en']).toBe('Gamma v2'); // updated
+    expect(store.getById('feat_delta')).toBeDefined();                   // appended
+  });
+
+  /**
+   * Test 16d: Empty array import is a no-op (store unchanged, isDirty set).
+   * Importing [] leaves all existing entities intact.
+   */
+  it('importing an empty array [] leaves existing entities intact', () => {
+    const store = new HomebrewStore();
+    store.add(makeFeature('feat_should_survive'));
+    store.isDirty = false;
+
+    store.importJSON('[]');
+
+    expect(store.entities).toHaveLength(1);
+    expect(store.getById('feat_should_survive')).toBeDefined();
+    expect(store.isDirty).toBe(true); // isDirty always set on importJSON
   });
 
   /**
    * Test 17: Throws SyntaxError on invalid JSON.
    *
    * An invalid JSON string must not corrupt the entity list.
+   * The merge is aborted before any mutation occurs.
    */
-  it('throws SyntaxError for invalid JSON input', () => {
+  it('throws SyntaxError for invalid JSON input and leaves store unchanged', () => {
     const store = new HomebrewStore();
     store.add(makeFeature('feat_protected'));
 
@@ -450,13 +529,18 @@ describe('HomebrewStore — importJSON()', () => {
    * Test 18: Throws TypeError when root JSON value is not an array.
    *
    * The DataLoader expects an array; an object at the root is a programmer error.
+   * No mutation occurs before the throw.
    */
   it('throws TypeError when the root JSON value is not an array', () => {
     const store = new HomebrewStore();
+    store.add(makeFeature('feat_protected_2'));
 
     expect(() => store.importJSON(JSON.stringify({ id: 'race_elf' }))).toThrow(TypeError);
     expect(() => store.importJSON('null')).toThrow(TypeError);
     expect(() => store.importJSON('42')).toThrow(TypeError);
+    // Store must be intact after all failed attempts
+    expect(store.entities).toHaveLength(1);
+    expect(store.getById('feat_protected_2')).toBeDefined();
   });
 });
 

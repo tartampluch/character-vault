@@ -17,12 +17,17 @@
       2. A D&D plain-English tooltip  — one sentence explaining what the type
          models, when to use it, and a concrete example.
 
-  STACKING BADGE CATEGORIES:
-    ALWAYS STACKS  — base, untyped, dodge, circumstance, synergy, multiplier
+  STACKING BADGE CATEGORIES (24 ModifierType values total — primitives.ts):
+    ALWAYS STACKS  — base, untyped, dodge, circumstance, synergy, multiplier  (6)
     BEST WINS      — armor, deflection, enhancement, insight, luck, morale,
                      natural_armor, profane, racial, resistance, sacred,
-                     shield, size, competence, inherent
-    SPECIAL        — setAbsolute, damage_reduction, max_dex_cap
+                     shield, size, competence, inherent                       (15)
+    SPECIAL        — setAbsolute, damage_reduction, max_dex_cap               (3)
+
+  NOTE: Earlier versions of this spec listed 23 types.  The `resistance` type
+  (bonus to saving throws — Cloak of Resistance, etc.) was added during Phase 4
+  but the spec comment was not updated.  The implementation correctly lists all
+  24 values from `primitives.ts`.
 
   LAYOUT:
     A two-column grid on desktop; single column on mobile.

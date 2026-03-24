@@ -92,11 +92,14 @@
   );
 
   /** EditorContext provided to all child sub-forms.
-   *  mode is snapshotted — it doesn't change after the form mounts. */
+   *  mode is snapshotted — it doesn't change after the form mounts.
+   *  dataLoader is the application singleton; tests can override via setContext
+   *  with a pre-populated DataLoader instance for full isolation. */
   const ctx: EditorContext = {
     feature,
-    mode: untrack(() => mode),
-    store: homebrewStore,
+    mode:       untrack(() => mode),
+    store:      homebrewStore,
+    dataLoader: dataLoader,
     get hasOverrideWarning() { return hasOverrideWarning; },
   };
 
@@ -155,6 +158,34 @@
   class="flex flex-col gap-5"
   onsubmit={(e) => { e.preventDefault(); handleSave(); }}
 >
+
+  <!-- STICKY OVERRIDE WARNING BANNER
+       Shown at the top of the form (sticky, always visible while scrolling)
+       whenever the entity id collides with a non-homebrew SRD entity already
+       in the DataLoader cache.
+       CoreFieldsSection also shows an inline amber banner near the ID field —
+       this sticky version ensures the warning is visible throughout long forms.
+       ARCHITECTURE.md §21.5.4 — "Sticky Override Warning banner driven by
+       ctx.hasOverrideWarning". -->
+  {#if hasOverrideWarning}
+    <div
+      class="sticky top-0 z-10 flex items-start gap-3 rounded-lg border border-amber-600/40
+             bg-amber-900/20 px-4 py-3 text-sm text-amber-300 shadow-lg"
+      role="alert"
+      aria-live="polite"
+      data-testid="override-warning-banner"
+    >
+      <span class="text-lg leading-none select-none" aria-hidden="true">⚠</span>
+      <div class="flex flex-col gap-0.5">
+        <p class="font-semibold">Override Warning</p>
+        <p class="text-xs text-amber-400/80">
+          The ID <code class="font-mono">{feature.id}</code> already exists in a loaded rule
+          source. This entity will <strong>override</strong> the existing one for this campaign.
+          Use <code class="font-mono">merge: "partial"</code> to extend it additively.
+        </p>
+      </div>
+    </div>
+  {/if}
 
   <!-- CORE FIELDS (always) -->
   <CoreFieldsSection />

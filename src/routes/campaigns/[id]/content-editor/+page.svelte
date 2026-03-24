@@ -244,8 +244,9 @@
     {#snippet children()}
       <div class="flex flex-col gap-4">
         <p class="text-xs text-text-muted">
-          Paste a JSON array of Feature objects. This will
-          <strong>replace all current entities</strong> in the store.
+          Paste a JSON array of Feature objects. Each entity is <strong>merged by ID</strong>:
+          existing entities with matching IDs are updated; new IDs are added;
+          entities already in the store that are <em>absent</em> from the import are left untouched.
         </p>
 
         {#if importError}

@@ -325,9 +325,28 @@ export class HomebrewStore {
   }
 
   /**
-   * Replaces the entire entity list with a parsed JSON array.
+   * Merges a parsed JSON array of Feature objects into the current entity list.
    * Used by the "Import JSON" feature in ContentLibraryPage (Phase 21.5.1).
    * Sets `isDirty = true` so the imported content is persisted.
+   *
+   * MERGE SEMANTICS (upsert-by-id, also called "import-merge"):
+   *   For each entity in the imported array:
+   *     • If an entity with the same `id` already exists in the store → it is
+   *       replaced with the imported version (same semantics as `add()` duplicate
+   *       handling: the imported file wins, acting as an update).
+   *     • If no entity with that `id` exists → it is appended to the list.
+   *   Entities already in the store whose `id` does NOT appear in the imported
+   *   array are LEFT UNTOUCHED.
+   *
+   * WHY MERGE INSTEAD OF REPLACE?
+   *   A replace-all import would silently destroy entities the GM had already
+   *   authored whenever they imported a partial file (e.g., importing only
+   *   the race entities while also having feats in the store).  Merge lets the
+   *   GM safely import additions and updates without losing unrelated content.
+   *
+   *   If a complete replacement is intentional (e.g., restoring a full backup),
+   *   the GM should first use the "Delete All" flow or clear the store manually
+   *   before importing.
    *
    * @param jsonString - A JSON array of Feature objects.
    * @throws {SyntaxError} if `jsonString` is not valid JSON.
@@ -338,8 +357,25 @@ export class HomebrewStore {
     if (!Array.isArray(parsed)) {
       throw new TypeError('[HomebrewStore] importJSON: root value must be a JSON array.');
     }
-    this._entities = parsed as Feature[];
-    this.isDirty = true;
+
+    const incoming = parsed as Feature[];
+
+    // Build a mutable copy of the existing entity list so we can upsert in-place.
+    const merged = [...this._entities];
+
+    for (const entity of incoming) {
+      const existingIdx = merged.findIndex(e => e.id === entity.id);
+      if (existingIdx !== -1) {
+        // Replace: imported version takes precedence over the stored version.
+        merged[existingIdx] = entity;
+      } else {
+        // Append: new entity not yet in the store.
+        merged.push(entity);
+      }
+    }
+
+    this._entities = merged;
+    this.isDirty   = true;
   }
 
   // ---------------------------------------------------------------------------
