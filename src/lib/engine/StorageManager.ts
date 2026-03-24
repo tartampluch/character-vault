@@ -99,8 +99,10 @@ export function setCsrfToken(token: string): void {
 
 /**
  * Returns headers for API requests, including CSRF and Content-Type.
+ * Exported so other stores (e.g. HomebrewStore) can share the same CSRF token
+ * without duplicating the token-management logic.
  */
-function apiHeaders(): Record<string, string> {
+export function apiHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
