@@ -368,7 +368,7 @@ _See `ARCHITECTURE.md` §21 for the complete design specification._
 
 _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` wrapper with focus trap, Escape-to-close, and backdrop close._
 
-- [ ] **21.2.1 PipelinePickerModal:** Create `src/lib/components/content-editor/PipelinePickerModal.svelte`. Displays all known pipeline IDs grouped by namespace: `attributes.*`, `combatStats.*`, `saves.*`, `skills.*`, `resources.*`. Sections are collapsible. Text search filter. Each row shows the pipeline ID, a D&D-meaningful label, and the default base value. Allows typing a custom pipeline ID for homebrew pipelines not in the default set. Emits `pipeline-picked` with the chosen ID.
+- [x] **21.2.1 PipelinePickerModal:** Create `src/lib/components/content-editor/PipelinePickerModal.svelte`. Displays all known pipeline IDs grouped by namespace: `attributes.*`, `combatStats.*`, `saves.*`, `skills.*`, `resources.*`. Sections are collapsible. Text search filter. Each row shows the pipeline ID, a D&D-meaningful label, and the default base value. Allows typing a custom pipeline ID for homebrew pipelines not in the default set. Emits `pipeline-picked` with the chosen ID.
 
 - [ ] **21.2.2 FeaturePickerModal:** Create `src/lib/components/content-editor/FeaturePickerModal.svelte`. Searchable list of all Feature IDs from `DataLoader` (SRD + homebrew). Filter by category (multi-select checkboxes) and free-text search on `id` / `label`. Each row shows ID, category badge, label. Clicking a row previews the feature description in a side pane. Supports single-select and multi-select modes via a `multiple` prop. Emits `feature-picked` with `ID[]`.
 
