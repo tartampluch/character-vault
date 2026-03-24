@@ -4,20 +4,25 @@
  * @description REST controller for Campaign resources.
  *
  * ENDPOINTS:
- *   GET  /api/campaigns                   → index()
- *   POST /api/campaigns                   → create()
- *   GET  /api/campaigns/{id}              → show($id)
- *   PUT  /api/campaigns/{id}              → update($id)
- *   GET  /api/campaigns/{id}/sync-status  → syncStatus($id)
+ *   GET  /api/campaigns                              → index()
+ *   POST /api/campaigns                              → create()
+ *   GET  /api/campaigns/{id}                         → show($id)
+ *   PUT  /api/campaigns/{id}                         → update($id)
+ *   GET  /api/campaigns/{id}/sync-status             → syncStatus($id)
+ *   GET  /api/campaigns/{id}/homebrew-rules          → getHomebrewRules($id)
+ *   PUT  /api/campaigns/{id}/homebrew-rules          → setHomebrewRules($id)
  *
  * VISIBILITY RULES:
  *   - All authenticated users can list campaigns they own or belong to.
  *   - GMs get `gmGlobalOverrides` in the show() response; players do not.
  *   - Only the campaign owner (or a GM) can update a campaign.
+ *   - Homebrew rules (GET) are readable by all authenticated users in the campaign.
+ *   - Homebrew rules (PUT) are writable by GMs only.
  *
  * @see api/auth.php for requireAuth(), requireGameMaster()
  * @see api/Database.php for Database::getInstance()
  * @see ARCHITECTURE.md Phase 14.5 for the full specification.
+ * @see ARCHITECTURE.md §21.1 for the homebrew rule source design.
  */
 
 declare(strict_types=1);
@@ -272,5 +277,156 @@ class CampaignController
             'campaignUpdatedAt'    => (int)$campaign['updated_at'],
             'characterTimestamps'  => $charTimestamps,
         ]);
+    }
+
+    // ============================================================
+    // GET /api/campaigns/{id}/homebrew-rules
+    // ============================================================
+
+    /**
+     * Returns the campaign-scoped homebrew rule entities as a JSON array.
+     *
+     * VISIBILITY:
+     *   Accessible to any authenticated user (GM and players alike).
+     *   The homebrew entities are needed by the DataLoader on the frontend so
+     *   all players can see newly-authored races, feats, spells, etc.
+     *
+     * RESPONSE (200):
+     *   A JSON array of Feature-like objects — the raw parsed value of
+     *   `campaigns.homebrew_rules_json`. An empty array `[]` is returned when
+     *   no homebrew content has been authored yet.
+     */
+    public static function getHomebrewRules(string $id): void
+    {
+        // Any authenticated user can read homebrew rules for their campaign.
+        requireAuth();
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare('SELECT homebrew_rules_json FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        $campaign = $stmt->fetch();
+
+        if (!$campaign) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        // Return the stored JSON array directly, parsing it so the response is
+        // a proper JSON array rather than a double-encoded string.
+        $rules = json_decode($campaign['homebrew_rules_json'] ?? '[]', true) ?? [];
+
+        http_response_code(200);
+        echo json_encode($rules);
+    }
+
+    // ============================================================
+    // PUT /api/campaigns/{id}/homebrew-rules
+    // ============================================================
+
+    /**
+     * Replaces the entire campaign-scoped homebrew rule array.
+     *
+     * AUTHORISATION:
+     *   GM only. Returns 403 for non-GM authenticated users.
+     *
+     * VALIDATION:
+     *   - Body must be valid JSON.                          → 422 on failure
+     *   - Root value must be a JSON array.                  → 422 on failure
+     *   - Raw request body must not exceed 2 MB.            → 413 on failure
+     *
+     * WHY REPLACE-ALL SEMANTICS?
+     *   The homebrew store is the canonical source: the frontend sends the
+     *   entire (potentially reordered or pruned) entity list on each save.
+     *   Partial-patch semantics would require entity-level diffing on the server,
+     *   adding complexity without benefit since the payload is always the
+     *   authoritative, already-edited state from HomebrewStore.
+     *
+     * SIDE EFFECT:
+     *   Updates `campaigns.updated_at` so that the sync-status polling endpoint
+     *   picks up the change and connected clients re-fetch campaign data.
+     *
+     * RESPONSE (200):
+     *   { "id": "<campaignId>", "updatedAt": <unix_timestamp> }
+     */
+    public static function setHomebrewRules(string $id): void
+    {
+        // Only GMs may write homebrew rules.
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // ---- 413 Request Entity Too Large ----------------------------------------
+        // Limit raw body size to 2 MB (2 097 152 bytes) before attempting to read it.
+        // file_get_contents('php://input') buffers the entire body in memory, so we
+        // check Content-Length first as a fast gate. Note: Content-Length may be
+        // absent (e.g., chunked transfer); we also enforce the limit after reading.
+        $maxBytes = 2 * 1024 * 1024; // 2 MB
+        $contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int)$_SERVER['CONTENT_LENGTH'] : 0;
+
+        if ($contentLength > $maxBytes) {
+            http_response_code(413);
+            echo json_encode([
+                'error'   => 'RequestTooLarge',
+                'message' => 'Homebrew rules payload must not exceed 2 MB.',
+            ]);
+            return;
+        }
+
+        $rawBody = file_get_contents('php://input');
+
+        if (strlen($rawBody) > $maxBytes) {
+            http_response_code(413);
+            echo json_encode([
+                'error'   => 'RequestTooLarge',
+                'message' => 'Homebrew rules payload must not exceed 2 MB.',
+            ]);
+            return;
+        }
+
+        // ---- 422 Unprocessable Entity — JSON validity ----------------------------
+        // json_decode returns null for invalid JSON AND for a literal JSON null.
+        // We handle both cases explicitly below.
+        $decoded = json_decode($rawBody, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(422);
+            echo json_encode([
+                'error'   => 'UnprocessableEntity',
+                'message' => 'Request body is not valid JSON: ' . json_last_error_msg(),
+            ]);
+            return;
+        }
+
+        // ---- 422 Unprocessable Entity — must be a JSON array ---------------------
+        // DataLoader expects an array of Feature objects. Reject objects, primitives, etc.
+        if (!is_array($decoded) || array_is_list($decoded) === false) {
+            http_response_code(422);
+            echo json_encode([
+                'error'   => 'UnprocessableEntity',
+                'message' => 'Request body must be a JSON array of Feature objects.',
+            ]);
+            return;
+        }
+
+        // ---- Verify the campaign exists (404) ------------------------------------
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        // ---- Persist & update timestamp ------------------------------------------
+        // Re-encode to guarantee consistent JSON formatting (no extra whitespace or
+        // potentially malicious unicode escapes from the raw body are stored verbatim).
+        $normalizedJson = json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $now = time();
+
+        $stmt = $db->prepare('UPDATE campaigns SET homebrew_rules_json = ?, updated_at = ? WHERE id = ?');
+        $stmt->execute([$normalizedJson, $now, $id]);
+
+        http_response_code(200);
+        echo json_encode(['id' => $id, 'updatedAt' => $now]);
     }
 }

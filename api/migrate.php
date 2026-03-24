@@ -14,7 +14,8 @@
  * TABLES:
  *   - users     (id, username, password_hash, display_name, is_game_master)
  *   - campaigns (id, title, description, poster_url, banner_url, owner_id,
- *                chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
+ *                chapters_json, enabled_rule_sources_json, gm_global_overrides_text,
+ *                homebrew_rules_json, updated_at)
  *   - characters (id, campaign_id, owner_id, name, is_npc, character_json,
  *                 gm_overrides_json, updated_at)
  *
@@ -67,6 +68,20 @@ function migrate(?PDO $pdo = null): void
     // ============================================================
     // CAMPAIGNS TABLE
     // ============================================================
+    //
+    // homebrew_rules_json (Phase 21.1.1):
+    //   Stores the campaign-scoped homebrew entity array as a JSON TEXT column.
+    //   Default is an empty JSON array '[]'.
+    //
+    //   SCOPE: campaign (vs. global server-side files stored in storage/rules/).
+    //   VISIBILITY: Readable by all authenticated users in the campaign (GM + players).
+    //   WRITEABLE: GM only — PUT /api/campaigns/{id}/homebrew-rules.
+    //
+    //   FORMAT: A JSON-encoded array of Feature-like objects — same format as
+    //   static/rules/*.json files — which DataLoader injects into the resolution
+    //   chain as the virtual source named "user_homebrew" (after all file sources,
+    //   before gmGlobalOverrides). See ARCHITECTURE.md §21.1 for the full chain.
+    //
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS campaigns (
             id                           TEXT PRIMARY KEY,
@@ -78,10 +93,32 @@ function migrate(?PDO $pdo = null): void
             chapters_json                TEXT NOT NULL DEFAULT \'[]\',
             enabled_rule_sources_json    TEXT NOT NULL DEFAULT \'[]\',
             gm_global_overrides_text     TEXT NOT NULL DEFAULT \'[]\',
+            homebrew_rules_json          TEXT NOT NULL DEFAULT \'[]\',
             updated_at                   INTEGER NOT NULL DEFAULT (strftime(\'%s\', \'now\')),
             FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
         )
     ');
+
+    // ============================================================
+    // ADDITIVE MIGRATION — homebrew_rules_json (Phase 21.1.1)
+    // ============================================================
+    //
+    // WHY ALTER TABLE?
+    //   CREATE TABLE IF NOT EXISTS is idempotent for the initial schema, but it
+    //   does NOT add columns to an already-existing table. On databases created by
+    //   a previous version (without homebrew_rules_json), we must add the column
+    //   explicitly. We use a try/catch instead of a PRAGMA table_info() loop
+    //   because it's simpler and SQLite's ALTER TABLE ADD COLUMN is itself
+    //   idempotent-by-error — we just swallow the "duplicate column" exception.
+    //
+    try {
+        $pdo->exec("ALTER TABLE campaigns ADD COLUMN homebrew_rules_json TEXT NOT NULL DEFAULT '[]'");
+    } catch (\PDOException $e) {
+        // "duplicate column name" means the column already exists — safe to ignore.
+        if (strpos($e->getMessage(), 'duplicate column') === false) {
+            throw $e;
+        }
+    }
 
     // ============================================================
     // CHARACTERS TABLE

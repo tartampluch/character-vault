@@ -10,11 +10,13 @@
  *     GET    /api/auth/me          → handleMe()        (auth.php)
  *
  *   Campaigns:
- *     GET    /api/campaigns             → CampaignController::index()
- *     POST   /api/campaigns             → CampaignController::create()
- *     GET    /api/campaigns/{id}        → CampaignController::show($id)
- *     PUT    /api/campaigns/{id}        → CampaignController::update($id)
- *     GET    /api/campaigns/{id}/sync-status → CampaignController::syncStatus($id)
+ *     GET    /api/campaigns                          → CampaignController::index()
+ *     POST   /api/campaigns                          → CampaignController::create()
+ *     GET    /api/campaigns/{id}                     → CampaignController::show($id)
+ *     PUT    /api/campaigns/{id}                     → CampaignController::update($id)
+ *     GET    /api/campaigns/{id}/sync-status         → CampaignController::syncStatus($id)
+ *     GET    /api/campaigns/{id}/homebrew-rules      → CampaignController::getHomebrewRules($id)
+ *     PUT    /api/campaigns/{id}/homebrew-rules      → CampaignController::setHomebrewRules($id)
  *
  *   Characters:
  *     GET    /api/characters?campaignId=X → CharacterController::index()
@@ -113,6 +115,16 @@ try {
 
     } elseif (preg_match('#^/campaigns/([^/]+)/sync-status$#', $path, $m) && $method === 'GET') {
         CampaignController::syncStatus($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/homebrew-rules$#', $path, $m) && $method === 'GET') {
+        // Homebrew rules are readable by any authenticated user in the campaign.
+        // No CSRF token needed for GET requests.
+        CampaignController::getHomebrewRules($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/homebrew-rules$#', $path, $m) && $method === 'PUT') {
+        // CSRF protection required: this mutates DB state and is GM-only.
+        verifyCsrfToken();
+        CampaignController::setHomebrewRules($m[1]);
 
     } elseif ($path === '/characters' && $method === 'GET') {
         CharacterController::index();

@@ -356,7 +356,7 @@ _See `ARCHITECTURE.md` §21 for the complete design specification._
 
 #### 21.1 — Foundation: Homebrew Rule Source Backend & DataLoader Integration
 
-- [ ] **21.1.1 Database Migration (Campaign Scope):** Add `homebrew_rules_json TEXT DEFAULT '[]'` to the `campaigns` table. Create `GET /api/campaigns/{id}/homebrew-rules` (returns the JSON array; accessible to GM and players), and `PUT /api/campaigns/{id}/homebrew-rules` (replaces the entire array; GM only; returns 403 for non-GM, 422 for invalid JSON, 413 if body > 2 MB). Update `campaigns.updated_at` on PUT.
+- [x] **21.1.1 Database Migration (Campaign Scope):** Add `homebrew_rules_json TEXT DEFAULT '[]'` to the `campaigns` table. Create `GET /api/campaigns/{id}/homebrew-rules` (returns the JSON array; accessible to GM and players), and `PUT /api/campaigns/{id}/homebrew-rules` (replaces the entire array; GM only; returns 403 for non-GM, 422 for invalid JSON, 413 if body > 2 MB). Update `campaigns.updated_at` on PUT.
 
 - [ ] **21.1.2 Global Rule Source API:** Create `storage/rules/` as a writable server directory (outside the web root, served via a PHP router). Implement `GET /api/global-rules` (lists all `.json` files with filename and byte size; GM only), `PUT /api/global-rules/{filename}` (writes the file; validates filename as `[0-9a-z_-]+\.json`; GM only; 422 on invalid name; 413 if body > 2 MB), `DELETE /api/global-rules/{filename}` (GM only). Filenames set alphabetical load order alongside `static/rules/` files (e.g., `50_my_setting.json` loads after `01_d20srd_psionics`).
 
