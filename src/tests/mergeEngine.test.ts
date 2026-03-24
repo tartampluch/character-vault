@@ -1691,3 +1691,389 @@ describe('DataLoader injection: partial-merge homebrew extends SRD base', () => 
     expect(elf!.grantedFeatures).not.toContain('-feat_low_light_vision');
   });
 });
+
+// ============================================================
+// PHASE 21.7.8 — Override-by-ID Integration Test
+// ============================================================
+//
+// Full end-to-end cycle exercising the COMPLETE override-by-ID pipeline:
+//
+//   HomebrewStore  →  DataLoader.loadRuleSources  →  feature cache
+//
+// Spec (PROGRESS.md §21.7.8):
+//   1. Entity with id: "race_elf" added to HomebrewStore.
+//   2. HomebrewStore serialises the entity array to JSON
+//      (toJSON() → campaignHomebrewRulesJson argument).
+//   3. DataLoader.loadRuleSources() injected with the JSON.
+//   4. Result: cache contains the HOMEBREW race_elf, not the SRD one.
+//   5. SRD-only fields absent (replace semantics — homebrew fully replaced SRD).
+//   6. Switching to merge: "partial" → SRD base tags still present AND
+//      homebrew tags appended — additive merge confirmed.
+//
+// WHY IMPORT HomebrewStore?
+//   This test verifies the complete serialization path:
+//   HomebrewStore.toJSON() → DataLoader.loadRuleSources().
+//   Using the store's own toJSON() surface ensures the integration is tested
+//   as production code would call it, not just JSON.stringify directly.
+//
+// FETCH MOCK:
+//   Uses the same exact-match buildFetchMock from the Phase 21.7.4 suites above.
+//   The SRD mock serves race_elf from a static file, and the global-rules
+//   endpoint returns an empty list (no storage/rules/ files in this test).
+// ============================================================
+
+import { HomebrewStore } from '$lib/engine/HomebrewStore.svelte';
+
+// ---------------------------------------------------------------------------
+// Override-by-ID fixtures
+// ---------------------------------------------------------------------------
+
+const SRD_ELF_OBJ: Record<string, unknown> = {
+  id:               'race_elf',
+  category:         'race',
+  label:            { en: 'Elf (SRD)' },
+  description:      { en: 'The SRD base elf.' },
+  ruleSource:       'srd_core',
+  tags:             ['race', 'elf', 'srd_tag', 'srd_exclusive'],
+  grantedModifiers: [],
+  grantedFeatures:  ['feat_low_light_vision', 'feat_srd_immunity'],
+};
+
+describe('Override-by-ID integration: HomebrewStore → DataLoader full cycle', () => {
+  let loader: DataLoader;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * CYCLE TEST 1 (spec step 1–5):
+   * Add a homebrew race_elf to HomebrewStore, serialize via toJSON(),
+   * inject into loadRuleSources() as campaignHomebrewRulesJson.
+   * Verify the HOMEBREW entity is in the cache and SRD-only fields are absent
+   * (replace semantics: homebrew fully replaced the SRD entity).
+   */
+  it('homebrew entity with same id as SRD entity replaces it completely (replace semantics)', async () => {
+    loader = new DataLoader();
+
+    // Step 1: Create HomebrewStore and add a homebrew race_elf.
+    const store = new HomebrewStore();
+    store.add({
+      id:               'race_elf',
+      category:         'race',
+      label:            { en: 'Elf (Homebrew)' },
+      description:      { en: 'Our campaign-specific elf.' },
+      ruleSource:       'user_homebrew',
+      tags:             ['race', 'elf', 'homebrew_tag'],
+      grantedModifiers: [],
+      grantedFeatures:  ['feat_homebrew_ability'],
+    });
+
+    // Confirm store has the entity and is dirty (unsaved).
+    expect(store.entities).toHaveLength(1);
+    expect(store.entities[0].id).toBe('race_elf');
+    expect(store.isDirty).toBe(true);
+
+    // Step 2: Serialize via HomebrewStore.toJSON().
+    const campaignJson = store.toJSON();
+    expect(() => JSON.parse(campaignJson)).not.toThrow();
+    expect(JSON.parse(campaignJson)).toHaveLength(1);
+
+    // Step 3: Provide an SRD static file with the same entity.
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF_OBJ],
+      '/api/global-rules':             [],
+    }));
+
+    // Step 4: Inject into DataLoader as campaign homebrew.
+    await loader.loadRuleSources(['srd_core'], undefined, campaignJson);
+
+    // Step 5: Verify the HOMEBREW entity wins (campaign layer > static layer).
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+
+    // Homebrew label, not SRD label.
+    expect(elf!.label['en']).toBe('Elf (Homebrew)');
+
+    // ruleSource is stamped as 'user_homebrew' by DataLoader.#applyCampaignHomebrew.
+    expect(elf!.ruleSource).toBe('user_homebrew');
+
+    // Homebrew tags present.
+    expect(elf!.tags).toContain('homebrew_tag');
+    expect(elf!.tags).toContain('elf');
+
+    // SRD-only fields absent (replace semantics — full replacement, not merge).
+    expect(elf!.tags).not.toContain('srd_tag');
+    expect(elf!.tags).not.toContain('srd_exclusive');
+
+    // SRD-only grantedFeatures absent.
+    expect(elf!.grantedFeatures).not.toContain('feat_srd_immunity');
+
+    // Homebrew-specific grantedFeature present.
+    expect(elf!.grantedFeatures).toContain('feat_homebrew_ability');
+  });
+
+  /**
+   * CYCLE TEST 2 (spec step 6 — partial merge path):
+   * Same cycle but the homebrew entity declares merge: "partial".
+   * SRD BASE tags must still be present (preserved from the static layer),
+   * AND homebrew tags must be appended (additive merge).
+   *
+   * WHY THIS MATTERS:
+   *   A GM may want to tweak an SRD elf without losing all its base properties.
+   *   merge: "partial" is the non-destructive override path.
+   */
+  it('homebrew entity with merge="partial" appends tags to SRD base (additive merge)', async () => {
+    loader = new DataLoader();
+
+    // Step 1: HomebrewStore with a PARTIAL homebrew race_elf.
+    const store = new HomebrewStore();
+    store.add({
+      id:               'race_elf',
+      category:         'race',
+      label:            { en: 'Elf (Partial Homebrew)' },
+      description:      { en: '' },
+      ruleSource:       'user_homebrew',
+      merge:            'partial',
+      tags:             ['homebrew_partial_tag'],    // to be APPENDED
+      grantedModifiers: [],
+      grantedFeatures:  ['feat_bonus_cantrip'],      // to be ADDED
+    });
+
+    // Verify entity in store.
+    expect(store.entities[0].merge).toBe('partial');
+
+    // Step 2: Serialize.
+    const campaignJson = store.toJSON();
+
+    // Step 3: Static file provides SRD base.
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF_OBJ],
+      '/api/global-rules':             [],
+    }));
+
+    // Step 4: Inject.
+    await loader.loadRuleSources(['srd_core'], undefined, campaignJson);
+
+    // Step 5: Verify SRD tags preserved AND homebrew tags appended.
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+
+    // SRD base tags PRESERVED (partial merge does not replace).
+    expect(elf!.tags).toContain('srd_tag');
+    expect(elf!.tags).toContain('srd_exclusive');
+    expect(elf!.tags).toContain('race');
+    expect(elf!.tags).toContain('elf');
+
+    // Homebrew tag APPENDED.
+    expect(elf!.tags).toContain('homebrew_partial_tag');
+
+    // SRD grantedFeatures PRESERVED.
+    expect(elf!.grantedFeatures).toContain('feat_low_light_vision');
+    expect(elf!.grantedFeatures).toContain('feat_srd_immunity');
+
+    // Homebrew grantedFeature ADDED.
+    expect(elf!.grantedFeatures).toContain('feat_bonus_cantrip');
+
+    // Label OVERWRITTEN by partial (scalar overwrite rule).
+    expect(elf!.label['en']).toBe('Elf (Partial Homebrew)');
+  });
+
+  /**
+   * CYCLE TEST 3 — HomebrewStore.remove() removes entity from DataLoader cycle.
+   * After calling remove() and re-injecting, the entity must revert to SRD.
+   *
+   * WHY TEST REMOVE?
+   *   The GM may delete a homebrew override mid-session. After deletion and
+   *   re-load, the SRD entity must reappear — not leave a ghost.
+   */
+  it('removing homebrew entity from store reverts to SRD entity on next load', async () => {
+    loader = new DataLoader();
+
+    const store = new HomebrewStore();
+    store.add({
+      id:               'race_elf',
+      category:         'race',
+      label:            { en: 'Elf (Homebrew to Delete)' },
+      description:      { en: '' },
+      ruleSource:       'user_homebrew',
+      tags:             ['homebrew_delete_tag'],
+      grantedModifiers: [],
+      grantedFeatures:  [],
+    });
+
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF_OBJ],
+      '/api/global-rules':             [],
+    }));
+
+    // Inject with homebrew present.
+    await loader.loadRuleSources(['srd_core'], undefined, store.toJSON());
+    expect(loader.getFeature('race_elf')!.label['en']).toBe('Elf (Homebrew to Delete)');
+
+    // Remove the homebrew entity from the store.
+    const removed = store.remove('race_elf');
+    expect(removed).toBe(true);
+    expect(store.entities).toHaveLength(0);
+
+    // Re-inject with empty homebrew.
+    loader.clearCache();
+    await loader.loadRuleSources(['srd_core'], undefined, store.toJSON());
+
+    // SRD entity must now be present.
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    expect(elf!.label['en']).toBe('Elf (SRD)');
+    expect(elf!.ruleSource).toBe('srd_core');
+    expect(elf!.tags).toContain('srd_tag');
+    expect(elf!.tags).not.toContain('homebrew_delete_tag');
+  });
+
+  /**
+   * CYCLE TEST 4 — HomebrewStore.update() patchs entity; DataLoader sees new value.
+   * Update a field, re-inject, verify the cache reflects the updated value.
+   */
+  it('update() on homebrew entity is reflected in DataLoader after re-injection', async () => {
+    loader = new DataLoader();
+
+    const store = new HomebrewStore();
+    store.add({
+      id:               'race_elf',
+      category:         'race',
+      label:            { en: 'Elf v1' },
+      description:      { en: '' },
+      ruleSource:       'user_homebrew',
+      tags:             ['v1_tag'],
+      grantedModifiers: [],
+      grantedFeatures:  [],
+    });
+
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':        [],
+      '/api/global-rules': [],
+    }));
+
+    // First injection.
+    await loader.loadRuleSources([], undefined, store.toJSON());
+    expect(loader.getFeature('race_elf')!.label['en']).toBe('Elf v1');
+
+    // Update label via store.
+    store.update('race_elf', { label: { en: 'Elf v2' }, tags: ['v1_tag', 'v2_tag'] });
+    expect(store.getById('race_elf')!.label['en']).toBe('Elf v2');
+
+    // Re-inject.
+    loader.clearCache();
+    await loader.loadRuleSources([], undefined, store.toJSON());
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf!.label['en']).toBe('Elf v2');
+    expect(elf!.tags).toContain('v2_tag');
+  });
+
+  /**
+   * CYCLE TEST 5 — Multiple homebrew entities from a single store inject correctly.
+   * Store holds race_elf (override) + feat_custom (new entity).
+   * After injection: both are in the cache; feat_custom is entirely new.
+   */
+  it('multiple entities from HomebrewStore all appear in DataLoader cache', async () => {
+    loader = new DataLoader();
+
+    const store = new HomebrewStore();
+    store.add({
+      id:               'race_elf',
+      category:         'race',
+      label:            { en: 'Elf (Multi-test)' },
+      description:      { en: '' },
+      ruleSource:       'user_homebrew',
+      tags:             ['elf', 'homebrew'],
+      grantedModifiers: [],
+      grantedFeatures:  [],
+    });
+    store.add({
+      id:               'feat_homebrew_custom',
+      category:         'feat',
+      label:            { en: 'Custom Homebrew Feat' },
+      description:      { en: 'A new feat not in any SRD.' },
+      ruleSource:       'user_homebrew',
+      tags:             ['feat', 'custom_homebrew'],
+      grantedModifiers: [],
+      grantedFeatures:  [],
+    });
+
+    expect(store.entities).toHaveLength(2);
+    const campaignJson = store.toJSON();
+
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':            [],
+      '/api/global-rules': [],
+    }));
+
+    await loader.loadRuleSources([], undefined, campaignJson);
+
+    // Both entities present.
+    expect(loader.getFeature('race_elf')).toBeDefined();
+    expect(loader.getFeature('feat_homebrew_custom')).toBeDefined();
+
+    // Correct labels.
+    expect(loader.getFeature('race_elf')!.label['en']).toBe('Elf (Multi-test)');
+    expect(loader.getFeature('feat_homebrew_custom')!.label['en']).toBe('Custom Homebrew Feat');
+
+    // Both stamped user_homebrew.
+    expect(loader.getFeature('race_elf')!.ruleSource).toBe('user_homebrew');
+    expect(loader.getFeature('feat_homebrew_custom')!.ruleSource).toBe('user_homebrew');
+
+    // getHomebrewRules('campaign') returns exactly 2 entries.
+    const campaignRules = loader.getHomebrewRules('campaign');
+    expect(campaignRules).toHaveLength(2);
+    expect(campaignRules.map(f => f.id).sort()).toEqual(
+      ['feat_homebrew_custom', 'race_elf'].sort()
+    );
+  });
+
+  /**
+   * CYCLE TEST 6 — importJSON() round-trip via DataLoader.
+   * Use HomebrewStore.importJSON() to bulk-replace entities, then inject.
+   * Verifies importJSON → toJSON() → DataLoader is a clean path.
+   */
+  it('importJSON() → toJSON() → DataLoader produces the imported entities', async () => {
+    loader = new DataLoader();
+
+    const store = new HomebrewStore();
+
+    // Bulk-import two entities via importJSON.
+    const bulkEntities = [
+      {
+        id: 'race_gnome', category: 'race',
+        label: { en: 'Gnome (Imported)' }, description: { en: '' },
+        ruleSource: 'user_homebrew',
+        tags: ['race', 'gnome', 'imported'],
+        grantedModifiers: [], grantedFeatures: [],
+      },
+      {
+        id: 'race_halfling', category: 'race',
+        label: { en: 'Halfling (Imported)' }, description: { en: '' },
+        ruleSource: 'user_homebrew',
+        tags: ['race', 'halfling', 'imported'],
+        grantedModifiers: [], grantedFeatures: [],
+      },
+    ];
+
+    store.importJSON(JSON.stringify(bulkEntities));
+    expect(store.entities).toHaveLength(2);
+    expect(store.isDirty).toBe(true);
+
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':            [],
+      '/api/global-rules': [],
+    }));
+
+    await loader.loadRuleSources([], undefined, store.toJSON());
+
+    expect(loader.getFeature('race_gnome')!.label['en']).toBe('Gnome (Imported)');
+    expect(loader.getFeature('race_halfling')!.label['en']).toBe('Halfling (Imported)');
+    expect(loader.getHomebrewRules('campaign')).toHaveLength(2);
+  });
+});

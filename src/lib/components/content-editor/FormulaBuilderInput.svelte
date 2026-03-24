@@ -284,8 +284,11 @@
       // Exact known path
       if (KNOWN_PATHS_SET.has(token)) continue;
 
-      // Template prefix match (e.g. "@classLevels.class_fighter")
-      if (TEMPLATE_PREFIXES.some(prefix => token.startsWith(prefix))) continue;
+      // Template prefix match (e.g. "@classLevels.class_fighter").
+      // Requires the token to have a non-empty suffix beyond the prefix itself —
+      // "@classLevels." alone (empty suffix) should fall through to the partial
+      // check below, not be marked valid before the GM has typed the class ID.
+      if (TEMPLATE_PREFIXES.some(prefix => token.startsWith(prefix) && token.length > prefix.length)) continue;
 
       // Is this a partial prefix? (e.g. "@classLevels." which is a prefix of valid paths)
       const isPartialPrefix = TEMPLATE_PREFIXES.some(p => p.startsWith(token + '.') || p === token);
