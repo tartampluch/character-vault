@@ -58,3 +58,8 @@ composer.lock
 
 # Portable build tools (downloaded by scripts/build.sh — never commit)
 /.build-tools/
+
+# Global rule source files in storage/rules/ are written at runtime by GMs
+# via PUT /api/global-rules/{filename} and must NOT be committed.
+# The directory itself is tracked via storage/rules/.gitkeep.
+/storage/rules/*.json

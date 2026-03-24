@@ -26,7 +26,12 @@
  *     DELETE /api/characters/{id}         → CharacterController::delete($id)
  *
  *   Rules:
- *     GET    /api/rules/list        → RulesController::list()  (returns available source files)
+ *     GET    /api/rules/list                    → RulesController::list()  (returns available source files)
+ *
+ *   Global Rule Sources (Phase 21.1.2):
+ *     GET    /api/global-rules                  → GlobalRulesController::list()
+ *     PUT    /api/global-rules/{filename}       → GlobalRulesController::put($filename)
+ *     DELETE /api/global-rules/{filename}       → GlobalRulesController::delete($filename)
  *
  * MIDDLEWARE CALL ORDER:
  *   1. applyCorsHeaders()     — CORS (must be first to handle OPTIONS preflight)
@@ -53,6 +58,7 @@ require_once __DIR__ . '/middleware.php';
 require_once __DIR__ . '/controllers/CampaignController.php';
 require_once __DIR__ . '/controllers/CharacterController.php';
 require_once __DIR__ . '/controllers/RulesController.php';
+require_once __DIR__ . '/controllers/GlobalRulesController.php';
 
 // ============================================================
 // GLOBAL MIDDLEWARE
@@ -147,6 +153,22 @@ try {
 
     } elseif ($path === '/rules/list' && $method === 'GET') {
         RulesController::list();
+
+    } elseif ($path === '/global-rules' && $method === 'GET') {
+        // Lists all *.json files in storage/rules/ with filename + byte size.
+        // GM only — the ContentLibraryPage uses this to populate the scope panel.
+        GlobalRulesController::list();
+
+    } elseif (preg_match('#^/global-rules/([^/]+)$#', $path, $m) && $method === 'PUT') {
+        // Creates or replaces a named rule file in storage/rules/.
+        // Filename is validated inside the controller (422 on bad name, 413 on size, 422 on bad JSON).
+        verifyCsrfToken();
+        GlobalRulesController::put($m[1]);
+
+    } elseif (preg_match('#^/global-rules/([^/]+)$#', $path, $m) && $method === 'DELETE') {
+        // Removes a named rule file from storage/rules/.
+        verifyCsrfToken();
+        GlobalRulesController::delete($m[1]);
 
     } else {
         http_response_code(404);
