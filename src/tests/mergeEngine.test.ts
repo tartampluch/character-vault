@@ -46,7 +46,7 @@
  * @see ARCHITECTURE.md Phase 17.7
  */
 
-import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll, vi } from 'vitest';
 import { DataLoader } from '$lib/engine/DataLoader';
 import type { Feature, LevelProgressionEntry } from '$lib/types/feature';
 import type { Modifier } from '$lib/types/pipeline';
@@ -1039,5 +1039,655 @@ describe('Merge Engine: edge cases and robustness', () => {
     // Also still findable by original tags
     const divineFeatured = loader.queryFeatures('tag:divine');
     expect(divineFeatured.some(f => f.id === 'class_druid')).toBe(true);
+  });
+});
+
+// ============================================================
+// PHASE 21.7.4 — DataLoader Injection Chain Tests
+// ============================================================
+//
+// These tests exercise the FULL dual-scope resolution chain introduced in
+// Phase 21.1.3 (ARCHITECTURE.md §21.5):
+//
+//   1. Static file sources (static/rules/)            — lowest priority
+//   2. Global file sources (storage/rules/)            — interleaved alphabetically
+//   3. Campaign homebrew  (campaigns.homebrew_rules_json) — above all file sources
+//   4. GM global overrides (campaigns.gmGlobalOverrides)  — highest file-like priority
+//
+// FETCH MOCK STRATEGY FOR INJECTION TESTS:
+//   These tests need more fine-grained control over fetch() than the global
+//   `beforeAll` mock provides (which returns [] for every request). Each
+//   describe block installs its own per-test vi.fn() via `beforeEach`
+//   and restores it in `afterEach`. This overrides the global stub for that
+//   block without interfering with other suites.
+//
+// TEST FEATURE: "race_elf"
+//   A canonical SRD elf race used as the base entity in all injection tests.
+//   Each test simulates a different resolution layer asserting the correct
+//   winner in the priority chain.
+// ============================================================
+
+// ---------------------------------------------------------------------------
+// Shared fixtures for injection tests
+// ---------------------------------------------------------------------------
+
+/** A minimal SRD "race_elf" from the base static rules file. */
+const SRD_ELF: Record<string, unknown> = {
+  id: 'race_elf',
+  category: 'race',
+  label: { en: 'Elf (SRD)' },
+  description: { en: 'The base SRD elf.' },
+  ruleSource: 'srd_core',
+  tags: ['race', 'elf', 'srd_tag'],
+  grantedModifiers: [],
+  grantedFeatures: ['feat_low_light_vision'],
+};
+
+/** Global-file override of race_elf (replace semantics by default). */
+const GLOBAL_ELF: Record<string, unknown> = {
+  id: 'race_elf',
+  category: 'race',
+  label: { en: 'Elf (Global Override)' },
+  description: { en: 'Global server-side customisation.' },
+  ruleSource: 'global_setting',
+  tags: ['race', 'elf', 'global_tag'],
+  grantedModifiers: [],
+  grantedFeatures: ['feat_low_light_vision'],
+};
+
+/** Campaign homebrew override of race_elf (replace semantics). */
+const HOMEBREW_ELF: Record<string, unknown> = {
+  id: 'race_elf',
+  category: 'race',
+  label: { en: 'Elf (Campaign Homebrew)' },
+  description: { en: 'Campaign-scoped homebrew elf.' },
+  ruleSource: 'user_homebrew',
+  tags: ['race', 'elf', 'homebrew_tag'],
+  grantedModifiers: [],
+  grantedFeatures: ['feat_low_light_vision'],
+};
+
+/** GM global override of race_elf (replace semantics). */
+const GM_ELF: Record<string, unknown> = {
+  id: 'race_elf',
+  category: 'race',
+  label: { en: 'Elf (GM Override)' },
+  description: { en: 'GM last-minute adjustment.' },
+  ruleSource: 'gm_override',
+  tags: ['race', 'elf', 'gm_tag'],
+  grantedModifiers: [],
+  grantedFeatures: ['feat_low_light_vision'],
+};
+
+// ---------------------------------------------------------------------------
+// Helper: build a fetch mock that routes by URL
+// ---------------------------------------------------------------------------
+
+/**
+ * Builds a `fetch` mock function whose behaviour is controlled by a URL→response
+ * routing table.  Any URL not in the table falls through to the default: an
+ * empty JSON array (same as the global `beforeAll` stub).
+ *
+ * EXACT MATCHING:
+ *   Uses exact URL equality (`url === key`) so that "/rules/01_srd/races.json"
+ *   does NOT accidentally match the "/rules" discovery key, which is a strict
+ *   prefix of the per-file URL.  Substring matching would cause the file-fetch
+ *   URLs to be mis-routed to the discovery endpoint's response.
+ *
+ * @param routes - Map of exact URL → resolved body (JSON-serialisable).
+ */
+function buildFetchMock(routes: Record<string, unknown>): ReturnType<typeof vi.fn> {
+  return vi.fn().mockImplementation((url: string) => {
+    // Exact-key lookup — O(1), unambiguous.
+    if (Object.prototype.hasOwnProperty.call(routes, url)) {
+      return Promise.resolve({
+        ok: true,
+        headers: { get: () => 'application/json' },
+        json: () => Promise.resolve(routes[url]),
+      });
+    }
+    // Default: empty array (no static files, no global files)
+    return Promise.resolve({
+      ok: true,
+      headers: { get: () => 'application/json' },
+      json: () => Promise.resolve([]),
+    });
+  });
+}
+
+// ============================================================
+// INJECTION TEST 1:
+// Campaign-homebrew entity with the same id as an SRD entity wins (replace)
+// ============================================================
+
+describe('DataLoader injection: campaign homebrew overrides SRD base', () => {
+  let loader: DataLoader;
+
+  beforeEach(() => {
+    loader = new DataLoader();
+    // Fetch mock: /rules returns ["/rules/srd_core/races.json"],
+    // that file returns [SRD_ELF].  No global files (/api/global-rules → []).
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules/srd_core/races.json': [SRD_ELF],
+      '/rules':                     ['/rules/srd_core/races.json'],
+    }));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * ARCHITECTURE.md §21.5:
+   *   "Campaign homebrew JSON is injected after all file sources … but BEFORE
+   *    gmGlobalOverrides."  entity with same id → replace semantics, homebrew wins.
+   *
+   * SETUP:
+   *   Static file layer:      race_elf (SRD)    → label: "Elf (SRD)"
+   *   Campaign homebrew:      race_elf (homebrew) → label: "Elf (Campaign Homebrew)"
+   *   gmGlobalOverrides:      (none)
+   *
+   * EXPECTED: label = "Elf (Campaign Homebrew)", tags contain 'homebrew_tag',
+   *           SRD-only tag 'srd_tag' is absent (replace semantics).
+   */
+  it('campaign-homebrew entity with same id fully replaces SRD entity', async () => {
+    await loader.loadRuleSources(
+      ['srd_core'],
+      undefined,                          // no GM overrides
+      JSON.stringify([HOMEBREW_ELF])      // campaign homebrew
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    expect(elf!.label['en']).toBe('Elf (Campaign Homebrew)');
+    expect(elf!.tags).toContain('homebrew_tag');
+    // SRD base is completely replaced — its exclusive tag is gone
+    expect(elf!.tags).not.toContain('srd_tag');
+  });
+
+  /**
+   * Verify that ruleSource is stamped to "user_homebrew" regardless of what
+   * the homebrew JSON declared, ensuring the entity survives the filter.
+   * ARCHITECTURE.md §21.5: "Stamped with ruleSource:'user_homebrew' (always active)."
+   */
+  it('campaign-homebrew entities are stamped with ruleSource "user_homebrew"', async () => {
+    // Homebrew entity that incorrectly declares ruleSource as something else
+    const badRuleSource = { ...HOMEBREW_ELF, ruleSource: 'some_other_source' };
+    await loader.loadRuleSources(
+      ['srd_core'],
+      undefined,
+      JSON.stringify([badRuleSource])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    // The DataLoader must force ruleSource = "user_homebrew"
+    expect(elf?.ruleSource).toBe('user_homebrew');
+  });
+
+  /**
+   * getHomebrewRules('campaign') should return exactly the campaign-homebrew entity.
+   */
+  it('getHomebrewRules("campaign") returns only campaign-scoped entities', async () => {
+    await loader.loadRuleSources(
+      ['srd_core'],
+      undefined,
+      JSON.stringify([HOMEBREW_ELF])
+    );
+
+    const homebrew = loader.getHomebrewRules('campaign');
+    expect(homebrew).toHaveLength(1);
+    expect(homebrew[0].id).toBe('race_elf');
+    expect(homebrew[0].ruleSource).toBe('user_homebrew');
+  });
+});
+
+// ============================================================
+// INJECTION TEST 2:
+// Global-scope file is interleaved alphabetically between SRD files.
+// ============================================================
+
+describe('DataLoader injection: global files interleaved alphabetically', () => {
+  let loader: DataLoader;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * ARCHITECTURE.md §21.5:
+   *   "Files in storage/rules/ are merged into the alphabetical file sort alongside
+   *    static/rules/ files — their position is determined by filename."
+   *
+   * FILE NAMED "00_z.json" (global) sorts BEFORE "01_*" (SRD) because
+   *   "00_z.json" < "01_srd_core/races.json" alphabetically.
+   * → Global file loads FIRST → SRD file overwrites it.
+   *
+   * SETUP:
+   *   static  "01_srd_core/races.json"   → race_elf (SRD)   label: "Elf (SRD)"
+   *   global  "00_z.json"                → race_elf (global) label: "Elf (Global Override)"
+   *
+   * Expected load order by sortKey: "00_z.json" then "01_srd_core/races.json"
+   * → Because "00" < "01" alphabetically, global loads BEFORE static → SRD wins.
+   */
+  it('global file "00_z.json" loads BEFORE "01_*" SRD files → SRD wins', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd_core/races.json'],
+      '/rules/01_srd_core/races.json': [SRD_ELF],
+      '/api/global-rules':             [{ filename: '00_z.json', bytes: 100 }],
+      '/api/global-rules/00_z.json':   [GLOBAL_ELF],
+    }));
+
+    await loader.loadRuleSources(['srd_core', 'global_setting']);
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    // "01_srd_core/races.json" sorted AFTER "00_z.json" → SRD is loaded last → SRD wins
+    expect(elf!.label['en']).toBe('Elf (SRD)');
+    expect(elf!.tags).toContain('srd_tag');
+    expect(elf!.tags).not.toContain('global_tag');
+  });
+
+  /**
+   * FILE NAMED "99_z.json" sorts AFTER all SRD files because
+   *   "99_z.json" > "01_srd_core/..." alphabetically.
+   * → Global file loads LAST → global file wins.
+   *
+   * SETUP:
+   *   static  "01_srd_core/races.json"   → race_elf (SRD)    label: "Elf (SRD)"
+   *   global  "99_z.json"                → race_elf (global)  label: "Elf (Global Override)"
+   *
+   * Expected load order by sortKey: "01_srd_core/races.json" then "99_z.json"
+   * → Global is loaded AFTER static → global wins.
+   */
+  it('global file "99_z.json" loads AFTER all SRD files → global wins', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd_core/races.json'],
+      '/rules/01_srd_core/races.json': [SRD_ELF],
+      '/api/global-rules':             [{ filename: '99_z.json', bytes: 100 }],
+      '/api/global-rules/99_z.json':   [GLOBAL_ELF],
+    }));
+
+    await loader.loadRuleSources(['srd_core', 'global_setting']);
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    // "99_z.json" sorted AFTER "01_srd_core/races.json" → global is loaded last → global wins
+    expect(elf!.label['en']).toBe('Elf (Global Override)');
+    expect(elf!.tags).toContain('global_tag');
+    expect(elf!.tags).not.toContain('srd_tag');
+  });
+
+  /**
+   * Two global files interleaved correctly in a multi-file sort.
+   * "20_*.json" < "50_*.json" — the 20_ file loads first and 50_ overwrites it.
+   */
+  it('two global files are sorted with each other — higher number wins', async () => {
+    const earlyGlobal: Record<string, unknown> = {
+      ...GLOBAL_ELF,
+      label: { en: 'Elf (20_global)' },
+      tags: ['race', 'elf', 'early_global'],
+    };
+    const lateGlobal: Record<string, unknown> = {
+      ...GLOBAL_ELF,
+      label: { en: 'Elf (50_global)' },
+      tags: ['race', 'elf', 'late_global'],
+    };
+
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                          [],  // No static files
+      '/api/global-rules':               [
+        { filename: '20_early.json', bytes: 50 },
+        { filename: '50_late.json',  bytes: 50 },
+      ],
+      '/api/global-rules/20_early.json': [earlyGlobal],
+      '/api/global-rules/50_late.json':  [lateGlobal],
+    }));
+
+    await loader.loadRuleSources(['global_setting']);
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    // "50_late.json" sorts after "20_early.json" → 50_ wins
+    expect(elf!.label['en']).toBe('Elf (50_global)');
+    expect(elf!.tags).toContain('late_global');
+    expect(elf!.tags).not.toContain('early_global');
+  });
+});
+
+// ============================================================
+// INJECTION TEST 3:
+// user_homebrew (campaign scope) ranks ABOVE global files
+// ============================================================
+
+describe('DataLoader injection: user_homebrew ranks above global files', () => {
+  let loader: DataLoader;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * ARCHITECTURE.md §21.5, resolution chain:
+   *   "3. Campaign homebrew JSON … always active, stored in campaigns.homebrew_rules_json.
+   *    2. Files in storage/rules/ … global homebrew."
+   *   Campaign (layer 3) is applied AFTER global files (layer 2) → campaign wins.
+   *
+   * SETUP:
+   *   global  "50_setting.json"  → race_elf (global)    label: "Elf (Global Override)"
+   *   campaign homebrew          → race_elf (campaign)   label: "Elf (Campaign Homebrew)"
+   *   GM overrides               → (none)
+   *
+   * EXPECTED: campaign homebrew wins because it is injected after all file sources.
+   */
+  it('campaign homebrew overrides a global file with the same entity id', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                          [],
+      '/api/global-rules':               [{ filename: '50_setting.json', bytes: 50 }],
+      '/api/global-rules/50_setting.json': [GLOBAL_ELF],
+    }));
+
+    await loader.loadRuleSources(
+      ['global_setting'],
+      undefined,                         // no GM overrides
+      JSON.stringify([HOMEBREW_ELF])     // campaign homebrew — should win
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    expect(elf!.label['en']).toBe('Elf (Campaign Homebrew)');
+    expect(elf!.tags).toContain('homebrew_tag');
+    expect(elf!.tags).not.toContain('global_tag');
+  });
+
+  /**
+   * Campaign homebrew ranks above BOTH a static file AND a global file with the
+   * same entity id.  All three layers present, campaign must win.
+   */
+  it('campaign homebrew ranks above both static and global files', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                          ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':        [SRD_ELF],
+      '/api/global-rules':               [{ filename: '50_setting.json', bytes: 50 }],
+      '/api/global-rules/50_setting.json': [GLOBAL_ELF],
+    }));
+
+    await loader.loadRuleSources(
+      ['srd_core', 'global_setting'],
+      undefined,
+      JSON.stringify([HOMEBREW_ELF])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf!.label['en']).toBe('Elf (Campaign Homebrew)');
+    expect(elf!.ruleSource).toBe('user_homebrew');
+  });
+});
+
+// ============================================================
+// INJECTION TEST 4:
+// gmGlobalOverrides ranks ABOVE campaign homebrew
+// ============================================================
+
+describe('DataLoader injection: gmGlobalOverrides ranks above campaign homebrew', () => {
+  let loader: DataLoader;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * ARCHITECTURE.md §21.5, resolution chain:
+   *   "4. GM global overrides (campaigns.gmGlobalOverrides)."
+   *   GM overrides are applied last among file-like sources → they win over campaign homebrew.
+   *
+   * SETUP:
+   *   campaign homebrew  → race_elf (campaign)  label: "Elf (Campaign Homebrew)"
+   *   GM global override → race_elf (GM)         label: "Elf (GM Override)"
+   *
+   * EXPECTED: GM override wins.
+   */
+  it('gmGlobalOverrides overwrites campaign homebrew for the same entity id', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':            [],
+      '/api/global-rules': [],
+    }));
+
+    await loader.loadRuleSources(
+      [],
+      JSON.stringify([GM_ELF]),           // GM global override — highest priority
+      JSON.stringify([HOMEBREW_ELF])      // campaign homebrew — should lose
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+    expect(elf!.label['en']).toBe('Elf (GM Override)');
+    expect(elf!.tags).toContain('gm_tag');
+    expect(elf!.tags).not.toContain('homebrew_tag');
+  });
+
+  /**
+   * Full four-layer chain: static → global → campaign → GM.
+   * Each layer adds a distinct tag.  After loading, only the GM entity survives
+   * (replace semantics at each layer).
+   */
+  it('full four-layer chain: static → global → campaign → GM (GM wins)', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                          ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':        [SRD_ELF],
+      '/api/global-rules':               [{ filename: '99_global.json', bytes: 50 }],
+      '/api/global-rules/99_global.json': [GLOBAL_ELF],
+    }));
+
+    await loader.loadRuleSources(
+      ['srd_core', 'global_setting'],
+      JSON.stringify([GM_ELF]),
+      JSON.stringify([HOMEBREW_ELF])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf!.label['en']).toBe('Elf (GM Override)');
+    // Only the GM layer's tag survives (each layer is a full replace)
+    expect(elf!.tags).toContain('gm_tag');
+    expect(elf!.tags).not.toContain('srd_tag');
+    expect(elf!.tags).not.toContain('global_tag');
+    expect(elf!.tags).not.toContain('homebrew_tag');
+  });
+
+  /**
+   * GM override with merge: "partial" adds to the campaign homebrew rather than
+   * replacing it entirely. Proves that merge semantics apply at every layer.
+   */
+  it('gmGlobalOverrides with merge "partial" extends campaign homebrew additively', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':            [],
+      '/api/global-rules': [],
+    }));
+
+    const gmPartial: Record<string, unknown> = {
+      id: 'race_elf',
+      category: 'race',
+      ruleSource: 'gm_override',
+      merge: 'partial',
+      tags: ['gm_partial_tag'],           // appended to campaign homebrew tags
+      grantedModifiers: [],
+      grantedFeatures: [],
+    };
+
+    await loader.loadRuleSources(
+      [],
+      JSON.stringify([gmPartial]),
+      JSON.stringify([HOMEBREW_ELF])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    // Both campaign homebrew tags AND GM partial tags should be present
+    expect(elf!.tags).toContain('homebrew_tag');
+    expect(elf!.tags).toContain('gm_partial_tag');
+    // Base elf tag also preserved (from campaign homebrew layer)
+    expect(elf!.tags).toContain('elf');
+  });
+});
+
+// ============================================================
+// INJECTION TEST 5:
+// merge: "partial" homebrew extends SRD base without clobbering
+// non-overridden fields
+// ============================================================
+
+describe('DataLoader injection: partial-merge homebrew extends SRD base', () => {
+  let loader: DataLoader;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /**
+   * ARCHITECTURE.md §21.5 + §18.3:
+   *   A campaign-homebrew entity declaring merge: "partial" must ADD its fields
+   *   to the existing SRD entity without clobbering non-overridden fields.
+   *
+   * SETUP:
+   *   static file: race_elf (SRD) with tags ["race","elf","srd_tag"]
+   *                and grantedFeatures: ["feat_low_light_vision"]
+   *
+   *   campaign homebrew (partial): adds tag "homebrew_tag", adds grantedFeature
+   *                "feat_elven_weapon_proficiency", changes label "en" only.
+   *
+   * EXPECTED after partial merge:
+   *   - tags: contain both "srd_tag" (preserved) and "homebrew_tag" (appended)
+   *   - grantedFeatures: contain both "feat_low_light_vision" and "feat_elven_weapon_proficiency"
+   *   - label.en updated (scalar overwrite)
+   *   - description.en from SRD preserved (not in partial)
+   */
+  it('partial homebrew appends tags and features without clobbering SRD base', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF],
+    }));
+
+    const partialHomebrew: Record<string, unknown> = {
+      id: 'race_elf',
+      category: 'race',
+      ruleSource: 'user_homebrew',
+      merge: 'partial',
+      label: { en: 'Elf (Homebrew Variant)' },
+      // description NOT provided → must be preserved from SRD base
+      tags: ['homebrew_tag'],
+      grantedModifiers: [],
+      grantedFeatures: ['feat_elven_weapon_proficiency'],
+    };
+
+    await loader.loadRuleSources(
+      ['srd_core'],
+      undefined,
+      JSON.stringify([partialHomebrew])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    expect(elf).toBeDefined();
+
+    // Label scalar overwritten by partial:
+    expect(elf!.label['en']).toBe('Elf (Homebrew Variant)');
+
+    // Description NOT in partial → SRD value preserved:
+    expect(elf!.description?.['en']).toBe('The base SRD elf.');
+
+    // Tags: SRD tags preserved AND homebrew tag appended:
+    expect(elf!.tags).toContain('srd_tag');
+    expect(elf!.tags).toContain('race');
+    expect(elf!.tags).toContain('elf');
+    expect(elf!.tags).toContain('homebrew_tag');
+
+    // grantedFeatures: SRD features preserved AND homebrew feature appended:
+    expect(elf!.grantedFeatures).toContain('feat_low_light_vision');
+    expect(elf!.grantedFeatures).toContain('feat_elven_weapon_proficiency');
+  });
+
+  /**
+   * A partial GM override on top of a partial campaign homebrew on top of SRD:
+   * three-layer additive chain.  Each layer adds a distinct, non-conflicting tag.
+   * All three tag sets must be present in the final result.
+   */
+  it('three-layer partial chain accumulates all tags additively', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF],
+    }));
+
+    const partialHomebrew: Record<string, unknown> = {
+      id: 'race_elf',
+      category: 'race',
+      ruleSource: 'user_homebrew',
+      merge: 'partial',
+      tags: ['homebrew_tag'],
+      grantedModifiers: [],
+      grantedFeatures: [],
+    };
+
+    const partialGm: Record<string, unknown> = {
+      id: 'race_elf',
+      category: 'race',
+      ruleSource: 'gm_override',
+      merge: 'partial',
+      tags: ['gm_tag'],
+      grantedModifiers: [],
+      grantedFeatures: [],
+    };
+
+    await loader.loadRuleSources(
+      ['srd_core'],
+      JSON.stringify([partialGm]),
+      JSON.stringify([partialHomebrew])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    // All three tag sets should be present
+    expect(elf!.tags).toContain('srd_tag');       // from SRD file
+    expect(elf!.tags).toContain('homebrew_tag');  // from campaign homebrew partial
+    expect(elf!.tags).toContain('gm_tag');        // from GM partial override
+  });
+
+  /**
+   * A -prefix deletion in campaign homebrew removes an SRD-defined
+   * grantedFeature.  Other SRD features are preserved.
+   */
+  it('partial-merge homebrew -prefix deletion removes an SRD grantedFeature', async () => {
+    loader = new DataLoader();
+    vi.stubGlobal('fetch', buildFetchMock({
+      '/rules':                        ['/rules/01_srd/races.json'],
+      '/rules/01_srd/races.json':      [SRD_ELF],
+    }));
+
+    const deletionHomebrew: Record<string, unknown> = {
+      id: 'race_elf',
+      category: 'race',
+      ruleSource: 'user_homebrew',
+      merge: 'partial',
+      tags: [],
+      grantedModifiers: [],
+      grantedFeatures: ['-feat_low_light_vision'],  // remove SRD feature
+    };
+
+    await loader.loadRuleSources(
+      ['srd_core'],
+      undefined,
+      JSON.stringify([deletionHomebrew])
+    );
+
+    const elf = loader.getFeature('race_elf');
+    // SRD feature removed by -prefix delegation
+    expect(elf!.grantedFeatures).not.toContain('feat_low_light_vision');
+    // Deletion marker itself must not remain in the array
+    expect(elf!.grantedFeatures).not.toContain('-feat_low_light_vision');
   });
 });
