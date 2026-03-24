@@ -435,7 +435,7 @@
             <FormulaBuilderInput
               id="mod-val-{mod.id}"
               value={mod.value}
-              placeholder="e.g. 2, -1, @attributes.stat_str.derivedModifier"
+              placeholder="e.g. 2, -1, @attributes.stat_strength.derivedModifier"
               onValueChanged={(v) => {
                 // Coerce to number if it looks like a plain number; keep string otherwise.
                 const asNum = Number(v);

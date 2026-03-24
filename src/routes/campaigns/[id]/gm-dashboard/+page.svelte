@@ -85,9 +85,9 @@
   function getStatSummary(char: typeof engine.character) {
     const attrs = char.attributes ?? {};
     return {
-      str:   attrs['stat_str']?.totalValue ?? attrs['stat_str']?.baseValue ?? '?',
-      dex:   attrs['stat_dex']?.totalValue ?? attrs['stat_dex']?.baseValue ?? '?',
-      con:   attrs['stat_con']?.totalValue ?? attrs['stat_con']?.baseValue ?? '?',
+      str:   attrs['stat_strength']?.totalValue ?? attrs['stat_strength']?.baseValue ?? '?',
+      dex:   attrs['stat_dexterity']?.totalValue ?? attrs['stat_dexterity']?.baseValue ?? '?',
+      con:   attrs['stat_constitution']?.totalValue ?? attrs['stat_constitution']?.baseValue ?? '?',
       hp:    char.resources?.['resources.hp']?.currentValue ?? '?',
       maxHp: char.resources?.['resources.hp'] ? engine.phase3_maxHp : '?',
     };
@@ -182,9 +182,9 @@
           </div>
           <div class="flex flex-wrap gap-2">
             {#each [
-              { label: ABILITY_ABBRS['stat_str'], value: stats.str },
-              { label: ABILITY_ABBRS['stat_dex'], value: stats.dex },
-              { label: ABILITY_ABBRS['stat_con'], value: stats.con },
+              { label: ABILITY_ABBRS['stat_strength'], value: stats.str },
+              { label: ABILITY_ABBRS['stat_dexterity'], value: stats.dex },
+              { label: ABILITY_ABBRS['stat_constitution'], value: stats.con },
               { label: 'HP',  value: `${stats.hp}/${stats.maxHp}`, accent: true },
               { label: ui('common.level', engine.settings.language), value: Object.values(selectedChar.classLevels).reduce((a,b) => a+b, 0) },
             ] as chip}

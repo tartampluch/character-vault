@@ -140,7 +140,7 @@
         "id": "psion_pp_int_bonus",
         "sourceId": "class_feature_psion_power_points",
         "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_int.derivedModifier",
+        "value": "@attributes.stat_intelligence.derivedModifier",
         "type": "base",
         "sourceName": { "en": "Psion Intelligence Bonus PP", "fr": "Psion bonus PP Intelligence" }
       }
@@ -343,7 +343,7 @@
         "id": "psywar_pp_wis_bonus",
         "sourceId": "class_feature_psychic_warrior_power_points",
         "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wis.derivedModifier",
+        "value": "@attributes.stat_wisdom.derivedModifier",
         "type": "base",
         "sourceName": { "en": "Psychic Warrior Wisdom Bonus PP", "fr": "Guerrier psychique bonus PP Sagesse" }
       }
@@ -898,7 +898,7 @@
         "id": "wilder_pp_cha_bonus",
         "sourceId": "class_feature_wilder_power_points",
         "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "base",
         "sourceName": { "en": "Wilder Charisma Bonus PP", "fr": "Déchaîné bonus PP Charisme" }
       }
@@ -933,7 +933,7 @@
         "id": "wilder_elude_touch_ac",
         "sourceId": "class_feature_wilder_elude_touch",
         "targetId": "combatStats.ac_touch",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "insight",
         "sourceName": { "en": "Elude Touch", "fr": "Esquiver le contact" }
       }

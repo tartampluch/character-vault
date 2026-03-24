@@ -125,11 +125,11 @@ export interface LevelingJournalClassEntry {
   classLabel: LocalizedString;
   /** The character's level in this class. */
   classLevel: number;
-  /** Total BAB contribution from this class (type "base" modifiers on "combatStats.bab"). */
+  /** Total BAB contribution from this class (type "base" modifiers on "combatStats.base_attack_bonus"). */
   totalBab: number;
-  /** Total Fortitude save base from this class (type "base" modifiers on "saves.fort"). */
+  /** Total Fortitude save base from this class (type "base" modifiers on "saves.fortitude"). */
   totalFort: number;
-  /** Total Reflex save base from this class (type "base" modifiers on "saves.ref"). */
+  /** Total Reflex save base from this class (type "base" modifiers on "saves.reflex"). */
   totalRef: number;
   /** Total Will save base from this class (type "base" modifiers on "saves.will"). */
   totalWill: number;
@@ -224,23 +224,23 @@ export interface SkillPointsBudget {
  *   The GameEngine stores pipelines in several `Record<ID, StatisticPipeline>` maps
  *   on the `Character` object. The map KEYS are the canonical IDs:
  *
- *     character.attributes   → keyed by  "stat_str", "stat_dex", ...  (NO prefix)
- *     character.combatStats  → keyed by  "combatStats.bab", "combatStats.ac_normal"  (WITH prefix)
- *     character.saves        → keyed by  "saves.fort", "saves.ref"  (WITH prefix)
+ *     character.attributes   → keyed by  "stat_strength", "stat_dexterity", ...  (NO prefix)
+ *     character.combatStats  → keyed by  "combatStats.base_attack_bonus", "combatStats.ac_normal"  (WITH prefix)
+ *     character.saves        → keyed by  "saves.fortitude", "saves.reflex"  (WITH prefix)
  *     character.skills       → keyed by  "skill_climb", "skill_jump"  (NO prefix)
  *
  *   However, ARCHITECTURE.md section 4.3 and ANNEXES.md Annex A use the
  *   `"attributes."` prefix in Math Parser @-paths AND sometimes in targetId fields:
  *
- *     @-paths    : "@attributes.stat_str.totalValue"  (always with namespace)
- *     targetId?  : "attributes.stat_str" OR "stat_str"  (both appear in examples)
+ *     @-paths    : "@attributes.stat_strength.totalValue"  (always with namespace)
+ *     targetId?  : "attributes.stat_strength" OR "stat_strength"  (both appear in examples)
  *
  *   The normaliser strips the `"attributes."` prefix from attribute targetIds so
  *   that JSON authors can use either convention and the engine processes them identically.
  *
  *   OTHER NAMESPACES (combatStats.*, saves.*, skill_*) do NOT need normalisation:
  *     - "combatStats.ac_normal" is used consistently both in JSON and as a map key.
- *     - "saves.fort" is used consistently both in JSON and as a map key.
+ *     - "saves.fortitude" is used consistently both in JSON and as a map key.
  *     - "skill_climb" is used consistently both in JSON and as the map key.
  *   Only the 6 main attribute stats (and custom homebrew stats) have this ambiguity.
  *
@@ -251,14 +251,14 @@ function normaliseModifierTargetId(targetId: ID): ID {
   // Strip namespace prefixes to produce the canonical map key used internally.
   //
   // SUPPORTED NORMALISATIONS:
-  //   "attributes.stat_str"          → "stat_str"                (Character.attributes key)
+  //   "attributes.stat_strength"          → "stat_strength"                (Character.attributes key)
   //   "skills.skill_climb"           → "skill_climb"             (Character.skills key)
   //   "resources.X.maxValue"         → "combatStats.X_max"       (virtual max pipeline)
   //
   // WHY TWO FORMS EXIST IN JSON:
   //   Content authors have historically used two conventions:
-  //     - Bare form:       "stat_str",   "skill_climb"   (matches the map key directly)
-  //     - Namespaced form: "attributes.stat_str", "skills.skill_climb"  (more readable)
+  //     - Bare form:       "stat_strength",   "skill_climb"   (matches the map key directly)
+  //     - Namespaced form: "attributes.stat_strength", "skills.skill_climb"  (more readable)
   //   Both are valid; this function normalises both to the map-key form so that all
   //   downstream comparisons work regardless of which convention the JSON uses.
   //
@@ -274,7 +274,7 @@ function normaliseModifierTargetId(targetId: ID): ID {
   //   combatStats pipeline and be read back as the pool's effective maximum.
   //
   // OTHER NAMESPACES are returned unchanged — they ARE the map key already:
-  //   "combatStats.bab", "saves.fort", "resources.hp", "slots.ring"
+  //   "combatStats.base_attack_bonus", "saves.fortitude", "resources.hp", "slots.ring"
   if (targetId.startsWith('attributes.')) {
     return targetId.slice('attributes.'.length);
   }
@@ -306,7 +306,7 @@ function normaliseModifierTargetId(targetId: ID): ID {
  *
  * @param pipelineId             - Unique skill pipeline ID (e.g., "skill_climb").
  * @param label                  - Localised display name.
- * @param keyAbility             - The governing ability score ID (e.g., "stat_str").
+ * @param keyAbility             - The governing ability score ID (e.g., "stat_strength").
  * @param appliesArmorCheckPenalty - Whether armour check penalty affects this skill.
  * @param canBeUsedUntrained     - Whether the skill can be used without any ranks.
  * @returns A blank SkillPipeline ready for injection into `Character.skills`.
@@ -421,12 +421,12 @@ export function createEmptyCharacter(id: ID, name: string): Character {
   // At runtime, `getAttrLabel()` above attempts to load from the data-driven
   // config table first, falling back to these constants.
   const DEFAULT_LABELS: Record<string, LocalizedString> = {
-    'stat_str':              { en: 'Strength',         fr: 'Force' },
-    'stat_dex':              { en: 'Dexterity',        fr: 'Dextérité' },
-    'stat_con':              { en: 'Constitution',     fr: 'Constitution' },
-    'stat_int':              { en: 'Intelligence',     fr: 'Intelligence' },
-    'stat_wis':              { en: 'Wisdom',           fr: 'Sagesse' },
-    'stat_cha':              { en: 'Charisma',         fr: 'Charisme' },
+    'stat_strength':              { en: 'Strength',         fr: 'Force' },
+    'stat_dexterity':              { en: 'Dexterity',        fr: 'Dextérité' },
+    'stat_constitution':              { en: 'Constitution',     fr: 'Constitution' },
+    'stat_intelligence':              { en: 'Intelligence',     fr: 'Intelligence' },
+    'stat_wisdom':              { en: 'Wisdom',           fr: 'Sagesse' },
+    'stat_charisma':              { en: 'Charisma',         fr: 'Charisme' },
     'stat_size':             { en: 'Size',             fr: 'Taille' },
     'stat_caster_level':     { en: 'Caster Level',     fr: 'Niveau de lanceur' },
     'stat_manifester_level': { en: 'Manifester Level', fr: 'Niveau de manifesteur' },
@@ -452,12 +452,12 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     // @see ARCHITECTURE.md section 9, Phase 3: Max HP = sum(hitDieResults) + CON_mod × level
     hitDieResults: {},
     attributes: {
-      'stat_str':             makePipeline('stat_str',             getAttrLabel('stat_str',             DEFAULT_LABELS['stat_str']),              10),
-      'stat_dex':             makePipeline('stat_dex',             getAttrLabel('stat_dex',             DEFAULT_LABELS['stat_dex']),              10),
-      'stat_con':             makePipeline('stat_con',             getAttrLabel('stat_con',             DEFAULT_LABELS['stat_con']),              10),
-      'stat_int':             makePipeline('stat_int',             getAttrLabel('stat_int',             DEFAULT_LABELS['stat_int']),              10),
-      'stat_wis':             makePipeline('stat_wis',             getAttrLabel('stat_wis',             DEFAULT_LABELS['stat_wis']),              10),
-      'stat_cha':             makePipeline('stat_cha',             getAttrLabel('stat_cha',             DEFAULT_LABELS['stat_cha']),              10),
+      'stat_strength':             makePipeline('stat_strength',             getAttrLabel('stat_strength',             DEFAULT_LABELS['stat_strength']),              10),
+      'stat_dexterity':             makePipeline('stat_dexterity',             getAttrLabel('stat_dexterity',             DEFAULT_LABELS['stat_dexterity']),              10),
+      'stat_constitution':             makePipeline('stat_constitution',             getAttrLabel('stat_constitution',             DEFAULT_LABELS['stat_constitution']),              10),
+      'stat_intelligence':             makePipeline('stat_intelligence',             getAttrLabel('stat_intelligence',             DEFAULT_LABELS['stat_intelligence']),              10),
+      'stat_wisdom':             makePipeline('stat_wisdom',             getAttrLabel('stat_wisdom',             DEFAULT_LABELS['stat_wisdom']),              10),
+      'stat_charisma':             makePipeline('stat_charisma',             getAttrLabel('stat_charisma',             DEFAULT_LABELS['stat_charisma']),              10),
       'stat_size':            makePipeline('stat_size',            getAttrLabel('stat_size',            DEFAULT_LABELS['stat_size']),              0),
       'stat_caster_level':    makePipeline('stat_caster_level',    getAttrLabel('stat_caster_level',    DEFAULT_LABELS['stat_caster_level']),      0),
       'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',DEFAULT_LABELS['stat_manifester_level']),  0),
@@ -466,8 +466,8 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       'combatStats.ac_normal': makePipeline('combatStats.ac_normal', { en: 'Armor Class', fr: "Classe d'armure" }, 10),
       'combatStats.ac_touch': makePipeline('combatStats.ac_touch', { en: 'Touch AC', fr: 'CA de contact' }, 10),
       'combatStats.ac_flat_footed': makePipeline('combatStats.ac_flat_footed', { en: 'Flat-Footed AC', fr: 'CA pris au dépourvu' }, 10),
-      'combatStats.bab': makePipeline('combatStats.bab', { en: 'Base Attack Bonus', fr: "Bonus d'attaque de base" }, 0),
-      'combatStats.init': makePipeline('combatStats.init', { en: 'Initiative', fr: 'Initiative' }, 0),
+      'combatStats.base_attack_bonus': makePipeline('combatStats.base_attack_bonus', { en: 'Base Attack Bonus', fr: "Bonus d'attaque de base" }, 0),
+      'combatStats.initiative': makePipeline('combatStats.initiative', { en: 'Initiative', fr: 'Initiative' }, 0),
       'combatStats.grapple': makePipeline('combatStats.grapple', { en: 'Grapple', fr: 'Lutte' }, 0),
       'combatStats.speed_land': makePipeline('combatStats.speed_land', { en: 'Land Speed', fr: 'Vitesse terrestre' }, 30),
       'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'Burrow Speed', fr: 'Vitesse de fouissement' }, 0),
@@ -524,7 +524,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       //   @see ARCHITECTURE.md section 4.8 — Arcane Spell Failure mechanic reference
       'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'Arcane Spell Failure', fr: "Risque d'échec des sorts arcaniques" }, 0),
 
-      // --- MAX DEX BONUS TO AC (`combatStats.max_dex_bonus`) ---
+      // --- MAX DEX BONUS TO AC (`combatStats.max_dexterity_bonus`) ---
       //
       // The maximum Dexterity modifier a character may apply to their Armor Class
       // while wearing armor, carrying a shield with a restriction, or under encumbrance.
@@ -544,25 +544,25 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       //
       // CONTENT AUTHORING:
       //   Armor/shield restricting DEX:
-      //     { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 3 }
+      //     { type: "max_dex_cap", targetId: "combatStats.max_dexterity_bonus", value: 3 }
       //   Heavy Load condition (cap of +1):
-      //     { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 1 }
+      //     { type: "max_dex_cap", targetId: "combatStats.max_dexterity_bonus", value: 1 }
       //   Mithral special material (+2 to the cap):
-      //     { type: "untyped", targetId: "combatStats.max_dex_bonus", value: 2 }
+      //     { type: "untyped", targetId: "combatStats.max_dexterity_bonus", value: 2 }
       //
       // UI CONTRACT:
-      //   The ArmorClass panel reads `combatStats.max_dex_bonus.totalValue` and caps
+      //   The ArmorClass panel reads `combatStats.max_dexterity_bonus.totalValue` and caps
       //   the DEX modifier contribution to AC at that value. A totalValue of 99 means
       //   "no cap" (full DEX applies). The pipeline value is also displayed in the
       //   ArmorClass breakdown for player transparency.
       //
       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
       // @see primitives.ts ModifierType: "max_dex_cap" for the new minimum-wins type
-      'combatStats.max_dex_bonus': makePipeline('combatStats.max_dex_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
+      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
     },
     saves: {
-      'saves.fort': makePipeline('saves.fort', { en: 'Fortitude', fr: 'Vigueur' }, 0),
-      'saves.ref': makePipeline('saves.ref', { en: 'Reflex', fr: 'Réflexes' }, 0),
+      'saves.fortitude': makePipeline('saves.fortitude', { en: 'Fortitude', fr: 'Vigueur' }, 0),
+      'saves.reflex': makePipeline('saves.reflex', { en: 'Reflex', fr: 'Réflexes' }, 0),
       'saves.will': makePipeline('saves.will', { en: 'Will', fr: 'Volonté' }, 0),
     },
     skills: {},
@@ -1113,9 +1113,9 @@ export class GameEngine {
     }
 
     // Build combatStats snapshot — strip "combatStats." prefix so path resolution works.
-    // CharacterContext.combatStats uses FLAT keys (e.g., "bab", not "combatStats.bab").
-    // The path @combatStats.bab.totalValue splits into ["combatStats","bab","totalValue"]
-    // and indexes context.combatStats["bab"] — which requires the flat key.
+    // CharacterContext.combatStats uses FLAT keys (e.g., "base_attack_bonus", not "combatStats.base_attack_bonus").
+    // The path @combatStats.base_attack_bonus.totalValue splits into ["combatStats","base_attack_bonus","totalValue"]
+    // and indexes context.combatStats["base_attack_bonus"] — which requires the flat key.
     // @see ARCHITECTURE.md section 9.10 — CharacterContext key conventions
     const combatStats: CharacterContext['combatStats'] = {};
     for (const [id, stat] of Object.entries(char.combatStats)) {
@@ -1124,7 +1124,7 @@ export class GameEngine {
     }
 
     // Build saves snapshot — strip "saves." prefix for the same reason.
-    // @saves.fort.totalValue requires context.saves["fort"], not context.saves["saves.fort"].
+    // @saves.fortitude.totalValue requires context.saves["fortitude"], not context.saves["saves.fortitude"].
     const saves: CharacterContext['saves'] = {};
     for (const [id, save] of Object.entries(char.saves)) {
       const flatKey = id.startsWith('saves.') ? id.slice('saves.'.length) : id;
@@ -1238,7 +1238,7 @@ export class GameEngine {
    *     - WIS modifier → Will save and (for Monk) AC bonus
    *     - INT modifier → Skill points available
    *
-   * MAIN ABILITY SCORE IDs: stat_str, stat_dex, stat_con, stat_int, stat_wis, stat_cha
+   * MAIN ABILITY SCORE IDs: stat_strength, stat_dexterity, stat_constitution, stat_intelligence, stat_wisdom, stat_charisma
    * Also processes any other attribute pipelines (stat_size, custom homebrew stats).
    */
   phase2_attributes: Record<ID, StatisticPipeline> = $derived.by(() => {
@@ -1376,7 +1376,7 @@ export class GameEngine {
     // (rolled or set at level-up), we compute the CON contribution here and add
     // it to the base pipeline (which holds the sum of hit die rolls).
     // CON modifier × character level is added as a runtime bonus.
-    const conDerivedMod = attributes['stat_con']?.derivedModifier ?? 0;
+    const conDerivedMod = attributes['stat_constitution']?.derivedModifier ?? 0;
     const conHpContrib = conDerivedMod * characterLevel;
 
     // Process each combat stat pipeline
@@ -1422,7 +1422,7 @@ export class GameEngine {
 
       // --- Max DEX Bonus to AC: minimum-wins among armor/condition caps ---
       //
-      // `combatStats.max_dex_bonus` uses a special stacking model:
+      // `combatStats.max_dexterity_bonus` uses a special stacking model:
       //   - `max_dex_cap` modifiers represent CONSTRAINTS (armor, encumbrance, conditions).
       //     The most restrictive cap wins: if chain mail (cap=2) and tower shield (cap=2)
       //     are both active, the effective cap is min(2, 2) = 2.
@@ -1445,7 +1445,7 @@ export class GameEngine {
       //
       // @see primitives.ts — ModifierType "max_dex_cap" documentation
       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
-      if (pipelineId === 'combatStats.max_dex_bonus') {
+      if (pipelineId === 'combatStats.max_dexterity_bonus') {
         // Separate the cap-imposing modifiers from additive bonuses
         const capMods = activeMods.filter(m => m.type === 'max_dex_cap');
         // After we extract capMods, only the non-cap modifiers go through normal stacking
@@ -1578,7 +1578,7 @@ export class GameEngine {
       }
     }
 
-    // Strip "saves." prefix — @saves.fort.totalValue needs context.saves["fort"].
+    // Strip "saves." prefix — @saves.fortitude.totalValue needs context.saves["fortitude"].
     const saves: CharacterContext['saves'] = {};
     for (const [id, save] of Object.entries(this.phase3_combatStats)) {
       if (id.startsWith('saves.')) {
@@ -1689,7 +1689,7 @@ export class GameEngine {
    */
   phase4_skillPointsBudget: SkillPointsBudget = $derived.by(() => {
     // INT modifier: actual value; max(1, ...) applied per level below.
-    const intMod = this.phase2_attributes['stat_int']?.derivedModifier ?? 0;
+    const intMod = this.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0;
 
     // --- D&D 3.5 FIRST-LEVEL 4× BONUS ---
     //
@@ -1810,9 +1810,9 @@ export class GameEngine {
    *
    * MULTICLASS ACCOUNTING:
    *   For each class in `character.classLevels`, this phase collects:
-   *   1. BAB contribution: sum of "base" type modifiers targeting "combatStats.bab"
+   *   1. BAB contribution: sum of "base" type modifiers targeting "combatStats.base_attack_bonus"
    *      from this class's level-gated levelProgression entries.
-   *   2. Save contributions: same logic for "saves.fort", "saves.ref", "saves.will".
+   *   2. Save contributions: same logic for "saves.fortitude", "saves.reflex", "saves.will".
    *   3. Skill points: taken directly from phase4_skillPointsBudget.
    *   4. Class skills: from the class Feature's `classSkills` array.
    *   5. Granted features: from levelProgression entries up to classLevel.
@@ -1845,19 +1845,19 @@ export class GameEngine {
       // "base" type modifiers stack, so summing gives the correct total per class.
       const babMods = flatMods.filter(
         e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'combatStats.bab'
+          && e.modifier.targetId === 'combatStats.base_attack_bonus'
           && e.modifier.type === 'base'
           && !e.modifier.situationalContext
       );
       const fortMods = flatMods.filter(
         e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'saves.fort'
+          && e.modifier.targetId === 'saves.fortitude'
           && e.modifier.type === 'base'
           && !e.modifier.situationalContext
       );
       const refMods = flatMods.filter(
         e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'saves.ref'
+          && e.modifier.targetId === 'saves.reflex'
           && e.modifier.type === 'base'
           && !e.modifier.situationalContext
       );
@@ -2101,23 +2101,23 @@ export class GameEngine {
    */
   readonly savingThrowConfig = [
     {
-      pipelineId: 'saves.fort',
-      keyAbilityId: 'stat_con',
+      pipelineId: 'saves.fortitude',
+      keyAbilityId: 'stat_constitution',
       /** Localized abbreviation of the key ability for this saving throw. */
       keyAbilityAbbr: { en: 'CON', fr: 'CON' } as { en: string; fr: string },
       // Fortitude: red-400 equivalent in oklch — perceptually consistent across themes
       accentColor: 'oklch(65% 0.19 28)',
     },
     {
-      pipelineId: 'saves.ref',
-      keyAbilityId: 'stat_dex',
+      pipelineId: 'saves.reflex',
+      keyAbilityId: 'stat_dexterity',
       keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } as { en: string; fr: string },
       // Reflex: sky-300 equivalent — cool blue for agility
       accentColor: 'oklch(74% 0.12 230)',
     },
     {
       pipelineId: 'saves.will',
-      keyAbilityId: 'stat_wis',
+      keyAbilityId: 'stat_wisdom',
       keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } as { en: string; fr: string },
       // Will: indigo-300 equivalent — aligns with the accent palette
       accentColor: 'oklch(72% 0.12 280)',
@@ -2155,7 +2155,7 @@ export class GameEngine {
    *     The engine reads the first tag starting with "caster_ability_" to get the stat ID.
    *
    * @param spellLevel   - The level of the spell (0 for cantrips).
-   * @param keyAbilityId - Optional: the explicit key ability pipeline ID (e.g., "stat_int").
+   * @param keyAbilityId - Optional: the explicit key ability pipeline ID (e.g., "stat_intelligence").
    *                       If provided, skips tag-based lookup and uses this directly.
    * @returns The computed Spell Save DC.
    */
@@ -2167,12 +2167,12 @@ export class GameEngine {
       castingAbilityMod = this.phase2_attributes[keyAbilityId]?.derivedModifier ?? 0;
     } else {
       // Attempt to infer casting ability from active class features.
-      // Convention: class features have a tag "caster_ability_stat_int" (or _wis, _cha).
+      // Convention: class features have a tag "caster_ability_stat_intelligence" (or _wis, _cha).
       // This follows the zero-hardcoding principle: the casting ability is declared in JSON.
       let foundAbilityId: ID | null = null;
       for (const tag of this.phase0_activeTags) {
         if (tag.startsWith('caster_ability_')) {
-          foundAbilityId = tag.slice('caster_ability_'.length); // "stat_int", "stat_wis", etc.
+          foundAbilityId = tag.slice('caster_ability_'.length); // "stat_intelligence", "stat_wisdom", etc.
           break;
         }
       }
@@ -2186,8 +2186,8 @@ export class GameEngine {
         //
         // WHY THIS FALLBACK EXISTS:
         //   Class Features SHOULD declare their casting ability via a tag like
-        //   "caster_ability_stat_int" (Wizard), "caster_ability_stat_wis" (Cleric),
-        //   or "caster_ability_stat_cha" (Sorcerer). When this tag is present, the
+        //   "caster_ability_stat_intelligence" (Wizard), "caster_ability_stat_wisdom" (Cleric),
+        //   or "caster_ability_stat_charisma" (Sorcerer). When this tag is present, the
         //   primary code path above resolves the correct ability automatically.
         //
         //   This fallback only triggers when NONE of the active Features have a
@@ -2197,8 +2197,8 @@ export class GameEngine {
         //
         // TO ELIMINATE THIS FALLBACK:
         //   Ensure all spellcaster class Features include a tag like:
-        //     "caster_ability_stat_wis" (divine), "caster_ability_stat_int" (arcane),
-        //     or "caster_ability_stat_cha" (spontaneous arcane/psionic).
+        //     "caster_ability_stat_wisdom" (divine), "caster_ability_stat_intelligence" (arcane),
+        //     or "caster_ability_stat_charisma" (spontaneous arcane/psionic).
         //   See the FeatureChoice documentation in ARCHITECTURE.md section 5.
         //
         // DATA-DRIVEN CASTING ABILITY IDS (read from config if available):
@@ -2208,14 +2208,14 @@ export class GameEngine {
           // Filter to mental stats (INT, WIS, CHA) — the only valid casting abilities in D&D 3.5
           for (const row of castingAbilityTable.data as Array<Record<string, unknown>>) {
             const id = row['id'] as string | undefined;
-            if (id && (id === 'stat_wis' || id === 'stat_int' || id === 'stat_cha')) {
+            if (id && (id === 'stat_wisdom' || id === 'stat_intelligence' || id === 'stat_charisma')) {
               castingAbilityIds.push(id);
             }
           }
         }
         // If config table not available, use hardcoded fallback (bootstrap state)
         if (castingAbilityIds.length === 0) {
-          castingAbilityIds.push('stat_wis', 'stat_int', 'stat_cha');
+          castingAbilityIds.push('stat_wisdom', 'stat_intelligence', 'stat_charisma');
         }
         castingAbilityMod = Math.max(
           ...castingAbilityIds.map(id => this.phase2_attributes[id]?.derivedModifier ?? 0)
@@ -2245,9 +2245,9 @@ export class GameEngine {
    * @returns The computed attack bonus as a number.
    */
   getWeaponAttackBonus(enhancement: number, isRanged: boolean): number {
-    const bab = this.phase3_combatStats['combatStats.bab']?.totalValue ?? 0;
-    const strMod = this.phase2_attributes['stat_str']?.derivedModifier ?? 0;
-    const dexMod = this.phase2_attributes['stat_dex']?.derivedModifier ?? 0;
+    const bab = this.phase3_combatStats['combatStats.base_attack_bonus']?.totalValue ?? 0;
+    const strMod = this.phase2_attributes['stat_strength']?.derivedModifier ?? 0;
+    const dexMod = this.phase2_attributes['stat_dexterity']?.derivedModifier ?? 0;
     const abilityMod = isRanged ? dexMod : strMod;
     return bab + abilityMod + enhancement;
   }
@@ -2267,7 +2267,7 @@ export class GameEngine {
    * @returns The computed damage bonus as a number.
    */
   getWeaponDamageBonus(enhancement: number, isTwoHanded: boolean): number {
-    const strMod = this.phase2_attributes['stat_str']?.derivedModifier ?? 0;
+    const strMod = this.phase2_attributes['stat_strength']?.derivedModifier ?? 0;
     const baseDamageMod = isTwoHanded ? Math.floor(strMod * 1.5) : strMod;
     return baseDamageMod + enhancement;
   }
@@ -2404,7 +2404,7 @@ export class GameEngine {
    * by the character's resolved STR totalValue from Phase 2.
    */
   phase2b_encumbranceTier: number = $derived.by(() => {
-    const strTotal = this.phase2_attributes['stat_str']?.totalValue ?? 10;
+    const strTotal = this.phase2_attributes['stat_strength']?.totalValue ?? 10;
     const table = dataLoader.getConfigTable('config_carrying_capacity');
     if (!table?.data) return -1;
 
@@ -3894,8 +3894,8 @@ export class GameEngine {
    * TARGETID NORMALISATION:
    *   Before pushing a modifier to the result, its `targetId` is normalised via
    *   `normaliseModifierTargetId()`. This allows JSON authors to use either:
-   *     - "stat_str"           (short form — the Character.attributes map key)
-   *     - "attributes.stat_str" (long form — as used in ARCHITECTURE.md Annex A examples)
+   *     - "stat_strength"           (short form — the Character.attributes map key)
+   *     - "attributes.stat_strength" (long form — as used in ARCHITECTURE.md Annex A examples)
    *   Both forms resolve to the same pipeline. See `normaliseModifierTargetId()` for details.
    */
   #processModifierList(
@@ -3921,8 +3921,8 @@ export class GameEngine {
       }
 
       // --- Normalise the targetId convention ---
-      // Strips the optional "attributes." prefix so both "stat_str" and
-      // "attributes.stat_str" target the same Character.attributes pipeline.
+      // Strips the optional "attributes." prefix so both "stat_strength" and
+      // "attributes.stat_strength" target the same Character.attributes pipeline.
       // Also strips the "skills." prefix: "skills.skill_climb" → "skill_climb".
       // This is a non-destructive normalisation — the original JSON is not mutated.
       const normalisedTargetId = normaliseModifierTargetId(mod.targetId);
@@ -3930,11 +3930,11 @@ export class GameEngine {
       // --- saves.all fan-out ---
       // "saves.all" is a broadcast shorthand: apply this modifier to ALL three saves.
       // Used by Divine Grace, Resistance spells, Cloaks of Resistance, etc.
-      // Fan out into three independent modifier entries targeting saves.fort/ref/will.
+      // Fan out into three independent modifier entries targeting saves.fortitude/reflex/will.
       if (normalisedTargetId === 'saves.all') {
-        const saveTargets = ['saves.fort', 'saves.ref', 'saves.will'] as const;
+        const saveTargets = ['saves.fortitude', 'saves.reflex', 'saves.will'] as const;
         for (const saveTarget of saveTargets) {
-          const suffix = saveTarget.split('.')[1]; // "fort" | "ref" | "will"
+          const suffix = saveTarget.split('.')[1]; // "fortitude" | "reflex" | "will"
           let fanMod: Modifier = { ...mod, targetId: saveTarget, id: `${mod.id}_${suffix}` };
           if (typeof fanMod.value === 'string') {
             const resolved = evaluateFormula(fanMod.value, instanceContext, this.settings.language);

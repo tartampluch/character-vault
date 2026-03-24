@@ -534,7 +534,7 @@ export interface Character {
   /**
    * The 6 main ability score pipelines and any custom attribute pipelines.
    *
-   * Standard keys: "stat_str", "stat_dex", "stat_con", "stat_int", "stat_wis", "stat_cha"
+   * Standard keys: "stat_strength", "stat_dexterity", "stat_constitution", "stat_intelligence", "stat_wisdom", "stat_charisma"
    * Custom homebrew stats can also appear here (e.g., "stat_sanity", "stat_honour").
    *
    * STORED: `baseValue` (player-assigned score)
@@ -590,8 +590,8 @@ export interface Character {
    *   "combatStats.ac_normal"      → Full armour class
    *   "combatStats.ac_touch"       → Touch armour class (no armour/shield/natural armour)
    *   "combatStats.ac_flat_footed" → Flat-footed AC (no DEX/dodge bonuses)
-   *   "combatStats.bab"            → Base attack bonus (cumulative from all classes)
-   *   "combatStats.init"           → Initiative modifier
+   *   "combatStats.base_attack_bonus"            → Base attack bonus (cumulative from all classes)
+   *   "combatStats.initiative"           → Initiative modifier
    *   "combatStats.grapple"        → Grapple check modifier
    *   "combatStats.speed_land"     → Land speed in feet
    *
@@ -603,7 +603,7 @@ export interface Character {
   /**
    * Saving throw pipelines.
    *
-   * Standard keys: "saves.fort" (Fortitude), "saves.ref" (Reflex), "saves.will" (Will)
+   * Standard keys: "saves.fortitude" (Fortitude), "saves.reflex" (Reflex), "saves.will" (Will)
    * ALL DERIVED from class `levelProgression` base increments + CON/DEX/WIS modifiers.
    */
   saves: Record<ID, StatisticPipeline>;

@@ -85,7 +85,7 @@ function buildBabModifiers(classId: string, increments: number[], classLevel: nu
     .map((inc, i) => makeBaseModifier(
       `${classId}_bab_l${i + 1}`,
       classId,
-      'combatStats.bab',
+      'combatStats.base_attack_bonus',
       inc
     ));
 }
@@ -157,16 +157,16 @@ describe('GESTALT_AFFECTED_PIPELINES and isGestaltAffectedPipeline()', () => {
    */
   it('GESTALT_AFFECTED_PIPELINES contains BAB and 3 saves', () => {
     expect(GESTALT_AFFECTED_PIPELINES.size).toBe(4);
-    expect(GESTALT_AFFECTED_PIPELINES).toContain('combatStats.bab');
-    expect(GESTALT_AFFECTED_PIPELINES).toContain('saves.fort');
-    expect(GESTALT_AFFECTED_PIPELINES).toContain('saves.ref');
+    expect(GESTALT_AFFECTED_PIPELINES).toContain('combatStats.base_attack_bonus');
+    expect(GESTALT_AFFECTED_PIPELINES).toContain('saves.fortitude');
+    expect(GESTALT_AFFECTED_PIPELINES).toContain('saves.reflex');
     expect(GESTALT_AFFECTED_PIPELINES).toContain('saves.will');
   });
 
   it('isGestaltAffectedPipeline: BAB and 3 saves → true', () => {
-    expect(isGestaltAffectedPipeline('combatStats.bab')).toBe(true);
-    expect(isGestaltAffectedPipeline('saves.fort')).toBe(true);
-    expect(isGestaltAffectedPipeline('saves.ref')).toBe(true);
+    expect(isGestaltAffectedPipeline('combatStats.base_attack_bonus')).toBe(true);
+    expect(isGestaltAffectedPipeline('saves.fortitude')).toBe(true);
+    expect(isGestaltAffectedPipeline('saves.reflex')).toBe(true);
     expect(isGestaltAffectedPipeline('saves.will')).toBe(true);
   });
 
@@ -184,7 +184,7 @@ describe('GESTALT_AFFECTED_PIPELINES and isGestaltAffectedPipeline()', () => {
   });
 
   it('isGestaltAffectedPipeline: unknown pipeline → false', () => {
-    expect(isGestaltAffectedPipeline('attributes.stat_str')).toBe(false);
+    expect(isGestaltAffectedPipeline('attributes.stat_strength')).toBe(false);
     expect(isGestaltAffectedPipeline('')).toBe(false);
     expect(isGestaltAffectedPipeline('saves.unknown')).toBe(false);
   });
@@ -347,8 +347,8 @@ describe('computeGestaltBase() — saves gestalt vs standard (ARCHITECTURE.md §
    *   Standard Fort = 5; Gestalt Fort = 4
    */
   it('Fighter 5 / Wizard 5: gestalt Fortitude = 4 (standard would be 5)', () => {
-    const fighterFort = buildSaveModifiers('class_fighter', 'saves.fort', GOOD_SAVE_INCREMENTS, 5);
-    const wizardFort  = buildSaveModifiers('class_wizard',  'saves.fort', POOR_SAVE_INCREMENTS, 5);
+    const fighterFort = buildSaveModifiers('class_fighter', 'saves.fortitude', GOOD_SAVE_INCREMENTS, 5);
+    const wizardFort  = buildSaveModifiers('class_wizard',  'saves.fortitude', POOR_SAVE_INCREMENTS, 5);
     const allMods = [...fighterFort, ...wizardFort];
     const classLevels = { 'class_fighter': 5, 'class_wizard': 5 };
 
@@ -364,8 +364,8 @@ describe('computeGestaltBase() — saves gestalt vs standard (ARCHITECTURE.md §
 
   it('Two Good saves (e.g., both classes are "Good Fort"): gestalt = standard = 4', () => {
     // Both have Good Fort save increments — max of identical = same as one
-    const class1Fort = buildSaveModifiers('class_fighter',  'saves.fort', GOOD_SAVE_INCREMENTS, 5);
-    const class2Fort = buildSaveModifiers('class_barbarian', 'saves.fort', GOOD_SAVE_INCREMENTS, 5);
+    const class1Fort = buildSaveModifiers('class_fighter',  'saves.fortitude', GOOD_SAVE_INCREMENTS, 5);
+    const class2Fort = buildSaveModifiers('class_barbarian', 'saves.fortitude', GOOD_SAVE_INCREMENTS, 5);
     const allMods = [...class1Fort, ...class2Fort];
     const classLevels = { 'class_fighter': 5, 'class_barbarian': 5 };
 
@@ -381,8 +381,8 @@ describe('computeGestaltBase() — saves gestalt vs standard (ARCHITECTURE.md §
 
   it('Gestalt Reflex: Rogue 5 (Good) / Fighter 5 (Poor) — Rogue wins', () => {
     // Rogue has Good Ref (same pattern as Fighter Good Fort)
-    const rogueRef   = buildSaveModifiers('class_rogue',    'saves.ref', GOOD_SAVE_INCREMENTS, 5);
-    const fighterRef = buildSaveModifiers('class_fighter',  'saves.ref', POOR_SAVE_INCREMENTS, 5);
+    const rogueRef   = buildSaveModifiers('class_rogue',    'saves.reflex', GOOD_SAVE_INCREMENTS, 5);
+    const fighterRef = buildSaveModifiers('class_fighter',  'saves.reflex', POOR_SAVE_INCREMENTS, 5);
     const allMods = [...rogueRef, ...fighterRef];
     const classLevels = { 'class_rogue': 5, 'class_fighter': 5 };
 
@@ -424,8 +424,8 @@ describe('groupBaseModifiersByClass() — modifier grouping by sourceId', () => 
   });
 
   it('ignores non-"base" type modifiers', () => {
-    const baseMod     = makeBaseModifier('m1', 'class_fighter', 'combatStats.bab', 1);
-    const enhancement = { ...makeBaseModifier('m2', 'class_fighter', 'combatStats.bab', 2), type: 'enhancement' as ModifierType };
+    const baseMod     = makeBaseModifier('m1', 'class_fighter', 'combatStats.base_attack_bonus', 1);
+    const enhancement = { ...makeBaseModifier('m2', 'class_fighter', 'combatStats.base_attack_bonus', 2), type: 'enhancement' as ModifierType };
     const grouped = groupBaseModifiersByClass([baseMod, enhancement], { 'class_fighter': 1 });
 
     // Only the "base" type mod should be grouped

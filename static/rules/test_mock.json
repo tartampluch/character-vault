@@ -11,17 +11,17 @@
     "_comment9": "TARGETID CONVENTION FOR MODIFIERS:",
     "_comment10": "The `targetId` in a Modifier must match the KEY used in the Character's",
     "_comment11": "pipeline records. Per GameEngine.svelte.ts createEmptyCharacter():",
-    "_comment12": "  - Main attributes:  'stat_str', 'stat_dex', 'stat_con', etc.",
+    "_comment12": "  - Main attributes:  'stat_strength', 'stat_dexterity', 'stat_constitution', etc.",
     "_comment13": "    (stored in Character.attributes — key prefix is the pipeline ID itself)",
-    "_comment14": "  - Combat stats:     'combatStats.ac_normal', 'combatStats.bab', etc.",
+    "_comment14": "  - Combat stats:     'combatStats.ac_normal', 'combatStats.base_attack_bonus', etc.",
     "_comment15": "    (stored in Character.combatStats — key includes the namespace prefix)",
-    "_comment16": "  - Saving throws:    'saves.fort', 'saves.ref', 'saves.will'",
+    "_comment16": "  - Saving throws:    'saves.fortitude', 'saves.reflex', 'saves.will'",
     "_comment17": "    (stored in Character.saves — key includes the namespace prefix)",
     "_comment18": "  - Skills:           'skill_climb', 'skill_jump', etc.",
     "_comment19": "    (stored in Character.skills — key is the skill ID without namespace)",
-    "_comment20": "NOTE: ARCHITECTURE.md section 4.3 shows paths like '@attributes.stat_str'",
+    "_comment20": "NOTE: ARCHITECTURE.md section 4.3 shows paths like '@attributes.stat_strength'",
     "_comment21": "(with the 'attributes.' prefix) for Math Parser @-paths. However, the",
-    "_comment22": "modifier targetId uses the Character record KEY directly (e.g., 'stat_str').",
+    "_comment22": "modifier targetId uses the Character record KEY directly (e.g., 'stat_strength').",
     "_comment23": "The GameEngine's DAG phases use the key directly when iterating records.",
     "_comment24": "================================================================="
   },
@@ -136,9 +136,9 @@
       "proficiency_all_shields"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con",
-      "stat_dex"
+      "stat_strength",
+      "stat_constitution",
+      "stat_dexterity"
     ],
     "classSkills": [
       "skill_climb",
@@ -162,7 +162,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -173,7 +173,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -184,7 +184,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base"
           },
@@ -214,7 +214,7 @@
               "en": "Fighter 2",
               "fr": "Guerrier 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -225,7 +225,7 @@
               "en": "Fighter 2",
               "fr": "Guerrier 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -242,7 +242,7 @@
               "en": "Fighter 3",
               "fr": "Guerrier 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -253,7 +253,7 @@
               "en": "Fighter 3",
               "fr": "Guerrier 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -403,7 +403,7 @@
           "en": "Breastplate",
           "fr": "Plastron"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 3,
         "type": "max_dex_cap"
       }
@@ -444,7 +444,7 @@
           "en": "Rage",
           "fr": "Rage"
         },
-        "targetId": "stat_str",
+        "targetId": "stat_strength",
         "value": 4,
         "type": "morale"
       },
@@ -455,7 +455,7 @@
           "en": "Rage",
           "fr": "Rage"
         },
-        "targetId": "stat_con",
+        "targetId": "stat_constitution",
         "value": 4,
         "type": "morale"
       },
@@ -516,7 +516,7 @@
           "en": "Orc",
           "fr": "Orque"
         },
-        "targetId": "stat_str",
+        "targetId": "stat_strength",
         "value": 4,
         "type": "racial"
       },
@@ -527,7 +527,7 @@
           "en": "Orc",
           "fr": "Orque"
         },
-        "targetId": "stat_int",
+        "targetId": "stat_intelligence",
         "value": -2,
         "type": "racial"
       },
@@ -538,7 +538,7 @@
           "en": "Orc",
           "fr": "Orque"
         },
-        "targetId": "stat_wis",
+        "targetId": "stat_wisdom",
         "value": -2,
         "type": "racial"
       },
@@ -549,7 +549,7 @@
           "en": "Orc",
           "fr": "Orque"
         },
-        "targetId": "stat_cha",
+        "targetId": "stat_charisma",
         "value": -2,
         "type": "racial"
       },
@@ -644,7 +644,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_str.totalValue",
+      "targetPath": "@attributes.stat_strength.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Strength 13+"
@@ -678,7 +678,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -727,7 +727,7 @@
           "en": "Belt of Giant Strength +2",
           "fr": "Ceinturon de Force de géant +2"
         },
-        "targetId": "stat_str",
+        "targetId": "stat_strength",
         "value": 2,
         "type": "enhancement"
       }
@@ -746,8 +746,8 @@
       "fr": "Ceinturon d'Endurance +2"
     },
     "description": {
-      "en": "Grants +2 enhancement to Constitution. When equipped, CON changes → HP Max changes via DAG cascade. Tests Phase 17.5 cascade: Belt → stat_con pipeline → saves.fort (CON-based) → combatStats.max_hp (CON mod × level).",
-      "fr": "Accorde +2 d'altération à la Constitution. Quand équipé, la CON change → PV max change via la cascade du DAG. Teste la cascade Phase 17.5 : Ceinture → pipeline stat_con → jets de Vigueur (basés CON) → PV max (modificateur CON × niveau)."
+      "en": "Grants +2 enhancement to Constitution. When equipped, CON changes → HP Max changes via DAG cascade. Tests Phase 17.5 cascade: Belt → stat_constitution pipeline → saves.fortitude (CON-based) → combatStats.max_hp (CON mod × level).",
+      "fr": "Accorde +2 d'altération à la Constitution. Quand équipé, la CON change → PV max change via la cascade du DAG. Teste la cascade Phase 17.5 : Ceinture → pipeline stat_constitution → jets de Vigueur (basés CON) → PV max (modificateur CON × niveau)."
     },
     "tags": [
       "item",
@@ -766,7 +766,7 @@
           "en": "Belt of Endurance +2",
           "fr": "Ceinturon d'Endurance +2"
         },
-        "targetId": "stat_con",
+        "targetId": "stat_constitution",
         "value": 2,
         "type": "enhancement"
       }
@@ -813,7 +813,7 @@
           "en": "Medium Load",
           "fr": "Charge intermédiaire"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 3,
         "type": "max_dex_cap"
       }
@@ -860,7 +860,7 @@
           "en": "Heavy Load",
           "fr": "Charge lourde"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 1,
         "type": "max_dex_cap"
       }

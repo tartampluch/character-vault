@@ -5,8 +5,8 @@
   PURPOSE:
     GMs authoring homebrew modifiers need to specify which pipeline a modifier
     targets (e.g. "Strength score", "AC", "Fortitude save"). Without a picker,
-    they would have to know internal pipeline IDs like `"attributes.stat_str"` or
-    `"combatStats.bab"` by heart — a prohibitive friction point.
+    they would have to know internal pipeline IDs like `"attributes.stat_strength"` or
+    `"combatStats.base_attack_bonus"` by heart — a prohibitive friction point.
 
     This modal exposes:
       1. All STATIC pipeline IDs grouped by namespace (attributes, combatStats,
@@ -63,7 +63,7 @@
     /**
      * Called when the user clicks a pipeline row or confirms the custom input.
      * The parent is responsible for closing the modal after handling the event.
-     * @param pipelineId - The fully-qualified pipeline ID (e.g. "attributes.stat_str").
+     * @param pipelineId - The fully-qualified pipeline ID (e.g. "attributes.stat_strength").
      */
     onPipelinePicked: (pipelineId: string) => void;
     /** Called when the user dismisses the modal without selecting a pipeline. */
@@ -160,12 +160,12 @@
       label: 'Ability Scores',
       key:   'attributes',
       entries: [
-        { id: 'attributes.stat_str', label: 'Strength',          baseValue: 10 },
-        { id: 'attributes.stat_dex', label: 'Dexterity',         baseValue: 10 },
-        { id: 'attributes.stat_con', label: 'Constitution',      baseValue: 10 },
-        { id: 'attributes.stat_int', label: 'Intelligence',      baseValue: 10 },
-        { id: 'attributes.stat_wis', label: 'Wisdom',            baseValue: 10 },
-        { id: 'attributes.stat_cha', label: 'Charisma',          baseValue: 10 },
+        { id: 'attributes.stat_strength', label: 'Strength',          baseValue: 10 },
+        { id: 'attributes.stat_dexterity', label: 'Dexterity',         baseValue: 10 },
+        { id: 'attributes.stat_constitution', label: 'Constitution',      baseValue: 10 },
+        { id: 'attributes.stat_intelligence', label: 'Intelligence',      baseValue: 10 },
+        { id: 'attributes.stat_wisdom', label: 'Wisdom',            baseValue: 10 },
+        { id: 'attributes.stat_charisma', label: 'Charisma',          baseValue: 10 },
         { id: 'attributes.stat_size',              label: 'Size Modifier',       baseValue:  0 },
         { id: 'attributes.stat_caster_level',      label: 'Caster Level',        baseValue:  0 },
         { id: 'attributes.stat_manifester_level',  label: 'Manifester Level',    baseValue:  0 },
@@ -178,8 +178,8 @@
         { id: 'combatStats.ac_normal',            label: 'Armor Class (Normal)',        baseValue: 10 },
         { id: 'combatStats.ac_touch',             label: 'Touch Armor Class',           baseValue: 10 },
         { id: 'combatStats.ac_flat_footed',       label: 'Flat-Footed Armor Class',     baseValue: 10 },
-        { id: 'combatStats.bab',                  label: 'Base Attack Bonus',           baseValue:  0 },
-        { id: 'combatStats.init',                 label: 'Initiative',                  baseValue:  0 },
+        { id: 'combatStats.base_attack_bonus',                  label: 'Base Attack Bonus',           baseValue:  0 },
+        { id: 'combatStats.initiative',                 label: 'Initiative',                  baseValue:  0 },
         { id: 'combatStats.grapple',              label: 'Grapple Check',               baseValue:  0 },
         { id: 'combatStats.max_hp',               label: 'Maximum Hit Points',          baseValue:  0 },
         { id: 'combatStats.speed_land',           label: 'Land Speed (ft.)',            baseValue: 30 },
@@ -190,15 +190,15 @@
         { id: 'combatStats.armor_check_penalty',  label: 'Armor Check Penalty',         baseValue:  0 },
         { id: 'combatStats.fortification',        label: 'Fortification (%)',           baseValue:  0 },
         { id: 'combatStats.arcane_spell_failure', label: 'Arcane Spell Failure (%)',    baseValue:  0 },
-        { id: 'combatStats.max_dex_bonus',        label: 'Max Dex Bonus to AC',         baseValue: 99 },
+        { id: 'combatStats.max_dexterity_bonus',        label: 'Max Dex Bonus to AC',         baseValue: 99 },
       ],
     },
     {
       label: 'Saving Throws',
       key:   'saves',
       entries: [
-        { id: 'saves.fort', label: 'Fortitude Save', baseValue: 0 },
-        { id: 'saves.ref',  label: 'Reflex Save',    baseValue: 0 },
+        { id: 'saves.fortitude', label: 'Fortitude Save', baseValue: 0 },
+        { id: 'saves.reflex',  label: 'Reflex Save',    baseValue: 0 },
         { id: 'saves.will', label: 'Will Save',      baseValue: 0 },
       ],
     },

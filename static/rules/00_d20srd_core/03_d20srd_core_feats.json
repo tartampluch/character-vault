@@ -398,7 +398,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -468,7 +468,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_int.totalValue",
+      "targetPath": "@attributes.stat_intelligence.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Intelligence 13+"
@@ -503,7 +503,7 @@
           "fr": "Réflexes de combat"
         },
         "targetId": "combatStats.attacks_of_opportunity_per_round",
-        "value": "@attributes.stat_dex.derivedModifier",
+        "value": "@attributes.stat_dexterity.derivedModifier",
         "type": "untyped"
       }
     ],
@@ -710,7 +710,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -860,7 +860,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_dex.totalValue",
+      "targetPath": "@attributes.stat_dexterity.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Dexterity 13+"
@@ -981,7 +981,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@combatStats.bab.totalValue",
+      "targetPath": "@combatStats.base_attack_bonus.totalValue",
       "operator": ">=",
       "value": 1,
       "errorMessage": "Requires Base Attack Bonus +1"
@@ -1137,7 +1137,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -1158,7 +1158,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"
@@ -1193,7 +1193,7 @@
           "en": "Great Fortitude",
           "fr": "Grande vigueur"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "untyped"
       }
@@ -1293,7 +1293,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 19,
           "errorMessage": "Requires Dexterity 19+"
@@ -1314,7 +1314,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 11,
           "errorMessage": "Requires Base Attack Bonus +11"
@@ -1533,7 +1533,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -1600,7 +1600,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 8,
           "errorMessage": "Requires Base Attack Bonus +8"
@@ -1644,7 +1644,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_int.totalValue",
+          "targetPath": "@attributes.stat_intelligence.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Intelligence 13+"
@@ -1711,7 +1711,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_int.totalValue",
+          "targetPath": "@attributes.stat_intelligence.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Intelligence 13+"
@@ -1751,7 +1751,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -1824,7 +1824,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -1864,7 +1864,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 19,
           "errorMessage": "Requires Dexterity 19+"
@@ -1885,7 +1885,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 11,
           "errorMessage": "Requires Base Attack Bonus +11"
@@ -1946,7 +1946,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_str.totalValue",
+          "targetPath": "@attributes.stat_strength.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Strength 13+"
@@ -1986,7 +1986,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_int.totalValue",
+          "targetPath": "@attributes.stat_intelligence.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Intelligence 13+"
@@ -2053,7 +2053,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 17,
           "errorMessage": "Requires Dexterity 17+"
@@ -2067,7 +2067,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 6,
           "errorMessage": "Requires Base Attack Bonus +6"
@@ -2225,7 +2225,7 @@
           "en": "Lightning Reflexes",
           "fr": "Réflexes éclair"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "untyped"
       }
@@ -2298,7 +2298,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 17,
           "errorMessage": "Requires Dexterity 17+"
@@ -2319,7 +2319,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 6,
           "errorMessage": "Requires Base Attack Bonus +6"
@@ -2403,7 +2403,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -2523,7 +2523,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_wis.totalValue",
+          "targetPath": "@attributes.stat_wisdom.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Wisdom 13+"
@@ -2735,7 +2735,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_str.totalValue",
+      "targetPath": "@attributes.stat_strength.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Strength 13+"
@@ -2791,7 +2791,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@combatStats.bab.totalValue",
+      "targetPath": "@combatStats.base_attack_bonus.totalValue",
       "operator": ">=",
       "value": 1,
       "errorMessage": "Requires Base Attack Bonus +1"
@@ -2874,7 +2874,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -3064,7 +3064,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -3092,7 +3092,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"
@@ -3215,7 +3215,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 15,
           "errorMessage": "Requires Dexterity 15+"
@@ -3411,7 +3411,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
@@ -3432,7 +3432,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"
@@ -3528,14 +3528,14 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_wis.totalValue",
+          "targetPath": "@attributes.stat_wisdom.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Wisdom 13+"
@@ -3549,7 +3549,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 8,
           "errorMessage": "Requires Base Attack Bonus +8"
@@ -3701,7 +3701,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 15,
           "errorMessage": "Requires Dexterity 15+"
@@ -3751,7 +3751,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_dex.totalValue",
+      "targetPath": "@attributes.stat_dexterity.totalValue",
       "operator": ">=",
       "value": 15,
       "errorMessage": "Requires Dexterity 15+"
@@ -3779,7 +3779,7 @@
     ],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@combatStats.bab.totalValue",
+      "targetPath": "@combatStats.base_attack_bonus.totalValue",
       "operator": ">=",
       "value": 1,
       "errorMessage": "Requires Base Attack Bonus +1"
@@ -3817,7 +3817,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 1,
           "errorMessage": "Requires Base Attack Bonus +1"
@@ -3956,14 +3956,14 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_dex.totalValue",
+          "targetPath": "@attributes.stat_dexterity.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Dexterity 13+"
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_int.totalValue",
+          "targetPath": "@attributes.stat_intelligence.totalValue",
           "operator": ">=",
           "value": 13,
           "errorMessage": "Requires Intelligence 13+"
@@ -3998,7 +3998,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"

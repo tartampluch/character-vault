@@ -17,8 +17,8 @@ import type { ID } from '../types/primitives';
  * Strength → Dexterity → Constitution → Intelligence → Wisdom → Charisma.
  */
 export const MAIN_ABILITY_IDS = [
-  'stat_str', 'stat_dex', 'stat_con',
-  'stat_int', 'stat_wis', 'stat_cha',
+  'stat_strength', 'stat_dexterity', 'stat_constitution',
+  'stat_intelligence', 'stat_wisdom', 'stat_charisma',
 ] as const;
 
 /**
@@ -26,6 +26,6 @@ export const MAIN_ABILITY_IDS = [
  * These are universally used in D&D 3.5 (even in non-English locales).
  */
 export const ABILITY_ABBRS: Readonly<Record<ID, string>> = {
-  stat_str: 'STR', stat_dex: 'DEX', stat_con: 'CON',
-  stat_int: 'INT', stat_wis: 'WIS', stat_cha: 'CHA',
+  stat_strength: 'STR', stat_dexterity: 'DEX', stat_constitution: 'CON',
+  stat_intelligence: 'INT', stat_wisdom: 'WIS', stat_charisma: 'CHA',
 };

@@ -101,7 +101,7 @@ All 202 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings**.
 ## Part B: Cross-Cutting Concerns
 
 ### 14. Zero Hardcoding
-**VALIDATED.** No hardcoded D&D terms in engine logic or template decision-making. Pipeline IDs (`stat_str`, `combatStats.bab`) and config table IDs referenced in UI components are data references, not hardcoded rules.
+**VALIDATED.** No hardcoded D&D terms in engine logic or template decision-making. Pipeline IDs (`stat_strength`, `combatStats.base_attack_bonus`) and config table IDs referenced in UI components are data references, not hardcoded rules.
 
 ### 15. i18n Completeness
 **VALIDATED.** Full coverage:

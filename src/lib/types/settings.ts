@@ -261,9 +261,9 @@ export interface CampaignSettings {
      *
      * WHAT IS AND ISN'T AFFECTED:
      *   AFFECTED (uses gestalt max-per-level):
-     *     - BAB (`combatStats.bab`)
-     *     - Fortitude save (`saves.fort`)
-     *     - Reflex save (`saves.ref`)
+     *     - BAB (`combatStats.base_attack_bonus`)
+     *     - Fortitude save (`saves.fortitude`)
+     *     - Reflex save (`saves.reflex`)
      *     - Will save (`saves.will`)
      *
      *   NOT AFFECTED (uses standard additive stacking even in gestalt):

@@ -384,8 +384,8 @@ describe('setAttributeBase and setSkillRanks', () => {
   it('setAttributeBase updates the pipeline base value', () => {
     const engine = new GameEngine();
     engine.character = createEmptyCharacter('test', 'Attr');
-    engine.setAttributeBase('stat_str', 16);
-    expect(engine.character.attributes['stat_str'].baseValue).toBe(16);
+    engine.setAttributeBase('stat_strength', 16);
+    expect(engine.character.attributes['stat_strength'].baseValue).toBe(16);
   });
 
   it('setAttributeBase logs a warning for unknown pipeline ID', () => {
@@ -399,7 +399,7 @@ describe('setAttributeBase and setSkillRanks', () => {
     const engine = new GameEngine();
     engine.character = createEmptyCharacter('test', 'Skill');
     engine.character.skills['skill_climb'] = {
-      id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_str',
+      id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_strength',
       baseValue: 0, ranks: 5, isClassSkill: true, appliesArmorCheckPenalty: true,
       canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 5, derivedModifier: 0,
@@ -412,7 +412,7 @@ describe('setAttributeBase and setSkillRanks', () => {
     const engine = new GameEngine();
     engine.character = createEmptyCharacter('test', 'Lock');
     engine.character.skills['skill_climb'] = {
-      id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_str',
+      id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_strength',
       baseValue: 0, ranks: 6, isClassSkill: true, appliesArmorCheckPenalty: true,
       canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 6, derivedModifier: 0,
@@ -426,7 +426,7 @@ describe('setAttributeBase and setSkillRanks', () => {
     const engine = new GameEngine();
     engine.character = createEmptyCharacter('test', 'Lock2');
     engine.character.skills['skill_swim'] = {
-      id: 'skill_swim', label: { en: 'Swim' }, keyAbility: 'stat_str',
+      id: 'skill_swim', label: { en: 'Swim' }, keyAbility: 'stat_strength',
       baseValue: 0, ranks: 5, isClassSkill: true, appliesArmorCheckPenalty: true,
       canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 5, derivedModifier: 0,

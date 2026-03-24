@@ -14,7 +14,7 @@
         "id": "dromite_cha_bonus",
         "sourceId": "race_dromite",
         "sourceName": { "en": "Dromite", "fr": "Dromite" },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 2,
         "type": "racial"
       },
@@ -22,7 +22,7 @@
         "id": "dromite_str_penalty",
         "sourceId": "race_dromite",
         "sourceName": { "en": "Dromite", "fr": "Dromite" },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": -2,
         "type": "racial"
       },
@@ -30,7 +30,7 @@
         "id": "dromite_wis_penalty",
         "sourceId": "race_dromite",
         "sourceName": { "en": "Dromite", "fr": "Dromite" },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": -2,
         "type": "racial"
       },
@@ -121,7 +121,7 @@
         "id": "duergar_con_bonus",
         "sourceId": "race_duergar",
         "sourceName": { "en": "Duergar", "fr": "Duergar" },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "racial"
       },
@@ -129,7 +129,7 @@
         "id": "duergar_cha_penalty",
         "sourceId": "race_duergar",
         "sourceName": { "en": "Duergar", "fr": "Duergar" },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": -4,
         "type": "racial"
       },
@@ -153,7 +153,7 @@
         "id": "duergar_save_spells",
         "sourceId": "race_duergar",
         "sourceName": { "en": "Psionic Heritage vs Magic", "fr": "Héritage psionique contre magie" },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "racial",
         "situationalContext": "vs_spells_and_spell_like_effects"
@@ -247,7 +247,7 @@
         "id": "elan_cha_penalty",
         "sourceId": "race_elan",
         "sourceName": { "en": "Elan", "fr": "Élan" },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": -2,
         "type": "racial"
       },
@@ -290,7 +290,7 @@
         "id": "half_giant_str_bonus",
         "sourceId": "race_half_giant",
         "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "racial"
       },
@@ -298,7 +298,7 @@
         "id": "half_giant_con_bonus",
         "sourceId": "race_half_giant",
         "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "racial"
       },
@@ -306,7 +306,7 @@
         "id": "half_giant_dex_penalty",
         "sourceId": "race_half_giant",
         "sourceName": { "en": "Half-Giant", "fr": "Demi-géant" },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": -2,
         "type": "racial"
       },
@@ -330,7 +330,7 @@
         "id": "half_giant_fire_save",
         "sourceId": "race_half_giant",
         "sourceName": { "en": "Fire Acclimated", "fr": "Acclimaté au feu" },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "racial",
         "situationalContext": "vs_fire_spells_and_effects"
@@ -393,7 +393,7 @@
         "id": "xeph_dex_bonus",
         "sourceId": "race_xeph",
         "sourceName": { "en": "Xeph", "fr": "Xeph" },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "racial"
       },
@@ -401,7 +401,7 @@
         "id": "xeph_str_penalty",
         "sourceId": "race_xeph",
         "sourceName": { "en": "Xeph", "fr": "Xeph" },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": -2,
         "type": "racial"
       },

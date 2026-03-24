@@ -2471,7 +2471,7 @@
           "en": "Potion of Bear's Endurance",
           "fr": "Potion d'endurance de l'ours"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 4,
         "type": "enhancement"
       }
@@ -2582,7 +2582,7 @@
           "en": "Potion of Bull's Strength",
           "fr": "Potion de force du taureau"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 4,
         "type": "enhancement"
       }
@@ -2627,7 +2627,7 @@
           "en": "Potion of Cat's Grace",
           "fr": "Potion de grâce du chat"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 4,
         "type": "enhancement"
       }
@@ -2936,7 +2936,7 @@
           "en": "Potion of Eagle's Splendor",
           "fr": "Potion de splendeur de l'aigle"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 4,
         "type": "enhancement"
       }
@@ -3113,7 +3113,7 @@
           "en": "Potion of Fox's Cunning",
           "fr": "Potion de ruse du renard"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 4,
         "type": "enhancement"
       }
@@ -4292,7 +4292,7 @@
           "en": "Potion of Owl's Wisdom",
           "fr": "Potion de sagesse du hibou"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 4,
         "type": "enhancement"
       }
@@ -8086,13 +8086,13 @@
         "type": "untyped"
       },
       {
-        "id": "item_armor_specific_breastplate_of_command_attributes_stat_cha",
+        "id": "item_armor_specific_breastplate_of_command_attributes_stat_charisma",
         "sourceId": "item_armor_specific_breastplate_of_command",
         "sourceName": {
           "en": "Breastplate of Command",
           "fr": "Plastron de commandement"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 2,
         "type": "competence"
       }
@@ -9674,13 +9674,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_weapon_special_wounding_attributes_stat_con",
+        "id": "item_weapon_special_wounding_attributes_stat_constitution",
         "sourceId": "item_weapon_special_wounding",
         "sourceName": {
           "en": "Weapon: Wounding",
           "fr": "Arme : blessante"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": -1,
         "type": "untyped",
         "situationalContext": "on_hit"
@@ -10961,7 +10961,7 @@
           "en": "Luck Blade (0 wishes)",
           "fr": "Lame de chance (0 souhaits)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -10972,7 +10972,7 @@
           "en": "Luck Blade (0 wishes)",
           "fr": "Lame de chance (0 souhaits)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -11057,7 +11057,7 @@
           "en": "Luck Blade (1 wish)",
           "fr": "Lame de chance (1 souhait)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -11068,7 +11068,7 @@
           "en": "Luck Blade (1 wish)",
           "fr": "Lame de chance (1 souhait)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -11165,7 +11165,7 @@
           "en": "Luck Blade (2 wishes)",
           "fr": "Lame de chance (2 souhaits)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -11176,7 +11176,7 @@
           "en": "Luck Blade (2 wishes)",
           "fr": "Lame de chance (2 souhaits)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -11273,7 +11273,7 @@
           "en": "Luck Blade (3 wishes)",
           "fr": "Lame de chance (3 souhaits)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -11284,7 +11284,7 @@
           "en": "Luck Blade (3 wishes)",
           "fr": "Lame de chance (3 souhaits)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -11976,25 +11976,25 @@
         "type": "enhancement"
       },
       {
-        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_con",
+        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_constitution",
         "sourceId": "item_weapon_specific_rapier_of_puncturing",
         "sourceName": {
           "en": "Rapier of Puncturing",
           "fr": "Rapière perforante"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": -1,
         "type": "untyped",
         "situationalContext": "on_hit"
       },
       {
-        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_con",
+        "id": "item_weapon_specific_rapier_of_puncturing_attributes_stat_constitution",
         "sourceId": "item_weapon_specific_rapier_of_puncturing",
         "sourceName": {
           "en": "Rapier of Puncturing",
           "fr": "Rapière perforante"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": -1,
         "type": "untyped",
         "situationalContext": "puncture_touch_attack"
@@ -12456,13 +12456,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_amulet_of_health_2_attributes_stat_con",
+        "id": "item_amulet_of_health_2_attributes_stat_constitution",
         "sourceId": "item_amulet_of_health_2",
         "sourceName": {
           "en": "Amulet of Health +2",
           "fr": "Amulette de santé +2"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "enhancement"
       }
@@ -12491,13 +12491,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_amulet_of_health_4_attributes_stat_con",
+        "id": "item_amulet_of_health_4_attributes_stat_constitution",
         "sourceId": "item_amulet_of_health_4",
         "sourceName": {
           "en": "Amulet of Health +4",
           "fr": "Amulette de santé +4"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 4,
         "type": "enhancement"
       }
@@ -12526,13 +12526,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_amulet_of_health_6_attributes_stat_con",
+        "id": "item_amulet_of_health_6_attributes_stat_constitution",
         "sourceId": "item_amulet_of_health_6",
         "sourceName": {
           "en": "Amulet of Health +6",
           "fr": "Amulette de santé +6"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 6,
         "type": "enhancement"
       }
@@ -13307,13 +13307,13 @@
     "costGp": 14900,
     "grantedModifiers": [
       {
-        "id": "item_belt_of_dwarvenkind_attributes_stat_con",
+        "id": "item_belt_of_dwarvenkind_attributes_stat_constitution",
         "sourceId": "item_belt_of_dwarvenkind",
         "sourceName": {
           "en": "Belt of Dwarvenkind",
           "fr": "Ceinture du nain"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "enhancement",
         "conditionNode": {
@@ -13330,7 +13330,7 @@
           "en": "Belt of Dwarvenkind",
           "fr": "Ceinture du nain"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "resistance"
       },
@@ -13341,7 +13341,7 @@
           "en": "Belt of Dwarvenkind",
           "fr": "Ceinture du nain"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "resistance"
       },
@@ -13381,13 +13381,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_belt_of_giant_strength_4_attributes_stat_str",
+        "id": "item_belt_of_giant_strength_4_attributes_stat_strength",
         "sourceId": "item_belt_of_giant_strength_4",
         "sourceName": {
           "en": "Belt of Giant Strength +4",
           "fr": "Ceinture de la force du géant +4"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 4,
         "type": "enhancement"
       }
@@ -13416,13 +13416,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_belt_of_giant_strength_6_attributes_stat_str",
+        "id": "item_belt_of_giant_strength_6_attributes_stat_strength",
         "sourceId": "item_belt_of_giant_strength_6",
         "sourceName": {
           "en": "Belt of Giant Strength +6",
           "fr": "Ceinture de la force du géant +6"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 6,
         "type": "enhancement"
       }
@@ -14714,7 +14714,7 @@
           "en": "Cloak of Arachnida",
           "fr": "Cape d'arachnide"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "luck",
         "situationalContext": "vs_spider_poison"
@@ -14797,13 +14797,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_cloak_of_charisma_2_attributes_stat_cha",
+        "id": "item_cloak_of_charisma_2_attributes_stat_charisma",
         "sourceId": "item_cloak_of_charisma_2",
         "sourceName": {
           "en": "Cloak of Charisma +2",
           "fr": "Cape du charisme +2"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 2,
         "type": "enhancement"
       }
@@ -14832,13 +14832,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_cloak_of_charisma_4_attributes_stat_cha",
+        "id": "item_cloak_of_charisma_4_attributes_stat_charisma",
         "sourceId": "item_cloak_of_charisma_4",
         "sourceName": {
           "en": "Cloak of Charisma +4",
           "fr": "Cape du charisme +4"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 4,
         "type": "enhancement"
       }
@@ -14867,13 +14867,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_cloak_of_charisma_6_attributes_stat_cha",
+        "id": "item_cloak_of_charisma_6_attributes_stat_charisma",
         "sourceId": "item_cloak_of_charisma_6",
         "sourceName": {
           "en": "Cloak of Charisma +6",
           "fr": "Cape du charisme +6"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 6,
         "type": "enhancement"
       }
@@ -15090,7 +15090,7 @@
           "en": "Cloak of Resistance +1",
           "fr": "Cape de résistance +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "resistance"
       },
@@ -15101,7 +15101,7 @@
           "en": "Cloak of Resistance +1",
           "fr": "Cape de résistance +1"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "resistance"
       },
@@ -15147,7 +15147,7 @@
           "en": "Cloak of Resistance +2",
           "fr": "Cape de résistance +2"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "resistance"
       },
@@ -15158,7 +15158,7 @@
           "en": "Cloak of Resistance +2",
           "fr": "Cape de résistance +2"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "resistance"
       },
@@ -15204,7 +15204,7 @@
           "en": "Cloak of Resistance +3",
           "fr": "Cape de résistance +3"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 3,
         "type": "resistance"
       },
@@ -15215,7 +15215,7 @@
           "en": "Cloak of Resistance +3",
           "fr": "Cape de résistance +3"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 3,
         "type": "resistance"
       },
@@ -15261,7 +15261,7 @@
           "en": "Cloak of Resistance +4",
           "fr": "Cape de résistance +4"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "resistance"
       },
@@ -15272,7 +15272,7 @@
           "en": "Cloak of Resistance +4",
           "fr": "Cape de résistance +4"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 4,
         "type": "resistance"
       },
@@ -15318,7 +15318,7 @@
           "en": "Cloak of Resistance +5",
           "fr": "Cape de résistance +5"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 5,
         "type": "resistance"
       },
@@ -15329,7 +15329,7 @@
           "en": "Cloak of Resistance +5",
           "fr": "Cape de résistance +5"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 5,
         "type": "resistance"
       },
@@ -16843,13 +16843,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_gauntlets_of_ogre_power_attributes_stat_str",
+        "id": "item_gauntlets_of_ogre_power_attributes_stat_strength",
         "sourceId": "item_gauntlets_of_ogre_power",
         "sourceName": {
           "en": "Gauntlets of Ogre Power",
           "fr": "Gantelets de la puissance d'ogre"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "enhancement"
       }
@@ -17030,13 +17030,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_gloves_of_dexterity_2_attributes_stat_dex",
+        "id": "item_gloves_of_dexterity_2_attributes_stat_dexterity",
         "sourceId": "item_gloves_of_dexterity_2",
         "sourceName": {
           "en": "Gloves of Dexterity +2",
           "fr": "Gants de dextérité +2"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "enhancement"
       }
@@ -17065,13 +17065,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_gloves_of_dexterity_4_attributes_stat_dex",
+        "id": "item_gloves_of_dexterity_4_attributes_stat_dexterity",
         "sourceId": "item_gloves_of_dexterity_4",
         "sourceName": {
           "en": "Gloves of Dexterity +4",
           "fr": "Gants de dextérité +4"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 4,
         "type": "enhancement"
       }
@@ -17100,13 +17100,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_gloves_of_dexterity_6_attributes_stat_dex",
+        "id": "item_gloves_of_dexterity_6_attributes_stat_dexterity",
         "sourceId": "item_gloves_of_dexterity_6",
         "sourceName": {
           "en": "Gloves of Dexterity +6",
           "fr": "Gants de dextérité +6"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 6,
         "type": "enhancement"
       }
@@ -17538,13 +17538,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_headband_of_intellect_2_attributes_stat_int",
+        "id": "item_headband_of_intellect_2_attributes_stat_intelligence",
         "sourceId": "item_headband_of_intellect_2",
         "sourceName": {
           "en": "Headband of Intellect +2",
           "fr": "Bandeau d'intellect +2"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 2,
         "type": "enhancement"
       }
@@ -17573,13 +17573,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_headband_of_intellect_4_attributes_stat_int",
+        "id": "item_headband_of_intellect_4_attributes_stat_intelligence",
         "sourceId": "item_headband_of_intellect_4",
         "sourceName": {
           "en": "Headband of Intellect +4",
           "fr": "Bandeau d'intellect +4"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 4,
         "type": "enhancement"
       }
@@ -17608,13 +17608,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_headband_of_intellect_6_attributes_stat_int",
+        "id": "item_headband_of_intellect_6_attributes_stat_intelligence",
         "sourceId": "item_headband_of_intellect_6",
         "sourceName": {
           "en": "Headband of Intellect +6",
           "fr": "Bandeau d'intellect +6"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 6,
         "type": "enhancement"
       }
@@ -18297,13 +18297,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_deep_red_sphere_attributes_stat_dex",
+        "id": "item_ioun_stone_deep_red_sphere_attributes_stat_dexterity",
         "sourceId": "item_ioun_stone_deep_red_sphere",
         "sourceName": {
           "en": "Ioun Stone (Deep Red Sphere)",
           "fr": "Pierre ioun (Sphère rouge foncé)"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "enhancement"
       }
@@ -18333,13 +18333,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_incandescent_blue_sphere_attributes_stat_wis",
+        "id": "item_ioun_stone_incandescent_blue_sphere_attributes_stat_wisdom",
         "sourceId": "item_ioun_stone_incandescent_blue_sphere",
         "sourceName": {
           "en": "Ioun Stone (Incandescent Blue Sphere)",
           "fr": "Pierre ioun (Sphère bleu incandescent)"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 2,
         "type": "enhancement"
       }
@@ -18369,13 +18369,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_pale_blue_rhomboid_attributes_stat_str",
+        "id": "item_ioun_stone_pale_blue_rhomboid_attributes_stat_strength",
         "sourceId": "item_ioun_stone_pale_blue_rhomboid",
         "sourceName": {
           "en": "Ioun Stone (Pale Blue Rhomboid)",
           "fr": "Pierre ioun (Rhomboïde bleu pâle)"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "enhancement"
       }
@@ -18405,13 +18405,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_pink_rhomboid_attributes_stat_con",
+        "id": "item_ioun_stone_pink_rhomboid_attributes_stat_constitution",
         "sourceId": "item_ioun_stone_pink_rhomboid",
         "sourceName": {
           "en": "Ioun Stone (Pink Rhomboid)",
           "fr": "Pierre ioun (Rhomboïde rose)"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "enhancement"
       }
@@ -18441,13 +18441,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_pink_and_green_sphere_attributes_stat_cha",
+        "id": "item_ioun_stone_pink_and_green_sphere_attributes_stat_charisma",
         "sourceId": "item_ioun_stone_pink_and_green_sphere",
         "sourceName": {
           "en": "Ioun Stone (Pink and Green Sphere)",
           "fr": "Pierre ioun (Sphère rose et verte)"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 2,
         "type": "enhancement"
       }
@@ -18477,13 +18477,13 @@
     "costGp": 8000,
     "grantedModifiers": [
       {
-        "id": "item_ioun_stone_scarlet_and_blue_sphere_attributes_stat_int",
+        "id": "item_ioun_stone_scarlet_and_blue_sphere_attributes_stat_intelligence",
         "sourceId": "item_ioun_stone_scarlet_and_blue_sphere",
         "sourceName": {
           "en": "Ioun Stone (Scarlet and Blue Sphere)",
           "fr": "Pierre ioun (Sphère écarlate et bleue)"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 2,
         "type": "enhancement"
       }
@@ -18650,7 +18650,7 @@
           "en": "Ioun Stone (Pale Green Prism)",
           "fr": "Pierre ioun (Prisme vert pâle)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "competence"
       },
@@ -18661,7 +18661,7 @@
           "en": "Ioun Stone (Pale Green Prism)",
           "fr": "Pierre ioun (Prisme vert pâle)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "competence"
       },
@@ -19007,13 +19007,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_bodily_health_1_attributes_stat_con",
+        "id": "item_manual_of_bodily_health_1_attributes_stat_constitution",
         "sourceId": "item_manual_of_bodily_health_1",
         "sourceName": {
           "en": "Manual of Bodily Health +1",
           "fr": "Manuel de la santé corporelle +1"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 1,
         "type": "inherent"
       }
@@ -19047,13 +19047,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_bodily_health_2_attributes_stat_con",
+        "id": "item_manual_of_bodily_health_2_attributes_stat_constitution",
         "sourceId": "item_manual_of_bodily_health_2",
         "sourceName": {
           "en": "Manual of Bodily Health +2",
           "fr": "Manuel de la santé corporelle +2"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "inherent"
       }
@@ -19087,13 +19087,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_bodily_health_3_attributes_stat_con",
+        "id": "item_manual_of_bodily_health_3_attributes_stat_constitution",
         "sourceId": "item_manual_of_bodily_health_3",
         "sourceName": {
           "en": "Manual of Bodily Health +3",
           "fr": "Manuel de la santé corporelle +3"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 3,
         "type": "inherent"
       }
@@ -19127,13 +19127,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_bodily_health_4_attributes_stat_con",
+        "id": "item_manual_of_bodily_health_4_attributes_stat_constitution",
         "sourceId": "item_manual_of_bodily_health_4",
         "sourceName": {
           "en": "Manual of Bodily Health +4",
           "fr": "Manuel de la santé corporelle +4"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 4,
         "type": "inherent"
       }
@@ -19167,13 +19167,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_bodily_health_5_attributes_stat_con",
+        "id": "item_manual_of_bodily_health_5_attributes_stat_constitution",
         "sourceId": "item_manual_of_bodily_health_5",
         "sourceName": {
           "en": "Manual of Bodily Health +5",
           "fr": "Manuel de la santé corporelle +5"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 5,
         "type": "inherent"
       }
@@ -19207,13 +19207,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_gainful_exercise_1_attributes_stat_str",
+        "id": "item_manual_of_gainful_exercise_1_attributes_stat_strength",
         "sourceId": "item_manual_of_gainful_exercise_1",
         "sourceName": {
           "en": "Manual of Gainful Exercise +1",
           "fr": "Manuel d'exercice profitable +1"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 1,
         "type": "inherent"
       }
@@ -19247,13 +19247,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_gainful_exercise_2_attributes_stat_str",
+        "id": "item_manual_of_gainful_exercise_2_attributes_stat_strength",
         "sourceId": "item_manual_of_gainful_exercise_2",
         "sourceName": {
           "en": "Manual of Gainful Exercise +2",
           "fr": "Manuel d'exercice profitable +2"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "inherent"
       }
@@ -19287,13 +19287,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_gainful_exercise_3_attributes_stat_str",
+        "id": "item_manual_of_gainful_exercise_3_attributes_stat_strength",
         "sourceId": "item_manual_of_gainful_exercise_3",
         "sourceName": {
           "en": "Manual of Gainful Exercise +3",
           "fr": "Manuel d'exercice profitable +3"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 3,
         "type": "inherent"
       }
@@ -19327,13 +19327,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_gainful_exercise_4_attributes_stat_str",
+        "id": "item_manual_of_gainful_exercise_4_attributes_stat_strength",
         "sourceId": "item_manual_of_gainful_exercise_4",
         "sourceName": {
           "en": "Manual of Gainful Exercise +4",
           "fr": "Manuel d'exercice profitable +4"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 4,
         "type": "inherent"
       }
@@ -19367,13 +19367,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_gainful_exercise_5_attributes_stat_str",
+        "id": "item_manual_of_gainful_exercise_5_attributes_stat_strength",
         "sourceId": "item_manual_of_gainful_exercise_5",
         "sourceName": {
           "en": "Manual of Gainful Exercise +5",
           "fr": "Manuel d'exercice profitable +5"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 5,
         "type": "inherent"
       }
@@ -19407,13 +19407,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_quickness_of_action_1_attributes_stat_dex",
+        "id": "item_manual_of_quickness_of_action_1_attributes_stat_dexterity",
         "sourceId": "item_manual_of_quickness_of_action_1",
         "sourceName": {
           "en": "Manual of Quickness of Action +1",
           "fr": "Manuel d'agilité d'action +1"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 1,
         "type": "inherent"
       }
@@ -19447,13 +19447,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_quickness_of_action_2_attributes_stat_dex",
+        "id": "item_manual_of_quickness_of_action_2_attributes_stat_dexterity",
         "sourceId": "item_manual_of_quickness_of_action_2",
         "sourceName": {
           "en": "Manual of Quickness of Action +2",
           "fr": "Manuel d'agilité d'action +2"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "inherent"
       }
@@ -19487,13 +19487,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_quickness_of_action_3_attributes_stat_dex",
+        "id": "item_manual_of_quickness_of_action_3_attributes_stat_dexterity",
         "sourceId": "item_manual_of_quickness_of_action_3",
         "sourceName": {
           "en": "Manual of Quickness of Action +3",
           "fr": "Manuel d'agilité d'action +3"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 3,
         "type": "inherent"
       }
@@ -19527,13 +19527,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_quickness_of_action_4_attributes_stat_dex",
+        "id": "item_manual_of_quickness_of_action_4_attributes_stat_dexterity",
         "sourceId": "item_manual_of_quickness_of_action_4",
         "sourceName": {
           "en": "Manual of Quickness of Action +4",
           "fr": "Manuel d'agilité d'action +4"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 4,
         "type": "inherent"
       }
@@ -19567,13 +19567,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_manual_of_quickness_of_action_5_attributes_stat_dex",
+        "id": "item_manual_of_quickness_of_action_5_attributes_stat_dexterity",
         "sourceId": "item_manual_of_quickness_of_action_5",
         "sourceName": {
           "en": "Manual of Quickness of Action +5",
           "fr": "Manuel d'agilité d'action +5"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 5,
         "type": "inherent"
       }
@@ -19607,13 +19607,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_clear_thought_1_attributes_stat_int",
+        "id": "item_tome_of_clear_thought_1_attributes_stat_intelligence",
         "sourceId": "item_tome_of_clear_thought_1",
         "sourceName": {
           "en": "Tome of Clear Thought +1",
           "fr": "Tome de la pensée claire +1"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 1,
         "type": "inherent"
       }
@@ -19647,13 +19647,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_clear_thought_2_attributes_stat_int",
+        "id": "item_tome_of_clear_thought_2_attributes_stat_intelligence",
         "sourceId": "item_tome_of_clear_thought_2",
         "sourceName": {
           "en": "Tome of Clear Thought +2",
           "fr": "Tome de la pensée claire +2"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 2,
         "type": "inherent"
       }
@@ -19687,13 +19687,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_clear_thought_3_attributes_stat_int",
+        "id": "item_tome_of_clear_thought_3_attributes_stat_intelligence",
         "sourceId": "item_tome_of_clear_thought_3",
         "sourceName": {
           "en": "Tome of Clear Thought +3",
           "fr": "Tome de la pensée claire +3"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 3,
         "type": "inherent"
       }
@@ -19727,13 +19727,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_clear_thought_4_attributes_stat_int",
+        "id": "item_tome_of_clear_thought_4_attributes_stat_intelligence",
         "sourceId": "item_tome_of_clear_thought_4",
         "sourceName": {
           "en": "Tome of Clear Thought +4",
           "fr": "Tome de la pensée claire +4"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 4,
         "type": "inherent"
       }
@@ -19767,13 +19767,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_clear_thought_5_attributes_stat_int",
+        "id": "item_tome_of_clear_thought_5_attributes_stat_intelligence",
         "sourceId": "item_tome_of_clear_thought_5",
         "sourceName": {
           "en": "Tome of Clear Thought +5",
           "fr": "Tome de la pensée claire +5"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 5,
         "type": "inherent"
       }
@@ -19807,13 +19807,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_leadership_and_influence_1_attributes_stat_cha",
+        "id": "item_tome_of_leadership_and_influence_1_attributes_stat_charisma",
         "sourceId": "item_tome_of_leadership_and_influence_1",
         "sourceName": {
           "en": "Tome of Leadership and Influence +1",
           "fr": "Tome du commandement et de l'influence +1"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 1,
         "type": "inherent"
       }
@@ -19847,13 +19847,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_leadership_and_influence_2_attributes_stat_cha",
+        "id": "item_tome_of_leadership_and_influence_2_attributes_stat_charisma",
         "sourceId": "item_tome_of_leadership_and_influence_2",
         "sourceName": {
           "en": "Tome of Leadership and Influence +2",
           "fr": "Tome du commandement et de l'influence +2"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 2,
         "type": "inherent"
       }
@@ -19887,13 +19887,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_leadership_and_influence_3_attributes_stat_cha",
+        "id": "item_tome_of_leadership_and_influence_3_attributes_stat_charisma",
         "sourceId": "item_tome_of_leadership_and_influence_3",
         "sourceName": {
           "en": "Tome of Leadership and Influence +3",
           "fr": "Tome du commandement et de l'influence +3"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 3,
         "type": "inherent"
       }
@@ -19927,13 +19927,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_leadership_and_influence_4_attributes_stat_cha",
+        "id": "item_tome_of_leadership_and_influence_4_attributes_stat_charisma",
         "sourceId": "item_tome_of_leadership_and_influence_4",
         "sourceName": {
           "en": "Tome of Leadership and Influence +4",
           "fr": "Tome du commandement et de l'influence +4"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 4,
         "type": "inherent"
       }
@@ -19967,13 +19967,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_leadership_and_influence_5_attributes_stat_cha",
+        "id": "item_tome_of_leadership_and_influence_5_attributes_stat_charisma",
         "sourceId": "item_tome_of_leadership_and_influence_5",
         "sourceName": {
           "en": "Tome of Leadership and Influence +5",
           "fr": "Tome du commandement et de l'influence +5"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 5,
         "type": "inherent"
       }
@@ -20007,13 +20007,13 @@
     "costGp": 27500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_understanding_1_attributes_stat_wis",
+        "id": "item_tome_of_understanding_1_attributes_stat_wisdom",
         "sourceId": "item_tome_of_understanding_1",
         "sourceName": {
           "en": "Tome of Understanding +1",
           "fr": "Tome de la compréhension +1"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 1,
         "type": "inherent"
       }
@@ -20047,13 +20047,13 @@
     "costGp": 55000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_understanding_2_attributes_stat_wis",
+        "id": "item_tome_of_understanding_2_attributes_stat_wisdom",
         "sourceId": "item_tome_of_understanding_2",
         "sourceName": {
           "en": "Tome of Understanding +2",
           "fr": "Tome de la compréhension +2"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 2,
         "type": "inherent"
       }
@@ -20087,13 +20087,13 @@
     "costGp": 82500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_understanding_3_attributes_stat_wis",
+        "id": "item_tome_of_understanding_3_attributes_stat_wisdom",
         "sourceId": "item_tome_of_understanding_3",
         "sourceName": {
           "en": "Tome of Understanding +3",
           "fr": "Tome de la compréhension +3"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 3,
         "type": "inherent"
       }
@@ -20127,13 +20127,13 @@
     "costGp": 110000,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_understanding_4_attributes_stat_wis",
+        "id": "item_tome_of_understanding_4_attributes_stat_wisdom",
         "sourceId": "item_tome_of_understanding_4",
         "sourceName": {
           "en": "Tome of Understanding +4",
           "fr": "Tome de la compréhension +4"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 4,
         "type": "inherent"
       }
@@ -20167,13 +20167,13 @@
     "costGp": 137500,
     "grantedModifiers": [
       {
-        "id": "item_tome_of_understanding_5_attributes_stat_wis",
+        "id": "item_tome_of_understanding_5_attributes_stat_wisdom",
         "sourceId": "item_tome_of_understanding_5",
         "sourceName": {
           "en": "Tome of Understanding +5",
           "fr": "Tome de la compréhension +5"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 5,
         "type": "inherent"
       }
@@ -21208,13 +21208,13 @@
     "costGp": 4000,
     "grantedModifiers": [
       {
-        "id": "item_periapt_of_wisdom_2_attributes_stat_wis",
+        "id": "item_periapt_of_wisdom_2_attributes_stat_wisdom",
         "sourceId": "item_periapt_of_wisdom_2",
         "sourceName": {
           "en": "Periapt of Wisdom +2",
           "fr": "Périapte de sagesse +2"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 2,
         "type": "enhancement"
       }
@@ -21243,13 +21243,13 @@
     "costGp": 16000,
     "grantedModifiers": [
       {
-        "id": "item_periapt_of_wisdom_4_attributes_stat_wis",
+        "id": "item_periapt_of_wisdom_4_attributes_stat_wisdom",
         "sourceId": "item_periapt_of_wisdom_4",
         "sourceName": {
           "en": "Periapt of Wisdom +4",
           "fr": "Périapte de sagesse +4"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 4,
         "type": "enhancement"
       }
@@ -21278,13 +21278,13 @@
     "costGp": 36000,
     "grantedModifiers": [
       {
-        "id": "item_periapt_of_wisdom_6_attributes_stat_wis",
+        "id": "item_periapt_of_wisdom_6_attributes_stat_wisdom",
         "sourceId": "item_periapt_of_wisdom_6",
         "sourceName": {
           "en": "Periapt of Wisdom +6",
           "fr": "Périapte de sagesse +6"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 6,
         "type": "enhancement"
       }
@@ -21624,7 +21624,7 @@
           "en": "Robe of the Archmagi (White (Good))",
           "fr": "Robe de l'archimage (Blanche (Bon))"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "resistance"
       },
@@ -21635,7 +21635,7 @@
           "en": "Robe of the Archmagi (White (Good))",
           "fr": "Robe de l'archimage (Blanche (Bon))"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 4,
         "type": "resistance"
       },
@@ -21703,7 +21703,7 @@
           "en": "Robe of the Archmagi (Gray (Neutral))",
           "fr": "Robe de l'archimage (Grise (Neutre))"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "resistance"
       },
@@ -21714,7 +21714,7 @@
           "en": "Robe of the Archmagi (Gray (Neutral))",
           "fr": "Robe de l'archimage (Grise (Neutre))"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 4,
         "type": "resistance"
       },
@@ -21782,7 +21782,7 @@
           "en": "Robe of the Archmagi (Black (Evil))",
           "fr": "Robe de l'archimage (Noire (Mauvais))"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "resistance"
       },
@@ -21793,7 +21793,7 @@
           "en": "Robe of the Archmagi (Black (Evil))",
           "fr": "Robe de l'archimage (Noire (Mauvais))"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 4,
         "type": "resistance"
       },
@@ -21997,7 +21997,7 @@
           "en": "Robe of Stars",
           "fr": "Robe des étoiles"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -22008,7 +22008,7 @@
           "en": "Robe of Stars",
           "fr": "Robe des étoiles"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -22464,7 +22464,7 @@
           "en": "Stone of Good Luck (Luckstone)",
           "fr": "Pierre de bonne chance (Chance)"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "luck"
       },
@@ -22475,7 +22475,7 @@
           "en": "Stone of Good Luck (Luckstone)",
           "fr": "Pierre de bonne chance (Chance)"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "luck"
       },
@@ -22702,7 +22702,7 @@
           "en": "Unguent of Timelessness",
           "fr": "Onguent d'intemporalité"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "resistance"
       },
@@ -22713,7 +22713,7 @@
           "en": "Unguent of Timelessness",
           "fr": "Onguent d'intemporalité"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "resistance"
       },
@@ -23720,7 +23720,7 @@
           "en": "Rod of Alertness",
           "fr": "Baguette de vigilance"
         },
-        "targetId": "combatStats.init",
+        "targetId": "combatStats.initiative",
         "value": 1,
         "type": "insight"
       }
@@ -24212,13 +24212,13 @@
     "hpMax": 10,
     "grantedModifiers": [
       {
-        "id": "item_rod_of_splendor_attributes_stat_cha",
+        "id": "item_rod_of_splendor_attributes_stat_charisma",
         "sourceId": "item_rod_of_splendor",
         "sourceName": {
           "en": "Rod of Splendor",
           "fr": "Baguette de splendeur"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 4,
         "type": "enhancement"
       }
@@ -25444,7 +25444,7 @@
           "en": "Staff of Power",
           "fr": "Bâton de puissance"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "luck"
       },
@@ -25455,7 +25455,7 @@
           "en": "Staff of Power",
           "fr": "Bâton de puissance"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "luck"
       },
@@ -58483,7 +58483,7 @@
           "en": "The Shadowstaff",
           "fr": "Le Bâton des Ombres"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 4,
         "type": "deflection"
       },
@@ -58506,7 +58506,7 @@
           "en": "The Shadowstaff",
           "fr": "Le Bâton des Ombres"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": -2,
         "type": "untyped",
         "situationalContext": "in_bright_or_absolute_darkness"
@@ -58669,7 +58669,7 @@
           "en": "Amulet of Inescapable Location",
           "fr": "Amulette de Localisation Inévitable"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": -10,
         "type": "untyped",
         "situationalContext": "vs_divination"
@@ -58681,7 +58681,7 @@
           "en": "Amulet of Inescapable Location",
           "fr": "Amulette de Localisation Inévitable"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": -10,
         "type": "untyped",
         "situationalContext": "vs_divination"
@@ -58809,13 +58809,13 @@
         "type": "armor"
       },
       {
-        "id": "item_cursed_armor_of_rage_attributes_stat_cha",
+        "id": "item_cursed_armor_of_rage_attributes_stat_charisma",
         "sourceId": "item_cursed_armor_of_rage",
         "sourceName": {
           "en": "Armor of Rage",
           "fr": "Armure de Rage"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": -4,
         "type": "untyped"
       }
@@ -59139,13 +59139,13 @@
     },
     "grantedModifiers": [
       {
-        "id": "item_cursed_gauntlets_of_fumbling_attributes_stat_dex",
+        "id": "item_cursed_gauntlets_of_fumbling_attributes_stat_dexterity",
         "sourceId": "item_cursed_gauntlets_of_fumbling",
         "sourceName": {
           "en": "Gauntlets of Fumbling",
           "fr": "Gantelets de Maladresse"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": -2,
         "type": "untyped",
         "conditionNode": {
@@ -59502,13 +59502,13 @@
     },
     "grantedModifiers": [
       {
-        "id": "item_cursed_ring_of_clumsiness_attributes_stat_dex",
+        "id": "item_cursed_ring_of_clumsiness_attributes_stat_dexterity",
         "sourceId": "item_cursed_ring_of_clumsiness",
         "sourceName": {
           "en": "Ring of Clumsiness",
           "fr": "Anneau de Maladresse"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": -4,
         "type": "untyped"
       },
@@ -59557,24 +59557,24 @@
     },
     "grantedModifiers": [
       {
-        "id": "item_cursed_robe_of_powerlessness_attributes_stat_str",
+        "id": "item_cursed_robe_of_powerlessness_attributes_stat_strength",
         "sourceId": "item_cursed_robe_of_powerlessness",
         "sourceName": {
           "en": "Robe of Powerlessness",
           "fr": "Robe de l'Impuissance"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": -10,
         "type": "untyped"
       },
       {
-        "id": "item_cursed_robe_of_powerlessness_attributes_stat_int",
+        "id": "item_cursed_robe_of_powerlessness_attributes_stat_intelligence",
         "sourceId": "item_cursed_robe_of_powerlessness",
         "sourceName": {
           "en": "Robe of Powerlessness",
           "fr": "Robe de l'Impuissance"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": -10,
         "type": "untyped"
       }
@@ -59618,7 +59618,7 @@
           "en": "Robe of Vermin",
           "fr": "Robe des Vermine"
         },
-        "targetId": "combatStats.init",
+        "targetId": "combatStats.initiative",
         "value": -5,
         "type": "untyped"
       },
@@ -59646,7 +59646,7 @@
           "en": "Robe of Vermin",
           "fr": "Robe des Vermine"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": -2,
         "type": "untyped",
         "conditionNode": {
@@ -59663,7 +59663,7 @@
           "en": "Robe of Vermin",
           "fr": "Robe des Vermine"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": -2,
         "type": "untyped",
         "conditionNode": {

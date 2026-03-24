@@ -83,7 +83,7 @@ const POTION_BULLS_STRENGTH: ItemFeature = {
       id: 'item_potion_bulls_strength_str',
       sourceId: 'item_potion_bulls_strength',
       sourceName: { en: "Potion of Bull's Strength", fr: "Potion de force du taureau" },
-      targetId: 'attributes.stat_str',
+      targetId: 'attributes.stat_strength',
       value: 4,
       type: 'enhancement',
     },

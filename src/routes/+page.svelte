@@ -60,12 +60,12 @@
         // Create and load a test character: Human Fighter 2
         const testChar = createEmptyCharacter('test-character-001', 'Test Hero');
         testChar.classLevels = { 'class_fighter': 2 };
-        testChar.attributes['stat_str'].baseValue = 16; // STR 16 → mod +3
-        testChar.attributes['stat_dex'].baseValue = 14; // DEX 14 → mod +2
-        testChar.attributes['stat_con'].baseValue = 14; // CON 14 → mod +2
-        testChar.attributes['stat_int'].baseValue = 10; // INT 10 → mod 0
-        testChar.attributes['stat_wis'].baseValue = 10; // WIS 10
-        testChar.attributes['stat_cha'].baseValue = 8;  // CHA 8 → mod -1
+        testChar.attributes['stat_strength'].baseValue = 16; // STR 16 → mod +3
+        testChar.attributes['stat_dexterity'].baseValue = 14; // DEX 14 → mod +2
+        testChar.attributes['stat_constitution'].baseValue = 14; // CON 14 → mod +2
+        testChar.attributes['stat_intelligence'].baseValue = 10; // INT 10 → mod 0
+        testChar.attributes['stat_wisdom'].baseValue = 10; // WIS 10
+        testChar.attributes['stat_charisma'].baseValue = 8;  // CHA 8 → mod -1
 
         // Add race (Human)
         testChar.activeFeatures.push({
@@ -143,14 +143,14 @@
    * Total Strength from Phase 2 DAG (base 16 + racial/enhancement bonuses).
    * Reactive: automatically updates when any STR modifier changes.
    */
-  let totalStr = $derived(engine.phase2_attributes['stat_str']?.totalValue ?? engine.character.attributes['stat_str']?.baseValue ?? 0);
-  let strMod = $derived(engine.phase2_attributes['stat_str']?.derivedModifier ?? 0);
+  let totalStr = $derived(engine.phase2_attributes['stat_strength']?.totalValue ?? engine.character.attributes['stat_strength']?.baseValue ?? 0);
+  let strMod = $derived(engine.phase2_attributes['stat_strength']?.derivedModifier ?? 0);
 
   /**
    * Total Dexterity (for AC calculation display)
    */
-  let totalDex = $derived(engine.phase2_attributes['stat_dex']?.totalValue ?? 10);
-  let dexMod = $derived(engine.phase2_attributes['stat_dex']?.derivedModifier ?? 0);
+  let totalDex = $derived(engine.phase2_attributes['stat_dexterity']?.totalValue ?? 10);
+  let dexMod = $derived(engine.phase2_attributes['stat_dexterity']?.derivedModifier ?? 0);
 
   /**
    * Total AC from Phase 3 DAG.
@@ -162,12 +162,12 @@
   /**
    * Base Attack Bonus from Phase 3 DAG.
    */
-  let bab = $derived(engine.phase3_combatStats['combatStats.bab']?.totalValue ?? 0);
+  let bab = $derived(engine.phase3_combatStats['combatStats.base_attack_bonus']?.totalValue ?? 0);
 
   /**
    * Fortitude save from Phase 3 DAG.
    */
-  let fort = $derived(engine.phase3_combatStats['saves.fort']?.totalValue ?? 0);
+  let fort = $derived(engine.phase3_combatStats['saves.fortitude']?.totalValue ?? 0);
 
   /**
    * Character level from Phase 0 DAG.
@@ -203,8 +203,8 @@
     // Get the attack pipeline (combatStats.attack_bonus or bab combined)
     // For this test, we build a minimal pipeline with the Favoured Enemy situational modifier
     const attackPipeline = {
-      ...engine.phase3_combatStats['combatStats.bab'] ?? {
-        id: 'combatStats.bab',
+      ...engine.phase3_combatStats['combatStats.base_attack_bonus'] ?? {
+        id: 'combatStats.base_attack_bonus',
         label: { en: 'BAB' },
         baseValue: 0,
         activeModifiers: [],
@@ -242,7 +242,7 @@
   function changeStrBase(event: Event) {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (!isNaN(value) && value >= 1 && value <= 30) {
-      engine.setAttributeBase('stat_str', value);
+      engine.setAttributeBase('stat_strength', value);
     }
   }
 </script>
@@ -304,7 +304,7 @@
         <label for="str-base" class="text-xs font-semibold uppercase tracking-wider text-accent">Strength (STR)</label>
         <div class="flex items-center gap-2">
           <span class="flex-1 text-xs text-text-muted">Base:</span>
-          <input id="str-base" type="number" min="1" max="30" value={engine.character.attributes['stat_str']?.baseValue ?? 10} onchange={changeStrBase} class="input w-16 text-center text-sm px-1" />
+          <input id="str-base" type="number" min="1" max="30" value={engine.character.attributes['stat_strength']?.baseValue ?? 10} onchange={changeStrBase} class="input w-16 text-center text-sm px-1" />
         </div>
         <div class="flex items-center justify-between px-1 py-1 rounded bg-accent/10">
           <span class="text-xs text-text-muted">Total:</span>
@@ -502,7 +502,7 @@
         <tr class="data-table-row {useOverrideSource ? 'bg-accent/10 border-l-2 border-l-accent' : ''}">
           <td>test_override enabled</td>
           <td><code>test_override</code></td>
-          <td>+2 stat_int (racial) — bonus feat GONE</td>
+          <td>+2 stat_intelligence (racial) — bonus feat GONE</td>
         </tr>
       </tbody>
     </table>

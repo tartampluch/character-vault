@@ -1282,7 +1282,7 @@
           "en": "Save vs. Poison +1",
           "fr": "Sauvegarde contre le poison +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_poison"
@@ -1315,7 +1315,7 @@
           "en": "Save vs. Poison +1",
           "fr": "Sauvegarde contre le poison +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_poison"
@@ -1348,7 +1348,7 @@
           "en": "Save vs. Poison +1",
           "fr": "Sauvegarde contre le poison +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_poison"
@@ -1381,7 +1381,7 @@
           "en": "Save vs. Poison +1",
           "fr": "Sauvegarde contre le poison +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_poison"
@@ -1414,7 +1414,7 @@
           "en": "Save vs. Poison +1",
           "fr": "Sauvegarde contre le poison +1"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_poison"
@@ -1554,12 +1554,12 @@
           "en": "Dark Blessing",
           "fr": "Bénédiction des ténèbres"
         },
-        "targetId": "saves.fort",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "targetId": "saves.fortitude",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "untyped",
         "conditionNode": {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "targetPath": "@attributes.stat_charisma.derivedModifier",
           "operator": ">",
           "value": 0
         }
@@ -1571,12 +1571,12 @@
           "en": "Dark Blessing",
           "fr": "Bénédiction des ténèbres"
         },
-        "targetId": "saves.ref",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "targetId": "saves.reflex",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "untyped",
         "conditionNode": {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "targetPath": "@attributes.stat_charisma.derivedModifier",
           "operator": ">",
           "value": 0
         }
@@ -1589,11 +1589,11 @@
           "fr": "Bénédiction des ténèbres"
         },
         "targetId": "saves.will",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "untyped",
         "conditionNode": {
           "logic": "CONDITION",
-          "targetPath": "@attributes.stat_cha.derivedModifier",
+          "targetPath": "@attributes.stat_charisma.derivedModifier",
           "operator": ">",
           "value": 0
         }
@@ -1675,7 +1675,7 @@
           "fr": "Commandement des morts-vivants"
         },
         "targetId": "resources.blackguard_command_undead_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -2135,7 +2135,7 @@
           "fr": "Défense avisée"
         },
         "targetId": "combatStats.ac_normal",
-        "value": "@attributes.stat_int.derivedModifier",
+        "value": "@attributes.stat_intelligence.derivedModifier",
         "type": "dodge",
         "conditionNode": {
           "logic": "AND",
@@ -2269,7 +2269,7 @@
           "en": "Grace",
           "fr": "Grâce"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "competence",
         "conditionNode": {
@@ -2563,7 +2563,7 @@
           "en": "Trap Sense +1",
           "fr": "Sens des pièges +1"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_traps"
@@ -2725,7 +2725,7 @@
           "en": "Trap Sense +1",
           "fr": "Sens des pièges +1"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_traps"
@@ -5104,7 +5104,7 @@
           "en": "True Stamina",
           "fr": "Vraie endurance"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "untyped"
       }
@@ -5136,7 +5136,7 @@
           "en": "Knowledge of Avoidance",
           "fr": "Savoir d'esquive"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "untyped"
       }

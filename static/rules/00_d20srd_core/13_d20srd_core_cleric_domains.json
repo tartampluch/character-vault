@@ -24,7 +24,7 @@
           "fr": "Domaine de l'Air"
         },
         "targetId": "resources.domain_air_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -261,7 +261,7 @@
           "fr": "Domaine de la Terre"
         },
         "targetId": "resources.domain_earth_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -351,7 +351,7 @@
           "fr": "Domaine du Feu"
         },
         "targetId": "resources.domain_fire_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -659,7 +659,7 @@
           "fr": "Domaine des Plantes"
         },
         "targetId": "resources.domain_plant_rebuke_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -958,7 +958,7 @@
           "fr": "Domaine de l'Eau"
         },
         "targetId": "resources.domain_water_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],

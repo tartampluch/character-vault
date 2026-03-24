@@ -28,7 +28,7 @@
  *   18. No separator needed when previous char is `+`.
  *   19. Clear action: resets value to `''` and state to `'empty'`.
  *   20. click-to-insert at cursor position 4 in `"2 + "` → produces
- *       `"2 + @attributes.stat_str.derivedModifier"`.
+ *       `"2 + @attributes.stat_strength.derivedModifier"`.
  *
  *   Validation icon / colour mapping:
  *   21. `'valid'` maps to icon `'✓'` and colour `'text-green-400'`.
@@ -89,24 +89,24 @@ const PATH_GROUPS: PathGroup[] = [
   {
     title: 'Ability Scores',
     entries: [
-      { path: '@attributes.stat_str.totalValue',       label: 'Strength (total)' },
-      { path: '@attributes.stat_str.derivedModifier',  label: 'Strength modifier' },
-      { path: '@attributes.stat_str.baseValue',        label: 'Strength (base)' },
-      { path: '@attributes.stat_dex.totalValue',       label: 'Dexterity (total)' },
-      { path: '@attributes.stat_dex.derivedModifier',  label: 'Dexterity modifier' },
-      { path: '@attributes.stat_dex.baseValue',        label: 'Dexterity (base)' },
-      { path: '@attributes.stat_con.totalValue',       label: 'Constitution (total)' },
-      { path: '@attributes.stat_con.derivedModifier',  label: 'Constitution modifier' },
-      { path: '@attributes.stat_con.baseValue',        label: 'Constitution (base)' },
-      { path: '@attributes.stat_int.totalValue',       label: 'Intelligence (total)' },
-      { path: '@attributes.stat_int.derivedModifier',  label: 'Intelligence modifier' },
-      { path: '@attributes.stat_int.baseValue',        label: 'Intelligence (base)' },
-      { path: '@attributes.stat_wis.totalValue',       label: 'Wisdom (total)' },
-      { path: '@attributes.stat_wis.derivedModifier',  label: 'Wisdom modifier' },
-      { path: '@attributes.stat_wis.baseValue',        label: 'Wisdom (base)' },
-      { path: '@attributes.stat_cha.totalValue',       label: 'Charisma (total)' },
-      { path: '@attributes.stat_cha.derivedModifier',  label: 'Charisma modifier' },
-      { path: '@attributes.stat_cha.baseValue',        label: 'Charisma (base)' },
+      { path: '@attributes.stat_strength.totalValue',       label: 'Strength (total)' },
+      { path: '@attributes.stat_strength.derivedModifier',  label: 'Strength modifier' },
+      { path: '@attributes.stat_strength.baseValue',        label: 'Strength (base)' },
+      { path: '@attributes.stat_dexterity.totalValue',       label: 'Dexterity (total)' },
+      { path: '@attributes.stat_dexterity.derivedModifier',  label: 'Dexterity modifier' },
+      { path: '@attributes.stat_dexterity.baseValue',        label: 'Dexterity (base)' },
+      { path: '@attributes.stat_constitution.totalValue',       label: 'Constitution (total)' },
+      { path: '@attributes.stat_constitution.derivedModifier',  label: 'Constitution modifier' },
+      { path: '@attributes.stat_constitution.baseValue',        label: 'Constitution (base)' },
+      { path: '@attributes.stat_intelligence.totalValue',       label: 'Intelligence (total)' },
+      { path: '@attributes.stat_intelligence.derivedModifier',  label: 'Intelligence modifier' },
+      { path: '@attributes.stat_intelligence.baseValue',        label: 'Intelligence (base)' },
+      { path: '@attributes.stat_wisdom.totalValue',       label: 'Wisdom (total)' },
+      { path: '@attributes.stat_wisdom.derivedModifier',  label: 'Wisdom modifier' },
+      { path: '@attributes.stat_wisdom.baseValue',        label: 'Wisdom (base)' },
+      { path: '@attributes.stat_charisma.totalValue',       label: 'Charisma (total)' },
+      { path: '@attributes.stat_charisma.derivedModifier',  label: 'Charisma modifier' },
+      { path: '@attributes.stat_charisma.baseValue',        label: 'Charisma (base)' },
       { path: '@attributes.stat_size.totalValue',      label: 'Size modifier' },
       { path: '@attributes.stat_caster_level.totalValue',      label: 'Caster Level' },
       { path: '@attributes.stat_manifester_level.totalValue',  label: 'Manifester Level' },
@@ -115,11 +115,11 @@ const PATH_GROUPS: PathGroup[] = [
   {
     title: 'Combat Statistics',
     entries: [
-      { path: '@combatStats.bab.totalValue',                  label: 'Base Attack Bonus' },
+      { path: '@combatStats.base_attack_bonus.totalValue',                  label: 'Base Attack Bonus' },
       { path: '@combatStats.ac_normal.totalValue',            label: 'Armor Class (Normal)' },
       { path: '@combatStats.ac_touch.totalValue',             label: 'Touch AC' },
       { path: '@combatStats.ac_flat_footed.totalValue',       label: 'Flat-Footed AC' },
-      { path: '@combatStats.init.totalValue',                 label: 'Initiative' },
+      { path: '@combatStats.initiative.totalValue',                 label: 'Initiative' },
       { path: '@combatStats.grapple.totalValue',              label: 'Grapple' },
       { path: '@combatStats.max_hp.totalValue',               label: 'Max Hit Points' },
       { path: '@combatStats.speed_land.totalValue',           label: 'Land Speed (ft.)' },
@@ -129,14 +129,14 @@ const PATH_GROUPS: PathGroup[] = [
       { path: '@combatStats.armor_check_penalty.totalValue',  label: 'Armor Check Penalty' },
       { path: '@combatStats.fortification.totalValue',        label: 'Fortification (%)' },
       { path: '@combatStats.arcane_spell_failure.totalValue', label: 'Arcane Spell Failure (%)' },
-      { path: '@combatStats.max_dex_bonus.totalValue',        label: 'Max DEX Bonus to AC' },
+      { path: '@combatStats.max_dexterity_bonus.totalValue',        label: 'Max DEX Bonus to AC' },
     ],
   },
   {
     title: 'Saving Throws',
     entries: [
-      { path: '@saves.fort.totalValue', label: 'Fortitude Save' },
-      { path: '@saves.ref.totalValue',  label: 'Reflex Save' },
+      { path: '@saves.fortitude.totalValue', label: 'Fortitude Save' },
+      { path: '@saves.reflex.totalValue',  label: 'Reflex Save' },
       { path: '@saves.will.totalValue', label: 'Will Save' },
     ],
   },
@@ -297,12 +297,12 @@ describe('FormulaBuilderInput — validation: @-path recognition', () => {
    * The spec says "green ✓ icon rendered" — in the implementation 'valid'
    * drives the ✓ icon. The icon assertion is in the icon/colour suite (test 21).
    */
-  it("recognised @-path '@attributes.stat_str.derivedModifier' → 'valid'", () => {
-    expect(validateFormula('@attributes.stat_str.derivedModifier')).toBe('valid');
+  it("recognised @-path '@attributes.stat_strength.derivedModifier' → 'valid'", () => {
+    expect(validateFormula('@attributes.stat_strength.derivedModifier')).toBe('valid');
   });
 
-  it("recognised @-path '@combatStats.bab.totalValue' → 'valid'", () => {
-    expect(validateFormula('@combatStats.bab.totalValue')).toBe('valid');
+  it("recognised @-path '@combatStats.base_attack_bonus.totalValue' → 'valid'", () => {
+    expect(validateFormula('@combatStats.base_attack_bonus.totalValue')).toBe('valid');
   });
 
   it("recognised @-path '@saves.will.totalValue' → 'valid'", () => {
@@ -397,15 +397,15 @@ describe("FormulaBuilderInput — validation: partial @-path → 'partial'", () 
     expect(validateFormula('@classLevels.')).toBe('partial');
   });
 
-  it("'@attributes' → 'partial' (GM hasn't finished to '.stat_str.totalValue')", () => {
+  it("'@attributes' → 'partial' (GM hasn't finished to '.stat_strength.totalValue')", () => {
     expect(validateFormula('@attributes')).toBe('partial');
   });
 
-  it("'@attributes.stat_str' → 'partial' (missing final .totalValue/.derivedModifier)", () => {
-    expect(validateFormula('@attributes.stat_str')).toBe('partial');
+  it("'@attributes.stat_strength' → 'partial' (missing final .totalValue/.derivedModifier)", () => {
+    expect(validateFormula('@attributes.stat_strength')).toBe('partial');
   });
 
-  it("'@saves' → 'partial' (prefix of @saves.fort/ref/will)", () => {
+  it("'@saves' → 'partial' (prefix of @saves.fortitude/reflex/will)", () => {
     expect(validateFormula('@saves')).toBe('partial');
   });
 
@@ -474,23 +474,23 @@ describe('FormulaBuilderInput — validation: extended cases', () => {
   /**
    * TEST 9: Mixed @-path + arithmetic with all valid tokens → 'valid'.
    */
-  it("'@attributes.stat_str.derivedModifier + 2' → 'valid'", () => {
-    expect(validateFormula('@attributes.stat_str.derivedModifier + 2')).toBe('valid');
+  it("'@attributes.stat_strength.derivedModifier + 2' → 'valid'", () => {
+    expect(validateFormula('@attributes.stat_strength.derivedModifier + 2')).toBe('valid');
   });
 
   it("'1d4 + @classLevels.class_rogue' → 'valid'", () => {
     expect(validateFormula('1d4 + @classLevels.class_rogue')).toBe('valid');
   });
 
-  it("'@combatStats.bab.totalValue + @attributes.stat_str.derivedModifier' → 'valid' (two known paths)", () => {
-    expect(validateFormula('@combatStats.bab.totalValue + @attributes.stat_str.derivedModifier')).toBe('valid');
+  it("'@combatStats.base_attack_bonus.totalValue + @attributes.stat_strength.derivedModifier' → 'valid' (two known paths)", () => {
+    expect(validateFormula('@combatStats.base_attack_bonus.totalValue + @attributes.stat_strength.derivedModifier')).toBe('valid');
   });
 
   /**
    * TEST 10: Mixed expression with one bad token → 'invalid'.
    */
-  it("'@attributes.stat_str.totalValue + @bogus.path' → 'invalid'", () => {
-    expect(validateFormula('@attributes.stat_str.totalValue + @bogus.path')).toBe('invalid');
+  it("'@attributes.stat_strength.totalValue + @bogus.path' → 'invalid'", () => {
+    expect(validateFormula('@attributes.stat_strength.totalValue + @bogus.path')).toBe('invalid');
   });
 
   it("'@bad' → 'invalid'", () => {
@@ -532,9 +532,9 @@ describe('FormulaBuilderInput — insertPath() insertion logic', () => {
    */
   it('cursor at end with existing text: appends path with space separator', () => {
     const input = makeInput('2 + ');     // trailing space, cursor at end
-    const result = insertPath(input, '@attributes.stat_str.derivedModifier');
+    const result = insertPath(input, '@attributes.stat_strength.derivedModifier');
     // Trailing space in "2 + " means no extra space needed (last char is ' ')
-    expect(result).toBe('2 + @attributes.stat_str.derivedModifier');
+    expect(result).toBe('2 + @attributes.stat_strength.derivedModifier');
   });
 
   it('cursor at end with no existing text: inserts path with no leading space', () => {
@@ -545,8 +545,8 @@ describe('FormulaBuilderInput — insertPath() insertion logic', () => {
 
   it('cursor at end with text not ending in space/operator: auto-adds space', () => {
     const input = makeInput('2');   // ends with digit, no space
-    const result = insertPath(input, '@attributes.stat_str.derivedModifier');
-    expect(result).toBe('2 @attributes.stat_str.derivedModifier');
+    const result = insertPath(input, '@attributes.stat_strength.derivedModifier');
+    expect(result).toBe('2 @attributes.stat_strength.derivedModifier');
   });
 
   /**
@@ -612,8 +612,8 @@ describe('FormulaBuilderInput — insertPath() insertion logic', () => {
 
   /**
    * TEST 20 (spec: "click-to-insert at cursor: simulate cursor at position 5 in
-   * input value '2 + ' → click '@attributes.stat_str.derivedModifier' →
-   * verify resulting value is '2 + @attributes.stat_str.derivedModifier' and
+   * input value '2 + ' → click '@attributes.stat_strength.derivedModifier' →
+   * verify resulting value is '2 + @attributes.stat_strength.derivedModifier' and
    * cursor is at end"):
    *
    * The value is "2 + " (length 4). The spec says "position 5" which is the end.
@@ -622,11 +622,11 @@ describe('FormulaBuilderInput — insertPath() insertion logic', () => {
   it("click-to-insert: cursor at end of '2 + ' inserts @-path directly after the space", () => {
     const value   = '2 + ';
     const input   = makeInput(value, value.length); // cursor at position 4 (end)
-    const path    = '@attributes.stat_str.derivedModifier';
+    const path    = '@attributes.stat_strength.derivedModifier';
     const result  = insertPath(input, path);
 
     // "2 + " trailing space → no extra separator
-    expect(result).toBe('2 + @attributes.stat_str.derivedModifier');
+    expect(result).toBe('2 + @attributes.stat_strength.derivedModifier');
 
     // Simulated cursor is now at the end of the inserted text
     // (setRangeText with 'end' places it after the insert)
@@ -790,7 +790,7 @@ describe('FormulaBuilderInput — validation edge cases', () => {
 
   it('expression mixing good path + bad path returns invalid', () => {
     expect(
-      validateFormula('@attributes.stat_str.totalValue + @totally.bogus')
+      validateFormula('@attributes.stat_strength.totalValue + @totally.bogus')
     ).toBe('invalid');
   });
 

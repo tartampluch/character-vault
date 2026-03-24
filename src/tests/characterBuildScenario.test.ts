@@ -263,9 +263,9 @@ const MOCK_FIGHTER: Feature = {
       // Fighter L1 bonus feat → grants bonus_feat_slots +1
       grantedFeatures: ['class_feature_fighter_bonus_feat'],
       grantedModifiers: [
-        m('f_bab_1',        'class_fighter', 'combatStats.bab',              1),
-        m('f_fort_1',       'class_fighter', 'saves.fort',                   2), // Good: +2 at L1
-        m('f_ref_1',        'class_fighter', 'saves.ref',                    0), // Poor: +0 at L1
+        m('f_bab_1',        'class_fighter', 'combatStats.base_attack_bonus',              1),
+        m('f_fort_1',       'class_fighter', 'saves.fortitude',                   2), // Good: +2 at L1
+        m('f_ref_1',        'class_fighter', 'saves.reflex',                    0), // Poor: +0 at L1
         m('f_will_1',       'class_fighter', 'saves.will',                   0), // Poor: +0 at L1
         m('f_bonus_feat_1', 'class_fighter', 'attributes.bonus_feat_slots',  1, 'untyped'),
       ],
@@ -275,9 +275,9 @@ const MOCK_FIGHTER: Feature = {
       // Fighter L2 bonus feat → grants bonus_feat_slots +1
       grantedFeatures: ['class_feature_fighter_bonus_feat_2'],
       grantedModifiers: [
-        m('f_bab_2',        'class_fighter', 'combatStats.bab',              1),
-        m('f_fort_2',       'class_fighter', 'saves.fort',                   0), // Good: +0 at L2
-        m('f_ref_2',        'class_fighter', 'saves.ref',                    0),
+        m('f_bab_2',        'class_fighter', 'combatStats.base_attack_bonus',              1),
+        m('f_fort_2',       'class_fighter', 'saves.fortitude',                   0), // Good: +0 at L2
+        m('f_ref_2',        'class_fighter', 'saves.reflex',                    0),
         m('f_will_2',       'class_fighter', 'saves.will',                   0),
         m('f_bonus_feat_2', 'class_fighter', 'attributes.bonus_feat_slots',  1, 'untyped'),
       ],
@@ -286,9 +286,9 @@ const MOCK_FIGHTER: Feature = {
       level: 3,
       grantedFeatures: [],
       grantedModifiers: [
-        m('f_bab_3',  'class_fighter', 'combatStats.bab',  1),
-        m('f_fort_3', 'class_fighter', 'saves.fort',       1), // Good: +1 at L3
-        m('f_ref_3',  'class_fighter', 'saves.ref',        1), // Poor: +1 at L3
+        m('f_bab_3',  'class_fighter', 'combatStats.base_attack_bonus',  1),
+        m('f_fort_3', 'class_fighter', 'saves.fortitude',       1), // Good: +1 at L3
+        m('f_ref_3',  'class_fighter', 'saves.reflex',        1), // Poor: +1 at L3
         m('f_will_3', 'class_fighter', 'saves.will',       1), // Poor: +1 at L3
       ],
     },
@@ -302,7 +302,7 @@ const MOCK_FIGHTER: Feature = {
 //   "When unarmored and unencumbered, the monk adds her Wisdom bonus to AC."
 //   Modeled here as an 'untyped' modifier on all three AC pipelines.
 //   In the live engine this has a conditionNode checking !wearing_armor && !encumbered;
-//   the modifier value is resolved from "@attributes.stat_wis.derivedModifier".
+//   the modifier value is resolved from "@attributes.stat_wisdom.derivedModifier".
 //   For the AC test we use the character's WIS modifier directly (WIS 14 → +2).
 //
 // BAB (3/4 progression): floor(3/4 × level)
@@ -339,9 +339,9 @@ const MOCK_MONK: Feature = {
       level: 1,
       grantedFeatures: ['class_feature_flurry_of_blows'],
       grantedModifiers: [
-        m('mk_bab_1',  'class_monk', 'combatStats.bab', 0), // ¾ BAB: +0 at L1
-        m('mk_fort_1', 'class_monk', 'saves.fort',      2), // Good: +2 at L1
-        m('mk_ref_1',  'class_monk', 'saves.ref',       2), // Good: +2 at L1
+        m('mk_bab_1',  'class_monk', 'combatStats.base_attack_bonus', 0), // ¾ BAB: +0 at L1
+        m('mk_fort_1', 'class_monk', 'saves.fortitude',      2), // Good: +2 at L1
+        m('mk_ref_1',  'class_monk', 'saves.reflex',       2), // Good: +2 at L1
         m('mk_will_1', 'class_monk', 'saves.will',      2), // Good: +2 at L1
       ],
     },
@@ -349,9 +349,9 @@ const MOCK_MONK: Feature = {
       level: 2,
       grantedFeatures: ['class_feature_evasion'],
       grantedModifiers: [
-        m('mk_bab_2',  'class_monk', 'combatStats.bab', 1), // ¾ BAB: +1 at L2
-        m('mk_fort_2', 'class_monk', 'saves.fort',      0), // Good: +0 at L2
-        m('mk_ref_2',  'class_monk', 'saves.ref',       0),
+        m('mk_bab_2',  'class_monk', 'combatStats.base_attack_bonus', 1), // ¾ BAB: +1 at L2
+        m('mk_fort_2', 'class_monk', 'saves.fortitude',      0), // Good: +0 at L2
+        m('mk_ref_2',  'class_monk', 'saves.reflex',       0),
         m('mk_will_2', 'class_monk', 'saves.will',      0),
       ],
     },
@@ -359,9 +359,9 @@ const MOCK_MONK: Feature = {
       level: 3,
       grantedFeatures: ['class_feature_still_mind'],
       grantedModifiers: [
-        m('mk_bab_3',  'class_monk', 'combatStats.bab', 1), // ¾ BAB: +1 at L3
-        m('mk_fort_3', 'class_monk', 'saves.fort',      1), // Good: +1 at L3
-        m('mk_ref_3',  'class_monk', 'saves.ref',       1),
+        m('mk_bab_3',  'class_monk', 'combatStats.base_attack_bonus', 1), // ¾ BAB: +1 at L3
+        m('mk_fort_3', 'class_monk', 'saves.fortitude',      1), // Good: +1 at L3
+        m('mk_ref_3',  'class_monk', 'saves.reflex',       1),
         m('mk_will_3', 'class_monk', 'saves.will',      1),
       ],
     },
@@ -396,9 +396,9 @@ const MOCK_PSION: Feature = {
       level: 1,
       grantedFeatures: ['class_feature_psion_powers_l1'],
       grantedModifiers: [
-        m('ps_bab_1',            'class_psion', 'combatStats.bab',          0), // Half BAB: +0 at L1
-        m('ps_fort_1',           'class_psion', 'saves.fort',               0), // Poor: +0 at L1
-        m('ps_ref_1',            'class_psion', 'saves.ref',                0), // Poor: +0 at L1
+        m('ps_bab_1',            'class_psion', 'combatStats.base_attack_bonus',          0), // Half BAB: +0 at L1
+        m('ps_fort_1',           'class_psion', 'saves.fortitude',               0), // Poor: +0 at L1
+        m('ps_ref_1',            'class_psion', 'saves.reflex',                0), // Poor: +0 at L1
         m('ps_will_1',           'class_psion', 'saves.will',               2), // Good: +2 at L1
         m('ps_manifester_lv_1',  'class_psion', 'stat_manifester_level',    1), // ML +1 per level
         m('ps_base_pp_1',        'class_psion', 'resources.psi_points.max', 2), // 2 base PP at level 1
@@ -437,9 +437,9 @@ const MOCK_WIZARD: Feature = {
       level: 1,
       grantedFeatures: ['class_feature_spellbook'],
       grantedModifiers: [
-        m('wz_bab_1',          'class_wizard', 'combatStats.bab',       0), // Half BAB: +0 at L1
-        m('wz_fort_1',         'class_wizard', 'saves.fort',            0), // Poor: +0 at L1
-        m('wz_ref_1',          'class_wizard', 'saves.ref',             0), // Poor: +0 at L1
+        m('wz_bab_1',          'class_wizard', 'combatStats.base_attack_bonus',       0), // Half BAB: +0 at L1
+        m('wz_fort_1',         'class_wizard', 'saves.fortitude',            0), // Poor: +0 at L1
+        m('wz_ref_1',          'class_wizard', 'saves.reflex',             0), // Poor: +0 at L1
         m('wz_will_1',         'class_wizard', 'saves.will',            2), // Good: +2 at L1
         m('wz_caster_lv_1',    'class_wizard', 'stat_caster_level',     1), // CL +1 per level
         m('wz_spells_0_base',  'class_wizard', 'attributes.spells_per_day_level0', 3), // 3 cantrips/day
@@ -556,42 +556,42 @@ describe('Character Build: Fighter 3 / Monk 3 / Psion 1 / Wizard 1 (Level 8)', (
      * @see ARCHITECTURE.md Example G
      */
     it('Fighter 3 contributes +3 BAB (full progression)', () => {
-      const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, CLASS_LEVELS.class_fighter, 'combatStats.bab');
+      const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, CLASS_LEVELS.class_fighter, 'combatStats.base_attack_bonus');
       expect(applyStackingRules(mods, 0).totalBonus).toBe(3);
     });
 
     it('Monk 3 contributes +2 BAB (3/4 progression: increments +0,+1,+1)', () => {
-      const mods = collectClassMods(MOCK_MONK.levelProgression!, CLASS_LEVELS.class_monk, 'combatStats.bab');
+      const mods = collectClassMods(MOCK_MONK.levelProgression!, CLASS_LEVELS.class_monk, 'combatStats.base_attack_bonus');
       expect(applyStackingRules(mods, 0).totalBonus).toBe(2);
     });
 
     it('Psion 1 contributes +0 BAB (half progression at level 1)', () => {
-      const mods = collectClassMods(MOCK_PSION.levelProgression!, CLASS_LEVELS.class_psion, 'combatStats.bab');
+      const mods = collectClassMods(MOCK_PSION.levelProgression!, CLASS_LEVELS.class_psion, 'combatStats.base_attack_bonus');
       expect(applyStackingRules(mods, 0).totalBonus).toBe(0);
     });
 
     it('Wizard 1 contributes +0 BAB (half progression at level 1)', () => {
-      const mods = collectClassMods(MOCK_WIZARD.levelProgression!, CLASS_LEVELS.class_wizard, 'combatStats.bab');
+      const mods = collectClassMods(MOCK_WIZARD.levelProgression!, CLASS_LEVELS.class_wizard, 'combatStats.base_attack_bonus');
       expect(applyStackingRules(mods, 0).totalBonus).toBe(0);
     });
 
     it('Combined BAB (all 4 classes) = +5', () => {
       const allBabMods: Modifier[] = [
-        ...collectClassMods(MOCK_FIGHTER.levelProgression!, CLASS_LEVELS.class_fighter, 'combatStats.bab'),
-        ...collectClassMods(MOCK_MONK.levelProgression!,    CLASS_LEVELS.class_monk,    'combatStats.bab'),
-        ...collectClassMods(MOCK_PSION.levelProgression!,   CLASS_LEVELS.class_psion,   'combatStats.bab'),
-        ...collectClassMods(MOCK_WIZARD.levelProgression!,  CLASS_LEVELS.class_wizard,  'combatStats.bab'),
+        ...collectClassMods(MOCK_FIGHTER.levelProgression!, CLASS_LEVELS.class_fighter, 'combatStats.base_attack_bonus'),
+        ...collectClassMods(MOCK_MONK.levelProgression!,    CLASS_LEVELS.class_monk,    'combatStats.base_attack_bonus'),
+        ...collectClassMods(MOCK_PSION.levelProgression!,   CLASS_LEVELS.class_psion,   'combatStats.base_attack_bonus'),
+        ...collectClassMods(MOCK_WIZARD.levelProgression!,  CLASS_LEVELS.class_wizard,  'combatStats.base_attack_bonus'),
       ];
       expect(applyStackingRules(allBabMods, 0).totalBonus).toBe(5);
     });
 
     it('BAB stacks (Fighter alone: +3; adding Monk raises it to +5, not max-of-the-two)', () => {
       const fighterOnly = applyStackingRules(
-        collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'combatStats.bab'), 0
+        collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'combatStats.base_attack_bonus'), 0
       ).totalBonus;
       const combined = applyStackingRules([
-        ...collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'combatStats.bab'),
-        ...collectClassMods(MOCK_MONK.levelProgression!, 3, 'combatStats.bab'),
+        ...collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'combatStats.base_attack_bonus'),
+        ...collectClassMods(MOCK_MONK.levelProgression!, 3, 'combatStats.base_attack_bonus'),
       ], 0).totalBonus;
       expect(fighterOnly).toBe(3);
       expect(combined).toBe(5); // 3 + 2 = 5, NOT max(3, 2) = 3
@@ -626,27 +626,27 @@ describe('Character Build: Fighter 3 / Monk 3 / Psion 1 / Wizard 1 (Level 8)', (
 
     describe('Fortitude (Good saves: Fighter + Monk; Poor: Psion + Wizard)', () => {
       it('Fighter 3 Fort base = +3 (Good: +2+0+1)', () => {
-        const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'saves.fort');
+        const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'saves.fortitude');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(3);
       });
 
       it('Monk 3 Fort base = +3 (Good: +2+0+1)', () => {
-        const mods = collectClassMods(MOCK_MONK.levelProgression!, 3, 'saves.fort');
+        const mods = collectClassMods(MOCK_MONK.levelProgression!, 3, 'saves.fortitude');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(3);
       });
 
       it('Psion 1 Fort base = 0 (Poor: +0 at L1)', () => {
-        const mods = collectClassMods(MOCK_PSION.levelProgression!, 1, 'saves.fort');
+        const mods = collectClassMods(MOCK_PSION.levelProgression!, 1, 'saves.fortitude');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(0);
       });
 
       it('Wizard 1 Fort base = 0 (Poor: +0 at L1)', () => {
-        const mods = collectClassMods(MOCK_WIZARD.levelProgression!, 1, 'saves.fort');
+        const mods = collectClassMods(MOCK_WIZARD.levelProgression!, 1, 'saves.fortitude');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(0);
       });
 
       it('Combined Fort base = +6; with CON+4 → total +10', () => {
-        const base = applyStackingRules(collectAllSaves('saves.fort'), 0).totalBonus;
+        const base = applyStackingRules(collectAllSaves('saves.fortitude'), 0).totalBonus;
         expect(base).toBe(6);
         expect(base + abilityMod(STATS.con)).toBe(10);
       });
@@ -654,17 +654,17 @@ describe('Character Build: Fighter 3 / Monk 3 / Psion 1 / Wizard 1 (Level 8)', (
 
     describe('Reflex (Poor: Fighter; Good: Monk; Poor: Psion + Wizard)', () => {
       it('Fighter 3 Ref base = +1 (Poor: +0+0+1)', () => {
-        const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'saves.ref');
+        const mods = collectClassMods(MOCK_FIGHTER.levelProgression!, 3, 'saves.reflex');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(1);
       });
 
       it('Monk 3 Ref base = +3 (Good: +2+0+1)', () => {
-        const mods = collectClassMods(MOCK_MONK.levelProgression!, 3, 'saves.ref');
+        const mods = collectClassMods(MOCK_MONK.levelProgression!, 3, 'saves.reflex');
         expect(applyStackingRules(mods, 0).totalBonus).toBe(3);
       });
 
       it('Combined Ref base = +4; with DEX+3 → total +7', () => {
-        const base = applyStackingRules(collectAllSaves('saves.ref'), 0).totalBonus;
+        const base = applyStackingRules(collectAllSaves('saves.reflex'), 0).totalBonus;
         expect(base).toBe(4);
         expect(base + abilityMod(STATS.dex)).toBe(7);
       });

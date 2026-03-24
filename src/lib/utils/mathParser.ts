@@ -9,7 +9,7 @@
  *   TWO MAIN RESPONSIBILITIES:
  *     1. VARIABLE RESOLUTION  (@-paths)
  *        Replaces `@`-prefixed dot-paths with values from the character context.
- *        Example: "@attributes.stat_str.derivedModifier" → 4 (if STR is 18)
+ *        Example: "@attributes.stat_strength.derivedModifier" → 4 (if STR is 18)
  *
  *     2. MATH EVALUATION      (safe expression evaluation)
  *        Evaluates arithmetic expressions like "10 + floor(4 * 1.5)".
@@ -58,7 +58,7 @@ import type { SupportedLanguage } from '../types/i18n';
  *   It is a "frozen" snapshot passed to the parser so formulas don't trigger
  *   additional reactive reads mid-calculation — which would cause infinite loops.
  *
- *   It is also more performant: reading `context.attributes.stat_str.derivedModifier`
+ *   It is also more performant: reading `context.attributes.stat_strength.derivedModifier`
  *   from a plain object is O(1), vs traversing a reactive Svelte store graph.
  *
  * STRUCTURE:
@@ -192,7 +192,7 @@ export interface CharacterContext {
  *   - `@constant.<id>`:  Returns the numeric constant or 0.
  *   - `@master.*`:       Accesses the master's sub-context for LinkedEntity formulas.
  *
- * @param path    - The full `@`-prefixed path string (e.g., "@attributes.stat_str.derivedModifier").
+ * @param path    - The full `@`-prefixed path string (e.g., "@attributes.stat_strength.derivedModifier").
  * @param context - The resolved character context snapshot.
  * @returns The resolved value (number, string, string[], or 0 for missing paths).
  */
@@ -511,16 +511,16 @@ function applyPipe(value: number, pipeName: string, lang: SupportedLanguage): st
  *          if the formula contained pipe operators or dice notation.
  *
  * @example Pure numeric formula:
- * evaluateFormula("floor(@attributes.stat_str.derivedModifier * 1.5)", context, "en") → 6
+ * evaluateFormula("floor(@attributes.stat_strength.derivedModifier * 1.5)", context, "en") → 6
  *
  * @example Cross-stat reference:
- * evaluateFormula("@attributes.stat_wis.derivedModifier", context, "en") → 3
+ * evaluateFormula("@attributes.stat_wisdom.derivedModifier", context, "en") → 3
  *
  * @example With pipe operator (description interpolation):
  * evaluateFormula("@attributes.speed_land.totalValue|distance", context, "fr") → "9 m"
  *
  * @example Damage formula (passed through to Dice Engine):
- * evaluateFormula("1d8 + @attributes.stat_str.derivedModifier", context, "en") → "1d8 + 4"
+ * evaluateFormula("1d8 + @attributes.stat_strength.derivedModifier", context, "en") → "1d8 + 4"
  */
 export function evaluateFormula(
   formula: string,
@@ -530,8 +530,8 @@ export function evaluateFormula(
   // --- Regex to find all @-path tokens, optionally followed by a |pipe ---
   // Matches: @word.word.word|pipe  OR  @word.word.word
   // Character class [\w.\-] supports:
-  //   \w  → a-z, A-Z, 0-9, underscore (handles snake_case IDs like "stat_str", "class_fighter")
-  //   \.  → dot separator (handles "attributes.stat_str.totalValue")
+  //   \w  → a-z, A-Z, 0-9, underscore (handles snake_case IDs like "stat_strength", "class_fighter")
+  //   \.  → dot separator (handles "attributes.stat_strength.totalValue")
   //   \-  → hyphen (handles kebab-case IDs like "class-dragon-disciple", "@constant.darkvision-range")
   // Per ARCHITECTURE.md section 2: ID = string (kebab-case format). Both conventions appear in JSON.
   const AT_PATH_REGEX = /@([\w.\-]+)(?:\|([\w\-]+))?/g;

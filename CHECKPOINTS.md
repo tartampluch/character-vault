@@ -20,7 +20,7 @@ Your job is to perform a **strict conformance review** against the architecture 
 ## 1. Type Conformance — Primitives & Pipelines (Phase 1.1–1.2)
 
 - Does `ModifierType` include ALL required values: `"damage_reduction"`, `"inherent"`, `"max_dex_cap"` in addition to the standard set?
-- Is `"max_dex_cap"` documented as "minimum-wins" and scoped to `combatStats.max_dex_bonus` only?
+- Is `"max_dex_cap"` documented as "minimum-wins" and scoped to `combatStats.max_dexterity_bonus` only?
 - Are `sourceId` and `sourceName` required (not optional) on every `Modifier`?
 - Does `Modifier` have optional `drBypassTags?: string[]` (only meaningful when `type === "damage_reduction"`)?
 - Does `Modifier.targetId` JSDoc document the `"attacker.*"` prefix convention (roll-time only, never in static pipeline)?
@@ -96,7 +96,7 @@ Your job is to perform a **strict conformance review** against the architecture 
 
 - Does `src/lib/utils/gestaltRules.ts` export `computeGestaltBase()`, `groupBaseModifiersByClass()`, `GESTALT_AFFECTED_PIPELINES`, `isGestaltAffectedPipeline()`?
 - Does `computeGestaltBase()` apply max-per-level (not sum) when 2+ classes contribute?
-- Is `GESTALT_AFFECTED_PIPELINES` exactly `{ "combatStats.bab", "saves.fort", "saves.ref", "saves.will" }` (NOT `combatStats.max_hp`)?
+- Is `GESTALT_AFFECTED_PIPELINES` exactly `{ "combatStats.base_attack_bonus", "saves.fortitude", "saves.reflex", "saves.will" }` (NOT `combatStats.max_hp`)?
 
 ## 8. Dice Engine (Phase 2.6)
 
@@ -120,7 +120,7 @@ Your job is to perform a **strict conformance review** against the architecture 
 - Phase 0: Is `eclForXp` exposed in the `CharacterContext` snapshot for the Math Parser to resolve `@eclForXp`?
 - Phase 2: Is `derivedModifier = floor((totalValue − 10) / 2)` computed for the 6 ability scores?
 - Phase 3: Is `max_hp` calculated using `phase0_characterLevel` (NOT `eclForXp`)?
-- Phase 3: Does the `combatStats.max_dex_bonus` special case execute BEFORE the general stacking loop? Does it separate `"max_dex_cap"` modifiers and apply `Math.min(...)` as `effectiveBaseValue`?
+- Phase 3: Does the `combatStats.max_dexterity_bonus` special case execute BEFORE the general stacking loop? Does it separate `"max_dex_cap"` modifiers and apply `Math.min(...)` as `effectiveBaseValue`?
 - Phase 4: Does it auto-generate synergy modifiers from the skill synergies config table?
 - Are modifiers with `situationalContext` routed to `situationalModifiers` (not `activeModifiers`)?
 - Is there a depth counter for infinite loop detection (cuts at 3 re-evaluations)?
@@ -130,7 +130,7 @@ Your job is to perform a **strict conformance review** against the architecture 
 
 - Is `combatStats.fortification` initialized with `baseValue: 0`?
 - Is `combatStats.arcane_spell_failure` initialized with `baseValue: 0`?
-- Is `combatStats.max_dex_bonus` initialized with `baseValue: 99` (uncapped by default)?
+- Is `combatStats.max_dexterity_bonus` initialized with `baseValue: 99` (uncapped by default)?
 - Are equipment slot pipelines present with correct defaults (`slots.ring = 2`, `slots.head = 1`, etc.)?
 
 ## 11. Resource Pool & Action Methods (Phase 3.7)
@@ -258,7 +258,7 @@ Scan ALL `.svelte` and `.ts` files for hardcoded D&D terms (class names, race na
 - Does HealthAndXP deplete temporary HP first when taking damage?
 - Does the XP bar use `@eclForXp` (not `@characterLevel`) for threshold lookup? (Required for monster PCs with LA > 0.)
 - Do the 3 AC pipelines read from separate `combatStats` entries?
-- Is the effective DEX to AC computed as `min(dexMod, combatStats.max_dex_bonus.totalValue)`?
+- Is the effective DEX to AC computed as `min(dexMod, combatStats.max_dexterity_bonus.totalValue)`?
 - Does the weapons dropdown read from inventory (not a hardcoded list)?
 - Does `ActionBudgetBar` collect all active features with `actionBudget`, compute min-wins per category, and use XOR for `action_budget_xor` tag?
 - Are action buttons disabled/greyed when budget = 0 or count reached?
@@ -454,8 +454,8 @@ Your job is to verify the test suite is **exhaustive** relative to the architect
 
 ## 6. Vitest — DAG Integration (Phase 17.5)
 
-- Belt of CON +2 cascade: does injecting it update `stat_con` → Fort save → `max_hp`?
-- Formula-as-value: does `"@attributes.stat_wis.derivedModifier"` on Monk AC bonus work?
+- Belt of CON +2 cascade: does injecting it update `stat_constitution` → Fort save → `max_hp`?
+- Formula-as-value: does `"@attributes.stat_wisdom.derivedModifier"` on Monk AC bonus work?
 - `forbiddenTags`: does a feature with a conflicting `forbiddenTag` get excluded?
 - `conditionNode` on modifier: does the conditional modifier apply only when its condition is met?
 - Dual-gated modifier (both `conditionNode` AND `situationalContext`): applies only when BOTH match?
@@ -504,7 +504,7 @@ Flag any engine feature with NO corresponding test:
 - `forbiddenTags` conflict detection
 - `conditionNode` on modifiers
 - Dual-gated modifiers (conditionNode + situationalContext)
-- Formula-as-value strings (e.g. `"@attributes.stat_wis.derivedModifier"`)
+- Formula-as-value strings (e.g. `"@attributes.stat_wisdom.derivedModifier"`)
 - `setAbsolute` with string values (e.g. Monk unarmed damage `"1d8"`)
 - Skill synergy auto-generation
 - `classSkills` union across multiple active classes

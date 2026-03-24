@@ -41,7 +41,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 6,
           "errorMessage": "Requires Base Attack Bonus +6"
@@ -144,8 +144,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_int"
+      "stat_dexterity",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -157,7 +157,7 @@
           {
             "id": "arcane_archer_1_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -168,7 +168,7 @@
           {
             "id": "arcane_archer_1_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -179,7 +179,7 @@
           {
             "id": "arcane_archer_1_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -209,7 +209,7 @@
           {
             "id": "arcane_archer_2_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -220,7 +220,7 @@
           {
             "id": "arcane_archer_2_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -231,7 +231,7 @@
           {
             "id": "arcane_archer_2_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -250,7 +250,7 @@
           {
             "id": "arcane_archer_3_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -280,7 +280,7 @@
           {
             "id": "arcane_archer_4_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -291,7 +291,7 @@
           {
             "id": "arcane_archer_4_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -302,7 +302,7 @@
           {
             "id": "arcane_archer_4_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -321,7 +321,7 @@
           {
             "id": "arcane_archer_5_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -340,7 +340,7 @@
           {
             "id": "arcane_archer_6_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -351,7 +351,7 @@
           {
             "id": "arcane_archer_6_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -362,7 +362,7 @@
           {
             "id": "arcane_archer_6_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -392,7 +392,7 @@
           {
             "id": "arcane_archer_7_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -411,7 +411,7 @@
           {
             "id": "arcane_archer_8_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -422,7 +422,7 @@
           {
             "id": "arcane_archer_8_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -433,7 +433,7 @@
           {
             "id": "arcane_archer_8_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -452,7 +452,7 @@
           {
             "id": "arcane_archer_9_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -482,7 +482,7 @@
           {
             "id": "arcane_archer_10_bab",
             "sourceId": "class_arcane_archer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -493,7 +493,7 @@
           {
             "id": "arcane_archer_10_fort",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -504,7 +504,7 @@
           {
             "id": "arcane_archer_10_ref",
             "sourceId": "class_arcane_archer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -652,8 +652,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_int"
+      "stat_dexterity",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -666,7 +666,7 @@
           {
             "id": "arcane_trickster_1_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -677,7 +677,7 @@
           {
             "id": "arcane_trickster_1_fort",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -688,7 +688,7 @@
           {
             "id": "arcane_trickster_1_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -719,7 +719,7 @@
           {
             "id": "arcane_trickster_2_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -730,7 +730,7 @@
           {
             "id": "arcane_trickster_2_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -761,7 +761,7 @@
           {
             "id": "arcane_trickster_3_fort",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -781,7 +781,7 @@
           {
             "id": "arcane_trickster_4_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -792,7 +792,7 @@
           {
             "id": "arcane_trickster_4_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -831,7 +831,7 @@
           {
             "id": "arcane_trickster_6_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -842,7 +842,7 @@
           {
             "id": "arcane_trickster_6_fort",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -853,7 +853,7 @@
           {
             "id": "arcane_trickster_6_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -892,7 +892,7 @@
           {
             "id": "arcane_trickster_8_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -903,7 +903,7 @@
           {
             "id": "arcane_trickster_8_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -934,7 +934,7 @@
           {
             "id": "arcane_trickster_9_fort",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -954,7 +954,7 @@
           {
             "id": "arcane_trickster_10_bab",
             "sourceId": "class_arcane_trickster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -965,7 +965,7 @@
           {
             "id": "arcane_trickster_10_ref",
             "sourceId": "class_arcane_trickster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1096,7 +1096,7 @@
       "skill_spellcraft"
     ],
     "recommendedAttributes": [
-      "stat_int"
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -1109,7 +1109,7 @@
           {
             "id": "archmage_1_bab",
             "sourceId": "class_archmage",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -1120,7 +1120,7 @@
           {
             "id": "archmage_1_fort",
             "sourceId": "class_archmage",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -1131,7 +1131,7 @@
           {
             "id": "archmage_1_ref",
             "sourceId": "class_archmage",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -1162,7 +1162,7 @@
           {
             "id": "archmage_2_bab",
             "sourceId": "class_archmage",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1193,7 +1193,7 @@
           {
             "id": "archmage_3_fort",
             "sourceId": "class_archmage",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1204,7 +1204,7 @@
           {
             "id": "archmage_3_ref",
             "sourceId": "class_archmage",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1224,7 +1224,7 @@
           {
             "id": "archmage_4_bab",
             "sourceId": "class_archmage",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1379,8 +1379,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_int"
+      "stat_dexterity",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -1395,7 +1395,7 @@
           {
             "id": "assassin_1_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -1406,7 +1406,7 @@
           {
             "id": "assassin_1_fort",
             "sourceId": "class_assassin",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -1417,7 +1417,7 @@
           {
             "id": "assassin_1_ref",
             "sourceId": "class_assassin",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -1459,7 +1459,7 @@
           {
             "id": "assassin_2_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1470,7 +1470,7 @@
           {
             "id": "assassin_2_ref",
             "sourceId": "class_assassin",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1500,7 +1500,7 @@
           {
             "id": "assassin_3_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1511,7 +1511,7 @@
           {
             "id": "assassin_3_fort",
             "sourceId": "class_assassin",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1563,7 +1563,7 @@
           {
             "id": "assassin_4_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1574,7 +1574,7 @@
           {
             "id": "assassin_4_ref",
             "sourceId": "class_assassin",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1646,7 +1646,7 @@
           {
             "id": "assassin_6_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1657,7 +1657,7 @@
           {
             "id": "assassin_6_fort",
             "sourceId": "class_assassin",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1668,7 +1668,7 @@
           {
             "id": "assassin_6_ref",
             "sourceId": "class_assassin",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1720,7 +1720,7 @@
           {
             "id": "assassin_7_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1762,7 +1762,7 @@
           {
             "id": "assassin_8_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1799,7 +1799,7 @@
               "en": "Assassin",
               "fr": "Assassin"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -1814,7 +1814,7 @@
           {
             "id": "assassin_9_fort",
             "sourceId": "class_assassin",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1855,7 +1855,7 @@
           {
             "id": "assassin_10_bab",
             "sourceId": "class_assassin",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1866,7 +1866,7 @@
           {
             "id": "assassin_10_ref",
             "sourceId": "class_assassin",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -1920,7 +1920,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 6,
           "errorMessage": "Requires Base Attack Bonus +6"
@@ -2012,9 +2012,9 @@
       "skill_ride"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_cha",
-      "stat_wis"
+      "stat_strength",
+      "stat_charisma",
+      "stat_wisdom"
     ],
     "levelProgression": [
       {
@@ -2029,7 +2029,7 @@
           {
             "id": "blackguard_1_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2040,7 +2040,7 @@
           {
             "id": "blackguard_1_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -2051,7 +2051,7 @@
           {
             "id": "blackguard_1_ref",
             "sourceId": "class_blackguard",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -2093,7 +2093,7 @@
           {
             "id": "blackguard_2_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2104,7 +2104,7 @@
           {
             "id": "blackguard_2_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2135,7 +2135,7 @@
           {
             "id": "blackguard_3_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2146,7 +2146,7 @@
           {
             "id": "blackguard_3_ref",
             "sourceId": "class_blackguard",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2187,7 +2187,7 @@
           {
             "id": "blackguard_4_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2198,7 +2198,7 @@
           {
             "id": "blackguard_4_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2229,7 +2229,7 @@
           {
             "id": "blackguard_5_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2257,7 +2257,7 @@
           {
             "id": "blackguard_6_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2268,7 +2268,7 @@
           {
             "id": "blackguard_6_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2279,7 +2279,7 @@
           {
             "id": "blackguard_6_ref",
             "sourceId": "class_blackguard",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2320,7 +2320,7 @@
           {
             "id": "blackguard_7_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2359,7 +2359,7 @@
           {
             "id": "blackguard_8_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2370,7 +2370,7 @@
           {
             "id": "blackguard_8_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2398,7 +2398,7 @@
           {
             "id": "blackguard_9_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2409,7 +2409,7 @@
           {
             "id": "blackguard_9_ref",
             "sourceId": "class_blackguard",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2451,7 +2451,7 @@
           {
             "id": "blackguard_10_bab",
             "sourceId": "class_blackguard",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2462,7 +2462,7 @@
           {
             "id": "blackguard_10_fort",
             "sourceId": "class_blackguard",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2607,9 +2607,9 @@
       "skill_spot"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con",
-      "stat_cha"
+      "stat_strength",
+      "stat_constitution",
+      "stat_charisma"
     ],
     "levelProgression": [
       {
@@ -2622,7 +2622,7 @@
           {
             "id": "dd_1_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -2633,7 +2633,7 @@
           {
             "id": "dd_1_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -2644,7 +2644,7 @@
           {
             "id": "dd_1_ref",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -2686,7 +2686,7 @@
           {
             "id": "dd_2_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2697,7 +2697,7 @@
           {
             "id": "dd_2_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2719,7 +2719,7 @@
           {
             "id": "dd_2_str",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_str",
+            "targetId": "attributes.stat_strength",
             "value": 2,
             "type": "untyped",
             "sourceName": {
@@ -2738,7 +2738,7 @@
           {
             "id": "dd_3_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2749,7 +2749,7 @@
           {
             "id": "dd_3_ref",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2768,7 +2768,7 @@
           {
             "id": "dd_4_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2779,7 +2779,7 @@
           {
             "id": "dd_4_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2801,7 +2801,7 @@
           {
             "id": "dd_4_str",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_str",
+            "targetId": "attributes.stat_strength",
             "value": 2,
             "type": "untyped",
             "sourceName": {
@@ -2839,7 +2839,7 @@
           {
             "id": "dd_6_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2850,7 +2850,7 @@
           {
             "id": "dd_6_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2861,7 +2861,7 @@
           {
             "id": "dd_6_ref",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2883,7 +2883,7 @@
           {
             "id": "dd_6_con",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_con",
+            "targetId": "attributes.stat_constitution",
             "value": 2,
             "type": "untyped",
             "sourceName": {
@@ -2902,7 +2902,7 @@
           {
             "id": "dd_7_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2932,7 +2932,7 @@
           {
             "id": "dd_8_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2943,7 +2943,7 @@
           {
             "id": "dd_8_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -2965,7 +2965,7 @@
           {
             "id": "dd_8_int",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_int",
+            "targetId": "attributes.stat_intelligence",
             "value": 2,
             "type": "untyped",
             "sourceName": {
@@ -2985,7 +2985,7 @@
           {
             "id": "dd_9_ref",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3016,7 +3016,7 @@
           {
             "id": "dd_10_bab",
             "sourceId": "class_dragon_disciple",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3027,7 +3027,7 @@
           {
             "id": "dd_10_fort",
             "sourceId": "class_dragon_disciple",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3049,7 +3049,7 @@
           {
             "id": "dd_10_str",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_str",
+            "targetId": "attributes.stat_strength",
             "value": 4,
             "type": "untyped",
             "sourceName": {
@@ -3060,7 +3060,7 @@
           {
             "id": "dd_10_cha",
             "sourceId": "class_dragon_disciple",
-            "targetId": "attributes.stat_cha",
+            "targetId": "attributes.stat_charisma",
             "value": 2,
             "type": "untyped",
             "sourceName": {
@@ -3105,7 +3105,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 6,
           "errorMessage": "Requires Base Attack Bonus +6"
@@ -3187,8 +3187,8 @@
       "skill_tumble"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_int"
+      "stat_dexterity",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -3200,7 +3200,7 @@
           {
             "id": "duelist_1_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3211,7 +3211,7 @@
           {
             "id": "duelist_1_fort",
             "sourceId": "class_duelist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -3222,7 +3222,7 @@
           {
             "id": "duelist_1_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -3252,7 +3252,7 @@
           {
             "id": "duelist_2_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3263,7 +3263,7 @@
           {
             "id": "duelist_2_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3282,7 +3282,7 @@
           {
             "id": "duelist_3_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3293,7 +3293,7 @@
           {
             "id": "duelist_3_fort",
             "sourceId": "class_duelist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3323,7 +3323,7 @@
           {
             "id": "duelist_4_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3334,7 +3334,7 @@
           {
             "id": "duelist_4_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3353,7 +3353,7 @@
           {
             "id": "duelist_5_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3372,7 +3372,7 @@
           {
             "id": "duelist_6_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3383,7 +3383,7 @@
           {
             "id": "duelist_6_fort",
             "sourceId": "class_duelist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3394,7 +3394,7 @@
           {
             "id": "duelist_6_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3424,7 +3424,7 @@
           {
             "id": "duelist_7_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3443,7 +3443,7 @@
           {
             "id": "duelist_8_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3454,7 +3454,7 @@
           {
             "id": "duelist_8_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3473,7 +3473,7 @@
           {
             "id": "duelist_9_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3484,7 +3484,7 @@
           {
             "id": "duelist_9_fort",
             "sourceId": "class_duelist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3514,7 +3514,7 @@
           {
             "id": "duelist_10_bab",
             "sourceId": "class_duelist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3525,7 +3525,7 @@
           {
             "id": "duelist_10_ref",
             "sourceId": "class_duelist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3573,7 +3573,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 7,
           "errorMessage": "Requires Base Attack Bonus +7"
@@ -3638,8 +3638,8 @@
       "skill_spot"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -3651,7 +3651,7 @@
           {
             "id": "dd_def_1_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3662,7 +3662,7 @@
           {
             "id": "dd_def_1_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -3673,7 +3673,7 @@
           {
             "id": "dd_def_1_ref",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -3714,7 +3714,7 @@
           {
             "id": "dd_def_2_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3725,7 +3725,7 @@
           {
             "id": "dd_def_2_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3755,7 +3755,7 @@
           {
             "id": "dd_def_3_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3766,7 +3766,7 @@
           {
             "id": "dd_def_3_ref",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3785,7 +3785,7 @@
           {
             "id": "dd_def_4_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3796,7 +3796,7 @@
           {
             "id": "dd_def_4_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3837,7 +3837,7 @@
           {
             "id": "dd_def_5_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3857,7 +3857,7 @@
           {
             "id": "dd_def_6_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3868,7 +3868,7 @@
           {
             "id": "dd_def_6_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3879,7 +3879,7 @@
           {
             "id": "dd_def_6_ref",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3909,7 +3909,7 @@
           {
             "id": "dd_def_7_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3940,7 +3940,7 @@
           {
             "id": "dd_def_8_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3951,7 +3951,7 @@
           {
             "id": "dd_def_8_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3981,7 +3981,7 @@
           {
             "id": "dd_def_9_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -3992,7 +3992,7 @@
           {
             "id": "dd_def_9_ref",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4011,7 +4011,7 @@
           {
             "id": "dd_def_10_bab",
             "sourceId": "class_dwarven_defender",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4022,7 +4022,7 @@
           {
             "id": "dd_def_10_fort",
             "sourceId": "class_dwarven_defender",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4131,8 +4131,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_int"
+      "stat_strength",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -4144,7 +4144,7 @@
           {
             "id": "ek_1_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4155,7 +4155,7 @@
           {
             "id": "ek_1_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -4166,7 +4166,7 @@
           {
             "id": "ek_1_ref",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -4196,7 +4196,7 @@
           {
             "id": "ek_2_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4207,7 +4207,7 @@
           {
             "id": "ek_2_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4226,7 +4226,7 @@
           {
             "id": "ek_3_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4237,7 +4237,7 @@
           {
             "id": "ek_3_ref",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4267,7 +4267,7 @@
           {
             "id": "ek_4_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4278,7 +4278,7 @@
           {
             "id": "ek_4_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4297,7 +4297,7 @@
           {
             "id": "ek_5_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4316,7 +4316,7 @@
           {
             "id": "ek_6_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4327,7 +4327,7 @@
           {
             "id": "ek_6_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4338,7 +4338,7 @@
           {
             "id": "ek_6_ref",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4368,7 +4368,7 @@
           {
             "id": "ek_7_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4387,7 +4387,7 @@
           {
             "id": "ek_8_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4398,7 +4398,7 @@
           {
             "id": "ek_8_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4417,7 +4417,7 @@
           {
             "id": "ek_9_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4428,7 +4428,7 @@
           {
             "id": "ek_9_ref",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4458,7 +4458,7 @@
           {
             "id": "ek_10_bab",
             "sourceId": "class_eldritch_knight",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4469,7 +4469,7 @@
           {
             "id": "ek_10_fort",
             "sourceId": "class_eldritch_knight",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4572,8 +4572,8 @@
       "skill_spellcraft"
     ],
     "recommendedAttributes": [
-      "stat_wis",
-      "stat_cha"
+      "stat_wisdom",
+      "stat_charisma"
     ],
     "levelProgression": [
       {
@@ -4585,7 +4585,7 @@
           {
             "id": "hierophant_1_bab",
             "sourceId": "class_hierophant",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -4596,7 +4596,7 @@
           {
             "id": "hierophant_1_fort",
             "sourceId": "class_hierophant",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -4607,7 +4607,7 @@
           {
             "id": "hierophant_1_ref",
             "sourceId": "class_hierophant",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -4637,7 +4637,7 @@
           {
             "id": "hierophant_2_bab",
             "sourceId": "class_hierophant",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4648,7 +4648,7 @@
           {
             "id": "hierophant_2_fort",
             "sourceId": "class_hierophant",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4678,7 +4678,7 @@
           {
             "id": "hierophant_3_ref",
             "sourceId": "class_hierophant",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4697,7 +4697,7 @@
           {
             "id": "hierophant_4_bab",
             "sourceId": "class_hierophant",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4708,7 +4708,7 @@
           {
             "id": "hierophant_4_fort",
             "sourceId": "class_hierophant",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4814,8 +4814,8 @@
       "skill_survival"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -4827,7 +4827,7 @@
           {
             "id": "hw_1_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4838,7 +4838,7 @@
           {
             "id": "hw_1_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -4849,7 +4849,7 @@
           {
             "id": "hw_1_ref",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -4879,7 +4879,7 @@
           {
             "id": "hw_2_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4890,7 +4890,7 @@
           {
             "id": "hw_2_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4909,7 +4909,7 @@
           {
             "id": "hw_3_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4920,7 +4920,7 @@
           {
             "id": "hw_3_ref",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4950,7 +4950,7 @@
           {
             "id": "hw_4_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4961,7 +4961,7 @@
           {
             "id": "hw_4_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4980,7 +4980,7 @@
           {
             "id": "hw_5_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -4999,7 +4999,7 @@
           {
             "id": "hw_6_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5010,7 +5010,7 @@
           {
             "id": "hw_6_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5021,7 +5021,7 @@
           {
             "id": "hw_6_ref",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5051,7 +5051,7 @@
           {
             "id": "hw_7_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5070,7 +5070,7 @@
           {
             "id": "hw_8_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5081,7 +5081,7 @@
           {
             "id": "hw_8_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5100,7 +5100,7 @@
           {
             "id": "hw_9_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5111,7 +5111,7 @@
           {
             "id": "hw_9_ref",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5141,7 +5141,7 @@
           {
             "id": "hw_10_bab",
             "sourceId": "class_horizon_walker",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5152,7 +5152,7 @@
           {
             "id": "hw_10_fort",
             "sourceId": "class_horizon_walker",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5264,7 +5264,7 @@
       "skill_use_magic_device"
     ],
     "recommendedAttributes": [
-      "stat_int"
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -5277,7 +5277,7 @@
           {
             "id": "lm_1_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5288,7 +5288,7 @@
           {
             "id": "lm_1_fort",
             "sourceId": "class_loremaster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5299,7 +5299,7 @@
           {
             "id": "lm_1_ref",
             "sourceId": "class_loremaster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5330,7 +5330,7 @@
           {
             "id": "lm_2_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5361,7 +5361,7 @@
           {
             "id": "lm_3_fort",
             "sourceId": "class_loremaster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5372,7 +5372,7 @@
           {
             "id": "lm_3_ref",
             "sourceId": "class_loremaster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5392,7 +5392,7 @@
           {
             "id": "lm_4_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5431,7 +5431,7 @@
           {
             "id": "lm_6_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5442,7 +5442,7 @@
           {
             "id": "lm_6_fort",
             "sourceId": "class_loremaster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5453,7 +5453,7 @@
           {
             "id": "lm_6_ref",
             "sourceId": "class_loremaster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5492,7 +5492,7 @@
           {
             "id": "lm_8_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5523,7 +5523,7 @@
           {
             "id": "lm_9_fort",
             "sourceId": "class_loremaster",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5534,7 +5534,7 @@
           {
             "id": "lm_9_ref",
             "sourceId": "class_loremaster",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5554,7 +5554,7 @@
           {
             "id": "lm_10_bab",
             "sourceId": "class_loremaster",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5665,8 +5665,8 @@
       "skill_spellcraft"
     ],
     "recommendedAttributes": [
-      "stat_int",
-      "stat_wis"
+      "stat_intelligence",
+      "stat_wisdom"
     ],
     "levelProgression": [
       {
@@ -5679,7 +5679,7 @@
           {
             "id": "mt_1_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5690,7 +5690,7 @@
           {
             "id": "mt_1_fort",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5701,7 +5701,7 @@
           {
             "id": "mt_1_ref",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -5732,7 +5732,7 @@
           {
             "id": "mt_2_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5763,7 +5763,7 @@
           {
             "id": "mt_3_fort",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5774,7 +5774,7 @@
           {
             "id": "mt_3_ref",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5794,7 +5794,7 @@
           {
             "id": "mt_4_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5833,7 +5833,7 @@
           {
             "id": "mt_6_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5844,7 +5844,7 @@
           {
             "id": "mt_6_fort",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5855,7 +5855,7 @@
           {
             "id": "mt_6_ref",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5894,7 +5894,7 @@
           {
             "id": "mt_8_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5925,7 +5925,7 @@
           {
             "id": "mt_9_fort",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5936,7 +5936,7 @@
           {
             "id": "mt_9_ref",
             "sourceId": "class_mystic_theurge",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -5956,7 +5956,7 @@
           {
             "id": "mt_10_bab",
             "sourceId": "class_mystic_theurge",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6104,8 +6104,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_cha"
+      "stat_dexterity",
+      "stat_charisma"
     ],
     "levelProgression": [
       {
@@ -6117,7 +6117,7 @@
           {
             "id": "sd_1_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -6128,7 +6128,7 @@
           {
             "id": "sd_1_fort",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -6139,7 +6139,7 @@
           {
             "id": "sd_1_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base",
             "sourceName": {
@@ -6171,7 +6171,7 @@
           {
             "id": "sd_2_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6182,7 +6182,7 @@
           {
             "id": "sd_2_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6202,7 +6202,7 @@
           {
             "id": "sd_3_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6213,7 +6213,7 @@
           {
             "id": "sd_3_fort",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6243,7 +6243,7 @@
           {
             "id": "sd_4_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6254,7 +6254,7 @@
           {
             "id": "sd_4_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6282,7 +6282,7 @@
           {
             "id": "sd_6_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6293,7 +6293,7 @@
           {
             "id": "sd_6_fort",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6304,7 +6304,7 @@
           {
             "id": "sd_6_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6334,7 +6334,7 @@
           {
             "id": "sd_7_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6353,7 +6353,7 @@
           {
             "id": "sd_8_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6364,7 +6364,7 @@
           {
             "id": "sd_8_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6383,7 +6383,7 @@
           {
             "id": "sd_9_fort",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6414,7 +6414,7 @@
           {
             "id": "sd_10_bab",
             "sourceId": "class_shadowdancer",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6425,7 +6425,7 @@
           {
             "id": "sd_10_ref",
             "sourceId": "class_shadowdancer",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6510,8 +6510,8 @@
       "skill_spellcraft"
     ],
     "recommendedAttributes": [
-      "stat_wis",
-      "stat_cha"
+      "stat_wisdom",
+      "stat_charisma"
     ],
     "levelProgression": [
       {
@@ -6524,7 +6524,7 @@
           {
             "id": "thaum_1_bab",
             "sourceId": "class_thaumaturgist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -6535,7 +6535,7 @@
           {
             "id": "thaum_1_fort",
             "sourceId": "class_thaumaturgist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -6546,7 +6546,7 @@
           {
             "id": "thaum_1_ref",
             "sourceId": "class_thaumaturgist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base",
             "sourceName": {
@@ -6577,7 +6577,7 @@
           {
             "id": "thaum_2_bab",
             "sourceId": "class_thaumaturgist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6608,7 +6608,7 @@
           {
             "id": "thaum_3_fort",
             "sourceId": "class_thaumaturgist",
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6619,7 +6619,7 @@
           {
             "id": "thaum_3_ref",
             "sourceId": "class_thaumaturgist",
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base",
             "sourceName": {
@@ -6639,7 +6639,7 @@
           {
             "id": "thaum_4_bab",
             "sourceId": "class_thaumaturgist",
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base",
             "sourceName": {

@@ -32,14 +32,14 @@
   const maxVP      = $derived(vpPool ? (engine.phase3_combatStats['combatStats.max_vitality']?.totalValue ?? 0) : 0);
   const currentVP  = $derived(vpPool?.currentValue ?? 0);
   const currentWP  = $derived(wpPool?.currentValue ?? 0);
-  const maxWP      = $derived(wpPool ? (engine.phase2_attributes['stat_con']?.totalValue ?? 10) : 10);
+  const maxWP      = $derived(wpPool ? (engine.phase2_attributes['stat_constitution']?.totalValue ?? 10) : 10);
   const vpPercent  = $derived(maxVP > 0 ? Math.max(0, Math.min(100, (currentVP / maxVP) * 100)) : 0);
   const wpPercent  = $derived(maxWP > 0 ? Math.max(0, Math.min(100, (currentWP / maxWP) * 100)) : 0);
 
   /* Health status — colour stays inline since it's a runtime computed value */
   const hpStatus = $derived.by(() => {
     if (!hpPool || maxHp <= 0) return { label: ui('combat.hp.unknown', engine.settings.language), color: 'oklch(55% 0.010 264)' };
-    if (currentHp <= -(engine.phase2_attributes['stat_con']?.totalValue ?? 10))
+    if (currentHp <= -(engine.phase2_attributes['stat_constitution']?.totalValue ?? 10))
       return { label: ui('combat.hp.dead', engine.settings.language),        color: 'oklch(30% 0.18 28)' };
     if (currentHp <= -1) return { label: ui('combat.hp.dying', engine.settings.language),       color: 'oklch(40% 0.20 28)' };
     if (currentHp ===  0) return { label: ui('combat.hp.unconscious', engine.settings.language), color: 'oklch(40% 0.18 28)' };
@@ -49,7 +49,7 @@
     return { label: ui('combat.hp.healthy', engine.settings.language), color: 'oklch(65% 0.17 145)' };
   });
 
-  const conMod       = $derived(engine.phase2_attributes['stat_con']?.derivedModifier ?? 0);
+  const conMod       = $derived(engine.phase2_attributes['stat_constitution']?.derivedModifier ?? 0);
   const conHpContrib = $derived(conMod * engine.phase0_characterLevel);
 
   let healAmount   = $state('');

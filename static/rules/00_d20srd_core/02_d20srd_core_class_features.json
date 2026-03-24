@@ -119,7 +119,7 @@
           "en": "Rage",
           "fr": "Furie"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 4,
         "type": "morale"
       },
@@ -130,7 +130,7 @@
           "en": "Rage",
           "fr": "Furie"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 4,
         "type": "morale"
       },
@@ -217,7 +217,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -303,7 +303,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -401,7 +401,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -480,7 +480,7 @@
           "en": "Greater Rage",
           "fr": "Grande furie"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "morale",
         "conditionNode": {
@@ -498,7 +498,7 @@
           "en": "Greater Rage",
           "fr": "Grande furie"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "morale",
         "conditionNode": {
@@ -575,7 +575,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -694,7 +694,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -813,7 +813,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -892,7 +892,7 @@
           "en": "Mighty Rage",
           "fr": "Furie surpuissante"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "morale",
         "conditionNode": {
@@ -910,7 +910,7 @@
           "en": "Mighty Rage",
           "fr": "Furie surpuissante"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "morale",
         "conditionNode": {
@@ -1352,7 +1352,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1439,7 +1439,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1546,7 +1546,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1642,7 +1642,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1758,7 +1758,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -1854,7 +1854,7 @@
           "en": "Trap Sense",
           "fr": "Sens des pièges"
         },
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "untyped",
         "situationalContext": "vs_trap"
@@ -2076,7 +2076,7 @@
           "fr": "Empathie sauvage"
         },
         "targetId": "attributes.wild_empathy",
-        "value": "@classLevels.class_ranger + @attributes.stat_cha.derivedModifier",
+        "value": "@classLevels.class_ranger + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -2864,7 +2864,7 @@
           "fr": "Châtiment du Mal"
         },
         "targetId": "combatStats.attack_bonus",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "untyped"
       },
       {
@@ -2907,7 +2907,7 @@
           "fr": "Grâce divine"
         },
         "targetId": "saves.all",
-        "value": "@attributes.stat_cha.derivedModifier",
+        "value": "@attributes.stat_charisma.derivedModifier",
         "type": "untyped"
       }
     ],
@@ -2946,7 +2946,7 @@
           "fr": "Imposition des mains"
         },
         "targetId": "resources.lay_on_hands_hp.maxValue",
-        "value": "@classLevels.class_paladin * @attributes.stat_cha.derivedModifier",
+        "value": "@classLevels.class_paladin * @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -3045,7 +3045,7 @@
           "fr": "Renvoi des morts-vivants"
         },
         "targetId": "resources.turn_undead_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -3324,7 +3324,7 @@
           "fr": "Bonus CA Moine (Sag)"
         },
         "targetId": "combatStats.ac_normal",
-        "value": "@attributes.stat_wis.derivedModifier",
+        "value": "@attributes.stat_wisdom.derivedModifier",
         "type": "untyped",
         "conditionNode": {
           "logic": "AND",
@@ -3376,7 +3376,7 @@
           "fr": "Bonus CA Moine (Sag)"
         },
         "targetId": "combatStats.ac_touch",
-        "value": "@attributes.stat_wis.derivedModifier",
+        "value": "@attributes.stat_wisdom.derivedModifier",
         "type": "untyped",
         "conditionNode": {
           "logic": "AND",
@@ -4519,7 +4519,7 @@
           "fr": "Empathie sauvage"
         },
         "targetId": "attributes.wild_empathy",
-        "value": "@classLevels.class_druid + @attributes.stat_cha.derivedModifier",
+        "value": "@classLevels.class_druid + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -5127,7 +5127,7 @@
           "fr": "Renvoi des morts-vivants"
         },
         "targetId": "resources.turn_undead_uses.maxValue",
-        "value": "3 + @attributes.stat_cha.derivedModifier",
+        "value": "3 + @attributes.stat_charisma.derivedModifier",
         "type": "base"
       }
     ],
@@ -5233,7 +5233,7 @@
           "fr": "Savoir du barde"
         },
         "targetId": "attributes.bardic_knowledge",
-        "value": "@classLevels.class_bard + @attributes.stat_int.derivedModifier",
+        "value": "@classLevels.class_bard + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -5566,7 +5566,7 @@
           "en": "Inspire Greatness",
           "fr": "Inspiration de grandeur"
         },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "competence"
       }

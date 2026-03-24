@@ -62,10 +62,10 @@ function makePipeline(baseValue = 0, mods: Modifier[] = [], situationalMods: Mod
 }
 
 const BASE_CONTEXT: CharacterContext = {
-  attributes: { stat_str: { baseValue: 10, totalValue: 10, derivedModifier: 0 } },
+  attributes: { stat_strength: { baseValue: 10, totalValue: 10, derivedModifier: 0 } },
   skills: {},
-  combatStats: { bab: { totalValue: 1 } },
-  saves: { fort: { totalValue: 2 }, ref: { totalValue: 2 }, will: { totalValue: 2 } },
+  combatStats: { base_attack_bonus: { totalValue: 1 } },
+  saves: { fortitude: { totalValue: 2 }, reflex: { totalValue: 2 }, will: { totalValue: 2 } },
   characterLevel: 1,
   eclForXp: 1,
   classLevels: {},
@@ -331,9 +331,9 @@ describe('mathParser — division by zero guard', () => {
   it('division by a formula resolving to 0 also returns 0', () => {
     const contextWithZeroBAB: CharacterContext = {
       ...BASE_CONTEXT,
-      combatStats: { bab: { totalValue: 0 } },
+      combatStats: { base_attack_bonus: { totalValue: 0 } },
     };
-    const result = evaluateFormula('10 / @combatStats.bab.totalValue', contextWithZeroBAB, 'en');
+    const result = evaluateFormula('10 / @combatStats.base_attack_bonus.totalValue', contextWithZeroBAB, 'en');
     expect(result).toBe(0);
   });
 
@@ -416,7 +416,7 @@ describe('diceEngine — isAttackOfOpportunity flag', () => {
 describe('saves.all fan-out logic (ARCHITECTURE.md section 9.4)', () => {
   /**
    * We test the fan-out indirectly by verifying that Divine Grace (+CHA to all saves)
-   * produces three independent +CHA bonus modifiers targeting saves.fort, saves.ref, saves.will.
+   * produces three independent +CHA bonus modifiers targeting saves.fortitude, saves.reflex, saves.will.
    *
    * This mirrors the internal behavior of #processModifierList when targetId === "saves.all".
    * We test via the stacking rules by manually constructing what the fan-out produces.
@@ -424,8 +424,8 @@ describe('saves.all fan-out logic (ARCHITECTURE.md section 9.4)', () => {
 
   it('Three independent modifiers from saves.all fan-out stack independently', () => {
     // Fan-out produces: mod_fort, mod_ref, mod_will each with value 3 (CHA mod)
-    const fortMod = makeModifier('divine_grace_fort', 3, 'untyped', { targetId: 'saves.fort' });
-    const refMod  = makeModifier('divine_grace_ref',  3, 'untyped', { targetId: 'saves.ref' });
+    const fortMod = makeModifier('divine_grace_fort', 3, 'untyped', { targetId: 'saves.fortitude' });
+    const refMod  = makeModifier('divine_grace_ref',  3, 'untyped', { targetId: 'saves.reflex' });
     const willMod = makeModifier('divine_grace_will', 3, 'untyped', { targetId: 'saves.will' });
 
     // Each save is computed independently
@@ -438,8 +438,8 @@ describe('saves.all fan-out logic (ARCHITECTURE.md section 9.4)', () => {
     // Cloak of Resistance +2 targets saves.all → each save gets +2
     // Resistance spell +1 targets saves.all → each save also gets +1
     // Both are "resistance" type → only highest applies (non-stacking)
-    const cloakFort   = makeModifier('cloak_fort',   2, 'resistance', { targetId: 'saves.fort' });
-    const spellFort   = makeModifier('spell_fort',   1, 'resistance', { targetId: 'saves.fort' });
+    const cloakFort   = makeModifier('cloak_fort',   2, 'resistance', { targetId: 'saves.fortitude' });
+    const spellFort   = makeModifier('spell_fort',   1, 'resistance', { targetId: 'saves.fortitude' });
     // resistance type = non-stacking, max wins
     const fortResult = applyStackingRules([cloakFort, spellFort], 4);
     expect(fortResult.totalValue).toBe(6); // 4 base + 2 (max resistance)

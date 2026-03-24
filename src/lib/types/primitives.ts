@@ -18,7 +18,7 @@
  *
  * Convention: always use a category prefix to avoid collisions across the entire
  * data dictionary. Examples:
- *   - "stat_str"          → an attribute pipeline
+ *   - "stat_strength"          → an attribute pipeline
  *   - "feat_power_attack" → a feat feature
  *   - "item_longsword"    → an equipment item
  *   - "skill_climb"       → a skill pipeline
@@ -112,20 +112,20 @@ export type ModifierType =
                        // (most restrictive cap wins — a character wearing a tower shield AND
                        // heavy armor cannot exceed the lower of the two maxDex values).
                        //
-                       // This type is meaningful ONLY on the `combatStats.max_dex_bonus`
+                       // This type is meaningful ONLY on the `combatStats.max_dexterity_bonus`
                        // pipeline. The Phase 3 computation handles it specially: it collects
                        // all `max_dex_cap` modifiers, takes the minimum as the effective
                        // base for the pipeline, then applies any remaining modifiers
                        // (e.g., +2 from Mithral special material) on top normally.
                        //
-                       // baseValue of `combatStats.max_dex_bonus` = 99 (no cap when
+                       // baseValue of `combatStats.max_dexterity_bonus` = 99 (no cap when
                        // no max_dex_cap modifier is active — unarmored character can apply
                        // full DEX modifier to AC). Mithral uses `type: "untyped"` (+2) on
                        // the same pipeline; that stacks AFTER the cap is established.
                        //
                        // CONTENT AUTHORING:
-                       //   Armor: { type: "max_dex_cap", targetId: "combatStats.max_dex_bonus", value: 3 }
-                       //   Mithral: { type: "untyped", targetId: "combatStats.max_dex_bonus", value: 2 }
+                       //   Armor: { type: "max_dex_cap", targetId: "combatStats.max_dexterity_bonus", value: 3 }
+                       //   Mithral: { type: "untyped", targetId: "combatStats.max_dexterity_bonus", value: 2 }
                        //   Heavy Load condition: { type: "max_dex_cap", ... value: 1 }
                        //   Encumbrance (medium): { type: "max_dex_cap", ... value: 3 }
                        //

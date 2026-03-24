@@ -1,7 +1,7 @@
 /**
  * @file src/tests/maxDexBonus.test.ts
  * @description Vitest unit tests for Engine Enhancement E-17:
- *              `combatStats.max_dex_bonus` pipeline and `max_dex_cap` modifier type.
+ *              `combatStats.max_dexterity_bonus` pipeline and `max_dex_cap` modifier type.
  *
  * WHAT IS TESTED:
  *
@@ -10,7 +10,7 @@
  *    modifier you can add to your Armor Class while wearing it."
  *
  * ARCHITECTURAL OVERVIEW:
- *   - `combatStats.max_dex_bonus` is a StatisticPipeline with `baseValue = 99` (≈ "no cap").
+ *   - `combatStats.max_dexterity_bonus` is a StatisticPipeline with `baseValue = 99` (≈ "no cap").
  *   - Armor/conditions impose a CAP via `type: "max_dex_cap"` modifiers. Multiple caps
  *     → MINIMUM wins (most restrictive applies).
  *   - Additive bonuses (e.g., Mithral +2) use `type: "untyped"` and stack on top of the cap.
@@ -31,7 +31,7 @@
  *   (5 tests)
  *
  * ─── PART 2: Phase 3 Pipeline Computation ─────────────────────────────────────
- *   Tests the combatStats.max_dex_bonus pipeline via stackingRules called directly
+ *   Tests the combatStats.max_dexterity_bonus pipeline via stackingRules called directly
  *   (simulating Phase 3 special handling logic).
  *   (7 tests)
  *
@@ -74,14 +74,14 @@ function makeModifier(
     id,
     sourceId,
     sourceName: { en: `Test ${id}`, fr: `Test ${id}` },
-    targetId: 'combatStats.max_dex_bonus',
+    targetId: 'combatStats.max_dexterity_bonus',
     value,
     type,
   };
 }
 
 /**
- * Simulates the Phase 3 special-case computation for combatStats.max_dex_bonus.
+ * Simulates the Phase 3 special-case computation for combatStats.max_dexterity_bonus.
  *
  * This replicates the engine logic from GameEngine.svelte.ts Phase 3:
  *   1. Separate max_dex_cap modifiers from additive modifiers.
@@ -89,8 +89,8 @@ function makeModifier(
  *   3. Apply remaining modifiers (untyped, enhancement, etc.) via applyStackingRules.
  *   4. Return totalValue.
  *
- * @param mods     - All active modifiers targeting combatStats.max_dex_bonus
- * @param baseVal  - Pipeline baseValue (99 for max_dex_bonus)
+ * @param mods     - All active modifiers targeting combatStats.max_dexterity_bonus
+ * @param baseVal  - Pipeline baseValue (99 for max_dexterity_bonus)
  */
 function computeMaxDexBonus(mods: Modifier[], baseVal = 99): number {
   const capMods = mods.filter(m => m.type === 'max_dex_cap');
@@ -134,7 +134,7 @@ describe('maxDexBonus — stacking rules behavior', () => {
     // Actually "max_dex_cap" would be grouped with same type; only highest applies.
     // With a single modifier and base=99: the modifier IS applied.
     // The real behavior: base=99, one cap modifier of 2 → totalBonus=2 → totalValue=101
-    // But this is NOT the correct semantics for max_dex_bonus!
+    // But this is NOT the correct semantics for max_dexterity_bonus!
     // This test documents that Phase 3 must intercept BEFORE calling applyStackingRules.
     expect(result.totalBonus).toBe(2); // cap mod is treated as regular additive by stackingRules
   });
@@ -231,12 +231,12 @@ describe('maxDexBonus — content authoring contracts', () => {
       id: 'armor_chainmail_max_dex',
       sourceId: 'item_armor_chainmail',
       sourceName: { en: 'Chainmail', fr: 'Cotte de mailles' },
-      targetId: 'combatStats.max_dex_bonus',
+      targetId: 'combatStats.max_dexterity_bonus',
       value: 2,
       type: 'max_dex_cap',
     };
     expect(armorMod.type).toBe('max_dex_cap');
-    expect(armorMod.targetId).toBe('combatStats.max_dex_bonus');
+    expect(armorMod.targetId).toBe('combatStats.max_dexterity_bonus');
     expect(armorMod.value).toBe(2);
   });
 
@@ -246,7 +246,7 @@ describe('maxDexBonus — content authoring contracts', () => {
       id: 'special_material_mithral_max_dex',
       sourceId: 'special_material_mithral',
       sourceName: { en: 'Mithral', fr: 'Mithral' },
-      targetId: 'combatStats.max_dex_bonus',
+      targetId: 'combatStats.max_dexterity_bonus',
       value: 2,
       type: 'untyped',
     };
@@ -259,7 +259,7 @@ describe('maxDexBonus — content authoring contracts', () => {
       id: 'condition_medium_load_max_dex',
       sourceId: 'condition_medium_load',
       sourceName: { en: 'Medium Load', fr: 'Charge moyenne' },
-      targetId: 'combatStats.max_dex_bonus',
+      targetId: 'combatStats.max_dexterity_bonus',
       value: 3,
       type: 'max_dex_cap',
     };
@@ -267,10 +267,10 @@ describe('maxDexBonus — content authoring contracts', () => {
   });
 
   it('T16 — shields WITHOUT dex restriction have no max_dex_cap mod (clean absence)', () => {
-    // Shields like heavy steel (maxDex=99) should NOT have any max_dex_bonus modifier
+    // Shields like heavy steel (maxDex=99) should NOT have any max_dexterity_bonus modifier
     // This is modeled by simply omitting the modifier (not adding a "cap at 99")
     const heavySteelShieldMods: Modifier[] = [
-      // Only AC bonus and ACP modifiers; NO max_dex_bonus modifier
+      // Only AC bonus and ACP modifiers; NO max_dexterity_bonus modifier
       {
         id: 'shield_heavy_steel_ac',
         sourceId: 'item_shield_heavy_steel',
@@ -280,7 +280,7 @@ describe('maxDexBonus — content authoring contracts', () => {
         type: 'shield',
       },
     ];
-    const maxDexMod = heavySteelShieldMods.find(m => m.targetId === 'combatStats.max_dex_bonus');
+    const maxDexMod = heavySteelShieldMods.find(m => m.targetId === 'combatStats.max_dexterity_bonus');
     expect(maxDexMod).toBeUndefined();
     // Without a max_dex_cap mod, computeMaxDexBonus returns 99 (no cap)
     expect(computeMaxDexBonus([])).toBe(99);
@@ -291,7 +291,7 @@ describe('maxDexBonus — content authoring contracts', () => {
       id: 'shield_tower_max_dex',
       sourceId: 'item_shield_tower',
       sourceName: { en: 'Tower Shield', fr: 'Pavois' },
-      targetId: 'combatStats.max_dex_bonus',
+      targetId: 'combatStats.max_dexterity_bonus',
       value: 2,
       type: 'max_dex_cap', // MUST be max_dex_cap, NOT setAbsolute
     };
@@ -328,7 +328,7 @@ describe('maxDexBonus — edge cases', () => {
   });
 
   it('T21 — multiple untyped bonuses on top of cap: all stack', () => {
-    // If for some reason multiple features add to max_dex_bonus, they all stack (untyped rule)
+    // If for some reason multiple features add to max_dexterity_bonus, they all stack (untyped rule)
     const mods: Modifier[] = [
       makeModifier('cap', 'max_dex_cap', 2, 'item_armor_chainmail'),
       makeModifier('mithral', 'untyped', 2, 'special_material_mithral'),
@@ -339,13 +339,13 @@ describe('maxDexBonus — edge cases', () => {
     expect(computeMaxDexBonus(mods)).toBe(5); // 2 + 2 (untyped) + 1 (enhancement)
   });
 
-  it('T22 — independence: max_dex_bonus pipeline does not affect other pipelines', () => {
-    // Ensure max_dex_cap mods targeting max_dex_bonus don't bleed into other pipelines
+  it('T22 — independence: max_dexterity_bonus pipeline does not affect other pipelines', () => {
+    // Ensure max_dex_cap mods targeting max_dexterity_bonus don't bleed into other pipelines
     const maxDexMods: Modifier[] = [
       makeModifier('cap', 'max_dex_cap', 2),
       makeModifier('mithral', 'untyped', 2),
     ];
-    // Compute max_dex_bonus
+    // Compute max_dexterity_bonus
     const maxDex = computeMaxDexBonus(maxDexMods);
     expect(maxDex).toBe(4);
 
@@ -358,7 +358,7 @@ describe('maxDexBonus — edge cases', () => {
     };
     const acpResult = applyStackingRules([acpMod], 0);
     expect(acpResult.totalValue).toBe(-5);
-    // The max_dex_bonus computation had no effect on the ACP pipeline
+    // The max_dexterity_bonus computation had no effect on the ACP pipeline
     expect(maxDex).toBe(4); // still 4, confirming independence
   });
 

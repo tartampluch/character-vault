@@ -271,7 +271,7 @@
       stacking: 'special',
       tooltip:  'Sets a maximum DEX-to-AC cap imposed by armor or conditions. '
               + 'Multiple caps compete with MINIMUM-WINS semantics (most restrictive wins). '
-              + 'Meaningful only on the combatStats.max_dex_bonus pipeline.',
+              + 'Meaningful only on the combatStats.max_dexterity_bonus pipeline.',
     },
   ];
 

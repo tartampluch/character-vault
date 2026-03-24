@@ -58,7 +58,7 @@ graph TD
 _Suggested target file: `src/lib/types/primitives.ts`_
 
 ```typescript
-export type ID = string; // kebab-case (e.g., "stat_str", "feat_power_attack")
+export type ID = string; // kebab-case (e.g., "stat_strength", "feat_power_attack")
 
 export type ModifierType =
     | "base"             // Foundational additive value; ALWAYS STACKS. Used for BAB/save level increments.
@@ -107,7 +107,7 @@ export type LogicNode =
     | { logic: "NOT"; node: LogicNode }
     | {
         logic: "CONDITION";
-        targetPath: string;   // e.g., "@attributes.stat_str.totalValue" or "@activeTags"
+        targetPath: string;   // e.g., "@attributes.stat_strength.totalValue" or "@activeTags"
         operator: LogicOperator;
         value: any;           // e.g., 13 or "feat_power_attack"
         errorMessage?: string; // e.g., "Requires Strength 13+"
@@ -149,7 +149,7 @@ export interface StatisticPipeline {
 }
 
 export interface SkillPipeline extends StatisticPipeline {
-    keyAbility: ID;               // e.g., "stat_dex" for Tumble
+    keyAbility: ID;               // e.g., "stat_dexterity" for Tumble
     ranks: number;                // Invested skill points
     isClassSkill: boolean;
     appliesArmorCheckPenalty: boolean;
@@ -202,9 +202,9 @@ When a `setAbsolute` modifier is active, `baseValue` and all other modifiers are
 | `@targetTags` | Target creature's tags | **Roll time only** |
 | `@master.classLevels.<classId>` | Master character's class level (LinkedEntity only) | LinkedEntity only |
 
-> **AI Implementation Note:** The Math Parser resolves `@attributes.stat_str.derivedModifier` by splitting into `["attributes", "stat_str", "derivedModifier"]` and walking the CharacterContext object. Missing paths return `0` with a console warning.
+> **AI Implementation Note:** The Math Parser resolves `@attributes.stat_strength.derivedModifier` by splitting into `["attributes", "stat_strength", "derivedModifier"]` and walking the CharacterContext object. Missing paths return `0` with a console warning.
 >
-> **Context key conventions:** `@combatStats.bab.totalValue` resolves by splitting into `["combatStats", "bab", "totalValue"]`, so `context.combatStats["bab"]` must exist. The `CharacterContext` context builders in `GameEngine.svelte.ts` strip the namespace prefix when building the snapshot: `"combatStats.bab"` → stored as `"bab"` in `context.combatStats`; `"saves.fort"` → stored as `"fort"` in `context.saves`. Content authors write `@combatStats.bab.totalValue` — this is correct and works as documented.
+> **Context key conventions:** `@combatStats.base_attack_bonus.totalValue` resolves by splitting into `["combatStats", "base_attack_bonus", "totalValue"]`, so `context.combatStats["base_attack_bonus"]` must exist. The `CharacterContext` context builders in `GameEngine.svelte.ts` strip the namespace prefix when building the snapshot: `"combatStats.base_attack_bonus"` → stored as `"base_attack_bonus"` in `context.combatStats`; `"saves.fortitude"` → stored as `"fortitude"` in `context.saves`. Content authors write `@combatStats.base_attack_bonus.totalValue` — this is correct and works as documented.
 
 > **Path distinction — `@characterLevel` vs `@eclForXp`:** Always use `@characterLevel` for game-mechanical calculations (feats, HP, skill ranks, class features). Use `@eclForXp` ONLY when consulting `config_xp_table` for level-up checks and starting wealth. For standard PC races (`levelAdjustment = 0`), both paths return the same value.
 
@@ -214,15 +214,15 @@ When a `setAbsolute` modifier is active, `baseValue` and all other modifiers are
 
 | Namespaced form (readable) | Bare form (canonical map key) | Pipeline namespace |
 |---|---|---|
-| `"attributes.stat_str"` | `"stat_str"` | `Character.attributes` |
-| `"attributes.stat_dex"` | `"stat_dex"` | `Character.attributes` |
+| `"attributes.stat_strength"` | `"stat_strength"` | `Character.attributes` |
+| `"attributes.stat_dexterity"` | `"stat_dexterity"` | `Character.attributes` |
 | `"skills.skill_climb"` | `"skill_climb"` | `Character.skills` |
 
 The normaliser strips the `"attributes."` and `"skills."` prefixes so both forms are equivalent. Content authors may use either form for attributes and skills.
 
 **Other namespaces are NOT normalised** — they are used verbatim as pipeline map keys:
-- `"combatStats.bab"`, `"combatStats.ac_normal"`, `"combatStats.speed_land"` → used exactly as written
-- `"saves.fort"`, `"saves.ref"`, `"saves.will"` → used exactly as written
+- `"combatStats.base_attack_bonus"`, `"combatStats.ac_normal"`, `"combatStats.speed_land"` → used exactly as written
+- `"saves.fortitude"`, `"saves.reflex"`, `"saves.will"` → used exactly as written
 - `"resources.hp"` → used exactly as written
 
 A special normalisation exists for resource max-value targeting: `"resources.X.maxValue"` → `"combatStats.X_max"`.
@@ -244,8 +244,8 @@ Similarly, descriptions and formula values that reference speed should use: `@co
 
 | Canonical ID | Ability | Do NOT use |
 |---|---|---|
-| `saves.fort` | Constitution | `saves.fortitude`, `saves.save_fort` |
-| `saves.ref` | Dexterity | `saves.reflex`, `saves.save_ref` |
+| `saves.fortitude` | Constitution | `saves.fortitude`, `saves.save_fort` |
+| `saves.reflex` | Dexterity | `saves.reflex`, `saves.save_ref` |
 | `saves.will` | Wisdom | `saves.save_will` |
 | `saves.all` | (broadcast) | — fans out to fort + ref + will in `#processModifierList` |
 
@@ -510,7 +510,7 @@ Inherent bonuses are permanent ability score improvements (tomes, manuals, Wish,
   "category": "item",
   "consumable": { "isConsumable": true },
   "grantedModifiers": [
-    { "targetId": "attributes.stat_str", "value": 4, "type": "inherent",
+    { "targetId": "attributes.stat_strength", "value": 4, "type": "inherent",
       "sourceId": "item_manual_of_gainful_exercise_4",
       "sourceName": { "en": "Manual of Gainful Exercise (+4)", "fr": "Manuel d'exercice profitable (+4)" },
       "id": "effect_manual_str_4" }
@@ -741,9 +741,9 @@ Ego = Will DC for dominance checks. Content authors compute Ego and store it in 
 
 > **AI Implementation Note:** When rendering the Item Detail modal for an intelligent item, check `intelligentItemData` and display a "Personality" tab with: ability scores, Ego score (formatted as "Will DC = egoScore for dominance"), alignment, communication mode, senses, language list. The `specialPurpose` and `dedicatedPower` fields should be displayed prominently when non-null — they define the item's core motivation.
 
-### 4.17. Max DEX Bonus to AC — `combatStats.max_dex_bonus`
+### 4.17. Max DEX Bonus to AC — `combatStats.max_dexterity_bonus`
 
-`combatStats.max_dex_bonus` is initialized at `baseValue = 99` (no restriction for unarmored characters).
+`combatStats.max_dexterity_bonus` is initialized at `baseValue = 99` (no restriction for unarmored characters).
 
 **Two-layer model:**
 - `"max_dex_cap"` modifiers (armor, shields, conditions): **MINIMUM wins** — most restrictive cap applies.
@@ -765,10 +765,10 @@ totalValue = applyStackingRules(otherMods, effectiveBase).totalValue
 
 ```json
 // Chainmail — caps max DEX at +2
-{ "targetId": "combatStats.max_dex_bonus", "value": 2, "type": "max_dex_cap" }
+{ "targetId": "combatStats.max_dexterity_bonus", "value": 2, "type": "max_dex_cap" }
 
 // Mithral special material — adds +2 on top of the cap
-{ "targetId": "combatStats.max_dex_bonus", "value": 2, "type": "untyped" }
+{ "targetId": "combatStats.max_dexterity_bonus", "value": 2, "type": "untyped" }
 ```
 
 #### Examples
@@ -784,15 +784,15 @@ totalValue = applyStackingRules(otherMods, effectiveBase).totalValue
 
 #### UI Contract — ArmorClass Panel
 
-The `ArmorClass.svelte` panel reads `combatStats.max_dex_bonus.totalValue`:
+The `ArmorClass.svelte` panel reads `combatStats.max_dexterity_bonus.totalValue`:
 - If `totalValue ≥ DEX_modifier`: full DEX applies (cap not reached).
 - If `totalValue < DEX_modifier`: cap the contribution at `totalValue`.
 - If `totalValue === 99`: display "No restriction" or omit the cap.
 
-The `ModifierBreakdownModal` for `combatStats.max_dex_bonus` shows both cap sources (armor/conditions) and additive bonuses (mithral) separately for player transparency.
+The `ModifierBreakdownModal` for `combatStats.max_dexterity_bonus` shows both cap sources (armor/conditions) and additive bonuses (mithral) separately for player transparency.
 
 > **AI Implementation Note (Phase 10.2):** When displaying AC, compute:
-> `effectiveDexToAC = Math.min(dexDerivedModifier, combatStats.max_dex_bonus.totalValue)`
+> `effectiveDexToAC = Math.min(dexDerivedModifier, combatStats.max_dexterity_bonus.totalValue)`
 > Use this capped value (not raw `dexDerivedModifier`) when summing AC components. Always guard against `totalValue === 99` as the "no cap" sentinel.
 
 ---
@@ -972,7 +972,7 @@ export interface ItemFeature extends Feature {
 
     armorData?: {
         armorBonus: number;
-        maxDex: number;              // Display-only shadow — engine uses combatStats.max_dex_bonus
+        maxDex: number;              // Display-only shadow — engine uses combatStats.max_dexterity_bonus
         armorCheckPenalty: number;
         arcaneSpellFailure: number;  // Display-only shadow — engine uses combatStats.arcane_spell_failure
     };
@@ -1383,9 +1383,9 @@ export interface Character {
     xp: number;
     hitDieResults: Record<number, number>; // { 1: 10, 2: 6, 3: 8, ... } per character level
 
-    attributes: Record<ID, StatisticPipeline>; // stat_str, stat_dex, stat_con, stat_int, stat_wis, stat_cha, stat_size, stat_caster_level, stat_manifester_level, ...
-    combatStats: Record<ID, StatisticPipeline>; // combatStats.ac_normal, combatStats.bab, combatStats.speed_land, ...
-    saves: Record<ID, StatisticPipeline>;       // saves.fort, saves.ref, saves.will
+    attributes: Record<ID, StatisticPipeline>; // stat_strength, stat_dexterity, stat_constitution, stat_intelligence, stat_wisdom, stat_charisma, stat_size, stat_caster_level, stat_manifester_level, ...
+    combatStats: Record<ID, StatisticPipeline>; // combatStats.ac_normal, combatStats.base_attack_bonus, combatStats.speed_land, ...
+    saves: Record<ID, StatisticPipeline>;       // saves.fortitude, saves.reflex, saves.will
     skills: Record<ID, SkillPipeline>;          // skill_climb, skill_tumble, ...
     resources: Record<ID, ResourcePool>;        // resources.hp, resources.psi_points, ...
     minimumSkillRanks?: Record<ID, number>;     // Per-skill rank floors for committed levels
@@ -1539,7 +1539,7 @@ Tomes and Manuals consumed via `consumeItem()` produce **non-ephemeral** instanc
 ]
 ```
 
-The source item is gone. The ephemeral modifier (+4 STR enhancement) flows into `phase2_attributes.stat_str.activeModifiers`. Clicking "Expire" calls `expireEffect("eph_item_potion_bulls_strength_1711123456789")`.
+The source item is gone. The ephemeral modifier (+4 STR enhancement) flows into `phase2_attributes.stat_strength.activeModifiers`. Clicking "Expire" calls `expireEffect("eph_item_potion_bulls_strength_1711123456789")`.
 
 > **Content Authoring Note:** Only `ItemFeature` definitions with `consumable.isConsumable: true` generate ephemeral instances. Rings, armour, weapons, and charged items (which use `resourcePoolTemplates`) are NOT consumable — they persist after depletion.
 
@@ -1658,9 +1658,9 @@ A Gestalt character advances in **two classes simultaneously** at each level. BA
 
 | Pipeline | Affected? | Notes |
 |---|:---:|---|
-| `combatStats.bab` | ✅ | Max per level |
-| `saves.fort` | ✅ | Max per level |
-| `saves.ref` | ✅ | Max per level |
+| `combatStats.base_attack_bonus` | ✅ | Max per level |
+| `saves.fortitude` | ✅ | Max per level |
+| `saves.reflex` | ✅ | Max per level |
 | `saves.will` | ✅ | Max per level |
 | `combatStats.max_hp` | ❌ | HP stacks: both classes' hit dice contribute fully |
 | All non-`"base"` types | ❌ | Enhancement/racial/luck etc. always use standard stacking |
@@ -1727,7 +1727,7 @@ Two resource pools replace standard HP, creating cinematic combat: hard to kill 
 {
   "id": "resources.wound_points",
   "label": { "en": "Wound Points" },
-  "maxPipelineId": "attributes.stat_con.totalValue",
+  "maxPipelineId": "attributes.stat_constitution.totalValue",
   "currentValue": 0, "temporaryValue": 0,
   "resetCondition": "never"
 }
@@ -1766,10 +1766,10 @@ flowchart TD
     end
 
     subgraph "Phase 3 — Combat Statistics"
-        P3BAB[combatStats.bab — gestalt-aware]
-        P3SAVES[saves.fort/ref/will — gestalt-aware]
+        P3BAB[combatStats.base_attack_bonus — gestalt-aware]
+        P3SAVES[saves.fortitude/reflex/will — gestalt-aware]
         P3HP[combatStats.max_hp = sum hitDieResults + CON_mod x level]
-        P3AC[combatStats.ac_normal/touch/flat_footed<br/>init / grapple / speed / fortification / ASF / max_dex_bonus]
+        P3AC[combatStats.ac_normal/touch/flat_footed<br/>init / grapple / speed / fortification / ASF / max_dexterity_bonus]
         P3CTX[phase3_context — context with combat stats]
     end
 
@@ -1801,7 +1801,7 @@ flowchart TD
 4. **Phase 3 (Combat Statistics):**
    A `$derived` computes AC, Initiative, BAB (sum of contributions from all classes via `levelProgression`), Saves, and **Max HP**. It uses the frozen results from Phase 2 (e.g.: Constitution modifier for HP). Character Level is derived here as `Object.values(character.classLevels).reduce((a, b) => a + b, 0)`.
 
-   **HP Calculation:** Max HP = sum of `hitDieResults[level]` (stored in the character's resources) + (`stat_con.derivedModifier` × character level). Hit die values per level are stored in the character state (rolled once during level-up or set to a fixed value based on campaign rules). When CON changes (e.g., from a Belt of Constitution), the HP maximum automatically recalculates because it reads the frozen CON modifier from Phase 2.
+   **HP Calculation:** Max HP = sum of `hitDieResults[level]` (stored in the character's resources) + (`stat_constitution.derivedModifier` × character level). Hit die values per level are stored in the character state (rolled once during level-up or set to a fixed value based on campaign rules). When CON changes (e.g., from a Belt of Constitution), the HP maximum automatically recalculates because it reads the frozen CON modifier from Phase 2.
 
    **Phase 3.7 — Gestalt Mode:** When `settings.variantRules.gestalt === true`, Phase 3 replaces the standard "sum all base modifiers" path for BAB and saves with `computeGestaltBase()` (max per level across classes, then sum). See section 8.1 and `src/lib/utils/gestaltRules.ts`.
 
@@ -1823,7 +1823,7 @@ The sequential DAG naturally prevents most cyclic dependencies since each phase 
 
 **Protection strategy:**
 - The engine maintains a resolution depth counter.
-- If a pipeline is re-evaluated more than **3 times** in a single resolution cycle, the engine cuts the evaluation, logs a warning ("Circular dependency detected on pipeline: stat_con"), and preserves the last stable value.
+- If a pipeline is re-evaluated more than **3 times** in a single resolution cycle, the engine cuts the evaluation, logs a warning ("Circular dependency detected on pipeline: stat_constitution"), and preserves the last stable value.
 - This mechanism is tested in Phase 17.5.
 
 ### 9.2. Phase 0 Detail — Character Level and ECL Derivation
@@ -1874,7 +1874,7 @@ For each modifier in a feature's `grantedModifiers` (called from `#collectModifi
 1. **Per-instance context:** Merges `instance.selections` so `@selection.<choiceId>` resolves correctly per FeatureChoice.
 2. **Condition check:** If `conditionNode` present and fails → skip this modifier entirely.
 3. **Normalise `targetId`:** Strips `"attributes."` / `"skills."` prefix; `"resources.X.maxValue"` → `"combatStats.X_max"`.
-4. **`saves.all` fan-out:** If normalised target is `"saves.all"`, creates three copies targeting `saves.fort`, `saves.ref`, `saves.will` with suffixed IDs (`${mod.id}_fort`, `${mod.id}_ref`, `${mod.id}_will`).
+4. **`saves.all` fan-out:** If normalised target is `"saves.all"`, creates three copies targeting `saves.fortitude`, `saves.reflex`, `saves.will` with suffixed IDs (`${mod.id}_fort`, `${mod.id}_ref`, `${mod.id}_will`).
 5. **Formula resolution:** String `value` fields are resolved to numbers via `evaluateFormula()` before being pushed.
 6. **All modifiers** (including `attacker.*`) go into the same flat result. The `attacker.*` separation is an APPLICATION concern, not a Phase 0 concern.
 
@@ -2030,7 +2030,7 @@ Max HP = sum(hitDieResults[1..characterLevel]) + (CON_derivedModifier × charact
 - Level 1: max die value (e.g. 10 for d10)
 - Levels 2+: `floor(maxDie / 2) + 1` (e.g. 6 for d10)
 
-HP recalculates automatically when CON changes (reactive DAG dependency on `phase2_attributes['stat_con'].derivedModifier`). The Phase 3 HP computation reads `hitDieResults` directly from `character`, not from `basePipeline.baseValue` — ensuring reactive updates when dice are recorded.
+HP recalculates automatically when CON changes (reactive DAG dependency on `phase2_attributes['stat_constitution'].derivedModifier`). The Phase 3 HP computation reads `hitDieResults` directly from `character`, not from `basePipeline.baseValue` — ensuring reactive updates when dice are recorded.
 
 ### 9.9. Context Snapshot — Progressive Phase Builds
 
@@ -2064,8 +2064,8 @@ The `CharacterContext` is a read-only snapshot passed to the Math Parser and Log
 interface CharacterContext {
     attributes:    Record<string, { baseValue: number; totalValue: number; derivedModifier: number }>;
     skills:        Record<string, { ranks: number; totalValue: number }>;
-    combatStats:   Record<string, { totalValue: number }>; // Design intent: bare keys "bab", "ac_normal", etc. See note below.
-    saves:         Record<string, { totalValue: number }>; // Design intent: bare keys "fort", "ref", "will". See note below.
+    combatStats:   Record<string, { totalValue: number }>; // Design intent: bare keys "base_attack_bonus", "ac_normal", etc. See note below.
+    saves:         Record<string, { totalValue: number }>; // Design intent: bare keys "fortitude", "reflex", "will". See note below.
     characterLevel: number;
     eclForXp:       number;
     classLevels:    Record<string, number>;
@@ -2078,12 +2078,12 @@ interface CharacterContext {
 }
 ```
 
-> **Key convention — combatStats and saves paths:** `CharacterContext.combatStats` uses **bare keys** (without namespace prefix — `"bab"`, `"ac_normal"`, `"speed_land"`, etc.). `CharacterContext.saves` uses bare keys (`"fort"`, `"ref"`, `"will"`). The `GameEngine` context builders (`phase0_context`, `phase3_context`) strip the prefix when building the snapshot:
+> **Key convention — combatStats and saves paths:** `CharacterContext.combatStats` uses **bare keys** (without namespace prefix — `"base_attack_bonus"`, `"ac_normal"`, `"speed_land"`, etc.). `CharacterContext.saves` uses bare keys (`"fortitude"`, `"reflex"`, `"will"`). The `GameEngine` context builders (`phase0_context`, `phase3_context`) strip the prefix when building the snapshot:
 > ```typescript
 > const flatKey = id.startsWith('combatStats.') ? id.slice('combatStats.'.length) : id;
 > combatStats[flatKey] = { totalValue: stat.totalValue };
 > ```
-> This is why `@combatStats.bab.totalValue` (path splits to `["combatStats","bab","totalValue"]`) correctly resolves to `context.combatStats["bab"].totalValue`.
+> This is why `@combatStats.base_attack_bonus.totalValue` (path splits to `["combatStats","base_attack_bonus","totalValue"]`) correctly resolves to `context.combatStats["base_attack_bonus"].totalValue`.
 
 ---
 
@@ -2118,9 +2118,9 @@ Filters `character.resources` for keys starting with `"resources.spell_slots_"` 
 #### Saving Throw Config (`savingThrowConfig`)
 A `readonly` constant array mapping save pipeline IDs to key ability IDs and localized abbreviations:
 ```typescript
-{ pipelineId: 'saves.fort', keyAbilityId: 'stat_con', keyAbilityAbbr: { en: 'CON', fr: 'CON' } }
-{ pipelineId: 'saves.ref',  keyAbilityId: 'stat_dex', keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } }
-{ pipelineId: 'saves.will', keyAbilityId: 'stat_wis', keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } }
+{ pipelineId: 'saves.fortitude', keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'CON', fr: 'CON' } }
+{ pipelineId: 'saves.reflex',  keyAbilityId: 'stat_dexterity', keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } }
+{ pipelineId: 'saves.will', keyAbilityId: 'stat_wisdom', keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } }
 ```
 
 #### Spell Save DC (`getSpellSaveDC(spellLevel, keyAbilityId?)`)
@@ -2129,10 +2129,10 @@ Formula: `10 + spellLevel + castingAbilityMod`
 
 Casting ability resolution (in priority order):
 1. If `keyAbilityId` explicitly provided: use `phase2_attributes[keyAbilityId].derivedModifier` directly.
-2. Scan `phase0_activeTags` for first tag starting with `"caster_ability_"`, extract the stat ID (e.g., `"caster_ability_stat_int"` → `"stat_int"`).
+2. Scan `phase0_activeTags` for first tag starting with `"caster_ability_"`, extract the stat ID (e.g., `"caster_ability_stat_intelligence"` → `"stat_intelligence"`).
 3. Fallback: `max(WIS.derivedModifier, INT.derivedModifier, CHA.derivedModifier)`.
 
-Content convention: spellcaster class Features should include a tag like `"caster_ability_stat_int"` (Wizard), `"caster_ability_stat_wis"` (Cleric), or `"caster_ability_stat_cha"` (Sorcerer) to enable precise DC computation.
+Content convention: spellcaster class Features should include a tag like `"caster_ability_stat_intelligence"` (Wizard), `"caster_ability_stat_wisdom"` (Cleric), or `"caster_ability_stat_charisma"` (Sorcerer) to enable precise DC computation.
 
 #### Weapon Attack/Damage Helpers
 
@@ -2184,7 +2184,7 @@ Cleave requires STR 13+ AND Power Attack:
 "prerequisitesNode": {
   "logic": "AND",
   "nodes": [
-    { "logic": "CONDITION", "targetPath": "@attributes.stat_str.totalValue",
+    { "logic": "CONDITION", "targetPath": "@attributes.stat_strength.totalValue",
       "operator": ">=", "value": 13, "errorMessage": "Requires Strength 13+" },
     { "logic": "CONDITION", "targetPath": "@activeTags",
       "operator": "has_tag", "value": "feat_power_attack",
@@ -2218,7 +2218,7 @@ Cleave requires STR 13+ AND Power Attack:
 ### Example C: Formula Resolution
 
 - `"floor(@classLevels.class_soulknife / 4)d8"` with Soulknife 9 → `"2d8"`
-- `"1d12 + floor(@attributes.stat_str.derivedModifier * 1.5)"` with STR mod 3 → `"1d12 + 4"`
+- `"1d12 + floor(@attributes.stat_strength.derivedModifier * 1.5)"` with STR mod 3 → `"1d12 + 4"`
 - `"{@combatStats.speed_land.totalValue|distance}"` in description → `"9 m"` (FR) or `"30 ft."` (EN)
 
 ### Example D: Stacking Rules
@@ -2257,7 +2257,7 @@ Stage 2 (roll time): if raging, modifier routes to `situationalModifiers` and ap
   "id": "monk_wis_to_ac_normal",
   "sourceId": "class_feature_monk_ac_bonus",
   "targetId": "combatStats.ac_normal",
-  "value": "@attributes.stat_wis.derivedModifier",
+  "value": "@attributes.stat_wisdom.derivedModifier",
   "type": "untyped",
   "conditionNode": {
     "logic": "AND",
@@ -2271,9 +2271,9 @@ Stage 2 (roll time): if raging, modifier routes to `situationalModifiers` and ap
 }
 ```
 
-The same modifier structure applies to `combatStats.ac_touch`. `combatStats.ac_flat_footed` does NOT receive this bonus (you lose WIS to AC when flat-footed). The `value` is a formula string; the Math Parser resolves it at sheet-computation time from `context.attributes["stat_wis"].derivedModifier`.
+The same modifier structure applies to `combatStats.ac_touch`. `combatStats.ac_flat_footed` does NOT receive this bonus (you lose WIS to AC when flat-footed). The `value` is a formula string; the Math Parser resolves it at sheet-computation time from `context.attributes["stat_wisdom"].derivedModifier`.
 
-See **Annex A, section A.1.3** for the complete Monk AC Bonus Feature with both the `ac_normal` and `ac_touch` modifiers, the four-condition `conditionNode`, and the correct use of `"@attributes.stat_wis.derivedModifier"` as value.
+See **Annex A, section A.1.3** for the complete Monk AC Bonus Feature with both the `ac_normal` and `ac_touch` modifiers, the four-condition `conditionNode`, and the correct use of `"@attributes.stat_wisdom.derivedModifier"` as value.
 
 ### Example G: Multiclass BAB and Save Resolution
 
@@ -2961,7 +2961,7 @@ The GM's JSON text area accepts a **JSON array** containing a mix of:
       "id": "gm_curse_str",
       "sourceId": "gm_custom_curse_weakness",
       "sourceName": { "en": "Mysterious Weakness" },
-      "targetId": "attributes.stat_str",
+      "targetId": "attributes.stat_strength",
       "value": -4, "type": "untyped"
     }],
     "grantedFeatures": []
@@ -3259,7 +3259,7 @@ The "Advanced / Raw JSON" panel in each `EntityForm` shows a live JSON represent
 
 ### 21.8. Formula Builder Input (`FormulaBuilderInput`)
 
-Many fields in the editor accept either a **plain number** or a **formula string** (e.g., `@attributes.stat_str.derivedModifier`, `"1d6+@classLevels.class_fighter"`, `"2"`). The `FormulaBuilderInput` component makes the `@`-path system approachable for GMs who do not know the internal path names.
+Many fields in the editor accept either a **plain number** or a **formula string** (e.g., `@attributes.stat_strength.derivedModifier`, `"1d6+@classLevels.class_fighter"`, `"2"`). The `FormulaBuilderInput` component makes the `@`-path system approachable for GMs who do not know the internal path names.
 
 #### Design
 
@@ -3267,17 +3267,17 @@ A compound component wrapping a standard text input with a collapsible **Source 
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  Value  [ @attributes.stat_str.derivedModifier + 2 ]  │
+│  Value  [ @attributes.stat_strength.derivedModifier + 2 ]  │
 │         ──────────────────────────────────────────── │
 │  [▼ Formula Assistant]                                │
 │  ┌──────────────────────┐                             │
 │  │ Ability Scores       │                             │
-│  │  @attributes.stat_str.totalValue                  │
-│  │  @attributes.stat_str.derivedModifier  ← click    │
-│  │  @attributes.stat_dex.totalValue       inserts at │
+│  │  @attributes.stat_strength.totalValue                  │
+│  │  @attributes.stat_strength.derivedModifier  ← click    │
+│  │  @attributes.stat_dexterity.totalValue       inserts at │
 │  │  ...                                   cursor     │
 │  │ Combat Stats         │                             │
-│  │  @combatStats.bab.totalValue                      │
+│  │  @combatStats.base_attack_bonus.totalValue                      │
 │  │  @combatStats.ac_normal.totalValue                │
 │  │  ...                                              │
 │  │ Class Levels         │                             │

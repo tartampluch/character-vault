@@ -320,7 +320,7 @@
           "en": "Mithral",
           "fr": "Mithral"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 2,
         "type": "untyped"
       },

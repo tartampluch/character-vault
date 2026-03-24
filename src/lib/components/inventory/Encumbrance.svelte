@@ -47,7 +47,7 @@
 
   // ── Carrying capacity (from config table) ─────────────────────────────────
   const carryingCapacity = $derived.by(() => {
-    const strTotal = engine.phase2_attributes['stat_str']?.totalValue ?? 10;
+    const strTotal = engine.phase2_attributes['stat_strength']?.totalValue ?? 10;
     const table    = dataLoader.getConfigTable('config_carrying_capacity');
     if (table?.data) {
       const rows = table.data as Array<Record<string, unknown>>;

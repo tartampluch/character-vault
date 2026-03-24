@@ -105,7 +105,7 @@ describe('Inherent Bonus — Type Soundness', () => {
       id: 'tome_str_2',
       sourceId: 'item_manual_of_gainful_exercise_2',
       sourceName: { en: 'Manual of Gainful Exercise +2', fr: 'Manuel d\'exercice profitable +2' },
-      targetId: 'attributes.stat_str',
+      targetId: 'attributes.stat_strength',
       value: 2,
       type: 'inherent',
     };
@@ -117,12 +117,12 @@ describe('Inherent Bonus — Type Soundness', () => {
       id: 'tome_con_4',
       sourceId: 'item_manual_of_bodily_health_4',
       sourceName: { en: 'Manual of Bodily Health +4', fr: 'Manuel de la santé corporelle +4' },
-      targetId: 'attributes.stat_con',
+      targetId: 'attributes.stat_constitution',
       value: 4,
       type: 'inherent',
     };
     expect(mod.value).toBe(4);
-    expect(mod.targetId).toBe('attributes.stat_con');
+    expect(mod.targetId).toBe('attributes.stat_constitution');
   });
 });
 
@@ -130,7 +130,7 @@ describe('Inherent Bonus — Stacking Rules (Within Inherent)', () => {
 
   it('3. Single inherent +2 STR → totalBonus = 2', () => {
     const result = applyStackingRules([
-      inh('tome_str_2', 'attributes.stat_str', 2),
+      inh('tome_str_2', 'attributes.stat_strength', 2),
     ], 10);
     expect(result.totalBonus).toBe(2);
     expect(result.appliedModifiers).toHaveLength(1);
@@ -142,8 +142,8 @@ describe('Inherent Bonus — Stacking Rules (Within Inherent)', () => {
     // higher of the two inherent bonuses applies. applyStackingRules() correctly
     // takes the highest for non-stackable types.
     const result = applyStackingRules([
-      inh('tome_str_2', 'attributes.stat_str', 2),
-      inh('tome_str_4', 'attributes.stat_str', 4),
+      inh('tome_str_2', 'attributes.stat_strength', 2),
+      inh('tome_str_4', 'attributes.stat_strength', 4),
     ], 10);
     expect(result.totalBonus).toBe(4);  // +4 wins over +2
     expect(result.appliedModifiers).toHaveLength(1);
@@ -154,8 +154,8 @@ describe('Inherent Bonus — Stacking Rules (Within Inherent)', () => {
 
   it('5. Two inherent bonuses (+2 and +2) → only one +2 applies', () => {
     const result = applyStackingRules([
-      inh('tome_str_2a', 'attributes.stat_str', 2),
-      inh('tome_str_2b', 'attributes.stat_str', 2),
+      inh('tome_str_2a', 'attributes.stat_strength', 2),
+      inh('tome_str_2b', 'attributes.stat_strength', 2),
     ], 10);
     expect(result.totalBonus).toBe(2);  // Only one +2 applies
     expect(result.appliedModifiers).toHaveLength(1);
@@ -165,16 +165,16 @@ describe('Inherent Bonus — Stacking Rules (Within Inherent)', () => {
   it('6. Inherent +5 (SRD maximum) → totalBonus = 5', () => {
     // The SRD maximum is +5; this test verifies the value is accepted and applied.
     const result = applyStackingRules([
-      inh('tome_str_5', 'attributes.stat_str', 5),
+      inh('tome_str_5', 'attributes.stat_strength', 5),
     ], 10);
     expect(result.totalBonus).toBe(5);
   });
 
   it('7. Three inherent bonuses (+1, +3, +5) → only +5 applies, others suppressed', () => {
     const result = applyStackingRules([
-      inh('tome_str_1', 'attributes.stat_str', 1),
-      inh('tome_str_3', 'attributes.stat_str', 3),
-      inh('tome_str_5', 'attributes.stat_str', 5),
+      inh('tome_str_1', 'attributes.stat_strength', 1),
+      inh('tome_str_3', 'attributes.stat_strength', 3),
+      inh('tome_str_5', 'attributes.stat_strength', 5),
     ], 10);
     expect(result.totalBonus).toBe(5);
     expect(result.appliedModifiers).toHaveLength(1);
@@ -192,8 +192,8 @@ describe('Inherent Bonus — Stacking Rules (With Other Types)', () => {
     // A character with both a Manual of Gainful Exercise (+4 STR, inherent) and a
     // Belt of Giant Strength (+4 STR, enhancement) benefits from BOTH.
     const result = applyStackingRules([
-      inh('tome_str_4', 'attributes.stat_str', 4),
-      enh('belt_str_4', 'attributes.stat_str', 4),
+      inh('tome_str_4', 'attributes.stat_strength', 4),
+      enh('belt_str_4', 'attributes.stat_strength', 4),
     ], 10);
     expect(result.totalBonus).toBe(8);  // 4 (inherent) + 4 (enhancement) = 8
     expect(result.appliedModifiers).toHaveLength(2);
@@ -202,8 +202,8 @@ describe('Inherent Bonus — Stacking Rules (With Other Types)', () => {
 
   it('9. Inherent +2 + enhancement +6 → totalBonus = 8', () => {
     const result = applyStackingRules([
-      inh('tome_str_2', 'attributes.stat_str', 2),
-      enh('belt_str_6', 'attributes.stat_str', 6),
+      inh('tome_str_2', 'attributes.stat_strength', 2),
+      enh('belt_str_6', 'attributes.stat_strength', 6),
     ], 10);
     expect(result.totalBonus).toBe(8);
     expect(result.appliedModifiers).toHaveLength(2);
@@ -211,8 +211,8 @@ describe('Inherent Bonus — Stacking Rules (With Other Types)', () => {
 
   it('10. Inherent +4 + luck +2 → totalBonus = 6 (both apply)', () => {
     const result = applyStackingRules([
-      inh('tome_str_4', 'attributes.stat_str', 4),
-      lck('stone_luck', 'attributes.stat_str', 2),
+      inh('tome_str_4', 'attributes.stat_strength', 4),
+      lck('stone_luck', 'attributes.stat_strength', 2),
     ], 10);
     expect(result.totalBonus).toBe(6);
     expect(result.appliedModifiers).toHaveLength(2);
@@ -220,8 +220,8 @@ describe('Inherent Bonus — Stacking Rules (With Other Types)', () => {
 
   it('11. Inherent +2 + morale +2 → totalBonus = 4 (both apply)', () => {
     const result = applyStackingRules([
-      inh('tome_str_2', 'attributes.stat_str', 2),
-      mor('rage_str', 'attributes.stat_str', 2),
+      inh('tome_str_2', 'attributes.stat_strength', 2),
+      mor('rage_str', 'attributes.stat_strength', 2),
     ], 10);
     expect(result.totalBonus).toBe(4);
     expect(result.appliedModifiers).toHaveLength(2);
@@ -231,9 +231,9 @@ describe('Inherent Bonus — Stacking Rules (With Other Types)', () => {
     // Reading a weaker tome after a stronger one: only the stronger inherent applies,
     // but the enhancement bonus from equipment still stacks fully.
     const result = applyStackingRules([
-      inh('tome_str_4', 'attributes.stat_str', 4),  // from first (stronger) tome
-      inh('tome_str_2', 'attributes.stat_str', 2),  // from second (weaker) tome — suppressed
-      enh('belt_str_4', 'attributes.stat_str', 4),  // Belt of Giant Strength
+      inh('tome_str_4', 'attributes.stat_strength', 4),  // from first (stronger) tome
+      inh('tome_str_2', 'attributes.stat_strength', 2),  // from second (weaker) tome — suppressed
+      enh('belt_str_4', 'attributes.stat_strength', 4),  // Belt of Giant Strength
     ], 10);
     expect(result.totalBonus).toBe(8);              // +4 inherent + +4 enhancement
     expect(result.appliedModifiers).toHaveLength(2);
@@ -246,8 +246,8 @@ describe('Inherent Bonus — Suppressed List Accuracy', () => {
 
   it('13. Weaker inherent is in suppressedModifiers when a stronger one exists', () => {
     const result = applyStackingRules([
-      inh('tome_str_2', 'attributes.stat_str', 2),
-      inh('tome_str_4', 'attributes.stat_str', 4),
+      inh('tome_str_2', 'attributes.stat_strength', 2),
+      inh('tome_str_4', 'attributes.stat_strength', 4),
     ], 10);
     expect(result.suppressedModifiers).toHaveLength(1);
     expect(result.suppressedModifiers[0].id).toBe('tome_str_2');
@@ -256,7 +256,7 @@ describe('Inherent Bonus — Suppressed List Accuracy', () => {
 
   it('14. No modifiers suppressed when only one inherent bonus is present', () => {
     const result = applyStackingRules([
-      inh('tome_str_3', 'attributes.stat_str', 3),
+      inh('tome_str_3', 'attributes.stat_strength', 3),
     ], 10);
     expect(result.suppressedModifiers).toHaveLength(0);
     expect(result.appliedModifiers).toHaveLength(1);

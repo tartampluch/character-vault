@@ -31,7 +31,7 @@
     if (!isActive || !feature.weaponData) return null;
     if (!feature.tags.some(t => t === 'weapon' || t === 'ranged')) return null;
     const enhancement = feature.grantedModifiers
-      .filter(m => m.type === 'enhancement' && m.targetId.includes('bab'))
+      .filter(m => m.type === 'enhancement' && m.targetId.includes('base_attack_bonus'))
       .reduce((sum, m) => sum + (typeof m.value === 'number' ? m.value : 0), 0);
     const isRanged    = feature.tags.includes('ranged') || (feature.weaponData.rangeIncrementFt ?? 0) > 0;
     const isTwoHanded = feature.weaponData.wieldCategory === 'two_handed';
@@ -76,7 +76,7 @@
       label: { en: 'Weapon Roll' },
       baseValue: 0,
       activeModifiers: [],
-      situationalModifiers: engine.phase3_combatStats['combatStats.bab']?.situationalModifiers ?? [],
+      situationalModifiers: engine.phase3_combatStats['combatStats.base_attack_bonus']?.situationalModifiers ?? [],
       totalBonus: isDamage ? damageBonus : attackBonus,
       totalValue: isDamage ? damageBonus : attackBonus,
       derivedModifier: 0,

@@ -242,9 +242,9 @@ export function computeGestaltBase(
  * All other pipelines (HP, resistances, AC, etc.) use standard additive stacking.
  *
  * AFFECTED pipelines:
- *   - `"combatStats.bab"`  — Base Attack Bonus
- *   - `"saves.fort"`       — Fortitude save base
- *   - `"saves.ref"`        — Reflex save base
+ *   - `"combatStats.base_attack_bonus"`  — Base Attack Bonus
+ *   - `"saves.fortitude"`       — Fortitude save base
+ *   - `"saves.reflex"`        — Reflex save base
  *   - `"saves.will"`       — Will save base
  *
  * NOT AFFECTED:
@@ -257,9 +257,9 @@ export function computeGestaltBase(
  * @see ARCHITECTURE.md section 8.2 — what is and isn't affected by Gestalt
  */
 export const GESTALT_AFFECTED_PIPELINES = new Set([
-  'combatStats.bab',
-  'saves.fort',
-  'saves.ref',
+  'combatStats.base_attack_bonus',
+  'saves.fortitude',
+  'saves.reflex',
   'saves.will',
 ]);
 

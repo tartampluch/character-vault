@@ -1466,7 +1466,7 @@
           "en": "Bear's Endurance",
           "fr": "Endurance de l'ours"
         },
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 4,
         "type": "enhancement"
       }
@@ -2100,7 +2100,7 @@
           "en": "Bull's Strength",
           "fr": "Force du taureau"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 4,
         "type": "enhancement"
       }
@@ -2409,7 +2409,7 @@
           "en": "Cat's Grace",
           "fr": "Grâce féline"
         },
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 4,
         "type": "enhancement"
       }
@@ -6888,7 +6888,7 @@
           "en": "Divine Power",
           "fr": "Puissance divine"
         },
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 6,
         "type": "enhancement"
       }
@@ -7157,7 +7157,7 @@
           "en": "Eagle's Splendor",
           "fr": "Splendeur de l'aigle"
         },
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": 4,
         "type": "enhancement"
       }
@@ -9111,7 +9111,7 @@
           "en": "Fox's Cunning",
           "fr": "Ruse du renard"
         },
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": 4,
         "type": "enhancement"
       }
@@ -15522,7 +15522,7 @@
           "en": "Owl's Wisdom",
           "fr": "Sagesse de la chouette"
         },
-        "targetId": "attributes.stat_wis",
+        "targetId": "attributes.stat_wisdom",
         "value": 4,
         "type": "enhancement"
       }

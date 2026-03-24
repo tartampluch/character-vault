@@ -17,8 +17,8 @@
   import { IconTabCombat, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
   const CORE_STATS = $derived([
-    { id: 'combatStats.bab',     shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
-    { id: 'combatStats.init',    shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
+    { id: 'combatStats.base_attack_bonus',     shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
+    { id: 'combatStats.initiative',    shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
     { id: 'combatStats.grapple', shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
   ] as const);
 

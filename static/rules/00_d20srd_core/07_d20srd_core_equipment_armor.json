@@ -53,7 +53,7 @@
           "en": "Padded Armor",
           "fr": "Armure matelassée"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 8,
         "type": "max_dex_cap"
       },
@@ -131,7 +131,7 @@
           "en": "Leather Armor",
           "fr": "Armure de cuir"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 6,
         "type": "max_dex_cap"
       },
@@ -209,7 +209,7 @@
           "en": "Studded Leather Armor",
           "fr": "Armure de cuir clouté"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 5,
         "type": "max_dex_cap"
       },
@@ -288,7 +288,7 @@
           "en": "Chain Shirt",
           "fr": "Chemise de mailles"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 4,
         "type": "max_dex_cap"
       },
@@ -366,7 +366,7 @@
           "en": "Hide Armor",
           "fr": "Armure de peau"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 4,
         "type": "max_dex_cap"
       },
@@ -445,7 +445,7 @@
           "en": "Scale Mail",
           "fr": "Cotte d'écailles"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 3,
         "type": "max_dex_cap"
       },
@@ -524,7 +524,7 @@
           "en": "Chainmail",
           "fr": "Cotte de mailles"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 2,
         "type": "max_dex_cap"
       },
@@ -603,7 +603,7 @@
           "en": "Breastplate",
           "fr": "Plastron"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 3,
         "type": "max_dex_cap"
       },
@@ -682,7 +682,7 @@
           "en": "Splint Mail",
           "fr": "Cotte à lamelles"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 0,
         "type": "max_dex_cap"
       },
@@ -761,7 +761,7 @@
           "en": "Banded Mail",
           "fr": "Cotte à bandes"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 1,
         "type": "max_dex_cap"
       },
@@ -840,7 +840,7 @@
           "en": "Half-Plate",
           "fr": "Demi-harnois"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 0,
         "type": "max_dex_cap"
       },
@@ -919,7 +919,7 @@
           "en": "Full Plate",
           "fr": "Harnois"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 1,
         "type": "max_dex_cap"
       },
@@ -1394,7 +1394,7 @@
           "en": "Tower Shield",
           "fr": "Pavois"
         },
-        "targetId": "combatStats.max_dex_bonus",
+        "targetId": "combatStats.max_dexterity_bonus",
         "value": 2,
         "type": "max_dex_cap"
       },

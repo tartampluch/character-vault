@@ -283,9 +283,9 @@ export interface LevelProgressionEntry {
    * up to and including the character's current level in this class.
    *
    * Typical contents:
-   *   - BAB increment (type: "base", targetId: "combatStats.bab", value: 1 or 0)
-   *   - Fort save increment (type: "base", targetId: "saves.fort", value: 1 or 0)
-   *   - Ref save increment (type: "base", targetId: "saves.ref", value: 1 or 0)
+   *   - BAB increment (type: "base", targetId: "combatStats.base_attack_bonus", value: 1 or 0)
+   *   - Fort save increment (type: "base", targetId: "saves.fortitude", value: 1 or 0)
+   *   - Ref save increment (type: "base", targetId: "saves.reflex", value: 1 or 0)
    *   - Will save increment (type: "base", targetId: "saves.will", value: 1 or 0)
    *   - HP die (type: "base", targetId: "stat_max_hp", value: "d10" or formula)
    */
@@ -643,8 +643,8 @@ export interface Feature {
    * the Point Buy modal (Phase 9.4) color-codes stats as green (recommended),
    * orange (useful), or red (dump stat) based on this field.
    *
-   * Example for a Fighter: ["stat_str", "stat_con", "stat_dex"]
-   * Example for a Wizard:  ["stat_int", "stat_dex", "stat_con"]
+   * Example for a Fighter: ["stat_strength", "stat_constitution", "stat_dexterity"]
+   * Example for a Wizard:  ["stat_intelligence", "stat_dexterity", "stat_constitution"]
    *
    * This field has ZERO mechanical impact; it is purely cosmetic/UX guidance.
    */
@@ -960,7 +960,7 @@ export interface Feature {
  *   Items with `equipmentSlot: "two_hands"` require BOTH main_hand AND off_hand slots.
  *   The GameEngine (Phase 3) enforces this during slot validation (Phase 13.3).
  *   Two-handed weapons also typically allow 1.5× STR modifier to damage — this is
- *   handled via a modifier with `value: "floor(@attributes.stat_str.derivedModifier * 1.5)"`.
+ *   handled via a modifier with `value: "floor(@attributes.stat_strength.derivedModifier * 1.5)"`.
  *
  * MAGIC ITEMS:
  *   A magic sword is just an ItemFeature with weapon data AND a `grantedModifiers`
@@ -1798,7 +1798,7 @@ export interface ItemFeature extends Feature {
      /**
       * Base damage dice expression (PRIMARY end for double weapons).
       * Examples: "1d4", "1d8", "2d6"
-      * Actual damage formula appended by the engine: "1d8 + @attributes.stat_str.derivedModifier"
+      * Actual damage formula appended by the engine: "1d8 + @attributes.stat_strength.derivedModifier"
       */
      damageDice: string;
 

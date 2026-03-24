@@ -44,12 +44,12 @@ import type { CharacterContext } from '$lib/utils/mathParser';
  */
 const mockContext: CharacterContext = {
   attributes: {
-    stat_str: { baseValue: 18, totalValue: 18, derivedModifier: 4 },
-    stat_dex: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-    stat_con: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
-    stat_int: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
-    stat_wis: { baseValue: 8,  totalValue: 8,  derivedModifier: -1 },
-    stat_cha: { baseValue: 6,  totalValue: 6,  derivedModifier: -2 },
+    stat_strength: { baseValue: 18, totalValue: 18, derivedModifier: 4 },
+    stat_dexterity: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_constitution: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+    stat_intelligence: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_wisdom: { baseValue: 8,  totalValue: 8,  derivedModifier: -1 },
+    stat_charisma: { baseValue: 6,  totalValue: 6,  derivedModifier: -2 },
     speed_land: { baseValue: 30, totalValue: 40, derivedModifier: 0 },
     speed_fly: { baseValue: 0, totalValue: 60, derivedModifier: 0 },
     // Simulated caster_level for spell formulas (see ARCHITECTURE.md A.7 Soulknife)
@@ -61,14 +61,14 @@ const mockContext: CharacterContext = {
     'skill_knowledge-arcana': { ranks: 8, totalValue: 8 }, // Hyphenated ID (important test case)
   },
   combatStats: {
-    // NOTE: In the real engine, combatStats keys use the full dotted ID ("combatStats.bab").
-    // The @combatStats.X.totalValue path traversal works when the context keys are flat (no dots).
-    // For these tests, we use flat keys to match the path resolution behavior.
-    bab: { totalValue: 6 },
+    // NOTE: In the real engine, the GameEngine strips the "combatStats." prefix when building the context,
+    // so the key is stored as the flat part of the pipeline ID (e.g., "base_attack_bonus", not "combatStats.base_attack_bonus").
+    // The @combatStats.X.totalValue path traversal works because the path segments map exactly to flat keys.
+    base_attack_bonus: { totalValue: 6 },
     ac_normal: { totalValue: 18 },
   },
   saves: {
-    fort: { totalValue: 5 },
+    fortitude: { totalValue: 5 },
   },
   characterLevel: 8,
   eclForXp: 8,
@@ -93,23 +93,23 @@ const mockContext: CharacterContext = {
 // ============================================================
 
 describe('evaluateFormula — @attributes paths', () => {
-  it('resolves @attributes.stat_str.totalValue', () => {
-    const result = evaluateFormula('@attributes.stat_str.totalValue', mockContext, 'en');
+  it('resolves @attributes.stat_strength.totalValue', () => {
+    const result = evaluateFormula('@attributes.stat_strength.totalValue', mockContext, 'en');
     expect(result).toBe(18);
   });
 
-  it('resolves @attributes.stat_str.derivedModifier', () => {
-    const result = evaluateFormula('@attributes.stat_str.derivedModifier', mockContext, 'en');
+  it('resolves @attributes.stat_strength.derivedModifier', () => {
+    const result = evaluateFormula('@attributes.stat_strength.derivedModifier', mockContext, 'en');
     expect(result).toBe(4);
   });
 
-  it('resolves @attributes.stat_str.baseValue', () => {
-    const result = evaluateFormula('@attributes.stat_str.baseValue', mockContext, 'en');
+  it('resolves @attributes.stat_strength.baseValue', () => {
+    const result = evaluateFormula('@attributes.stat_strength.baseValue', mockContext, 'en');
     expect(result).toBe(18);
   });
 
-  it('resolves @attributes.stat_wis.derivedModifier (negative)', () => {
-    const result = evaluateFormula('@attributes.stat_wis.derivedModifier', mockContext, 'en');
+  it('resolves @attributes.stat_wisdom.derivedModifier (negative)', () => {
+    const result = evaluateFormula('@attributes.stat_wisdom.derivedModifier', mockContext, 'en');
     expect(result).toBe(-1);
   });
 });
@@ -133,10 +133,10 @@ describe('evaluateFormula — @skills paths', () => {
 });
 
 describe('evaluateFormula — @combatStats paths', () => {
-  it('resolves @combatStats.bab.totalValue (flat key in context)', () => {
-    // The path @combatStats.bab.totalValue traverses context.combatStats['bab'].totalValue
+  it('resolves @combatStats.base_attack_bonus.totalValue (flat key in context)', () => {
+    // The path @combatStats.base_attack_bonus.totalValue traverses context.combatStats['base_attack_bonus'].totalValue
     // In test context, we use flat keys (no dots in key names).
-    const result = evaluateFormula('@combatStats.bab.totalValue', mockContext, 'en');
+    const result = evaluateFormula('@combatStats.base_attack_bonus.totalValue', mockContext, 'en');
     expect(result).toBe(6);
   });
 
@@ -163,12 +163,12 @@ describe('evaluateFormula — @combatStats paths', () => {
  */
 const monsterPcContext: CharacterContext = {
   attributes: {
-    stat_str: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
-    stat_dex: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-    stat_int: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
-    stat_wis: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
-    stat_cha: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
-    stat_con: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_strength: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_dexterity: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_intelligence: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+    stat_wisdom: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_charisma: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_constitution: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
   },
   skills: {
     skill_hide:         { ranks: 3,  totalValue: 5 },
@@ -176,7 +176,7 @@ const monsterPcContext: CharacterContext = {
     skill_sneak:        { ranks: 3,  totalValue: 5 },
   },
   combatStats: {
-    bab: { totalValue: 2 },  // Rogue 3 with 3/4 BAB = +2
+    base_attack_bonus: { totalValue: 2 },  // Rogue 3 with 3/4 BAB = +2
   },
   saves: {},
   // classLevels sum = 3; levelAdjustment = 2; eclForXp = 5
@@ -318,21 +318,21 @@ describe('evaluateFormula — math operations', () => {
     expect(evaluateFormula('floor(7 / 2)', mockContext, 'en')).toBe(3);
   });
 
-  it('evaluates floor with path: "floor(@attributes.stat_str.totalValue / 2)"', () => {
+  it('evaluates floor with path: "floor(@attributes.stat_strength.totalValue / 2)"', () => {
     // floor(18 / 2) = 9
-    const result = evaluateFormula('floor(@attributes.stat_str.totalValue / 2)', mockContext, 'en');
+    const result = evaluateFormula('floor(@attributes.stat_strength.totalValue / 2)', mockContext, 'en');
     expect(result).toBe(9);
   });
 
-  it('evaluates formula with derivedModifier: "3 + @attributes.stat_cha.derivedModifier"', () => {
+  it('evaluates formula with derivedModifier: "3 + @attributes.stat_charisma.derivedModifier"', () => {
     // 3 + (-2) = 1
-    const result = evaluateFormula('3 + @attributes.stat_cha.derivedModifier', mockContext, 'en');
+    const result = evaluateFormula('3 + @attributes.stat_charisma.derivedModifier', mockContext, 'en');
     expect(result).toBe(1);
   });
 
-  it('evaluates two-handed damage formula: "floor(@attributes.stat_str.derivedModifier * 1.5)"', () => {
+  it('evaluates two-handed damage formula: "floor(@attributes.stat_strength.derivedModifier * 1.5)"', () => {
     // floor(4 * 1.5) = floor(6) = 6
-    const result = evaluateFormula('floor(@attributes.stat_str.derivedModifier * 1.5)', mockContext, 'en');
+    const result = evaluateFormula('floor(@attributes.stat_strength.derivedModifier * 1.5)', mockContext, 'en');
     expect(result).toBe(6);
   });
 

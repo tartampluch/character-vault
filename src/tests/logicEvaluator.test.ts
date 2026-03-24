@@ -30,9 +30,9 @@ import type { CharacterContext } from '$lib/utils/mathParser';
 
 const mockContext: CharacterContext = {
   attributes: {
-    stat_str: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-    stat_dex: { baseValue: 19, totalValue: 19, derivedModifier: 4 },
-    stat_int: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_strength: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_dexterity: { baseValue: 19, totalValue: 19, derivedModifier: 4 },
+    stat_intelligence: { baseValue: 10, totalValue: 10, derivedModifier: 0 },
     caster_level: { baseValue: 0, totalValue: 5, derivedModifier: 0 },
   },
   skills: {
@@ -40,7 +40,7 @@ const mockContext: CharacterContext = {
     skill_tumble: { ranks: 3, totalValue: 7 },
   },
   combatStats: {
-    bab: { totalValue: 6 },
+    base_attack_bonus: { totalValue: 6 },
   },
   saves: {},
   characterLevel: 8,
@@ -65,7 +65,7 @@ describe('CONDITION — numeric comparison (>=)', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@attributes.stat_str.totalValue',
+        targetPath: '@attributes.stat_strength.totalValue',
         operator: '>=',
         value: 13,
         errorMessage: 'Requires Strength 13+',
@@ -79,7 +79,7 @@ describe('CONDITION — numeric comparison (>=)', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@attributes.stat_str.totalValue',
+        targetPath: '@attributes.stat_strength.totalValue',
         operator: '>=',
         value: 20,
         errorMessage: 'Requires Strength 20+',
@@ -94,7 +94,7 @@ describe('CONDITION — numeric comparison (>=)', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@combatStats.bab.totalValue',
+        targetPath: '@combatStats.base_attack_bonus.totalValue',
         operator: '>=',
         value: 6,
         errorMessage: 'Requires BAB +6',
@@ -108,7 +108,7 @@ describe('CONDITION — numeric comparison (>=)', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@combatStats.bab.totalValue',
+        targetPath: '@combatStats.base_attack_bonus.totalValue',
         operator: '>=',
         value: 11,
         errorMessage: 'Requires BAB +11',
@@ -210,7 +210,7 @@ describe('AND node', () => {
         nodes: [
           {
             logic: 'CONDITION',
-            targetPath: '@attributes.stat_str.totalValue',
+            targetPath: '@attributes.stat_strength.totalValue',
             operator: '>=',
             value: 13,
             errorMessage: 'Requires Strength 13+',
@@ -237,7 +237,7 @@ describe('AND node', () => {
         nodes: [
           {
             logic: 'CONDITION',
-            targetPath: '@attributes.stat_str.totalValue',
+            targetPath: '@attributes.stat_strength.totalValue',
             operator: '>=',
             value: 13,
             errorMessage: 'Requires Strength 13+',
@@ -555,7 +555,7 @@ describe('CONDITION — <= (less than or equal) operator', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@attributes.stat_str.totalValue',
+        targetPath: '@attributes.stat_strength.totalValue',
         operator: '<=',
         value: 14,
         errorMessage: 'Requires Strength 14 or lower',
@@ -569,7 +569,7 @@ describe('CONDITION — <= (less than or equal) operator', () => {
     const result = evaluateLogicNode(
       {
         logic: 'CONDITION',
-        targetPath: '@attributes.stat_str.totalValue',
+        targetPath: '@attributes.stat_strength.totalValue',
         operator: '<=',
         value: 10,
         errorMessage: 'Requires Strength 10 or lower',

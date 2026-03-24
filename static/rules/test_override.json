@@ -37,7 +37,7 @@
         "id": "human_override_int_bonus",
         "sourceId": "race_human",
         "sourceName": { "en": "Human Override", "fr": "Humain Remplacement" },
-        "targetId": "stat_int",
+        "targetId": "stat_intelligence",
         "value": 2,
         "type": "racial"
       }
@@ -74,7 +74,7 @@
             "id": "fighter_4_bab",
             "sourceId": "class_fighter",
             "sourceName": { "en": "Fighter 4", "fr": "Guerrier 4" },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -82,7 +82,7 @@
             "id": "fighter_4_fort",
             "sourceId": "class_fighter",
             "sourceName": { "en": "Fighter 4", "fr": "Guerrier 4" },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -111,7 +111,7 @@
     "tags": ["homebrew", "-fighter_bonus_feat"],
     "prerequisitesNode": {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_str.totalValue",
+      "targetPath": "@attributes.stat_strength.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Strength 13+ (Homebrew: Power Attack prerequisite removed)"

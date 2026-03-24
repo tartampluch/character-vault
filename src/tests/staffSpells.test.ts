@@ -302,7 +302,7 @@ describe('Staff Spells — Real-World Field Combinations', () => {
           id: 'staff_power_luck_saves_fort',
           sourceId: 'item_staff_power_combo',
           sourceName: { en: 'Staff of Power', fr: 'Bâton de puissance' },
-          targetId: 'saves.fort',
+          targetId: 'saves.fortitude',
           value: 2,
           type: 'luck',
         },

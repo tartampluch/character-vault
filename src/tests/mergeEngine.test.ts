@@ -127,8 +127,8 @@ const BASE_DRUID: Feature = {
   forbiddenTags: ['metal_armor'],
   ruleSource: 'srd_core',
   grantedModifiers: [
-    makeModifier('druid_bab_l1', 'combatStats.bab', 0, 'base'),
-    makeModifier('druid_fort_l1', 'saves.fort', 2, 'base'),
+    makeModifier('druid_bab_l1', 'combatStats.base_attack_bonus', 0, 'base'),
+    makeModifier('druid_fort_l1', 'saves.fortitude', 2, 'base'),
   ],
   grantedFeatures: ['feat_wild_shape', 'feat_animal_companion', 'feat_nature_sense'],
   choices: [
@@ -140,9 +140,9 @@ const BASE_DRUID: Feature = {
     },
   ],
   levelProgression: [
-    makeEntry(1, [], [makeModifier('druid_bab_l1_prog', 'combatStats.bab', 0, 'base')]),
-    makeEntry(2, ['feat_wild_shape_small'], [makeModifier('druid_bab_l2', 'combatStats.bab', 1, 'base')]),
-    makeEntry(3, [], [makeModifier('druid_bab_l3', 'combatStats.bab', 0, 'base')]),
+    makeEntry(1, [], [makeModifier('druid_bab_l1_prog', 'combatStats.base_attack_bonus', 0, 'base')]),
+    makeEntry(2, ['feat_wild_shape_small'], [makeModifier('druid_bab_l2', 'combatStats.base_attack_bonus', 1, 'base')]),
+    makeEntry(3, [], [makeModifier('druid_bab_l3', 'combatStats.base_attack_bonus', 0, 'base')]),
   ],
 };
 
@@ -357,7 +357,7 @@ describe('Merge Engine: merge: "partial" — additive merge', () => {
         levelProgression: [
           // New level 4 entry — doesn't exist in base
           makeEntry(4, ['feat_wild_shape_medium'], [
-            makeModifier('druid_bab_l4', 'combatStats.bab', 1, 'base'),
+            makeModifier('druid_bab_l4', 'combatStats.base_attack_bonus', 1, 'base'),
           ]),
         ],
       },
@@ -395,7 +395,7 @@ describe('Merge Engine: merge: "partial" — additive merge', () => {
         grantedFeatures: [],
         levelProgression: [
           makeEntry(2, ['feat_wild_shape_tiny'], [  // Replaces level 2 content
-            makeModifier('druid_bab_l2_revised', 'combatStats.bab', 1, 'base'),
+            makeModifier('druid_bab_l2_revised', 'combatStats.base_attack_bonus', 1, 'base'),
           ]),
         ],
       },

@@ -33,7 +33,7 @@
 
   // ── Language system ─────────────────────────────────────────────────────────
   const intModifier = $derived(
-    Math.max(0, engine.phase2_attributes['stat_int']?.derivedModifier ?? 0)
+    Math.max(0, engine.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0)
   );
   const speakLanguageRanks = $derived(
     engine.character.skills['skill_speak_language']?.ranks ?? 0

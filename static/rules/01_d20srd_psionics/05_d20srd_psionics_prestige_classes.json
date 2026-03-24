@@ -71,27 +71,27 @@
         "level": 1,
         "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_1"],
         "grantedModifiers": [
-          { "id": "cerebro_1_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
-          { "id": "cerebro_1_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fort", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
-          { "id": "cerebro_1_ref", "sourceId": "class_cerebremancer", "targetId": "saves.ref", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
+          { "id": "cerebro_1_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
+          { "id": "cerebro_1_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fortitude", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
+          { "id": "cerebro_1_ref", "sourceId": "class_cerebremancer", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } },
           { "id": "cerebro_1_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Cerebremancer 1", "fr": "Cérébromanicien 1" } }
         ]
       },
       { "level": 2, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_2"],
         "grantedModifiers": [
-          { "id": "cerebro_2_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 2", "fr": "Cérébromanicien 2" } },
+          { "id": "cerebro_2_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 2", "fr": "Cérébromanicien 2" } },
           { "id": "cerebro_2_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 2", "fr": "Cérébromanicien 2" } }
         ]
       },
       { "level": 3, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_3"],
         "grantedModifiers": [
-          { "id": "cerebro_3_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 3", "fr": "Cérébromanicien 3" } },
-          { "id": "cerebro_3_ref", "sourceId": "class_cerebremancer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 3", "fr": "Cérébromanicien 3" } }
+          { "id": "cerebro_3_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 3", "fr": "Cérébromanicien 3" } },
+          { "id": "cerebro_3_ref", "sourceId": "class_cerebremancer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 3", "fr": "Cérébromanicien 3" } }
         ]
       },
       { "level": 4, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_4"],
         "grantedModifiers": [
-          { "id": "cerebro_4_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 4", "fr": "Cérébromanicien 4" } },
+          { "id": "cerebro_4_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 4", "fr": "Cérébromanicien 4" } },
           { "id": "cerebro_4_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 4", "fr": "Cérébromanicien 4" } }
         ]
       },
@@ -102,9 +102,9 @@
       },
       { "level": 6, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_6"],
         "grantedModifiers": [
-          { "id": "cerebro_6_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
-          { "id": "cerebro_6_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
-          { "id": "cerebro_6_ref", "sourceId": "class_cerebremancer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
+          { "id": "cerebro_6_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
+          { "id": "cerebro_6_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
+          { "id": "cerebro_6_ref", "sourceId": "class_cerebremancer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } },
           { "id": "cerebro_6_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 6", "fr": "Cérébromanicien 6" } }
         ]
       },
@@ -115,19 +115,19 @@
       },
       { "level": 8, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_8"],
         "grantedModifiers": [
-          { "id": "cerebro_8_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 8", "fr": "Cérébromanicien 8" } },
+          { "id": "cerebro_8_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 8", "fr": "Cérébromanicien 8" } },
           { "id": "cerebro_8_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 8", "fr": "Cérébromanicien 8" } }
         ]
       },
       { "level": 9, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_9"],
         "grantedModifiers": [
-          { "id": "cerebro_9_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 9", "fr": "Cérébromanicien 9" } },
-          { "id": "cerebro_9_ref", "sourceId": "class_cerebremancer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 9", "fr": "Cérébromanicien 9" } }
+          { "id": "cerebro_9_fort", "sourceId": "class_cerebremancer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 9", "fr": "Cérébromanicien 9" } },
+          { "id": "cerebro_9_ref", "sourceId": "class_cerebremancer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 9", "fr": "Cérébromanicien 9" } }
         ]
       },
       { "level": 10, "grantedFeatures": ["class_feature_cerebremancer_dual_advancement_10"],
         "grantedModifiers": [
-          { "id": "cerebro_10_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 10", "fr": "Cérébromanicien 10" } },
+          { "id": "cerebro_10_bab", "sourceId": "class_cerebremancer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 10", "fr": "Cérébromanicien 10" } },
           { "id": "cerebro_10_will", "sourceId": "class_cerebremancer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Cerebremancer 10", "fr": "Cérébromanicien 10" } }
         ]
       }
@@ -148,7 +148,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 3,
           "errorMessage": "Requires Base Attack Bonus +3"
@@ -222,8 +222,8 @@
           "class_feature_elocater_manifesting_adv"
         ],
         "grantedModifiers": [
-          { "id": "eloc_1_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Elocater 1", "fr": "Élocataire 1" } },
-          { "id": "eloc_1_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "Elocater 1", "fr": "Élocataire 1" } },
+          { "id": "eloc_1_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Elocater 1", "fr": "Élocataire 1" } },
+          { "id": "eloc_1_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Elocater 1", "fr": "Élocataire 1" } },
           { "id": "eloc_1_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Elocater 1", "fr": "Élocataire 1" } }
         ]
       },
@@ -231,8 +231,8 @@
         "level": 2,
         "grantedFeatures": ["class_feature_elocater_opportunistic_strike_1"],
         "grantedModifiers": [
-          { "id": "eloc_2_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 2", "fr": "Élocataire 2" } },
-          { "id": "eloc_2_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Elocater 2", "fr": "Élocataire 2" } },
+          { "id": "eloc_2_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 2", "fr": "Élocataire 2" } },
+          { "id": "eloc_2_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Elocater 2", "fr": "Élocataire 2" } },
           { "id": "eloc_2_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Elocater 2", "fr": "Élocataire 2" } }
         ]
       },
@@ -240,16 +240,16 @@
         "level": 3,
         "grantedFeatures": ["class_feature_elocater_dimension_step", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_3_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 3", "fr": "Élocataire 3" } },
-          { "id": "eloc_3_fort", "sourceId": "class_elocater", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Elocater 3", "fr": "Élocataire 3" } }
+          { "id": "eloc_3_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 3", "fr": "Élocataire 3" } },
+          { "id": "eloc_3_fort", "sourceId": "class_elocater", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Elocater 3", "fr": "Élocataire 3" } }
         ]
       },
       {
         "level": 4,
         "grantedFeatures": ["class_feature_elocater_flanker", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_4_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 4", "fr": "Élocataire 4" } },
-          { "id": "eloc_4_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Elocater 4", "fr": "Élocataire 4" } },
+          { "id": "eloc_4_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 4", "fr": "Élocataire 4" } },
+          { "id": "eloc_4_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Elocater 4", "fr": "Élocataire 4" } },
           { "id": "eloc_4_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Elocater 4", "fr": "Élocataire 4" } }
         ]
       },
@@ -257,16 +257,16 @@
         "level": 5,
         "grantedFeatures": ["class_feature_elocater_opportunistic_strike_2"],
         "grantedModifiers": [
-          { "id": "eloc_5_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Elocater 5", "fr": "Élocataire 5" } }
+          { "id": "eloc_5_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Elocater 5", "fr": "Élocataire 5" } }
         ]
       },
       {
         "level": 6,
         "grantedFeatures": ["class_feature_elocater_transporter", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_6_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
-          { "id": "eloc_6_fort", "sourceId": "class_elocater", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
-          { "id": "eloc_6_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
+          { "id": "eloc_6_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
+          { "id": "eloc_6_fort", "sourceId": "class_elocater", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
+          { "id": "eloc_6_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } },
           { "id": "eloc_6_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Elocater 6", "fr": "Élocataire 6" } }
         ]
       },
@@ -274,15 +274,15 @@
         "level": 7,
         "grantedFeatures": ["class_feature_elocater_capricious_step", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_7_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 7", "fr": "Élocataire 7" } }
+          { "id": "eloc_7_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 7", "fr": "Élocataire 7" } }
         ]
       },
       {
         "level": 8,
         "grantedFeatures": ["class_feature_elocater_opportunistic_strike_3"],
         "grantedModifiers": [
-          { "id": "eloc_8_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 8", "fr": "Élocataire 8" } },
-          { "id": "eloc_8_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Elocater 8", "fr": "Élocataire 8" } },
+          { "id": "eloc_8_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 8", "fr": "Élocataire 8" } },
+          { "id": "eloc_8_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Elocater 8", "fr": "Élocataire 8" } },
           { "id": "eloc_8_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Elocater 8", "fr": "Élocataire 8" } }
         ]
       },
@@ -290,16 +290,16 @@
         "level": 9,
         "grantedFeatures": ["class_feature_elocater_dimension_spring_attack", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_9_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Elocater 9", "fr": "Élocataire 9" } },
-          { "id": "eloc_9_fort", "sourceId": "class_elocater", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Elocater 9", "fr": "Élocataire 9" } }
+          { "id": "eloc_9_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Elocater 9", "fr": "Élocataire 9" } },
+          { "id": "eloc_9_fort", "sourceId": "class_elocater", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Elocater 9", "fr": "Élocataire 9" } }
         ]
       },
       {
         "level": 10,
         "grantedFeatures": ["class_feature_elocater_accelerated_action", "class_feature_elocater_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "eloc_10_bab", "sourceId": "class_elocater", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Elocater 10", "fr": "Élocataire 10" } },
-          { "id": "eloc_10_ref", "sourceId": "class_elocater", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Elocater 10", "fr": "Élocataire 10" } },
+          { "id": "eloc_10_bab", "sourceId": "class_elocater", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Elocater 10", "fr": "Élocataire 10" } },
+          { "id": "eloc_10_ref", "sourceId": "class_elocater", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Elocater 10", "fr": "Élocataire 10" } },
           { "id": "eloc_10_will", "sourceId": "class_elocater", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Elocater 10", "fr": "Élocataire 10" } }
         ]
       }
@@ -376,7 +376,7 @@
         "level": 1,
         "grantedFeatures": ["class_feature_metamind_free_manifesting_1st"],
         "grantedModifiers": [
-          { "id": "mm_1_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Metamind 1", "fr": "Méta-esprit 1" } },
+          { "id": "mm_1_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Metamind 1", "fr": "Méta-esprit 1" } },
           { "id": "mm_1_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Metamind 1", "fr": "Méta-esprit 1" } }
         ]
       },
@@ -384,7 +384,7 @@
         "level": 2,
         "grantedFeatures": ["class_feature_metamind_cognizance_5", "class_feature_metamind_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "mm_2_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Metamind 2", "fr": "Méta-esprit 2" } },
+          { "id": "mm_2_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Metamind 2", "fr": "Méta-esprit 2" } },
           { "id": "mm_2_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Metamind 2", "fr": "Méta-esprit 2" } }
         ]
       },
@@ -392,15 +392,15 @@
         "level": 3,
         "grantedFeatures": ["class_feature_metamind_free_manifesting_2nd"],
         "grantedModifiers": [
-          { "id": "mm_3_fort", "sourceId": "class_metamind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Metamind 3", "fr": "Méta-esprit 3" } },
-          { "id": "mm_3_ref", "sourceId": "class_metamind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Metamind 3", "fr": "Méta-esprit 3" } }
+          { "id": "mm_3_fort", "sourceId": "class_metamind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Metamind 3", "fr": "Méta-esprit 3" } },
+          { "id": "mm_3_ref", "sourceId": "class_metamind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Metamind 3", "fr": "Méta-esprit 3" } }
         ]
       },
       {
         "level": 4,
         "grantedFeatures": ["class_feature_metamind_cognizance_7", "class_feature_metamind_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "mm_4_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Metamind 4", "fr": "Méta-esprit 4" } },
+          { "id": "mm_4_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Metamind 4", "fr": "Méta-esprit 4" } },
           { "id": "mm_4_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Metamind 4", "fr": "Méta-esprit 4" } }
         ]
       },
@@ -415,9 +415,9 @@
         "level": 6,
         "grantedFeatures": ["class_feature_metamind_cognizance_9", "class_feature_metamind_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "mm_6_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
-          { "id": "mm_6_fort", "sourceId": "class_metamind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
-          { "id": "mm_6_ref", "sourceId": "class_metamind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
+          { "id": "mm_6_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
+          { "id": "mm_6_fort", "sourceId": "class_metamind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
+          { "id": "mm_6_ref", "sourceId": "class_metamind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } },
           { "id": "mm_6_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Metamind 6", "fr": "Méta-esprit 6" } }
         ]
       },
@@ -432,7 +432,7 @@
         "level": 8,
         "grantedFeatures": ["class_feature_metamind_cognizance_11", "class_feature_metamind_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "mm_8_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Metamind 8", "fr": "Méta-esprit 8" } },
+          { "id": "mm_8_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Metamind 8", "fr": "Méta-esprit 8" } },
           { "id": "mm_8_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Metamind 8", "fr": "Méta-esprit 8" } }
         ]
       },
@@ -440,15 +440,15 @@
         "level": 9,
         "grantedFeatures": ["class_feature_metamind_free_manifesting_5th"],
         "grantedModifiers": [
-          { "id": "mm_9_fort", "sourceId": "class_metamind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Metamind 9", "fr": "Méta-esprit 9" } },
-          { "id": "mm_9_ref", "sourceId": "class_metamind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Metamind 9", "fr": "Méta-esprit 9" } }
+          { "id": "mm_9_fort", "sourceId": "class_metamind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Metamind 9", "fr": "Méta-esprit 9" } },
+          { "id": "mm_9_ref", "sourceId": "class_metamind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Metamind 9", "fr": "Méta-esprit 9" } }
         ]
       },
       {
         "level": 10,
         "grantedFeatures": ["class_feature_metamind_font_of_power", "class_feature_metamind_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "mm_10_bab", "sourceId": "class_metamind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Metamind 10", "fr": "Méta-esprit 10" } },
+          { "id": "mm_10_bab", "sourceId": "class_metamind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Metamind 10", "fr": "Méta-esprit 10" } },
           { "id": "mm_10_will", "sourceId": "class_metamind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Metamind 10", "fr": "Méta-esprit 10" } }
         ]
       }
@@ -529,7 +529,7 @@
           "class_feature_psion_uncarnate_uncarnate_armor"
         ],
         "grantedModifiers": [
-          { "id": "pu_1_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Psion Uncarnate 1", "fr": "Psion sans corps 1" } },
+          { "id": "pu_1_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psion Uncarnate 1", "fr": "Psion sans corps 1" } },
           { "id": "pu_1_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Psion Uncarnate 1", "fr": "Psion sans corps 1" } }
         ]
       },
@@ -537,7 +537,7 @@
         "level": 2,
         "grantedFeatures": ["class_feature_psion_uncarnate_shed_body_1", "class_feature_psion_uncarnate_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "pu_2_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 2", "fr": "Psion sans corps 2" } },
+          { "id": "pu_2_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 2", "fr": "Psion sans corps 2" } },
           { "id": "pu_2_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 2", "fr": "Psion sans corps 2" } }
         ]
       },
@@ -545,15 +545,15 @@
         "level": 3,
         "grantedFeatures": ["class_feature_psion_uncarnate_assume_equipment", "class_feature_psion_uncarnate_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "pu_3_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 3", "fr": "Psion sans corps 3" } },
-          { "id": "pu_3_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 3", "fr": "Psion sans corps 3" } }
+          { "id": "pu_3_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 3", "fr": "Psion sans corps 3" } },
+          { "id": "pu_3_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 3", "fr": "Psion sans corps 3" } }
         ]
       },
       {
         "level": 4,
         "grantedFeatures": ["class_feature_psion_uncarnate_assume_likeness"],
         "grantedModifiers": [
-          { "id": "pu_4_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 4", "fr": "Psion sans corps 4" } },
+          { "id": "pu_4_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 4", "fr": "Psion sans corps 4" } },
           { "id": "pu_4_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 4", "fr": "Psion sans corps 4" } }
         ]
       },
@@ -571,9 +571,9 @@
         "level": 6,
         "grantedFeatures": ["class_feature_psion_uncarnate_shed_body_2", "class_feature_psion_uncarnate_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "pu_6_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
-          { "id": "pu_6_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
-          { "id": "pu_6_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
+          { "id": "pu_6_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
+          { "id": "pu_6_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
+          { "id": "pu_6_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } },
           { "id": "pu_6_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 6", "fr": "Psion sans corps 6" } }
         ]
       },
@@ -588,7 +588,7 @@
         "level": 8,
         "grantedFeatures": ["class_feature_psion_uncarnate_uncarnate_bridge", "class_feature_psion_uncarnate_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "pu_8_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 8", "fr": "Psion sans corps 8" } },
+          { "id": "pu_8_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 8", "fr": "Psion sans corps 8" } },
           { "id": "pu_8_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 8", "fr": "Psion sans corps 8" } }
         ]
       },
@@ -599,15 +599,15 @@
           "class_feature_psion_uncarnate_manifesting_adv"
         ],
         "grantedModifiers": [
-          { "id": "pu_9_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 9", "fr": "Psion sans corps 9" } },
-          { "id": "pu_9_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 9", "fr": "Psion sans corps 9" } }
+          { "id": "pu_9_fort", "sourceId": "class_psion_uncarnate", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 9", "fr": "Psion sans corps 9" } },
+          { "id": "pu_9_ref", "sourceId": "class_psion_uncarnate", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 9", "fr": "Psion sans corps 9" } }
         ]
       },
       {
         "level": 10,
         "grantedFeatures": ["class_feature_psion_uncarnate_permanently_incorporeal"],
         "grantedModifiers": [
-          { "id": "pu_10_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 10", "fr": "Psion sans corps 10" } },
+          { "id": "pu_10_bab", "sourceId": "class_psion_uncarnate", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 10", "fr": "Psion sans corps 10" } },
           { "id": "pu_10_will", "sourceId": "class_psion_uncarnate", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion Uncarnate 10", "fr": "Psion sans corps 10" } }
         ]
       }
@@ -628,7 +628,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"
@@ -691,8 +691,8 @@
           "class_feature_psionic_fist_powers_known"
         ],
         "grantedModifiers": [
-          { "id": "pf_1_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 1", "fr": "Poing psionique 1" } },
-          { "id": "pf_1_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "Psionic Fist 1", "fr": "Poing psionique 1" } },
+          { "id": "pf_1_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 1", "fr": "Poing psionique 1" } },
+          { "id": "pf_1_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Psionic Fist 1", "fr": "Poing psionique 1" } },
           { "id": "pf_1_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Psionic Fist 1", "fr": "Poing psionique 1" } },
           { "id": "pf_1_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 1 (PP)", "fr": "Poing psionique 1 (PP)" } }
         ]
@@ -701,8 +701,8 @@
         "level": 2,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_2_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 2", "fr": "Poing psionique 2" } },
-          { "id": "pf_2_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 2", "fr": "Poing psionique 2" } },
+          { "id": "pf_2_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 2", "fr": "Poing psionique 2" } },
+          { "id": "pf_2_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 2", "fr": "Poing psionique 2" } },
           { "id": "pf_2_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 2", "fr": "Poing psionique 2" } },
           { "id": "pf_2_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Psionic Fist 2 (PP)", "fr": "Poing psionique 2 (PP)" } }
         ]
@@ -711,8 +711,8 @@
         "level": 3,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_3_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 3", "fr": "Poing psionique 3" } },
-          { "id": "pf_3_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 3", "fr": "Poing psionique 3" } },
+          { "id": "pf_3_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 3", "fr": "Poing psionique 3" } },
+          { "id": "pf_3_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 3", "fr": "Poing psionique 3" } },
           { "id": "pf_3_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 3, "type": "base", "sourceName": { "en": "Psionic Fist 3 (PP)", "fr": "Poing psionique 3 (PP)" } }
         ]
       },
@@ -720,8 +720,8 @@
         "level": 4,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_4_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 4", "fr": "Poing psionique 4" } },
-          { "id": "pf_4_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 4", "fr": "Poing psionique 4" } },
+          { "id": "pf_4_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 4", "fr": "Poing psionique 4" } },
+          { "id": "pf_4_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 4", "fr": "Poing psionique 4" } },
           { "id": "pf_4_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 4", "fr": "Poing psionique 4" } },
           { "id": "pf_4_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psionic Fist 4 (PP)", "fr": "Poing psionique 4 (PP)" } }
         ]
@@ -730,7 +730,7 @@
         "level": 5,
         "grantedFeatures": ["class_feature_psionic_fist_bonus_feat_1"],
         "grantedModifiers": [
-          { "id": "pf_5_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 5", "fr": "Poing psionique 5" } },
+          { "id": "pf_5_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 5", "fr": "Poing psionique 5" } },
           { "id": "pf_5_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 5, "type": "base", "sourceName": { "en": "Psionic Fist 5 (PP)", "fr": "Poing psionique 5 (PP)" } }
         ]
       },
@@ -738,9 +738,9 @@
         "level": 6,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_6_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
-          { "id": "pf_6_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
-          { "id": "pf_6_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
+          { "id": "pf_6_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
+          { "id": "pf_6_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
+          { "id": "pf_6_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
           { "id": "pf_6_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 6", "fr": "Poing psionique 6" } },
           { "id": "pf_6_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psionic Fist 6 (PP)", "fr": "Poing psionique 6 (PP)" } }
         ]
@@ -749,7 +749,7 @@
         "level": 7,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_7_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 7", "fr": "Poing psionique 7" } },
+          { "id": "pf_7_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 7", "fr": "Poing psionique 7" } },
           { "id": "pf_7_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psionic Fist 7 (PP)", "fr": "Poing psionique 7 (PP)" } }
         ]
       },
@@ -757,8 +757,8 @@
         "level": 8,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_8_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 8", "fr": "Poing psionique 8" } },
-          { "id": "pf_8_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 8", "fr": "Poing psionique 8" } },
+          { "id": "pf_8_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 8", "fr": "Poing psionique 8" } },
+          { "id": "pf_8_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 8", "fr": "Poing psionique 8" } },
           { "id": "pf_8_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 8", "fr": "Poing psionique 8" } },
           { "id": "pf_8_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psionic Fist 8 (PP)", "fr": "Poing psionique 8 (PP)" } }
         ]
@@ -767,8 +767,8 @@
         "level": 9,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "pf_9_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 9", "fr": "Poing psionique 9" } },
-          { "id": "pf_9_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 9", "fr": "Poing psionique 9" } },
+          { "id": "pf_9_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psionic Fist 9", "fr": "Poing psionique 9" } },
+          { "id": "pf_9_fort", "sourceId": "class_psionic_fist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 9", "fr": "Poing psionique 9" } },
           { "id": "pf_9_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psionic Fist 9 (PP)", "fr": "Poing psionique 9 (PP)" } }
         ]
       },
@@ -776,8 +776,8 @@
         "level": 10,
         "grantedFeatures": ["class_feature_psionic_fist_bonus_feat_2"],
         "grantedModifiers": [
-          { "id": "pf_10_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 10", "fr": "Poing psionique 10" } },
-          { "id": "pf_10_ref", "sourceId": "class_psionic_fist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 10", "fr": "Poing psionique 10" } },
+          { "id": "pf_10_bab", "sourceId": "class_psionic_fist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 10", "fr": "Poing psionique 10" } },
+          { "id": "pf_10_ref", "sourceId": "class_psionic_fist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 10", "fr": "Poing psionique 10" } },
           { "id": "pf_10_will", "sourceId": "class_psionic_fist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psionic Fist 10", "fr": "Poing psionique 10" } },
           { "id": "pf_10_pp", "sourceId": "class_psionic_fist", "targetId": "resources.power_points.maxValue", "value": 16, "type": "base", "sourceName": { "en": "Psionic Fist 10 (PP)", "fr": "Poing psionique 10 (PP)" } }
         ]
@@ -862,25 +862,25 @@
         "level": 1,
         "grantedFeatures": ["class_feature_pyro_fire_lash"],
         "grantedModifiers": [
-          { "id": "pyro_1_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } },
-          { "id": "pyro_1_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } },
-          { "id": "pyro_1_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } }
+          { "id": "pyro_1_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } },
+          { "id": "pyro_1_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } },
+          { "id": "pyro_1_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Pyrokineticist 1", "fr": "Pyrocinéticiste 1" } }
         ]
       },
       {
         "level": 2,
         "grantedFeatures": ["class_feature_pyro_fire_adaptation", "class_feature_pyro_hand_afire"],
         "grantedModifiers": [
-          { "id": "pyro_2_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } },
-          { "id": "pyro_2_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } },
-          { "id": "pyro_2_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } }
+          { "id": "pyro_2_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } },
+          { "id": "pyro_2_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } },
+          { "id": "pyro_2_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 2", "fr": "Pyrocinéticiste 2" } }
         ]
       },
       {
         "level": 3,
         "grantedFeatures": ["class_feature_pyro_bolt_of_fire"],
         "grantedModifiers": [
-          { "id": "pyro_3_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 3", "fr": "Pyrocinéticiste 3" } },
+          { "id": "pyro_3_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 3", "fr": "Pyrocinéticiste 3" } },
           { "id": "pyro_3_will", "sourceId": "class_pyrokineticist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 3", "fr": "Pyrocinéticiste 3" } }
         ]
       },
@@ -888,25 +888,25 @@
         "level": 4,
         "grantedFeatures": ["class_feature_pyro_weapon_afire"],
         "grantedModifiers": [
-          { "id": "pyro_4_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } },
-          { "id": "pyro_4_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } },
-          { "id": "pyro_4_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } }
+          { "id": "pyro_4_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } },
+          { "id": "pyro_4_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } },
+          { "id": "pyro_4_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 4", "fr": "Pyrocinéticiste 4" } }
         ]
       },
       {
         "level": 5,
         "grantedFeatures": ["class_feature_pyro_nimbus"],
         "grantedModifiers": [
-          { "id": "pyro_5_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 5", "fr": "Pyrocinéticiste 5" } }
+          { "id": "pyro_5_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 5", "fr": "Pyrocinéticiste 5" } }
         ]
       },
       {
         "level": 6,
         "grantedFeatures": ["class_feature_pyro_firewalk"],
         "grantedModifiers": [
-          { "id": "pyro_6_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
-          { "id": "pyro_6_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
-          { "id": "pyro_6_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
+          { "id": "pyro_6_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
+          { "id": "pyro_6_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
+          { "id": "pyro_6_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } },
           { "id": "pyro_6_will", "sourceId": "class_pyrokineticist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 6", "fr": "Pyrocinéticiste 6" } }
         ]
       },
@@ -914,23 +914,23 @@
         "level": 7,
         "grantedFeatures": ["class_feature_pyro_fear_no_fire"],
         "grantedModifiers": [
-          { "id": "pyro_7_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 7", "fr": "Pyrocinéticiste 7" } }
+          { "id": "pyro_7_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 7", "fr": "Pyrocinéticiste 7" } }
         ]
       },
       {
         "level": 8,
         "grantedFeatures": ["class_feature_pyro_greater_weapon_afire"],
         "grantedModifiers": [
-          { "id": "pyro_8_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } },
-          { "id": "pyro_8_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } },
-          { "id": "pyro_8_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } }
+          { "id": "pyro_8_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } },
+          { "id": "pyro_8_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } },
+          { "id": "pyro_8_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 8", "fr": "Pyrocinéticiste 8" } }
         ]
       },
       {
         "level": 9,
         "grantedFeatures": ["class_feature_pyro_heat_death"],
         "grantedModifiers": [
-          { "id": "pyro_9_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 9", "fr": "Pyrocinéticiste 9" } },
+          { "id": "pyro_9_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Pyrokineticist 9", "fr": "Pyrocinéticiste 9" } },
           { "id": "pyro_9_will", "sourceId": "class_pyrokineticist", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 9", "fr": "Pyrocinéticiste 9" } }
         ]
       },
@@ -938,9 +938,9 @@
         "level": 10,
         "grantedFeatures": ["class_feature_pyro_conflagration"],
         "grantedModifiers": [
-          { "id": "pyro_10_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } },
-          { "id": "pyro_10_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } },
-          { "id": "pyro_10_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } }
+          { "id": "pyro_10_bab", "sourceId": "class_pyrokineticist", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } },
+          { "id": "pyro_10_fort", "sourceId": "class_pyrokineticist", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } },
+          { "id": "pyro_10_ref", "sourceId": "class_pyrokineticist", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Pyrokineticist 10", "fr": "Pyrocinéticiste 10" } }
         ]
       }
     ]
@@ -960,7 +960,7 @@
       "nodes": [
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 4,
           "errorMessage": "Requires Base Attack Bonus +4"
@@ -1026,7 +1026,7 @@
           "class_feature_slayer_enemy_sense"
         ],
         "grantedModifiers": [
-          { "id": "sl_1_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 1", "fr": "Pourfendeur 1" } },
+          { "id": "sl_1_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 1", "fr": "Pourfendeur 1" } },
           { "id": "sl_1_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Slayer 1", "fr": "Pourfendeur 1" } }
         ]
       },
@@ -1034,7 +1034,7 @@
         "level": 2,
         "grantedFeatures": ["class_feature_slayer_brain_nausea", "class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_2_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 2", "fr": "Pourfendeur 2" } },
+          { "id": "sl_2_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 2", "fr": "Pourfendeur 2" } },
           { "id": "sl_2_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Slayer 2", "fr": "Pourfendeur 2" } }
         ]
       },
@@ -1042,9 +1042,9 @@
         "level": 3,
         "grantedFeatures": ["class_feature_slayer_lucid_buffer", "class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_3_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } },
-          { "id": "sl_3_fort", "sourceId": "class_slayer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } },
-          { "id": "sl_3_ref", "sourceId": "class_slayer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } }
+          { "id": "sl_3_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } },
+          { "id": "sl_3_fort", "sourceId": "class_slayer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } },
+          { "id": "sl_3_ref", "sourceId": "class_slayer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Slayer 3", "fr": "Pourfendeur 3" } }
         ]
       },
       {
@@ -1054,7 +1054,7 @@
           "class_feature_slayer_manifesting_adv"
         ],
         "grantedModifiers": [
-          { "id": "sl_4_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 4", "fr": "Pourfendeur 4" } },
+          { "id": "sl_4_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 4", "fr": "Pourfendeur 4" } },
           { "id": "sl_4_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Slayer 4", "fr": "Pourfendeur 4" } }
         ]
       },
@@ -1062,16 +1062,16 @@
         "level": 5,
         "grantedFeatures": ["class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_5_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 5", "fr": "Pourfendeur 5" } }
+          { "id": "sl_5_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 5", "fr": "Pourfendeur 5" } }
         ]
       },
       {
         "level": 6,
         "grantedFeatures": ["class_feature_slayer_cerebral_blind", "class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_6_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
-          { "id": "sl_6_fort", "sourceId": "class_slayer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
-          { "id": "sl_6_ref", "sourceId": "class_slayer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
+          { "id": "sl_6_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
+          { "id": "sl_6_fort", "sourceId": "class_slayer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
+          { "id": "sl_6_ref", "sourceId": "class_slayer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } },
           { "id": "sl_6_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Slayer 6", "fr": "Pourfendeur 6" } }
         ]
       },
@@ -1082,14 +1082,14 @@
           "class_feature_slayer_manifesting_adv"
         ],
         "grantedModifiers": [
-          { "id": "sl_7_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 7", "fr": "Pourfendeur 7" } }
+          { "id": "sl_7_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 7", "fr": "Pourfendeur 7" } }
         ]
       },
       {
         "level": 8,
         "grantedFeatures": ["class_feature_slayer_breach_power_resistance", "class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_8_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 8", "fr": "Pourfendeur 8" } },
+          { "id": "sl_8_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 8", "fr": "Pourfendeur 8" } },
           { "id": "sl_8_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Slayer 8", "fr": "Pourfendeur 8" } }
         ]
       },
@@ -1097,9 +1097,9 @@
         "level": 9,
         "grantedFeatures": ["class_feature_slayer_cerebral_immunity", "class_feature_slayer_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "sl_9_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } },
-          { "id": "sl_9_fort", "sourceId": "class_slayer", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } },
-          { "id": "sl_9_ref", "sourceId": "class_slayer", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } }
+          { "id": "sl_9_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } },
+          { "id": "sl_9_fort", "sourceId": "class_slayer", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } },
+          { "id": "sl_9_ref", "sourceId": "class_slayer", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Slayer 9", "fr": "Pourfendeur 9" } }
         ]
       },
       {
@@ -1110,7 +1110,7 @@
           "class_feature_slayer_manifesting_adv"
         ],
         "grantedModifiers": [
-          { "id": "sl_10_bab", "sourceId": "class_slayer", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Slayer 10", "fr": "Pourfendeur 10" } },
+          { "id": "sl_10_bab", "sourceId": "class_slayer", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Slayer 10", "fr": "Pourfendeur 10" } },
           { "id": "sl_10_will", "sourceId": "class_slayer", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Slayer 10", "fr": "Pourfendeur 10" } }
         ]
       }
@@ -1188,7 +1188,7 @@
         "level": 1,
         "grantedFeatures": ["class_feature_thrallherd_thrallherd"],
         "grantedModifiers": [
-          { "id": "th_1_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 0, "type": "base", "sourceName": { "en": "Thrallherd 1", "fr": "Maître des esclaves 1" } },
+          { "id": "th_1_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Thrallherd 1", "fr": "Maître des esclaves 1" } },
           { "id": "th_1_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Thrallherd 1", "fr": "Maître des esclaves 1" } }
         ]
       },
@@ -1196,7 +1196,7 @@
         "level": 2,
         "grantedFeatures": ["class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_2_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 2", "fr": "Maître des esclaves 2" } },
+          { "id": "th_2_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 2", "fr": "Maître des esclaves 2" } },
           { "id": "th_2_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 2", "fr": "Maître des esclaves 2" } }
         ]
       },
@@ -1204,15 +1204,15 @@
         "level": 3,
         "grantedFeatures": ["class_feature_thrallherd_psionic_charm", "class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_3_fort", "sourceId": "class_thrallherd", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 3", "fr": "Maître des esclaves 3" } },
-          { "id": "th_3_ref", "sourceId": "class_thrallherd", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 3", "fr": "Maître des esclaves 3" } }
+          { "id": "th_3_fort", "sourceId": "class_thrallherd", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 3", "fr": "Maître des esclaves 3" } },
+          { "id": "th_3_ref", "sourceId": "class_thrallherd", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 3", "fr": "Maître des esclaves 3" } }
         ]
       },
       {
         "level": 4,
         "grantedFeatures": ["class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_4_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 4", "fr": "Maître des esclaves 4" } },
+          { "id": "th_4_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 4", "fr": "Maître des esclaves 4" } },
           { "id": "th_4_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 4", "fr": "Maître des esclaves 4" } }
         ]
       },
@@ -1227,9 +1227,9 @@
         "level": 6,
         "grantedFeatures": ["class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_6_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
-          { "id": "th_6_fort", "sourceId": "class_thrallherd", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
-          { "id": "th_6_ref", "sourceId": "class_thrallherd", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
+          { "id": "th_6_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
+          { "id": "th_6_fort", "sourceId": "class_thrallherd", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
+          { "id": "th_6_ref", "sourceId": "class_thrallherd", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } },
           { "id": "th_6_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 6", "fr": "Maître des esclaves 6" } }
         ]
       },
@@ -1244,7 +1244,7 @@
         "level": 8,
         "grantedFeatures": ["class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_8_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 8", "fr": "Maître des esclaves 8" } },
+          { "id": "th_8_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 8", "fr": "Maître des esclaves 8" } },
           { "id": "th_8_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 8", "fr": "Maître des esclaves 8" } }
         ]
       },
@@ -1252,15 +1252,15 @@
         "level": 9,
         "grantedFeatures": ["class_feature_thrallherd_superior_dominate", "class_feature_thrallherd_manifesting_adv"],
         "grantedModifiers": [
-          { "id": "th_9_fort", "sourceId": "class_thrallherd", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 9", "fr": "Maître des esclaves 9" } },
-          { "id": "th_9_ref", "sourceId": "class_thrallherd", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 9", "fr": "Maître des esclaves 9" } }
+          { "id": "th_9_fort", "sourceId": "class_thrallherd", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 9", "fr": "Maître des esclaves 9" } },
+          { "id": "th_9_ref", "sourceId": "class_thrallherd", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 9", "fr": "Maître des esclaves 9" } }
         ]
       },
       {
         "level": 10,
         "grantedFeatures": ["class_feature_thrallherd_twofold_master"],
         "grantedModifiers": [
-          { "id": "th_10_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 10", "fr": "Maître des esclaves 10" } },
+          { "id": "th_10_bab", "sourceId": "class_thrallherd", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 10", "fr": "Maître des esclaves 10" } },
           { "id": "th_10_will", "sourceId": "class_thrallherd", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Thrallherd 10", "fr": "Maître des esclaves 10" } }
         ]
       }
@@ -1288,7 +1288,7 @@
         },
         {
           "logic": "CONDITION",
-          "targetPath": "@combatStats.bab.totalValue",
+          "targetPath": "@combatStats.base_attack_bonus.totalValue",
           "operator": ">=",
           "value": 3,
           "errorMessage": "Requires Base Attack Bonus +3"
@@ -1348,9 +1348,9 @@
           "class_feature_war_mind_powers_known"
         ],
         "grantedModifiers": [
-          { "id": "wm_1_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
-          { "id": "wm_1_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 2, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
-          { "id": "wm_1_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 2, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
+          { "id": "wm_1_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
+          { "id": "wm_1_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
+          { "id": "wm_1_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "War Mind 1", "fr": "Esprit guerrier 1" } },
           { "id": "wm_1_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "War Mind 1 (PP)", "fr": "Esprit guerrier 1 (PP)" } }
         ]
       },
@@ -1358,9 +1358,9 @@
         "level": 2,
         "grantedFeatures": ["class_feature_war_mind_chain_defensive_posture_1"],
         "grantedModifiers": [
-          { "id": "wm_2_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
-          { "id": "wm_2_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
-          { "id": "wm_2_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
+          { "id": "wm_2_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
+          { "id": "wm_2_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
+          { "id": "wm_2_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "War Mind 2", "fr": "Esprit guerrier 2" } },
           { "id": "wm_2_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 3, "type": "base", "sourceName": { "en": "War Mind 2 (PP)", "fr": "Esprit guerrier 2 (PP)" } }
         ]
       },
@@ -1368,7 +1368,7 @@
         "level": 3,
         "grantedFeatures": ["class_feature_war_mind_enduring_body_1"],
         "grantedModifiers": [
-          { "id": "wm_3_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 3", "fr": "Esprit guerrier 3" } },
+          { "id": "wm_3_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 3", "fr": "Esprit guerrier 3" } },
           { "id": "wm_3_will", "sourceId": "class_war_mind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "War Mind 3", "fr": "Esprit guerrier 3" } },
           { "id": "wm_3_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "War Mind 3 (PP)", "fr": "Esprit guerrier 3 (PP)" } }
         ]
@@ -1377,9 +1377,9 @@
         "level": 4,
         "grantedFeatures": [],
         "grantedModifiers": [
-          { "id": "wm_4_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
-          { "id": "wm_4_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
-          { "id": "wm_4_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
+          { "id": "wm_4_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
+          { "id": "wm_4_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
+          { "id": "wm_4_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "War Mind 4", "fr": "Esprit guerrier 4" } },
           { "id": "wm_4_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 5, "type": "base", "sourceName": { "en": "War Mind 4 (PP)", "fr": "Esprit guerrier 4 (PP)" } }
         ]
       },
@@ -1387,7 +1387,7 @@
         "level": 5,
         "grantedFeatures": ["class_feature_war_mind_sweeping_strike"],
         "grantedModifiers": [
-          { "id": "wm_5_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 5", "fr": "Esprit guerrier 5" } },
+          { "id": "wm_5_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 5", "fr": "Esprit guerrier 5" } },
           { "id": "wm_5_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 6, "type": "base", "sourceName": { "en": "War Mind 5 (PP)", "fr": "Esprit guerrier 5 (PP)" } }
         ]
       },
@@ -1395,9 +1395,9 @@
         "level": 6,
         "grantedFeatures": ["class_feature_war_mind_enduring_body_2"],
         "grantedModifiers": [
-          { "id": "wm_6_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
-          { "id": "wm_6_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
-          { "id": "wm_6_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
+          { "id": "wm_6_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
+          { "id": "wm_6_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
+          { "id": "wm_6_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
           { "id": "wm_6_will", "sourceId": "class_war_mind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "War Mind 6", "fr": "Esprit guerrier 6" } },
           { "id": "wm_6_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 9, "type": "base", "sourceName": { "en": "War Mind 6 (PP)", "fr": "Esprit guerrier 6 (PP)" } }
         ]
@@ -1406,7 +1406,7 @@
         "level": 7,
         "grantedFeatures": ["class_feature_war_mind_chain_personal_superiority_2"],
         "grantedModifiers": [
-          { "id": "wm_7_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 7", "fr": "Esprit guerrier 7" } },
+          { "id": "wm_7_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 7", "fr": "Esprit guerrier 7" } },
           { "id": "wm_7_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 9, "type": "base", "sourceName": { "en": "War Mind 7 (PP)", "fr": "Esprit guerrier 7 (PP)" } }
         ]
       },
@@ -1414,9 +1414,9 @@
         "level": 8,
         "grantedFeatures": ["class_feature_war_mind_chain_defensive_posture_2"],
         "grantedModifiers": [
-          { "id": "wm_8_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
-          { "id": "wm_8_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
-          { "id": "wm_8_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
+          { "id": "wm_8_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
+          { "id": "wm_8_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
+          { "id": "wm_8_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "War Mind 8", "fr": "Esprit guerrier 8" } },
           { "id": "wm_8_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 10, "type": "base", "sourceName": { "en": "War Mind 8 (PP)", "fr": "Esprit guerrier 8 (PP)" } }
         ]
       },
@@ -1424,7 +1424,7 @@
         "level": 9,
         "grantedFeatures": ["class_feature_war_mind_enduring_body_3"],
         "grantedModifiers": [
-          { "id": "wm_9_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 9", "fr": "Esprit guerrier 9" } },
+          { "id": "wm_9_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 9", "fr": "Esprit guerrier 9" } },
           { "id": "wm_9_will", "sourceId": "class_war_mind", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "War Mind 9", "fr": "Esprit guerrier 9" } },
           { "id": "wm_9_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 11, "type": "base", "sourceName": { "en": "War Mind 9 (PP)", "fr": "Esprit guerrier 9 (PP)" } }
         ]
@@ -1433,9 +1433,9 @@
         "level": 10,
         "grantedFeatures": ["class_feature_war_mind_chain_overwhelming_force"],
         "grantedModifiers": [
-          { "id": "wm_10_bab", "sourceId": "class_war_mind", "targetId": "combatStats.bab", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
-          { "id": "wm_10_fort", "sourceId": "class_war_mind", "targetId": "saves.fort", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
-          { "id": "wm_10_ref", "sourceId": "class_war_mind", "targetId": "saves.ref", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
+          { "id": "wm_10_bab", "sourceId": "class_war_mind", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
+          { "id": "wm_10_fort", "sourceId": "class_war_mind", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
+          { "id": "wm_10_ref", "sourceId": "class_war_mind", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "War Mind 10", "fr": "Esprit guerrier 10" } },
           { "id": "wm_10_pp", "sourceId": "class_war_mind", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "War Mind 10 (PP)", "fr": "Esprit guerrier 10 (PP)" } }
         ]
       }

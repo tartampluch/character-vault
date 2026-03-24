@@ -9,7 +9,7 @@
           "en": "Appraise",
           "fr": "Estimation"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -33,7 +33,7 @@
           "en": "Balance",
           "fr": "Équilibre"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -56,7 +56,7 @@
           "en": "Bluff",
           "fr": "Bluff"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -101,7 +101,7 @@
           "en": "Climb",
           "fr": "Escalade"
         },
-        "keyAbility": "stat_str",
+        "keyAbility": "stat_strength",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -125,7 +125,7 @@
           "en": "Concentration",
           "fr": "Concentration"
         },
-        "keyAbility": "stat_con",
+        "keyAbility": "stat_constitution",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -148,7 +148,7 @@
           "en": "Craft",
           "fr": "Artisanat"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
@@ -192,7 +192,7 @@
           "en": "Craft (Alchemy)",
           "fr": "Artisanat (Alchimie)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_craft",
@@ -217,7 +217,7 @@
           "en": "Craft (Weaponsmithing)",
           "fr": "Artisanat (Armurerie)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_craft",
@@ -242,7 +242,7 @@
           "en": "Craft (Armorsmithing)",
           "fr": "Artisanat (Fabrication d'armures)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_craft",
@@ -267,7 +267,7 @@
           "en": "Craft (Bowmaking)",
           "fr": "Artisanat (Fabrication d'arcs)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_craft",
@@ -292,7 +292,7 @@
           "en": "Craft (Trapmaking)",
           "fr": "Artisanat (Fabrication de pièges)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_craft",
@@ -308,7 +308,7 @@
           "en": "Decipher Script",
           "fr": "Déchiffrage"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -332,7 +332,7 @@
           "en": "Diplomacy",
           "fr": "Diplomatie"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -369,7 +369,7 @@
           "en": "Disable Device",
           "fr": "Sabotage"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -384,7 +384,7 @@
           "en": "Disguise",
           "fr": "Déguisement"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -408,7 +408,7 @@
           "en": "Escape Artist",
           "fr": "Évasion"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -440,7 +440,7 @@
           "en": "Forgery",
           "fr": "Contrefaçon"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -455,7 +455,7 @@
           "en": "Gather Information",
           "fr": "Collecte d'informations"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -478,7 +478,7 @@
           "en": "Handle Animal",
           "fr": "Dressage"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -509,7 +509,7 @@
           "en": "Heal",
           "fr": "Art de la guérison"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -524,7 +524,7 @@
           "en": "Hide",
           "fr": "Discrétion"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -539,7 +539,7 @@
           "en": "Intimidate",
           "fr": "Intimidation"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -562,7 +562,7 @@
           "en": "Jump",
           "fr": "Saut"
         },
-        "keyAbility": "stat_str",
+        "keyAbility": "stat_strength",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -592,7 +592,7 @@
           "en": "Knowledge (Arcana)",
           "fr": "Connaissance (Arcanes)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -616,7 +616,7 @@
           "en": "Knowledge (Architecture and Engineering)",
           "fr": "Connaissance (Architecture et Génie)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -641,7 +641,7 @@
           "en": "Knowledge (Dungeoneering)",
           "fr": "Connaissance (Exploration souterraine)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -666,7 +666,7 @@
           "en": "Knowledge (Geography)",
           "fr": "Connaissance (Géographie)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -691,7 +691,7 @@
           "en": "Knowledge (History)",
           "fr": "Connaissance (Histoire)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -716,7 +716,7 @@
           "en": "Knowledge (Local)",
           "fr": "Connaissance (Région)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -740,7 +740,7 @@
           "en": "Knowledge (Nature)",
           "fr": "Connaissance (Nature)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -772,7 +772,7 @@
           "en": "Knowledge (Nobility and Royalty)",
           "fr": "Connaissance (Noblesse et Royauté)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -796,7 +796,7 @@
           "en": "Knowledge (The Planes)",
           "fr": "Connaissance (Les Plans)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -821,7 +821,7 @@
           "en": "Knowledge (Religion)",
           "fr": "Connaissance (Religion)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_knowledge",
@@ -846,7 +846,7 @@
           "en": "Listen",
           "fr": "Écoute"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -861,7 +861,7 @@
           "en": "Move Silently",
           "fr": "Déplacement silencieux"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -876,7 +876,7 @@
           "en": "Open Lock",
           "fr": "Crochetage"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -891,7 +891,7 @@
           "en": "Perform",
           "fr": "Représentation"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
@@ -918,7 +918,7 @@
           "en": "Perform (Act)",
           "fr": "Représentation (Comédie)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -934,7 +934,7 @@
           "en": "Perform (Dance)",
           "fr": "Représentation (Danse)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -950,7 +950,7 @@
           "en": "Perform (Oratory)",
           "fr": "Représentation (Oratoire)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -966,7 +966,7 @@
           "en": "Perform (Sing)",
           "fr": "Représentation (Chant)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -982,7 +982,7 @@
           "en": "Perform (String Instruments)",
           "fr": "Représentation (Instruments à cordes)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -998,7 +998,7 @@
           "en": "Perform (Wind Instruments)",
           "fr": "Représentation (Instruments à vent)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -1014,7 +1014,7 @@
           "en": "Perform (Percussion Instruments)",
           "fr": "Représentation (Instruments à percussion)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -1030,7 +1030,7 @@
           "en": "Perform (Keyboard Instruments)",
           "fr": "Représentation (Instruments à clavier)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -1046,7 +1046,7 @@
           "en": "Perform (Comedy)",
           "fr": "Représentation (Comédie bouffonne)"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "parentSkillId": "skill_perform",
@@ -1062,7 +1062,7 @@
           "en": "Profession",
           "fr": "Profession"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "isVariant": true,
@@ -1092,7 +1092,7 @@
           "en": "Ride",
           "fr": "Équitation"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1115,7 +1115,7 @@
           "en": "Search",
           "fr": "Fouille"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1147,7 +1147,7 @@
           "en": "Sense Motive",
           "fr": "Psychologie"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1170,7 +1170,7 @@
           "en": "Sleight of Hand",
           "fr": "Escamotage"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -1208,7 +1208,7 @@
           "en": "Spellcraft",
           "fr": "Art de la magie"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1247,7 +1247,7 @@
           "en": "Spot",
           "fr": "Observation"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1262,7 +1262,7 @@
           "en": "Survival",
           "fr": "Survie"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1325,7 +1325,7 @@
           "en": "Swim",
           "fr": "Natation"
         },
-        "keyAbility": "stat_str",
+        "keyAbility": "stat_strength",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -1340,7 +1340,7 @@
           "en": "Tumble",
           "fr": "Acrobaties"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": true,
         "description": {
@@ -1377,7 +1377,7 @@
           "en": "Use Magic Device",
           "fr": "Utilisation d'objets magiques"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1417,7 +1417,7 @@
           "en": "Use Rope",
           "fr": "Utilisation de cordes"
         },
-        "keyAbility": "stat_dex",
+        "keyAbility": "stat_dexterity",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1457,7 +1457,7 @@
           "en": "Autohypnosis",
           "fr": "Autohypnose"
         },
-        "keyAbility": "stat_wis",
+        "keyAbility": "stat_wisdom",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1487,7 +1487,7 @@
           "en": "Knowledge (Psionics)",
           "fr": "Connaissance (psionique)"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1517,7 +1517,7 @@
           "en": "Psicraft",
           "fr": "Science psionique"
         },
-        "keyAbility": "stat_int",
+        "keyAbility": "stat_intelligence",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {
@@ -1547,7 +1547,7 @@
           "en": "Use Psionic Device",
           "fr": "Utilisation d'objet psionique"
         },
-        "keyAbility": "stat_cha",
+        "keyAbility": "stat_charisma",
         "canBeUsedUntrained": false,
         "appliesArmorCheckPenalty": false,
         "description": {

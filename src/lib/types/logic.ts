@@ -53,7 +53,7 @@ import type { LogicOperator } from './primitives';
  *   "nodes": [
  *     {
  *       "logic": "CONDITION",
- *       "targetPath": "@attributes.stat_str.totalValue",
+ *       "targetPath": "@attributes.stat_strength.totalValue",
  *       "operator": ">=",
  *       "value": 13,
  *       "errorMessage": "Requires Strength 13+"
@@ -142,7 +142,7 @@ export interface LogicNodeNot {
  * ```json
  * {
  *   "logic": "CONDITION",
- *   "targetPath": "@combatStats.bab.totalValue",
+ *   "targetPath": "@combatStats.base_attack_bonus.totalValue",
  *   "operator": ">=",
  *   "value": 6,
  *   "errorMessage": "Base Attack Bonus +6 required"

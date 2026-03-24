@@ -12,9 +12,9 @@
       "5"                                → plain number
       "1d6"                              → dice expression (passed to Dice Engine)
       "2d8+3"                            → dice + constant
-      "@attributes.stat_str.derivedModifier"     → @-path (resolved by Math Parser)
+      "@attributes.stat_strength.derivedModifier"     → @-path (resolved by Math Parser)
       "@classLevels.class_fighter"       → @-path with dynamic suffix
-      "@attributes.stat_str.derivedModifier + 2" → @-path + arithmetic
+      "@attributes.stat_strength.derivedModifier + 2" → @-path + arithmetic
       "1d4+@classLevels.class_rogue"     → dice + @-path
 
   Three consumer sites (Phase 21.3):
@@ -124,7 +124,7 @@
     value,
     onValueChanged,
     id,
-    placeholder = 'e.g. 5, 1d6, @attributes.stat_str.derivedModifier',
+    placeholder = 'e.g. 5, 1d6, @attributes.stat_strength.derivedModifier',
     disabled = false,
   }: Props = $props();
 
@@ -146,24 +146,24 @@
     {
       title: 'Ability Scores',
       entries: [
-        { path: '@attributes.stat_str.totalValue',       label: 'Strength (total)' },
-        { path: '@attributes.stat_str.derivedModifier',  label: 'Strength modifier' },
-        { path: '@attributes.stat_str.baseValue',        label: 'Strength (base)' },
-        { path: '@attributes.stat_dex.totalValue',       label: 'Dexterity (total)' },
-        { path: '@attributes.stat_dex.derivedModifier',  label: 'Dexterity modifier' },
-        { path: '@attributes.stat_dex.baseValue',        label: 'Dexterity (base)' },
-        { path: '@attributes.stat_con.totalValue',       label: 'Constitution (total)' },
-        { path: '@attributes.stat_con.derivedModifier',  label: 'Constitution modifier' },
-        { path: '@attributes.stat_con.baseValue',        label: 'Constitution (base)' },
-        { path: '@attributes.stat_int.totalValue',       label: 'Intelligence (total)' },
-        { path: '@attributes.stat_int.derivedModifier',  label: 'Intelligence modifier' },
-        { path: '@attributes.stat_int.baseValue',        label: 'Intelligence (base)' },
-        { path: '@attributes.stat_wis.totalValue',       label: 'Wisdom (total)' },
-        { path: '@attributes.stat_wis.derivedModifier',  label: 'Wisdom modifier' },
-        { path: '@attributes.stat_wis.baseValue',        label: 'Wisdom (base)' },
-        { path: '@attributes.stat_cha.totalValue',       label: 'Charisma (total)' },
-        { path: '@attributes.stat_cha.derivedModifier',  label: 'Charisma modifier' },
-        { path: '@attributes.stat_cha.baseValue',        label: 'Charisma (base)' },
+        { path: '@attributes.stat_strength.totalValue',       label: 'Strength (total)' },
+        { path: '@attributes.stat_strength.derivedModifier',  label: 'Strength modifier' },
+        { path: '@attributes.stat_strength.baseValue',        label: 'Strength (base)' },
+        { path: '@attributes.stat_dexterity.totalValue',       label: 'Dexterity (total)' },
+        { path: '@attributes.stat_dexterity.derivedModifier',  label: 'Dexterity modifier' },
+        { path: '@attributes.stat_dexterity.baseValue',        label: 'Dexterity (base)' },
+        { path: '@attributes.stat_constitution.totalValue',       label: 'Constitution (total)' },
+        { path: '@attributes.stat_constitution.derivedModifier',  label: 'Constitution modifier' },
+        { path: '@attributes.stat_constitution.baseValue',        label: 'Constitution (base)' },
+        { path: '@attributes.stat_intelligence.totalValue',       label: 'Intelligence (total)' },
+        { path: '@attributes.stat_intelligence.derivedModifier',  label: 'Intelligence modifier' },
+        { path: '@attributes.stat_intelligence.baseValue',        label: 'Intelligence (base)' },
+        { path: '@attributes.stat_wisdom.totalValue',       label: 'Wisdom (total)' },
+        { path: '@attributes.stat_wisdom.derivedModifier',  label: 'Wisdom modifier' },
+        { path: '@attributes.stat_wisdom.baseValue',        label: 'Wisdom (base)' },
+        { path: '@attributes.stat_charisma.totalValue',       label: 'Charisma (total)' },
+        { path: '@attributes.stat_charisma.derivedModifier',  label: 'Charisma modifier' },
+        { path: '@attributes.stat_charisma.baseValue',        label: 'Charisma (base)' },
         { path: '@attributes.stat_size.totalValue',      label: 'Size modifier' },
         { path: '@attributes.stat_caster_level.totalValue',     label: 'Caster Level' },
         { path: '@attributes.stat_manifester_level.totalValue', label: 'Manifester Level' },
@@ -172,11 +172,11 @@
     {
       title: 'Combat Statistics',
       entries: [
-        { path: '@combatStats.bab.totalValue',                  label: 'Base Attack Bonus' },
+        { path: '@combatStats.base_attack_bonus.totalValue',                  label: 'Base Attack Bonus' },
         { path: '@combatStats.ac_normal.totalValue',            label: 'Armor Class (Normal)' },
         { path: '@combatStats.ac_touch.totalValue',             label: 'Touch AC' },
         { path: '@combatStats.ac_flat_footed.totalValue',       label: 'Flat-Footed AC' },
-        { path: '@combatStats.init.totalValue',                 label: 'Initiative' },
+        { path: '@combatStats.initiative.totalValue',                 label: 'Initiative' },
         { path: '@combatStats.grapple.totalValue',              label: 'Grapple' },
         { path: '@combatStats.max_hp.totalValue',               label: 'Max Hit Points' },
         { path: '@combatStats.speed_land.totalValue',           label: 'Land Speed (ft.)' },
@@ -186,14 +186,14 @@
         { path: '@combatStats.armor_check_penalty.totalValue',  label: 'Armor Check Penalty' },
         { path: '@combatStats.fortification.totalValue',        label: 'Fortification (%)' },
         { path: '@combatStats.arcane_spell_failure.totalValue', label: 'Arcane Spell Failure (%)' },
-        { path: '@combatStats.max_dex_bonus.totalValue',        label: 'Max DEX Bonus to AC' },
+        { path: '@combatStats.max_dexterity_bonus.totalValue',        label: 'Max DEX Bonus to AC' },
       ],
     },
     {
       title: 'Saving Throws',
       entries: [
-        { path: '@saves.fort.totalValue', label: 'Fortitude Save' },
-        { path: '@saves.ref.totalValue',  label: 'Reflex Save' },
+        { path: '@saves.fortitude.totalValue', label: 'Fortitude Save' },
+        { path: '@saves.reflex.totalValue',  label: 'Reflex Save' },
         { path: '@saves.will.totalValue', label: 'Will Save' },
       ],
     },
@@ -530,7 +530,7 @@
               <li><code>5</code> — plain number</li>
               <li><code>1d6</code> — roll 1 six-sided die</li>
               <li><code>2d8+3</code> — roll 2d8, add 3</li>
-              <li><code>1d4+@attributes.stat_str.derivedModifier</code></li>
+              <li><code>1d4+@attributes.stat_strength.derivedModifier</code></li>
               <li><code>@classLevels.class_fighter</code></li>
               <li><code>@characterLevel * 2</code></li>
             </ul>

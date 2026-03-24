@@ -54,12 +54,12 @@
   // ===========================================================================
 
   const ABILITY_SCORES: Array<{ id: ID; label: string }> = [
-    { id: 'stat_str', label: 'Strength (STR)' },
-    { id: 'stat_dex', label: 'Dexterity (DEX)' },
-    { id: 'stat_con', label: 'Constitution (CON)' },
-    { id: 'stat_int', label: 'Intelligence (INT)' },
-    { id: 'stat_wis', label: 'Wisdom (WIS)' },
-    { id: 'stat_cha', label: 'Charisma (CHA)' },
+    { id: 'stat_strength', label: 'Strength (STR)' },
+    { id: 'stat_dexterity', label: 'Dexterity (DEX)' },
+    { id: 'stat_constitution', label: 'Constitution (CON)' },
+    { id: 'stat_intelligence', label: 'Intelligence (INT)' },
+    { id: 'stat_wisdom', label: 'Wisdom (WIS)' },
+    { id: 'stat_charisma', label: 'Charisma (CHA)' },
   ];
 
   function hasRecommendedAttr(id: ID): boolean {

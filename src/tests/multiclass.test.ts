@@ -63,14 +63,14 @@ import type { ModifierType } from '$lib/types/primitives';
  * @param id       - Unique modifier ID.
  * @param sourceId - The class ID generating this BAB increment.
  * @param value    - The BAB increment for this level (+1 for full BAB, 0/+1 alternating for half, etc.).
- * @returns A Modifier targeting "combatStats.bab" with type "base".
+ * @returns A Modifier targeting "combatStats.base_attack_bonus" with type "base".
  */
 function makeBabModifier(id: string, sourceId: string, value: number): Modifier {
   return {
     id,
     sourceId,
     sourceName: { en: id },
-    targetId: 'combatStats.bab',
+    targetId: 'combatStats.base_attack_bonus',
     value,
     type: 'base' as ModifierType,
   };
@@ -87,7 +87,7 @@ function makeBabModifier(id: string, sourceId: string, value: number): Modifier 
  *
  * @param id       - Unique modifier ID.
  * @param sourceId - The class ID generating this save increment.
- * @param targetId - Pipeline ID (e.g., "saves.fort", "saves.ref", "saves.will").
+ * @param targetId - Pipeline ID (e.g., "saves.fortitude", "saves.reflex", "saves.will").
  * @param value    - The save increment for this level.
  * @returns A Modifier with type "base".
  */
@@ -139,8 +139,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: ['class_feature_fighter_bonus_feat'],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l1', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l1', 'class_fighter', 'saves.fort', 2),
-        makeSaveModifier('fighter_ref_l1', 'class_fighter', 'saves.ref', 0),
+        makeSaveModifier('fighter_fort_l1', 'class_fighter', 'saves.fortitude', 2),
+        makeSaveModifier('fighter_ref_l1', 'class_fighter', 'saves.reflex', 0),
         makeSaveModifier('fighter_will_l1', 'class_fighter', 'saves.will', 0),
       ],
     },
@@ -150,8 +150,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: ['class_feature_fighter_bonus_feat_2'],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l2', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l2', 'class_fighter', 'saves.fort', 0),
-        makeSaveModifier('fighter_ref_l2', 'class_fighter', 'saves.ref', 0),
+        makeSaveModifier('fighter_fort_l2', 'class_fighter', 'saves.fortitude', 0),
+        makeSaveModifier('fighter_ref_l2', 'class_fighter', 'saves.reflex', 0),
         makeSaveModifier('fighter_will_l2', 'class_fighter', 'saves.will', 0),
       ],
     },
@@ -161,8 +161,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: [],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l3', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l3', 'class_fighter', 'saves.fort', 1),
-        makeSaveModifier('fighter_ref_l3', 'class_fighter', 'saves.ref', 1),
+        makeSaveModifier('fighter_fort_l3', 'class_fighter', 'saves.fortitude', 1),
+        makeSaveModifier('fighter_ref_l3', 'class_fighter', 'saves.reflex', 1),
         makeSaveModifier('fighter_will_l3', 'class_fighter', 'saves.will', 1),
       ],
     },
@@ -172,8 +172,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: ['class_feature_fighter_bonus_feat_4'],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l4', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l4', 'class_fighter', 'saves.fort', 0),
-        makeSaveModifier('fighter_ref_l4', 'class_fighter', 'saves.ref', 0),
+        makeSaveModifier('fighter_fort_l4', 'class_fighter', 'saves.fortitude', 0),
+        makeSaveModifier('fighter_ref_l4', 'class_fighter', 'saves.reflex', 0),
         makeSaveModifier('fighter_will_l4', 'class_fighter', 'saves.will', 0),
       ],
     },
@@ -183,8 +183,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: [],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l5', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l5', 'class_fighter', 'saves.fort', 1),
-        makeSaveModifier('fighter_ref_l5', 'class_fighter', 'saves.ref', 0),
+        makeSaveModifier('fighter_fort_l5', 'class_fighter', 'saves.fortitude', 1),
+        makeSaveModifier('fighter_ref_l5', 'class_fighter', 'saves.reflex', 0),
         makeSaveModifier('fighter_will_l5', 'class_fighter', 'saves.will', 0),
       ],
     },
@@ -194,8 +194,8 @@ const MOCK_FIGHTER: Feature = {
       grantedFeatures: ['class_feature_fighter_bonus_feat_6'],
       grantedModifiers: [
         makeBabModifier('fighter_bab_l6', 'class_fighter', 1),
-        makeSaveModifier('fighter_fort_l6', 'class_fighter', 'saves.fort', 0),
-        makeSaveModifier('fighter_ref_l6', 'class_fighter', 'saves.ref', 1),
+        makeSaveModifier('fighter_fort_l6', 'class_fighter', 'saves.fortitude', 0),
+        makeSaveModifier('fighter_ref_l6', 'class_fighter', 'saves.reflex', 1),
         makeSaveModifier('fighter_will_l6', 'class_fighter', 'saves.will', 1),
       ],
     },
@@ -238,8 +238,8 @@ const MOCK_WIZARD: Feature = {
       grantedFeatures: ['class_feature_wizard_scribe_scroll'],
       grantedModifiers: [
         makeBabModifier('wizard_bab_l1', 'class_wizard', 0),
-        makeSaveModifier('wizard_fort_l1', 'class_wizard', 'saves.fort', 0),
-        makeSaveModifier('wizard_ref_l1', 'class_wizard', 'saves.ref', 0),
+        makeSaveModifier('wizard_fort_l1', 'class_wizard', 'saves.fortitude', 0),
+        makeSaveModifier('wizard_ref_l1', 'class_wizard', 'saves.reflex', 0),
         makeSaveModifier('wizard_will_l1', 'class_wizard', 'saves.will', 2),
       ],
     },
@@ -249,8 +249,8 @@ const MOCK_WIZARD: Feature = {
       grantedFeatures: [],
       grantedModifiers: [
         makeBabModifier('wizard_bab_l2', 'class_wizard', 1),
-        makeSaveModifier('wizard_fort_l2', 'class_wizard', 'saves.fort', 0),
-        makeSaveModifier('wizard_ref_l2', 'class_wizard', 'saves.ref', 0),
+        makeSaveModifier('wizard_fort_l2', 'class_wizard', 'saves.fortitude', 0),
+        makeSaveModifier('wizard_ref_l2', 'class_wizard', 'saves.reflex', 0),
         makeSaveModifier('wizard_will_l2', 'class_wizard', 'saves.will', 1),
       ],
     },
@@ -260,8 +260,8 @@ const MOCK_WIZARD: Feature = {
       grantedFeatures: [],
       grantedModifiers: [
         makeBabModifier('wizard_bab_l3', 'class_wizard', 0),
-        makeSaveModifier('wizard_fort_l3', 'class_wizard', 'saves.fort', 1),
-        makeSaveModifier('wizard_ref_l3', 'class_wizard', 'saves.ref', 1),
+        makeSaveModifier('wizard_fort_l3', 'class_wizard', 'saves.fortitude', 1),
+        makeSaveModifier('wizard_ref_l3', 'class_wizard', 'saves.reflex', 1),
         makeSaveModifier('wizard_will_l3', 'class_wizard', 'saves.will', 0),
       ],
     },
@@ -287,7 +287,7 @@ const MOCK_WIZARD: Feature = {
  *
  * @param progressionEntries - The class's levelProgression array.
  * @param classLevel         - The character's level in this class.
- * @param targetPipeline     - The pipeline ID to filter by (e.g., "combatStats.bab").
+ * @param targetPipeline     - The pipeline ID to filter by (e.g., "combatStats.base_attack_bonus").
  * @returns All modifiers targeting the specified pipeline, from entries ≤ classLevel.
  */
 function collectLevelGatedModifiers(
@@ -394,7 +394,7 @@ describe('Multiclass: BAB calculation (ARCHITECTURE.md Example G)', () => {
     const fighterBabMods = collectLevelGatedModifiers(
       MOCK_FIGHTER.levelProgression!,
       fighterLevel,
-      'combatStats.bab'
+      'combatStats.base_attack_bonus'
     );
 
     const result = applyStackingRules(fighterBabMods, 0);
@@ -409,7 +409,7 @@ describe('Multiclass: BAB calculation (ARCHITECTURE.md Example G)', () => {
     const wizardBabMods = collectLevelGatedModifiers(
       MOCK_WIZARD.levelProgression!,
       wizardLevel,
-      'combatStats.bab'
+      'combatStats.base_attack_bonus'
     );
 
     const result = applyStackingRules(wizardBabMods, 0);
@@ -425,8 +425,8 @@ describe('Multiclass: BAB calculation (ARCHITECTURE.md Example G)', () => {
 
     // Collect BAB modifiers from BOTH classes (simulating Phase 0 combining all active features)
     const allBabMods: Modifier[] = [
-      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, fighterLevel, 'combatStats.bab'),
-      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, wizardLevel, 'combatStats.bab'),
+      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, fighterLevel, 'combatStats.base_attack_bonus'),
+      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, wizardLevel, 'combatStats.base_attack_bonus'),
     ];
 
     // Apply stacking rules — "base" type STACKS (it does not take-the-highest like typed bonuses)
@@ -441,7 +441,7 @@ describe('Multiclass: BAB calculation (ARCHITECTURE.md Example G)', () => {
     // However, zero-value mods (Wizard's +0 increments) don't contribute but ARE in the list
     // The engine processes all and sums them.
     const babAppliedCount = result.appliedModifiers.filter(
-      m => m.targetId === 'combatStats.bab'
+      m => m.targetId === 'combatStats.base_attack_bonus'
     ).length;
     expect(babAppliedCount).toBeGreaterThanOrEqual(2); // At minimum both non-zero contributions
   });
@@ -451,8 +451,8 @@ describe('Multiclass: BAB calculation (ARCHITECTURE.md Example G)', () => {
     // If BAB mistakenly used highest-only (like "enhancement" type), we'd get only +5.
     // This test PROVES that "base" type correctly STACKS to give +6.
     const allBabMods: Modifier[] = [
-      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'combatStats.bab'),
-      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'combatStats.bab'),
+      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'combatStats.base_attack_bonus'),
+      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'combatStats.base_attack_bonus'),
     ];
 
     const result = applyStackingRules(allBabMods, 0);
@@ -474,7 +474,7 @@ describe('Multiclass: Saving throw calculation (ARCHITECTURE.md Example G)', () 
     const fortMods = collectLevelGatedModifiers(
       MOCK_FIGHTER.levelProgression!,
       5,
-      'saves.fort'
+      'saves.fortitude'
     );
     const result = applyStackingRules(fortMods, 0);
     // Fighter Good Fort at levels 1-5: 2+0+1+0+1 = 4
@@ -485,7 +485,7 @@ describe('Multiclass: Saving throw calculation (ARCHITECTURE.md Example G)', () 
     const refMods = collectLevelGatedModifiers(
       MOCK_FIGHTER.levelProgression!,
       5,
-      'saves.ref'
+      'saves.reflex'
     );
     const result = applyStackingRules(refMods, 0);
     // Fighter Poor Ref at levels 1-5: 0+0+1+0+0 = 1
@@ -507,7 +507,7 @@ describe('Multiclass: Saving throw calculation (ARCHITECTURE.md Example G)', () 
     const fortMods = collectLevelGatedModifiers(
       MOCK_WIZARD.levelProgression!,
       3,
-      'saves.fort'
+      'saves.fortitude'
     );
     const result = applyStackingRules(fortMods, 0);
     // Wizard Poor Fort at levels 1-3: 0+0+1 = 1
@@ -527,8 +527,8 @@ describe('Multiclass: Saving throw calculation (ARCHITECTURE.md Example G)', () 
 
   it('Combined Fort save = +5 (Fighter 4 + Wizard 1)', () => {
     const allFortMods = [
-      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'saves.fort'),
-      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'saves.fort'),
+      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'saves.fortitude'),
+      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'saves.fortitude'),
     ];
     const result = applyStackingRules(allFortMods, 0);
     expect(result.totalBonus).toBe(5); // 4 + 1 = 5
@@ -536,8 +536,8 @@ describe('Multiclass: Saving throw calculation (ARCHITECTURE.md Example G)', () 
 
   it('Combined Reflex save = +2 (Fighter 1 + Wizard 1)', () => {
     const allRefMods = [
-      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'saves.ref'),
-      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'saves.ref'),
+      ...collectLevelGatedModifiers(MOCK_FIGHTER.levelProgression!, 5, 'saves.reflex'),
+      ...collectLevelGatedModifiers(MOCK_WIZARD.levelProgression!, 3, 'saves.reflex'),
     ];
     const result = applyStackingRules(allRefMods, 0);
     expect(result.totalBonus).toBe(2); // 1 + 1 = 2
@@ -655,7 +655,7 @@ describe('Multiclass: DataLoader caching and level-gated feature lookup', () => 
     const fighter = loader.getFeature('class_fighter')!;
     const classLevel = 5;
 
-    const babMods = collectLevelGatedModifiers(fighter.levelProgression!, classLevel, 'combatStats.bab');
+    const babMods = collectLevelGatedModifiers(fighter.levelProgression!, classLevel, 'combatStats.base_attack_bonus');
     const result = applyStackingRules(babMods, 0);
 
     // Fighter 5 full BAB = +5
@@ -666,7 +666,7 @@ describe('Multiclass: DataLoader caching and level-gated feature lookup', () => 
     const wizard = loader.getFeature('class_wizard')!;
     const classLevel = 3;
 
-    const babMods = collectLevelGatedModifiers(wizard.levelProgression!, classLevel, 'combatStats.bab');
+    const babMods = collectLevelGatedModifiers(wizard.levelProgression!, classLevel, 'combatStats.base_attack_bonus');
     const result = applyStackingRules(babMods, 0);
 
     // Wizard 3 half BAB = +1
@@ -683,12 +683,12 @@ describe('Multiclass: DataLoader caching and level-gated feature lookup', () => 
       ...collectLevelGatedModifiers(
         fighter.levelProgression!,
         classLevels['class_fighter'],
-        'combatStats.bab'
+        'combatStats.base_attack_bonus'
       ),
       ...collectLevelGatedModifiers(
         wizard.levelProgression!,
         classLevels['class_wizard'],
-        'combatStats.bab'
+        'combatStats.base_attack_bonus'
       ),
     ];
 
@@ -713,7 +713,7 @@ describe('Multiclass: Boundary conditions and edge cases', () => {
     const babMods = collectLevelGatedModifiers(
       MOCK_FIGHTER.levelProgression!,
       5,
-      'combatStats.bab'
+      'combatStats.base_attack_bonus'
     );
 
     // Level 5 modifier (ID: fighter_bab_l5) must be in the list
@@ -753,7 +753,7 @@ describe('Multiclass: Boundary conditions and edge cases', () => {
 
     // Simulating logic: if !feature.levelProgression, no entries are processed
     const progression = noProgressionClass.levelProgression ?? [];
-    const mods = collectLevelGatedModifiers(progression, 5, 'combatStats.bab');
+    const mods = collectLevelGatedModifiers(progression, 5, 'combatStats.base_attack_bonus');
     expect(mods).toHaveLength(0);
 
     const granted = collectGrantedFeatureIds(progression, 5);

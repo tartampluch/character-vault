@@ -448,7 +448,7 @@ export function applyStackingRules(
  *
  * WHY CAN THIS BE A STRING?
  *   `Modifier.value` is `number | string` because formulas like
- *   `"@attributes.stat_wis.derivedModifier"` are valid modifier values in JSON.
+ *   `"@attributes.stat_wisdom.derivedModifier"` are valid modifier values in JSON.
  *   However, by the time a modifier reaches `applyStackingRules()`, the GameEngine
  *   has ALREADY resolved all string formulas to numbers via `evaluateFormula()`.
  *   This helper is a safety net for any string that somehow slipped through

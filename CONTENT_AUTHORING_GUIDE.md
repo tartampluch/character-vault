@@ -220,7 +220,7 @@ Tags are **string labels** placed on Features. They serve three purposes:
 | `alignment_ALIGN` | Moral alignment | `alignment_lawful`, `alignment_chaotic`, `alignment_good`, `alignment_evil` |
 | `heavy_load` / `medium_load` | Encumbrance condition | Auto-injected by engine based on carried weight |
 | `spellcaster` | Has spellcasting | Used in prestige class prerequisites |
-| `caster_ability_STAT` | Casting stat identifier | `caster_ability_stat_int`, `caster_ability_stat_wis`, `caster_ability_stat_cha` |
+| `caster_ability_STAT` | Casting stat identifier | `caster_ability_stat_intelligence`, `caster_ability_stat_wisdom`, `caster_ability_stat_charisma` |
 | `condition_NAME` | Active condition | `condition_stunned`, `condition_raging` |
 | `extraordinary` / `supernatural` / `spell_like` | Ability type | For SR/PR checks |
 | `sys_` | System-wide global modifier | `sys_immune_mind_affecting`, `sys_roll_maximize_damage` |
@@ -403,12 +403,12 @@ The `targetId` in a modifier tells the engine **which pipeline** to affect.
 
 | Target ID | Statistic |
 |---|---|
-| `attributes.stat_str` or `stat_str` | Strength |
-| `attributes.stat_dex` or `stat_dex` | Dexterity |
-| `attributes.stat_con` or `stat_con` | Constitution |
-| `attributes.stat_int` or `stat_int` | Intelligence |
-| `attributes.stat_wis` or `stat_wis` | Wisdom |
-| `attributes.stat_cha` or `stat_cha` | Charisma |
+| `attributes.stat_strength` or `stat_strength` | Strength |
+| `attributes.stat_dexterity` or `stat_dexterity` | Dexterity |
+| `attributes.stat_constitution` or `stat_constitution` | Constitution |
+| `attributes.stat_intelligence` or `stat_intelligence` | Intelligence |
+| `attributes.stat_wisdom` or `stat_wisdom` | Wisdom |
+| `attributes.stat_charisma` or `stat_charisma` | Charisma |
 | `attributes.stat_size` | Size modifier pipeline |
 | `attributes.stat_caster_level` | Arcane/divine caster level |
 | `attributes.stat_manifester_level` | Psionic manifester level |
@@ -420,18 +420,18 @@ The `targetId` in a modifier tells the engine **which pipeline** to affect.
 
 | Target ID | Save | Ability |
 |---|---|---|
-| `saves.fort` | Fortitude | CON |
-| `saves.ref` | Reflex | DEX |
+| `saves.fortitude` | Fortitude | CON |
+| `saves.reflex` | Reflex | DEX |
 | `saves.will` | Will | WIS |
 | `saves.all` | **All three** (fan-out broadcast) | — |
 
-> Using `saves.all` automatically creates three copies targeting `saves.fort`, `saves.ref`, and `saves.will`. Use this for bonuses like Resistance or Luck that apply to all saves simultaneously.
+> Using `saves.all` automatically creates three copies targeting `saves.fortitude`, `saves.reflex`, and `saves.will`. Use this for bonuses like Resistance or Luck that apply to all saves simultaneously.
 
 #### Combat Statistics (`combatStats.*`)
 
 | Target ID | Statistic |
 |---|---|
-| `combatStats.bab` | Base Attack Bonus |
+| `combatStats.base_attack_bonus` | Base Attack Bonus |
 | `combatStats.ac_normal` | Normal AC |
 | `combatStats.ac_touch` | Touch AC |
 | `combatStats.ac_flat_footed` | Flat-footed AC |
@@ -445,7 +445,7 @@ The `targetId` in a modifier tells the engine **which pipeline** to affect.
 | `combatStats.speed_swim` | Swim speed |
 | `combatStats.speed_climb` | Climb speed |
 | `combatStats.speed_burrow` | Burrow speed |
-| `combatStats.max_dex_bonus` | Maximum DEX bonus to AC |
+| `combatStats.max_dexterity_bonus` | Maximum DEX bonus to AC |
 | `combatStats.armor_check_penalty` | Armor Check Penalty |
 | `combatStats.arcane_spell_failure` | Arcane Spell Failure % |
 | `combatStats.fortification` | Fortification % (crit negation) |
@@ -524,14 +524,14 @@ Inside a formula string, any path starting with `@` is replaced with a live valu
 
 | Path | Returns |
 |---|---|
-| `@attributes.stat_str.totalValue` | Strength's total score |
-| `@attributes.stat_str.derivedModifier` | STR modifier = `floor((STR - 10) / 2)` |
-| `@attributes.stat_str.baseValue` | Base STR before modifiers |
+| `@attributes.stat_strength.totalValue` | Strength's total score |
+| `@attributes.stat_strength.derivedModifier` | STR modifier = `floor((STR - 10) / 2)` |
+| `@attributes.stat_strength.baseValue` | Base STR before modifiers |
 | `@skills.skill_tumble.ranks` | Ranks invested in Tumble |
 | `@skills.skill_tumble.totalValue` | Total Tumble check value |
-| `@combatStats.bab.totalValue` | Current BAB total |
+| `@combatStats.base_attack_bonus.totalValue` | Current BAB total |
 | `@combatStats.speed_land.totalValue` | Land speed in feet |
-| `@saves.fort.totalValue` | Fortitude save total |
+| `@saves.fortitude.totalValue` | Fortitude save total |
 | `@characterLevel` | Sum of all class levels |
 | `@classLevels.class_rogue` | Level in a specific class |
 | `@activeTags` | Array of all currently active tags |
@@ -542,7 +542,7 @@ Inside a formula string, any path starting with `@` is replaced with a live valu
 ### Formula Examples
 
 ```json
-{ "value": "@attributes.stat_wis.derivedModifier" }
+{ "value": "@attributes.stat_wisdom.derivedModifier" }
 ```
 → Uses the WIS modifier as the value (Monk AC bonus)
 
@@ -552,12 +552,12 @@ Inside a formula string, any path starting with `@` is replaced with a live valu
 → Psychic Strike dice: 1d8 at level 4, 2d8 at level 8, etc.
 
 ```json
-{ "value": "1d12 + floor(@attributes.stat_str.derivedModifier * 1.5)" }
+{ "value": "1d12 + floor(@attributes.stat_strength.derivedModifier * 1.5)" }
 ```
 → Two-handed weapon damage (1.5× STR modifier)
 
 ```json
-{ "value": "3 + @attributes.stat_con.derivedModifier" }
+{ "value": "3 + @attributes.stat_constitution.derivedModifier" }
 ```
 → Barbarian Rage duration in rounds
 
@@ -567,12 +567,12 @@ A `value` of `"1d6"` or `"2d10"` should only be used where the result is a **dam
 
 | Use dice formula for | Use numeric value for |
 |---|---|
-| `combatStats.damage_bonus` (on-hit bonus dice) | `attributes.stat_str` (ability score delta) |
-| Augmentation `grantedModifiers.targetId: "damage"` | `combatStats.bab` (attack bonus) |
-| `combatStats.power_damage_bonus` (psionic) | `saves.fort/ref/will` (save increments) |
+| `combatStats.damage_bonus` (on-hit bonus dice) | `attributes.stat_strength` (ability score delta) |
+| Augmentation `grantedModifiers.targetId: "damage"` | `combatStats.base_attack_bonus` (attack bonus) |
+| `combatStats.power_damage_bonus` (psionic) | `saves.fortitude/reflex/will` (save increments) |
 | Any pipeline that accumulates damage at cast time | Any pipeline that feeds into a static sheet total |
 
-The engine evaluates dice formulas using the Math Parser; if a dice result is fed into a static pipeline like `saves.fort`, it will roll each sheet recomputation — an unintended and incorrect result.
+The engine evaluates dice formulas using the Math Parser; if a dice result is fed into a static pipeline like `saves.fortitude`, it will roll each sheet recomputation — an unintended and incorrect result.
 
 ### Supported Math Functions
 
@@ -582,8 +582,8 @@ The Math Parser supports the following functions inside formula strings:
 |---|---|---|
 | `floor(x)` | `"floor(@classLevels.class_bard / 2)"` | Most common — for half/quarter progressions |
 | `ceil(x)` | `"ceil(@characterLevel / 3)"` | Rounds up |
-| `round(x)` | `"round(@attributes.stat_wis.derivedModifier)"` | Rounds to nearest |
-| `max(a, b)` | `"max(0, @attributes.stat_str.derivedModifier)"` | Floor at 0 |
+| `round(x)` | `"round(@attributes.stat_wisdom.derivedModifier)"` | Rounds to nearest |
+| `max(a, b)` | `"max(0, @attributes.stat_strength.derivedModifier)"` | Floor at 0 |
 | `min(a, b)` | `"min(5, @classLevels.class_barbarian)"` | Cap at value |
 | `abs(x)` | `"abs(@saves.will.totalValue)"` | Absolute value |
 
@@ -659,8 +659,8 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 | Path | Checks |
 |---|---|
 | `@activeTags` | Active tag list (use with `has_tag` / `missing_tag`) |
-| `@attributes.stat_str.totalValue` | Strength score (use with `>=`) |
-| `@attributes.stat_dex.totalValue` | Dexterity score |
+| `@attributes.stat_strength.totalValue` | Strength score (use with `>=`) |
+| `@attributes.stat_dexterity.totalValue` | Dexterity score |
 | `@attributes.stat_caster_level.totalValue` | Caster level |
 | `@skills.skill_tumble.ranks` | Skill ranks |
 | `@characterLevel` | Total character level |
@@ -679,7 +679,7 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 ```json
 "prerequisitesNode": {
   "logic": "CONDITION",
-  "targetPath": "@attributes.stat_str.totalValue",
+  "targetPath": "@attributes.stat_strength.totalValue",
   "operator": ">=",
   "value": 13,
   "errorMessage": "Requires Strength 13+"
@@ -694,7 +694,7 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
   "nodes": [
     {
       "logic": "CONDITION",
-      "targetPath": "@attributes.stat_str.totalValue",
+      "targetPath": "@attributes.stat_strength.totalValue",
       "operator": ">=",
       "value": 13,
       "errorMessage": "Requires Strength 13+"
@@ -899,7 +899,7 @@ A race Feature uses `"category": "race"` and follows the standard Feature templa
       "id": "dwarf_con_bonus",
       "sourceId": "race_dwarf",
       "sourceName": { "en": "Dwarf", "fr": "Nain" },
-      "targetId": "attributes.stat_con",
+      "targetId": "attributes.stat_constitution",
       "value": 2,
       "type": "racial"
     },
@@ -907,7 +907,7 @@ A race Feature uses `"category": "race"` and follows the standard Feature templa
       "id": "dwarf_cha_penalty",
       "sourceId": "race_dwarf",
       "sourceName": { "en": "Dwarf", "fr": "Nain" },
-      "targetId": "attributes.stat_cha",
+      "targetId": "attributes.stat_charisma",
       "value": -2,
       "type": "racial"
     },
@@ -1024,7 +1024,7 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
     "skill_climb", "skill_craft", "skill_handle_animal",
     "skill_intimidate", "skill_jump", "skill_ride", "skill_swim"
   ],
-  "recommendedAttributes": ["stat_str", "stat_con"],
+  "recommendedAttributes": ["stat_strength", "stat_constitution"],
   "levelProgression": [
     {
       "level": 1,
@@ -1036,21 +1036,21 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
           "id": "fight_1_bab",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
-          "targetId": "combatStats.bab",
+          "targetId": "combatStats.base_attack_bonus",
           "value": 1, "type": "base"
         },
         {
           "id": "fight_1_fort",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
-          "targetId": "saves.fort",
+          "targetId": "saves.fortitude",
           "value": 2, "type": "base"
         },
         {
           "id": "fight_1_ref",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 1", "fr": "Guerrier 1" },
-          "targetId": "saves.ref",
+          "targetId": "saves.reflex",
           "value": 0, "type": "base"
         },
         {
@@ -1070,14 +1070,14 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
           "id": "fight_2_bab",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 2", "fr": "Guerrier 2" },
-          "targetId": "combatStats.bab",
+          "targetId": "combatStats.base_attack_bonus",
           "value": 1, "type": "base"
         },
         {
           "id": "fight_2_fort",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 2", "fr": "Guerrier 2" },
-          "targetId": "saves.fort",
+          "targetId": "saves.fortitude",
           "value": 1, "type": "base"
         }
       ]
@@ -1090,14 +1090,14 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
           "id": "fight_3_bab",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 3", "fr": "Guerrier 3" },
-          "targetId": "combatStats.bab",
+          "targetId": "combatStats.base_attack_bonus",
           "value": 1, "type": "base"
         },
         {
           "id": "fight_3_fort",
           "sourceId": "class_fighter",
           "sourceName": { "en": "Fighter 3", "fr": "Guerrier 3" },
-          "targetId": "saves.fort",
+          "targetId": "saves.fortitude",
           "value": 1, "type": "base"
         }
       ]
@@ -1114,8 +1114,8 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
 
 ```json
 { "level": 2, "grantedFeatures": [], "grantedModifiers": [
-    { "id": "fight_2_bab",  "targetId": "combatStats.bab",  "value": 1, "type": "base", ... },
-    { "id": "fight_2_fort", "targetId": "saves.fort", "value": 1, "type": "base", ... }
+    { "id": "fight_2_bab",  "targetId": "combatStats.base_attack_bonus",  "value": 1, "type": "base", ... },
+    { "id": "fight_2_fort", "targetId": "saves.fortitude", "value": 1, "type": "base", ... }
 ]}
 ```
 (No `fight_2_ref` or `fight_2_will` needed — they improved by 0.)
@@ -1136,11 +1136,11 @@ Every spellcasting class (arcane or divine) must include the casting ability tag
 
 | Class | Tag to add |
 |---|---|
-| Wizard | `"caster_ability_stat_int"` |
-| Sorcerer, Bard | `"caster_ability_stat_cha"` |
-| Cleric, Druid, Ranger, Paladin | `"caster_ability_stat_wis"` |
-| Psion (INT), Psychic Warrior | `"caster_ability_stat_int"` |
-| Wilder | `"caster_ability_stat_cha"` |
+| Wizard | `"caster_ability_stat_intelligence"` |
+| Sorcerer, Bard | `"caster_ability_stat_charisma"` |
+| Cleric, Druid, Ranger, Paladin | `"caster_ability_stat_wisdom"` |
+| Psion (INT), Psychic Warrior | `"caster_ability_stat_intelligence"` |
+| Wilder | `"caster_ability_stat_charisma"` |
 
 Also add `"spellcaster"` to the class `tags` array if the class can cast spells — this is the tag prestige class prerequisites check for "must be able to cast arcane/divine spells."
 
@@ -1220,7 +1220,7 @@ Some class features have no modifiers — they are narrative abilities that the 
       "id": "rage_str_bonus",
       "sourceId": "class_feature_barbarian_rage",
       "sourceName": { "en": "Rage", "fr": "Furie" },
-      "targetId": "attributes.stat_str",
+      "targetId": "attributes.stat_strength",
       "value": 4,
       "type": "morale"
     },
@@ -1228,7 +1228,7 @@ Some class features have no modifiers — they are narrative abilities that the 
       "id": "rage_con_bonus",
       "sourceId": "class_feature_barbarian_rage",
       "sourceName": { "en": "Rage", "fr": "Furie" },
-      "targetId": "attributes.stat_con",
+      "targetId": "attributes.stat_constitution",
       "value": 4,
       "type": "morale"
     },
@@ -1348,7 +1348,7 @@ Feats use `"category": "feat"`. The most important things feats add are `prerequ
     "nodes": [
       {
         "logic": "CONDITION",
-        "targetPath": "@attributes.stat_str.totalValue",
+        "targetPath": "@attributes.stat_strength.totalValue",
         "operator": ">=",
         "value": 13,
         "errorMessage": "Requires Strength 13+"
@@ -1693,7 +1693,7 @@ Double weapons (Dire Flail, Quarterstaff, Orc Double Axe) have two ends with dif
       "id": "armor_chain_shirt_max_dex",
       "sourceId": "item_armor_chain_shirt",
       "sourceName": { "en": "Chain Shirt", "fr": "Chemise de mailles" },
-      "targetId": "combatStats.max_dex_bonus",
+      "targetId": "combatStats.max_dexterity_bonus",
       "value": 4,
       "type": "max_dex_cap"
     },
@@ -1723,7 +1723,7 @@ Double weapons (Dire Flail, Quarterstaff, Orc Double Axe) have two ends with dif
 | Field | Description |
 |---|---|
 | `armorBonus` | Display value shown on item card |
-| `maxDex` | Display value (engine uses `combatStats.max_dex_bonus` modifier) |
+| `maxDex` | Display value (engine uses `combatStats.max_dexterity_bonus` modifier) |
 | `armorCheckPenalty` | Display value (engine uses `combatStats.armor_check_penalty` modifier) |
 | `arcaneSpellFailure` | Display value (engine uses `combatStats.arcane_spell_failure` modifier) |
 
@@ -1983,7 +1983,7 @@ A potion is destroyed on use. Its modifiers become an ephemeral effect on the ch
       "id": "potion_bulls_str_bonus",
       "sourceId": "item_potion_bulls_strength",
       "sourceName": { "en": "Bull's Strength", "fr": "Force du taureau" },
-      "targetId": "attributes.stat_str",
+      "targetId": "attributes.stat_strength",
       "value": 4,
       "type": "enhancement"
     }
@@ -2176,7 +2176,7 @@ Environment features use `"category": "environment"`. They are injected into all
       "id": "extreme_heat_penalty",
       "sourceId": "environment_extreme_heat",
       "sourceName": { "en": "Extreme Heat", "fr": "Chaleur extrême" },
-      "targetId": "saves.fort",
+      "targetId": "saves.fortitude",
       "value": -4,
       "type": "untyped"
     }
@@ -2387,8 +2387,8 @@ In description text, use `{@path|distance}` or `{@path|weight}` pipes for automa
 
 | ID | Do NOT use |
 |---|---|
-| `saves.fort` | `saves.fortitude`, `saves.save_fort` |
-| `saves.ref` | `saves.reflex`, `saves.save_ref` |
+| `saves.fortitude` | `saves.fortitude`, `saves.save_fort` |
+| `saves.reflex` | `saves.reflex`, `saves.save_ref` |
 | `saves.will` | `saves.save_will` |
 | `saves.all` | Broadcasts to all three saves |
 

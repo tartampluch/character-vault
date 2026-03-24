@@ -62,7 +62,7 @@ import type { LogicNode } from './logic';
  *   modifier count toward `totalBonus`.
  *
  * KEY FIELD: `value`
- *   Can be a number (most common) OR a formula string (e.g., "@attributes.stat_wis.derivedModifier").
+ *   Can be a number (most common) OR a formula string (e.g., "@attributes.stat_wisdom.derivedModifier").
  *   String values are resolved by the Math Parser at computation time.
  *   This enables data-driven cross-stat dependencies:
  *     - Monk WIS → AC
@@ -88,7 +88,7 @@ import type { LogicNode } from './logic';
  *   "sourceId": "class_feature_monk_ac_bonus",
  *   "sourceName": { "en": "Monk Wisdom AC", "fr": "CA Sagesse Moine" },
  *   "targetId": "combatStats.ac_normal",
- *   "value": "@attributes.stat_wis.derivedModifier",
+ *   "value": "@attributes.stat_wisdom.derivedModifier",
  *   "type": "untyped",
  *   "conditionNode": { ... }
  * }
@@ -130,9 +130,9 @@ export interface Modifier {
    * The ID of the pipeline this modifier targets.
    *
    * CONVENTION:
-   *   - Main attributes:  "stat_str", "stat_dex", "stat_con", "stat_int", "stat_wis", "stat_cha"
-   *   - Combat stats:     "combatStats.ac_normal", "combatStats.bab", "combatStats.init"
-   *   - Saves:            "saves.fort", "saves.ref", "saves.will"
+   *   - Main attributes:  "stat_strength", "stat_dexterity", "stat_constitution", "stat_intelligence", "stat_wisdom", "stat_charisma"
+   *   - Combat stats:     "combatStats.ac_normal", "combatStats.base_attack_bonus", "combatStats.initiative"
+   *   - Saves:            "saves.fortitude", "saves.reflex", "saves.will"
    *   - Skills:           "skills.skill_climb", "skills.skill_jump"
    *   - Resources:        "resources.hp.maxValue" (via the maxPipelineId pointer)
    *   - Custom homebrew:  Any ID — the engine auto-creates the pipeline on first encounter.
@@ -163,9 +163,9 @@ export interface Modifier {
    * - `string`: A Math Parser formula resolved at computation time.
    *             Must be a valid math expression with optional `@`-path variables.
    *             Examples:
-   *               "@attributes.stat_wis.derivedModifier"   (Paladin/Monk cross-stat)
+   *               "@attributes.stat_wisdom.derivedModifier"   (Paladin/Monk cross-stat)
    *               "floor(@classLevels.class_soulknife / 4)" (scaling ability formula)
-   *               "2 * @attributes.stat_str.derivedModifier" (two-handed damage)
+   *               "2 * @attributes.stat_strength.derivedModifier" (two-handed damage)
    */
   value: number | string;
 
@@ -345,7 +345,7 @@ export interface Modifier {
 export interface StatisticPipeline {
   /**
    * The pipeline's unique identifier.
-   * Example: "stat_str", "combatStats.ac_normal", "saves.fort"
+   * Example: "stat_strength", "combatStats.ac_normal", "saves.fortitude"
    */
   id: ID;
 
@@ -466,7 +466,7 @@ export interface StatisticPipeline {
 export interface SkillPipeline extends StatisticPipeline {
   /**
    * The ID of the ability score pipeline that this skill uses as its base modifier.
-   * Example: "stat_dex" for Tumble, "stat_int" for Knowledge (Arcana).
+   * Example: "stat_dexterity" for Tumble, "stat_intelligence" for Knowledge (Arcana).
    *
    * The engine reads `character.attributes[keyAbility].derivedModifier` during
    * DAG Phase 4 to compute the skill's base contribution from the ability score.
@@ -705,7 +705,7 @@ export interface ResourcePool {
    *   Can be a plain number (most common) OR a Math Parser formula string, enabling
    *   scaling healing rates:
    *     `"floor(@classLevels.class_cleric / 2)"` — scales with cleric level
-   *     `"@attributes.stat_con.derivedModifier"` — scales with CON modifier (unusual but valid)
+   *     `"@attributes.stat_constitution.derivedModifier"` — scales with CON modifier (unusual but valid)
    *
    * DEFAULT: `undefined` / `0` — no incremental recharge. Pools with full-reset
    * `resetCondition` values can omit this field.

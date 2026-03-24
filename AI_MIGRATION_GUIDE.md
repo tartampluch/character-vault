@@ -103,7 +103,7 @@ Run this checklist on **every** converted entity before writing the output file:
 ### Semantic Validation
 
 - [ ] All `targetId` values are canonical pipeline IDs (not invented names)
-- [ ] `targetId` for saves uses `saves.fort` / `saves.ref` / `saves.will` (not `saves.fortitude` etc.)
+- [ ] `targetId` for saves uses `saves.fortitude` / `saves.reflex` / `saves.will` (not `saves.fort` / `saves.ref` etc.)
 - [ ] Speed modifiers use `"combatStats.speed_land"` (not `"attributes.speed_land"` for formula paths)
 - [ ] `type: "base"` is used ONLY for class progression (BAB, saves, CL increments) and race base speed — not for generic bonuses
 - [ ] Racial ability score modifiers use `"type": "racial"` (not `"type": "untyped"`)
@@ -222,11 +222,11 @@ Is it an ambient effect that the GM injects globally (heat, underwater)?
 
 ❌ **Wrong:** Using `"type": "untyped"` for racial ability score bonuses
 ```json
-{ "value": 2, "type": "untyped", "targetId": "attributes.stat_dex" }
+{ "value": 2, "type": "untyped", "targetId": "attributes.stat_dexterity" }
 ```
 ✅ **Correct:** Use `"type": "racial"`
 ```json
-{ "value": 2, "type": "racial", "targetId": "attributes.stat_dex" }
+{ "value": 2, "type": "racial", "targetId": "attributes.stat_dexterity" }
 ```
 
 ❌ **Wrong:** Storing speed in a `conditionNode` without using the standard pipeline
@@ -251,15 +251,15 @@ Both base classes and prestige classes use `"category": "class"`. Prestige class
 | Class name | `label.en/fr` + `id: "class_NAME"` | |
 | Hit Die (d6, d8, d10, d12) | `grantedModifiers` on `combatStats.hit_die_type` with base value 6/8/10/12 | |
 | Skill points/level | `grantedModifiers` on `attributes.skill_points_per_level` with `type: "base"` | Value: 2, 4, 6, 8 |
-| BAB progression | `levelProgression[n].grantedModifiers` on `combatStats.bab` with `type: "base"` | Increments, not totals |
-| Fort/Ref/Will progression | `levelProgression[n].grantedModifiers` on `saves.fort/ref/will` | Increments |
+| BAB progression | `levelProgression[n].grantedModifiers` on `combatStats.base_attack_bonus` with `type: "base"` | Increments, not totals |
+| Fortitude/Reflex/Will progression | `levelProgression[n].grantedModifiers` on `saves.fortitude/reflex/will` | Increments |
 | Caster level | `levelProgression[n].grantedModifiers` on `attributes.stat_caster_level` | +1 per level |
 | Manifester level | `levelProgression[n].grantedModifiers` on `attributes.stat_manifester_level` | +1 per level |
 | Class skills | `classSkills: [...]` array | List of `skill_ID` strings |
 | Weapon/armor proficiencies | `grantedFeatures: ["proficiency_TYPE"]` | Reference shared proficiency Features |
 | Class feature at level N | `levelProgression[N].grantedFeatures: ["class_feature_ID"]` | The feature is defined separately |
 | Alignment restriction | `forbiddenTags: ["alignment_lawful"]` | One tag per forbidden alignment |
-| Spellcasting ability | Add tag `"caster_ability_stat_wis"` (or int/cha) | In the class's `tags` array |
+| Spellcasting ability | Add tag `"caster_ability_stat_wisdom"` (or int/cha) | In the class's `tags` array |
 | Prestige class prerequisites | `prerequisitesNode` | Use AND/OR/NOT tree; see Section 13 |
 
 ### BAB Conversion by Progression Type
@@ -295,11 +295,11 @@ Increments:             0, 1, 1, 1, 0, 1, 1, 1, 0, 1...
 
 ❌ **Wrong:** Storing cumulative BAB totals
 ```json
-{ "level": 5, "grantedModifiers": [{ "targetId": "combatStats.bab", "value": 5 }] }
+{ "level": 5, "grantedModifiers": [{ "targetId": "combatStats.base_attack_bonus", "value": 5 }] }
 ```
 ✅ **Correct:** Store per-level increments
 ```json
-{ "level": 5, "grantedModifiers": [{ "targetId": "combatStats.bab", "value": 1 }] }
+{ "level": 5, "grantedModifiers": [{ "targetId": "combatStats.base_attack_bonus", "value": 1 }] }
 ```
 
 ❌ **Wrong:** Omitting level entries that grant nothing
@@ -506,7 +506,7 @@ This makes every "Weapon Focus (longsword)" distinct without creating separate f
 | Source Material | Engine Field | Notes |
 |---|---|---|
 | Armor bonus | `grantedModifiers` on `combatStats.ac_normal` with `type: "armor"` | Also set shadow in `armorData.armorBonus` |
-| Max DEX | `grantedModifiers` on `combatStats.max_dex_bonus` with `type: "max_dex_cap"` | Also set shadow in `armorData.maxDex` |
+| Max DEX | `grantedModifiers` on `combatStats.max_dexterity_bonus` with `type: "max_dex_cap"` | Also set shadow in `armorData.maxDex` |
 | ACP | `grantedModifiers` on `combatStats.armor_check_penalty` with `type: "base"` | Negative value (e.g., -7 for full plate). Also set shadow in `armorData.armorCheckPenalty` |
 | ASF | `grantedModifiers` on `combatStats.arcane_spell_failure` with `type: "base"` | As percentage integer (e.g., 35). Also shadow |
 | Armor type (light/medium/heavy) | `tags`: add `"armor_light"` / `"armor_medium"` / `"armor_heavy"` | Also add `"wearing_armor"` to ALL armor items |
@@ -610,7 +610,7 @@ Monster types (Undead, Construct, Dragon, Humanoid, etc.) are Features with `"ca
       "id": "undead_con_zero",
       "sourceId": "monster_type_undead",
       "sourceName": { "en": "Undead Type", "fr": "Type mort-vivant" },
-      "targetId": "attributes.stat_con",
+      "targetId": "attributes.stat_constitution",
       "value": 0,
       "type": "setAbsolute"
     }
@@ -655,12 +655,12 @@ The `hd_humanoid` Feature is a class-like Feature with `levelProgression` defini
   "xp": 0,
   "hitDieResults": { "1": 8, "2": 5 },
   "attributes": {
-    "stat_str": { "id": "stat_str", "baseValue": 17, ... },
-    "stat_dex": { "id": "stat_dex", "baseValue": 11, ... },
-    "stat_con": { "id": "stat_con", "baseValue": 12, ... },
-    "stat_int": { "id": "stat_int", "baseValue":  7, ... },
-    "stat_wis": { "id": "stat_wis", "baseValue":  8, ... },
-    "stat_cha": { "id": "stat_cha", "baseValue":  8, ... }
+    "stat_strength": { "id": "stat_strength", "baseValue": 17, ... },
+    "stat_dexterity": { "id": "stat_dexterity", "baseValue": 11, ... },
+    "stat_constitution": { "id": "stat_constitution", "baseValue": 12, ... },
+    "stat_intelligence": { "id": "stat_intelligence", "baseValue":  7, ... },
+    "stat_wisdom": { "id": "stat_wisdom", "baseValue":  8, ... },
+    "stat_charisma": { "id": "stat_charisma", "baseValue":  8, ... }
   },
   "activeFeatures": [
     { "instanceId": "afi_race_orc",   "featureId": "race_orc",         "isActive": true },
@@ -702,9 +702,9 @@ The `condition_raging` tag is special: it's injected by the Barbarian Rage class
 
 | Source Text Pattern | LogicNode Structure |
 |---|---|
-| `"Requires STR 13+"` | `CONDITION: @attributes.stat_str.totalValue >= 13` |
+| `"Requires STR 13+"` | `CONDITION: @attributes.stat_strength.totalValue >= 13` |
 | `"Requires Power Attack feat"` | `CONDITION: @activeTags has_tag feat_power_attack` |
-| `"Requires BAB +6"` | `CONDITION: @combatStats.bab.totalValue >= 6` |
+| `"Requires BAB +6"` | `CONDITION: @combatStats.base_attack_bonus.totalValue >= 6` |
 | `"Requires 5 ranks in Tumble"` | `CONDITION: @skills.skill_tumble.ranks >= 5` |
 | `"Requires caster level 7th"` | `CONDITION: @attributes.stat_caster_level.totalValue >= 7` |
 | `"Requires Fighter level 4"` | `CONDITION: @classLevels.class_fighter >= 4` |
@@ -857,7 +857,7 @@ This allows other Features to check `has_tag feat_weapon_focus` as a prerequisit
 
 ### The `saves.all` Fan-Out Rule
 
-When a bonus applies to ALL three saving throws, use `targetId: "saves.all"` in a single modifier — do not write three separate modifiers. The engine automatically fans this out to `fort`, `ref`, and `will`.
+When a bonus applies to ALL three saving throws, use `targetId: "saves.all"` in a single modifier — do not write three separate modifiers. The engine automatically fans this out to `fortitude`, `reflex`, and `will`.
 
 ```json
 { "targetId": "saves.all", "value": 1, "type": "resistance" }
@@ -897,7 +897,7 @@ PCGen stores data in `.lst` files with tab-separated custom DSL syntax. Here is 
 |---|---|
 | `MOVE:Walk,30` | `grantedModifiers` on `combatStats.speed_land`, `value: 30`, `type: "base"` |
 | `SIZE:M` | `tags: ["size_medium"]` |
-| `BONUS:STAT|STR|2|TYPE=Racial` | `grantedModifiers` on `attributes.stat_str`, `value: 2`, `type: "racial"` |
+| `BONUS:STAT|STR|2|TYPE=Racial` | `grantedModifiers` on `attributes.stat_strength`, `value: 2`, `type: "racial"` |
 | `VISION:Darkvision (60 ft)` | `grantedFeatures: ["trait_darkvision_60"]` |
 | `LANGBONUS:Goblin,Orc` | Bonus language choices in `choices` |
 | `LANGAUTO:Common,Gnoll` | `grantedFeatures: ["language_common", "language_gnoll"]` |
@@ -908,7 +908,7 @@ PCGen stores data in `.lst` files with tab-separated custom DSL syntax. Here is 
 
 | PCGen Token | Engine Field |
 |---|---|
-| `PRE:1,STAT:STR=13` | `prerequisitesNode: CONDITION >= 13 on @attributes.stat_str.totalValue` |
+| `PRE:1,STAT:STR=13` | `prerequisitesNode: CONDITION >= 13 on @attributes.stat_strength.totalValue` |
 | `PRE:1,FEAT:Power Attack` | `prerequisitesNode: CONDITION has_tag feat_power_attack on @activeTags` |
 | `BONUS:COMBAT|TOHIT|1|TYPE=Untyped` | `grantedModifiers` on `combatStats.attack_bonus`, `type: "untyped"` |
 | `BONUS:SKILL|Jump,Tumble|2` | Two modifiers on `skills.skill_jump` and `skills.skill_tumble` |
@@ -958,7 +958,7 @@ Key tables: Class Features table (BAB, Saves, Special)
 The HTML table has rows for each level. Extract:
 - Column 1 (Level) → `levelProgression[n].level`
 - Column 2 (BAB) → compute increment from cumulative total
-- Fort/Ref/Will columns → compute increment from cumulative total
+- Fortitude/Reflex/Will columns → compute increment from cumulative total
 - "Special" column → IDs of `grantedFeatures`
 
 **Converting cumulative BAB to increments:**

@@ -51,7 +51,7 @@ const BASE_SETTINGS = {
 
 const BASE_CONTEXT: CharacterContext = {
   attributes: {}, skills: {},
-  combatStats: { bab: { totalValue: 5 } }, saves: {},
+  combatStats: { base_attack_bonus: { totalValue: 5 } }, saves: {},
   characterLevel: 5, eclForXp: 5, classLevels: {},
   activeTags: [], equippedWeaponTags: [], selection: {}, constants: {},
 };

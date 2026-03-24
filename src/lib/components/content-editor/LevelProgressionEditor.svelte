@@ -45,8 +45,8 @@
   entries with no data are trimmed before saving to keep the JSON compact.
 
   Each LevelProgressionEntry.grantedModifiers contains:
-    { targetId: 'combatStats.bab', type: 'base', value: 1 }  for the BAB incr.
-    { targetId: 'saves.fort',      type: 'base', value: 1 }  for the Fort incr.
+    { targetId: 'combatStats.base_attack_bonus', type: 'base', value: 1 }  for the BAB incr.
+    { targetId: 'saves.fortitude',      type: 'base', value: 1 }  for the Fort incr.
     etc.
 
   ────────────────────────────────────────────────────────────────────────────
@@ -123,9 +123,9 @@
   // INCREMENT HELPERS
   // ===========================================================================
 
-  const BAB_TARGET  = 'combatStats.bab';
-  const FORT_TARGET = 'saves.fort';
-  const REF_TARGET  = 'saves.ref';
+  const BAB_TARGET  = 'combatStats.base_attack_bonus';
+  const FORT_TARGET = 'saves.fortitude';
+  const REF_TARGET  = 'saves.reflex';
   const WILL_TARGET = 'saves.will';
 
   function getIncrement(entry: LevelProgressionEntry, targetId: string): number {

@@ -239,7 +239,7 @@ describe('ConditionNodeBuilder logic — CONDITION node serialization', () => {
   it('single CONDITION node serializes and re-hydrates without data loss', () => {
     const original: LogicNodeCondition = {
       logic:        'CONDITION',
-      targetPath:   '@attributes.stat_str.totalValue',
+      targetPath:   '@attributes.stat_strength.totalValue',
       operator:     '>=',
       value:        13,
       errorMessage: 'Requires Strength 13+',
@@ -249,7 +249,7 @@ describe('ConditionNodeBuilder logic — CONDITION node serialization', () => {
     const parsed = JSON.parse(json) as LogicNodeCondition;
 
     expect(parsed.logic).toBe('CONDITION');
-    expect(parsed.targetPath).toBe('@attributes.stat_str.totalValue');
+    expect(parsed.targetPath).toBe('@attributes.stat_strength.totalValue');
     expect(parsed.operator).toBe('>=');
     expect(parsed.value).toBe(13);
     expect(parsed.errorMessage).toBe('Requires Strength 13+');
@@ -306,7 +306,7 @@ describe('ConditionNodeBuilder logic — AND tree serialization', () => {
         makeTagCondition('feat_power_attack', 'has_tag', 'Requires Power Attack'),
         {
           logic:      'CONDITION',
-          targetPath: '@attributes.stat_str.totalValue',
+          targetPath: '@attributes.stat_strength.totalValue',
           operator:   '>=',
           value:      13,
           errorMessage: 'Requires Strength 13+',
@@ -611,7 +611,7 @@ describe('ConditionNodeBuilder logic — deeply nested tree (AND → OR → NOT 
     nodes: [
       {
         logic:        'CONDITION',
-        targetPath:   '@combatStats.bab.totalValue',
+        targetPath:   '@combatStats.base_attack_bonus.totalValue',
         operator:     '>=',
         value:        6,
         errorMessage: 'Base Attack Bonus +6 required',
@@ -661,11 +661,11 @@ describe('ConditionNodeBuilder logic — deeply nested tree (AND → OR → NOT 
 
   it('(d) evaluateLogicNode processes deeply nested tree without throwing', () => {
     // Context: BAB = not represented in activeTags model, but the OR will
-    // also check combatStats.bab.totalValue. Set a context where the character
+    // also check combatStats.base_attack_bonus.totalValue. Set a context where the character
     // has BAB ≥ 6 (OR passes) and is NOT polymorphed (NOT passes) → AND passes.
     const ctx = makeContext({
       activeTags: [], // no 'status_polymorphed' → NOT(has_tag) = TRUE
-      combatStats: { 'combatStats.bab': { totalValue: 8 } },
+      combatStats: { 'combatStats.base_attack_bonus': { totalValue: 8 } },
     });
 
     let result: ReturnType<typeof evaluateLogicNode> | undefined;

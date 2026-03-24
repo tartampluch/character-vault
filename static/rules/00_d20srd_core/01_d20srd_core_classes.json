@@ -63,8 +63,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -82,7 +82,7 @@
               "en": "Barbarian 1",
               "fr": "Barbare 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -93,7 +93,7 @@
               "en": "Barbarian 1",
               "fr": "Barbare 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -104,7 +104,7 @@
               "en": "Barbarian 1",
               "fr": "Barbare 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base"
           },
@@ -134,7 +134,7 @@
               "en": "Barbarian 2",
               "fr": "Barbare 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -145,7 +145,7 @@
               "en": "Barbarian 2",
               "fr": "Barbare 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -164,7 +164,7 @@
               "en": "Barbarian 3",
               "fr": "Barbare 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -175,7 +175,7 @@
               "en": "Barbarian 3",
               "fr": "Barbare 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -205,7 +205,7 @@
               "en": "Barbarian 4",
               "fr": "Barbare 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -216,7 +216,7 @@
               "en": "Barbarian 4",
               "fr": "Barbare 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -235,7 +235,7 @@
               "en": "Barbarian 5",
               "fr": "Barbare 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -254,7 +254,7 @@
               "en": "Barbarian 6",
               "fr": "Barbare 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -265,7 +265,7 @@
               "en": "Barbarian 6",
               "fr": "Barbare 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -276,7 +276,7 @@
               "en": "Barbarian 6",
               "fr": "Barbare 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -306,7 +306,7 @@
               "en": "Barbarian 7",
               "fr": "Barbare 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -325,7 +325,7 @@
               "en": "Barbarian 8",
               "fr": "Barbare 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -336,7 +336,7 @@
               "en": "Barbarian 8",
               "fr": "Barbare 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -355,7 +355,7 @@
               "en": "Barbarian 9",
               "fr": "Barbare 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -366,7 +366,7 @@
               "en": "Barbarian 9",
               "fr": "Barbare 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -396,7 +396,7 @@
               "en": "Barbarian 10",
               "fr": "Barbare 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -407,7 +407,7 @@
               "en": "Barbarian 10",
               "fr": "Barbare 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -426,7 +426,7 @@
               "en": "Barbarian 11",
               "fr": "Barbare 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -446,7 +446,7 @@
               "en": "Barbarian 12",
               "fr": "Barbare 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -457,7 +457,7 @@
               "en": "Barbarian 12",
               "fr": "Barbare 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -468,7 +468,7 @@
               "en": "Barbarian 12",
               "fr": "Barbare 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -498,7 +498,7 @@
               "en": "Barbarian 13",
               "fr": "Barbare 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -517,7 +517,7 @@
               "en": "Barbarian 14",
               "fr": "Barbare 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -528,7 +528,7 @@
               "en": "Barbarian 14",
               "fr": "Barbare 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -547,7 +547,7 @@
               "en": "Barbarian 15",
               "fr": "Barbare 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -558,7 +558,7 @@
               "en": "Barbarian 15",
               "fr": "Barbare 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -589,7 +589,7 @@
               "en": "Barbarian 16",
               "fr": "Barbare 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -600,7 +600,7 @@
               "en": "Barbarian 16",
               "fr": "Barbare 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -619,7 +619,7 @@
               "en": "Barbarian 17",
               "fr": "Barbare 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -638,7 +638,7 @@
               "en": "Barbarian 18",
               "fr": "Barbare 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -649,7 +649,7 @@
               "en": "Barbarian 18",
               "fr": "Barbare 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -660,7 +660,7 @@
               "en": "Barbarian 18",
               "fr": "Barbare 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -690,7 +690,7 @@
               "en": "Barbarian 19",
               "fr": "Barbare 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -710,7 +710,7 @@
               "en": "Barbarian 20",
               "fr": "Barbare 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -721,7 +721,7 @@
               "en": "Barbarian 20",
               "fr": "Barbare 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -824,8 +824,8 @@
       "skill_use_magic_device"
     ],
     "recommendedAttributes": [
-      "stat_cha",
-      "stat_dex"
+      "stat_charisma",
+      "stat_dexterity"
     ],
     "levelProgression": [
       {
@@ -846,7 +846,7 @@
               "en": "Bard 1",
               "fr": "Barde 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -857,7 +857,7 @@
               "en": "Bard 1",
               "fr": "Barde 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base"
           },
@@ -896,7 +896,7 @@
               "en": "Bard 2",
               "fr": "Barde 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -907,7 +907,7 @@
               "en": "Bard 2",
               "fr": "Barde 2"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -959,7 +959,7 @@
               "en": "Bard 3",
               "fr": "Barde 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -970,7 +970,7 @@
               "en": "Bard 3",
               "fr": "Barde 3"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -998,7 +998,7 @@
               "en": "Bard 4",
               "fr": "Barde 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1009,7 +1009,7 @@
               "en": "Bard 4",
               "fr": "Barde 4"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1059,7 +1059,7 @@
               "en": "Bard 5",
               "fr": "Barde 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -1100,7 +1100,7 @@
               "en": "Bard 6",
               "fr": "Barde 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1111,7 +1111,7 @@
               "en": "Bard 6",
               "fr": "Barde 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1122,7 +1122,7 @@
               "en": "Bard 6",
               "fr": "Barde 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1161,7 +1161,7 @@
               "en": "Bard 7",
               "fr": "Barde 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1191,7 +1191,7 @@
               "en": "Bard 8",
               "fr": "Barde 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1202,7 +1202,7 @@
               "en": "Bard 8",
               "fr": "Barde 8"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1254,7 +1254,7 @@
               "en": "Bard 9",
               "fr": "Barde 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -1265,7 +1265,7 @@
               "en": "Bard 9",
               "fr": "Barde 9"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1293,7 +1293,7 @@
               "en": "Bard 10",
               "fr": "Barde 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1304,7 +1304,7 @@
               "en": "Bard 10",
               "fr": "Barde 10"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1343,7 +1343,7 @@
               "en": "Bard 11",
               "fr": "Barde 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1384,7 +1384,7 @@
               "en": "Bard 12",
               "fr": "Barde 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1395,7 +1395,7 @@
               "en": "Bard 12",
               "fr": "Barde 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1406,7 +1406,7 @@
               "en": "Bard 12",
               "fr": "Barde 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1445,7 +1445,7 @@
               "en": "Bard 13",
               "fr": "Barde 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -1475,7 +1475,7 @@
               "en": "Bard 14",
               "fr": "Barde 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1486,7 +1486,7 @@
               "en": "Bard 14",
               "fr": "Barde 14"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1549,7 +1549,7 @@
               "en": "Bard 15",
               "fr": "Barde 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1560,7 +1560,7 @@
               "en": "Bard 15",
               "fr": "Barde 15"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1599,7 +1599,7 @@
               "en": "Bard 16",
               "fr": "Barde 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1610,7 +1610,7 @@
               "en": "Bard 16",
               "fr": "Barde 16"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1660,7 +1660,7 @@
               "en": "Bard 17",
               "fr": "Barde 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -1712,7 +1712,7 @@
               "en": "Bard 18",
               "fr": "Barde 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1723,7 +1723,7 @@
               "en": "Bard 18",
               "fr": "Barde 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1734,7 +1734,7 @@
               "en": "Bard 18",
               "fr": "Barde 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1784,7 +1784,7 @@
               "en": "Bard 19",
               "fr": "Barde 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1825,7 +1825,7 @@
               "en": "Bard 20",
               "fr": "Barde 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1836,7 +1836,7 @@
               "en": "Bard 20",
               "fr": "Barde 20"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1948,8 +1948,8 @@
       }
     ],
     "recommendedAttributes": [
-      "stat_wis",
-      "stat_cha"
+      "stat_wisdom",
+      "stat_charisma"
     ],
     "levelProgression": [
       {
@@ -1967,7 +1967,7 @@
               "en": "Cleric 1",
               "fr": "Clerc 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -1978,7 +1978,7 @@
               "en": "Cleric 1",
               "fr": "Clerc 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -1989,7 +1989,7 @@
               "en": "Cleric 1",
               "fr": "Clerc 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base"
           },
@@ -2050,7 +2050,7 @@
               "en": "Cleric 2",
               "fr": "Clerc 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2061,7 +2061,7 @@
               "en": "Cleric 2",
               "fr": "Clerc 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2111,7 +2111,7 @@
               "en": "Cleric 3",
               "fr": "Clerc 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2122,7 +2122,7 @@
               "en": "Cleric 3",
               "fr": "Clerc 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2161,7 +2161,7 @@
               "en": "Cleric 4",
               "fr": "Clerc 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2172,7 +2172,7 @@
               "en": "Cleric 4",
               "fr": "Clerc 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2261,7 +2261,7 @@
               "en": "Cleric 6",
               "fr": "Clerc 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2272,7 +2272,7 @@
               "en": "Cleric 6",
               "fr": "Clerc 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2283,7 +2283,7 @@
               "en": "Cleric 6",
               "fr": "Clerc 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2333,7 +2333,7 @@
               "en": "Cleric 7",
               "fr": "Clerc 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2394,7 +2394,7 @@
               "en": "Cleric 8",
               "fr": "Clerc 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2405,7 +2405,7 @@
               "en": "Cleric 8",
               "fr": "Clerc 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2455,7 +2455,7 @@
               "en": "Cleric 9",
               "fr": "Clerc 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2505,7 +2505,7 @@
               "en": "Cleric 10",
               "fr": "Clerc 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2516,7 +2516,7 @@
               "en": "Cleric 10",
               "fr": "Clerc 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2566,7 +2566,7 @@
               "en": "Cleric 11",
               "fr": "Clerc 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2627,7 +2627,7 @@
               "en": "Cleric 12",
               "fr": "Clerc 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2638,7 +2638,7 @@
               "en": "Cleric 12",
               "fr": "Clerc 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2649,7 +2649,7 @@
               "en": "Cleric 12",
               "fr": "Clerc 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2749,7 +2749,7 @@
               "en": "Cleric 14",
               "fr": "Clerc 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2760,7 +2760,7 @@
               "en": "Cleric 14",
               "fr": "Clerc 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2810,7 +2810,7 @@
               "en": "Cleric 15",
               "fr": "Clerc 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2821,7 +2821,7 @@
               "en": "Cleric 15",
               "fr": "Clerc 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2882,7 +2882,7 @@
               "en": "Cleric 16",
               "fr": "Clerc 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2893,7 +2893,7 @@
               "en": "Cleric 16",
               "fr": "Clerc 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2993,7 +2993,7 @@
               "en": "Cleric 18",
               "fr": "Clerc 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3004,7 +3004,7 @@
               "en": "Cleric 18",
               "fr": "Clerc 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3015,7 +3015,7 @@
               "en": "Cleric 18",
               "fr": "Clerc 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3065,7 +3065,7 @@
               "en": "Cleric 19",
               "fr": "Clerc 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3115,7 +3115,7 @@
               "en": "Cleric 20",
               "fr": "Clerc 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3126,7 +3126,7 @@
               "en": "Cleric 20",
               "fr": "Clerc 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3246,8 +3246,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_wis",
-      "stat_con"
+      "stat_wisdom",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -3266,7 +3266,7 @@
               "en": "Druid 1",
               "fr": "Druide 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -3277,7 +3277,7 @@
               "en": "Druid 1",
               "fr": "Druide 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -3288,7 +3288,7 @@
               "en": "Druid 1",
               "fr": "Druide 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 0,
             "type": "base"
           },
@@ -3340,7 +3340,7 @@
               "en": "Druid 2",
               "fr": "Druide 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3351,7 +3351,7 @@
               "en": "Druid 2",
               "fr": "Druide 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3403,7 +3403,7 @@
               "en": "Druid 3",
               "fr": "Druide 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3414,7 +3414,7 @@
               "en": "Druid 3",
               "fr": "Druide 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3444,7 +3444,7 @@
               "en": "Druid 4",
               "fr": "Druide 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3455,7 +3455,7 @@
               "en": "Druid 4",
               "fr": "Druide 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3537,7 +3537,7 @@
               "en": "Druid 6",
               "fr": "Druide 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3548,7 +3548,7 @@
               "en": "Druid 6",
               "fr": "Druide 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3559,7 +3559,7 @@
               "en": "Druid 6",
               "fr": "Druide 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3611,7 +3611,7 @@
               "en": "Druid 7",
               "fr": "Druide 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3663,7 +3663,7 @@
               "en": "Druid 8",
               "fr": "Druide 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3674,7 +3674,7 @@
               "en": "Druid 8",
               "fr": "Druide 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3726,7 +3726,7 @@
               "en": "Druid 9",
               "fr": "Druide 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3767,7 +3767,7 @@
               "en": "Druid 10",
               "fr": "Druide 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3778,7 +3778,7 @@
               "en": "Druid 10",
               "fr": "Druide 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3830,7 +3830,7 @@
               "en": "Druid 11",
               "fr": "Druide 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3882,7 +3882,7 @@
               "en": "Druid 12",
               "fr": "Druide 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3893,7 +3893,7 @@
               "en": "Druid 12",
               "fr": "Druide 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3904,7 +3904,7 @@
               "en": "Druid 12",
               "fr": "Druide 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3997,7 +3997,7 @@
               "en": "Druid 14",
               "fr": "Druide 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4008,7 +4008,7 @@
               "en": "Druid 14",
               "fr": "Druide 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4061,7 +4061,7 @@
               "en": "Druid 15",
               "fr": "Druide 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4072,7 +4072,7 @@
               "en": "Druid 15",
               "fr": "Druide 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4124,7 +4124,7 @@
               "en": "Druid 16",
               "fr": "Druide 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4135,7 +4135,7 @@
               "en": "Druid 16",
               "fr": "Druide 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4227,7 +4227,7 @@
               "en": "Druid 18",
               "fr": "Druide 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4238,7 +4238,7 @@
               "en": "Druid 18",
               "fr": "Druide 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4249,7 +4249,7 @@
               "en": "Druid 18",
               "fr": "Druide 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4299,7 +4299,7 @@
               "en": "Druid 19",
               "fr": "Druide 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4352,7 +4352,7 @@
               "en": "Druid 20",
               "fr": "Druide 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4363,7 +4363,7 @@
               "en": "Druid 20",
               "fr": "Druide 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4463,8 +4463,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -4480,7 +4480,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4491,7 +4491,7 @@
               "en": "Fighter 1",
               "fr": "Guerrier 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           }
@@ -4510,7 +4510,7 @@
               "en": "Fighter 2",
               "fr": "Guerrier 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4521,7 +4521,7 @@
               "en": "Fighter 2",
               "fr": "Guerrier 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4538,7 +4538,7 @@
               "en": "Fighter 3",
               "fr": "Guerrier 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4549,7 +4549,7 @@
               "en": "Fighter 3",
               "fr": "Guerrier 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4579,7 +4579,7 @@
               "en": "Fighter 4",
               "fr": "Guerrier 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4590,7 +4590,7 @@
               "en": "Fighter 4",
               "fr": "Guerrier 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4607,7 +4607,7 @@
               "en": "Fighter 5",
               "fr": "Guerrier 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4626,7 +4626,7 @@
               "en": "Fighter 6",
               "fr": "Guerrier 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4637,7 +4637,7 @@
               "en": "Fighter 6",
               "fr": "Guerrier 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4648,7 +4648,7 @@
               "en": "Fighter 6",
               "fr": "Guerrier 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4676,7 +4676,7 @@
               "en": "Fighter 7",
               "fr": "Guerrier 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4695,7 +4695,7 @@
               "en": "Fighter 8",
               "fr": "Guerrier 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4706,7 +4706,7 @@
               "en": "Fighter 8",
               "fr": "Guerrier 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4723,7 +4723,7 @@
               "en": "Fighter 9",
               "fr": "Guerrier 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4734,7 +4734,7 @@
               "en": "Fighter 9",
               "fr": "Guerrier 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4764,7 +4764,7 @@
               "en": "Fighter 10",
               "fr": "Guerrier 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4775,7 +4775,7 @@
               "en": "Fighter 10",
               "fr": "Guerrier 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4792,7 +4792,7 @@
               "en": "Fighter 11",
               "fr": "Guerrier 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4811,7 +4811,7 @@
               "en": "Fighter 12",
               "fr": "Guerrier 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4822,7 +4822,7 @@
               "en": "Fighter 12",
               "fr": "Guerrier 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4833,7 +4833,7 @@
               "en": "Fighter 12",
               "fr": "Guerrier 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4861,7 +4861,7 @@
               "en": "Fighter 13",
               "fr": "Guerrier 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4880,7 +4880,7 @@
               "en": "Fighter 14",
               "fr": "Guerrier 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4891,7 +4891,7 @@
               "en": "Fighter 14",
               "fr": "Guerrier 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4908,7 +4908,7 @@
               "en": "Fighter 15",
               "fr": "Guerrier 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4919,7 +4919,7 @@
               "en": "Fighter 15",
               "fr": "Guerrier 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4949,7 +4949,7 @@
               "en": "Fighter 16",
               "fr": "Guerrier 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4960,7 +4960,7 @@
               "en": "Fighter 16",
               "fr": "Guerrier 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4977,7 +4977,7 @@
               "en": "Fighter 17",
               "fr": "Guerrier 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4996,7 +4996,7 @@
               "en": "Fighter 18",
               "fr": "Guerrier 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5007,7 +5007,7 @@
               "en": "Fighter 18",
               "fr": "Guerrier 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5018,7 +5018,7 @@
               "en": "Fighter 18",
               "fr": "Guerrier 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5046,7 +5046,7 @@
               "en": "Fighter 19",
               "fr": "Guerrier 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -5065,7 +5065,7 @@
               "en": "Fighter 20",
               "fr": "Guerrier 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5076,7 +5076,7 @@
               "en": "Fighter 20",
               "fr": "Guerrier 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -5155,9 +5155,9 @@
       "skill_tumble"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_dex",
-      "stat_wis"
+      "stat_strength",
+      "stat_dexterity",
+      "stat_wisdom"
     ],
     "levelProgression": [
       {
@@ -5174,7 +5174,7 @@
               "en": "Monk 1",
               "fr": "Moine 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -5185,7 +5185,7 @@
               "en": "Monk 1",
               "fr": "Moine 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -5196,7 +5196,7 @@
               "en": "Monk 1",
               "fr": "Moine 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base"
           },
@@ -5238,7 +5238,7 @@
               "en": "Monk 2",
               "fr": "Moine 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5249,7 +5249,7 @@
               "en": "Monk 2",
               "fr": "Moine 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5260,7 +5260,7 @@
               "en": "Monk 2",
               "fr": "Moine 2"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5290,7 +5290,7 @@
               "en": "Monk 3",
               "fr": "Moine 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5321,7 +5321,7 @@
               "en": "Monk 4",
               "fr": "Moine 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5332,7 +5332,7 @@
               "en": "Monk 4",
               "fr": "Moine 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5343,7 +5343,7 @@
               "en": "Monk 4",
               "fr": "Moine 4"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5461,7 +5461,7 @@
               "en": "Monk 6",
               "fr": "Moine 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5472,7 +5472,7 @@
               "en": "Monk 6",
               "fr": "Moine 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5483,7 +5483,7 @@
               "en": "Monk 6",
               "fr": "Moine 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5524,7 +5524,7 @@
               "en": "Monk 7",
               "fr": "Moine 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -5543,7 +5543,7 @@
               "en": "Monk 8",
               "fr": "Moine 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5554,7 +5554,7 @@
               "en": "Monk 8",
               "fr": "Moine 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5565,7 +5565,7 @@
               "en": "Monk 8",
               "fr": "Moine 8"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5626,7 +5626,7 @@
               "en": "Monk 10",
               "fr": "Moine 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5637,7 +5637,7 @@
               "en": "Monk 10",
               "fr": "Moine 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5648,7 +5648,7 @@
               "en": "Monk 10",
               "fr": "Moine 10"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5747,7 +5747,7 @@
               "en": "Monk 11",
               "fr": "Moine 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -5767,7 +5767,7 @@
               "en": "Monk 12",
               "fr": "Moine 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5778,7 +5778,7 @@
               "en": "Monk 12",
               "fr": "Moine 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5789,7 +5789,7 @@
               "en": "Monk 12",
               "fr": "Moine 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5848,7 +5848,7 @@
               "en": "Monk 14",
               "fr": "Moine 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5859,7 +5859,7 @@
               "en": "Monk 14",
               "fr": "Moine 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -5870,7 +5870,7 @@
               "en": "Monk 14",
               "fr": "Moine 14"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -5900,7 +5900,7 @@
               "en": "Monk 15",
               "fr": "Moine 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -5999,7 +5999,7 @@
               "en": "Monk 16",
               "fr": "Moine 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6010,7 +6010,7 @@
               "en": "Monk 16",
               "fr": "Moine 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6021,7 +6021,7 @@
               "en": "Monk 16",
               "fr": "Moine 16"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6070,7 +6070,7 @@
               "en": "Monk 18",
               "fr": "Moine 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6081,7 +6081,7 @@
               "en": "Monk 18",
               "fr": "Moine 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6092,7 +6092,7 @@
               "en": "Monk 18",
               "fr": "Moine 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6133,7 +6133,7 @@
               "en": "Monk 19",
               "fr": "Moine 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -6153,7 +6153,7 @@
               "en": "Monk 20",
               "fr": "Moine 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6164,7 +6164,7 @@
               "en": "Monk 20",
               "fr": "Moine 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6175,7 +6175,7 @@
               "en": "Monk 20",
               "fr": "Moine 20"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6339,9 +6339,9 @@
       "skill_sense_motive"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_cha",
-      "stat_con"
+      "stat_strength",
+      "stat_charisma",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -6359,7 +6359,7 @@
               "en": "Paladin 1",
               "fr": "Paladin 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6370,7 +6370,7 @@
               "en": "Paladin 1",
               "fr": "Paladin 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           }
@@ -6390,7 +6390,7 @@
               "en": "Paladin 2",
               "fr": "Paladin 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6401,7 +6401,7 @@
               "en": "Paladin 2",
               "fr": "Paladin 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -6421,7 +6421,7 @@
               "en": "Paladin 3",
               "fr": "Paladin 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6432,7 +6432,7 @@
               "en": "Paladin 3",
               "fr": "Paladin 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6463,7 +6463,7 @@
               "en": "Paladin 4",
               "fr": "Paladin 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6474,7 +6474,7 @@
               "en": "Paladin 4",
               "fr": "Paladin 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6505,7 +6505,7 @@
               "en": "Paladin 5",
               "fr": "Paladin 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -6524,7 +6524,7 @@
               "en": "Paladin 6",
               "fr": "Paladin 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6535,7 +6535,7 @@
               "en": "Paladin 6",
               "fr": "Paladin 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6546,7 +6546,7 @@
               "en": "Paladin 6",
               "fr": "Paladin 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6585,7 +6585,7 @@
               "en": "Paladin 7",
               "fr": "Paladin 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -6602,7 +6602,7 @@
               "en": "Paladin 8",
               "fr": "Paladin 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6613,7 +6613,7 @@
               "en": "Paladin 8",
               "fr": "Paladin 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6643,7 +6643,7 @@
               "en": "Paladin 9",
               "fr": "Paladin 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6654,7 +6654,7 @@
               "en": "Paladin 9",
               "fr": "Paladin 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6684,7 +6684,7 @@
               "en": "Paladin 10",
               "fr": "Paladin 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6695,7 +6695,7 @@
               "en": "Paladin 10",
               "fr": "Paladin 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6723,7 +6723,7 @@
               "en": "Paladin 11",
               "fr": "Paladin 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6753,7 +6753,7 @@
               "en": "Paladin 12",
               "fr": "Paladin 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6764,7 +6764,7 @@
               "en": "Paladin 12",
               "fr": "Paladin 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6775,7 +6775,7 @@
               "en": "Paladin 12",
               "fr": "Paladin 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6814,7 +6814,7 @@
               "en": "Paladin 13",
               "fr": "Paladin 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -6831,7 +6831,7 @@
               "en": "Paladin 14",
               "fr": "Paladin 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6842,7 +6842,7 @@
               "en": "Paladin 14",
               "fr": "Paladin 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6884,7 +6884,7 @@
               "en": "Paladin 15",
               "fr": "Paladin 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6895,7 +6895,7 @@
               "en": "Paladin 15",
               "fr": "Paladin 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -6934,7 +6934,7 @@
               "en": "Paladin 16",
               "fr": "Paladin 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -6945,7 +6945,7 @@
               "en": "Paladin 16",
               "fr": "Paladin 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -6973,7 +6973,7 @@
               "en": "Paladin 17",
               "fr": "Paladin 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7003,7 +7003,7 @@
               "en": "Paladin 18",
               "fr": "Paladin 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7014,7 +7014,7 @@
               "en": "Paladin 18",
               "fr": "Paladin 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7025,7 +7025,7 @@
               "en": "Paladin 18",
               "fr": "Paladin 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7064,7 +7064,7 @@
               "en": "Paladin 19",
               "fr": "Paladin 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7116,7 +7116,7 @@
               "en": "Paladin 20",
               "fr": "Paladin 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7127,7 +7127,7 @@
               "en": "Paladin 20",
               "fr": "Paladin 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7218,9 +7218,9 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_dex",
-      "stat_wis"
+      "stat_strength",
+      "stat_dexterity",
+      "stat_wisdom"
     ],
     "levelProgression": [
       {
@@ -7238,7 +7238,7 @@
               "en": "Ranger 1",
               "fr": "Rôdeur 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7249,7 +7249,7 @@
               "en": "Ranger 1",
               "fr": "Rôdeur 1"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           },
@@ -7260,7 +7260,7 @@
               "en": "Ranger 1",
               "fr": "Rôdeur 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base"
           }
@@ -7279,7 +7279,7 @@
               "en": "Ranger 2",
               "fr": "Rôdeur 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7290,7 +7290,7 @@
               "en": "Ranger 2",
               "fr": "Rôdeur 2"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7301,7 +7301,7 @@
               "en": "Ranger 2",
               "fr": "Rôdeur 2"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -7320,7 +7320,7 @@
               "en": "Ranger 3",
               "fr": "Rôdeur 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7351,7 +7351,7 @@
               "en": "Ranger 4",
               "fr": "Rôdeur 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7362,7 +7362,7 @@
               "en": "Ranger 4",
               "fr": "Rôdeur 4"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7373,7 +7373,7 @@
               "en": "Ranger 4",
               "fr": "Rôdeur 4"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7403,7 +7403,7 @@
               "en": "Ranger 5",
               "fr": "Rôdeur 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -7422,7 +7422,7 @@
               "en": "Ranger 6",
               "fr": "Rôdeur 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7433,7 +7433,7 @@
               "en": "Ranger 6",
               "fr": "Rôdeur 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7444,7 +7444,7 @@
               "en": "Ranger 6",
               "fr": "Rôdeur 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7485,7 +7485,7 @@
               "en": "Ranger 7",
               "fr": "Rôdeur 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -7504,7 +7504,7 @@
               "en": "Ranger 8",
               "fr": "Rôdeur 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7515,7 +7515,7 @@
               "en": "Ranger 8",
               "fr": "Rôdeur 8"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7526,7 +7526,7 @@
               "en": "Ranger 8",
               "fr": "Rôdeur 8"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7556,7 +7556,7 @@
               "en": "Ranger 9",
               "fr": "Rôdeur 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7586,7 +7586,7 @@
               "en": "Ranger 10",
               "fr": "Rôdeur 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7597,7 +7597,7 @@
               "en": "Ranger 10",
               "fr": "Rôdeur 10"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7608,7 +7608,7 @@
               "en": "Ranger 10",
               "fr": "Rôdeur 10"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7638,7 +7638,7 @@
               "en": "Ranger 11",
               "fr": "Rôdeur 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7666,7 +7666,7 @@
               "en": "Ranger 12",
               "fr": "Rôdeur 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7677,7 +7677,7 @@
               "en": "Ranger 12",
               "fr": "Rôdeur 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7688,7 +7688,7 @@
               "en": "Ranger 12",
               "fr": "Rôdeur 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7729,7 +7729,7 @@
               "en": "Ranger 13",
               "fr": "Rôdeur 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -7746,7 +7746,7 @@
               "en": "Ranger 14",
               "fr": "Rôdeur 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7757,7 +7757,7 @@
               "en": "Ranger 14",
               "fr": "Rôdeur 14"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7768,7 +7768,7 @@
               "en": "Ranger 14",
               "fr": "Rôdeur 14"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7809,7 +7809,7 @@
               "en": "Ranger 15",
               "fr": "Rôdeur 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7848,7 +7848,7 @@
               "en": "Ranger 16",
               "fr": "Rôdeur 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7859,7 +7859,7 @@
               "en": "Ranger 16",
               "fr": "Rôdeur 16"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7870,7 +7870,7 @@
               "en": "Ranger 16",
               "fr": "Rôdeur 16"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7900,7 +7900,7 @@
               "en": "Ranger 17",
               "fr": "Rôdeur 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7928,7 +7928,7 @@
               "en": "Ranger 18",
               "fr": "Rôdeur 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -7939,7 +7939,7 @@
               "en": "Ranger 18",
               "fr": "Rôdeur 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -7950,7 +7950,7 @@
               "en": "Ranger 18",
               "fr": "Rôdeur 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -7989,7 +7989,7 @@
               "en": "Ranger 19",
               "fr": "Rôdeur 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8041,7 +8041,7 @@
               "en": "Ranger 20",
               "fr": "Rôdeur 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8052,7 +8052,7 @@
               "en": "Ranger 20",
               "fr": "Rôdeur 20"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8063,7 +8063,7 @@
               "en": "Ranger 20",
               "fr": "Rôdeur 20"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -8164,8 +8164,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_dex",
-      "stat_int"
+      "stat_dexterity",
+      "stat_intelligence"
     ],
     "levelProgression": [
       {
@@ -8182,7 +8182,7 @@
               "en": "Rogue 1",
               "fr": "Roublard 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -8193,7 +8193,7 @@
               "en": "Rogue 1",
               "fr": "Roublard 1"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 2,
             "type": "base"
           }
@@ -8212,7 +8212,7 @@
               "en": "Rogue 2",
               "fr": "Roublard 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8223,7 +8223,7 @@
               "en": "Rogue 2",
               "fr": "Roublard 2"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8243,7 +8243,7 @@
               "en": "Rogue 3",
               "fr": "Roublard 3"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8254,7 +8254,7 @@
               "en": "Rogue 3",
               "fr": "Roublard 3"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8284,7 +8284,7 @@
               "en": "Rogue 4",
               "fr": "Roublard 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8295,7 +8295,7 @@
               "en": "Rogue 4",
               "fr": "Roublard 4"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8314,7 +8314,7 @@
               "en": "Rogue 5",
               "fr": "Roublard 5"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           }
@@ -8333,7 +8333,7 @@
               "en": "Rogue 6",
               "fr": "Roublard 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8344,7 +8344,7 @@
               "en": "Rogue 6",
               "fr": "Roublard 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8355,7 +8355,7 @@
               "en": "Rogue 6",
               "fr": "Roublard 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -8385,7 +8385,7 @@
               "en": "Rogue 7",
               "fr": "Roublard 7"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -8404,7 +8404,7 @@
               "en": "Rogue 8",
               "fr": "Roublard 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8415,7 +8415,7 @@
               "en": "Rogue 8",
               "fr": "Roublard 8"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8435,7 +8435,7 @@
               "en": "Rogue 9",
               "fr": "Roublard 9"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -8446,7 +8446,7 @@
               "en": "Rogue 9",
               "fr": "Roublard 9"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8476,7 +8476,7 @@
               "en": "Rogue 10",
               "fr": "Roublard 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8487,7 +8487,7 @@
               "en": "Rogue 10",
               "fr": "Roublard 10"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8506,7 +8506,7 @@
               "en": "Rogue 11",
               "fr": "Roublard 11"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -8525,7 +8525,7 @@
               "en": "Rogue 12",
               "fr": "Roublard 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8536,7 +8536,7 @@
               "en": "Rogue 12",
               "fr": "Roublard 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8547,7 +8547,7 @@
               "en": "Rogue 12",
               "fr": "Roublard 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -8578,7 +8578,7 @@
               "en": "Rogue 13",
               "fr": "Roublard 13"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           }
@@ -8595,7 +8595,7 @@
               "en": "Rogue 14",
               "fr": "Roublard 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8606,7 +8606,7 @@
               "en": "Rogue 14",
               "fr": "Roublard 14"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8626,7 +8626,7 @@
               "en": "Rogue 15",
               "fr": "Roublard 15"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8637,7 +8637,7 @@
               "en": "Rogue 15",
               "fr": "Roublard 15"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8667,7 +8667,7 @@
               "en": "Rogue 16",
               "fr": "Roublard 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8678,7 +8678,7 @@
               "en": "Rogue 16",
               "fr": "Roublard 16"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8697,7 +8697,7 @@
               "en": "Rogue 17",
               "fr": "Roublard 17"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           }
@@ -8716,7 +8716,7 @@
               "en": "Rogue 18",
               "fr": "Roublard 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8727,7 +8727,7 @@
               "en": "Rogue 18",
               "fr": "Roublard 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8738,7 +8738,7 @@
               "en": "Rogue 18",
               "fr": "Roublard 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -8769,7 +8769,7 @@
               "en": "Rogue 19",
               "fr": "Roublard 19"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -8786,7 +8786,7 @@
               "en": "Rogue 20",
               "fr": "Roublard 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8797,7 +8797,7 @@
               "en": "Rogue 20",
               "fr": "Roublard 20"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -8861,8 +8861,8 @@
       "skill_spellcraft"
     ],
     "recommendedAttributes": [
-      "stat_cha",
-      "stat_con"
+      "stat_charisma",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -8879,7 +8879,7 @@
               "en": "Sorcerer 1",
               "fr": "Ensorceleur 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -8929,7 +8929,7 @@
               "en": "Sorcerer 2",
               "fr": "Ensorceleur 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -8979,7 +8979,7 @@
               "en": "Sorcerer 3",
               "fr": "Ensorceleur 3"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -8990,7 +8990,7 @@
               "en": "Sorcerer 3",
               "fr": "Ensorceleur 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9018,7 +9018,7 @@
               "en": "Sorcerer 4",
               "fr": "Ensorceleur 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9085,7 +9085,7 @@
               "en": "Sorcerer 6",
               "fr": "Ensorceleur 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9096,7 +9096,7 @@
               "en": "Sorcerer 6",
               "fr": "Ensorceleur 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9107,7 +9107,7 @@
               "en": "Sorcerer 6",
               "fr": "Ensorceleur 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9185,7 +9185,7 @@
               "en": "Sorcerer 8",
               "fr": "Ensorceleur 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9235,7 +9235,7 @@
               "en": "Sorcerer 9",
               "fr": "Ensorceleur 9"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9246,7 +9246,7 @@
               "en": "Sorcerer 9",
               "fr": "Ensorceleur 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9285,7 +9285,7 @@
               "en": "Sorcerer 10",
               "fr": "Ensorceleur 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9363,7 +9363,7 @@
               "en": "Sorcerer 12",
               "fr": "Ensorceleur 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9374,7 +9374,7 @@
               "en": "Sorcerer 12",
               "fr": "Ensorceleur 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9385,7 +9385,7 @@
               "en": "Sorcerer 12",
               "fr": "Ensorceleur 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9463,7 +9463,7 @@
               "en": "Sorcerer 14",
               "fr": "Ensorceleur 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9513,7 +9513,7 @@
               "en": "Sorcerer 15",
               "fr": "Ensorceleur 15"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9524,7 +9524,7 @@
               "en": "Sorcerer 15",
               "fr": "Ensorceleur 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9563,7 +9563,7 @@
               "en": "Sorcerer 16",
               "fr": "Ensorceleur 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9641,7 +9641,7 @@
               "en": "Sorcerer 18",
               "fr": "Ensorceleur 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9652,7 +9652,7 @@
               "en": "Sorcerer 18",
               "fr": "Ensorceleur 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9663,7 +9663,7 @@
               "en": "Sorcerer 18",
               "fr": "Ensorceleur 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -9741,7 +9741,7 @@
               "en": "Sorcerer 20",
               "fr": "Ensorceleur 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9852,8 +9852,8 @@
       }
     ],
     "recommendedAttributes": [
-      "stat_int",
-      "stat_con"
+      "stat_intelligence",
+      "stat_constitution"
     ],
     "levelProgression": [
       {
@@ -9871,7 +9871,7 @@
               "en": "Wizard 1",
               "fr": "Magicien 1"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 0,
             "type": "base"
           },
@@ -9921,7 +9921,7 @@
               "en": "Wizard 2",
               "fr": "Magicien 2"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -9971,7 +9971,7 @@
               "en": "Wizard 3",
               "fr": "Magicien 3"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -9982,7 +9982,7 @@
               "en": "Wizard 3",
               "fr": "Magicien 3"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10010,7 +10010,7 @@
               "en": "Wizard 4",
               "fr": "Magicien 4"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10079,7 +10079,7 @@
               "en": "Wizard 6",
               "fr": "Magicien 6"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10090,7 +10090,7 @@
               "en": "Wizard 6",
               "fr": "Magicien 6"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -10101,7 +10101,7 @@
               "en": "Wizard 6",
               "fr": "Magicien 6"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10179,7 +10179,7 @@
               "en": "Wizard 8",
               "fr": "Magicien 8"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10229,7 +10229,7 @@
               "en": "Wizard 9",
               "fr": "Magicien 9"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -10240,7 +10240,7 @@
               "en": "Wizard 9",
               "fr": "Magicien 9"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10281,7 +10281,7 @@
               "en": "Wizard 10",
               "fr": "Magicien 10"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10359,7 +10359,7 @@
               "en": "Wizard 12",
               "fr": "Magicien 12"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10370,7 +10370,7 @@
               "en": "Wizard 12",
               "fr": "Magicien 12"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -10381,7 +10381,7 @@
               "en": "Wizard 12",
               "fr": "Magicien 12"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10459,7 +10459,7 @@
               "en": "Wizard 14",
               "fr": "Magicien 14"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10511,7 +10511,7 @@
               "en": "Wizard 15",
               "fr": "Magicien 15"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -10522,7 +10522,7 @@
               "en": "Wizard 15",
               "fr": "Magicien 15"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10561,7 +10561,7 @@
               "en": "Wizard 16",
               "fr": "Magicien 16"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10639,7 +10639,7 @@
               "en": "Wizard 18",
               "fr": "Magicien 18"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -10650,7 +10650,7 @@
               "en": "Wizard 18",
               "fr": "Magicien 18"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -10661,7 +10661,7 @@
               "en": "Wizard 18",
               "fr": "Magicien 18"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -10741,7 +10741,7 @@
               "en": "Wizard 20",
               "fr": "Magicien 20"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },

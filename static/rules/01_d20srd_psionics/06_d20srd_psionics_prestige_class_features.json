@@ -638,7 +638,7 @@
         "sourceId": "class_feature_psionic_fist_power_points",
         "sourceName": { "en": "Psionic Fist Wisdom Bonus PP", "fr": "Poing psionique bonus PP Sagesse" },
         "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wis.derivedModifier",
+        "value": "@attributes.stat_wisdom.derivedModifier",
         "type": "base"
       }
     ],
@@ -724,7 +724,7 @@
         "id": "pyro_fire_adaptation_save",
         "sourceId": "class_feature_pyro_fire_adaptation",
         "sourceName": { "en": "Fire Adaptation", "fr": "Adaptation au feu" },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "racial",
         "situationalContext": "vs_fire_spells_and_effects"
@@ -812,7 +812,7 @@
         "id": "pyro_fear_no_fire_save",
         "sourceId": "class_feature_pyro_fear_no_fire",
         "sourceName": { "en": "Fear No Fire", "fr": "Intrépidité face au feu" },
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 4,
         "type": "racial",
         "situationalContext": "vs_fire_spells_and_effects"
@@ -1262,7 +1262,7 @@
         "sourceId": "class_feature_war_mind_power_points",
         "sourceName": { "en": "War Mind Wisdom Bonus PP", "fr": "Esprit guerrier bonus PP Sagesse" },
         "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wis.derivedModifier",
+        "value": "@attributes.stat_wisdom.derivedModifier",
         "type": "base"
       }
     ],

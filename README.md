@@ -203,7 +203,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting utilities — distance, weight, modifier sign, currency, dice |
 | [`sessionContext.test.ts`](src/tests/sessionContext.test.ts) | GM / player profile switching, active campaign context |
 | [`storageManager.test.ts`](src/tests/storageManager.test.ts) | localStorage CRUD, polling, async API methods, LinkedEntity depth guard |
-| [`contextKeyFix.test.ts`](src/tests/contextKeyFix.test.ts) | **Regression** — `@combatStats.bab.totalValue` prerequisite paths resolve correctly |
+| [`contextKeyFix.test.ts`](src/tests/contextKeyFix.test.ts) | **Regression** — `@combatStats.base_attack_bonus.totalValue` prerequisite paths resolve correctly |
 | [`edgeCases.test.ts`](src/tests/edgeCases.test.ts) | Multiplier modifiers, `not_includes`/`missing_tag` operators, division by zero, `@constant` paths |
 | [`coverageCompletion.test.ts`](src/tests/coverageCompletion.test.ts) | Non-stacking penalties, `has_tag` on non-array, pure constant dice formula, V/WP routing |
 | [`sceneAndPrereqs.test.ts`](src/tests/sceneAndPrereqs.test.ts) | Scene global features, character level/ECL, HP adjustment, resource resets |

@@ -28,7 +28,7 @@
  *      is only applied when the condition passes (ARCHITECTURE.md Example H).
  *
  *   4. Formula-as-value (MAJOR fix #3):
- *      Proves that modifier.value = "@attributes.stat_wis.derivedModifier" is correctly
+ *      Proves that modifier.value = "@attributes.stat_wisdom.derivedModifier" is correctly
  *      resolved via evaluateFormula() (ARCHITECTURE.md Example H).
  *
  *   5. Circular dependency detection (Phase 17.5 "Loop Test"):
@@ -73,7 +73,7 @@ function makeMod(id: string, value: number, type: string, targetId = 'test'): Mo
 
 describe('DAG cascade: Belt of Constitution +2', () => {
   /**
-   * Simulates the Phase 2 computation for stat_con.
+   * Simulates the Phase 2 computation for stat_constitution.
    * Belt of Constitution grants +2 enhancement to CON.
    * CON base = 12 → totalValue = 14 → derivedModifier = +2
    */
@@ -284,7 +284,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
 
     // Unarmored Monk context
     const ctx: CharacterContext = {
-      attributes: { stat_wis: { baseValue: 16, totalValue: 16, derivedModifier: 3 } },
+      attributes: { stat_wisdom: { baseValue: 16, totalValue: 16, derivedModifier: 3 } },
       skills: {},
       combatStats: {},
       saves: {},
@@ -313,7 +313,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
 
     // Monk wearing a breastplate
     const ctx: CharacterContext = {
-      attributes: { stat_wis: { baseValue: 16, totalValue: 16, derivedModifier: 3 } },
+      attributes: { stat_wisdom: { baseValue: 16, totalValue: 16, derivedModifier: 3 } },
       skills: {},
       combatStats: {},
       saves: {},
@@ -348,7 +348,7 @@ describe('DAG conditionNode: conditional modifier activation based on active sta
       id: 'barb_rage_str',
       sourceId: 'class_feature_rage',
       sourceName: { en: 'Rage' },
-      targetId: 'stat_str',
+      targetId: 'stat_strength',
       value: 4,
       type: 'untyped' as import('$lib/types/primitives').ModifierType,
     };
@@ -399,7 +399,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
   /**
    * ARCHITECTURE.md Example H (section 10):
    *   The Monk's AC Bonus modifier has:
-   *     "value": "@attributes.stat_wis.derivedModifier"
+   *     "value": "@attributes.stat_wisdom.derivedModifier"
    *   instead of a static number.
    *
    * The GameEngine in #processModifierList() resolves string values:
@@ -412,11 +412,11 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
    * and a character context, then constructing the resolved modifier.
    */
 
-  it('Formula-as-value: "@attributes.stat_wis.derivedModifier" resolves to WIS mod', () => {
+  it('Formula-as-value: "@attributes.stat_wisdom.derivedModifier" resolves to WIS mod', () => {
     // Character with WIS 16 → derivedModifier = +3
     const ctx: CharacterContext = {
       attributes: {
-        stat_wis: { baseValue: 16, totalValue: 16, derivedModifier: 3 },
+        stat_wisdom: { baseValue: 16, totalValue: 16, derivedModifier: 3 },
       },
       skills: {},
       combatStats: {},
@@ -430,7 +430,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
       constants: {},
     };
 
-    const formulaValue = '@attributes.stat_wis.derivedModifier';
+    const formulaValue = '@attributes.stat_wisdom.derivedModifier';
     const resolved = evaluateFormula(formulaValue, ctx, 'en');
 
     expect(resolved).toBe(3); // WIS 16 → modifier +3
@@ -439,13 +439,13 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
 
   it('Formula-as-value resolves to correct AC contribution when used as a modifier', () => {
     // Simulates what the GameEngine does when processing Monk AC bonus modifier:
-    // 1. The modifier has value: "@attributes.stat_wis.derivedModifier"
+    // 1. The modifier has value: "@attributes.stat_wisdom.derivedModifier"
     // 2. The engine calls evaluateFormula to resolve it
     // 3. The resolved number is used in applyStackingRules
 
     const ctx: CharacterContext = {
       attributes: {
-        stat_wis: { baseValue: 20, totalValue: 20, derivedModifier: 5 }, // WIS 20 → +5
+        stat_wisdom: { baseValue: 20, totalValue: 20, derivedModifier: 5 }, // WIS 20 → +5
       },
       skills: {},
       combatStats: {},
@@ -460,7 +460,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
     };
 
     // Step 1: Resolve the formula value (simulates GameEngine #processModifierList)
-    const formulaValue = '@attributes.stat_wis.derivedModifier';
+    const formulaValue = '@attributes.stat_wisdom.derivedModifier';
     const numericValue = evaluateFormula(formulaValue, ctx, 'en');
     expect(numericValue).toBe(5); // WIS 20 → +5
 
@@ -485,11 +485,11 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
     // In the real GameEngine, this re-evaluation is done automatically via Svelte $derived.
     // Here we simulate it by calling evaluateFormula twice with different contexts.
 
-    const formulaValue = '@attributes.stat_wis.derivedModifier';
+    const formulaValue = '@attributes.stat_wisdom.derivedModifier';
 
     // Before an item: WIS 14 → +2
     const ctxBefore: CharacterContext = {
-      attributes: { stat_wis: { baseValue: 14, totalValue: 14, derivedModifier: 2 } },
+      attributes: { stat_wisdom: { baseValue: 14, totalValue: 14, derivedModifier: 2 } },
       skills: {},
       combatStats: {},
       saves: {},
@@ -504,7 +504,7 @@ describe('DAG formula-as-value: modifier.value resolved via evaluateFormula', ()
 
     // After equipping Periapt of Wisdom +4: WIS 18 → +4
     const ctxAfter: CharacterContext = {
-      attributes: { stat_wis: { baseValue: 14, totalValue: 18, derivedModifier: 4 } }, // +4 enhancement
+      attributes: { stat_wisdom: { baseValue: 14, totalValue: 18, derivedModifier: 4 } }, // +4 enhancement
       skills: {},
       combatStats: {},
       saves: {},
@@ -882,7 +882,7 @@ describe('DAG circular dependency safety', () => {
 
   it('evaluateFormula with deeply nested formula does not crash', () => {
     const ctx: CharacterContext = {
-      attributes: { stat_str: { baseValue: 10, totalValue: 10, derivedModifier: 0 } },
+      attributes: { stat_strength: { baseValue: 10, totalValue: 10, derivedModifier: 0 } },
       skills: {},
       combatStats: {},
       saves: {},
@@ -898,7 +898,7 @@ describe('DAG circular dependency safety', () => {
     // A "circular" formula tries to read STR based on STR — but evaluateFormula is
     // not reactive; it reads a snapshot. So it just resolves once, no loop.
     const result = evaluateFormula(
-      '@attributes.stat_str.derivedModifier + @attributes.stat_str.totalValue',
+      '@attributes.stat_strength.derivedModifier + @attributes.stat_strength.totalValue',
       ctx,
       'en'
     );
@@ -1051,12 +1051,12 @@ describe('Choice-derived sub-tags (Phase 1.3d — choiceGrantedTagPrefix)', () =
      */
     const contextWithLongbow: CharacterContext = {
       attributes: {
-        stat_str: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-        stat_dex: { baseValue: 16, totalValue: 16, derivedModifier: 3 },
-        stat_int: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+        stat_strength: { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+        stat_dexterity: { baseValue: 16, totalValue: 16, derivedModifier: 3 },
+        stat_intelligence: { baseValue: 12, totalValue: 12, derivedModifier: 1 },
       },
       skills: {},
-      combatStats: { bab: { totalValue: 8 } },
+      combatStats: { base_attack_bonus: { totalValue: 8 } },
       saves: {},
       characterLevel: 8,
       eclForXp: 8,
@@ -1200,7 +1200,7 @@ describe('saves.all fan-out stacking simulation', () => {
       value: 3,
       type: 'untyped',
     });
-    for (const save of ['fort', 'ref', 'will']) {
+    for (const save of ['fortitude', 'reflex', 'will']) {
       expect(applyStackingRules([makeSaveMod(save)], 0).totalBonus).toBe(3);
     }
   });
@@ -1209,12 +1209,12 @@ describe('saves.all fan-out stacking simulation', () => {
     const cloakFort: Modifier = {
       id: 'cloak_fort', sourceId: 'item_cloak_resistance_3',
       sourceName: { en: 'Cloak of Resistance +3', fr: 'Cape de résistance +3' },
-      targetId: 'saves.fort', value: 3, type: 'resistance',
+      targetId: 'saves.fortitude', value: 3, type: 'resistance',
     };
     const graceFort: Modifier = {
       id: 'grace_fort', sourceId: 'class_feature_paladin_divine_grace',
       sourceName: { en: 'Divine Grace', fr: 'Grâce divine' },
-      targetId: 'saves.fort', value: 3, type: 'untyped',
+      targetId: 'saves.fortitude', value: 3, type: 'untyped',
     };
     expect(applyStackingRules([cloakFort, graceFort], 0).totalBonus).toBe(6);
   });
@@ -1223,12 +1223,12 @@ describe('saves.all fan-out stacking simulation', () => {
     const cloak3: Modifier = {
       id: 'cloak3_fort', sourceId: 'item_cloak_3',
       sourceName: { en: 'Cloak +3', fr: 'Cape +3' },
-      targetId: 'saves.fort', value: 3, type: 'resistance',
+      targetId: 'saves.fortitude', value: 3, type: 'resistance',
     };
     const cloak2: Modifier = {
       id: 'cloak2_fort', sourceId: 'item_cloak_2',
       sourceName: { en: 'Cloak +2', fr: 'Cape +2' },
-      targetId: 'saves.fort', value: 2, type: 'resistance',
+      targetId: 'saves.fortitude', value: 2, type: 'resistance',
     };
     const result = applyStackingRules([cloak3, cloak2], 0);
     expect(result.totalBonus).toBe(3); // Only highest resistance applies

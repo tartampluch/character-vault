@@ -38,7 +38,7 @@
       "skill_survival"
     ],
     "recommendedAttributes": [
-      "stat_wis"
+      "stat_wisdom"
     ],
     "grantedModifiers": [
       {
@@ -60,7 +60,7 @@
           "fr": "Adepte"
         },
         "targetId": "attributes.skill_points_per_level",
-        "value": "2 + @attributes.stat_int.derivedModifier",
+        "value": "2 + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -122,7 +122,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -150,7 +150,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -161,7 +161,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -189,7 +189,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -234,7 +234,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -245,7 +245,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -256,7 +256,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -312,7 +312,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -340,7 +340,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -351,7 +351,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -379,7 +379,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -435,7 +435,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -446,7 +446,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -457,7 +457,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -502,7 +502,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -530,7 +530,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -541,7 +541,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -580,7 +580,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -625,7 +625,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -636,7 +636,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -647,7 +647,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -703,7 +703,7 @@
               "en": "Adept",
               "fr": "Adepte"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -819,8 +819,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_cha",
-      "stat_str"
+      "stat_charisma",
+      "stat_strength"
     ],
     "grantedModifiers": [
       {
@@ -842,7 +842,7 @@
           "fr": "Aristocrate"
         },
         "targetId": "attributes.skill_points_per_level",
-        "value": "4 + @attributes.stat_int.derivedModifier",
+        "value": "4 + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -881,7 +881,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -909,7 +909,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -920,7 +920,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -931,7 +931,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -948,7 +948,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -981,7 +981,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -992,7 +992,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1003,7 +1003,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1031,7 +1031,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1048,7 +1048,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1076,7 +1076,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1087,7 +1087,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -1104,7 +1104,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1132,7 +1132,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1149,7 +1149,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1160,7 +1160,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1171,7 +1171,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1204,7 +1204,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1232,7 +1232,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1243,7 +1243,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1254,7 +1254,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -1271,7 +1271,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1304,7 +1304,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1315,7 +1315,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1326,7 +1326,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1354,7 +1354,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1371,7 +1371,7 @@
               "en": "Aristocrat",
               "fr": "Aristocrate"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1420,8 +1420,8 @@
       "skill_use_rope"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "choices": [
       {
@@ -1454,7 +1454,7 @@
           "fr": "Roturier"
         },
         "targetId": "attributes.skill_points_per_level",
-        "value": "2 + @attributes.stat_int.derivedModifier",
+        "value": "2 + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -1476,7 +1476,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1493,7 +1493,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1504,7 +1504,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1532,7 +1532,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1554,7 +1554,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1565,7 +1565,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1576,7 +1576,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1609,7 +1609,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1626,7 +1626,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1637,7 +1637,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1665,7 +1665,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1687,7 +1687,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1698,7 +1698,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1709,7 +1709,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1742,7 +1742,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1759,7 +1759,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1770,7 +1770,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1798,7 +1798,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1820,7 +1820,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1831,7 +1831,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -1842,7 +1842,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -1875,7 +1875,7 @@
               "en": "Commoner",
               "fr": "Roturier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -1902,8 +1902,8 @@
     ],
     "classSkills": [],
     "recommendedAttributes": [
-      "stat_int",
-      "stat_dex"
+      "stat_intelligence",
+      "stat_dexterity"
     ],
     "grantedModifiers": [
       {
@@ -1925,7 +1925,7 @@
           "fr": "Expert"
         },
         "targetId": "attributes.skill_points_per_level",
-        "value": "6 + @attributes.stat_int.derivedModifier",
+        "value": "6 + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -1964,7 +1964,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -1992,7 +1992,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2003,7 +2003,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2014,7 +2014,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -2031,7 +2031,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2064,7 +2064,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2075,7 +2075,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2086,7 +2086,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2114,7 +2114,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -2131,7 +2131,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2159,7 +2159,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2170,7 +2170,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -2187,7 +2187,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2215,7 +2215,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -2232,7 +2232,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2243,7 +2243,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2254,7 +2254,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2287,7 +2287,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2315,7 +2315,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2326,7 +2326,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2337,7 +2337,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           }
@@ -2354,7 +2354,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2387,7 +2387,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -2398,7 +2398,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -2409,7 +2409,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -2437,7 +2437,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -2454,7 +2454,7 @@
               "en": "Expert",
               "fr": "Expert"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3518,8 +3518,8 @@
       "skill_swim"
     ],
     "recommendedAttributes": [
-      "stat_str",
-      "stat_con"
+      "stat_strength",
+      "stat_constitution"
     ],
     "grantedModifiers": [
       {
@@ -3541,7 +3541,7 @@
           "fr": "Guerrier"
         },
         "targetId": "attributes.skill_points_per_level",
-        "value": "2 + @attributes.stat_int.derivedModifier",
+        "value": "2 + @attributes.stat_intelligence.derivedModifier",
         "type": "base"
       }
     ],
@@ -3563,7 +3563,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3574,7 +3574,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 2,
             "type": "base"
           }
@@ -3591,7 +3591,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3602,7 +3602,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -3619,7 +3619,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3630,7 +3630,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3658,7 +3658,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3669,7 +3669,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -3686,7 +3686,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -3703,7 +3703,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3714,7 +3714,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3725,7 +3725,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3753,7 +3753,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -3770,7 +3770,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3781,7 +3781,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -3798,7 +3798,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3809,7 +3809,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3837,7 +3837,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3848,7 +3848,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -3865,7 +3865,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -3882,7 +3882,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3893,7 +3893,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -3904,7 +3904,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -3932,7 +3932,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -3949,7 +3949,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3960,7 +3960,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -3977,7 +3977,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -3988,7 +3988,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4016,7 +4016,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4027,7 +4027,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }
@@ -4044,7 +4044,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4061,7 +4061,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4072,7 +4072,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           },
@@ -4083,7 +4083,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.ref",
+            "targetId": "saves.reflex",
             "value": 1,
             "type": "base"
           },
@@ -4111,7 +4111,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           }
@@ -4128,7 +4128,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "combatStats.bab",
+            "targetId": "combatStats.base_attack_bonus",
             "value": 1,
             "type": "base"
           },
@@ -4139,7 +4139,7 @@
               "en": "Warrior",
               "fr": "Guerrier"
             },
-            "targetId": "saves.fort",
+            "targetId": "saves.fortitude",
             "value": 1,
             "type": "base"
           }

@@ -4,9 +4,9 @@
  *
  * BUG FIXED (2026-03-23):
  *   The GameEngine context builders were storing combatStats entries with their full
- *   database keys ("combatStats.bab") instead of flat keys ("bab"). The Math Parser
- *   path @combatStats.bab.totalValue splits into ["combatStats","bab","totalValue"] and
- *   looks up context.combatStats["bab"] — which returned undefined with the old code.
+ *   database keys ("combatStats.base_attack_bonus") instead of flat keys ("base_attack_bonus"). The Math Parser
+ *   path @combatStats.base_attack_bonus.totalValue splits into ["combatStats","base_attack_bonus","totalValue"] and
+ *   looks up context.combatStats["base_attack_bonus"] — which returned undefined with the old code.
  *
  *   This caused ALL BAB prerequisite checks (Power Attack, Cleave, Weapon Specialization,
  *   etc.) to silently return 0, making them never satisfiable in production.
@@ -14,7 +14,7 @@
  * WHAT IS TESTED:
  *   1. resolvePath correctly resolves @combatStats.X.totalValue using flat keys.
  *   2. resolvePath correctly resolves @saves.X.totalValue using flat keys.
- *   3. Prerequisites using @combatStats.bab.totalValue pass/fail correctly.
+ *   3. Prerequisites using @combatStats.base_attack_bonus.totalValue pass/fail correctly.
  *   4. normaliseModifierTargetId handles "resources.X.maxValue" → "combatStats.X_max".
  *
  * @see ARCHITECTURE.md section 9.10 — CharacterContext key conventions
@@ -33,17 +33,17 @@ import type { LogicNode } from '$lib/types/logic';
 
 /**
  * A CharacterContext that precisely mirrors what the fixed GameEngine produces:
- *   - combatStats uses FLAT keys: "bab", "ac_normal", "speed_land" (NOT "combatStats.bab")
- *   - saves uses FLAT keys: "fort", "ref", "will" (NOT "saves.fort")
+ *   - combatStats uses FLAT keys: "base_attack_bonus", "ac_normal", "speed_land" (NOT "combatStats.base_attack_bonus")
+ *   - saves uses FLAT keys: "fortitude", "reflex", "will" (NOT "saves.fortitude")
  */
 const MOCK_CONTEXT: CharacterContext = {
   attributes: {
-    stat_str:  { baseValue: 16, totalValue: 16, derivedModifier: 3 },
-    stat_dex:  { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-    stat_con:  { baseValue: 14, totalValue: 14, derivedModifier: 2 },
-    stat_int:  { baseValue: 12, totalValue: 12, derivedModifier: 1 },
-    stat_wis:  { baseValue: 10, totalValue: 10, derivedModifier: 0 },
-    stat_cha:  { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_strength:  { baseValue: 16, totalValue: 16, derivedModifier: 3 },
+    stat_dexterity:  { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_constitution:  { baseValue: 14, totalValue: 14, derivedModifier: 2 },
+    stat_intelligence:  { baseValue: 12, totalValue: 12, derivedModifier: 1 },
+    stat_wisdom:  { baseValue: 10, totalValue: 10, derivedModifier: 0 },
+    stat_charisma:  { baseValue: 10, totalValue: 10, derivedModifier: 0 },
     stat_caster_level: { baseValue: 0, totalValue: 5, derivedModifier: 0 },
   },
   skills: {
@@ -52,11 +52,11 @@ const MOCK_CONTEXT: CharacterContext = {
   },
   // FLAT KEYS — the fix strips "combatStats." prefix when building the context
   combatStats: {
-    bab:          { totalValue: 6 },
+    base_attack_bonus: { totalValue: 6 },
     ac_normal:    { totalValue: 17 },
     ac_touch:     { totalValue: 13 },
     ac_flat_footed: { totalValue: 15 },
-    init:         { totalValue: 3 },
+    initiative: { totalValue: 3 },
     grapple:      { totalValue: 9 },
     speed_land:   { totalValue: 30 },
     speed_fly:    { totalValue: 0 },
@@ -64,8 +64,8 @@ const MOCK_CONTEXT: CharacterContext = {
   },
   // FLAT KEYS — the fix strips "saves." prefix when building the context
   saves: {
-    fort: { totalValue: 7 },
-    ref:  { totalValue: 4 },
+    fortitude: { totalValue: 7 },
+    reflex: { totalValue: 4 },
     will: { totalValue: 2 },
   },
   characterLevel: 6,
@@ -82,8 +82,8 @@ const MOCK_CONTEXT: CharacterContext = {
 // =============================================================================
 
 describe('CharacterContext flat key fix — @combatStats paths', () => {
-  it('resolves @combatStats.bab.totalValue to 6 (flat key "bab")', () => {
-    const result = resolvePath('@combatStats.bab.totalValue', MOCK_CONTEXT);
+  it('resolves @combatStats.base_attack_bonus.totalValue to 6 (flat key "base_attack_bonus")', () => {
+    const result = resolvePath('@combatStats.base_attack_bonus.totalValue', MOCK_CONTEXT);
     expect(result).toBe(6);
   });
 
@@ -96,8 +96,8 @@ describe('CharacterContext flat key fix — @combatStats paths', () => {
     expect(resolvePath('@combatStats.ac_touch.totalValue', MOCK_CONTEXT)).toBe(13);
   });
 
-  it('resolves @combatStats.init.totalValue correctly', () => {
-    expect(resolvePath('@combatStats.init.totalValue', MOCK_CONTEXT)).toBe(3);
+  it('resolves @combatStats.initiative.totalValue correctly', () => {
+    expect(resolvePath('@combatStats.initiative.totalValue', MOCK_CONTEXT)).toBe(3);
   });
 
   it('resolves @combatStats.speed_land.totalValue correctly', () => {
@@ -119,13 +119,13 @@ describe('CharacterContext flat key fix — @combatStats paths', () => {
     const brokenContext: CharacterContext = {
       ...MOCK_CONTEXT,
       combatStats: {
-        // The BAD old format — full "combatStats.bab" key instead of flat "bab"
-        'combatStats.bab': { totalValue: 99 }, // This key can never be resolved by path
+        // The BAD old format — full "combatStats.base_attack_bonus" key (with prefix) instead of flat "base_attack_bonus"
+        'combatStats.base_attack_bonus': { totalValue: 99 }, // This key can never be resolved by path
       },
     };
-    // @combatStats.bab.totalValue splits into ["combatStats","bab"] — looks for key "bab"
-    // The broken context has "combatStats.bab" not "bab" → undefined → 0
-    const result = resolvePath('@combatStats.bab.totalValue', brokenContext);
+    // @combatStats.base_attack_bonus.totalValue splits into ["combatStats","base_attack_bonus"] — looks for key "base_attack_bonus"
+    // The broken context has full prefixed key "combatStats.base_attack_bonus" not flat "base_attack_bonus" → undefined → 0
+    const result = resolvePath('@combatStats.base_attack_bonus.totalValue', brokenContext);
     expect(result).toBe(0); // Would silently fail with broken context
   });
 });
@@ -135,34 +135,34 @@ describe('CharacterContext flat key fix — @combatStats paths', () => {
 // =============================================================================
 
 describe('CharacterContext flat key fix — @saves paths', () => {
-  it('resolves @saves.fort.totalValue to 7', () => {
-    expect(resolvePath('@saves.fort.totalValue', MOCK_CONTEXT)).toBe(7);
+  it('resolves @saves.fortitude.totalValue to 7', () => {
+    expect(resolvePath('@saves.fortitude.totalValue', MOCK_CONTEXT)).toBe(7);
   });
 
-  it('resolves @saves.ref.totalValue to 4', () => {
-    expect(resolvePath('@saves.ref.totalValue', MOCK_CONTEXT)).toBe(4);
+  it('resolves @saves.reflex.totalValue to 4', () => {
+    expect(resolvePath('@saves.reflex.totalValue', MOCK_CONTEXT)).toBe(4);
   });
 
   it('resolves @saves.will.totalValue to 2', () => {
     expect(resolvePath('@saves.will.totalValue', MOCK_CONTEXT)).toBe(2);
   });
 
-  it('would return 0 with broken saves context (full "saves.fort" key)', () => {
+  it('would return 0 with broken saves context (full "saves.fortitude" key)', () => {
     const brokenContext: CharacterContext = {
       ...MOCK_CONTEXT,
       saves: {
-        'saves.fort': { totalValue: 99 }, // baggy format won't resolve
+        'saves.fortitude': { totalValue: 99 }, // baggy format won't resolve
       },
     };
-    expect(resolvePath('@saves.fort.totalValue', brokenContext)).toBe(0);
+    expect(resolvePath('@saves.fortitude.totalValue', brokenContext)).toBe(0);
   });
 });
 
 // =============================================================================
-// 3. Prerequisite checking — @combatStats.bab.totalValue used in LogicNode
+// 3. Prerequisite checking — @combatStats.base_attack_bonus.totalValue used in LogicNode
 // =============================================================================
 
-describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', () => {
+describe('Prerequisite checks using @combatStats.base_attack_bonus.totalValue (regression)', () => {
   /**
    * These are the exact prerequisite patterns used in the D20 SRD rule files.
    * With the old buggy context keys, ALL of these would silently return false.
@@ -171,7 +171,7 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
   it('Power Attack (BAB +1): passes when BAB = 6', () => {
     const node: LogicNode = {
       logic: 'CONDITION',
-      targetPath: '@combatStats.bab.totalValue',
+      targetPath: '@combatStats.base_attack_bonus.totalValue',
       operator: '>=',
       value: 1,
       errorMessage: 'Requires Base Attack Bonus +1',
@@ -182,7 +182,7 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
   it('Weapon Specialization (BAB +4): passes when BAB = 6', () => {
     const node: LogicNode = {
       logic: 'CONDITION',
-      targetPath: '@combatStats.bab.totalValue',
+      targetPath: '@combatStats.base_attack_bonus.totalValue',
       operator: '>=',
       value: 4,
       errorMessage: 'Requires BAB +4',
@@ -193,11 +193,11 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
   it('Combat Reflexes (BAB +1): fails when BAB = 0 (level 0 character)', () => {
     const noBABContext: CharacterContext = {
       ...MOCK_CONTEXT,
-      combatStats: { ...MOCK_CONTEXT.combatStats, bab: { totalValue: 0 } },
+      combatStats: { ...MOCK_CONTEXT.combatStats, base_attack_bonus: { totalValue: 0 } },
     };
     const node: LogicNode = {
       logic: 'CONDITION',
-      targetPath: '@combatStats.bab.totalValue',
+      targetPath: '@combatStats.base_attack_bonus.totalValue',
       operator: '>=',
       value: 1,
     };
@@ -207,7 +207,7 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
   it('Greater Weapon Specialization (BAB +12): fails when BAB = 6', () => {
     const node: LogicNode = {
       logic: 'CONDITION',
-      targetPath: '@combatStats.bab.totalValue',
+      targetPath: '@combatStats.base_attack_bonus.totalValue',
       operator: '>=',
       value: 12,
     };
@@ -218,7 +218,7 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
     const springAttackNode: LogicNode = {
       logic: 'AND',
       nodes: [
-        { logic: 'CONDITION', targetPath: '@combatStats.bab.totalValue', operator: '>=', value: 4 },
+        { logic: 'CONDITION', targetPath: '@combatStats.base_attack_bonus.totalValue', operator: '>=', value: 4 },
         { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_dodge' },
         { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'feat_mobility' },
       ],
@@ -239,14 +239,14 @@ describe('Prerequisite checks using @combatStats.bab.totalValue (regression)', (
 
 describe('evaluateFormula with @combatStats paths (flat key required)', () => {
   it('uses BAB in arithmetic: BAB + STR mod = attack roll base', () => {
-    const formula = '@combatStats.bab.totalValue + @attributes.stat_str.derivedModifier';
+    const formula = '@combatStats.base_attack_bonus.totalValue + @attributes.stat_strength.derivedModifier';
     const result = evaluateFormula(formula, MOCK_CONTEXT, 'en');
     expect(result).toBe(9); // BAB 6 + STR mod 3
   });
 
-  it('saves check formula: @saves.fort.totalValue >= 10', () => {
+  it('saves check formula: @saves.fortitude.totalValue >= 10', () => {
     // Used in "auto-pass fort DC 10" style formulas
-    const result = evaluateFormula('@saves.fort.totalValue', MOCK_CONTEXT, 'en');
+    const result = evaluateFormula('@saves.fortitude.totalValue', MOCK_CONTEXT, 'en');
     expect(result).toBe(7);
   });
 

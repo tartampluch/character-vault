@@ -123,12 +123,12 @@ When translating descriptive text, aim for the style of the official French *Man
 
 | English | French | ID used in data |
 |---|---|---|
-| Strength | Force | `stat_str` |
-| Dexterity | Dextérité | `stat_dex` |
-| Constitution | Constitution | `stat_con` |
-| Intelligence | Intelligence | `stat_int` |
-| Wisdom | Sagesse | `stat_wis` |
-| Charisma | Charisme | `stat_cha` |
+| Strength | Force | `stat_strength` |
+| Dexterity | Dextérité | `stat_dexterity` |
+| Constitution | Constitution | `stat_constitution` |
+| Intelligence | Intelligence | `stat_intelligence` |
+| Wisdom | Sagesse | `stat_wisdom` |
+| Charisma | Charisme | `stat_charisma` |
 | Fortitude save | jet de Vigueur | `save_fort` |
 | Reflex save | jet de Réflexes | `save_ref` |
 | Will save | jet de Volonté | `save_will` |
@@ -402,8 +402,8 @@ All IDs use strict `kebab-case` with a category prefix:
 
 | SRD text | JSON `LogicNode` |
 |---|---|
-| `Str 13` | `{ "logic": "CONDITION", "targetPath": "@attributes.stat_str.totalValue", "operator": ">=", "value": 13, "errorMessage": "Requires Strength 13+" }` |
-| `BAB +6` | `{ "logic": "CONDITION", "targetPath": "@combatStats.bab.totalValue", "operator": ">=", "value": 6, "errorMessage": "Requires BAB +6" }` |
+| `Str 13` | `{ "logic": "CONDITION", "targetPath": "@attributes.stat_strength.totalValue", "operator": ">=", "value": 13, "errorMessage": "Requires Strength 13+" }` |
+| `BAB +6` | `{ "logic": "CONDITION", "targetPath": "@combatStats.base_attack_bonus.totalValue", "operator": ">=", "value": 6, "errorMessage": "Requires BAB +6" }` |
 | `Power Attack feat` | `{ "logic": "CONDITION", "targetPath": "@activeTags", "operator": "has_tag", "value": "feat_power_attack", "errorMessage": "Requires Power Attack" }` |
 | `5 ranks in Spot` | `{ "logic": "CONDITION", "targetPath": "@skills.skill_spot.ranks", "operator": ">=", "value": 5, "errorMessage": "Requires 5 ranks in Spot" }` |
 | `Caster level 3` | `{ "logic": "CONDITION", "targetPath": "@attributes.stat_caster_level.totalValue", "operator": ">=", "value": 3, "errorMessage": "Requires caster level 3" }` |
@@ -535,7 +535,7 @@ Several tasks build a single output file across multiple sub-tasks:
       "skill_climb": {
         "id": "skill_climb",
         "label": { "en": "Climb", "fr": "Escalade" },
-        "keyAbility": "stat_str",
+        "keyAbility": "stat_strength",
         "canBeUsedUntrained": true,
         "appliesArmorCheckPenalty": true,
         "description": { "en": "...", "fr": "..." },
@@ -696,7 +696,7 @@ Key mechanics:
 
 | Feature | Mechanic |
 |---|---|
-| Turn Undead | `activation` (standard action) + `ResourcePool` `resources.turn_undead_uses` max = `"3 + @attributes.stat_cha.derivedModifier"` |
+| Turn Undead | `activation` (standard action) + `ResourcePool` `resources.turn_undead_uses` max = `"3 + @attributes.stat_charisma.derivedModifier"` |
 | Rebuke Undead | Evil clerics only — same pool/pattern as Turn Undead; different effect description |
 | Spontaneous Casting | Tag-based flag: good/neutral clerics swap any prepared spell for a Cure spell of equal or lower level; evil clerics swap for Inflict — model as a `situationalContext` note in description, no `grantedModifiers` needed |
 | Spellcasting (divine, prepared) | `ResourcePool` per slot level 0–9 on `resources.spell_slots_cleric_<n>`; domain spell slots are handled by 76 domain features |
@@ -821,7 +821,7 @@ Key mechanics:
 | Feature | Mechanic |
 |---|---|
 | Unarmed Strike damage | `setAbsolute` on `combatStats.unarmed_damage` per tier: 1d6 (level 1) → 1d8 (level 7) → 1d10 (level 11) → 2d6 (level 15) → 2d8 (level 19); also grants the `"unarmed"` tag |
-| AC Bonus | `grantedModifiers` value = `"@attributes.stat_wis.derivedModifier"`, type `"wisdom"`, with `conditionNode` requiring no armor tag, no shield tag, and no encumbrance |
+| AC Bonus | `grantedModifiers` value = `"@attributes.stat_wisdom.derivedModifier"`, type `"wisdom"`, with `conditionNode` requiring no armor tag, no shield tag, and no encumbrance |
 | Flurry of Blows | Extra attack at −2/−2 penalty (levels 1–4), full BAB (level 5+), +1 extra attack (level 11+); model as `grantedModifiers` on `combatStats.extra_attacks` with appropriate penalty |
 | Still Mind | `grantedModifiers` +2 saves vs. enchantments, type `"untyped"` |
 | Slow Fall | Damage reduction when within arm's reach of a wall; scales per level — description + conditional modifier on fall damage |
@@ -873,7 +873,7 @@ Key mechanics:
 | Detect Evil | At-will (move action); description-only |
 | Smite Evil | `activation` (standard); `ResourcePool` `resources.smite_evil_uses` max = `"1 + floor((@classLevels.class_paladin - 1) / 5)"`; on hit: +CHA to attack roll, +class level to damage |
 | Divine Grace | `grantedModifiers` CHA modifier to all saving throws, type `"untyped"` |
-| Lay on Hands | `ResourcePool` `resources.lay_on_hands_hp` max = `"@classLevels.class_paladin * @attributes.stat_cha.derivedModifier"`; heals that many HP per day (free action on self, standard on others) |
+| Lay on Hands | `ResourcePool` `resources.lay_on_hands_hp` max = `"@classLevels.class_paladin * @attributes.stat_charisma.derivedModifier"`; heals that many HP per day (free action on self, standard on others) |
 | Aura of Courage | `grantedModifiers` +4 morale bonus vs. fear for self and allies within 10 ft |
 | Divine Health | Immunity to all diseases |
 | Turn Undead | Gained at level 4; same pattern as Cleric Turn Undead with CHA-based pool |
@@ -1367,7 +1367,7 @@ Focus on items with mechanical relevance (thieves' tools → +2 Disable Device, 
 - Each class has a **10-level** `levelProgression`.
 - Each class requires a `prerequisitesNode` at the class level (entry requirements), using the prerequisites table in this document.
 - **Spellcasting advancement** (Mystic Theurge, Archmage, Eldritch Knight, Arcane Trickster, Loremaster, Thaumaturgist, Hierophant): model as modifiers incrementing the **existing** base class spell slot `ResourcePool` (e.g., add to `resources.spell_slots_wizard_3`). Do not create new pools.
-- **Dragon Disciple ability score increases**: `type: "untyped"` on `attributes.stat_str`, `stat_con`, `stat_int` at the specified levels.
+- **Dragon Disciple ability score increases**: `type: "untyped"` on `attributes.stat_strength`, `stat_constitution`, `stat_intelligence` at the specified levels.
 - **Blackguard**: Paladin-mirror abilities — use same pool/modifier patterns as 17.
 
 ---
@@ -1735,7 +1735,7 @@ Run after generating any output file. Validation is **bidirectional**: first che
 - [x] Every `Modifier` object has: `id`, `sourceId`, `sourceName.en`, `sourceName.fr`, `targetId`, `value`, `type`
 - [x] `type` is one of the valid `ModifierType` values: `"base"`, `"multiplier"`, `"untyped"`, `"racial"`, `"enhancement"`, `"morale"`, `"luck"`, `"insight"`, `"sacred"`, `"profane"`, `"dodge"`, `"armor"`, `"shield"`, `"natural_armor"`, `"deflection"`, `"competence"`, `"circumstance"`, `"synergy"`, `"size"`, `"setAbsolute"`, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`, `"resistance"`
 - [x] Stacking rules are respected: two `"enhancement"` bonuses to the same pipeline do NOT both appear; use the correct type so the engine can enforce non-stacking
-- [x] `targetId` paths are valid pipeline paths (`attributes.stat_str`, `combatStats.attack_bonus`, `skills.skill_hide`, etc.) — no typos, no invented paths
+- [x] `targetId` paths are valid pipeline paths (`attributes.stat_strength`, `combatStats.attack_bonus`, `skills.skill_hide`, etc.) — no typos, no invented paths
 
 **Choices and options**
 - [x] Every `FeatureChoice` has a valid `optionsQuery` (`"tag:<name>"`, `"category:<name>"`, or `"discipline:<name>"`)

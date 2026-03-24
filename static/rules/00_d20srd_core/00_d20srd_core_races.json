@@ -91,7 +91,7 @@
       {
         "id": "dwarf_con_bonus",
         "sourceId": "race_dwarf",
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -102,7 +102,7 @@
       {
         "id": "dwarf_cha_penalty",
         "sourceId": "race_dwarf",
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -250,7 +250,7 @@
       {
         "id": "elf_dex_bonus",
         "sourceId": "race_elf",
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -261,7 +261,7 @@
       {
         "id": "elf_con_penalty",
         "sourceId": "race_elf",
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -283,7 +283,7 @@
       {
         "id": "elf_enchantment_save_fort",
         "sourceId": "race_elf",
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -295,7 +295,7 @@
       {
         "id": "elf_enchantment_save_ref",
         "sourceId": "race_elf",
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -386,7 +386,7 @@
       {
         "id": "gnome_con_bonus",
         "sourceId": "race_gnome",
-        "targetId": "attributes.stat_con",
+        "targetId": "attributes.stat_constitution",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -397,7 +397,7 @@
       {
         "id": "gnome_str_penalty",
         "sourceId": "race_gnome",
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -585,7 +585,7 @@
       {
         "id": "half_elf_enchantment_save_fort",
         "sourceId": "race_half_elf",
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -597,7 +597,7 @@
       {
         "id": "half_elf_enchantment_save_ref",
         "sourceId": "race_half_elf",
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -706,7 +706,7 @@
       {
         "id": "half_orc_str_bonus",
         "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -717,7 +717,7 @@
       {
         "id": "half_orc_int_penalty",
         "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_int",
+        "targetId": "attributes.stat_intelligence",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -728,7 +728,7 @@
       {
         "id": "half_orc_cha_penalty",
         "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_cha",
+        "targetId": "attributes.stat_charisma",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -779,7 +779,7 @@
       {
         "id": "halfling_dex_bonus",
         "sourceId": "race_halfling",
-        "targetId": "attributes.stat_dex",
+        "targetId": "attributes.stat_dexterity",
         "value": 2,
         "type": "racial",
         "sourceName": {
@@ -790,7 +790,7 @@
       {
         "id": "halfling_str_penalty",
         "sourceId": "race_halfling",
-        "targetId": "attributes.stat_str",
+        "targetId": "attributes.stat_strength",
         "value": -2,
         "type": "racial",
         "sourceName": {
@@ -911,7 +911,7 @@
       {
         "id": "halfling_save_all",
         "sourceId": "race_halfling",
-        "targetId": "saves.fort",
+        "targetId": "saves.fortitude",
         "value": 1,
         "type": "racial",
         "sourceName": {
@@ -922,7 +922,7 @@
       {
         "id": "halfling_save_all_ref",
         "sourceId": "race_halfling",
-        "targetId": "saves.ref",
+        "targetId": "saves.reflex",
         "value": 1,
         "type": "racial",
         "sourceName": {
