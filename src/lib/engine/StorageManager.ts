@@ -160,6 +160,11 @@ export class StorageManager {
 
   #checkAvailability(): boolean {
     try {
+      // In Node.js 25+, localStorage is a native global but requires the
+      // --localstorage-file flag to work (and warns without it). Accessing it
+      // in a non-browser environment (SSR, tests) is never useful, so we guard
+      // with a window check first — window is only defined in browsers.
+      if (typeof window === 'undefined') return false;
       if (typeof localStorage === 'undefined') return false;
       const testKey = `${STORAGE_PREFIX}_test`;
       localStorage.setItem(testKey, '1');

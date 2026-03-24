@@ -52,6 +52,10 @@ let localStorageMock: ReturnType<typeof createLocalStorageMock>;
 
 beforeEach(() => {
   localStorageMock = createLocalStorageMock();
+  // Stub `window` so StorageManager#checkAvailability() sees a browser-like
+  // environment (Node.js 25 has native localStorage but no `window`, which
+  // would trigger a --localstorage-file warning and cause isAvailable = false).
+  vi.stubGlobal('window', {});
   vi.stubGlobal('localStorage', localStorageMock);
 });
 

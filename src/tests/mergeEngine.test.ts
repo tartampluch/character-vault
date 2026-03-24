@@ -46,11 +46,34 @@
  * @see ARCHITECTURE.md Phase 17.7
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
 import { DataLoader } from '$lib/engine/DataLoader';
 import type { Feature, LevelProgressionEntry } from '$lib/types/feature';
 import type { Modifier } from '$lib/types/pipeline';
 import type { ModifierType } from '$lib/types/primitives';
+
+// ---------------------------------------------------------------------------
+// FETCH MOCK — suppress DataLoader network discovery noise
+// ---------------------------------------------------------------------------
+// The mergeEngine tests use loadRuleSources() exclusively to exercise the
+// gmGlobalOverrides / merge pipeline. No real rule source files are needed.
+// Without this mock, calling loadRuleSources() in a Node.js test environment
+// (where relative URLs like "/rules" are invalid) generates ERR_INVALID_URL
+// errors and console output on every test, obscuring real failures.
+//
+// This mock reports an empty file list so the DataLoader immediately proceeds
+// to apply the gmGlobalOverrides JSON that each test provides.
+beforeAll(() => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    headers: { get: () => 'application/json' },
+    json: () => Promise.resolve([]),
+  }));
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
+});
 
 // ============================================================
 // HELPERS
