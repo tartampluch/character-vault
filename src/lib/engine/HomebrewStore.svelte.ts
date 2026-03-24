@@ -383,6 +383,23 @@ export class HomebrewStore {
   // ---------------------------------------------------------------------------
 
   /**
+   * Immediately persists the current entity list to the backend.
+   *
+   * This is the public counterpart to the private `#persist()` method.
+   * It is intended for use in tests (where the Svelte `$effect` scheduler is not
+   * running) and in imperative "Save Now" button handlers where the caller needs
+   * to await the result of the save.
+   *
+   * The auto-save path (`isDirty → $effect → debounce → #persist`) is still the
+   * primary save mechanism in production; `save()` is an explicit override.
+   *
+   * @returns A Promise resolving when the save completes (or silently fails).
+   */
+  async save(): Promise<void> {
+    return this.#persist();
+  }
+
+  /**
    * Loads homebrew entities from the backend for the current scope.
    *
    * CAMPAIGN SCOPE:

@@ -913,6 +913,214 @@ describe('HomebrewStore — filename validation', () => {
 });
 
 // =============================================================================
+// 37. load() — non-array JSON response
+// =============================================================================
+
+describe('HomebrewStore — load() non-array JSON response', () => {
+  /**
+   * Test 37: Backend returns a non-array JSON value (e.g., an object or null).
+   *
+   * load() must log a warning and leave the current entity list untouched.
+   * This guards against a misconfigured backend returning `{}` instead of `[]`.
+   */
+  it('ignores load() when backend returns non-array JSON without mutating state', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ error: 'wrong shape' }),
+    }));
+
+    const store = new HomebrewStore();
+    store.add(makeFeature('feat_protected_non_array'));
+    store.isDirty = false;
+
+    store.scope    = 'global';
+    store.filename = '50_homebrew.json';
+    await store.load();
+
+    // Entity list must be intact — non-array response is silently ignored.
+    expect(store.entities).toHaveLength(1);
+    expect(store.getById('feat_protected_non_array')).toBeDefined();
+    // isDirty was false before; a failed/skipped load must not change it.
+    expect(store.isDirty).toBe(false);
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+});
+
+// =============================================================================
+// 38–44. save() — #persist() all branches
+// =============================================================================
+
+describe('HomebrewStore — save() / #persist()', () => {
+  /**
+   * Test 38: save() sends a PUT to the campaign endpoint and clears isDirty on success.
+   */
+  it('campaign scope: PUT calls /api/campaigns/{id}/homebrew-rules and clears isDirty', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = new HomebrewStore();
+    store.scope = 'campaign';
+    sessionContext.setActiveCampaign('camp_save_test');
+    store.add(makeFeature('feat_to_save'));
+    expect(store.isDirty).toBe(true);
+
+    await store.save();
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [calledUrl, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toBe('/api/campaigns/camp_save_test/homebrew-rules');
+    expect(options.method).toBe('PUT');
+    expect(store.isDirty).toBe(false);
+    expect(store.isSaving).toBe(false);
+  });
+
+  /**
+   * Test 39: save() sends a PUT to the global endpoint.
+   */
+  it('global scope: PUT calls /api/global-rules/{filename}', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = new HomebrewStore();
+    store.scope    = 'global';
+    store.filename = '50_homebrew.json';
+    store.add(makeFeature('feat_global_save'));
+
+    await store.save();
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [calledUrl] = fetchMock.mock.calls[0] as [string];
+    expect(calledUrl).toBe('/api/global-rules/50_homebrew.json');
+    expect(store.isDirty).toBe(false);
+    expect(store.isSaving).toBe(false);
+  });
+
+  /**
+   * Test 40: save() aborts silently when scope=campaign and activeCampaignId is null.
+   */
+  it('does not call fetch when scope=campaign and activeCampaignId is null', async () => {
+    const warnSpy   = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = new HomebrewStore();
+    store.scope = 'campaign';
+    // sessionContext.activeCampaignId remains null (reset in afterEach).
+
+    await store.save();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  /**
+   * Test 41: save() with an invalid global filename logs an error and skips the fetch.
+   *
+   * The validation in #persist() must abort before sending any network request
+   * when the filename does not match [0-9a-z_-]+\.json.
+   */
+  it('global scope with invalid filename aborts save without calling fetch', async () => {
+    const errorSpy  = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = new HomebrewStore();
+    store.scope    = 'global';
+    store.filename = 'INVALID FILE.json'; // uppercase + space — rejected by regex
+    store.add(makeFeature('feat_bad_filename'));
+
+    await store.save();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    // isDirty stays true because the save was aborted, not completed.
+    expect(store.isDirty).toBe(true);
+    expect(store.isSaving).toBe(false);
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  /**
+   * Test 42: save() with a non-OK response leaves isDirty = true and isSaving = false.
+   *
+   * A server error (e.g., 500) means the save failed — the store must signal that
+   * a retry is needed by keeping isDirty = true.
+   */
+  it('non-OK HTTP response keeps isDirty = true and sets isSaving = false', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ message: 'Internal Server Error' }),
+    }));
+
+    const store = new HomebrewStore();
+    store.scope = 'global';
+    store.filename = '50_homebrew.json';
+    store.add(makeFeature('feat_save_fail'));
+
+    await store.save();
+
+    expect(store.isDirty).toBe(true);
+    expect(store.isSaving).toBe(false);
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  /**
+   * Test 43: save() with a non-OK response where the body is not JSON.
+   *
+   * When the error body cannot be parsed as JSON, the store must still
+   * log the error (without a server message) and keep isDirty = true.
+   */
+  it('non-OK response with non-JSON body is handled gracefully', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 422,
+      json: () => Promise.reject(new SyntaxError('Not JSON')),
+    }));
+
+    const store = new HomebrewStore();
+    store.scope = 'global';
+    store.filename = '50_homebrew.json';
+    store.add(makeFeature('feat_non_json_error'));
+
+    await store.save();
+
+    expect(store.isDirty).toBe(true);
+    expect(store.isSaving).toBe(false);
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  /**
+   * Test 44: save() network error is caught gracefully; isDirty stays true.
+   *
+   * A rejected fetch() promise (e.g., offline) must not propagate as an
+   * unhandled rejection. The store logs the error and leaves isDirty = true.
+   */
+  it('network error during save() is caught; isDirty stays true and isSaving = false', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network offline')));
+
+    const store = new HomebrewStore();
+    store.scope = 'global';
+    store.filename = '50_homebrew.json';
+    store.add(makeFeature('feat_network_save_fail'));
+
+    await expect(store.save()).resolves.toBeUndefined(); // must not throw
+
+    expect(store.isDirty).toBe(true);
+    expect(store.isSaving).toBe(false);
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+});
+
+// =============================================================================
 // 35–36. entities accessor
 // =============================================================================
 
