@@ -36,6 +36,7 @@ require_once __DIR__ . '/../api/middleware.php';
 require_once __DIR__ . '/../api/controllers/CampaignController.php';
 require_once __DIR__ . '/../api/controllers/CharacterController.php';
 require_once __DIR__ . '/../api/controllers/RulesController.php';
+require_once __DIR__ . '/../api/controllers/GlobalRulesController.php';
 
 // 3. Shared test utilities
 require_once __DIR__ . '/TestCase.php';

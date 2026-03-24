@@ -430,9 +430,9 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 #### 21.7 — Tests
 
-- [ ] **21.7.1 PHPUnit — Campaign-Scope Homebrew API:** Create `tests/HomebrewRulesTest.php`. Tests: fresh campaign returns `[]`; GM PUT saves and GET returns persisted data; non-GM PUT → 403; invalid JSON body → 422; body > 2 MB → 413; `campaigns.updated_at` changes after PUT; well-formed Feature with unknown extra fields is accepted (no over-validation on content).
+- [x] **21.7.1 PHPUnit — Campaign-Scope Homebrew API:** Create `tests/HomebrewRulesTest.php`. Tests: fresh campaign returns `[]`; GM PUT saves and GET returns persisted data; non-GM PUT → 403; invalid JSON body → 422; body > 2 MB → 413; `campaigns.updated_at` changes after PUT; well-formed Feature with unknown extra fields is accepted (no over-validation on content).
 
-- [ ] **21.7.2 PHPUnit — Global Rule Source API:** Extend `tests/HomebrewRulesTest.php` (or create `tests/GlobalRulesTest.php`). Tests: GET lists files after PUT; valid PUT creates file in `storage/rules/`; invalid filename (e.g., `../escape.json`, `MY FILE.json`) → 422; body > 2 MB → 413; DELETE removes file; non-GM requests return 403 for PUT and DELETE.
+- [x] **21.7.2 PHPUnit — Global Rule Source API:** Extend `tests/HomebrewRulesTest.php` (or create `tests/GlobalRulesTest.php`). Tests: GET lists files after PUT; valid PUT creates file in `storage/rules/`; invalid filename (e.g., `../escape.json`, `MY FILE.json`) → 422; body > 2 MB → 413; DELETE removes file; non-GM requests return 403 for PUT and DELETE.
 
 - [ ] **21.7.3 Vitest — HomebrewStore Unit Tests:** Create `src/tests/homebrewStore.test.ts`. Tests: `add()` inserts entity with `ruleSource: "user_homebrew"`; `update()` patches without clobbering unrelated fields; `remove()` deletes by ID; `toJSON()` produces valid parseable JSON array; `isDirty` becomes `true` after mutation and `false` after save; scope switching re-routes saves to the correct endpoint; filename validation rejects paths with invalid characters.
 

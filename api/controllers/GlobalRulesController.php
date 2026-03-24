@@ -63,8 +63,34 @@ class GlobalRulesController
      *   (the web root is the SvelteKit build output, not the project root).
      *   The PHP CLI router (run.sh) and the Apache .htaccess both serve only the
      *   SvelteKit `build/` directory, so `storage/` is unreachable directly via HTTP.
+     *
+     * TESTABILITY:
+     *   The GLOBAL_RULES_DIR environment variable overrides this path at runtime.
+     *   PHPUnit tests set it to a temporary directory (via sys_get_temp_dir()) so
+     *   they never touch the real storage/rules/ directory, and cleanup is trivial.
+     *   In production this variable is unset, so the default path is always used.
      */
     private const STORAGE_DIR = __DIR__ . '/../../storage/rules/';
+
+    /**
+     * Returns the resolved storage directory path (with trailing slash).
+     *
+     * Resolution order:
+     *   1. GLOBAL_RULES_DIR environment variable (set by tests or custom deployments)
+     *   2. STORAGE_DIR constant (the default production path)
+     *
+     * The returned path always ends with a directory separator so callers can
+     * safely concatenate a filename without an extra join operation.
+     */
+    private static function storageDir(): string
+    {
+        $envDir = getenv('GLOBAL_RULES_DIR');
+        if ($envDir !== false && $envDir !== '') {
+            // Ensure the path always ends with a separator.
+            return rtrim($envDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        }
+        return self::STORAGE_DIR;
+    }
 
     /**
      * Maximum allowed request body in bytes (2 MiB).
@@ -108,7 +134,7 @@ class GlobalRulesController
     {
         requireAuth();
 
-        $dir = self::STORAGE_DIR;
+        $dir = self::storageDir();
 
         // Directory may not have been created yet on a fresh installation.
         if (!is_dir($dir)) {
@@ -183,7 +209,7 @@ class GlobalRulesController
             return;
         }
 
-        $targetPath = self::STORAGE_DIR . $filename;
+        $targetPath = self::storageDir() . $filename;
 
         // ---- 404 — file must exist ---------------------------------------------------
         if (!is_file($targetPath)) {
@@ -304,7 +330,7 @@ class GlobalRulesController
         }
 
         // ---- Ensure storage directory exists ----------------------------------------
-        $dir = self::STORAGE_DIR;
+        $dir = self::storageDir();
         if (!is_dir($dir)) {
             // mode 0755: owner can rwx, group/others can r-x — appropriate for web server use.
             if (!mkdir($dir, 0755, true)) {
@@ -395,7 +421,7 @@ class GlobalRulesController
             return;
         }
 
-        $targetPath = self::STORAGE_DIR . $filename;
+        $targetPath = self::storageDir() . $filename;
 
         // ---- 404 — file must exist ---------------------------------------------------
         if (!is_file($targetPath)) {
