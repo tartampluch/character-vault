@@ -49,6 +49,7 @@ This project was architected and developed in collaboration with **Google Gemini
 - [Running the application](#running-the-application)
 - [Environment variables](#environment-variables)
 - [Production deployment](#production-deployment)
+- [d20srd folder — Third-Party Content Notice](#d20srd-folder--third-party-content-notice)
 - [Further reading](#further-reading)
 
 ---
@@ -509,12 +510,23 @@ php api/migrate.php
 
 ---
 
+## d20srd folder — Third-Party Content Notice
+
+The `d20srd/` folder in this repository is a **mirror of content from [d20srd.org](https://www.d20srd.org)**, which publishes the System Reference Document (SRD) for the D&D 3.5 rules under the Open Game License (OGL).
+
+- All content inside `d20srd/` is the **intellectual property of its respective owners** (Wizards of the Coast / d20srd.org). It is **not mine**.
+- The `d20srd/` folder is **explicitly excluded from the CC BY-NC-SA 4.0 license** that governs the rest of this project. The owner's license (OGL) prevails for all content within that folder.
+- [`D20SRD_CONVERSION.md`](D20SRD_CONVERSION.md) contains the AI prompt used to convert the HTML files from the `d20srd/` folder into valid JSON rule files compatible with this application.
+
+---
+
 ## Further reading
 
 | Document | Contents |
 |----------|----------|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Full engine specification: ECS philosophy, all 19 sections covering primitives, logic engine, mathematical pipelines, feature model, character entity, campaign data model, DAG phases, dice engine, i18n, data override system |
 | [`ANNEXES.md`](ANNEXES.md) | Complete JSON rule file examples (races, classes, feats, spells, items, psionics, environments) and configuration table reference |
+| [`D20SRD_CONVERSION.md`](D20SRD_CONVERSION.md) | Prompt used to convert `d20srd/` HTML files into valid JSON rule files for this application |
 
 ---
 
