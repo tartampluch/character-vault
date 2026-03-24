@@ -124,7 +124,7 @@ Every Feature shares the same base structure:
 
 | Field | Type | Required | Description |
 |---|---|:---:|---|
-| `id` | `string` | ✅ | Unique identifier. Use `kebab-case` with category prefix. |
+| `id` | `string` | ✅ | Unique identifier. Use `snake_case` with category prefix (e.g., `"feat_power_attack"`, `"race_elf"`). Never use hyphens. |
 | `category` | `string` | ✅ | What kind of Feature this is. See [category table](#featurecategory-values). |
 | `ruleSource` | `string` | ✅ | Which rules module this belongs to (e.g., `"srd_core"`, `"homebrew_mymod"`). Used for filtering. |
 | `label` | `LocalizedString` | ✅ | Display name in all supported languages. |
@@ -163,7 +163,9 @@ Every Feature shares the same base structure:
 
 ## 4. IDs and Naming Conventions
 
-IDs are **globally unique** kebab-case strings. Use the category as the prefix:
+IDs are **globally unique** `snake_case` strings (lowercase words separated by underscores). Use the category as the prefix:
+
+> **Critical:** IDs use `underscore_case`, not `kebab-case`. A modifier targeting `has_tag "feat_power_attack"` will never match an ID written as `feat-power-attack`. Every hyphen is a bug.
 
 | Category | Prefix | Example |
 |---|---|---|
@@ -178,8 +180,8 @@ IDs are **globally unique** kebab-case strings. Use the category as the prefix:
 | Item (magic) | `item_ring_`, `item_wand_`, etc. | `item_ring_protection_2`, `item_wand_magic_missile_cl1` |
 | Condition | `condition_` | `condition_stunned`, `condition_blinded` |
 | Environment | `environment_` | `environment_extreme_heat`, `environment_underwater` |
-| Modifier | `mod_` | `mod_barbarian_rage_str`, `mod_power_attack_penalty` |
-| Config table | `config_` | `config_xp_table`, `config_carrying_capacity` |
+| Modifier | _(no fixed prefix)_ | `barbarian_fast_movement_speed`, `rage_str_bonus` |
+| Config table | _(uses `tableId`, not `id`)_ | `config_xp_table`, `config_carrying_capacity` |
 
 > **Rule:** A modifier's `id` must be unique within the Feature that contains it. When two modifiers inside the same Feature would conflict, append a suffix: `mod_barbarian_rage_str`, `mod_barbarian_rage_con`.
 
@@ -216,12 +218,38 @@ Tags are **string labels** placed on Features. They serve three purposes:
 | `weapon_TYPE` | Weapon category | `weapon_simple`, `weapon_martial`, `weapon_exotic` |
 | `weapon_melee` / `weapon_ranged` | Attack mode | For ranged attack bonus conditions |
 | `alignment_ALIGN` | Moral alignment | `alignment_lawful`, `alignment_chaotic`, `alignment_good`, `alignment_evil` |
-| `heavy_load` / `medium_load` | Encumbrance condition | Auto-injected by engine |
+| `heavy_load` / `medium_load` | Encumbrance condition | Auto-injected by engine based on carried weight |
 | `spellcaster` | Has spellcasting | Used in prestige class prerequisites |
-| `caster_ability_STAT` | Casting stat identifier | `caster_ability_stat_int`, `caster_ability_stat_wis` |
+| `caster_ability_STAT` | Casting stat identifier | `caster_ability_stat_int`, `caster_ability_stat_wis`, `caster_ability_stat_cha` |
 | `condition_NAME` | Active condition | `condition_stunned`, `condition_raging` |
 | `extraordinary` / `supernatural` / `spell_like` | Ability type | For SR/PR checks |
 | `sys_` | System-wide global modifier | `sys_immune_mind_affecting`, `sys_roll_maximize_damage` |
+| `metal_armor` / `metal_shield` | Metal construction | Used by Druid `forbiddenTags` |
+| `action_budget_xor` | Standard OR Move restriction | Add to Staggered/Disabled conditions |
+
+### `wearing_armor` and `carrying_shield` Tags
+
+All armor items have the `"wearing_armor"` tag in their own `tags` array. All shield items have `"carrying_shield"`. These are the **canonical tags to check in conditionNodes** when a feature depends on whether the character is currently armored or carrying a shield.
+
+```
+item_armor_chain_shirt → tags: ["item","armor","armor_light","wearing_armor","item_armor_chain_shirt"]
+item_shield_heavy_wooden → tags: ["item","shield","shield_heavy","carrying_shield","item_shield_heavy_wooden"]
+```
+
+The `"armor_light"`, `"armor_medium"`, `"armor_heavy"` tags identify the **weight category** — use these when you need to distinguish between types. Use `"wearing_armor"` when you only care whether ANY armor is equipped (e.g., Monk AC bonus).
+
+### The Self-Referencing Tag Rule
+
+> **Every Feature's `id` must appear in its own `tags` array.**
+
+```json
+{
+  "id": "feat_weapon_focus",
+  "tags": ["feat", "general", "fighter_bonus_feat", "feat_weapon_focus"]
+}
+```
+
+This allows other Features to write `has_tag "feat_weapon_focus"` as a prerequisite. If the self-referencing tag is missing, the feat chain is silently broken.
 
 ### The `forbiddenTags` Field
 
@@ -272,8 +300,29 @@ A **Modifier** is a single numeric change applied to a **pipeline** (a named sta
 | `value` | `number\|string` | ✅ | Amount to add/subtract. Can be a formula string. See [Section 9](#9-formula-values--dynamic-math). |
 | `type` | `ModifierType` | ✅ | Controls stacking behavior. See [Section 7](#7-modifier-types--stacking-rules). |
 | `conditionNode` | `LogicNode` | ❌ | Sheet-time gate: if this logic fails, the modifier is ignored entirely. |
-| `situationalContext` | `string` | ❌ | Roll-time tag: modifier goes to `situationalModifiers` and only fires when this string is in the roll's target tags. |
-| `drBypassTags` | `string[]` | ❌ | **Only for `type: "damage_reduction"`** — materials that bypass this DR. |
+| `situationalContext` | `string` | ❌ | Roll-time tag: modifier goes to `situationalModifiers` and only fires when this string is in the roll's target tags. See canonical values below. |
+| `drBypassTags` | `string[]` | ❌ | **Required when `type: "damage_reduction"`** — materials that bypass this DR. Use `[]` for DR X/—. Omit only for non-DR modifiers. |
+
+### Canonical `situationalContext` Values
+
+| Value | When it fires |
+|---|---|
+| `"vs_poison"` | Saving throw against poison |
+| `"vs_spells_and_spell_like"` | Saving throw vs. spells or spell-like abilities |
+| `"vs_enchantment"` | Save or attack against enchantment-school effect |
+| `"vs_illusion"` | Save or roll against illusion-school effect |
+| `"vs_orc"` | Attack roll against an orc |
+| `"vs_goblinoid"` | Attack roll against a goblinoid |
+| `"vs_giant"` | Attack roll against a giant |
+| `"vs_air_elementals"` | Attack or save against air elementals |
+| `"vs_earth_effects"` | Save against earth-based effects |
+| `"vs_fire"` | Save or damage against fire |
+| `"on_hit"` | Damage roll only on a successful hit (e.g., Flaming +1d6) |
+| `"vs_trap"` | Perception/saving throw against a trap |
+| `"melee"` | Melee attack context |
+| `"ranged"` | Ranged attack context |
+
+> **Custom values are allowed.** The engine matches the string verbatim — `"vs_evil_outsiders"` is a valid custom context. Both the modifier's `situationalContext` and the `RollContext.targetTags` must include the same string for the modifier to fire.
 
 ### Your First Modifier — A Simple Bonus
 
@@ -320,12 +369,12 @@ That's it. The engine adds +2 to the Listen skill pipeline whenever the Elf race
 | `"deflection"` | ❌ Highest wins | Ring of Protection, Shield of Faith, etc. |
 | `"competence"` | ❌ Highest wins | Competence bonus to skills (Skill Focus, etc.). |
 | `"size"` | ❌ Highest wins | Size-based attack/AC bonuses/penalties. |
-| `"inherent"` | ❌ Highest wins | Permanent (tomes, wish, miracle). Stacks with all other types. |
+| `"inherent"` | ❌ Highest wins among inherent | Permanent (tomes, wish, miracle). Does NOT stack with another `"inherent"` bonus to the same pipeline — highest wins. BUT stacks freely with all non-inherent types (enhancement, racial, morale, etc.). |
 | `"resistance"` | ❌ Highest wins | Resistance bonus to saves (Cloak of Resistance). |
 | `"setAbsolute"` | Special | Forces pipeline to exact value. Last one wins. |
 | `"damage_reduction"` | Special | Best-wins per bypass-tag group. See Section 16. |
 | `"max_dex_cap"` | Special | Minimum wins (most restrictive cap). See Section 16. |
-| `"multiplier"` | Special | Highest-impact multiplier wins. Applied after all additive bonuses. |
+| `"multiplier"` | Special | Highest-impact multiplier wins (the one farthest from 1.0). Applied after all additive bonuses as: `totalValue = floor((base + additiveSum) × multiplier)`. Use for STR × 1.5 on two-handed weapons. Example: `{ "value": 1.5, "type": "multiplier", "targetId": "combatStats.damage_bonus" }`. |
 
 ### Practical Example — Ring of Protection vs Shield of Faith
 
@@ -400,7 +449,13 @@ The `targetId` in a modifier tells the engine **which pipeline** to affect.
 | `combatStats.armor_check_penalty` | Armor Check Penalty |
 | `combatStats.arcane_spell_failure` | Arcane Spell Failure % |
 | `combatStats.fortification` | Fortification % (crit negation) |
-| `combatStats.hit_die_type` | Hit die type (d6, d8, d10, d12) |
+| `combatStats.hit_die_type` | Hit die type integer (6, 8, 10, 12) — class declares its own |
+| `combatStats.saving_throw_bonus` | **Situational save bonus** — used for bonuses vs. creature types (ring vs. elementals). Use `saves.all` for unconditional save bonuses; use `combatStats.saving_throw_bonus` with `"situationalContext"` for conditional ones. |
+| `combatStats.energy_resistance_fire` | Fire resistance value |
+| `combatStats.energy_resistance_cold` | Cold resistance value |
+| `combatStats.energy_resistance_electricity` | Electricity resistance value |
+| `combatStats.energy_resistance_acid` | Acid resistance value |
+| `combatStats.energy_resistance_sonic` | Sonic resistance value |
 
 #### Skills (`skills.*`)
 
@@ -418,7 +473,28 @@ The `targetId` in a modifier tells the engine **which pipeline** to affect.
 | `skills.skill_diplomacy` | Diplomacy |
 | `skills.skill_intimidate` | Intimidate |
 | `skills.skill_knowledge_arcana` | Knowledge (Arcana) |
-| … | _All skill IDs follow `skill_` prefix + snake_case name_ |
+| `skills.skill_knowledge_dungeoneering` | Knowledge (Dungeoneering) |
+| `skills.skill_knowledge_history` | Knowledge (History) |
+| `skills.skill_knowledge_nature` | Knowledge (Nature) |
+| `skills.skill_knowledge_planes` | Knowledge (The Planes) |
+| `skills.skill_knowledge_religion` | Knowledge (Religion) |
+| `skills.skill_listen` | Listen |
+| `skills.skill_open_lock` | Open Lock |
+| `skills.skill_ride` | Ride |
+| `skills.skill_search` | Search |
+| `skills.skill_sense_motive` | Sense Motive |
+| `skills.skill_sleight_of_hand` | Sleight of Hand |
+| `skills.skill_spellcraft` | Spellcraft |
+| `skills.skill_spot` | Spot |
+| `skills.skill_survival` | Survival |
+| `skills.skill_swim` | Swim |
+| `skills.skill_use_magic_device` | Use Magic Device |
+| `skills.skill_use_rope` | Use Rope |
+| `skills.skill_autohypnosis` | Autohypnosis _(psionic)_ |
+| `skills.skill_psicraft` | Psicraft _(psionic)_ |
+| `skills.skill_use_psionic_device` | Use Psionic Device _(psionic)_ |
+
+> **Rule:** Every skill ID is `skill_` + lowercase name with spaces replaced by underscores. The "skills." prefix is used in `targetId` (for modifiers) and in `@`-paths (for formulas), but is stripped when referencing a skill in `classSkills` arrays — write `"skill_climb"`, not `"skills.skill_climb"`, in class definitions.
 
 #### Resources (`resources.*`)
 
@@ -485,6 +561,34 @@ Inside a formula string, any path starting with `@` is replaced with a live valu
 ```
 → Barbarian Rage duration in rounds
 
+### Which Target IDs Accept Dice Formula Values?
+
+A `value` of `"1d6"` or `"2d10"` should only be used where the result is a **damage roll or variable numeric output**, not where the engine needs a static number to sum.
+
+| Use dice formula for | Use numeric value for |
+|---|---|
+| `combatStats.damage_bonus` (on-hit bonus dice) | `attributes.stat_str` (ability score delta) |
+| Augmentation `grantedModifiers.targetId: "damage"` | `combatStats.bab` (attack bonus) |
+| `combatStats.power_damage_bonus` (psionic) | `saves.fort/ref/will` (save increments) |
+| Any pipeline that accumulates damage at cast time | Any pipeline that feeds into a static sheet total |
+
+The engine evaluates dice formulas using the Math Parser; if a dice result is fed into a static pipeline like `saves.fort`, it will roll each sheet recomputation — an unintended and incorrect result.
+
+### Supported Math Functions
+
+The Math Parser supports the following functions inside formula strings:
+
+| Function | Example | Notes |
+|---|---|---|
+| `floor(x)` | `"floor(@classLevels.class_bard / 2)"` | Most common — for half/quarter progressions |
+| `ceil(x)` | `"ceil(@characterLevel / 3)"` | Rounds up |
+| `round(x)` | `"round(@attributes.stat_wis.derivedModifier)"` | Rounds to nearest |
+| `max(a, b)` | `"max(0, @attributes.stat_str.derivedModifier)"` | Floor at 0 |
+| `min(a, b)` | `"min(5, @classLevels.class_barbarian)"` | Cap at value |
+| `abs(x)` | `"abs(@saves.will.totalValue)"` | Absolute value |
+
+Unsupported function calls return `0` with a console warning — they do not throw errors.
+
 ### Description Pipe Syntax
 
 In description text, use `{@path|pipe}` to display a value with unit conversion:
@@ -519,7 +623,12 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 { "logic": "AND", "nodes": [ ...children... ] }
 { "logic": "OR",  "nodes": [ ...children... ] }
 { "logic": "NOT", "node": ...single child... }
-{
+```
+
+> **Critical asymmetry:** `AND` and `OR` use `"nodes"` (plural array). `NOT` uses `"node"` (singular object — no array). Writing `"nodes": [...]` on a NOT node is a silent bug — the JSON is valid but the condition never evaluates correctly.
+
+```json
+
   "logic": "CONDITION",
   "targetPath": "@activeTags",
   "operator": "has_tag",
@@ -538,8 +647,12 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 | `"!="` | Not equal | number or string |
 | `"includes"` | Array contains value | string |
 | `"not_includes"` | Array does not contain | string |
-| `"has_tag"` | `@activeTags` contains tag | tag string |
-| `"missing_tag"` | `@activeTags` does not contain | tag string |
+| `"has_tag"` | Shorthand: `@activeTags` contains tag | tag string |
+| `"missing_tag"` | Shorthand: `@activeTags` does not contain | tag string |
+
+> **`has_tag` vs `includes`:** `has_tag` and `missing_tag` are explicit shorthands for checking `@activeTags`. Use them when your `targetPath` is `@activeTags`. For other arrays (like `@equippedWeaponTags`), use `"includes"` or `"not_includes"`. Functionally they are equivalent for array membership — the distinction is semantic clarity.
+
+> **No `>` or `<` operators.** To express "BAB strictly greater than 5", use `">=" 6`. The engine has no strict comparison operators.
 
 ### Common `targetPath` Values
 
@@ -553,6 +666,13 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 | `@characterLevel` | Total character level |
 | `@classLevels.class_fighter` | Fighter class level |
 | `@equippedWeaponTags` | Equipped weapon tags |
+
+### `errorMessage` Field
+
+`errorMessage` appears on `CONDITION` leaves inside `prerequisitesNode` to provide a human-readable explanation to the player. Rules:
+- Include it on every CONDITION leaf that is directly user-facing (prerequisite feats, ability scores)
+- It is optional on intermediate logic nodes (`AND`/`OR`/`NOT`) — the leaves' messages are shown
+- It is optional on `conditionNode` (modifier-level gates) — these are internal mechanics, not displayed to the user
 
 ### Tutorial — Prerequisite: Power Attack (STR 13+)
 
@@ -623,6 +743,8 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
 
 ### Tutorial — Conditional Modifier: Fast Movement (Not heavy armor, not heavy load)
 
+> **Tag naming note:** Heavy armor items carry both `"armor_heavy"` (weight-category tag) AND their `grantedModifiers` include a tag injection — but for conditionNode checks, the SRD data uses the string `"heavy_armor"` (matching the tag emitted by the engine when a heavy armor item is active). Always match the exact string used in the actual item's `tags` array or the engine-emitted tag. When in doubt, check the existing SRD armor JSON.
+
 ```json
 {
   "id": "barbarian_fast_movement_speed",
@@ -640,7 +762,7 @@ Both use the same `LogicNode` structure: an AND/OR/NOT tree of `CONDITION` leave
           "logic": "CONDITION",
           "targetPath": "@activeTags",
           "operator": "has_tag",
-          "value": "armor_heavy",
+          "value": "heavy_armor",
           "errorMessage": "Fast Movement does not apply while wearing heavy armor"
         }
       },
@@ -986,6 +1108,42 @@ Each entry provides **increments** (not cumulative totals). The engine sums all 
 
 > **At level 3:** BAB = 1+1+1 = **+3**, Fort = 2+1+1 = **+4**, Ref = 0, Will = 0 — exactly matching the SRD Fighter table.
 
+### Level Progression — Important Authoring Rules
+
+**Include all 20 levels even when saves are 0.** Every level entry must exist in `levelProgression`. For levels where a save or BAB increment is 0, simply omit that modifier's entry (the engine treats missing entries as 0). Do not write `"value": 0` entries — they are noise.
+
+```json
+{ "level": 2, "grantedFeatures": [], "grantedModifiers": [
+    { "id": "fight_2_bab",  "targetId": "combatStats.bab",  "value": 1, "type": "base", ... },
+    { "id": "fight_2_fort", "targetId": "saves.fort", "value": 1, "type": "base", ... }
+]}
+```
+(No `fight_2_ref` or `fight_2_will` needed — they improved by 0.)
+
+**Do include zero-value BAB entries for levels where BAB does not increase**, because the engine needs proof that the level was authored (missing entries are fine; the system sums only what is present).
+
+**Spell slot resources** follow a `resources.spell_slots_CLASS_LEVEL` target pattern, also with `"type": "base"`:
+
+```json
+{ "id": "wizard_1_slots_1", "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" }
+{ "id": "wizard_2_slots_1", "targetId": "resources.spell_slots_wizard_1", "value": 1, "type": "base" }
+```
+(At wizard level 2, the 1st-level slot pool maximum grows by +1, etc.)
+
+### Spellcasting Class Tags
+
+Every spellcasting class (arcane or divine) must include the casting ability tag in its **class-level** `tags` array:
+
+| Class | Tag to add |
+|---|---|
+| Wizard | `"caster_ability_stat_int"` |
+| Sorcerer, Bard | `"caster_ability_stat_cha"` |
+| Cleric, Druid, Ranger, Paladin | `"caster_ability_stat_wis"` |
+| Psion (INT), Psychic Warrior | `"caster_ability_stat_int"` |
+| Wilder | `"caster_ability_stat_cha"` |
+
+Also add `"spellcaster"` to the class `tags` array if the class can cast spells — this is the tag prestige class prerequisites check for "must be able to cast arcane/divine spells."
+
 ### Caster Level Progression
 
 For spellcasting classes, add a modifier in each `levelProgression` entry targeting `"attributes.stat_caster_level"`:
@@ -1029,6 +1187,8 @@ Some class features have no modifiers — they are narrative abilities that the 
 
 ### Active Class Feature — Rage (with ResourcePool)
 
+> **Architecture note:** Rage modifiers fire whenever the Rage feature is **active** (i.e., in `activeFeatures` with `isActive: true`). They do NOT need a `conditionNode`. The player activates Rage by spending 1 charge via the UI button — the engine sets `isActive: true` on the class feature instance. The modifiers apply automatically while Rage is on. Do not add `conditionNode: { has_tag "condition_raging" }` — this is incorrect and will break the feature.
+
 ```json
 {
   "id": "class_feature_barbarian_rage",
@@ -1039,7 +1199,7 @@ Some class features have no modifiers — they are narrative abilities that the 
     "en": "A barbarian can fly into a rage, temporarily gaining +4 STR, +4 CON, and +2 morale bonus on Will saves, but -2 AC.",
     "fr": "Un barbare peut entrer dans une furie, gagnant +4 FOR, +4 CON, +2 moral aux jets de Volonté, mais subissant -2 CA."
   },
-  "tags": ["class_feature", "barbarian", "extraordinary"],
+  "tags": ["class_feature", "barbarian", "extraordinary", "rage"],
   "activation": {
     "actionType": "free",
     "resourceCost": {
@@ -1049,46 +1209,36 @@ Some class features have no modifiers — they are narrative abilities that the 
   },
   "grantedModifiers": [
     {
-      "id": "rage_str",
+      "id": "barbarian_rage_uses_max",
+      "sourceId": "class_feature_barbarian_rage",
+      "sourceName": { "en": "Rage", "fr": "Furie" },
+      "targetId": "resources.barbarian_rage_uses.maxValue",
+      "value": "1 + floor(@classLevels.class_barbarian / 4)",
+      "type": "base"
+    },
+    {
+      "id": "rage_str_bonus",
       "sourceId": "class_feature_barbarian_rage",
       "sourceName": { "en": "Rage", "fr": "Furie" },
       "targetId": "attributes.stat_str",
       "value": 4,
-      "type": "morale",
-      "conditionNode": {
-        "logic": "CONDITION",
-        "targetPath": "@activeTags",
-        "operator": "has_tag",
-        "value": "condition_raging"
-      }
+      "type": "morale"
     },
     {
-      "id": "rage_con",
+      "id": "rage_con_bonus",
       "sourceId": "class_feature_barbarian_rage",
       "sourceName": { "en": "Rage", "fr": "Furie" },
       "targetId": "attributes.stat_con",
       "value": 4,
-      "type": "morale",
-      "conditionNode": {
-        "logic": "CONDITION",
-        "targetPath": "@activeTags",
-        "operator": "has_tag",
-        "value": "condition_raging"
-      }
+      "type": "morale"
     },
     {
-      "id": "rage_will",
+      "id": "rage_will_bonus",
       "sourceId": "class_feature_barbarian_rage",
       "sourceName": { "en": "Rage", "fr": "Furie" },
       "targetId": "saves.will",
       "value": 2,
-      "type": "morale",
-      "conditionNode": {
-        "logic": "CONDITION",
-        "targetPath": "@activeTags",
-        "operator": "has_tag",
-        "value": "condition_raging"
-      }
+      "type": "morale"
     },
     {
       "id": "rage_ac_penalty",
@@ -1096,31 +1246,41 @@ Some class features have no modifiers — they are narrative abilities that the 
       "sourceName": { "en": "Rage Penalty", "fr": "Pénalité de furie" },
       "targetId": "combatStats.ac_normal",
       "value": -2,
-      "type": "untyped",
-      "conditionNode": {
-        "logic": "CONDITION",
-        "targetPath": "@activeTags",
-        "operator": "has_tag",
-        "value": "condition_raging"
-      }
+      "type": "untyped"
+    },
+    {
+      "id": "rage_ac_touch_penalty",
+      "sourceId": "class_feature_barbarian_rage",
+      "sourceName": { "en": "Rage Penalty (touch)", "fr": "Pénalité de furie (contact)" },
+      "targetId": "combatStats.ac_touch",
+      "value": -2,
+      "type": "untyped"
     }
   ],
   "grantedFeatures": []
 }
 ```
 
-The class resource pool for Rage uses maximum formula; add this to the class's `grantedModifiers`:
+> **Resource pool max location:** The maximum for the Rage resource pool is declared on the class feature itself (`targetId: "resources.barbarian_rage_uses.maxValue"`), not on the class. The engine normalizes `resources.X.maxValue` to `combatStats.X_max` internally.
+
+### Resource Cost `targetId` — ID Format Rules
+
+The `activation.resourceCost.targetId` references a **character-level resource pool** using the full `resources.POOL_ID` path:
 
 ```json
-{
-  "id": "barbarian_rage_pool_max",
-  "sourceId": "class_barbarian",
-  "sourceName": { "en": "Barbarian Rage", "fr": "Furie barbare" },
-  "targetId": "resources.barbarian_rage_uses.maxValue",
-  "value": "1 + floor(@characterLevel / 4)",
-  "type": "base"
-}
+"resourceCost": { "targetId": "resources.barbarian_rage_uses", "cost": 1 }
 ```
+
+For **item-level pools** (wand charges, ring uses) tracked in `ActiveFeatureInstance.itemResourcePools`, the `activation.resourceCost.targetId` is just the bare `poolId` string (no `resources.` prefix):
+
+```json
+"resourceCost": { "targetId": "spell_turning_uses", "cost": 1 }
+```
+
+| Pool type | `targetId` format | Stored in |
+|---|---|---|
+| Class features (Rage, Smite, Bardic Music) | `"resources.POOL_ID"` (with prefix) | `Character.resources` |
+| Item charges (wand, ring, staff) | `"POOL_ID"` (bare, no prefix) | `ActiveFeatureInstance.itemResourcePools` |
 
 ### Activation `actionType` Values
 
@@ -1257,6 +1417,8 @@ This is the most important pattern: a feat that grants different bonuses dependi
 3. When longsword is equipped, `@equippedWeaponTags` includes `"item_longsword"` → modifier fires
 4. Another feat that requires "Weapon Focus (longsword)" checks for `has_tag "feat_weapon_focus_item_longsword"`
 
+> **`choiceGrantedTagPrefix` is required for prerequisite chains.** If you omit it, the engine still records the player's selection in `selections` (so `@selection.CHOICE_ID` works in conditionNodes), but it will NOT emit a derived tag into `@activeTags`. This means any feat that checks `has_tag "feat_weapon_focus_item_longsword"` will never fire. Always include `choiceGrantedTagPrefix` when other features must detect what was chosen.
+
 ### `FeatureChoice.optionsQuery` Formats
 
 | Format | Meaning |
@@ -1264,7 +1426,9 @@ This is the most important pattern: a feat that grants different bonuses dependi
 | `"tag:weapon"` | All Features with the `"weapon"` tag |
 | `"tag:weapon+tag:martial"` | Features with BOTH `"weapon"` AND `"martial"` tags |
 | `"category:domain"` | All Features of category `"domain"` |
+| `"category:feat"` | All feats |
 | `"discipline:telepathy"` | All psionic powers in the telepathy discipline |
+| `"discipline:clairsentience+level:3"` | Level-3 clairsentience powers |
 
 ---
 
@@ -1333,9 +1497,17 @@ Spells and powers use `"category": "magic"`. They extend the base Feature with m
 | `list_ranger` | Ranger |
 | `list_sorcerer` | Sorcerer |
 | `list_wizard` | Wizard |
-| `list_domain_NAME` | Domain spell list (e.g., `list_domain_fire`) |
-| `list_psion_wilder` | Psion/Wilder (psionic) |
-| `list_psychic_warrior` | Psychic Warrior (psionic) |
+| `list_domain_NAME` | Domain spell list (e.g., `list_domain_fire`, `list_domain_water`, `list_domain_war`) |
+| `list_assassin` | Assassin |
+| `list_blackguard` | Blackguard |
+| `list_psion_wilder` | Psion/Wilder (all disciplines) |
+| `list_psion_seer` | Psion Specialist — Seer (clairsentience) |
+| `list_psion_shaper` | Psion Specialist — Shaper (metacreativity) |
+| `list_psion_kineticist` | Psion Specialist — Kineticist (psychokinesis) |
+| `list_psion_egoist` | Psion Specialist — Egoist (psychometabolism) |
+| `list_psion_nomad` | Psion Specialist — Nomad (psychoportation) |
+| `list_psion_telepath` | Psion Specialist — Telepath (telepathy) |
+| `list_psychic_warrior` | Psychic Warrior |
 
 ### Psionic Power — Mind Thrust
 
@@ -1443,7 +1615,41 @@ Items use `"category": "item"` and the `ItemFeature` shape. The key extra fields
 | `critMultiplier` | `number` | Crit multiplier: `2`, `3`, or `4` |
 | `reachFt` | `number` | Reach in feet: `5` (standard), `10` (reach weapon) |
 | `rangeIncrementFt` | `number` | Range increment for thrown/ranged weapons (in feet) |
+| `secondaryWeaponData` | `object` | **Double weapons only** — stats for the off-hand end. See below. |
 | `onCritDice` | `object` | On-crit burst dice (Flaming Burst, etc.) — see Section 17 |
+
+### Double Weapon — `secondaryWeaponData`
+
+Double weapons (Dire Flail, Quarterstaff, Orc Double Axe) have two ends with different damage. Use `wieldCategory: "double"` and add a `secondaryWeaponData` block for the off-hand end:
+
+```json
+{
+  "id": "item_dire_flail",
+  "category": "item",
+  "ruleSource": "srd_core",
+  "label": { "en": "Dire Flail", "fr": "Fléau de guerre à deux têtes" },
+  "tags": ["item", "weapon", "weapon_exotic", "weapon_melee", "item_dire_flail"],
+  "equipmentSlot": "two_hands",
+  "weightLbs": 10,
+  "costGp": 90,
+  "weaponData": {
+    "wieldCategory": "double",
+    "damageDice": "1d8",
+    "damageType": ["bludgeoning"],
+    "critRange": "20",
+    "critMultiplier": 2,
+    "reachFt": 5,
+    "secondaryWeaponData": {
+      "damageDice": "1d8",
+      "damageType": ["bludgeoning"],
+      "critRange": "20",
+      "critMultiplier": 2
+    }
+  },
+  "grantedModifiers": [],
+  "grantedFeatures": []
+}
+```
 
 ### Armor Example — Chain Shirt
 
@@ -1660,17 +1866,26 @@ DR modifiers use `"type": "damage_reduction"` with a `drBypassTags` array:
 }
 ```
 
-| `drBypassTags` Value | D&D 3.5 Notation |
-|---|---|
-| `[]` | DR X/— (nothing bypasses) |
-| `["magic"]` | DR X/magic |
-| `["silver"]` | DR X/silver |
-| `["cold_iron"]` | DR X/cold iron |
-| `["good"]` | DR X/good |
-| `["epic"]` | DR X/epic |
-| `["magic", "silver"]` | DR X/magic AND silver (both required) |
+| `drBypassTags` Value | D&D 3.5 Notation | Semantics |
+|---|---|---|
+| `[]` | DR X/— | Nothing bypasses |
+| `["magic"]` | DR X/magic | Magic weapons bypass |
+| `["silver"]` | DR X/silver | Silver weapons bypass |
+| `["cold_iron"]` | DR X/cold iron | Cold iron weapons bypass |
+| `["good"]` | DR X/good | Good-aligned weapons bypass |
+| `["epic"]` | DR X/epic | Epic weapons bypass |
+| `["magic", "silver"]` | DR X/magic AND silver | Weapon must be BOTH magic AND silver |
 
-**For class progression DR (Barbarian)**, use `"type": "base"` (additive) instead of `"damage_reduction"`:
+> **DR "OR" logic** (e.g., DR 5/magic or silver — either bypasses): Model this as **two separate DR modifiers** with different `drBypassTags`, each at the same value. The best-wins grouping applies per bypass-tag group, so DR 5/magic and DR 5/silver independently resolve:
+
+```json
+{ "value": 5, "type": "damage_reduction", "drBypassTags": ["magic"] },
+{ "value": 5, "type": "damage_reduction", "drBypassTags": ["silver"] }
+```
+Against a magic weapon: the first DR entry (magic) is bypassed; the second (silver) still applies → 5 DR remaining.
+Against a magic+silver weapon: both are bypassed → no DR.
+
+**For class progression DR (Barbarian)**: This is a special exception to the `"type": "base"` rule. The additive increments (+1 at level 7, +1 at level 10, etc.) targeting `"combatStats.damage_reduction"` use `"type": "base"` because the engine needs to sum them across levels. This is the only non-BAB/save/CL use of `"type": "base"` that is architecturally correct.
 
 ```json
 {
@@ -1809,6 +2024,11 @@ A wand uses the item's fixed caster level (NOT the wielder's). Always specify `w
   "grantedModifiers": [],
   "grantedFeatures": []
 }
+```
+
+> **Wand activation:** Wands do not need an explicit `activation` field. The presence of `wandSpell` is sufficient for the Casting Panel UI to display an "Activate" button. The CastingPanel checks for `wandSpell`, deducts 1 charge via `spendItemPoolCharge`, and casts with `wandSpell.casterLevel`. Similarly, staves use `staffSpells` to generate their UI, and scrolls use `scrollSpells`.
+
+```
 ```
 
 ### Scroll
@@ -2132,7 +2352,9 @@ In description text, use `{@path|distance}` or `{@path|weight}` pipes for automa
 | `@selection.<choiceId>` | Player's choice selection |
 | `@constant.<id>` | Named constant from config |
 | `@targetTags` | Target's tags (roll-time only) |
-| `@master.classLevels.<id>` | Master's class level (linked entities only) |
+| `@eclForXp` | Character level + level adjustment (use ONLY for XP table lookups) |
+| `@master.classLevels.<id>` | Master's class level (animal companions / familiars only) |
+| `@master.attributes.<id>.derivedModifier` | Master's ability modifier (linked entities only) |
 
 ### Feature Categories Quick Reference
 

@@ -50,8 +50,9 @@ Follow these steps for every batch of entities you convert:
 
 Before converting **anything**, read:
 1. `ARCHITECTURE.md` — For TypeScript interfaces, engine rules, modifier stacking, and pipeline semantics
-2. `ANNEXES.md` — For complete worked JSON examples matching the entity type you are converting
-3. This document (AI_MIGRATION_GUIDE.md) — For conversion protocols
+2. `CONTENT_AUTHORING_GUIDE.md` — For complete field references, examples, and canonical ID tables
+3. `ANNEXES.md` — For additional complete worked JSON examples (races, full 20-level classes, spells, psionic powers, magic items, environments)
+4. This document (AI_MIGRATION_GUIDE.md) — For conversion protocols
 
 ### Step 2 — Identify the Entity Type
 
@@ -88,7 +89,7 @@ Run this checklist on **every** converted entity before writing the output file:
 
 ### Schema Validation
 
-- [ ] `id` is present and follows `kebab-case` with category prefix
+- [ ] `id` is present and follows `snake_case` with category prefix (e.g., `"race_elf"`, `"feat_power_attack"`) — never use hyphens
 - [ ] `category` matches one of the 11 valid values
 - [ ] `ruleSource` is present and matches the source module ID
 - [ ] `label` has both `"en"` and `"fr"` values (never empty strings)
@@ -188,7 +189,7 @@ Is it an ambient effect that the GM injects globally (heat, underwater)?
 |---|---|---|
 | Race name | `label.en` | Also generate `label.fr` |
 | Stat adjustments (+2 STR, -2 CHA) | `grantedModifiers` with `type: "racial"` | One modifier per stat |
-| Base land speed | `grantedModifiers` targeting `combatStats.speed_land` with `type: "base"` | Value in feet |
+| Base land speed | `grantedModifiers` targeting `"combatStats.speed_land"` with `type: "base"` | Value in feet. Use `"combatStats.speed_land"` — **not** `"attributes.speed_land"` — as the canonical target ID in new content. The normalizer handles the legacy form but `"combatStats.speed_land"` is correct and unambiguous. |
 | Size category | `tags`: add `"size_small"` / `"size_medium"` / `"size_large"` etc. | |
 | Darkvision | `grantedFeatures: ["trait_darkvision_60"]` | Reference a shared Feature |
 | Skill bonuses | `grantedModifiers` on `skills.skill_X` with `type: "racial"` | |
@@ -197,7 +198,7 @@ Is it an ambient effect that the GM injects globally (heat, underwater)?
 | AC bonus vs specific enemy | `grantedModifiers` on `combatStats.ac_normal` with `situationalContext` | |
 | Automatic languages | `grantedFeatures: ["language_common", "language_dwarvish"]` | Reference shared Features |
 | Bonus languages | `choices` with `optionsQuery: "category:language"` | |
-| Favored class | Modeled as `"favoredClass"` field (display only, no engine mechanic) | |
+| Favored class | Not modeled — no engine field for this. Include in `description` text only. | |
 | Level adjustment (LA) | Stored on `Character.levelAdjustment` — not in the race Feature itself | |
 | Racial Hit Dice | A class-like Feature `"hd_TYPE"` in `character.classLevels` | e.g., `"hd_gnoll": 2` |
 | Spell-like abilities (X/day) | `resourcePoolTemplates` + `activation` on a sub-Feature | Reference in `grantedFeatures` |
@@ -263,11 +264,25 @@ Both base classes and prestige classes use `"category": "class"`. Prestige class
 
 ### BAB Conversion by Progression Type
 
-| Progression | Level 1 | Level 2 | Level 3 | Level 4 | Level 5 | Pattern |
-|---|---|---|---|---|---|---|
-| Full BAB (Fighter) | +1 | +1 | +1 | +1 | +1 | `1` every level |
-| 3/4 BAB (Cleric) | +0 | +1 | +1 | +0 | +1 | `0,1,1,0,1,1,0,...` |
-| 1/2 BAB (Wizard) | +0 | +1 | +0 | +1 | +0 | `0,1,0,1,0,...` |
+| Progression | L1 | L2 | L3 | L4 | L5 | L6 | L7 | L8 | L9 | Pattern |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Full BAB (Fighter, Barbarian, Ranger...) | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | `1` every level |
+| 3/4 BAB (Cleric, Rogue, Bard...) | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 1 | 0 | `0` then `1,1,1` cycle |
+| 1/2 BAB (Wizard, Sorcerer...) | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | alternating `0,1` |
+
+> **Verify with cumulative totals:**
+> - 3/4 BAB at level 4: 0+1+1+1 = **+3** (SRD: Cleric 4 = +3 ✓)
+> - 3/4 BAB at level 8: 0+1+1+1+0+1+1+1 = **+6** (SRD: Cleric 8 = +6 ✓)
+> - Do NOT use `[0,1,1,0,1,1,0,...]` — that produces +2 at level 4, which is wrong.
+
+**Converting cumulative totals to increments:**
+```
+SRD table (cumulative): 0, 1, 2, 3, 3, 4, 5, 6, 6, 7...
+Increment[N] = cumulative[N] - cumulative[N-1]
+Increments:             0, 1, 1, 1, 0, 1, 1, 1, 0, 1...
+```
+
+**Include the increment entry for every level** — even when the value is 0, include the level entry in `levelProgression`. If a level has BAB=0, no BAB modifier entry is needed in `grantedModifiers` (just omit it from that level's array), but the level object itself must exist.
 
 ### Save Conversion by Progression Type
 
@@ -492,27 +507,35 @@ This makes every "Weapon Focus (longsword)" distinct without creating separate f
 |---|---|---|
 | Armor bonus | `grantedModifiers` on `combatStats.ac_normal` with `type: "armor"` | Also set shadow in `armorData.armorBonus` |
 | Max DEX | `grantedModifiers` on `combatStats.max_dex_bonus` with `type: "max_dex_cap"` | Also set shadow in `armorData.maxDex` |
-| ACP | `grantedModifiers` on `combatStats.armor_check_penalty` | Negative value (e.g., -6). Also set shadow |
-| ASF | `grantedModifiers` on `combatStats.arcane_spell_failure` | As percentage integer (e.g., 35). Also shadow |
-| Armor type (light/medium/heavy) | `tags`: add `"armor_light"` / `"armor_medium"` / `"armor_heavy"` | |
-| Shield type | `tags`: add `"shield"` + `"shield_light"` / `"shield_heavy"` / `"shield_tower"` | |
+| ACP | `grantedModifiers` on `combatStats.armor_check_penalty` with `type: "base"` | Negative value (e.g., -7 for full plate). Also set shadow in `armorData.armorCheckPenalty` |
+| ASF | `grantedModifiers` on `combatStats.arcane_spell_failure` with `type: "base"` | As percentage integer (e.g., 35). Also shadow |
+| Armor type (light/medium/heavy) | `tags`: add `"armor_light"` / `"armor_medium"` / `"armor_heavy"` | Also add `"wearing_armor"` to ALL armor items |
+| Shield type | `tags`: add `"shield"` + `"shield_light"` / `"shield_heavy"` / `"shield_tower"` | Also add `"carrying_shield"` to ALL shield items |
+| Metal construction | `tags`: add `"metal_armor"` for metal armors, `"metal_shield"` for metal shields | Required for Druid restriction |
 
 ### SRD Armor Table
 
-| Armor | AC | Max DEX | ACP | ASF | Weight | Tags |
+All armors add `"item"`, `"armor"`, `"wearing_armor"`, and their specific weight-category tag. Metal armors also add `"metal_armor"`.
+
+| Armor | AC | Max DEX | ACP | ASF | Weight | Required tags |
 |---|---|---|---|---|---|---|
-| Padded | 1 | 8 | 0 | 5% | 10 lb | light |
-| Leather | 2 | 6 | 0 | 10% | 15 lb | light |
-| Studded Leather | 3 | 5 | -1 | 15% | 20 lb | light |
-| Chain Shirt | 4 | 4 | -2 | 20% | 25 lb | light |
-| Hide | 3 | 4 | -3 | 20% | 25 lb | medium |
-| Scale Mail | 4 | 3 | -4 | 25% | 30 lb | medium |
-| Chainmail | 5 | 2 | -5 | 30% | 40 lb | medium |
-| Breastplate | 5 | 3 | -4 | 25% | 30 lb | medium |
-| Splint Mail | 6 | 0 | -7 | 40% | 45 lb | heavy |
-| Banded Mail | 6 | 1 | -6 | 35% | 35 lb | heavy |
-| Half Plate | 7 | 0 | -7 | 40% | 50 lb | heavy |
-| Full Plate | 8 | 1 | -6 | 35% | 50 lb | heavy |
+| Padded | 1 | 8 | 0 | 5% | 10 lb | `armor_light` |
+| Leather | 2 | 6 | 0 | 10% | 15 lb | `armor_light` |
+| Studded Leather | 3 | 5 | -1 | 15% | 20 lb | `armor_light`, `metal_armor` |
+| Chain Shirt | 4 | 4 | -2 | 20% | 25 lb | `armor_light`, `metal_armor` |
+| Hide | 3 | 4 | -3 | 20% | 25 lb | `armor_medium` |
+| Scale Mail | 4 | 3 | -4 | 25% | 30 lb | `armor_medium`, `metal_armor` |
+| Chainmail | 5 | 2 | -5 | 30% | 40 lb | `armor_medium`, `metal_armor` |
+| Breastplate | 5 | 3 | -4 | 25% | 30 lb | `armor_medium`, `metal_armor` |
+| Splint Mail | 6 | 0 | -7 | 40% | 45 lb | `armor_heavy`, `metal_armor` |
+| Banded Mail | 6 | 1 | -6 | 35% | 35 lb | `armor_heavy`, `metal_armor` |
+| Half Plate | 7 | 0 | -7 | 40% | 50 lb | `armor_heavy`, `metal_armor` |
+| Full Plate | 8 | 1 | -6 | 35% | 50 lb | `armor_heavy`, `metal_armor` |
+
+**Example — Full Plate full tag set:**
+```json
+"tags": ["item", "armor", "armor_heavy", "metal_armor", "wearing_armor", "item_armor_full_plate"]
+```
 
 ---
 
@@ -524,18 +547,28 @@ This makes every "Weapon Focus (longsword)" distinct without creating separate f
 |---|---|
 | `+N` enhancement bonus to ability score | `grantedModifiers` with `type: "enhancement"` on `attributes.stat_X` |
 | `+N` deflection bonus to AC | `grantedModifiers` with `type: "deflection"` on `combatStats.ac_normal` |
-| `+N` natural armor bonus | `grantedModifiers` with `type: "natural_armor"` on `combatStats.ac_normal` and `ac_flat_footed` |
+| `+N` natural armor bonus | `grantedModifiers` with `type: "natural_armor"` on `combatStats.ac_normal` AND `ac_flat_footed` |
 | `+N` resistance bonus to saves | `grantedModifiers` with `type: "resistance"` on `saves.all` |
 | `+N` competence bonus to skill | `grantedModifiers` with `type: "competence"` on `skills.skill_X` |
+| Situational `+N` save bonus vs. creature type | `grantedModifiers` on `combatStats.saving_throw_bonus` with `type: "resistance"` (or `"untyped"`) and `"situationalContext"`. **Do NOT use `saves.all` for situational save bonuses** — use `combatStats.saving_throw_bonus` so the bonus only fires at roll time and never inflates the static save total. |
 | X/day spell-like ability | `resourcePoolTemplates` with `"resetCondition": "per_day"` + `activation` |
 | `+N` enhancement to weapon | `grantedModifiers` with `type: "enhancement"` on `combatStats.attack_bonus` AND `combatStats.damage_bonus` |
 | On-hit fire damage (Flaming) | `grantedModifiers` on `combatStats.damage_bonus` with `"situationalContext": "on_hit"`, `"value": "1d6"` |
 | Critical hit extra dice (Flaming Burst) | `weaponData.onCritDice: { baseDiceFormula, damageType, scalesWithCritMultiplier }` |
+| Energy resistance | `grantedModifiers` on `combatStats.energy_resistance_ELEMENT` with `type: "resistance"` |
 | Cursed item | Add `removalPrevention: { isCursed: true, removableBy: ["remove_curse", ...] }` |
 | DR bypass by material | `grantedModifiers` on `combatStats.damage_reduction` with appropriate `drBypassTags` |
 | Fortification (crit negation) | `grantedModifiers` on `combatStats.fortification` with `"type": "untyped"`, value 25/75/100 |
 | Tome/manual (permanent stat boost) | `grantedModifiers` with `type: "inherent"` + `consumable: { isConsumable: true }` |
 | Intelligent item | `intelligentItemData: { intelligenceScore, wisdomScore, charismaScore, egoScore, ... }` |
+
+### `saves.all` vs `combatStats.saving_throw_bonus` — Which to Use
+
+| Bonus type | Target ID | When |
+|---|---|---|
+| Unconditional save bonus (Cloak of Resistance) | `saves.all` with `type: "resistance"` | Always active, appears in static save total |
+| Situational save bonus (Ring vs. elementals) | `combatStats.saving_throw_bonus` with `situationalContext` | Only fires at roll time, never inflates static total |
+| Penalty to all saves (Cursed item) | `saves.all` with `type: "untyped"`, negative value | Always active, appears in static save total |
 
 ### Magic Weapon Bonus Type Disambiguation
 
@@ -652,7 +685,7 @@ The `hd_humanoid` Feature is a class-like Feature with `levelProgression` defini
 | Stat penalty | `grantedModifiers` on `attributes.stat_X` | |
 | Save penalty | `grantedModifiers` on `saves.all` or specific save | |
 | Action restriction | `actionBudget: { standard: N, move: N, full_round: N }` | `0` = blocked, absent = unlimited |
-| "Standard OR move" rule | Add tag `"action_budget_xor"` | UI enforces mutual exclusion |
+| "Standard OR move" rule | Add tag `"action_budget_xor"` to the condition's `tags` array | UI enforces mutual exclusion between standard and move actions |
 | Immune to | Conditions that prevent other conditions are modeled as `forbiddenTags` on the immunizing Feature | |
 
 ### Active Conditions vs. Passive Conditions
@@ -779,6 +812,18 @@ When source material says "+N BONUS_TYPE bonus to X", use this mapping:
 
 ## 15. Common Patterns and Anti-Patterns
 
+### The Self-Referencing Tag Rule
+
+> **Every Feature's `id` must appear in its own `tags` array.**
+
+```json
+{ "id": "feat_cleave", "tags": ["feat", "general", "fighter_bonus_feat", "feat_cleave"] }
+```
+
+Without `"feat_cleave"` in the tags, no other Feature can check `has_tag "feat_cleave"` as a prerequisite. This silently breaks entire feat chains. Always include the self-referencing ID tag.
+
+---
+
 ### The `"base"` Type Rule
 
 `"type": "base"` is **ONLY** for:
@@ -786,11 +831,16 @@ When source material says "+N BONUS_TYPE bonus to X", use this mapping:
 - Save level-by-level increments in `levelProgression`
 - Caster/manifester level increments in `levelProgression`
 - Race base speed (establishes the character's movement floor)
+- Armor Check Penalty (ACP) on armor items — additive, not stacking-capped
+- Arcane Spell Failure (ASF) on armor items
+- Class-progression Damage Reduction increments (Barbarian DR/— levels)
+- Spell slot pool initial increment per level (`resources.spell_slots_X_N`)
 
 It is **NOT** for:
 - Ability score racial bonuses (use `"racial"`)
 - Enhancement bonuses from magic items (use `"enhancement"`)
 - Feat bonuses (use `"untyped"` unless explicitly typed in source)
+- Armor bonus to AC (use `"armor"`)
 
 ### The Self-Referencing Tag Rule
 
