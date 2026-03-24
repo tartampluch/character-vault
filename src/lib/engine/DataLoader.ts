@@ -18,12 +18,27 @@
  *      are retained in the cache.
  *
  * FILE DISCOVERY:
- *   In development (SvelteKit), we use a rules manifest file (`static/rules/manifest.json`)
- *   that lists all available rule files in sorted order. This manifest is generated at
- *   build time (or manually maintained during development).
+ *   In development (SvelteKit), we use `GET /rules` (a SvelteKit server endpoint in
+ *   `src/routes/rules/+server.ts`) which scans `static/rules/` recursively and returns
+ *   an array of URL paths. Falls back to `GET /rules/manifest.json` if the endpoint
+ *   is unavailable.
  *
- *   Alternative: The PHP backend provides `GET /api/rules/list` in production.
- *   The DataLoader detects which mode to use based on the environment.
+ * DUAL-SCOPE RESOLUTION CHAIN (Phase 21.1.3):
+ *
+ *   The complete resolution chain is (lowest → highest priority):
+ *
+ *     1. Files in `static/rules/`  — SRD content, loaded alphabetically by path
+ *     2. Files in `storage/rules/` — Global homebrew, interleaved alphabetically
+ *                                    by filename alongside static files
+ *     3. Campaign homebrew JSON    — Virtual source "user_homebrew", always active,
+ *                                    stored in campaigns.homebrew_rules_json
+ *     4. GM global overrides       — campaigns.gmGlobalOverrides
+ *     5. GM per-character overrides— character.gmOverrides (applied by GameEngine)
+ *
+ *   Files in layers 1 and 2 are sorted together by their "sort key" (static files
+ *   use the path relative to `rules/`; global files use their bare filename). This
+ *   ensures that `50_my_setting.json` in `storage/rules/` loads AFTER all `01_*`
+ *   SRD psionic files but BEFORE any `90_*` campaign override files.
  *
  * MERGE ENGINE:
  *   When a Feature with the same `id` as an existing Feature is encountered:
@@ -39,7 +54,8 @@
  *   Entities with a `tableId` field (instead of `id` + `category`) are stored
  *   in the config table cache. They always use "replace" semantics (no partial merge).
  *
- * @see ARCHITECTURE.md section 18 for data override engine specification.
+ * @see ARCHITECTURE.md §18 for data override engine specification.
+ * @see ARCHITECTURE.md §21.5 for the dual-scope homebrew resolution chain.
  */
 
 import type { Feature, MergeStrategy, LevelProgressionEntry, FeatureChoice } from '../types/feature';
@@ -250,24 +266,62 @@ function mergeChoices(existing: FeatureChoice[], partialChoices: FeatureChoice[]
 // DATA LOADER CLASS
 // =============================================================================
 
+// =============================================================================
+// INTERNAL FILE ENTRY — unified record for static + global rule files
+// =============================================================================
+
+/**
+ * Represents a single rule source file that the DataLoader will fetch.
+ *
+ * WHY A UNIFIED RECORD?
+ *   Static and global files share the same lifecycle (discover → sort → fetch → process)
+ *   but live in different locations and are served via different URLs. Unifying them into
+ *   a single `FileEntry` type lets `loadRuleSources` process both categories through a
+ *   single sorted loop without duplicating logic.
+ *
+ * - `sortKey`: The string used for alphabetical sorting against all other files.
+ *   Static: relative path from `rules/`  (e.g., `"00_d20srd_core/races.json"`)
+ *   Global: bare filename                (e.g., `"50_my_setting.json"`)
+ *   These sort naturally together because the numeric prefix controls position.
+ *
+ * - `fetchUrl`: The browser URL used to actually retrieve the file content.
+ *   Static: `/rules/...`              (SvelteKit static asset serving)
+ *   Global: `/api/global-rules/...`   (PHP backend, files are outside the web root)
+ *
+ * - `isGlobal`: Whether this file lives in `storage/rules/` (vs `static/rules/`).
+ *   Used to track which ruleSource IDs originate from global files, enabling
+ *   `getHomebrewRules('global')`.
+ */
+interface FileEntry {
+  sortKey: string;
+  fetchUrl: string;
+  isGlobal: boolean;
+}
+
+/**
+ * Shape of each entry returned by `GET /api/global-rules`.
+ */
+interface GlobalRuleFileInfo {
+  filename: string;
+  bytes: number;
+}
+
 /**
  * The DataLoader is responsible for:
- *   1. Loading JSON rule source files (from static/rules/ or the PHP API).
+ *   1. Loading JSON rule source files (from static/rules/ and storage/rules/).
  *   2. Merging features according to the Merge Engine rules (replace/partial).
  *   3. Filtering features by CampaignSettings.enabledRuleSources.
  *   4. Caching features and config tables in memory for fast access.
  *   5. Providing a lookup API for the GameEngine (getFeature, getConfigTable, etc.).
  *
  * LOADING ORDER:
- *   Files are loaded in ALPHABETICAL ORDER of their path (case-insensitive).
- *   The manifest file (`static/rules/manifest.json`) lists files in this order.
- *   Within a file, entities are processed in array order.
- *   Later entities (from later files) override earlier ones (for `merge: "replace"`).
+ *   Files from `static/rules/` and `storage/rules/` are sorted together
+ *   alphabetically by sort key (path / filename), giving numeric-prefix control.
+ *   Campaign homebrew JSON is applied after all files.
+ *   GM overrides are applied last.
  *
- * GM OVERRIDES INTEGRATION:
- *   After all files are loaded, `applyGmOverrides()` processes the campaign's
- *   GM global override text (a JSON array of Feature/ConfigTable objects).
- *   These are applied last (highest priority in the resolution chain).
+ *   Full chain: static + global files (alphabetical) → campaign homebrew
+ *               → GM overrides → filter by enabledRuleSources.
  */
 export class DataLoader {
   /**
@@ -291,85 +345,205 @@ export class DataLoader {
    */
   private enabledRuleSources: ID[] = [];
 
+  /**
+   * Set of ruleSource IDs that were found in global rule files (storage/rules/).
+   *
+   * WHY TRACK THIS?
+   *   `getHomebrewRules('global')` must return features whose ruleSource originated
+   *   from a GM-authored file in `storage/rules/`. Since ruleSource is an arbitrary
+   *   string set by the GM in the JSON, we can't recognise global sources by name
+   *   alone. We record which ruleSource values appear in each global file as we
+   *   process them, building this set progressively during loading.
+   *
+   *   This set is cleared in `clearCache()` so it stays in sync with the cache.
+   */
+  private _globalRuleSourceIds = new Set<string>();
+
   // ---------------------------------------------------------------------------
   // LOADING API
   // ---------------------------------------------------------------------------
 
   /**
-   * Loads all rule source files from static/rules/ and populates the caches.
+   * Loads all rule source files and populates the caches.
    *
-   * FILE DISCOVERY STRATEGY (two-tier fallback):
-   *   1. PRIMARY: GET /rules — SvelteKit server endpoint that recursively scans
-   *      `static/rules/` in alphabetical order. Implements the "drop a JSON file =
-   *      auto-discovered" Open Content Ecosystem promise (ARCHITECTURE.md section 18.1).
-   *   2. FALLBACK: GET /rules/manifest.json — Manually maintained manifest.
-   *      Used for static builds, edge deployments, or PHP production (Phase 14).
+   * FULL RESOLUTION CHAIN (in order, lowest → highest priority):
    *
-   * PROCESS:
-   *   1. Discover file paths via the server endpoint or manifest fallback.
-   *   2. Fetch each file in discovered order (alphabetical = loading priority).
-   *   3. Parse each file as a JSON array of entities.
-   *   4. Process each entity through the Merge Engine (replace/partial).
-   *   5. Apply GM global overrides (Layer 2: higher priority than all source files).
-   *   6. Filter out features from non-enabled sources.
+   *   1. Static + global rule files — sorted together alphabetically by sort key.
+   *      static/rules/ files are discovered via GET /rules (SvelteKit endpoint) or
+   *      manifest.json fallback.
+   *      storage/rules/ files are discovered via GET /api/global-rules (PHP API).
+   *      Sort keys are compared together: `"00_srd_core/races.json"` sorts
+   *      before `"50_my_setting.json"` because `"00"` < `"50"`.
    *
-   * @param enabledSources - The list of source IDs to enable (from CampaignSettings).
-   * @param gmGlobalOverrides - Optional GM global override JSON string (Layer 2 of chain).
+   *   2. Campaign homebrew JSON (`campaignHomebrewRulesJson`).
+   *      Injected as the virtual source `"user_homebrew"` — always active,
+   *      not subject to the `enabledRuleSources` filter (exempt in
+   *      `#filterByEnabledSources`).  Stores the campaign-scoped entities
+   *      authored via the Content Editor (Phase 21).
+   *
+   *   3. GM global overrides (`gmGlobalOverrides`).
+   *      Highest priority among file-like sources; applied after campaign homebrew.
+   *
+   *   4. Filter: remove features whose ruleSource is not in `enabledSources`
+   *      (exempting `"user_homebrew"` and `"gm_*"` sources).
+   *
+   * FILE DISCOVERY — static files (two-tier fallback):
+   *   PRIMARY:  GET /rules — SvelteKit server endpoint that scans static/rules/
+   *             recursively and returns URL paths.
+   *   FALLBACK: GET /rules/manifest.json — static manifest for builds/edge.
+   *
+   * FILE DISCOVERY — global files:
+   *   GET /api/global-rules — PHP endpoint listing filenames in storage/rules/.
+   *   Skipped gracefully if unavailable (e.g. in Vitest unit tests where no server
+   *   is running).
+   *
+   * @param enabledSources            - IDs from CampaignSettings.enabledRuleSources.
+   * @param gmGlobalOverrides         - Optional. Raw JSON string for Layer 3.
+   * @param campaignHomebrewRulesJson - Optional. Raw JSON string stored in
+   *                                    campaigns.homebrew_rules_json.  All entities
+   *                                    are stamped with ruleSource:"user_homebrew".
    */
   async loadRuleSources(
     enabledSources: ID[],
-    gmGlobalOverrides?: string
+    gmGlobalOverrides?: string,
+    campaignHomebrewRulesJson?: string
   ): Promise<void> {
     this.clearCache();
     this.enabledRuleSources = enabledSources;
 
-    // Step 1: Discover rule source files (two-tier: server API → manifest fallback)
-    let filePaths: string[] = [];
+    // -----------------------------------------------------------------------
+    // Step 1a: Discover static rule files via GET /rules or manifest.json
+    // -----------------------------------------------------------------------
+    let staticFilePaths: string[] = [];
     try {
-      // PRIMARY: SvelteKit server endpoint (GET /rules) scans static/rules/ recursively.
-      // Returns a JSON array of sorted URL paths.
+      // PRIMARY: SvelteKit endpoint scans static/rules/ recursively.
+      // Returns a JSON array of URL paths like ["/rules/00_srd_core/races.json", ...]
       const discoveryResponse = await fetch('/rules');
       if (discoveryResponse.ok) {
         const contentType = discoveryResponse.headers.get('content-type') ?? '';
         if (contentType.includes('application/json')) {
-          filePaths = await discoveryResponse.json() as string[];
+          staticFilePaths = await discoveryResponse.json() as string[];
         } else {
-          // SvelteKit returned an HTML page (not our API) — fall through to manifest
+          // SvelteKit returned HTML (e.g., dev server not running) — fall through
           throw new Error('Discovery endpoint returned non-JSON');
         }
       } else {
         throw new Error(`Discovery endpoint returned HTTP ${discoveryResponse.status}`);
       }
     } catch (discoveryErr) {
-      // FALLBACK: static manifest.json file
+      // FALLBACK: static manifest.json
       console.info('[DataLoader] Auto-discovery endpoint unavailable, using manifest.json:', discoveryErr);
       try {
         const manifestResponse = await fetch('/rules/manifest.json');
         if (manifestResponse.ok) {
-          filePaths = await manifestResponse.json() as string[];
+          staticFilePaths = await manifestResponse.json() as string[];
         } else {
-          console.warn('[DataLoader] manifest.json not available either. No rule sources loaded.');
+          console.warn('[DataLoader] manifest.json not available either. No static rule sources loaded.');
         }
       } catch (manifestErr) {
         console.warn('[DataLoader] Failed to load manifest.json:', manifestErr);
       }
     }
 
-    // Defensive sort: ensure alphabetical order even if the server/manifest doesn't guarantee it.
-    // Architecture §18.1 requires files to be loaded in alphabetical order by full relative path.
-    filePaths.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-
-    // Step 2-4: Load and process each file in order
-    for (const filePath of filePaths) {
-      await this.#loadRuleFile(filePath);
+    // -----------------------------------------------------------------------
+    // Step 1b: Discover global rule files via GET /api/global-rules
+    // -----------------------------------------------------------------------
+    // This endpoint is served by GlobalRulesController::list() and returns
+    // [{ filename: "50_my_setting.json", bytes: 4096 }, ...].
+    // It is accessible to all authenticated users so DataLoader can call it
+    // for all players, not just GMs.
+    //
+    // Failure is non-fatal: if the PHP server is not available (e.g. in
+    // unit tests or SvelteKit-only dev mode), we simply skip global files.
+    let globalFileInfos: GlobalRuleFileInfo[] = [];
+    try {
+      const globalListResponse = await fetch('/api/global-rules');
+      if (globalListResponse.ok) {
+        globalFileInfos = await globalListResponse.json() as GlobalRuleFileInfo[];
+      } else if (globalListResponse.status !== 404) {
+        // 404 = storage/rules/ is empty or endpoint not yet wired — expected. Anything
+        // else (401, 500) is worth logging.
+        console.warn('[DataLoader] GET /api/global-rules returned HTTP', globalListResponse.status);
+      }
+    } catch (globalErr) {
+      // No PHP server in this environment (e.g., unit tests via Vitest).
+      // Log at debug level — this is an expected condition during testing.
+      console.debug('[DataLoader] GET /api/global-rules unavailable (no backend?). Skipping global rule files.');
     }
 
-    // Step 5: Apply GM global overrides (Layer 2: after all source files)
+    // -----------------------------------------------------------------------
+    // Step 1c: Build unified FileEntry[] and sort together alphabetically
+    // -----------------------------------------------------------------------
+    // Static files:
+    //   fetchUrl: "/rules/00_srd_core/races.json"
+    //   sortKey:  "00_srd_core/races.json"  (strip the leading "/rules/")
+    //
+    // Global files:
+    //   fetchUrl: "/api/global-rules/50_my_setting.json"
+    //   sortKey:  "50_my_setting.json"       (bare filename)
+    //
+    // Comparing "00_srd_core/races.json" vs "50_my_setting.json" naturally
+    // places the global file after all 00_* and 01_* SRD content — exactly
+    // the intended load-order behaviour described in ARCHITECTURE.md §21.5.
+    const fileEntries: FileEntry[] = [];
+
+    for (const fetchUrl of staticFilePaths) {
+      // Strip the "/rules/" URL prefix to derive the sort key.
+      // If for some reason the path doesn't start with "/rules/", use it verbatim.
+      const sortKey = fetchUrl.startsWith('/rules/')
+        ? fetchUrl.slice('/rules/'.length)
+        : fetchUrl;
+      fileEntries.push({ sortKey, fetchUrl, isGlobal: false });
+    }
+
+    for (const info of globalFileInfos) {
+      fileEntries.push({
+        sortKey:  info.filename,                               // e.g. "50_my_setting.json"
+        fetchUrl: `/api/global-rules/${info.filename}`,        // served by GlobalRulesController
+        isGlobal: true,
+      });
+    }
+
+    // Defensive sort: alphabetical by sortKey (case-insensitive).
+    // Architecture §21.5 requires the combined list to be sorted by filename/path.
+    fileEntries.sort((a, b) =>
+      a.sortKey.localeCompare(b.sortKey, undefined, { sensitivity: 'base' })
+    );
+
+    // -----------------------------------------------------------------------
+    // Steps 2–4: Load and process each file in sorted order
+    // -----------------------------------------------------------------------
+    for (const entry of fileEntries) {
+      await this.#loadRuleFile(entry.fetchUrl, entry.isGlobal);
+    }
+
+    // -----------------------------------------------------------------------
+    // Step 5: Inject campaign-scoped homebrew as virtual source "user_homebrew"
+    // -----------------------------------------------------------------------
+    // WHY THIS POSITION?
+    //   Campaign homebrew ranks ABOVE all file sources (static + global) but
+    //   BELOW gmGlobalOverrides. This matches ARCHITECTURE.md §21.5:
+    //     "Injected after all files in CampaignSettings.enabledRuleSources,
+    //      before gmGlobalOverrides."
+    //
+    // WHY STAMP ruleSource = "user_homebrew"?
+    //   This makes the source exempt from the enabledRuleSources filter
+    //   (see #filterByEnabledSources) and makes getHomebrewRules('campaign')
+    //   trivially accurate without extra bookkeeping.
+    if (campaignHomebrewRulesJson) {
+      this.#applyCampaignHomebrew(campaignHomebrewRulesJson);
+    }
+
+    // -----------------------------------------------------------------------
+    // Step 6: Apply GM global overrides (Layer 3: highest file-like priority)
+    // -----------------------------------------------------------------------
     if (gmGlobalOverrides) {
       this.#applyGmOverrides(gmGlobalOverrides);
     }
 
-    // Step 6: Filter out features from non-enabled sources
+    // -----------------------------------------------------------------------
+    // Step 7: Filter out features from non-enabled sources
+    // -----------------------------------------------------------------------
     this.#filterByEnabledSources();
 
     this.isLoaded = true;
@@ -378,9 +552,14 @@ export class DataLoader {
   /**
    * Fetches and processes a single rules JSON file.
    *
-   * @param filePath - The path relative to the static/public directory (e.g., "/rules/00_srd_core/races.json").
+   * @param filePath - The fetch URL for the file (e.g., "/rules/00_srd_core/races.json"
+   *                   for static files, or "/api/global-rules/50_my_setting.json" for
+   *                   global files stored in storage/rules/).
+   * @param isGlobal - When `true`, the ruleSource IDs found in this file are recorded
+   *                   in `_globalRuleSourceIds` so `getHomebrewRules('global')` can
+   *                   identify them later.  Defaults to `false`.
    */
-  async #loadRuleFile(filePath: string): Promise<void> {
+  async #loadRuleFile(filePath: string, isGlobal = false): Promise<void> {
     try {
       const response = await fetch(filePath);
       if (!response.ok) {
@@ -393,6 +572,16 @@ export class DataLoader {
       if (!Array.isArray(entities)) {
         console.warn(`[DataLoader] Rule file ${filePath} does not contain a JSON array. Skipping.`);
         return;
+      }
+
+      // If this file comes from storage/rules/ (global scope), record every ruleSource
+      // value it contains so getHomebrewRules('global') can identify them.
+      if (isGlobal) {
+        for (const entity of entities) {
+          if (entity.ruleSource && typeof entity.ruleSource === 'string') {
+            this._globalRuleSourceIds.add(entity.ruleSource);
+          }
+        }
       }
 
       for (const entity of entities) {
@@ -484,9 +673,50 @@ export class DataLoader {
   }
 
   /**
-   * Applies GM global override text (Layer 2 of the resolution chain).
+   * Injects campaign-scoped homebrew entities as the virtual source "user_homebrew".
+   * Applied AFTER all file sources (static + global) but BEFORE gmGlobalOverrides,
+   * per ARCHITECTURE.md §21.5.
+   *
+   * RULESOUCE STAMPING:
+   *   Every entity loaded from the campaign homebrew JSON has its `ruleSource`
+   *   forced to `"user_homebrew"`, regardless of what the GM may have set.
+   *   This ensures two invariants:
+   *     1. The entity is exempt from the `enabledRuleSources` filter
+   *        (see the `'user_homebrew'` exemption in `#filterByEnabledSources`).
+   *     2. `getHomebrewRules('campaign')` can reliably identify these features
+   *        by checking `ruleSource === "user_homebrew"`.
+   *
+   * WHY FORCE, NOT DEFAULT?
+   *   Campaign homebrew is always scoped to this campaign and always active.
+   *   Allowing a custom ruleSource would mean the entity could be accidentally
+   *   filtered out if that source ID is not in `enabledRuleSources`.
+   *
+   * @param homebrewJson - Raw JSON string from campaigns.homebrew_rules_json.
+   */
+  #applyCampaignHomebrew(homebrewJson: string): void {
+    let entities: RawEntity[];
+    try {
+      entities = JSON.parse(homebrewJson) as RawEntity[];
+      if (!Array.isArray(entities)) {
+        console.warn('[DataLoader] Campaign homebrew rules is not a JSON array. Ignoring.');
+        return;
+      }
+    } catch (err) {
+      console.warn('[DataLoader] Failed to parse campaign homebrew rules JSON:', err);
+      return;
+    }
+
+    for (const entity of entities) {
+      // Stamp ruleSource unconditionally — see method JSDoc for the rationale.
+      entity.ruleSource = 'user_homebrew';
+      this.#processEntity(entity);
+    }
+  }
+
+  /**
+   * Applies GM global override text (Layer 3 of the resolution chain).
    * Parses the JSON string and processes each entity through the merge engine.
-   * Applied AFTER all source files, giving overrides the highest priority.
+   * Applied AFTER campaign homebrew, giving overrides the highest file-like priority.
    *
    * @param gmOverridesJson - Raw JSON string from Campaign.gmGlobalOverrides.
    */
@@ -511,44 +741,49 @@ export class DataLoader {
 
   /**
    * Filters the feature cache to remove features from non-enabled rule sources.
-   * Called after all files and GM overrides are loaded.
+   * Called after all files, campaign homebrew, and GM overrides are loaded.
    *
    * LOGIC:
    *   A feature is retained if its `ruleSource` is in `enabledRuleSources`.
    *   If `enabledRuleSources` is empty, ALL features are retained (permissive default).
    *
-   * IMPORTANT — GM OVERRIDE EXEMPTION (MAJOR fix #3):
-   *   Features with `ruleSource: "gm_override"` (or any value starting with "gm_")
-   *   are ALWAYS retained regardless of `enabledRuleSources`. This is required because:
-   *     1. GM Global Overrides (Layer 2) and GM Per-Character Overrides (Layer 3) reference
-   *        custom Feature definitions that the GM creates directly in the text area.
-   *     2. These features cannot and should not be "disabled" by the source filter —
-   *        they are the GM's direct runtime modifications, not rule sources to be toggled.
-   *     3. Without this exemption, saving GM overrides with `ruleSource: "gm_override"`
-   *        would have their features silently discarded by the filter after loading.
+   * EXEMPT SOURCES (always retained regardless of enabledRuleSources):
    *
-   *   The GM ruleSource convention is: `"gm_override"` (for globally defined overrides)
-   *   or any string beginning with `"gm_"` for custom per-campaign override blocks.
+   *   1. GM sources — `ruleSource === "gm_override"` or starts with `"gm_"`:
+   *      GM Global and Per-Character Overrides inject features the GM edits directly.
+   *      These are the GM's live runtime modifications and should never be silently
+   *      discarded by the source filter.  See ARCHITECTURE.md §18.5–18.6.
    *
-   * NOTE: Config tables from GM overrides are also exempt from filtering.
+   *   2. Campaign homebrew — `ruleSource === "user_homebrew"`:
+   *      Campaign-scoped homebrew (authored via the Content Editor and stored in
+   *      campaigns.homebrew_rules_json) is always active for its campaign.  The GM
+   *      explicitly created this content — it does not need to be toggled via
+   *      `enabledRuleSources`.  See ARCHITECTURE.md §21.5.
    *
-   * @see ARCHITECTURE.md section 18.5 and 18.6 for GM override specifications.
+   * NOTE: Config tables from exempt sources are also filter-immune.
    */
   #filterByEnabledSources(): void {
     if (this.enabledRuleSources.length === 0) return; // Empty = no filtering
 
-    // Filter features (exempt GM override sources)
+    /**
+     * Returns true when the given ruleSource should bypass the enabled-sources filter.
+     * Centralised here so features and config tables share the same exemption logic.
+     */
+    const isExempt = (ruleSource: string): boolean =>
+      ruleSource === 'user_homebrew' ||
+      ruleSource === 'gm_override'   ||
+      ruleSource.startsWith('gm_');
+
+    // Filter features
     for (const [id, feature] of this.featureCache) {
-      const isGmSource = feature.ruleSource === 'gm_override' || feature.ruleSource.startsWith('gm_');
-      if (!isGmSource && !this.enabledRuleSources.includes(feature.ruleSource)) {
+      if (!isExempt(feature.ruleSource) && !this.enabledRuleSources.includes(feature.ruleSource)) {
         this.featureCache.delete(id);
       }
     }
 
-    // Filter config tables (exempt GM override sources)
+    // Filter config tables
     for (const [tableId, table] of this.configTableCache) {
-      const isGmSource = table.ruleSource === 'gm_override' || table.ruleSource.startsWith('gm_');
-      if (!isGmSource && !this.enabledRuleSources.includes(table.ruleSource)) {
+      if (!isExempt(table.ruleSource) && !this.enabledRuleSources.includes(table.ruleSource)) {
         this.configTableCache.delete(tableId);
       }
     }
@@ -668,11 +903,52 @@ export class DataLoader {
   }
 
   /**
+   * Returns all homebrew features for the specified scope.
+   *
+   * WHY TWO SCOPES?
+   *   Phase 21 introduces two homebrew persistence scopes:
+   *     - `'campaign'`: entities stored in `campaigns.homebrew_rules_json`, injected
+   *       as the virtual source `"user_homebrew"`.  These belong to a single campaign.
+   *     - `'global'`: entities loaded from `.json` files in `storage/rules/`,
+   *       published via `PUT /api/global-rules/{filename}`.  These can be shared
+   *       across multiple campaigns by listing the file in `enabledRuleSources`.
+   *
+   * `getHomebrewRules('campaign')`:
+   *   Returns all features whose `ruleSource === "user_homebrew"`.
+   *   This is accurate because `#applyCampaignHomebrew` stamps every entity
+   *   with that exact ruleSource value.
+   *
+   * `getHomebrewRules('global')`:
+   *   Returns features whose ruleSource appeared in any file loaded from
+   *   `storage/rules/`.  Tracked via `_globalRuleSourceIds` during
+   *   `#loadRuleFile(path, isGlobal=true)`.
+   *
+   * NOTE: Both methods query the CURRENT cache state — call after loadRuleSources().
+   *
+   * @param scope - `'campaign'` or `'global'`.
+   * @returns Array of Features from that scope, or `[]` if none are loaded.
+   */
+  getHomebrewRules(scope: 'campaign' | 'global'): Feature[] {
+    if (scope === 'campaign') {
+      return Array.from(this.featureCache.values()).filter(
+        f => f.ruleSource === 'user_homebrew'
+      );
+    }
+
+    // scope === 'global'
+    // Return features whose ruleSource was seen in at least one global file.
+    return Array.from(this.featureCache.values()).filter(
+      f => this._globalRuleSourceIds.has(f.ruleSource)
+    );
+  }
+
+  /**
    * Clears all cached data. Used for testing and when changing campaigns.
    */
   clearCache(): void {
     this.featureCache.clear();
     this.configTableCache.clear();
+    this._globalRuleSourceIds.clear();
     this.isLoaded = false;
   }
 }

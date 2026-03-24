@@ -28,8 +28,9 @@
  *   Rules:
  *     GET    /api/rules/list                    → RulesController::list()  (returns available source files)
  *
- *   Global Rule Sources (Phase 21.1.2):
+ *   Global Rule Sources (Phase 21.1.2 + 21.1.3):
  *     GET    /api/global-rules                  → GlobalRulesController::list()
+ *     GET    /api/global-rules/{filename}       → GlobalRulesController::getFileContent($filename)
  *     PUT    /api/global-rules/{filename}       → GlobalRulesController::put($filename)
  *     DELETE /api/global-rules/{filename}       → GlobalRulesController::delete($filename)
  *
@@ -156,8 +157,13 @@ try {
 
     } elseif ($path === '/global-rules' && $method === 'GET') {
         // Lists all *.json files in storage/rules/ with filename + byte size.
-        // GM only — the ContentLibraryPage uses this to populate the scope panel.
+        // Accessible by all authenticated users — DataLoader calls this at app init.
         GlobalRulesController::list();
+
+    } elseif (preg_match('#^/global-rules/([^/]+)$#', $path, $m) && $method === 'GET') {
+        // Serves the raw JSON content of a named global rule file.
+        // Accessible by all authenticated users — DataLoader fetches file content for all users.
+        GlobalRulesController::getFileContent($m[1]);
 
     } elseif (preg_match('#^/global-rules/([^/]+)$#', $path, $m) && $method === 'PUT') {
         // Creates or replaces a named rule file in storage/rules/.

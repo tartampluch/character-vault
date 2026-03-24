@@ -5,6 +5,7 @@
  *
  * ENDPOINTS:
  *   GET    /api/global-rules             → list()
+ *   GET    /api/global-rules/{filename}  → getFileContent($filename)
  *   PUT    /api/global-rules/{filename}  → put($filename)
  *   DELETE /api/global-rules/{filename}  → delete($filename)
  *
@@ -32,8 +33,9 @@
  *     - Overwriting system files      (must end with `.json`)
  *
  * AUTHORISATION:
- *   All three endpoints are GM-only (403 for authenticated non-GMs,
- *   401 for unauthenticated requests).
+ *   list() and getFileContent() require any authenticated user — the DataLoader
+ *   calls these for ALL users at app init, not just GMs.
+ *   put() and delete() are GM-only (403 for authenticated non-GMs).
  *
  * @see ARCHITECTURE.md §21.1.2 for the full specification.
  * @see api/controllers/RulesController.php for the read-only static file discovery.
@@ -84,6 +86,10 @@ class GlobalRulesController
     /**
      * Lists all `.json` files in `storage/rules/`, sorted alphabetically.
      *
+     * AUTHORISATION: Any authenticated user.
+     *   The DataLoader calls `GET /api/global-rules` during app initialization for ALL
+     *   users (not only GMs), because all users need the complete rule set loaded.
+     *
      * RESPONSE (200):
      *   [
      *     { "filename": "50_setting.json", "bytes": 4096 },
@@ -100,7 +106,7 @@ class GlobalRulesController
      */
     public static function list(): void
     {
-        requireGameMaster();
+        requireAuth();
 
         $dir = self::STORAGE_DIR;
 
@@ -138,6 +144,74 @@ class GlobalRulesController
 
         http_response_code(200);
         echo json_encode($files);
+    }
+
+    // ============================================================
+    // GET /api/global-rules/{filename}
+    // ============================================================
+
+    /**
+     * Returns the full JSON content of a named global rule file.
+     *
+     * AUTHORISATION: Any authenticated user.
+     *   The DataLoader fetches each file's content during app initialization for ALL
+     *   users; restricting this to GMs would prevent rule loading for players.
+     *
+     * RESPONSE (200):
+     *   The raw JSON array stored in the file, with `Content-Type: application/json`.
+     *
+     * SECURITY:
+     *   Filename is validated against the same strict pattern used by put() and
+     *   delete() — this prevents directory traversal (no `..`, slashes, spaces).
+     *   The file is read only from `STORAGE_DIR`; no other path is reachable.
+     *
+     * @param string $filename  The validated filename segment from the URL.
+     */
+    public static function getFileContent(string $filename): void
+    {
+        requireAuth();
+
+        // ---- 422 — filename validation -----------------------------------------------
+        if (!preg_match(self::VALID_FILENAME_PATTERN, $filename)) {
+            http_response_code(422);
+            echo json_encode([
+                'error'   => 'UnprocessableEntity',
+                'message' => "Filename '{$filename}' is invalid. "
+                           . 'Only lowercase letters, digits, hyphens, and underscores are allowed, '
+                           . 'and the name must end with .json.',
+            ]);
+            return;
+        }
+
+        $targetPath = self::STORAGE_DIR . $filename;
+
+        // ---- 404 — file must exist ---------------------------------------------------
+        if (!is_file($targetPath)) {
+            http_response_code(404);
+            echo json_encode([
+                'error'   => 'NotFound',
+                'message' => "Global rule file '{$filename}' does not exist.",
+            ]);
+            return;
+        }
+
+        // ---- Read and serve ----------------------------------------------------------
+        $content = @file_get_contents($targetPath);
+        if ($content === false) {
+            error_log('[GlobalRulesController] Failed to read: ' . $targetPath);
+            http_response_code(500);
+            echo json_encode([
+                'error'   => 'ServerError',
+                'message' => 'Could not read rule file from disk.',
+            ]);
+            return;
+        }
+
+        // Return the raw JSON content directly. The file was normalised when PUT
+        // (via json_encode), so it is always valid JSON — we don't re-parse it here
+        // to avoid unnecessary processing overhead.
+        http_response_code(200);
+        echo $content;
     }
 
     // ============================================================
