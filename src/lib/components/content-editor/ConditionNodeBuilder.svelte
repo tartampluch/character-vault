@@ -47,13 +47,29 @@
   field stores this as the absence of a prerequisite tree.
 
   ────────────────────────────────────────────────────────────────────────────
-  PHASE SCOPE (21.2.6 vs. 21.2.7)
+  PHASE SCOPE (21.2.6 completed, 21.2.7 added)
   ────────────────────────────────────────────────────────────────────────────
-  21.2.6 (this file): Rendering and editing of EXISTING nodes.  Deletion.
-  21.2.7 (next task): "+ Add Condition", "+ Add Group", node-type switcher,
-                      ▲/▼ reorder controls, depth-4 guard.
+  21.2.6: Rendering and editing of EXISTING nodes.  Deletion.
+  21.2.7: "+ Add Condition", "+ Add Group", AND↔OR switcher, ▲/▼ reorder,
+          depth-4 guard on "+ Add Group".
 
-  Extension points for 21.2.7 are marked with  ← 21.2.7  comments.
+  ADD SEMANTICS:
+    At root (node===undefined):
+      "+ Add Condition" → wraps a blank CONDITION in AND → onNodeChanged
+      "+ Add Group (AND/OR)" → emits a blank AND/OR with one blank CONDITION
+
+    Inside AND/OR children area:
+      "+ Add Condition" → appends a blank CONDITION to nodes[]
+      "+ Add Group (AND)" / "+ Add Group (OR)" → appends new nested container
+
+  REORDER:
+    ▲ swaps node at index i with node at index i-1.
+    ▼ swaps node at index i with node at index i+1.
+    No drag-and-drop API is used.
+
+  DEPTH GUARD:
+    MAX_DEPTH = 4.  At depth ≥ MAX_DEPTH the "+ Add Group" buttons are hidden
+    and a tooltip (title attribute) explains the raw JSON panel.
 
   ────────────────────────────────────────────────────────────────────────────
   @see src/lib/types/logic.ts              for LogicNode, LogicNodeCondition
@@ -358,6 +374,100 @@
     if (logic === 'OR')  return 'border-l-purple-500/60';
     return 'border-l-red-500/60'; // NOT
   }
+
+  // ===========================================================================
+  // 21.2.7 — DEPTH GUARD
+  // ===========================================================================
+
+  /**
+   * Maximum allowed nesting depth.
+   * At depth ≥ MAX_DEPTH the "+ Add Group" button is hidden.
+   * Deeper trees are still editable via the Raw JSON panel (Phase 21.7).
+   */
+  const MAX_DEPTH = 4;
+
+  // ===========================================================================
+  // 21.2.7 — ADD / REORDER HELPERS
+  // ===========================================================================
+
+  /**
+   * Appends a blank CONDITION node to an AND/OR container's children.
+   * Called from the "+ Add Condition" button inside AND/OR children areas.
+   */
+  function addConditionToAndOr(andOrNode: LogicNodeAnd | LogicNodeOr): void {
+    onNodeChanged({
+      ...andOrNode,
+      nodes: [...andOrNode.nodes, makeBlankCondition()],
+    });
+  }
+
+  /**
+   * Appends a new AND or OR group (containing one blank CONDITION) to an
+   * existing AND/OR container.  Hidden when depth ≥ MAX_DEPTH.
+   */
+  function addGroupToAndOr(
+    andOrNode: LogicNodeAnd | LogicNodeOr,
+    newGroupLogic: 'AND' | 'OR'
+  ): void {
+    const newGroup: LogicNodeAnd | LogicNodeOr = {
+      logic: newGroupLogic,
+      nodes: [makeBlankCondition()],
+    };
+    onNodeChanged({ ...andOrNode, nodes: [...andOrNode.nodes, newGroup] });
+  }
+
+  /**
+   * Swaps the child at `indexA` with the child at `indexB` in an AND/OR node.
+   * Used by the ▲/▼ reorder buttons.
+   */
+  function swapChildren(
+    andOrNode: LogicNodeAnd | LogicNodeOr,
+    indexA: number,
+    indexB: number
+  ): void {
+    if (indexB < 0 || indexB >= andOrNode.nodes.length) return;
+    const newNodes = [...andOrNode.nodes];
+    [newNodes[indexA], newNodes[indexB]] = [newNodes[indexB], newNodes[indexA]];
+    onNodeChanged({ ...andOrNode, nodes: newNodes });
+  }
+
+  /**
+   * Toggles an AND container to OR or vice-versa, keeping all children.
+   * Called from the "All of these (AND)" / "Any of these (OR)" switcher button.
+   */
+  function switchAndOr(andOrNode: LogicNodeAnd | LogicNodeOr): void {
+    onNodeChanged({
+      logic: andOrNode.logic === 'AND' ? 'OR' : 'AND',
+      nodes: andOrNode.nodes,
+    });
+  }
+
+  /**
+   * Called from the root empty state "+ Add Condition" button.
+   * Wraps a blank CONDITION inside an AND root and emits it.
+   * Using AND as the default root makes it easy to add more conditions later.
+   */
+  function addConditionAtRoot(): void {
+    onNodeChanged({ logic: 'AND', nodes: [makeBlankCondition()] });
+  }
+
+  /**
+   * Called from the root empty state "+ Add Group" buttons.
+   * Emits a new AND or OR group containing one blank CONDITION.
+   */
+  function addGroupAtRoot(groupLogic: 'AND' | 'OR'): void {
+    onNodeChanged({ logic: groupLogic, nodes: [makeBlankCondition()] });
+  }
+
+  // ===========================================================================
+  // 21.2.7 — "ADD GROUP" DROPDOWN STATE (per AND/OR container)
+  // ===========================================================================
+
+  /**
+   * Whether the "+ Add Group ▾" dropdown menu is open.
+   * Each AND/OR container instance has its own independent flag.
+   */
+  let addGroupDropdownOpen = $state(false);
 </script>
 
 <!-- ============================================================ -->
@@ -379,15 +489,71 @@
 <!-- ============================================================ -->
 
 {#if node === undefined}
-  <!-- ── EMPTY STATE ───────────────────────────────────────────────────── -->
+  <!-- ── EMPTY STATE — root has no conditions yet ──────────────────────── -->
   <!--
-    Shown at the root when no condition has been set yet, or transiently when
-    the last child is deleted from AND/OR.
-    21.2.7 will place an "+ Add Condition" button here.
+    Shown when no LogicNode tree exists at all (root empty state) or when the
+    last child was just deleted from an AND/OR container.
+    Offers the same Add actions as the inside of an AND/OR container.
   -->
-  <div class="flex items-center gap-2 py-2 px-3 rounded border border-dashed
-              border-border text-xs text-text-muted italic">
-    No conditions. <!-- ← 21.2.7: "+ Add Condition" button goes here -->
+  <div class="flex flex-wrap items-center gap-2 py-2 px-3 rounded border border-dashed
+              border-border bg-surface/50">
+    <span class="text-xs text-text-muted italic mr-1">No conditions.</span>
+
+    <!-- "+ Add Condition" — creates a blank AND root with one blank CONDITION -->
+    <button
+      type="button"
+      class="btn-ghost text-xs py-0.5 px-2 h-auto"
+      onclick={addConditionAtRoot}
+    >
+      + Add Condition
+    </button>
+
+    <!-- "+ Add Group" — dropdown, hidden at depth ≥ MAX_DEPTH -->
+    {#if depth < MAX_DEPTH}
+      <div class="relative">
+        <button
+          type="button"
+          class="btn-ghost text-xs py-0.5 px-2 h-auto"
+          onclick={() => (addGroupDropdownOpen = !addGroupDropdownOpen)}
+          aria-haspopup="menu"
+          aria-expanded={addGroupDropdownOpen}
+        >
+          + Add Group ▾
+        </button>
+        {#if addGroupDropdownOpen}
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <div
+            role="menu"
+            tabindex="-1"
+            class="absolute left-0 top-full mt-1 z-10 flex flex-col rounded-lg border
+                   border-border bg-surface shadow-lg overflow-hidden text-xs w-44"
+            onkeydown={(e) => { if (e.key === 'Escape') addGroupDropdownOpen = false; }}
+          >
+            <button
+              type="button" role="menuitem"
+              class="px-3 py-2 text-left hover:bg-surface-alt text-blue-400 font-semibold"
+              onclick={() => { addGroupAtRoot('AND'); addGroupDropdownOpen = false; }}
+            >
+              AND — All of these
+            </button>
+            <button
+              type="button" role="menuitem"
+              class="px-3 py-2 text-left hover:bg-surface-alt text-purple-400 font-semibold"
+              onclick={() => { addGroupAtRoot('OR'); addGroupDropdownOpen = false; }}
+            >
+              OR — Any of these
+            </button>
+          </div>
+        {/if}
+      </div>
+    {:else}
+      <span
+        class="text-xs text-text-muted italic"
+        title="Maximum nesting depth reached. Use the Raw JSON panel to add deeper groups."
+      >
+        Max depth reached
+      </span>
+    {/if}
   </div>
 
 {:else if node.logic === 'AND' || node.logic === 'OR'}
@@ -400,14 +566,23 @@
     <div class="flex items-center justify-between px-3 py-2 bg-surface-alt gap-2">
       <div class="flex items-center gap-2 flex-1">
         <!--
-          Node-type label.
-          21.2.7 will replace this <span> with a clickable toggle button.
+          AND ↔ OR switcher button.
+          Clicking toggles the combinator type while preserving all children.
+          Styled as a small pill so it's clearly interactive but unobtrusive.
         -->
-        <span class="text-xs font-bold uppercase tracking-wider
-                     {isAnd ? 'text-blue-400' : 'text-purple-400'}">
+        <button
+          type="button"
+          class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded
+                 border transition-colors
+                 {isAnd
+                   ? 'text-blue-400 border-blue-700/50 hover:bg-blue-900/30'
+                   : 'text-purple-400 border-purple-700/50 hover:bg-purple-900/30'}"
+          onclick={() => switchAndOr(node)}
+          title="Click to toggle between AND and OR"
+        >
           {isAnd ? 'All of these (AND)' : 'Any of these (OR)'}
-        </span>
-        <!-- ← 21.2.7: AND↔OR switcher button goes here -->
+          <span class="ml-1 opacity-60 text-[9px]">↕</span>
+        </button>
       </div>
 
       <!-- Delete this entire AND/OR group -->
@@ -433,17 +608,119 @@
     <!-- Children -->
     <div class="flex flex-col gap-2 p-3">
       {#each node.nodes as child, i (i)}
-        <div class="flex flex-col gap-0">
-          <!-- ← 21.2.7: ▲/▼ reorder buttons go alongside each child -->
-          <ConditionNodeBuilder
-            node={child}
-            depth={depth + 1}
-            onNodeChanged={(newChild) => handleAndOrChildChanged(node, i, newChild)}
-          />
+        <!--
+          Each child is wrapped in a row that contains:
+            LEFT GUTTER:  ▲/▼ reorder buttons (index swap, no drag-and-drop)
+            RIGHT AREA:   the recursive ConditionNodeBuilder for this child
+        -->
+        <div class="flex items-start gap-1.5">
+          <!-- Reorder controls -->
+          <div class="flex flex-col shrink-0 mt-1">
+            <button
+              type="button"
+              class="btn-ghost btn-icon h-5 w-5 p-0 text-text-muted
+                     disabled:opacity-20 disabled:cursor-not-allowed"
+              onclick={() => swapChildren(node, i, i - 1)}
+              disabled={i === 0}
+              title="Move up"
+              aria-label="Move condition up"
+            >
+              <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="18 15 12 9 6 15"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-ghost btn-icon h-5 w-5 p-0 text-text-muted
+                     disabled:opacity-20 disabled:cursor-not-allowed"
+              onclick={() => swapChildren(node, i, i + 1)}
+              disabled={i === node.nodes.length - 1}
+              title="Move down"
+              aria-label="Move condition down"
+            >
+              <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Child node (recursive) -->
+          <div class="flex-1 min-w-0">
+            <ConditionNodeBuilder
+              node={child}
+              depth={depth + 1}
+              onNodeChanged={(newChild) => handleAndOrChildChanged(node, i, newChild)}
+            />
+          </div>
         </div>
       {/each}
 
-      <!-- ← 21.2.7: "+ Add Condition" and "+ Add Group" buttons go here -->
+      <!-- ── Add bar ──────────────────────────────────────────────────── -->
+      <!--
+        Shown at the bottom of every AND/OR container.
+        Lets GMs append new children without leaving the tree view.
+      -->
+      <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-border/50 mt-1">
+        <!-- "+ Add Condition" -->
+        <button
+          type="button"
+          class="btn-ghost text-xs py-0.5 px-2 h-auto"
+          onclick={() => addConditionToAndOr(node)}
+        >
+          + Add Condition
+        </button>
+
+        <!-- "+ Add Group ▾" — hidden at max depth -->
+        {#if depth < MAX_DEPTH}
+          <div class="relative">
+            <button
+              type="button"
+              class="btn-ghost text-xs py-0.5 px-2 h-auto"
+              onclick={() => (addGroupDropdownOpen = !addGroupDropdownOpen)}
+              aria-haspopup="menu"
+              aria-expanded={addGroupDropdownOpen}
+            >
+              + Add Group ▾
+            </button>
+            {#if addGroupDropdownOpen}
+              <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+              <div
+                role="menu"
+                tabindex="-1"
+                class="absolute left-0 top-full mt-1 z-10 flex flex-col rounded-lg border
+                       border-border bg-surface shadow-lg overflow-hidden text-xs w-44"
+                onkeydown={(e) => { if (e.key === 'Escape') addGroupDropdownOpen = false; }}
+              >
+                <button
+                  type="button" role="menuitem"
+                  class="px-3 py-2 text-left hover:bg-surface-alt text-blue-400 font-semibold"
+                  onclick={() => { addGroupToAndOr(node, 'AND'); addGroupDropdownOpen = false; }}
+                >
+                  AND — All of these
+                </button>
+                <button
+                  type="button" role="menuitem"
+                  class="px-3 py-2 text-left hover:bg-surface-alt text-purple-400 font-semibold"
+                  onclick={() => { addGroupToAndOr(node, 'OR'); addGroupDropdownOpen = false; }}
+                >
+                  OR — Any of these
+                </button>
+              </div>
+            {/if}
+          </div>
+        {:else}
+          <span
+            class="text-xs text-text-muted italic"
+            title="Maximum nesting depth ({MAX_DEPTH}) reached. Use the Raw JSON panel to add deeper groups."
+          >
+            Max depth reached
+          </span>
+        {/if}
+      </div>
     </div>
   </div>
 
