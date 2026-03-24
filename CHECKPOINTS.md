@@ -786,9 +786,140 @@ If no issues found in a category: "✅ [Category]: No issues found."
 
 ---
 
+## Checkpoint #8 — Content Editor System
+
+**Prerequisites:** Phase 21 must be complete (Phases 1–20 already reviewed).
+
+```markdown
+You are a senior code reviewer specializing in Svelte 5 form architecture, data-driven UI patterns, and D&D 3.5 content authoring workflows.
+
+I have attached `ARCHITECTURE.md` (especially §21), `PROMPT.md` (Phase 21 tasks), and all source files produced during Phase 21: PHP backend files, `HomebrewStore.svelte.ts`, the `DataLoader.ts` injection point, all picker modals (`src/lib/components/content-editor/`), all editor sub-form components, the `EntityForm` orchestrator, `ContentLibraryPage`, `NewEntityPage`, `EditEntityPage`, `RawJsonPanel`, `FormulaBuilderInput`, and all Phase 21 test files.
+
+Your job is to verify Phase 21 is **complete, correct, and robust**. Do NOT rewrite code. Produce a **numbered checklist of issues** with file paths, line references, and severity (CRITICAL / MAJOR / MINOR).
+
+---
+
+## 1. Backend — Campaign-Scope Homebrew API (Phase 21.1.1)
+
+- Does `campaigns` table have `homebrew_rules_json TEXT DEFAULT '[]'`?
+- Does `GET /api/campaigns/{id}/homebrew-rules` return the JSON array? Accessible to both GM and players?
+- Does `PUT /api/campaigns/{id}/homebrew-rules` require GM role? Returns 403 for non-GM?
+- Does PUT return 422 for invalid JSON body?
+- Does PUT return 413 for body > 2 MB?
+- Does PUT update `campaigns.updated_at`?
+
+## 2. Backend — Global Rule Source API (Phase 21.1.2)
+
+- Does `storage/rules/` exist as a server-side writable directory (outside web root)?
+- Does `GET /api/global-rules` list files with filename and size? Is it GM-only?
+- Does `PUT /api/global-rules/{filename}` write to `storage/rules/`? Returns 403 for non-GM? Returns 422 for invalid filename (path traversal `../`, spaces, uppercase, missing `.json` extension)? Returns 413 for body > 2 MB?
+- Does `DELETE /api/global-rules/{filename}` remove the file? GM-only?
+- Is filename validation strictly `[0-9a-z_-]+\.json`?
+
+## 3. DataLoader Integration — Dual Scope (Phase 21.1.3)
+
+- Are `storage/rules/` files interleaved alphabetically with `static/rules/` files in the resolution chain?
+- Is `campaigns.homebrew_rules_json` injected AFTER all file sources (both `static/rules/` and `storage/rules/`) but BEFORE `gmGlobalOverrides`?
+- Is the injection point documented with a JSDoc comment?
+- Does `getHomebrewRules('campaign')` and `getHomebrewRules('global')` return the correct parsed arrays?
+- Does global file `00_z.json` in `storage/rules/` load before `01_*` SRD files? Does `99_z.json` load after all SRD files?
+
+## 4. HomebrewStore (Phase 21.1.4)
+
+- Does `HomebrewStore` expose reactive `isDirty: boolean` and `isSaving: boolean`?
+- Is auto-save debounced (≥ 1 s)?
+- Does `add()` assign / preserve `ruleSource: "user_homebrew"`?
+- Does `update()` patch without clobbering unreferenced fields?
+- Does `remove()` delete by ID?
+- Does `toJSON()` produce a valid parseable JSON array?
+- Does `isDirty` reset to `false` after save completes?
+- When `scope === 'campaign'`, does auto-save call `PUT /api/campaigns/{id}/homebrew-rules`?
+- When `scope === 'global'`, does auto-save call `PUT /api/global-rules/{filename}`?
+- Is filename validated as `[0-9a-z_-]+\.json` before save? Is a warning shown for an invalid filename?
+
+## 5. Picker Modals (Phase 21.2)
+
+- **21.2.1 PipelinePickerModal**: All 5 namespaces present and collapsible? Custom pipeline ID input available?
+- **21.2.2 FeaturePickerModal**: Searches both SRD and homebrew? `multiple` prop supported? Preview pane on row click?
+- **21.2.3 TagPickerModal**: Tags grouped by prefix with usage counts? Custom tag can be added?
+- **21.2.4 EntitySearchModal**: Search debounced ≤ 200 ms? "Clone" emits complete `Feature` object? Keyboard navigation (↑↓/Enter) works?
+- **21.2.5 ModifierTypePickerModal**: All 23 `ModifierType` values listed? Stacking badge and D&D tooltip on each?
+- **21.2.6 + 21.2.7 ConditionNodeBuilder**: AND/OR/NOT/CONDITION node types all rendered correctly? All 8 `LogicOperator` values present with plain-English labels? `targetPath` autocomplete populated from `ARCHITECTURE.md §4.3`? Serializes empty tree as `undefined` (not `null`)? "+ Add Condition" appends a blank CONDITION node? "+ Add Group" inserts AND/OR wrapper containing a blank CONDITION? AND ↔ OR type-switcher on container headers works? ▲/▼ reorder buttons perform index-swap correctly? Nesting depth limit of 4 is enforced (button hidden at depth 4 with tooltip pointing to Raw JSON panel)?
+
+## 6. FormulaBuilderInput (Phase 21.3.1)
+
+- Is the Formula Assistant panel collapsible?
+- Are all major `@`-path categories represented (Ability Scores, Combat Stats, Saves, Skills, Class Levels, Constants & Special — per `ARCHITECTURE.md §4.3`)?
+- Does clicking a path insert it at the current cursor position via `input.setRangeText()`?
+- Is the **validation indicator icon** present at the right edge of the input? ✓ green for recognized `@`-paths or plain numbers, ✗ red for unrecognized paths, ⚠ amber for partially-specified paths (e.g., `@classLevels.` without a class ID suffix)?
+- Is the input text itself **plain and unstyled** (no border-colour change, no overlay div, no inline token colouring)?
+- Is `FormulaBuilderInput` used in `ModifierListEditor` (value field), `ActivationEditor` (resourceCost.cost), and `ResourcePoolEditor` (rechargeAmount, maxPipelineId)?
+- Does the clear button reset the value to `""`?
+
+## 7. Core Editor Forms (Phase 21.3)
+
+- Is `EditorContext` created by `EntityForm` via `setContext(EDITOR_CONTEXT_KEY, ctx)` and consumed by all sub-form children via `getContext()` — with **no prop-drilling** of the `Feature` draft?
+- Does `EditorContext` expose `feature`, `dataLoader`, `mode`, `store`, and `hasOverrideWarning` as documented in `ARCHITECTURE.md §21.3`?
+- Is `editorContext.ts` a separate module that exports `EDITOR_CONTEXT_KEY` and the `EditorContext` interface?
+- Can any sub-form component be mounted in isolation for testing by providing a `mockEditorContext` via `new Map([[EDITOR_CONTEXT_KEY, ...]])`?
+- **21.3.2 CoreFieldsSection**: Does ID collision with SRD entity show amber "Override Warning" banner? Does description have Markdown preview toggle? Is `merge` a radio with inline explanation?
+- **21.3.3 ModifierListEditor**: Does `targetId` open `PipelinePickerModal`? Does `type` open `ModifierTypePickerModal`? Is `drBypassTags` visible only when `type === "damage_reduction"`? Does `value` use `FormulaBuilderInput`? Are `sourceId`/`sourceName` auto-filled from parent entity?
+- **21.3.4 GrantedFeaturesEditor**: Does each chip show the loaded label (not raw ID)? Does "+ Add Feature" open `FeaturePickerModal` in multi-select mode?
+- **21.3.5 ChoicesEditor**: Does "Test Query" run the query live and show result count?
+- **21.3.6 LevelProgressionEditor**: Do preset buttons fill only the relevant column? Does table scroll horizontally on narrow viewports?
+- **21.3.7 ActivationEditor**: Does `triggerEvent` only appear for `"reaction"` actionType? Does `resourceCost.cost` use `FormulaBuilderInput`?
+- **21.3.8 ResourcePoolEditor**: Is `rechargeAmount` (using `FormulaBuilderInput`) only visible for `"per_turn"` and `"per_round"`?
+- **21.3.9 ActionBudgetEditor**: Do SRD preset buttons fill correct values per `ARCHITECTURE.md §5.6`? Is tooltip "blank = unlimited, 0 = blocked" present?
+
+## 8. Specialized Sub-Forms (Phase 21.4)
+
+- **21.4.1 + 21.4.4 ItemDataEditor**: Are all 7 collapsible sections present (General, Weapon, Armor, Consumable, Charged Items, Cursed, Intelligent Item)? Is Intelligent Item `egoScore` auto-computed with manual override toggle? Are Wand/Staff/Scroll/Rod independently toggled (each populates its own `ItemFeature` field)? Are the `<!-- TODO 21.4.4 -->` placeholder comments removed after 21.4.4 is complete?
+- **21.4.2 MagicDataEditor**: Is psionic section hidden for non-psionic? Do augmentations include PP cost + modifiers + `effectDescription`?
+- **21.4.3 RaceClassExtrasEditor**: Is `classSkills` shown only for `class`? Are `recommendedAttributes` shown only for `race` and `class`?
+
+## 9. Top-Level Pages, EntityForm & Scope UI (Phase 21.5)
+
+- **21.5.1 ContentLibraryPage**: Is it GM-only? Does `HomebrewScopePanel` show scope toggle and filename input? Is filename input visible only for `scope === 'global'`? Is load-order tooltip shown on filename input? Do Edit/Clone/Delete row actions work? Does "Import JSON" merge into the store (not overwrite)?
+- **21.5.2 NewEntityPage**: Does Step 1 show a card grid of all 11 `FeatureCategory` values? Does the "Clone" path pre-populate `EntityForm`?
+- **21.5.4 EntityForm**: Is `setContext(EDITOR_CONTEXT_KEY, ctx)` called before any child renders? Is sticky "Override Warning" banner driven by `ctx.hasOverrideWarning`? Is `LevelProgressionEditor` only rendered for `class`? Are `ItemDataEditor`/`MagicDataEditor` only rendered for `item`/`magic`? Does `ctx.store.isSaving` spinner appear on Save button?
+- **21.5.5 RawJsonPanel**: Is two-way sync intact? Does invalid JSON show error WITHOUT corrupting form state? Are "Prettify/Minify" and "Copy to Clipboard" functional?
+
+## 10. Navigation & Route Guards (Phase 21.6)
+
+- Is "Content Editor" in `Sidebar.svelte` visible ONLY to GMs with active campaign?
+- Do all three editor routes (`/content-editor`, `/content-editor/new`, `/content-editor/[entityId]`) redirect non-GMs to `/campaigns`?
+
+## 11. Test Coverage (Phase 21.7)
+
+- **21.7.1 PHPUnit campaign-scope**: Covers fresh-campaign empty array, GM PUT/GET round-trip, 403/422/413 error codes, `updated_at` update, extra fields accepted?
+- **21.7.2 PHPUnit global-scope**: Covers GET listing, valid PUT creates file, invalid filename → 422, 413 guard, DELETE removes file, 403 for non-GM?
+- **21.7.3 Vitest HomebrewStore**: Covers `add/update/remove/toJSON`, `isDirty` lifecycle, scope routing to correct endpoint, filename validation?
+- **21.7.4 Vitest DataLoader injection**: Covers chain priority (global files interleaved alphabetically, campaign homebrew above global, `gmGlobalOverrides` above campaign, partial merge extends rather than replaces)?
+- **21.7.5 Vitest ConditionNodeBuilder**: Covers single CONDITION round-trip, AND tree with 3 children, NOT wrapper, empty → `undefined`, render snapshot (no crash on deeply nested AND → OR → NOT → CONDITION)? Also covers 21.2.7 interactions: add condition, add group, ▲/▼ reorder, AND↔OR switch, depth-4 limit enforced?
+- **21.7.6 Vitest FormulaBuilderInput**: Uses `@testing-library/svelte`. Covers: recognized path → `validationState === 'valid'` (green ✓ icon), unrecognized → `'error'` (red ✗), partial `@classLevels.` → `'partial'` (amber ⚠), plain number → `'neutral'` (no icon), click-to-insert at cursor position, clear button resets to `""`. Asserts indicator icon rendered — **does NOT assert input border-colour or `<input>` CSS classes** (input text is unstyled by design)?
+- **21.7.7 Vitest RawJsonPanel**: Covers form→textarea, valid paste→form, invalid paste→form unchanged, prettify/minify, override warning flag?
+- **21.7.8 Vitest Override-by-ID**: Full replace cycle and partial-merge cycle against real SRD entity ID?
+
+## 12. UX & D&D Labelling
+
+- Do all modals have focus traps, Escape-to-close, and backdrop-close?
+- Are all interactive elements ≥ 44 px on `pointer: coarse`?
+- Do D&D-specific labels use plain English (e.g., "Force exact value (Wild Shape)" not `"setAbsolute"`)?
+- Is the GM end-to-end workflow verified: create homebrew race → save → race appears in character sheet race dropdown without restart?
+
+---
+
+Output format: A numbered markdown checklist. For each issue:
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file:lineNumber` — Description and what Phase 21 / `ARCHITECTURE.md §21` requires.
+
+If no issues found in a category: "✅ [Category]: No issues found."
+```
+
+---
+
 ## Final Review — Complete System Validation
 
-**Prerequisites:** All phases (1–20+) must be complete.
+**Prerequisites:** All phases (1–21) must be complete.
 
 ```markdown
 You are a principal software architect performing a final acceptance review before v1.0 release.
@@ -807,7 +938,7 @@ This is the FINAL review before release. It is comprehensive.
 
 ## Part A: Architecture Conformance (Full Sweep)
 
-Walk through every section of `ARCHITECTURE.md` (§1–20) and verify the implementation:
+Walk through every section of `ARCHITECTURE.md` (§1–21) and verify the implementation:
 
 1. **§1 (ECS Philosophy):** Are Features the only source of modifiers? Is GameEngine the only processing system?
 2. **§2 (Primitives):** Do `ID`, `ModifierType` (all 23 values including "damage_reduction", "inherent", "max_dex_cap"), and `LogicOperator` match exactly?
@@ -824,6 +955,7 @@ Walk through every section of `ARCHITECTURE.md` (§1–20) and verify the implem
 13. **§11–17 (i18n, Monsters, Environment, Epic, Psionics, Variants, Dice):** Structurally supported?
 14. **§18 (Data Override Engine):** Complete resolution chain? Partial merge and `-prefix` deletion? Config table replacement? GM override layers?
 15. **§19–20 (Polling, Routes):** Routes match §20? Polling (§19) implemented in `StorageManager`?
+16. **§21 (Content Editor System):** Homebrew API present? DataLoader injection priority correct? HomebrewStore CRUD + auto-save? All 6 picker modals implemented? Override-by-ID banner and merge semantics correct? Two-way raw JSON sync functional? All routes GM-gated? All Phase 21 tests passing?
 
 ## Part B: Cross-Cutting Concerns
 
@@ -850,6 +982,23 @@ Walk through every section of `ARCHITECTURE.md` (§1–20) and verify the implem
 27. **Responsive Layout:** Works at 320px–1920px? Sidebar collapsible? Full-height character sheet?
 28. **Touch & Accessibility:** Touch targets ≥44px on coarse pointer? Focus rings (`prefers-reduced-motion`)?
 29. **Design Consistency:** Cards, buttons, inputs, badges, headers, modals all consistent?
+
+## Part F: Content Editor System (Phase 21 Validation)
+
+30. **Campaign-Scope API (21.1.1):** `GET/PUT /api/campaigns/{id}/homebrew-rules` present? GM-only PUT? 403/422/413 codes correct? `updated_at` updated?
+31. **Global-Scope API (21.1.2):** `GET/PUT/DELETE /api/global-rules/{filename}` present? `storage/rules/` writable outside web root? Filename validation enforced?
+32. **DataLoader Dual-Scope Priority (21.1.3):** `storage/rules/` files sorted alongside `static/rules/`? Campaign homebrew above all files? `gmGlobalOverrides` above campaign homebrew? Injection documented in code?
+33. **HomebrewStore (21.1.4):** `add/update/remove/toJSON` correct? `isDirty/isSaving` reactive? Auto-save routes to correct endpoint based on `scope`? Filename validated before save?
+34. **Picker Modals (21.2):** All 6 present (`PipelinePicker`, `FeaturePicker`, `TagPicker`, `EntitySearch`, `ModifierTypePicker`, `ConditionNodeBuilder`)? Each handles edge cases (empty results, keyboard nav, Escape-to-close)?
+35. **FormulaBuilderInput (21.3.1):** Used in `ModifierListEditor`, `ActivationEditor`, and `ResourcePoolEditor`? Click-to-insert at cursor via `setRangeText()` works? Validation **indicator icon** (✓/✗/⚠) present? Input text unstyled (no inline token colouring, no overlay div)?
+36. **ConditionNodeBuilder (21.2.6 + 21.2.7):** AND/OR/NOT/CONDITION supported? All 8 operators with plain-English labels? Add/group/reorder interactions (▲/▼, AND↔OR switch)? Depth-4 limit? Empty tree → `undefined`?
+37. **EditorContext (21.5.4):** `editorContext.ts` module present? `setContext(EDITOR_CONTEXT_KEY, ctx)` in `EntityForm`? Sub-forms use `getContext()` with no prop-drilling of the `Feature` draft? Each sub-form independently testable via mock context?
+38. **Override-by-ID (21.3.2+21.5.4):** Amber "Override Warning" banner driven by `ctx.hasOverrideWarning`? Replace vs partial merge semantics correct in homebrew chain?
+39. **HomebrewScopePanel (21.5.1):** Scope toggle (Campaign/Global) works? Filename input visible only for global scope? Load-order tooltip present?
+40. **Raw JSON Two-Way Sync (21.5.5):** Invalid JSON does NOT corrupt form state? Form edits update textarea immediately?
+41. **Route Guards (21.6.1):** All content editor routes GM-only? Non-GMs redirected to `/campaigns`?
+42. **Test Coverage (21.7):** 2 PHPUnit test files (campaign-scope + global-scope) and 8 Vitest test files present and passing? 21.7.6 asserts icon state not border-colour?
+43. **End-to-End:** GM creates homebrew race, saves as campaign-scope, race appears in character sheet race dropdown without restart?
 
 ---
 

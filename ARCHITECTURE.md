@@ -3062,3 +3062,247 @@ The client uses `localStorage` or `IndexedDB` to store data between sessions. On
 - The `/character/[id]` route loads the character from the `StorageManager` (localStorage in Phase 4, PHP API in Phase 14) and injects it into the `GameEngine`.
 - The redirect `/` → `/campaigns` is done via a `+page.server.ts` or a SvelteKit navigation hook.
 - Routes `/campaigns/[id]/settings` and `/campaigns/[id]/gm-dashboard` are only accessible if `SessionContext.isGameMaster` is `true`. A navigation guard redirects non-GMs.
+- Content Editor routes (`/campaigns/[id]/content-editor/**`) are also GM-only (see §21).
+
+---
+
+## 21. Content Editor System (Phase 21)
+
+### 21.1. Goals & Design Principles
+
+The Content Editor System gives GMs a fully graphical way to author and extend game content **without touching JSON directly**. Every entity type (races, classes, feats, spells, items, conditions, etc.) gets a dedicated form-driven editor that maps directly to the Feature type system.
+
+**Core principles:**
+- **Zero-JSON required:** Every field in every Feature sub-type is editable through purpose-built form controls. A GM should never need to know what a `LogicNode` looks like to set a prerequisite.
+- **No inheritance / no links:** "Clone from existing" copies all data into a new independent entity. There is no runtime link back to the source. If the source is later modified, the clone is untouched.
+- **Duplicate-and-override-ID:** A GM can take any existing SRD entity, clone it, and assign it the **same ID** as the original. The cloned entity then overrides the original in the resolution chain via the normal Merge Engine — without the GM ever seeing raw JSON.
+- **Non-cluttered UI with list modals:** Whenever the GM must pick from a list (select a target pipeline, choose tags, add modifiers, pick granted features, define prerequisites), a dedicated **selection modal** opens instead of embedding the entire list inline. This keeps the main form clean and scannable.
+- **Raw JSON escape hatch:** Each editor exposes an expandable "Advanced / Raw JSON" panel at the bottom. Editing there instantly reflects in the form fields and vice versa (two-way live sync). This is for power users and edge-cases only.
+- **GM-only access gate:** All editor routes require `SessionContext.isGameMaster === true`. Players cannot create or modify rule content.
+- **Dual-scope persistence:** Authored entities can be saved either as a **campaign-scoped** homebrew collection (stored in the database, available only to that campaign) or as a **global-scoped** homebrew file (stored on the server, available to all campaigns that enable it). The GM chooses the scope and sets the filename.
+
+### 21.2. Entity Type Coverage
+
+Every `FeatureCategory` value maps to an editor form. The table below shows which specialized sub-type interface is used:
+
+| Category | Base Type | Extra Fields |
+|---|---|---|
+| `race` | `Feature` | tags, size, speed modifiers, racial traits as grantedFeatures |
+| `class` | `Feature` | levelProgression, classSkills, spPerLevel, HitDie, BAB progression |
+| `class_feature` | `Feature` | activation, resourcePoolTemplates, actionBudget |
+| `feat` | `Feature` | prerequisitesNode, choices |
+| `deity` | `Feature` | domains (as grantedFeatures), favored weapon |
+| `domain` | `Feature` | classSkills, domain spell list |
+| `magic` | `MagicFeature` | school, components, range, duration, spellLists, augmentations |
+| `item` | `ItemFeature` | slot, weight, cost, weaponData, armorData, staffSpells, etc. |
+| `condition` | `Feature` | forbiddenTags, actionBudget (status effect modifiers) |
+| `monster_type` | `Feature` | tags (creature type keywords), DR, special qualities |
+| `environment` | `Feature` | situational modifiers, conditionNodes |
+
+### 21.3. Editor Architecture
+
+```
+/campaigns/[id]/content-editor                  → Content Library (all homebrew for this campaign)
+/campaigns/[id]/content-editor/new              → New entity form (category step then form)
+/campaigns/[id]/content-editor/[entityId]       → Edit existing homebrew entity
+```
+
+#### Component Tree
+
+```
+ContentLibraryPage
+├── HomebrewScopePanel        (campaign vs. global scope toggle; filename input for global)
+├── ContentLibraryTable       (sortable, filterable: id, category, label, source, actions)
+└── EntityForm                (the main editor form; switches sub-form by category)
+    ├── CoreFieldsSection     (id, label, description, ruleSource, tags, forbiddenTags, merge)
+    ├── ConditionNodeBuilder  (visual AND/OR/NOT/CONDITION tree; collapsed when empty)
+    ├── ModifierListEditor    (add/edit/delete Modifier rows; uses FormulaBuilderInput)
+    ├── GrantedFeaturesEditor (feature ID chips; opens FeaturePickerModal)
+    ├── ChoicesEditor         (FeatureChoice list; optionsQuery builder)
+    ├── LevelProgressionEditor (class only — per-level BAB/save/features table)
+    ├── ActivationEditor      (actionType, resourceCost via FormulaBuilderInput, tiered costs)
+    ├── ResourcePoolEditor    (resourcePoolTemplates; rechargeAmount via FormulaBuilderInput)
+    ├── ActionBudgetEditor    (6 numeric inputs; SRD condition presets)
+    ├── ItemDataEditor        (ItemFeature only: all item sub-fields in collapsible sections)
+    ├── MagicDataEditor       (MagicFeature only: school, spellLists, augmentations, psionic)
+    ├── RaceClassExtrasEditor (race: recommendedAttributes; class: classSkills, spPerLevel, HD)
+    └── RawJsonPanel          (expandable <details>; two-way live sync with form state)
+```
+
+#### EditorContext — Shared Reactive State
+
+All sub-form components inside `EntityForm` share a single reactive draft `Feature` object via Svelte's `setContext / getContext` API. This avoids prop-drilling through a 4-level deep tree.
+
+```typescript
+// src/lib/components/content-editor/editorContext.ts
+
+import type { DataLoader } from '$lib/engine/DataLoader';
+import type { HomebrewStore } from '$lib/engine/HomebrewStore.svelte';
+import type { Feature } from '$lib/types/feature';
+
+export const EDITOR_CONTEXT_KEY = Symbol('editor-context');
+
+export interface EditorContext {
+    /** The reactive Feature draft being edited. Children mutate this directly. */
+    feature: Feature;
+
+    /**
+     * DataLoader reference — used for live lookups:
+     *   tag pool, feature labels, pipeline IDs, optionsQuery test.
+     */
+    dataLoader: DataLoader;
+
+    /** 'create' → Save calls HomebrewStore.add(); 'edit' → calls update(). */
+    mode: 'create' | 'edit';
+
+    /** The store that owns persistence and isDirty/isSaving state. */
+    store: HomebrewStore;
+
+    /**
+     * True when feature.id matches an existing SRD entity ID.
+     * Derived automatically from dataLoader.getAllFeatures().
+     * Drives the amber "Override Warning" banner in CoreFieldsSection.
+     */
+    readonly hasOverrideWarning: boolean;
+}
+```
+
+`EntityForm` creates the context in its `<script>` block:
+```typescript
+const ctx: EditorContext = {
+    feature: $state(structuredClone(initialData ?? defaultFeature(category))),
+    dataLoader,
+    mode,
+    store,
+    get hasOverrideWarning() {
+        return dataLoader.getAllFeatures().some(f => f.id === ctx.feature.id
+            && f.ruleSource !== 'user_homebrew');
+    }
+};
+setContext(EDITOR_CONTEXT_KEY, ctx);
+```
+
+Each child simply reads it:
+```typescript
+const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+// then mutates: ctx.feature.tags = [...ctx.feature.tags, newTag];
+```
+
+**Testability:** Every sub-form component can be unit-tested in isolation by mounting it with a minimal context stub:
+```typescript
+render(ModifierListEditor, {
+    context: new Map([[EDITOR_CONTEXT_KEY, mockEditorContext]])
+});
+```
+
+### 21.4. Shared Picker Modals
+
+These reusable modal components are opened from within the editor forms to avoid clutter:
+
+| Modal | Purpose |
+|---|---|
+| `PipelinePickerModal` | Choose a `targetId` for a Modifier — lists all known pipeline IDs grouped by namespace |
+| `FeaturePickerModal` | Choose Feature IDs for `grantedFeatures` — searchable, filterable, with preview pane |
+| `TagPickerModal` | Choose tags from the existing tag pool or enter a new custom tag |
+| `EntitySearchModal` | Search & clone-from any SRD or homebrew entity — keyboard-navigable, with preview |
+| `ModifierTypePickerModal` | Choose `ModifierType` with stacking behavior badge and D&D explanation |
+| `ConditionNodeBuilder` | Visual `LogicNode` tree editor (also used inline in `ModifierListEditor`) |
+
+### 21.5. The Homebrew Rule Source — Dual Scope
+
+Authored entities are persisted in one of two scopes, chosen by the GM:
+
+#### Campaign Scope (default)
+
+- **Storage:** `campaigns.homebrew_rules_json` in the database.
+- **Visibility:** Available only to that campaign.
+- **Priority in chain:** Injected after all files in `CampaignSettings.enabledRuleSources`, before `gmGlobalOverrides`.
+- **API:** `GET /api/campaigns/{id}/homebrew-rules` (GM + players read) · `PUT /api/campaigns/{id}/homebrew-rules` (GM only).
+
+#### Global Scope
+
+- **Storage:** A named JSON file in the server-side writable directory `storage/rules/` (outside the web root). Served to the frontend via the `DataLoader` fetch path.
+- **Visibility:** Available to all campaigns that include the file in their `CampaignSettings.enabledRuleSources`. GMs can enable/disable it per campaign in the Rule Source Manager UI (Phase 15.1).
+- **Filename & load order:** The GM sets the filename (e.g., `50_my_setting_homebrew.json`). Files in `storage/rules/` load in the same alphabetical sort as `static/rules/` files — the prefix number controls priority. A file named `50_*` loads after all `01_*` SRD psionics files but before `99_*` files.
+- **Filename validation:** Only lowercase alphanumeric characters, underscores, and hyphens are allowed. The `.json` extension is enforced. Example valid names: `50_darklands.json`, `05_variant_races.json`.
+- **API:** `GET /api/global-rules` (lists all global files with name and size) · `PUT /api/global-rules/{filename}` (GM only; writes file; 422 on invalid name; 413 if > 2 MB) · `DELETE /api/global-rules/{filename}` (GM only).
+
+#### Resolution Chain with Both Scopes
+
+```
+static/rules/00_*/    ← SRD Core (lowest)
+static/rules/01_*/    ← SRD Psionics
+storage/rules/50_*/   ← Global homebrew (interleaved alphabetically)
+[campaign homebrew_rules_json]  ← Campaign homebrew (above all file sources)
+[gmGlobalOverrides]             ← GM session override (above all)
+[gmOverrides per-character]     ← Per-character GM override (highest)
+```
+
+### 21.6. Override-by-ID (Duplicate and Override)
+
+When a GM chooses "Duplicate and Override ID" on an existing entity (e.g., `race_elf`), the editor:
+1. Clones all fields from the source into the form.
+2. Pre-fills `id` with the **exact same ID** as the source.
+3. Sets `merge: "replace"` by default.
+4. Saves into the homebrew rule source (campaign or global scope, whichever is active). The homebrew version silently overrides the SRD version because it ranks higher in the resolution chain.
+5. Shows a yellow **"Override Warning"** banner when the `id` matches an existing SRD entity, clearly describing what will be overridden.
+
+The GM may switch to `merge: "partial"` to extend the SRD entity additively instead of replacing it.
+
+### 21.7. Two-Way Raw JSON Sync
+
+The "Advanced / Raw JSON" panel in each `EntityForm` shows a live JSON representation of the current form state. Rules:
+1. **Form → JSON:** Any field change updates the textarea immediately (synchronous).
+2. **JSON → Form:** On textarea input (debounced 300 ms): attempt to parse. On valid parse: update all form fields. On invalid parse: show red syntax error banner — **do not corrupt form state**.
+3. The textarea is the canonical serialized form — it is exactly what will be saved to the API.
+4. A "Prettify / Minify" toggle and a "Copy to Clipboard" button are always visible.
+
+### 21.8. Formula Builder Input (`FormulaBuilderInput`)
+
+Many fields in the editor accept either a **plain number** or a **formula string** (e.g., `@attributes.stat_str.derivedModifier`, `"1d6+@classLevels.class_fighter"`, `"2"`). The `FormulaBuilderInput` component makes the `@`-path system approachable for GMs who do not know the internal path names.
+
+#### Design
+
+A compound component wrapping a standard text input with a collapsible **Source Browser** panel alongside it:
+
+```
+┌──────────────────────────────────────────────────────┐
+│  Value  [ @attributes.stat_str.derivedModifier + 2 ]  │
+│         ──────────────────────────────────────────── │
+│  [▼ Formula Assistant]                                │
+│  ┌──────────────────────┐                             │
+│  │ Ability Scores       │                             │
+│  │  @attributes.stat_str.totalValue                  │
+│  │  @attributes.stat_str.derivedModifier  ← click    │
+│  │  @attributes.stat_dex.totalValue       inserts at │
+│  │  ...                                   cursor     │
+│  │ Combat Stats         │                             │
+│  │  @combatStats.bab.totalValue                      │
+│  │  @combatStats.ac_normal.totalValue                │
+│  │  ...                                              │
+│  │ Class Levels         │                             │
+│  │  @classLevels.<classId>    (typed after click)    │
+│  │ Constants & Special  │                             │
+│  │  @characterLevel                                   │
+│  │  @eclForXp                                         │
+│  └──────────────────────┘                             │
+└──────────────────────────────────────────────────────┘
+```
+
+#### Behavior
+
+- **Click-to-insert:** Clicking any path in the Source Browser inserts it at the current cursor position in the text input (via `input.setRangeText()` + `input.dispatchEvent(new Event('input'))`). The cursor advances to immediately after the inserted text.
+- **Validation indicator:** A small icon at the right edge of the input reflects the parse result of the current value (debounced 150 ms): ✓ green for a fully recognized `@`-path or plain number, ✗ red for an unrecognized path, ⚠ amber for a partially-specified path (e.g., `@classLevels.` needs a class ID suffix). The input text itself is **unstyled plain text** — no inline token colouring, no overlay `<div>`. This avoids the cursor-tracking complexity of overlay approaches and is robust across all browsers, IME inputs, and screen readers.
+- **Scope:** Used by `ModifierListEditor` (value field), `ActivationEditor` (resourceCost.cost), `ResourcePoolEditor` (rechargeAmount, maxPipelineId).
+
+#### Implementation Notes
+
+Inline token colouring inside a native `<input>` requires a transparent `<input>` layered over a `<div>` that mirrors the text with `<span>` markup. This technique is fragile: proportional fonts make pixel-perfect alignment unreliable, and it requires separate handling for every special character and IME composition event. The validation indicator approach (Option C) provides the same semantic feedback with zero complexity overhead. Inline colouring remains a stretch goal for a future iteration if user feedback demands it — the component interface is forward-compatible because validation state is already computed internally.
+
+### 21.9. Routes Added (see §20)
+
+```
+/campaigns/[id]/content-editor                  → Homebrew Content Library (GM only)
+/campaigns/[id]/content-editor/new              → New entity form (GM only)
+/campaigns/[id]/content-editor/[entityId]       → Edit homebrew entity (GM only)
+```

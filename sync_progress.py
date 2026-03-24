@@ -62,7 +62,8 @@ PROGRESS_PATH = _ROOT / "PROGRESS.md"
 # automatically marked [x], no matter what LAST_CHECKED_TASK is set to.
 NEVER_CHECK: frozenset[str] = frozenset(
     {
-        "21.1+",  # Phase 21 — scope not yet defined
+        "21.",  # Phase 21 — all tasks (21.1.1, 21.2.1, … 21.7.8)
+        "Checkpoint #8",  # Phase 21 checkpoint
         "Final Review",  # Pre-release final review
     }
 )
@@ -83,7 +84,7 @@ def extract_checklist_from_prompt(text: str) -> str:
     m = re.search(r"^# Checklist\s*$", text, re.MULTILINE)
     if not m:
         raise ValueError("'# Checklist' heading not found in PROMPT.md")
-    return text[m.start():]
+    return text[m.start() :]
 
 
 def remap_header_level(text: str) -> str:
@@ -221,8 +222,7 @@ def splice_into_progress(progress_text: str, new_section: str) -> str:
 
     if d20_pos == -1:
         print(
-            "⚠  '## D20SRD Data Conversion' not found "
-            "— section will not be appended."
+            "⚠  '## D20SRD Data Conversion' not found — section will not be appended."
         )
 
     # ── Ensure clean boundaries ──────────────────────────────────────────────
