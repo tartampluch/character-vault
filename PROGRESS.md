@@ -410,7 +410,7 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 - [x] **21.4.2 MagicDataEditor:** Create `src/lib/components/content-editor/MagicDataEditor.svelte` (`category: "magic"` only). Sections: **General** (`magicType` radio — Arcane / Divine / Psionic; `school` dropdown; spell component checkboxes V/S/M/F/DF/XP); **Spell Lists** (table of class IDs → level; opens `FeaturePickerModal` for class); **Psionic** (visible when `magicType === "psionic"`: `discipline` dropdown, `displays` multi-select, augmentations list — each entry has PP cost, `grantedModifiers` via `ModifierListEditor`, `effectDescription` textarea).
 
-- [ ] **21.4.3 RaceClassExtrasEditor:** Create `src/lib/components/content-editor/RaceClassExtrasEditor.svelte`. Race: `recommendedAttributes` chip list (attribute picker dropdown). Class: `classSkills` chip list (opens `FeaturePickerModal` filtered to skill category), `spPerLevel` number input, hit die dropdown (d4/d6/d8/d10/d12). Renders only when category is `"race"` or `"class"`.
+- [x] **21.4.3 RaceClassExtrasEditor:** Create `src/lib/components/content-editor/RaceClassExtrasEditor.svelte`. Race: `recommendedAttributes` chip list (attribute picker dropdown). Class: `classSkills` chip list (opens `FeaturePickerModal` filtered to skill category), `spPerLevel` number input, hit die dropdown (d4/d6/d8/d10/d12). Renders only when category is `"race"` or `"class"`.
 
 #### 21.5 — Top-Level Editor Pages & Content Library
 
