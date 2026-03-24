@@ -374,7 +374,7 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 - [x] **21.2.3 TagPickerModal:** Create `src/lib/components/content-editor/TagPickerModal.svelte`. Shows all tags in use across loaded features, grouped by prefix (e.g., `feat_*`, `item_*`, `weapon_*`), each with a usage count badge. GM can add a new custom tag. Emits `tags-picked` with `string[]`.
 
-- [ ] **21.2.4 EntitySearchModal:** Create `src/lib/components/content-editor/EntitySearchModal.svelte`. Full-text search across all loaded entities (SRD + homebrew). Debounced 200 ms. Results show ID, category badge, `ruleSource`, and one-line description excerpt. Clicking a result opens a preview card. "Clone this entity" emits `entity-clone-selected` with the complete `Feature` object. Keyboard navigation (↑↓ + Enter) required.
+- [x] **21.2.4 EntitySearchModal:** Create `src/lib/components/content-editor/EntitySearchModal.svelte`. Full-text search across all loaded entities (SRD + homebrew). Debounced 200 ms. Results show ID, category badge, `ruleSource`, and one-line description excerpt. Clicking a result opens a preview card. "Clone this entity" emits `entity-clone-selected` with the complete `Feature` object. Keyboard navigation (↑↓ + Enter) required.
 
 - [ ] **21.2.5 ModifierTypePickerModal:** Create `src/lib/components/content-editor/ModifierTypePickerModal.svelte`. Shows all 23 `ModifierType` values in a grid with a stacking behavior badge (ALWAYS STACKS / BEST WINS / SPECIAL) and a plain-English D&D tooltip per type (e.g., "Dodge — always stacks; use for dodge bonuses from feats and tumbling"). Emits `modifier-type-picked`.
 
