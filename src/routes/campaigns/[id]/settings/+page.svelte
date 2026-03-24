@@ -15,7 +15,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
-  import { storageManager } from '$lib/engine/StorageManager';
+  import { storageManager, apiHeaders } from '$lib/engine/StorageManager';
   import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack } from '$lib/components/ui/icons';
   import { ui } from '$lib/i18n/ui-strings';
 
@@ -130,7 +130,7 @@
     try {
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: apiHeaders(),
         credentials: 'include',
         body: JSON.stringify({
           enabledRuleSources: enabledSources,

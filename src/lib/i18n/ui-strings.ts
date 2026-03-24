@@ -93,6 +93,8 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'vault.empty_title':            { en: 'No adventurers yet!', fr: 'Aucun aventurier !' },
   'vault.empty_gm':               { en: 'Create the party\'s first character or add an NPC to get started.', fr: 'Créez le premier personnage du groupe ou ajoutez un PNJ pour commencer.' },
   'vault.empty_player':           { en: 'You don\'t have any characters in this campaign yet. Click "Create New Character" to begin your journey!', fr: 'Vous n\'avez pas encore de personnage dans cette campagne. Cliquez sur « Créer un personnage » pour commencer votre aventure !' },
+  'vault.delete_confirm':         { en: 'Delete "{name}"? This cannot be undone.', fr: 'Supprimer « {name} » ? Cette action est irréversible.' },
+  'vault.delete_character':       { en: 'Delete character', fr: 'Supprimer le personnage' },
 
   // ==========================================================================
   // GM DASHBOARD
@@ -124,6 +126,10 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   // CORE TAB — BASIC INFO
   // ==========================================================================
   'core.basic_info':              { en: 'Basic Information', fr: 'Informations générales' },
+  'core.character_name':          { en: 'Character Name', fr: 'Nom du personnage' },
+  'core.player_name':             { en: 'Player Name', fr: 'Nom du joueur' },
+  'core.character_name_placeholder': { en: 'e.g. Thorin Ironforge', fr: 'ex. Thorin Forgefer' },
+  'core.player_name_placeholder': { en: 'Real name of the player', fr: 'Prénom réel du joueur' },
   'core.race':                    { en: 'Race', fr: 'Race' },
   'core.class':                   { en: 'Class', fr: 'Classe' },
   'core.deity':                   { en: 'Deity', fr: 'Divinité' },

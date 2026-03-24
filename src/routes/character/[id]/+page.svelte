@@ -68,6 +68,8 @@
   import { goto } from '$app/navigation';
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
+  import { dataLoader } from '$lib/engine/DataLoader';
+  import { campaignStore } from '$lib/engine/CampaignStore.svelte';
 
   // ── Core tab components (Phase 8) ──────────────────────────────────────────
   import BasicInfo             from '$lib/components/core/BasicInfo.svelte';
@@ -164,20 +166,31 @@
     const fromVault = engine.allVaultCharacters.find(c => c.id === id);
     if (fromVault) {
       engine.loadCharacter(fromVault);
-      return;
-    }
-
-    const fromStorage = storageManager.loadCharacter(id);
-    if (fromStorage) {
-      engine.loadCharacter(fromStorage);
-      if (!engine.allVaultCharacters.some(c => c.id === id)) {
-        engine.allVaultCharacters.push(fromStorage);
+    } else {
+      const fromStorage = storageManager.loadCharacter(id);
+      if (fromStorage) {
+        engine.loadCharacter(fromStorage);
+        if (!engine.allVaultCharacters.some(c => c.id === id)) {
+          engine.allVaultCharacters.push(fromStorage);
+        }
+      } else {
+        console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
+        engine.loadCharacter(createEmptyCharacter(id, 'Unknown Character'));
       }
-      return;
     }
 
-    console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
-    engine.loadCharacter(createEmptyCharacter(id, 'Unknown Character'));
+    // Ensure rule sources are loaded even when navigating directly to a character
+    // (bypassing the vault page that normally triggers the load).
+    // Uses the character's campaign sources if available, or engine settings as fallback.
+    if (!dataLoader.isLoaded) {
+      const char = engine.character;
+      const camp = char.campaignId ? campaignStore.getCampaign(char.campaignId) : undefined;
+      const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
+      const gmOverrides    = camp?.gmGlobalOverrides;
+      dataLoader
+        .loadRuleSources(enabledSources, gmOverrides)
+        .catch(err => console.warn('[CharacterSheet] Failed to load rule sources:', err));
+    }
   });
 
   // ===========================================================================

@@ -10,6 +10,7 @@
 -->
 
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
@@ -17,12 +18,18 @@
   import { goto } from '$app/navigation';
   import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
 
+  // Load campaigns from the PHP API when the hub mounts.
+  // The store starts with mock data so the UI is never empty during the load.
+  onMount(() => {
+    campaignStore.loadFromApi();
+  });
+
   let showCreateForm   = $state(false);
   let newCampaignTitle = $state('');
 
-  function handleCreateCampaign() {
+  async function handleCreateCampaign() {
     if (!newCampaignTitle.trim()) return;
-    const campaign = campaignStore.createCampaign(newCampaignTitle.trim(), sessionContext.currentUserId);
+    const campaign = await campaignStore.createInApi(newCampaignTitle.trim(), sessionContext.currentUserId);
     newCampaignTitle = '';
     showCreateForm = false;
     goto(`/campaigns/${campaign.id}`);

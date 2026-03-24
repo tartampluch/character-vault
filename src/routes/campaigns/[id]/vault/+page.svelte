@@ -15,6 +15,7 @@
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
+  import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
   import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCharacter, IconCampaign, IconBack } from '$lib/components/ui/icons';
@@ -25,6 +26,16 @@
   $effect(() => {
     sessionContext.setActiveCampaign(campaignId);
     engine.loadVaultCharacters();
+
+    // Load rule sources for this campaign so the character sheet dropdowns
+    // (races, classes, deities, etc.) are populated before the user opens
+    // or creates a character.
+    const camp = campaignStore.getCampaign(campaignId);
+    if (camp) {
+      dataLoader
+        .loadRuleSources(camp.enabledRuleSources, camp.gmGlobalOverrides)
+        .catch(err => console.warn('[Vault] Failed to load rule sources:', err));
+    }
   });
 
   function createNewCharacter() {
@@ -52,6 +63,25 @@
       engine.allVaultCharacters.find(c => c.id === characterId) ?? engine.character
     );
     goto(`/character/${characterId}?tab=core`);
+  }
+
+  /**
+   * Returns true when the current user is allowed to delete the given character.
+   *   - GMs can delete any character (PCs, NPCs, monsters).
+   *   - Players can only delete characters they own.
+   */
+  function canDelete(character: { ownerId?: string }): boolean {
+    return sessionContext.isGameMaster || character.ownerId === sessionContext.currentUserId;
+  }
+
+  /**
+   * Asks for confirmation then removes the character from the vault.
+   * Linked characters (mounts, followers) are NOT deleted — only the
+   * selected character's own data is removed.
+   */
+  function handleDelete(character: { id: string; name: string }) {
+    if (!confirm(`Delete "${character.name}"? This cannot be undone.`)) return;
+    engine.removeCharacterFromVault(character.id);
   }
 </script>
 
@@ -128,7 +158,11 @@
       aria-label="Character list ({engine.visibleCharacters.length} adventurers)"
     >
       {#each engine.visibleCharacters as character (character.id)}
-        <CharacterCard {character} onclick={() => openCharacter(character.id)} />
+        <CharacterCard
+          {character}
+          onclick={() => openCharacter(character.id)}
+          ondelete={canDelete(character) ? () => handleDelete(character) : undefined}
+        />
       {/each}
     </section>
   {/if}

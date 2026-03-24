@@ -35,7 +35,9 @@
  * @see ARCHITECTURE.md Phase 14.2 for the PHP replacement.
  */
 
+import { goto } from '$app/navigation';
 import type { ID } from '../types/primitives';
+import { setCsrfToken } from './StorageManager';
 
 // =============================================================================
 // SESSION CONTEXT TYPE
@@ -222,14 +224,45 @@ class SessionContext {
    * @returns Promise resolving when session data is loaded (no-op in mock).
    */
   async loadFromServer(): Promise<void> {
-    // MOCK: No-op. State is pre-initialized above.
-    // PHASE 14.2: Replace with:
-    // const response = await fetch('/api/auth/me');
-    // if (!response.ok) { goto('/login'); return; }
-    // const data = await response.json();
-    // this.currentUserId = data.userId;
-    // this.currentUserDisplayName = data.displayName;
-    // this.isGameMaster = data.isGameMaster;
+    // PHASE 14.2: Fetch the real PHP session from the backend.
+    // On 401 (no session), redirect to /login so the user can authenticate.
+    // The /api/auth/me response also contains the CSRF token needed for
+    // all state-changing requests (POST/PUT/DELETE).
+    try {
+      const response = await fetch('/api/auth/me', { credentials: 'include' });
+
+      if (response.status === 401) {
+        // No active session — send the user to the login page.
+        // Preserve the current URL so we can redirect back after login.
+        const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+        await goto(`/login?returnTo=${returnTo}`);
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('[SessionContext] GET /api/auth/me returned HTTP', response.status);
+        return;
+      }
+
+      const data = (await response.json()) as {
+        id: string;
+        display_name: string;
+        is_game_master: boolean;
+        csrfToken: string;
+      };
+
+      this.currentUserId          = data.id;
+      this.currentUserDisplayName = data.display_name;
+      this.isGameMaster           = data.is_game_master;
+
+      // Store the CSRF token so all mutating API calls (POST/PUT/DELETE) can
+      // include it as the X-CSRF-Token header via StorageManager.apiHeaders().
+      if (data.csrfToken) {
+        setCsrfToken(data.csrfToken);
+      }
+    } catch (err) {
+      console.error('[SessionContext] Failed to reach /api/auth/me:', err);
+    }
   }
 }
 

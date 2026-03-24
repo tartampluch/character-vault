@@ -28,7 +28,9 @@
 	 *     paint, ThemeManager handles runtime interactivity.
 	 */
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { themeManager } from '$lib/stores/ThemeManager.svelte';
+	import { sessionContext } from '$lib/engine/SessionContext.svelte';
 
 	/**
 	 * AppShell — Phase 19.4.
@@ -45,10 +47,19 @@
 
 	let { children } = $props();
 
-	onMount(() => {
+	onMount(async () => {
 		// Initialize theme: reads cookie, resolves system preference, attaches
 		// OS preference listener. Safe to call — idempotent (guarded by init flag).
 		themeManager.init();
+
+		// Phase 14.2: Bootstrap the PHP session.
+		// Calls GET /api/auth/me to populate sessionContext with the logged-in
+		// user's identity and CSRF token.
+		// If not logged in (401), redirects to /login — UNLESS we're already there
+		// (avoids infinite redirect loop on the login page itself).
+		if (!$page.url.pathname.startsWith('/login')) {
+			await sessionContext.loadFromServer();
+		}
 	});
 </script>
 

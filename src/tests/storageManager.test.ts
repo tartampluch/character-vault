@@ -9,10 +9,11 @@
  *      → FULLY TESTABLE by mocking localStorage via vi.stubGlobal.
  *
  *   2. ASYNC API LAYER (fetch calls to PHP): saveCharacterToApi, loadAllCharactersFromApi,
- *      saveGmOverridesToApi, startPolling/stopPolling.
- *      → Partially testable by mocking fetch. Out of scope for unit tests.
+ *      deleteCharacterFromApi, saveGmOverridesToApi, startPolling/stopPolling.
+ *      → Partially testable by mocking fetch.
  *
- * COVERAGE TARGET: All synchronous localStorage-based methods + helper functions.
+ * COVERAGE TARGET: All synchronous localStorage-based methods + helper functions
+ *                  + deleteCharacterFromApi() (added in the deletion feature).
  *
  * STRATEGY — localStorage mock:
  *   Node.js does not have localStorage. We use vi.stubGlobal() to inject a
@@ -537,5 +538,91 @@ describe('StorageManager — async API methods with mocked fetch', () => {
     // Should fall back to localStorage
     expect(result.some(c => c.name === 'LocalAlice')).toBe(true);
     consoleSpy.mockRestore();
+  });
+});
+
+// =============================================================================
+// 13. deleteCharacterFromApi() — localStorage + API deletion
+// =============================================================================
+
+describe('StorageManager — deleteCharacterFromApi()', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('removes the character from localStorage before the API call resolves', async () => {
+    const sm = new StorageManager();
+    sm.saveCharacter(makeChar('char_del_api_1'));
+    // Use a fetch mock that never resolves (simulates slow network)
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})));
+
+    // Fire-and-forget — do not await so we can check the sync removal immediately
+    void sm.deleteCharacterFromApi('char_del_api_1');
+
+    // localStorage removal is synchronous — it has already happened
+    expect(sm.loadCharacter('char_del_api_1')).toBeNull();
+    expect(sm.listCharacterIds()).not.toContain('char_del_api_1');
+  });
+
+  it('sets isApiReachable = true on successful DELETE response', async () => {
+    const sm = new StorageManager();
+    sm.saveCharacter(makeChar('char_del_api_2'));
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 204 }));
+
+    await sm.deleteCharacterFromApi('char_del_api_2');
+
+    expect(sm.isApiReachable).toBe(true);
+  });
+
+  it('sets isApiReachable = false and warns on network failure, character still removed locally', async () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    sm.saveCharacter(makeChar('char_del_api_3'));
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network down')));
+
+    await sm.deleteCharacterFromApi('char_del_api_3');
+
+    expect(sm.isApiReachable).toBe(false);
+    // Character is gone from localStorage even though the API call failed
+    expect(sm.loadCharacter('char_del_api_3')).toBeNull();
+    consoleSpy.mockRestore();
+  });
+
+  it('sending DELETE for a non-existent localStorage character does not crash', async () => {
+    const sm = new StorageManager();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 204 }));
+
+    // The character was never saved — deleteCharacter() returns false silently
+    await expect(sm.deleteCharacterFromApi('char_never_existed')).resolves.not.toThrow();
+  });
+
+  it('DELETE request targets the correct API path with the character ID', async () => {
+    const sm = new StorageManager();
+    sm.saveCharacter(makeChar('char_del_api_url'));
+
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await sm.deleteCharacterFromApi('char_del_api_url');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/characters/char_del_api_url',
+      expect.objectContaining({ method: 'DELETE' })
+    );
+  });
+
+  it('DELETE request includes credentials: include for session cookie', async () => {
+    const sm = new StorageManager();
+    sm.saveCharacter(makeChar('char_del_creds'));
+
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await sm.deleteCharacterFromApi('char_del_creds');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ credentials: 'include' })
+    );
   });
 });

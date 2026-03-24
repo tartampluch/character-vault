@@ -198,6 +198,49 @@
   </div>
 
   <!-- ========================================================= -->
+  <!-- NAME FIELDS — character name + player name               -->
+  <!-- ========================================================= -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+    <!-- CHARACTER NAME -->
+    <div class="flex flex-col gap-1">
+      <label for="character-name-input" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        {ui('core.character_name', engine.settings.language)}
+      </label>
+      <input
+        id="character-name-input"
+        type="text"
+        class="input"
+        value={engine.character.name}
+        placeholder={ui('core.character_name_placeholder', engine.settings.language)}
+        maxlength="80"
+        oninput={(e) => { engine.character.name = (e.target as HTMLInputElement).value; }}
+        aria-label={ui('core.character_name', engine.settings.language)}
+      />
+    </div>
+
+    <!-- PLAYER NAME (PCs only) -->
+    {#if !engine.character.isNPC}
+      <div class="flex flex-col gap-1">
+        <label for="player-name-input" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+          {ui('core.player_name', engine.settings.language)}
+        </label>
+        <input
+          id="player-name-input"
+          type="text"
+          class="input"
+          value={engine.character.playerRealName ?? ''}
+          placeholder={ui('core.player_name_placeholder', engine.settings.language)}
+          maxlength="80"
+          oninput={(e) => { engine.character.playerRealName = (e.target as HTMLInputElement).value || undefined; }}
+          aria-label={ui('core.player_name', engine.settings.language)}
+        />
+      </div>
+    {/if}
+
+  </div>
+
+  <!-- ========================================================= -->
   <!-- SELECTORS GRID — 2-col on sm+, 1-col on xs               -->
   <!-- ========================================================= -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">

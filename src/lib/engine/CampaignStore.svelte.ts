@@ -22,6 +22,7 @@
 
 import type { Campaign } from '../types/campaign';
 import type { ID } from '../types/primitives';
+import { apiHeaders } from './StorageManager';
 
 // =============================================================================
 // MOCK CAMPAIGN DATA
@@ -95,6 +96,7 @@ class CampaignStore {
   /**
    * The list of available campaigns.
    * Reactive: any component reading this $state re-renders when it changes.
+   * Starts with mock data; replaced by API data once loadFromApi() resolves.
    */
   campaigns = $state<Campaign[]>([...MOCK_CAMPAIGNS]);
 
@@ -102,6 +104,70 @@ class CampaignStore {
    * Whether campaigns are being loaded (for UI loading states).
    */
   isLoading = $state<boolean>(false);
+
+  // ---------------------------------------------------------------------------
+  // API — Phase 14.5
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Loads all campaigns from the PHP API and replaces the in-memory list.
+   * Falls back to the existing (mock) list if the API is unavailable.
+   *
+   * Call from the campaigns hub page onMount / $effect.
+   */
+  async loadFromApi(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const response = await fetch('/api/campaigns', {
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        console.warn('[CampaignStore] GET /api/campaigns returned HTTP', response.status);
+        return;
+      }
+      const data = (await response.json()) as Campaign[];
+      if (Array.isArray(data)) {
+        this.campaigns = data;
+      }
+    } catch (err) {
+      console.warn('[CampaignStore] GET /api/campaigns unavailable, using mock data:', err);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * Creates a campaign via the PHP API, adds it to the local list, and returns it.
+   * Falls back to local-only creation if the API is unavailable.
+   */
+  async createInApi(title: string, ownerId: ID): Promise<Campaign> {
+    // Optimistic local entry (used as fallback and as the return value)
+    const local = this.createCampaign(title, ownerId);
+
+    try {
+      const response = await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ title }),
+      });
+      if (!response.ok) {
+        console.warn('[CampaignStore] POST /api/campaigns returned HTTP', response.status);
+        return local;
+      }
+      // Replace the optimistic entry with the server-assigned ID
+      const created = (await response.json()) as { id: string; title: string; ownerId: string };
+      const index = this.campaigns.findIndex(c => c.id === local.id);
+      if (index !== -1) {
+        this.campaigns[index] = { ...local, id: created.id };
+      }
+      return { ...local, id: created.id };
+    } catch (err) {
+      console.warn('[CampaignStore] POST /api/campaigns unavailable, campaign created locally only:', err);
+      return local;
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // READ

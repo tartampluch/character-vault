@@ -774,11 +774,14 @@ export class GameEngine {
    * @param characterId - The character ID to remove.
    */
   removeCharacterFromVault(characterId: ID): void {
-    storageManager.deleteCharacter(characterId);
+    // Remove from the in-memory vault list immediately (reactive UI update).
     const index = this.allVaultCharacters.findIndex(c => c.id === characterId);
     if (index !== -1) {
       this.allVaultCharacters.splice(index, 1);
     }
+    // Delete from localStorage + PHP API (fire-and-forget; localStorage is
+    // synchronous so the local removal is guaranteed even if the API is down).
+    storageManager.deleteCharacterFromApi(characterId);
   }
 
   // ---------------------------------------------------------------------------
