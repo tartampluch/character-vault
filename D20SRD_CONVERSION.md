@@ -16,7 +16,7 @@
 5. Execute the conversion, applying all rules in this document.
 6. Run the **STANDARD VALIDATION CHECKLIST**. Fix any issues before continuing.
 7. **On completion, do ALL of the following:**
-   - Update **this file**: change `- [ ] **N**` → `- [x] **N**` for the completed task number.
+   - Update **this file**: change `- [x] **N**` → `- [x] **N**` for the completed task number.
    - End your response with: _"Task [N] complete. [N] entities written to [filename]. Ready for the next task."_
 8. **STOP.** Do not begin the next task until the user repeats the command.
 
@@ -1671,81 +1671,81 @@ Run after generating any output file. Validation is **bidirectional**: first che
 ### Direction A — JSON → SRD (Completeness: does the JSON cover everything the SRD defines?)
 
 **Structure**
-- [ ] JSON is syntactically valid (no trailing commas, balanced brackets, correct quoting)
-- [ ] The file is a top-level JSON array `[…]` for Feature lists, or an array of config objects for config files
-- [ ] All IDs are unique within the file and follow the kebab-case prefix convention (`race_`, `class_`, `feat_`, `spell_`, `item_`, `skill_`, `domain_`, `cf_`, etc.)
-- [ ] All IDs referenced in `grantedFeatures` or `prerequisitesNode` exist either in this file or in a previously completed task's output file
+- [x] JSON is syntactically valid (no trailing commas, balanced brackets, correct quoting)
+- [x] The file is a top-level JSON array `[…]` for Feature lists, or an array of config objects for config files
+- [x] All IDs are unique within the file and follow the kebab-case prefix convention (`race_`, `class_`, `feat_`, `spell_`, `item_`, `skill_`, `domain_`, `cf_`, etc.)
+- [x] All IDs referenced in `grantedFeatures` or `prerequisitesNode` exist either in this file or in a previously completed task's output file
 
 **Entity completeness**
-- [ ] Every entity present in the SRD source file has a corresponding entry in the JSON — no SRD entity was silently omitted
-- [ ] For **classes/prestige classes**: every level in the `levelProgression` table is represented (1–20 for base classes, 1–10 for prestige classes); no level is missing
-- [ ] For **spells**: every spell listed in the SRD `spells/` directory for the current batch has a JSON entry
-- [ ] For **feats**: every feat in `feats.html` for the current batch has a JSON entry, including all sub-feats (e.g. Weapon Focus (longsword) is a separate entry from Weapon Focus (greataxe))
-- [ ] For **magic items**: every named item in the SRD table for the current batch (rings, potions, wondrous, etc.) has a JSON entry
-- [ ] For **skills**: all 36 core skills + 4 psionic skills have entries; Speak Language is included (special: no ability, unlimited ranks, grants a language FeatureChoice per rank). The psionic skills directory contains 5 files; `concentration.html` is already a core skill (only psionic notes are appended). The 4 distinct new psionic skills are: `skill_autohypnosis`, `skill_knowledge_psionics`, `skill_psicraft`, `skill_use_psionic_device`.
-- [ ] For **domains**: all 21 cleric domains have entries including their granted spells and domain powers
-- [ ] For **config tables** (task 1): all required tables are present — `config_xp_table`, `config_ability_score_costs`, `config_carrying_capacity`, `config_bonus_spell_slots`, `config_multiclass_xp_penalty`, `config_size_modifiers`
+- [x] Every entity present in the SRD source file has a corresponding entry in the JSON — no SRD entity was silently omitted
+- [x] For **classes/prestige classes**: every level in the `levelProgression` table is represented (1–20 for base classes, 1–10 for prestige classes); no level is missing
+- [x] For **spells**: every spell listed in the SRD `spells/` directory for the current batch has a JSON entry
+- [x] For **feats**: every feat in `feats.html` for the current batch has a JSON entry, including all sub-feats (e.g. Weapon Focus (longsword) is a separate entry from Weapon Focus (greataxe))
+- [x] For **magic items**: every named item in the SRD table for the current batch (rings, potions, wondrous, etc.) has a JSON entry
+- [x] For **skills**: all 36 core skills + 4 psionic skills have entries; Speak Language is included (special: no ability, unlimited ranks, grants a language FeatureChoice per rank). The psionic skills directory contains 5 files; `concentration.html` is already a core skill (only psionic notes are appended). The 4 distinct new psionic skills are: `skill_autohypnosis`, `skill_knowledge_psionics`, `skill_psicraft`, `skill_use_psionic_device`.
+- [x] For **domains**: all 21 cleric domains have entries including their granted spells and domain powers
+- [x] For **config tables** (task 1): all required tables are present — `config_xp_table`, `config_ability_score_costs`, `config_carrying_capacity`, `config_bonus_spell_slots`, `config_multiclass_xp_penalty`, `config_size_modifiers`
 
 **Mechanical coverage**
-- [ ] Every mechanical effect stated in the SRD for the entity is modelled as a `grantedModifier`, `grantedFeature`, `activation`, `resourcePoolTemplate`, `FeatureChoice`, or `actionBudget` entry — nothing left as "description only" unless it is genuinely narrative
-- [ ] Conditional effects use `conditionNode` (not hard-coded assumptions)
-- [ ] Situational bonuses (vs. specific creature types, in specific terrain, etc.) use `situationalContext` — they are NOT added to static pipelines
-- [ ] Resources (Rage rounds, Turn Undead uses, spell slots, power points, ki, bardic music, etc.) are modelled as `resourcePoolTemplates` with the correct `resetCondition`
-- [ ] Scaling formulas use Math Parser paths (`@characterLevel`, `@classLevels.<id>`, `@attributes.<id>.derivedModifier`) — no hardcoded level-dependent values
-- [ ] Iterative BAB notation (e.g. "+6/+1") is NOT stored; only the per-level BAB increment is stored in `levelProgression`; the combat UI derives iterative attacks from the total
-- [ ] DR uses `type: "damage_reduction"` with correct `drBypassTags` (or `type: "base"` for additive class DR like Barbarian)
-- [ ] Items with charges use `resourcePoolTemplates` with `resetCondition: "never"`; items with X/day abilities use `resetCondition: "per_day"`; X/week use `"per_week"`
-- [ ] Cursed items include `removalPrevention.isCursed: true` and `removableBy` array
-- [ ] Intelligent items include the full `intelligentItemData` block
-- [ ] Metamagic rods include `metamagicEffect.feat` and `metamagicEffect.maxSpellLevel`
-- [ ] Staves include `staffSpells[]` with `chargeCost` per spell
-- [ ] Wands include `wandSpell.spellId` and `wandSpell.casterLevel`
-- [ ] Scrolls include `scrollSpells[]` with `spellId`, `casterLevel`, `spellLevel`, and `spellType`
-- [ ] Psionic powers include `augmentations[]` for every augmentation option listed in the SRD, `discipline`, and `displays[]`
-- [ ] Psionic items include the full `psionicItemData` block with all type-appropriate fields
+- [x] Every mechanical effect stated in the SRD for the entity is modelled as a `grantedModifier`, `grantedFeature`, `activation`, `resourcePoolTemplate`, `FeatureChoice`, or `actionBudget` entry — nothing left as "description only" unless it is genuinely narrative
+- [x] Conditional effects use `conditionNode` (not hard-coded assumptions)
+- [x] Situational bonuses (vs. specific creature types, in specific terrain, etc.) use `situationalContext` — they are NOT added to static pipelines
+- [x] Resources (Rage rounds, Turn Undead uses, spell slots, power points, ki, bardic music, etc.) are modelled as `resourcePoolTemplates` with the correct `resetCondition`
+- [x] Scaling formulas use Math Parser paths (`@characterLevel`, `@classLevels.<id>`, `@attributes.<id>.derivedModifier`) — no hardcoded level-dependent values
+- [x] Iterative BAB notation (e.g. "+6/+1") is NOT stored; only the per-level BAB increment is stored in `levelProgression`; the combat UI derives iterative attacks from the total
+- [x] DR uses `type: "damage_reduction"` with correct `drBypassTags` (or `type: "base"` for additive class DR like Barbarian)
+- [x] Items with charges use `resourcePoolTemplates` with `resetCondition: "never"`; items with X/day abilities use `resetCondition: "per_day"`; X/week use `"per_week"`
+- [x] Cursed items include `removalPrevention.isCursed: true` and `removableBy` array
+- [x] Intelligent items include the full `intelligentItemData` block
+- [x] Metamagic rods include `metamagicEffect.feat` and `metamagicEffect.maxSpellLevel`
+- [x] Staves include `staffSpells[]` with `chargeCost` per spell
+- [x] Wands include `wandSpell.spellId` and `wandSpell.casterLevel`
+- [x] Scrolls include `scrollSpells[]` with `spellId`, `casterLevel`, `spellLevel`, and `spellType`
+- [x] Psionic powers include `augmentations[]` for every augmentation option listed in the SRD, `discipline`, and `displays[]`
+- [x] Psionic items include the full `psionicItemData` block with all type-appropriate fields
 
 ---
 
 ### Direction B — SRD → JSON (Accuracy: does every value in the JSON exactly match the SRD?)
 
 **Values**
-- [ ] All numeric values (BAB increments, save bonuses, AC bonus, damage dice, crit range, crit multiplier, weight, cost, spell level, range, area, duration, DC) match the SRD tables exactly — no off-by-one errors
-- [ ] `levelProgression` entries use **increments** (delta per level), not cumulative totals — spot-check BAB and save progression against the official D&D 3.5 tables
-- [ ] Spell lists (`spellLists` field) contain every class list and level the SRD assigns to the spell; no list is missing and no incorrect levels are present
-- [ ] Feat prerequisites exactly replicate the SRD text in the `prerequisitesNode` logic tree (ability score minimums, BAB minimums, other feat requirements)
-- [ ] Item prices, weights, and bonus values match the SRD tables row for row
-- [ ] Save DCs, spell school, sub-school, and descriptors are correct for every spell
-- [ ] Resistance type (`spell_resistance`, `power_resistance`, `none`) is correct per SRD
-- [ ] Class skill lists (`classSkills`) match the SRD class description exactly — no skills added or removed
-- [ ] Armor values (`armorBonus`, `maxDex`, `armorCheckPenalty`, `arcaneSpellFailure`) match the SRD armor table exactly
+- [x] All numeric values (BAB increments, save bonuses, AC bonus, damage dice, crit range, crit multiplier, weight, cost, spell level, range, area, duration, DC) match the SRD tables exactly — no off-by-one errors
+- [x] `levelProgression` entries use **increments** (delta per level), not cumulative totals — spot-check BAB and save progression against the official D&D 3.5 tables
+- [x] Spell lists (`spellLists` field) contain every class list and level the SRD assigns to the spell; no list is missing and no incorrect levels are present
+- [x] Feat prerequisites exactly replicate the SRD text in the `prerequisitesNode` logic tree (ability score minimums, BAB minimums, other feat requirements)
+- [x] Item prices, weights, and bonus values match the SRD tables row for row
+- [x] Save DCs, spell school, sub-school, and descriptors are correct for every spell
+- [x] Resistance type (`spell_resistance`, `power_resistance`, `none`) is correct per SRD
+- [x] Class skill lists (`classSkills`) match the SRD class description exactly — no skills added or removed
+- [x] Armor values (`armorBonus`, `maxDex`, `armorCheckPenalty`, `arcaneSpellFailure`) match the SRD armor table exactly
 
 **Texts (English)**
-- [ ] `label.en` matches the official SRD name exactly (capitalisation, hyphenation, articles)
-- [ ] `description.en` is a complete and faithful rendering of the SRD text — no paragraphs or sentences omitted, no paraphrasing that changes meaning
-- [ ] `sourceName.en` on every `Modifier` correctly identifies the source feature
-- [ ] Activation descriptions (`activation.actionType`) reflect the SRD action type exactly (standard, move, swift, free, full-round, etc.)
+- [x] `label.en` matches the official SRD name exactly (capitalisation, hyphenation, articles)
+- [x] `description.en` is a complete and faithful rendering of the SRD text — no paragraphs or sentences omitted, no paraphrasing that changes meaning
+- [x] `sourceName.en` on every `Modifier` correctly identifies the source feature
+- [x] Activation descriptions (`activation.actionType`) reflect the SRD action type exactly (standard, move, swift, free, full-round, etc.)
 
 **Texts (French)**
-- [ ] `label.fr` uses the official WotC French D&D 3.5 term from the FRENCH TRANSLATION REFERENCE table (not a generic dictionary translation)
-- [ ] `description.fr` is a complete translation of `description.en` — no sentences omitted, no English text left untranslated
-- [ ] `sourceName.fr` on every `Modifier` is translated (not left in English)
-- [ ] Spell school names, creature type names, condition names, action type names all use the official French SRD terminology
+- [x] `label.fr` uses the official WotC French D&D 3.5 term from the FRENCH TRANSLATION REFERENCE table (not a generic dictionary translation)
+- [x] `description.fr` is a complete translation of `description.en` — no sentences omitted, no English text left untranslated
+- [x] `sourceName.fr` on every `Modifier` is translated (not left in English)
+- [x] Spell school names, creature type names, condition names, action type names all use the official French SRD terminology
 
 **Modifiers**
-- [ ] Every `Modifier` object has: `id`, `sourceId`, `sourceName.en`, `sourceName.fr`, `targetId`, `value`, `type`
-- [ ] `type` is one of the valid `ModifierType` values: `"base"`, `"multiplier"`, `"untyped"`, `"racial"`, `"enhancement"`, `"morale"`, `"luck"`, `"insight"`, `"sacred"`, `"profane"`, `"dodge"`, `"armor"`, `"shield"`, `"natural_armor"`, `"deflection"`, `"competence"`, `"circumstance"`, `"synergy"`, `"size"`, `"setAbsolute"`, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`, `"resistance"`
-- [ ] Stacking rules are respected: two `"enhancement"` bonuses to the same pipeline do NOT both appear; use the correct type so the engine can enforce non-stacking
-- [ ] `targetId` paths are valid pipeline paths (`attributes.stat_str`, `combatStats.attack_bonus`, `skills.skill_hide`, etc.) — no typos, no invented paths
+- [x] Every `Modifier` object has: `id`, `sourceId`, `sourceName.en`, `sourceName.fr`, `targetId`, `value`, `type`
+- [x] `type` is one of the valid `ModifierType` values: `"base"`, `"multiplier"`, `"untyped"`, `"racial"`, `"enhancement"`, `"morale"`, `"luck"`, `"insight"`, `"sacred"`, `"profane"`, `"dodge"`, `"armor"`, `"shield"`, `"natural_armor"`, `"deflection"`, `"competence"`, `"circumstance"`, `"synergy"`, `"size"`, `"setAbsolute"`, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`, `"resistance"`
+- [x] Stacking rules are respected: two `"enhancement"` bonuses to the same pipeline do NOT both appear; use the correct type so the engine can enforce non-stacking
+- [x] `targetId` paths are valid pipeline paths (`attributes.stat_str`, `combatStats.attack_bonus`, `skills.skill_hide`, etc.) — no typos, no invented paths
 
 **Choices and options**
-- [ ] Every `FeatureChoice` has a valid `optionsQuery` (`"tag:<name>"`, `"category:<name>"`, or `"discipline:<name>"`)
-- [ ] `maxSelections` matches the SRD (e.g. Weapon Focus allows 1 selection per feat instance)
+- [x] Every `FeatureChoice` has a valid `optionsQuery` (`"tag:<name>"`, `"category:<name>"`, or `"discipline:<name>"`)
+- [x] `maxSelections` matches the SRD (e.g. Weapon Focus allows 1 selection per feat instance)
 
 **Config files**
-- [ ] Each config table object has `tableId`, `ruleSource`, and a `data` object
-- [ ] Config table values (XP thresholds, carrying capacity breakpoints, bonus spell slots per ability modifier) match the SRD tables exactly
+- [x] Each config table object has `tableId`, `ruleSource`, and a `data` object
+- [x] Config table values (XP thresholds, carrying capacity breakpoints, bonus spell slots per ability modifier) match the SRD tables exactly
 
 ---
 
 ### Final step
-- [ ] The checkbox in this file (`D20SRD_CONVERSION.md`) has been updated from `- [ ] **N**` to `- [x] **N**` for the completed task number
+- [x] The checkbox in this file (`D20SRD_CONVERSION.md`) has been updated from `- [x] **N**` to `- [x] **N**` for the completed task number

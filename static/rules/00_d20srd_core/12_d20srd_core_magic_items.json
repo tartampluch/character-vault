@@ -31715,7 +31715,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_bear’s_endurance",
+    "id": "item_scroll_arcane_bears_endurance",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -31832,7 +31832,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_bull’s_strength",
+    "id": "item_scroll_arcane_bulls_strength",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -31910,7 +31910,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_cat’s_grace",
+    "id": "item_scroll_arcane_cats_grace",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -32300,7 +32300,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_eagle’s_splendor",
+    "id": "item_scroll_arcane_eagles_splendor",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -32495,7 +32495,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_fox’s_cunning",
+    "id": "item_scroll_arcane_foxs_cunning",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -33119,7 +33119,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_owl’s_wisdom",
+    "id": "item_scroll_arcane_owls_wisdom",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -38384,7 +38384,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_faithful_hound",
+    "id": "item_scroll_arcane_mages_faithful_hound",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -38423,7 +38423,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_private_sanctum",
+    "id": "item_scroll_arcane_mages_private_sanctum",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -39476,7 +39476,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_bear’s_endurance_mass",
+    "id": "item_scroll_arcane_bears_endurance_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -39554,7 +39554,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_bull’s_strength_mass",
+    "id": "item_scroll_arcane_bulls_strength_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -39593,7 +39593,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_cat’s_grace_mass",
+    "id": "item_scroll_arcane_cats_grace_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -39944,7 +39944,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_eagle’s_splendor_mass",
+    "id": "item_scroll_arcane_eagles_splendor_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -40100,7 +40100,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_fox’s_cunning_mass",
+    "id": "item_scroll_arcane_foxs_cunning_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -40256,7 +40256,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_heroes’_feast",
+    "id": "item_scroll_arcane_heroes_feast",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -40412,7 +40412,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_lucubration",
+    "id": "item_scroll_arcane_mages_lucubration",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -40529,7 +40529,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_owl’s_wisdom_mass",
+    "id": "item_scroll_arcane_owls_wisdom_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -41738,7 +41738,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_magnificent_mansion",
+    "id": "item_scroll_arcane_mages_magnificent_mansion",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -41777,7 +41777,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_sword",
+    "id": "item_scroll_arcane_mages_sword",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -44351,7 +44351,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_arcane_mage’s_disjunction",
+    "id": "item_scroll_arcane_mages_disjunction",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -46964,7 +46964,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_i",
+    "id": "item_scroll_divine_summon_natures_ally_i",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -47159,7 +47159,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_bear’s_endurance",
+    "id": "item_scroll_divine_bears_endurance",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -47198,7 +47198,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_bull’s_strength",
+    "id": "item_scroll_divine_bulls_strength",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -47276,7 +47276,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_cat’s_grace",
+    "id": "item_scroll_divine_cats_grace",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -47588,7 +47588,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_eagle’s_splendor",
+    "id": "item_scroll_divine_eagles_splendor",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -48134,7 +48134,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_owl’s_wisdom",
+    "id": "item_scroll_divine_owls_wisdom",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -48758,7 +48758,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_ii",
+    "id": "item_scroll_divine_summon_natures_ally_ii",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -50591,7 +50591,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_iii",
+    "id": "item_scroll_divine_summon_natures_ally_iii",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -51917,7 +51917,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_iv",
+    "id": "item_scroll_divine_summon_natures_ally_iv",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -53048,7 +53048,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_v",
+    "id": "item_scroll_divine_summon_natures_ally_v",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -53555,7 +53555,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_bear’s_endurance_mass",
+    "id": "item_scroll_divine_bears_endurance_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -53633,7 +53633,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_bull’s_strength_mass",
+    "id": "item_scroll_divine_bulls_strength_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -53672,7 +53672,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_cat’s_grace_mass",
+    "id": "item_scroll_divine_cats_grace_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -53828,7 +53828,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_eagle’s_splendor_mass",
+    "id": "item_scroll_divine_eagles_splendor_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -54140,7 +54140,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_heroes’_feast",
+    "id": "item_scroll_divine_heroes_feast",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -54335,7 +54335,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_owl’s_wisdom_mass",
+    "id": "item_scroll_divine_owls_wisdom_mass",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -54569,7 +54569,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_vi",
+    "id": "item_scroll_divine_summon_natures_ally_vi",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -55544,7 +55544,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_vii",
+    "id": "item_scroll_divine_summon_natures_ally_vii",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -56519,7 +56519,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_viii",
+    "id": "item_scroll_divine_summon_natures_ally_viii",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -57377,7 +57377,7 @@
     "grantedFeatures": []
   },
   {
-    "id": "item_scroll_divine_summon_nature’s_ally_ix",
+    "id": "item_scroll_divine_summon_natures_ally_ix",
     "category": "item",
     "ruleSource": "srd_core",
     "label": {
@@ -60016,7 +60016,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60060,7 +60060,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60104,7 +60104,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60148,7 +60148,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60192,7 +60192,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60236,7 +60236,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60280,7 +60280,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60324,7 +60324,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60368,7 +60368,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60412,7 +60412,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60456,7 +60456,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60500,7 +60500,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60544,7 +60544,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60588,7 +60588,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60632,7 +60632,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60676,7 +60676,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60720,7 +60720,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60764,7 +60764,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60808,7 +60808,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60853,7 +60853,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60898,7 +60898,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60943,7 +60943,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -60988,7 +60988,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61033,7 +61033,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61078,7 +61078,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61123,7 +61123,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61168,7 +61168,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61213,7 +61213,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61258,7 +61258,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61303,7 +61303,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61348,7 +61348,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61393,7 +61393,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61438,7 +61438,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61483,7 +61483,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61528,7 +61528,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61573,7 +61573,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61618,7 +61618,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61664,7 +61664,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61710,7 +61710,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61756,7 +61756,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61802,7 +61802,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61848,7 +61848,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61894,7 +61894,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61940,7 +61940,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -61986,7 +61986,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62032,7 +62032,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62078,7 +62078,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62124,7 +62124,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62170,7 +62170,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62216,7 +62216,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62262,7 +62262,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62308,7 +62308,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62354,7 +62354,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62400,7 +62400,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62446,7 +62446,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62493,7 +62493,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62540,7 +62540,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62587,7 +62587,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62634,7 +62634,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62681,7 +62681,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62728,7 +62728,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62775,7 +62775,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62822,7 +62822,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62869,7 +62869,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62916,7 +62916,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -62963,7 +62963,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63010,7 +63010,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63057,7 +63057,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63104,7 +63104,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63151,7 +63151,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63198,7 +63198,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63245,7 +63245,7 @@
     },
     "tags": [
       "item",
-      "intelligent",
+      "intelligent_item",
       "magic_item"
     ],
     "equipmentSlot": "none",
@@ -63293,7 +63293,7 @@
     "tags": [
       "item",
       "weapon",
-      "intelligent",
+      "intelligent_item",
       "magic_item",
       "lawful",
       "good"
@@ -63385,7 +63385,7 @@
     "tags": [
       "item",
       "weapon",
-      "intelligent",
+      "intelligent_item",
       "magic_item",
       "chaotic",
       "evil"
@@ -63488,7 +63488,7 @@
     "tags": [
       "item",
       "weapon",
-      "intelligent",
+      "intelligent_item",
       "magic_item",
       "good",
       "lawful",
