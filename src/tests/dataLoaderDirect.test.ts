@@ -19,9 +19,7 @@
  *   - DataLoader.clearCache()                                       (lines 673–677)
  *   - DataLoader.#processEntity() via the injectEntity() test helper
  *     (covers entity validation, array defaulting, replace/partial merge)
- *   - DataLoader.#filterByEnabledSources() via loadRuleSources()
- *     — tested indirectly by calling the private method flow via #applyGmOverrides
- *   - DataLoader.#applyGmOverrides — invalid JSON, non-array, valid override
+  *   - DataLoader.#applyGmOverrides — invalid JSON, non-array, valid override
  *
  * COVERAGE DELTA (from 67.29%):
  *   After these tests, the uncovered DataLoader lines should be only the async
@@ -56,6 +54,14 @@ function makeFeature(id: string, ruleSource = 'srd_core', tags: string[] = []): 
 
 function makeConfigTable(tableId: string, data: Record<string, unknown>[]): ConfigTable {
   return { tableId, ruleSource: 'srd_core', data };
+}
+
+/**
+ * Wraps a flat array of raw entities into the required rule-file wrapper format.
+ * Used in fetch mocks so test data matches the format DataLoader expects.
+ */
+function wrapEntities(entities: unknown[]): { supportedLanguages: string[]; entities: unknown[] } {
+  return { supportedLanguages: ['en'], entities };
 }
 
 // =============================================================================
@@ -487,17 +493,17 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
       if (url === '/rules/races.json') {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([
+          json: () => Promise.resolve(wrapEntities([
             { id: 'race_human', category: 'race', ruleSource: 'srd_core', tags: ['race'], grantedModifiers: [], grantedFeatures: [] },
-          ]),
+          ])),
         });
       }
       if (url === '/rules/classes.json') {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([
+          json: () => Promise.resolve(wrapEntities([
             { id: 'class_fighter', category: 'class', ruleSource: 'srd_core', tags: ['class'], grantedModifiers: [], grantedFeatures: [] },
-          ]),
+          ])),
         });
       }
       return Promise.reject(new Error(`Unexpected fetch: ${url}`));
@@ -527,13 +533,13 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       if (url === '/rules/races.json') {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
           { id: 'race_elf', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-        ]) });
+        ])) });
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
         { id: 'class_rogue', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-      ]) });
+      ])) });
     });
     vi.stubGlobal('fetch', mockFetch);
 
@@ -562,18 +568,18 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       if (url.includes('prestige')) {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
           { id: 'prestige_arcane_archer', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-        ]) });
+        ])) });
       }
       if (url.includes('races')) {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
           { id: 'race_dwarf', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-        ]) });
+        ])) });
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
         { id: 'class_wizard', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-      ]) });
+      ])) });
     });
     vi.stubGlobal('fetch', mockFetch);
 
@@ -595,19 +601,19 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
         return Promise.resolve({
           ok: true,
           headers: { get: () => 'application/json' },
-          json: () => Promise.resolve(['/rules/config_tables.json']),
+          json: () => Promise.resolve(['/rules/00_d20srd_core/00_d20srd_core_config_tables.json']),
         });
       }
       if (url === '/api/global-rules') {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
         { tableId: 'config_skill_definitions', ruleSource: 'srd_core', data: [{ id: 'skill_climb' }] },
-      ]) });
+      ])) });
     });
     vi.stubGlobal('fetch', mockFetch);
 
-    await loader.loadRuleSources(['config_tables.json']);
+    await loader.loadRuleSources(['00_d20srd_core/00_d20srd_core_config_tables.json']);
     expect(loader.getConfigTable('config_skill_definitions')).toBeDefined();
   });
 
@@ -618,24 +624,24 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
         return Promise.resolve({
           ok: true,
           headers: { get: () => 'application/json' },
-          json: () => Promise.resolve(['/rules/config_tables.json', '/rules/races.json']),
+          json: () => Promise.resolve(['/rules/00_d20srd_core/00_d20srd_core_config_tables.json', '/rules/races.json']),
         });
       }
       if (url === '/api/global-rules') {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
-      if (url.includes('config_tables')) {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      if (url.includes('00_d20srd_core_config_tables')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
           { tableId: 'config_skill_definitions', ruleSource: 'srd_core', data: [] },
-        ]) });
+        ])) });
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
         { id: 'race_gnome', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-      ]) });
+      ])) });
     });
     vi.stubGlobal('fetch', mockFetch);
 
-    // Only enable races.json — NOT config_tables.json
+    // Only enable races.json — NOT 00_d20srd_core_config_tables.json
     await loader.loadRuleSources(['races.json']);
 
     expect(loader.getFeature('race_gnome')).toBeDefined();
@@ -670,9 +676,9 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       const id = url.includes('a.json') ? 'feat_a' : url.includes('b.json') ? 'feat_b' : 'feat_c';
-      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(wrapEntities([
         { id, category: 'feat', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
-      ]) });
+      ])) });
     });
     vi.stubGlobal('fetch', mockFetch);
 
@@ -704,9 +710,9 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
       if (url === '/rules/test_features.json') {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([
+          json: () => Promise.resolve(wrapEntities([
             { id: 'feat_loaded', category: 'feat', ruleSource: 'srd_core', tags: ['general'], grantedModifiers: [], grantedFeatures: [] },
-          ]),
+          ])),
         });
       }
       if (url === '/api/global-rules') {
@@ -760,7 +766,7 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
     }));
 
     await loader.loadRuleSources([]);
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('does not contain a JSON array'));
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('is not a valid rule-file wrapper object'));
     vi.unstubAllGlobals();
     consoleSpy.mockRestore();
   });

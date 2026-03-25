@@ -60,41 +60,29 @@
 
 import type { Feature, MergeStrategy, LevelProgressionEntry, FeatureChoice } from '../types/feature';
 import type { ID } from '../types/primitives';
+import { SUPPORTED_UI_LANGUAGES } from '../i18n/ui-strings';
 
 // =============================================================================
-// RULE FILE METADATA — Optional top-level object wrapper for JSON rule files
+// RULE FILE FORMAT — Top-level wrapper for JSON rule files
 // =============================================================================
 
 /**
- * Optional top-level wrapper format for JSON rule files.
+ * The required top-level wrapper for all JSON rule files.
  *
- * JSON rule files may be stored either as:
+ * Every rule file must be a JSON object with this structure:
+ *   ```json
+ *   {
+ *     "supportedLanguages": ["en", "fr"],
+ *     "entities": [ { "id": "...", "category": "...", ... }, ... ]
+ *   }
+ *   ```
  *
- *   1. LEGACY FORMAT — bare array (backward-compatible):
- *      ```json
- *      [ { "id": "...", "category": "...", ... }, ... ]
- *      ```
+ * The `supportedLanguages` array declares which language codes appear in the
+ * `LocalizedString` values of this file's entities. The DataLoader collects all
+ * declared languages across loaded files and exposes them via `getAvailableLanguages()`,
+ * which drives the language selector dropdown in the sidebar.
  *
- *   2. METADATA FORMAT — object wrapper (recommended for new files):
- *      ```json
- *      {
- *        "supportedLanguages": ["en", "fr"],
- *        "entities": [ { "id": "...", "category": "...", ... }, ... ]
- *      }
- *      ```
- *
- * The `supportedLanguages` field declares which language codes are present in
- * the `LocalizedString` values of this file's entities. The DataLoader collects
- * all declared languages across all loaded files and exposes them via
- * `getAvailableLanguages()`. This drives the language selector dropdown in the UI.
- *
- * FALLBACK RULE:
- *   If `supportedLanguages` is absent (legacy format), English (`"en"`) is assumed
- *   as the only language supported by that file. This is safe because the localization
- *   fallback chain in `t()` always falls back to `"en"` when the requested language
- *   is missing.
- *
- * EXAMPLE — new file with French and Spanish:
+ * EXAMPLE — file providing English, French and Spanish:
  *   ```json
  *   {
  *     "supportedLanguages": ["en", "fr", "es"],
@@ -104,8 +92,8 @@ import type { ID } from '../types/primitives';
  *   }
  *   ```
  *   When this file is loaded, "es" is added to the available-languages set, causing
- *   the language dropdown to offer Spanish. Any string without an `es` key will
- *   gracefully fall back to its `en` key via `t()`.
+ *   the language dropdown to offer Spanish. Strings without an `es` key fall back
+ *   to their `en` key via `t()`.
  */
 interface RuleFileWrapper {
   supportedLanguages?: string[];
@@ -409,7 +397,7 @@ export class DataLoader {
   loadVersion = 0;
 
   /**
-   * Set of enabled file paths (relative, e.g. "00_d20srd_core/00_d20srd_core_races.json").
+   * Set of enabled file paths (relative, e.g. "00_d20srd_core/01_d20srd_core_races.json").
    * When non-empty, only files whose sortKey matches an entry here are loaded.
    * When empty, ALL discovered files are loaded (permissive default — useful in tests).
    *
@@ -435,18 +423,29 @@ export class DataLoader {
   private _globalRuleSourceIds = new Set<string>();
 
   /**
-   * Set of language codes declared across all loaded rule files via the optional
-   * `supportedLanguages` field in the JSON file wrapper format.
+   * Set of language codes available to the user in the language selector dropdown.
    *
-   * Always contains `"en"` (English is universally assumed as the base language).
-   * Additional language codes (e.g., `"fr"`, `"es"`) are added as files declaring
-   * them are loaded. This set is exposed via `getAvailableLanguages()` and drives
-   * the language selector dropdown in the UI.
+   * SEED: Initialized from `SUPPORTED_UI_LANGUAGES` (defined in `ui-strings.ts`).
+   * These are the languages that have full built-in UI chrome translations, and they
+   * are always available regardless of which JSON rule files are loaded.
    *
-   * Cleared in `clearCache()` and re-seeded with `"en"` on every load cycle,
-   * so the set always reflects the currently loaded file set.
+   * Additional language codes (e.g., `"es"`, `"de"`) are merged in when a loaded JSON
+   * file declares them in its `supportedLanguages` array. Community files providing
+   * Spanish data will cause `"es"` to appear in the dropdown even if `ui-strings.ts`
+   * has no Spanish chrome translations (those fall back to English).
+   *
+   * This set is exposed via `getAvailableLanguages()` and drives the language selector
+   * dropdown in the sidebar. It is reset to the built-in seed in `clearCache()` so it
+   * always reflects the currently loaded file set plus the built-in languages.
+   *
+   * WHY NOT HARDCODE ['en', 'fr'] HERE?
+   *   `ui-strings.ts` is the single source of truth for which languages have full
+   *   UI chrome coverage. Deriving the seed from there means adding a new built-in
+   *   language (e.g., 'de') only requires a change in `ui-strings.ts`.
    */
-  private _availableLanguages = new Set<string>(['en']);
+  private _availableLanguages = new Set<string>(
+    SUPPORTED_UI_LANGUAGES.map(l => l.code)
+  );
 
   // ---------------------------------------------------------------------------
   // LOADING API
@@ -466,9 +465,8 @@ export class DataLoader {
    *
    *   2. Campaign homebrew JSON (`campaignHomebrewRulesJson`).
    *      Injected as the virtual source `"user_homebrew"` — always active,
-   *      not subject to the `enabledRuleSources` filter (exempt in
-   *      `#filterByEnabledSources`).  Stores the campaign-scoped entities
-   *      authored via the Content Editor (Phase 21).
+   *      not subject to the `enabledRuleSources` filter.  Stores the campaign-scoped
+   *      entities authored via the Content Editor (Phase 21).
    *
    *   3. GM global overrides (`gmGlobalOverrides`).
    *      Highest priority among file-like sources; applied after campaign homebrew.
@@ -592,8 +590,8 @@ export class DataLoader {
     for (const fetchUrl of staticFilePaths) {
       // Strip the "/rules/" URL prefix to derive the sort key.
       // The sort key doubles as the file path used in enabledFilePaths matching:
-      //   fetchUrl  → "/rules/00_d20srd_core/00_d20srd_core_races.json"
-      //   sortKey   → "00_d20srd_core/00_d20srd_core_races.json"
+      //   fetchUrl  → "/rules/00_d20srd_core/01_d20srd_core_races.json"
+      //   sortKey   → "00_d20srd_core/01_d20srd_core_races.json"
       const sortKey = fetchUrl.startsWith('/rules/')
         ? fetchUrl.slice('/rules/'.length)
         : fetchUrl;
@@ -638,9 +636,8 @@ export class DataLoader {
     //      before gmGlobalOverrides."
     //
     // WHY STAMP ruleSource = "user_homebrew"?
-    //   This makes the source exempt from the enabledRuleSources filter
-    //   (see #filterByEnabledSources) and makes getHomebrewRules('campaign')
-    //   trivially accurate without extra bookkeeping.
+    //   Makes getHomebrewRules('campaign') trivially accurate without extra bookkeeping,
+    //   and ensures the homebrew is always loaded (not filtered by enabledFilePaths).
     if (campaignHomebrewRulesJson) {
       this.#applyCampaignHomebrew(campaignHomebrewRulesJson);
     }
@@ -651,11 +648,6 @@ export class DataLoader {
     if (gmGlobalOverrides) {
       this.#applyGmOverrides(gmGlobalOverrides);
     }
-
-    // -----------------------------------------------------------------------
-    // Step 7: Filter out features from non-enabled sources
-    // -----------------------------------------------------------------------
-    this.#filterByEnabledSources();
 
     this.isLoaded = true;
     // Increment the reactive version counter so Svelte $derived blocks that
@@ -681,34 +673,22 @@ export class DataLoader {
         return;
       }
 
-      const raw = await response.json() as RawEntity[] | RuleFileWrapper;
+      const raw = await response.json() as RuleFileWrapper;
 
-      let entities: RawEntity[];
+      if (typeof raw !== 'object' || raw === null || !Array.isArray(raw.entities)) {
+        console.warn(`[DataLoader] Rule file ${filePath} is not a valid rule-file wrapper object ({ supportedLanguages?, entities: [] }). Skipping.`);
+        return;
+      }
 
-      if (Array.isArray(raw)) {
-        // LEGACY FORMAT: bare array — no language metadata, English is assumed.
-        entities = raw;
-        // 'en' is already always present in _availableLanguages; no action needed.
-      } else if (
-        typeof raw === 'object' &&
-        raw !== null &&
-        Array.isArray((raw as RuleFileWrapper).entities)
-      ) {
-        // METADATA FORMAT: object wrapper with optional supportedLanguages.
-        const wrapper = raw as RuleFileWrapper;
-        entities = wrapper.entities;
+      const entities: RawEntity[] = raw.entities;
 
-        // Register any declared languages so the UI dropdown can include them.
-        if (Array.isArray(wrapper.supportedLanguages)) {
-          for (const lang of wrapper.supportedLanguages) {
-            if (typeof lang === 'string' && lang.trim()) {
-              this._availableLanguages.add(lang.trim());
-            }
+      // Register any declared languages so the UI dropdown can include them.
+      if (Array.isArray(raw.supportedLanguages)) {
+        for (const lang of raw.supportedLanguages) {
+          if (typeof lang === 'string' && lang.trim()) {
+            this._availableLanguages.add(lang.trim());
           }
         }
-      } else {
-        console.warn(`[DataLoader] Rule file ${filePath} does not contain a JSON array or a valid rule-file wrapper object. Skipping.`);
-        return;
       }
 
       // If this file comes from storage/rules/ (global scope), record every ruleSource
@@ -747,26 +727,15 @@ export class DataLoader {
    *   Unknown extra fields are tolerated (future-proofing for new features).
    *   Missing optional fields (label, description, tags, etc.) are gracefully defaulted.
    */
-  /**
-   * No-op: filtering is now done at file-load time by path (see enabledFilePaths).
-   * Every entity in a loaded file is accepted; entities in skipped files are never
-   * seen. Kept as a shim so #processEntity call-sites compile unchanged.
-   */
-  #isSourceAccepted(_ruleSource: string): boolean {
-    return true;
-  }
-
   #processEntity(entity: RawEntity): void {
     // --- Config Table (identified by tableId) ---
     if (entity.tableId) {
       const ruleSource = entity.ruleSource ?? 'unknown';
-      // Reject entities from non-enabled sources before caching
-      if (!this.#isSourceAccepted(ruleSource)) return;
 
       // Normalize `data` to an array.
       // Some config table JSON files use an object keyed by ID (e.g.
       // config_skill_definitions in 04_d20srd_core_skills_config.json) while others
-      // use a plain array (e.g. config_tables.json).
+      // use a plain array (e.g. 00_d20srd_core_config_tables.json).
       // The engine always iterates `table.data` as an array, so we normalise here.
       let rawData = entity.data ?? [];
       if (!Array.isArray(rawData) && typeof rawData === 'object' && rawData !== null) {
@@ -797,9 +766,6 @@ export class DataLoader {
       console.warn(`[DataLoader] Entity "${entity.id}" missing \`ruleSource\` field. Defaulting to "unknown". This entity will be excluded if enabledRuleSources is set.`);
       entity.ruleSource = 'unknown';
     }
-
-    // Reject entities from non-enabled sources before caching
-    if (!this.#isSourceAccepted(entity.ruleSource)) return;
 
     // Ensure required array fields are arrays (engine iterates over these without null checks)
     if (!Array.isArray(entity.grantedModifiers)) {
@@ -844,15 +810,14 @@ export class DataLoader {
    *   Every entity loaded from the campaign homebrew JSON has its `ruleSource`
    *   forced to `"user_homebrew"`, regardless of what the GM may have set.
    *   This ensures two invariants:
-   *     1. The entity is exempt from the `enabledRuleSources` filter
-   *        (see the `'user_homebrew'` exemption in `#filterByEnabledSources`).
+   *     1. The entity is always loaded (file-path filtering only applies to static files,
+   *        not to campaign homebrew which is injected directly).
    *     2. `getHomebrewRules('campaign')` can reliably identify these features
    *        by checking `ruleSource === "user_homebrew"`.
    *
    * WHY FORCE, NOT DEFAULT?
    *   Campaign homebrew is always scoped to this campaign and always active.
-   *   Allowing a custom ruleSource would mean the entity could be accidentally
-   *   filtered out if that source ID is not in `enabledRuleSources`.
+   *   Using a fixed ruleSource value makes identification unambiguous.
    *
    * @param homebrewJson - Raw JSON string from campaigns.homebrew_rules_json.
    */
@@ -900,35 +865,6 @@ export class DataLoader {
     for (const entity of entities) {
       this.#processEntity(entity);
     }
-  }
-
-  /**
-   * Filters the feature cache to remove features from non-enabled rule sources.
-   * Called after all files, campaign homebrew, and GM overrides are loaded.
-   *
-   * LOGIC:
-   *   A feature is retained if its `ruleSource` is in `enabledRuleSources`.
-   *   If `enabledRuleSources` is empty, ALL features are retained (permissive default).
-   *
-   * EXEMPT SOURCES (always retained regardless of enabledRuleSources):
-   *
-   *   1. GM sources — `ruleSource === "gm_override"` or starts with `"gm_"`:
-   *      GM Global and Per-Character Overrides inject features the GM edits directly.
-   *      These are the GM's live runtime modifications and should never be silently
-   *      discarded by the source filter.  See ARCHITECTURE.md §18.5–18.6.
-   *
-   *   2. Campaign homebrew — `ruleSource === "user_homebrew"`:
-   *      Campaign-scoped homebrew (authored via the Content Editor and stored in
-   *      campaigns.homebrew_rules_json) is always active for its campaign.  The GM
-   *      explicitly created this content — it does not need to be toggled via
-   *      `enabledRuleSources`.  See ARCHITECTURE.md §21.5.
-   *
-   * NOTE: Config tables from exempt sources are also filter-immune.
-   */
-   #filterByEnabledSources(): void {
-    // No-op: filtering is now done at file-load time by path (enabledFilePaths).
-    // Only files explicitly enabled are fetched and parsed; their entities are
-    // all accepted. No post-load pruning needed.
   }
 
   // ---------------------------------------------------------------------------
@@ -1091,8 +1027,9 @@ export class DataLoader {
     this.featureCache.clear();
     this.configTableCache.clear();
     this._globalRuleSourceIds.clear();
-    // Reset available languages to the baseline (English is always available).
-    this._availableLanguages = new Set<string>(['en']);
+    // Reset available languages to the built-in seed from ui-strings.ts.
+    // SUPPORTED_UI_LANGUAGES is the single source of truth for built-in UI languages.
+    this._availableLanguages = new Set<string>(SUPPORTED_UI_LANGUAGES.map(l => l.code));
     this.isLoaded = false;
   }
 

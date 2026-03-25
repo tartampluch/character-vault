@@ -3,60 +3,54 @@
  * @description SvelteKit server endpoint for auto-discovery of JSON rule source files.
  *
  * PURPOSE:
- *   Replaces the static `manifest.json` approach with a real-time directory scan.
- *   Per ARCHITECTURE.md section 18.1: "The DataLoader scans this directory recursively
- *   and loads all `.json` files in alphabetical order."
- *
- *   WHY THIS IS NEEDED:
- *   Content creators (GMs and community modders) should be able to drop a new `.json`
- *   file into `static/rules/` and have it automatically discovered — no manual manifest
- *   maintenance required. This is the "Open Content Ecosystem" promise from
- *   ARCHITECTURE.md section 1.
+ *   Provides a real-time directory scan of `static/rules/` so content creators can
+ *   drop a new `.json` file into a subdirectory and have it automatically discovered
+ *   — no manual manifest maintenance required.
  *
  * USAGE BY THE DATALOADER:
  *   The DataLoader first tries `GET /rules` (this endpoint). If the server responds
- *   with a sorted file list, it uses that. If this endpoint is unavailable (e.g., during
- *   static builds or testing), it falls back to `GET /rules/manifest.json`.
+ *   with a sorted file list, it uses that. If this endpoint is unavailable (e.g., in
+ *   the Vitest test environment where there is no SvelteKit server), it falls back to
+ *   `GET /rules/manifest.json`.
+ *
+ * EXCLUDED PATHS:
+ *   - `manifest.json`       — static fallback manifest, not a rule file.
+ *   - `test/` subdirectory  — unit-test fixtures only; MUST NOT be loaded in any
+ *                             deployed or development session. The `test/` folder
+ *                             contains `test_mock.json` and `test_override.json`
+ *                             which are consumed exclusively by the Vitest test suite
+ *                             via `manifest.json`. They are never part of a live campaign.
  *
  * LOADING ORDER:
  *   Files are returned sorted ALPHABETICALLY by their relative path (case-insensitive).
- *   This is the canonical override priority: files loaded later override files loaded
- *   earlier when entities share the same `id` (for `merge: "replace"` semantics).
+ *   This is the canonical override priority — files loaded later override files loaded
+ *   earlier when entities share the same `id`.
  *
- *   Naming convention (from ARCHITECTURE.md section 18.1):
  *   ```
  *   static/rules/
- *     00_srd_core/             ← loaded first (lowest priority)
- *       00_races.json
- *       01_classes.json
+ *     00_d20srd_core/          ← loaded first (lowest priority)
+ *       00_d20srd_core_config_tables.json
+ *       01_d20srd_core_races.json
+ *       …
  *     50_homebrew/             ← loaded after core (higher priority)
  *       00_custom_feats.json
  *     90_campaign_overrides/   ← loaded last (highest file-level priority)
  *       00_custom_rules.json
+ *     test/                    ← EXCLUDED — unit-test fixtures, never served
  *   ```
  *
  * RESPONSE FORMAT:
- *   Returns a JSON array of URL paths (strings), ready to be fetched by the DataLoader.
- *   Example:
  *   ```json
  *   [
- *     "/rules/00_srd_core/00_races.json",
- *     "/rules/00_srd_core/01_classes.json",
+ *     "/rules/00_d20srd_core/00_d20srd_core_config_tables.json",
+ *     "/rules/00_d20srd_core/01_d20srd_core_races.json",
  *     "/rules/50_homebrew/00_custom_feats.json"
  *   ]
  *   ```
  *
- * ENVIRONMENT:
- *   This endpoint runs on the SvelteKit NODE adapter server. The `static/` directory
- *   is served at the root URL `/` during development AND accessible via the filesystem
- *   at `./static/` relative to the project root.
- *
- *   In production (PHP + SvelteKit hybrid):
- *   The PHP backend provides `GET /api/rules/list` with the same response format (Phase 14).
- *   The DataLoader will be updated in Phase 14.6 to prefer the PHP API endpoint.
- *
  * @see src/lib/engine/DataLoader.ts for the loadRuleSources() consumer.
- * @see ARCHITECTURE.md section 18.1 for file discovery and loading order specification.
+ * @see static/rules/manifest.json for the test-environment fallback (includes test/).
+ * @see ARCHITECTURE.md section 18 for file discovery and loading order specification.
  */
 
 import { json } from '@sveltejs/kit';
@@ -73,20 +67,40 @@ const RULES_DIR = join(process.cwd(), 'static', 'rules');
 const URL_PREFIX = '/rules';
 
 /**
- * Recursively walks a directory and collects all `.json` file paths.
+ * Names of directories under `static/rules/` that are never served to the app.
  *
- * WHY RECURSIVE?
- *   Rule source files are organised into subdirectories by source name
- *   (e.g., `00_srd_core/`, `50_homebrew/`). The engine must discover
- *   files across ALL subdirectory levels.
+ * `test/` contains unit-test fixtures (`test_mock.json`, `test_override.json`) that
+ * are consumed exclusively by the Vitest test suite.  They MUST NOT be loaded in any
+ * live or development session — they contain dummy data designed to exercise merge
+ * semantics and would pollute a real campaign's entity cache.
+ *
+ * The `test/` files are still listed in `manifest.json` so that the DataLoader's
+ * `manifest.json` fallback path (used when this SvelteKit endpoint is unavailable,
+ * i.e., in the Vitest environment) can reach them.
+ */
+const EXCLUDED_DIRS = new Set(['test']);
+
+/**
+ * Names of root-level files that are never served as rule sources.
+ *
+ * `manifest.json` is the static fallback file-list used by the DataLoader when
+ * this endpoint is unavailable; it is not itself a rule file.
+ */
+const EXCLUDED_FILES = new Set(['manifest.json']);
+
+/**
+ * Recursively walks a directory and collects all `.json` rule file paths.
+ *
+ * Skips any directory whose name appears in `EXCLUDED_DIRS` (currently `test/`)
+ * and any root-level file whose name appears in `EXCLUDED_FILES` (currently
+ * `manifest.json`).
  *
  * ALPHABETICAL SORT:
- *   Each directory's entries are sorted before recursion. This guarantees that
- *   the final alphabetically-sorted list reflects the intended loading order
- *   (numeric prefixes like `00_`, `50_`, `90_` give deterministic priority).
+ *   Each directory's entries are sorted before recursion so the final list
+ *   reflects the intended loading order (numeric prefixes give deterministic priority).
  *
  * @param dir - Absolute path to the directory to scan.
- * @returns Sorted array of absolute file paths to `.json` files.
+ * @returns Sorted array of absolute file paths to `.json` rule files.
  */
 async function collectJsonFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
@@ -108,14 +122,14 @@ async function collectJsonFiles(dir: string): Promise<string[]> {
     const stats = await stat(fullPath);
 
     if (stats.isDirectory()) {
-      // Recurse into subdirectory
+      // Skip the test/ subfolder entirely — it contains unit-test fixtures only.
+      if (EXCLUDED_DIRS.has(entry)) continue;
+      // Recurse into all other subdirectories.
       const subFiles = await collectJsonFiles(fullPath);
       files.push(...subFiles);
-    } else if (entry.endsWith('.json') && !['manifest.json', 'test_mock.json', 'test_override.json'].includes(entry)) {
-        // Exclude: manifest (meta-file), test_mock and test_override (test-suite only,
-        // not intended for production/API use).
-        files.push(fullPath);
-      }
+    } else if (entry.endsWith('.json') && !EXCLUDED_FILES.has(entry)) {
+      files.push(fullPath);
+    }
   }
 
   return files;

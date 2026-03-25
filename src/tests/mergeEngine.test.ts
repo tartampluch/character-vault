@@ -1136,14 +1136,29 @@ const GM_ELF: Record<string, unknown> = {
  *
  * @param routes - Map of exact URL → resolved body (JSON-serialisable).
  */
+/**
+ * Wraps a flat entity array into the rule-file wrapper format that DataLoader requires.
+ * Only wraps when the URL is a `.json` rule file path (not a discovery or metadata endpoint).
+ * The `/rules` discovery endpoint and `/api/global-rules` metadata endpoint return
+ * plain arrays (of strings and metadata objects respectively) and must NOT be wrapped.
+ */
+function asRuleFile(url: string, value: unknown): unknown {
+  // Only wrap if this looks like a rule file URL (ends with .json)
+  if (url.endsWith('.json') && Array.isArray(value)) {
+    return { supportedLanguages: ['en'], entities: value };
+  }
+  return value;
+}
+
 function buildFetchMock(routes: Record<string, unknown>): ReturnType<typeof vi.fn> {
   return vi.fn().mockImplementation((url: string) => {
     // Exact-key lookup — O(1), unambiguous.
     if (Object.prototype.hasOwnProperty.call(routes, url)) {
+      // Wrap entity arrays in the rule-file format; pass URL string arrays through.
       return Promise.resolve({
         ok: true,
         headers: { get: () => 'application/json' },
-        json: () => Promise.resolve(routes[url]),
+        json: () => Promise.resolve(asRuleFile(url, routes[url])),
       });
     }
     // Default: empty array (no static files, no global files)

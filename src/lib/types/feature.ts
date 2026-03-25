@@ -1035,7 +1035,7 @@ export interface ItemFeature extends Feature {
   /**
    * Item weight in POUNDS (the SRD reference unit).
    * Always stored in pounds, regardless of the active display language.
-   * The UI converts to kg for French display using `I18N_CONFIG.fr.weightMultiplier`.
+   * The UI converts to kg for metric-system languages using `UNIT_SYSTEM_CONFIG.metric.weightMultiplier`.
    */
   weightLbs: number;
 

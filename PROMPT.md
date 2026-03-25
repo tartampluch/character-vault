@@ -32,7 +32,7 @@ Once the `PROGRESS.md` file is successfully created and saved, apply the Pause &
 
 _Goal: Define the complete TypeScript type system up-front. All interfaces — including every sub-type extension — are established here so subsequent phases can build on a stable contract._
 
-- [ ] **1.1 Primitives & i18n:** Create `src/lib/types/primitives.ts` with `ID` (string alias), complete `ModifierType` union (enhancement, deflection, natural_armor, armor, shield, luck, morale, competence, racial, insight, sacred, profane, circumstance, dodge, synergy, untyped, resistance, base, setAbsolute, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`), and `LogicOperator`. Create `src/lib/types/i18n.ts` (`LocalizedString`, `I18N_CONFIG`). Per `ARCHITECTURE.md` §2.
+- [ ] **1.1 Primitives & i18n:** Create `src/lib/types/primitives.ts` with `ID` (string alias), complete `ModifierType` union (enhancement, deflection, natural_armor, armor, shield, luck, morale, competence, racial, insight, sacred, profane, circumstance, dodge, synergy, untyped, resistance, base, setAbsolute, `"damage_reduction"`, `"inherent"`, `"max_dex_cap"`), and `LogicOperator`. Create `src/lib/types/i18n.ts` (`LocalizedString`, `UnitSystem`, `UNIT_SYSTEM_CONFIG`; backward-compat `I18N_CONFIG` alias). Per `ARCHITECTURE.md` §11.
 
 - [ ] **1.2 Logic & Pipeline Types:** Create `src/lib/types/logic.ts` (recursive `LogicNode` — AND, OR, NOT, CONDITION node types with all 8 `LogicOperator` values). Create `src/lib/types/pipeline.ts`: `Modifier` (required `sourceId`, `sourceName`, `targetId`, `value`, `type`; optional `drBypassTags?: string[]`, `situationalContext?`, JSDoc for the `"attacker.*"` target prefix convention); `StatisticPipeline` with `derivedModifier`; `SkillPipeline`; `ResourcePool` with 8-value `resetCondition` union: `"short_rest"`, `"long_rest"`, `"encounter"`, `"never"`, `"per_turn"`, `"per_round"`, `"per_day"`, `"per_week"` and optional `rechargeAmount?: number | string`. Per `ARCHITECTURE.md` §3–4.4.
 
@@ -44,7 +44,7 @@ _Goal: Define the complete TypeScript type system up-front. All interfaces — i
 
 _Goal: Build all pure, stateless utility functions. These have no Svelte dependencies and can be tested in isolation._
 
-- [ ] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (localization helpers and unit conversion based on `CampaignSettings` locale).
+- [ ] **2.1 i18n Formatters:** Create `src/lib/utils/formatters.ts` (localization helpers and unit conversion). Key exports: `t()`, `getUnitSystem(lang)` (maps language code → `UnitSystem` via `LANG_UNIT_SYSTEM` from `ui-strings.ts`), `formatDistance()`, `formatWeight()`. Unit system is decoupled from language: both functions resolve via `getUnitSystem()` then look up `UNIT_SYSTEM_CONFIG`. Unknown community language codes default to `"imperial"`.
 
 - [ ] **2.2 Math Parser:** Create `src/lib/utils/mathParser.ts`. Evaluate formula strings, replace `@` placeholders with character context values. Support all paths per `ARCHITECTURE.md` §4.3: `@characterLevel`, `@eclForXp`, `@classLevels.<id>`, `@activeTags`, `@selection.<choiceId>`, `@constant.<id>`, `@master.classLevels.<id>`. Handle `|distance` and `|weight` pipes. Return 0 and log warning for unresolved paths. Export `CharacterContext` type with `eclForXp` field.
 

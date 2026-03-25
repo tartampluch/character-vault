@@ -61,7 +61,7 @@
   });
 
   // ── Enabled sources — stored as RELATIVE FILE PATHS ──────────────────────
-  // e.g. ["00_d20srd_core/00_d20srd_core_races.json", "config_tables.json"]
+  // e.g. ["00_d20srd_core/00_d20srd_core_config_tables.json", "00_d20srd_core/01_d20srd_core_races.json"]
   //
   // The DataLoader receives these paths and fetches ONLY the listed files.
   // This gives fine-grained control: the GM can enable individual files

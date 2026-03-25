@@ -25,7 +25,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { StorageManager, setCsrfToken } from '$lib/engine/StorageManager';
+import { StorageManager, setCsrfToken, debounce } from '$lib/engine/StorageManager';
 import { createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
 import type { Character } from '$lib/types/character';
 
@@ -624,5 +624,172 @@ describe('StorageManager — deleteCharacterFromApi()', () => {
       expect.any(String),
       expect.objectContaining({ credentials: 'include' })
     );
+  });
+});
+
+// =============================================================================
+// User-level language persistence (saveUserLanguage / loadUserLanguage)
+// =============================================================================
+
+describe('StorageManager — user language persistence', () => {
+  let mockStorage: Map<string, string>;
+
+  beforeEach(() => {
+    mockStorage = new Map();
+    vi.stubGlobal('localStorage', {
+      getItem:    (k: string) => mockStorage.get(k) ?? null,
+      setItem:    (k: string, v: string) => { mockStorage.set(k, v); },
+      removeItem: (k: string) => { mockStorage.delete(k); },
+      clear:      () => { mockStorage.clear(); },
+      get length() { return mockStorage.size; },
+      key:        (i: number) => [...mockStorage.keys()][i] ?? null,
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('saveUserLanguage persists the code and loadUserLanguage retrieves it', () => {
+    const sm = new StorageManager();
+    sm.saveUserLanguage('fr');
+    expect(sm.loadUserLanguage()).toBe('fr');
+  });
+
+  it('saveUserLanguage overwrites a previous value', () => {
+    const sm = new StorageManager();
+    sm.saveUserLanguage('fr');
+    sm.saveUserLanguage('en');
+    expect(sm.loadUserLanguage()).toBe('en');
+  });
+
+  it('loadUserLanguage returns "en" when nothing has been saved', () => {
+    const sm = new StorageManager();
+    expect(sm.loadUserLanguage()).toBe('en');
+  });
+
+  it('saveUserLanguage with a community code round-trips correctly', () => {
+    const sm = new StorageManager();
+    sm.saveUserLanguage('es');
+    expect(sm.loadUserLanguage()).toBe('es');
+  });
+
+  it('saveUserLanguage is a no-op when localStorage is unavailable', () => {
+    vi.unstubAllGlobals();
+    vi.stubGlobal('localStorage', undefined);
+    const sm = new StorageManager();
+    // Should not throw
+    expect(() => sm.saveUserLanguage('fr')).not.toThrow();
+  });
+
+  it('loadUserLanguage returns "en" when localStorage is unavailable', () => {
+    vi.unstubAllGlobals();
+    vi.stubGlobal('localStorage', undefined);
+    const sm = new StorageManager();
+    expect(sm.loadUserLanguage()).toBe('en');
+  });
+});
+
+// =============================================================================
+// saveGmOverridesToApi — error / catch branch
+// =============================================================================
+
+describe('StorageManager — saveGmOverridesToApi error handling', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('sets isApiReachable = false and warns when fetch throws', async () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network failure')));
+
+    await sm.saveGmOverridesToApi('char_gmo_fail', []);
+
+    expect(sm.isApiReachable).toBe(false);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('saveGmOverridesToApi')
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('sets isApiReachable = true on successful PUT', async () => {
+    const sm = new StorageManager();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 200 }));
+
+    await sm.saveGmOverridesToApi('char_gmo_ok', [{ type: 'test' }]);
+
+    expect(sm.isApiReachable).toBe(true);
+  });
+});
+
+// =============================================================================
+// debounce() — exported helper
+// =============================================================================
+
+describe('debounce() — call deferral helper', () => {
+  it('does not call the function immediately', () => {
+    vi.useFakeTimers();
+    const fn = vi.fn();
+    const debounced = debounce(fn, 100);
+
+    debounced('a');
+    expect(fn).not.toHaveBeenCalled();
+
+    vi.runAllTimers();
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('a');
+    vi.useRealTimers();
+  });
+
+  it('only fires once when called multiple times within the delay window', () => {
+    vi.useFakeTimers();
+    const fn = vi.fn();
+    const debounced = debounce(fn, 200);
+
+    debounced('first');
+    debounced('second');
+    debounced('third');
+
+    expect(fn).not.toHaveBeenCalled();
+    vi.runAllTimers();
+
+    // Only the last call should have fired
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('third');
+    vi.useRealTimers();
+  });
+
+  it('fires again after the delay has elapsed since the last call', () => {
+    vi.useFakeTimers();
+    const fn = vi.fn();
+    const debounced = debounce(fn, 50);
+
+    debounced('first');
+    vi.advanceTimersByTime(60); // first call fires
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    debounced('second');
+    vi.advanceTimersByTime(60); // second call fires
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenLastCalledWith('second');
+    vi.useRealTimers();
+  });
+
+  it('resets the timer when called again before the delay elapses', () => {
+    vi.useFakeTimers();
+    const fn = vi.fn();
+    const debounced = debounce(fn, 100);
+
+    debounced('a');
+    vi.advanceTimersByTime(80); // Not yet fired
+    debounced('b');             // Resets the timer
+    vi.advanceTimersByTime(80); // Still not 100ms since last call
+    expect(fn).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(30); // Now > 100ms since 'b' — fires
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('b');
+    vi.useRealTimers();
   });
 });

@@ -67,12 +67,60 @@ export default defineConfig({
 		 *
 		 * ALIASES:
 		 *   The $lib alias must be configured so tests can import from src/lib/...
+		 *
+		 * COVERAGE:
+		 *   Run with: npm run test -- --coverage
+		 *   Or: npx vitest run --coverage
+		 *
+		 *   INCLUDED: only hand-authored TypeScript source files under src/lib/
+		 *   that contain executable runtime logic.
+		 *
+		 *   EXCLUDED from the coverage table:
+		 *     *.svelte          Svelte components require browser/jsdom; excluded from
+		 *                       the Node test suite by design.
+		 *     *.json            Static data files — no executable branches to cover.
+		 *     src/lib/types/    Pure TypeScript type/interface declarations; they
+		 *                       compile away completely and have no runtime coverage.
+		 *     .svelte-kit/      Auto-generated SvelteKit build artefacts.
+		 *     src/tests/        Test files themselves should not appear in coverage.
+		 *     src/routes/       SvelteKit route handlers run in a server environment
+		 *                       not available to the Node test runner.
+		 *     src/lib/components/  Svelte UI components (browser environment required).
 		 */
 		environment: 'node',
 		globals: true,
 		include: ['src/tests/**/*.test.ts'],
 		alias: {
 			'$lib': new URL('./src/lib', import.meta.url).pathname,
+		},
+		coverage: {
+			provider: 'v8',
+			/**
+			 * Instrument only hand-authored source files that contain testable
+			 * runtime logic. Types are excluded (they compile away).
+			 */
+			include: [
+				'src/lib/engine/**/*.ts',
+				'src/lib/i18n/**/*.ts',
+				'src/lib/utils/**/*.ts',
+			],
+			/**
+			 * Within the included paths, additionally exclude:
+			 *   *.svelte       — browser component files
+			 *   *.json         — static data
+			 *   .svelte-kit/   — generated build artefacts (should not match, belt+braces)
+			 */
+			exclude: [
+				'**/*.svelte',
+				'**/*.json',
+				'.svelte-kit/**',
+			],
+			/**
+			 * all: true — show every included file even if no test imports it yet,
+			 * so zero-coverage modules are visible rather than silently absent.
+			 */
+			all: true,
+			reporter: ['text', 'lcov'],
 		},
 	},
 

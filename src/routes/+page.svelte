@@ -49,10 +49,12 @@
   $effect(() => {
     if (isInitialized) return;
 
-    // Load only the test_mock source initially (test_override can be toggled)
+    // Load only the test fixtures initially (test_override can be toggled).
+    // Paths are relative to static/rules/ — the test/ subfolder is excluded from
+    // auto-discovery but CAN be loaded explicitly by passing the full relative path.
     const enabledSources = useOverrideSource
-      ? ['test_mock', 'test_override']
-      : ['test_mock'];
+      ? ['test/test_mock.json', 'test/test_override.json']
+      : ['test/test_mock.json'];
 
     dataLoader
       .loadRuleSources(enabledSources)

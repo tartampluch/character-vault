@@ -20,7 +20,7 @@
  *
  * @see src/lib/components/core/BasicInfo.svelte — getExcludedOptionIds()
  * @see src/lib/types/feature.ts                 — FeatureChoice.excludedBy
- * @see static/rules/00_d20srd_core/01_d20srd_core_classes.json — cleric choices
+ * @see static/rules/00_d20srd_core/02_d20srd_core_classes.json — cleric choices
  */
 
 import { describe, it, expect } from 'vitest';
@@ -213,7 +213,7 @@ describe('getExcludedOptionIds — multiple siblings in excludedBy', () => {
 describe('Cleric class JSON — excludedBy declared on domain choices', () => {
   it('cleric class JSON declares excludedBy on both domain choices', async () => {
     const mod = await import(
-      '../../static/rules/00_d20srd_core/01_d20srd_core_classes.json'
+      '../../static/rules/00_d20srd_core/02_d20srd_core_classes.json'
     );
     // JSON files now use the metadata wrapper format: { supportedLanguages, entities }
     const raw = mod.default as { entities: Record<string, unknown>[] } | Record<string, unknown>[];
@@ -239,7 +239,7 @@ describe('Cleric class JSON — excludedBy declared on domain choices', () => {
 // =============================================================================
 
 describe('Language switching — engine.settings.language', () => {
-  it('engine starts with a valid SupportedLanguage ("en" or "fr")', async () => {
+  it('engine starts with "en" as default language', async () => {
     const { engine } = await import('$lib/engine/GameEngine.svelte');
     expect(['en', 'fr']).toContain(engine.settings.language);
   });

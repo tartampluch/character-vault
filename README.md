@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1147_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-1470_tests-6E9F18?logo=vitest&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -71,9 +71,12 @@ character-vault/
 │   └── config.php              # Environment variable loader (.env + process env)
 ├── static/
 │   └── rules/                  # JSON rule files (SRD core, psionics, homebrew…)
-│       ├── 00_d20srd_core/     # Races, classes, feats, spells, equipment, config tables
+│       ├── 00_d20srd_core/     # Config tables, races, classes, feats, spells, equipment
+│       │   └── 00_d20srd_core_config_tables.json  # Loaded first: XP, skills, synergies…
 │       ├── 01_d20srd_psionics/ # Psionic classes, powers, items
-│       └── config_tables.json  # XP thresholds, carrying capacity, skill synergies…
+│       └── test/               # Unit-test fixtures ONLY — never loaded in any deployment
+│           ├── test_mock.json     # Base entities for the Vitest test suite
+│           └── test_override.json # Merge-engine test: partial/replace override fixtures
 ├── tests/                      # PHPUnit integration tests (5 files, 40 tests)
 ├── scripts/
 │   ├── build.sh                # Native build pipeline (type-check → test → package)
@@ -200,7 +203,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`inherentBonus.test.ts`](src/tests/inherentBonus.test.ts) | Tome/Manual inherent bonuses, highest-wins among inherent type |
 | [`intelligentItems.test.ts`](src/tests/intelligentItems.test.ts) | Intelligent item metadata, Ego formula, communication tiers |
 | [`triggerActivation.test.ts`](src/tests/triggerActivation.test.ts) | `"reaction"` / `"passive"` actionTypes, `getReactionFeaturesByTrigger()` |
-| [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting utilities — distance, weight, modifier sign, currency, dice |
+| [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting utilities — `getUnitSystem()`, `SUPPORTED_UI_LANGUAGES` integrity, distance/weight per unit system (imperial & metric), modifier sign, currency, dice |
 | [`sessionContext.test.ts`](src/tests/sessionContext.test.ts) | GM / player profile switching, active campaign context |
 | [`storageManager.test.ts`](src/tests/storageManager.test.ts) | localStorage CRUD, polling, async API methods, LinkedEntity depth guard |
 | [`contextKeyFix.test.ts`](src/tests/contextKeyFix.test.ts) | **Regression** — `@combatStats.base_attack_bonus.totalValue` prerequisite paths resolve correctly |
@@ -210,16 +213,25 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 #### Coverage
 
-| Module | Statements | Notes |
-|--------|-----------|-------|
-| `utils/formatters.ts` | **100%** | Pure formatting functions |
-| `utils/stackingRules.ts` | **100%** | D&D 3.5 stacking rules engine |
-| `engine/SessionContext.svelte.ts` | **100%** | Session context reactive singleton |
-| `engine/DataLoader.ts` | ~99% | Async fetch paths mocked; 1% = impossible-to-hit defensive branches |
-| `utils/diceEngine.ts` | ~98% | One uncovered branch: unused legacy path |
-| `utils/gestaltRules.ts` | ~98% | |
-| `engine/StorageManager.ts` | ~80% | Async API methods partly mocked |
-| `engine/GameEngine.svelte.ts` | ~17% | See note below |
+Coverage is measured with `npx vitest run --coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
+
+**Overall (43 test files, 1 470 tests): 93% statements · 87% branches · 96% functions · 94% lines**
+
+| Module | Stmts | Branch | Notes |
+|---|---|---|---|
+| `i18n/ui-strings.ts` | **100%** | **100%** | Full UI chrome string coverage |
+| `utils/constants.ts` | **100%** | **100%** | Ability abbreviations |
+| `utils/stackingRules.ts` | **100%** | 94% | D&D 3.5 stacking rules engine |
+| `engine/SessionContext.svelte.ts` | **100%** | **100%** | Session context reactive singleton |
+| `utils/gestaltRules.ts` | 98% | 86% | |
+| `utils/diceEngine.ts` | 98% | 88% | Two uncovered edge-case branches |
+| `engine/DataLoader.ts` | 95% | 87% | Async fetch paths exercised via fetch mock |
+| `utils/formatters.ts` | 93% | 86% | |
+| `utils/logicEvaluator.ts` | 91% | 90% | |
+| `utils/mathParser.ts` | 88% | 83% | |
+| `engine/StorageManager.ts` | 89% | 86% | Async API methods tested via fetch mock |
+| `engine/HomebrewStore.svelte.ts` | 97% | 97% | |
+| `engine/GameEngine.svelte.ts` | ~17% | ~8% | See note below |
 
 > **Why is `GameEngine.svelte.ts` coverage low?**
 >

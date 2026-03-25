@@ -391,7 +391,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
   //   Embedded labels are used when:
   //   a) The DataLoader has not yet completed loading (engine bootstrap).
   //   b) The 'srd_core' rule source is not in enabledRuleSources.
-  //   c) The config_tables.json file failed to load.
+  //   c) The 00_d20srd_core_config_tables.json file failed to load.
   //   In all these cases, the engine remains functional with the embedded fallback labels.
   //
   // WHY NOT FULLY LAZY?
@@ -611,8 +611,19 @@ export class GameEngine {
   // MUTABLE STATE ($state)
   // ---------------------------------------------------------------------------
 
-  /** The active campaign settings (language, house rules, enabled sources). */
-  settings = $state<CampaignSettings>(createDefaultCampaignSettings());
+  /**
+   * The active campaign settings (language, house rules, enabled sources).
+   *
+   * NOTE ON LANGUAGE INITIALIZATION:
+   *   `settings.language` is initialized from user-level localStorage
+   *   (`storageManager.loadUserLanguage()`) rather than the campaign-settings
+   *   default. This ensures the user's language preference persists across
+   *   all campaigns and app restarts independent of campaign data.
+   */
+  settings = $state<CampaignSettings>({
+    ...createDefaultCampaignSettings(),
+    language: storageManager.loadUserLanguage(),
+  });
 
   /** The currently active character. Replacing this triggers full DAG re-evaluation. */
   character = $state<Character>(createEmptyCharacter('default', 'New Character'));
@@ -885,6 +896,54 @@ export class GameEngine {
   readonly #autoSaveSettingsEffect = $effect.root(() => {
     $effect(() => {
       storageManager.saveSettings(this.settings);
+    });
+  });
+
+  /**
+   * Auto-save $effect: persists the language preference at the USER level
+   * (independently of campaign settings) whenever it changes.
+   *
+   * WHY SEPARATE FROM autoSaveSettingsEffect?
+   *   Campaign settings are campaign-scoped. The language preference must
+   *   survive campaign changes and be restored next time the user logs in,
+   *   regardless of which campaign they are in.
+   */
+  readonly #autoSaveLanguageEffect = $effect.root(() => {
+    $effect(() => {
+      storageManager.saveUserLanguage(this.settings.language);
+    });
+  });
+
+  /**
+   * Language validation $effect: ensures the selected language is supported by
+   * at least one loaded rule file (or by the built-in UI chrome languages).
+   *
+   * TIMING GUARD:
+   *   Only runs after the DataLoader has completed at least one full load
+   *   (checked via `dataLoader.isLoaded`). This prevents premature resets
+   *   during progressive file loading — files load one by one and the
+   *   _availableLanguages set grows as they load, but we should not fall back
+   *   to English just because a file hasn't arrived yet.
+   *
+   *   The `this.availableLanguages` read creates a reactive dependency on
+   *   `this.dataLoaderVersion`, so this effect re-runs after every load cycle.
+   *
+   * BEHAVIOUR:
+   *   - If the current language is in `availableLanguages` → keep it.
+   *   - If NOT in `availableLanguages` AND load is complete → reset to `"en"`.
+   *   - Before first load completes → never reset (preserves the saved pref).
+   */
+  readonly #languageValidationEffect = $effect.root(() => {
+    $effect(() => {
+      const langs = this.availableLanguages; // reactive dep via dataLoaderVersion
+      // Only validate after the DataLoader has completed its first full load.
+      // dataLoader.isLoaded is set to true inside loadRuleSources() right before
+      // loadVersion is incremented, so it is always true here.
+      if (!dataLoader.isLoaded) return;
+      const currentLang = this.settings.language;
+      if (!langs.includes(currentLang)) {
+        this.settings.language = 'en';
+      }
     });
   });
 
@@ -2268,7 +2327,7 @@ export class GameEngine {
    *
    *   WHY TAGS FOR CASTING ABILITY?
    *     Class JSON features include a tag like `"arcane_caster_int"` or `"divine_caster_wis"`
-   *     (see test_mock.json: class_fighter has tags ["class_fighter", "martial", ...]).
+    *     (see test/test_mock.json: class_fighter has tags ["class_fighter", "martial", ...]).
    *     The engine reads the first tag starting with "caster_ability_" to get the stat ID.
    *
    * @param spellLevel   - The level of the spell (0 for cantrips).

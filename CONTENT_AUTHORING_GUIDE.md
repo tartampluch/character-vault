@@ -69,19 +69,40 @@ All rule files live inside `static/rules/`. The engine loads them in **alphabeti
 ```
 static/rules/
   00_d20srd_core/
-    00_d20srd_core_races.json       ← Loaded first (lowest priority)
-    01_d20srd_core_classes.json
-    02_d20srd_core_class_features.json
-    03_d20srd_core_feats.json
-    05_d20srd_core_spells.json
-    06_d20srd_core_equipment_weapons.json
-    07_d20srd_core_equipment_armor.json
-    09_d20srd_core_config.json
+    00_d20srd_core_config_tables.json  ← Loaded first — XP, skills, synergies, etc.
+    01_d20srd_core_races.json
+    02_d20srd_core_classes.json
+    03_d20srd_core_class_features.json
+    04_d20srd_core_feats.json
+    05_d20srd_core_skills_config.json
+    06_d20srd_core_spells.json
+    07_d20srd_core_equipment_weapons.json
+    08_d20srd_core_equipment_armor.json
+    09_d20srd_core_equipment_goods.json
+    10_d20srd_core_config.json
+    11_d20srd_core_prestige_classes.json
+    12_d20srd_core_prestige_class_features.json
+    13_d20srd_core_magic_items.json
+    14_d20srd_core_cleric_domains.json
+    15_d20srd_core_npc_classes.json
+    16_d20srd_core_special_materials.json
+    17_d20srd_core_racial_features.json
+    18_d20srd_core_proficiency_features.json
+  01_d20srd_psionics/
+    00_d20srd_psionics_classes.json
+    01_d20srd_psionics_class_features.json
+    ...
   50_homebrew_my_setting/
-    00_my_custom_races.json         ← Loaded last (highest priority)
-  config_tables.json
-  manifest.json
+    00_my_custom_races.json            ← Loaded last (highest priority)
+  test/                               ← EXCLUDED — unit-test fixtures, never loaded
+    test_mock.json
+    test_override.json
+  manifest.json                       ← Static fallback for Vitest (includes test/)
 ```
+
+> **`test/` subfolder** — this directory is completely excluded from auto-discovery by
+> both the SvelteKit endpoint and the PHP API. Its contents are Vitest unit-test
+> fixtures only. Do NOT put content-authoring files there.
 
 **Naming convention:** `NN_rule_source_name/NN_rule_source_name_content_type.json`
 
@@ -2240,7 +2261,7 @@ Config tables provide lookup data (XP thresholds, carrying capacity, etc.) using
 }
 ```
 
-Config tables can be placed inside any rule file alongside Features, or in the dedicated `config_tables.json` file. A table with the same `tableId` from a later file completely replaces the earlier version.
+Config tables can be placed inside any rule file alongside Features. By convention, the dedicated `00_d20srd_core_config_tables.json` (loaded first) holds the SRD core config tables. A table with the same `tableId` from a later file completely replaces the earlier version — place overrides in files with higher numbers.
 
 ---
 
@@ -2339,23 +2360,26 @@ Provide `label` and `description` in every language listed in `supportedLanguage
 
 English is **always required** — it is the universal fallback. Other languages are optional but should be provided if they are declared in `supportedLanguages`.
 
-**Built-in UI chrome languages:**
+**Built-in UI chrome languages** (defined in `src/lib/i18n/ui-strings.ts` → `SUPPORTED_UI_LANGUAGES`):
 
-| Code | Language | UI chrome fully translated |
-|---|---|:---:|
-| `"en"` | English | ✅ |
-| `"fr"` | French | ✅ |
-| Other codes | Community | ❌ (falls back to English in UI, but game data is shown in the provided language) |
+| Code | Language | UI chrome fully translated | Unit system |
+|---|---|:---:|---|
+| `"en"` | English | ✅ | `imperial` (ft., lb.) |
+| `"fr"` | French | ✅ | `metric` (m, kg) |
+| Other codes | Community | ❌ (falls back to English) | `imperial` (default) |
+
+To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPPORTED_UI_LANGUAGES` and translate all `UI_STRINGS` keys.
 
 ### Unit Conversion
 
-All rule values are stored in **imperial units** (feet, pounds). The display layer converts automatically based on the selected language:
+All rule values are stored in **imperial units** (feet, pounds). The display layer converts automatically based on the **unit system** of the active language:
 
-| Language | Distance | Weight |
-|---|---|---|
-| English (`en`) | feet (×1) | pounds (×1) |
-| French (`fr`) | metres (×0.3) | kilograms (×0.5) |
-| Unknown codes | feet (×1) — defaults to English | pounds (×1) |
+| Unit system | Languages | Distance | Weight |
+|---|---|---|---|
+| `imperial` | `en` and unknown codes | feet (×1) | pounds (×1) |
+| `metric` | `fr` | metres (×0.3) | kilograms (×0.5) |
+
+The mapping from language code to unit system is defined in `LANG_UNIT_SYSTEM` (built from `SUPPORTED_UI_LANGUAGES`). Community language codes not in that map default to `imperial`.
 
 In description text, use `{@path|distance}` or `{@path|weight}` pipes for automatic unit display:
 

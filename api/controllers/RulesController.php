@@ -57,16 +57,23 @@ class RulesController
      *
      * FILE DISCOVERY ALGORITHM:
      *   1. Use RecursiveDirectoryIterator to scan all subdirectories.
-     *   2. Filter for `.json` files only.
-     *   3. Extract relative path (from static/rules/ as root).
-     *   4. Sort alphabetically (case-insensitive).
-     *   5. For each file, read the first entity's `ruleSource` field (or the
-     *      top-level `_meta.ruleSource` if present).
-     *   6. Count the number of Feature/ConfigTable entities in the file.
+     *   2. Skip the `test/` subdirectory entirely (unit-test fixtures, not for deployment).
+     *   3. Skip `manifest.json` at the root (static fallback list, not a rule file).
+     *   4. Filter for `.json` files only.
+     *   5. Extract relative path (from static/rules/ as root).
+     *   6. Sort alphabetically (case-insensitive).
+     *   7. For each file, read `ruleSource` and count entities via extractFileMeta().
+     *
+     * EXCLUDED PATHS:
+     *   - `test/` subdirectory: contains unit-test fixtures (`test_mock.json`,
+     *     `test_override.json`) used exclusively by the Vitest test suite. These files
+     *     must never appear in a live campaign. They are still listed in `manifest.json`
+     *     so the DataLoader can reach them in the test environment (where this PHP
+     *     endpoint is unavailable).
+     *   - `manifest.json`: the static fallback file-list itself, not a rule source.
      *
      * PERFORMANCE:
-     *   Reads the first JSON entity of each file only to extract ruleSource.
-     *   Does NOT parse the entire file (avoids loading all rules on every request).
+     *   Reads the JSON wrapper of each file to extract ruleSource and entityCount.
      *   The DataLoader caches the full parse in memory after the first load.
      */
     public static function list(): void
@@ -81,6 +88,13 @@ class RulesController
             return;
         }
 
+        // Directory names (relative to $rulesDir) that must never be served.
+        // 'test' contains unit-test fixtures only — excluded from all deployments.
+        $excludedDirs  = ['test'];
+
+        // Root-level file names that are not rule sources.
+        $excludedFiles = ['manifest.json'];
+
         $files = [];
 
         $iterator = new RecursiveIteratorIterator(
@@ -93,13 +107,19 @@ class RulesController
                 continue;
             }
 
-            // Skip meta/test files that are only meant for the Vitest test suite
-            $skip = ['manifest.json', 'test_mock.json', 'test_override.json'];
-            if (in_array($file->getFilename(), $skip, true)) {
+            // Skip any file whose immediate parent directory is in the excluded list.
+            // This catches test/test_mock.json, test/test_override.json, etc.
+            $parentDir = basename($file->getPath());
+            if (in_array($parentDir, $excludedDirs, true)) {
                 continue;
             }
 
-            // Get path relative to rules dir (e.g., "00_srd_core/00_srd_core_races.json")
+            // Skip excluded root-level files (manifest.json).
+            if (in_array($file->getFilename(), $excludedFiles, true)) {
+                continue;
+            }
+
+            // Get path relative to rules dir (e.g., "00_d20srd_core/01_d20srd_core_races.json")
             $relativePath = str_replace(
                 [$rulesDir, '\\'],
                 ['', '/'],
@@ -133,10 +153,10 @@ class RulesController
     /**
      * Extracts lightweight metadata from a JSON rule source file.
      *
-     * APPROACH:
-     *   JSON parse the entire file but only read the first entity's
-     *   ruleSource/tableId fields, plus count entities.
-     *   This avoids implementing complex streaming JSON parsing for PHP.
+     * FILE FORMAT:
+     *   All rule files use the standard wrapper format:
+     *     { "supportedLanguages": ["en", "fr"], "entities": [...] }
+     *   ruleSource is read from the first entity inside "entities".
      *
      * RETURNS:
      *   ['ruleSource' => string, 'entityCount' => int, 'description' => string]
@@ -151,47 +171,26 @@ class RulesController
         }
 
         $data = @json_decode($content, true);
-        if (!is_array($data)) {
+        if (!is_array($data) || !isset($data['entities']) || !is_array($data['entities'])) {
             return $default;
         }
 
-        // Top-level metadata object (if present)
-        if (isset($data['_meta'])) {
-            return [
-                'ruleSource'  => $data['_meta']['ruleSource'] ?? 'unknown',
-                'entityCount' => count($data['entities'] ?? []),
-                'description' => $data['_meta']['description'] ?? '',
-            ];
+        $entities    = $data['entities'];
+        $firstEntity = $entities[0] ?? null;
+        $ruleSource  = 'unknown';
+
+        if ($firstEntity !== null) {
+            if (isset($firstEntity['ruleSource'])) {
+                $ruleSource = $firstEntity['ruleSource'];
+            } elseif (isset($firstEntity['tableId'])) {
+                $ruleSource = 'config_table';
+            }
         }
 
-        // Array of entities (standard format)
-        if (isset($data[0])) {
-            $firstEntity = $data[0];
-            return [
-                'ruleSource'  => $firstEntity['ruleSource'] ?? (($firstEntity['tableId'] ?? null) ? 'config_table' : 'unknown'),
-                'entityCount' => count($data),
-                'description' => '',
-            ];
-        }
-
-        // Single entity (unusual but valid)
-        if (isset($data['ruleSource'])) {
-            return [
-                'ruleSource'  => $data['ruleSource'],
-                'entityCount' => 1,
-                'description' => '',
-            ];
-        }
-
-        // Config table format (has tableId)
-        if (isset($data['tableId'])) {
-            return [
-                'ruleSource'  => $data['ruleSource'] ?? 'unknown',
-                'entityCount' => 1,
-                'description' => $data['description'] ?? '',
-            ];
-        }
-
-        return $default;
+        return [
+            'ruleSource'  => $ruleSource,
+            'entityCount' => count($entities),
+            'description' => '',
+        ];
     }
 }

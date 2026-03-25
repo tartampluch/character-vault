@@ -56,7 +56,7 @@ const MOCK_CAMPAIGNS: Campaign[] = [
         isCompleted: false,
       },
     ],
-    enabledRuleSources: ['srd_core', 'test_mock'],
+    enabledRuleSources: [],   // empty = load all discovered rule files
     gmGlobalOverrides: '[]',
     updatedAt: Date.now(),
   },
@@ -75,7 +75,7 @@ const MOCK_CAMPAIGNS: Campaign[] = [
         isCompleted: false,
       },
     ],
-    enabledRuleSources: ['srd_core', 'test_mock'],
+    enabledRuleSources: [],   // empty = load all discovered rule files
     gmGlobalOverrides: '[]',
     updatedAt: Date.now(),
   },

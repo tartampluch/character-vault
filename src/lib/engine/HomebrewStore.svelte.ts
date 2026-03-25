@@ -237,8 +237,8 @@ export class HomebrewStore {
    * RULESOUCE ENFORCEMENT:
    *   If the entity does not have a `ruleSource` set, it defaults to
    *   `"user_homebrew"`.  This matches DataLoader's stamping behaviour for
-   *   campaign-scope entities and ensures the entity is never silently filtered
-   *   out by `#filterByEnabledSources`.
+   *   campaign-scope entities, ensuring the entity is always recognized as
+   *   campaign homebrew by `getHomebrewRules('campaign')`.
    *
    * DUPLICATE ID:
    *   If an entity with the same `id` already exists, it is replaced (same

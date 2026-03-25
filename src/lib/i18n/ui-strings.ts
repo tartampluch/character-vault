@@ -19,8 +19,54 @@
  *   Examples: `combat.hp.title`, `feats.empty_state`, `sidebar.campaigns`
  */
 
-import type { LocalizedString } from '../types/i18n';
+import type { LocalizedString, UnitSystem } from '../types/i18n';
 import { t } from '../utils/formatters';
+
+// =============================================================================
+// BUILT-IN UI LANGUAGE REGISTRY
+// =============================================================================
+
+/**
+ * The single source of truth for which languages have full UI chrome coverage.
+ *
+ * Each entry declares:
+ *   - `code`:       BCP-47-style language code used in `LocalizedString` keys.
+ *   - `unitSystem`: which unit system this language uses for distance/weight display.
+ *                   Either `"imperial"` (ft./lb.) or `"metric"` (m/kg).
+ *
+ * WHY HERE AND NOT IN i18n.ts?
+ *   This file already owns all UI string translations. Keeping the language
+ *   registry here means adding a new language requires exactly TWO changes
+ *   in this single file:
+ *     1. Add an entry to `SUPPORTED_UI_LANGUAGES`.
+ *     2. Add translations for that code in every `UI_STRINGS` entry.
+ *   No other file needs modification for a new built-in UI language.
+ *
+ * Community JSON data files can declare additional language codes via
+ * `supportedLanguages`; those are merged into the dropdown at load time.
+ * They do not need entries here because the UI chrome falls back to English
+ * for unknown codes (via the `t()` fallback chain).
+ *
+ * HOW IT SEEDS THE DROPDOWN:
+ *   `DataLoader._availableLanguages` is seeded from `SUPPORTED_UI_LANGUAGES`
+ *   at construction time. The language dropdown in the sidebar always shows
+ *   at least these languages, regardless of which JSON files are loaded.
+ */
+export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: UnitSystem }> = [
+  { code: 'en', unitSystem: 'imperial' },
+  { code: 'fr', unitSystem: 'metric'   },
+];
+
+/**
+ * Lookup map: language code → unit system.
+ * Built once at module load from `SUPPORTED_UI_LANGUAGES` for O(1) lookup.
+ *
+ * For language codes not present in this map (community languages), the
+ * `getUnitSystem()` helper in `formatters.ts` falls back to `"imperial"`.
+ */
+export const LANG_UNIT_SYSTEM: ReadonlyMap<string, UnitSystem> = new Map(
+  SUPPORTED_UI_LANGUAGES.map(({ code, unitSystem }) => [code, unitSystem])
+);
 
 // ---------------------------------------------------------------------------
 // UI STRING REGISTRY

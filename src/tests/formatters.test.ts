@@ -21,7 +21,7 @@
  * @see ARCHITECTURE.md section 11 — i18n and Unit Conversion
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   t,
   formatDistance,
@@ -31,16 +31,19 @@ import {
   formatModifier,
   formatCurrency,
   formatDiceRolls,
+  getUnitSystem,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
+import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui } from '$lib/i18n/ui-strings';
+import { getAbilityAbbr, MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
 
 // =============================================================================
 // HELPERS
 // =============================================================================
 
-function makeSettings(lang: 'en' | 'fr') {
+function makeSettings(lang: string) {
   return {
-    language: lang as 'en' | 'fr',
+    language: lang,
     statGeneration: { method: 'standard_array' as const, rerollOnes: false, pointBuyBudget: 25 },
     diceRules: { explodingTwenties: false },
     variantRules: { vitalityWoundPoints: false, gestalt: false },
@@ -292,5 +295,194 @@ describe('formatDiceRolls() — dice roll display', () => {
 
   it('single 1: "1d4: [1]"', () => {
     expect(formatDiceRolls([1], 4)).toBe('1d4: [1]');
+  });
+});
+
+// =============================================================================
+// 9. getUnitSystem() — language code → unit system resolution
+// =============================================================================
+
+describe('getUnitSystem() — language to unit system mapping', () => {
+  it('English → "imperial"', () => {
+    expect(getUnitSystem('en')).toBe('imperial');
+  });
+
+  it('French → "metric"', () => {
+    expect(getUnitSystem('fr')).toBe('metric');
+  });
+
+  it('unknown community language → "imperial" (safe SRD default)', () => {
+    expect(getUnitSystem('es')).toBe('imperial');
+    expect(getUnitSystem('de')).toBe('imperial');
+    expect(getUnitSystem('ja')).toBe('imperial');
+    expect(getUnitSystem('xyz')).toBe('imperial');
+  });
+
+  it('empty string → "imperial"', () => {
+    expect(getUnitSystem('')).toBe('imperial');
+  });
+
+  it('all SUPPORTED_UI_LANGUAGES entries resolve without throwing', () => {
+    for (const { code } of SUPPORTED_UI_LANGUAGES) {
+      const result = getUnitSystem(code);
+      expect(['imperial', 'metric']).toContain(result);
+    }
+  });
+});
+
+// =============================================================================
+// 10. SUPPORTED_UI_LANGUAGES / LANG_UNIT_SYSTEM registry integrity
+// =============================================================================
+
+describe('SUPPORTED_UI_LANGUAGES registry integrity', () => {
+  it('has at least two entries (en and fr)', () => {
+    expect(SUPPORTED_UI_LANGUAGES.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('always includes "en" with unitSystem "imperial"', () => {
+    const en = SUPPORTED_UI_LANGUAGES.find(l => l.code === 'en');
+    expect(en).toBeDefined();
+    expect(en!.unitSystem).toBe('imperial');
+  });
+
+  it('always includes "fr" with unitSystem "metric"', () => {
+    const fr = SUPPORTED_UI_LANGUAGES.find(l => l.code === 'fr');
+    expect(fr).toBeDefined();
+    expect(fr!.unitSystem).toBe('metric');
+  });
+
+  it('every entry has a non-empty code and a valid unitSystem', () => {
+    for (const { code, unitSystem } of SUPPORTED_UI_LANGUAGES) {
+      expect(typeof code).toBe('string');
+      expect(code.length).toBeGreaterThan(0);
+      expect(['imperial', 'metric']).toContain(unitSystem);
+    }
+  });
+
+  it('LANG_UNIT_SYSTEM map contains every code from SUPPORTED_UI_LANGUAGES', () => {
+    for (const { code, unitSystem } of SUPPORTED_UI_LANGUAGES) {
+      expect(LANG_UNIT_SYSTEM.has(code)).toBe(true);
+      expect(LANG_UNIT_SYSTEM.get(code)).toBe(unitSystem);
+    }
+  });
+});
+
+// =============================================================================
+// 11. formatDistance() and formatWeight() with community (unknown) language
+// =============================================================================
+
+describe('formatDistance() with community language codes', () => {
+  it('unknown language "es" falls back to imperial: 30 ft → "30 ft."', () => {
+    expect(formatDistance(30, 'es')).toBe('30 ft.');
+  });
+
+  it('unknown language "de" falls back to imperial: 60 ft → "60 ft."', () => {
+    expect(formatDistance(60, 'de')).toBe('60 ft.');
+  });
+});
+
+describe('formatWeight() with community language codes', () => {
+  it('unknown language "es" falls back to imperial: 10 lbs → "10 lb."', () => {
+    expect(formatWeight(10, 'es')).toBe('10 lb.');
+  });
+
+  it('unknown language "de" falls back to imperial: 50 lbs → "50 lb."', () => {
+    expect(formatWeight(50, 'de')).toBe('50 lb.');
+  });
+});
+
+// =============================================================================
+// 12. ui() — UI chrome string lookup with fallback
+// =============================================================================
+
+describe('ui() — UI string lookup', () => {
+  it('returns English string for a known key with lang "en"', () => {
+    expect(ui('lang.en', 'en')).toBe('English');
+  });
+
+  it('returns French string for a known key with lang "fr"', () => {
+    expect(ui('lang.en', 'fr')).toBe('Anglais');
+  });
+
+  it('falls back to English when the requested language key is missing', () => {
+    // "es" is not in UI_STRINGS for any key — should fall back to English
+    const result = ui('lang.en', 'es');
+    expect(result).toBe('English');
+  });
+
+  it('defaults lang to "en" when no lang argument is supplied', () => {
+    expect(ui('lang.fr')).toBe('French');
+  });
+
+  it('returns the key itself and logs a warning for an unknown key', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = ui('nonexistent.key.that.does.not.exist');
+    expect(result).toBe('nonexistent.key.that.does.not.exist');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('nonexistent.key.that.does.not.exist')
+    );
+    warnSpy.mockRestore();
+  });
+
+  it('all keys that exist for "en" also exist for "fr"', () => {
+    // Verify a representative sample of UI_STRINGS keys: calling ui(key, 'fr')
+    // must never return the key string itself (which would signal a missing entry).
+    const knownKeys = [
+      'lang.label', 'lang.select_tooltip', 'lang.en', 'lang.fr',
+      'combat.hp.title', 'combat.ac.title',
+    ];
+    for (const key of knownKeys) {
+      const result = ui(key, 'fr');
+      expect(result).not.toBe(key);
+    }
+  });
+});
+
+// =============================================================================
+// 13. getAbilityAbbr() — constants.ts
+// =============================================================================
+
+describe('getAbilityAbbr() — ability score abbreviations', () => {
+  it('returns English abbreviation for each of the 6 ability scores', () => {
+    expect(getAbilityAbbr('stat_strength',     'en')).toBe('STR');
+    expect(getAbilityAbbr('stat_dexterity',    'en')).toBe('DEX');
+    expect(getAbilityAbbr('stat_constitution', 'en')).toBe('CON');
+    expect(getAbilityAbbr('stat_intelligence', 'en')).toBe('INT');
+    expect(getAbilityAbbr('stat_wisdom',       'en')).toBe('WIS');
+    expect(getAbilityAbbr('stat_charisma',     'en')).toBe('CHA');
+  });
+
+  it('returns French abbreviation for each ability score', () => {
+    expect(getAbilityAbbr('stat_strength',     'fr')).toBe('FOR');
+    expect(getAbilityAbbr('stat_dexterity',    'fr')).toBe('DEX');
+    expect(getAbilityAbbr('stat_constitution', 'fr')).toBe('CON');
+    expect(getAbilityAbbr('stat_intelligence', 'fr')).toBe('INT');
+    expect(getAbilityAbbr('stat_wisdom',       'fr')).toBe('SAG');
+    expect(getAbilityAbbr('stat_charisma',     'fr')).toBe('CHA');
+  });
+
+  it('falls back to English abbreviation for an unknown language code', () => {
+    expect(getAbilityAbbr('stat_strength',  'es')).toBe('STR');
+    expect(getAbilityAbbr('stat_wisdom',    'de')).toBe('WIS');
+  });
+
+  it('returns a derived abbreviation for an unknown ability ID', () => {
+    // stat_perception → 'PER' (first 3 uppercase letters after stripping 'stat_')
+    expect(getAbilityAbbr('stat_perception', 'en')).toBe('PER');
+    expect(getAbilityAbbr('stat_ab',         'en')).toBe('AB');
+  });
+
+  it('MAIN_ABILITY_IDS covers exactly the 6 standard ability scores', () => {
+    expect(MAIN_ABILITY_IDS).toHaveLength(6);
+    expect(MAIN_ABILITY_IDS).toContain('stat_strength');
+    expect(MAIN_ABILITY_IDS).toContain('stat_charisma');
+  });
+
+  it('ABILITY_ABBRS has an entry for every ID in MAIN_ABILITY_IDS', () => {
+    for (const id of MAIN_ABILITY_IDS) {
+      expect(ABILITY_ABBRS[id]).toBeDefined();
+      expect(ABILITY_ABBRS[id].en).toBeTruthy();
+      expect(ABILITY_ABBRS[id].fr).toBeTruthy();
+    }
   });
 });

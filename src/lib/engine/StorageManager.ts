@@ -55,6 +55,12 @@ const KEYS = {
   CHARACTER_PREFIX:    `${STORAGE_PREFIX}character_`,
   CAMPAIGN_SETTINGS:   `${STORAGE_PREFIX}campaign_settings`,
   ACTIVE_CHARACTER_ID: `${STORAGE_PREFIX}active_character_id`,
+  /**
+   * User-level language preference.
+   * Stored independently of campaign settings so the user's language choice
+   * persists across campaigns and is not overwritten by campaign-level settings.
+   */
+  USER_LANGUAGE:       `${STORAGE_PREFIX}user_language`,
   /** Cached sync timestamps from the last poll. */
   SYNC_TIMESTAMPS:     `${STORAGE_PREFIX}sync_timestamps`,
 } as const;
@@ -302,6 +308,41 @@ export class StorageManager {
     } catch (err) {
       console.warn('[StorageManager] loadSettings: failed, using defaults:', err);
       return createDefaultCampaignSettings();
+    }
+  }
+
+  /**
+   * Persists the user's preferred UI language at the user level (independent of campaigns).
+   *
+   * This is called whenever `engine.settings.language` changes. Storing the language
+   * separately from `CampaignSettings` ensures the user's choice is remembered across
+   * all campaigns and is not reset when campaign settings are overwritten.
+   *
+   * @param lang - The BCP-47-style language code to save (e.g. `"en"`, `"fr"`, `"es"`).
+   */
+  saveUserLanguage(lang: string): void {
+    if (!this.isAvailable) return;
+    try {
+      localStorage.setItem(KEYS.USER_LANGUAGE, lang);
+    } catch (err) {
+      console.warn('[StorageManager] saveUserLanguage: failed:', err);
+    }
+  }
+
+  /**
+   * Loads the user's preferred UI language.
+   *
+   * Returns the stored language code, or `"en"` as the universal fallback if
+   * no preference has been saved yet.
+   *
+   * @returns The stored language code, defaulting to `"en"`.
+   */
+  loadUserLanguage(): string {
+    if (!this.isAvailable) return 'en';
+    try {
+      return localStorage.getItem(KEYS.USER_LANGUAGE) ?? 'en';
+    } catch {
+      return 'en';
     }
   }
 

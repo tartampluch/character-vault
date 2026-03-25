@@ -9,26 +9,29 @@
  *   to its translation.
  *
  *   All calculations are performed in the SRD reference unit system (feet, pounds).
- *   Unit conversion happens ONLY at the display layer, using the `I18N_CONFIG` lookup.
- *   This means the math engine never needs to know or care about the active language.
+ *   Unit conversion happens ONLY at the display layer, using `UNIT_SYSTEM_CONFIG`
+ *   combined with `LANG_UNIT_SYSTEM` (from `ui-strings.ts`). The math engine never
+ *   needs to know or care about the active language.
+ *
+ * UNIT SYSTEM ARCHITECTURE (decoupled from language codes):
+ *   Unit display (imperial vs. metric) is a property of the *unit system* a language
+ *   uses, not of the language code itself. This means:
+ *
+ *   1. `UNIT_SYSTEM_CONFIG` maps `UnitSystem` → conversion factors/suffixes.
+ *      Only TWO entries ever: "imperial" and "metric". Adding a new language
+ *      never requires touching this table.
+ *
+ *   2. `LANG_UNIT_SYSTEM` (in ui-strings.ts) maps each built-in language code to
+ *      either "imperial" or "metric". This is the ONLY place to change when adding
+ *      a new built-in UI language.
+ *
+ *   3. Community language codes not present in `LANG_UNIT_SYSTEM` default to
+ *      "imperial" (safest fallback — SRD values are in feet/pounds).
  *
  * Usage pattern (inside the GameEngine's `t()` helper):
  *   const name = engine.t(feature.label);
  *   // → Returns "Boule de feu" if lang is "fr", fallback to "en" if missing.
  */
-
-// =============================================================================
-// SUPPORTED LANGUAGES
-// =============================================================================
-
-/**
- * The set of languages the engine officially supports.
- *
- * Extending this type (e.g., adding "de" for German) is the only change needed
- * in this file to support a new language. Rule JSON files would then simply add
- * the new key to their `LocalizedString` objects.
- */
-export type SupportedLanguage = "en" | "fr";
 
 // =============================================================================
 // LOCALIZED STRING
@@ -37,11 +40,10 @@ export type SupportedLanguage = "en" | "fr";
 /**
  * A translatable string stored as a map from language code to translated text.
  *
- * Using `Record<string, string>` (instead of `Record<SupportedLanguage, string>`)
- * intentionally keeps this type open. Community-created content can include
- * arbitrary language keys (e.g., "de", "es", "ja") without TypeScript errors,
- * while the engine always gracefully falls back to "en" if the active language
- * is not present in a given object.
+ * Using `Record<string, string>` (instead of a union type) intentionally keeps
+ * this type open. Community-created content can include arbitrary language keys
+ * (e.g., "de", "es", "ja") without TypeScript errors, while the engine always
+ * gracefully falls back to "en" if the active language is not present.
  *
  * @example
  * const label: LocalizedString = {
@@ -52,16 +54,33 @@ export type SupportedLanguage = "en" | "fr";
 export type LocalizedString = Record<string, string>;
 
 // =============================================================================
+// UNIT SYSTEM
+// =============================================================================
+
+/**
+ * The two unit systems used in display formatting.
+ *
+ * - `"imperial"`: feet and pounds (SRD default; English, etc.)
+ * - `"metric"`:   metres and kilograms (French, most of the world)
+ *
+ * This is decoupled from language codes: a new language simply maps to one of
+ * these two values in `SUPPORTED_UI_LANGUAGES` / `LANG_UNIT_SYSTEM`
+ * (both in `ui-strings.ts`) and never requires changes to `UNIT_SYSTEM_CONFIG`.
+ */
+export type UnitSystem = "imperial" | "metric";
+
+// =============================================================================
 // LOCALIZATION CONFIG — DISPLAY LAYER UNIT CONVERSION
 // =============================================================================
 
 /**
- * Per-language display configuration for unit conversion.
+ * Per-unit-system display configuration for unit conversion.
  *
- * Why keep this here and not in a JSON file?
- *   Because these multipliers are universal mathematical constants tied to the
- *   language/locale, not to a specific rule source. They are safe as compile-time
- *   constants. Putting them in a JSON would add a loading step for trivial data.
+ * Why keyed by `UnitSystem` rather than language code?
+ *   Because unit display is a property of the measurement system, not the
+ *   language. Dozens of languages all map to the same two conversion factors.
+ *   Adding German, Spanish, Italian, etc. requires zero changes here — they
+ *   just map to "metric" or "imperial" in `SUPPORTED_UI_LANGUAGES`.
  *
  * Reference units (always stored in the engine and JSONs):
  *   - Distance: feet (ft)  → D&D 3.5 SRD uses feet as the base unit.
@@ -70,59 +89,61 @@ export type LocalizedString = Record<string, string>;
 export interface LocalizationConfig {
   /**
    * Multiplier to convert feet to the display unit.
-   * English: 1 (feet → feet, no conversion)
-   * French:  0.3 (feet → metres, approximate standard conversion used in FR localisations)
+   * imperial: 1    (feet → feet, no conversion)
+   * metric:   0.3  (feet → metres, standard used in FR/metric localisations)
    */
   distanceMultiplier: number;
 
   /**
    * The display unit suffix for distance.
-   * English: "ft."
-   * French:  "m"
+   * imperial: "ft."
+   * metric:   "m"
    */
   distanceUnit: string;
 
   /**
    * Multiplier to convert pounds to the display unit.
-   * English: 1 (pounds → pounds, no conversion)
-   * French:  0.5 (pounds → kilograms, approximate: 1 lb ≈ 0.5 kg)
-   *
-   * Note: D&D 3.5 FR officially uses 0.5 kg/lb for encumbrance simplicity.
+   * imperial: 1    (pounds → pounds, no conversion)
+   * metric:   0.5  (pounds → kilograms; D&D 3.5 FR uses 0.5 kg/lb for simplicity)
    */
   weightMultiplier: number;
 
   /**
    * The display unit suffix for weight.
-   * English: "lb."
-   * French:  "kg"
+   * imperial: "lb."
+   * metric:   "kg"
    */
   weightUnit: string;
 }
 
 // =============================================================================
-// I18N_CONFIG — COMPILE-TIME CONSTANT TABLE
+// UNIT_SYSTEM_CONFIG — COMPILE-TIME CONSTANT TABLE
 // =============================================================================
 
 /**
- * The global localization configuration table.
+ * The authoritative mapping from `UnitSystem` to display configuration.
  *
- * This is the authoritative mapping from a `SupportedLanguage` code to its
- * unit-display configuration. It is consumed by the `GameEngine`'s `formatDistance()`
- * and `formatWeight()` helper methods (see `GameEngine.svelte.ts`, Phase 3.1).
+ * This table has exactly TWO entries and will NEVER need additional entries,
+ * regardless of how many languages are added. When a new language is added
+ * to `SUPPORTED_UI_LANGUAGES` in `ui-strings.ts`, it maps to one of these two
+ * existing unit systems.
  *
- * It is also used by the Math Parser (`mathParser.ts`, Phase 2.2) to resolve
- * the `|distance` and `|weight` pipe operators in formula strings:
+ * Consumed by `formatDistance()` and `formatWeight()` in `formatters.ts` via
+ * the `getUnitSystem(lang)` helper (also in `formatters.ts`).
+ *
+ * Also consumed by the Math Parser (`mathParser.ts`) to resolve the `|distance`
+ * and `|weight` pipe operators in formula strings:
  *   "@attributes.speed_land.totalValue|distance"
- *   → Calls formatDistance(totalValue) → "40 ft." (en) or "12 m" (fr)
+ *   → Calls formatDistance(totalValue, lang) → "40 ft." (imperial) or "12 m" (metric)
  */
-export const I18N_CONFIG: Record<SupportedLanguage, LocalizationConfig> = {
-  en: {
+export const UNIT_SYSTEM_CONFIG: Record<UnitSystem, LocalizationConfig> = {
+  imperial: {
     distanceMultiplier: 1,
     distanceUnit: "ft.",
     weightMultiplier: 1,
     weightUnit: "lb.",
   },
-  fr: {
+  metric: {
     // French D&D 3.5 localisations use metres and kilograms.
     // 1 square = 5 ft = 1.5 m, but the simpler 0.3 multiplier is used
     // for descriptions like "30 ft. → 9 m" (more intuitive than 1.5×6=9).

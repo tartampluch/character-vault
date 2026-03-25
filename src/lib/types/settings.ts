@@ -22,7 +22,7 @@
  *   - `enabledRuleSources`          → read by `DataLoader.ts` to filter loaded features
  *   - `language`                    → read by `GameEngine.t()` for all localized strings
  *
- * @see src/lib/types/i18n.ts            for SupportedLanguage type.
+ * @see src/lib/types/i18n.ts            for UnitSystem, UNIT_SYSTEM_CONFIG.
  * @see src/lib/utils/diceEngine.ts       (Phase 2.5) for explodingTwenties use.
  * @see src/lib/engine/DataLoader.ts      (Phase 4.2) for enabledRuleSources use.
  */
@@ -59,7 +59,7 @@ export interface CampaignSettings {
    * because all text goes through reactive `$derived` calls to `engine.t()`.
    *
    * TYPE NOTE:
-   *   Using `string` (not `SupportedLanguage`) allows arbitrary language codes from
+   *   Using `string` (not a union type) allows arbitrary language codes from
    *   community JSON files to be selected. The `t()` fallback chain gracefully handles
    *   any code that lacks a full translation set by falling back to English.
    *   UI chrome strings (ui-strings.ts) always provide at least `en` and `fr`.
@@ -355,7 +355,7 @@ export interface CampaignSettings {
  */
 export function createDefaultCampaignSettings(): CampaignSettings {
   return {
-    language: 'en' as string,
+    language: 'en',
     statGeneration: {
       method: 'point_buy',
       rerollOnes: false,

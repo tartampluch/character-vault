@@ -1089,7 +1089,7 @@ When `choiceGrantedTagPrefix` is set, the GameEngine emits a derived active tag 
 **SRD usage examples:**
 - **Archmage:** `has_tag "feat_skill_focus_skill_spellcraft"` — exactly Skill Focus (Spellcraft).
 - **Thaumaturgist:** `has_tag "feat_spell_focus_arcane_school_conjuration"` — exactly Spell Focus (Conjuration).
-- **Arcane School features:** Eight `arcane_school_*` features are defined in `02_d20srd_core_class_features.json` with `tag: "arcane_school"`. They serve as the selection pool for `feat_spell_focus`.
+- **Arcane School features:** Eight `arcane_school_*` features are defined in `03_d20srd_core_class_features.json` with `tag: "arcane_school"`. They serve as the selection pool for `feat_spell_focus`.
 
 **Concrete example — Weapon Focus with sub-tag:**
 
@@ -2291,31 +2291,79 @@ The engine operates on a **Single Source of Truth** principle. Rule files (JSON)
 
 ### 11.1. Localized Data Structure
 
-_Suggested target file: `src/lib/types/i18n.ts`_
+_Target file: `src/lib/types/i18n.ts`_
 
 ```typescript
 export type LocalizedString = Record<string, string>;
 // Example: { "en": "Fireball", "fr": "Boule de feu", "es": "Bola de fuego" }
-// Open record type — any language code is valid.
-
-// Built-in unit-conversion configs for display layer:
-export type SupportedLanguage = "en" | "fr";  // Only for I18N_CONFIG lookups
+// Open record type — any language code is valid. The engine falls back to "en".
 
 export interface LocalizationConfig {
-    distanceMultiplier: number;
-    distanceUnit: string;
-    weightMultiplier: number;
-    weightUnit: string;
+    distanceMultiplier: number;  distanceUnit: string;
+    weightMultiplier:   number;  weightUnit:   string;
 }
 
-export const I18N_CONFIG: Record<SupportedLanguage, LocalizationConfig> = {
-    "en": { distanceMultiplier: 1,   distanceUnit: "ft.", weightMultiplier: 1,   weightUnit: "lb." },
-    "fr": { distanceMultiplier: 0.3, distanceUnit: "m",   weightMultiplier: 0.5, weightUnit: "kg" }
+// Two unit systems. This table NEVER grows — adding a new language just maps
+// it to one of these two entries in LANG_UNIT_SYSTEM (ui-strings.ts).
+export type UnitSystem = "imperial" | "metric";
+
+export const UNIT_SYSTEM_CONFIG: Record<UnitSystem, LocalizationConfig> = {
+    imperial: { distanceMultiplier: 1,   distanceUnit: "ft.", weightMultiplier: 1,   weightUnit: "lb." },
+    metric:   { distanceMultiplier: 0.3, distanceUnit: "m",   weightMultiplier: 0.5, weightUnit: "kg"  },
 };
-// Unknown language codes default to the English config at the display layer.
 ```
 
-### 11.2. JSON Rule File Format and `supportedLanguages`
+### 11.2. Single-Source Built-in Language Registry
+
+_Target file: `src/lib/i18n/ui-strings.ts`_
+
+**`ui-strings.ts` is the only file that needs changes when adding a new built-in language.** It owns:
+
+1. `SUPPORTED_UI_LANGUAGES` — the array of `{ code, unitSystem }` objects for all languages with full UI chrome translations.
+2. `LANG_UNIT_SYSTEM` — a `Map<string, UnitSystem>` built from the above for O(1) lookup.
+3. All `UI_STRINGS` key translations for every declared language code.
+
+```typescript
+// In ui-strings.ts:
+export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: UnitSystem }> = [
+    { code: 'en', unitSystem: 'imperial' },
+    { code: 'fr', unitSystem: 'metric'   },
+    // Add new built-in languages here. Add their strings to UI_STRINGS below.
+];
+
+export const LANG_UNIT_SYSTEM: ReadonlyMap<string, UnitSystem> =
+    new Map(SUPPORTED_UI_LANGUAGES.map(({ code, unitSystem }) => [code, unitSystem]));
+```
+
+**Adding a new built-in language (e.g., German) requires exactly these changes in `ui-strings.ts`:**
+1. Add `{ code: 'de', unitSystem: 'metric' }` to `SUPPORTED_UI_LANGUAGES`.
+2. Add `"de"` keys to every `UI_STRINGS` entry.
+
+No other file needs modification.
+
+### 11.3. Unit System Resolution
+
+_Target file: `src/lib/utils/formatters.ts`_
+
+```typescript
+// getUnitSystem() bridges language code → unit system.
+// Unknown codes (community languages) default to "imperial" (SRD reference system).
+export function getUnitSystem(lang: string): UnitSystem {
+    return LANG_UNIT_SYSTEM.get(lang) ?? 'imperial';
+}
+
+// formatDistance / formatWeight delegate to getUnitSystem():
+export function formatDistance(feet: number, lang: string): string {
+    const config = UNIT_SYSTEM_CONFIG[getUnitSystem(lang)];
+    const rounded = Math.round(feet * config.distanceMultiplier * 10) / 10;
+    return `${rounded} ${config.distanceUnit}`;
+}
+// formatDistance(30, "en") → "30 ft."  (imperial)
+// formatDistance(30, "fr") → "9 m"     (metric)
+// formatDistance(30, "es") → "30 ft."  (community lang → imperial fallback)
+```
+
+### 11.4. JSON Rule File Format and `supportedLanguages`
 
 Rule files use a metadata wrapper format declaring which languages they contain:
 
@@ -2328,23 +2376,23 @@ Rule files use a metadata wrapper format declaring which languages they contain:
 }
 ```
 
-The DataLoader collects all declared language codes across all loaded files and exposes them via `getAvailableLanguages()`. The UI language selector dropdown is populated from this set — it always contains at least `"en"`.
+`DataLoader._availableLanguages` is seeded from `SUPPORTED_UI_LANGUAGES` at construction time, then merges in codes declared by loaded JSON files. The language dropdown always shows at least the built-in UI languages.
 
 **Fallback behavior:**
 - Files without `supportedLanguages` (legacy bare-array format) are accepted; `"en"` is assumed.
-- The `t()` function always falls back: requested lang → `"en"` → first key → `"??"`.
-- A community file declaring `"es"` will surface Spanish in the dropdown even if the UI chrome has no Spanish translations — those fall back to English.
+- The `t()` function: requested lang → `"en"` → first key → `"??"`.
+- A community file declaring `"es"` surfaces Spanish in the dropdown; UI chrome strings for unknown codes fall back to English.
 
-### 11.3. Integration in the Svelte Engine (GameEngine)
+### 11.5. Integration in the Svelte Engine (GameEngine)
 
 ```typescript
 export class GameEngine {
-    settings = $state<CampaignSettings>({ language: 'en', ... });
+    settings = $state<CampaignSettings>({ language: storageManager.loadUserLanguage(), ... });
 
-    // Available languages derived from loaded JSON files
+    // Available languages: built-in UI languages + languages from loaded JSON files.
     availableLanguages: string[] = $derived.by(() => {
-        void this.dataLoaderVersion; // reactive dependency on data reloads
-        return dataLoader.getAvailableLanguages(); // always includes "en"
+        void this.dataLoaderVersion;
+        return dataLoader.getAvailableLanguages();
     });
 
     t(textObj: LocalizedString | string): string {
@@ -2352,31 +2400,25 @@ export class GameEngine {
         const lang = this.settings.language;
         return textObj[lang] || textObj["en"] || Object.values(textObj)[0] || "??";
     }
-
-    formatDistance(feetValue: number): string {
-        const config = I18N_CONFIG[this.settings.language as SupportedLanguage] ?? I18N_CONFIG["en"];
-        const rounded = Math.round(feetValue * config.distanceMultiplier * 10) / 10;
-        return `${rounded} ${config.distanceUnit}`;
-    }
 }
 ```
 
-### 11.4. UI Chrome Strings
+Language preference is persisted at user level (not campaign level) via `storageManager.saveUserLanguage()` / `loadUserLanguage()`.
 
-All static UI text (navigation, button labels, section headers, empty states) is stored in `src/lib/i18n/ui-strings.ts` as `LocalizedString` objects with `"en"` and `"fr"` keys. Community language codes that lack a UI chrome key fall back to English via the standard `t()` fallback chain.
+### 11.6. UI Chrome Strings
+
+All static UI text is stored in `src/lib/i18n/ui-strings.ts`. Community codes not in `UI_STRINGS` fall back to English.
 
 ```typescript
 ui('combat.hp.title', 'fr')  // → "Points de vie"
 ui('combat.hp.title', 'es')  // → "Hit Points" (falls back to English)
 ```
 
-### 11.5. GM-Only Internal IDs
+### 11.7. GM-Only Internal IDs
 
-Internal identifiers (`feature.id`, `feature.ruleSource`, tags) are only visible to users with game master role (`sessionContext.isGameMaster === true`). Players see only display names and descriptions. This is enforced in the FeatureModal and EphemeralEffectsPanel components.
+Internal identifiers (`feature.id`, `feature.ruleSource`, tags) are only visible to GMs (`sessionContext.isGameMaster`). Enforced in FeatureModal and EphemeralEffectsPanel.
 
-### 11.6. Placeholder Pipes
-
-In JSON descriptions, "Pipes" indicate that a variable should be converted before display.
+### 11.8. Placeholder Pipes
 
 ```json
 "description": {
@@ -2385,9 +2427,9 @@ In JSON descriptions, "Pipes" indicate that a variable should be converted befor
 }
 ```
 
-The engine reads the value (40 feet), sees the `|distance` pipe, calls `formatDistance(40)`, and outputs `"12 m"` (French) or `"40 ft."` (English). Unknown language codes default to English unit formatting.
+The `|distance` pipe calls `formatDistance(value, lang)`. Output: `"12 m"` (metric) or `"40 ft."` (imperial). Unknown language codes default to imperial.
 
-All rule values are stored in **reference units** (feet, pounds). The `t()` function reads the current language. The `|distance` and `|weight` pipe operators in description strings call `formatDistance()` and `formatWeight()` for localized display.
+All rule values are stored in **reference units** (feet, pounds). The `|distance` and `|weight` pipe operators in description strings call `formatDistance()` and `formatWeight()` for localized display.
 
 ---
 
@@ -2829,23 +2871,44 @@ All JSON rule files in `static/rules/` (recursively) are loaded in **alphabetica
 ```
 static/rules/
   00_d20srd_core/
-    00_d20srd_core_races.json
-    01_d20srd_core_classes.json
-    02_d20srd_core_class_features.json
-    03_d20srd_core_feats.json
-    05_d20srd_core_spells.json
-    07_d20srd_core_equipment_armor.json
-    09_d20srd_core_config.json
+    00_d20srd_core_config_tables.json   ← Loaded first (config tables, XP, skills…)
+    01_d20srd_core_races.json
+    02_d20srd_core_classes.json
+    03_d20srd_core_class_features.json
+    04_d20srd_core_feats.json
+    05_d20srd_core_skills_config.json
+    06_d20srd_core_spells.json
+    07_d20srd_core_equipment_weapons.json
+    08_d20srd_core_equipment_armor.json
+    09_d20srd_core_equipment_goods.json
+    10_d20srd_core_config.json
+    …
   01_d20srd_psionics/
     00_d20srd_psionics_classes.json
-    01_d20srd_psionics_powers.json
+    01_d20srd_psionics_class_features.json
+    02_d20srd_psionics_powers.json
+    …
   50_homebrew_winter_circle/
     00_winter_circle_druid.json
   90_campaign_reign_of_winter/
     00_reign_custom_rules.json
-  config_tables.json
-  manifest.json
+  test/                               ← EXCLUDED from all discovery (never deployed)
+    test_mock.json                    ← Unit-test base entities (Vitest only)
+    test_override.json                ← Merge-engine test fixtures (Vitest only)
+  manifest.json                       ← Static fallback for Vitest (includes test/)
 ```
+
+#### The `test/` subfolder
+
+The `test/` directory is a **unit-test-only zone**:
+
+| Aspect | Detail |
+|---|---|
+| **Contents** | `test_mock.json` — a minimal set of base entities (race, class, armor, condition, orc) that exercises the DAG pipeline. `test_override.json` — partial and full-replace override entities used to verify merge engine semantics (`merge: "replace"` / `merge: "partial"`). |
+| **Who loads it** | The Vitest test suite only, via `manifest.json` (the static fallback that is used when the SvelteKit server endpoint is not running). |
+| **Excluded from** | The SvelteKit `GET /rules` endpoint (skips the `test/` directory by name). The PHP `GET /api/rules/list` endpoint (skips files whose parent directory is `test/`). Any live or development campaign session. |
+| **Why in `static/`** | The files must be HTTP-accessible so `DataLoader.#loadRuleFile()` can `fetch()` them during Vitest tests that use `loadRuleSources(['test/test_mock.json'])`. |
+| **Deployment** | These files are physically present in the deployment package but are never served by either discovery endpoint. They are completely invisible to the running application. |
 
 `CampaignSettings.enabledRuleSources` is a **filter** (include/exclude), not a loading order control. Alphabetical file order always determines priority.
 

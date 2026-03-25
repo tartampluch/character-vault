@@ -11,7 +11,7 @@
  *   This file is the ONLY place where unit conversion happens. Any component or
  *   utility that needs to display a distance or weight to the user must call
  *   these functions. The result changes automatically when the active language
- *   changes, because all formatting reads from the `I18N_CONFIG` constant.
+ *   changes, because all formatting reads from the `UNIT_SYSTEM_CONFIG` constant.
  *
  *   PURE FUNCTIONS:
  *   All functions in this file are pure (no side effects, no state).
@@ -22,13 +22,14 @@
  *     - Svelte component templates (Phase 8+)
  *     - Unit tests (Phase 17.1)
  *
- * @see src/lib/types/i18n.ts       for LocalizedString, SupportedLanguage, I18N_CONFIG
+ * @see src/lib/types/i18n.ts       for LocalizedString, UnitSystem, UNIT_SYSTEM_CONFIG
  * @see src/lib/types/settings.ts   for CampaignSettings
  * @see src/lib/utils/mathParser.ts (Phase 2.2) for |distance and |weight pipe handling
  */
 
-import { I18N_CONFIG } from '../types/i18n';
-import type { LocalizedString, SupportedLanguage } from '../types/i18n';
+import { UNIT_SYSTEM_CONFIG } from '../types/i18n';
+import type { LocalizedString, UnitSystem } from '../types/i18n';
+import { LANG_UNIT_SYSTEM } from '../i18n/ui-strings';
 import type { CampaignSettings } from '../types/settings';
 
 // =============================================================================
@@ -78,15 +79,47 @@ export function t(textObj: LocalizedString | string, lang: string): string {
 }
 
 // =============================================================================
+// UNIT SYSTEM RESOLUTION
+// =============================================================================
+
+/**
+ * Resolves the `UnitSystem` for a given language code.
+ *
+ * LOOKUP ORDER:
+ *   1. `LANG_UNIT_SYSTEM` (from `ui-strings.ts`) — covers all built-in UI languages.
+ *   2. Default: `"imperial"` — safest fallback for community languages not in the map.
+ *      (All SRD values are stored in feet/pounds, so imperial is always correct.)
+ *
+ * This is the ONLY place that bridges language code → unit system.
+ * Adding a new built-in language only requires adding its entry to
+ * `SUPPORTED_UI_LANGUAGES` in `ui-strings.ts`; this function needs no changes.
+ *
+ * @param lang - Any language code string (e.g. `"en"`, `"fr"`, `"es"`).
+ * @returns `"imperial"` or `"metric"`.
+ *
+ * @example
+ * getUnitSystem("en")  // → "imperial"
+ * getUnitSystem("fr")  // → "metric"
+ * getUnitSystem("es")  // → "imperial" (community lang, defaults to imperial)
+ * getUnitSystem("de")  // → "imperial" (not yet in map, defaults to imperial)
+ */
+export function getUnitSystem(lang: string): UnitSystem {
+  return LANG_UNIT_SYSTEM.get(lang) ?? 'imperial';
+}
+
+// =============================================================================
 // DISTANCE FORMATTING
 // =============================================================================
 
 /**
  * Converts a distance value in FEET to the display unit for the active language.
  *
+ * Delegates unit-system resolution to `getUnitSystem(lang)`, then applies the
+ * appropriate multiplier and suffix from `UNIT_SYSTEM_CONFIG`.
+ *
  * Conversion:
- *   - English: 1:1 (feet stay as feet) → "30 ft."
- *   - French:  feet × 0.3 → metres     → "9 m"
+ *   - imperial languages (en, …): 1:1 (feet stay as feet) → "30 ft."
+ *   - metric languages   (fr, …): feet × 0.3 → metres     → "9 m"
  *
  * WHY NOT STORE IN METRES?
  *   D&D 3.5 rule text, spell ranges, and movement speeds are always specified in
@@ -103,8 +136,8 @@ export function t(textObj: LocalizedString | string, lang: string): string {
  *     40 ft → 12.0 m (displayed as "12 m")
  *   Trailing zeros after the decimal are stripped by JS's default number-to-string.
  *
- * @param feet     - Distance in feet (the engine's reference unit).
- * @param lang     - The target display language.
+ * @param feet - Distance in feet (the engine's reference unit).
+ * @param lang - The target display language (any string; unknown → imperial).
  * @returns Formatted distance string with unit suffix.
  *
  * @example
@@ -112,9 +145,10 @@ export function t(textObj: LocalizedString | string, lang: string): string {
  * formatDistance(30, "fr") // → "9 m"
  * formatDistance(25, "fr") // → "7.5 m"
  * formatDistance(0, "en")  // → "0 ft."
+ * formatDistance(30, "es") // → "30 ft." (community lang → imperial fallback)
  */
 export function formatDistance(feet: number, lang: string): string {
-  const config = I18N_CONFIG[lang as SupportedLanguage] ?? I18N_CONFIG['en'];
+  const config = UNIT_SYSTEM_CONFIG[getUnitSystem(lang)];
   const converted = feet * config.distanceMultiplier;
   // Round to 1 decimal to avoid floating point artifacts (e.g., 9.000000001)
   const rounded = Math.round(converted * 10) / 10;
@@ -123,9 +157,6 @@ export function formatDistance(feet: number, lang: string): string {
 
 /**
  * Convenience overload: resolves the language from a `CampaignSettings` object.
- *
- * This signature is provided for callers that have access to the full settings
- * object (e.g., Svelte components, GameEngine methods) rather than just the language string.
  *
  * @param feet     - Distance in feet.
  * @param settings - The active campaign settings (language is read from here).
@@ -142,30 +173,33 @@ export function formatDistanceWithSettings(feet: number, settings: CampaignSetti
 /**
  * Converts a weight value in POUNDS to the display unit for the active language.
  *
+ * Delegates unit-system resolution to `getUnitSystem(lang)`, then applies the
+ * appropriate multiplier and suffix from `UNIT_SYSTEM_CONFIG`.
+ *
  * Conversion:
- *   - English: 1:1 (pounds stay as pounds) → "10 lb."
- *   - French:  pounds × 0.5 → kilograms    → "5 kg"
+ *   - imperial languages (en, …): 1:1 (pounds stay as pounds) → "10 lb."
+ *   - metric languages   (fr, …): pounds × 0.5 → kilograms    → "5 kg"
  *
  * WHY 0.5 FOR KG (not 0.4536)?
  *   D&D 3.5 French editions use 0.5 kg/lb as a rounded convention for encumbrance
  *   calculations (it simplifies head-math at the gaming table). The exact scientific
  *   conversion (0.4536) would produce ugly numbers like "4.536 kg" for a 10 lb item.
- *   The convention is explicit in the I18N_CONFIG constant.
  *
  * ROUNDING:
  *   Rounded to 1 decimal place for clean display output.
  *
- * @param lbs      - Weight in pounds (the engine's reference unit).
- * @param lang     - The target display language.
+ * @param lbs  - Weight in pounds (the engine's reference unit).
+ * @param lang - The target display language (any string; unknown → imperial).
  * @returns Formatted weight string with unit suffix.
  *
  * @example
  * formatWeight(10, "en") // → "10 lb."
  * formatWeight(10, "fr") // → "5 kg"
  * formatWeight(1, "fr")  // → "0.5 kg"
+ * formatWeight(10, "es") // → "10 lb." (community lang → imperial fallback)
  */
 export function formatWeight(lbs: number, lang: string): string {
-  const config = I18N_CONFIG[lang as SupportedLanguage] ?? I18N_CONFIG['en'];
+  const config = UNIT_SYSTEM_CONFIG[getUnitSystem(lang)];
   const converted = lbs * config.weightMultiplier;
   const rounded = Math.round(converted * 10) / 10;
   return `${rounded} ${config.weightUnit}`;

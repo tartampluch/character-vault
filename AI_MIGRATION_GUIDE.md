@@ -1124,7 +1124,9 @@ Use the official Wizards of the Coast French translation (Éditions Spécial Jeu
 
 ### Distance and Weight in Description Text
 
-Rule values are always in imperial units (feet, pounds). Use `{@path|distance}` pipes for display:
+Rule values are always in imperial units (feet, pounds). The display layer uses `UNIT_SYSTEM_CONFIG` keyed by `UnitSystem` (`"imperial"` or `"metric"`), with the language→unit-system mapping coming from `LANG_UNIT_SYSTEM` in `ui-strings.ts`. Community languages not in that map default to `imperial`.
+
+Use `{@path|distance}` pipes in description text for automatic unit conversion:
 
 ```json
 "description": {
