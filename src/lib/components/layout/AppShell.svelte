@@ -86,8 +86,10 @@
   import { afterNavigate } from '$app/navigation';
   import Sidebar from './Sidebar.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { loadUiLocale } from '$lib/i18n/ui-strings';
   import { IconMenu } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
@@ -167,8 +169,17 @@
    * On mount (browser-only): read the cookie to restore the previous sidebar state.
    * Must happen in onMount because `document.cookie` is not available in SSR.
    */
-  onMount(() => {
+  onMount(async () => {
     sidebarCollapsed = readSidebarCookie();
+
+    // Discover community locale files from the server and register them so
+    // they appear in the language dropdown.  Non-critical: no-op on failure.
+    await dataLoader.loadExternalLocales();
+
+    // Load the active language's locale file if it is not English.
+    // This ensures translated UI chrome is ready before the first interaction.
+    const lang = engine.settings.language;
+    if (lang && lang !== 'en') await loadUiLocale(lang);
   });
 
   // ---------------------------------------------------------------------------

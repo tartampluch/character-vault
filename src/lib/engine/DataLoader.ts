@@ -60,7 +60,8 @@
 
 import type { Feature, MergeStrategy, LevelProgressionEntry, FeatureChoice } from '../types/feature';
 import type { ID } from '../types/primitives';
-import { SUPPORTED_UI_LANGUAGES } from '../i18n/ui-strings';
+import { SUPPORTED_UI_LANGUAGES, registerLangUnitSystem } from '../i18n/ui-strings';
+import type { UnitSystem } from '../types/i18n';
 
 // =============================================================================
 // RULE FILE FORMAT — Top-level wrapper for JSON rule files
@@ -1060,6 +1061,42 @@ export class DataLoader {
    */
   getAvailableLanguages(): string[] {
     return Array.from(this._availableLanguages).sort();
+  }
+
+  /**
+   * Discovers community UI locale files from the server and registers them so
+   * they appear in the language dropdown.
+   *
+   * Calls GET /api/locales, which scans static/locales/*.json and returns an
+   * array of { code, language, unitSystem } descriptors.  For each locale:
+   *   - The language code is added to _availableLanguages (dropdown option).
+   *   - The unit system is registered via registerLangUnitSystem() so distance
+   *     and weight formatting work correctly for that language.
+   *
+   * The built-in locales (en, fr) are always present regardless of the API
+   * response — this method only adds *additional* community-contributed files.
+   *
+   * Non-critical: if the endpoint is unreachable the app continues normally
+   * with only the built-in languages.
+   *
+   * Call once on app startup (AppShell.svelte onMount), after rule files load.
+   */
+  async loadExternalLocales(): Promise<void> {
+    try {
+      const res = await fetch('/api/locales');
+      if (!res.ok) return;
+      const locales = await res.json() as Array<{
+        code: string;
+        language: string;
+        unitSystem: UnitSystem;
+      }>;
+      for (const { code, unitSystem } of locales) {
+        this._availableLanguages.add(code);
+        registerLangUnitSystem(code, unitSystem);
+      }
+    } catch {
+      // Non-critical — built-in languages always available.
+    }
   }
 }
 

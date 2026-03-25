@@ -61,7 +61,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, loadUiLocale } from '$lib/i18n/ui-strings';
   import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
   import {
     IconCampaign,
@@ -486,10 +486,12 @@
         <button
           class="flex items-center justify-center w-full h-8 rounded-md text-xs font-bold
                  text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
-          onclick={() => {
+          onclick={async () => {
             const langs = engine.availableLanguages;
-            const idx = langs.indexOf(engine.settings.language);
-            engine.settings.language = langs[(idx + 1) % langs.length];
+            const idx  = langs.indexOf(engine.settings.language);
+            const code = langs[(idx + 1) % langs.length];
+            await loadUiLocale(code);
+            engine.settings.language = code;
           }}
           title="{ui('lang.select_tooltip', engine.settings.language)}"
           aria-label="{ui('lang.select_tooltip', engine.settings.language)}"
@@ -510,7 +512,11 @@
                  hover:border-accent focus:border-accent focus:outline-none
                  transition-colors"
           value={engine.settings.language}
-          onchange={(e) => { engine.settings.language = (e.target as HTMLSelectElement).value; }}
+          onchange={async (e) => {
+            const code = (e.target as HTMLSelectElement).value;
+            await loadUiLocale(code);
+            engine.settings.language = code;
+          }}
           aria-label="{ui('lang.select_tooltip', engine.settings.language)}"
           title="{ui('lang.select_tooltip', engine.settings.language)}"
         >

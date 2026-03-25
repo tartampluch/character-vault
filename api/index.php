@@ -61,6 +61,7 @@ require_once __DIR__ . '/controllers/CampaignController.php';
 require_once __DIR__ . '/controllers/CharacterController.php';
 require_once __DIR__ . '/controllers/RulesController.php';
 require_once __DIR__ . '/controllers/GlobalRulesController.php';
+require_once __DIR__ . '/controllers/UiLocalesController.php';
 
 // ============================================================
 // GLOBAL MIDDLEWARE
@@ -120,6 +121,10 @@ try {
         // (an attacker forcing a player to log out during a game session)
         verifyCsrfToken();
         handleLogout();
+
+    } elseif ($path === '/locales' && $method === 'GET') {
+        // Public — no auth required (locale metadata is not sensitive)
+        (new UiLocalesController())->index();
 
     } elseif ($path === '/auth/me' && $method === 'GET') {
         handleMe();

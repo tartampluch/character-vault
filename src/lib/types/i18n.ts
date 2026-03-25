@@ -37,6 +37,40 @@
 // LOCALIZED STRING
 // =============================================================================
 
+// =============================================================================
+// UI LOCALE TYPES  (chrome strings only — not used for game-data entities)
+// =============================================================================
+
+/**
+ * A single CLDR plural-form object for a UI chrome string.
+ * Keys are CLDR plural categories: "zero", "one", "two", "few", "many", "other".
+ * Translators only need to fill in the categories their language uses
+ * (most European languages just need "one" and "other").
+ *
+ * @example
+ * { one: "{n} fichier", other: "{n} fichiers" }  // French
+ * { one: "{n} file",    other: "{n} files"    }  // English
+ */
+export type UiPluralForms = Partial<Record<Intl.LDMLPluralRule, string>>;
+
+/**
+ * A single UI chrome string value.
+ * - Plain `string` for simple labels (buttons, headings, messages).
+ * - `UiPluralForms` for count-dependent strings (use with `uiN()`).
+ */
+export type UiStringValue = string | UiPluralForms;
+
+/**
+ * A flat key→value map loaded from a locale JSON file.
+ * The `$meta` block (present in the JSON file for translator guidance) is
+ * stripped out by the loader before the map is cached.
+ */
+export type UiLocale = Record<string, UiStringValue>;
+
+// =============================================================================
+// LOCALIZED STRING  (game-data entities — JSON rule files)
+// =============================================================================
+
 /**
  * A translatable string stored as a map from language code to translated text.
  *

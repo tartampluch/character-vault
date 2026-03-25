@@ -21,7 +21,7 @@
  * @see ARCHITECTURE.md section 11 — i18n and Unit Conversion
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
 import {
   t,
   formatDistance,
@@ -34,7 +34,7 @@ import {
   getUnitSystem,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
-import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui } from '$lib/i18n/ui-strings';
+import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, loadUiLocale } from '$lib/i18n/ui-strings';
 import { getAbilityAbbr, MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
 
 // =============================================================================
@@ -396,6 +396,30 @@ describe('formatWeight() with community language codes', () => {
 // =============================================================================
 
 describe('ui() — UI string lookup', () => {
+  // The new ui-strings architecture loads non-English locales on demand via
+  // loadUiLocale(). Seed a minimal French locale so the "fr" tests work without
+  // a running server. Only the keys exercised in this section are needed.
+  beforeAll(async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            '$meta': { code: 'fr', language: 'Français' },
+            'lang.en':             'Anglais',
+            'lang.label':          'Langue',
+            'lang.select_tooltip': 'Changer la langue',
+            'lang.fr':             'Français',
+            'combat.hp.title':     'Points de vie',
+            'combat.ac.title':     'Classe d\'armure',
+          }),
+      }),
+    );
+    await loadUiLocale('fr');
+    vi.unstubAllGlobals();
+  });
+
   it('returns English string for a known key with lang "en"', () => {
     expect(ui('lang.en', 'en')).toBe('English');
   });

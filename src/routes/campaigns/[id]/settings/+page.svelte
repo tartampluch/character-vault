@@ -18,7 +18,7 @@
   import { storageManager, apiHeaders } from '$lib/engine/StorageManager';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack } from '$lib/components/ui/icons';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
 
   $effect(() => {
     if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`);
@@ -587,7 +587,7 @@
       <div class="flex flex-col gap-1">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
           {ui('settings.rule_sources.load_order', engine.settings.language)}
-          <span class="normal-case font-normal ml-1">— {enabledSources.length} / {availableFiles.length} {ui('settings.rule_sources.files', engine.settings.language)}</span>
+          <span class="normal-case font-normal ml-1">— {enabledSources.length} / {availableFiles.length} {uiN('settings.rule_sources.files', availableFiles.length, engine.settings.language)}</span>
         </p>
         {#each enabledSources as path, i (path)}
           {@const file = availableFiles.find(f => f.path === path)}
@@ -608,7 +608,7 @@
             </span>
             <span class="flex-1 text-[10px] font-mono truncate text-text-primary">{path}</span>
             {#if file}
-              <span class="shrink-0 text-[10px] text-text-muted/60">{file.entityCount} {ui('settings.rule_sources.entities', engine.settings.language)}</span>
+              <span class="shrink-0 text-[10px] text-text-muted/60">{file.entityCount} {uiN('settings.rule_sources.entities', file.entityCount ?? 0, engine.settings.language)}</span>
             {/if}
             <button
               type="button"
@@ -629,7 +629,7 @@
         <div class="flex flex-col gap-1">
           <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
             {ui('settings.rule_sources.all_files', engine.settings.language)}
-            <span class="normal-case font-normal ml-1">— {disabledFiles.length} / {availableFiles.length} {ui('settings.rule_sources.files', engine.settings.language)}</span>
+            <span class="normal-case font-normal ml-1">— {disabledFiles.length} / {availableFiles.length} {uiN('settings.rule_sources.files', availableFiles.length, engine.settings.language)}</span>
           </p>
           {#each disabledFiles as file}
             {@const gc = groupPalette(file.ruleSource)}
@@ -638,7 +638,7 @@
                 {file.ruleSource}
               </span>
               <span class="flex-1 text-[10px] font-mono truncate text-text-muted">{file.path}</span>
-              <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount} {ui('settings.rule_sources.entities', engine.settings.language)}</span>
+              <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount} {uiN('settings.rule_sources.entities', file.entityCount ?? 0, engine.settings.language)}</span>
               <button
                 class="shrink-0 text-[10px] px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
                 onclick={() => toggleFile(file.path)}
@@ -1090,7 +1090,7 @@
       {#if isValidJson}
         {@const _c = JSON.parse(gmOverridesText || '[]').length}
         <span class="text-text-muted">
-          {(_c === 1 ? ui('settings.overrides.entry', engine.settings.language) : ui('settings.overrides.entries', engine.settings.language)).replace('{n}', String(_c))}
+          {uiN('settings.overrides.entry', _c, engine.settings.language)}
         </span>
       {/if}
     </div>

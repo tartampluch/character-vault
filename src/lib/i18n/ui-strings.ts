@@ -1,56 +1,47 @@
 /**
  * @file src/lib/i18n/ui-strings.ts
- * @description Centralized UI chrome strings for internationalization.
+ * @description UI chrome i18n: English baseline strings + runtime locale loader.
  *
- * All user-visible UI text (section headers, button labels, status messages,
- * empty states, form labels, tooltips) is defined here as `LocalizedString`
- * objects with `en` and `fr` translations.
+ * ARCHITECTURE
+ * ────────────
+ * English is always bundled here as the fallback baseline.
+ * Every other language is loaded on demand from /locales/{code}.json.
  *
- * Components import the `ui` helper function which resolves strings based
- * on the current campaign language setting via `engine.settings.language`.
+ * ADDING A BUILT-IN LANGUAGE (ships with the app):
+ *   1. Add { code, unitSystem } to SUPPORTED_UI_LANGUAGES.
+ *   2. Create static/locales/{code}.json with all translated keys.
+ *   No TypeScript change is needed — the loader is purely data-driven.
  *
- * ADDING A NEW STRING:
- *   1. Add an entry to `UI_STRINGS` with a semantic key.
- *   2. Provide at least `en` and `fr` translations.
- *   3. Use `ui('your_key')` in the component template.
+ * ADDING A COMMUNITY LANGUAGE (server-dropped file):
+ *   Drop static/locales/{code}.json on the server. The discovery endpoint
+ *   GET /api/locales returns it automatically and the language appears in
+ *   the dropdown on next page load. No code change required.
  *
- * NAMING CONVENTION:
- *   Keys use dot-separated namespaces: `section.subsection.element`
- *   Examples: `combat.hp.title`, `feats.empty_state`, `sidebar.campaigns`
+ * STRING TYPES
+ *   Simple string:  "key": "Translation text"
+ *   Template var:   "key": "Hello {name}!" — caller does .replace('{name}', val)
+ *   Plural object:  "key": { "one": "1 file", "other": "{n} files" }
+ *                   → use uiN(key, count, lang) at call sites
+ *
+ * PLURAL FORM NAMES (CLDR):
+ *   Most European languages only use "one" and "other".
+ *   Languages like Russian, Arabic, Polish need "few", "many", "zero" too.
+ *   Intl.PluralRules handles the selection automatically for any BCP-47 code.
  */
 
-import type { LocalizedString, UnitSystem } from '../types/i18n';
-import { t } from '../utils/formatters';
+import type { UiStringValue, UiLocale, UnitSystem } from '../types/i18n';
 
 // =============================================================================
-// BUILT-IN UI LANGUAGE REGISTRY
+// BUILT-IN LANGUAGE REGISTRY
 // =============================================================================
 
 /**
- * The single source of truth for which languages have full UI chrome coverage.
+ * Languages that ship with the application (always available, even offline).
+ * English is the fallback baseline — it never needs a locale file.
+ * French ships as static/locales/fr.json.
  *
- * Each entry declares:
- *   - `code`:       BCP-47-style language code used in `LocalizedString` keys.
- *   - `unitSystem`: which unit system this language uses for distance/weight display.
- *                   Either `"imperial"` (ft./lb.) or `"metric"` (m/kg).
- *
- * WHY HERE AND NOT IN i18n.ts?
- *   This file already owns all UI string translations. Keeping the language
- *   registry here means adding a new language requires exactly TWO changes
- *   in this single file:
- *     1. Add an entry to `SUPPORTED_UI_LANGUAGES`.
- *     2. Add translations for that code in every `UI_STRINGS` entry.
- *   No other file needs modification for a new built-in UI language.
- *
- * Community JSON data files can declare additional language codes via
- * `supportedLanguages`; those are merged into the dropdown at load time.
- * They do not need entries here because the UI chrome falls back to English
- * for unknown codes (via the `t()` fallback chain).
- *
- * HOW IT SEEDS THE DROPDOWN:
- *   `DataLoader._availableLanguages` is seeded from `SUPPORTED_UI_LANGUAGES`
- *   at construction time. The language dropdown in the sidebar always shows
- *   at least these languages, regardless of which JSON files are loaded.
+ * Community languages (dropped in static/locales/) are discovered dynamically
+ * via GET /api/locales and registered at runtime — no entry needed here.
  */
 export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: UnitSystem }> = [
   { code: 'en', unitSystem: 'imperial' },
@@ -58,864 +49,944 @@ export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: U
 ];
 
 /**
- * Lookup map: language code → unit system.
- * Built once at module load from `SUPPORTED_UI_LANGUAGES` for O(1) lookup.
- *
- * For language codes not present in this map (community languages), the
- * `getUnitSystem()` helper in `formatters.ts` falls back to `"imperial"`.
+ * Language code → unit system map.
+ * Built from SUPPORTED_UI_LANGUAGES at module load; extended at runtime for
+ * community locales via registerLangUnitSystem().
  */
-export const LANG_UNIT_SYSTEM: ReadonlyMap<string, UnitSystem> = new Map(
+export const LANG_UNIT_SYSTEM = new Map<string, UnitSystem>(
   SUPPORTED_UI_LANGUAGES.map(({ code, unitSystem }) => [code, unitSystem])
 );
 
-// ---------------------------------------------------------------------------
-// UI STRING REGISTRY
-// ---------------------------------------------------------------------------
+/**
+ * Register a unit system for a language code discovered at runtime.
+ * Called by DataLoader.loadExternalLocales() after the /api/locales discovery.
+ * No-op if the code is already registered (built-in languages take priority).
+ */
+export function registerLangUnitSystem(code: string, unitSystem: UnitSystem): void {
+  if (!LANG_UNIT_SYSTEM.has(code)) LANG_UNIT_SYSTEM.set(code, unitSystem);
+}
 
-export const UI_STRINGS: Record<string, LocalizedString> = {
+// =============================================================================
+// RUNTIME LOCALE CACHE
+// =============================================================================
+
+/** Loaded locale maps, keyed by language code (never contains 'en'). */
+const _loadedLocales = new Map<string, UiLocale>();
+
+/** Cached Intl.PluralRules instances, one per language code. */
+const _pluralCache = new Map<string, Intl.PluralRules>();
+
+/**
+ * Load a locale file from /locales/{code}.json and cache it.
+ *
+ * - No-op for 'en' (always resolved from the bundled baseline).
+ * - No-op if already loaded.
+ * - Falls back silently to English if the file is missing or unreachable.
+ *
+ * Call this once when the user selects a language (Sidebar.svelte) and once
+ * on app startup for the active language (AppShell.svelte).
+ */
+export async function loadUiLocale(code: string): Promise<void> {
+  if (code === 'en' || _loadedLocales.has(code)) return;
+  try {
+    const res = await fetch(`/locales/${code}.json`);
+    if (!res.ok) return;
+    const raw = await res.json() as Record<string, unknown>;
+    // Strip the $meta block — it is translator metadata, not a string key.
+    const { $meta: _ignored, ...strings } = raw;
+    _loadedLocales.set(code, strings as UiLocale);
+  } catch {
+    // Non-critical: the UI will display English strings as a graceful fallback.
+  }
+}
+
+// =============================================================================
+// ENGLISH BASELINE — all UI chrome strings in English
+// =============================================================================
+// Keys:   dot-separated namespaces  →  'section.subsection.element'
+// Values: plain string  OR  { one: '…', other: '…' } for count-sensitive labels
+//         (use uiN() at call sites for plural objects)
+// =============================================================================
+
+export const UI_STRINGS: Record<string, UiStringValue> = {
 
   // ==========================================================================
   // LOGIN PAGE
   // ==========================================================================
-  'login.title':                  { en: 'Sign in to continue', fr: 'Connectez-vous pour continuer' },
-  'login.username':               { en: 'Username', fr: 'Identifiant' },
-  'login.password':               { en: 'Password', fr: 'Mot de passe' },
-  'login.sign_in':                { en: 'Sign In', fr: 'Se connecter' },
-  'login.signing_in':             { en: 'Signing in…', fr: 'Connexion…' },
-  'login.error_invalid':          { en: 'Invalid username or password.', fr: 'Identifiant ou mot de passe incorrect.' },
-  'login.error_too_many':         { en: 'Too many login attempts. Please wait 15 minutes.', fr: 'Trop de tentatives de connexion. Veuillez attendre 15 minutes.' },
-  'login.error_failed':           { en: 'Login failed (HTTP {status}). Please try again.', fr: 'Connexion échouée (HTTP {status}). Veuillez réessayer.' },
-  'login.error_server':           { en: 'Could not reach the server. Is the PHP API running?', fr: 'Impossible de contacter le serveur. L\'API PHP est-elle démarrée ?' },
-  'login.dev_hint':               { en: 'Dev accounts: {gm} or {player} — run {cmd} to create them.', fr: 'Comptes de dev : {gm} ou {player} — lancez {cmd} pour les créer.' },
+  'login.title':                  'Sign in to continue',
+  'login.username':               'Username',
+  'login.password':               'Password',
+  'login.sign_in':                'Sign In',
+  'login.signing_in':             'Signing in…',
+  'login.error_invalid':          'Invalid username or password.',
+  'login.error_too_many':         'Too many login attempts. Please wait 15 minutes.',
+  'login.error_failed':           'Login failed (HTTP {status}). Please try again.',
+  'login.error_server':           'Could not reach the server. Is the PHP API running?',
+  'login.dev_hint':               'Dev accounts: {gm} or {player} — run {cmd} to create them.',
 
   // ==========================================================================
   // SIDEBAR & NAVIGATION
   // ==========================================================================
-  'app.title':                    { en: 'Character Vault', fr: 'Character Vault' },
-  'nav.campaigns':                { en: 'Campaigns', fr: 'Campagnes' },
-  'nav.vault':                    { en: 'Vault', fr: 'Coffre' },
-  'nav.character':                { en: 'Character', fr: 'Personnage' },
-  'nav.character_sheet':          { en: 'Character Sheet', fr: 'Fiche de Personnage' },
-  'nav.gm_tools':                 { en: 'GM Tools', fr: 'Outils MJ' },
-  'nav.gm_dashboard':             { en: 'GM Dashboard', fr: 'Tableau de bord MJ' },
-  'nav.content_editor':           { en: 'Content Editor', fr: 'Éditeur de contenu' },
-  'nav.settings':                 { en: 'Settings', fr: 'Paramètres' },
-  'nav.campaign_settings':        { en: 'Campaign Settings', fr: 'Paramètres de campagne' },
-  'nav.expand_sidebar':           { en: 'Expand sidebar', fr: 'Développer la barre latérale' },
-  'nav.collapse_sidebar':         { en: 'Collapse sidebar', fr: 'Réduire la barre latérale' },
-  'nav.close_navigation':         { en: 'Close navigation', fr: 'Fermer la navigation' },
-  'nav.role_gm':                  { en: 'Game Master', fr: 'Maître du Jeu' },
-  'nav.role_player':              { en: 'Player', fr: 'Joueur' },
-  'nav.switch_to_player':         { en: 'Switch to Player mode', fr: 'Passer en mode Joueur' },
-  'nav.switch_to_gm':             { en: 'Switch to GM mode', fr: 'Passer en mode MJ' },
-  'nav.dev_prefix':               { en: 'Dev:', fr: 'Dev :' },
+  'app.title':                    'Character Vault',
+  'nav.campaigns':                'Campaigns',
+  'nav.vault':                    'Vault',
+  'nav.character':                'Character',
+  'nav.character_sheet':          'Character Sheet',
+  'nav.gm_tools':                 'GM Tools',
+  'nav.gm_dashboard':             'GM Dashboard',
+  'nav.content_editor':           'Content Editor',
+  'nav.settings':                 'Settings',
+  'nav.campaign_settings':        'Campaign Settings',
+  'nav.expand_sidebar':           'Expand sidebar',
+  'nav.collapse_sidebar':         'Collapse sidebar',
+  'nav.close_navigation':         'Close navigation',
+  'nav.role_gm':                  'Game Master',
+  'nav.role_player':              'Player',
+  'nav.switch_to_player':         'Switch to Player mode',
+  'nav.switch_to_gm':             'Switch to GM mode',
+  'nav.dev_prefix':               'Dev:',
 
   // ==========================================================================
   // THEME TOGGLE
   // ==========================================================================
-  'theme.system':                 { en: 'System', fr: 'Système' },
-  'theme.light':                  { en: 'Light', fr: 'Clair' },
-  'theme.dark':                   { en: 'Dark', fr: 'Sombre' },
-  'theme.tooltip_system':         { en: 'Theme: System (follows OS preference). Click for Light.', fr: 'Thème : Système (suit les préférences du système). Cliquer pour Clair.' },
-  'theme.tooltip_light':          { en: 'Theme: Light. Click for Dark.', fr: 'Thème : Clair. Cliquer pour Sombre.' },
-  'theme.tooltip_dark':           { en: 'Theme: Dark. Click for System.', fr: 'Thème : Sombre. Cliquer pour Système.' },
+  'theme.system':                 'System',
+  'theme.light':                  'Light',
+  'theme.dark':                   'Dark',
+  'theme.tooltip_system':         'Theme: System (follows OS preference). Click for Light.',
+  'theme.tooltip_light':          'Theme: Light. Click for Dark.',
+  'theme.tooltip_dark':           'Theme: Dark. Click for System.',
 
   // ==========================================================================
   // CHARACTER SHEET TABS
   // ==========================================================================
-  'tab.core':                     { en: 'Core', fr: 'Principal' },
-  'tab.abilities':                { en: 'Abilities', fr: 'Caractéristiques' },
-  'tab.combat':                   { en: 'Combat', fr: 'Combat' },
-  'tab.feats':                    { en: 'Feats', fr: 'Dons' },
-  'tab.magic':                    { en: 'Magic', fr: 'Magie' },
-  'tab.inventory':                { en: 'Inventory', fr: 'Inventaire' },
+  'tab.core':                     'Core',
+  'tab.abilities':                'Abilities',
+  'tab.combat':                   'Combat',
+  'tab.feats':                    'Feats',
+  'tab.magic':                    'Magic',
+  'tab.inventory':                'Inventory',
 
   // ==========================================================================
   // CAMPAIGNS HUB
   // ==========================================================================
-  'campaigns.title':              { en: 'Your Campaigns', fr: 'Vos Campagnes' },
-  'campaigns.subtitle':           { en: 'Choose a campaign to begin, or create a new one.', fr: 'Choisissez une campagne ou créez-en une nouvelle.' },
-  'campaigns.create':             { en: 'Create Campaign', fr: 'Créer une campagne' },
-  'campaigns.new_title':          { en: 'New Campaign', fr: 'Nouvelle campagne' },
-  'campaigns.field_title':        { en: 'Campaign Title', fr: 'Titre de la campagne' },
-  'campaigns.field_title_placeholder': { en: 'e.g. Reign of Winter, Curse of Strahd…', fr: 'ex. Le Règne de l\'Hiver, La Malédiction de Strahd…' },
-  'campaigns.empty_title':        { en: 'No campaigns yet', fr: 'Aucune campagne' },
-  'campaigns.empty_gm':           { en: 'Click "+ Create Campaign" above to start your first adventure.', fr: 'Cliquez sur « + Créer une campagne » pour lancer votre première aventure.' },
-  'campaigns.empty_player':       { en: 'Your Game Master hasn\'t created a campaign yet. Check back later!', fr: 'Votre Maître du Jeu n\'a pas encore créé de campagne. Revenez plus tard !' },
-  'campaigns.open':               { en: 'Open →', fr: 'Ouvrir →' },
+  'campaigns.title':              'Your Campaigns',
+  'campaigns.subtitle':           'Choose a campaign to begin, or create a new one.',
+  'campaigns.create':             'Create Campaign',
+  'campaigns.new_title':          'New Campaign',
+  'campaigns.field_title':        'Campaign Title',
+  'campaigns.field_title_placeholder': 'e.g. Reign of Winter, Curse of Strahd…',
+  'campaigns.empty_title':        'No campaigns yet',
+  'campaigns.empty_gm':           'Click "+ Create Campaign" above to start your first adventure.',
+  'campaigns.empty_player':       "Your Game Master hasn't created a campaign yet. Check back later!",
+  'campaigns.open':               'Open →',
 
   // ==========================================================================
   // CAMPAIGN DETAIL
   // ==========================================================================
-  'campaign.not_found':           { en: 'Campaign not found', fr: 'Campagne introuvable' },
-  'campaign.not_found_desc':      { en: 'The campaign with this ID doesn\'t exist.', fr: 'La campagne avec cet identifiant n\'existe pas.' },
-  'campaign.back_to_hub':         { en: 'Back to Campaign Hub', fr: 'Retour aux campagnes' },
-  'campaign.character_vault':     { en: 'Character Vault', fr: 'Character Vault' },
-  'campaign.chapters_title':      { en: 'Chapters & Acts', fr: 'Chapitres & Actes' },
-  'campaign.chapters_empty_gm':   { en: 'No chapters yet. Add chapters in Campaign Settings.', fr: 'Aucun chapitre. Ajoutez des chapitres dans les Paramètres de campagne.' },
-  'campaign.chapters_empty_player': { en: 'No chapters have been added to this campaign yet.', fr: 'Aucun chapitre n\'a encore été ajouté à cette campagne.' },
-  'campaign.completed':           { en: 'Completed', fr: 'Terminé' },
-  'campaign.mark_done':           { en: 'Mark done', fr: 'Marquer terminé' },
-  'campaign.mark_incomplete':     { en: 'Mark as incomplete', fr: 'Marquer comme incomplet' },
-  'campaign.mark_completed':      { en: 'Mark as completed', fr: 'Marquer comme terminé' },
-  'campaign.done':                { en: 'Done', fr: 'Terminé' },
-  'campaign.task_done':           { en: 'Done', fr: 'Terminé' },
-  'campaign.task_mark_done':      { en: 'Mark done', fr: 'Marquer terminé' },
-  'campaign.active_sources':      { en: 'Active Rule Sources', fr: 'Sources de règles actives' },
-  'campaign.manage_sources_hint': { en: 'Manage rule sources in GM Settings.', fr: 'Gérez les sources de règles dans les Paramètres MJ.' },
+  'campaign.not_found':           'Campaign not found',
+  'campaign.not_found_desc':      "The campaign with this ID doesn't exist.",
+  'campaign.back_to_hub':         'Back to Campaign Hub',
+  'campaign.character_vault':     'Character Vault',
+  'campaign.chapters_title':      'Chapters & Acts',
+  'campaign.chapters_empty_gm':   'No chapters yet. Add chapters in Campaign Settings.',
+  'campaign.chapters_empty_player': 'No chapters have been added to this campaign yet.',
+  'campaign.completed':           'Completed',
+  'campaign.mark_done':           'Mark done',
+  'campaign.mark_incomplete':     'Mark as incomplete',
+  'campaign.mark_completed':      'Mark as completed',
+  'campaign.done':                'Done',
+  'campaign.task_done':           'Done',
+  'campaign.task_mark_done':      'Mark done',
+  'campaign.active_sources':      'Active Rule Sources',
+  'campaign.manage_sources_hint': 'Manage rule sources in GM Settings.',
+  'campaign.tasks_total':         '{completed}/{total} tasks',
 
   // ==========================================================================
   // CHARACTER VAULT
   // ==========================================================================
-  'vault.title':                  { en: 'Your Adventurers', fr: 'Vos Aventuriers' },
-  'vault.create_character':       { en: 'Create New Character', fr: 'Créer un personnage' },
-  'vault.add_npc':                { en: 'Add NPC / Monster', fr: 'Ajouter PNJ / Monstre' },
-  'vault.gm_view':                { en: 'GM View', fr: 'Vue MJ' },
-  'vault.player_view':            { en: 'Player View', fr: 'Vue Joueur' },
-  'vault.characters':             { en: 'character(s)', fr: 'personnage(s)' },
-  'vault.empty_title':            { en: 'No adventurers yet!', fr: 'Aucun aventurier !' },
-  'vault.empty_gm':               { en: 'Create the party\'s first character or add an NPC to get started.', fr: 'Créez le premier personnage du groupe ou ajoutez un PNJ pour commencer.' },
-  'vault.empty_player':           { en: 'You don\'t have any characters in this campaign yet. Click "Create New Character" to begin your journey!', fr: 'Vous n\'avez pas encore de personnage dans cette campagne. Cliquez sur « Créer un personnage » pour commencer votre aventure !' },
-  'vault.delete_confirm':         { en: 'Delete "{name}"? This cannot be undone.', fr: 'Supprimer « {name} » ? Cette action est irréversible.' },
-  'vault.delete_character':       { en: 'Delete character', fr: 'Supprimer le personnage' },
+  'vault.title':                  'Your Adventurers',
+  'vault.create_character':       'Create New Character',
+  'vault.add_npc':                'Add NPC / Monster',
+  'vault.gm_view':                'GM View',
+  'vault.player_view':            'Player View',
+  'vault.characters':             'character(s)',
+  'vault.empty_title':            'No adventurers yet!',
+  'vault.empty_gm':               "Create the party's first character or add an NPC to get started.",
+  'vault.empty_player':           'You don\'t have any characters in this campaign yet. Click "Create New Character" to begin your journey!',
+  'vault.delete_confirm':         'Delete "{name}"? This cannot be undone.',
+  'vault.delete_character':       'Delete character',
 
   // ==========================================================================
   // GM DASHBOARD
   // ==========================================================================
-  'gm.dashboard':                 { en: 'GM Dashboard', fr: 'Tableau de bord MJ' },
-  'gm.all_characters':            { en: 'All Characters', fr: 'Tous les personnages' },
-  'gm.no_characters':             { en: 'No characters in this campaign yet.', fr: 'Aucun personnage dans cette campagne.' },
-  'gm.select_character':          { en: '← Select a character to view their stats and edit GM overrides.', fr: '← Sélectionnez un personnage pour voir ses stats et éditer les overrides MJ.' },
-  'gm.npc':                       { en: 'NPC', fr: 'PNJ' },
-  'gm.pc':                        { en: 'PC', fr: 'PJ' },
-  'gm.quick_stats':               { en: 'Quick Stats (read-only)', fr: 'Stats rapides (lecture seule)' },
-  'gm.active_features':           { en: 'active features', fr: 'capacités actives' },
-  'gm.overrides':                 { en: 'GM override(s)', fr: 'override(s) MJ' },
-  'gm.per_char_overrides':        { en: 'Per-Character GM Overrides', fr: 'Overrides MJ par personnage' },
-  'gm.override_help':             { en: 'Array of ActiveFeatureInstance objects applied LAST in the resolution chain. Each entry needs instanceId, featureId, isActive.', fr: 'Tableau d\'objets ActiveFeatureInstance appliqués EN DERNIER dans la chaîne de résolution. Chaque entrée nécessite instanceId, featureId, isActive.' },
-  'gm.must_be_json_array':        { en: 'Must be a JSON array.', fr: 'Doit être un tableau JSON.' },
-  'gm.invalid_json':              { en: 'Invalid JSON', fr: 'JSON invalide' },
-  'gm.valid_json':                { en: 'Valid JSON', fr: 'JSON valide' },
-  'gm.saved':                     { en: 'Saved!', fr: 'Enregistré !' },
-  'gm.saved_locally':             { en: 'Saved locally (API unavailable).', fr: 'Enregistré localement (API indisponible).' },
-  'gm.saving':                    { en: 'Saving…', fr: 'Enregistrement…' },
-  'gm.save_overrides':            { en: 'Save Overrides', fr: 'Enregistrer les overrides' },
-  'gm.syntax_error':              { en: 'Syntax error:', fr: 'Erreur de syntaxe :' },
-  'gm.level_prefix':              { en: 'Lv.', fr: 'Nv.' },
-  'gm.override_count':            { en: 'override(s)', fr: 'override(s)' },
-  'gm.view':                      { en: 'GM View', fr: 'Vue MJ' },
+  'gm.dashboard':                 'GM Dashboard',
+  'gm.all_characters':            'All Characters',
+  'gm.no_characters':             'No characters in this campaign yet.',
+  'gm.select_character':          '← Select a character to view their stats and edit GM overrides.',
+  'gm.npc':                       'NPC',
+  'gm.pc':                        'PC',
+  'gm.quick_stats':               'Quick Stats (read-only)',
+  'gm.active_features':           'active features',
+  'gm.overrides':                 'GM override(s)',
+  'gm.per_char_overrides':        'Per-Character GM Overrides',
+  'gm.override_help':             'Array of ActiveFeatureInstance objects applied LAST in the resolution chain. Each entry needs instanceId, featureId, isActive.',
+  'gm.must_be_json_array':        'Must be a JSON array.',
+  'gm.invalid_json':              'Invalid JSON',
+  'gm.valid_json':                'Valid JSON',
+  'gm.saved':                     'Saved!',
+  'gm.saved_locally':             'Saved locally (API unavailable).',
+  'gm.saving':                    'Saving…',
+  'gm.save_overrides':            'Save Overrides',
+  'gm.syntax_error':              'Syntax error:',
+  'gm.level_prefix':              'Lv.',
+  'gm.override_count':            'override(s)',
+  'gm.view':                      'GM View',
 
   // ==========================================================================
   // CORE TAB — BASIC INFO
   // ==========================================================================
-  'core.basic_info':              { en: 'Basic Information', fr: 'Informations générales' },
-  'core.character_name':          { en: 'Character Name', fr: 'Nom du personnage' },
-  'core.player_name':             { en: 'Player Name', fr: 'Nom du joueur' },
-  'core.character_name_placeholder': { en: 'e.g. Thorin Ironforge', fr: 'ex. Thorin Forgefer' },
-  'core.player_name_placeholder': { en: 'e.g. Alice, Bob…', fr: 'ex. Alice, Bob…' },
-  'core.race':                    { en: 'Race', fr: 'Race' },
-  'core.class':                   { en: 'Class', fr: 'Classe' },
-  'core.deity':                   { en: 'Deity', fr: 'Divinité' },
-  'core.alignment':               { en: 'Alignment', fr: 'Alignement' },
-  'core.none':                    { en: '— None —', fr: '— Aucun —' },
-  'core.select':                  { en: '— Select —', fr: '— Choisir —' },
-  'core.level_in':                { en: 'Level in', fr: 'Niveau dans' },
-  'core.recommended':             { en: 'Recommended:', fr: 'Recommandé :' },
-  'core.show_details':            { en: 'Show details', fr: 'Voir les détails' },
-  'core.no_deities':              { en: 'No deities loaded. Enable a rule source with deity data.', fr: 'Aucune divinité chargée. Activez une source de règles contenant des divinités.' },
-  'core.choices':                 { en: 'Choices', fr: 'Choix' },
-  'core.up_to':                   { en: 'up to', fr: 'jusqu\'à' },
-  'core.no_options':              { en: 'No options matching', fr: 'Aucune option correspondant à' },
+  'core.basic_info':              'Basic Information',
+  'core.character_name':          'Character Name',
+  'core.player_name':             'Player Name',
+  'core.character_name_placeholder': 'e.g. Thorin Ironforge',
+  'core.player_name_placeholder': 'e.g. Alice, Bob…',
+  'core.race':                    'Race',
+  'core.class':                   'Class',
+  'core.deity':                   'Deity',
+  'core.alignment':               'Alignment',
+  'core.none':                    '— None —',
+  'core.select':                  '— Select —',
+  'core.level_in':                'Level in',
+  'core.recommended':             'Recommended:',
+  'core.show_details':            'Show details',
+  'core.no_deities':              'No deities loaded. Enable a rule source with deity data.',
+  'core.choices':                 'Choices',
+  'core.up_to':                   'up to',
+  'core.no_options':              'No options matching',
 
   // ==========================================================================
   // CORE TAB — SUMMARY PANELS
   // ==========================================================================
-  'core.ability_scores':          { en: 'Ability Scores', fr: 'Caractéristiques' },
-  'core.saving_throws':           { en: 'Saving Throws', fr: 'Jets de sauvegarde' },
-  'core.skills':                  { en: 'Skills', fr: 'Compétences' },
-  'core.edit_link':               { en: 'Edit →', fr: 'Modifier →' },
-  'core.skills_trained_total':    { en: '{trained} trained • {total} total', fr: '{trained} entraînées • {total} total' },
-  'core.skills_empty':            { en: 'No skills loaded.', fr: 'Aucune compétence chargée.' },
-  'core.skills_empty_hint':       { en: 'Skills appear once {key} is loaded.', fr: 'Les compétences apparaissent une fois que {key} est chargé.' },
-  'core.ability_scores_empty':    { en: 'No attributes loaded. Load rule sources to initialise.', fr: 'Aucune caractéristique chargée. Chargez les sources de règles pour initialiser.' },
+  'core.ability_scores':          'Ability Scores',
+  'core.saving_throws':           'Saving Throws',
+  'core.skills':                  'Skills',
+  'core.edit_link':               'Edit →',
+  'core.skills_trained_total':    '{trained} trained • {total} total',
+  'core.skills_empty':            'No skills loaded.',
+  'core.skills_empty_hint':       'Skills appear once {key} is loaded.',
+  'core.ability_scores_empty':    'No attributes loaded. Load rule sources to initialise.',
 
   // ==========================================================================
   // ABILITIES TAB — POINT BUY MODAL
   // ==========================================================================
-  'abilities.point_buy.title':    { en: 'Point Buy', fr: 'Achat de points' },
-  'abilities.point_buy.budget_label': { en: 'Budget', fr: 'Budget' },
-  'abilities.point_buy.remaining': { en: '{n} remaining', fr: '{n} restants' },
-  'abilities.point_buy.cost':     { en: 'Cost', fr: 'Coût' },
-  'abilities.point_buy.pts':      { en: 'pts', fr: 'pts' },
-  'abilities.point_buy.how_it_works': { en: 'Scores start at 8 for free. Raising a score costs points — higher scores cost more per point (15+ costs 2 pts/step). The GM sets the budget in campaign settings.', fr: 'Les scores démarrent à 8 gratuitement. Augmenter un score coûte des points — les scores élevés coûtent plus cher par palier (15+ coûte 2 pts/palier). Le MJ définit le budget dans les paramètres de la campagne.' },
-  'abilities.point_buy.reset':    { en: 'Reset All (8s)', fr: 'Réinitialiser (8s)' },
-  'abilities.point_buy.confirm':  { en: 'Confirm', fr: 'Confirmer' },
+  'abilities.point_buy.title':    'Point Buy',
+  'abilities.point_buy.budget_label': 'Budget',
+  'abilities.point_buy.remaining': '{n} remaining',
+  'abilities.point_buy.cost':     'Cost',
+  'abilities.point_buy.pts':      'pts',
+  'abilities.point_buy.how_it_works': 'Scores start at 8 for free. Raising a score costs points — higher scores cost more per point (15+ costs 2 pts/step). The GM sets the budget in campaign settings.',
+  'abilities.point_buy.reset':    'Reset All (8s)',
+  'abilities.point_buy.confirm':  'Confirm',
 
   // ==========================================================================
   // ABILITIES TAB — ROLL STATS MODAL
   // ==========================================================================
-  'abilities.roll.title':         { en: 'Roll Stats (4d6 Drop Lowest)', fr: 'Lancer les stats (4d6 retire le plus bas)' },
-  'abilities.roll.reroll_active': { en: 'Reroll 1s active', fr: 'Relance des 1s active' },
-  'abilities.roll.reroll_off':    { en: 'Reroll 1s: OFF', fr: 'Relance des 1s : NON' },
-  'abilities.roll.method_desc':   { en: 'Method: 4d6 drop lowest × 6', fr: 'Méthode : 4d6 retire le plus bas × 6' },
-  'abilities.roll.rolled_values': { en: 'Rolled values — click to assign:', fr: 'Valeurs lancées — cliquer pour assigner :' },
-  'abilities.roll.not_assigned':  { en: '— Not assigned —', fr: '— Non assigné —' },
-  'abilities.roll.roll':          { en: 'Roll!', fr: 'Lancer !' },
-  'abilities.roll.roll_again':    { en: 'Roll Again', fr: 'Relancer' },
-  'abilities.roll.apply':         { en: 'Apply These Scores', fr: 'Appliquer ces scores' },
-  'abilities.roll.prompt':        { en: 'Click "Roll!" to generate 6 ability scores.', fr: 'Cliquer sur "Lancer !" pour générer 6 scores de caractéristiques.' },
+  'abilities.roll.title':         'Roll Stats (4d6 Drop Lowest)',
+  'abilities.roll.reroll_active': 'Reroll 1s active',
+  'abilities.roll.reroll_off':    'Reroll 1s: OFF',
+  'abilities.roll.method_desc':   'Method: 4d6 drop lowest × 6',
+  'abilities.roll.rolled_values': 'Rolled values — click to assign:',
+  'abilities.roll.not_assigned':  '— Not assigned —',
+  'abilities.roll.roll':          'Roll!',
+  'abilities.roll.roll_again':    'Roll Again',
+  'abilities.roll.apply':         'Apply These Scores',
+  'abilities.roll.prompt':        'Click "Roll!" to generate 6 ability scores.',
 
   // ==========================================================================
   // ABILITIES TAB
   // ==========================================================================
-  'abilities.title':              { en: 'Ability Scores', fr: 'Caractéristiques' },
-  'abilities.point_buy':          { en: 'Point Buy', fr: 'Achat par points' },
-  'abilities.roll_stats':         { en: 'Roll Stats', fr: 'Lancer les dés' },
-  'abilities.base':               { en: 'Base', fr: 'Base' },
-  'abilities.total':              { en: 'Total', fr: 'Total' },
-  'abilities.mod':                { en: 'Mod', fr: 'Mod' },
-  'abilities.temp':               { en: 'Temp', fr: 'Temp' },
-  'abilities.recommended_for':    { en: 'Recommended for your class', fr: 'Recommandé pour votre classe' },
-  'abilities.check':              { en: 'Check', fr: 'Test' },
-  'abilities.show_breakdown':     { en: 'Show modifier breakdown', fr: 'Voir le détail des modificateurs' },
-  'abilities.temp_tooltip':       { en: 'Temporary modifier (buff/curse)', fr: 'Modificateur temporaire (bonus/malédiction)' },
-  'abilities.point_buy_tooltip':  { en: 'Point Buy stat generation wizard', fr: 'Assistant de création par achat de points' },
-  'abilities.roll_stats_tooltip': { en: 'Roll Stats wizard (4d6 drop lowest)', fr: 'Assistant de lancer de dés (4d6, retire le plus bas)' },
+  'abilities.title':              'Ability Scores',
+  'abilities.point_buy':          'Point Buy',
+  'abilities.roll_stats':         'Roll Stats',
+  'abilities.base':               'Base',
+  'abilities.total':              'Total',
+  'abilities.mod':                'Mod',
+  'abilities.temp':               'Temp',
+  'abilities.recommended_for':    'Recommended for your class',
+  'abilities.check':              'Check',
+  'abilities.show_breakdown':     'Show modifier breakdown',
+  'abilities.temp_tooltip':       'Temporary modifier (buff/curse)',
+  'abilities.point_buy_tooltip':  'Point Buy stat generation wizard',
+  'abilities.roll_stats_tooltip': 'Roll Stats wizard (4d6 drop lowest)',
 
   // ==========================================================================
   // SAVING THROWS
   // ==========================================================================
-  'saves.title':                  { en: 'Saving Throws', fr: 'Jets de sauvegarde' },
-  'saves.base':                   { en: 'Base', fr: 'Base' },
-  'saves.mods':                   { en: 'Mods', fr: 'Mods' },
-  'saves.temp':                   { en: 'Temp', fr: 'Temp' },
-  'saves.show_breakdown':         { en: 'Show breakdown', fr: 'Voir le détail' },
-  'saves.roll':                   { en: 'Roll saving throw', fr: 'Lancer le jet de sauvegarde' },
-  'saves.save':                   { en: 'Save', fr: 'Sauvegarde' },
+  'saves.title':                  'Saving Throws',
+  'saves.base':                   'Base',
+  'saves.mods':                   'Mods',
+  'saves.temp':                   'Temp',
+  'saves.show_breakdown':         'Show breakdown',
+  'saves.roll':                   'Roll saving throw',
+  'saves.save':                   'Save',
 
   // ==========================================================================
   // SKILLS MATRIX
   // ==========================================================================
-  'skills.title':                 { en: 'Skills Matrix', fr: 'Matrice de compétences' },
-  'skills.sp':                    { en: 'SP:', fr: 'PC :' },
-  'skills.no_skills':             { en: 'No skills loaded.', fr: 'Aucune compétence chargée.' },
-  'skills.enable_source':         { en: 'Enable a rule source with skill definitions.', fr: 'Activez une source de règles avec des définitions de compétences.' },
-  'skills.col_skill':             { en: 'Skill', fr: 'Compétence' },
-  'skills.col_total':             { en: 'Total', fr: 'Total' },
-  'skills.col_ability':           { en: 'Ability', fr: 'Carac.' },
-  'skills.col_ranks':             { en: 'Ranks', fr: 'Rangs' },
-  'skills.col_cost':              { en: 'Cost', fr: 'Coût' },
-  'skills.col_max':               { en: 'Max', fr: 'Max' },
-  'skills.training_required':     { en: 'T', fr: 'F' },
-  'skills.class_skill':           { en: 'Class Skill', fr: 'Compétence de classe' },
-  'skills.cross_class':           { en: 'Cross-class Skill', fr: 'Compétence hors classe' },
-  'skills.cross_class_short':     { en: 'Cross-class', fr: 'Hors classe' },
-  'skills.rank_locked':           { en: 'Min', fr: 'Min' },
-  'skills.rank_locked_tooltip':   { en: 'Minimum rank — skill points spent at a committed level-up cannot be refunded.', fr: 'Rang minimum — les points de compétence dépensés lors d\'un gain de niveau validé ne peuvent pas être remboursés.' },
-  'skills.journal_btn':           { en: 'Journal', fr: 'Journal' },
-  'skills.journal_tooltip':       { en: 'Open the leveling journal — explains which class contributed which skill points, BAB, and saves.', fr: 'Ouvrir le journal de progression — explique quels points de compétence, BBA et jets de sauvegarde viennent de chaque classe.' },
+  'skills.title':                 'Skills Matrix',
+  'skills.sp':                    'SP:',
+  'skills.no_skills':             'No skills loaded.',
+  'skills.enable_source':         'Enable a rule source with skill definitions.',
+  'skills.col_skill':             'Skill',
+  'skills.col_total':             'Total',
+  'skills.col_ability':           'Ability',
+  'skills.col_ranks':             'Ranks',
+  'skills.col_cost':              'Cost',
+  'skills.col_max':               'Max',
+  'skills.training_required':     'T',
+  'skills.class_skill':           'Class Skill',
+  'skills.cross_class':           'Cross-class Skill',
+  'skills.cross_class_short':     'Cross-class',
+  'skills.rank_locked':           'Min',
+  'skills.rank_locked_tooltip':   'Minimum rank — skill points spent at a committed level-up cannot be refunded.',
+  'skills.journal_btn':           'Journal',
+  'skills.journal_tooltip':       'Open the leveling journal — explains which class contributed which skill points, BAB, and saves.',
 
   // ==========================================================================
   // LEVELING JOURNAL MODAL
   // ==========================================================================
-  'journal.title':                { en: 'Leveling Journal', fr: 'Journal de progression' },
-  'journal.subtitle':             { en: 'Per-class contribution breakdown', fr: 'Répartition des contributions par classe' },
-  'journal.no_classes':           { en: 'No classes active. Add a class on the Core tab to begin.', fr: 'Aucune classe active. Ajoutez une classe dans l\'onglet Principal pour commencer.' },
-  'journal.class_level':          { en: 'Level', fr: 'Niveau' },
-  'journal.bab':                  { en: 'BAB', fr: 'BBA' },
-  'journal.fort':                 { en: 'Fort', fr: 'Vig.' },
-  'journal.ref':                  { en: 'Ref', fr: 'Réf.' },
-  'journal.will':                 { en: 'Will', fr: 'Vol.' },
-  'journal.skill_points':         { en: 'SP', fr: 'PC' },
-  'journal.sp_formula':           { en: '{base} SP/lv', fr: '{base} PC/nv' },
-  'journal.sp_with_int':          { en: '({base}+INT{int:+}) × {lvl} = {total}', fr: '({base}+INT{int:+}) × {lvl} = {total}' },
-  'journal.sp_note':              { en: '× {lvl} levels', fr: '× {lvl} niveaux' },
-  'journal.class_skills_title':   { en: 'Class Skills', fr: 'Compétences de classe' },
-  'journal.class_skills_none':    { en: 'None declared', fr: 'Aucune déclarée' },
-  'journal.features_title':       { en: 'Features Granted (up to level {lvl})', fr: 'Capacités obtenues (jusqu\'au niveau {lvl})' },
-  'journal.features_none':        { en: 'No features', fr: 'Aucune capacité' },
-  'journal.totals_row':           { en: 'Totals', fr: 'Totaux' },
-  'journal.bonus_sp':             { en: 'Bonus SP/lv (racial/feat): +{bonus}', fr: 'PC bonus/nv (racial/don) : +{bonus}' },
-  'journal.multiclass_warning':   { en: 'Multiclass XP penalty may apply if classes differ by more than 1 level (SRD rule).', fr: 'Une pénalité d\'XP multiclasse peut s\'appliquer si les classes diffèrent de plus d\'un niveau (règle du MR).' },
-  'journal.lock_ranks_btn':       { en: 'Lock Current Ranks', fr: 'Verrouiller les rangs' },
-  'journal.lock_ranks_tooltip':   { en: 'Lock current skill ranks as the minimum floor — simulates committing a level-up.', fr: 'Verrouille les rangs actuels comme plancher minimum — simule la validation d\'un gain de niveau.' },
-  'journal.unlock_ranks_btn':     { en: 'Unlock Ranks', fr: 'Déverrouiller les rangs' },
-  'journal.unlock_ranks_tooltip': { en: 'Remove all rank minimums — allow free reallocation (only for character creation).', fr: 'Supprime tous les minima de rangs — autorise la réallocation libre (création de personnage seulement).' },
-  'journal.sp_first_level_note':  { en: 'The first class taken at character level 1 receives 4× the normal SP for that level (D&D 3.5 SRD). This bonus is already included in the totals above.', fr: 'La première classe prise au niveau 1 du personnage reçoit 4× les PC normaux pour ce niveau (SRD D&D 3.5). Ce bonus est déjà inclus dans les totaux ci-dessus.' },
+  'journal.title':                'Leveling Journal',
+  'journal.subtitle':             'Per-class contribution breakdown',
+  'journal.no_classes':           'No classes active. Add a class on the Core tab to begin.',
+  'journal.class_level':          'Level',
+  'journal.bab':                  'BAB',
+  'journal.fort':                 'Fort',
+  'journal.ref':                  'Ref',
+  'journal.will':                 'Will',
+  'journal.skill_points':         'SP',
+  'journal.sp_formula':           '{base} SP/lv',
+  'journal.sp_with_int':          '({base}+INT{int:+}) × {lvl} = {total}',
+  'journal.sp_note':              '× {lvl} levels',
+  'journal.class_skills_title':   'Class Skills',
+  'journal.class_skills_none':    'None declared',
+  'journal.features_title':       'Features Granted (up to level {lvl})',
+  'journal.features_none':        'No features',
+  'journal.totals_row':           'Totals',
+  'journal.bonus_sp':             'Bonus SP/lv (racial/feat): +{bonus}',
+  'journal.multiclass_warning':   'Multiclass XP penalty may apply if classes differ by more than 1 level (SRD rule).',
+  'journal.lock_ranks_btn':       'Lock Current Ranks',
+  'journal.lock_ranks_tooltip':   'Lock current skill ranks as the minimum floor — simulates committing a level-up.',
+  'journal.unlock_ranks_btn':     'Unlock Ranks',
+  'journal.unlock_ranks_tooltip': 'Remove all rank minimums — allow free reallocation (only for character creation).',
+  'journal.sp_first_level_note':  'The first class taken at character level 1 receives 4× the normal SP for that level (D&D 3.5 SRD). This bonus is already included in the totals above.',
 
   // ==========================================================================
   // COMBAT TAB — HIT POINTS & XP
   // ==========================================================================
-  'combat.hp.title':              { en: 'Hit Points', fr: 'Points de vie' },
-  'combat.hp.con_contrib':        { en: 'CON contrib:', fr: 'Contrib. CON :' },
-  'combat.hp.current':            { en: 'Current', fr: 'Actuels' },
-  'combat.hp.max':                { en: 'Max', fr: 'Max' },
-  'combat.hp.temp':               { en: '+Temp', fr: '+Temp' },
-  'combat.hp.heal':               { en: 'Heal', fr: 'Soigner' },
-  'combat.hp.damage':             { en: 'Damage', fr: 'Dégâts' },
-  'combat.hp.add_temp':           { en: '+ Temp', fr: '+ Temp' },
-  'combat.hp.unknown':            { en: 'Unknown', fr: 'Inconnu' },
-  'combat.hp.dead':               { en: 'Dead', fr: 'Mort' },
-  'combat.hp.dying':              { en: 'Dying', fr: 'Agonisant' },
-  'combat.hp.unconscious':        { en: 'Unconscious', fr: 'Inconscient' },
-  'combat.hp.bloodied':           { en: 'Bloodied', fr: 'Blessé' },
-  'combat.hp.injured':            { en: 'Injured', fr: 'Touché' },
-  'combat.hp.healthy':            { en: 'Healthy', fr: 'En forme' },
-  'combat.xp.title':              { en: 'Experience', fr: 'Expérience' },
-  'combat.xp.level':              { en: 'Level', fr: 'Niveau' },
-  'combat.xp.xp_separator':      { en: 'XP /', fr: 'XP /' },
-  'combat.xp.xp':                { en: 'XP', fr: 'XP' },
-  'combat.xp.to_next':           { en: 'XP to next level', fr: 'XP pour le prochain niveau' },
-  'combat.xp.add_placeholder':   { en: 'Add XP…', fr: 'Ajouter XP…' },
-  'combat.xp.award':             { en: '+ Award XP', fr: '+ Donner XP' },
-  'combat.xp.level_up':          { en: 'Level Up!', fr: 'Niveau supérieur !' },
-  'combat.xp.config_hint':       { en: 'Load config_xp_thresholds for accurate XP thresholds.', fr: 'Chargez config_xp_thresholds pour des seuils d\'XP précis.' },
+  'combat.hp.title':              'Hit Points',
+  'combat.hp.con_contrib':        'CON contrib:',
+  'combat.hp.current':            'Current',
+  'combat.hp.max':                'Max',
+  'combat.hp.temp':               '+Temp',
+  'combat.hp.heal':               'Heal',
+  'combat.hp.damage':             'Damage',
+  'combat.hp.add_temp':           '+ Temp',
+  'combat.hp.unknown':            'Unknown',
+  'combat.hp.dead':               'Dead',
+  'combat.hp.dying':              'Dying',
+  'combat.hp.unconscious':        'Unconscious',
+  'combat.hp.bloodied':           'Bloodied',
+  'combat.hp.injured':            'Injured',
+  'combat.hp.healthy':            'Healthy',
+  'combat.xp.title':              'Experience',
+  'combat.xp.level':              'Level',
+  'combat.xp.xp_separator':      'XP /',
+  'combat.xp.xp':                 'XP',
+  'combat.xp.to_next':            'XP to next level',
+  'combat.xp.add_placeholder':    'Add XP…',
+  'combat.xp.award':              '+ Award XP',
+  'combat.xp.level_up':           'Level Up!',
+  'combat.xp.config_hint':        'Load config_xp_thresholds for accurate XP thresholds.',
 
   // ==========================================================================
   // COMBAT TAB — ARMOR CLASS
   // ==========================================================================
-  'combat.ac.title':              { en: 'Armor Class', fr: 'Classe d\'armure' },
-  'combat.ac.temp_mod':           { en: 'Temp Mod', fr: 'Mod Temp' },
-  'combat.ac.normal':             { en: 'AC', fr: 'CA' },
-  'combat.ac.touch':              { en: 'Touch', fr: 'Contact' },
-  'combat.ac.flat':               { en: 'Flat', fr: 'Pris au dépourvu' },
-  'combat.ac.normal_desc':        { en: 'Normal Armor Class', fr: 'Classe d\'armure normale' },
-  'combat.ac.touch_desc':         { en: 'Touch AC (ignores armor/shield/natural armor)', fr: 'CA de contact (ignore armure/bouclier/armure naturelle)' },
-  'combat.ac.flat_desc':          { en: 'Flat-Footed AC (ignores DEX/dodge)', fr: 'CA pris au dépourvu (ignore DEX/esquive)' },
-  'combat.ac.temp_label':         { en: 'temp', fr: 'temp' },
+  'combat.ac.title':              'Armor Class',
+  'combat.ac.temp_mod':           'Temp Mod',
+  'combat.ac.normal':             'AC',
+  'combat.ac.touch':              'Touch',
+  'combat.ac.flat':               'Flat',
+  'combat.ac.normal_desc':        'Normal Armor Class',
+  'combat.ac.touch_desc':         'Touch AC (ignores armor/shield/natural armor)',
+  'combat.ac.flat_desc':          'Flat-Footed AC (ignores DEX/dodge)',
+  'combat.ac.temp_label':         'temp',
 
   // ==========================================================================
   // COMBAT TAB — CORE COMBAT
   // ==========================================================================
-  'combat.core.title':            { en: 'Core Combat', fr: 'Combat de base' },
-  'combat.core.bab':              { en: 'BAB', fr: 'BBA' },
-  'combat.core.initiative':       { en: 'Initiative', fr: 'Initiative' },
-  'combat.core.grapple':          { en: 'Grapple', fr: 'Lutte' },
-  'combat.core.bab_desc':         { en: 'Base Attack Bonus', fr: 'Bonus de base à l\'attaque' },
-  'combat.core.initiative_desc':  { en: 'Initiative modifier (DEX + misc)', fr: 'Modificateur d\'initiative (DEX + divers)' },
-  'combat.core.grapple_desc':     { en: 'Grapple modifier (BAB + STR + size)', fr: 'Modificateur de lutte (BBA + FOR + taille)' },
-  'combat.core.initiative_roll':  { en: 'Initiative Roll', fr: 'Jet d\'initiative' },
-  'combat.core.grapple_check':    { en: 'Grapple Check', fr: 'Test de lutte' },
-  'combat.core.breakdown':        { en: 'Breakdown', fr: 'Détail' },
-  'combat.core.roll':             { en: 'Roll', fr: 'Lancer' },
+  'combat.core.title':            'Core Combat',
+  'combat.core.bab':              'BAB',
+  'combat.core.initiative':       'Initiative',
+  'combat.core.grapple':          'Grapple',
+  'combat.core.bab_desc':         'Base Attack Bonus',
+  'combat.core.initiative_desc':  'Initiative modifier (DEX + misc)',
+  'combat.core.grapple_desc':     'Grapple modifier (BAB + STR + size)',
+  'combat.core.initiative_roll':  'Initiative Roll',
+  'combat.core.grapple_check':    'Grapple Check',
+  'combat.core.breakdown':        'Breakdown',
+  'combat.core.roll':             'Roll',
 
   // ==========================================================================
   // COMBAT TAB — ATTACKS
   // ==========================================================================
-  'combat.attacks.title':         { en: 'Weapons & Attacks', fr: 'Armes & Attaques' },
-  'combat.attacks.main_hand':     { en: 'Main Hand', fr: 'Main principale' },
-  'combat.attacks.unarmed':       { en: 'Unarmed', fr: 'À mains nues' },
-  'combat.attacks.atk':           { en: 'ATK:', fr: 'ATQ :' },
-  'combat.attacks.dmg':           { en: 'DMG:', fr: 'DGT :' },
-  'combat.attacks.crit':          { en: 'Crit:', fr: 'Crit :' },
-  'combat.attacks.attack':        { en: 'Attack', fr: 'Attaque' },
-  'combat.attacks.damage':        { en: 'Damage', fr: 'Dégâts' },
+  'combat.attacks.title':         'Weapons & Attacks',
+  'combat.attacks.main_hand':     'Main Hand',
+  'combat.attacks.unarmed':       'Unarmed',
+  'combat.attacks.atk':           'ATK:',
+  'combat.attacks.dmg':           'DMG:',
+  'combat.attacks.crit':          'Crit:',
+  'combat.attacks.attack':        'Attack',
+  'combat.attacks.damage':        'Damage',
 
   // ==========================================================================
   // COMBAT TAB — MOVEMENT
   // ==========================================================================
-  'combat.movement.title':        { en: 'Movement Speeds', fr: 'Vitesses de déplacement' },
-  'combat.movement.penalty_note': { en: 'Armor & encumbrance penalties applied via pipeline modifiers.', fr: 'Pénalités d\'armure et d\'encombrement appliquées via les modificateurs de pipeline.' },
-  'combat.movement.penalty_title': { en: 'Penalty from armor or encumbrance', fr: 'Pénalité d\'armure ou d\'encombrement' },
+  'combat.movement.title':        'Movement Speeds',
+  'combat.movement.penalty_note': 'Armor & encumbrance penalties applied via pipeline modifiers.',
+  'combat.movement.penalty_title': 'Penalty from armor or encumbrance',
 
   // ==========================================================================
   // COMBAT TAB — RESISTANCES
   // ==========================================================================
-  'combat.resistances.title':     { en: 'Resistances', fr: 'Résistances' },
-  'combat.resistances.fire':      { en: 'Fire', fr: 'Feu' },
-  'combat.resistances.cold':      { en: 'Cold', fr: 'Froid' },
-  'combat.resistances.acid':      { en: 'Acid', fr: 'Acide' },
-  'combat.resistances.electricity': { en: 'Electricity', fr: 'Électricité' },
-  'combat.resistances.sonic':     { en: 'Sonic', fr: 'Son' },
-  'combat.resistances.sr':        { en: 'SR', fr: 'RM' },
-  'combat.resistances.pr':        { en: 'PR', fr: 'RP' },
-  'combat.resistances.fort':      { en: 'Fort.', fr: 'Fort.' },
-  'combat.resistances.misc':      { en: 'Misc modifier', fr: 'Modificateur divers' },
+  'combat.resistances.title':     'Resistances',
+  'combat.resistances.fire':      'Fire',
+  'combat.resistances.cold':      'Cold',
+  'combat.resistances.acid':      'Acid',
+  'combat.resistances.electricity': 'Electricity',
+  'combat.resistances.sonic':     'Sonic',
+  'combat.resistances.sr':        'SR',
+  'combat.resistances.pr':        'PR',
+  'combat.resistances.fort':      'Fort.',
+  'combat.resistances.misc':      'Misc modifier',
 
   // ==========================================================================
   // COMBAT TAB — DAMAGE REDUCTION
   // ==========================================================================
-  'combat.dr.title':              { en: 'Damage Reduction', fr: 'Réduction de dégâts' },
-  'combat.dr.empty':              { en: 'No Damage Reduction configured.', fr: 'Aucune réduction de dégâts configurée.' },
-  'combat.dr.add':                { en: 'Add DR', fr: 'Ajouter RD' },
-  'combat.dr.value':              { en: 'Value', fr: 'Valeur' },
-  'combat.dr.bypassed_by':        { en: 'Bypassed By', fr: 'Contournée par' },
+  'combat.dr.title':              'Damage Reduction',
+  'combat.dr.empty':              'No Damage Reduction configured.',
+  'combat.dr.add':                'Add DR',
+  'combat.dr.value':              'Value',
+  'combat.dr.bypassed_by':        'Bypassed By',
 
   // ==========================================================================
   // INVENTORY — ENCUMBRANCE
   // ==========================================================================
-  'inventory.encumbrance.title':  { en: 'Encumbrance & Wealth', fr: 'Encombrement & Richesse' },
-  'inventory.encumbrance.carried': { en: 'carried', fr: 'porté' },
-  'inventory.encumbrance.light':  { en: 'Light', fr: 'Légère' },
-  'inventory.encumbrance.medium': { en: 'Medium', fr: 'Moyenne' },
-  'inventory.encumbrance.heavy':  { en: 'Heavy', fr: 'Lourde' },
-  'inventory.encumbrance.max':    { en: 'Max', fr: 'Max' },
-  'inventory.encumbrance.light_lte': { en: 'Light ≤', fr: 'Légère ≤' },
-  'inventory.encumbrance.medium_lte': { en: 'Medium ≤', fr: 'Moyenne ≤' },
-  'inventory.encumbrance.heavy_lte': { en: 'Heavy ≤', fr: 'Lourde ≤' },
-  'inventory.encumbrance.speed_warning': { en: '— speed reduced, check penalties apply', fr: '— vitesse réduite, pénalités de test actives' },
-  'inventory.encumbrance.coin_weight': { en: 'Coins add:', fr: 'Poids pièces :' },
-  'inventory.encumbrance.wealth': { en: 'Wealth', fr: 'Richesse' },
-  'inventory.encumbrance.total':  { en: 'Total', fr: 'Total' },
-  'inventory.encumbrance.gp':     { en: 'GP', fr: 'PO' },
-  'inventory.encumbrance.config_hint': { en: 'Load config_carrying_capacity for accurate weight limits.', fr: 'Chargez config_carrying_capacity pour des limites précises.' },
-  'inventory.encumbrance.tier_unknown':     { en: 'Unknown', fr: 'Inconnu' },
-  'inventory.encumbrance.tier_overloaded':  { en: 'Overloaded', fr: 'Surchargé' },
-  'inventory.encumbrance.tier_heavy':       { en: 'Heavy Load', fr: 'Charge lourde' },
-  'inventory.encumbrance.tier_medium':      { en: 'Medium Load', fr: 'Charge moyenne' },
-  'inventory.encumbrance.tier_light':       { en: 'Light Load', fr: 'Charge légère' },
-  'inventory.coins.pp':           { en: 'PP', fr: 'PP' },
-  'inventory.coins.gp':           { en: 'GP', fr: 'PO' },
-  'inventory.coins.sp':           { en: 'SP', fr: 'PA' },
-  'inventory.coins.cp':           { en: 'CP', fr: 'PC' },
-  'inventory.coins.pp_title':     { en: 'Platinum Pieces', fr: 'Pièces de platine' },
-  'inventory.coins.gp_title':     { en: 'Gold Pieces', fr: 'Pièces d\'or' },
-  'inventory.coins.sp_title':     { en: 'Silver Pieces', fr: 'Pièces d\'argent' },
-  'inventory.coins.cp_title':     { en: 'Copper Pieces', fr: 'Pièces de cuivre' },
+  'inventory.encumbrance.title':  'Encumbrance & Wealth',
+  'inventory.encumbrance.carried': 'carried',
+  'inventory.encumbrance.light':  'Light',
+  'inventory.encumbrance.medium': 'Medium',
+  'inventory.encumbrance.heavy':  'Heavy',
+  'inventory.encumbrance.max':    'Max',
+  'inventory.encumbrance.light_lte': 'Light ≤',
+  'inventory.encumbrance.medium_lte': 'Medium ≤',
+  'inventory.encumbrance.heavy_lte': 'Heavy ≤',
+  'inventory.encumbrance.speed_warning': '— speed reduced, check penalties apply',
+  'inventory.encumbrance.coin_weight': 'Coins add:',
+  'inventory.encumbrance.wealth': 'Wealth',
+  'inventory.encumbrance.total':  'Total',
+  'inventory.encumbrance.gp':     'GP',
+  'inventory.encumbrance.config_hint': 'Load config_carrying_capacity for accurate weight limits.',
+  'inventory.encumbrance.tier_unknown':     'Unknown',
+  'inventory.encumbrance.tier_overloaded':  'Overloaded',
+  'inventory.encumbrance.tier_heavy':       'Heavy Load',
+  'inventory.encumbrance.tier_medium':      'Medium Load',
+  'inventory.encumbrance.tier_light':       'Light Load',
+  'inventory.coins.pp':           'PP',
+  'inventory.coins.gp':           'GP',
+  'inventory.coins.sp':           'SP',
+  'inventory.coins.cp':           'CP',
+  'inventory.coins.pp_title':     'Platinum Pieces',
+  'inventory.coins.gp_title':     'Gold Pieces',
+  'inventory.coins.sp_title':     'Silver Pieces',
+  'inventory.coins.cp_title':     'Copper Pieces',
 
   // ==========================================================================
   // FEATS TAB
   // ==========================================================================
-  'feats.title':                  { en: 'Feats', fr: 'Dons' },
-  'feats.available':              { en: 'Available:', fr: 'Disponibles :' },
-  'feats.remaining':              { en: 'Remaining:', fr: 'Restants :' },
-  'feats.add':                    { en: 'Add Feat', fr: 'Ajouter un don' },
-  'feats.granted':                { en: 'Granted Feats (automatic)', fr: 'Dons acquis (automatiques)' },
-  'feats.from':                   { en: 'from:', fr: 'source :' },
-  'feats.selected':               { en: 'Selected Feats', fr: 'Dons sélectionnés' },
-  'feats.empty':                  { en: 'No feats selected yet. Click "+ Add Feat" to choose from the catalog.', fr: 'Aucun don sélectionné. Cliquez sur « + Ajouter un don » pour choisir dans le catalogue.' },
-  'feats.slots_available':        { en: 'slot(s) available.', fr: 'emplacement(s) disponible(s).' },
-  'feats.remove_tooltip':         { en: 'Remove this feat (frees a slot)', fr: 'Retirer ce don (libère un emplacement)' },
-  'feats.unknown_source':         { en: 'Unknown', fr: 'Inconnu' },
+  'feats.title':                  'Feats',
+  'feats.available':              'Available:',
+  'feats.remaining':              'Remaining:',
+  'feats.add':                    'Add Feat',
+  'feats.granted':                'Granted Feats (automatic)',
+  'feats.from':                   'from:',
+  'feats.selected':               'Selected Feats',
+  'feats.empty':                  'No feats selected yet. Click "+ Add Feat" to choose from the catalog.',
+  'feats.slots_available':        'slot(s) available.',
+  'feats.remove_tooltip':         'Remove this feat (frees a slot)',
+  'feats.unknown_source':         'Unknown',
 
   // ==========================================================================
   // FEAT CATALOG MODAL
   // ==========================================================================
-  'feat_catalog.title':           { en: 'Feat Catalog', fr: 'Catalogue de dons' },
-  'feat_catalog.slots_left':      { en: 'slot(s) left', fr: 'emplacement(s) restant(s)' },
-  'feat_catalog.feats_found':     { en: 'feat(s) found', fr: 'don(s) trouvé(s)' },
-  'feat_catalog.search':          { en: 'Search feats…', fr: 'Rechercher des dons…' },
-  'feat_catalog.all_tags':        { en: 'All tags', fr: 'Tous les tags' },
-  'feat_catalog.empty':           { en: 'Load a rule source with feats to populate this catalog.', fr: 'Chargez une source de règles contenant des dons pour remplir ce catalogue.' },
-  'feat_catalog.have':            { en: 'Have', fr: 'Acquis' },
-  'feat_catalog.select':          { en: 'Select', fr: 'Choisir' },
-  'feat_catalog.prereqs_met':     { en: 'prerequisites met', fr: 'prérequis remplis' },
-  'feat_catalog.prereqs_not_met': { en: 'prerequisites not met', fr: 'prérequis non remplis' },
-  'feat_catalog.already_have':    { en: 'Already have this feat', fr: 'Don déjà acquis' },
-  'feat_catalog.cannot_select':   { en: 'Cannot select: prerequisites not met', fr: 'Impossible : prérequis non remplis' },
+  'feat_catalog.title':           'Feat Catalog',
+  'feat_catalog.slots_left':      'slot(s) left',
+  'feat_catalog.feats_found':     'feat(s) found',
+  'feat_catalog.search':          'Search feats…',
+  'feat_catalog.all_tags':        'All tags',
+  'feat_catalog.empty':           'Load a rule source with feats to populate this catalog.',
+  'feat_catalog.have':            'Have',
+  'feat_catalog.select':          'Select',
+  'feat_catalog.prereqs_met':     'prerequisites met',
+  'feat_catalog.prereqs_not_met': 'prerequisites not met',
+  'feat_catalog.already_have':    'Already have this feat',
+  'feat_catalog.cannot_select':   'Cannot select: prerequisites not met',
 
   // ==========================================================================
-  // EPHEMERAL EFFECTS PANEL (Phase E-3)
-  // Active effects created by consuming potions, oils, and one-shot items.
+  // EPHEMERAL EFFECTS PANEL
   // ==========================================================================
-  'effects.panel.title':          { en: 'Active Effects', fr: 'Effets actifs' },
-  'effects.panel.empty':          { en: 'No active effects. Drink a potion or use an ability to see effects here.', fr: 'Aucun effet actif. Buvez une potion ou utilisez une capacité pour voir les effets ici.' },
-  'effects.panel.expire':         { en: 'Expire', fr: 'Dissiper' },
-  'effects.panel.expire_tooltip': { en: 'End this effect early', fr: 'Terminer cet effet prématurément' },
-  'effects.panel.duration':       { en: 'Duration:', fr: 'Durée :' },
-  'effects.panel.applied_round':  { en: 'Applied at round', fr: 'Appliqué au round' },
-  'effects.panel.source':         { en: 'Source:', fr: 'Source :' },
-  'effects.panel.active_badge':   { en: 'Active', fr: 'Actif' },
-  'effects.panel.confirm_expire': { en: 'End this effect?', fr: 'Terminer cet effet ?' },
+  'effects.panel.title':          'Active Effects',
+  'effects.panel.empty':          'No active effects. Drink a potion or use an ability to see effects here.',
+  'effects.panel.expire':         'Expire',
+  'effects.panel.expire_tooltip': 'End this effect early',
+  'effects.panel.duration':       'Duration:',
+  'effects.panel.applied_round':  'Applied at round',
+  'effects.panel.source':         'Source:',
+  'effects.panel.active_badge':   'Active',
+  'effects.panel.confirm_expire': 'End this effect?',
 
-  // Inventory "Use" button for consumables
-  'inventory.use_item':           { en: 'Use', fr: 'Utiliser' },
-  'inventory.drink_potion':       { en: 'Drink', fr: 'Boire' },
-  'inventory.apply_oil':          { en: 'Apply', fr: 'Appliquer' },
-  'inventory.consumable_badge':   { en: 'Consumable', fr: 'Consommable' },
+  'inventory.use_item':           'Use',
+  'inventory.drink_potion':       'Drink',
+  'inventory.apply_oil':          'Apply',
+  'inventory.consumable_badge':   'Consumable',
 
   // ==========================================================================
   // MAGIC TAB
   // ==========================================================================
-  'magic.abilities.title':        { en: 'Special Abilities', fr: 'Capacités spéciales' },
-  'magic.abilities.empty':        { en: 'No special abilities found. Class and domain abilities with activation types will appear here.', fr: 'Aucune capacité spéciale trouvée. Les capacités de classe et de domaine avec un type d\'activation apparaîtront ici.' },
-  'magic.abilities.cost':         { en: 'Cost:', fr: 'Coût :' },
-  'magic.abilities.use':          { en: 'Use', fr: 'Utiliser' },
-  'magic.casting.title':          { en: 'Spells & Powers', fr: 'Sorts & Pouvoirs' },
-  'magic.casting.empty':          { en: 'No spells known. Use the Grimoire to learn spells.', fr: 'Aucun sort connu. Utilisez le Grimoire pour apprendre des sorts.' },
-  'magic.casting.cantrips':       { en: 'Cantrips (0)', fr: 'Tours de magie (0)' },
-  'magic.casting.level':          { en: 'Level', fr: 'Niveau' },
-  'magic.casting.save_dc':        { en: 'Save DC:', fr: 'DD Sauveg. :' },
-  'magic.casting.cast':           { en: 'Cast', fr: 'Lancer' },
-  'magic.casting.damage':         { en: 'Damage', fr: 'Dégâts' },
-  'magic.grimoire.title':         { en: 'Grimoire — Spell Catalog', fr: 'Grimoire — Catalogue de sorts' },
-  'magic.grimoire.cl':            { en: 'CL', fr: 'NLS' },
-  'magic.grimoire.max_level':     { en: 'Max Lvl', fr: 'Niv. max' },
-  'magic.grimoire.search':        { en: 'Search spells…', fr: 'Rechercher des sorts…' },
-  'magic.grimoire.no_class':      { en: 'Select a spellcasting class to see its spell list.', fr: 'Sélectionnez une classe de lanceur de sorts pour voir sa liste.' },
-  'magic.grimoire.no_match':      { en: 'no spells match the current filters.', fr: 'aucun sort ne correspond aux filtres actuels.' },
-  'magic.grimoire.lvl':           { en: 'Lvl', fr: 'Niv' },
-  'magic.grimoire.known':         { en: 'Known', fr: 'Connu' },
-  'magic.grimoire.learn':         { en: 'Learn', fr: 'Apprendre' },
+  'magic.abilities.title':        'Special Abilities',
+  'magic.abilities.empty':        'No special abilities found. Class and domain abilities with activation types will appear here.',
+  'magic.abilities.cost':         'Cost:',
+  'magic.abilities.use':          'Use',
+  'magic.casting.title':          'Spells & Powers',
+  'magic.casting.empty':          'No spells known. Use the Grimoire to learn spells.',
+  'magic.casting.cantrips':       'Cantrips (0)',
+  'magic.casting.level':          'Level',
+  'magic.casting.save_dc':        'Save DC:',
+  'magic.casting.cast':           'Cast',
+  'magic.casting.damage':         'Damage',
+  'magic.grimoire.title':         'Grimoire — Spell Catalog',
+  'magic.grimoire.cl':            'CL',
+  'magic.grimoire.max_level':     'Max Lvl',
+  'magic.grimoire.search':        'Search spells…',
+  'magic.grimoire.no_class':      'Select a spellcasting class to see its spell list.',
+  'magic.grimoire.no_match':      'no spells match the current filters.',
+  'magic.grimoire.lvl':           'Lvl',
+  'magic.grimoire.known':         'Known',
+  'magic.grimoire.learn':         'Learn',
 
   // ==========================================================================
   // MODIFIER BREAKDOWN MODAL
   // ==========================================================================
-  'breakdown.title_suffix':       { en: '— Breakdown', fr: '— Détail' },
-  'breakdown.base_value':         { en: 'Base value', fr: 'Valeur de base' },
-  'breakdown.suppressed':         { en: 'Suppressed (stacking rules)', fr: 'Supprimés (règles de cumul)' },
-  'breakdown.base':               { en: 'Base', fr: 'Base' },
-  'breakdown.modifiers':          { en: 'Modifiers', fr: 'Modificateurs' },
-  'breakdown.derived_mod':        { en: '→ Mod:', fr: '→ Mod :' },
-  'breakdown.situational':        { en: 'Situational (applied at roll time)', fr: 'Situationnels (appliqués au lancer)' },
-  'breakdown.vs':                 { en: 'vs.', fr: 'c.' },
-  'breakdown.conditional':        { en: 'Conditional', fr: 'Conditionnel' },
+  'breakdown.title_suffix':       '— Breakdown',
+  'breakdown.base_value':         'Base value',
+  'breakdown.suppressed':         'Suppressed (stacking rules)',
+  'breakdown.base':               'Base',
+  'breakdown.modifiers':          'Modifiers',
+  'breakdown.derived_mod':        '→ Mod:',
+  'breakdown.situational':        'Situational (applied at roll time)',
+  'breakdown.vs':                 'vs.',
+  'breakdown.conditional':        'Conditional',
 
   // ==========================================================================
-  // FEATURE MODAL (breakdown of race/class/feat features)
+  // FEATURE MODAL
   // ==========================================================================
-  'feature.section_modifiers':    { en: 'Modifiers', fr: 'Modificateurs' },
-  'feature.section_grants':       { en: 'Grants', fr: 'Accorde' },
-  'feature.section_prerequisites': { en: 'Prerequisites', fr: 'Prérequis' },
-  'feature.section_choices':      { en: 'Choices', fr: 'Choix' },
-  'feature.conditional':          { en: 'Conditional', fr: 'Conditionnel' },
-  'feature.not_found':            { en: 'Feature not found', fr: 'Capacité introuvable' },
-  'feature.not_found_desc':       { en: 'No feature found with ID', fr: 'Aucune capacité trouvée avec l\'identifiant' },
-  'feature.cache_hint':           { en: 'The DataLoader cache may not be loaded, or the rule source containing this feature may not be enabled.', fr: 'Le cache du DataLoader n\'est peut-être pas chargé, ou la source de règles contenant cette capacité n\'est peut-être pas activée.' },
-  'feature.no_prereqs':           { en: 'No labelled prerequisites found.', fr: 'Aucun prérequis étiqueté trouvé.' },
-  'feature.grant_type.sense':     { en: 'Sense', fr: 'Sens' },
-  'feature.grant_type.proficiency': { en: 'Proficiency', fr: 'Maîtrise' },
-  'feature.grant_type.language':  { en: 'Language', fr: 'Langue' },
-  'feature.grant_type.immunity':  { en: 'Immunity', fr: 'Immunité' },
-  'feature.grant_type.racial':    { en: 'Racial', fr: 'Racial' },
-  'feature.grant_type.class_feature': { en: 'Class Feature', fr: 'Capacité de classe' },
-  'feature.grant_type.feat':      { en: 'Feat', fr: 'Don' },
-  'feature.grant_type.spell':     { en: 'Spell', fr: 'Sort' },
-  'feature.grant_type.item':      { en: 'Item', fr: 'Objet' },
-  'feature.grant_type.condition': { en: 'Condition', fr: 'Condition' },
-  'feature.grant_type.feature':   { en: 'Feature', fr: 'Capacité' },
-  'feature.choice_select':        { en: 'Select', fr: 'Choisir' },
-  'feature.choice_selected':      { en: 'Selected', fr: 'Sélectionné' },
-  'feature.choice_remove':        { en: 'Remove', fr: 'Retirer' },
-  'feature.choice_pick_up_to':    { en: 'Pick up to {n}', fr: 'Choisir jusqu\'à {n}' },
-  'feature.choice_pick_one':      { en: 'Pick one', fr: 'Choisir un' },
-  'feature.choice_no_options':    { en: 'No options available. Enable the relevant rule source.', fr: 'Aucune option disponible. Activez la source de règles correspondante.' },
+  'feature.section_modifiers':    'Modifiers',
+  'feature.section_grants':       'Grants',
+  'feature.section_prerequisites': 'Prerequisites',
+  'feature.section_choices':      'Choices',
+  'feature.conditional':          'Conditional',
+  'feature.not_found':            'Feature not found',
+  'feature.not_found_desc':       'No feature found with ID',
+  'feature.cache_hint':           'The DataLoader cache may not be loaded, or the rule source containing this feature may not be enabled.',
+  'feature.no_prereqs':           'No labelled prerequisites found.',
+  'feature.grant_type.sense':     'Sense',
+  'feature.grant_type.proficiency': 'Proficiency',
+  'feature.grant_type.language':  'Language',
+  'feature.grant_type.immunity':  'Immunity',
+  'feature.grant_type.racial':    'Racial',
+  'feature.grant_type.class_feature': 'Class Feature',
+  'feature.grant_type.feat':      'Feat',
+  'feature.grant_type.spell':     'Spell',
+  'feature.grant_type.item':      'Item',
+  'feature.grant_type.condition': 'Condition',
+  'feature.grant_type.feature':   'Feature',
+  'feature.choice_select':        'Select',
+  'feature.choice_selected':      'Selected',
+  'feature.choice_remove':        'Remove',
+  'feature.choice_pick_up_to':    'Pick up to {n}',
+  'feature.choice_pick_one':      'Pick one',
+  'feature.choice_no_options':    'No options available. Enable the relevant rule source.',
 
   // ==========================================================================
   // DICE ROLL MODAL
   // ==========================================================================
-  'dice.target_tags':             { en: 'Target Tags', fr: 'Tags de cible' },
-  'dice.situational_available':   { en: 'situational bonus(es) available', fr: 'bonus situationnel(s) disponible(s)' },
-  'dice.tags_placeholder':        { en: 'e.g. orc, evil, undead', fr: 'ex. orque, mauvais, mort-vivant' },
-  'dice.rolling':                 { en: 'Rolling...', fr: 'Lancer en cours...' },
-  'dice.roll_again':              { en: 'Roll Again', fr: 'Relancer' },
-  'dice.roll':                    { en: 'Roll!', fr: 'Lancer !' },
-  'dice.critical_threat':         { en: 'CRITICAL THREAT!', fr: 'MENACE DE CRITIQUE !' },
-  'dice.fumble':                  { en: 'FUMBLE!', fr: 'ÉCHEC CRITIQUE !' },
-  'dice.result':                  { en: 'Result', fr: 'Résultat' },
-  'dice.explosion':               { en: 'EXPLOSION', fr: 'EXPLOSION' },
-  'dice.dice_rolls':              { en: 'Dice rolls', fr: 'Lancers de dés' },
-  'dice.natural_total':           { en: 'Natural total', fr: 'Total naturel' },
-  'dice.static_bonus':            { en: 'Static bonus', fr: 'Bonus statique' },
-  'dice.situational_bonus':       { en: 'Situational bonus', fr: 'Bonus situationnel' },
-  'dice.final_total':             { en: 'Final Total', fr: 'Total final' },
-  'dice.exploding_active':        { en: 'Exploding 20s active', fr: '20 explosifs actifs' },
+  'dice.target_tags':             'Target Tags',
+  'dice.situational_available':   'situational bonus(es) available',
+  'dice.tags_placeholder':        'e.g. orc, evil, undead',
+  'dice.rolling':                 'Rolling...',
+  'dice.roll_again':              'Roll Again',
+  'dice.roll':                    'Roll!',
+  'dice.critical_threat':         'CRITICAL THREAT!',
+  'dice.fumble':                  'FUMBLE!',
+  'dice.result':                  'Result',
+  'dice.explosion':               'EXPLOSION',
+  'dice.dice_rolls':              'Dice rolls',
+  'dice.natural_total':           'Natural total',
+  'dice.static_bonus':            'Static bonus',
+  'dice.situational_bonus':       'Situational bonus',
+  'dice.final_total':             'Final Total',
+  'dice.exploding_active':        'Exploding 20s active',
 
   // ==========================================================================
   // COMMON / SHARED
   // ==========================================================================
-  'common.cancel':                { en: 'Cancel', fr: 'Annuler' },
-  'common.save':                  { en: 'Save', fr: 'Enregistrer' },
-  'common.campaign':              { en: 'Campaign', fr: 'Campagne' },
-  'common.level':                 { en: 'Level', fr: 'Niveau' },
-  'common.unknown':               { en: 'Unknown', fr: 'Inconnu' },
-  'common.gm':                    { en: 'GM', fr: 'MJ' },
-  'common.player':                { en: 'Player', fr: 'Joueur' },
+  'common.cancel':                'Cancel',
+  'common.save':                  'Save',
+  'common.campaign':              'Campaign',
+  'common.level':                 'Level',
+  'common.unknown':               'Unknown',
+  'common.gm':                    'GM',
+  'common.player':                'Player',
 
   // ==========================================================================
-  // PREREQUISITE STATUS (for runtime re-validation)
+  // PREREQUISITE STATUS
   // ==========================================================================
-  'prereq.disabled':              { en: 'Prerequisites no longer met — effects suspended', fr: 'Prérequis non remplis — effets suspendus' },
+  'prereq.disabled':              'Prerequisites no longer met — effects suspended',
 
   // ==========================================================================
-  // ECL / LEVEL ADJUSTMENT (Engine Extension A — Phase 1.5)
+  // ECL / LEVEL ADJUSTMENT
   // ==========================================================================
-  'ecl.title':                    { en: 'Level Adjustment', fr: 'Ajustement de niveau' },
-  'ecl.la_label':                 { en: 'LA', fr: 'AN' },
-  'ecl.ecl_label':                { en: 'ECL', fr: 'NCE' },
-  'ecl.xp_label':                 { en: 'XP', fr: 'XP' },
-  'ecl.la_tooltip':               { en: 'Level Adjustment — racial balance surcharge. ECL = class levels + LA.', fr: 'Ajustement de niveau — surcoût racial. NCE = niveaux de classe + AN.' },
-  'ecl.ecl_tooltip':              { en: 'Effective Character Level — used for XP thresholds.', fr: 'Niveau de personnage effectif — utilisé pour les seuils d\'XP.' },
-  'ecl.reduce_la':                { en: 'Reduce LA', fr: 'Réduire AN' },
-  'ecl.reduce_la_tooltip':        { en: 'Pay XP to reduce LA by 1 (requires 3× LA class levels — SRD variant rule).', fr: 'Payez des XP pour réduire l\'AN de 1 (nécessite 3× AN en niveaux de classe).' },
-  'ecl.reduce_la_confirm':        { en: 'Reduce Level Adjustment from {current} to {next}?', fr: 'Réduire l\'ajustement de niveau de {current} à {next} ?' },
-  'ecl.xp_bar_label':             { en: 'XP to next level', fr: 'XP jusqu\'au prochain niveau' },
+  'ecl.title':                    'Level Adjustment',
+  'ecl.la_label':                 'LA',
+  'ecl.ecl_label':                'ECL',
+  'ecl.xp_label':                 'XP',
+  'ecl.la_tooltip':               'Level Adjustment — racial balance surcharge. ECL = class levels + LA.',
+  'ecl.ecl_tooltip':              'Effective Character Level — used for XP thresholds.',
+  'ecl.reduce_la':                'Reduce LA',
+  'ecl.reduce_la_tooltip':        'Pay XP to reduce LA by 1 (requires 3× LA class levels — SRD variant rule).',
+  'ecl.reduce_la_confirm':        'Reduce Level Adjustment from {current} to {next}?',
+  'ecl.xp_bar_label':             'XP to next level',
 
   // ==========================================================================
-  // FAST HEALING / REGENERATION — per_turn pools (Engine Extension B — Phase 1.6 / 3.6)
+  // FAST HEALING / REGENERATION
   // ==========================================================================
-  'heal.fast_healing':            { en: 'Fast Healing', fr: 'Guérison accélérée' },
-  'heal.regeneration':            { en: 'Regeneration', fr: 'Régénération' },
-  'heal.tick_button':             { en: 'Start Turn', fr: 'Début de tour' },
-  'heal.tick_tooltip':            { en: 'Apply per-turn healing (Fast Healing / Regeneration) for this character\'s turn.', fr: 'Appliquer la guérison par tour (Guérison accélérée / Régénération) au début du tour.' },
-  'heal.per_turn_badge':          { en: '+{n}/turn', fr: '+{n}/tour' },
-  'heal.per_round_badge':         { en: '+{n}/round', fr: '+{n}/round' },
-  'heal.encounter_reset':         { en: 'New Encounter', fr: 'Nouveau combat' },
-  'heal.long_rest':               { en: 'Long Rest', fr: 'Repos long' },
-  'heal.short_rest':              { en: 'Short Rest', fr: 'Repos court' },
+  'heal.fast_healing':            'Fast Healing',
+  'heal.regeneration':            'Regeneration',
+  'heal.tick_button':             'Start Turn',
+  'heal.tick_tooltip':            "Apply per-turn healing (Fast Healing / Regeneration) for this character's turn.",
+  'heal.per_turn_badge':          '+{n}/turn',
+  'heal.per_round_badge':         '+{n}/round',
+  'heal.encounter_reset':         'New Encounter',
+  'heal.long_rest':               'Long Rest',
+  'heal.short_rest':              'Short Rest',
 
   // ==========================================================================
-  // DAMAGE REDUCTION — drBypassTags (Engine Extension C — Phase 2.4a)
+  // DAMAGE REDUCTION
   // ==========================================================================
-  'dr.groups_title':              { en: 'Active DR', fr: 'RD active' },
-  'dr.bypass_label':              { en: 'Bypassed by:', fr: 'Contournable par :' },
-  'dr.none_bypass':               { en: '— (nothing)', fr: '— (rien)' },
-  'dr.suppressed':                { en: 'Suppressed (lower value)', fr: 'Supprimée (valeur inférieure)' },
-  'dr.add_innate':                { en: 'Add Innate DR', fr: 'Ajouter une RD innée' },
-  'dr.base_class_label':          { en: 'Class DR (additive):', fr: 'RD de classe (additive) :' },
-  'dr.innate_label':              { en: 'Innate / Racial DR:', fr: 'RD innée / raciale :' },
+  'dr.groups_title':              'Active DR',
+  'dr.bypass_label':              'Bypassed by:',
+  'dr.none_bypass':               '— (nothing)',
+  'dr.suppressed':                'Suppressed (lower value)',
+  'dr.add_innate':                'Add Innate DR',
+  'dr.base_class_label':          'Class DR (additive):',
+  'dr.innate_label':              'Innate / Racial DR:',
 
   // ==========================================================================
-  // PSIONIC POWERS — discipline / displays (Engine Extension D — Phase 1.3a)
+  // PSIONIC POWERS
   // ==========================================================================
-  'psi.discipline_label':         { en: 'Discipline', fr: 'Discipline' },
-  'psi.displays_label':           { en: 'Displays', fr: 'Manifestations' },
-  'psi.suppress_displays':        { en: 'Suppress Displays', fr: 'Supprimer manifestations' },
-  'psi.suppress_dc':              { en: 'DC {dc}', fr: 'DD {dc}' },
-  'psi.pp_cost':                  { en: '{pp} PP', fr: '{pp} PM' },
-  'psi.discipline.clairsentience':  { en: 'Clairsentience', fr: 'Clairsentience' },
-  'psi.discipline.metacreativity': { en: 'Metacreativity', fr: 'Métacréativité' },
-  'psi.discipline.psychokinesis':  { en: 'Psychokinesis', fr: 'Psychokinésie' },
-  'psi.discipline.psychometabolism': { en: 'Psychometabolism', fr: 'Psychométabolisme' },
-  'psi.discipline.psychoportation': { en: 'Psychoportation', fr: 'Psychoportation' },
-  'psi.discipline.telepathy':      { en: 'Telepathy', fr: 'Télépathie' },
-  'psi.display.auditory':         { en: 'Aud', fr: 'Aud' },
-  'psi.display.material':         { en: 'Mat', fr: 'Mat' },
-  'psi.display.mental':           { en: 'Men', fr: 'Men' },
-  'psi.display.olfactory':        { en: 'Olf', fr: 'Olf' },
-  'psi.display.visual':           { en: 'Vis', fr: 'Vis' },
-  'psi.filter_discipline':        { en: 'Filter by discipline', fr: 'Filtrer par discipline' },
-  'psi.all_disciplines':          { en: 'All disciplines', fr: 'Toutes les disciplines' },
+  'psi.discipline_label':         'Discipline',
+  'psi.displays_label':           'Displays',
+  'psi.suppress_displays':        'Suppress Displays',
+  'psi.suppress_dc':              'DC {dc}',
+  'psi.pp_cost':                  '{pp} PP',
+  'psi.discipline.clairsentience':  'Clairsentience',
+  'psi.discipline.metacreativity': 'Metacreativity',
+  'psi.discipline.psychokinesis':  'Psychokinesis',
+  'psi.discipline.psychometabolism': 'Psychometabolism',
+  'psi.discipline.psychoportation': 'Psychoportation',
+  'psi.discipline.telepathy':      'Telepathy',
+  'psi.display.auditory':         'Aud',
+  'psi.display.material':         'Mat',
+  'psi.display.mental':           'Men',
+  'psi.display.olfactory':        'Olf',
+  'psi.display.visual':           'Vis',
+  'psi.filter_discipline':        'Filter by discipline',
+  'psi.all_disciplines':          'All disciplines',
 
   // ==========================================================================
-  // PSIONIC ITEMS (Engine Extension E — Phase 1.3b)
+  // PSIONIC ITEMS
   // ==========================================================================
-  'psionic_item.cognizance_crystal': { en: 'Cognizance Crystal', fr: 'Cristal de cognizance' },
-  'psionic_item.dorje':              { en: 'Dorje', fr: 'Dorjé' },
-  'psionic_item.power_stone':        { en: 'Power Stone', fr: 'Pierre mentale' },
-  'psionic_item.psicrown':           { en: 'Psicrown', fr: 'Psicouronne' },
-  'psionic_item.psionic_tattoo':     { en: 'Psionic Tattoo', fr: 'Tatouage psionique' },
-  'psionic_item.stored_pp':          { en: '{pp} / {max} PP', fr: '{pp} / {max} PM' },
-  'psionic_item.charges':            { en: '{n} / {max} charges', fr: '{n} / {max} charges' },
-  'psionic_item.attuned':            { en: 'Attuned', fr: 'Accordé' },
-  'psionic_item.not_attuned':        { en: 'Not attuned (10 min.)', fr: 'Non accordé (10 min.)' },
-  'psionic_item.attune_button':      { en: 'Attune', fr: 'Accorder' },
-  'psionic_item.activated':          { en: 'Used', fr: 'Utilisé' },
-  'psionic_item.activate_button':    { en: 'Activate Tattoo', fr: 'Activer tatouage' },
-  'psionic_item.use_charge':         { en: 'Use', fr: 'Utiliser' },
-  'psionic_item.manifest_from_crown': { en: 'Manifest', fr: 'Manifester' },
-  'psionic_item.draw_pp':            { en: 'Draw {pp} PP', fr: 'Puiser {pp} PM' },
-  'psionic_item.powers_known':       { en: 'Powers', fr: 'Pouvoirs' },
-  'psionic_item.brainburn_risk':     { en: '⚠ Brainburn risk (ML check DC {dc})', fr: '⚠ Risque d\'incandescence (jet ML DD {dc})' },
-  'psionic_item.power_flushed':      { en: 'Used up', fr: 'Consommé' },
+  'psionic_item.cognizance_crystal': 'Cognizance Crystal',
+  'psionic_item.dorje':              'Dorje',
+  'psionic_item.power_stone':        'Power Stone',
+  'psionic_item.psicrown':           'Psicrown',
+  'psionic_item.psionic_tattoo':     'Psionic Tattoo',
+  'psionic_item.stored_pp':          '{pp} / {max} PP',
+  'psionic_item.charges':            '{n} / {max} charges',
+  'psionic_item.attuned':            'Attuned',
+  'psionic_item.not_attuned':        'Not attuned (10 min.)',
+  'psionic_item.attune_button':      'Attune',
+  'psionic_item.activated':          'Used',
+  'psionic_item.activate_button':    'Activate Tattoo',
+  'psionic_item.use_charge':         'Use',
+  'psionic_item.manifest_from_crown': 'Manifest',
+  'psionic_item.draw_pp':            'Draw {pp} PP',
+  'psionic_item.powers_known':       'Powers',
+  'psionic_item.brainburn_risk':     '⚠ Brainburn risk (ML check DC {dc})',
+  'psionic_item.power_flushed':      'Used up',
 
   // ==========================================================================
-  // LORE & LANGUAGES (Core Tab)
+  // LORE & LANGUAGES
   // ==========================================================================
-  'lore.personal_story':          { en: 'Personal Story', fr: 'Histoire personnelle' },
-  'lore.personal_story_placeholder': { en: "The character's backstory, motivation, personality traits, ideals, bonds, and flaws…", fr: "L'histoire personnelle du personnage, sa motivation, ses traits de personnalité, ses idéaux, ses liens et ses défauts…" },
-  'lore.languages':               { en: 'Languages', fr: 'Langues' },
-  'lore.bonus_slots':             { en: '{used}/{total} bonus slots', fr: '{used}/{total} emplacements bonus' },
-  'lore.no_bonus_slots':          { en: 'No bonus slots', fr: 'Aucun emplacement bonus' },
-  'lore.automatic':               { en: 'Automatic', fr: 'Automatiques' },
-  'lore.learned':                 { en: 'Learned', fr: 'Apprises' },
-  'lore.add_language':            { en: '— Add language ({n} slot{s} left) —', fr: '— Ajouter une langue ({n} emplacement{s} restant{s}) —' },
-  'lore.all_slots_filled':        { en: 'All bonus language slots filled. Increase INT or add Speak Language ranks for more.', fr: 'Tous les emplacements de langue bonus sont remplis. Augmentez l\'INT ou ajoutez des rangs en Langue parlée pour en obtenir plus.' },
-  'lore.no_languages_available':  { en: 'No additional languages available. Enable a rule source with language features.', fr: 'Aucune langue supplémentaire disponible. Activez une source de règles avec des capacités de langue.' },
-  'lore.appearance':              { en: 'Appearance', fr: 'Apparence' },
-  'lore.height':                  { en: 'Height', fr: 'Taille' },
-  'lore.weight':                  { en: 'Weight', fr: 'Poids' },
-  'lore.age':                     { en: 'Age', fr: 'Âge' },
-  'lore.eyes':                    { en: 'Eyes', fr: 'Yeux' },
-  'lore.hair':                    { en: 'Hair', fr: 'Cheveux' },
-  'lore.skin':                    { en: 'Skin', fr: 'Peau' },
-  'lore.height_placeholder':      { en: "5'8\"", fr: '1,72 m' },
-  'lore.weight_placeholder':      { en: '160 lb.', fr: '72 kg' },
-  'lore.age_placeholder':         { en: '24', fr: '24' },
-  'lore.eyes_placeholder':        { en: 'Brown', fr: 'Marrons' },
-  'lore.hair_placeholder':        { en: 'Dark brown', fr: 'Brun foncé' },
-  'lore.skin_placeholder':        { en: 'Olive', fr: 'Olivâtre' },
+  'lore.personal_story':          'Personal Story',
+  'lore.personal_story_placeholder': "The character's backstory, motivation, personality traits, ideals, bonds, and flaws…",
+  'lore.languages':               'Languages',
+  'lore.bonus_slots':             '{used}/{total} bonus slots',
+  'lore.no_bonus_slots':          'No bonus slots',
+  'lore.automatic':               'Automatic',
+  'lore.learned':                 'Learned',
+  'lore.add_language':            '— Add language ({n} slot{s} left) —',
+  'lore.all_slots_filled':        'All bonus language slots filled. Increase INT or add Speak Language ranks for more.',
+  'lore.no_languages_available':  'No additional languages available. Enable a rule source with language features.',
+  'lore.appearance':              'Appearance',
+  'lore.height':                  'Height',
+  'lore.weight':                  'Weight',
+  'lore.age':                     'Age',
+  'lore.eyes':                    'Eyes',
+  'lore.hair':                    'Hair',
+  'lore.skin':                    'Skin',
+  'lore.height_placeholder':      "5'8\"",
+  'lore.weight_placeholder':      '160 lb.',
+  'lore.age_placeholder':         '24',
+  'lore.eyes_placeholder':        'Brown',
+  'lore.hair_placeholder':        'Dark brown',
+  'lore.skin_placeholder':        'Olive',
 
   // ==========================================================================
-  // ACTION BUDGET (Engine Extension F — Phase 1.3c)
+  // ACTION BUDGET
   // ==========================================================================
-  'action.budget_title':          { en: 'Actions This Turn', fr: 'Actions ce tour' },
-  'action.standard':              { en: 'Standard', fr: 'Standard' },
-  'action.move':                  { en: 'Move', fr: 'Déplacement' },
-  'action.swift':                 { en: 'Swift', fr: 'Rapide' },
-  'action.immediate':             { en: 'Immediate', fr: 'Immédiate' },
-  'action.free':                  { en: 'Free', fr: 'Libre' },
-  'action.full_round':            { en: 'Full Round', fr: 'Tour complet' },
-  'action.blocked':               { en: 'Blocked by: {conditions}', fr: 'Bloqué par : {conditions}' },
-  'action.spent':                 { en: 'Spent', fr: 'Dépensée' },
-  'action.available':             { en: 'Available', fr: 'Disponible' },
-  'action.spend_standard':        { en: 'Use Standard Action', fr: 'Utiliser action standard' },
-  'action.spend_move':            { en: 'Use Move Action', fr: 'Utiliser action de déplacement' },
-  'action.spend_full':            { en: 'Use Full-Round Action', fr: 'Utiliser action de tour complet' },
-  'action.reset_turn':            { en: 'Reset Turn', fr: 'Réinitialiser le tour' },
-  'action.xor_note':              { en: 'Standard OR Move — not both.', fr: 'Standard OU Déplacement — pas les deux.' },
+  'action.budget_title':          'Actions This Turn',
+  'action.standard':              'Standard',
+  'action.move':                  'Move',
+  'action.swift':                 'Swift',
+  'action.immediate':             'Immediate',
+  'action.free':                  'Free',
+  'action.full_round':            'Full Round',
+  'action.blocked':               'Blocked by: {conditions}',
+  'action.spent':                 'Spent',
+  'action.available':             'Available',
+  'action.spend_standard':        'Use Standard Action',
+  'action.spend_move':            'Use Move Action',
+  'action.spend_full':            'Use Full-Round Action',
+  'action.reset_turn':            'Reset Turn',
+  'action.xor_note':              'Standard OR Move — not both.',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — GENERAL (GM settings page)
+  // CAMPAIGN SETTINGS — GENERAL
   // ==========================================================================
-  'settings.save':                { en: 'Save Settings', fr: 'Enregistrer' },
-  'settings.saving':              { en: 'Saving…', fr: 'Enregistrement…' },
-  'settings.saved':               { en: 'Settings saved successfully!', fr: 'Paramètres enregistrés !' },
-  'settings.saved_local':         { en: 'Saved locally (API unavailable).', fr: 'Sauvegardé localement (API indisponible).' },
-  'settings.back_campaign':       { en: 'Campaign', fr: 'Campagne' },
-  'settings.gm_view':             { en: 'GM View', fr: 'Vue MJ' },
-  'settings.title':               { en: 'Campaign Settings', fr: 'Paramètres de campagne' },
+  'settings.save':                'Save Settings',
+  'settings.saving':              'Saving…',
+  'settings.saved':               'Settings saved successfully!',
+  'settings.saved_local':         'Saved locally (API unavailable).',
+  'settings.back_campaign':       'Campaign',
+  'settings.gm_view':             'GM View',
+  'settings.title':               'Campaign Settings',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — RULE SOURCES (GM settings page)
+  // CAMPAIGN SETTINGS — RULE SOURCES
   // ==========================================================================
-  'settings.rule_sources.title':  { en: 'Rule Sources', fr: 'Sources de règles' },
-  'settings.rule_sources.desc':   { en: 'Enable or disable rule source files. Drag to reorder — sources loaded later have higher priority (last wins on duplicate IDs).', fr: 'Activer ou désactiver les fichiers de règles. Faites glisser pour réordonner — les sources chargées en dernier ont la priorité la plus haute (le dernier gagne en cas d\'ID dupliqué).' },
-  'settings.rule_sources.quick_toggle': { en: 'Quick toggle:', fr: 'Basculement rapide :' },
-  'settings.rule_sources.disable_all': { en: 'Disable all', fr: 'Tout désactiver' },
-  'settings.rule_sources.enable_all': { en: 'Enable all', fr: 'Tout activer' },
-  'settings.rule_sources.load_order':   { en: 'Load order',  fr: 'Ordre de chargement' },
-  'settings.rule_sources.all_files':    { en: 'All files',   fr: 'Tous les fichiers' },
-  'settings.rule_sources.available':    { en: 'available',   fr: 'disponibles' },
-  'settings.rule_sources.entities':     { en: 'entities',    fr: 'entités' },
-  'settings.rule_sources.files':        { en: 'files',       fr: 'fichiers' },
-  'settings.rule_sources.toggle_all':   { en: 'All',         fr: 'Tous' },
-  'settings.rule_sources.toggle_none':  { en: 'None',        fr: 'Aucun' },
-  'settings.rule_sources.enabled_count': { en: '{enabled} / {total} enabled', fr: '{enabled} / {total} activés' },
-  'settings.rule_sources.enable': { en: 'Enable', fr: 'Activer' },
-  'settings.rule_sources.disable': { en: 'Disable', fr: 'Désactiver' },
-  'settings.rule_sources.none':   { en: 'No rule sources found. Start the PHP API server to load sources.', fr: 'Aucune source de règles trouvée. Démarrez le serveur PHP pour charger les sources.' },
-
-
-  'settings.rule_sources.error':  { en: 'Could not load rule sources', fr: 'Impossible de charger les sources de règles' },
+  'settings.rule_sources.title':  'Rule Sources',
+  'settings.rule_sources.desc':   'Enable or disable rule source files. Drag to reorder — sources loaded later have higher priority (last wins on duplicate IDs).',
+  'settings.rule_sources.quick_toggle': 'Quick toggle:',
+  'settings.rule_sources.disable_all': 'Disable all',
+  'settings.rule_sources.enable_all': 'Enable all',
+  'settings.rule_sources.load_order':   'Load order',
+  'settings.rule_sources.all_files':    'All files',
+  'settings.rule_sources.available':    'available',
+  'settings.rule_sources.entities':     { one: 'entity',  other: 'entities' },
+  'settings.rule_sources.files':        { one: 'file',    other: 'files'    },
+  'settings.rule_sources.toggle_all':   'All',
+  'settings.rule_sources.toggle_none':  'None',
+  'settings.rule_sources.enabled_count': '{enabled} / {total} enabled',
+  'settings.rule_sources.enable': 'Enable',
+  'settings.rule_sources.disable': 'Disable',
+  'settings.rule_sources.none':   'No rule sources found. Start the PHP API server to load sources.',
+  'settings.rule_sources.error':  'Could not load rule sources',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — GM OVERRIDES (GM settings page)
+  // CAMPAIGN SETTINGS — GM OVERRIDES
   // ==========================================================================
-  'settings.overrides.title':      { en: 'GM Global Overrides', fr: 'Surcharges globales du MJ' },
-  'settings.overrides.desc':       { en: 'A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign, AFTER all rule source files. Features need <code>id</code> + <code>category</code>. Config tables need <code>tableId</code> + <code>data</code>.', fr: 'Un tableau JSON d\'objets de type Feature et/ou de tables de configuration appliqués à TOUS les personnages de cette campagne, APRÈS les fichiers de règles. Les Features nécessitent <code>id</code> + <code>category</code>. Les tables de configuration nécessitent <code>tableId</code> + <code>data</code>.' },
-  'settings.overrides.aria_label': { en: 'GM Global Overrides JSON', fr: 'JSON des surcharges globales du MJ' },
-  'settings.overrides.valid':      { en: 'Valid JSON', fr: 'JSON valide' },
-  'settings.overrides.invalid':    { en: 'Invalid JSON — fix errors before saving', fr: 'JSON invalide — corrigez les erreurs avant d\'enregistrer' },
-  'settings.overrides.entry':      { en: '{n} override entry', fr: '{n} surcharge' },
-  'settings.overrides.entries':    { en: '{n} override entries', fr: '{n} surcharges' },
-  'settings.overrides.examples':       { en: 'Examples', fr: 'Exemples' },
-  'settings.overrides.ex_new_label':   { en: 'New feature — grant a bonus to all characters', fr: 'Nouvelle feature — accorder un bonus à tous les personnages' },
-  'settings.overrides.ex_merge_label': { en: 'Partial override — patch an existing rule entity', fr: 'Surcharge partielle — modifier une entité de règle existante' },
-  'settings.overrides.ex_table_label': { en: 'Config table — replace a lookup table', fr: 'Table de config — remplacer une table de référence' },
+  'settings.overrides.title':      'GM Global Overrides',
+  'settings.overrides.desc':       'A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign, AFTER all rule source files. Features need <code>id</code> + <code>category</code>. Config tables need <code>tableId</code> + <code>data</code>.',
+  'settings.overrides.aria_label': 'GM Global Overrides JSON',
+  'settings.overrides.valid':      'Valid JSON',
+  'settings.overrides.invalid':    'Invalid JSON — fix errors before saving',
+  'settings.overrides.entry':      { one: '{n} override entry', other: '{n} override entries' },
+  'settings.overrides.examples':   'Examples',
+  'settings.overrides.ex_new_label':   'New feature — grant a bonus to all characters',
+  'settings.overrides.ex_merge_label': 'Partial override — patch an existing rule entity',
+  'settings.overrides.ex_table_label': 'Config table — replace a lookup table',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — DICE RULES (GM settings page)
+  // CAMPAIGN SETTINGS — DICE RULES
   // ==========================================================================
-  'settings.dice_rules.title':    { en: 'Dice Rules', fr: 'Règles de dés' },
-  'settings.dice_rules.desc':     { en: 'House rules that modify how dice are resolved in this campaign.', fr: 'Règles maison qui modifient la résolution des dés dans cette campagne.' },
-  'settings.exploding_twenties':  { en: 'Exploding 20s', fr: '20 explosifs' },
-  'settings.exploding_twenties_desc': { en: 'When a natural 20 is rolled on a d20, roll again and add the result. Repeat while 20s keep coming. Can produce astronomically high totals.', fr: 'Quand un 20 naturel est obtenu sur un d20, relancez et additionnez. Recommencez tant que des 20 sont obtenus. Peut produire des totaux astronomiques.' },
+  'settings.dice_rules.title':    'Dice Rules',
+  'settings.dice_rules.desc':     'House rules that modify how dice are resolved in this campaign.',
+  'settings.exploding_twenties':  'Exploding 20s',
+  'settings.exploding_twenties_desc': 'When a natural 20 is rolled on a d20, roll again and add the result. Repeat while 20s keep coming. Can produce astronomically high totals.',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — STAT GENERATION (GM settings page)
+  // CAMPAIGN SETTINGS — STAT GENERATION
   // ==========================================================================
-  'settings.stat_gen.title':      { en: 'Stat Generation', fr: 'Génération des statistiques' },
-  'settings.stat_gen.desc':       { en: 'Method used by players to generate their ability scores during character creation.', fr: 'Méthode utilisée par les joueurs pour générer leurs caractéristiques lors de la création du personnage.' },
-  'settings.stat_gen.method':     { en: 'Generation Method', fr: 'Méthode de génération' },
-  'settings.stat_gen.roll':       { en: 'Roll (4d6 drop lowest)', fr: 'Lancer (4d6 retire le plus bas)' },
-  'settings.stat_gen.point_buy':  { en: 'Point Buy', fr: 'Achat de points' },
-  'settings.stat_gen.standard_array': { en: 'Standard Array (15/14/13/12/10/8)', fr: 'Tableau standard (15/14/13/12/10/8)' },
-  'settings.stat_gen.reroll_ones': { en: 'Reroll 1s', fr: 'Relancer les 1' },
-  'settings.stat_gen.reroll_ones_desc': { en: 'Before dropping the lowest die, reroll any die showing 1 once. Produces higher average scores.', fr: 'Avant de retirer le dé le plus bas, relancez une fois tout dé affichant 1. Produit des scores moyens plus élevés.' },
-  'settings.stat_gen.budget':     { en: 'Point Buy Budget', fr: 'Budget d\'achat de points' },
-  'settings.stat_gen.budget_desc': { en: 'Total points to spend. Standard D&D 3.5: Low = 15, Standard = 25, High = 32, Epic = 40.', fr: 'Points totaux à dépenser. D&D 3.5 standard : Faible = 15, Standard = 25, Élevé = 32, Épique = 40.' },
-  'settings.stat_gen.allowed_methods': { en: 'Allowed Methods (players may use any checked method)', fr: 'Méthodes autorisées (les joueurs peuvent utiliser toute méthode cochée)' },
-  'settings.stat_gen.preset_low':  { en: 'Low (15)', fr: 'Faible (15)' },
-  'settings.stat_gen.preset_std':  { en: 'Standard (25)', fr: 'Standard (25)' },
-  'settings.stat_gen.preset_high': { en: 'High (32)', fr: 'Élevé (32)' },
-  'settings.stat_gen.preset_epic': { en: 'Epic (40)', fr: 'Épique (40)' },
+  'settings.stat_gen.title':      'Stat Generation',
+  'settings.stat_gen.desc':       'Method used by players to generate their ability scores during character creation.',
+  'settings.stat_gen.method':     'Generation Method',
+  'settings.stat_gen.roll':       'Roll (4d6 drop lowest)',
+  'settings.stat_gen.point_buy':  'Point Buy',
+  'settings.stat_gen.standard_array': 'Standard Array (15/14/13/12/10/8)',
+  'settings.stat_gen.reroll_ones': 'Reroll 1s',
+  'settings.stat_gen.reroll_ones_desc': 'Before dropping the lowest die, reroll any die showing 1 once. Produces higher average scores.',
+  'settings.stat_gen.budget':     'Point Buy Budget',
+  'settings.stat_gen.budget_desc': 'Total points to spend. Standard D&D 3.5: Low = 15, Standard = 25, High = 32, Epic = 40.',
+  'settings.stat_gen.allowed_methods': 'Allowed Methods (players may use any checked method)',
+  'settings.stat_gen.preset_low':  'Low (15)',
+  'settings.stat_gen.preset_std':  'Standard (25)',
+  'settings.stat_gen.preset_high': 'High (32)',
+  'settings.stat_gen.preset_epic': 'Epic (40)',
 
   // ==========================================================================
-  // VARIANT RULES (Engine Extensions G + H — Phase 2.5a / 2.5b)
+  // VARIANT RULES
   // ==========================================================================
-  'variant.title':                { en: 'Variant Rules', fr: 'Règles variantes' },
-  'variant.gestalt':              { en: 'Gestalt Characters', fr: 'Personnages gestalts' },
-  'variant.gestalt_desc':         { en: 'Characters advance in two classes simultaneously. BAB and saves use the best progression each level (not additive).', fr: 'Les personnages progressent simultanément dans deux classes. BBA et jets de sauvegarde utilisent la meilleure progression par niveau (non additive).' },
-  'variant.vitality_wound':       { en: 'Vitality & Wound Points', fr: 'Points de vitalité et de blessure' },
-  'variant.vitality_wound_desc':  { en: 'Replaces HP with Vitality Points (normal hits) and Wound Points (critical hits). Critical damage goes directly to Wound Points.', fr: 'Remplace les PV par des Points de vitalité (touches normales) et Points de blessure (coups critiques). Les dégâts critiques vont directement aux Points de blessure.' },
+  'variant.title':                'Variant Rules',
+  'variant.gestalt':              'Gestalt Characters',
+  'variant.gestalt_desc':         'Characters advance in two classes simultaneously. BAB and saves use the best progression each level (not additive).',
+  'variant.vitality_wound':       'Vitality & Wound Points',
+  'variant.vitality_wound_desc':  'Replaces HP with Vitality Points (normal hits) and Wound Points (critical hits). Critical damage goes directly to Wound Points.',
 
   // ==========================================================================
-  // VITALITY / WOUND POINTS (Engine Extension H — Phase 2.5b)
+  // VITALITY / WOUND POINTS
   // ==========================================================================
-  'vwp.vitality_label':           { en: 'Vitality', fr: 'Vitalité' },
-  'vwp.wound_label':              { en: 'Wounds', fr: 'Blessures' },
-  'vwp.wound_dc_note':            { en: 'Fort save DC {dc} or stunned', fr: 'Save Vig DD {dc} ou étourdi' },
-  'vwp.fatigued_note':            { en: 'First wound damage → Fatigued', fr: 'Premiers dégâts de blessure → Fatigué' },
-  'vwp.damage_to':                { en: 'Damage → {pool}', fr: 'Dégâts → {pool}' },
-  'vwp.pool_vitality':            { en: 'Vitality Points', fr: 'Points de vitalité' },
-  'vwp.pool_wounds':              { en: 'Wound Points', fr: 'Points de blessure' },
-  'vwp.pool_hp':                  { en: 'Hit Points', fr: 'Points de vie' },
-  'dice.damage_routes_to':        { en: 'Routes to:', fr: 'Affecte :' },
-  'dice.critical_wound':          { en: '→ WOUND POINTS', fr: '→ POINTS DE BLESSURE' },
-  'dice.normal_vitality':         { en: '→ Vitality Points', fr: '→ Points de vitalité' },
+  'vwp.vitality_label':           'Vitality',
+  'vwp.wound_label':              'Wounds',
+  'vwp.wound_dc_note':            'Fort save DC {dc} or stunned',
+  'vwp.fatigued_note':            'First wound damage → Fatigued',
+  'vwp.damage_to':                'Damage → {pool}',
+  'vwp.pool_vitality':            'Vitality Points',
+  'vwp.pool_wounds':              'Wound Points',
+  'vwp.pool_hp':                  'Hit Points',
+  'dice.damage_routes_to':        'Routes to:',
+  'dice.critical_wound':          '→ WOUND POINTS',
+  'dice.normal_vitality':         '→ Vitality Points',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — CHAPTERS & ACTS (GM settings page)
+  // CAMPAIGN SETTINGS — CHAPTERS & ACTS
   // ==========================================================================
-  'settings.chapters.title':        { en: 'Chapters & Acts', fr: 'Chapitres & Actes' },
-  'settings.chapters.desc':         { en: 'Manage the campaign\'s narrative chapters and acts, visible to all players. Changes are saved with the rest of the settings.', fr: 'Gérez les chapitres et actes narratifs de la campagne, visibles par tous les joueurs. Les modifications sont enregistrées avec les autres paramètres.' },
-  'settings.chapters.add':          { en: 'Add Chapter', fr: 'Ajouter un chapitre' },
-  'settings.chapters.empty':        { en: 'No chapters yet. Click "Add Chapter" below to create the first one.', fr: 'Aucun chapitre. Cliquez sur « Ajouter un chapitre » ci-dessous pour en créer un.' },
-  'settings.chapters.title_label':  { en: 'Title', fr: 'Titre' },
-  'settings.chapters.desc_label':   { en: 'Description (optional)', fr: 'Description (optionnelle)' },
-  'settings.chapters.remove':       { en: 'Remove', fr: 'Supprimer' },
-  'settings.chapters.title_placeholder': { en: 'e.g. Act I: The Beginning', fr: 'ex. Acte I : Le Commencement' },
-  'settings.chapters.desc_placeholder': { en: 'Brief summary of this chapter…', fr: 'Résumé de ce chapitre…' },
-  'settings.chapters.tasks_label':      { en: 'Tasks', fr: 'Tâches' },
-  'settings.chapters.add_task':         { en: '+ Add task', fr: '+ Ajouter une tâche' },
-  'settings.chapters.task_placeholder': { en: 'Task title…', fr: 'Titre de la tâche…' },
-  'settings.chapters.remove_task':      { en: 'Remove task', fr: 'Supprimer la tâche' },
-  'campaign.tasks_total':               { en: '{completed}/{total} tasks', fr: '{completed}/{total} tâches' },
+  'settings.chapters.title':        'Chapters & Acts',
+  'settings.chapters.desc':         "Manage the campaign's narrative chapters and acts, visible to all players. Changes are saved with the rest of the settings.",
+  'settings.chapters.add':          'Add Chapter',
+  'settings.chapters.empty':        'No chapters yet. Click "Add Chapter" below to create the first one.',
+  'settings.chapters.title_label':  'Title',
+  'settings.chapters.desc_label':   'Description (optional)',
+  'settings.chapters.remove':       'Remove',
+  'settings.chapters.title_placeholder': 'e.g. Act I: The Beginning',
+  'settings.chapters.desc_placeholder': 'Brief summary of this chapter…',
+  'settings.chapters.tasks_label':      'Tasks',
+  'settings.chapters.add_task':         '+ Add task',
+  'settings.chapters.task_placeholder': 'Task title…',
+  'settings.chapters.remove_task':      'Remove task',
 
   // ==========================================================================
   // LANGUAGE SELECTOR
   // ==========================================================================
-  'lang.label':                   { en: 'Language', fr: 'Langue' },
-  'lang.select_tooltip':          { en: 'Switch display language', fr: 'Changer la langue d\'affichage' },
+  'lang.label':                   'Language',
+  'lang.select_tooltip':          'Switch display language',
 
-  // Built-in language names (en + fr translations).
-  // Community files may provide language codes not listed here; those will use
-  // the code itself (e.g. "es") as their display label in the dropdown.
-  'lang.en':                      { en: 'English', fr: 'Anglais' },
-  'lang.fr':                      { en: 'French', fr: 'Français' },
-  'lang.de':                      { en: 'German', fr: 'Allemand' },
-  'lang.es':                      { en: 'Spanish', fr: 'Espagnol' },
-  'lang.it':                      { en: 'Italian', fr: 'Italien' },
-  'lang.pt':                      { en: 'Portuguese', fr: 'Portugais' },
-  'lang.nl':                      { en: 'Dutch', fr: 'Néerlandais' },
-  'lang.pl':                      { en: 'Polish', fr: 'Polonais' },
-  'lang.cs':                      { en: 'Czech', fr: 'Tchèque' },
-  'lang.ja':                      { en: 'Japanese', fr: 'Japonais' },
-  'lang.ko':                      { en: 'Korean', fr: 'Coréen' },
-  'lang.zh':                      { en: 'Chinese', fr: 'Chinois' },
+  // Built-in language display names.
+  // Community locale files may provide codes not listed here; those will use
+  // the raw code (e.g. "ES") as their dropdown label.
+  'lang.en':                      'English',
+  'lang.fr':                      'French',
+  'lang.de':                      'German',
+  'lang.es':                      'Spanish',
+  'lang.it':                      'Italian',
+  'lang.pt':                      'Portuguese',
+  'lang.nl':                      'Dutch',
+  'lang.pl':                      'Polish',
+  'lang.cs':                      'Czech',
+  'lang.ja':                      'Japanese',
+  'lang.ko':                      'Korean',
+  'lang.zh':                      'Chinese',
 };
 
-// ---------------------------------------------------------------------------
-// HELPER FUNCTION
-// ---------------------------------------------------------------------------
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
 
 /**
- * Resolves a UI chrome string by its registry key.
+ * Resolves a UI chrome string by key for the given language.
  *
- * @param key  - The dot-separated key from UI_STRINGS (e.g., 'combat.hp.title').
- * @param lang - The target language. If omitted, returns the English string.
- * @returns The localised string, or the key itself if not found (for debug visibility).
+ * Resolution order:
+ *   1. Loaded locale for the requested language (from /locales/{lang}.json)
+ *   2. English baseline (UI_STRINGS)
+ *   3. The key itself, with a console warning (for debug visibility)
+ *
+ * For plural keys, returns the "other" form as the default.
+ * Use uiN() when you have a count and need the correct plural form.
  *
  * @example
- * ui('combat.hp.title', 'fr') // → "Points de vie"
- * ui('combat.hp.title', 'en') // → "Hit Points"
+ * ui('combat.hp.title', 'fr')  // → "Points de vie"
+ * ui('combat.hp.title', 'en')  // → "Hit Points"
+ * ui('combat.hp.title', 'de')  // → "Hit Points" (falls back to EN if de.json not loaded)
  */
 export function ui(key: string, lang: string = 'en'): string {
-  const entry = UI_STRINGS[key];
-  if (!entry) {
+  const localeEntry = lang !== 'en' ? _loadedLocales.get(lang)?.[key] : undefined;
+  const entry = localeEntry ?? UI_STRINGS[key];
+  if (entry === undefined) {
     console.warn(`[i18n] Missing UI string key: "${key}"`);
     return key;
   }
-  return t(entry, lang);
+  if (typeof entry === 'string') return entry;
+  // Plural object: return the "other" form as a non-count-aware fallback.
+  return entry['other'] ?? entry['one'] ?? key;
+}
+
+/**
+ * Resolves a count-aware UI chrome string using Intl.PluralRules.
+ *
+ * The string value for the key must be a UiPluralForms object:
+ *   { one: "{n} file", other: "{n} files" }
+ *
+ * The token {n} in the selected form is replaced with String(count).
+ *
+ * Falls back to ui(key, lang) behaviour if the value is a plain string.
+ *
+ * @example
+ * uiN('settings.rule_sources.files', 1,  'fr') // → "1 fichier"
+ * uiN('settings.rule_sources.files', 28, 'fr') // → "28 fichiers"
+ * uiN('settings.rule_sources.files', 28, 'en') // → "28 files"
+ */
+export function uiN(key: string, count: number, lang: string = 'en'): string {
+  const localeEntry = lang !== 'en' ? _loadedLocales.get(lang)?.[key] : undefined;
+  const entry = localeEntry ?? UI_STRINGS[key];
+  if (entry === undefined) {
+    console.warn(`[i18n] Missing UI string key: "${key}"`);
+    return key;
+  }
+  if (typeof entry === 'string') return entry;
+
+  let pr = _pluralCache.get(lang);
+  if (!pr) { pr = new Intl.PluralRules(lang); _pluralCache.set(lang, pr); }
+
+  const form  = pr.select(count);
+  const value = entry[form] ?? entry['other'] ?? entry['one'] ?? key;
+  return value.replace('{n}', String(count));
 }
