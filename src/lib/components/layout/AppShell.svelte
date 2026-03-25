@@ -83,6 +83,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
+  import { afterNavigate } from '$app/navigation';
   import Sidebar from './Sidebar.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
@@ -203,7 +204,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // AUTO-CLOSE ON NAVIGATION
+  //   AUTO-CLOSE AND SCROLL RESET ON NAVIGATION
   // ---------------------------------------------------------------------------
 
   /**
@@ -224,6 +225,20 @@
     if (mobileOpen) {
       mobileOpen = false;
     }
+  });
+
+  /**
+   * Reset the main content scroll position to the top after every navigation.
+   *
+   * WHY: SvelteKit's built-in scroll restoration targets `window.scrollY`, but
+   * this app uses a custom scroll container (`<main id="main-content">`  with
+   * `overflow-y-auto`) instead of body scroll. Without this hook, navigating
+   * between pages leaves `main.scrollTop` at its previous value, making the
+   * new page's content appear below the visible area rather than replacing it.
+   */
+  afterNavigate(() => {
+    const mainEl = document.getElementById('main-content');
+    if (mainEl) mainEl.scrollTop = 0;
   });
 
   // ---------------------------------------------------------------------------

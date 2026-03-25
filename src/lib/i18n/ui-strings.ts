@@ -159,6 +159,8 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'campaign.mark_incomplete':     { en: 'Mark as incomplete', fr: 'Marquer comme incomplet' },
   'campaign.mark_completed':      { en: 'Mark as completed', fr: 'Marquer comme terminé' },
   'campaign.done':                { en: 'Done', fr: 'Terminé' },
+  'campaign.task_done':           { en: 'Done', fr: 'Terminé' },
+  'campaign.task_mark_done':      { en: 'Mark done', fr: 'Marquer terminé' },
   'campaign.active_sources':      { en: 'Active Rule Sources', fr: 'Sources de règles actives' },
   'campaign.manage_sources_hint': { en: 'Manage rule sources in GM Settings.', fr: 'Gérez les sources de règles dans les Paramètres MJ.' },
 
@@ -772,23 +774,35 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'settings.rule_sources.quick_toggle': { en: 'Quick toggle:', fr: 'Basculement rapide :' },
   'settings.rule_sources.disable_all': { en: 'Disable all', fr: 'Tout désactiver' },
   'settings.rule_sources.enable_all': { en: 'Enable all', fr: 'Tout activer' },
-  'settings.rule_sources.all_files': { en: 'All files', fr: 'Tous les fichiers' },
+  'settings.rule_sources.load_order':   { en: 'Load order',  fr: 'Ordre de chargement' },
+  'settings.rule_sources.all_files':    { en: 'All files',   fr: 'Tous les fichiers' },
+  'settings.rule_sources.available':    { en: 'available',   fr: 'disponibles' },
+  'settings.rule_sources.entities':     { en: 'entities',    fr: 'entités' },
+  'settings.rule_sources.files':        { en: 'files',       fr: 'fichiers' },
+  'settings.rule_sources.toggle_all':   { en: 'All',         fr: 'Tous' },
+  'settings.rule_sources.toggle_none':  { en: 'None',        fr: 'Aucun' },
   'settings.rule_sources.enabled_count': { en: '{enabled} / {total} enabled', fr: '{enabled} / {total} activés' },
   'settings.rule_sources.enable': { en: 'Enable', fr: 'Activer' },
   'settings.rule_sources.disable': { en: 'Disable', fr: 'Désactiver' },
   'settings.rule_sources.none':   { en: 'No rule sources found. Start the PHP API server to load sources.', fr: 'Aucune source de règles trouvée. Démarrez le serveur PHP pour charger les sources.' },
+
+
   'settings.rule_sources.error':  { en: 'Could not load rule sources', fr: 'Impossible de charger les sources de règles' },
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — GM OVERRIDES (GM settings page)
   // ==========================================================================
-  'settings.overrides.title':     { en: 'GM Global Overrides', fr: 'Substitutions globales MJ' },
-  'settings.overrides.desc':      { en: 'A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign, AFTER all rule source files.', fr: 'Un tableau JSON d\'objets Feature et/ou de tables de configuration appliqués à TOUS les personnages de la campagne, APRÈS tous les fichiers de règles.' },
-  'settings.overrides.valid':     { en: 'Valid JSON', fr: 'JSON valide' },
-  'settings.overrides.invalid':   { en: 'Invalid JSON — fix errors before saving', fr: 'JSON invalide — corrigez les erreurs avant d\'enregistrer' },
-  'settings.overrides.entries':   { en: '{n} override {entries}', fr: '{n} substitution{s}' },
-  'settings.overrides.entry':     { en: 'entry', fr: '' },
-  'settings.overrides.entries_pl': { en: 'entries', fr: '' },
+  'settings.overrides.title':      { en: 'GM Global Overrides', fr: 'Surcharges globales du MJ' },
+  'settings.overrides.desc':       { en: 'A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign, AFTER all rule source files. Features need <code>id</code> + <code>category</code>. Config tables need <code>tableId</code> + <code>data</code>.', fr: 'Un tableau JSON d\'objets de type Feature et/ou de tables de configuration appliqués à TOUS les personnages de cette campagne, APRÈS les fichiers de règles. Les Features nécessitent <code>id</code> + <code>category</code>. Les tables de configuration nécessitent <code>tableId</code> + <code>data</code>.' },
+  'settings.overrides.aria_label': { en: 'GM Global Overrides JSON', fr: 'JSON des surcharges globales du MJ' },
+  'settings.overrides.valid':      { en: 'Valid JSON', fr: 'JSON valide' },
+  'settings.overrides.invalid':    { en: 'Invalid JSON — fix errors before saving', fr: 'JSON invalide — corrigez les erreurs avant d\'enregistrer' },
+  'settings.overrides.entry':      { en: '{n} override entry', fr: '{n} surcharge' },
+  'settings.overrides.entries':    { en: '{n} override entries', fr: '{n} surcharges' },
+  'settings.overrides.examples':       { en: 'Examples', fr: 'Exemples' },
+  'settings.overrides.ex_new_label':   { en: 'New feature — grant a bonus to all characters', fr: 'Nouvelle feature — accorder un bonus à tous les personnages' },
+  'settings.overrides.ex_merge_label': { en: 'Partial override — patch an existing rule entity', fr: 'Surcharge partielle — modifier une entité de règle existante' },
+  'settings.overrides.ex_table_label': { en: 'Config table — replace a lookup table', fr: 'Table de config — remplacer une table de référence' },
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — DICE RULES (GM settings page)
@@ -807,7 +821,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'settings.stat_gen.roll':       { en: 'Roll (4d6 drop lowest)', fr: 'Lancer (4d6 retire le plus bas)' },
   'settings.stat_gen.point_buy':  { en: 'Point Buy', fr: 'Achat de points' },
   'settings.stat_gen.standard_array': { en: 'Standard Array (15/14/13/12/10/8)', fr: 'Tableau standard (15/14/13/12/10/8)' },
-  'settings.stat_gen.reroll_ones': { en: 'Reroll 1s', fr: 'Relancer les 1s' },
+  'settings.stat_gen.reroll_ones': { en: 'Reroll 1s', fr: 'Relancer les 1' },
   'settings.stat_gen.reroll_ones_desc': { en: 'Before dropping the lowest die, reroll any die showing 1 once. Produces higher average scores.', fr: 'Avant de retirer le dé le plus bas, relancez une fois tout dé affichant 1. Produit des scores moyens plus élevés.' },
   'settings.stat_gen.budget':     { en: 'Point Buy Budget', fr: 'Budget d\'achat de points' },
   'settings.stat_gen.budget_desc': { en: 'Total points to spend. Standard D&D 3.5: Low = 15, Standard = 25, High = 32, Epic = 40.', fr: 'Points totaux à dépenser. D&D 3.5 standard : Faible = 15, Standard = 25, Élevé = 32, Épique = 40.' },
@@ -853,6 +867,11 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'settings.chapters.remove':       { en: 'Remove', fr: 'Supprimer' },
   'settings.chapters.title_placeholder': { en: 'e.g. Act I: The Beginning', fr: 'ex. Acte I : Le Commencement' },
   'settings.chapters.desc_placeholder': { en: 'Brief summary of this chapter…', fr: 'Résumé de ce chapitre…' },
+  'settings.chapters.tasks_label':      { en: 'Tasks', fr: 'Tâches' },
+  'settings.chapters.add_task':         { en: '+ Add task', fr: '+ Ajouter une tâche' },
+  'settings.chapters.task_placeholder': { en: 'Task title…', fr: 'Titre de la tâche…' },
+  'settings.chapters.remove_task':      { en: 'Remove task', fr: 'Supprimer la tâche' },
+  'campaign.tasks_total':               { en: '{completed}/{total} tasks', fr: '{completed}/{total} tâches' },
 
   // ==========================================================================
   // LANGUAGE SELECTOR

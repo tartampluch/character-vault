@@ -488,6 +488,19 @@
 		@apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
 	}
 
+	/**
+	 * Danger outline — light-mode-safe small destructive button.
+	 * Use for inline remove/disable/delete actions in forms and lists.
+	 *
+	 * Light: subtle red tint on white background.
+	 * Dark:  deep red tint on dark background (was grey-looking with red-950/20).
+	 */
+	.btn-danger-outline {
+		@apply rounded border cursor-pointer transition-colors
+		       bg-red-100 border-red-300 text-red-700 hover:bg-red-200
+		       dark:bg-red-950/40 dark:border-red-800/60 dark:text-red-400 dark:hover:bg-red-900/50;
+	}
+
 	/** Ghost — invisible until hovered. Tertiary and icon-adjacent actions. */
 	.btn-ghost {
 		@apply text-text-secondary hover:bg-surface-alt hover:text-text-primary;

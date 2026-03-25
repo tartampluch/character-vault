@@ -44,8 +44,12 @@
 
     // Apply per-campaign rule settings (diceRules, statGeneration, variantRules)
     // whenever the campaign changes, so all players share the same campaign rules.
+    // Guard: PHP json_decode('{}', true) can return [] (empty array) for a never-saved
+    // settings blob; an empty array is truthy in JS but has no diceRules/etc fields,
+    // which would silently reset the engine to defaults.  Only apply when cs is a
+    // non-null, non-array object (i.e. has at least one settings key).
     const cs = campaign?.campaignSettings;
-    if (cs) {
+    if (cs && !Array.isArray(cs)) {
       const defaults = createDefaultCampaignSettings();
       engine.updateSettings({
         diceRules:      { ...defaults.diceRules,      ...(cs.diceRules      ?? {}) },

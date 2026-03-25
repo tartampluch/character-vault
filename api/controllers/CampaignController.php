@@ -49,10 +49,10 @@ class CampaignController
 
         // GMs see all campaigns; players see campaigns they own
         if ($user['is_game_master']) {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, updated_at FROM campaigns ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns ORDER BY updated_at DESC');
             $stmt->execute();
         } else {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
             $stmt->execute([$user['id']]);
         }
 
@@ -62,7 +62,11 @@ class CampaignController
         foreach ($campaigns as &$c) {
             $c['chapters']           = json_decode($c['chapters_json'] ?? '[]', true);
             $c['enabledRuleSources'] = json_decode($c['enabled_rule_sources_json'] ?? '[]', true);
-            unset($c['chapters_json'], $c['enabled_rule_sources_json']);
+            // Decode campaignSettings; return null when empty so the frontend can
+            // distinguish "never configured" from an actual settings object.
+            $cs = json_decode($c['campaign_settings_json'] ?? 'null', true);
+            $c['campaignSettings'] = (is_array($cs) && !array_is_list($cs)) ? $cs : null;
+            unset($c['chapters_json'], $c['enabled_rule_sources_json'], $c['campaign_settings_json']);
         }
 
         Logger::info('Campaign', 'List', ['count' => count($campaigns)]);
@@ -163,8 +167,12 @@ class CampaignController
             'enabledRuleSources'  => json_decode($campaign['enabled_rule_sources_json'] ?? '[]', true),
             'updatedAt'           => (int)$campaign['updated_at'],
             // Per-campaign rule settings (diceRules, statGeneration, variantRules).
-            // All players receive this so their engines apply the same rules.
-            'campaignSettings'    => json_decode($campaign['campaign_settings_json'] ?? '{}', true) ?? (object)[],
+            // All players receive this field so their engines apply the same rules.
+            // Return null when empty so the frontend treats it as "no settings saved".
+            'campaignSettings'    => (function() use ($campaign) {
+                $cs = json_decode($campaign['campaign_settings_json'] ?? 'null', true);
+                return (is_array($cs) && !array_is_list($cs)) ? $cs : null;
+            })(),
         ];
 
         // GMs also receive the raw global overrides text (for their editor UI)

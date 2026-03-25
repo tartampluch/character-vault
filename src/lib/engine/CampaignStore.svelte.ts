@@ -196,6 +196,11 @@ class CampaignStore {
 
   /**
    * Toggles the `isCompleted` status of a chapter within a campaign.
+   *
+   * When the chapter has tasks, all tasks are bulk-toggled to the new state
+   * so the chapter-level flag stays in sync with task completion.
+   * When the chapter has no tasks, the flag is toggled directly.
+   *
    * Only GMs can call this — enforced by the UI (not by the store).
    *
    * @param campaignId - The campaign ID.
@@ -208,7 +213,40 @@ class CampaignStore {
     const chapter = campaign.chapters.find(ch => ch.id === chapterId);
     if (!chapter) return;
 
-    chapter.isCompleted = !chapter.isCompleted;
+    const newState = !chapter.isCompleted;
+    chapter.isCompleted = newState;
+    // Sync all tasks to the new state so the task list reflects the bulk toggle.
+    if (chapter.tasks && chapter.tasks.length > 0) {
+      for (const task of chapter.tasks) task.isCompleted = newState;
+    }
+    campaign.updatedAt = Date.now();
+  }
+
+  /**
+   * Toggles a single task within a chapter.
+   *
+   * After toggling, the chapter's `isCompleted` flag is automatically derived:
+   * it becomes `true` only when every task is completed, and `false` otherwise.
+   *
+   * Only GMs can call this — enforced by the UI (not by the store).
+   *
+   * @param campaignId - The campaign ID.
+   * @param chapterId  - The chapter that owns the task.
+   * @param taskId     - The task to toggle.
+   */
+  toggleTaskCompleted(campaignId: ID, chapterId: ID, taskId: ID): void {
+    const campaign = this.campaigns.find(c => c.id === campaignId);
+    if (!campaign) return;
+
+    const chapter = campaign.chapters.find(ch => ch.id === chapterId);
+    if (!chapter || !chapter.tasks) return;
+
+    const task = chapter.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    task.isCompleted = !task.isCompleted;
+    // Auto-derive chapter completion: done only when every task is done.
+    chapter.isCompleted = chapter.tasks.every(t => t.isCompleted);
     campaign.updatedAt = Date.now();
   }
 

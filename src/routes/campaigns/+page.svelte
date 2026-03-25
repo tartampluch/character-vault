@@ -16,6 +16,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { goto } from '$app/navigation';
+  import { campaignTaskStats } from '$lib/types/campaign';
   import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
 
   // Load campaigns from the PHP API when the hub mounts.
@@ -157,18 +158,18 @@
               <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{campaign.description}</p>
             {/if}
 
-            <!-- Chapter progress -->
+            <!-- Chapter / task progress -->
             {#if campaign.chapters.length > 0}
-              {@const completedCount = campaign.chapters.filter(ch => ch.isCompleted).length}
-              {@const pct = Math.round((completedCount / campaign.chapters.length) * 100)}
+              {@const stats = campaignTaskStats(campaign.chapters)}
+              {@const pct = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}
               <div class="flex items-center gap-2 mt-auto pt-1">
-                <span class="text-[10px] text-text-muted shrink-0">{completedCount}/{campaign.chapters.length}</span>
+                <span class="text-[10px] text-text-muted shrink-0">{stats.completed}/{stats.total}</span>
                 <div
                   class="flex-1 h-1 bg-border rounded-full overflow-hidden"
                   role="progressbar"
-                  aria-valuenow={completedCount}
+                  aria-valuenow={stats.completed}
                   aria-valuemin={0}
-                  aria-valuemax={campaign.chapters.length}
+                  aria-valuemax={stats.total}
                 >
                   <div
                     class="h-full bg-accent rounded-full transition-all duration-300"

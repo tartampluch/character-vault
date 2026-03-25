@@ -14,6 +14,8 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { apiHeaders } from '$lib/engine/StorageManager';
+  import { campaignTaskStats } from '$lib/types/campaign';
   import { ui } from '$lib/i18n/ui-strings';
   import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
 
@@ -22,8 +24,7 @@
 
   const chapterStats = $derived.by(() => {
     if (!campaign) return { total: 0, completed: 0, percent: 0 };
-    const total     = campaign.chapters.length;
-    const completed = campaign.chapters.filter(ch => ch.isCompleted).length;
+    const { total, completed } = campaignTaskStats(campaign.chapters);
     return { total, completed, percent: total > 0 ? Math.round((completed / total) * 100) : 0 };
   });
 
@@ -31,8 +32,42 @@
     if (campaignId) sessionContext.setActiveCampaign(campaignId);
   });
 
-  function toggleChapter(chapterId: string) {
+  /** Sends the current chapter list (including tasks) to the API. */
+  async function persistChapters() {
+    const updated = campaignStore.getCampaign(campaignId);
+    if (!updated) return;
+    try {
+      await fetch(`/api/campaigns/${campaignId}`, {
+        method: 'PUT',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({
+          chapters: updated.chapters.map(ch => ({
+            id: ch.id,
+            title: ch.title,
+            description: ch.description,
+            isCompleted: ch.isCompleted,
+            tasks: (ch.tasks ?? []).map(t => ({
+              id: t.id,
+              title: t.title,
+              isCompleted: t.isCompleted,
+            })),
+          })),
+        }),
+      });
+    } catch (err) {
+      console.warn('[CampaignDetail] Failed to persist chapters:', err);
+    }
+  }
+
+  async function toggleChapter(chapterId: string) {
     campaignStore.toggleChapterCompleted(campaignId, chapterId);
+    await persistChapters();
+  }
+
+  async function toggleTask(chapterId: string, taskId: string) {
+    campaignStore.toggleTaskCompleted(campaignId, chapterId, taskId);
+    await persistChapters();
   }
 
   function t(textObj: Record<string, string> | string): string {
@@ -119,7 +154,11 @@
           </h2>
           {#if chapterStats.total > 0}
             <div class="flex items-center gap-2 flex-1 min-w-[160px]">
-              <span class="text-xs text-text-muted whitespace-nowrap">{chapterStats.completed}/{chapterStats.total}</span>
+              <span class="text-xs text-text-muted whitespace-nowrap">
+                {ui('campaign.tasks_total', engine.settings.language)
+                  .replace('{completed}', String(chapterStats.completed))
+                  .replace('{total}',     String(chapterStats.total))}
+              </span>
               <div
                 class="flex-1 h-1.5 bg-border rounded-full overflow-hidden"
                 role="progressbar"
@@ -180,6 +219,46 @@
                   </h3>
                   {#if chapter.description}
                     <p class="mt-0.5 text-xs text-text-muted leading-relaxed">{t(chapter.description)}</p>
+                  {/if}
+
+                  <!-- ── Task list ────────────────────────────────────────── -->
+                  {#if chapter.tasks && chapter.tasks.length > 0}
+                    <ul class="mt-2 flex flex-col gap-1" aria-label="Tasks for {t(chapter.title)}">
+                      {#each chapter.tasks as task (task.id)}
+                        <li class="flex items-center gap-2 text-xs">
+                          {#if sessionContext.isGameMaster}
+                            <label class="flex items-center gap-2 cursor-pointer group flex-1 min-w-0">
+                              <input
+                                type="checkbox"
+                                checked={task.isCompleted}
+                                onchange={() => toggleTask(chapter.id, task.id)}
+                                class="w-3 h-3 accent-accent shrink-0"
+                                aria-label="{task.isCompleted
+                                  ? ui('campaign.task_done', engine.settings.language)
+                                  : ui('campaign.task_mark_done', engine.settings.language)}: {t(task.title)}"
+                              />
+                              <span class="truncate transition-colors
+                                           {task.isCompleted
+                                             ? 'text-text-muted line-through decoration-green-600/40'
+                                             : 'text-text-secondary group-hover:text-text-primary'}">
+                                {t(task.title)}
+                              </span>
+                            </label>
+                          {:else}
+                            <span class="shrink-0 w-3 h-3 flex items-center justify-center">
+                              {#if task.isCompleted}
+                                <IconChecked size={10} class="text-green-400" aria-hidden="true" />
+                              {:else}
+                                <span class="w-2.5 h-2.5 rounded-sm border border-border inline-block" aria-hidden="true"></span>
+                              {/if}
+                            </span>
+                            <span class="truncate {task.isCompleted ? 'text-text-muted line-through decoration-green-600/40' : 'text-text-secondary'}">
+                              {t(task.title)}
+                            </span>
+                          {/if}
+                        </li>
+                      {/each}
+                    </ul>
                   {/if}
                 </div>
 

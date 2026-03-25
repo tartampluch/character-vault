@@ -30,6 +30,22 @@ import type { CampaignSettings } from './settings';
 // =============================================================================
 
 /**
+ * A single task (checklist item) within a chapter.
+ *
+ * Tasks are sub-units of a chapter: checking every task automatically
+ * completes the chapter. A chapter with no tasks counts as one indivisible
+ * unit in the overall progress bar.
+ */
+export interface ChapterTask {
+  /** Unique identifier within the chapter. */
+  id: ID;
+  /** Display title of the task (localised). */
+  title: LocalizedString;
+  /** Whether the task has been completed. */
+  isCompleted: boolean;
+}
+
+/**
  * A single chapter or act in the campaign's narrative progression.
  *
  * Chapters provide a lightweight storytelling structure that the GM can use to
@@ -65,10 +81,23 @@ export interface Chapter {
 
   /**
    * Whether the chapter has been completed by the adventuring party.
-   * Only the GM can toggle this flag (enforced by the UI role check).
-   * Used to visually indicate story progress in the Campaign Details page.
+   *
+   * When the chapter has tasks: derived automatically — true only when every
+   * task is completed. The GM can also bulk-complete all tasks via the chapter
+   * toggle button, which sets this flag and marks all tasks as done.
+   *
+   * When the chapter has no tasks: toggled manually by the GM.
    */
   isCompleted: boolean;
+
+  /**
+   * Optional task checklist for this chapter.
+   *
+   * Each task is a single-line item. The chapter's progress in the overall
+   * stats equals the number of tasks (completed vs. total). A chapter with
+   * no tasks counts as one indivisible unit.
+   */
+  tasks?: ChapterTask[];
 }
 
 // =============================================================================
@@ -207,6 +236,36 @@ export interface Campaign {
    * @see ARCHITECTURE.md section 19 for the polling sync protocol.
    */
   updatedAt: number;
+}
+
+// =============================================================================
+// TASK-AWARE PROGRESS HELPER
+// =============================================================================
+
+/**
+ * Computes task-aware progress totals for a campaign.
+ *
+ * Rules:
+ *   - Chapter with tasks  → contributes `tasks.length` to total,
+ *                           `tasks.filter(t => t.isCompleted).length` to completed.
+ *   - Chapter without tasks → counts as 1 unit, completed when `isCompleted === true`.
+ *
+ * @returns `{ total, completed }` — use to build a progress bar or "X / Y tasks" label.
+ */
+export function campaignTaskStats(chapters: Campaign['chapters']): { total: number; completed: number } {
+  let total = 0;
+  let completed = 0;
+  for (const ch of chapters) {
+    const tasks = ch.tasks ?? [];
+    if (tasks.length === 0) {
+      total     += 1;
+      completed += ch.isCompleted ? 1 : 0;
+    } else {
+      total     += tasks.length;
+      completed += tasks.filter(t => t.isCompleted).length;
+    }
+  }
+  return { total, completed };
 }
 
 // =============================================================================

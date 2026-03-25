@@ -28,11 +28,18 @@
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
 
   // ── Chapter management ─────────────────────────────────────────────────────
+  interface EditableTask {
+    id: string;
+    title: Record<string, string>;
+    isCompleted: boolean;
+  }
+
   interface EditableChapter {
     id: string;
     title: Record<string, string>;
     description: Record<string, string>;
     isCompleted: boolean;
+    tasks: EditableTask[];
   }
 
   let editableChapters = $state<EditableChapter[]>([]);
@@ -61,6 +68,11 @@
         title: { ...ch.title },
         description: { ...ch.description },
         isCompleted: ch.isCompleted,
+        tasks: ((ch as unknown as Record<string, unknown>)['tasks'] as EditableTask[] ?? []).map(t => ({
+          id: t.id,
+          title: { ...t.title },
+          isCompleted: t.isCompleted,
+        })),
       }));
       syncedUpdatedAt  = c.updatedAt;
       chaptersAreDirty = false;
@@ -74,7 +86,64 @@
       title: {},
       description: {},
       isCompleted: false,
+      tasks: [],
     }];
+  }
+
+  // ── Chapter drag-to-reorder ───────────────────────────────────────────────
+  let chapterDragSrc = $state<number | null>(null);
+
+  function handleChapterDragStart(index: number) {
+    chapterDragSrc = index;
+  }
+  function handleChapterDragOver(event: DragEvent, targetIndex: number) {
+    event.preventDefault();
+    if (chapterDragSrc === null || chapterDragSrc === targetIndex) return;
+    const list = [...editableChapters];
+    const [removed] = list.splice(chapterDragSrc, 1);
+    list.splice(targetIndex, 0, removed);
+    editableChapters = list;
+    chapterDragSrc   = targetIndex;
+    chaptersAreDirty = true;
+  }
+  function handleChapterDragEnd() { chapterDragSrc = null; }
+
+  // ── Task drag-to-reorder (per chapter) ───────────────────────────────────
+  let taskDragSrc = $state<{ chapterId: string; index: number } | null>(null);
+
+  function handleTaskDragStart(chapterId: string, index: number) {
+    taskDragSrc = { chapterId, index };
+  }
+  function handleTaskDragOver(event: DragEvent, chapterId: string, targetIndex: number) {
+    event.preventDefault();
+    if (!taskDragSrc || taskDragSrc.chapterId !== chapterId || taskDragSrc.index === targetIndex) return;
+    const ch = editableChapters.find(c => c.id === chapterId);
+    if (!ch) return;
+    const tasks = [...ch.tasks];
+    const [removed] = tasks.splice(taskDragSrc.index, 1);
+    tasks.splice(targetIndex, 0, removed);
+    ch.tasks         = tasks;
+    taskDragSrc      = { chapterId, index: targetIndex };
+    chaptersAreDirty = true;
+  }
+  function handleTaskDragEnd() { taskDragSrc = null; }
+
+  function addTask(chapterId: string) {
+    chaptersAreDirty = true;
+    const ch = editableChapters.find(c => c.id === chapterId);
+    if (!ch) return;
+    ch.tasks = [...ch.tasks, {
+      id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      title: {},
+      isCompleted: false,
+    }];
+  }
+
+  function removeTask(chapterId: string, taskId: string) {
+    chaptersAreDirty = true;
+    const ch = editableChapters.find(c => c.id === chapterId);
+    if (!ch) return;
+    ch.tasks = ch.tasks.filter(t => t.id !== taskId);
   }
 
   function removeChapter(id: string) {
@@ -133,6 +202,42 @@
     }
   });
 
+  // ── Group-color palette — deterministic, light & dark aware ─────────────────
+  // Each entry has three states: on (all enabled), partial (some), off (none).
+  // All class strings are complete literals so Tailwind v4's scanner picks them up.
+  // The palette is intentionally longer than the number of expected rule groups so
+  // collisions are rare; the hash ensures the same group always gets the same color.
+  type GroupColorState = { on: string; partial: string; off: string };
+  const GROUP_PALETTE: readonly GroupColorState[] = [
+    { on: 'border-sky-600/60 bg-sky-600/10 text-sky-700 dark:text-sky-400',         partial: 'border-sky-600/35 bg-sky-600/10 text-sky-600 dark:text-sky-500',         off: 'border-sky-600/15 bg-transparent text-sky-700/40 dark:text-sky-400/30'         },
+    { on: 'border-violet-600/60 bg-violet-600/10 text-violet-700 dark:text-violet-400', partial: 'border-violet-600/35 bg-violet-600/10 text-violet-600 dark:text-violet-500', off: 'border-violet-600/15 bg-transparent text-violet-700/40 dark:text-violet-400/30' },
+    { on: 'border-amber-600/60 bg-amber-600/10 text-amber-700 dark:text-amber-400',   partial: 'border-amber-600/35 bg-amber-600/10 text-amber-600 dark:text-amber-500',   off: 'border-amber-600/15 bg-transparent text-amber-700/40 dark:text-amber-400/30'   },
+    { on: 'border-emerald-600/60 bg-emerald-600/10 text-emerald-700 dark:text-emerald-400', partial: 'border-emerald-600/35 bg-emerald-600/10 text-emerald-600 dark:text-emerald-500', off: 'border-emerald-600/15 bg-transparent text-emerald-700/40 dark:text-emerald-400/30' },
+    { on: 'border-rose-600/60 bg-rose-600/10 text-rose-700 dark:text-rose-400',       partial: 'border-rose-600/35 bg-rose-600/10 text-rose-600 dark:text-rose-500',       off: 'border-rose-600/15 bg-transparent text-rose-700/40 dark:text-rose-400/30'       },
+    { on: 'border-cyan-600/60 bg-cyan-600/10 text-cyan-700 dark:text-cyan-400',       partial: 'border-cyan-600/35 bg-cyan-600/10 text-cyan-600 dark:text-cyan-500',       off: 'border-cyan-600/15 bg-transparent text-cyan-700/40 dark:text-cyan-400/30'       },
+    { on: 'border-orange-600/60 bg-orange-600/10 text-orange-700 dark:text-orange-400', partial: 'border-orange-600/35 bg-orange-600/10 text-orange-600 dark:text-orange-500', off: 'border-orange-600/15 bg-transparent text-orange-700/40 dark:text-orange-400/30' },
+    { on: 'border-teal-600/60 bg-teal-600/10 text-teal-700 dark:text-teal-400',       partial: 'border-teal-600/35 bg-teal-600/10 text-teal-600 dark:text-teal-500',       off: 'border-teal-600/15 bg-transparent text-teal-700/40 dark:text-teal-400/30'       },
+    { on: 'border-indigo-600/60 bg-indigo-600/10 text-indigo-700 dark:text-indigo-400', partial: 'border-indigo-600/35 bg-indigo-600/10 text-indigo-600 dark:text-indigo-500', off: 'border-indigo-600/15 bg-transparent text-indigo-700/40 dark:text-indigo-400/30' },
+    { on: 'border-pink-600/60 bg-pink-600/10 text-pink-700 dark:text-pink-400',       partial: 'border-pink-600/35 bg-pink-600/10 text-pink-600 dark:text-pink-500',       off: 'border-pink-600/15 bg-transparent text-pink-700/40 dark:text-pink-400/30'       },
+    { on: 'border-lime-600/60 bg-lime-600/10 text-lime-700 dark:text-lime-400',       partial: 'border-lime-600/35 bg-lime-600/10 text-lime-600 dark:text-lime-500',       off: 'border-lime-600/15 bg-transparent text-lime-700/40 dark:text-lime-400/30'       },
+    { on: 'border-fuchsia-600/60 bg-fuchsia-600/10 text-fuchsia-700 dark:text-fuchsia-400', partial: 'border-fuchsia-600/35 bg-fuchsia-600/10 text-fuchsia-600 dark:text-fuchsia-500', off: 'border-fuchsia-600/15 bg-transparent text-fuchsia-700/40 dark:text-fuchsia-400/30' },
+  ];
+
+  /** Deterministic hash: same group name → same palette entry every time. */
+  function groupPalette(groupId: string): GroupColorState {
+    let h = 0;
+    for (let i = 0; i < groupId.length; i++) {
+      h = Math.imul(31, h) + groupId.charCodeAt(i) | 0;
+    }
+    return GROUP_PALETTE[Math.abs(h) % GROUP_PALETTE.length];
+  }
+
+  /** Enable every available file (adds all to the load order). */
+  function enableAllSources() { enabledSources = availableFiles.map(f => f.path); }
+
+  /** Remove every file from the load order. */
+  function disableAllSources() { enabledSources = []; }
+
   let dragSrcIndex = $state<number | null>(null);
 
   /** Toggle a single file path on/off. */
@@ -171,12 +276,8 @@
   function handleDragEnd() { dragSrcIndex = null; }
 
   let gmOverridesText = $state('[]');
-  let jsonError       = $state('');
-  let jsonWarnings    = $state<string[]>([]);
-  let isValidJson     = $state(true);
 
   // Sync the override text from campaign data when campaign loads/changes.
-  // Using $effect avoids the "initial value capture" warning from $derived.
   let overridesInitialised = false;
   $effect(() => {
     const overrides = campaign?.gmGlobalOverrides;
@@ -186,51 +287,74 @@
     }
   });
 
-  function validateOverrideJson() {
-    jsonError = ''; jsonWarnings = []; isValidJson = true;
-    if (!gmOverridesText.trim() || gmOverridesText.trim() === '[]') return;
+  /**
+   * Reactive JSON validation — recomputes synchronously whenever gmOverridesText
+   * changes. Using $derived.by() guarantees re-evaluation on every edit, unlike
+   * the previous $effect approach which could lag or silently no-op.
+   */
+  const _jsonValidation = $derived.by(() => {
+    const text     = gmOverridesText;
+    const trimmed  = text.trim();
+
+    if (!trimmed || trimmed === '[]') {
+      return { valid: true, error: '', warnings: [] as string[] };
+    }
+
     let parsed: unknown;
     try {
-      parsed = JSON.parse(gmOverridesText);
+      parsed = JSON.parse(text);
     } catch (e: unknown) {
       const err = e as Error;
       const posMatch = err.message.match(/position (\d+)/);
+      let errMsg: string;
       if (posMatch) {
-        const pos = parseInt(posMatch[1], 10);
-        const lineNum = gmOverridesText.slice(0, pos).split('\n').length;
-        jsonError = `Syntax error on line ${lineNum}: ${err.message}`;
+        const pos     = parseInt(posMatch[1], 10);
+        const lineNum = text.slice(0, pos).split('\n').length;
+        errMsg = `Syntax error on line ${lineNum}: ${err.message}`;
       } else {
-        jsonError = `Syntax error: ${err.message}`;
+        errMsg = `Syntax error: ${err.message}`;
       }
-      isValidJson = false; return;
+      return { valid: false, error: errMsg, warnings: [] as string[] };
     }
-    if (!Array.isArray(parsed)) { jsonError = 'Override JSON must be an array ([ ... ]).'; isValidJson = false; return; }
+
+    if (!Array.isArray(parsed)) {
+      return { valid: false, error: 'Override JSON must be an array ([ ... ]).', warnings: [] as string[] };
+    }
+
+    const warnings: string[] = [];
     for (let i = 0; i < (parsed as unknown[]).length; i++) {
       const entry = (parsed as Record<string, unknown>[])[i];
-      if (!entry || typeof entry !== 'object') { jsonWarnings.push(`Entry ${i}: expected object, got ${typeof entry}.`); continue; }
+      if (!entry || typeof entry !== 'object') {
+        warnings.push(`Entry ${i}: expected object, got ${typeof entry}.`);
+        continue;
+      }
       if (!entry['tableId'] && (!entry['id'] || !entry['category'])) {
-        jsonWarnings.push(`Entry ${i} ("${entry['id'] ?? '?'}"): missing 'id' or 'category'.`);
+        warnings.push(`Entry ${i} ("${entry['id'] ?? '?'}"): missing 'id' or 'category'.`);
       }
       if (entry['tableId'] && !entry['data']) {
-        jsonWarnings.push(`Entry ${i} (tableId: "${entry['tableId']}"): missing 'data' array.`);
+        warnings.push(`Entry ${i} (tableId: "${entry['tableId']}"): missing 'data' array.`);
       }
     }
-  }
+    return { valid: true, error: '', warnings };
+  });
 
-  $effect(() => { gmOverridesText; validateOverrideJson(); });
+  const isValidJson  = $derived(_jsonValidation.valid);
+  const jsonError    = $derived(_jsonValidation.error);
+  const jsonWarnings = $derived(_jsonValidation.warnings);
 
   // ── Dice Rules ────────────────────────────────────────────────────────────
-  let explodingTwenties = $state(engine.settings.diceRules?.explodingTwenties ?? false);
+  // Initialised to engine defaults; overwritten by the $effect below once
+  // campaign.campaignSettings arrives from the store (populated by loadFromApi).
+  let explodingTwenties = $state(false);
 
   // ── Stat Generation ───────────────────────────────────────────────────────
-  let rerollOnes      = $state(engine.settings.statGeneration?.rerollOnes ?? false);
-  let pointBuyBudget  = $state(engine.settings.statGeneration?.pointBuyBudget ?? 25);
+  let rerollOnes      = $state(false);
+  let pointBuyBudget  = $state(25);
   // allowedMethods: which methods the GM allows players to use (checkboxes)
   // Default: all three enabled (backward-compatible with saved settings that don't have this field)
-  const _am = engine.settings.statGeneration?.allowedMethods ?? ['roll', 'point_buy', 'standard_array'];
-  let allowedRoll     = $state(_am.includes('roll'));
-  let allowedPointBuy = $state(_am.includes('point_buy'));
-  let allowedStdArray = $state(_am.includes('standard_array'));
+  let allowedRoll     = $state(true);
+  let allowedPointBuy = $state(true);
+  let allowedStdArray = $state(true);
 
   const allowedMethods = $derived.by((): Array<'roll' | 'point_buy' | 'standard_array'> => {
     const methods: Array<'roll' | 'point_buy' | 'standard_array'> = [];
@@ -241,8 +365,39 @@
   });
 
   // ── Variant Rules (Extensions G + H) ─────────────────────────────────────
-  let variantGestalt = $state(engine.settings.variantRules?.gestalt ?? false);
-  let variantVWP     = $state(engine.settings.variantRules?.vitalityWoundPoints ?? false);
+  let variantGestalt = $state(false);
+  let variantVWP     = $state(false);
+
+  /**
+   * Populate dice / stat-gen / variant fields from the campaign's persisted
+   * settings once campaign data is available in the store.
+   *
+   * WHY NOT engine.settings?
+   *   engine.settings is populated in memory at runtime and resets to defaults
+   *   on every page refresh.  campaign.campaignSettings comes from the PHP API
+   *   (GET /api/campaigns) and survives page refreshes.
+   *
+   * Guard: only runs once per mount (diceSettingsInitialised flag).
+   */
+  let diceSettingsInitialised = false;
+  $effect(() => {
+    const cs = campaign?.campaignSettings;
+    // cs is null for campaigns that have never had settings saved — skip init
+    // so the form remains at the defaults declared above.
+    if (!diceSettingsInitialised && cs && !Array.isArray(cs)) {
+      explodingTwenties = cs.diceRules?.explodingTwenties            ?? false;
+      rerollOnes        = cs.statGeneration?.rerollOnes               ?? false;
+      pointBuyBudget    = cs.statGeneration?.pointBuyBudget           ?? 25;
+      const methods     = cs.statGeneration?.allowedMethods
+                          ?? ['roll', 'point_buy', 'standard_array'];
+      allowedRoll       = methods.includes('roll');
+      allowedPointBuy   = methods.includes('point_buy');
+      allowedStdArray   = methods.includes('standard_array');
+      variantGestalt    = cs.variantRules?.gestalt                    ?? false;
+      variantVWP        = cs.variantRules?.vitalityWoundPoints        ?? false;
+      diceSettingsInitialised = true;
+    }
+  });
 
   let isSaving    = $state(false);
   let saveSuccess = $state('');
@@ -268,6 +423,11 @@
         title: ch.title,
         description: ch.description,
         isCompleted: ch.isCompleted,
+        tasks: ch.tasks.map(t => ({
+          id: t.id,
+          title: t.title,
+          isCompleted: t.isCompleted,
+        })),
       }));
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method: 'PUT',
@@ -283,11 +443,17 @@
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      // Sync the campaign store so other pages see the updated data
+      // Sync the campaign store so other pages (vault, detail) see the updated data,
+      // including campaignSettings so the form re-initialises correctly after navigation.
       campaignStore.updateCampaign(campaignId, {
         enabledRuleSources: [...enabledSources],
         gmGlobalOverrides: gmOverridesText,
         chapters: chaptersPayload,
+        campaignSettings: {
+          diceRules:      { explodingTwenties },
+          statGeneration: { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods },
+          variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
+        },
       });
       chaptersAreDirty = false;   // sync is safe again after a clean save
       saveSuccess = ui('settings.saved', engine.settings.language);
@@ -375,19 +541,37 @@
 
     <!-- Quick group enable/disable buttons -->
     {#if availableGroups.length > 0}
-      <div class="flex flex-wrap gap-2 py-1">
+      <div class="flex flex-wrap items-center gap-2 py-1">
         <span class="text-xs text-text-muted self-center shrink-0">{ui('settings.rule_sources.quick_toggle', engine.settings.language)}</span>
+
+        <!-- Global All / None -->
+        <button
+          type="button"
+          class="text-xs px-2.5 py-1 rounded border transition-colors
+                 border-border text-text-secondary hover:border-green-600/50 hover:bg-green-600/10 hover:text-green-600 dark:hover:border-green-500/50 dark:hover:bg-green-500/10 dark:hover:text-green-400"
+          onclick={enableAllSources}
+          title={ui('settings.rule_sources.enable_all', engine.settings.language)}
+        >{ui('settings.rule_sources.toggle_all', engine.settings.language)}</button>
+        <button
+          type="button"
+          class="text-xs px-2.5 py-1 rounded border transition-colors
+                 border-border text-text-secondary hover:border-red-600/50 hover:bg-red-600/10 hover:text-red-600 dark:hover:border-red-500/50 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+          onclick={disableAllSources}
+          title={ui('settings.rule_sources.disable_all', engine.settings.language)}
+        >{ui('settings.rule_sources.toggle_none', engine.settings.language)}</button>
+
+        <!-- Separator -->
+        <span class="self-stretch w-px bg-border/60 shrink-0 my-0.5" aria-hidden="true"></span>
+
+        <!-- Per-group colored pills -->
         {#each availableGroups as groupId}
           {@const groupFiles = availableFiles.filter(f => f.ruleSource === groupId)}
           {@const allOn = groupFiles.length > 0 && groupFiles.every(f => enabledSources.includes(f.path))}
           {@const someOn = groupFiles.some(f => enabledSources.includes(f.path))}
+          {@const gc = groupPalette(groupId)}
           <button
-            class="text-xs px-2.5 py-1 rounded border transition-colors
-                   {allOn
-                     ? 'border-accent/60 bg-accent/10 text-accent hover:bg-red-950/20 hover:text-red-400 hover:border-red-700/40'
-                     : someOn
-                       ? 'border-yellow-600/60 bg-yellow-950/20 text-yellow-400 hover:border-accent/60 hover:bg-accent/10 hover:text-accent'
-                       : 'border-border text-text-muted hover:border-green-700/40 hover:bg-green-950/20 hover:text-green-400'}"
+            class="text-xs px-2.5 py-1 rounded border transition-all
+                   {allOn ? gc.on : someOn ? gc.partial : gc.off}"
             onclick={() => toggleGroup(groupId)}
             title="{allOn ? ui('settings.rule_sources.disable_all', engine.settings.language) : ui('settings.rule_sources.enable_all', engine.settings.language)} — {groupId}"
             type="button"
@@ -398,48 +582,73 @@
       </div>
     {/if}
 
-    <!-- Full file list sorted alphabetically — one row per file -->
-    {#if availableFiles.length > 0}
-      {@const enabledSet = new Set(enabledSources)}
+    <!-- ── Load order — draggable, shows only enabled files in their current order -->
+    {#if enabledSources.length > 0}
       <div class="flex flex-col gap-1">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
-          {ui('settings.rule_sources.all_files', engine.settings.language)} — {ui('settings.rule_sources.enabled_count', engine.settings.language).replace('{enabled}', String(enabledSources.length)).replace('{total}', String(availableFiles.length))}
+          {ui('settings.rule_sources.load_order', engine.settings.language)}
+          <span class="normal-case font-normal ml-1">— {enabledSources.length} / {availableFiles.length} {ui('settings.rule_sources.files', engine.settings.language)}</span>
         </p>
-        {#each availableFiles as file}
-          {@const on = enabledSet.has(file.path)}
+        {#each enabledSources as path, i (path)}
+          {@const file = availableFiles.find(f => f.path === path)}
+          {@const gc   = groupPalette(file?.ruleSource ?? '')}
           <div
-            class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all duration-150
-                   {on
-                     ? 'border-accent/40 bg-surface-alt'
-                     : 'border-border bg-surface opacity-50 hover:opacity-80'}"
+            class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-accent/40 bg-surface-alt
+                   select-none transition-opacity duration-100 {dragSrcIndex === i ? 'opacity-30' : ''}"
+            draggable="true"
+            ondragstart={() => handleDragStart(i)}
+            ondragover={(e) => handleDragOver(e, i)}
+            ondragend={handleDragEnd}
+            role="listitem"
+            aria-label="Drag to reorder: {path}"
           >
-            <!-- ruleSource badge -->
-            <span
-              class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded
-                     {on ? 'bg-accent/15 text-accent' : 'bg-surface-alt text-text-muted'}"
-            >{file.ruleSource}</span>
-
-            <!-- File path -->
-            <span class="flex-1 text-[10px] font-mono truncate {on ? 'text-text-primary' : 'text-text-muted'}">
-              {file.path}
+            <IconDragHandle size={12} class="text-text-muted/50 shrink-0 cursor-grab" aria-hidden="true" />
+            <span class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border {gc.on}">
+              {file?.ruleSource ?? '?'}
             </span>
-
-            <!-- Entity count -->
-            <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount}</span>
-
-            <!-- Toggle button -->
+            <span class="flex-1 text-[10px] font-mono truncate text-text-primary">{path}</span>
+            {#if file}
+              <span class="shrink-0 text-[10px] text-text-muted/60">{file.entityCount} {ui('settings.rule_sources.entities', engine.settings.language)}</span>
+            {/if}
             <button
-              class="shrink-0 text-[10px] px-2 py-0.5 rounded border transition-colors
-                     {on
-                       ? 'border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30'
-                       : 'border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30'}"
-              onclick={() => toggleFile(file.path)}
-              aria-label="{on ? ui('settings.rule_sources.disable', engine.settings.language) : ui('settings.rule_sources.enable', engine.settings.language)} {file.path}"
               type="button"
-            >{on ? ui('settings.rule_sources.disable', engine.settings.language) : ui('settings.rule_sources.enable', engine.settings.language)}</button>
+              class="shrink-0 text-[10px] px-2 py-0.5 btn-danger-outline"
+              onclick={() => toggleFile(path)}
+              aria-label="{ui('settings.rule_sources.disable', engine.settings.language)} {path}"
+            >{ui('settings.rule_sources.disable', engine.settings.language)}</button>
           </div>
         {/each}
       </div>
+    {/if}
+
+    <!-- ── Available files — only files not yet in the load order -->
+    {#if availableFiles.length > 0}
+      {@const enabledSet = new Set(enabledSources)}
+      {@const disabledFiles = availableFiles.filter(f => !enabledSet.has(f.path))}
+      {#if disabledFiles.length > 0}
+        <div class="flex flex-col gap-1">
+          <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
+            {ui('settings.rule_sources.all_files', engine.settings.language)}
+            <span class="normal-case font-normal ml-1">— {disabledFiles.length} / {availableFiles.length} {ui('settings.rule_sources.files', engine.settings.language)}</span>
+          </p>
+          {#each disabledFiles as file}
+            {@const gc = groupPalette(file.ruleSource)}
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-border bg-surface opacity-50 hover:opacity-80 transition-all duration-150">
+              <span class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border {gc.off}">
+                {file.ruleSource}
+              </span>
+              <span class="flex-1 text-[10px] font-mono truncate text-text-muted">{file.path}</span>
+              <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount} {ui('settings.rule_sources.entities', engine.settings.language)}</span>
+              <button
+                class="shrink-0 text-[10px] px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
+                onclick={() => toggleFile(file.path)}
+                aria-label="{ui('settings.rule_sources.enable', engine.settings.language)} {file.path}"
+                type="button"
+              >{ui('settings.rule_sources.enable', engine.settings.language)}</button>
+            </div>
+          {/each}
+        </div>
+      {/if}
     {/if}
 
     {#if availableFiles.length === 0 && !loadingError}
@@ -581,7 +790,7 @@
             class="input w-24 text-center text-sm font-bold text-sky-500 dark:text-sky-400"
             aria-label="Point buy budget"
           />
-          <span class="text-xs text-text-muted">{ui('common.level', engine.settings.language).toLowerCase()} pts</span>
+          <span class="text-xs text-text-muted">{ui('common.level', engine.settings.language).toLowerCase()} points</span>
         </div>
       </div>
     {/if}
@@ -662,32 +871,81 @@
     {:else}
       <ol class="flex flex-col gap-3">
         {#each editableChapters as chapter, index (chapter.id)}
-          <li class="flex flex-col gap-2 rounded-lg border border-border bg-surface-alt p-3">
+          <li
+            class="flex flex-col gap-2 rounded-lg border border-border bg-surface-alt p-3 select-none
+                   transition-opacity duration-100 {chapterDragSrc === index ? 'opacity-30' : ''}"
+            draggable="true"
+            ondragstart={() => handleChapterDragStart(index)}
+            ondragover={(e) => handleChapterDragOver(e, index)}
+            ondragend={handleChapterDragEnd}
+          >
             <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-text-muted w-5 shrink-0 text-center">{index + 1}</span>
+              <IconDragHandle size={14} class="text-text-muted/50 shrink-0 cursor-grab" aria-hidden="true" />
               <input
                 type="text"
                 value={chapter.title[engine.settings.language] ?? chapter.title['en'] ?? ''}
                 oninput={(e) => { chaptersAreDirty = true; chapter.title = { ...chapter.title, [engine.settings.language]: e.currentTarget.value }; }}
-                class="input flex-1 text-sm"
+                class="input flex-1 text-sm cursor-text select-text"
                 placeholder={ui('settings.chapters.title_placeholder', engine.settings.language)}
                 aria-label="{ui('settings.chapters.title_label', engine.settings.language)} {index + 1}"
               />
               <button
                 type="button"
-                class="shrink-0 text-xs px-2 py-1 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
+                class="shrink-0 text-xs px-2 py-1 btn-danger-outline"
                 onclick={() => removeChapter(chapter.id)}
                 aria-label="{ui('settings.chapters.remove', engine.settings.language)} {index + 1}"
               >{ui('settings.chapters.remove', engine.settings.language)}</button>
             </div>
-            <input
-              type="text"
-              value={chapter.description[engine.settings.language] ?? chapter.description['en'] ?? ''}
+            <div class="ml-7">
+              <textarea
+                value={chapter.description[engine.settings.language] ?? chapter.description['en'] ?? ''}
                 oninput={(e) => { chaptersAreDirty = true; chapter.description = { ...chapter.description, [engine.settings.language]: e.currentTarget.value }; }}
-              class="input text-xs ml-7"
-              placeholder={ui('settings.chapters.desc_placeholder', engine.settings.language)}
-              aria-label="{ui('settings.chapters.desc_label', engine.settings.language)} {index + 1}"
-            />
+                class="input text-xs w-full resize-y min-h-[3rem]"
+                placeholder={ui('settings.chapters.desc_placeholder', engine.settings.language)}
+                aria-label="{ui('settings.chapters.desc_label', engine.settings.language)} {index + 1}"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <!-- ── Task list ──────────────────────────────────────────────── -->
+            <div class="ml-7 flex flex-col gap-1.5">
+              {#if chapter.tasks.length > 0}
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                  {ui('settings.chapters.tasks_label', engine.settings.language)}
+                </span>
+                {#each chapter.tasks as task, ti (task.id)}
+                  <div
+                    class="flex items-center gap-2 select-none transition-opacity duration-100
+                           {taskDragSrc?.chapterId === chapter.id && taskDragSrc?.index === ti ? 'opacity-30' : ''}"
+                    draggable="true"
+                    ondragstart={() => handleTaskDragStart(chapter.id, ti)}
+                    ondragover={(e) => handleTaskDragOver(e, chapter.id, ti)}
+                    ondragend={handleTaskDragEnd}
+                  >
+                    <IconDragHandle size={12} class="text-text-muted/40 shrink-0 cursor-grab" aria-hidden="true" />
+                    <input
+                      type="text"
+                      value={task.title[engine.settings.language] ?? task.title['en'] ?? ''}
+                      oninput={(e) => { chaptersAreDirty = true; task.title = { ...task.title, [engine.settings.language]: e.currentTarget.value }; }}
+                      class="input flex-1 text-xs cursor-text select-text"
+                      placeholder={ui('settings.chapters.task_placeholder', engine.settings.language)}
+                      aria-label="{ui('settings.chapters.tasks_label', engine.settings.language)} {index + 1}, task {ti + 1}"
+                    />
+                    <button
+                      type="button"
+                      class="shrink-0 text-xs px-1.5 py-0.5 btn-danger-outline"
+                      onclick={() => removeTask(chapter.id, task.id)}
+                      aria-label="{ui('settings.chapters.remove_task', engine.settings.language)} {ti + 1}"
+                    >×</button>
+                  </div>
+                {/each}
+              {/if}
+              <button
+                type="button"
+                class="self-start text-xs text-accent/70 hover:text-accent transition-colors mt-0.5"
+                onclick={() => addTask(chapter.id)}
+              >{ui('settings.chapters.add_task', engine.settings.language)}</button>
+            </div>
           </li>
         {/each}
       </ol>
@@ -704,14 +962,91 @@
   <section class="card p-5 flex flex-col gap-3">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconGMDashboard size={18} aria-hidden="true" /> GM Global Overrides
+        <IconGMDashboard size={18} aria-hidden="true" /> {ui('settings.overrides.title', engine.settings.language)}
       </h2>
-      <p class="mt-2 text-xs text-text-muted leading-relaxed">
-        A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign,
-        AFTER all rule source files. Features need <code class="bg-surface-alt px-1 rounded">id</code> + <code class="bg-surface-alt px-1 rounded">category</code>.
-        Config tables need <code class="bg-surface-alt px-1 rounded">tableId</code> + <code class="bg-surface-alt px-1 rounded">data</code>.
+      <p class="mt-2 text-xs text-text-muted leading-relaxed [&_code]:bg-surface-alt [&_code]:px-1 [&_code]:rounded">
+        {@html ui('settings.overrides.desc', engine.settings.language)}
       </p>
     </div>
+
+    <!-- Examples (collapsible) -->
+    <details class="group rounded-lg border border-border">
+      <summary class="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-xs font-medium text-text-muted
+                      hover:text-text-primary transition-colors list-none [&::-webkit-details-marker]:hidden">
+        <span class="transition-transform duration-150 group-open:rotate-90" aria-hidden="true">▶</span>
+        {ui('settings.overrides.examples', engine.settings.language)}
+      </summary>
+      <div class="flex flex-col gap-3 px-3 pb-3 pt-1">
+
+        <!-- Example 1: new feature granting a campaign-wide bonus -->
+        <div class="flex flex-col gap-1">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-accent/80">
+            {ui('settings.overrides.ex_new_label', engine.settings.language)}
+          </p>
+          <pre class="overflow-x-auto rounded bg-surface-alt px-3 py-2 text-[10px] leading-relaxed text-text-secondary font-mono">{`[
+  {
+    "id":          "gm_campaign_boon",
+    "category":    "feat",
+    "ruleSource":  "gm_override",
+    "label":       { "en": "Campaign Boon", "fr": "Bénédiction de campagne" },
+    "description": { "en": "All adventurers gain a +2 morale bonus to Spot.", "fr": "Tous les aventuriers gagnent un bonus de moral de +2 à Détection." },
+    "grantedModifiers": [
+      {
+        "id":       "gm_campaign_boon_spot",
+        "sourceId": "gm_campaign_boon",
+        "targetId": "skills.skill_spot",
+        "value":    2,
+        "type":     "morale"
+      }
+    ]
+  }
+]`}</pre>
+        </div>
+
+        <!-- Example 2: partial override (merge) to patch an existing entity -->
+        <div class="flex flex-col gap-1">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-accent/80">
+            {ui('settings.overrides.ex_merge_label', engine.settings.language)}
+          </p>
+          <pre class="overflow-x-auto rounded bg-surface-alt px-3 py-2 text-[10px] leading-relaxed text-text-secondary font-mono">{`[
+  {
+    "id":       "feat_power_attack",
+    "category": "feat",
+    "merge":    "partial",
+    "label":    { "en": "Power Attack (house rule)" },
+    "grantedModifiers": [
+      {
+        "id":       "feat_pa_custom_penalty",
+        "sourceId": "feat_power_attack",
+        "targetId": "combat.attack_bonus",
+        "value":    -2,
+        "type":     "untyped"
+      }
+    ]
+  }
+]`}</pre>
+        </div>
+
+        <!-- Example 3: config table override -->
+        <div class="flex flex-col gap-1">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-accent/80">
+            {ui('settings.overrides.ex_table_label', engine.settings.language)}
+          </p>
+          <pre class="overflow-x-auto rounded bg-surface-alt px-3 py-2 text-[10px] leading-relaxed text-text-secondary font-mono">{`[
+  {
+    "tableId":    "config_xp_thresholds",
+    "ruleSource": "gm_override",
+    "data": [
+      { "level": 1, "xpRequired": 0    },
+      { "level": 2, "xpRequired": 1500 },
+      { "level": 3, "xpRequired": 3500 }
+    ]
+  }
+]`}</pre>
+        </div>
+
+      </div>
+    </details>
 
     <!-- JSON error -->
     {#if jsonError}
@@ -740,21 +1075,22 @@
       bind:value={gmOverridesText}
       spellcheck="false"
       rows="18"
-      aria-label="GM Global Overrides JSON"
+      aria-label={ui('settings.overrides.aria_label', engine.settings.language)}
     ></textarea>
 
     <!-- JSON status bar -->
     <div class="flex items-center justify-between text-xs px-0.5">
       <span class="flex items-center gap-1.5 font-medium {isValidJson ? 'text-green-400' : 'text-red-400'}">
         {#if isValidJson}
-          <IconSuccess size={13} aria-hidden="true" /> Valid JSON
+          <IconSuccess size={13} aria-hidden="true" /> {ui('settings.overrides.valid', engine.settings.language)}
         {:else}
-          <IconError size={13} aria-hidden="true" /> Invalid JSON — fix errors before saving
+          <IconError size={13} aria-hidden="true" /> {ui('settings.overrides.invalid', engine.settings.language)}
         {/if}
       </span>
       {#if isValidJson}
+        {@const _c = JSON.parse(gmOverridesText || '[]').length}
         <span class="text-text-muted">
-          {(() => { const c = JSON.parse(gmOverridesText || '[]').length; return `${c} override entr${c === 1 ? 'y' : 'ies'}`; })()}
+          {(_c === 1 ? ui('settings.overrides.entry', engine.settings.language) : ui('settings.overrides.entries', engine.settings.language)).replace('{n}', String(_c))}
         </span>
       {/if}
     </div>
