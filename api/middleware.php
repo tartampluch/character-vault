@@ -23,6 +23,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Logger.php';
 
 // ============================================================
 // 1. CORS MIDDLEWARE
@@ -128,6 +129,8 @@ function verifyCsrfToken(): void
 
     // hash_equals() prevents timing attacks on token comparison
     if ($clientToken === null || $sessionToken === null || !hash_equals($sessionToken, $clientToken)) {
+        $reason = $clientToken === null ? 'token absent' : ($sessionToken === null ? 'no session token' : 'mismatch');
+        Logger::warn('CSRF', '403 — CSRF check failed', ['method' => $method, 'reason' => $reason]);
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode([
@@ -202,6 +205,13 @@ function checkRateLimit(string $key = 'global', int $maxRequests = 60, int $wind
 
     if ($count > $maxRequests) {
         $retryAfter = $windowStart + $windowSec - $now;
+        Logger::warn('RateLimit', '429 — limit exceeded', [
+            'key'   => $key,
+            'ip'    => $ip,
+            'count' => $count,
+            'max'   => $maxRequests,
+            'retry' => $retryAfter . 's',
+        ]);
         http_response_code(429);
         header('Content-Type: application/json');
         header('Retry-After: ' . max(0, $retryAfter));

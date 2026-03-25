@@ -152,7 +152,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'campaign.back_to_hub':         { en: 'Back to Campaign Hub', fr: 'Retour aux campagnes' },
   'campaign.character_vault':     { en: 'Character Vault', fr: 'Character Vault' },
   'campaign.chapters_title':      { en: 'Chapters & Acts', fr: 'Chapitres & Actes' },
-  'campaign.chapters_empty_gm':   { en: 'No chapters yet. Add chapters via GM Settings.', fr: 'Aucun chapitre. Ajoutez des chapitres via les Paramètres MJ.' },
+  'campaign.chapters_empty_gm':   { en: 'No chapters yet. Add chapters in Campaign Settings.', fr: 'Aucun chapitre. Ajoutez des chapitres dans les Paramètres de campagne.' },
   'campaign.chapters_empty_player': { en: 'No chapters have been added to this campaign yet.', fr: 'Aucun chapitre n\'a encore été ajouté à cette campagne.' },
   'campaign.completed':           { en: 'Completed', fr: 'Terminé' },
   'campaign.mark_done':           { en: 'Mark done', fr: 'Marquer terminé' },
@@ -840,6 +840,19 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'dice.damage_routes_to':        { en: 'Routes to:', fr: 'Affecte :' },
   'dice.critical_wound':          { en: '→ WOUND POINTS', fr: '→ POINTS DE BLESSURE' },
   'dice.normal_vitality':         { en: '→ Vitality Points', fr: '→ Points de vitalité' },
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — CHAPTERS & ACTS (GM settings page)
+  // ==========================================================================
+  'settings.chapters.title':        { en: 'Chapters & Acts', fr: 'Chapitres & Actes' },
+  'settings.chapters.desc':         { en: 'Manage the campaign\'s narrative chapters and acts, visible to all players. Changes are saved with the rest of the settings.', fr: 'Gérez les chapitres et actes narratifs de la campagne, visibles par tous les joueurs. Les modifications sont enregistrées avec les autres paramètres.' },
+  'settings.chapters.add':          { en: 'Add Chapter', fr: 'Ajouter un chapitre' },
+  'settings.chapters.empty':        { en: 'No chapters yet. Click "Add Chapter" below to create the first one.', fr: 'Aucun chapitre. Cliquez sur « Ajouter un chapitre » ci-dessous pour en créer un.' },
+  'settings.chapters.title_label':  { en: 'Title', fr: 'Titre' },
+  'settings.chapters.desc_label':   { en: 'Description (optional)', fr: 'Description (optionnelle)' },
+  'settings.chapters.remove':       { en: 'Remove', fr: 'Supprimer' },
+  'settings.chapters.title_placeholder': { en: 'e.g. Act I: The Beginning', fr: 'ex. Acte I : Le Commencement' },
+  'settings.chapters.desc_placeholder': { en: 'Brief summary of this chapter…', fr: 'Résumé de ce chapitre…' },
 
   // ==========================================================================
   // LANGUAGE SELECTOR

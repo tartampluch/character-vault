@@ -44,6 +44,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Logger.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/middleware.php';
 
@@ -112,6 +113,7 @@ function requireAuth(): array
     initSession();
 
     if (empty($_SESSION['user_id'])) {
+        Logger::warn('Auth', '401 Unauthorized — no active session');
         http_response_code(401);
         header('Content-Type: application/json');
         echo json_encode([
@@ -121,12 +123,18 @@ function requireAuth(): array
         httpExit();
     }
 
-    return [
+    $user = [
         'id'             => $_SESSION['user_id'],
         'username'       => $_SESSION['username'] ?? '',
         'is_game_master' => (bool)($_SESSION['is_game_master'] ?? false),
         'display_name'   => $_SESSION['display_name'] ?? '',
     ];
+
+    // Register the authenticated user with the logger so request/response lines
+    // can show who made the call without requiring each controller to do it.
+    Logger::setUser($user['username'], $user['is_game_master']);
+
+    return $user;
 }
 
 /**
@@ -143,6 +151,7 @@ function requireGameMaster(): array
     $user = requireAuth();
 
     if (!$user['is_game_master']) {
+        Logger::warn('Auth', '403 Forbidden — GM privileges required', ['user' => $user['username']]);
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode([
@@ -209,6 +218,7 @@ function handleLogin(): void
     $hashToCheck = $user ? $user['password_hash'] : $dummyHash;
 
     if (!$user || !password_verify($password, $hashToCheck)) {
+        Logger::warn('Auth', 'Login failed — invalid credentials', ['user' => $username]);
         http_response_code(401);
         echo json_encode(['error' => 'InvalidCredentials', 'message' => 'Invalid username or password.']);
         return;
@@ -226,12 +236,18 @@ function handleLogin(): void
     $_SESSION['display_name']   = $user['display_name'];
     $_SESSION['is_game_master'] = (bool)$user['is_game_master'];
 
+    $isGM = (bool)$user['is_game_master'];
+    Logger::info('Auth', 'Login OK', [
+        'user' => $user['username'],
+        'role' => $isGM ? 'GM' : 'player',
+    ]);
+
     http_response_code(200);
     echo json_encode([
         'id'             => $user['id'],
         'username'       => $user['username'],
         'display_name'   => $user['display_name'],
-        'is_game_master' => (bool)$user['is_game_master'],
+        'is_game_master' => $isGM,
     ]);
 }
 
@@ -251,6 +267,8 @@ function handleLogin(): void
 function handleLogout(): void
 {
     initSession();
+
+    $loggedOutUser = $_SESSION['username'] ?? '(unknown)';
 
     // Clear all session data
     $_SESSION = [];
@@ -276,6 +294,7 @@ function handleLogout(): void
         session_destroy();
     }
 
+    Logger::info('Auth', 'Logout', ['user' => $loggedOutUser]);
     http_response_code(200);
     echo json_encode(['message' => 'Logged out successfully.']);
 }

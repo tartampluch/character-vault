@@ -28,6 +28,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../Logger.php';
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../auth.php';
 
@@ -167,6 +168,7 @@ class CharacterController
             }, $characters);
         }
 
+        Logger::info('Char', 'List', ['campaign' => $campaignId, 'count' => count($result)]);
         http_response_code(200);
         echo json_encode($result);
     }
@@ -231,6 +233,7 @@ class CharacterController
         $stmt = $db->prepare('INSERT INTO characters (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$id, $campaignId, $user['id'], $name, $isNPC ? 1 : 0, json_encode($characterData), '[]', $now]);
 
+        Logger::info('Char', 'Created', ['id' => $id, 'name' => $name, 'npc' => $isNPC]);
         http_response_code(201);
         echo json_encode(['id' => $id, 'name' => $name, 'updatedAt' => $now]);
     }
@@ -292,6 +295,7 @@ class CharacterController
         $sql = 'UPDATE characters SET ' . implode(', ', $fields) . ' WHERE id = ?';
         $db->prepare($sql)->execute($params);
 
+        Logger::info('Char', 'Updated', ['id' => $id, 'name' => $name ?? '(unchanged)']);
         http_response_code(200);
         echo json_encode(['id' => $id, 'updatedAt' => $now]);
     }
@@ -333,6 +337,7 @@ class CharacterController
         $stmt = $db->prepare('UPDATE characters SET gm_overrides_json = ?, updated_at = ? WHERE id = ?');
         $stmt->execute([json_encode($gmOverrides), $now, $id]);
 
+        Logger::info('Char', 'GM overrides updated', ['id' => $id, 'count' => count((array)$gmOverrides)]);
         http_response_code(200);
         echo json_encode(['id' => $id, 'updatedAt' => $now]);
     }
@@ -367,6 +372,7 @@ class CharacterController
 
         $db->prepare('DELETE FROM characters WHERE id = ?')->execute([$id]);
 
+        Logger::info('Char', 'Deleted', ['id' => $id]);
         http_response_code(200);
         echo json_encode(['id' => $id, 'deleted' => true]);
     }

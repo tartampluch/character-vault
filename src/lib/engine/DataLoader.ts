@@ -728,6 +728,16 @@ export class DataLoader {
    *   Missing optional fields (label, description, tags, etc.) are gracefully defaulted.
    */
   #processEntity(entity: RawEntity): void {
+    // --- Silently skip documentation / comment-header objects ---
+    // Rule JSON files may contain header objects whose keys are entirely
+    // underscore-prefixed metadata (e.g. `_comment`, `_comment2`) plus an
+    // optional `ruleSource` field.  They carry no entity data and should be
+    // discarded without a console warning.
+    if (!entity.id && !entity.tableId) {
+      const nonMeta = Object.keys(entity).filter(k => !k.startsWith('_') && k !== 'ruleSource');
+      if (nonMeta.length === 0) return;
+    }
+
     // --- Config Table (identified by tableId) ---
     if (entity.tableId) {
       const ruleSource = entity.ruleSource ?? 'unknown';

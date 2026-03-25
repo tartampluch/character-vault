@@ -37,6 +37,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Logger.php';
 
 /**
  * Runs the full database migration: creates all tables if they don't exist.
@@ -100,42 +101,36 @@ function migrate(?PDO $pdo = null): void
     ');
 
     // ============================================================
-    // ADDITIVE MIGRATION — homebrew_rules_json (Phase 21.1.1)
+    // ADDITIVE MIGRATIONS — campaigns table
     // ============================================================
     //
-    // WHY ALTER TABLE?
-    //   CREATE TABLE IF NOT EXISTS is idempotent for the initial schema, but it
-    //   does NOT add columns to an already-existing table. On databases created by
-    //   a previous version (without homebrew_rules_json), we must add the column
-    //   explicitly. We use a try/catch instead of a PRAGMA table_info() loop
-    //   because it's simpler and SQLite's ALTER TABLE ADD COLUMN is itself
-    //   idempotent-by-error — we just swallow the "duplicate column" exception.
+    // WHY PRAGMA table_info() INSTEAD OF try/catch?
+    //   ALTER TABLE ADD COLUMN fails if the column already exists. The error
+    //   message differs by database driver:
+    //     SQLite: "table X already has a column named Y"
+    //     MySQL:  "Duplicate column name 'Y'"
+    //   Rather than matching driver-specific strings, we read the schema once
+    //   via PRAGMA table_info() and only execute ALTER TABLE when the column
+    //   is genuinely absent. This is truly idempotent and driver-agnostic.
     //
-    try {
+    $campaignCols = array_column(
+        $pdo->query('PRAGMA table_info(campaigns)')->fetchAll(PDO::FETCH_ASSOC),
+        'name'
+    );
+
+    // Phase 21.1.1 — homebrew_rules_json
+    // Stores campaign-scoped homebrew entity array as JSON.
+    if (!in_array('homebrew_rules_json', $campaignCols, true)) {
         $pdo->exec("ALTER TABLE campaigns ADD COLUMN homebrew_rules_json TEXT NOT NULL DEFAULT '[]'");
-    } catch (\PDOException $e) {
-        // "duplicate column name" means the column already exists — safe to ignore.
-        if (strpos($e->getMessage(), 'duplicate column') === false) {
-            throw $e;
-        }
+        Logger::info('Migrate', 'Added column campaigns.homebrew_rules_json');
     }
 
-    // ============================================================
-    // ADDITIVE MIGRATION — campaign_settings_json
-    // ============================================================
-    //
-    // Stores per-campaign rule settings (diceRules, statGeneration, variantRules)
-    // as a JSON object. Previously these were only kept in localStorage; this column
-    // makes them persist server-side and syncs across devices.
-    //
-    // Default '{}' means "use engine defaults" on first load.
-    //
-    try {
+    // campaign_settings_json — per-campaign rule settings (diceRules, statGeneration, variantRules).
+    // Previously kept only in localStorage; this column persists them server-side
+    // and syncs them across devices. Default '{}' means "use engine defaults".
+    if (!in_array('campaign_settings_json', $campaignCols, true)) {
         $pdo->exec("ALTER TABLE campaigns ADD COLUMN campaign_settings_json TEXT NOT NULL DEFAULT '{}'");
-    } catch (\PDOException $e) {
-        if (strpos($e->getMessage(), 'duplicate column') === false) {
-            throw $e;
-        }
+        Logger::info('Migrate', 'Added column campaigns.campaign_settings_json');
     }
 
     // ============================================================

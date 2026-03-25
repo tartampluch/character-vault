@@ -53,6 +53,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/Logger.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/middleware.php';
@@ -91,8 +92,25 @@ $path = rtrim($path, '/') ?: '/';
 // Parse path segments
 $segments = array_values(array_filter(explode('/', $path)));
 
+// Capture start time for response-timing logs.
+$_requestStart = microtime(true);
+
+// Log every request in dev mode.  The response line is written by a shutdown
+// function so it fires after http_response_code() is finalised.
+Logger::request($method, $path);
+register_shutdown_function(function () use ($method, $path, $_requestStart): void {
+    $status = http_response_code();
+    Logger::response(is_int($status) ? $status : 200, $method, $path, $_requestStart);
+});
+
 // Route matching
 try {
+    // 5. Auto-run database migrations (idempotent — creates tables and adds missing columns).
+    //    Runs inside the try/catch so any unexpected migration error returns a proper
+    //    JSON 500 response instead of a bare PHP fatal error.
+    //    The migration uses PRAGMA table_info() checks so it is a true no-op when
+    //    the schema is already up to date (no ALTER TABLE attempted).
+    Database::runMigrations(Database::getInstance());
     if ($path === '/auth/login' && $method === 'POST') {
         checkLoginRateLimit(); // Stricter limit for login
         handleLogin();
@@ -181,18 +199,21 @@ try {
         echo json_encode(['error' => 'NotFound', 'message' => "Endpoint {$method} {$path} not found."]);
     }
 } catch (\PDOException $e) {
-    // Database error — log it but don't expose internals to the client
-    error_log('[CharacterVault API] PDOException: ' . $e->getMessage());
+    $msg = $e->getMessage();
+    error_log('[CharacterVault API] PDOException: ' . $msg);
+    Logger::error('DB', $msg, ['code' => $e->getCode()]);
     http_response_code(500);
     echo json_encode([
         'error'   => 'DatabaseError',
-        'message' => APP_ENV === 'development' ? $e->getMessage() : 'An internal database error occurred.',
+        'message' => APP_ENV === 'development' ? $msg : 'An internal database error occurred.',
     ]);
 } catch (\Exception $e) {
-    error_log('[CharacterVault API] Exception: ' . $e->getMessage());
+    $msg = $e->getMessage();
+    error_log('[CharacterVault API] Exception: ' . $msg);
+    Logger::error('Server', $msg, ['class' => get_class($e)]);
     http_response_code(500);
     echo json_encode([
         'error'   => 'ServerError',
-        'message' => APP_ENV === 'development' ? $e->getMessage() : 'An internal server error occurred.',
+        'message' => APP_ENV === 'development' ? $msg : 'An internal server error occurred.',
     ]);
 }

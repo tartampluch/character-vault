@@ -28,6 +28,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../Logger.php';
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../auth.php';
 
@@ -64,6 +65,7 @@ class CampaignController
             unset($c['chapters_json'], $c['enabled_rule_sources_json']);
         }
 
+        Logger::info('Campaign', 'List', ['count' => count($campaigns)]);
         http_response_code(200);
         echo json_encode($campaigns);
     }
@@ -118,6 +120,7 @@ class CampaignController
         ]);
         $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
 
+        Logger::info('Campaign', 'Created', ['id' => $id, 'title' => $title]);
         http_response_code(201);
         echo json_encode(['id' => $id, 'title' => $title, 'ownerId' => $user['id']]);
     }
@@ -169,6 +172,7 @@ class CampaignController
             $result['gmGlobalOverrides'] = $campaign['gm_global_overrides_text'] ?? '[]';
         }
 
+        Logger::info('Campaign', 'Show', ['id' => $id]);
         http_response_code(200);
         echo json_encode($result);
     }
@@ -270,6 +274,16 @@ class CampaignController
         $sql = 'UPDATE campaigns SET ' . implode(', ', $fields) . ' WHERE id = ?';
         $db->prepare($sql)->execute($params);
 
+        // Build a human-readable list of what actually changed for the log.
+        $changedFields = array_filter([
+            isset($body['title'])               ? 'title'               : null,
+            isset($body['description'])         ? 'description'         : null,
+            isset($body['chapters'])            ? 'chapters'            : null,
+            isset($body['enabledRuleSources'])  ? 'enabledRuleSources'  : null,
+            isset($body['gmGlobalOverrides'])   ? 'gmGlobalOverrides'   : null,
+            $hasSettingsUpdate                  ? 'campaignSettings'    : null,
+        ]);
+        Logger::info('Campaign', 'Updated', ['id' => $id, 'fields' => implode(' ', $changedFields)]);
         http_response_code(200);
         echo json_encode(['id' => $id, 'updatedAt' => $now]);
     }
@@ -369,6 +383,7 @@ class CampaignController
         // a proper JSON array rather than a double-encoded string.
         $rules = json_decode($campaign['homebrew_rules_json'] ?? '[]', true) ?? [];
 
+        Logger::info('Campaign', 'Homebrew GET', ['id' => $id, 'count' => count($rules)]);
         http_response_code(200);
         echo json_encode($rules);
     }
@@ -479,6 +494,7 @@ class CampaignController
         $stmt = $db->prepare('UPDATE campaigns SET homebrew_rules_json = ?, updated_at = ? WHERE id = ?');
         $stmt->execute([$normalizedJson, $now, $id]);
 
+        Logger::info('Campaign', 'Homebrew PUT', ['id' => $id, 'entities' => count($decoded)]);
         http_response_code(200);
         echo json_encode(['id' => $id, 'updatedAt' => $now]);
     }

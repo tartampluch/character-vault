@@ -27,6 +27,61 @@
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
 
+  // ── Chapter management ─────────────────────────────────────────────────────
+  interface EditableChapter {
+    id: string;
+    title: Record<string, string>;
+    description: Record<string, string>;
+    isCompleted: boolean;
+  }
+
+  let editableChapters = $state<EditableChapter[]>([]);
+
+  /**
+   * The `updatedAt` timestamp of the last campaign snapshot we synced chapters
+   * from.  -1 means we haven't synced yet.
+   *
+   * We re-sync when:
+   *   a) first load (syncedUpdatedAt === -1), OR
+   *   b) the server has a newer timestamp AND no unsaved edits exist.
+   *
+   * Once the user edits a chapter we set chaptersAreDirty = true so that a
+   * concurrent poll cycle doesn't silently overwrite their in-progress work.
+   * The flag is cleared again after a successful save.
+   */
+  let syncedUpdatedAt  = $state<number>(-1);
+  let chaptersAreDirty = $state(false);
+
+  $effect(() => {
+    const c = campaign;
+    if (!c) return;
+    if (syncedUpdatedAt === -1 || (!chaptersAreDirty && c.updatedAt > syncedUpdatedAt)) {
+      editableChapters = (c.chapters ?? []).map(ch => ({
+        id: ch.id,
+        title: { ...ch.title },
+        description: { ...ch.description },
+        isCompleted: ch.isCompleted,
+      }));
+      syncedUpdatedAt  = c.updatedAt;
+      chaptersAreDirty = false;
+    }
+  });
+
+  function addChapter() {
+    chaptersAreDirty = true;
+    editableChapters = [...editableChapters, {
+      id: `chap_${Date.now()}`,
+      title: {},
+      description: {},
+      isCompleted: false,
+    }];
+  }
+
+  function removeChapter(id: string) {
+    chaptersAreDirty = true;
+    editableChapters = editableChapters.filter(ch => ch.id !== id);
+  }
+
   // ── Rule source file metadata (one entry per JSON file from GET /api/rules/list) ──
   interface RuleSourceFile { path: string; ruleSource: string; entityCount: number; description: string; }
   let availableFiles = $state<RuleSourceFile[]>([]);
@@ -208,6 +263,12 @@
       .catch(e => console.warn('[Settings] DataLoader reload failed:', e));
 
     try {
+      const chaptersPayload = editableChapters.map(ch => ({
+        id: ch.id,
+        title: ch.title,
+        description: ch.description,
+        isCompleted: ch.isCompleted,
+      }));
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method: 'PUT',
         headers: apiHeaders(),
@@ -215,22 +276,25 @@
         body: JSON.stringify({
           enabledRuleSources: enabledSources,
           gmGlobalOverrides: gmOverridesText,
+          chapters: chaptersPayload,
           diceRules:      { explodingTwenties },
           statGeneration: { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods },
           variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      // Sync the campaign store so other pages see the updated sources
+      // Sync the campaign store so other pages see the updated data
       campaignStore.updateCampaign(campaignId, {
         enabledRuleSources: [...enabledSources],
         gmGlobalOverrides: gmOverridesText,
+        chapters: chaptersPayload,
       });
-      saveSuccess = 'Settings saved successfully!';
+      chaptersAreDirty = false;   // sync is safe again after a clean save
+      saveSuccess = ui('settings.saved', engine.settings.language);
       setTimeout(() => (saveSuccess = ''), 3000);
     } catch (err) {
       console.warn('[Settings] API unavailable:', err);
-      saveSuccess = 'Saved locally (API unavailable).';
+      saveSuccess = ui('settings.saved_local', engine.settings.language);
       setTimeout(() => (saveSuccess = ''), 5000);
     } finally {
       isSaving = false;
@@ -243,14 +307,14 @@
   <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
   <header class="flex items-center gap-3 flex-wrap border-b border-border pb-4">
     <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors shrink-0">
-      <IconBack size={12} aria-hidden="true" /> Campaign
+      <IconBack size={12} aria-hidden="true" /> {ui('settings.back_campaign', engine.settings.language)}
     </a>
     <h1 class="flex items-center gap-2 text-xl font-bold text-text-primary flex-1">
-      <IconSettings size={20} aria-hidden="true" /> Campaign Settings
+      <IconSettings size={20} aria-hidden="true" /> {ui('settings.title', engine.settings.language)}
     </h1>
     <div class="flex items-center gap-2">
       <span class="badge-accent flex items-center gap-1 text-xs">
-        <IconGMDashboard size={12} aria-hidden="true" /> GM View
+        <IconGMDashboard size={12} aria-hidden="true" /> {ui('settings.gm_view', engine.settings.language)}
       </span>
       <button
         class="btn-primary"
@@ -259,7 +323,7 @@
         aria-label="Save campaign settings"
         type="button"
       >
-        {isSaving ? 'Saving…' : 'Save Settings'}
+        {isSaving ? ui('settings.saving', engine.settings.language) : ui('settings.save', engine.settings.language)}
       </button>
     </div>
   </header>
@@ -582,7 +646,61 @@
     </label>
   </section>
 
-  <!-- ── SECTION 5: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
+  <!-- ── SECTION 5: CHAPTERS & ACTS ──────────────────────────────────────── -->
+  <section class="card p-5 flex flex-col gap-4" id="chapters">
+    <div>
+      <h2 class="section-header text-base border-b border-border pb-2">
+        📖 {ui('settings.chapters.title', engine.settings.language)}
+      </h2>
+      <p class="mt-2 text-xs text-text-muted leading-relaxed">
+        {ui('settings.chapters.desc', engine.settings.language)}
+      </p>
+    </div>
+
+    {#if editableChapters.length === 0}
+      <p class="text-xs text-text-muted italic">{ui('settings.chapters.empty', engine.settings.language)}</p>
+    {:else}
+      <ol class="flex flex-col gap-3">
+        {#each editableChapters as chapter, index (chapter.id)}
+          <li class="flex flex-col gap-2 rounded-lg border border-border bg-surface-alt p-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-text-muted w-5 shrink-0 text-center">{index + 1}</span>
+              <input
+                type="text"
+                value={chapter.title[engine.settings.language] ?? chapter.title['en'] ?? ''}
+                oninput={(e) => { chaptersAreDirty = true; chapter.title = { ...chapter.title, [engine.settings.language]: e.currentTarget.value }; }}
+                class="input flex-1 text-sm"
+                placeholder={ui('settings.chapters.title_placeholder', engine.settings.language)}
+                aria-label="{ui('settings.chapters.title_label', engine.settings.language)} {index + 1}"
+              />
+              <button
+                type="button"
+                class="shrink-0 text-xs px-2 py-1 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
+                onclick={() => removeChapter(chapter.id)}
+                aria-label="{ui('settings.chapters.remove', engine.settings.language)} {index + 1}"
+              >{ui('settings.chapters.remove', engine.settings.language)}</button>
+            </div>
+            <input
+              type="text"
+              value={chapter.description[engine.settings.language] ?? chapter.description['en'] ?? ''}
+                oninput={(e) => { chaptersAreDirty = true; chapter.description = { ...chapter.description, [engine.settings.language]: e.currentTarget.value }; }}
+              class="input text-xs ml-7"
+              placeholder={ui('settings.chapters.desc_placeholder', engine.settings.language)}
+              aria-label="{ui('settings.chapters.desc_label', engine.settings.language)} {index + 1}"
+            />
+          </li>
+        {/each}
+      </ol>
+    {/if}
+
+    <button
+      type="button"
+      class="btn-secondary self-start gap-1 text-sm"
+      onclick={addChapter}
+    >+ {ui('settings.chapters.add', engine.settings.language)}</button>
+  </section>
+
+  <!-- ── SECTION 6: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
   <section class="card p-5 flex flex-col gap-3">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">

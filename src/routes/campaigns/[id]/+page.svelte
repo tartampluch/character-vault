@@ -135,10 +135,18 @@
         </div>
 
         {#if campaign.chapters.length === 0}
-          <div class="card p-5 text-sm text-text-muted text-center italic">
-            {sessionContext.isGameMaster
+          <div class="card p-5 text-sm text-text-muted text-center italic flex flex-col items-center gap-3">
+            <span>{sessionContext.isGameMaster
               ? ui('campaign.chapters_empty_gm', engine.settings.language)
-              : ui('campaign.chapters_empty_player', engine.settings.language)}
+              : ui('campaign.chapters_empty_player', engine.settings.language)}</span>
+            {#if sessionContext.isGameMaster}
+              <a
+                href="/campaigns/{campaignId}/settings#chapters"
+                class="btn-secondary inline-flex items-center gap-1 text-xs not-italic"
+              >
+                <IconSettings size={12} aria-hidden="true" /> {ui('nav.campaign_settings', engine.settings.language)}
+              </a>
+            {/if}
           </div>
         {:else}
           <ol class="flex flex-col gap-2" aria-label="List of chapters">

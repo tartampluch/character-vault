@@ -25,85 +25,34 @@ import type { ID } from '../types/primitives';
 import { apiHeaders } from './StorageManager';
 
 // =============================================================================
-// MOCK CAMPAIGN DATA
-// =============================================================================
-
-/**
- * Mock campaigns for development.
- * These simulate what would come from the PHP API in Phase 14.
- * Data is intentionally generic (no hardcoded D&D terms in the logic layer,
- * but campaign TITLES are user-authored strings, so they're fine here as mocks).
- */
-const MOCK_CAMPAIGNS: Campaign[] = [
-  {
-    id: 'campaign_001',
-    title: 'Reign of Winter',
-    description: 'A campaign of intrigue, ancient evils, and frozen wilderness. The adventurers must stop a cold that threatens to consume the world.',
-    posterUrl: undefined,
-    bannerUrl: undefined,
-    ownerId: 'user_gm_001',
-    chapters: [
-      {
-        id: 'chapter_001_01',
-        title: { en: 'Act I: The Snows of Summer', fr: 'Acte I : Les neiges de l\'été' },
-        description: { en: 'Strange snow falls in summer. The village of Heldren is threatened.', fr: 'Une neige étrange tombe en été. Le village d\'Heldren est menacé.' },
-        isCompleted: true,
-      },
-      {
-        id: 'chapter_001_02',
-        title: { en: 'Act II: The Shackled Hut', fr: 'Acte II : La hutte enchaînée' },
-        description: { en: 'Track the source of the cold to Baba Yaga\'s dancing hut.', fr: 'Tracez la source du froid jusqu\'à la hutte dansante de Baba Yaga.' },
-        isCompleted: false,
-      },
-    ],
-    enabledRuleSources: [],   // empty = load all discovered rule files
-    gmGlobalOverrides: '[]',
-    updatedAt: Date.now(),
-  },
-  {
-    id: 'campaign_002',
-    title: 'The Darklands',
-    description: 'A homebrew campaign set in a world of perpetual twilight, where the surface world is only legend and survival is paramount.',
-    posterUrl: undefined,
-    bannerUrl: undefined,
-    ownerId: 'user_gm_001',
-    chapters: [
-      {
-        id: 'chapter_002_01',
-        title: { en: 'Chapter 1: Descent', fr: 'Chapitre 1 : La descente' },
-        description: { en: 'The party ventures into the depths for the first time.', fr: 'Le groupe s\'aventure dans les profondeurs pour la première fois.' },
-        isCompleted: false,
-      },
-    ],
-    enabledRuleSources: [],   // empty = load all discovered rule files
-    gmGlobalOverrides: '[]',
-    updatedAt: Date.now(),
-  },
-];
-
-// =============================================================================
 // CAMPAIGN STORE CLASS
 // =============================================================================
 
 /**
  * Manages the campaign list state using Svelte 5 $state.
  *
- * PHASE 14 REPLACEMENT:
- *   The mock data and localStorage operations will be replaced by
- *   `fetch('/api/campaigns')`, `POST /api/campaigns`, etc.
+ * The store starts empty — no mock data. Any component that depends on
+ * campaign data must ensure loadFromApi() has been called first (either by
+ * a parent layout or by the component itself via loadIfNeeded()).
  */
 class CampaignStore {
   /**
-   * The list of available campaigns.
-   * Reactive: any component reading this $state re-renders when it changes.
-   * Starts with mock data; replaced by API data once loadFromApi() resolves.
+   * The list of campaigns loaded from the PHP API.
+   * Empty until the first successful loadFromApi() call.
    */
-  campaigns = $state<Campaign[]>([...MOCK_CAMPAIGNS]);
+  campaigns = $state<Campaign[]>([]);
 
   /**
-   * Whether campaigns are being loaded (for UI loading states).
+   * Whether a loadFromApi() call is currently in flight.
    */
   isLoading = $state<boolean>(false);
+
+  /**
+   * True after the first successful API load in this browser session.
+   * Used by sub-route layouts to skip a redundant fetch when the hub page
+   * (or a sibling layout) has already loaded the list.
+   */
+  hasLoaded = $state<boolean>(false);
 
   // ---------------------------------------------------------------------------
   // API — Phase 14.5
@@ -111,9 +60,10 @@ class CampaignStore {
 
   /**
    * Loads all campaigns from the PHP API and replaces the in-memory list.
-   * Falls back to the existing (mock) list if the API is unavailable.
+   * Sets hasLoaded = true on success.
    *
-   * Call from the campaigns hub page onMount / $effect.
+   * Safe to call from multiple places — if already loading, the second call
+   * will still fire but will simply overwrite with the same data.
    */
   async loadFromApi(): Promise<void> {
     this.isLoading = true;
@@ -129,11 +79,23 @@ class CampaignStore {
       const data = (await response.json()) as Campaign[];
       if (Array.isArray(data)) {
         this.campaigns = data;
+        this.hasLoaded = true;
       }
     } catch (err) {
-      console.warn('[CampaignStore] GET /api/campaigns unavailable, using mock data:', err);
+      console.warn('[CampaignStore] GET /api/campaigns unavailable:', err);
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  /**
+   * Calls loadFromApi() only when no successful load has occurred yet.
+   * Use this in layouts / pages that may render before the hub page has
+   * had a chance to populate the store (e.g. direct URL navigation or refresh).
+   */
+  async loadIfNeeded(): Promise<void> {
+    if (!this.hasLoaded && !this.isLoading) {
+      await this.loadFromApi();
     }
   }
 
@@ -164,7 +126,7 @@ class CampaignStore {
       }
       return { ...local, id: created.id };
     } catch (err) {
-      console.warn('[CampaignStore] POST /api/campaigns unavailable, campaign created locally only:', err);
+      console.warn('[CampaignStore] POST /api/campaigns unavailable, campaign created locally only (will not persist):', err);
       return local;
     }
   }
