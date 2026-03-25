@@ -17,6 +17,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
+  import { createDefaultCampaignSettings } from '$lib/types/settings';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
   import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCharacter, IconCampaign, IconBack } from '$lib/components/ui/icons';
 
@@ -40,6 +41,19 @@
     const key = JSON.stringify(sources) + (overrides ?? '');
     if (key === lastSourcesKey) return;
     lastSourcesKey = key;
+
+    // Apply per-campaign rule settings (diceRules, statGeneration, variantRules)
+    // whenever the campaign changes, so all players share the same campaign rules.
+    const cs = campaign?.campaignSettings;
+    if (cs) {
+      const defaults = createDefaultCampaignSettings();
+      engine.updateSettings({
+        diceRules:      { ...defaults.diceRules,      ...(cs.diceRules      ?? {}) },
+        statGeneration: { ...defaults.statGeneration, ...(cs.statGeneration ?? {}) },
+        variantRules:   { ...defaults.variantRules,   ...(cs.variantRules   ?? {}) },
+      });
+    }
+
     if (sources.length > 0) {
       dataLoader
         .loadRuleSources(sources, overrides)

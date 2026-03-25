@@ -74,7 +74,7 @@
       <!-- BASE VALUE row -->
       <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-2 py-1.5 rounded hover:bg-surface-alt text-sm">
         <span class="text-text-secondary truncate">{ui('breakdown.base_value', engine.settings.language)}</span>
-        <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt text-text-muted whitespace-nowrap">—</span>
+        <span></span>
         <span class="font-semibold text-right min-w-[2.5rem] text-text-muted">{formatModifier(baseValue)}</span>
       </div>
 

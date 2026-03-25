@@ -159,6 +159,9 @@ class CampaignController
             'chapters'            => json_decode($campaign['chapters_json'] ?? '[]', true),
             'enabledRuleSources'  => json_decode($campaign['enabled_rule_sources_json'] ?? '[]', true),
             'updatedAt'           => (int)$campaign['updated_at'],
+            // Per-campaign rule settings (diceRules, statGeneration, variantRules).
+            // All players receive this so their engines apply the same rules.
+            'campaignSettings'    => json_decode($campaign['campaign_settings_json'] ?? '{}', true) ?? (object)[],
         ];
 
         // GMs also receive the raw global overrides text (for their editor UI)
@@ -225,6 +228,33 @@ class CampaignController
         if (isset($body['gmGlobalOverrides']) && $user['is_game_master']) {
             $fields[] = 'gm_global_overrides_text = ?';
             $params[] = $body['gmGlobalOverrides'];
+        }
+
+        // Merge incoming rule-settings fields (diceRules, statGeneration, variantRules)
+        // into the stored campaign_settings_json blob.
+        // We READ the existing blob, merge only the provided keys, then WRITE it back.
+        // This is safe and forward-compatible: unknown keys are preserved.
+        $settingsKeys = ['diceRules', 'statGeneration', 'variantRules'];
+        $hasSettingsUpdate = false;
+        foreach ($settingsKeys as $key) {
+            if (isset($body[$key])) { $hasSettingsUpdate = true; break; }
+        }
+        if ($hasSettingsUpdate && $user['is_game_master']) {
+            // Load existing settings blob
+            $stmt = $db->prepare('SELECT campaign_settings_json FROM campaigns WHERE id = ?');
+            $stmt->execute([$id]);
+            $row = $stmt->fetch();
+            $existing = json_decode($row['campaign_settings_json'] ?? '{}', true) ?? [];
+
+            // Merge provided keys
+            foreach ($settingsKeys as $key) {
+                if (isset($body[$key])) {
+                    $existing[$key] = $body[$key];
+                }
+            }
+
+            $fields[] = 'campaign_settings_json = ?';
+            $params[] = json_encode($existing, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
         if (empty($fields)) {

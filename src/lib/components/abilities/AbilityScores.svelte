@@ -213,7 +213,7 @@
   {#if dp}
     <DiceRollModal
       formula="1d20"
-      pipeline={dp}
+      pipeline={{ ...dp, totalBonus: dp.derivedModifier }}
       label="{engine.t(dp.label)} {ui('abilities.check', engine.settings.language)}"
       onclose={() => (diceRollPipelineId = null)}
     />

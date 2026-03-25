@@ -14,10 +14,10 @@ import type { ID } from '../types/primitives';
 
 /**
  * The 6 main ability score pipeline IDs, in canonical D&D 3.5 order:
- * Strength → Dexterity → Constitution → Intelligence → Wisdom → Charisma.
+ * Strength → Constitution → Dexterity → Intelligence → Wisdom → Charisma.
  */
 export const MAIN_ABILITY_IDS = [
-  'stat_strength', 'stat_dexterity', 'stat_constitution',
+  'stat_strength', 'stat_constitution', 'stat_dexterity',
   'stat_intelligence', 'stat_wisdom', 'stat_charisma',
 ] as const;
 

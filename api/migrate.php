@@ -121,6 +121,24 @@ function migrate(?PDO $pdo = null): void
     }
 
     // ============================================================
+    // ADDITIVE MIGRATION — campaign_settings_json
+    // ============================================================
+    //
+    // Stores per-campaign rule settings (diceRules, statGeneration, variantRules)
+    // as a JSON object. Previously these were only kept in localStorage; this column
+    // makes them persist server-side and syncs across devices.
+    //
+    // Default '{}' means "use engine defaults" on first load.
+    //
+    try {
+        $pdo->exec("ALTER TABLE campaigns ADD COLUMN campaign_settings_json TEXT NOT NULL DEFAULT '{}'");
+    } catch (\PDOException $e) {
+        if (strpos($e->getMessage(), 'duplicate column') === false) {
+            throw $e;
+        }
+    }
+
+    // ============================================================
     // CHARACTERS TABLE
     // ============================================================
     //

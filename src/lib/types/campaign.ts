@@ -23,6 +23,7 @@
 
 import type { ID } from './primitives';
 import type { LocalizedString } from './i18n';
+import type { CampaignSettings } from './settings';
 
 // =============================================================================
 // CHAPTER — Story progression unit (Acts, Chapters, Sessions)
@@ -180,6 +181,16 @@ export interface Campaign {
    * @see ARCHITECTURE.md section 18.6 for the full GM text area format specification.
    */
   gmGlobalOverrides: string;
+
+  /**
+   * Per-campaign rule settings: dice rules, stat generation method, variant rules.
+   *
+   * Stored in `campaign_settings_json` on the server; merged into `engine.settings`
+   * when the vault page loads. Partial — only keys present override engine defaults.
+   *
+   * All players receive this field so their engines apply the same rules.
+   */
+  campaignSettings?: Partial<Pick<CampaignSettings, 'diceRules' | 'statGeneration' | 'variantRules'>>;
 
   /**
    * Unix timestamp (seconds since epoch) of the last modification to this campaign.

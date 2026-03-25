@@ -682,6 +682,32 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'action.xor_note':              { en: 'Standard OR Move — not both.', fr: 'Standard OU Déplacement — pas les deux.' },
 
   // ==========================================================================
+  // CAMPAIGN SETTINGS — DICE RULES (GM settings page)
+  // ==========================================================================
+  'settings.dice_rules.title':    { en: 'Dice Rules', fr: 'Règles de dés' },
+  'settings.dice_rules.desc':     { en: 'House rules that modify how dice are resolved in this campaign.', fr: 'Règles maison qui modifient la résolution des dés dans cette campagne.' },
+  'settings.exploding_twenties':  { en: 'Exploding 20s', fr: '20 explosifs' },
+  'settings.exploding_twenties_desc': { en: 'When a natural 20 is rolled on a d20, roll again and add the result. Repeat while 20s keep coming. Can produce astronomically high totals.', fr: 'Quand un 20 naturel est obtenu sur un d20, relancez et additionnez. Recommencez tant que des 20 sont obtenus. Peut produire des totaux astronomiques.' },
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — STAT GENERATION (GM settings page)
+  // ==========================================================================
+  'settings.stat_gen.title':      { en: 'Stat Generation', fr: 'Génération des statistiques' },
+  'settings.stat_gen.desc':       { en: 'Method used by players to generate their ability scores during character creation.', fr: 'Méthode utilisée par les joueurs pour générer leurs caractéristiques lors de la création du personnage.' },
+  'settings.stat_gen.method':     { en: 'Generation Method', fr: 'Méthode de génération' },
+  'settings.stat_gen.roll':       { en: 'Roll (4d6 drop lowest)', fr: 'Lancer (4d6 retire le plus bas)' },
+  'settings.stat_gen.point_buy':  { en: 'Point Buy', fr: 'Achat de points' },
+  'settings.stat_gen.standard_array': { en: 'Standard Array (15/14/13/12/10/8)', fr: 'Tableau standard (15/14/13/12/10/8)' },
+  'settings.stat_gen.reroll_ones': { en: 'Reroll 1s', fr: 'Relancer les 1s' },
+  'settings.stat_gen.reroll_ones_desc': { en: 'Before dropping the lowest die, reroll any die showing 1 once. Produces higher average scores.', fr: 'Avant de retirer le dé le plus bas, relancez une fois tout dé affichant 1. Produit des scores moyens plus élevés.' },
+  'settings.stat_gen.budget':     { en: 'Point Buy Budget', fr: 'Budget d\'achat de points' },
+  'settings.stat_gen.budget_desc': { en: 'Total points to spend. Standard D&D 3.5: Low = 15, Standard = 25, High = 32, Epic = 40.', fr: 'Points totaux à dépenser. D&D 3.5 standard : Faible = 15, Standard = 25, Élevé = 32, Épique = 40.' },
+  'settings.stat_gen.preset_low':  { en: 'Low (15)', fr: 'Faible (15)' },
+  'settings.stat_gen.preset_std':  { en: 'Standard (25)', fr: 'Standard (25)' },
+  'settings.stat_gen.preset_high': { en: 'High (32)', fr: 'Élevé (32)' },
+  'settings.stat_gen.preset_epic': { en: 'Epic (40)', fr: 'Épique (40)' },
+
+  // ==========================================================================
   // VARIANT RULES (Engine Extensions G + H — Phase 2.5a / 2.5b)
   // ==========================================================================
   'variant.title':                { en: 'Variant Rules', fr: 'Règles variantes' },

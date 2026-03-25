@@ -164,6 +164,14 @@
 
   $effect(() => { gmOverridesText; validateOverrideJson(); });
 
+  // ── Dice Rules ────────────────────────────────────────────────────────────
+  let explodingTwenties = $state(engine.settings.diceRules?.explodingTwenties ?? false);
+
+  // ── Stat Generation ───────────────────────────────────────────────────────
+  let statMethod      = $state<'roll' | 'point_buy' | 'standard_array'>(engine.settings.statGeneration?.method ?? 'point_buy');
+  let rerollOnes      = $state(engine.settings.statGeneration?.rerollOnes ?? false);
+  let pointBuyBudget  = $state(engine.settings.statGeneration?.pointBuyBudget ?? 25);
+
   // ── Variant Rules (Extensions G + H) ─────────────────────────────────────
   let variantGestalt = $state(engine.settings.variantRules?.gestalt ?? false);
   let variantVWP     = $state(engine.settings.variantRules?.vitalityWoundPoints ?? false);
@@ -177,7 +185,9 @@
 
     // Apply to in-memory engine state immediately (instant UI feedback)
     engine.settings.enabledRuleSources = [...enabledSources];
-    engine.settings.variantRules = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
+    engine.settings.diceRules      = { explodingTwenties };
+    engine.settings.statGeneration = { method: statMethod, rerollOnes, pointBuyBudget };
+    engine.settings.variantRules   = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
 
     // Reload rule sources so character sheet dropdowns reflect new selection
     dataLoader
@@ -192,7 +202,9 @@
         body: JSON.stringify({
           enabledRuleSources: enabledSources,
           gmGlobalOverrides: gmOverridesText,
-          variantRules: { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
+          diceRules:      { explodingTwenties },
+          statGeneration: { method: statMethod, rerollOnes, pointBuyBudget },
+          variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -359,7 +371,147 @@
 
   </section>
 
-  <!-- ── SECTION 2: VARIANT RULES (Extensions G + H) ─────────────────────── -->
+  <!-- ── SECTION 2: DICE RULES ────────────────────────────────────────────── -->
+  <section class="card p-5 flex flex-col gap-4">
+    <div>
+      <h2 class="section-header text-base border-b border-border pb-2">
+        🎲 {ui('settings.dice_rules.title', engine.settings.language)}
+      </h2>
+      <p class="mt-2 text-xs text-text-muted leading-relaxed">
+        {ui('settings.dice_rules.desc', engine.settings.language)}
+      </p>
+    </div>
+
+    <!-- Exploding Twenties -->
+    <label class="flex items-start gap-3 cursor-pointer group">
+      <div class="mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          bind:checked={explodingTwenties}
+          class="w-4 h-4 accent-accent rounded"
+          aria-labelledby="dice-exploding-twenties-label"
+        />
+      </div>
+      <div class="flex flex-col gap-0.5">
+        <span id="dice-exploding-twenties-label" class="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
+          {ui('settings.exploding_twenties', engine.settings.language)}
+        </span>
+        <span class="text-xs text-text-muted leading-relaxed">
+          {ui('settings.exploding_twenties_desc', engine.settings.language)}
+        </span>
+      </div>
+    </label>
+  </section>
+
+  <!-- ── SECTION 3: STAT GENERATION ───────────────────────────────────────── -->
+  <section class="card p-5 flex flex-col gap-4">
+    <div>
+      <h2 class="section-header text-base border-b border-border pb-2">
+        ⚀ {ui('settings.stat_gen.title', engine.settings.language)}
+      </h2>
+      <p class="mt-2 text-xs text-text-muted leading-relaxed">
+        {ui('settings.stat_gen.desc', engine.settings.language)}
+      </p>
+    </div>
+
+    <!-- Method selector -->
+    <div class="flex flex-col gap-2">
+      <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        {ui('settings.stat_gen.method', engine.settings.language)}
+      </span>
+      <div class="flex flex-col gap-1.5">
+        {#each ([
+          ['roll',           'settings.stat_gen.roll'],
+          ['point_buy',      'settings.stat_gen.point_buy'],
+          ['standard_array', 'settings.stat_gen.standard_array'],
+        ] as const) as [value, key]}
+          <label class="flex items-center gap-2.5 cursor-pointer group">
+            <input
+              type="radio"
+              name="stat-gen-method"
+              {value}
+              bind:group={statMethod}
+              class="w-4 h-4 accent-accent shrink-0"
+            />
+            <span class="text-sm text-text-primary group-hover:text-accent transition-colors">
+              {ui(key, engine.settings.language)}
+            </span>
+          </label>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Reroll Ones — only relevant for roll method -->
+    {#if statMethod === 'roll'}
+      <label class="flex items-start gap-3 cursor-pointer group">
+        <div class="mt-0.5 shrink-0">
+          <input
+            type="checkbox"
+            bind:checked={rerollOnes}
+            class="w-4 h-4 accent-accent rounded"
+            aria-labelledby="stat-gen-reroll-label"
+          />
+        </div>
+        <div class="flex flex-col gap-0.5">
+          <span id="stat-gen-reroll-label" class="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
+            {ui('settings.stat_gen.reroll_ones', engine.settings.language)}
+          </span>
+          <span class="text-xs text-text-muted leading-relaxed">
+            {ui('settings.stat_gen.reroll_ones_desc', engine.settings.language)}
+          </span>
+        </div>
+      </label>
+    {/if}
+
+    <!-- Point Buy Budget — only relevant for point_buy method -->
+    {#if statMethod === 'point_buy'}
+      <div class="flex flex-col gap-2">
+        <label for="point-buy-budget" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+          {ui('settings.stat_gen.budget', engine.settings.language)}
+        </label>
+        <p class="text-xs text-text-muted -mt-1">
+          {ui('settings.stat_gen.budget_desc', engine.settings.language)}
+        </p>
+
+        <!-- Preset buttons -->
+        <div class="flex flex-wrap gap-2">
+          {#each ([
+            [15, 'settings.stat_gen.preset_low'],
+            [25, 'settings.stat_gen.preset_std'],
+            [32, 'settings.stat_gen.preset_high'],
+            [40, 'settings.stat_gen.preset_epic'],
+          ] as const) as [pts, key]}
+            <button
+              type="button"
+              class="text-xs px-3 py-1 rounded border transition-colors
+                     {pointBuyBudget === pts
+                       ? 'border-accent bg-accent/15 text-accent'
+                       : 'border-border text-text-muted hover:border-accent/50 hover:text-text-primary'}"
+              onclick={() => { pointBuyBudget = pts; }}
+            >
+              {ui(key, engine.settings.language)}
+            </button>
+          {/each}
+        </div>
+
+        <!-- Custom budget input -->
+        <div class="flex items-center gap-2">
+          <input
+            id="point-buy-budget"
+            type="number"
+            min="1"
+            max="999"
+            bind:value={pointBuyBudget}
+            class="input w-24 text-center text-sm font-bold text-sky-500 dark:text-sky-400"
+            aria-label="Point buy budget"
+          />
+          <span class="text-xs text-text-muted">{ui('common.level', engine.settings.language).toLowerCase()} pts</span>
+        </div>
+      </div>
+    {/if}
+  </section>
+
+  <!-- ── SECTION 4: VARIANT RULES (Extensions G + H) ─────────────────────── -->
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
@@ -418,7 +570,7 @@
     </label>
   </section>
 
-  <!-- ── SECTION 3: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
+  <!-- ── SECTION 5: GM GLOBAL OVERRIDES ────────────────────────────────────── -->
   <section class="card p-5 flex flex-col gap-3">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
