@@ -16,7 +16,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
   import { IconStats } from '$lib/components/ui/icons';
-  import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
 
   const charId = $derived(engine.character.id);
 </script>
@@ -51,7 +51,7 @@
         >
           <!-- Abbreviated label: STR, DEX, etc. -->
           <span class="stat-label">
-            {abilityId.replace('stat_', '').toUpperCase()}
+            {getAbilityAbbr(abilityId, engine.settings.language)}
           </span>
 
           <!-- Numeric total value -->

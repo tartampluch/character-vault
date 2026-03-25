@@ -30,6 +30,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
+  import { getAbilityAbbr } from '$lib/utils/constants';
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -86,11 +87,9 @@
       .slice(0, 4)
       .map(mod => {
         const val = mod.value as number;
-        const abbr = mod.targetId
-          .replace('attributes.', '')
-          .replace('stat_', '')
-          .toUpperCase()
-          .slice(0, 3);
+          // Normalize "attributes.stat_strength" → "stat_strength" then to localized abbr
+          const statKey = mod.targetId.replace('attributes.', '');
+          const abbr = getAbilityAbbr(statKey, engine.settings.language);
         return {
           label:    `${val > 0 ? '+' : ''}${val} ${abbr}`,
           positive: val > 0,
@@ -393,7 +392,7 @@
           <div class="flex items-center gap-1 flex-wrap">
             <span class="text-xs text-text-muted">{ui('core.recommended', engine.settings.language)}</span>
             {#each activeClass.recommendedAttributes as attrId}
-              <span class="badge-green font-mono">{attrId.replace('stat_', '').toUpperCase()}</span>
+              <span class="badge-green font-mono">{getAbilityAbbr(attrId, engine.settings.language)}</span>
             {/each}
           </div>
         {/if}
@@ -478,41 +477,41 @@
           {@const currentSelection = activeClassSelections[choice.choiceId]?.[0] ?? ''}
 
           <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-1.5">
-              <label
-                for="choice-{choice.choiceId}"
-                class="text-xs font-medium text-text-secondary flex-1"
-              >
-                {engine.t(choice.label)}
-                {#if choice.maxSelections > 1}
-                  <span class="text-text-muted ml-1">({ui('core.up_to', engine.settings.language)} {choice.maxSelections})</span>
-                {/if}
-              </label>
-              {#if currentSelection}
-                <button
-                  class="btn-ghost p-1 rounded-full"
-                  onclick={() => (modalFeatureId = currentSelection)}
-                  aria-label="Show selected option details"
-                  title="Show details for selected option"
-                  type="button"
-                >
-                  <IconInfo size={14} aria-hidden="true" />
-                </button>
-              {/if}
-            </div>
-
-            <select
-              id="choice-{choice.choiceId}"
-              class="select"
-              value={currentSelection}
-              onchange={(e) => handleChoiceChange(choice.choiceId, (e.target as HTMLSelectElement).value)}
-              aria-label="{engine.t(choice.label)}"
+            <!-- Label row (no info button here — it moves to the right of the dropdown) -->
+            <label
+              for="choice-{choice.choiceId}"
+              class="text-xs font-medium text-text-secondary"
             >
+              {engine.t(choice.label)}
+              {#if choice.maxSelections > 1}
+                <span class="text-text-muted ml-1">({ui('core.up_to', engine.settings.language)} {choice.maxSelections})</span>
+              {/if}
+            </label>
+
+            <!-- Dropdown + (i) button side by side — same pattern as race/class dropdowns -->
+            <div class="flex items-center gap-1.5">
+              <select
+                id="choice-{choice.choiceId}"
+                class="select flex-1"
+                value={currentSelection}
+                onchange={(e) => handleChoiceChange(choice.choiceId, (e.target as HTMLSelectElement).value)}
+                aria-label="{engine.t(choice.label)}"
+              >
               <option value="">{ui('core.select', engine.settings.language)}</option>
               {#each options as option}
                 <option value={option.id}>{engine.t(option.label)}</option>
               {/each}
-            </select>
+              </select>
+              {#if currentSelection}
+                <button
+                  class="btn-ghost p-1 rounded-full shrink-0"
+                  onclick={() => (modalFeatureId = currentSelection)}
+                  aria-label="Show selected option details"
+                  title="Show details for selected option"
+                  type="button"
+                ><IconInfo size={14} aria-hidden="true" /></button>
+              {/if}
+            </div><!-- /dropdown+info row -->
 
             {#if allOptions.length === 0}
               <p class="text-xs text-text-muted italic">

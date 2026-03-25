@@ -9,7 +9,7 @@
 -->
 
 <script lang="ts">
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, formatSituationalContext } from '$lib/utils/formatters';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import type { Modifier } from '$lib/types/pipeline';
@@ -138,7 +138,7 @@
           <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-2 py-1.5 rounded bg-accent/5 text-sm">
             <span class="text-text-primary truncate">{engine.t(mod.sourceName)}</span>
             <span class="text-[10px] px-1.5 py-0.5 rounded border border-accent/30 text-accent bg-accent/10 whitespace-nowrap">
-              {ui('breakdown.vs', engine.settings.language)} {mod.situationalContext}
+              {formatSituationalContext(mod.situationalContext ?? '')}
             </span>
             <span class="font-semibold text-right min-w-[2.5rem] {modColor(numVal)}">{formatModifier(numVal)}</span>
           </div>

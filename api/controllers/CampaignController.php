@@ -114,6 +114,7 @@ class CampaignController
             '00_d20srd_core/14_d20srd_core_npc_classes.json',
             '00_d20srd_core/15_d20srd_core_special_materials.json',
             '00_d20srd_core/16_d20srd_core_racial_features.json',
+            '00_d20srd_core/17_d20srd_core_proficiency_features.json',
         ]);
         $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
 

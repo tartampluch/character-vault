@@ -13,7 +13,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { interpolateDescription } from '$lib/utils/mathParser';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, formatSituationalContext } from '$lib/utils/formatters';
   import type { ID } from '$lib/types/primitives';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd } from '$lib/components/ui/icons';
@@ -62,143 +62,68 @@
       });
   });
 
-  function resolvePipelineLabel(targetId: string): string {
-    const normalised = targetId.startsWith('attributes.') ? targetId.slice('attributes.'.length) : targetId;
-    const attrPipeline   = engine.phase2_attributes[normalised];
-    if (attrPipeline?.label) return engine.t(attrPipeline.label);
-    const combatPipeline = engine.phase3_combatStats[targetId];
-    if (combatPipeline?.label) return engine.t(combatPipeline.label);
-    const skillPipeline  = engine.phase4_skills[targetId];
-    if (skillPipeline?.label) return engine.t(skillPipeline.label);
-    return targetId;
-  }
-
   /**
-   * Converts a machine-readable `situationalContext` string into a short,
-   * readable English label for display in the modifiers list.
-   *
-   * Examples:
-   *   "vs_enchantment"          → "vs. Enchantment spells"
-   *   "vs_poison"               → "vs. Poison"
-   *   "vs_giant"                → "vs. Giants"
-   *   "vs_orc_goblinoid"        → "vs. Orcs & Goblinoids"
-   *   "appraise_stone_metal_items" → "Appraising stone/metal items"
+   * Static fallback labels for pipeline targetIds that are not modelled as
+   * runtime pipelines (e.g. saves.all, combatStats.hit_die_type, …).
+   * These are modifier targets that exist in the JSON data but have no
+   * corresponding runtime StatisticPipeline in phase2/3.
    */
-  const SITUATIONAL_LABELS: Record<string, string> = {
-    vs_enchantment:                      'vs. Enchantment',
-    vs_poison:                           'vs. Poison',
-    vs_spells_and_spell_like:            'vs. Spells & Spell-likes',
-    vs_spells_and_spell_like_effects:    'vs. Spells & Spell-likes',
-    vs_giant:                            'vs. Giants',
-    vs_giant_type:                       'vs. Giant type',
-    vs_orc_goblinoid:                    'vs. Orcs & Goblinoids',
-    vs_orcs_and_goblinoids:              'vs. Orcs & Goblinoids',
-    vs_kobold_goblinoid:                 'vs. Kobolds & Goblinoids',
-    vs_evil:                             'vs. Evil',
-    vs_good:                             'vs. Good',
-    vs_chaotic:                          'vs. Chaos',
-    vs_lawful:                           'vs. Law',
-    vs_charm_or_fear:                    'vs. Charm or Fear',
-    vs_fear:                             'vs. Fear',
-    vs_illusion:                         'vs. Illusion',
-    vs_mind_affecting_and_compulsion:    'vs. Mind-affecting & Compulsions',
-    vs_mind_affecting_compulsion:        'vs. Mind-affecting & Compulsions',
-    vs_compulsions_and_mind_affecting:   'vs. Compulsions & Mind-affecting',
-    vs_divination:                       'vs. Divination',
-    vs_trap:                             'vs. Traps',
-    vs_traps:                            'vs. Traps (duplicate)',
-    vs_bull_rush_or_trip:                'vs. Bull Rush / Trip',
-    vs_bull_rush_or_trip_on_ground:      'vs. Bull Rush / Trip (while standing)',
-    vs_charge_attacks:                   'vs. Charge attacks',
-    vs_ranged_attacks:                   'vs. Ranged attacks',
-    vs_fire_spells_and_effects:          'vs. Fire spells & effects',
-    vs_fire_creature:                    'vs. Fire creatures',
-    vs_fire_effects:                     'vs. Fire effects',
-    vs_fire_elementals:                  'vs. Fire elementals',
-    vs_cold_creature:                    'vs. Cold creatures',
-    vs_air_or_electricity_effects:       'vs. Air / Electricity',
-    vs_earth_effects:                    'vs. Earth effects',
-    vs_water_or_cold_effects_dupe:       'vs. Water / Cold',
-    vs_elemental:                        'vs. Elementals',
-    vs_outsider:                         'vs. Outsiders',
-    vs_construct:                        'vs. Constructs',
-    vs_shapechanger:                     'vs. Shapechangers',
-    vs_fey_spell_like:                   'vs. Fey spell-likes',
-    vs_designated_foe:                   'vs. Designated foe',
-    vs_designated_target:                'vs. Designated target',
-    vs_favored_enemy_1:                  'vs. Favored Enemy 1',
-    vs_favored_enemy_2:                  'vs. Favored Enemy 2',
-    vs_favored_enemy_3:                  'vs. Favored Enemy 3',
-    vs_favored_enemy_4:                  'vs. Favored Enemy 4',
-    vs_favored_enemy_5:                  'vs. Favored Enemy 5',
-    vs_sworn_enemy:                      'vs. Sworn Enemy',
-    vs_unusual_stonework:                'vs. Unusual stonework',
-    vs_attacks_of_opportunity_on_movement: 'vs. AoOs on movement',
-    vs_attacks_of_opportunity_while_moving: 'vs. AoOs while moving',
-    vs_power_resistance:                 'vs. Power Resistance',
-    vs_powers_spells_and_spell_like_effects: 'vs. Powers & Spells',
-    vs_spider_poison:                    'vs. Spider poison',
-    appraise_stone_metal_items:          'Appraising stone/metal items',
-    craft_stone_metal_items:             'Crafting stone/metal items',
-    unusual_stonework:                   'Near unusual stonework',
-    tracking:                            'While tracking',
-    sneak_attack:                        'On sneak attack',
-    on_hit:                              'On hit',
-    on_hit_fire:                         'On hit (fire)',
-    on_hit_cold:                         'On hit (cold)',
-    on_hit_electricity:                  'On hit (electricity)',
-    on_hit_nonlethal:                    'On hit (nonlethal)',
-    casting_defensively_or_grappled:     'While casting defensively / grappled',
-    fighting_defensively_or_total_defense: 'While fighting defensively',
-    wielding_two_weapons:                'While two-weapon fighting',
-    single_piercing_weapon_no_offhand:   'Single piercing weapon, no off-hand',
-    using_bow:                           'While using a bow',
-    thrown_weapons_and_slings:           'With thrown weapons & slings',
-    ranged_within_30ft:                  'Ranged within 30 ft.',
-    unarmed_or_natural:                  'Unarmed / natural attacks',
-    shield_bash:                         'On shield bash',
-    near_wall:                           'When adjacent to a wall',
-    underwater:                          'While underwater',
-    in_saltwater:                        'In saltwater',
-    in_bright_or_absolute_darkness:      'In bright light or darkness',
-    outdoors_temperate:                  'In temperate outdoors',
-    becoming_psionically_focused:        'When becoming psionically focused',
-    manifesting_on_defensive_or_grappling: 'When manifesting defensively',
-    puncture_touch_attack:               'On puncture touch attack',
-    target_flat_footed_or_flanked:       'vs. Flat-footed / flanked target',
-    vs_opponent_already_damaged_this_turn: 'vs. Already-damaged opponent',
-    when_casting_chaos_spells:           'When casting Chaos spells',
-    when_casting_divination_spells:      'When casting Divination spells',
-    when_casting_evil_spells:            'When casting Evil spells',
-    when_casting_good_spells:            'When casting Good spells',
-    when_casting_healing_spells:         'When casting Healing spells',
-    when_casting_law_spells:             'When casting Law spells',
-    wielded_by_paladin:                  'When wielded by a paladin',
-    air_elemental:                       'While air elemental',
-    earth_elemental:                     'While earth elemental',
-    fire_elemental:                      'While fire elemental',
-    water_elemental:                     'While water elemental',
-    vs_aquatic_creature:                 'vs. Aquatic creatures',
-    vs_forest_creature:                  'vs. Forest creatures',
-    vs_desert_creature:                  'vs. Desert creatures',
-    vs_hills_creature:                   'vs. Hills creatures',
-    vs_marsh_creature:                   'vs. Marsh creatures',
-    vs_mountain_creature:                'vs. Mountain creatures',
-    vs_plains_creature:                  'vs. Plains creatures',
-    vs_underground_creature:             'vs. Underground creatures',
-    vs_air_planar_creature:              'vs. Air planar creatures',
-    vs_cavernous_plane_creature:         'vs. Cavernous planar creatures',
-    vs_shifting_plane_creature:          'vs. Shifting planar creatures',
-    vs_aligned_plane_creature:           'vs. Aligned planar creatures',
-    vs_air_elementals:                   'vs. Air elementals',
-    vs_earth_elementals:                 'vs. Earth elementals',
-    vs_water_elementals:                 'vs. Water elementals',
-    vs_water_or_cold_effects:            'vs. Water / Cold effects',
+  const PIPELINE_FALLBACK_LABELS: Record<string, { en: string; fr: string }> = {
+    'saves.all':                           { en: 'All Saving Throws',          fr: 'Jets de sauvegarde (tous)'    },
+    'saves.fortitude':                     { en: 'Fortitude Save',              fr: 'Jet de Vigueur'               },
+    'saves.reflex':                        { en: 'Reflex Save',                 fr: 'Jet de Réflexes'              },
+    'saves.will':                          { en: 'Will Save',                   fr: 'Jet de Volonté'               },
+    'combatStats.attack_bonus':            { en: 'Attack Bonus',                fr: "Bonus d'attaque"              },
+    'combatStats.stability_check':         { en: 'Stability Check',             fr: 'Test de stabilité'            },
+    'combatStats.hit_die_type':            { en: 'Hit Die',                     fr: 'Dé de vie'                    },
+    'combatStats.speed_land':              { en: 'Land Speed',                  fr: 'Vitesse terrestre'            },
+    'combatStats.speed_fly':               { en: 'Fly Speed',                   fr: 'Vitesse de vol'               },
+    'combatStats.speed_swim':              { en: 'Swim Speed',                  fr: 'Vitesse de nage'              },
+    'combatStats.speed_climb':             { en: 'Climb Speed',                 fr: "Vitesse d'escalade"           },
+    'combatStats.speed_burrow':            { en: 'Burrow Speed',                fr: 'Vitesse de fouissement'       },
+    'combatStats.ac_normal':               { en: 'Armor Class',                 fr: "Classe d'armure"              },
+    'combatStats.ac_touch':                { en: 'Touch AC',                    fr: 'CA de contact'                },
+    'combatStats.ac_flat_footed':          { en: 'Flat-Footed AC',              fr: 'CA pris au dépourvu'          },
+    'attributes.speed_land':               { en: 'Land Speed',                  fr: 'Vitesse terrestre'            },
+    'attributes.skill_points_per_level':   { en: 'Skill Points / Level',        fr: 'Points de compétence / niveau'},
+    'attributes.bonus_skill_points_per_level': { en: 'Bonus Skill Points / Level', fr: 'Points bonus / niveau'    },
+    'attributes.bonus_skill_points_1st_level': { en: 'Bonus Skill Points (1st Level)', fr: 'Points bonus (niveau 1)' },
+    'attributes.bonus_feat_slots':         { en: 'Bonus Feat Slots',            fr: 'Emplacements de don bonus'    },
+    'attributes.spell_dc_illusion':        { en: 'Illusion Spell DC',           fr: 'DD des sorts d\'illusion'     },
+    'attributes.stat_strength':            { en: 'Strength',                    fr: 'Force'                        },
+    'attributes.stat_dexterity':           { en: 'Dexterity',                   fr: 'Dextérité'                    },
+    'attributes.stat_constitution':        { en: 'Constitution',                fr: 'Constitution'                 },
+    'attributes.stat_intelligence':        { en: 'Intelligence',                fr: 'Intelligence'                 },
+    'attributes.stat_wisdom':              { en: 'Wisdom',                      fr: 'Sagesse'                      },
+    'attributes.stat_charisma':            { en: 'Charisma',                    fr: 'Charisme'                     },
+    'attributes.stat_size':                { en: 'Size',                        fr: 'Taille'                       },
   };
 
-  function formatSituationalContext(ctx: string): string {
-    return SITUATIONAL_LABELS[ctx]
-      ?? ctx.replace(/_/g, ' ').replace(/\bvs\b/, 'vs.').replace(/\b\w/g, c => c.toUpperCase());
+  function resolvePipelineLabel(targetId: string): string {
+    // 1. Normalize: "attributes.stat_strength" → "stat_strength"
+    const normalised = targetId.startsWith('attributes.') ? targetId.slice('attributes.'.length) : targetId;
+
+    // 2. Try live pipelines first (most accurate, language-reactive)
+    const attrPipeline   = engine.phase2_attributes[normalised];
+    if (attrPipeline?.label) return engine.t(attrPipeline.label);
+
+    const combatPipeline = engine.phase3_combatStats[targetId];
+    if (combatPipeline?.label) return engine.t(combatPipeline.label);
+
+    // skills use a "skills.skill_X" prefix
+    const skillKey = targetId.startsWith('skills.') ? targetId : `skills.${targetId}`;
+    const skillPipeline = engine.phase4_skills[skillKey] ?? engine.phase4_skills[targetId];
+    if (skillPipeline?.label) return engine.t(skillPipeline.label);
+
+    // 3. Static fallback map for targetIds with no runtime pipeline
+    const fallback = PIPELINE_FALLBACK_LABELS[targetId] ?? PIPELINE_FALLBACK_LABELS[`attributes.${targetId}`];
+    if (fallback) return engine.t(fallback);
+
+    // 4. Last resort: prettify the raw ID
+    return targetId
+      .replace(/^(attributes|combatStats|skills|saves)\./, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase());
   }
 
   /**

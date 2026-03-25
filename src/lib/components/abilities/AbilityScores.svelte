@@ -20,7 +20,7 @@
   import RollStatsModal from './RollStatsModal.svelte';
   import { IconStats, IconTabFeats, IconDiceRoll, IconInfo } from '$lib/components/ui/icons';
   import type { ID } from '$lib/types/primitives';
-  import { MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
 
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
@@ -86,7 +86,7 @@
     {#each MAIN_ABILITY_IDS as abilityId}
       {@const pipeline = engine.phase2_attributes[abilityId]}
       {#if pipeline}
-        {@const abbr = ABILITY_ABBRS[abilityId] ?? abilityId.replace('stat_', '').toUpperCase()}
+        {@const abbr = getAbilityAbbr(abilityId, engine.settings.language)}
         {@const isRecommended = recommendedIds.includes(abilityId)}
         {@const tempMod = getTempMod(abilityId)}
 
@@ -197,7 +197,7 @@
   {@const bp = engine.phase2_attributes[breakdownPipelineId]}
   {#if bp}
     <ModifierBreakdownModal
-      label="{engine.t(bp.label)} ({ABILITY_ABBRS[breakdownPipelineId] ?? ''})"
+      label="{engine.t(bp.label)} ({getAbilityAbbr(breakdownPipelineId, engine.settings.language)})"
       baseValue={bp.baseValue}
       activeModifiers={bp.activeModifiers}
       situationalModifiers={bp.situationalModifiers}

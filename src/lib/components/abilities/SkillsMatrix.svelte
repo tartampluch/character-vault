@@ -27,6 +27,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { getAbilityAbbr } from '$lib/utils/constants';
   import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
@@ -254,7 +255,7 @@
               <!-- Key ability -->
               <td class="text-center">
                 <span class="text-xs font-bold text-text-muted font-mono">
-                  {skill.keyAbility.replace('stat_', '').toUpperCase().slice(0, 3)}
+                  {getAbilityAbbr(skill.keyAbility, engine.settings.language)}
                 </span>
               </td>
 

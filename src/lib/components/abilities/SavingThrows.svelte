@@ -76,7 +76,7 @@
               class="flex flex-col items-center px-2 py-1 rounded border bg-surface min-w-[2.5rem]"
               style="border-color: {save.accentColor}40;"
             >
-              <span class="text-[10px] uppercase tracking-wider text-text-muted">{save.keyAbilityAbbr}</span>
+              <span class="text-[10px] uppercase tracking-wider text-text-muted">{engine.t(save.keyAbilityAbbr)}</span>
               <span
                 class="text-sm font-semibold
                   {abilityMod > 0 ? 'text-green-500 dark:text-green-400'

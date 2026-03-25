@@ -22,10 +22,29 @@ export const MAIN_ABILITY_IDS = [
 ] as const;
 
 /**
- * Standard 3-letter abbreviations for each ability score.
- * These are universally used in D&D 3.5 (even in non-English locales).
+ * Localized 3-letter abbreviations for each ability score.
+ *
+ * French D&D 3.5 abbreviations:
+ *   FOR (Force), DEX (Dextérité), CON (Constitution),
+ *   INT (Intelligence), SAG (Sagesse), CHA (Charisme)
+ *
+ * Use `getAbilityAbbr(id, language)` to retrieve the correct abbreviation.
  */
-export const ABILITY_ABBRS: Readonly<Record<ID, string>> = {
-  stat_strength: 'STR', stat_dexterity: 'DEX', stat_constitution: 'CON',
-  stat_intelligence: 'INT', stat_wisdom: 'WIS', stat_charisma: 'CHA',
+export const ABILITY_ABBRS: Readonly<Record<ID, { en: string; fr: string }>> = {
+  stat_strength:     { en: 'STR', fr: 'FOR' },
+  stat_dexterity:    { en: 'DEX', fr: 'DEX' },
+  stat_constitution: { en: 'CON', fr: 'CON' },
+  stat_intelligence: { en: 'INT', fr: 'INT' },
+  stat_wisdom:       { en: 'WIS', fr: 'SAG' },
+  stat_charisma:     { en: 'CHA', fr: 'CHA' },
 };
+
+/**
+ * Returns the localized 3-letter abbreviation for an ability score ID.
+ *
+ * @param id       - The ability score ID (e.g. 'stat_strength').
+ * @param language - The current UI language ('en' | 'fr').
+ */
+export function getAbilityAbbr(id: ID, language: 'en' | 'fr'): string {
+  return ABILITY_ABBRS[id]?.[language] ?? id.replace('stat_', '').toUpperCase().slice(0, 3);
+}
