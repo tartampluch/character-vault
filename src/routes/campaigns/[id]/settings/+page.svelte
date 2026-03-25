@@ -47,28 +47,27 @@
   $effect(() => { if (sessionContext.isGameMaster) loadAvailableSources(); });
 
   /**
-   * Groups the flat file list by `ruleSource` ID (the logical source identifier
-   * from inside each JSON file, e.g. "srd_core", "srd_psionics").
-   * This is the level the DataLoader.loadRuleSources() filter operates on.
-   * Files with ruleSource "unknown" or "?" are omitted (they carry no game data).
+   * All unique ruleSource group IDs present in the available file list.
+   * Used for the "Enable all <group>" quick buttons.
    */
-  interface SourceGroup { id: string; entityCount: number; fileCount: number; }
-  const sourceGroups = $derived.by((): SourceGroup[] => {
-    const map = new Map<string, SourceGroup>();
+  const availableGroups = $derived.by((): string[] => {
+    const seen = new Set<string>();
     for (const f of availableFiles) {
-      const id = f.ruleSource;
-      if (!id || id === 'unknown' || id === '?' ) continue;
-      const g = map.get(id) ?? { id, entityCount: 0, fileCount: 0 };
-      map.set(id, { ...g, entityCount: g.entityCount + f.entityCount, fileCount: g.fileCount + 1 });
+      if (f.ruleSource && f.ruleSource !== 'unknown' && f.ruleSource !== '?') {
+        seen.add(f.ruleSource);
+      }
     }
-    // Return in deterministic order (alphabetically by source ID)
-    return Array.from(map.values()).sort((a, b) => a.id.localeCompare(b.id));
+    return Array.from(seen).sort();
   });
 
-  // ── Enabled rule sources — stored as logical source IDs, NOT file paths ──────
+  // ── Enabled rule sources — stored as logical source IDs (e.g. "srd_core") ──
+  // The DataLoader.loadRuleSources() filters its feature cache by these IDs.
+  // Individual file paths are NOT stored here — the DataLoader loads every file
+  // it discovers and then filters by ruleSource ID at the feature level.
+  //
   // Initialised from the campaign's saved enabledRuleSources so that a page
-  // refresh reflects what was last saved to the database.
-  let enabledSources   = $state<string[]>([]);
+  // refresh reflects what was last persisted to the database.
+  let enabledSources     = $state<string[]>([]);
   let sourcesInitialised = false;
   $effect(() => {
     const sources = campaign?.enabledRuleSources;
@@ -80,10 +79,30 @@
 
   let dragSrcIndex = $state<number | null>(null);
 
+  /** Toggle a single ruleSource ID (e.g. one specific file's source). */
   function toggleSource(sourceId: string) {
     enabledSources = enabledSources.includes(sourceId)
       ? enabledSources.filter(s => s !== sourceId)
       : [...enabledSources, sourceId];
+  }
+
+  /**
+   * Enable ALL file paths whose ruleSource matches `groupId` in one click.
+   * If every file in the group is already enabled, disables them all (toggle).
+   */
+  function toggleGroup(groupId: string) {
+    const groupSourceIds = availableFiles
+      .filter(f => f.ruleSource === groupId)
+      .map(f => f.ruleSource);   // all the same value, but gives us the distinct ID
+    // De-duplicate: for a group, there is exactly one logical source ID
+    const allEnabled = enabledSources.includes(groupId);
+    if (allEnabled) {
+      enabledSources = enabledSources.filter(s => s !== groupId);
+    } else {
+      if (!enabledSources.includes(groupId)) {
+        enabledSources = [...enabledSources, groupId];
+      }
+    }
   }
 
   function handleDragStart(index: number) { dragSrcIndex = index; }
@@ -246,20 +265,48 @@
     {/if}
 
     <!--
-      Sources are displayed as LOGICAL GROUPS (by ruleSource ID, e.g. "srd_core"),
-      not as individual file paths. A single source ID like "srd_core" covers
-      17 JSON files; enabling it passes that ID to DataLoader.loadRuleSources()
-      which filters all cached entities by their ruleSource field.
+      HOW RULE SOURCES WORK:
+        Each JSON file carries a `ruleSource` field (e.g. "srd_core").
+        DataLoader loads ALL discovered files, then filters its feature cache
+        to only keep entities whose `ruleSource` is in `enabledRuleSources`.
+        So enabling "srd_core" enables ALL files tagged with that source ID —
+        you do not need to enable individual files.
+
+        The list below shows individual files for transparency and fine-grained
+        ordering. The "Enable group" buttons let you turn on all files of a
+        source in one click.
     -->
 
-    <!-- Enabled (draggable) sources -->
+    <!-- Quick group toggle buttons -->
+    {#if availableGroups.length > 0}
+      <div class="flex flex-wrap gap-2 py-1">
+        <span class="text-xs text-text-muted self-center shrink-0">Quick enable:</span>
+        {#each availableGroups as groupId}
+          {@const isEnabled = enabledSources.includes(groupId)}
+          <button
+            class="text-xs px-2.5 py-1 rounded border transition-colors
+                   {isEnabled
+                     ? 'border-accent/60 bg-accent/10 text-accent hover:bg-red-950/20 hover:text-red-400 hover:border-red-700/40'
+                     : 'border-border text-text-muted hover:border-green-700/40 hover:bg-green-950/20 hover:text-green-400'}"
+            onclick={() => toggleGroup(groupId)}
+            title="{isEnabled ? 'Disable' : 'Enable'} all files with source: {groupId}"
+            type="button"
+          >
+            {#if isEnabled}<IconChecked size={11} class="inline mr-0.5" aria-hidden="true" />{/if}{groupId}
+          </button>
+        {/each}
+      </div>
+    {/if}
+
+    <!-- Enabled files (draggable, ordered by load priority) -->
     {#if enabledSources.length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent">
-          <IconChecked size={12} aria-hidden="true" /> Enabled (drag to reorder)
+          <IconChecked size={12} aria-hidden="true" /> Enabled sources (drag to reorder load priority)
         </p>
         {#each enabledSources as sourceId, index}
-          {@const group = sourceGroups.find(g => g.id === sourceId)}
+          {@const filesForSource = availableFiles.filter(f => f.ruleSource === sourceId)}
+          {@const entityCount = filesForSource.reduce((n, f) => n + f.entityCount, 0)}
           <div
             class="flex items-center gap-2 px-3 py-2 rounded-lg border border-accent/40 bg-surface-alt
                    cursor-grab active:cursor-grabbing transition-opacity duration-150
@@ -274,14 +321,12 @@
             <span class="text-text-muted shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
             <div class="flex-1 min-w-0">
               <span class="text-xs font-mono font-semibold text-text-primary truncate block">{sourceId}</span>
-              {#if group}
+              {#if filesForSource.length > 0}
                 <span class="text-[10px] text-text-muted">
-                  {group.fileCount} file{group.fileCount !== 1 ? 's' : ''} · {group.entityCount} entities
+                  {filesForSource.length} file{filesForSource.length !== 1 ? 's' : ''} · {entityCount} entities
                 </span>
               {:else}
-                <span class="text-[10px] text-amber-400/80 italic">
-                  Saved source — not found in current file list
-                </span>
+                <span class="text-[10px] text-amber-400/80 italic">Saved source — API files not yet loaded</span>
               {/if}
             </div>
             <span class="badge-accent shrink-0 text-[10px]">#{index + 1}</span>
@@ -296,23 +341,25 @@
       </div>
     {/if}
 
-    <!-- Available (disabled) sources -->
-    {#if sourceGroups.filter(g => !enabledSources.includes(g.id)).length > 0}
+    <!-- Available (disabled) source IDs — only show known group IDs not yet enabled -->
+    {#if availableGroups.filter(g => !enabledSources.includes(g)).length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted">Available (not loaded)</p>
-        {#each sourceGroups.filter(g => !enabledSources.includes(g.id)) as group}
+        {#each availableGroups.filter(g => !enabledSources.includes(g)) as groupId}
+          {@const filesForGroup = availableFiles.filter(f => f.ruleSource === groupId)}
+          {@const entityCount = filesForGroup.reduce((n, f) => n + f.entityCount, 0)}
           <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60 hover:opacity-100 transition-opacity">
             <span class="text-border shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
             <div class="flex-1 min-w-0">
-              <span class="text-xs font-mono font-semibold text-text-muted truncate block">{group.id}</span>
+              <span class="text-xs font-mono font-semibold text-text-muted truncate block">{groupId}</span>
               <span class="text-[10px] text-text-muted">
-                {group.fileCount} file{group.fileCount !== 1 ? 's' : ''} · {group.entityCount} entities
+                {filesForGroup.length} file{filesForGroup.length !== 1 ? 's' : ''} · {entityCount} entities
               </span>
             </div>
             <button
               class="shrink-0 text-xs px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
-              onclick={() => toggleSource(group.id)}
-              aria-label="Enable {group.id}"
+              onclick={() => toggleSource(groupId)}
+              aria-label="Enable {groupId}"
               type="button"
             >Enable</button>
           </div>
@@ -320,7 +367,7 @@
       </div>
     {/if}
 
-    {#if sourceGroups.length === 0 && !loadingError}
+    {#if availableFiles.length === 0 && !loadingError}
       <p class="text-xs text-text-muted italic">No rule sources found. Start the PHP API server to load sources.</p>
     {/if}
   </section>

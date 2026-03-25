@@ -972,5 +972,166 @@
     ],
     "favoredClass": "class_rogue",
     "choices": []
+  },
+
+  {
+    "id": "language_common",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Common", "fr": "Commun" },
+    "description": { "en": "The trade language spoken throughout most civilised lands.", "fr": "La langue commerciale parlée dans la plupart des terres civilisées." },
+    "tags": ["language", "language_common"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_dwarven",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Dwarven", "fr": "Nain" },
+    "description": { "en": "The language of dwarves, filled with hard consonants and guttural sounds.", "fr": "La langue des nains, riche en consonnes dures et en sons gutturaux." },
+    "tags": ["language", "language_dwarven"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_elven",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Elven", "fr": "Elfique" },
+    "description": { "en": "The flowing, musical tongue of elves.", "fr": "La langue mélodieuse et fluide des elfes." },
+    "tags": ["language", "language_elven"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_gnome",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Gnome", "fr": "Gnome" },
+    "description": { "en": "The intricate, detail-rich language of gnomes.", "fr": "La langue complexe et riche en détails des gnomes." },
+    "tags": ["language", "language_gnome"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_halfling",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Halfling", "fr": "Halfelin" },
+    "description": { "en": "A warm, borrowing language with elements from many human dialects.", "fr": "Une langue chaleureuse, empruntant à de nombreux dialectes humains." },
+    "tags": ["language", "language_halfling"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_orc",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Orc", "fr": "Orque" },
+    "description": { "en": "The guttural, aggressive language of orcs.", "fr": "La langue gutturale et agressive des orques." },
+    "tags": ["language", "language_orc"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_giant",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Giant", "fr": "Géant" },
+    "description": { "en": "The slow, booming tongue of giants and ogres.", "fr": "La langue lente et tonitruante des géants et des ogres." },
+    "tags": ["language", "language_giant"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_goblin",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Goblin", "fr": "Gobelin" },
+    "description": { "en": "A squeaky, mongrel tongue shared by goblins and hobgoblins.", "fr": "Un dialecte grinçant partagé par les gobelins et les hobgobelins." },
+    "tags": ["language", "language_goblin"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_abyssal",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Abyssal", "fr": "Abyssal" },
+    "description": { "en": "The language of chaotic evil outsiders from the Abyss.", "fr": "La langue des créatures extraplanaires chaotiques mauvaises de l'Abysse." },
+    "tags": ["language", "language_abyssal"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_celestial",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Celestial", "fr": "Céleste" },
+    "description": { "en": "The language of good-aligned outsiders from the upper planes.", "fr": "La langue des créatures extraplanaires bonnes des plans supérieurs." },
+    "tags": ["language", "language_celestial"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_draconic",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Draconic", "fr": "Draconique" },
+    "description": { "en": "The ancient tongue of dragons, also used by kobolds and lizardfolk.", "fr": "L'ancienne langue des dragons, aussi utilisée par les kobolds et les hommes-lézards." },
+    "tags": ["language", "language_draconic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_druidic",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Druidic", "fr": "Druidique" },
+    "description": { "en": "A secret language known only to druids. It is forbidden to teach it to non-druids.", "fr": "Une langue secrète connue seulement des druides. Il est interdit de l'enseigner aux non-druides." },
+    "tags": ["language", "language_druidic"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_infernal",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Infernal", "fr": "Infernal" },
+    "description": { "en": "The precise, law-bound tongue of devils and lawful evil outsiders.", "fr": "La langue précise et réglementée des diables et des créatures extraplanaires loyales mauvaises." },
+    "tags": ["language", "language_infernal"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_sylvan",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Sylvan", "fr": "Sylvestre" },
+    "description": { "en": "The lyrical language of fey creatures and nature spirits.", "fr": "La langue lyrique des créatures féeriques et des esprits de la nature." },
+    "tags": ["language", "language_sylvan"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_terran",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Terran", "fr": "Terreux" },
+    "description": { "en": "The slow, grinding language of earth elementals and xorns.", "fr": "La langue lente et rauque des élémentaires de terre et des xorns." },
+    "tags": ["language", "language_terran"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
+  },
+  {
+    "id": "language_undercommon",
+    "category": "language",
+    "ruleSource": "srd_core",
+    "label": { "en": "Undercommon", "fr": "Commun des profondeurs" },
+    "description": { "en": "The trade tongue of the Underdark, derived from Elven.", "fr": "La langue commerciale des Royaumes Souterrains, dérivée de l'elfique." },
+    "tags": ["language", "language_undercommon"],
+    "grantedModifiers": [],
+    "grantedFeatures": []
   }
 ]

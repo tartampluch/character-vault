@@ -222,8 +222,8 @@
         { id: 'char-height', label: 'Height',     bind: 'height', placeholder: "5'8\"" },
         { id: 'char-weight', label: 'Weight',     bind: 'weight', placeholder: '160 lb.' },
         { id: 'char-age',    label: 'Age',        bind: 'age',    placeholder: '24' },
-        { id: 'char-eyes',   label: 'Eye Color',  bind: 'eyes',   placeholder: 'Brown' },
-        { id: 'char-hair',   label: 'Hair Color', bind: 'hair',   placeholder: 'Dark brown' },
+        { id: 'char-eyes',   label: 'Eyes',       bind: 'eyes',   placeholder: 'Brown' },
+        { id: 'char-hair',   label: 'Hair',       bind: 'hair',   placeholder: 'Dark brown' },
         { id: 'char-skin',   label: 'Skin',       bind: 'skin',   placeholder: 'Olive' },
       ] as field}
         <div class="flex flex-col gap-0.5">

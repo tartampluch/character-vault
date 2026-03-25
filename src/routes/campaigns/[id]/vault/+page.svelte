@@ -26,14 +26,23 @@
   $effect(() => {
     sessionContext.setActiveCampaign(campaignId);
     engine.loadVaultCharacters();
+  });
 
-    // Load rule sources for this campaign so the character sheet dropdowns
-    // (races, classes, deities, etc.) are populated before the user opens
-    // or creates a character.
-    const camp = campaignStore.getCampaign(campaignId);
-    if (camp) {
+  // Reload rule sources whenever the campaign's enabledRuleSources changes.
+  // This $effect is intentionally separate so it re-runs when loadFromApi()
+  // updates the campaign store (which changes campaign.enabledRuleSources).
+  // The JSON.stringify ensures the effect re-runs even if the array reference
+  // changes but the contents are the same (avoids duplicate loads).
+  let lastSourcesKey = '';
+  $effect(() => {
+    const sources = campaign?.enabledRuleSources ?? [];
+    const overrides = campaign?.gmGlobalOverrides;
+    const key = JSON.stringify(sources) + (overrides ?? '');
+    if (key === lastSourcesKey) return;
+    lastSourcesKey = key;
+    if (sources.length > 0) {
       dataLoader
-        .loadRuleSources(camp.enabledRuleSources, camp.gmGlobalOverrides)
+        .loadRuleSources(sources, overrides)
         .catch(err => console.warn('[Vault] Failed to load rule sources:', err));
     }
   });

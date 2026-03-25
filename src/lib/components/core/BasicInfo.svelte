@@ -70,18 +70,31 @@
   );
 
   // ── Modifier badges helper ──────────────────────────────────────────────────
+  // Shows up to 3 ability-score modifiers in the race/class dropdown labels.
+  // Only shows attribute stats (STR/DEX/CON etc.) — speed, skill bonuses, etc.
+  // are too verbose for a dropdown badge.
   function getModifierBadges(feature: Feature): string[] {
     if (!feature.grantedModifiers?.length) return [];
     return feature.grantedModifiers
-      .filter(mod => typeof mod.value === 'number' && mod.value !== 0)
+      .filter(mod => {
+        if (typeof mod.value !== 'number' || mod.value === 0) return false;
+        // Only show core attribute stats in badges (skip speed, saves, skills, etc.)
+        return mod.targetId.includes('stat_str') ||
+               mod.targetId.includes('stat_dex') ||
+               mod.targetId.includes('stat_con') ||
+               mod.targetId.includes('stat_int') ||
+               mod.targetId.includes('stat_wis') ||
+               mod.targetId.includes('stat_cha');
+      })
       .slice(0, 3)
       .map(mod => {
         const valStr = formatModifier(mod.value as number);
+        // Strip all known prefixes to leave just the abbreviated stat name
         const shortTarget = mod.targetId
+          .replace('attributes.', '')
           .replace('stat_', '')
-          .replace('attributes.stat_', '')
           .toUpperCase()
-          .slice(0, 5);
+          .slice(0, 3);
         return `${valStr} ${shortTarget}`;
       });
   }

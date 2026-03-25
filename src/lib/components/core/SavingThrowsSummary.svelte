@@ -59,11 +59,11 @@
           <!-- Key ability abbreviation (CON, DEX, WIS) coloured per save -->
           <span
             class="text-xs font-bold tracking-wider opacity-75 cursor-help"
-            title="Governed by {save.keyAbilityAbbr} ({formatModifier(keyAbilityMod)})"
+            title="Governed by {engine.t(save.keyAbilityAbbr)} ({formatModifier(keyAbilityMod)})"
             aria-hidden="true"
             style="color: {save.accentColor};"
           >
-            {save.keyAbilityAbbr}
+            {engine.t(save.keyAbilityAbbr)}
           </span>
 
           <!-- Total modifier value -->
