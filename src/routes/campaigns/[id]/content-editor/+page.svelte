@@ -50,6 +50,8 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import Modal from '$lib/components/ui/Modal.svelte';
 
@@ -297,7 +299,7 @@
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </a>
-    <h1 class="text-xl font-bold text-text-primary">Content Editor</h1>
+    <h1 class="text-xl font-bold text-text-primary">{ui('nav.content_editor', engine.settings.language)}</h1>
   </div>
 
   <!-- ──────────────────────────────────────────────────────────────────────── -->

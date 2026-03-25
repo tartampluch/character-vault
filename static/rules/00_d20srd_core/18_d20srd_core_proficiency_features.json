@@ -7,7 +7,8 @@
     {
       "_comment": "SRD CORE — WEAPON & ARMOR PROFICIENCY FEATURE DEFINITIONS",
       "_comment2": "Referenced by grantedFeatures on class and racial feature entities.",
-      "_comment3": "All entries have ruleSource: srd_core and category: proficiency."
+      "_comment3": "All entries have ruleSource: srd_core and category: proficiency.",
+      "ruleSource": "srd_core"
     },
     {
       "id": "proficiency_weapons_simple",

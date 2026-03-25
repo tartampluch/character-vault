@@ -70,6 +70,7 @@
   import { storageManager } from '$lib/engine/StorageManager';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ── Core tab components (Phase 8) ──────────────────────────────────────────
   import BasicInfo             from '$lib/components/core/BasicInfo.svelte';
@@ -119,12 +120,12 @@
   // ===========================================================================
 
   const TABS = [
-    { key: 'core',      label: 'Core',      icon: IconTabCore      },
-    { key: 'abilities', label: 'Abilities', icon: IconTabAbilities },
-    { key: 'combat',    label: 'Combat',    icon: IconTabCombat    },
-    { key: 'feats',     label: 'Feats',     icon: IconTabFeats     },
-    { key: 'magic',     label: 'Magic',     icon: IconTabMagic     },
-    { key: 'inventory', label: 'Inventory', icon: IconTabInventory },
+    { key: 'core',      labelKey: 'tab.core',      icon: IconTabCore      },
+    { key: 'abilities', labelKey: 'tab.abilities', icon: IconTabAbilities },
+    { key: 'combat',    labelKey: 'tab.combat',    icon: IconTabCombat    },
+    { key: 'feats',     labelKey: 'tab.feats',     icon: IconTabFeats     },
+    { key: 'magic',     labelKey: 'tab.magic',     icon: IconTabMagic     },
+    { key: 'inventory', labelKey: 'tab.inventory', icon: IconTabInventory },
   ] as const;
 
   type TabKey = (typeof TABS)[number]['key'];
@@ -365,7 +366,7 @@
         aria-controls="tab-panel-{tab.key}"
         id="tab-btn-{tab.key}"
         type="button"
-        title={tab.label}
+        title={ui(tab.labelKey, engine.settings.language)}
       >
         <!--
           Icon: always shown (20px per nav convention).
@@ -374,7 +375,7 @@
           without cluttering the narrow screen.
         -->
         <tab.icon size={20} aria-hidden="true" />
-        <span class="hidden md:inline">{tab.label}</span>
+        <span class="hidden md:inline">{ui(tab.labelKey, engine.settings.language)}</span>
       </button>
     {/each}
   </div>

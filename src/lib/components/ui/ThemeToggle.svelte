@@ -30,40 +30,38 @@
 	import { IconThemeSystem, IconThemeLight, IconThemeDark } from '$lib/components/ui/icons';
 	import { themeManager } from '$lib/stores/ThemeManager.svelte';
 	import type { ThemePreference } from '$lib/stores/ThemeManager.svelte';
+	import { engine } from '$lib/engine/GameEngine.svelte';
+	import { ui } from '$lib/i18n/ui-strings';
 
 	/** If true, render a text label alongside the icon. Default: false. */
 	let { showLabel = false }: { showLabel?: boolean } = $props();
 
 	/**
-	 * Mapping from preference state to display metadata.
-	 *
-	 * WHY NOT A SWITCH?
-	 *   Using a lookup object avoids verbose if/else chains and makes it trivial
-	 *   to add new states in the future (though none are planned).
+	 * Mapping from preference state to i18n keys.
 	 */
-	const STATE_META: Record<
-		ThemePreference,
-		{ label: string; tooltip: string; icon: typeof IconThemeSystem }
-	> = {
+	const STATE_KEYS: Record<ThemePreference, { labelKey: string; tooltipKey: string; icon: typeof IconThemeSystem }> = {
 		system: {
-			label: 'System',
-			tooltip: 'Theme: System (follows OS preference). Click for Light.',
+			labelKey:   'theme.system',
+			tooltipKey: 'theme.tooltip_system',
 			icon: IconThemeSystem
 		},
 		light: {
-			label: 'Light',
-			tooltip: 'Theme: Light. Click for Dark.',
+			labelKey:   'theme.light',
+			tooltipKey: 'theme.tooltip_light',
 			icon: IconThemeLight
 		},
 		dark: {
-			label: 'Dark',
-			tooltip: 'Theme: Dark. Click for System.',
+			labelKey:   'theme.dark',
+			tooltipKey: 'theme.tooltip_dark',
 			icon: IconThemeDark
 		}
 	};
 
-	/** Derived: current state metadata, updated reactively as themeManager.preference changes. */
-	const meta = $derived(STATE_META[themeManager.preference]);
+	/** Derived: current state keys, updated reactively as themeManager.preference changes. */
+	const stateKeys = $derived(STATE_KEYS[themeManager.preference]);
+	const lang      = $derived(engine.settings.language);
+	const label     = $derived(ui(stateKeys.labelKey, lang));
+	const tooltip   = $derived(ui(stateKeys.tooltipKey, lang));
 </script>
 
 <!--
@@ -78,8 +76,8 @@
 <button
 	class="btn-ghost gap-2"
 	onclick={() => themeManager.cycle()}
-	title={meta.tooltip}
-	aria-label={meta.tooltip}
+	title={tooltip}
+	aria-label={tooltip}
 	type="button"
 >
 	<!--
@@ -88,13 +86,13 @@
 		aria-hidden prevents the SVG being announced redundantly by screen readers
 		(the button's aria-label already fully describes the control).
 	-->
-	<meta.icon size={20} aria-hidden="true" />
+	<stateKeys.icon size={20} aria-hidden="true" />
 
 	<!--
 		Optional text label — shown when parent layout has enough space (e.g. expanded sidebar).
 		Hidden by default to keep the toggle compact in icon-only contexts.
 	-->
 	{#if showLabel}
-		<span>{meta.label}</span>
+		<span>{label}</span>
 	{/if}
 </button>

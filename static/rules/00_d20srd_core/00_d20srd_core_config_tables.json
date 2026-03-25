@@ -12,7 +12,8 @@
       "_comment5": "cannot be derived from simple formulas. They are loaded by the",
       "_comment6": "DataLoader and accessed via getConfigTable(tableId).",
       "_comment7": "ruleSource: 'srd_core' — enable this source to load these tables.",
-      "_comment8": "================================================================="
+      "_comment8": "=================================================================",
+      "ruleSource": "srd_core"
     },
     {
       "tableId": "config_attribute_definitions",

@@ -446,11 +446,11 @@
       <a
         href="/campaigns/{campaignId}/content-editor"
         class={navLinkClass('/campaigns/' + campaignId + '/content-editor')}
-        title="Content Editor"
+        title={ui('nav.content_editor', engine.settings.language)}
       >
         <IconEdit size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
-          <span class="truncate">Content Editor</span>
+          <span class="truncate">{ui('nav.content_editor', engine.settings.language)}</span>
         {/if}
       </a>
 

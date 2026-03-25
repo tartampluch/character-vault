@@ -15,6 +15,7 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // Redirect destination — the page the user was trying to reach before being
   // sent here by SessionContext.loadFromServer().
@@ -24,6 +25,17 @@
   let password  = $state('');
   let error     = $state('');
   let isLoading = $state(false);
+
+  /**
+   * Detect the browser's preferred language and map it to a supported UI language.
+   * Defaults to 'en' if the browser language is not supported.
+   */
+  const lang = $derived.by(() => {
+    if (typeof navigator === 'undefined') return 'en';
+    const browserLang = navigator.language.slice(0, 2).toLowerCase();
+    const supported = ['en', 'fr'];
+    return supported.includes(browserLang) ? browserLang : 'en';
+  });
 
   async function handleLogin(e: SubmitEvent) {
     e.preventDefault();
@@ -40,15 +52,15 @@
       });
 
       if (loginResp.status === 401) {
-        error = 'Invalid username or password.';
+        error = ui('login.error_invalid', lang);
         return;
       }
       if (loginResp.status === 429) {
-        error = 'Too many login attempts. Please wait 15 minutes.';
+        error = ui('login.error_too_many', lang);
         return;
       }
       if (!loginResp.ok) {
-        error = `Login failed (HTTP ${loginResp.status}). Please try again.`;
+        error = ui('login.error_failed', lang).replace('{status}', String(loginResp.status));
         return;
       }
 
@@ -58,7 +70,7 @@
       // 3. Navigate to the originally intended destination.
       await goto(decodeURIComponent(returnTo));
     } catch (err) {
-      error = 'Could not reach the server. Is the PHP API running?';
+      error = ui('login.error_server', lang);
       console.error('[Login] fetch error:', err);
     } finally {
       isLoading = false;
@@ -76,7 +88,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
       <h1 class="text-2xl font-bold text-text-primary mb-1">Character Vault</h1>
-      <p class="text-sm text-text-muted">Sign in to continue</p>
+      <p class="text-sm text-text-muted">{ui('login.title', lang)}</p>
     </div>
 
     <!-- Card -->
@@ -93,7 +105,7 @@
       <form onsubmit={handleLogin} class="flex flex-col gap-4" novalidate>
 
         <div class="flex flex-col gap-1.5">
-          <label for="username" class="text-xs font-medium text-text-secondary">Username</label>
+          <label for="username" class="text-xs font-medium text-text-secondary">{ui('login.username', lang)}</label>
           <input
             id="username"
             type="text"
@@ -109,7 +121,7 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="password" class="text-xs font-medium text-text-secondary">Password</label>
+          <label for="password" class="text-xs font-medium text-text-secondary">{ui('login.password', lang)}</label>
           <input
             id="password"
             type="password"
@@ -129,7 +141,7 @@
           disabled={isLoading || !username.trim() || !password}
           class="btn-primary w-full mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Signing in…' : 'Sign In'}
+          {isLoading ? ui('login.signing_in', lang) : ui('login.sign_in', lang)}
         </button>
 
       </form>

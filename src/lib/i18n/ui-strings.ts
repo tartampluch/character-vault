@@ -75,15 +75,29 @@ export const LANG_UNIT_SYSTEM: ReadonlyMap<string, UnitSystem> = new Map(
 export const UI_STRINGS: Record<string, LocalizedString> = {
 
   // ==========================================================================
+  // LOGIN PAGE
+  // ==========================================================================
+  'login.title':                  { en: 'Sign in to continue', fr: 'Connectez-vous pour continuer' },
+  'login.username':               { en: 'Username', fr: 'Identifiant' },
+  'login.password':               { en: 'Password', fr: 'Mot de passe' },
+  'login.sign_in':                { en: 'Sign In', fr: 'Se connecter' },
+  'login.signing_in':             { en: 'Signing in…', fr: 'Connexion…' },
+  'login.error_invalid':          { en: 'Invalid username or password.', fr: 'Identifiant ou mot de passe incorrect.' },
+  'login.error_too_many':         { en: 'Too many login attempts. Please wait 15 minutes.', fr: 'Trop de tentatives de connexion. Veuillez attendre 15 minutes.' },
+  'login.error_failed':           { en: 'Login failed (HTTP {status}). Please try again.', fr: 'Connexion échouée (HTTP {status}). Veuillez réessayer.' },
+  'login.error_server':           { en: 'Could not reach the server. Is the PHP API running?', fr: 'Impossible de contacter le serveur. L\'API PHP est-elle démarrée ?' },
+
+  // ==========================================================================
   // SIDEBAR & NAVIGATION
   // ==========================================================================
-  'app.title':                    { en: 'Character Vault', fr: 'Coffre aux Personnages' },
+  'app.title':                    { en: 'Character Vault', fr: 'Character Vault' },
   'nav.campaigns':                { en: 'Campaigns', fr: 'Campagnes' },
   'nav.vault':                    { en: 'Vault', fr: 'Coffre' },
   'nav.character':                { en: 'Character', fr: 'Personnage' },
   'nav.character_sheet':          { en: 'Character Sheet', fr: 'Fiche de Personnage' },
   'nav.gm_tools':                 { en: 'GM Tools', fr: 'Outils MJ' },
   'nav.gm_dashboard':             { en: 'GM Dashboard', fr: 'Tableau de bord MJ' },
+  'nav.content_editor':           { en: 'Content Editor', fr: 'Éditeur de contenu' },
   'nav.settings':                 { en: 'Settings', fr: 'Paramètres' },
   'nav.campaign_settings':        { en: 'Campaign Settings', fr: 'Paramètres de campagne' },
   'nav.expand_sidebar':           { en: 'Expand sidebar', fr: 'Développer la barre latérale' },
@@ -94,6 +108,26 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'nav.switch_to_player':         { en: 'Switch to Player mode', fr: 'Passer en mode Joueur' },
   'nav.switch_to_gm':             { en: 'Switch to GM mode', fr: 'Passer en mode MJ' },
   'nav.dev_prefix':               { en: 'Dev:', fr: 'Dev :' },
+
+  // ==========================================================================
+  // THEME TOGGLE
+  // ==========================================================================
+  'theme.system':                 { en: 'System', fr: 'Système' },
+  'theme.light':                  { en: 'Light', fr: 'Clair' },
+  'theme.dark':                   { en: 'Dark', fr: 'Sombre' },
+  'theme.tooltip_system':         { en: 'Theme: System (follows OS preference). Click for Light.', fr: 'Thème : Système (suit les préférences du système). Cliquer pour Clair.' },
+  'theme.tooltip_light':          { en: 'Theme: Light. Click for Dark.', fr: 'Thème : Clair. Cliquer pour Sombre.' },
+  'theme.tooltip_dark':           { en: 'Theme: Dark. Click for System.', fr: 'Thème : Sombre. Cliquer pour Système.' },
+
+  // ==========================================================================
+  // CHARACTER SHEET TABS
+  // ==========================================================================
+  'tab.core':                     { en: 'Core', fr: 'Principal' },
+  'tab.abilities':                { en: 'Abilities', fr: 'Caractéristiques' },
+  'tab.combat':                   { en: 'Combat', fr: 'Combat' },
+  'tab.feats':                    { en: 'Feats', fr: 'Dons' },
+  'tab.magic':                    { en: 'Magic', fr: 'Magie' },
+  'tab.inventory':                { en: 'Inventory', fr: 'Inventaire' },
 
   // ==========================================================================
   // CAMPAIGNS HUB
@@ -115,7 +149,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'campaign.not_found':           { en: 'Campaign not found', fr: 'Campagne introuvable' },
   'campaign.not_found_desc':      { en: 'The campaign with this ID doesn\'t exist.', fr: 'La campagne avec cet identifiant n\'existe pas.' },
   'campaign.back_to_hub':         { en: 'Back to Campaign Hub', fr: 'Retour aux campagnes' },
-  'campaign.character_vault':     { en: 'Character Vault', fr: 'Coffre aux Personnages' },
+  'campaign.character_vault':     { en: 'Character Vault', fr: 'Character Vault' },
   'campaign.chapters_title':      { en: 'Chapters & Acts', fr: 'Chapitres & Actes' },
   'campaign.chapters_empty_gm':   { en: 'No chapters yet. Add chapters via GM Settings.', fr: 'Aucun chapitre. Ajoutez des chapitres via les Paramètres MJ.' },
   'campaign.chapters_empty_player': { en: 'No chapters have been added to this campaign yet.', fr: 'Aucun chapitre n\'a encore été ajouté à cette campagne.' },
@@ -485,6 +519,30 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'breakdown.situational':        { en: 'Situational (applied at roll time)', fr: 'Situationnels (appliqués au lancer)' },
   'breakdown.vs':                 { en: 'vs.', fr: 'c.' },
   'breakdown.conditional':        { en: 'Conditional', fr: 'Conditionnel' },
+
+  // ==========================================================================
+  // FEATURE MODAL (breakdown of race/class/feat features)
+  // ==========================================================================
+  'feature.section_modifiers':    { en: 'Modifiers', fr: 'Modificateurs' },
+  'feature.section_grants':       { en: 'Grants', fr: 'Accorde' },
+  'feature.section_prerequisites': { en: 'Prerequisites', fr: 'Prérequis' },
+  'feature.section_choices':      { en: 'Choices', fr: 'Choix' },
+  'feature.conditional':          { en: 'Conditional', fr: 'Conditionnel' },
+  'feature.not_found':            { en: 'Feature not found', fr: 'Capacité introuvable' },
+  'feature.not_found_desc':       { en: 'No feature found with ID', fr: 'Aucune capacité trouvée avec l\'identifiant' },
+  'feature.cache_hint':           { en: 'The DataLoader cache may not be loaded, or the rule source containing this feature may not be enabled.', fr: 'Le cache du DataLoader n\'est peut-être pas chargé, ou la source de règles contenant cette capacité n\'est peut-être pas activée.' },
+  'feature.no_prereqs':           { en: 'No labelled prerequisites found.', fr: 'Aucun prérequis étiqueté trouvé.' },
+  'feature.grant_type.sense':     { en: 'Sense', fr: 'Sens' },
+  'feature.grant_type.proficiency': { en: 'Proficiency', fr: 'Maîtrise' },
+  'feature.grant_type.language':  { en: 'Language', fr: 'Langue' },
+  'feature.grant_type.immunity':  { en: 'Immunity', fr: 'Immunité' },
+  'feature.grant_type.racial':    { en: 'Racial', fr: 'Racial' },
+  'feature.grant_type.class_feature': { en: 'Class Feature', fr: 'Capacité de classe' },
+  'feature.grant_type.feat':      { en: 'Feat', fr: 'Don' },
+  'feature.grant_type.spell':     { en: 'Spell', fr: 'Sort' },
+  'feature.grant_type.item':      { en: 'Item', fr: 'Objet' },
+  'feature.grant_type.condition': { en: 'Condition', fr: 'Condition' },
+  'feature.grant_type.feature':   { en: 'Feature', fr: 'Capacité' },
 
   // ==========================================================================
   // DICE ROLL MODAL

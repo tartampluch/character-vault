@@ -15,6 +15,7 @@
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { interpolateDescription } from '$lib/utils/mathParser';
   import { formatModifier, formatSituationalContext } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ID } from '$lib/types/primitives';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd } from '$lib/components/ui/icons';
@@ -26,6 +27,7 @@
 
   let { featureId, onclose }: Props = $props();
 
+  const lang    = $derived(engine.settings.language);
   const feature = $derived(featureId ? dataLoader.getFeature(featureId) : undefined);
   const title   = $derived(feature ? engine.t(feature.label) : '???');
 
@@ -59,9 +61,65 @@
         const name = f
           ? engine.t(f.label)
           : id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-        return { id, name, hasData: !!f };
+        return { id, name, hasData: !!f, category: f?.category ?? guessGrantCategory(id) };
       });
   });
+
+  /**
+   * Guess a grant category from the ID when the feature is not loaded,
+   * for pill display purposes.
+   */
+  function guessGrantCategory(id: string): string {
+    if (id.startsWith('language_'))    return 'language';
+    if (id.startsWith('sense_'))       return 'sense';
+    if (id.startsWith('proficiency_')) return 'proficiency';
+    if (id.startsWith('immunity_'))    return 'immunity';
+    if (id.startsWith('class_feature_')) return 'class_feature';
+    if (id.startsWith('racial_feature_')) return 'racial';
+    if (id.startsWith('feat_'))        return 'feat';
+    if (id.startsWith('spell_'))       return 'spell';
+    if (id.startsWith('item_'))        return 'item';
+    if (id.startsWith('condition_'))   return 'condition';
+    return 'feature';
+  }
+
+  /**
+   * Returns an i18n key for a grant category label.
+   */
+  function grantCategoryKey(category: string): string {
+    const keyMap: Record<string, string> = {
+      language:      'feature.grant_type.language',
+      sense:         'feature.grant_type.sense',
+      proficiency:   'feature.grant_type.proficiency',
+      immunity:      'feature.grant_type.immunity',
+      class_feature: 'feature.grant_type.class_feature',
+      racial:        'feature.grant_type.racial',
+      feat:          'feature.grant_type.feat',
+      spell:         'feature.grant_type.spell',
+      item:          'feature.grant_type.item',
+      condition:     'feature.grant_type.condition',
+    };
+    return keyMap[category] ?? 'feature.grant_type.feature';
+  }
+
+  /**
+   * Tailwind classes for a grant-type pill badge.
+   */
+  function grantPillClass(category: string): string {
+    const map: Record<string, string> = {
+      language:      'bg-blue-900/40 text-blue-300 border-blue-700/50',
+      sense:         'bg-cyan-900/40 text-cyan-300 border-cyan-700/40',
+      proficiency:   'bg-amber-900/40 text-amber-300 border-amber-700/40',
+      immunity:      'bg-green-900/40 text-green-400 border-green-700/50',
+      class_feature: 'bg-blue-900/30 text-blue-200 border-blue-700/30',
+      racial:        'bg-green-900/30 text-green-300 border-green-700/30',
+      feat:          'bg-yellow-900/40 text-yellow-300 border-yellow-700/40',
+      spell:         'bg-purple-900/40 text-purple-300 border-purple-700/40',
+      item:          'bg-cyan-900/30 text-cyan-300 border-cyan-700/30',
+      condition:     'bg-red-900/30 text-red-400 border-red-700/30',
+    };
+    return `${map[category] ?? 'bg-surface-alt text-text-muted border-border'} border text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0`;
+  }
 
   /**
    * Static fallback labels for pipeline targetIds that are not modelled as
@@ -111,9 +169,10 @@
     const combatPipeline = engine.phase3_combatStats[targetId];
     if (combatPipeline?.label) return engine.t(combatPipeline.label);
 
-    // skills use a "skills.skill_X" prefix
-    const skillKey = targetId.startsWith('skills.') ? targetId : `skills.${targetId}`;
-    const skillPipeline = engine.phase4_skills[skillKey] ?? engine.phase4_skills[targetId];
+    // skills: phase4_skills is keyed by bare skill ID (e.g. "skill_listen")
+    // but targetId may have "skills." prefix (e.g. "skills.skill_listen")
+    const skillId = targetId.startsWith('skills.') ? targetId.slice('skills.'.length) : targetId;
+    const skillPipeline = engine.phase4_skills[skillId];
     if (skillPipeline?.label) return engine.t(skillPipeline.label);
 
     // 3. Static fallback map for targetIds with no runtime pipeline
@@ -155,27 +214,22 @@
     open={true}
     onClose={onclose}
     size="lg"
-    title={feature ? title : 'Feature not found'}
+    title={feature ? title : ui('feature.not_found', lang)}
   >
     {#snippet children()}
       {#if !feature}
         <!-- Feature not in cache -->
         <div class="text-center py-4 flex flex-col gap-2">
           <p class="text-sm text-text-primary">
-            No feature found with ID <code class="bg-surface-alt px-1.5 py-0.5 rounded text-xs">{featureId}</code>.
+            {ui('feature.not_found_desc', lang)} <code class="bg-surface-alt px-1.5 py-0.5 rounded text-xs">{featureId}</code>.
           </p>
           <p class="text-xs text-text-muted italic">
-            The DataLoader cache may not be loaded, or the rule source containing this feature may not be enabled.
+            {ui('feature.cache_hint', lang)}
           </p>
         </div>
 
       {:else}
         <div class="flex flex-col gap-4">
-
-          <!-- Category badge (below the modal title provided by Modal.svelte) -->
-          <div>
-            <span class={categoryBadgeClass(feature.category)}>{feature.category}</span>
-          </div>
 
           <!-- ── DESCRIPTION ─────────────────────────────────────────── -->
           {#if description}
@@ -188,7 +242,7 @@
           {#if feature.prerequisitesNode}
             <section class="flex flex-col gap-1.5">
               <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent border-b border-border pb-1">
-                <IconInfo size={14} aria-hidden="true" /> Prerequisites
+                <IconInfo size={14} aria-hidden="true" /> {ui('feature.section_prerequisites', lang)}
               </h3>
               {#if prereqResult}
                 <ul class="flex flex-col gap-1">
@@ -203,7 +257,7 @@
                     </li>
                   {/each}
                   {#if prereqResult.metMessages.length === 0 && prereqResult.errorMessages.length === 0}
-                    <li class="text-xs text-text-muted italic">No labelled prerequisites found.</li>
+                    <li class="text-xs text-text-muted italic">{ui('feature.no_prereqs', lang)}</li>
                   {/if}
                 </ul>
               {/if}
@@ -214,7 +268,7 @@
           {#if feature.grantedModifiers?.length}
             <section class="flex flex-col gap-1.5">
               <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent border-b border-border pb-1">
-                <IconAbilities size={14} aria-hidden="true" /> Modifiers
+                <IconAbilities size={14} aria-hidden="true" /> {ui('feature.section_modifiers', lang)}
               </h3>
               <ul class="flex flex-col gap-1">
                 {#each feature.grantedModifiers as mod}
@@ -238,7 +292,7 @@
                     <!-- Conditional flag -->
                     {#if mod.conditionNode}
                       <span class="flex items-center gap-0.5 text-[10px] text-yellow-500 dark:text-yellow-400">
-                        <IconWarning size={11} aria-hidden="true" /> Conditional
+                        <IconWarning size={11} aria-hidden="true" /> {ui('feature.conditional', lang)}
                       </span>
                     {/if}
                   </li>
@@ -251,13 +305,17 @@
           {#if grantedFeatureNames.length > 0}
             <section class="flex flex-col gap-1.5">
               <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent border-b border-border pb-1">
-                <IconAdd size={14} aria-hidden="true" /> Grants
+                <IconAdd size={14} aria-hidden="true" /> {ui('feature.section_grants', lang)}
               </h3>
               <ul class="flex flex-col gap-1">
-                {#each grantedFeatureNames as { id, name, hasData }}
-                  <li class="flex items-center justify-between gap-3 text-sm py-0.5">
+                {#each grantedFeatureNames as { id, name, hasData, category }}
+                  <li class="flex items-center gap-2 text-sm py-0.5">
+                    <!-- Category pill -->
+                    <span class={grantPillClass(category)}>
+                      {ui(grantCategoryKey(category), lang)}
+                    </span>
                     <!-- Human-readable name, dimmed if the feature isn't loaded -->
-                    <span class="{hasData ? 'text-accent' : 'text-text-muted italic'}">{name}</span>
+                    <span class="{hasData ? 'text-accent' : 'text-text-muted italic'} flex-1 min-w-0 truncate">{name}</span>
                     <!-- Show raw ID only when we couldn't resolve a label -->
                     {#if !hasData}
                       <code class="text-[10px] text-text-muted/60 bg-surface-alt px-1.5 py-0.5 rounded shrink-0">{id}</code>
@@ -272,7 +330,7 @@
           {#if feature.choices?.length}
             <section class="flex flex-col gap-1.5">
               <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent border-b border-border pb-1">
-                <IconTabFeats size={14} aria-hidden="true" /> Choices
+                <IconTabFeats size={14} aria-hidden="true" /> {ui('feature.section_choices', lang)}
               </h3>
               <ul class="flex flex-col gap-1.5">
                 {#each feature.choices as choice}
@@ -301,6 +359,10 @@
               <div class="flex items-center gap-2 text-xs">
                 <span class="text-text-muted w-12 text-right shrink-0">ID</span>
                 <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded break-all">{feature.id}</code>
+              </div>
+              <div class="flex items-start gap-2 text-xs">
+                <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">Cat.</span>
+                <span class={categoryBadgeClass(feature.category)}>{feature.category}</span>
               </div>
               {#if feature.tags?.length}
                 <div class="flex items-start gap-2 text-xs">

@@ -10,7 +10,8 @@
       "_comment3": "These feature objects are referenced by grantedFeatures on race entities.",
       "_comment4": "They provide the label, description, tags and ruleSource needed by the",
       "_comment5": "FeatureModal and LoreAndLanguages (automatic language detection) components.",
-      "_comment6": "================================================================================"
+      "_comment6": "================================================================================",
+      "ruleSource": "srd_core"
     },
     {
       "id": "sense_low_light_vision",
