@@ -285,23 +285,10 @@
       >
         <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each races as race}
-          {@const badges = getModifierBadges(race)}
-          <option value={race.id}>
-            {engine.t(race.label)}{badges.length ? ' (' + badges.join(', ') + ')' : ''}
-          </option>
+          <option value={race.id}>{engine.t(race.label)}</option>
         {/each}
       </select>
-      <!-- Active race modifier badges -->
-      {#if activeRace}
-        {@const badges = getModifierBadges(activeRace)}
-        {#if badges.length}
-          <div class="flex flex-wrap gap-1 mt-0.5">
-            {#each badges as badge}
-              <span class="badge-accent font-mono">{badge}</span>
-            {/each}
-          </div>
-        {/if}
-      {/if}
+
     </div>
 
     <!-- CLASS -->

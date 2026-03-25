@@ -340,6 +340,24 @@ export class DataLoader {
   isLoaded = false;
 
   /**
+   * Monotonically incremented each time `loadRuleSources()` completes.
+   *
+   * PURPOSE — REACTIVE INVALIDATION:
+   *   The DataLoader's caches are plain `Map<>` objects (not Svelte `$state`).
+   *   Svelte 5 `$derived` blocks that call `dataLoader.getFeature()` or
+   *   `dataLoader.getConfigTable()` have NO tracked reactive dependency on the
+   *   caches and would NOT re-run when `loadRuleSources` refills them.
+   *
+   *   This counter is the deliberate reactive "pin" that bridges the gap:
+   *   - `GameEngine.svelte.ts` declares a `$state` counter that mirrors this value.
+   *   - All `$derived` blocks that read from the DataLoader also read
+   *     `engine.dataLoaderVersion`, creating a tracked dependency.
+   *   - When `loadVersion` is incremented here, the engine's `$state` is bumped
+   *     via `engine.bumpDataLoaderVersion()`, which invalidates all dependent derivations.
+   */
+  loadVersion = 0;
+
+  /**
    * List of enabled rule source IDs (set during loadRuleSources()).
    * Used for filtering after loading.
    */
@@ -555,6 +573,9 @@ export class DataLoader {
     this.#filterByEnabledSources();
 
     this.isLoaded = true;
+    // Increment the reactive version counter so Svelte $derived blocks that
+    // depend on engine.dataLoaderVersion are invalidated and re-run.
+    this.loadVersion++;
   }
 
   /**
@@ -618,12 +639,36 @@ export class DataLoader {
    *   Unknown extra fields are tolerated (future-proofing for new features).
    *   Missing optional fields (label, description, tags, etc.) are gracefully defaulted.
    */
+  /**
+   * Returns true if the given ruleSource should be included in the cache.
+   *
+   * EARLY-REJECTION FILTER:
+   *   Called during entity processing so non-enabled entities are never cached.
+   *   This prevents later-loaded files (e.g. test_mock) from overwriting
+   *   enabled entities (e.g. srd_core/race_human) with a non-enabled version —
+   *   which would then be deleted by #filterByEnabledSources(), making the
+   *   enabled entity disappear entirely.
+   *
+   *   When enabledRuleSources is empty, all sources are accepted (no filtering).
+   */
+  #isSourceAccepted(ruleSource: string): boolean {
+    if (this.enabledRuleSources.length === 0) return true;
+    // System sources are always exempt
+    if (ruleSource === 'user_homebrew' ||
+        ruleSource === 'gm_override'   ||
+        ruleSource.startsWith('gm_'))  return true;
+    return this.enabledRuleSources.includes(ruleSource);
+  }
+
   #processEntity(entity: RawEntity): void {
     // --- Config Table (identified by tableId) ---
     if (entity.tableId) {
+      const ruleSource = entity.ruleSource ?? 'unknown';
+      // Reject entities from non-enabled sources before caching
+      if (!this.#isSourceAccepted(ruleSource)) return;
       const configTable: ConfigTable = {
         tableId: entity.tableId,
-        ruleSource: entity.ruleSource ?? 'unknown',
+        ruleSource,
         description: entity.description as string | undefined,
         data: (entity.data ?? []) as Record<string, unknown>[],
       };
@@ -645,6 +690,9 @@ export class DataLoader {
       console.warn(`[DataLoader] Entity "${entity.id}" missing \`ruleSource\` field. Defaulting to "unknown". This entity will be excluded if enabledRuleSources is set.`);
       entity.ruleSource = 'unknown';
     }
+
+    // Reject entities from non-enabled sources before caching
+    if (!this.#isSourceAccepted(entity.ruleSource)) return;
 
     // Ensure required array fields are arrays (engine iterates over these without null checks)
     if (!Array.isArray(entity.grantedModifiers)) {

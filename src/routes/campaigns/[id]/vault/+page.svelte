@@ -43,6 +43,7 @@
     if (sources.length > 0) {
       dataLoader
         .loadRuleSources(sources, overrides)
+        .then(() => engine.bumpDataLoaderVersion())
         .catch(err => console.warn('[Vault] Failed to load rule sources:', err));
     }
   });

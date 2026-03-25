@@ -298,17 +298,16 @@
       </div>
     {/if}
 
-    <!-- Enabled files (draggable, ordered by load priority) -->
+    <!-- Enabled files (draggable, ordered by load priority — one row per source ID) -->
     {#if enabledSources.length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent">
-          <IconChecked size={12} aria-hidden="true" /> Enabled sources (drag to reorder load priority)
+          <IconChecked size={12} aria-hidden="true" /> Enabled (drag to reorder load priority)
         </p>
         {#each enabledSources as sourceId, index}
-          {@const filesForSource = availableFiles.filter(f => f.ruleSource === sourceId)}
-          {@const entityCount = filesForSource.reduce((n, f) => n + f.entityCount, 0)}
+          {@const files = availableFiles.filter(f => f.ruleSource === sourceId)}
           <div
-            class="flex items-center gap-2 px-3 py-2 rounded-lg border border-accent/40 bg-surface-alt
+            class="flex flex-col gap-1 px-3 py-2 rounded-lg border border-accent/40 bg-surface-alt
                    cursor-grab active:cursor-grabbing transition-opacity duration-150
                    {dragSrcIndex === index ? 'opacity-40 border-dashed' : ''}"
             draggable="true"
@@ -318,50 +317,63 @@
             role="listitem"
             aria-label="{sourceId} (drag to reorder)"
           >
-            <span class="text-text-muted shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
-            <div class="flex-1 min-w-0">
-              <span class="text-xs font-mono font-semibold text-text-primary truncate block">{sourceId}</span>
-              {#if filesForSource.length > 0}
-                <span class="text-[10px] text-text-muted">
-                  {filesForSource.length} file{filesForSource.length !== 1 ? 's' : ''} · {entityCount} entities
-                </span>
-              {:else}
-                <span class="text-[10px] text-amber-400/80 italic">Saved source — API files not yet loaded</span>
-              {/if}
+            <!-- Source header row -->
+            <div class="flex items-center gap-2">
+              <span class="text-text-muted shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
+              <span class="text-xs font-mono font-bold text-accent flex-1 truncate">{sourceId}</span>
+              <span class="badge-accent shrink-0 text-[10px]">#{index + 1}</span>
+              <button
+                class="shrink-0 text-xs px-2 py-0.5 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
+                onclick={() => toggleSource(sourceId)}
+                aria-label="Disable {sourceId}"
+                type="button"
+              >Disable</button>
             </div>
-            <span class="badge-accent shrink-0 text-[10px]">#{index + 1}</span>
-            <button
-              class="shrink-0 text-xs px-2 py-0.5 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
-              onclick={() => toggleSource(sourceId)}
-              aria-label="Disable {sourceId}"
-              type="button"
-            >Disable</button>
+            <!-- Individual files in this source -->
+            {#if files.length > 0}
+              <ul class="ml-6 flex flex-col gap-0.5">
+                {#each files as file}
+                  <li class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-mono text-text-muted truncate flex-1">{file.path}</span>
+                    <span class="text-[10px] text-text-muted/60 shrink-0">{file.entityCount} entities</span>
+                  </li>
+                {/each}
+              </ul>
+            {:else}
+              <p class="ml-6 text-[10px] text-amber-400/80 italic">Saved source — file list not yet loaded from API</p>
+            {/if}
           </div>
         {/each}
       </div>
     {/if}
 
-    <!-- Available (disabled) source IDs — only show known group IDs not yet enabled -->
+    <!-- Available (disabled) files — grouped visually but individually shown -->
     {#if availableGroups.filter(g => !enabledSources.includes(g)).length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted">Available (not loaded)</p>
         {#each availableGroups.filter(g => !enabledSources.includes(g)) as groupId}
-          {@const filesForGroup = availableFiles.filter(f => f.ruleSource === groupId)}
-          {@const entityCount = filesForGroup.reduce((n, f) => n + f.entityCount, 0)}
-          <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60 hover:opacity-100 transition-opacity">
-            <span class="text-border shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
-            <div class="flex-1 min-w-0">
-              <span class="text-xs font-mono font-semibold text-text-muted truncate block">{groupId}</span>
-              <span class="text-[10px] text-text-muted">
-                {filesForGroup.length} file{filesForGroup.length !== 1 ? 's' : ''} · {entityCount} entities
-              </span>
+          {@const files = availableFiles.filter(f => f.ruleSource === groupId)}
+          <div class="flex flex-col gap-1 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60 hover:opacity-100 transition-opacity">
+            <!-- Group header -->
+            <div class="flex items-center gap-2">
+              <span class="text-border shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
+              <span class="text-xs font-mono font-bold text-text-muted flex-1 truncate">{groupId}</span>
+              <button
+                class="shrink-0 text-xs px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
+                onclick={() => toggleSource(groupId)}
+                aria-label="Enable {groupId}"
+                type="button"
+              >Enable</button>
             </div>
-            <button
-              class="shrink-0 text-xs px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
-              onclick={() => toggleSource(groupId)}
-              aria-label="Enable {groupId}"
-              type="button"
-            >Enable</button>
+            <!-- Individual files -->
+            <ul class="ml-6 flex flex-col gap-0.5">
+              {#each files as file}
+                <li class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono text-text-muted/70 truncate flex-1">{file.path}</span>
+                  <span class="text-[10px] text-text-muted/50 shrink-0">{file.entityCount} entities</span>
+                </li>
+              {/each}
+            </ul>
           </div>
         {/each}
       </div>

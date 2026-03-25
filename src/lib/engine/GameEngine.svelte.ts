@@ -626,6 +626,29 @@ export class GameEngine {
   /** Set when a storage error occurs. Displayed as a UI notification. */
   lastError = $state<string | null>(null);
 
+  /**
+   * Mirrors `dataLoader.loadVersion`. Incremented by `bumpDataLoaderVersion()`
+   * after every `loadRuleSources()` call.
+   *
+   * WHY NEEDED:
+   *   The DataLoader's feature/config caches are plain `Map<>` objects that Svelte
+   *   cannot track. Any `$derived` that reads from the DataLoader must also read
+   *   this counter to become properly invalidated when new rule sources are loaded.
+   *   Without this, skills, saving throws, phases etc. would show stale data (or
+   *   "No skills loaded") until an unrelated $state change happened to retrigger them.
+   *
+   * USAGE IN $derived:
+   *   Read `engine.dataLoaderVersion` at the start of any $derived that calls
+   *   `dataLoader.getFeature()`, `dataLoader.getConfigTable()` etc.
+   *   The value itself is ignored; the read is the reactive dependency.
+   */
+  dataLoaderVersion = $state(0);
+
+  /** Called by the vault page after loadRuleSources() resolves. */
+  bumpDataLoaderVersion(): void {
+    this.dataLoaderVersion = dataLoader.loadVersion;
+  }
+
   // ---------------------------------------------------------------------------
   // VAULT STATE & VISIBILITY
   // ---------------------------------------------------------------------------
@@ -1028,7 +1051,12 @@ export class GameEngine {
    *
    * Includes ALL tags from ALL ACTIVE features' tag arrays, deduplicated.
    */
-  phase0_activeTags: string[] = $derived(this.#computeActiveTags());
+  phase0_activeTags: string[] = $derived.by(() => {
+    // Reading dataLoaderVersion creates a reactive dependency so the entire
+    // DAG re-runs when loadRuleSources() completes and new feature data is available.
+    void this.dataLoaderVersion;
+    return this.#computeActiveTags();
+  });
 
   /**
    * DAG Phase 0c: Character level (sum of all class levels).
@@ -1629,7 +1657,11 @@ export class GameEngine {
    * The engine reads Feature.classSkills from the DataLoader for each active feature instance.
    * A missing feature (DataLoader stub) contributes nothing (graceful empty skip).
    */
-  phase4_classSkillSet: ReadonlySet<ID> = $derived.by(() => {
+   phase4_classSkillSet: ReadonlySet<ID> = $derived.by(() => {
+    // Reading dataLoaderVersion creates a reactive dependency so this $derived
+    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    void this.dataLoaderVersion;
+
     const classSkillIds = new Set<ID>();
     const allInstances = [
       ...this.character.activeFeatures,
@@ -1957,6 +1989,10 @@ export class GameEngine {
    * as a bonus (negative value) for skills with appliesArmorCheckPenalty === true.
    */
   phase4_skills: Record<ID, import('../types/pipeline').SkillPipeline> = $derived.by(() => {
+    // Reading dataLoaderVersion creates a reactive dependency so this $derived
+    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    void this.dataLoaderVersion;
+
     const result: Record<ID, import('../types/pipeline').SkillPipeline> = {};
     const flatMods = this.phase0_flatModifiers;
     const attributes = this.phase2_attributes;
