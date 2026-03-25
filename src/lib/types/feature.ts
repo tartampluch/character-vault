@@ -227,6 +227,38 @@ export interface FeatureChoice {
    * @see ARCHITECTURE.md section 5.3 — FeatureChoice and active tag derivation
    */
   choiceGrantedTagPrefix?: string;
+
+  /**
+   * Optional list of other `choiceId` values within the SAME Feature whose
+   * selected value must be excluded from THIS choice's option list.
+   *
+   * USE CASE — Cleric domains:
+   *   A cleric picks two domains. The same domain cannot be picked twice, and
+   *   some combinations are mutually exclusive (alignment restrictions, deity
+   *   requirements, etc.).
+   *
+   *   ```json
+   *   { "choiceId": "domain_1", "excludedBy": ["domain_2"] }
+   *   { "choiceId": "domain_2", "excludedBy": ["domain_1"] }
+   *   ```
+   *
+   *   At render time the UI reads every sibling choice listed in `excludedBy`,
+   *   looks up the player's current selection for each, and removes those option
+   *   IDs from the current choice's `<select>`.  This prevents:
+   *     - Picking the same domain twice (cross-reference both ways).
+   *     - Domain combinations that are mutually exclusive (add only the
+   *       incompatible sibling's choiceId where the restriction applies).
+   *
+   * IMPORTANT:
+   *   To prevent picking the SAME option twice across two choices, list each
+   *   choice's `choiceId` in the other choice's `excludedBy` array.
+   *
+   *   Additional per-option tag-based restrictions (alignment, deity) should be
+   *   modelled via `prerequisitesNode` on the domain Feature itself and surfaced
+   *   as disabled options in the UI (future work — current implementation removes
+   *   the option entirely when it is selected in a sibling choice).
+   */
+  excludedBy?: ID[];
 }
 
 // =============================================================================

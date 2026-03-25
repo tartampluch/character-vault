@@ -479,6 +479,40 @@
       <ThemeToggle showLabel={!collapsed} />
     </div>
 
+    <!-- Language switcher — EN / FR toggle -->
+    <div class="flex items-center gap-1 px-1 py-0.5">
+      {#if collapsed}
+        <!-- Icon-only mode: single button cycles EN→FR→EN -->
+        <button
+          class="flex items-center justify-center w-full h-8 rounded-md text-xs font-bold
+                 text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+          onclick={() => { engine.settings.language = engine.settings.language === 'en' ? 'fr' : 'en'; }}
+          title="Switch language ({engine.settings.language === 'en' ? 'FR' : 'EN'})"
+          aria-label="Switch language"
+          type="button"
+        >
+          {engine.settings.language.toUpperCase()}
+        </button>
+      {:else}
+        <!-- Expanded mode: two-button pill group -->
+        <span class="text-[10px] text-text-muted uppercase tracking-wider mr-1 shrink-0">Lang</span>
+        <div class="flex rounded-md overflow-hidden border border-border flex-1">
+          {#each ['en', 'fr'] as lang}
+            <button
+              class="flex-1 text-xs py-1 font-semibold transition-colors
+                     {engine.settings.language === lang
+                       ? 'bg-accent text-white'
+                       : 'text-text-muted hover:bg-surface-alt'}"
+              onclick={() => { engine.settings.language = lang as 'en' | 'fr'; }}
+              aria-label="Switch to {lang === 'en' ? 'English' : 'French'}"
+              aria-pressed={engine.settings.language === lang}
+              type="button"
+            >{lang.toUpperCase()}</button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+
     <!--
       User / session indicator:
       - Collapsed: shows a single user icon (role-specific color).

@@ -1928,24 +1928,26 @@
       "skill_spellcraft"
     ],
     "choices": [
-      {
-        "choiceId": "domain_1",
-        "label": {
-          "en": "First Domain",
-          "fr": "Premier domaine"
-        },
-        "optionsQuery": "tag:domain",
-        "maxSelections": 1
-      },
-      {
-        "choiceId": "domain_2",
-        "label": {
-          "en": "Second Domain",
-          "fr": "Second domaine"
-        },
-        "optionsQuery": "tag:domain",
-        "maxSelections": 1
-      }
+  {
+    "choiceId": "domain_1",
+    "label": {
+      "en": "First Domain",
+      "fr": "Premier domaine"
+    },
+    "optionsQuery": "tag:domain",
+    "maxSelections": 1,
+    "excludedBy": ["domain_2"]
+  },
+  {
+    "choiceId": "domain_2",
+    "label": {
+      "en": "Second Domain",
+      "fr": "Second domaine"
+    },
+    "optionsQuery": "tag:domain",
+    "maxSelections": 1,
+    "excludedBy": ["domain_1"]
+  }
     ],
     "recommendedAttributes": [
       "stat_wisdom",

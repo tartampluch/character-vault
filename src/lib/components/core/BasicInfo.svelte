@@ -124,14 +124,26 @@
 
   function handleClassChange(event: Event) {
     const featureId = (event.target as HTMLSelectElement).value;
+
+    // Remove ALL prior class feature instances AND their classLevels entries.
+    // Without the classLevels cleanup, switching class accumulates entries
+    // (Fighter 1 → Wizard 1 → Rogue 1 = level 3 multiclass instead of level 1).
+    const previousClassIds = engine.character.activeFeatures
+      .filter(afi => {
+        const f = dataLoader.getFeature(afi.featureId);
+        return f?.category === 'class';
+      })
+      .map(afi => afi.featureId);
+
     removeAllOfCategory('class');
+
+    for (const prevId of previousClassIds) {
+      delete engine.character.classLevels[prevId];
+    }
+
     if (featureId) {
-      if (!engine.character.classLevels[featureId]) {
-        engine.character.classLevels[featureId] = 1;
-      }
+      engine.character.classLevels[featureId] = 1;
       engine.addFeature({ instanceId: makeCategoryInstanceId('class', featureId), featureId, isActive: true });
-    } else {
-      if (activeClass) delete engine.character.classLevels[activeClass.id];
     }
   }
 
@@ -192,6 +204,30 @@
       delete instance.selections[choiceId];
     }
     engine.character.activeFeatures = [...engine.character.activeFeatures];
+  }
+
+  /**
+   * Returns the set of option IDs that must be excluded from a given choice.
+   *
+   * Exclusion sources:
+   *   1. `choice.excludedBy` — sibling choiceId whose current selection is blocked.
+   *      A domain already picked for "domain_1" cannot also be picked for "domain_2".
+   *   2. The choice's own current selection — you can't re-pick the same domain
+   *      (this is implicit: if domain_1 is in domain_2's excludedBy, the same
+   *      ID is blocked; but we guard it explicitly too for single-choice lists).
+   */
+  function getExcludedOptionIds(choice: typeof activeClassChoices[number]): Set<string> {
+    const excluded = new Set<string>();
+    if (!choice.excludedBy?.length) return excluded;
+
+    const selections = activeClassSelections;
+    for (const siblingChoiceId of choice.excludedBy) {
+      const siblingSelection = selections[siblingChoiceId];
+      if (siblingSelection?.length) {
+        for (const id of siblingSelection) excluded.add(id);
+      }
+    }
+    return excluded;
   }
 
   // ── Feature modal ────────────────────────────────────────────────────────────
@@ -287,19 +323,13 @@
           ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
       </div>
-      <!-- Stat modifier pills (green=positive, red=negative) -->
+      <!-- Stat modifier pills — same style as class recommended-attrs badges -->
       {#if activeRace}
         {@const pills = getModifierPills(activeRace)}
         {#if pills.length}
           <div class="flex flex-wrap gap-1 mt-0.5">
             {#each pills as pill}
-              <span
-                class="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full border
-                       {pill.positive
-                         ? 'bg-green-950/30 border-green-700/50 text-green-400'
-                         : pill.zero
-                           ? 'bg-surface-alt border-border text-text-muted'
-                           : 'bg-red-950/30 border-red-700/50 text-red-400'}"
+              <span class="font-mono {pill.positive ? 'badge-green' : pill.zero ? 'badge-gray' : 'badge-red'}"
               >{pill.label}</span>
             {/each}
           </div>
@@ -442,7 +472,9 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {#each activeClassChoices as choice}
-          {@const options = dataLoader.queryFeatures(choice.optionsQuery)}
+          {@const allOptions     = dataLoader.queryFeatures(choice.optionsQuery)}
+          {@const excludedIds    = getExcludedOptionIds(choice)}
+          {@const options        = allOptions.filter(o => !excludedIds.has(o.id))}
           {@const currentSelection = activeClassSelections[choice.choiceId]?.[0] ?? ''}
 
           <div class="flex flex-col gap-1">
@@ -482,7 +514,7 @@
               {/each}
             </select>
 
-            {#if options.length === 0}
+            {#if allOptions.length === 0}
               <p class="text-xs text-text-muted italic">
                 {ui('core.no_options', engine.settings.language)} <code class="bg-surface-alt px-1 rounded">{choice.optionsQuery}</code>.
               </p>
