@@ -62,6 +62,57 @@ import type { Feature, MergeStrategy, LevelProgressionEntry, FeatureChoice } fro
 import type { ID } from '../types/primitives';
 
 // =============================================================================
+// RULE FILE METADATA — Optional top-level object wrapper for JSON rule files
+// =============================================================================
+
+/**
+ * Optional top-level wrapper format for JSON rule files.
+ *
+ * JSON rule files may be stored either as:
+ *
+ *   1. LEGACY FORMAT — bare array (backward-compatible):
+ *      ```json
+ *      [ { "id": "...", "category": "...", ... }, ... ]
+ *      ```
+ *
+ *   2. METADATA FORMAT — object wrapper (recommended for new files):
+ *      ```json
+ *      {
+ *        "supportedLanguages": ["en", "fr"],
+ *        "entities": [ { "id": "...", "category": "...", ... }, ... ]
+ *      }
+ *      ```
+ *
+ * The `supportedLanguages` field declares which language codes are present in
+ * the `LocalizedString` values of this file's entities. The DataLoader collects
+ * all declared languages across all loaded files and exposes them via
+ * `getAvailableLanguages()`. This drives the language selector dropdown in the UI.
+ *
+ * FALLBACK RULE:
+ *   If `supportedLanguages` is absent (legacy format), English (`"en"`) is assumed
+ *   as the only language supported by that file. This is safe because the localization
+ *   fallback chain in `t()` always falls back to `"en"` when the requested language
+ *   is missing.
+ *
+ * EXAMPLE — new file with French and Spanish:
+ *   ```json
+ *   {
+ *     "supportedLanguages": ["en", "fr", "es"],
+ *     "entities": [
+ *       { "id": "weapon_espada", "label": { "en": "Sword", "fr": "Épée", "es": "Espada" }, ... }
+ *     ]
+ *   }
+ *   ```
+ *   When this file is loaded, "es" is added to the available-languages set, causing
+ *   the language dropdown to offer Spanish. Any string without an `es` key will
+ *   gracefully fall back to its `en` key via `t()`.
+ */
+interface RuleFileWrapper {
+  supportedLanguages?: string[];
+  entities: RawEntity[];
+}
+
+// =============================================================================
 // CONFIG TABLE — Lookup table structure loaded from JSON
 // =============================================================================
 
@@ -383,6 +434,20 @@ export class DataLoader {
    */
   private _globalRuleSourceIds = new Set<string>();
 
+  /**
+   * Set of language codes declared across all loaded rule files via the optional
+   * `supportedLanguages` field in the JSON file wrapper format.
+   *
+   * Always contains `"en"` (English is universally assumed as the base language).
+   * Additional language codes (e.g., `"fr"`, `"es"`) are added as files declaring
+   * them are loaded. This set is exposed via `getAvailableLanguages()` and drives
+   * the language selector dropdown in the UI.
+   *
+   * Cleared in `clearCache()` and re-seeded with `"en"` on every load cycle,
+   * so the set always reflects the currently loaded file set.
+   */
+  private _availableLanguages = new Set<string>(['en']);
+
   // ---------------------------------------------------------------------------
   // LOADING API
   // ---------------------------------------------------------------------------
@@ -616,10 +681,33 @@ export class DataLoader {
         return;
       }
 
-      const entities = await response.json() as RawEntity[];
+      const raw = await response.json() as RawEntity[] | RuleFileWrapper;
 
-      if (!Array.isArray(entities)) {
-        console.warn(`[DataLoader] Rule file ${filePath} does not contain a JSON array. Skipping.`);
+      let entities: RawEntity[];
+
+      if (Array.isArray(raw)) {
+        // LEGACY FORMAT: bare array — no language metadata, English is assumed.
+        entities = raw;
+        // 'en' is already always present in _availableLanguages; no action needed.
+      } else if (
+        typeof raw === 'object' &&
+        raw !== null &&
+        Array.isArray((raw as RuleFileWrapper).entities)
+      ) {
+        // METADATA FORMAT: object wrapper with optional supportedLanguages.
+        const wrapper = raw as RuleFileWrapper;
+        entities = wrapper.entities;
+
+        // Register any declared languages so the UI dropdown can include them.
+        if (Array.isArray(wrapper.supportedLanguages)) {
+          for (const lang of wrapper.supportedLanguages) {
+            if (typeof lang === 'string' && lang.trim()) {
+              this._availableLanguages.add(lang.trim());
+            }
+          }
+        }
+      } else {
+        console.warn(`[DataLoader] Rule file ${filePath} does not contain a JSON array or a valid rule-file wrapper object. Skipping.`);
         return;
       }
 
@@ -1003,7 +1091,28 @@ export class DataLoader {
     this.featureCache.clear();
     this.configTableCache.clear();
     this._globalRuleSourceIds.clear();
+    // Reset available languages to the baseline (English is always available).
+    this._availableLanguages = new Set<string>(['en']);
     this.isLoaded = false;
+  }
+
+  /**
+   * Returns the set of language codes available across all currently loaded rule files.
+   *
+   * ALWAYS contains `"en"` (English is the universal fallback and base language).
+   * Additional codes are added from `supportedLanguages` arrays in loaded files that
+   * use the metadata wrapper format (e.g., `{ "supportedLanguages": ["en", "fr"], "entities": [...] }`).
+   *
+   * UI usage:
+   *   The language dropdown in the sidebar reads this list to populate its options.
+   *   Any code returned here has at least one loaded file that declared it.
+   *   Strings not available in the selected language will gracefully fall back to
+   *   English via `t()`.
+   *
+   * @returns Sorted array of language code strings (e.g., `["en", "fr"]`).
+   */
+  getAvailableLanguages(): string[] {
+    return Array.from(this._availableLanguages).sort();
   }
 }
 

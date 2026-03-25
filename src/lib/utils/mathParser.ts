@@ -44,7 +44,6 @@
  */
 
 import { formatDistance, formatWeight } from './formatters';
-import type { SupportedLanguage } from '../types/i18n';
 
 // =============================================================================
 // CHARACTER CONTEXT — The resolved state snapshot for formula evaluation
@@ -469,7 +468,7 @@ export function evaluateMathExpression(expr: string): number {
  * @param lang     - The active display language for locale-sensitive pipes.
  * @returns The transformed display string.
  */
-function applyPipe(value: number, pipeName: string, lang: SupportedLanguage): string {
+function applyPipe(value: number, pipeName: string, lang: string): string {
   switch (pipeName) {
     case 'distance':
       return formatDistance(value, lang);
@@ -525,7 +524,7 @@ function applyPipe(value: number, pipeName: string, lang: SupportedLanguage): st
 export function evaluateFormula(
   formula: string,
   context: CharacterContext,
-  lang: SupportedLanguage
+  lang: string
 ): number | string {
   // --- Regex to find all @-path tokens, optionally followed by a |pipe ---
   // Matches: @word.word.word|pipe  OR  @word.word.word
@@ -609,7 +608,7 @@ export function evaluateFormula(
 export function interpolateDescription(
   description: string,
   context: CharacterContext,
-  lang: SupportedLanguage
+  lang: string
 ): string {
   // Matches: {<formula>} blocks inside a description string
   return description.replace(/\{([^}]+)\}/g, (_match, formulaStr) => {

@@ -1,142 +1,531 @@
-[
-  {
-    "_comment": "SRD CORE — WEAPON & ARMOR PROFICIENCY FEATURE DEFINITIONS",
-    "_comment2": "Referenced by grantedFeatures on class and racial feature entities.",
-    "_comment3": "All entries have ruleSource: srd_core and category: proficiency."
-  },
-
-  { "id": "proficiency_weapons_simple",   "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Simple Weapon Proficiency",     "fr": "Maîtrise des armes courantes" },
-    "description": { "en": "Proficient with all simple weapons.", "fr": "Maîtrise de toutes les armes courantes." },
-    "tags": ["proficiency", "weapon", "simple_weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_all_simple",       "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Simple Weapon Proficiency (All)", "fr": "Maîtrise armes courantes (toutes)" },
-    "description": { "en": "Proficient with all simple weapons.", "fr": "Maîtrise de toutes les armes courantes." },
-    "tags": ["proficiency", "weapon", "simple_weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_all_martial",      "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Martial Weapon Proficiency (All)", "fr": "Maîtrise armes de guerre (toutes)" },
-    "description": { "en": "Proficient with all martial weapons.", "fr": "Maîtrise de toutes les armes de guerre." },
-    "tags": ["proficiency", "weapon", "martial_weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_armor_all",        "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Armor Proficiency (All)",        "fr": "Maîtrise des armures (toutes)" },
-    "description": { "en": "Proficient with all armor types (light, medium, heavy).", "fr": "Maîtrise de tous les types d'armure (légère, intermédiaire, lourde)." },
-    "tags": ["proficiency", "armor"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_armor_light",      "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Light Armor Proficiency",        "fr": "Maîtrise des armures légères" },
-    "description": { "en": "Proficient with light armor.", "fr": "Maîtrise des armures légères." },
-    "tags": ["proficiency", "armor", "light_armor"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_armor_medium",     "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Medium Armor Proficiency",       "fr": "Maîtrise des armures intermédiaires" },
-    "description": { "en": "Proficient with light and medium armor.", "fr": "Maîtrise des armures légères et intermédiaires." },
-    "tags": ["proficiency", "armor", "medium_armor"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_shields_all",      "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Shield Proficiency (All)",       "fr": "Maîtrise des boucliers (tous)" },
-    "description": { "en": "Proficient with all shields, including tower shields.", "fr": "Maîtrise de tous les boucliers, y compris le pavois." },
-    "tags": ["proficiency", "shield"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_shields_except_tower", "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Shield Proficiency (except Tower)", "fr": "Maîtrise boucliers (sauf pavois)" },
-    "description": { "en": "Proficient with shields (buckler, small, large) but not tower shields.", "fr": "Maîtrise des boucliers (targe, petit, grand) mais pas du pavois." },
-    "tags": ["proficiency", "shield"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_shields_no_tower", "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Shield Proficiency (no Tower)",  "fr": "Maîtrise boucliers (sans pavois)" },
-    "description": { "en": "Proficient with shields, but not tower shields.", "fr": "Maîtrise des boucliers, mais pas du pavois." },
-    "tags": ["proficiency", "shield"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_shields_wooden",   "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Wooden Shield Proficiency",      "fr": "Maîtrise du bouclier en bois" },
-    "description": { "en": "Proficient with small and large wooden shields.", "fr": "Maîtrise du petit et grand bouclier en bois." },
-    "tags": ["proficiency", "shield"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_tower_shield",     "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Tower Shield Proficiency",       "fr": "Maîtrise du pavois" },
-    "description": { "en": "Proficient with tower shields.", "fr": "Maîtrise du pavois." },
-    "tags": ["proficiency", "shield"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_dagger",           "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Dagger Proficiency",             "fr": "Maîtrise du poignard" },
-    "description": { "en": "Proficient with daggers.", "fr": "Maîtrise du poignard." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_club",             "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Club Proficiency",               "fr": "Maîtrise du gourdin" },
-    "description": { "en": "Proficient with clubs.", "fr": "Maîtrise du gourdin." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_quarterstaff",     "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Quarterstaff Proficiency",       "fr": "Maîtrise du bâton" },
-    "description": { "en": "Proficient with quarterstaves.", "fr": "Maîtrise du bâton." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_dart",             "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Dart Proficiency",               "fr": "Maîtrise du dard" },
-    "description": { "en": "Proficient with darts.", "fr": "Maîtrise du dard." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_sling",            "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Sling Proficiency",              "fr": "Maîtrise de la fronde" },
-    "description": { "en": "Proficient with slings.", "fr": "Maîtrise de la fronde." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_light_crossbow",   "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Light Crossbow Proficiency",     "fr": "Maîtrise de l'arbalète légère" },
-    "description": { "en": "Proficient with light crossbows.", "fr": "Maîtrise de l'arbalète légère." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_heavy_crossbow",   "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Heavy Crossbow Proficiency",     "fr": "Maîtrise de l'arbalète lourde" },
-    "description": { "en": "Proficient with heavy crossbows.", "fr": "Maîtrise de l'arbalète lourde." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_hand_crossbow",    "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Hand Crossbow Proficiency",      "fr": "Maîtrise de l'arbalète de poing" },
-    "description": { "en": "Proficient with hand crossbows.", "fr": "Maîtrise de l'arbalète de poing." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_scimitar",         "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Scimitar Proficiency",           "fr": "Maîtrise du cimeterre" },
-    "description": { "en": "Proficient with scimitars.", "fr": "Maîtrise du cimeterre." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_shortspear",       "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Shortspear Proficiency",         "fr": "Maîtrise de la javeline courte" },
-    "description": { "en": "Proficient with shortspears.", "fr": "Maîtrise de la javeline courte." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_spear",            "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Spear Proficiency",              "fr": "Maîtrise de la lance" },
-    "description": { "en": "Proficient with spears.", "fr": "Maîtrise de la lance." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_sap",              "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Sap Proficiency",                "fr": "Maîtrise de la matraque" },
-    "description": { "en": "Proficient with saps.", "fr": "Maîtrise de la matraque." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_short_sword",      "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Short Sword Proficiency",        "fr": "Maîtrise de l'épée courte" },
-    "description": { "en": "Proficient with short swords.", "fr": "Maîtrise de l'épée courte." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_sickle",           "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Sickle Proficiency",             "fr": "Maîtrise de la faucille" },
-    "description": { "en": "Proficient with sickles.", "fr": "Maîtrise de la faucille." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_whip",             "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Whip Proficiency",               "fr": "Maîtrise du fouet" },
-    "description": { "en": "Proficient with whips.", "fr": "Maîtrise du fouet." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] },
-
-  { "id": "proficiency_weapons_monk",     "category": "proficiency", "ruleSource": "srd_core",
-    "label": { "en": "Monk Weapon Proficiency",        "fr": "Maîtrise des armes de moine" },
-    "description": { "en": "Proficient with club, crossbow (light or heavy), dagger, handaxe, javelin, kama, nunchaku, quarterstaff, sai, shuriken, siangham, and sling.", "fr": "Maîtrise du gourdin, arbalète (légère ou lourde), poignard, hachette, javelot, kama, nunchaku, bâton, saï, shuriken, siangham et fronde." },
-    "tags": ["proficiency", "weapon"], "grantedModifiers": [], "grantedFeatures": [] }
-]
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "_comment": "SRD CORE — WEAPON & ARMOR PROFICIENCY FEATURE DEFINITIONS",
+      "_comment2": "Referenced by grantedFeatures on class and racial feature entities.",
+      "_comment3": "All entries have ruleSource: srd_core and category: proficiency."
+    },
+    {
+      "id": "proficiency_weapons_simple",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Simple Weapon Proficiency",
+        "fr": "Maîtrise des armes courantes"
+      },
+      "description": {
+        "en": "Proficient with all simple weapons.",
+        "fr": "Maîtrise de toutes les armes courantes."
+      },
+      "tags": [
+        "proficiency",
+        "weapon",
+        "simple_weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_all_simple",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Simple Weapon Proficiency (All)",
+        "fr": "Maîtrise armes courantes (toutes)"
+      },
+      "description": {
+        "en": "Proficient with all simple weapons.",
+        "fr": "Maîtrise de toutes les armes courantes."
+      },
+      "tags": [
+        "proficiency",
+        "weapon",
+        "simple_weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_all_martial",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Martial Weapon Proficiency (All)",
+        "fr": "Maîtrise armes de guerre (toutes)"
+      },
+      "description": {
+        "en": "Proficient with all martial weapons.",
+        "fr": "Maîtrise de toutes les armes de guerre."
+      },
+      "tags": [
+        "proficiency",
+        "weapon",
+        "martial_weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_armor_all",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Armor Proficiency (All)",
+        "fr": "Maîtrise des armures (toutes)"
+      },
+      "description": {
+        "en": "Proficient with all armor types (light, medium, heavy).",
+        "fr": "Maîtrise de tous les types d'armure (légère, intermédiaire, lourde)."
+      },
+      "tags": [
+        "proficiency",
+        "armor"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_armor_light",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Light Armor Proficiency",
+        "fr": "Maîtrise des armures légères"
+      },
+      "description": {
+        "en": "Proficient with light armor.",
+        "fr": "Maîtrise des armures légères."
+      },
+      "tags": [
+        "proficiency",
+        "armor",
+        "light_armor"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_armor_medium",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Medium Armor Proficiency",
+        "fr": "Maîtrise des armures intermédiaires"
+      },
+      "description": {
+        "en": "Proficient with light and medium armor.",
+        "fr": "Maîtrise des armures légères et intermédiaires."
+      },
+      "tags": [
+        "proficiency",
+        "armor",
+        "medium_armor"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shields_all",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Shield Proficiency (All)",
+        "fr": "Maîtrise des boucliers (tous)"
+      },
+      "description": {
+        "en": "Proficient with all shields, including tower shields.",
+        "fr": "Maîtrise de tous les boucliers, y compris le pavois."
+      },
+      "tags": [
+        "proficiency",
+        "shield"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shields_except_tower",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Shield Proficiency (except Tower)",
+        "fr": "Maîtrise boucliers (sauf pavois)"
+      },
+      "description": {
+        "en": "Proficient with shields (buckler, small, large) but not tower shields.",
+        "fr": "Maîtrise des boucliers (targe, petit, grand) mais pas du pavois."
+      },
+      "tags": [
+        "proficiency",
+        "shield"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shields_no_tower",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Shield Proficiency (no Tower)",
+        "fr": "Maîtrise boucliers (sans pavois)"
+      },
+      "description": {
+        "en": "Proficient with shields, but not tower shields.",
+        "fr": "Maîtrise des boucliers, mais pas du pavois."
+      },
+      "tags": [
+        "proficiency",
+        "shield"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shields_wooden",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Wooden Shield Proficiency",
+        "fr": "Maîtrise du bouclier en bois"
+      },
+      "description": {
+        "en": "Proficient with small and large wooden shields.",
+        "fr": "Maîtrise du petit et grand bouclier en bois."
+      },
+      "tags": [
+        "proficiency",
+        "shield"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_tower_shield",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Tower Shield Proficiency",
+        "fr": "Maîtrise du pavois"
+      },
+      "description": {
+        "en": "Proficient with tower shields.",
+        "fr": "Maîtrise du pavois."
+      },
+      "tags": [
+        "proficiency",
+        "shield"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_dagger",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dagger Proficiency",
+        "fr": "Maîtrise du poignard"
+      },
+      "description": {
+        "en": "Proficient with daggers.",
+        "fr": "Maîtrise du poignard."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_club",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Club Proficiency",
+        "fr": "Maîtrise du gourdin"
+      },
+      "description": {
+        "en": "Proficient with clubs.",
+        "fr": "Maîtrise du gourdin."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_quarterstaff",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Quarterstaff Proficiency",
+        "fr": "Maîtrise du bâton"
+      },
+      "description": {
+        "en": "Proficient with quarterstaves.",
+        "fr": "Maîtrise du bâton."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_dart",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dart Proficiency",
+        "fr": "Maîtrise du dard"
+      },
+      "description": {
+        "en": "Proficient with darts.",
+        "fr": "Maîtrise du dard."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_sling",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Sling Proficiency",
+        "fr": "Maîtrise de la fronde"
+      },
+      "description": {
+        "en": "Proficient with slings.",
+        "fr": "Maîtrise de la fronde."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_light_crossbow",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Light Crossbow Proficiency",
+        "fr": "Maîtrise de l'arbalète légère"
+      },
+      "description": {
+        "en": "Proficient with light crossbows.",
+        "fr": "Maîtrise de l'arbalète légère."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_heavy_crossbow",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Heavy Crossbow Proficiency",
+        "fr": "Maîtrise de l'arbalète lourde"
+      },
+      "description": {
+        "en": "Proficient with heavy crossbows.",
+        "fr": "Maîtrise de l'arbalète lourde."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_hand_crossbow",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Hand Crossbow Proficiency",
+        "fr": "Maîtrise de l'arbalète de poing"
+      },
+      "description": {
+        "en": "Proficient with hand crossbows.",
+        "fr": "Maîtrise de l'arbalète de poing."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_scimitar",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Scimitar Proficiency",
+        "fr": "Maîtrise du cimeterre"
+      },
+      "description": {
+        "en": "Proficient with scimitars.",
+        "fr": "Maîtrise du cimeterre."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shortspear",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Shortspear Proficiency",
+        "fr": "Maîtrise de la javeline courte"
+      },
+      "description": {
+        "en": "Proficient with shortspears.",
+        "fr": "Maîtrise de la javeline courte."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_spear",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Spear Proficiency",
+        "fr": "Maîtrise de la lance"
+      },
+      "description": {
+        "en": "Proficient with spears.",
+        "fr": "Maîtrise de la lance."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_sap",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Sap Proficiency",
+        "fr": "Maîtrise de la matraque"
+      },
+      "description": {
+        "en": "Proficient with saps.",
+        "fr": "Maîtrise de la matraque."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_short_sword",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Short Sword Proficiency",
+        "fr": "Maîtrise de l'épée courte"
+      },
+      "description": {
+        "en": "Proficient with short swords.",
+        "fr": "Maîtrise de l'épée courte."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_sickle",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Sickle Proficiency",
+        "fr": "Maîtrise de la faucille"
+      },
+      "description": {
+        "en": "Proficient with sickles.",
+        "fr": "Maîtrise de la faucille."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_whip",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Whip Proficiency",
+        "fr": "Maîtrise du fouet"
+      },
+      "description": {
+        "en": "Proficient with whips.",
+        "fr": "Maîtrise du fouet."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_weapons_monk",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Monk Weapon Proficiency",
+        "fr": "Maîtrise des armes de moine"
+      },
+      "description": {
+        "en": "Proficient with club, crossbow (light or heavy), dagger, handaxe, javelin, kama, nunchaku, quarterstaff, sai, shuriken, siangham, and sling.",
+        "fr": "Maîtrise du gourdin, arbalète (légère ou lourde), poignard, hachette, javelot, kama, nunchaku, bâton, saï, shuriken, siangham et fronde."
+      },
+      "tags": [
+        "proficiency",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    }
+  ]
+}

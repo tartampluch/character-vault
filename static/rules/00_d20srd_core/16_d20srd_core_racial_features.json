@@ -1,175 +1,316 @@
-[
-  {
-    "_comment": "================================================================================",
-    "_comment2": "SRD CORE — RACIAL FEATURE DEFINITIONS",
-    "_comment3": "These feature objects are referenced by grantedFeatures on race entities.",
-    "_comment4": "They provide the label, description, tags and ruleSource needed by the",
-    "_comment5": "FeatureModal and LoreAndLanguages (automatic language detection) components.",
-    "_comment6": "================================================================================"
-  },
-
-  {
-    "id": "sense_low_light_vision",
-    "category": "sense",
-    "ruleSource": "srd_core",
-    "label": { "en": "Low-Light Vision", "fr": "Vision dans le noir partiel" },
-    "description": { "en": "Can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of shadowy illumination. Retains the ability to distinguish colour and detail under these conditions.", "fr": "Peut voir deux fois plus loin qu'un humain dans la lumière des étoiles, du clair de lune, d'une torche et dans des conditions d'éclairage similaires. Conserve la capacité de distinguer les couleurs et les détails dans ces conditions." },
-    "tags": ["sense", "racial", "vision"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "sense_darkvision_60ft",
-    "category": "sense",
-    "ruleSource": "srd_core",
-    "label": { "en": "Darkvision 60 ft.", "fr": "Vision dans le noir (18 m)" },
-    "description": { "en": "Can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and dwarves can function just fine with no light at all.", "fr": "Peut voir dans l'obscurité totale jusqu'à 18 mètres. La vision dans le noir est en noir et blanc uniquement, mais fonctionne autrement comme la vision normale." },
-    "tags": ["sense", "racial", "vision", "darkvision"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "immunity_sleep_magic",
-    "category": "immunity",
-    "ruleSource": "srd_core",
-    "label": { "en": "Immunity to Sleep Effects", "fr": "Immunité aux effets de sommeil" },
-    "description": { "en": "Immune to magical sleep effects.", "fr": "Immunisé contre les effets magiques de sommeil." },
-    "tags": ["immunity", "racial", "sleep"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "proficiency_longsword",
-    "category": "proficiency",
-    "ruleSource": "srd_core",
-    "label": { "en": "Longsword Proficiency", "fr": "Maîtrise de l'épée longue" },
-    "description": { "en": "Proficient with longswords as a racial trait.", "fr": "Maîtrise de l'épée longue comme trait racial." },
-    "tags": ["proficiency", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "proficiency_rapier",
-    "category": "proficiency",
-    "ruleSource": "srd_core",
-    "label": { "en": "Rapier Proficiency", "fr": "Maîtrise du rapière" },
-    "description": { "en": "Proficient with rapiers as a racial trait.", "fr": "Maîtrise du rapière comme trait racial." },
-    "tags": ["proficiency", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "proficiency_longbow",
-    "category": "proficiency",
-    "ruleSource": "srd_core",
-    "label": { "en": "Longbow Proficiency", "fr": "Maîtrise de l'arc long" },
-    "description": { "en": "Proficient with longbows (including composite longbows) as a racial trait.", "fr": "Maîtrise de l'arc long (y compris l'arc long composite) comme trait racial." },
-    "tags": ["proficiency", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "proficiency_shortbow",
-    "category": "proficiency",
-    "ruleSource": "srd_core",
-    "label": { "en": "Shortbow Proficiency", "fr": "Maîtrise de l'arc court" },
-    "description": { "en": "Proficient with shortbows (including composite shortbows) as a racial trait.", "fr": "Maîtrise de l'arc court (y compris l'arc court composite) comme trait racial." },
-    "tags": ["proficiency", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_elf_secret_door_detection",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Secret Door Detection", "fr": "Détection des portes secrètes" },
-    "description": { "en": "Elves who merely pass within 5 feet of a secret or concealed door are entitled to a Search check to notice it as if they were actively looking for it. An elf who is actively looking for a secret door receives a +2 racial bonus on Search checks to find them.", "fr": "Les elfes qui passent à moins de 1,50 m d'une porte secrète ou dissimulée ont droit à un test de Recherche pour la remarquer comme s'ils la cherchaient activement. Un elfe qui cherche activement une porte secrète reçoit un bonus racial de +2 aux tests de Recherche." },
-    "tags": ["racial_feature", "racial", "sense", "perception"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_elven_blood",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Elven Blood", "fr": "Sang elfique" },
-    "description": { "en": "For all effects related to race, a half-elf is considered an elf.", "fr": "Pour tous les effets liés à la race, un demi-elfe est considéré comme un elfe." },
-    "tags": ["racial_feature", "racial"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_orc_blood",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Orc Blood", "fr": "Sang orque" },
-    "description": { "en": "For all effects related to race, a half-orc is considered an orc.", "fr": "Pour tous les effets liés à la race, un demi-orque est considéré comme un orque." },
-    "tags": ["racial_feature", "racial"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_dwarf_stonecunning_passive",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Stonecunning", "fr": "Sens de la pierre" },
-    "description": { "en": "Grants a +2 racial bonus on Search checks to notice unusual stonework. A dwarf who merely comes within 10 feet of unusual stonework can make a Search check as if actively looking for it.", "fr": "Confère un bonus racial de +2 aux tests de Recherche pour remarquer une maçonnerie inhabituelle. Un nain qui se trouve à moins de 3 m d'une telle maçonnerie peut effectuer un test de Recherche comme s'il la cherchait activement." },
-    "tags": ["racial_feature", "racial", "stonecunning"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_dwarf_weapon_familiarity",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Dwarf Weapon Familiarity", "fr": "Familiarité avec les armes naines" },
-    "description": { "en": "Dwarves may treat dwarven waraxes and dwarven urgroshes as martial weapons, rather than exotic weapons.", "fr": "Les nains peuvent traiter les haches de guerre naines et les urgroshes nains comme des armes de guerre plutôt que des armes exotiques." },
-    "tags": ["racial_feature", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_gnome_speak_with_animals",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Speak with Animals (Burrowing)", "fr": "Communication avec les animaux fouisseurs" },
-    "description": { "en": "Can speak with burrowing animals (moles, badgers, chipmunks, ground squirrels, and so on). This ability is innate to all gnomes.", "fr": "Peut communiquer avec les animaux fouisseurs (taupes, blaireaux, tamias, spermophiles, etc.). Cette capacité est innée chez tous les gnomes." },
-    "tags": ["racial_feature", "racial", "special"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_gnome_spell_like_abilities",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Gnome Spell-like Abilities", "fr": "Capacités innées gnomes" },
-    "description": { "en": "1/day — dancing lights, ghost sound, prestidigitation. Caster level 1st; save DC 10 + gnome's Cha modifier + spell level.", "fr": "1/jour — lumières dansantes, son illusoire, prestidigitation. Niveau de lanceur 1 ; DD du jet de sauvegarde 10 + modificateur de Cha du gnome + niveau du sort." },
-    "tags": ["racial_feature", "racial", "spell_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-
-  {
-    "id": "racial_feature_gnome_weapon_familiarity",
-    "category": "racial_feature",
-    "ruleSource": "srd_core",
-    "label": { "en": "Gnome Weapon Familiarity", "fr": "Familiarité avec les armes gnomes" },
-    "description": { "en": "Gnomes may treat gnome hooked hammers as martial weapons rather than exotic weapons.", "fr": "Les gnomes peuvent traiter les marteaux crochets gnomes comme des armes de guerre plutôt que des armes exotiques." },
-    "tags": ["racial_feature", "racial", "weapon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  }
-]
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "_comment": "================================================================================",
+      "_comment2": "SRD CORE — RACIAL FEATURE DEFINITIONS",
+      "_comment3": "These feature objects are referenced by grantedFeatures on race entities.",
+      "_comment4": "They provide the label, description, tags and ruleSource needed by the",
+      "_comment5": "FeatureModal and LoreAndLanguages (automatic language detection) components.",
+      "_comment6": "================================================================================"
+    },
+    {
+      "id": "sense_low_light_vision",
+      "category": "sense",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Low-Light Vision",
+        "fr": "Vision dans le noir partiel"
+      },
+      "description": {
+        "en": "Can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of shadowy illumination. Retains the ability to distinguish colour and detail under these conditions.",
+        "fr": "Peut voir deux fois plus loin qu'un humain dans la lumière des étoiles, du clair de lune, d'une torche et dans des conditions d'éclairage similaires. Conserve la capacité de distinguer les couleurs et les détails dans ces conditions."
+      },
+      "tags": [
+        "sense",
+        "racial",
+        "vision"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "sense_darkvision_60ft",
+      "category": "sense",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Darkvision 60 ft.",
+        "fr": "Vision dans le noir (18 m)"
+      },
+      "description": {
+        "en": "Can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and dwarves can function just fine with no light at all.",
+        "fr": "Peut voir dans l'obscurité totale jusqu'à 18 mètres. La vision dans le noir est en noir et blanc uniquement, mais fonctionne autrement comme la vision normale."
+      },
+      "tags": [
+        "sense",
+        "racial",
+        "vision",
+        "darkvision"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "immunity_sleep_magic",
+      "category": "immunity",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Immunity to Sleep Effects",
+        "fr": "Immunité aux effets de sommeil"
+      },
+      "description": {
+        "en": "Immune to magical sleep effects.",
+        "fr": "Immunisé contre les effets magiques de sommeil."
+      },
+      "tags": [
+        "immunity",
+        "racial",
+        "sleep"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_longsword",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Longsword Proficiency",
+        "fr": "Maîtrise de l'épée longue"
+      },
+      "description": {
+        "en": "Proficient with longswords as a racial trait.",
+        "fr": "Maîtrise de l'épée longue comme trait racial."
+      },
+      "tags": [
+        "proficiency",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_rapier",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Rapier Proficiency",
+        "fr": "Maîtrise du rapière"
+      },
+      "description": {
+        "en": "Proficient with rapiers as a racial trait.",
+        "fr": "Maîtrise du rapière comme trait racial."
+      },
+      "tags": [
+        "proficiency",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_longbow",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Longbow Proficiency",
+        "fr": "Maîtrise de l'arc long"
+      },
+      "description": {
+        "en": "Proficient with longbows (including composite longbows) as a racial trait.",
+        "fr": "Maîtrise de l'arc long (y compris l'arc long composite) comme trait racial."
+      },
+      "tags": [
+        "proficiency",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "proficiency_shortbow",
+      "category": "proficiency",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Shortbow Proficiency",
+        "fr": "Maîtrise de l'arc court"
+      },
+      "description": {
+        "en": "Proficient with shortbows (including composite shortbows) as a racial trait.",
+        "fr": "Maîtrise de l'arc court (y compris l'arc court composite) comme trait racial."
+      },
+      "tags": [
+        "proficiency",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_elf_secret_door_detection",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Secret Door Detection",
+        "fr": "Détection des portes secrètes"
+      },
+      "description": {
+        "en": "Elves who merely pass within 5 feet of a secret or concealed door are entitled to a Search check to notice it as if they were actively looking for it. An elf who is actively looking for a secret door receives a +2 racial bonus on Search checks to find them.",
+        "fr": "Les elfes qui passent à moins de 1,50 m d'une porte secrète ou dissimulée ont droit à un test de Recherche pour la remarquer comme s'ils la cherchaient activement. Un elfe qui cherche activement une porte secrète reçoit un bonus racial de +2 aux tests de Recherche."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "sense",
+        "perception"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_elven_blood",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Elven Blood",
+        "fr": "Sang elfique"
+      },
+      "description": {
+        "en": "For all effects related to race, a half-elf is considered an elf.",
+        "fr": "Pour tous les effets liés à la race, un demi-elfe est considéré comme un elfe."
+      },
+      "tags": [
+        "racial_feature",
+        "racial"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_orc_blood",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Orc Blood",
+        "fr": "Sang orque"
+      },
+      "description": {
+        "en": "For all effects related to race, a half-orc is considered an orc.",
+        "fr": "Pour tous les effets liés à la race, un demi-orque est considéré comme un orque."
+      },
+      "tags": [
+        "racial_feature",
+        "racial"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_dwarf_stonecunning_passive",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Stonecunning",
+        "fr": "Sens de la pierre"
+      },
+      "description": {
+        "en": "Grants a +2 racial bonus on Search checks to notice unusual stonework. A dwarf who merely comes within 10 feet of unusual stonework can make a Search check as if actively looking for it.",
+        "fr": "Confère un bonus racial de +2 aux tests de Recherche pour remarquer une maçonnerie inhabituelle. Un nain qui se trouve à moins de 3 m d'une telle maçonnerie peut effectuer un test de Recherche comme s'il la cherchait activement."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "stonecunning"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_dwarf_weapon_familiarity",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dwarf Weapon Familiarity",
+        "fr": "Familiarité avec les armes naines"
+      },
+      "description": {
+        "en": "Dwarves may treat dwarven waraxes and dwarven urgroshes as martial weapons, rather than exotic weapons.",
+        "fr": "Les nains peuvent traiter les haches de guerre naines et les urgroshes nains comme des armes de guerre plutôt que des armes exotiques."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_gnome_speak_with_animals",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Speak with Animals (Burrowing)",
+        "fr": "Communication avec les animaux fouisseurs"
+      },
+      "description": {
+        "en": "Can speak with burrowing animals (moles, badgers, chipmunks, ground squirrels, and so on). This ability is innate to all gnomes.",
+        "fr": "Peut communiquer avec les animaux fouisseurs (taupes, blaireaux, tamias, spermophiles, etc.). Cette capacité est innée chez tous les gnomes."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "special"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_gnome_spell_like_abilities",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Gnome Spell-like Abilities",
+        "fr": "Capacités innées gnomes"
+      },
+      "description": {
+        "en": "1/day — dancing lights, ghost sound, prestidigitation. Caster level 1st; save DC 10 + gnome's Cha modifier + spell level.",
+        "fr": "1/jour — lumières dansantes, son illusoire, prestidigitation. Niveau de lanceur 1 ; DD du jet de sauvegarde 10 + modificateur de Cha du gnome + niveau du sort."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "spell_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "racial_feature_gnome_weapon_familiarity",
+      "category": "racial_feature",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Gnome Weapon Familiarity",
+        "fr": "Familiarité avec les armes gnomes"
+      },
+      "description": {
+        "en": "Gnomes may treat gnome hooked hammers as martial weapons rather than exotic weapons.",
+        "fr": "Les gnomes peuvent traiter les marteaux crochets gnomes comme des armes de guerre plutôt que des armes exotiques."
+      },
+      "tags": [
+        "racial_feature",
+        "racial",
+        "weapon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    }
+  ]
+}

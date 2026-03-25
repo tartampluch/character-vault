@@ -59,7 +59,7 @@ import type { CampaignSettings } from '../types/settings';
  * t(label, "de") // → "Strength" (falls back to English)
  * t("raw string", "fr") // → "raw string" (pass-through for plain strings)
  */
-export function t(textObj: LocalizedString | string, lang: SupportedLanguage): string {
+export function t(textObj: LocalizedString | string, lang: string): string {
   // --- Pass-through for plain strings (already translated or non-translated labels) ---
   if (typeof textObj === 'string') return textObj;
 
@@ -113,8 +113,8 @@ export function t(textObj: LocalizedString | string, lang: SupportedLanguage): s
  * formatDistance(25, "fr") // → "7.5 m"
  * formatDistance(0, "en")  // → "0 ft."
  */
-export function formatDistance(feet: number, lang: SupportedLanguage): string {
-  const config = I18N_CONFIG[lang];
+export function formatDistance(feet: number, lang: string): string {
+  const config = I18N_CONFIG[lang as SupportedLanguage] ?? I18N_CONFIG['en'];
   const converted = feet * config.distanceMultiplier;
   // Round to 1 decimal to avoid floating point artifacts (e.g., 9.000000001)
   const rounded = Math.round(converted * 10) / 10;
@@ -164,8 +164,8 @@ export function formatDistanceWithSettings(feet: number, settings: CampaignSetti
  * formatWeight(10, "fr") // → "5 kg"
  * formatWeight(1, "fr")  // → "0.5 kg"
  */
-export function formatWeight(lbs: number, lang: SupportedLanguage): string {
-  const config = I18N_CONFIG[lang];
+export function formatWeight(lbs: number, lang: string): string {
+  const config = I18N_CONFIG[lang as SupportedLanguage] ?? I18N_CONFIG['en'];
   const converted = lbs * config.weightMultiplier;
   const rounded = Math.round(converted * 10) / 10;
   return `${rounded} ${config.weightUnit}`;

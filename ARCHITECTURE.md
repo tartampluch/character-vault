@@ -1598,7 +1598,7 @@ _Suggested target file: `src/lib/types/settings.ts`_
 
 ```typescript
 export interface CampaignSettings {
-    language: "en" | "fr";
+    language: string; // Any language code; UI chrome falls back to "en" for unknown codes
     statGeneration: {
         method: "roll" | "point_buy" | "standard_array";
         rerollOnes: boolean;
@@ -2295,9 +2295,11 @@ _Suggested target file: `src/lib/types/i18n.ts`_
 
 ```typescript
 export type LocalizedString = Record<string, string>;
-// Example: { "en": "Fireball", "fr": "Boule de feu" }
+// Example: { "en": "Fireball", "fr": "Boule de feu", "es": "Bola de fuego" }
+// Open record type — any language code is valid.
 
-export type SupportedLanguage = "en" | "fr";
+// Built-in unit-conversion configs for display layer:
+export type SupportedLanguage = "en" | "fr";  // Only for I18N_CONFIG lookups
 
 export interface LocalizationConfig {
     distanceMultiplier: number;
@@ -2310,37 +2312,71 @@ export const I18N_CONFIG: Record<SupportedLanguage, LocalizationConfig> = {
     "en": { distanceMultiplier: 1,   distanceUnit: "ft.", weightMultiplier: 1,   weightUnit: "lb." },
     "fr": { distanceMultiplier: 0.3, distanceUnit: "m",   weightMultiplier: 0.5, weightUnit: "kg" }
 };
+// Unknown language codes default to the English config at the display layer.
 ```
 
-### 11.2. Integration in the Svelte Engine (GameEngine)
+### 11.2. JSON Rule File Format and `supportedLanguages`
+
+Rule files use a metadata wrapper format declaring which languages they contain:
+
+```json
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+    { "id": "race_human", "category": "race", "label": { "en": "Human", "fr": "Humain" }, ... }
+  ]
+}
+```
+
+The DataLoader collects all declared language codes across all loaded files and exposes them via `getAvailableLanguages()`. The UI language selector dropdown is populated from this set — it always contains at least `"en"`.
+
+**Fallback behavior:**
+- Files without `supportedLanguages` (legacy bare-array format) are accepted; `"en"` is assumed.
+- The `t()` function always falls back: requested lang → `"en"` → first key → `"??"`.
+- A community file declaring `"es"` will surface Spanish in the dropdown even if the UI chrome has no Spanish translations — those fall back to English.
+
+### 11.3. Integration in the Svelte Engine (GameEngine)
 
 ```typescript
 export class GameEngine {
-    currentLang = $state<SupportedLanguage>("en");
+    settings = $state<CampaignSettings>({ language: 'en', ... });
+
+    // Available languages derived from loaded JSON files
+    availableLanguages: string[] = $derived.by(() => {
+        void this.dataLoaderVersion; // reactive dependency on data reloads
+        return dataLoader.getAvailableLanguages(); // always includes "en"
+    });
 
     t(textObj: LocalizedString | string): string {
         if (typeof textObj === "string") return textObj;
-        return textObj[this.currentLang] || textObj["en"] || "Missing text";
+        const lang = this.settings.language;
+        return textObj[lang] || textObj["en"] || Object.values(textObj)[0] || "??";
     }
 
     formatDistance(feetValue: number): string {
-        const config = I18N_CONFIG[this.currentLang];
-        const converted = feetValue * config.distanceMultiplier;
-        const rounded = Math.round(converted * 10) / 10;
+        const config = I18N_CONFIG[this.settings.language as SupportedLanguage] ?? I18N_CONFIG["en"];
+        const rounded = Math.round(feetValue * config.distanceMultiplier * 10) / 10;
         return `${rounded} ${config.distanceUnit}`;
-    }
-
-    formatWeight(lbsValue: number): string {
-        const config = I18N_CONFIG[this.currentLang];
-        const converted = lbsValue * config.weightMultiplier;
-        return `${converted} ${config.weightUnit}`;
     }
 }
 ```
 
-### 11.3. Placeholder Pipes
+### 11.4. UI Chrome Strings
 
-In JSON descriptions, "Pipes" (like in Angular or Vue) indicate that a variable should be converted before display.
+All static UI text (navigation, button labels, section headers, empty states) is stored in `src/lib/i18n/ui-strings.ts` as `LocalizedString` objects with `"en"` and `"fr"` keys. Community language codes that lack a UI chrome key fall back to English via the standard `t()` fallback chain.
+
+```typescript
+ui('combat.hp.title', 'fr')  // → "Points de vie"
+ui('combat.hp.title', 'es')  // → "Hit Points" (falls back to English)
+```
+
+### 11.5. GM-Only Internal IDs
+
+Internal identifiers (`feature.id`, `feature.ruleSource`, tags) are only visible to users with game master role (`sessionContext.isGameMaster === true`). Players see only display names and descriptions. This is enforced in the FeatureModal and EphemeralEffectsPanel components.
+
+### 11.6. Placeholder Pipes
+
+In JSON descriptions, "Pipes" indicate that a variable should be converted before display.
 
 ```json
 "description": {
@@ -2349,7 +2385,7 @@ In JSON descriptions, "Pipes" (like in Angular or Vue) indicate that a variable 
 }
 ```
 
-The engine reads the value (40 feet), sees the `|distance` pipe, calls `formatDistance(40)`, and outputs `"12 m"` (French) or `"40 ft."` (English).
+The engine reads the value (40 feet), sees the `|distance` pipe, calls `formatDistance(40)`, and outputs `"12 m"` (French) or `"40 ft."` (English). Unknown language codes default to English unit formatting.
 
 All rule values are stored in **reference units** (feet, pounds). The `t()` function reads the current language. The `|distance` and `|weight` pipe operators in description strings call `formatDistance()` and `formatWeight()` for localized display.
 

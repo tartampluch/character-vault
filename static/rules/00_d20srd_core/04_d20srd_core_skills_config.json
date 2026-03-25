@@ -1,1576 +1,1582 @@
-[
-  {
-    "tableId": "config_skill_definitions",
-    "ruleSource": "srd_core",
-    "data": {
-      "skill_appraise": {
-        "id": "skill_appraise",
-        "label": {
-          "en": "Appraise",
-          "fr": "Estimation"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can appraise common or well-known objects with a DC 12 Appraise check. Appraising a rare or exotic item requires a successful check against DC 15, 20, or higher. If the check succeeds, you estimate the value correctly; failure means you estimate the value at 50% to 150% of its actual value.",
-          "fr": "Vous pouvez estimer des objets courants ou bien connus avec un test d'Estimation DD 12. Estimer un objet rare ou exotique nécessite un test réussi contre DD 15, 20 ou plus. En cas de succès, vous estimez la valeur correctement ; en cas d'échec, vous estimez la valeur entre 50% et 150% de sa valeur réelle."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "related_craft_items"
-          }
-        ]
-      },
-      "skill_balance": {
-        "id": "skill_balance",
-        "label": {
-          "en": "Balance",
-          "fr": "Équilibre"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "You can walk on a precarious surface. A successful check lets you move at half your speed along the surface for 1 round. A failure by 4 or less means you can't move for 1 round. A failure by 5 or more means you fall. You are considered flat-footed while balancing unless you have 5 or more ranks in Balance.",
-          "fr": "Vous pouvez marcher sur une surface précaire. Un test réussi vous permet de vous déplacer à la moitié de votre vitesse sur la surface pendant 1 round. Un échec de 4 ou moins signifie que vous ne pouvez pas vous déplacer pendant 1 round. Un échec de 5 ou plus signifie que vous tombez. Vous êtes considéré comme pris au dépourvu en maintenant votre équilibre, sauf si vous avez 5 rangs ou plus en Équilibre."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_tumble",
-            "minRanks": 5,
-            "targetSkillId": "skill_balance",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_bluff": {
-        "id": "skill_bluff",
-        "label": {
-          "en": "Bluff",
-          "fr": "Bluff"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "A Bluff check is opposed by the target's Sense Motive check. A successful Bluff check indicates that the target reacts as you wish, at least for a short time, or believes something you want it to believe. You can also use Bluff to feint in combat, create a diversion to hide, or deliver a secret message.",
-          "fr": "Un test de Bluff est opposé au test de Psychologie de la cible. Un test de Bluff réussi indique que la cible réagit comme vous le souhaitez, au moins pendant un court moment, ou croit quelque chose que vous voulez qu'elle croie. Vous pouvez également utiliser le Bluff pour feinter au combat, créer une diversion pour vous cacher, ou transmettre un message secret."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "tableId": "config_skill_definitions",
+      "ruleSource": "srd_core",
+      "data": {
+        "skill_appraise": {
+          "id": "skill_appraise",
+          "label": {
+            "en": "Appraise",
+            "fr": "Estimation"
           },
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_intimidate",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can appraise common or well-known objects with a DC 12 Appraise check. Appraising a rare or exotic item requires a successful check against DC 15, 20, or higher. If the check succeeds, you estimate the value correctly; failure means you estimate the value at 50% to 150% of its actual value.",
+            "fr": "Vous pouvez estimer des objets courants ou bien connus avec un test d'Estimation DD 12. Estimer un objet rare ou exotique nécessite un test réussi contre DD 15, 20 ou plus. En cas de succès, vous estimez la valeur correctement ; en cas d'échec, vous estimez la valeur entre 50% et 150% de sa valeur réelle."
           },
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_sleight_of_hand",
-            "bonus": 2,
-            "type": "synergy"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "related_craft_items"
+            }
+          ]
+        },
+        "skill_balance": {
+          "id": "skill_balance",
+          "label": {
+            "en": "Balance",
+            "fr": "Équilibre"
           },
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_disguise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "acting_in_character_while_observed"
-          }
-        ]
-      },
-      "skill_climb": {
-        "id": "skill_climb",
-        "label": {
-          "en": "Climb",
-          "fr": "Escalade"
-        },
-        "keyAbility": "stat_strength",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "With a successful Climb check, you can advance up, down, or across a slope, a wall, or other steep incline at one-quarter your normal speed. A Climb check that fails by 4 or less means you make no progress, and one that fails by 5 or more means you fall from whatever height you have already attained.",
-          "fr": "Avec un test d'Escalade réussi, vous pouvez progresser vers le haut, le bas ou en travers d'une pente, d'un mur ou d'une autre inclinaison abrupte à un quart de votre vitesse normale. Un test d'Escalade qui échoue de 4 ou moins signifie que vous ne progressez pas, et un échec de 5 ou plus signifie que vous tombez de la hauteur déjà atteinte."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_use_rope",
-            "minRanks": 5,
-            "targetSkillId": "skill_climb",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "climbing_rope_or_knotted_rope"
-          }
-        ]
-      },
-      "skill_concentration": {
-        "id": "skill_concentration",
-        "label": {
-          "en": "Concentration",
-          "fr": "Concentration"
-        },
-        "keyAbility": "stat_constitution",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You must make a Concentration check whenever you might potentially be distracted while engaged in some action that requires your full attention, such as casting a spell, concentrating on an active spell, directing a spell, using a spell-like ability, or using a skill that would provoke an attack of opportunity. If the check fails, the action automatically fails and is wasted. [Psionic additions: Gain psionic focus (DC 20, full-round action provokes AoO); manifest without display (DC 15 + power level); manifest defensively without AoO (DC 15 + power level). Failure wastes power points. 5 ranks grants +2 to Autohypnosis checks. Combat Manifestation feat grants +4 when manifesting defensively or while grappling.]",
-          "fr": "Vous devez effectuer un test de Concentration chaque fois que vous pourriez être distrait(e) lors d'une action nécessitant toute votre attention, comme lancer un sort, vous concentrer sur un sort actif, diriger un sort, utiliser une capacité de sort ou utiliser une compétence qui provoquerait une attaque d'opportunité. Si le test échoue, l'action échoue automatiquement et est gaspillée."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_concentration",
-            "minRanks": 5,
-            "targetSkillId": "skill_autohypnosis",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_craft": {
-        "id": "skill_craft",
-        "label": {
-          "en": "Craft",
-          "fr": "Artisanat"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "isVariant": true,
-        "variants": [
-          "skill_craft_alchemy",
-          "skill_craft_armorsmithing",
-          "skill_craft_bowmaking",
-          "skill_craft_calligraphy",
-          "skill_craft_carpentry",
-          "skill_craft_cobbling",
-          "skill_craft_gemcutting",
-          "skill_craft_leatherworking",
-          "skill_craft_locksmithing",
-          "skill_craft_painting",
-          "skill_craft_pottery",
-          "skill_craft_sculpting",
-          "skill_craft_shipmaking",
-          "skill_craft_stonemasonry",
-          "skill_craft_trapmaking",
-          "skill_craft_weaponsmithing",
-          "skill_craft_weaving"
-        ],
-        "description": {
-          "en": "Like Knowledge, Perform, and Profession, Craft is actually a number of separate skills. A Craft skill is focused on creating something. You can practice your trade and make a decent living, earning about half your check result in gold pieces per week of dedicated work. The basic function is to allow you to make an item of the appropriate type.",
-          "fr": "Comme Connaissance, Représentation et Profession, Artisanat représente en réalité plusieurs compétences distinctes. Une compétence d'Artisanat est axée sur la création d'un objet. Vous pouvez pratiquer votre métier et gagner décemment votre vie, gagnant environ la moitié du résultat de votre test en pièces d'or par semaine de travail."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "related_craft_items"
-          }
-        ]
-      },
-      "skill_craft_alchemy": {
-        "id": "skill_craft_alchemy",
-        "label": {
-          "en": "Craft (Alchemy)",
-          "fr": "Artisanat (Alchimie)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_craft",
-        "description": {
-          "en": "Craft (alchemy) allows you to create alchemical items such as acid, alchemist's fire, antitoxin, smokestick, sunrod, tanglefoot bag, tindertwig, and thunderstone. Requires being a spellcaster. DC ranges from 15 to 25 depending on the item.",
-          "fr": "Artisanat (alchimie) vous permet de créer des objets alchimiques tels que l'acide, le feu alchimiste, l'antitoxine, le bâton fumigène, la torche épée, le sac engluant, le tison et la pierre tonnante. Nécessite d'être un lanceur de sorts. DD de 15 à 25 selon l'objet."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft_alchemy",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "appraise_alchemical_items"
-          }
-        ]
-      },
-      "skill_craft_weaponsmithing": {
-        "id": "skill_craft_weaponsmithing",
-        "label": {
-          "en": "Craft (Weaponsmithing)",
-          "fr": "Artisanat (Armurerie)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_craft",
-        "description": {
-          "en": "Craft (weaponsmithing) allows you to create weapons. DC 12 for simple weapons, DC 15 for martial weapons, DC 18 for exotic weapons. Also allows creation of crossbows (DC 15).",
-          "fr": "Artisanat (armurerie) vous permet de créer des armes. DD 12 pour les armes courantes, DD 15 pour les armes de guerre, DD 18 pour les armes exotiques. Permet aussi la création d'arbalètes (DD 15)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft_weaponsmithing",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "appraise_weapons"
-          }
-        ]
-      },
-      "skill_craft_armorsmithing": {
-        "id": "skill_craft_armorsmithing",
-        "label": {
-          "en": "Craft (Armorsmithing)",
-          "fr": "Artisanat (Fabrication d'armures)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_craft",
-        "description": {
-          "en": "Craft (armorsmithing) allows you to create armor and shields. DC = 10 + the AC bonus of the armor or shield.",
-          "fr": "Artisanat (fabrication d'armures) vous permet de créer des armures et des boucliers. DD = 10 + le bonus de CA de l'armure ou du bouclier."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft_armorsmithing",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "appraise_armor"
-          }
-        ]
-      },
-      "skill_craft_bowmaking": {
-        "id": "skill_craft_bowmaking",
-        "label": {
-          "en": "Craft (Bowmaking)",
-          "fr": "Artisanat (Fabrication d'arcs)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_craft",
-        "description": {
-          "en": "Craft (bowmaking) allows you to create bows. DC 12 for longbow or shortbow, DC 15 for composite bows, DC 15 + (2 × strength rating) for composite bows with a high strength rating.",
-          "fr": "Artisanat (fabrication d'arcs) vous permet de créer des arcs. DD 12 pour l'arc long ou court, DD 15 pour les arcs composites, DD 15 + (2 × indice de Force) pour les arcs composites avec un indice de Force élevé."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_craft_bowmaking",
-            "minRanks": 5,
-            "targetSkillId": "skill_appraise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "appraise_bows"
-          }
-        ]
-      },
-      "skill_craft_trapmaking": {
-        "id": "skill_craft_trapmaking",
-        "label": {
-          "en": "Craft (Trapmaking)",
-          "fr": "Artisanat (Fabrication de pièges)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_craft",
-        "description": {
-          "en": "Craft (trapmaking) allows you to construct mechanical traps. The DC varies depending on the complexity of the trap.",
-          "fr": "Artisanat (fabrication de pièges) vous permet de construire des pièges mécaniques. Le DD varie selon la complexité du piège."
-        },
-        "synergies": []
-      },
-      "skill_decipher_script": {
-        "id": "skill_decipher_script",
-        "label": {
-          "en": "Decipher Script",
-          "fr": "Déchiffrage"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can decipher writing in an unfamiliar language or a message written in an incomplete or archaic form. The base DC is 20 for the simplest messages, 25 for standard texts, and 30 or higher for intricate, exotic, or very old writing. If the check succeeds, you understand the general content of a piece of writing about one page long.",
-          "fr": "Vous pouvez déchiffrer des écrits dans une langue inconnue ou un message rédigé sous une forme incomplète ou archaïque. Le DD de base est de 20 pour les messages les plus simples, de 25 pour les textes courants, et de 30 ou plus pour les écrits complexes, exotiques ou très anciens. Si le test réussit, vous comprenez le contenu général d'un texte d'environ une page."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_decipher_script",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_magic_device",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "use_magic_device_scrolls"
-          }
-        ]
-      },
-      "skill_diplomacy": {
-        "id": "skill_diplomacy",
-        "label": {
-          "en": "Diplomacy",
-          "fr": "Diplomatie"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can change the attitudes of others with a successful Diplomacy check. In negotiations, participants roll opposed Diplomacy checks, and the winner gains the advantage. Changing attitudes generally takes at least 1 full minute; a rushed check can be made as a full-round action with a -10 penalty.",
-          "fr": "Vous pouvez changer les attitudes des autres avec un test de Diplomatie réussi. Dans les négociations, les participants effectuent des tests de Diplomatie opposés, et le vainqueur obtient l'avantage. Changer les attitudes prend généralement au moins 1 minute complète ; un test rapide peut être effectué comme une action complexe avec un malus de -10."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "You can walk on a precarious surface. A successful check lets you move at half your speed along the surface for 1 round. A failure by 4 or less means you can't move for 1 round. A failure by 5 or more means you fall. You are considered flat-footed while balancing unless you have 5 or more ranks in Balance.",
+            "fr": "Vous pouvez marcher sur une surface précaire. Un test réussi vous permet de vous déplacer à la moitié de votre vitesse sur la surface pendant 1 round. Un échec de 4 ou moins signifie que vous ne pouvez pas vous déplacer pendant 1 round. Un échec de 5 ou plus signifie que vous tombez. Vous êtes considéré comme pris au dépourvu en maintenant votre équilibre, sauf si vous avez 5 rangs ou plus en Équilibre."
           },
-          {
-            "sourceSkillId": "skill_knowledge_nobility",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_tumble",
+              "minRanks": 5,
+              "targetSkillId": "skill_balance",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_bluff": {
+          "id": "skill_bluff",
+          "label": {
+            "en": "Bluff",
+            "fr": "Bluff"
           },
-          {
-            "sourceSkillId": "skill_sense_motive",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_disable_device": {
-        "id": "skill_disable_device",
-        "label": {
-          "en": "Disable Device",
-          "fr": "Sabotage"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "The Disable Device check is made secretly. Disabling a simple device has a DC of 10; more intricate devices have higher DCs (15–25). If the check succeeds, you disable the device. Rogues (and characters with the trapfinding class feature) can disarm magic traps (DC 25 + spell level).",
-          "fr": "Le test de Sabotage est réalisé secrètement. Désactiver un dispositif simple a un DD de 10 ; les dispositifs plus complexes ont des DD plus élevés (15-25). Si le test réussit, vous désactivez le dispositif. Les roublards (et les personnages avec la capacité de classe recherche de pièges) peuvent désactiver les pièges magiques (DD 25 + niveau du sort)."
-        },
-        "synergies": []
-      },
-      "skill_disguise": {
-        "id": "skill_disguise",
-        "label": {
-          "en": "Disguise",
-          "fr": "Déguisement"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Your Disguise check result determines how good the disguise is, and it is opposed by others' Spot check results. The effectiveness of your disguise depends in part on how much you're attempting to change your appearance. Creating a disguise requires 1d3×10 minutes of work.",
-          "fr": "Le résultat de votre test de Déguisement détermine la qualité du déguisement, et il est opposé aux résultats des tests d'Observation des autres. L'efficacité de votre déguisement dépend en partie de l'ampleur des changements que vous tentez d'apporter à votre apparence. Créer un déguisement nécessite 1d3×10 minutes de travail."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_disguise",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "acting_in_character_while_observed"
-          }
-        ]
-      },
-      "skill_escape_artist": {
-        "id": "skill_escape_artist",
-        "label": {
-          "en": "Escape Artist",
-          "fr": "Évasion"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "You can escape from rope bindings (opposed by binder's Use Rope +10), manacles (DC 30), or a grapple (opposed by grappler's grapple check). Escaping from a net or entangle spell is a full-round action. Squeezing through a tight space (DC 30) takes at least 1 minute.",
-          "fr": "Vous pouvez vous échapper de liens en corde (opposé au test d'Utilisation de cordes du lieur +10), de menottes (DD 30), ou d'une prise au corps (opposé au test d'empoignade de l'adversaire). S'échapper d'un filet ou d'un sort d'enchevêtrement est une action complexe. Se glisser dans un espace étroit (DD 30) prend au moins 1 minute."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_escape_artist",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_rope",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "binding_someone"
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "A Bluff check is opposed by the target's Sense Motive check. A successful Bluff check indicates that the target reacts as you wish, at least for a short time, or believes something you want it to believe. You can also use Bluff to feint in combat, create a diversion to hide, or deliver a secret message.",
+            "fr": "Un test de Bluff est opposé au test de Psychologie de la cible. Un test de Bluff réussi indique que la cible réagit comme vous le souhaitez, au moins pendant un court moment, ou croit quelque chose que vous voulez qu'elle croie. Vous pouvez également utiliser le Bluff pour feinter au combat, créer une diversion pour vous cacher, ou transmettre un message secret."
           },
-          {
-            "sourceSkillId": "skill_use_rope",
-            "minRanks": 5,
-            "targetSkillId": "skill_escape_artist",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "escaping_rope_bonds"
-          }
-        ]
-      },
-      "skill_forgery": {
-        "id": "skill_forgery",
-        "label": {
-          "en": "Forgery",
-          "fr": "Contrefaçon"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_intimidate",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_sleight_of_hand",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_disguise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "acting_in_character_while_observed"
+            }
+          ]
         },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can forge documents on which the handwriting is not specific to a person (+8 bonus), forge a signature (+4 bonus), or forge a longer document in the hand of a particular person. The Forgery check is made secretly and is opposed by the examiner's Forgery check. Forgery is language-dependent.",
-          "fr": "Vous pouvez contrefaire des documents dont l'écriture n'est pas propre à une personne (+8 au test), contrefaire une signature (+4 au test), ou contrefaire un document plus long de la main d'une personne particulière. Le test de Contrefaçon est réalisé secrètement et est opposé au test de Contrefaçon de l'examinateur. La Contrefaçon dépend du langage."
-        },
-        "synergies": []
-      },
-      "skill_gather_information": {
-        "id": "skill_gather_information",
-        "label": {
-          "en": "Gather Information",
-          "fr": "Collecte d'informations"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "An evening spent in a tavern can result in learning about the local area's troubles, important people, and notable happenings through casual conversation. DC 10 for basic information, 15–25 for more specific information. Takes 1d4+1 hours and costs 1d4+1 gp in bribes, drinks, and so on.",
-          "fr": "Une soirée passée dans une taverne peut vous permettre d'apprendre les problèmes de la région locale, les personnages importants et les événements notables grâce à une conversation informelle. DD 10 pour des informations de base, 15-25 pour des informations plus spécifiques. Prend 1d4+1 heures et coûte 1d4+1 po."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_local",
-            "minRanks": 5,
-            "targetSkillId": "skill_gather_information",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_handle_animal": {
-        "id": "skill_handle_animal",
-        "label": {
-          "en": "Handle Animal",
-          "fr": "Dressage"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Use this skill to drive a team of horses pulling a wagon, to teach a dog to guard, to train a horse for war, or to teach a parrot to speak a particular phrase. You can also use this skill to tame a wild animal or to change an animal's general attitude.",
-          "fr": "Utilisez cette compétence pour conduire une équipe de chevaux tirant un chariot, pour apprendre à un chien à monter la garde, pour entraîner un cheval à la guerre, ou pour apprendre à un perroquet une phrase particulière. Vous pouvez également l'utiliser pour apprivoiser un animal sauvage ou pour modifier l'attitude générale d'un animal."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_handle_animal",
-            "minRanks": 5,
-            "targetSkillId": "skill_ride",
-            "bonus": 2,
-            "type": "synergy"
+        "skill_climb": {
+          "id": "skill_climb",
+          "label": {
+            "en": "Climb",
+            "fr": "Escalade"
           },
-          {
-            "sourceSkillId": "skill_handle_animal",
-            "minRanks": 5,
-            "targetSkillId": "wild_empathy_check",
-            "bonus": 2,
-            "type": "synergy",
-            "note": "Bonus on wild empathy checks (non-skill target)"
-          }
-        ]
-      },
-      "skill_heal": {
-        "id": "skill_heal",
-        "label": {
-          "en": "Heal",
-          "fr": "Art de la guérison"
-        },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can provide first aid (DC 15), treat wounds from caltrops or similar attacks (DC 15), stabilize a dying character (DC 15), treat poison (DC = poison's save DC), treat disease (DC = disease's save DC), or provide long-term care (DC 15, restores 2 hp/level/day or 4 hp/level/day with rest).",
-          "fr": "Vous pouvez prodiguer les premiers secours (DD 15), traiter les blessures causées par des chausse-trapes ou des attaques similaires (DD 15), stabiliser un personnage mourant (DD 15), traiter un poison (DD = DD de sauvegarde du poison), traiter une maladie (DD = DD de sauvegarde de la maladie), ou prodiguer des soins à long terme (DD 15, restaure 2 pv/niveau/jour ou 4 pv/niveau/jour avec du repos)."
-        },
-        "synergies": []
-      },
-      "skill_hide": {
-        "id": "skill_hide",
-        "label": {
-          "en": "Hide",
-          "fr": "Discrétion"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "Your Hide check is opposed by the Spot check of anyone who might see you. You can move at up to half your normal speed and hide at no penalty. Moving at greater than half speed and up to full speed incurs a -5 penalty. If you stop moving, others may notice you if their Spot check exceeds your last Hide check result.",
-          "fr": "Votre test de Discrétion est opposé au test d'Observation de toute personne susceptible de vous voir. Vous pouvez vous déplacer jusqu'à la moitié de votre vitesse normale et vous cacher sans pénalité. Se déplacer à plus de la moitié de la vitesse et jusqu'à la vitesse complète entraîne un malus de -5. Si vous vous arrêtez de vous déplacer, les autres peuvent vous remarquer si leur test d'Observation dépasse le résultat de votre dernier test de Discrétion."
-        },
-        "synergies": []
-      },
-      "skill_intimidate": {
-        "id": "skill_intimidate",
-        "label": {
-          "en": "Intimidate",
-          "fr": "Intimidation"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can change another's behavior with a successful Intimidate check. Your Intimidate check is opposed by the target's modified level check (1d20 + character level or Hit Dice + Wisdom modifier + any modifiers against fear). If you win, you may threaten the target and lower its attitude one step (usually to Unfriendly).",
-          "fr": "Vous pouvez modifier le comportement d'autrui avec un test d'Intimidation réussi. Votre test d'Intimidation est opposé au test de niveau modifié de la cible (1d20 + niveau de personnage ou DV + modificateur de Sagesse + tout modificateur contre la peur). Si vous gagnez, vous pouvez menacer la cible et réduire son attitude d'un cran (généralement à Inamical)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_intimidate",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_jump": {
-        "id": "skill_jump",
-        "label": {
-          "en": "Jump",
-          "fr": "Saut"
-        },
-        "keyAbility": "stat_strength",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "You can make long jumps (horizontal), high jumps (vertical), and vaults. A long jump DC equals the distance in feet. A high jump DC equals 4 × the height in feet. You need a 20-foot running start for full-distance jumps; without it, you can only jump half the distance.",
-          "fr": "Vous pouvez effectuer des sauts en longueur (horizontaux), des sauts en hauteur (verticaux) et des enjambées. Le DD d'un saut en longueur est égal à la distance en pieds. Le DD d'un saut en hauteur est égal à 4 × la hauteur en pieds. Vous avez besoin d'un élan de 6 mètres pour les sauts à pleine distance ; sans élan, vous ne pouvez sauter que la moitié de la distance."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_tumble",
-            "minRanks": 5,
-            "targetSkillId": "skill_jump",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_strength",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "With a successful Climb check, you can advance up, down, or across a slope, a wall, or other steep incline at one-quarter your normal speed. A Climb check that fails by 4 or less means you make no progress, and one that fails by 5 or more means you fall from whatever height you have already attained.",
+            "fr": "Avec un test d'Escalade réussi, vous pouvez progresser vers le haut, le bas ou en travers d'une pente, d'un mur ou d'une autre inclinaison abrupte à un quart de votre vitesse normale. Un test d'Escalade qui échoue de 4 ou moins signifie que vous ne progressez pas, et un échec de 5 ou plus signifie que vous tombez de la hauteur déjà atteinte."
           },
-          {
-            "sourceSkillId": "skill_jump",
-            "minRanks": 5,
-            "targetSkillId": "skill_tumble",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_arcana": {
-        "id": "skill_knowledge_arcana",
-        "label": {
-          "en": "Knowledge (Arcana)",
-          "fr": "Connaissance (Arcanes)"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_use_rope",
+              "minRanks": 5,
+              "targetSkillId": "skill_climb",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "climbing_rope_or_knotted_rope"
+            }
+          ]
         },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (arcana) covers ancient mysteries, magic traditions, arcane symbols, and related topics. Can be used to identify magical effects, schools of magic, and spellcasters.",
-          "fr": "Connaissance (arcanes) couvre les mystères anciens, les traditions magiques, les symboles arcaniques et les sujets connexes. Peut être utilisée pour identifier les effets magiques, les écoles de magie et les lanceurs de sorts."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_arcana",
-            "minRanks": 5,
-            "targetSkillId": "skill_spellcraft",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_architecture": {
-        "id": "skill_knowledge_architecture",
-        "label": {
-          "en": "Knowledge (Architecture and Engineering)",
-          "fr": "Connaissance (Architecture et Génie)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (architecture and engineering) covers buildings, aqueducts, bridges, and fortifications.",
-          "fr": "Connaissance (architecture et génie) couvre les bâtiments, les aqueducs, les ponts et les fortifications."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_architecture",
-            "minRanks": 5,
-            "targetSkillId": "skill_search",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "finding_secret_doors_or_hidden_compartments"
-          }
-        ]
-      },
-      "skill_knowledge_dungeoneering": {
-        "id": "skill_knowledge_dungeoneering",
-        "label": {
-          "en": "Knowledge (Dungeoneering)",
-          "fr": "Connaissance (Exploration souterraine)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (dungeoneering) covers aberrations, caverns, oozes, and spelunking.",
-          "fr": "Connaissance (exploration souterraine) couvre les aberrations, les cavernes, les vases et la spéléologie."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_dungeoneering",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_underground"
-          }
-        ]
-      },
-      "skill_knowledge_geography": {
-        "id": "skill_knowledge_geography",
-        "label": {
-          "en": "Knowledge (Geography)",
-          "fr": "Connaissance (Géographie)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (geography) covers lands, terrain, climate, and people.",
-          "fr": "Connaissance (géographie) couvre les terres, le terrain, le climat et les peuples."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_geography",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "avoid_getting_lost_or_natural_hazards"
-          }
-        ]
-      },
-      "skill_knowledge_history": {
-        "id": "skill_knowledge_history",
-        "label": {
-          "en": "Knowledge (History)",
-          "fr": "Connaissance (Histoire)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (history) covers wars, colonies, migrations, and the founding of cities.",
-          "fr": "Connaissance (histoire) couvre les guerres, les colonies, les migrations et la fondation des cités."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_history",
-            "minRanks": 5,
-            "targetSkillId": "bardic_knowledge",
-            "bonus": 2,
-            "type": "synergy",
-            "note": "Bonus on bardic knowledge checks (non-skill target)"
-          }
-        ]
-      },
-      "skill_knowledge_local": {
-        "id": "skill_knowledge_local",
-        "label": {
-          "en": "Knowledge (Local)",
-          "fr": "Connaissance (Région)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (local) covers legends, personalities, inhabitants, laws, customs, traditions, and humanoids.",
-          "fr": "Connaissance (région) couvre les légendes, les personnalités, les habitants, les lois, les coutumes, les traditions et les humanoïdes."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_local",
-            "minRanks": 5,
-            "targetSkillId": "skill_gather_information",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_nature": {
-        "id": "skill_knowledge_nature",
-        "label": {
-          "en": "Knowledge (Nature)",
-          "fr": "Connaissance (Nature)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (nature) covers animals, fey, giants, monstrous humanoids, plants, seasons and cycles, weather, and vermin.",
-          "fr": "Connaissance (nature) couvre les animaux, les fées, les géants, les humanoïdes monstrueux, les plantes, les cycles saisonniers, la météorologie et les vermines."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_nature",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_aboveground"
+        "skill_concentration": {
+          "id": "skill_concentration",
+          "label": {
+            "en": "Concentration",
+            "fr": "Concentration"
           },
-          {
-            "sourceSkillId": "skill_survival",
-            "minRanks": 5,
-            "targetSkillId": "skill_knowledge_nature",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_nobility": {
-        "id": "skill_knowledge_nobility",
-        "label": {
-          "en": "Knowledge (Nobility and Royalty)",
-          "fr": "Connaissance (Noblesse et Royauté)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (nobility and royalty) covers lineages, heraldry, family trees, mottoes, and similar topics.",
-          "fr": "Connaissance (noblesse et royauté) couvre les lignées, l'héraldique, les arbres généalogiques, les devises et les sujets similaires."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_nobility",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_planes": {
-        "id": "skill_knowledge_planes",
-        "label": {
-          "en": "Knowledge (The Planes)",
-          "fr": "Connaissance (Les Plans)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (the planes) covers the Inner Planes, the Outer Planes, the Astral Plane, the Ethereal Plane, outsiders, and planar magic.",
-          "fr": "Connaissance (les plans) couvre les Plans intérieurs, les Plans extérieurs, le Plan astral, le Plan éthéré, les extérieurs et la magie planaire."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_planes",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_on_other_planes"
-          }
-        ]
-      },
-      "skill_knowledge_religion": {
-        "id": "skill_knowledge_religion",
-        "label": {
-          "en": "Knowledge (Religion)",
-          "fr": "Connaissance (Religion)"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_knowledge",
-        "description": {
-          "en": "Knowledge (religion) covers gods and goddesses, mythic history, ecclesiastic tradition, holy symbols, and undead.",
-          "fr": "Connaissance (religion) couvre les dieux et déesses, l'histoire mythique, les traditions ecclésiastiques, les symboles sacrés et les morts-vivants."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_religion",
-            "minRanks": 5,
-            "targetSkillId": "turning_undead_check",
-            "bonus": 2,
-            "type": "synergy",
-            "note": "Bonus on turning checks against undead (non-skill target)"
-          }
-        ]
-      },
-      "skill_listen": {
-        "id": "skill_listen",
-        "label": {
-          "en": "Listen",
-          "fr": "Écoute"
-        },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Your Listen check is opposed by a Move Silently check or by a DC that reflects how quiet the noise is. You can detect the approach of invisible creatures, overhear conversations, and detect the presence of hidden foes. Elves and half-elves have a +2 racial bonus. A sleeping character takes a -10 penalty.",
-          "fr": "Votre test d'Écoute est opposé à un test de Déplacement silencieux ou à un DD reflétant la discrétion du bruit. Vous pouvez détecter l'approche de créatures invisibles, surprendre des conversations et détecter la présence d'ennemis cachés. Les elfes et les demi-elfes ont un bonus racial de +2. Un personnage endormi subit un malus de -10."
-        },
-        "synergies": []
-      },
-      "skill_move_silently": {
-        "id": "skill_move_silently",
-        "label": {
-          "en": "Move Silently",
-          "fr": "Déplacement silencieux"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "Your Move Silently check is opposed by the Listen check of anyone who might hear you. You can move at up to half your normal speed silently. At more than half speed up to full speed, you take a -5 penalty on your Move Silently check.",
-          "fr": "Votre test de Déplacement silencieux est opposé au test d'Écoute de toute personne susceptible de vous entendre. Vous pouvez vous déplacer jusqu'à la moitié de votre vitesse normale en silence. À plus de la moitié de votre vitesse et jusqu'à la vitesse complète, vous subissez un malus de -5 à votre test de Déplacement silencieux."
-        },
-        "synergies": []
-      },
-      "skill_open_lock": {
-        "id": "skill_open_lock",
-        "label": {
-          "en": "Open Lock",
-          "fr": "Crochetage"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can open a lock using lockpicks. The DC depends on the quality of the lock: very simple lock (DC 20), average lock (DC 25), good lock (DC 30), very superior lock (DC 40). Opening a lock requires thieves' tools. Without thieves' tools, you take a -4 penalty on the check. With masterwork thieves' tools, you gain a +2 circumstance bonus.",
-          "fr": "Vous pouvez ouvrir un verrou à l'aide de crochets de serrurier. Le DD dépend de la qualité de la serrure : serrure très simple (DD 20), serrure ordinaire (DD 25), bonne serrure (DD 30), serrure très supérieure (DD 40). Ouvrir une serrure nécessite des outils de voleur. Sans outils de voleur, vous subissez un malus de -4 au test. Avec des outils de voleur de haute qualité, vous bénéficiez d'un bonus de circonstance de +2."
-        },
-        "synergies": []
-      },
-      "skill_perform": {
-        "id": "skill_perform",
-        "label": {
-          "en": "Perform",
-          "fr": "Représentation"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "isVariant": true,
-        "variants": [
-          "skill_perform_act",
-          "skill_perform_comedy",
-          "skill_perform_dance",
-          "skill_perform_keyboard_instruments",
-          "skill_perform_oratory",
-          "skill_perform_percussion_instruments",
-          "skill_perform_sing",
-          "skill_perform_string_instruments",
-          "skill_perform_wind_instruments"
-        ],
-        "description": {
-          "en": "Like Craft and Knowledge, Perform is actually a number of separate skills. You can impress audiences with your talent and skill. An audience evaluates your performance on a scale of 1 to 30. You can earn money from your performances as a musician, storyteller, or other entertainer.",
-          "fr": "Comme Artisanat et Connaissance, Représentation représente en réalité plusieurs compétences distinctes. Vous pouvez impressionner le public avec votre talent et vos compétences. Un public évalue votre performance sur une échelle de 1 à 30. Vous pouvez gagner de l'argent grâce à vos représentations en tant que musicien, conteur ou autre artiste."
-        },
-        "synergies": []
-      },
-      "skill_perform_act": {
-        "id": "skill_perform_act",
-        "label": {
-          "en": "Perform (Act)",
-          "fr": "Représentation (Comédie)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (act) covers dramatic acting, comedy, and stage performance.",
-          "fr": "Représentation (comédie) couvre le jeu dramatique, la comédie et les représentations scéniques."
-        },
-        "synergies": []
-      },
-      "skill_perform_dance": {
-        "id": "skill_perform_dance",
-        "label": {
-          "en": "Perform (Dance)",
-          "fr": "Représentation (Danse)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (dance) covers all forms of dance performance.",
-          "fr": "Représentation (danse) couvre toutes les formes de danse."
-        },
-        "synergies": []
-      },
-      "skill_perform_oratory": {
-        "id": "skill_perform_oratory",
-        "label": {
-          "en": "Perform (Oratory)",
-          "fr": "Représentation (Oratoire)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (oratory) covers epic/heroic recitation and storytelling.",
-          "fr": "Représentation (oratoire) couvre la récitation épique/héroïque et la narration."
-        },
-        "synergies": []
-      },
-      "skill_perform_sing": {
-        "id": "skill_perform_sing",
-        "label": {
-          "en": "Perform (Sing)",
-          "fr": "Représentation (Chant)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (sing) covers all vocal performance including singing and chanting.",
-          "fr": "Représentation (chant) couvre toutes les performances vocales, y compris le chant et les chants religieux."
-        },
-        "synergies": []
-      },
-      "skill_perform_string_instruments": {
-        "id": "skill_perform_string_instruments",
-        "label": {
-          "en": "Perform (String Instruments)",
-          "fr": "Représentation (Instruments à cordes)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (string instruments) covers lute, harp, and other string instruments.",
-          "fr": "Représentation (instruments à cordes) couvre le luth, la harpe et d'autres instruments à cordes."
-        },
-        "synergies": []
-      },
-      "skill_perform_wind_instruments": {
-        "id": "skill_perform_wind_instruments",
-        "label": {
-          "en": "Perform (Wind Instruments)",
-          "fr": "Représentation (Instruments à vent)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (wind instruments) covers flute, horn, and other wind instruments.",
-          "fr": "Représentation (instruments à vent) couvre la flûte, le cor et d'autres instruments à vent."
-        },
-        "synergies": []
-      },
-      "skill_perform_percussion_instruments": {
-        "id": "skill_perform_percussion_instruments",
-        "label": {
-          "en": "Perform (Percussion Instruments)",
-          "fr": "Représentation (Instruments à percussion)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (percussion instruments) covers drums, cymbals, and other percussion instruments.",
-          "fr": "Représentation (instruments à percussion) couvre les tambours, les cymbales et d'autres instruments à percussion."
-        },
-        "synergies": []
-      },
-      "skill_perform_keyboard_instruments": {
-        "id": "skill_perform_keyboard_instruments",
-        "label": {
-          "en": "Perform (Keyboard Instruments)",
-          "fr": "Représentation (Instruments à clavier)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (keyboard instruments) covers keyboard instruments such as the harpsichord.",
-          "fr": "Représentation (instruments à clavier) couvre les instruments à clavier tels que le clavecin."
-        },
-        "synergies": []
-      },
-      "skill_perform_comedy": {
-        "id": "skill_perform_comedy",
-        "label": {
-          "en": "Perform (Comedy)",
-          "fr": "Représentation (Comédie bouffonne)"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "parentSkillId": "skill_perform",
-        "description": {
-          "en": "Perform (comedy) covers slapstick, comedy acts, and jesters.",
-          "fr": "Représentation (comédie bouffonne) couvre la comédie physique, les numéros comiques et les bouffons."
-        },
-        "synergies": []
-      },
-      "skill_profession": {
-        "id": "skill_profession",
-        "label": {
-          "en": "Profession",
-          "fr": "Profession"
-        },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "isVariant": true,
-        "variants": [
-          "skill_profession_herbalist",
-          "skill_profession_sailor",
-          "skill_profession_soldier",
-          "skill_profession_scribe",
-          "skill_profession_merchant",
-          "skill_profession_cook",
-          "skill_profession_farmer",
-          "skill_profession_hunter",
-          "skill_profession_miner",
-          "skill_profession_shepherd",
-          "skill_profession_tanner",
-          "skill_profession_woodcutter"
-        ],
-        "description": {
-          "en": "Like Craft, Knowledge, and Perform, Profession is actually a number of separate skills. Unlike Craft, Profession does not cover the creation of goods (that's covered by Craft). Instead, Profession covers an occupation. You can earn half your check result in gold pieces per week from practicing your Profession.",
-          "fr": "Comme Artisanat, Connaissance et Représentation, Profession représente en réalité plusieurs compétences distinctes. Contrairement à Artisanat, Profession ne couvre pas la création de marchandises (c'est la compétence Artisanat). La Profession couvre une occupation. Vous pouvez gagner la moitié du résultat de votre test en pièces d'or par semaine en pratiquant votre Profession."
-        },
-        "synergies": []
-      },
-      "skill_ride": {
-        "id": "skill_ride",
-        "label": {
-          "en": "Ride",
-          "fr": "Équitation"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "If you attempt to ride a creature that is not a horse or similar mount, you take a -5 penalty on your Ride checks. Typical DCs: guide with knees (DC 5), stay in saddle (DC 5), fight with warhorse (DC 10), cover (DC 15), soft fall (DC 15), leap (DC 15), spur mount (DC 10), control mount in battle (DC 20), fast mount/dismount (DC 20).",
-          "fr": "Si vous tentez de monter une créature qui n'est pas un cheval ou une monture similaire, vous subissez un malus de -5 à vos tests d'Équitation. DD typiques : guider avec les genoux (DD 5), rester en selle (DD 5), combattre avec un destrier (DD 10), se couvrir (DD 15), chute souple (DD 15), saut (DD 15), éperonner la monture (DD 10), contrôler la monture au combat (DD 20), monter/démonter rapidement (DD 20)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_handle_animal",
-            "minRanks": 5,
-            "targetSkillId": "skill_ride",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_search": {
-        "id": "skill_search",
-        "label": {
-          "en": "Search",
-          "fr": "Fouille"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You generally must be within 10 feet of the object or surface to be searched. A successful Search check allows you to notice something unusual. A Search check can be used to find a hidden notice on a wall (DC 20), a secret door (DC 20–30), or a cache (DC 20). Rogues can also use it to find traps. Elves have a +2 racial bonus.",
-          "fr": "Vous devez généralement être à moins de 3 mètres de l'objet ou de la surface à fouiller. Un test de Fouille réussi vous permet de remarquer quelque chose d'inhabituel. Un test de Fouille peut être utilisé pour trouver une affiche cachée sur un mur (DD 20), une porte secrète (DD 20-30) ou une cachette (DD 20). Les roublards peuvent également l'utiliser pour trouver des pièges. Les elfes ont un bonus racial de +2."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_search",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "find_or_follow_tracks"
+          "keyAbility": "stat_constitution",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You must make a Concentration check whenever you might potentially be distracted while engaged in some action that requires your full attention, such as casting a spell, concentrating on an active spell, directing a spell, using a spell-like ability, or using a skill that would provoke an attack of opportunity. If the check fails, the action automatically fails and is wasted. [Psionic additions: Gain psionic focus (DC 20, full-round action provokes AoO); manifest without display (DC 15 + power level); manifest defensively without AoO (DC 15 + power level). Failure wastes power points. 5 ranks grants +2 to Autohypnosis checks. Combat Manifestation feat grants +4 when manifesting defensively or while grappling.]",
+            "fr": "Vous devez effectuer un test de Concentration chaque fois que vous pourriez être distrait(e) lors d'une action nécessitant toute votre attention, comme lancer un sort, vous concentrer sur un sort actif, diriger un sort, utiliser une capacité de sort ou utiliser une compétence qui provoquerait une attaque d'opportunité. Si le test échoue, l'action échoue automatiquement et est gaspillée."
           },
-          {
-            "sourceSkillId": "skill_knowledge_architecture",
-            "minRanks": 5,
-            "targetSkillId": "skill_search",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "finding_secret_doors_or_hidden_compartments"
-          }
-        ]
-      },
-      "skill_sense_motive": {
-        "id": "skill_sense_motive",
-        "label": {
-          "en": "Sense Motive",
-          "fr": "Psychologie"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_concentration",
+              "minRanks": 5,
+              "targetSkillId": "skill_autohypnosis",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
         },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "A successful Sense Motive check lets you avoid being bluffed. You can detect lies made to your face (DC 20), gauge the trustworthiness of someone, or simply notice whether someone seems nervous or ill-at-ease (DC 10). You can also attempt to read a person's body language.",
-          "fr": "Un test de Psychologie réussi vous permet d'éviter d'être abusé par un Bluff. Vous pouvez détecter les mensonges directs (DD 20), évaluer la fiabilité de quelqu'un, ou simplement remarquer si quelqu'un semble nerveux ou mal à l'aise (DD 10). Vous pouvez également tenter de lire le langage corporel d'une personne."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_sense_motive",
-            "minRanks": 5,
-            "targetSkillId": "skill_diplomacy",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_sleight_of_hand": {
-        "id": "skill_sleight_of_hand",
-        "label": {
-          "en": "Sleight of Hand",
-          "fr": "Escamotage"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "A DC 10 Sleight of Hand check lets you palm a coin-sized, unattended object. Picking pockets is a DC 20 check. The check is opposed by the target's Spot check if they could notice. Attempting a Sleight of Hand check without at least 1 rank in the skill results in a -5 penalty.",
-          "fr": "Un test d'Escamotage DD 10 vous permet de faire disparaître un objet de la taille d'une pièce de monnaie non gardé. Faire les poches est un test DD 20. Le test est opposé au test d'Observation de la cible si elle pourrait le remarquer. Tenter un test d'Escamotage sans au moins 1 rang dans la compétence entraîne un malus de -5."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_bluff",
-            "minRanks": 5,
-            "targetSkillId": "skill_sleight_of_hand",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_speak_language": {
-        "id": "skill_speak_language",
-        "label": {
-          "en": "Speak Language",
-          "fr": "Langues"
-        },
-        "keyAbility": null,
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Speak Language has no checks. Every time you put a rank into this skill, you learn to speak and read one new language. You start knowing your racial language and Common. Half-elves can speak both Elven and Common as well as a human language. Characters with high Intelligence scores can learn bonus languages. Literate characters who know a language can also read and write it.",
-          "fr": "La compétence Langues n'a pas de test. Chaque fois que vous investissez un rang dans cette compétence, vous apprenez à parler et lire une nouvelle langue. Vous commencez avec la langue de votre race et le Commun. Les demi-elfes peuvent parler à la fois l'Elfique et le Commun ainsi qu'une langue humaine. Les personnages avec un score d'Intelligence élevé peuvent apprendre des langues supplémentaires. Les personnages sachant lire et écrire peuvent lire et écrire un langage qu'ils connaissent."
-        },
-        "synergies": []
-      },
-      "skill_spellcraft": {
-        "id": "skill_spellcraft",
-        "label": {
-          "en": "Spellcraft",
-          "fr": "Art de la magie"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Use this skill to identify spells as they are cast or spells already in place. To identify a spell, the DC is 15 + spell level. You can decipher scrolls (DC 20 + spell level), learn a spell from a spellbook (DC 15 + spell level), prepare spells from another caster's spellbook (DC 15 + spell level), or identify a magic item using detect magic (DC 15 + item caster level).",
-          "fr": "Utilisez cette compétence pour identifier des sorts lors de leur incantation ou des sorts déjà en place. Pour identifier un sort, le DD est de 15 + niveau du sort. Vous pouvez déchiffrer des parchemins (DD 20 + niveau du sort), apprendre un sort d'un grimoire (DD 15 + niveau du sort), préparer des sorts à partir du grimoire d'un autre lanceur de sorts (DD 15 + niveau du sort), ou identifier un objet magique avec détection de la magie (DD 15 + niveau de lanceur de sorts de l'objet)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_arcana",
-            "minRanks": 5,
-            "targetSkillId": "skill_spellcraft",
-            "bonus": 2,
-            "type": "synergy"
+        "skill_craft": {
+          "id": "skill_craft",
+          "label": {
+            "en": "Craft",
+            "fr": "Artisanat"
           },
-          {
-            "sourceSkillId": "skill_use_magic_device",
-            "minRanks": 5,
-            "targetSkillId": "skill_spellcraft",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "decipher_spells_on_scrolls"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "isVariant": true,
+          "variants": [
+            "skill_craft_alchemy",
+            "skill_craft_armorsmithing",
+            "skill_craft_bowmaking",
+            "skill_craft_calligraphy",
+            "skill_craft_carpentry",
+            "skill_craft_cobbling",
+            "skill_craft_gemcutting",
+            "skill_craft_leatherworking",
+            "skill_craft_locksmithing",
+            "skill_craft_painting",
+            "skill_craft_pottery",
+            "skill_craft_sculpting",
+            "skill_craft_shipmaking",
+            "skill_craft_stonemasonry",
+            "skill_craft_trapmaking",
+            "skill_craft_weaponsmithing",
+            "skill_craft_weaving"
+          ],
+          "description": {
+            "en": "Like Knowledge, Perform, and Profession, Craft is actually a number of separate skills. A Craft skill is focused on creating something. You can practice your trade and make a decent living, earning about half your check result in gold pieces per week of dedicated work. The basic function is to allow you to make an item of the appropriate type.",
+            "fr": "Comme Connaissance, Représentation et Profession, Artisanat représente en réalité plusieurs compétences distinctes. Une compétence d'Artisanat est axée sur la création d'un objet. Vous pouvez pratiquer votre métier et gagner décemment votre vie, gagnant environ la moitié du résultat de votre test en pièces d'or par semaine de travail."
           },
-          {
-            "sourceSkillId": "skill_spellcraft",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_magic_device",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "use_magic_device_scrolls"
-          }
-        ]
-      },
-      "skill_spot": {
-        "id": "skill_spot",
-        "label": {
-          "en": "Spot",
-          "fr": "Observation"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "related_craft_items"
+            }
+          ]
         },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "A Spot check is opposed by the Hide check of the creature or person you're trying to notice, or by a DC that represents the general difficulty of noticing something. Spot is used to notice things at a distance, detect hidden creatures nearby, or notice detail. Elves have a +2 racial bonus. A -1 penalty applies per 10 feet of distance between you and the thing you're trying to spot.",
-          "fr": "Un test d'Observation est opposé au test de Discrétion de la créature ou de la personne que vous essayez de remarquer, ou par un DD représentant la difficulté générale à remarquer quelque chose. Observation est utilisé pour remarquer des choses à distance, détecter des créatures cachées à proximité ou noter des détails. Les elfes ont un bonus racial de +2. Un malus de -1 s'applique par tranche de 3 mètres entre vous et ce que vous essayez de remarquer."
-        },
-        "synergies": []
-      },
-      "skill_survival": {
-        "id": "skill_survival",
-        "label": {
-          "en": "Survival",
-          "fr": "Survie"
-        },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can keep yourself and others safe and fed in the wild. DCs: get along in the wild (DC 10), find food and water (DC 10), avoid getting lost (DC 15), avoid natural hazards (DC 15), predict weather up to 24 hours ahead (DC 15), follow tracks (DC varies), care for the wounded (DC 15). A Ranger has Track as a bonus feat.",
-          "fr": "Vous pouvez vous maintenir en vie ainsi que d'autres personnes dans la nature sauvage. DD : subsister dans la nature (DD 10), trouver nourriture et eau (DD 10), éviter de se perdre (DD 15), éviter les risques naturels (DD 15), prévoir la météo jusqu'à 24 heures à l'avance (DD 15), suivre une piste (DD variable), soigner les blessés (DD 15). Un rôdeur dispose de Pistage comme don supplémentaire."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_survival",
-            "minRanks": 5,
-            "targetSkillId": "skill_knowledge_nature",
-            "bonus": 2,
-            "type": "synergy"
+        "skill_craft_alchemy": {
+          "id": "skill_craft_alchemy",
+          "label": {
+            "en": "Craft (Alchemy)",
+            "fr": "Artisanat (Alchimie)"
           },
-          {
-            "sourceSkillId": "skill_knowledge_dungeoneering",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_underground"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_craft",
+          "description": {
+            "en": "Craft (alchemy) allows you to create alchemical items such as acid, alchemist's fire, antitoxin, smokestick, sunrod, tanglefoot bag, tindertwig, and thunderstone. Requires being a spellcaster. DC ranges from 15 to 25 depending on the item.",
+            "fr": "Artisanat (alchimie) vous permet de créer des objets alchimiques tels que l'acide, le feu alchimiste, l'antitoxine, le bâton fumigène, la torche épée, le sac engluant, le tison et la pierre tonnante. Nécessite d'être un lanceur de sorts. DD de 15 à 25 selon l'objet."
           },
-          {
-            "sourceSkillId": "skill_knowledge_nature",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_aboveground"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft_alchemy",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "appraise_alchemical_items"
+            }
+          ]
+        },
+        "skill_craft_weaponsmithing": {
+          "id": "skill_craft_weaponsmithing",
+          "label": {
+            "en": "Craft (Weaponsmithing)",
+            "fr": "Artisanat (Armurerie)"
           },
-          {
-            "sourceSkillId": "skill_knowledge_geography",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "avoid_getting_lost_or_natural_hazards"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_craft",
+          "description": {
+            "en": "Craft (weaponsmithing) allows you to create weapons. DC 12 for simple weapons, DC 15 for martial weapons, DC 18 for exotic weapons. Also allows creation of crossbows (DC 15).",
+            "fr": "Artisanat (armurerie) vous permet de créer des armes. DD 12 pour les armes courantes, DD 15 pour les armes de guerre, DD 18 pour les armes exotiques. Permet aussi la création d'arbalètes (DD 15)."
           },
-          {
-            "sourceSkillId": "skill_knowledge_planes",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "survival_on_other_planes"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft_weaponsmithing",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "appraise_weapons"
+            }
+          ]
+        },
+        "skill_craft_armorsmithing": {
+          "id": "skill_craft_armorsmithing",
+          "label": {
+            "en": "Craft (Armorsmithing)",
+            "fr": "Artisanat (Fabrication d'armures)"
           },
-          {
-            "sourceSkillId": "skill_search",
-            "minRanks": 5,
-            "targetSkillId": "skill_survival",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "find_or_follow_tracks"
-          }
-        ]
-      },
-      "skill_swim": {
-        "id": "skill_swim",
-        "label": {
-          "en": "Swim",
-          "fr": "Natation"
-        },
-        "keyAbility": "stat_strength",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "Make a Swim check once per round while you are in the water. Success means you may swim at up to one-quarter your speed (as a move action) or one-half your speed (as a full-round action). A character who fails by 4 or less can't move. A failure by 5 or more means the character goes under water. DC 10 for calm water, DC 15 for rough water, DC 20 for stormy water.",
-          "fr": "Effectuez un test de Natation une fois par round lorsque vous êtes dans l'eau. Un succès signifie que vous pouvez nager jusqu'au quart de votre vitesse (comme une action de mouvement) ou à la moitié de votre vitesse (comme une action complexe). Un personnage qui échoue de 4 ou moins ne peut pas se déplacer. Un échec de 5 ou plus signifie que le personnage coule. DD 10 pour l'eau calme, DD 15 pour les eaux agitées, DD 20 pour les eaux tempêtueuses."
-        },
-        "synergies": []
-      },
-      "skill_tumble": {
-        "id": "skill_tumble",
-        "label": {
-          "en": "Tumble",
-          "fr": "Acrobaties"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": true,
-        "description": {
-          "en": "You can fall safely, move past opponents, or roll to minimize the effect of a fall. You can tumble at one-half speed as part of normal movement, provoking no attacks of opportunity. DC 15 to tumble past a foe (no AoO), DC 25 to tumble through a foe's space, DC 15 to fall safely from up to 10 feet.",
-          "fr": "Vous pouvez tomber en sécurité, passer devant des adversaires, ou rouler pour minimiser l'effet d'une chute. Vous pouvez faire des acrobaties à la moitié de votre vitesse dans le cadre d'un déplacement normal, sans provoquer d'attaques d'opportunité. DD 15 pour passer devant un ennemi (pas d'AO), DD 25 pour traverser l'espace d'un ennemi, DD 15 pour tomber en sécurité depuis moins de 3 mètres."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_tumble",
-            "minRanks": 5,
-            "targetSkillId": "skill_balance",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_craft",
+          "description": {
+            "en": "Craft (armorsmithing) allows you to create armor and shields. DC = 10 + the AC bonus of the armor or shield.",
+            "fr": "Artisanat (fabrication d'armures) vous permet de créer des armures et des boucliers. DD = 10 + le bonus de CA de l'armure ou du bouclier."
           },
-          {
-            "sourceSkillId": "skill_tumble",
-            "minRanks": 5,
-            "targetSkillId": "skill_jump",
-            "bonus": 2,
-            "type": "synergy"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft_armorsmithing",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "appraise_armor"
+            }
+          ]
+        },
+        "skill_craft_bowmaking": {
+          "id": "skill_craft_bowmaking",
+          "label": {
+            "en": "Craft (Bowmaking)",
+            "fr": "Artisanat (Fabrication d'arcs)"
           },
-          {
-            "sourceSkillId": "skill_jump",
-            "minRanks": 5,
-            "targetSkillId": "skill_tumble",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_use_magic_device": {
-        "id": "skill_use_magic_device",
-        "label": {
-          "en": "Use Magic Device",
-          "fr": "Utilisation d'objets magiques"
-        },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You can use this skill to read a spell from a scroll or activate a magic item. DC 25 to activate blindly, DC 20 to decipher a written spell, DC 20 to use a scroll (if it's on your spell list, 15 + spell level to cast it, otherwise 20 + spell level), DC 20 to use a wand, DC 25 to emulate a class feature, DC 15 to emulate an ability score of 11.",
-          "fr": "Vous pouvez utiliser cette compétence pour lire un sort à partir d'un parchemin ou activer un objet magique. DD 25 pour activer à l'aveugle, DD 20 pour déchiffrer un sort écrit, DD 20 pour utiliser un parchemin (si le sort est dans votre liste, 15 + niveau du sort pour le lancer, sinon 20 + niveau du sort), DD 20 pour utiliser une baguette, DD 25 pour émuler une capacité de classe, DD 15 pour émuler un score de caractéristique de 11."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_spellcraft",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_magic_device",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "use_magic_device_scrolls"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_craft",
+          "description": {
+            "en": "Craft (bowmaking) allows you to create bows. DC 12 for longbow or shortbow, DC 15 for composite bows, DC 15 + (2 × strength rating) for composite bows with a high strength rating.",
+            "fr": "Artisanat (fabrication d'arcs) vous permet de créer des arcs. DD 12 pour l'arc long ou court, DD 15 pour les arcs composites, DD 15 + (2 × indice de Force) pour les arcs composites avec un indice de Force élevé."
           },
-          {
-            "sourceSkillId": "skill_decipher_script",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_magic_device",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "use_magic_device_scrolls"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_craft_bowmaking",
+              "minRanks": 5,
+              "targetSkillId": "skill_appraise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "appraise_bows"
+            }
+          ]
+        },
+        "skill_craft_trapmaking": {
+          "id": "skill_craft_trapmaking",
+          "label": {
+            "en": "Craft (Trapmaking)",
+            "fr": "Artisanat (Fabrication de pièges)"
           },
-          {
-            "sourceSkillId": "skill_use_magic_device",
-            "minRanks": 5,
-            "targetSkillId": "skill_spellcraft",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "decipher_spells_on_scrolls"
-          }
-        ]
-      },
-      "skill_use_rope": {
-        "id": "skill_use_rope",
-        "label": {
-          "en": "Use Rope",
-          "fr": "Utilisation de cordes"
-        },
-        "keyAbility": "stat_dexterity",
-        "canBeUsedUntrained": true,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "With a DC 10 check, you can tie a person's hands behind their back. You can also use a rope to lasso a target (DC 20), fasten a rope to a grappling hook (DC 10), splice two ropes together (DC 15), and use a rope in various other ways. A creature bound with a rope can escape with an Escape Artist check against your Use Rope check + 10.",
-          "fr": "Avec un test DD 10, vous pouvez lier les mains d'une personne dans le dos. Vous pouvez également utiliser une corde pour attraper une cible au lasso (DD 20), fixer une corde à un grappin (DD 10), épisser deux cordes ensemble (DD 15), et utiliser une corde de diverses autres façons. Une créature ligotée avec une corde peut s'échapper avec un test d'Évasion contre votre test d'Utilisation de cordes + 10."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_use_rope",
-            "minRanks": 5,
-            "targetSkillId": "skill_climb",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "climbing_rope_or_knotted_rope"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_craft",
+          "description": {
+            "en": "Craft (trapmaking) allows you to construct mechanical traps. The DC varies depending on the complexity of the trap.",
+            "fr": "Artisanat (fabrication de pièges) vous permet de construire des pièges mécaniques. Le DD varie selon la complexité du piège."
           },
-          {
-            "sourceSkillId": "skill_use_rope",
-            "minRanks": 5,
-            "targetSkillId": "skill_escape_artist",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "escaping_rope_bonds"
+          "synergies": []
+        },
+        "skill_decipher_script": {
+          "id": "skill_decipher_script",
+          "label": {
+            "en": "Decipher Script",
+            "fr": "Déchiffrage"
           },
-          {
-            "sourceSkillId": "skill_escape_artist",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_rope",
-            "bonus": 2,
-            "type": "synergy",
-            "condition": "binding_someone"
-          }
-        ]
-      },
-      "skill_autohypnosis": {
-        "id": "skill_autohypnosis",
-        "label": {
-          "en": "Autohypnosis",
-          "fr": "Autohypnose"
-        },
-        "keyAbility": "stat_wisdom",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "You have trained your mind to gain mastery over your body and the mind's own deepest capabilities. Check uses: Ignore caltrop wound (DC 18), Memorize information (DC 15), Resist dying (DC 20), Resist fear (fear effect DC), Tolerate poison (poison DC), Willpower at 0 HP (DC 20). If you have the Autonomous feat, you get a +2 bonus on Autohypnosis checks.",
-          "fr": "Vous avez entraîné votre esprit pour maîtriser votre corps et les capacités les plus profondes de l'esprit. Utilisations : Ignorer une blessure de crapaudine (DD 18), Mémoriser des informations (DD 15), Résister à la mort (DD 20), Résister à la peur (DD de l'effet), Tolérer un poison (DD du poison), Force de volonté à 0 PV (DD 20)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_autohypnosis",
-            "minRanks": 5,
-            "targetSkillId": "skill_knowledge_psionics",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can decipher writing in an unfamiliar language or a message written in an incomplete or archaic form. The base DC is 20 for the simplest messages, 25 for standard texts, and 30 or higher for intricate, exotic, or very old writing. If the check succeeds, you understand the general content of a piece of writing about one page long.",
+            "fr": "Vous pouvez déchiffrer des écrits dans une langue inconnue ou un message rédigé sous une forme incomplète ou archaïque. Le DD de base est de 20 pour les messages les plus simples, de 25 pour les textes courants, et de 30 ou plus pour les écrits complexes, exotiques ou très anciens. Si le test réussit, vous comprenez le contenu général d'un texte d'environ une page."
           },
-          {
-            "sourceSkillId": "skill_concentration",
-            "minRanks": 5,
-            "targetSkillId": "skill_autohypnosis",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_knowledge_psionics": {
-        "id": "skill_knowledge_psionics",
-        "label": {
-          "en": "Knowledge (Psionics)",
-          "fr": "Connaissance (psionique)"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_decipher_script",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_magic_device",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "use_magic_device_scrolls"
+            }
+          ]
         },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Knowledge (psionics) covers ancient mysteries, psionic traditions, psychic symbols, cryptic phrases, astral constructs, and psionic races. You can use this skill to identify psionic monsters and their special powers or vulnerabilities. An untrained check is simply an Intelligence check — you know only common knowledge (DC 10 or lower) without training. If you have the Autonomous feat, you get a +2 bonus.",
-          "fr": "La Connaissance (psionique) couvre les mystères anciens, les traditions psioniques, les symboles psychiques, les phrases cryptiques, les constructions astrales et les races psioniques. Vous pouvez utiliser cette compétence pour identifier les monstres psioniques et leurs capacités ou vulnérabilités spéciales."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_psionics",
-            "minRanks": 5,
-            "targetSkillId": "skill_psicraft",
-            "bonus": 2,
-            "type": "synergy"
+        "skill_diplomacy": {
+          "id": "skill_diplomacy",
+          "label": {
+            "en": "Diplomacy",
+            "fr": "Diplomatie"
           },
-          {
-            "sourceSkillId": "skill_autohypnosis",
-            "minRanks": 5,
-            "targetSkillId": "skill_knowledge_psionics",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_psicraft": {
-        "id": "skill_psicraft",
-        "label": {
-          "en": "Psicraft",
-          "fr": "Science psionique"
-        },
-        "keyAbility": "stat_intelligence",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Use this skill to identify powers as they are manifested or powers already in place. DC table: 15 + power level (identify power being manifested; identify discipline of detected aura; address power stone); 20 + power level (identify power already in effect; identify psionic materials); 25 + power level (identify power after making saving throw against it); 25 (identify psionic tattoo, 1 min); 20 (draw diagram for psionic dimensional anchor). A psion gets +2 on checks within their discipline. Psionic Affinity feat grants +2.",
-          "fr": "Utilisez cette compétence pour identifier les pouvoirs lors de leur manifestation ou des pouvoirs déjà en place. DD : 15 + niveau du pouvoir (identifier un pouvoir en cours de manifestation; identifier la discipline d'une aura détectée; déchiffrer une pierre de pouvoir); 20 + niveau du pouvoir (identifier un pouvoir déjà en place). Un psion gagne +2 pour les tests liés à sa discipline. Le don Affinité psionique accorde +2."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_knowledge_psionics",
-            "minRanks": 5,
-            "targetSkillId": "skill_psicraft",
-            "bonus": 2,
-            "type": "synergy"
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can change the attitudes of others with a successful Diplomacy check. In negotiations, participants roll opposed Diplomacy checks, and the winner gains the advantage. Changing attitudes generally takes at least 1 full minute; a rushed check can be made as a full-round action with a -10 penalty.",
+            "fr": "Vous pouvez changer les attitudes des autres avec un test de Diplomatie réussi. Dans les négociations, les participants effectuent des tests de Diplomatie opposés, et le vainqueur obtient l'avantage. Changer les attitudes prend généralement au moins 1 minute complète ; un test rapide peut être effectué comme une action complexe avec un malus de -10."
           },
-          {
-            "sourceSkillId": "skill_psicraft",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_psionic_device",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
-      },
-      "skill_use_psionic_device": {
-        "id": "skill_use_psionic_device",
-        "label": {
-          "en": "Use Psionic Device",
-          "fr": "Utilisation d'objet psionique"
+          "synergies": [
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_nobility",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_sense_motive",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
         },
-        "keyAbility": "stat_charisma",
-        "canBeUsedUntrained": false,
-        "appliesArmorCheckPenalty": false,
-        "description": {
-          "en": "Use this skill to activate psionic devices including power stones and dorjes that you otherwise could not activate. DC table: 25 (activate blindly); 25 + power level (address power stone); see text (emulate ability score); 30 (emulate alignment); 20 (emulate class feature); 25 (emulate race); 20 (use dorje); 20 + manifester level (use power stone). Cannot take 10 with this skill. Cannot aid another. Psionic Affinity feat grants +2.",
-          "fr": "Utilisez cette compétence pour activer des objets psioniques, notamment des pierres de pouvoir et des dorjes, que vous ne pourriez pas activer autrement. DD : 25 (activation aveugle); 25 + niveau du pouvoir (déchiffrer une pierre de pouvoir); selon contexte (émuler une valeur de caractéristique); 30 (émuler un alignement); 20 (émuler une aptitude de classe); 25 (émuler une race); 20 (utiliser un dorje); 20 + niveau de manifestation (utiliser une pierre de pouvoir)."
-        },
-        "synergies": [
-          {
-            "sourceSkillId": "skill_psicraft",
-            "minRanks": 5,
-            "targetSkillId": "skill_use_psionic_device",
-            "bonus": 2,
-            "type": "synergy"
+        "skill_disable_device": {
+          "id": "skill_disable_device",
+          "label": {
+            "en": "Disable Device",
+            "fr": "Sabotage"
           },
-          {
-            "sourceSkillId": "skill_use_psionic_device",
-            "minRanks": 5,
-            "targetSkillId": "skill_psicraft",
-            "bonus": 2,
-            "type": "synergy"
-          }
-        ]
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "The Disable Device check is made secretly. Disabling a simple device has a DC of 10; more intricate devices have higher DCs (15–25). If the check succeeds, you disable the device. Rogues (and characters with the trapfinding class feature) can disarm magic traps (DC 25 + spell level).",
+            "fr": "Le test de Sabotage est réalisé secrètement. Désactiver un dispositif simple a un DD de 10 ; les dispositifs plus complexes ont des DD plus élevés (15-25). Si le test réussit, vous désactivez le dispositif. Les roublards (et les personnages avec la capacité de classe recherche de pièges) peuvent désactiver les pièges magiques (DD 25 + niveau du sort)."
+          },
+          "synergies": []
+        },
+        "skill_disguise": {
+          "id": "skill_disguise",
+          "label": {
+            "en": "Disguise",
+            "fr": "Déguisement"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Your Disguise check result determines how good the disguise is, and it is opposed by others' Spot check results. The effectiveness of your disguise depends in part on how much you're attempting to change your appearance. Creating a disguise requires 1d3×10 minutes of work.",
+            "fr": "Le résultat de votre test de Déguisement détermine la qualité du déguisement, et il est opposé aux résultats des tests d'Observation des autres. L'efficacité de votre déguisement dépend en partie de l'ampleur des changements que vous tentez d'apporter à votre apparence. Créer un déguisement nécessite 1d3×10 minutes de travail."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_disguise",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "acting_in_character_while_observed"
+            }
+          ]
+        },
+        "skill_escape_artist": {
+          "id": "skill_escape_artist",
+          "label": {
+            "en": "Escape Artist",
+            "fr": "Évasion"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "You can escape from rope bindings (opposed by binder's Use Rope +10), manacles (DC 30), or a grapple (opposed by grappler's grapple check). Escaping from a net or entangle spell is a full-round action. Squeezing through a tight space (DC 30) takes at least 1 minute.",
+            "fr": "Vous pouvez vous échapper de liens en corde (opposé au test d'Utilisation de cordes du lieur +10), de menottes (DD 30), ou d'une prise au corps (opposé au test d'empoignade de l'adversaire). S'échapper d'un filet ou d'un sort d'enchevêtrement est une action complexe. Se glisser dans un espace étroit (DD 30) prend au moins 1 minute."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_escape_artist",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_rope",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "binding_someone"
+            },
+            {
+              "sourceSkillId": "skill_use_rope",
+              "minRanks": 5,
+              "targetSkillId": "skill_escape_artist",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "escaping_rope_bonds"
+            }
+          ]
+        },
+        "skill_forgery": {
+          "id": "skill_forgery",
+          "label": {
+            "en": "Forgery",
+            "fr": "Contrefaçon"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can forge documents on which the handwriting is not specific to a person (+8 bonus), forge a signature (+4 bonus), or forge a longer document in the hand of a particular person. The Forgery check is made secretly and is opposed by the examiner's Forgery check. Forgery is language-dependent.",
+            "fr": "Vous pouvez contrefaire des documents dont l'écriture n'est pas propre à une personne (+8 au test), contrefaire une signature (+4 au test), ou contrefaire un document plus long de la main d'une personne particulière. Le test de Contrefaçon est réalisé secrètement et est opposé au test de Contrefaçon de l'examinateur. La Contrefaçon dépend du langage."
+          },
+          "synergies": []
+        },
+        "skill_gather_information": {
+          "id": "skill_gather_information",
+          "label": {
+            "en": "Gather Information",
+            "fr": "Collecte d'informations"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "An evening spent in a tavern can result in learning about the local area's troubles, important people, and notable happenings through casual conversation. DC 10 for basic information, 15–25 for more specific information. Takes 1d4+1 hours and costs 1d4+1 gp in bribes, drinks, and so on.",
+            "fr": "Une soirée passée dans une taverne peut vous permettre d'apprendre les problèmes de la région locale, les personnages importants et les événements notables grâce à une conversation informelle. DD 10 pour des informations de base, 15-25 pour des informations plus spécifiques. Prend 1d4+1 heures et coûte 1d4+1 po."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_local",
+              "minRanks": 5,
+              "targetSkillId": "skill_gather_information",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_handle_animal": {
+          "id": "skill_handle_animal",
+          "label": {
+            "en": "Handle Animal",
+            "fr": "Dressage"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Use this skill to drive a team of horses pulling a wagon, to teach a dog to guard, to train a horse for war, or to teach a parrot to speak a particular phrase. You can also use this skill to tame a wild animal or to change an animal's general attitude.",
+            "fr": "Utilisez cette compétence pour conduire une équipe de chevaux tirant un chariot, pour apprendre à un chien à monter la garde, pour entraîner un cheval à la guerre, ou pour apprendre à un perroquet une phrase particulière. Vous pouvez également l'utiliser pour apprivoiser un animal sauvage ou pour modifier l'attitude générale d'un animal."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_handle_animal",
+              "minRanks": 5,
+              "targetSkillId": "skill_ride",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_handle_animal",
+              "minRanks": 5,
+              "targetSkillId": "wild_empathy_check",
+              "bonus": 2,
+              "type": "synergy",
+              "note": "Bonus on wild empathy checks (non-skill target)"
+            }
+          ]
+        },
+        "skill_heal": {
+          "id": "skill_heal",
+          "label": {
+            "en": "Heal",
+            "fr": "Art de la guérison"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can provide first aid (DC 15), treat wounds from caltrops or similar attacks (DC 15), stabilize a dying character (DC 15), treat poison (DC = poison's save DC), treat disease (DC = disease's save DC), or provide long-term care (DC 15, restores 2 hp/level/day or 4 hp/level/day with rest).",
+            "fr": "Vous pouvez prodiguer les premiers secours (DD 15), traiter les blessures causées par des chausse-trapes ou des attaques similaires (DD 15), stabiliser un personnage mourant (DD 15), traiter un poison (DD = DD de sauvegarde du poison), traiter une maladie (DD = DD de sauvegarde de la maladie), ou prodiguer des soins à long terme (DD 15, restaure 2 pv/niveau/jour ou 4 pv/niveau/jour avec du repos)."
+          },
+          "synergies": []
+        },
+        "skill_hide": {
+          "id": "skill_hide",
+          "label": {
+            "en": "Hide",
+            "fr": "Discrétion"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "Your Hide check is opposed by the Spot check of anyone who might see you. You can move at up to half your normal speed and hide at no penalty. Moving at greater than half speed and up to full speed incurs a -5 penalty. If you stop moving, others may notice you if their Spot check exceeds your last Hide check result.",
+            "fr": "Votre test de Discrétion est opposé au test d'Observation de toute personne susceptible de vous voir. Vous pouvez vous déplacer jusqu'à la moitié de votre vitesse normale et vous cacher sans pénalité. Se déplacer à plus de la moitié de la vitesse et jusqu'à la vitesse complète entraîne un malus de -5. Si vous vous arrêtez de vous déplacer, les autres peuvent vous remarquer si leur test d'Observation dépasse le résultat de votre dernier test de Discrétion."
+          },
+          "synergies": []
+        },
+        "skill_intimidate": {
+          "id": "skill_intimidate",
+          "label": {
+            "en": "Intimidate",
+            "fr": "Intimidation"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can change another's behavior with a successful Intimidate check. Your Intimidate check is opposed by the target's modified level check (1d20 + character level or Hit Dice + Wisdom modifier + any modifiers against fear). If you win, you may threaten the target and lower its attitude one step (usually to Unfriendly).",
+            "fr": "Vous pouvez modifier le comportement d'autrui avec un test d'Intimidation réussi. Votre test d'Intimidation est opposé au test de niveau modifié de la cible (1d20 + niveau de personnage ou DV + modificateur de Sagesse + tout modificateur contre la peur). Si vous gagnez, vous pouvez menacer la cible et réduire son attitude d'un cran (généralement à Inamical)."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_intimidate",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_jump": {
+          "id": "skill_jump",
+          "label": {
+            "en": "Jump",
+            "fr": "Saut"
+          },
+          "keyAbility": "stat_strength",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "You can make long jumps (horizontal), high jumps (vertical), and vaults. A long jump DC equals the distance in feet. A high jump DC equals 4 × the height in feet. You need a 20-foot running start for full-distance jumps; without it, you can only jump half the distance.",
+            "fr": "Vous pouvez effectuer des sauts en longueur (horizontaux), des sauts en hauteur (verticaux) et des enjambées. Le DD d'un saut en longueur est égal à la distance en pieds. Le DD d'un saut en hauteur est égal à 4 × la hauteur en pieds. Vous avez besoin d'un élan de 6 mètres pour les sauts à pleine distance ; sans élan, vous ne pouvez sauter que la moitié de la distance."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_tumble",
+              "minRanks": 5,
+              "targetSkillId": "skill_jump",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_jump",
+              "minRanks": 5,
+              "targetSkillId": "skill_tumble",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_arcana": {
+          "id": "skill_knowledge_arcana",
+          "label": {
+            "en": "Knowledge (Arcana)",
+            "fr": "Connaissance (Arcanes)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (arcana) covers ancient mysteries, magic traditions, arcane symbols, and related topics. Can be used to identify magical effects, schools of magic, and spellcasters.",
+            "fr": "Connaissance (arcanes) couvre les mystères anciens, les traditions magiques, les symboles arcaniques et les sujets connexes. Peut être utilisée pour identifier les effets magiques, les écoles de magie et les lanceurs de sorts."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_arcana",
+              "minRanks": 5,
+              "targetSkillId": "skill_spellcraft",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_architecture": {
+          "id": "skill_knowledge_architecture",
+          "label": {
+            "en": "Knowledge (Architecture and Engineering)",
+            "fr": "Connaissance (Architecture et Génie)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (architecture and engineering) covers buildings, aqueducts, bridges, and fortifications.",
+            "fr": "Connaissance (architecture et génie) couvre les bâtiments, les aqueducs, les ponts et les fortifications."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_architecture",
+              "minRanks": 5,
+              "targetSkillId": "skill_search",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "finding_secret_doors_or_hidden_compartments"
+            }
+          ]
+        },
+        "skill_knowledge_dungeoneering": {
+          "id": "skill_knowledge_dungeoneering",
+          "label": {
+            "en": "Knowledge (Dungeoneering)",
+            "fr": "Connaissance (Exploration souterraine)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (dungeoneering) covers aberrations, caverns, oozes, and spelunking.",
+            "fr": "Connaissance (exploration souterraine) couvre les aberrations, les cavernes, les vases et la spéléologie."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_dungeoneering",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_underground"
+            }
+          ]
+        },
+        "skill_knowledge_geography": {
+          "id": "skill_knowledge_geography",
+          "label": {
+            "en": "Knowledge (Geography)",
+            "fr": "Connaissance (Géographie)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (geography) covers lands, terrain, climate, and people.",
+            "fr": "Connaissance (géographie) couvre les terres, le terrain, le climat et les peuples."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_geography",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "avoid_getting_lost_or_natural_hazards"
+            }
+          ]
+        },
+        "skill_knowledge_history": {
+          "id": "skill_knowledge_history",
+          "label": {
+            "en": "Knowledge (History)",
+            "fr": "Connaissance (Histoire)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (history) covers wars, colonies, migrations, and the founding of cities.",
+            "fr": "Connaissance (histoire) couvre les guerres, les colonies, les migrations et la fondation des cités."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_history",
+              "minRanks": 5,
+              "targetSkillId": "bardic_knowledge",
+              "bonus": 2,
+              "type": "synergy",
+              "note": "Bonus on bardic knowledge checks (non-skill target)"
+            }
+          ]
+        },
+        "skill_knowledge_local": {
+          "id": "skill_knowledge_local",
+          "label": {
+            "en": "Knowledge (Local)",
+            "fr": "Connaissance (Région)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (local) covers legends, personalities, inhabitants, laws, customs, traditions, and humanoids.",
+            "fr": "Connaissance (région) couvre les légendes, les personnalités, les habitants, les lois, les coutumes, les traditions et les humanoïdes."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_local",
+              "minRanks": 5,
+              "targetSkillId": "skill_gather_information",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_nature": {
+          "id": "skill_knowledge_nature",
+          "label": {
+            "en": "Knowledge (Nature)",
+            "fr": "Connaissance (Nature)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (nature) covers animals, fey, giants, monstrous humanoids, plants, seasons and cycles, weather, and vermin.",
+            "fr": "Connaissance (nature) couvre les animaux, les fées, les géants, les humanoïdes monstrueux, les plantes, les cycles saisonniers, la météorologie et les vermines."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_nature",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_aboveground"
+            },
+            {
+              "sourceSkillId": "skill_survival",
+              "minRanks": 5,
+              "targetSkillId": "skill_knowledge_nature",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_nobility": {
+          "id": "skill_knowledge_nobility",
+          "label": {
+            "en": "Knowledge (Nobility and Royalty)",
+            "fr": "Connaissance (Noblesse et Royauté)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (nobility and royalty) covers lineages, heraldry, family trees, mottoes, and similar topics.",
+            "fr": "Connaissance (noblesse et royauté) couvre les lignées, l'héraldique, les arbres généalogiques, les devises et les sujets similaires."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_nobility",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_planes": {
+          "id": "skill_knowledge_planes",
+          "label": {
+            "en": "Knowledge (The Planes)",
+            "fr": "Connaissance (Les Plans)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (the planes) covers the Inner Planes, the Outer Planes, the Astral Plane, the Ethereal Plane, outsiders, and planar magic.",
+            "fr": "Connaissance (les plans) couvre les Plans intérieurs, les Plans extérieurs, le Plan astral, le Plan éthéré, les extérieurs et la magie planaire."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_planes",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_on_other_planes"
+            }
+          ]
+        },
+        "skill_knowledge_religion": {
+          "id": "skill_knowledge_religion",
+          "label": {
+            "en": "Knowledge (Religion)",
+            "fr": "Connaissance (Religion)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_knowledge",
+          "description": {
+            "en": "Knowledge (religion) covers gods and goddesses, mythic history, ecclesiastic tradition, holy symbols, and undead.",
+            "fr": "Connaissance (religion) couvre les dieux et déesses, l'histoire mythique, les traditions ecclésiastiques, les symboles sacrés et les morts-vivants."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_religion",
+              "minRanks": 5,
+              "targetSkillId": "turning_undead_check",
+              "bonus": 2,
+              "type": "synergy",
+              "note": "Bonus on turning checks against undead (non-skill target)"
+            }
+          ]
+        },
+        "skill_listen": {
+          "id": "skill_listen",
+          "label": {
+            "en": "Listen",
+            "fr": "Écoute"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Your Listen check is opposed by a Move Silently check or by a DC that reflects how quiet the noise is. You can detect the approach of invisible creatures, overhear conversations, and detect the presence of hidden foes. Elves and half-elves have a +2 racial bonus. A sleeping character takes a -10 penalty.",
+            "fr": "Votre test d'Écoute est opposé à un test de Déplacement silencieux ou à un DD reflétant la discrétion du bruit. Vous pouvez détecter l'approche de créatures invisibles, surprendre des conversations et détecter la présence d'ennemis cachés. Les elfes et les demi-elfes ont un bonus racial de +2. Un personnage endormi subit un malus de -10."
+          },
+          "synergies": []
+        },
+        "skill_move_silently": {
+          "id": "skill_move_silently",
+          "label": {
+            "en": "Move Silently",
+            "fr": "Déplacement silencieux"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "Your Move Silently check is opposed by the Listen check of anyone who might hear you. You can move at up to half your normal speed silently. At more than half speed up to full speed, you take a -5 penalty on your Move Silently check.",
+            "fr": "Votre test de Déplacement silencieux est opposé au test d'Écoute de toute personne susceptible de vous entendre. Vous pouvez vous déplacer jusqu'à la moitié de votre vitesse normale en silence. À plus de la moitié de votre vitesse et jusqu'à la vitesse complète, vous subissez un malus de -5 à votre test de Déplacement silencieux."
+          },
+          "synergies": []
+        },
+        "skill_open_lock": {
+          "id": "skill_open_lock",
+          "label": {
+            "en": "Open Lock",
+            "fr": "Crochetage"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can open a lock using lockpicks. The DC depends on the quality of the lock: very simple lock (DC 20), average lock (DC 25), good lock (DC 30), very superior lock (DC 40). Opening a lock requires thieves' tools. Without thieves' tools, you take a -4 penalty on the check. With masterwork thieves' tools, you gain a +2 circumstance bonus.",
+            "fr": "Vous pouvez ouvrir un verrou à l'aide de crochets de serrurier. Le DD dépend de la qualité de la serrure : serrure très simple (DD 20), serrure ordinaire (DD 25), bonne serrure (DD 30), serrure très supérieure (DD 40). Ouvrir une serrure nécessite des outils de voleur. Sans outils de voleur, vous subissez un malus de -4 au test. Avec des outils de voleur de haute qualité, vous bénéficiez d'un bonus de circonstance de +2."
+          },
+          "synergies": []
+        },
+        "skill_perform": {
+          "id": "skill_perform",
+          "label": {
+            "en": "Perform",
+            "fr": "Représentation"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "isVariant": true,
+          "variants": [
+            "skill_perform_act",
+            "skill_perform_comedy",
+            "skill_perform_dance",
+            "skill_perform_keyboard_instruments",
+            "skill_perform_oratory",
+            "skill_perform_percussion_instruments",
+            "skill_perform_sing",
+            "skill_perform_string_instruments",
+            "skill_perform_wind_instruments"
+          ],
+          "description": {
+            "en": "Like Craft and Knowledge, Perform is actually a number of separate skills. You can impress audiences with your talent and skill. An audience evaluates your performance on a scale of 1 to 30. You can earn money from your performances as a musician, storyteller, or other entertainer.",
+            "fr": "Comme Artisanat et Connaissance, Représentation représente en réalité plusieurs compétences distinctes. Vous pouvez impressionner le public avec votre talent et vos compétences. Un public évalue votre performance sur une échelle de 1 à 30. Vous pouvez gagner de l'argent grâce à vos représentations en tant que musicien, conteur ou autre artiste."
+          },
+          "synergies": []
+        },
+        "skill_perform_act": {
+          "id": "skill_perform_act",
+          "label": {
+            "en": "Perform (Act)",
+            "fr": "Représentation (Comédie)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (act) covers dramatic acting, comedy, and stage performance.",
+            "fr": "Représentation (comédie) couvre le jeu dramatique, la comédie et les représentations scéniques."
+          },
+          "synergies": []
+        },
+        "skill_perform_dance": {
+          "id": "skill_perform_dance",
+          "label": {
+            "en": "Perform (Dance)",
+            "fr": "Représentation (Danse)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (dance) covers all forms of dance performance.",
+            "fr": "Représentation (danse) couvre toutes les formes de danse."
+          },
+          "synergies": []
+        },
+        "skill_perform_oratory": {
+          "id": "skill_perform_oratory",
+          "label": {
+            "en": "Perform (Oratory)",
+            "fr": "Représentation (Oratoire)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (oratory) covers epic/heroic recitation and storytelling.",
+            "fr": "Représentation (oratoire) couvre la récitation épique/héroïque et la narration."
+          },
+          "synergies": []
+        },
+        "skill_perform_sing": {
+          "id": "skill_perform_sing",
+          "label": {
+            "en": "Perform (Sing)",
+            "fr": "Représentation (Chant)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (sing) covers all vocal performance including singing and chanting.",
+            "fr": "Représentation (chant) couvre toutes les performances vocales, y compris le chant et les chants religieux."
+          },
+          "synergies": []
+        },
+        "skill_perform_string_instruments": {
+          "id": "skill_perform_string_instruments",
+          "label": {
+            "en": "Perform (String Instruments)",
+            "fr": "Représentation (Instruments à cordes)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (string instruments) covers lute, harp, and other string instruments.",
+            "fr": "Représentation (instruments à cordes) couvre le luth, la harpe et d'autres instruments à cordes."
+          },
+          "synergies": []
+        },
+        "skill_perform_wind_instruments": {
+          "id": "skill_perform_wind_instruments",
+          "label": {
+            "en": "Perform (Wind Instruments)",
+            "fr": "Représentation (Instruments à vent)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (wind instruments) covers flute, horn, and other wind instruments.",
+            "fr": "Représentation (instruments à vent) couvre la flûte, le cor et d'autres instruments à vent."
+          },
+          "synergies": []
+        },
+        "skill_perform_percussion_instruments": {
+          "id": "skill_perform_percussion_instruments",
+          "label": {
+            "en": "Perform (Percussion Instruments)",
+            "fr": "Représentation (Instruments à percussion)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (percussion instruments) covers drums, cymbals, and other percussion instruments.",
+            "fr": "Représentation (instruments à percussion) couvre les tambours, les cymbales et d'autres instruments à percussion."
+          },
+          "synergies": []
+        },
+        "skill_perform_keyboard_instruments": {
+          "id": "skill_perform_keyboard_instruments",
+          "label": {
+            "en": "Perform (Keyboard Instruments)",
+            "fr": "Représentation (Instruments à clavier)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (keyboard instruments) covers keyboard instruments such as the harpsichord.",
+            "fr": "Représentation (instruments à clavier) couvre les instruments à clavier tels que le clavecin."
+          },
+          "synergies": []
+        },
+        "skill_perform_comedy": {
+          "id": "skill_perform_comedy",
+          "label": {
+            "en": "Perform (Comedy)",
+            "fr": "Représentation (Comédie bouffonne)"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "parentSkillId": "skill_perform",
+          "description": {
+            "en": "Perform (comedy) covers slapstick, comedy acts, and jesters.",
+            "fr": "Représentation (comédie bouffonne) couvre la comédie physique, les numéros comiques et les bouffons."
+          },
+          "synergies": []
+        },
+        "skill_profession": {
+          "id": "skill_profession",
+          "label": {
+            "en": "Profession",
+            "fr": "Profession"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "isVariant": true,
+          "variants": [
+            "skill_profession_herbalist",
+            "skill_profession_sailor",
+            "skill_profession_soldier",
+            "skill_profession_scribe",
+            "skill_profession_merchant",
+            "skill_profession_cook",
+            "skill_profession_farmer",
+            "skill_profession_hunter",
+            "skill_profession_miner",
+            "skill_profession_shepherd",
+            "skill_profession_tanner",
+            "skill_profession_woodcutter"
+          ],
+          "description": {
+            "en": "Like Craft, Knowledge, and Perform, Profession is actually a number of separate skills. Unlike Craft, Profession does not cover the creation of goods (that's covered by Craft). Instead, Profession covers an occupation. You can earn half your check result in gold pieces per week from practicing your Profession.",
+            "fr": "Comme Artisanat, Connaissance et Représentation, Profession représente en réalité plusieurs compétences distinctes. Contrairement à Artisanat, Profession ne couvre pas la création de marchandises (c'est la compétence Artisanat). La Profession couvre une occupation. Vous pouvez gagner la moitié du résultat de votre test en pièces d'or par semaine en pratiquant votre Profession."
+          },
+          "synergies": []
+        },
+        "skill_ride": {
+          "id": "skill_ride",
+          "label": {
+            "en": "Ride",
+            "fr": "Équitation"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "If you attempt to ride a creature that is not a horse or similar mount, you take a -5 penalty on your Ride checks. Typical DCs: guide with knees (DC 5), stay in saddle (DC 5), fight with warhorse (DC 10), cover (DC 15), soft fall (DC 15), leap (DC 15), spur mount (DC 10), control mount in battle (DC 20), fast mount/dismount (DC 20).",
+            "fr": "Si vous tentez de monter une créature qui n'est pas un cheval ou une monture similaire, vous subissez un malus de -5 à vos tests d'Équitation. DD typiques : guider avec les genoux (DD 5), rester en selle (DD 5), combattre avec un destrier (DD 10), se couvrir (DD 15), chute souple (DD 15), saut (DD 15), éperonner la monture (DD 10), contrôler la monture au combat (DD 20), monter/démonter rapidement (DD 20)."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_handle_animal",
+              "minRanks": 5,
+              "targetSkillId": "skill_ride",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_search": {
+          "id": "skill_search",
+          "label": {
+            "en": "Search",
+            "fr": "Fouille"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You generally must be within 10 feet of the object or surface to be searched. A successful Search check allows you to notice something unusual. A Search check can be used to find a hidden notice on a wall (DC 20), a secret door (DC 20–30), or a cache (DC 20). Rogues can also use it to find traps. Elves have a +2 racial bonus.",
+            "fr": "Vous devez généralement être à moins de 3 mètres de l'objet ou de la surface à fouiller. Un test de Fouille réussi vous permet de remarquer quelque chose d'inhabituel. Un test de Fouille peut être utilisé pour trouver une affiche cachée sur un mur (DD 20), une porte secrète (DD 20-30) ou une cachette (DD 20). Les roublards peuvent également l'utiliser pour trouver des pièges. Les elfes ont un bonus racial de +2."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_search",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "find_or_follow_tracks"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_architecture",
+              "minRanks": 5,
+              "targetSkillId": "skill_search",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "finding_secret_doors_or_hidden_compartments"
+            }
+          ]
+        },
+        "skill_sense_motive": {
+          "id": "skill_sense_motive",
+          "label": {
+            "en": "Sense Motive",
+            "fr": "Psychologie"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "A successful Sense Motive check lets you avoid being bluffed. You can detect lies made to your face (DC 20), gauge the trustworthiness of someone, or simply notice whether someone seems nervous or ill-at-ease (DC 10). You can also attempt to read a person's body language.",
+            "fr": "Un test de Psychologie réussi vous permet d'éviter d'être abusé par un Bluff. Vous pouvez détecter les mensonges directs (DD 20), évaluer la fiabilité de quelqu'un, ou simplement remarquer si quelqu'un semble nerveux ou mal à l'aise (DD 10). Vous pouvez également tenter de lire le langage corporel d'une personne."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_sense_motive",
+              "minRanks": 5,
+              "targetSkillId": "skill_diplomacy",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_sleight_of_hand": {
+          "id": "skill_sleight_of_hand",
+          "label": {
+            "en": "Sleight of Hand",
+            "fr": "Escamotage"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "A DC 10 Sleight of Hand check lets you palm a coin-sized, unattended object. Picking pockets is a DC 20 check. The check is opposed by the target's Spot check if they could notice. Attempting a Sleight of Hand check without at least 1 rank in the skill results in a -5 penalty.",
+            "fr": "Un test d'Escamotage DD 10 vous permet de faire disparaître un objet de la taille d'une pièce de monnaie non gardé. Faire les poches est un test DD 20. Le test est opposé au test d'Observation de la cible si elle pourrait le remarquer. Tenter un test d'Escamotage sans au moins 1 rang dans la compétence entraîne un malus de -5."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_bluff",
+              "minRanks": 5,
+              "targetSkillId": "skill_sleight_of_hand",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_speak_language": {
+          "id": "skill_speak_language",
+          "label": {
+            "en": "Speak Language",
+            "fr": "Langues"
+          },
+          "keyAbility": null,
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Speak Language has no checks. Every time you put a rank into this skill, you learn to speak and read one new language. You start knowing your racial language and Common. Half-elves can speak both Elven and Common as well as a human language. Characters with high Intelligence scores can learn bonus languages. Literate characters who know a language can also read and write it.",
+            "fr": "La compétence Langues n'a pas de test. Chaque fois que vous investissez un rang dans cette compétence, vous apprenez à parler et lire une nouvelle langue. Vous commencez avec la langue de votre race et le Commun. Les demi-elfes peuvent parler à la fois l'Elfique et le Commun ainsi qu'une langue humaine. Les personnages avec un score d'Intelligence élevé peuvent apprendre des langues supplémentaires. Les personnages sachant lire et écrire peuvent lire et écrire un langage qu'ils connaissent."
+          },
+          "synergies": []
+        },
+        "skill_spellcraft": {
+          "id": "skill_spellcraft",
+          "label": {
+            "en": "Spellcraft",
+            "fr": "Art de la magie"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Use this skill to identify spells as they are cast or spells already in place. To identify a spell, the DC is 15 + spell level. You can decipher scrolls (DC 20 + spell level), learn a spell from a spellbook (DC 15 + spell level), prepare spells from another caster's spellbook (DC 15 + spell level), or identify a magic item using detect magic (DC 15 + item caster level).",
+            "fr": "Utilisez cette compétence pour identifier des sorts lors de leur incantation ou des sorts déjà en place. Pour identifier un sort, le DD est de 15 + niveau du sort. Vous pouvez déchiffrer des parchemins (DD 20 + niveau du sort), apprendre un sort d'un grimoire (DD 15 + niveau du sort), préparer des sorts à partir du grimoire d'un autre lanceur de sorts (DD 15 + niveau du sort), ou identifier un objet magique avec détection de la magie (DD 15 + niveau de lanceur de sorts de l'objet)."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_arcana",
+              "minRanks": 5,
+              "targetSkillId": "skill_spellcraft",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_use_magic_device",
+              "minRanks": 5,
+              "targetSkillId": "skill_spellcraft",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "decipher_spells_on_scrolls"
+            },
+            {
+              "sourceSkillId": "skill_spellcraft",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_magic_device",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "use_magic_device_scrolls"
+            }
+          ]
+        },
+        "skill_spot": {
+          "id": "skill_spot",
+          "label": {
+            "en": "Spot",
+            "fr": "Observation"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "A Spot check is opposed by the Hide check of the creature or person you're trying to notice, or by a DC that represents the general difficulty of noticing something. Spot is used to notice things at a distance, detect hidden creatures nearby, or notice detail. Elves have a +2 racial bonus. A -1 penalty applies per 10 feet of distance between you and the thing you're trying to spot.",
+            "fr": "Un test d'Observation est opposé au test de Discrétion de la créature ou de la personne que vous essayez de remarquer, ou par un DD représentant la difficulté générale à remarquer quelque chose. Observation est utilisé pour remarquer des choses à distance, détecter des créatures cachées à proximité ou noter des détails. Les elfes ont un bonus racial de +2. Un malus de -1 s'applique par tranche de 3 mètres entre vous et ce que vous essayez de remarquer."
+          },
+          "synergies": []
+        },
+        "skill_survival": {
+          "id": "skill_survival",
+          "label": {
+            "en": "Survival",
+            "fr": "Survie"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can keep yourself and others safe and fed in the wild. DCs: get along in the wild (DC 10), find food and water (DC 10), avoid getting lost (DC 15), avoid natural hazards (DC 15), predict weather up to 24 hours ahead (DC 15), follow tracks (DC varies), care for the wounded (DC 15). A Ranger has Track as a bonus feat.",
+            "fr": "Vous pouvez vous maintenir en vie ainsi que d'autres personnes dans la nature sauvage. DD : subsister dans la nature (DD 10), trouver nourriture et eau (DD 10), éviter de se perdre (DD 15), éviter les risques naturels (DD 15), prévoir la météo jusqu'à 24 heures à l'avance (DD 15), suivre une piste (DD variable), soigner les blessés (DD 15). Un rôdeur dispose de Pistage comme don supplémentaire."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_survival",
+              "minRanks": 5,
+              "targetSkillId": "skill_knowledge_nature",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_dungeoneering",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_underground"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_nature",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_aboveground"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_geography",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "avoid_getting_lost_or_natural_hazards"
+            },
+            {
+              "sourceSkillId": "skill_knowledge_planes",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "survival_on_other_planes"
+            },
+            {
+              "sourceSkillId": "skill_search",
+              "minRanks": 5,
+              "targetSkillId": "skill_survival",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "find_or_follow_tracks"
+            }
+          ]
+        },
+        "skill_swim": {
+          "id": "skill_swim",
+          "label": {
+            "en": "Swim",
+            "fr": "Natation"
+          },
+          "keyAbility": "stat_strength",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "Make a Swim check once per round while you are in the water. Success means you may swim at up to one-quarter your speed (as a move action) or one-half your speed (as a full-round action). A character who fails by 4 or less can't move. A failure by 5 or more means the character goes under water. DC 10 for calm water, DC 15 for rough water, DC 20 for stormy water.",
+            "fr": "Effectuez un test de Natation une fois par round lorsque vous êtes dans l'eau. Un succès signifie que vous pouvez nager jusqu'au quart de votre vitesse (comme une action de mouvement) ou à la moitié de votre vitesse (comme une action complexe). Un personnage qui échoue de 4 ou moins ne peut pas se déplacer. Un échec de 5 ou plus signifie que le personnage coule. DD 10 pour l'eau calme, DD 15 pour les eaux agitées, DD 20 pour les eaux tempêtueuses."
+          },
+          "synergies": []
+        },
+        "skill_tumble": {
+          "id": "skill_tumble",
+          "label": {
+            "en": "Tumble",
+            "fr": "Acrobaties"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": true,
+          "description": {
+            "en": "You can fall safely, move past opponents, or roll to minimize the effect of a fall. You can tumble at one-half speed as part of normal movement, provoking no attacks of opportunity. DC 15 to tumble past a foe (no AoO), DC 25 to tumble through a foe's space, DC 15 to fall safely from up to 10 feet.",
+            "fr": "Vous pouvez tomber en sécurité, passer devant des adversaires, ou rouler pour minimiser l'effet d'une chute. Vous pouvez faire des acrobaties à la moitié de votre vitesse dans le cadre d'un déplacement normal, sans provoquer d'attaques d'opportunité. DD 15 pour passer devant un ennemi (pas d'AO), DD 25 pour traverser l'espace d'un ennemi, DD 15 pour tomber en sécurité depuis moins de 3 mètres."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_tumble",
+              "minRanks": 5,
+              "targetSkillId": "skill_balance",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_tumble",
+              "minRanks": 5,
+              "targetSkillId": "skill_jump",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_jump",
+              "minRanks": 5,
+              "targetSkillId": "skill_tumble",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_use_magic_device": {
+          "id": "skill_use_magic_device",
+          "label": {
+            "en": "Use Magic Device",
+            "fr": "Utilisation d'objets magiques"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You can use this skill to read a spell from a scroll or activate a magic item. DC 25 to activate blindly, DC 20 to decipher a written spell, DC 20 to use a scroll (if it's on your spell list, 15 + spell level to cast it, otherwise 20 + spell level), DC 20 to use a wand, DC 25 to emulate a class feature, DC 15 to emulate an ability score of 11.",
+            "fr": "Vous pouvez utiliser cette compétence pour lire un sort à partir d'un parchemin ou activer un objet magique. DD 25 pour activer à l'aveugle, DD 20 pour déchiffrer un sort écrit, DD 20 pour utiliser un parchemin (si le sort est dans votre liste, 15 + niveau du sort pour le lancer, sinon 20 + niveau du sort), DD 20 pour utiliser une baguette, DD 25 pour émuler une capacité de classe, DD 15 pour émuler un score de caractéristique de 11."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_spellcraft",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_magic_device",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "use_magic_device_scrolls"
+            },
+            {
+              "sourceSkillId": "skill_decipher_script",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_magic_device",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "use_magic_device_scrolls"
+            },
+            {
+              "sourceSkillId": "skill_use_magic_device",
+              "minRanks": 5,
+              "targetSkillId": "skill_spellcraft",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "decipher_spells_on_scrolls"
+            }
+          ]
+        },
+        "skill_use_rope": {
+          "id": "skill_use_rope",
+          "label": {
+            "en": "Use Rope",
+            "fr": "Utilisation de cordes"
+          },
+          "keyAbility": "stat_dexterity",
+          "canBeUsedUntrained": true,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "With a DC 10 check, you can tie a person's hands behind their back. You can also use a rope to lasso a target (DC 20), fasten a rope to a grappling hook (DC 10), splice two ropes together (DC 15), and use a rope in various other ways. A creature bound with a rope can escape with an Escape Artist check against your Use Rope check + 10.",
+            "fr": "Avec un test DD 10, vous pouvez lier les mains d'une personne dans le dos. Vous pouvez également utiliser une corde pour attraper une cible au lasso (DD 20), fixer une corde à un grappin (DD 10), épisser deux cordes ensemble (DD 15), et utiliser une corde de diverses autres façons. Une créature ligotée avec une corde peut s'échapper avec un test d'Évasion contre votre test d'Utilisation de cordes + 10."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_use_rope",
+              "minRanks": 5,
+              "targetSkillId": "skill_climb",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "climbing_rope_or_knotted_rope"
+            },
+            {
+              "sourceSkillId": "skill_use_rope",
+              "minRanks": 5,
+              "targetSkillId": "skill_escape_artist",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "escaping_rope_bonds"
+            },
+            {
+              "sourceSkillId": "skill_escape_artist",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_rope",
+              "bonus": 2,
+              "type": "synergy",
+              "condition": "binding_someone"
+            }
+          ]
+        },
+        "skill_autohypnosis": {
+          "id": "skill_autohypnosis",
+          "label": {
+            "en": "Autohypnosis",
+            "fr": "Autohypnose"
+          },
+          "keyAbility": "stat_wisdom",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "You have trained your mind to gain mastery over your body and the mind's own deepest capabilities. Check uses: Ignore caltrop wound (DC 18), Memorize information (DC 15), Resist dying (DC 20), Resist fear (fear effect DC), Tolerate poison (poison DC), Willpower at 0 HP (DC 20). If you have the Autonomous feat, you get a +2 bonus on Autohypnosis checks.",
+            "fr": "Vous avez entraîné votre esprit pour maîtriser votre corps et les capacités les plus profondes de l'esprit. Utilisations : Ignorer une blessure de crapaudine (DD 18), Mémoriser des informations (DD 15), Résister à la mort (DD 20), Résister à la peur (DD de l'effet), Tolérer un poison (DD du poison), Force de volonté à 0 PV (DD 20)."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_autohypnosis",
+              "minRanks": 5,
+              "targetSkillId": "skill_knowledge_psionics",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_concentration",
+              "minRanks": 5,
+              "targetSkillId": "skill_autohypnosis",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_knowledge_psionics": {
+          "id": "skill_knowledge_psionics",
+          "label": {
+            "en": "Knowledge (Psionics)",
+            "fr": "Connaissance (psionique)"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Knowledge (psionics) covers ancient mysteries, psionic traditions, psychic symbols, cryptic phrases, astral constructs, and psionic races. You can use this skill to identify psionic monsters and their special powers or vulnerabilities. An untrained check is simply an Intelligence check — you know only common knowledge (DC 10 or lower) without training. If you have the Autonomous feat, you get a +2 bonus.",
+            "fr": "La Connaissance (psionique) couvre les mystères anciens, les traditions psioniques, les symboles psychiques, les phrases cryptiques, les constructions astrales et les races psioniques. Vous pouvez utiliser cette compétence pour identifier les monstres psioniques et leurs capacités ou vulnérabilités spéciales."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_psionics",
+              "minRanks": 5,
+              "targetSkillId": "skill_psicraft",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_autohypnosis",
+              "minRanks": 5,
+              "targetSkillId": "skill_knowledge_psionics",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_psicraft": {
+          "id": "skill_psicraft",
+          "label": {
+            "en": "Psicraft",
+            "fr": "Science psionique"
+          },
+          "keyAbility": "stat_intelligence",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Use this skill to identify powers as they are manifested or powers already in place. DC table: 15 + power level (identify power being manifested; identify discipline of detected aura; address power stone); 20 + power level (identify power already in effect; identify psionic materials); 25 + power level (identify power after making saving throw against it); 25 (identify psionic tattoo, 1 min); 20 (draw diagram for psionic dimensional anchor). A psion gets +2 on checks within their discipline. Psionic Affinity feat grants +2.",
+            "fr": "Utilisez cette compétence pour identifier les pouvoirs lors de leur manifestation ou des pouvoirs déjà en place. DD : 15 + niveau du pouvoir (identifier un pouvoir en cours de manifestation; identifier la discipline d'une aura détectée; déchiffrer une pierre de pouvoir); 20 + niveau du pouvoir (identifier un pouvoir déjà en place). Un psion gagne +2 pour les tests liés à sa discipline. Le don Affinité psionique accorde +2."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_knowledge_psionics",
+              "minRanks": 5,
+              "targetSkillId": "skill_psicraft",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_psicraft",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_psionic_device",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        },
+        "skill_use_psionic_device": {
+          "id": "skill_use_psionic_device",
+          "label": {
+            "en": "Use Psionic Device",
+            "fr": "Utilisation d'objet psionique"
+          },
+          "keyAbility": "stat_charisma",
+          "canBeUsedUntrained": false,
+          "appliesArmorCheckPenalty": false,
+          "description": {
+            "en": "Use this skill to activate psionic devices including power stones and dorjes that you otherwise could not activate. DC table: 25 (activate blindly); 25 + power level (address power stone); see text (emulate ability score); 30 (emulate alignment); 20 (emulate class feature); 25 (emulate race); 20 (use dorje); 20 + manifester level (use power stone). Cannot take 10 with this skill. Cannot aid another. Psionic Affinity feat grants +2.",
+            "fr": "Utilisez cette compétence pour activer des objets psioniques, notamment des pierres de pouvoir et des dorjes, que vous ne pourriez pas activer autrement. DD : 25 (activation aveugle); 25 + niveau du pouvoir (déchiffrer une pierre de pouvoir); selon contexte (émuler une valeur de caractéristique); 30 (émuler un alignement); 20 (émuler une aptitude de classe); 25 (émuler une race); 20 (utiliser un dorje); 20 + niveau de manifestation (utiliser une pierre de pouvoir)."
+          },
+          "synergies": [
+            {
+              "sourceSkillId": "skill_psicraft",
+              "minRanks": 5,
+              "targetSkillId": "skill_use_psionic_device",
+              "bonus": 2,
+              "type": "synergy"
+            },
+            {
+              "sourceSkillId": "skill_use_psionic_device",
+              "minRanks": 5,
+              "targetSkillId": "skill_psicraft",
+              "bonus": 2,
+              "type": "synergy"
+            }
+          ]
+        }
       }
     }
-  }
-]
+  ]
+}

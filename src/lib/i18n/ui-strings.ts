@@ -19,7 +19,7 @@
  *   Examples: `combat.hp.title`, `feats.empty_state`, `sidebar.campaigns`
  */
 
-import type { LocalizedString, SupportedLanguage } from '../types/i18n';
+import type { LocalizedString } from '../types/i18n';
 import { t } from '../utils/formatters';
 
 // ---------------------------------------------------------------------------
@@ -600,6 +600,28 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'dice.damage_routes_to':        { en: 'Routes to:', fr: 'Affecte :' },
   'dice.critical_wound':          { en: '→ WOUND POINTS', fr: '→ POINTS DE BLESSURE' },
   'dice.normal_vitality':         { en: '→ Vitality Points', fr: '→ Points de vitalité' },
+
+  // ==========================================================================
+  // LANGUAGE SELECTOR
+  // ==========================================================================
+  'lang.label':                   { en: 'Language', fr: 'Langue' },
+  'lang.select_tooltip':          { en: 'Switch display language', fr: 'Changer la langue d\'affichage' },
+
+  // Built-in language names (en + fr translations).
+  // Community files may provide language codes not listed here; those will use
+  // the code itself (e.g. "es") as their display label in the dropdown.
+  'lang.en':                      { en: 'English', fr: 'Anglais' },
+  'lang.fr':                      { en: 'French', fr: 'Français' },
+  'lang.de':                      { en: 'German', fr: 'Allemand' },
+  'lang.es':                      { en: 'Spanish', fr: 'Espagnol' },
+  'lang.it':                      { en: 'Italian', fr: 'Italien' },
+  'lang.pt':                      { en: 'Portuguese', fr: 'Portugais' },
+  'lang.nl':                      { en: 'Dutch', fr: 'Néerlandais' },
+  'lang.pl':                      { en: 'Polish', fr: 'Polonais' },
+  'lang.cs':                      { en: 'Czech', fr: 'Tchèque' },
+  'lang.ja':                      { en: 'Japanese', fr: 'Japonais' },
+  'lang.ko':                      { en: 'Korean', fr: 'Coréen' },
+  'lang.zh':                      { en: 'Chinese', fr: 'Chinois' },
 };
 
 // ---------------------------------------------------------------------------
@@ -617,7 +639,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
  * ui('combat.hp.title', 'fr') // → "Points de vie"
  * ui('combat.hp.title', 'en') // → "Hit Points"
  */
-export function ui(key: string, lang: SupportedLanguage = 'en'): string {
+export function ui(key: string, lang: string = 'en'): string {
   const entry = UI_STRINGS[key];
   if (!entry) {
     console.warn(`[i18n] Missing UI string key: "${key}"`);

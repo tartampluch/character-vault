@@ -43,8 +43,12 @@ export const ABILITY_ABBRS: Readonly<Record<ID, { en: string; fr: string }>> = {
  * Returns the localized 3-letter abbreviation for an ability score ID.
  *
  * @param id       - The ability score ID (e.g. 'stat_strength').
- * @param language - The current UI language ('en' | 'fr').
+ * @param language - The current UI language (any string; falls back to 'en' for
+ *                   unknown languages since ABILITY_ABBRS only defines 'en' and 'fr').
  */
-export function getAbilityAbbr(id: ID, language: 'en' | 'fr'): string {
-  return ABILITY_ABBRS[id]?.[language] ?? id.replace('stat_', '').toUpperCase().slice(0, 3);
+export function getAbilityAbbr(id: ID, language: string): string {
+  const abbrs = ABILITY_ABBRS[id];
+  if (!abbrs) return id.replace('stat_', '').toUpperCase().slice(0, 3);
+  // Use the requested language if present; fall back to English.
+  return (abbrs as Record<string, string>)[language] ?? abbrs['en'];
 }

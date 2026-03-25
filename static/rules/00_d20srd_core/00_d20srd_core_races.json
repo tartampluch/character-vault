@@ -1,1137 +1,1286 @@
-[
-  {
-    "id": "race_human",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Human",
-      "fr": "Humain"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "race_human",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Human",
+        "fr": "Humain"
+      },
+      "description": {
+        "en": "Humans are the most adaptable, flexible, and ambitious people among the common races. They have widely varying tastes, morals, and customs in the many different lands where they have settled.",
+        "fr": "Les humains sont les plus adaptables, flexibles et ambitieux parmi les races courantes. Leurs goûts, mœurs et coutumes varient considérablement dans les nombreuses terres où ils se sont installés."
+      },
+      "tags": [
+        "race",
+        "humanoid",
+        "size_medium",
+        "race_human"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "human_speed",
+          "sourceId": "race_human",
+          "targetId": "attributes.speed_land",
+          "value": 30,
+          "type": "base",
+          "sourceName": {
+            "en": "Human",
+            "fr": "Humain"
+          }
+        },
+        {
+          "id": "human_bonus_skill_1st",
+          "sourceId": "race_human",
+          "targetId": "attributes.bonus_skill_points_1st_level",
+          "value": 4,
+          "type": "racial",
+          "sourceName": {
+            "en": "Human Versatility",
+            "fr": "Polyvalence humaine"
+          }
+        },
+        {
+          "id": "human_bonus_skill_per_level",
+          "sourceId": "race_human",
+          "targetId": "attributes.bonus_skill_points_per_level",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Human Versatility",
+            "fr": "Polyvalence humaine"
+          }
+        },
+        {
+          "id": "human_bonus_feat",
+          "sourceId": "race_human",
+          "targetId": "attributes.bonus_feat_slots",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Human Bonus Feat",
+            "fr": "Don supplémentaire humain"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "language_common"
+      ],
+      "favoredClass": "any",
+      "choices": []
     },
-    "description": {
-      "en": "Humans are the most adaptable, flexible, and ambitious people among the common races. They have widely varying tastes, morals, and customs in the many different lands where they have settled.",
-      "fr": "Les humains sont les plus adaptables, flexibles et ambitieux parmi les races courantes. Leurs goûts, mœurs et coutumes varient considérablement dans les nombreuses terres où ils se sont installés."
+    {
+      "id": "race_dwarf",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dwarf",
+        "fr": "Nain"
+      },
+      "description": {
+        "en": "Dwarves are known for their skill in warfare, their ability to withstand physical and magical punishment, their hard work, and their capacity for drinking ale. Dwarves are slow to joke around with those they do not know well.",
+        "fr": "Les nains sont connus pour leur habileté au combat, leur capacité à résister aux punitions physiques et magiques, leur travail acharné et leur aptitude à boire de la bière. Les nains sont lents à plaisanter avec ceux qu'ils ne connaissent pas bien."
+      },
+      "tags": [
+        "race",
+        "humanoid",
+        "size_medium",
+        "race_dwarf"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "dwarf_con_bonus",
+          "sourceId": "race_dwarf",
+          "targetId": "attributes.stat_constitution",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf",
+            "fr": "Nain"
+          }
+        },
+        {
+          "id": "dwarf_cha_penalty",
+          "sourceId": "race_dwarf",
+          "targetId": "attributes.stat_charisma",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf",
+            "fr": "Nain"
+          }
+        },
+        {
+          "id": "dwarf_speed",
+          "sourceId": "race_dwarf",
+          "targetId": "attributes.speed_land",
+          "value": 20,
+          "type": "base",
+          "sourceName": {
+            "en": "Dwarf",
+            "fr": "Nain"
+          }
+        },
+        {
+          "id": "dwarf_save_vs_poison",
+          "sourceId": "race_dwarf",
+          "targetId": "saves.all",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Poison Resistance",
+            "fr": "Résistance naine au poison"
+          },
+          "situationalContext": "vs_poison"
+        },
+        {
+          "id": "dwarf_save_vs_spells",
+          "sourceId": "race_dwarf",
+          "targetId": "saves.all",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Spell Resistance",
+            "fr": "Résistance naine aux sorts"
+          },
+          "situationalContext": "vs_spells_and_spell_like"
+        },
+        {
+          "id": "dwarf_attack_vs_orcs",
+          "sourceId": "race_dwarf",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Enmity",
+            "fr": "Inimitié naine"
+          },
+          "situationalContext": "vs_orc_goblinoid"
+        },
+        {
+          "id": "dwarf_dodge_vs_giants",
+          "sourceId": "race_dwarf",
+          "targetId": "combatStats.ac_normal",
+          "value": 4,
+          "type": "dodge",
+          "sourceName": {
+            "en": "Dwarf vs Giants",
+            "fr": "Nain vs Géants"
+          },
+          "situationalContext": "vs_giant"
+        },
+        {
+          "id": "dwarf_appraise_stone_metal",
+          "sourceId": "race_dwarf",
+          "targetId": "skills.skill_appraise",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Stonecunning",
+            "fr": "Sens de la pierre nain"
+          },
+          "situationalContext": "appraise_stone_metal_items"
+        },
+        {
+          "id": "dwarf_craft_stone_metal",
+          "sourceId": "race_dwarf",
+          "targetId": "skills.skill_craft",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Stonecunning",
+            "fr": "Sens de la pierre nain"
+          },
+          "situationalContext": "craft_stone_metal_items"
+        },
+        {
+          "id": "dwarf_search_stonework",
+          "sourceId": "race_dwarf",
+          "targetId": "skills.skill_search",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Stonecunning",
+            "fr": "Sens de la pierre nain"
+          },
+          "situationalContext": "unusual_stonework"
+        },
+        {
+          "id": "dwarf_stability",
+          "sourceId": "race_dwarf",
+          "targetId": "combatStats.stability_check",
+          "value": 4,
+          "type": "racial",
+          "sourceName": {
+            "en": "Dwarf Stability",
+            "fr": "Stabilité naine"
+          },
+          "situationalContext": "vs_bull_rush_or_trip_on_ground"
+        }
+      ],
+      "grantedFeatures": [
+        "sense_darkvision_60ft",
+        "racial_feature_dwarf_weapon_familiarity",
+        "language_common",
+        "language_dwarven",
+        "racial_feature_dwarf_stonecunning_passive"
+      ],
+      "favoredClass": "class_fighter",
+      "choices": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_medium",
-      "race_human"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "human_speed",
-        "sourceId": "race_human",
-        "targetId": "attributes.speed_land",
-        "value": 30,
-        "type": "base",
-        "sourceName": {
-          "en": "Human",
-          "fr": "Humain"
-        }
+    {
+      "id": "race_elf",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Elf",
+        "fr": "Elfe"
       },
-      {
-        "id": "human_bonus_skill_1st",
-        "sourceId": "race_human",
-        "targetId": "attributes.bonus_skill_points_1st_level",
-        "value": 4,
-        "type": "racial",
-        "sourceName": {
-          "en": "Human Versatility",
-          "fr": "Polyvalence humaine"
-        }
+      "description": {
+        "en": "Elves are known for their poetry, song, and magical arts, but when danger threatens they show great skill with weapons and strategy. Elves can live to be over 700 years old, and by human standards they are slow to make friends and enemies.",
+        "fr": "Les elfes sont connus pour leur poésie, leur chant et leurs arts magiques, mais lorsque le danger menace, ils montrent une grande habileté avec les armes et la stratégie. Les elfes peuvent vivre plus de 700 ans, et selon les standards humains, ils sont lents à se faire des amis et des ennemis."
       },
-      {
-        "id": "human_bonus_skill_per_level",
-        "sourceId": "race_human",
-        "targetId": "attributes.bonus_skill_points_per_level",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Human Versatility",
-          "fr": "Polyvalence humaine"
+      "tags": [
+        "race",
+        "humanoid",
+        "size_medium",
+        "race_elf"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "elf_dex_bonus",
+          "sourceId": "race_elf",
+          "targetId": "attributes.stat_dexterity",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf",
+            "fr": "Elfe"
+          }
+        },
+        {
+          "id": "elf_con_penalty",
+          "sourceId": "race_elf",
+          "targetId": "attributes.stat_constitution",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf",
+            "fr": "Elfe"
+          }
+        },
+        {
+          "id": "elf_speed",
+          "sourceId": "race_elf",
+          "targetId": "attributes.speed_land",
+          "value": 30,
+          "type": "base",
+          "sourceName": {
+            "en": "Elf",
+            "fr": "Elfe"
+          }
+        },
+        {
+          "id": "elf_enchantment_save_fort",
+          "sourceId": "race_elf",
+          "targetId": "saves.fortitude",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Enchantment Resistance",
+            "fr": "Résistance elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "elf_enchantment_save_ref",
+          "sourceId": "race_elf",
+          "targetId": "saves.reflex",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Enchantment Resistance",
+            "fr": "Résistance elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "elf_enchantment_save_will",
+          "sourceId": "race_elf",
+          "targetId": "saves.will",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Enchantment Resistance",
+            "fr": "Résistance elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "elf_listen",
+          "sourceId": "race_elf",
+          "targetId": "skills.skill_listen",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Keen Senses",
+            "fr": "Sens aiguisés elfiques"
+          }
+        },
+        {
+          "id": "elf_search",
+          "sourceId": "race_elf",
+          "targetId": "skills.skill_search",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Keen Senses",
+            "fr": "Sens aiguisés elfiques"
+          }
+        },
+        {
+          "id": "elf_spot",
+          "sourceId": "race_elf",
+          "targetId": "skills.skill_spot",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Elf Keen Senses",
+            "fr": "Sens aiguisés elfiques"
+          }
         }
-      },
-      {
-        "id": "human_bonus_feat",
-        "sourceId": "race_human",
-        "targetId": "attributes.bonus_feat_slots",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Human Bonus Feat",
-          "fr": "Don supplémentaire humain"
-        }
-      }
-    ],
-    "grantedFeatures": [
-      "language_common"
-    ],
-    "favoredClass": "any",
-    "choices": []
-  },
-  {
-    "id": "race_dwarf",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Dwarf",
-      "fr": "Nain"
+      ],
+      "grantedFeatures": [
+        "immunity_sleep_magic",
+        "sense_low_light_vision",
+        "proficiency_longsword",
+        "proficiency_rapier",
+        "proficiency_longbow",
+        "proficiency_shortbow",
+        "language_common",
+        "language_elven",
+        "racial_feature_elf_secret_door_detection"
+      ],
+      "favoredClass": "class_wizard",
+      "choices": []
     },
-    "description": {
-      "en": "Dwarves are known for their skill in warfare, their ability to withstand physical and magical punishment, their hard work, and their capacity for drinking ale. Dwarves are slow to joke around with those they do not know well.",
-      "fr": "Les nains sont connus pour leur habileté au combat, leur capacité à résister aux punitions physiques et magiques, leur travail acharné et leur aptitude à boire de la bière. Les nains sont lents à plaisanter avec ceux qu'ils ne connaissent pas bien."
+    {
+      "id": "race_gnome",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Gnome",
+        "fr": "Gnome"
+      },
+      "description": {
+        "en": "Gnomes are welcome everywhere as technicians, alchemists, and inventors. Despite the demand for their skills, most gnomes prefer to remain among their own kind, living in comfortable burrows beneath rolling, wooded hills where animals and magical folk are drawn by their mysterious affinity for illusion magic.",
+        "fr": "Les gnomes sont les bienvenus partout en tant que techniciens, alchimistes et inventeurs. Malgré la demande pour leurs compétences, la plupart des gnomes préfèrent rester entre eux, vivant dans des terriers confortables sous des collines boisées ondulantes où les animaux et les gens magiques sont attirés par leur affinité mystérieuse avec la magie des illusions."
+      },
+      "tags": [
+        "race",
+        "humanoid",
+        "size_small",
+        "race_gnome"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "gnome_con_bonus",
+          "sourceId": "race_gnome",
+          "targetId": "attributes.stat_constitution",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome",
+            "fr": "Gnome"
+          }
+        },
+        {
+          "id": "gnome_str_penalty",
+          "sourceId": "race_gnome",
+          "targetId": "attributes.stat_strength",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome",
+            "fr": "Gnome"
+          }
+        },
+        {
+          "id": "gnome_size_ac",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.ac_normal",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "gnome_size_ac_touch",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.ac_touch",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "gnome_size_ac_flat",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.ac_flat_footed",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "gnome_size_attack",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "gnome_size_hide",
+          "sourceId": "race_gnome",
+          "targetId": "skills.skill_hide",
+          "value": 4,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "gnome_speed",
+          "sourceId": "race_gnome",
+          "targetId": "attributes.speed_land",
+          "value": 20,
+          "type": "base",
+          "sourceName": {
+            "en": "Gnome",
+            "fr": "Gnome"
+          }
+        },
+        {
+          "id": "gnome_illusion_save",
+          "sourceId": "race_gnome",
+          "targetId": "saves.all",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome Illusion Resistance",
+            "fr": "Résistance gnome aux illusions"
+          },
+          "situationalContext": "vs_illusion"
+        },
+        {
+          "id": "gnome_illusion_dc",
+          "sourceId": "race_gnome",
+          "targetId": "attributes.spell_dc_illusion",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome Illusion Mastery",
+            "fr": "Maîtrise gnome des illusions"
+          }
+        },
+        {
+          "id": "gnome_attack_kobolds",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome vs Kobolds/Goblinoids",
+            "fr": "Gnome vs Kobolds/Gobelinoïdes"
+          },
+          "situationalContext": "vs_kobold_goblinoid"
+        },
+        {
+          "id": "gnome_dodge_giants",
+          "sourceId": "race_gnome",
+          "targetId": "combatStats.ac_normal",
+          "value": 4,
+          "type": "dodge",
+          "sourceName": {
+            "en": "Gnome vs Giants",
+            "fr": "Gnome vs Géants"
+          },
+          "situationalContext": "vs_giant"
+        },
+        {
+          "id": "gnome_listen",
+          "sourceId": "race_gnome",
+          "targetId": "skills.skill_listen",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome Keen Hearing",
+            "fr": "Ouïe aiguisée gnomique"
+          }
+        },
+        {
+          "id": "gnome_craft_alchemy",
+          "sourceId": "race_gnome",
+          "targetId": "skills.skill_craft_alchemy",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Gnome Alchemy",
+            "fr": "Alchimie gnomique"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "sense_low_light_vision",
+        "racial_feature_gnome_weapon_familiarity",
+        "racial_feature_gnome_speak_with_animals",
+        "racial_feature_gnome_spell_like_abilities",
+        "language_common",
+        "language_gnome"
+      ],
+      "favoredClass": "class_bard",
+      "choices": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_medium",
-      "race_dwarf"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "dwarf_con_bonus",
-        "sourceId": "race_dwarf",
-        "targetId": "attributes.stat_constitution",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf",
-          "fr": "Nain"
+    {
+      "id": "race_half_elf",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Half-Elf",
+        "fr": "Demi-elfe"
+      },
+      "description": {
+        "en": "Wherever humans and elves interact, half-elves come into being. Half-elves have the curiosity and ambition of their human ancestry, while the elven part of their heritage gives them finely honed senses, taste for beauty, and love of art and song.",
+        "fr": "Partout où les humains et les elfes interagissent, les demi-elfes naissent. Les demi-elfes ont la curiosité et l'ambition de leur ascendance humaine, tandis que la partie elfique de leur héritage leur confère des sens finement aiguisés, un goût pour la beauté et un amour de l'art et de la chanson."
+      },
+      "tags": [
+        "race",
+        "humanoid",
+        "size_medium",
+        "race_half_elf"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "half_elf_speed",
+          "sourceId": "race_half_elf",
+          "targetId": "attributes.speed_land",
+          "value": 30,
+          "type": "base",
+          "sourceName": {
+            "en": "Half-Elf",
+            "fr": "Demi-elfe"
+          }
+        },
+        {
+          "id": "half_elf_enchantment_save_fort",
+          "sourceId": "race_half_elf",
+          "targetId": "saves.fortitude",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf Enchantment Resistance",
+            "fr": "Résistance demi-elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "half_elf_enchantment_save_ref",
+          "sourceId": "race_half_elf",
+          "targetId": "saves.reflex",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf Enchantment Resistance",
+            "fr": "Résistance demi-elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "half_elf_enchantment_save_will",
+          "sourceId": "race_half_elf",
+          "targetId": "saves.will",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf Enchantment Resistance",
+            "fr": "Résistance demi-elfique aux enchantements"
+          },
+          "situationalContext": "vs_enchantment"
+        },
+        {
+          "id": "half_elf_listen",
+          "sourceId": "race_half_elf",
+          "targetId": "skills.skill_listen",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf",
+            "fr": "Demi-elfe"
+          }
+        },
+        {
+          "id": "half_elf_search",
+          "sourceId": "race_half_elf",
+          "targetId": "skills.skill_search",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf",
+            "fr": "Demi-elfe"
+          }
+        },
+        {
+          "id": "half_elf_spot",
+          "sourceId": "race_half_elf",
+          "targetId": "skills.skill_spot",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf",
+            "fr": "Demi-elfe"
+          }
+        },
+        {
+          "id": "half_elf_diplomacy",
+          "sourceId": "race_half_elf",
+          "targetId": "skills.skill_diplomacy",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf Social Grace",
+            "fr": "Grâce sociale demi-elfique"
+          }
+        },
+        {
+          "id": "half_elf_gather_information",
+          "sourceId": "race_half_elf",
+          "targetId": "skills.skill_gather_information",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Elf Social Grace",
+            "fr": "Grâce sociale demi-elfique"
+          }
         }
-      },
-      {
-        "id": "dwarf_cha_penalty",
-        "sourceId": "race_dwarf",
-        "targetId": "attributes.stat_charisma",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf",
-          "fr": "Nain"
-        }
-      },
-      {
-        "id": "dwarf_speed",
-        "sourceId": "race_dwarf",
-        "targetId": "attributes.speed_land",
-        "value": 20,
-        "type": "base",
-        "sourceName": {
-          "en": "Dwarf",
-          "fr": "Nain"
-        }
-      },
-      {
-        "id": "dwarf_save_vs_poison",
-        "sourceId": "race_dwarf",
-        "targetId": "saves.all",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Poison Resistance",
-          "fr": "Résistance naine au poison"
-        },
-        "situationalContext": "vs_poison"
-      },
-      {
-        "id": "dwarf_save_vs_spells",
-        "sourceId": "race_dwarf",
-        "targetId": "saves.all",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Spell Resistance",
-          "fr": "Résistance naine aux sorts"
-        },
-        "situationalContext": "vs_spells_and_spell_like"
-      },
-      {
-        "id": "dwarf_attack_vs_orcs",
-        "sourceId": "race_dwarf",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Enmity",
-          "fr": "Inimitié naine"
-        },
-        "situationalContext": "vs_orc_goblinoid"
-      },
-      {
-        "id": "dwarf_dodge_vs_giants",
-        "sourceId": "race_dwarf",
-        "targetId": "combatStats.ac_normal",
-        "value": 4,
-        "type": "dodge",
-        "sourceName": {
-          "en": "Dwarf vs Giants",
-          "fr": "Nain vs Géants"
-        },
-        "situationalContext": "vs_giant"
-      },
-      {
-        "id": "dwarf_appraise_stone_metal",
-        "sourceId": "race_dwarf",
-        "targetId": "skills.skill_appraise",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Stonecunning",
-          "fr": "Sens de la pierre nain"
-        },
-        "situationalContext": "appraise_stone_metal_items"
-      },
-      {
-        "id": "dwarf_craft_stone_metal",
-        "sourceId": "race_dwarf",
-        "targetId": "skills.skill_craft",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Stonecunning",
-          "fr": "Sens de la pierre nain"
-        },
-        "situationalContext": "craft_stone_metal_items"
-      },
-      {
-        "id": "dwarf_search_stonework",
-        "sourceId": "race_dwarf",
-        "targetId": "skills.skill_search",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Stonecunning",
-          "fr": "Sens de la pierre nain"
-        },
-        "situationalContext": "unusual_stonework"
-      },
-      {
-        "id": "dwarf_stability",
-        "sourceId": "race_dwarf",
-        "targetId": "combatStats.stability_check",
-        "value": 4,
-        "type": "racial",
-        "sourceName": {
-          "en": "Dwarf Stability",
-          "fr": "Stabilité naine"
-        },
-        "situationalContext": "vs_bull_rush_or_trip_on_ground"
-      }
-    ],
-    "grantedFeatures": [
-      "sense_darkvision_60ft",
-      "racial_feature_dwarf_weapon_familiarity",
-      "language_common",
-      "language_dwarven",
-      "racial_feature_dwarf_stonecunning_passive"
-    ],
-    "favoredClass": "class_fighter",
-    "choices": []
-  },
-  {
-    "id": "race_elf",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Elf",
-      "fr": "Elfe"
+      ],
+      "grantedFeatures": [
+        "immunity_sleep_magic",
+        "sense_low_light_vision",
+        "racial_feature_elven_blood",
+        "language_common",
+        "language_elven"
+      ],
+      "favoredClass": "any",
+      "choices": []
     },
-    "description": {
-      "en": "Elves are known for their poetry, song, and magical arts, but when danger threatens they show great skill with weapons and strategy. Elves can live to be over 700 years old, and by human standards they are slow to make friends and enemies.",
-      "fr": "Les elfes sont connus pour leur poésie, leur chant et leurs arts magiques, mais lorsque le danger menace, ils montrent une grande habileté avec les armes et la stratégie. Les elfes peuvent vivre plus de 700 ans, et selon les standards humains, ils sont lents à se faire des amis et des ennemis."
+    {
+      "id": "race_half_orc",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Half-Orc",
+        "fr": "Demi-orc"
+      },
+      "description": {
+        "en": "In the wild frontiers, tribes of human and orc barbarians live in uneasy balance, fighting in times of war and trading in times of peace. Half-orcs who are born in the frontier may live with either human or orc parents, but they are nevertheless exposed to both cultures.",
+        "fr": "Dans les frontières sauvages, des tribus de barbares humains et orcs vivent dans un équilibre précaire, se battant en temps de guerre et commerçant en temps de paix. Les demi-orcs nés à la frontière peuvent vivre avec des parents humains ou orcs, mais ils sont néanmoins exposés aux deux cultures."
+      },
+      "tags": [
+        "race",
+        "humanoid",
+        "size_medium",
+        "race_half_orc"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "half_orc_str_bonus",
+          "sourceId": "race_half_orc",
+          "targetId": "attributes.stat_strength",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Orc",
+            "fr": "Demi-orc"
+          }
+        },
+        {
+          "id": "half_orc_int_penalty",
+          "sourceId": "race_half_orc",
+          "targetId": "attributes.stat_intelligence",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Orc",
+            "fr": "Demi-orc"
+          }
+        },
+        {
+          "id": "half_orc_cha_penalty",
+          "sourceId": "race_half_orc",
+          "targetId": "attributes.stat_charisma",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Half-Orc",
+            "fr": "Demi-orc"
+          }
+        },
+        {
+          "id": "half_orc_speed",
+          "sourceId": "race_half_orc",
+          "targetId": "attributes.speed_land",
+          "value": 30,
+          "type": "base",
+          "sourceName": {
+            "en": "Half-Orc",
+            "fr": "Demi-orc"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "sense_darkvision_60ft",
+        "racial_feature_orc_blood",
+        "language_common",
+        "language_orc"
+      ],
+      "favoredClass": "class_barbarian",
+      "choices": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_medium",
-      "race_elf"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "elf_dex_bonus",
-        "sourceId": "race_elf",
-        "targetId": "attributes.stat_dexterity",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf",
-          "fr": "Elfe"
-        }
+    {
+      "id": "race_halfling",
+      "category": "race",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Halfling",
+        "fr": "Halfelin"
       },
-      {
-        "id": "elf_con_penalty",
-        "sourceId": "race_elf",
-        "targetId": "attributes.stat_constitution",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf",
-          "fr": "Elfe"
-        }
+      "description": {
+        "en": "Halflings are clever, capable, and resourceful survivors. They are notoriously curious and show a daring that many larger people can't match. Halflings are practical jokers, and they like nothing better than scaring the wits out of people by hiding in inconvenient places.",
+        "fr": "Les halfelins sont des survivants intelligents, capables et ingénieux. Ils sont notoirement curieux et font preuve d'une audace que de nombreuses créatures plus grandes ne peuvent égaler. Les halfelins sont des plaisantins pratiques, et ils adorent par-dessus tout effrayer les gens en se cachant dans des endroits inconfortables."
       },
-      {
-        "id": "elf_speed",
-        "sourceId": "race_elf",
-        "targetId": "attributes.speed_land",
-        "value": 30,
-        "type": "base",
-        "sourceName": {
-          "en": "Elf",
-          "fr": "Elfe"
-        }
-      },
-      {
-        "id": "elf_enchantment_save_fort",
-        "sourceId": "race_elf",
-        "targetId": "saves.fortitude",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Enchantment Resistance",
-          "fr": "Résistance elfique aux enchantements"
+      "tags": [
+        "race",
+        "humanoid",
+        "size_small",
+        "race_halfling"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "halfling_dex_bonus",
+          "sourceId": "race_halfling",
+          "targetId": "attributes.stat_dexterity",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling",
+            "fr": "Halfelin"
+          }
         },
-        "situationalContext": "vs_enchantment"
-      },
-      {
-        "id": "elf_enchantment_save_ref",
-        "sourceId": "race_elf",
-        "targetId": "saves.reflex",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Enchantment Resistance",
-          "fr": "Résistance elfique aux enchantements"
+        {
+          "id": "halfling_str_penalty",
+          "sourceId": "race_halfling",
+          "targetId": "attributes.stat_strength",
+          "value": -2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling",
+            "fr": "Halfelin"
+          }
         },
-        "situationalContext": "vs_enchantment"
-      },
-      {
-        "id": "elf_enchantment_save_will",
-        "sourceId": "race_elf",
-        "targetId": "saves.will",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Enchantment Resistance",
-          "fr": "Résistance elfique aux enchantements"
+        {
+          "id": "halfling_size_ac",
+          "sourceId": "race_halfling",
+          "targetId": "combatStats.ac_normal",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
         },
-        "situationalContext": "vs_enchantment"
-      },
-      {
-        "id": "elf_listen",
-        "sourceId": "race_elf",
-        "targetId": "skills.skill_listen",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Keen Senses",
-          "fr": "Sens aiguisés elfiques"
+        {
+          "id": "halfling_size_ac_touch",
+          "sourceId": "race_halfling",
+          "targetId": "combatStats.ac_touch",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "halfling_size_ac_flat",
+          "sourceId": "race_halfling",
+          "targetId": "combatStats.ac_flat_footed",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "halfling_size_attack",
+          "sourceId": "race_halfling",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "halfling_size_hide",
+          "sourceId": "race_halfling",
+          "targetId": "skills.skill_hide",
+          "value": 4,
+          "type": "size",
+          "sourceName": {
+            "en": "Small Size",
+            "fr": "Petite taille"
+          }
+        },
+        {
+          "id": "halfling_speed",
+          "sourceId": "race_halfling",
+          "targetId": "attributes.speed_land",
+          "value": 20,
+          "type": "base",
+          "sourceName": {
+            "en": "Halfling",
+            "fr": "Halfelin"
+          }
+        },
+        {
+          "id": "halfling_climb",
+          "sourceId": "race_halfling",
+          "targetId": "skills.skill_climb",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Agility",
+            "fr": "Agilité halfeline"
+          }
+        },
+        {
+          "id": "halfling_jump",
+          "sourceId": "race_halfling",
+          "targetId": "skills.skill_jump",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Agility",
+            "fr": "Agilité halfeline"
+          }
+        },
+        {
+          "id": "halfling_listen",
+          "sourceId": "race_halfling",
+          "targetId": "skills.skill_listen",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Keen Senses",
+            "fr": "Sens aiguisés halfelins"
+          }
+        },
+        {
+          "id": "halfling_move_silently",
+          "sourceId": "race_halfling",
+          "targetId": "skills.skill_move_silently",
+          "value": 2,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Agility",
+            "fr": "Agilité halfeline"
+          }
+        },
+        {
+          "id": "halfling_save_all",
+          "sourceId": "race_halfling",
+          "targetId": "saves.fortitude",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Lucky",
+            "fr": "Chance halfeline"
+          }
+        },
+        {
+          "id": "halfling_save_all_ref",
+          "sourceId": "race_halfling",
+          "targetId": "saves.reflex",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Lucky",
+            "fr": "Chance halfeline"
+          }
+        },
+        {
+          "id": "halfling_save_all_will",
+          "sourceId": "race_halfling",
+          "targetId": "saves.will",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Lucky",
+            "fr": "Chance halfeline"
+          }
+        },
+        {
+          "id": "halfling_save_vs_fear",
+          "sourceId": "race_halfling",
+          "targetId": "saves.will",
+          "value": 2,
+          "type": "morale",
+          "sourceName": {
+            "en": "Halfling Fearless",
+            "fr": "Absence de peur halfeline"
+          },
+          "situationalContext": "vs_fear"
+        },
+        {
+          "id": "halfling_attack_thrown",
+          "sourceId": "race_halfling",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "racial",
+          "sourceName": {
+            "en": "Halfling Thrown Weapons",
+            "fr": "Armes de jet halfelines"
+          },
+          "situationalContext": "thrown_weapons_and_slings"
         }
-      },
-      {
-        "id": "elf_search",
-        "sourceId": "race_elf",
-        "targetId": "skills.skill_search",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Keen Senses",
-          "fr": "Sens aiguisés elfiques"
-        }
-      },
-      {
-        "id": "elf_spot",
-        "sourceId": "race_elf",
-        "targetId": "skills.skill_spot",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Elf Keen Senses",
-          "fr": "Sens aiguisés elfiques"
-        }
-      }
-    ],
-    "grantedFeatures": [
-      "immunity_sleep_magic",
-      "sense_low_light_vision",
-      "proficiency_longsword",
-      "proficiency_rapier",
-      "proficiency_longbow",
-      "proficiency_shortbow",
-      "language_common",
-      "language_elven",
-      "racial_feature_elf_secret_door_detection"
-    ],
-    "favoredClass": "class_wizard",
-    "choices": []
-  },
-  {
-    "id": "race_gnome",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Gnome",
-      "fr": "Gnome"
+      ],
+      "grantedFeatures": [
+        "language_common",
+        "language_halfling"
+      ],
+      "favoredClass": "class_rogue",
+      "choices": []
     },
-    "description": {
-      "en": "Gnomes are welcome everywhere as technicians, alchemists, and inventors. Despite the demand for their skills, most gnomes prefer to remain among their own kind, living in comfortable burrows beneath rolling, wooded hills where animals and magical folk are drawn by their mysterious affinity for illusion magic.",
-      "fr": "Les gnomes sont les bienvenus partout en tant que techniciens, alchimistes et inventeurs. Malgré la demande pour leurs compétences, la plupart des gnomes préfèrent rester entre eux, vivant dans des terriers confortables sous des collines boisées ondulantes où les animaux et les gens magiques sont attirés par leur affinité mystérieuse avec la magie des illusions."
+    {
+      "id": "language_common",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Common",
+        "fr": "Commun"
+      },
+      "description": {
+        "en": "The trade language spoken throughout most civilised lands.",
+        "fr": "La langue commerciale parlée dans la plupart des terres civilisées."
+      },
+      "tags": [
+        "language",
+        "language_common"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_small",
-      "race_gnome"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "gnome_con_bonus",
-        "sourceId": "race_gnome",
-        "targetId": "attributes.stat_constitution",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome",
-          "fr": "Gnome"
-        }
+    {
+      "id": "language_dwarven",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dwarven",
+        "fr": "Nain"
       },
-      {
-        "id": "gnome_str_penalty",
-        "sourceId": "race_gnome",
-        "targetId": "attributes.stat_strength",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome",
-          "fr": "Gnome"
-        }
+      "description": {
+        "en": "The language of dwarves, filled with hard consonants and guttural sounds.",
+        "fr": "La langue des nains, riche en consonnes dures et en sons gutturaux."
       },
-      {
-        "id": "gnome_size_ac",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.ac_normal",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
-      },
-      {
-        "id": "gnome_size_ac_touch",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.ac_touch",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
-      },
-      {
-        "id": "gnome_size_ac_flat",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.ac_flat_footed",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
-      },
-      {
-        "id": "gnome_size_attack",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
-      },
-      {
-        "id": "gnome_size_hide",
-        "sourceId": "race_gnome",
-        "targetId": "skills.skill_hide",
-        "value": 4,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
-      },
-      {
-        "id": "gnome_speed",
-        "sourceId": "race_gnome",
-        "targetId": "attributes.speed_land",
-        "value": 20,
-        "type": "base",
-        "sourceName": {
-          "en": "Gnome",
-          "fr": "Gnome"
-        }
-      },
-      {
-        "id": "gnome_illusion_save",
-        "sourceId": "race_gnome",
-        "targetId": "saves.all",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome Illusion Resistance",
-          "fr": "Résistance gnome aux illusions"
-        },
-        "situationalContext": "vs_illusion"
-      },
-      {
-        "id": "gnome_illusion_dc",
-        "sourceId": "race_gnome",
-        "targetId": "attributes.spell_dc_illusion",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome Illusion Mastery",
-          "fr": "Maîtrise gnome des illusions"
-        }
-      },
-      {
-        "id": "gnome_attack_kobolds",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome vs Kobolds/Goblinoids",
-          "fr": "Gnome vs Kobolds/Gobelinoïdes"
-        },
-        "situationalContext": "vs_kobold_goblinoid"
-      },
-      {
-        "id": "gnome_dodge_giants",
-        "sourceId": "race_gnome",
-        "targetId": "combatStats.ac_normal",
-        "value": 4,
-        "type": "dodge",
-        "sourceName": {
-          "en": "Gnome vs Giants",
-          "fr": "Gnome vs Géants"
-        },
-        "situationalContext": "vs_giant"
-      },
-      {
-        "id": "gnome_listen",
-        "sourceId": "race_gnome",
-        "targetId": "skills.skill_listen",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome Keen Hearing",
-          "fr": "Ouïe aiguisée gnomique"
-        }
-      },
-      {
-        "id": "gnome_craft_alchemy",
-        "sourceId": "race_gnome",
-        "targetId": "skills.skill_craft_alchemy",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Gnome Alchemy",
-          "fr": "Alchimie gnomique"
-        }
-      }
-    ],
-    "grantedFeatures": [
-      "sense_low_light_vision",
-      "racial_feature_gnome_weapon_familiarity",
-      "racial_feature_gnome_speak_with_animals",
-      "racial_feature_gnome_spell_like_abilities",
-      "language_common",
-      "language_gnome"
-    ],
-    "favoredClass": "class_bard",
-    "choices": []
-  },
-  {
-    "id": "race_half_elf",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Half-Elf",
-      "fr": "Demi-elfe"
+      "tags": [
+        "language",
+        "language_dwarven"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "description": {
-      "en": "Wherever humans and elves interact, half-elves come into being. Half-elves have the curiosity and ambition of their human ancestry, while the elven part of their heritage gives them finely honed senses, taste for beauty, and love of art and song.",
-      "fr": "Partout où les humains et les elfes interagissent, les demi-elfes naissent. Les demi-elfes ont la curiosité et l'ambition de leur ascendance humaine, tandis que la partie elfique de leur héritage leur confère des sens finement aiguisés, un goût pour la beauté et un amour de l'art et de la chanson."
+    {
+      "id": "language_elven",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Elven",
+        "fr": "Elfique"
+      },
+      "description": {
+        "en": "The flowing, musical tongue of elves.",
+        "fr": "La langue mélodieuse et fluide des elfes."
+      },
+      "tags": [
+        "language",
+        "language_elven"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_medium",
-      "race_half_elf"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "half_elf_speed",
-        "sourceId": "race_half_elf",
-        "targetId": "attributes.speed_land",
-        "value": 30,
-        "type": "base",
-        "sourceName": {
-          "en": "Half-Elf",
-          "fr": "Demi-elfe"
-        }
+    {
+      "id": "language_gnome",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Gnome",
+        "fr": "Gnome"
       },
-      {
-        "id": "half_elf_enchantment_save_fort",
-        "sourceId": "race_half_elf",
-        "targetId": "saves.fortitude",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf Enchantment Resistance",
-          "fr": "Résistance demi-elfique aux enchantements"
-        },
-        "situationalContext": "vs_enchantment"
+      "description": {
+        "en": "The intricate, detail-rich language of gnomes.",
+        "fr": "La langue complexe et riche en détails des gnomes."
       },
-      {
-        "id": "half_elf_enchantment_save_ref",
-        "sourceId": "race_half_elf",
-        "targetId": "saves.reflex",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf Enchantment Resistance",
-          "fr": "Résistance demi-elfique aux enchantements"
-        },
-        "situationalContext": "vs_enchantment"
-      },
-      {
-        "id": "half_elf_enchantment_save_will",
-        "sourceId": "race_half_elf",
-        "targetId": "saves.will",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf Enchantment Resistance",
-          "fr": "Résistance demi-elfique aux enchantements"
-        },
-        "situationalContext": "vs_enchantment"
-      },
-      {
-        "id": "half_elf_listen",
-        "sourceId": "race_half_elf",
-        "targetId": "skills.skill_listen",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf",
-          "fr": "Demi-elfe"
-        }
-      },
-      {
-        "id": "half_elf_search",
-        "sourceId": "race_half_elf",
-        "targetId": "skills.skill_search",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf",
-          "fr": "Demi-elfe"
-        }
-      },
-      {
-        "id": "half_elf_spot",
-        "sourceId": "race_half_elf",
-        "targetId": "skills.skill_spot",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf",
-          "fr": "Demi-elfe"
-        }
-      },
-      {
-        "id": "half_elf_diplomacy",
-        "sourceId": "race_half_elf",
-        "targetId": "skills.skill_diplomacy",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf Social Grace",
-          "fr": "Grâce sociale demi-elfique"
-        }
-      },
-      {
-        "id": "half_elf_gather_information",
-        "sourceId": "race_half_elf",
-        "targetId": "skills.skill_gather_information",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Elf Social Grace",
-          "fr": "Grâce sociale demi-elfique"
-        }
-      }
-    ],
-    "grantedFeatures": [
-      "immunity_sleep_magic",
-      "sense_low_light_vision",
-      "racial_feature_elven_blood",
-      "language_common",
-      "language_elven"
-    ],
-    "favoredClass": "any",
-    "choices": []
-  },
-  {
-    "id": "race_half_orc",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Half-Orc",
-      "fr": "Demi-orc"
+      "tags": [
+        "language",
+        "language_gnome"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "description": {
-      "en": "In the wild frontiers, tribes of human and orc barbarians live in uneasy balance, fighting in times of war and trading in times of peace. Half-orcs who are born in the frontier may live with either human or orc parents, but they are nevertheless exposed to both cultures.",
-      "fr": "Dans les frontières sauvages, des tribus de barbares humains et orcs vivent dans un équilibre précaire, se battant en temps de guerre et commerçant en temps de paix. Les demi-orcs nés à la frontière peuvent vivre avec des parents humains ou orcs, mais ils sont néanmoins exposés aux deux cultures."
+    {
+      "id": "language_halfling",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Halfling",
+        "fr": "Halfelin"
+      },
+      "description": {
+        "en": "A warm, borrowing language with elements from many human dialects.",
+        "fr": "Une langue chaleureuse, empruntant à de nombreux dialectes humains."
+      },
+      "tags": [
+        "language",
+        "language_halfling"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_medium",
-      "race_half_orc"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "half_orc_str_bonus",
-        "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_strength",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Orc",
-          "fr": "Demi-orc"
-        }
+    {
+      "id": "language_orc",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Orc",
+        "fr": "Orque"
       },
-      {
-        "id": "half_orc_int_penalty",
-        "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_intelligence",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Orc",
-          "fr": "Demi-orc"
-        }
+      "description": {
+        "en": "The guttural, aggressive language of orcs.",
+        "fr": "La langue gutturale et agressive des orques."
       },
-      {
-        "id": "half_orc_cha_penalty",
-        "sourceId": "race_half_orc",
-        "targetId": "attributes.stat_charisma",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Half-Orc",
-          "fr": "Demi-orc"
-        }
-      },
-      {
-        "id": "half_orc_speed",
-        "sourceId": "race_half_orc",
-        "targetId": "attributes.speed_land",
-        "value": 30,
-        "type": "base",
-        "sourceName": {
-          "en": "Half-Orc",
-          "fr": "Demi-orc"
-        }
-      }
-    ],
-    "grantedFeatures": [
-      "sense_darkvision_60ft",
-      "racial_feature_orc_blood",
-      "language_common",
-      "language_orc"
-    ],
-    "favoredClass": "class_barbarian",
-    "choices": []
-  },
-  {
-    "id": "race_halfling",
-    "category": "race",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Halfling",
-      "fr": "Halfelin"
+      "tags": [
+        "language",
+        "language_orc"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "description": {
-      "en": "Halflings are clever, capable, and resourceful survivors. They are notoriously curious and show a daring that many larger people can't match. Halflings are practical jokers, and they like nothing better than scaring the wits out of people by hiding in inconvenient places.",
-      "fr": "Les halfelins sont des survivants intelligents, capables et ingénieux. Ils sont notoirement curieux et font preuve d'une audace que de nombreuses créatures plus grandes ne peuvent égaler. Les halfelins sont des plaisantins pratiques, et ils adorent par-dessus tout effrayer les gens en se cachant dans des endroits inconfortables."
+    {
+      "id": "language_giant",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Giant",
+        "fr": "Géant"
+      },
+      "description": {
+        "en": "The slow, booming tongue of giants and ogres.",
+        "fr": "La langue lente et tonitruante des géants et des ogres."
+      },
+      "tags": [
+        "language",
+        "language_giant"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": [
-      "race",
-      "humanoid",
-      "size_small",
-      "race_halfling"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "halfling_dex_bonus",
-        "sourceId": "race_halfling",
-        "targetId": "attributes.stat_dexterity",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling",
-          "fr": "Halfelin"
-        }
+    {
+      "id": "language_goblin",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Goblin",
+        "fr": "Gobelin"
       },
-      {
-        "id": "halfling_str_penalty",
-        "sourceId": "race_halfling",
-        "targetId": "attributes.stat_strength",
-        "value": -2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling",
-          "fr": "Halfelin"
-        }
+      "description": {
+        "en": "A squeaky, mongrel tongue shared by goblins and hobgoblins.",
+        "fr": "Un dialecte grinçant partagé par les gobelins et les hobgobelins."
       },
-      {
-        "id": "halfling_size_ac",
-        "sourceId": "race_halfling",
-        "targetId": "combatStats.ac_normal",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
+      "tags": [
+        "language",
+        "language_goblin"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_abyssal",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Abyssal",
+        "fr": "Abyssal"
       },
-      {
-        "id": "halfling_size_ac_touch",
-        "sourceId": "race_halfling",
-        "targetId": "combatStats.ac_touch",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
+      "description": {
+        "en": "The language of chaotic evil outsiders from the Abyss.",
+        "fr": "La langue des créatures extraplanaires chaotiques mauvaises de l'Abysse."
       },
-      {
-        "id": "halfling_size_ac_flat",
-        "sourceId": "race_halfling",
-        "targetId": "combatStats.ac_flat_footed",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
+      "tags": [
+        "language",
+        "language_abyssal"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_celestial",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Celestial",
+        "fr": "Céleste"
       },
-      {
-        "id": "halfling_size_attack",
-        "sourceId": "race_halfling",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
+      "description": {
+        "en": "The language of good-aligned outsiders from the upper planes.",
+        "fr": "La langue des créatures extraplanaires bonnes des plans supérieurs."
       },
-      {
-        "id": "halfling_size_hide",
-        "sourceId": "race_halfling",
-        "targetId": "skills.skill_hide",
-        "value": 4,
-        "type": "size",
-        "sourceName": {
-          "en": "Small Size",
-          "fr": "Petite taille"
-        }
+      "tags": [
+        "language",
+        "language_celestial"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_draconic",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Draconic",
+        "fr": "Draconique"
       },
-      {
-        "id": "halfling_speed",
-        "sourceId": "race_halfling",
-        "targetId": "attributes.speed_land",
-        "value": 20,
-        "type": "base",
-        "sourceName": {
-          "en": "Halfling",
-          "fr": "Halfelin"
-        }
+      "description": {
+        "en": "The ancient tongue of dragons, also used by kobolds and lizardfolk.",
+        "fr": "L'ancienne langue des dragons, aussi utilisée par les kobolds et les hommes-lézards."
       },
-      {
-        "id": "halfling_climb",
-        "sourceId": "race_halfling",
-        "targetId": "skills.skill_climb",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Agility",
-          "fr": "Agilité halfeline"
-        }
+      "tags": [
+        "language",
+        "language_draconic"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_druidic",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Druidic",
+        "fr": "Druidique"
       },
-      {
-        "id": "halfling_jump",
-        "sourceId": "race_halfling",
-        "targetId": "skills.skill_jump",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Agility",
-          "fr": "Agilité halfeline"
-        }
+      "description": {
+        "en": "A secret language known only to druids. It is forbidden to teach it to non-druids.",
+        "fr": "Une langue secrète connue seulement des druides. Il est interdit de l'enseigner aux non-druides."
       },
-      {
-        "id": "halfling_listen",
-        "sourceId": "race_halfling",
-        "targetId": "skills.skill_listen",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Keen Senses",
-          "fr": "Sens aiguisés halfelins"
-        }
+      "tags": [
+        "language",
+        "language_druidic"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_infernal",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Infernal",
+        "fr": "Infernal"
       },
-      {
-        "id": "halfling_move_silently",
-        "sourceId": "race_halfling",
-        "targetId": "skills.skill_move_silently",
-        "value": 2,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Agility",
-          "fr": "Agilité halfeline"
-        }
+      "description": {
+        "en": "The precise, law-bound tongue of devils and lawful evil outsiders.",
+        "fr": "La langue précise et réglementée des diables et des créatures extraplanaires loyales mauvaises."
       },
-      {
-        "id": "halfling_save_all",
-        "sourceId": "race_halfling",
-        "targetId": "saves.fortitude",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Lucky",
-          "fr": "Chance halfeline"
-        }
+      "tags": [
+        "language",
+        "language_infernal"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_sylvan",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Sylvan",
+        "fr": "Sylvestre"
       },
-      {
-        "id": "halfling_save_all_ref",
-        "sourceId": "race_halfling",
-        "targetId": "saves.reflex",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Lucky",
-          "fr": "Chance halfeline"
-        }
+      "description": {
+        "en": "The lyrical language of fey creatures and nature spirits.",
+        "fr": "La langue lyrique des créatures féeriques et des esprits de la nature."
       },
-      {
-        "id": "halfling_save_all_will",
-        "sourceId": "race_halfling",
-        "targetId": "saves.will",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Lucky",
-          "fr": "Chance halfeline"
-        }
+      "tags": [
+        "language",
+        "language_sylvan"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_terran",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Terran",
+        "fr": "Terreux"
       },
-      {
-        "id": "halfling_save_vs_fear",
-        "sourceId": "race_halfling",
-        "targetId": "saves.will",
-        "value": 2,
-        "type": "morale",
-        "sourceName": {
-          "en": "Halfling Fearless",
-          "fr": "Absence de peur halfeline"
-        },
-        "situationalContext": "vs_fear"
+      "description": {
+        "en": "The slow, grinding language of earth elementals and xorns.",
+        "fr": "La langue lente et rauque des élémentaires de terre et des xorns."
       },
-      {
-        "id": "halfling_attack_thrown",
-        "sourceId": "race_halfling",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "racial",
-        "sourceName": {
-          "en": "Halfling Thrown Weapons",
-          "fr": "Armes de jet halfelines"
-        },
-        "situationalContext": "thrown_weapons_and_slings"
-      }
-    ],
-    "grantedFeatures": [
-      "language_common",
-      "language_halfling"
-    ],
-    "favoredClass": "class_rogue",
-    "choices": []
-  },
-
-  {
-    "id": "language_common",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Common", "fr": "Commun" },
-    "description": { "en": "The trade language spoken throughout most civilised lands.", "fr": "La langue commerciale parlée dans la plupart des terres civilisées." },
-    "tags": ["language", "language_common"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_dwarven",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Dwarven", "fr": "Nain" },
-    "description": { "en": "The language of dwarves, filled with hard consonants and guttural sounds.", "fr": "La langue des nains, riche en consonnes dures et en sons gutturaux." },
-    "tags": ["language", "language_dwarven"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_elven",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Elven", "fr": "Elfique" },
-    "description": { "en": "The flowing, musical tongue of elves.", "fr": "La langue mélodieuse et fluide des elfes." },
-    "tags": ["language", "language_elven"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_gnome",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Gnome", "fr": "Gnome" },
-    "description": { "en": "The intricate, detail-rich language of gnomes.", "fr": "La langue complexe et riche en détails des gnomes." },
-    "tags": ["language", "language_gnome"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_halfling",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Halfling", "fr": "Halfelin" },
-    "description": { "en": "A warm, borrowing language with elements from many human dialects.", "fr": "Une langue chaleureuse, empruntant à de nombreux dialectes humains." },
-    "tags": ["language", "language_halfling"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_orc",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Orc", "fr": "Orque" },
-    "description": { "en": "The guttural, aggressive language of orcs.", "fr": "La langue gutturale et agressive des orques." },
-    "tags": ["language", "language_orc"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_giant",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Giant", "fr": "Géant" },
-    "description": { "en": "The slow, booming tongue of giants and ogres.", "fr": "La langue lente et tonitruante des géants et des ogres." },
-    "tags": ["language", "language_giant"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_goblin",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Goblin", "fr": "Gobelin" },
-    "description": { "en": "A squeaky, mongrel tongue shared by goblins and hobgoblins.", "fr": "Un dialecte grinçant partagé par les gobelins et les hobgobelins." },
-    "tags": ["language", "language_goblin"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_abyssal",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Abyssal", "fr": "Abyssal" },
-    "description": { "en": "The language of chaotic evil outsiders from the Abyss.", "fr": "La langue des créatures extraplanaires chaotiques mauvaises de l'Abysse." },
-    "tags": ["language", "language_abyssal"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_celestial",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Celestial", "fr": "Céleste" },
-    "description": { "en": "The language of good-aligned outsiders from the upper planes.", "fr": "La langue des créatures extraplanaires bonnes des plans supérieurs." },
-    "tags": ["language", "language_celestial"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_draconic",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Draconic", "fr": "Draconique" },
-    "description": { "en": "The ancient tongue of dragons, also used by kobolds and lizardfolk.", "fr": "L'ancienne langue des dragons, aussi utilisée par les kobolds et les hommes-lézards." },
-    "tags": ["language", "language_draconic"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_druidic",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Druidic", "fr": "Druidique" },
-    "description": { "en": "A secret language known only to druids. It is forbidden to teach it to non-druids.", "fr": "Une langue secrète connue seulement des druides. Il est interdit de l'enseigner aux non-druides." },
-    "tags": ["language", "language_druidic"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_infernal",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Infernal", "fr": "Infernal" },
-    "description": { "en": "The precise, law-bound tongue of devils and lawful evil outsiders.", "fr": "La langue précise et réglementée des diables et des créatures extraplanaires loyales mauvaises." },
-    "tags": ["language", "language_infernal"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_sylvan",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Sylvan", "fr": "Sylvestre" },
-    "description": { "en": "The lyrical language of fey creatures and nature spirits.", "fr": "La langue lyrique des créatures féeriques et des esprits de la nature." },
-    "tags": ["language", "language_sylvan"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_terran",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Terran", "fr": "Terreux" },
-    "description": { "en": "The slow, grinding language of earth elementals and xorns.", "fr": "La langue lente et rauque des élémentaires de terre et des xorns." },
-    "tags": ["language", "language_terran"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "language_undercommon",
-    "category": "language",
-    "ruleSource": "srd_core",
-    "label": { "en": "Undercommon", "fr": "Commun des profondeurs" },
-    "description": { "en": "The trade tongue of the Underdark, derived from Elven.", "fr": "La langue commerciale des Royaumes Souterrains, dérivée de l'elfique." },
-    "tags": ["language", "language_undercommon"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  }
-]
+      "tags": [
+        "language",
+        "language_terran"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "language_undercommon",
+      "category": "language",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Undercommon",
+        "fr": "Commun des profondeurs"
+      },
+      "description": {
+        "en": "The trade tongue of the Underdark, derived from Elven.",
+        "fr": "La langue commerciale des Royaumes Souterrains, dérivée de l'elfique."
+      },
+      "tags": [
+        "language",
+        "language_undercommon"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    }
+  ]
+}

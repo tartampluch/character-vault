@@ -73,6 +73,15 @@ For each entity in the source material, extract:
 
 Follow the field-by-field mapping tables in sections 4–12. When a source field has no direct mapping, model it as a `description` text rather than inventing engine fields.
 
+Every output file must use the metadata wrapper format with a `supportedLanguages` declaration:
+```json
+{
+  "supportedLanguages": ["en"],
+  "entities": [ ... ]
+}
+```
+Add `"fr"` (or other codes) to `supportedLanguages` only when you are also providing those translations in every `label` and `description` field. See Section 19 for full guidelines.
+
 ### Step 5 — Run the Validation Checklist
 
 Use Section 2 before committing any output.
@@ -92,8 +101,8 @@ Run this checklist on **every** converted entity before writing the output file:
 - [ ] `id` is present and follows `snake_case` with category prefix (e.g., `"race_elf"`, `"feat_power_attack"`) — never use hyphens
 - [ ] `category` matches one of the 11 valid values
 - [ ] `ruleSource` is present and matches the source module ID
-- [ ] `label` has both `"en"` and `"fr"` values (never empty strings)
-- [ ] `description` has both `"en"` and `"fr"` values (never empty strings)
+- [ ] `label` has at least `"en"` value (never empty string); add `"fr"` if the file declares `"fr"` in `supportedLanguages`
+- [ ] `description` has at least `"en"` value; add `"fr"` if the file declares `"fr"` in `supportedLanguages`
 - [ ] `tags` array is present and includes at least the self-referencing ID tag
 - [ ] `grantedModifiers` is present (can be `[]`)
 - [ ] `grantedFeatures` is present (can be `[]`)
@@ -1034,14 +1043,48 @@ mod_gnome_craft_alchemy_bonus
 
 ---
 
-## 19. Bilingual Output — Translation Guidelines
+## 19. Multilingual Output — Translation Guidelines
 
-### Mandatory Bilingual Coverage
+### File Wrapper and `supportedLanguages`
 
-Every `label` and `description` field MUST have both `"en"` and `"fr"`. Never output:
+Every rule file MUST use the metadata wrapper format and declare which languages it provides:
+
 ```json
-{ "en": "Power Attack", "fr": "" }         ← INVALID (empty)
-{ "en": "Power Attack" }                    ← INVALID (missing key)
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+    { "id": "feat_power_attack", ... }
+  ]
+}
+```
+
+The `supportedLanguages` array drives the language dropdown in the UI: every code listed here will appear as a selectable language. The engine discovers these codes at load time via `DataLoader.getAvailableLanguages()`.
+
+**Rules:**
+
+| Rule | Detail |
+|---|---|
+| `"en"` is always required | English is the universal base and fallback. NEVER omit `"en"` from any `label` or `description`. |
+| Other languages | Include them in every `label` and `description` if they are listed in `supportedLanguages`. |
+| Missing translation | If a `"fr"` key is absent on a string, the UI silently falls back to `"en"`. This is safe but should be avoided when `"fr"` is declared. |
+| Unknown codes | Any code (e.g., `"es"`, `"de"`, `"ja"`) is valid. UI chrome strings without that code fall back to English automatically. |
+
+### Minimum vs. Full Coverage
+
+| Scenario | What to output |
+|---|---|
+| English-only source (no translation available) | `"supportedLanguages": ["en"]` — only `"en"` keys in strings |
+| English + French source | `"supportedLanguages": ["en", "fr"]` — both `"en"` and `"fr"` keys |
+| English + Spanish community file | `"supportedLanguages": ["en", "es"]` — both `"en"` and `"es"` keys |
+| Full trilingual file | `"supportedLanguages": ["en", "fr", "es"]` — all three keys |
+
+### Mandatory Coverage for Declared Languages
+
+Every `label` and `description` MUST have at least `"en"`. For each additional code in `supportedLanguages`, provide the translation. Never output empty strings:
+```json
+{ "en": "Power Attack", "fr": "" }         ← INVALID (empty French)
+{ "en": "Power Attack" }                    ← valid IF supportedLanguages is ["en"] only
+{ "en": "Power Attack", "fr": "Attaque en puissance" } ← valid for ["en", "fr"]
 ```
 
 ### Official French D&D 3.5 Terms

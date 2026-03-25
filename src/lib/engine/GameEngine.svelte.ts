@@ -36,7 +36,7 @@ import { createDefaultCampaignSettings } from '../types/settings';
 import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight } from '../utils/formatters';
 import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
-import type { LocalizedString, SupportedLanguage } from '../types/i18n';
+import type { LocalizedString } from '../types/i18n';
 import type { StatisticPipeline, SkillPipeline, ResourcePool, Modifier } from '../types/pipeline';
 import type { Feature, ResourcePoolTemplate, ActivationTier } from '../types/feature';
 import type { ID } from '../types/primitives';
@@ -648,6 +648,27 @@ export class GameEngine {
   bumpDataLoaderVersion(): void {
     this.dataLoaderVersion = dataLoader.loadVersion;
   }
+
+  /**
+   * The set of language codes available across all currently loaded rule files.
+   *
+   * Derived reactively from `dataLoader.getAvailableLanguages()`. Re-evaluated
+   * whenever `bumpDataLoaderVersion()` is called (i.e., after every load cycle).
+   *
+   * Always contains at least `["en"]`. Additional codes (e.g., `"fr"`, `"es"`) appear
+   * when at least one loaded file declares them in its `supportedLanguages` array.
+   *
+   * UI usage:
+   *   The language dropdown in the sidebar reads this array to populate its options.
+   *   Selecting a language code updates `engine.settings.language`, which propagates
+   *   reactively to all `engine.t()` and `ui()` calls across the UI.
+   */
+  availableLanguages: string[] = $derived.by(() => {
+    // Reading dataLoaderVersion creates a reactive dependency so this $derived
+    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    void this.dataLoaderVersion;
+    return dataLoader.getAvailableLanguages();
+  });
 
   // ---------------------------------------------------------------------------
   // VAULT STATE & VISIBILITY
@@ -2695,7 +2716,7 @@ export class GameEngine {
   // ---------------------------------------------------------------------------
 
   /** Active display language shortcut. */
-  get lang(): SupportedLanguage {
+  get lang(): string {
     return this.settings.language;
   }
 

@@ -39,6 +39,7 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -195,9 +196,12 @@
             <p class="text-sm font-medium text-text-primary truncate">
               {#if effect.feature}
                 {engine.t(effect.feature.label)}
-              {:else}
-                <!-- Fallback if feature data is not loaded yet -->
+              {:else if sessionContext.isGameMaster}
+                <!-- Fallback (GM-only): show raw featureId when feature data is not loaded -->
                 <span class="text-text-muted">{effect.featureId}</span>
+              {:else}
+                <!-- Fallback (players): show a generic label instead of internal ID -->
+                <span class="text-text-muted">{ui('common.unknown', engine.settings.language)}</span>
               {/if}
             </p>
 

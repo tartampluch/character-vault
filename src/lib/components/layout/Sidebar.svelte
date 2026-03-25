@@ -479,37 +479,49 @@
       <ThemeToggle showLabel={!collapsed} />
     </div>
 
-    <!-- Language switcher — EN / FR toggle -->
+    <!-- Language switcher — dropdown populated from loaded rule files -->
     <div class="flex items-center gap-1 px-1 py-0.5">
       {#if collapsed}
-        <!-- Icon-only mode: single button cycles EN→FR→EN -->
+        <!-- Icon-only mode: compact language badge showing active code -->
         <button
           class="flex items-center justify-center w-full h-8 rounded-md text-xs font-bold
                  text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
-          onclick={() => { engine.settings.language = engine.settings.language === 'en' ? 'fr' : 'en'; }}
-          title="Switch language ({engine.settings.language === 'en' ? 'FR' : 'EN'})"
-          aria-label="Switch language"
+          onclick={() => {
+            const langs = engine.availableLanguages;
+            const idx = langs.indexOf(engine.settings.language);
+            engine.settings.language = langs[(idx + 1) % langs.length];
+          }}
+          title="{ui('lang.select_tooltip', engine.settings.language)}"
+          aria-label="{ui('lang.select_tooltip', engine.settings.language)}"
           type="button"
         >
           {engine.settings.language.toUpperCase()}
         </button>
       {:else}
-        <!-- Expanded mode: two-button pill group -->
-        <span class="text-[10px] text-text-muted uppercase tracking-wider mr-1 shrink-0">Lang</span>
-        <div class="flex rounded-md overflow-hidden border border-border flex-1">
-          {#each ['en', 'fr'] as lang}
-            <button
-              class="flex-1 text-xs py-1 font-semibold transition-colors
-                     {engine.settings.language === lang
-                       ? 'bg-accent text-white'
-                       : 'text-text-muted hover:bg-surface-alt'}"
-              onclick={() => { engine.settings.language = lang as 'en' | 'fr'; }}
-              aria-label="Switch to {lang === 'en' ? 'English' : 'French'}"
-              aria-pressed={engine.settings.language === lang}
-              type="button"
-            >{lang.toUpperCase()}</button>
+        <!-- Expanded mode: dropdown select -->
+        <label
+          for="sidebar-lang-select"
+          class="text-[10px] text-text-muted uppercase tracking-wider mr-1 shrink-0"
+        >{ui('lang.label', engine.settings.language)}</label>
+        <select
+          id="sidebar-lang-select"
+          class="flex-1 text-xs py-1 px-1.5 rounded-md border border-border
+                 bg-surface text-text-primary cursor-pointer
+                 hover:border-accent focus:border-accent focus:outline-none
+                 transition-colors"
+          value={engine.settings.language}
+          onchange={(e) => { engine.settings.language = (e.target as HTMLSelectElement).value; }}
+          aria-label="{ui('lang.select_tooltip', engine.settings.language)}"
+          title="{ui('lang.select_tooltip', engine.settings.language)}"
+        >
+          {#each engine.availableLanguages as lang}
+            <option value={lang}>
+              {ui(`lang.${lang}`, engine.settings.language) !== `lang.${lang}`
+                ? ui(`lang.${lang}`, engine.settings.language)
+                : lang.toUpperCase()}
+            </option>
           {/each}
-        </div>
+        </select>
       {/if}
     </div>
 

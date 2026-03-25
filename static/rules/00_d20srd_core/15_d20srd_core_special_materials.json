@@ -1,385 +1,391 @@
-[
-  {
-    "id": "special_material_adamantine",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Adamantine",
-      "fr": "Adamantium"
-    },
-    "description": {
-      "en": "This ultrahard metal adds to the quality of a weapon or suit of armor. Weapons fashioned from adamantine have a natural ability to bypass hardness when sundering weapons or attacking objects, ignoring hardness less than 20. Adamantine weapons and armor are always of masterwork quality (cost included), so adamantine weapons gain the standard +1 enhancement bonus on attack rolls. The armor check penalty of adamantine armor is lessened by 1 compared to ordinary armor of its type. Weapons, armor, and shields normally made of steel that are made of adamantine have one-third more hit points than normal. Adamantine has 40 hit points per inch of thickness and hardness 20. Only items normally made of metal can be fashioned from adamantine.",
-      "fr": "Ce métal ultradur améliore la qualité d'une arme ou d'une armure. Les armes en adamantium ignorent l'indice de solidité inférieur à 20 lorsqu'elles tentent de briser des armes ou d'attaquer des objets. Les armes et armures en adamantium sont toujours de qualité maîtresse (coût inclus), ainsi les armes en adamantium bénéficient du bonus d'altération de +1 aux jets d'attaque. Le malus d'armure aux tests des armures en adamantium est réduit de 1. Les objets normalement en acier fabriqués en adamantium ont un tiers de points de vie supplémentaires. L'adamantium a 40 points de vie par centimètre d'épaisseur et une solidité de 20. Seuls les objets normalement faits de métal peuvent être fabriqués en adamantium."
-    },
-    "tags": [
-      "special_material",
-      "special_material_adamantine",
-      "adamantine",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_adamantine_masterwork_attack",
-        "sourceId": "special_material_adamantine",
-        "sourceName": {
-          "en": "Adamantine (masterwork)",
-          "fr": "Adamantium (maîtresse)"
-        },
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "enhancement"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "special_material_adamantine",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Adamantine",
+        "fr": "Adamantium"
       },
-      {
-        "id": "special_material_adamantine_acp",
-        "sourceId": "special_material_adamantine",
-        "sourceName": {
-          "en": "Adamantine (masterwork ACP reduction)",
-          "fr": "Adamantium (réduction malus maîtresse)"
-        },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 1,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_adamantine_light_armor",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Adamantine (light armor DR)",
-      "fr": "Adamantium (RD armure légère)"
-    },
-    "description": {
-      "en": "Light armor made of adamantine (padded, leather, studded leather, chain shirt, hide) grants DR 1/— to the wearer in addition to the general adamantine properties.",
-      "fr": "Une armure légère en adamantium (matelassée, cuir, cuir clouté, cotte de mailles courte, peau) confère une RD 1/— à son porteur, en plus des propriétés générales de l'adamantium."
-    },
-    "tags": [
-      "special_material",
-      "special_material_adamantine",
-      "adamantine",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_adamantine_light_dr",
-        "sourceId": "special_material_adamantine_light_armor",
-        "sourceName": {
-          "en": "Adamantine Light Armor (DR 1/—)",
-          "fr": "Armure légère en adamantium (RD 1/—)"
-        },
-        "targetId": "combatStats.damage_reduction",
-        "value": 1,
-        "type": "damage_reduction",
-        "drBypassTags": []
+      "description": {
+        "en": "This ultrahard metal adds to the quality of a weapon or suit of armor. Weapons fashioned from adamantine have a natural ability to bypass hardness when sundering weapons or attacking objects, ignoring hardness less than 20. Adamantine weapons and armor are always of masterwork quality (cost included), so adamantine weapons gain the standard +1 enhancement bonus on attack rolls. The armor check penalty of adamantine armor is lessened by 1 compared to ordinary armor of its type. Weapons, armor, and shields normally made of steel that are made of adamantine have one-third more hit points than normal. Adamantine has 40 hit points per inch of thickness and hardness 20. Only items normally made of metal can be fashioned from adamantine.",
+        "fr": "Ce métal ultradur améliore la qualité d'une arme ou d'une armure. Les armes en adamantium ignorent l'indice de solidité inférieur à 20 lorsqu'elles tentent de briser des armes ou d'attaquer des objets. Les armes et armures en adamantium sont toujours de qualité maîtresse (coût inclus), ainsi les armes en adamantium bénéficient du bonus d'altération de +1 aux jets d'attaque. Le malus d'armure aux tests des armures en adamantium est réduit de 1. Les objets normalement en acier fabriqués en adamantium ont un tiers de points de vie supplémentaires. L'adamantium a 40 points de vie par centimètre d'épaisseur et une solidité de 20. Seuls les objets normalement faits de métal peuvent être fabriqués en adamantium."
       },
-      {
-        "id": "special_material_adamantine_light_masterwork_attack",
-        "sourceId": "special_material_adamantine_light_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork)",
-          "fr": "Adamantium (maîtresse)"
+      "tags": [
+        "special_material",
+        "special_material_adamantine",
+        "adamantine",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_adamantine_masterwork_attack",
+          "sourceId": "special_material_adamantine",
+          "sourceName": {
+            "en": "Adamantine (masterwork)",
+            "fr": "Adamantium (maîtresse)"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "enhancement"
         },
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "enhancement"
+        {
+          "id": "special_material_adamantine_acp",
+          "sourceId": "special_material_adamantine",
+          "sourceName": {
+            "en": "Adamantine (masterwork ACP reduction)",
+            "fr": "Adamantium (réduction malus maîtresse)"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 1,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_adamantine_light_armor",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Adamantine (light armor DR)",
+        "fr": "Adamantium (RD armure légère)"
       },
-      {
-        "id": "special_material_adamantine_light_acp",
-        "sourceId": "special_material_adamantine_light_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork ACP reduction)",
-          "fr": "Adamantium (réduction malus maîtresse)"
-        },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 1,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_adamantine_medium_armor",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Adamantine (medium armor DR)",
-      "fr": "Adamantium (RD armure intermédiaire)"
-    },
-    "description": {
-      "en": "Medium armor made of adamantine (scale mail, chainmail, breastplate) grants DR 2/— to the wearer in addition to the general adamantine properties.",
-      "fr": "Une armure intermédiaire en adamantium (cotte de mailles à écailles, cotte de mailles, plastron) confère une RD 2/— à son porteur, en plus des propriétés générales de l'adamantium."
-    },
-    "tags": [
-      "special_material",
-      "special_material_adamantine",
-      "adamantine",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_adamantine_medium_dr",
-        "sourceId": "special_material_adamantine_medium_armor",
-        "sourceName": {
-          "en": "Adamantine Medium Armor (DR 2/—)",
-          "fr": "Armure intermédiaire en adamantium (RD 2/—)"
-        },
-        "targetId": "combatStats.damage_reduction",
-        "value": 2,
-        "type": "damage_reduction",
-        "drBypassTags": []
+      "description": {
+        "en": "Light armor made of adamantine (padded, leather, studded leather, chain shirt, hide) grants DR 1/— to the wearer in addition to the general adamantine properties.",
+        "fr": "Une armure légère en adamantium (matelassée, cuir, cuir clouté, cotte de mailles courte, peau) confère une RD 1/— à son porteur, en plus des propriétés générales de l'adamantium."
       },
-      {
-        "id": "special_material_adamantine_medium_masterwork_attack",
-        "sourceId": "special_material_adamantine_medium_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork)",
-          "fr": "Adamantium (maîtresse)"
+      "tags": [
+        "special_material",
+        "special_material_adamantine",
+        "adamantine",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_adamantine_light_dr",
+          "sourceId": "special_material_adamantine_light_armor",
+          "sourceName": {
+            "en": "Adamantine Light Armor (DR 1/—)",
+            "fr": "Armure légère en adamantium (RD 1/—)"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 1,
+          "type": "damage_reduction",
+          "drBypassTags": []
         },
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "enhancement"
+        {
+          "id": "special_material_adamantine_light_masterwork_attack",
+          "sourceId": "special_material_adamantine_light_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork)",
+            "fr": "Adamantium (maîtresse)"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "enhancement"
+        },
+        {
+          "id": "special_material_adamantine_light_acp",
+          "sourceId": "special_material_adamantine_light_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork ACP reduction)",
+            "fr": "Adamantium (réduction malus maîtresse)"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 1,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_adamantine_medium_armor",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Adamantine (medium armor DR)",
+        "fr": "Adamantium (RD armure intermédiaire)"
       },
-      {
-        "id": "special_material_adamantine_medium_acp",
-        "sourceId": "special_material_adamantine_medium_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork ACP reduction)",
-          "fr": "Adamantium (réduction malus maîtresse)"
-        },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 1,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_adamantine_heavy_armor",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Adamantine (heavy armor DR)",
-      "fr": "Adamantium (RD armure lourde)"
-    },
-    "description": {
-      "en": "Heavy armor made of adamantine (splint mail, banded mail, half-plate, full plate) grants DR 3/— to the wearer in addition to the general adamantine properties.",
-      "fr": "Une armure lourde en adamantium (cotte à anneaux, armure lamellaire, demi-plaque, plaque complète) confère une RD 3/— à son porteur, en plus des propriétés générales de l'adamantium."
-    },
-    "tags": [
-      "special_material",
-      "special_material_adamantine",
-      "adamantine",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_adamantine_heavy_dr",
-        "sourceId": "special_material_adamantine_heavy_armor",
-        "sourceName": {
-          "en": "Adamantine Heavy Armor (DR 3/—)",
-          "fr": "Armure lourde en adamantium (RD 3/—)"
-        },
-        "targetId": "combatStats.damage_reduction",
-        "value": 3,
-        "type": "damage_reduction",
-        "drBypassTags": []
+      "description": {
+        "en": "Medium armor made of adamantine (scale mail, chainmail, breastplate) grants DR 2/— to the wearer in addition to the general adamantine properties.",
+        "fr": "Une armure intermédiaire en adamantium (cotte de mailles à écailles, cotte de mailles, plastron) confère une RD 2/— à son porteur, en plus des propriétés générales de l'adamantium."
       },
-      {
-        "id": "special_material_adamantine_heavy_masterwork_attack",
-        "sourceId": "special_material_adamantine_heavy_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork)",
-          "fr": "Adamantium (maîtresse)"
+      "tags": [
+        "special_material",
+        "special_material_adamantine",
+        "adamantine",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_adamantine_medium_dr",
+          "sourceId": "special_material_adamantine_medium_armor",
+          "sourceName": {
+            "en": "Adamantine Medium Armor (DR 2/—)",
+            "fr": "Armure intermédiaire en adamantium (RD 2/—)"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 2,
+          "type": "damage_reduction",
+          "drBypassTags": []
         },
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "enhancement"
+        {
+          "id": "special_material_adamantine_medium_masterwork_attack",
+          "sourceId": "special_material_adamantine_medium_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork)",
+            "fr": "Adamantium (maîtresse)"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "enhancement"
+        },
+        {
+          "id": "special_material_adamantine_medium_acp",
+          "sourceId": "special_material_adamantine_medium_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork ACP reduction)",
+            "fr": "Adamantium (réduction malus maîtresse)"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 1,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_adamantine_heavy_armor",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Adamantine (heavy armor DR)",
+        "fr": "Adamantium (RD armure lourde)"
       },
-      {
-        "id": "special_material_adamantine_heavy_acp",
-        "sourceId": "special_material_adamantine_heavy_armor",
-        "sourceName": {
-          "en": "Adamantine (masterwork ACP reduction)",
-          "fr": "Adamantium (réduction malus maîtresse)"
-        },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 1,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_darkwood",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Darkwood",
-      "fr": "Bois sombre"
-    },
-    "description": {
-      "en": "This rare magic wood is as hard as normal wood but very light. Any wooden or mostly wooden item made from darkwood is considered a masterwork item and weighs only half as much as a normal wooden item of that type. Items not normally made of wood or only partially of wood (such as a battleaxe or a mace) either cannot be made from darkwood or do not gain any special benefit from being made of darkwood. The armor check penalty of a darkwood shield is lessened by 2 compared to an ordinary shield of its type. The price of a darkwood item uses the original weight but adds 10 gp per pound to the price of a masterwork version. Darkwood has 10 hit points per inch of thickness and hardness 5.",
-      "fr": "Ce bois magique rare est aussi dur que le bois ordinaire, mais beaucoup plus léger. Tout objet en bois ou principalement en bois fabriqué en bois sombre est considéré de qualité maîtresse et pèse moitié moins qu'un objet en bois ordinaire du même type. Les objets normalement pas fabriqués en bois ou seulement partiellement (comme une hache de bataille ou une masse) ne peuvent pas être fabriqués en bois sombre ou n'en bénéficient pas. Le malus d'armure aux tests d'un bouclier en bois sombre est réduit de 2 par rapport à un bouclier ordinaire du même type. Le bois sombre a 10 points de vie par centimètre d'épaisseur et une solidité de 5."
-    },
-    "tags": [
-      "special_material",
-      "special_material_darkwood",
-      "wood"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_darkwood_acp",
-        "sourceId": "special_material_darkwood",
-        "sourceName": {
-          "en": "Darkwood",
-          "fr": "Bois sombre"
-        },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 2,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_dragonhide",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Dragonhide",
-      "fr": "Peau de dragon"
-    },
-    "description": {
-      "en": "Armorsmiths can work with the hides of dragons to produce armor or shields of masterwork quality. Because dragonhide armor is not made of metal, druids can wear it without penalty. Dragonhide armor costs double what masterwork armor of that type ordinarily costs, but it takes no longer to make than ordinary armor of that type. One dragon produces enough hide for a single suit of masterwork hide armor for a creature one size category smaller than the dragon (or banded mail two sizes smaller, half-plate three sizes smaller, or a breastplate or full plate four sizes smaller). In each case, enough hide is available to produce a small or large masterwork shield if the dragon is Large or larger. Dragonhide has 10 hit points per inch of thickness and hardness 10.",
-      "fr": "Les armuriers peuvent travailler les peaux de dragons pour produire des armures ou des boucliers de qualité maîtresse. L'armure en peau de dragon n'étant pas en métal, les druides peuvent la porter sans pénalité. Elle coûte le double d'une armure maîtresse ordinaire du même type, mais ne prend pas plus de temps à fabriquer. Un dragon fournit assez de peau pour une armure de peau maîtresse pour une créature d'une catégorie de taille inférieure (ou cotte de mailles lamellaire deux tailles plus petite, demi-plaque trois tailles plus petite, plastron ou plaque complète quatre tailles plus petite). Dans chaque cas, assez de peau est disponible pour produire un bouclier maîtresse si le dragon est Grand ou plus. La peau de dragon a 10 points de vie par centimètre d'épaisseur et une solidité de 10."
-    },
-    "tags": [
-      "special_material",
-      "special_material_dragonhide"
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_cold_iron",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Iron, Cold",
-      "fr": "Fer froid"
-    },
-    "description": {
-      "en": "This iron, mined deep underground and known for its effectiveness against fey creatures, is forged at a lower temperature to preserve its delicate properties. Weapons made of cold iron cost twice as much to make as their normal counterparts. Any magical enhancements to a cold iron weapon cost an additional 2,000 gp. Items without metal parts cannot be made from cold iron. A double weapon that has only half of it made of cold iron increases its cost by 50%. Cold iron has 30 hit points per inch of thickness and hardness 10.",
-      "fr": "Ce fer, extrait en profondeur et connu pour son efficacité contre les créatures fées, est forgé à plus basse température pour préserver ses délicates propriétés. Les armes en fer froid coûtent le double du prix normal. Toute amélioration magique d'une arme en fer froid coûte 2 000 po supplémentaires. Les objets sans parties métalliques ne peuvent pas être fabriqués en fer froid. Une arme double dont seule la moitié est en fer froid voit son coût augmenter de 50%. Le fer froid a 30 points de vie par centimètre d'épaisseur et une solidité de 10."
-    },
-    "tags": [
-      "special_material",
-      "special_material_cold_iron",
-      "cold_iron",
-      "metal"
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_mithral",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Mithral",
-      "fr": "Mithral"
-    },
-    "description": {
-      "en": "Mithral is a very rare silvery, glistening metal that is lighter than iron but just as hard. When worked like steel, it becomes a wonderful material from which to create armor and is occasionally used for other items as well. Most mithral armors are one category lighter than normal for purposes of movement and other limitations — heavy armors are treated as medium, and medium armors are treated as light; light armors are still treated as light (tag: armor_movement_category_reduced). Spell failure chances for armors and shields made from mithral are decreased by 10%, maximum Dexterity bonus is increased by 2, and armor check penalties are lessened by 3 (to a minimum of 0). An item made from mithral weighs half as much as the same item made from other metals. In the case of weapons, this lighter weight does not change a weapon's size category or the ease with which it can be wielded. Items not primarily of metal are not meaningfully affected by being partially made of mithral (a longsword can be a mithral weapon, while a scythe cannot). Weapons or armors fashioned from mithral are always masterwork items as well; the masterwork cost is included in the prices. Mithral has 30 hit points per inch of thickness and hardness 15.",
-      "fr": "Le mithral est un métal très rare, argenté et brillant, plus léger que le fer mais tout aussi dur. La plupart des armures en mithral sont considérées comme d'une catégorie inférieure pour les déplacements et autres limitations — les armures lourdes sont traitées comme des armures intermédiaires, les armures intermédiaires comme des armures légères ; les armures légères restent légères (balise : armor_movement_category_reduced). Les armures et boucliers en mithral réduisent le risque d'échec des sorts arcaniques de 10%, augmentent le bonus de Dextérité maximum de 2, et réduisent le malus d'armure aux tests de 3 (minimum 0). Un objet en mithral pèse moitié moins que le même objet en métal ordinaire. Pour les armes, ce poids réduit ne modifie pas la catégorie de taille ni la facilité de maniement. Les objets principalement non métalliques ne bénéficient pas significativement d'une fabrication partielle en mithral. Les armes et armures en mithral sont toujours de qualité maîtresse ; le coût maîtresse est inclus dans les prix du mithral. Le mithral a 30 points de vie par centimètre d'épaisseur et une solidité de 15."
-    },
-    "tags": [
-      "special_material",
-      "special_material_mithral",
-      "armor_movement_category_reduced",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_mithral_asf",
-        "sourceId": "special_material_mithral",
-        "sourceName": {
-          "en": "Mithral",
-          "fr": "Mithral"
-        },
-        "targetId": "combatStats.arcane_spell_failure",
-        "value": -10,
-        "type": "untyped"
+      "description": {
+        "en": "Heavy armor made of adamantine (splint mail, banded mail, half-plate, full plate) grants DR 3/— to the wearer in addition to the general adamantine properties.",
+        "fr": "Une armure lourde en adamantium (cotte à anneaux, armure lamellaire, demi-plaque, plaque complète) confère une RD 3/— à son porteur, en plus des propriétés générales de l'adamantium."
       },
-      {
-        "id": "special_material_mithral_max_dex",
-        "sourceId": "special_material_mithral",
-        "sourceName": {
-          "en": "Mithral",
-          "fr": "Mithral"
+      "tags": [
+        "special_material",
+        "special_material_adamantine",
+        "adamantine",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_adamantine_heavy_dr",
+          "sourceId": "special_material_adamantine_heavy_armor",
+          "sourceName": {
+            "en": "Adamantine Heavy Armor (DR 3/—)",
+            "fr": "Armure lourde en adamantium (RD 3/—)"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 3,
+          "type": "damage_reduction",
+          "drBypassTags": []
         },
-        "targetId": "combatStats.max_dexterity_bonus",
-        "value": 2,
-        "type": "untyped"
-      },
-      {
-        "id": "special_material_mithral_acp",
-        "sourceId": "special_material_mithral",
-        "sourceName": {
-          "en": "Mithral",
-          "fr": "Mithral"
+        {
+          "id": "special_material_adamantine_heavy_masterwork_attack",
+          "sourceId": "special_material_adamantine_heavy_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork)",
+            "fr": "Adamantium (maîtresse)"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "enhancement"
         },
-        "targetId": "combatStats.armor_check_penalty",
-        "value": 3,
-        "type": "untyped"
-      },
-      {
-        "id": "special_material_mithral_masterwork_attack",
-        "sourceId": "special_material_mithral",
-        "sourceName": {
-          "en": "Mithral (masterwork)",
-          "fr": "Mithral (maîtresse)"
-        },
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "enhancement"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "special_material_alchemical_silver",
-    "category": "item",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Silver, Alchemical",
-      "fr": "Argent alchimique"
+        {
+          "id": "special_material_adamantine_heavy_acp",
+          "sourceId": "special_material_adamantine_heavy_armor",
+          "sourceName": {
+            "en": "Adamantine (masterwork ACP reduction)",
+            "fr": "Adamantium (réduction malus maîtresse)"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 1,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
     },
-    "description": {
-      "en": "A complex process involving metallurgy and alchemy can bond silver to a weapon made of steel so that it bypasses the damage reduction of creatures such as lycanthropes. On a successful attack with a silvered weapon, the wielder takes a −1 penalty on the damage roll (with the usual minimum of 1 point of damage). The alchemical silvering process cannot be applied to nonmetal items, and it does not work on rare metals such as adamantine, cold iron, and mithral. Alchemical silver has 10 hit points per inch of thickness and hardness 8.",
-      "fr": "Un procédé complexe alliant métallurgie et alchimie permet de lier l'argent à une arme en acier afin de contourner la réduction des dégâts de créatures telles que les lycanthropes. À chaque attaque réussie avec une arme en argent alchimique, le porteur subit un malus de −1 aux jets de dégâts (avec le minimum habituel de 1 point de dégâts). L'argenture alchimique ne peut pas s'appliquer aux objets non métalliques, et ne fonctionne pas sur les métaux rares tels que l'adamantium, le fer froid et le mithral. L'argent alchimique a 10 points de vie par centimètre d'épaisseur et une solidité de 8."
+    {
+      "id": "special_material_darkwood",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Darkwood",
+        "fr": "Bois sombre"
+      },
+      "description": {
+        "en": "This rare magic wood is as hard as normal wood but very light. Any wooden or mostly wooden item made from darkwood is considered a masterwork item and weighs only half as much as a normal wooden item of that type. Items not normally made of wood or only partially of wood (such as a battleaxe or a mace) either cannot be made from darkwood or do not gain any special benefit from being made of darkwood. The armor check penalty of a darkwood shield is lessened by 2 compared to an ordinary shield of its type. The price of a darkwood item uses the original weight but adds 10 gp per pound to the price of a masterwork version. Darkwood has 10 hit points per inch of thickness and hardness 5.",
+        "fr": "Ce bois magique rare est aussi dur que le bois ordinaire, mais beaucoup plus léger. Tout objet en bois ou principalement en bois fabriqué en bois sombre est considéré de qualité maîtresse et pèse moitié moins qu'un objet en bois ordinaire du même type. Les objets normalement pas fabriqués en bois ou seulement partiellement (comme une hache de bataille ou une masse) ne peuvent pas être fabriqués en bois sombre ou n'en bénéficient pas. Le malus d'armure aux tests d'un bouclier en bois sombre est réduit de 2 par rapport à un bouclier ordinaire du même type. Le bois sombre a 10 points de vie par centimètre d'épaisseur et une solidité de 5."
+      },
+      "tags": [
+        "special_material",
+        "special_material_darkwood",
+        "wood"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_darkwood_acp",
+          "sourceId": "special_material_darkwood",
+          "sourceName": {
+            "en": "Darkwood",
+            "fr": "Bois sombre"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 2,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": [
-      "special_material",
-      "special_material_alchemical_silver",
-      "silver",
-      "metal"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "special_material_alchemical_silver_damage_penalty",
-        "sourceId": "special_material_alchemical_silver",
-        "sourceName": {
-          "en": "Alchemical Silver (damage penalty)",
-          "fr": "Argent alchimique (malus aux dégâts)"
+    {
+      "id": "special_material_dragonhide",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Dragonhide",
+        "fr": "Peau de dragon"
+      },
+      "description": {
+        "en": "Armorsmiths can work with the hides of dragons to produce armor or shields of masterwork quality. Because dragonhide armor is not made of metal, druids can wear it without penalty. Dragonhide armor costs double what masterwork armor of that type ordinarily costs, but it takes no longer to make than ordinary armor of that type. One dragon produces enough hide for a single suit of masterwork hide armor for a creature one size category smaller than the dragon (or banded mail two sizes smaller, half-plate three sizes smaller, or a breastplate or full plate four sizes smaller). In each case, enough hide is available to produce a small or large masterwork shield if the dragon is Large or larger. Dragonhide has 10 hit points per inch of thickness and hardness 10.",
+        "fr": "Les armuriers peuvent travailler les peaux de dragons pour produire des armures ou des boucliers de qualité maîtresse. L'armure en peau de dragon n'étant pas en métal, les druides peuvent la porter sans pénalité. Elle coûte le double d'une armure maîtresse ordinaire du même type, mais ne prend pas plus de temps à fabriquer. Un dragon fournit assez de peau pour une armure de peau maîtresse pour une créature d'une catégorie de taille inférieure (ou cotte de mailles lamellaire deux tailles plus petite, demi-plaque trois tailles plus petite, plastron ou plaque complète quatre tailles plus petite). Dans chaque cas, assez de peau est disponible pour produire un bouclier maîtresse si le dragon est Grand ou plus. La peau de dragon a 10 points de vie par centimètre d'épaisseur et une solidité de 10."
+      },
+      "tags": [
+        "special_material",
+        "special_material_dragonhide"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_cold_iron",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Iron, Cold",
+        "fr": "Fer froid"
+      },
+      "description": {
+        "en": "This iron, mined deep underground and known for its effectiveness against fey creatures, is forged at a lower temperature to preserve its delicate properties. Weapons made of cold iron cost twice as much to make as their normal counterparts. Any magical enhancements to a cold iron weapon cost an additional 2,000 gp. Items without metal parts cannot be made from cold iron. A double weapon that has only half of it made of cold iron increases its cost by 50%. Cold iron has 30 hit points per inch of thickness and hardness 10.",
+        "fr": "Ce fer, extrait en profondeur et connu pour son efficacité contre les créatures fées, est forgé à plus basse température pour préserver ses délicates propriétés. Les armes en fer froid coûtent le double du prix normal. Toute amélioration magique d'une arme en fer froid coûte 2 000 po supplémentaires. Les objets sans parties métalliques ne peuvent pas être fabriqués en fer froid. Une arme double dont seule la moitié est en fer froid voit son coût augmenter de 50%. Le fer froid a 30 points de vie par centimètre d'épaisseur et une solidité de 10."
+      },
+      "tags": [
+        "special_material",
+        "special_material_cold_iron",
+        "cold_iron",
+        "metal"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_mithral",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Mithral",
+        "fr": "Mithral"
+      },
+      "description": {
+        "en": "Mithral is a very rare silvery, glistening metal that is lighter than iron but just as hard. When worked like steel, it becomes a wonderful material from which to create armor and is occasionally used for other items as well. Most mithral armors are one category lighter than normal for purposes of movement and other limitations — heavy armors are treated as medium, and medium armors are treated as light; light armors are still treated as light (tag: armor_movement_category_reduced). Spell failure chances for armors and shields made from mithral are decreased by 10%, maximum Dexterity bonus is increased by 2, and armor check penalties are lessened by 3 (to a minimum of 0). An item made from mithral weighs half as much as the same item made from other metals. In the case of weapons, this lighter weight does not change a weapon's size category or the ease with which it can be wielded. Items not primarily of metal are not meaningfully affected by being partially made of mithral (a longsword can be a mithral weapon, while a scythe cannot). Weapons or armors fashioned from mithral are always masterwork items as well; the masterwork cost is included in the prices. Mithral has 30 hit points per inch of thickness and hardness 15.",
+        "fr": "Le mithral est un métal très rare, argenté et brillant, plus léger que le fer mais tout aussi dur. La plupart des armures en mithral sont considérées comme d'une catégorie inférieure pour les déplacements et autres limitations — les armures lourdes sont traitées comme des armures intermédiaires, les armures intermédiaires comme des armures légères ; les armures légères restent légères (balise : armor_movement_category_reduced). Les armures et boucliers en mithral réduisent le risque d'échec des sorts arcaniques de 10%, augmentent le bonus de Dextérité maximum de 2, et réduisent le malus d'armure aux tests de 3 (minimum 0). Un objet en mithral pèse moitié moins que le même objet en métal ordinaire. Pour les armes, ce poids réduit ne modifie pas la catégorie de taille ni la facilité de maniement. Les objets principalement non métalliques ne bénéficient pas significativement d'une fabrication partielle en mithral. Les armes et armures en mithral sont toujours de qualité maîtresse ; le coût maîtresse est inclus dans les prix du mithral. Le mithral a 30 points de vie par centimètre d'épaisseur et une solidité de 15."
+      },
+      "tags": [
+        "special_material",
+        "special_material_mithral",
+        "armor_movement_category_reduced",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_mithral_asf",
+          "sourceId": "special_material_mithral",
+          "sourceName": {
+            "en": "Mithral",
+            "fr": "Mithral"
+          },
+          "targetId": "combatStats.arcane_spell_failure",
+          "value": -10,
+          "type": "untyped"
         },
-        "targetId": "combatStats.damage_bonus",
-        "value": -1,
-        "type": "untyped"
-      }
-    ],
-    "grantedFeatures": []
-  }
-]
+        {
+          "id": "special_material_mithral_max_dex",
+          "sourceId": "special_material_mithral",
+          "sourceName": {
+            "en": "Mithral",
+            "fr": "Mithral"
+          },
+          "targetId": "combatStats.max_dexterity_bonus",
+          "value": 2,
+          "type": "untyped"
+        },
+        {
+          "id": "special_material_mithral_acp",
+          "sourceId": "special_material_mithral",
+          "sourceName": {
+            "en": "Mithral",
+            "fr": "Mithral"
+          },
+          "targetId": "combatStats.armor_check_penalty",
+          "value": 3,
+          "type": "untyped"
+        },
+        {
+          "id": "special_material_mithral_masterwork_attack",
+          "sourceId": "special_material_mithral",
+          "sourceName": {
+            "en": "Mithral (masterwork)",
+            "fr": "Mithral (maîtresse)"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "enhancement"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "special_material_alchemical_silver",
+      "category": "item",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Silver, Alchemical",
+        "fr": "Argent alchimique"
+      },
+      "description": {
+        "en": "A complex process involving metallurgy and alchemy can bond silver to a weapon made of steel so that it bypasses the damage reduction of creatures such as lycanthropes. On a successful attack with a silvered weapon, the wielder takes a −1 penalty on the damage roll (with the usual minimum of 1 point of damage). The alchemical silvering process cannot be applied to nonmetal items, and it does not work on rare metals such as adamantine, cold iron, and mithral. Alchemical silver has 10 hit points per inch of thickness and hardness 8.",
+        "fr": "Un procédé complexe alliant métallurgie et alchimie permet de lier l'argent à une arme en acier afin de contourner la réduction des dégâts de créatures telles que les lycanthropes. À chaque attaque réussie avec une arme en argent alchimique, le porteur subit un malus de −1 aux jets de dégâts (avec le minimum habituel de 1 point de dégâts). L'argenture alchimique ne peut pas s'appliquer aux objets non métalliques, et ne fonctionne pas sur les métaux rares tels que l'adamantium, le fer froid et le mithral. L'argent alchimique a 10 points de vie par centimètre d'épaisseur et une solidité de 8."
+      },
+      "tags": [
+        "special_material",
+        "special_material_alchemical_silver",
+        "silver",
+        "metal"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "special_material_alchemical_silver_damage_penalty",
+          "sourceId": "special_material_alchemical_silver",
+          "sourceName": {
+            "en": "Alchemical Silver (damage penalty)",
+            "fr": "Argent alchimique (malus aux dégâts)"
+          },
+          "targetId": "combatStats.damage_bonus",
+          "value": -1,
+          "type": "untyped"
+        }
+      ],
+      "grantedFeatures": []
+    }
+  ]
+}

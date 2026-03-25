@@ -1,963 +1,3432 @@
-[
-  {
-    "id": "class_psion",
-    "category": "class",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psion", "fr": "Psion" },
-    "description": {
-      "en": "A psion is a character who has developed the ability to harness the power of the mind. Psions learn to manifest powers — the psionic equivalent of spells — by focusing their mental energy into controlled bursts. Unlike spellcasters, psions are not limited to a fixed number of manifestations per day; they are limited instead by their power point reserve.",
-      "fr": "Un psion est un personnage qui a développé la capacité d'exploiter la puissance de l'esprit. Les psions apprennent à manifester des pouvoirs — l'équivalent psionic des sorts — en focalisant leur énergie mentale en rafales contrôlées. Contrairement aux lanceurs de sorts, les psions ne sont pas limités à un nombre fixe de manifestations par jour ; ils sont plutôt limités par leur réserve de points de pouvoir."
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "class_psion",
+      "category": "class",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psion",
+        "fr": "Psion"
+      },
+      "description": {
+        "en": "A psion is a character who has developed the ability to harness the power of the mind. Psions learn to manifest powers — the psionic equivalent of spells — by focusing their mental energy into controlled bursts. Unlike spellcasters, psions are not limited to a fixed number of manifestations per day; they are limited instead by their power point reserve.",
+        "fr": "Un psion est un personnage qui a développé la capacité d'exploiter la puissance de l'esprit. Les psions apprennent à manifester des pouvoirs — l'équivalent psionic des sorts — en focalisant leur énergie mentale en rafales contrôlées. Contrairement aux lanceurs de sorts, les psions ne sont pas limités à un nombre fixe de manifestations par jour ; ils sont plutôt limités par leur réserve de points de pouvoir."
+      },
+      "tags": [
+        "class",
+        "base_class",
+        "psionic_manifester",
+        "class_psion"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "psion_hit_die",
+          "sourceId": "class_psion",
+          "targetId": "combatStats.hit_die_type",
+          "value": 4,
+          "type": "base",
+          "sourceName": {
+            "en": "Psion",
+            "fr": "Psion"
+          }
+        },
+        {
+          "id": "psion_skill_points",
+          "sourceId": "class_psion",
+          "targetId": "attributes.skill_points_per_level",
+          "value": 2,
+          "type": "base",
+          "sourceName": {
+            "en": "Psion",
+            "fr": "Psion"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "proficiency_club",
+        "proficiency_dagger",
+        "proficiency_heavy_crossbow",
+        "proficiency_light_crossbow",
+        "proficiency_quarterstaff",
+        "proficiency_shortspear"
+      ],
+      "choices": [
+        {
+          "choiceId": "psionic_discipline",
+          "label": {
+            "en": "Psionic Discipline",
+            "fr": "Discipline psionique"
+          },
+          "optionsQuery": "tag:psionic_discipline",
+          "maxSelections": 1
+        }
+      ],
+      "recommendedAttributes": [
+        "stat_intelligence",
+        "stat_constitution"
+      ],
+      "classSkills": [
+        "skill_concentration",
+        "skill_craft",
+        "skill_knowledge_arcana",
+        "skill_knowledge_dungeoneering",
+        "skill_knowledge_geography",
+        "skill_knowledge_history",
+        "skill_knowledge_local",
+        "skill_knowledge_nature",
+        "skill_knowledge_nobility",
+        "skill_knowledge_planes",
+        "skill_knowledge_psionics",
+        "skill_knowledge_religion",
+        "skill_profession",
+        "skill_psicraft"
+      ],
+      "levelProgression": [
+        {
+          "level": 1,
+          "grantedFeatures": [
+            "class_feature_psion_discipline",
+            "class_feature_psion_bonus_feat_1",
+            "class_feature_psion_power_points",
+            "class_feature_psion_powers_known"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psion_1_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 1",
+                "fr": "Psion 1"
+              }
+            },
+            {
+              "id": "psion_1_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 1",
+                "fr": "Psion 1"
+              }
+            },
+            {
+              "id": "psion_1_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 1",
+                "fr": "Psion 1"
+              }
+            },
+            {
+              "id": "psion_1_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 1",
+                "fr": "Psion 1"
+              }
+            },
+            {
+              "id": "psion_1_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 1 (PP)",
+                "fr": "Psion 1 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_2_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 2",
+                "fr": "Psion 2"
+              }
+            },
+            {
+              "id": "psion_2_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 2",
+                "fr": "Psion 2"
+              }
+            },
+            {
+              "id": "psion_2_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 2 (PP)",
+                "fr": "Psion 2 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_3_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 3",
+                "fr": "Psion 3"
+              }
+            },
+            {
+              "id": "psion_3_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 3",
+                "fr": "Psion 3"
+              }
+            },
+            {
+              "id": "psion_3_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 5,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 3 (PP)",
+                "fr": "Psion 3 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_4_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 4",
+                "fr": "Psion 4"
+              }
+            },
+            {
+              "id": "psion_4_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 4",
+                "fr": "Psion 4"
+              }
+            },
+            {
+              "id": "psion_4_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 6,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 4 (PP)",
+                "fr": "Psion 4 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "grantedFeatures": [
+            "class_feature_psion_bonus_feat_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psion_5_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 5 (PP)",
+                "fr": "Psion 5 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_6_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 6",
+                "fr": "Psion 6"
+              }
+            },
+            {
+              "id": "psion_6_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 6",
+                "fr": "Psion 6"
+              }
+            },
+            {
+              "id": "psion_6_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 6",
+                "fr": "Psion 6"
+              }
+            },
+            {
+              "id": "psion_6_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 6",
+                "fr": "Psion 6"
+              }
+            },
+            {
+              "id": "psion_6_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 10,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 6 (PP)",
+                "fr": "Psion 6 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_7_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 11,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 7 (PP)",
+                "fr": "Psion 7 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_8_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 8",
+                "fr": "Psion 8"
+              }
+            },
+            {
+              "id": "psion_8_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 8",
+                "fr": "Psion 8"
+              }
+            },
+            {
+              "id": "psion_8_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 8 (PP)",
+                "fr": "Psion 8 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_9_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 9",
+                "fr": "Psion 9"
+              }
+            },
+            {
+              "id": "psion_9_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 9",
+                "fr": "Psion 9"
+              }
+            },
+            {
+              "id": "psion_9_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 14,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 9 (PP)",
+                "fr": "Psion 9 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "grantedFeatures": [
+            "class_feature_psion_bonus_feat_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psion_10_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 10",
+                "fr": "Psion 10"
+              }
+            },
+            {
+              "id": "psion_10_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 10",
+                "fr": "Psion 10"
+              }
+            },
+            {
+              "id": "psion_10_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 16,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 10 (PP)",
+                "fr": "Psion 10 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_11_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 18,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 11 (PP)",
+                "fr": "Psion 11 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_12_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 12",
+                "fr": "Psion 12"
+              }
+            },
+            {
+              "id": "psion_12_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 12",
+                "fr": "Psion 12"
+              }
+            },
+            {
+              "id": "psion_12_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 12",
+                "fr": "Psion 12"
+              }
+            },
+            {
+              "id": "psion_12_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 12",
+                "fr": "Psion 12"
+              }
+            },
+            {
+              "id": "psion_12_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 20,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 12 (PP)",
+                "fr": "Psion 12 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_13_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 21,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 13 (PP)",
+                "fr": "Psion 13 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 14,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_14_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 14",
+                "fr": "Psion 14"
+              }
+            },
+            {
+              "id": "psion_14_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 14",
+                "fr": "Psion 14"
+              }
+            },
+            {
+              "id": "psion_14_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 23,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 14 (PP)",
+                "fr": "Psion 14 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 15,
+          "grantedFeatures": [
+            "class_feature_psion_bonus_feat_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psion_15_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 15",
+                "fr": "Psion 15"
+              }
+            },
+            {
+              "id": "psion_15_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 15",
+                "fr": "Psion 15"
+              }
+            },
+            {
+              "id": "psion_15_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 25,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 15 (PP)",
+                "fr": "Psion 15 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 16,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_16_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 16",
+                "fr": "Psion 16"
+              }
+            },
+            {
+              "id": "psion_16_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 16",
+                "fr": "Psion 16"
+              }
+            },
+            {
+              "id": "psion_16_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 26,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 16 (PP)",
+                "fr": "Psion 16 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 17,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_17_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 29,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 17 (PP)",
+                "fr": "Psion 17 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 18,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_18_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 18",
+                "fr": "Psion 18"
+              }
+            },
+            {
+              "id": "psion_18_fort",
+              "sourceId": "class_psion",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 18",
+                "fr": "Psion 18"
+              }
+            },
+            {
+              "id": "psion_18_ref",
+              "sourceId": "class_psion",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 18",
+                "fr": "Psion 18"
+              }
+            },
+            {
+              "id": "psion_18_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 18",
+                "fr": "Psion 18"
+              }
+            },
+            {
+              "id": "psion_18_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 30,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 18 (PP)",
+                "fr": "Psion 18 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 19,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psion_19_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 31,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 19 (PP)",
+                "fr": "Psion 19 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 20,
+          "grantedFeatures": [
+            "class_feature_psion_bonus_feat_5"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psion_20_bab",
+              "sourceId": "class_psion",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 20",
+                "fr": "Psion 20"
+              }
+            },
+            {
+              "id": "psion_20_will",
+              "sourceId": "class_psion",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 20",
+                "fr": "Psion 20"
+              }
+            },
+            {
+              "id": "psion_20_pp",
+              "sourceId": "class_psion",
+              "targetId": "resources.power_points.maxValue",
+              "value": 32,
+              "type": "base",
+              "sourceName": {
+                "en": "Psion 20 (PP)",
+                "fr": "Psion 20 (PP)"
+              }
+            }
+          ]
+        }
+      ]
     },
-    "tags": ["class", "base_class", "psionic_manifester", "class_psion"],
-    "grantedModifiers": [
-      {
-        "id": "psion_hit_die",
-        "sourceId": "class_psion",
-        "targetId": "combatStats.hit_die_type",
-        "value": 4,
-        "type": "base",
-        "sourceName": { "en": "Psion", "fr": "Psion" }
+    {
+      "id": "class_psychic_warrior",
+      "category": "class",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Warrior",
+        "fr": "Guerrier psychique"
       },
-      {
-        "id": "psion_skill_points",
-        "sourceId": "class_psion",
-        "targetId": "attributes.skill_points_per_level",
-        "value": 2,
-        "type": "base",
-        "sourceName": { "en": "Psion", "fr": "Psion" }
-      }
-    ],
-    "grantedFeatures": [
-      "proficiency_club",
-      "proficiency_dagger",
-      "proficiency_heavy_crossbow",
-      "proficiency_light_crossbow",
-      "proficiency_quarterstaff",
-      "proficiency_shortspear"
-    ],
-    "choices": [
-      {
-        "choiceId": "psionic_discipline",
-        "label": { "en": "Psionic Discipline", "fr": "Discipline psionique" },
-        "optionsQuery": "tag:psionic_discipline",
-        "maxSelections": 1
-      }
-    ],
-    "recommendedAttributes": ["stat_intelligence", "stat_constitution"],
-    "classSkills": [
-      "skill_concentration",
-      "skill_craft",
-      "skill_knowledge_arcana",
-      "skill_knowledge_dungeoneering",
-      "skill_knowledge_geography",
-      "skill_knowledge_history",
-      "skill_knowledge_local",
-      "skill_knowledge_nature",
-      "skill_knowledge_nobility",
-      "skill_knowledge_planes",
-      "skill_knowledge_psionics",
-      "skill_knowledge_religion",
-      "skill_profession",
-      "skill_psicraft"
-    ],
-    "levelProgression": [
-      {
-        "level": 1,
-        "grantedFeatures": [
-          "class_feature_psion_discipline",
-          "class_feature_psion_bonus_feat_1",
-          "class_feature_psion_power_points",
-          "class_feature_psion_powers_known"
-        ],
-        "grantedModifiers": [
-          { "id": "psion_1_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psion 1", "fr": "Psion 1" } },
-          { "id": "psion_1_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 0, "type": "base", "sourceName": { "en": "Psion 1", "fr": "Psion 1" } },
-          { "id": "psion_1_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Psion 1", "fr": "Psion 1" } },
-          { "id": "psion_1_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Psion 1", "fr": "Psion 1" } },
-          { "id": "psion_1_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Psion 1 (PP)", "fr": "Psion 1 (PP)" } }
-        ]
+      "description": {
+        "en": "The psychic warrior combines martial prowess with psionic power. Unlike the psion, the psychic warrior does not use his mind-powers to avoid combat; he uses them to enhance his fighting abilities. The psychic warrior is a formidable combatant who supplements his physical abilities with psionic power.",
+        "fr": "Le guerrier psychique combine prouesse martiale et pouvoir psionic. Contrairement au psion, le guerrier psychique n'utilise pas ses pouvoirs mentaux pour éviter le combat ; il les utilise pour améliorer ses capacités martiales. Le guerrier psychique est un redoutable combattant qui complète ses capacités physiques par le pouvoir psionic."
       },
-      {
-        "level": 2,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_2_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 2", "fr": "Psion 2" } },
-          { "id": "psion_2_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 2", "fr": "Psion 2" } },
-          { "id": "psion_2_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psion 2 (PP)", "fr": "Psion 2 (PP)" } }
-        ]
-      },
-      {
-        "level": 3,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_3_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 3", "fr": "Psion 3" } },
-          { "id": "psion_3_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 3", "fr": "Psion 3" } },
-          { "id": "psion_3_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 5, "type": "base", "sourceName": { "en": "Psion 3 (PP)", "fr": "Psion 3 (PP)" } }
-        ]
-      },
-      {
-        "level": 4,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_4_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 4", "fr": "Psion 4" } },
-          { "id": "psion_4_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 4", "fr": "Psion 4" } },
-          { "id": "psion_4_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 6, "type": "base", "sourceName": { "en": "Psion 4 (PP)", "fr": "Psion 4 (PP)" } }
-        ]
-      },
-      {
-        "level": 5,
-        "grantedFeatures": ["class_feature_psion_bonus_feat_2"],
-        "grantedModifiers": [
-          { "id": "psion_5_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psion 5 (PP)", "fr": "Psion 5 (PP)" } }
-        ]
-      },
-      {
-        "level": 6,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_6_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 6", "fr": "Psion 6" } },
-          { "id": "psion_6_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 6", "fr": "Psion 6" } },
-          { "id": "psion_6_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 6", "fr": "Psion 6" } },
-          { "id": "psion_6_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 6", "fr": "Psion 6" } },
-          { "id": "psion_6_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 10, "type": "base", "sourceName": { "en": "Psion 6 (PP)", "fr": "Psion 6 (PP)" } }
-        ]
-      },
-      {
-        "level": 7,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_7_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 11, "type": "base", "sourceName": { "en": "Psion 7 (PP)", "fr": "Psion 7 (PP)" } }
-        ]
-      },
-      {
-        "level": 8,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_8_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 8", "fr": "Psion 8" } },
-          { "id": "psion_8_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 8", "fr": "Psion 8" } },
-          { "id": "psion_8_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psion 8 (PP)", "fr": "Psion 8 (PP)" } }
-        ]
-      },
-      {
-        "level": 9,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_9_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 9", "fr": "Psion 9" } },
-          { "id": "psion_9_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 9", "fr": "Psion 9" } },
-          { "id": "psion_9_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 14, "type": "base", "sourceName": { "en": "Psion 9 (PP)", "fr": "Psion 9 (PP)" } }
-        ]
-      },
-      {
-        "level": 10,
-        "grantedFeatures": ["class_feature_psion_bonus_feat_3"],
-        "grantedModifiers": [
-          { "id": "psion_10_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 10", "fr": "Psion 10" } },
-          { "id": "psion_10_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 10", "fr": "Psion 10" } },
-          { "id": "psion_10_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 16, "type": "base", "sourceName": { "en": "Psion 10 (PP)", "fr": "Psion 10 (PP)" } }
-        ]
-      },
-      {
-        "level": 11,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_11_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 18, "type": "base", "sourceName": { "en": "Psion 11 (PP)", "fr": "Psion 11 (PP)" } }
-        ]
-      },
-      {
-        "level": 12,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_12_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 12", "fr": "Psion 12" } },
-          { "id": "psion_12_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 12", "fr": "Psion 12" } },
-          { "id": "psion_12_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 12", "fr": "Psion 12" } },
-          { "id": "psion_12_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 12", "fr": "Psion 12" } },
-          { "id": "psion_12_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 20, "type": "base", "sourceName": { "en": "Psion 12 (PP)", "fr": "Psion 12 (PP)" } }
-        ]
-      },
-      {
-        "level": 13,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_13_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 21, "type": "base", "sourceName": { "en": "Psion 13 (PP)", "fr": "Psion 13 (PP)" } }
-        ]
-      },
-      {
-        "level": 14,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_14_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 14", "fr": "Psion 14" } },
-          { "id": "psion_14_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 14", "fr": "Psion 14" } },
-          { "id": "psion_14_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 23, "type": "base", "sourceName": { "en": "Psion 14 (PP)", "fr": "Psion 14 (PP)" } }
-        ]
-      },
-      {
-        "level": 15,
-        "grantedFeatures": ["class_feature_psion_bonus_feat_4"],
-        "grantedModifiers": [
-          { "id": "psion_15_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 15", "fr": "Psion 15" } },
-          { "id": "psion_15_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 15", "fr": "Psion 15" } },
-          { "id": "psion_15_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 25, "type": "base", "sourceName": { "en": "Psion 15 (PP)", "fr": "Psion 15 (PP)" } }
-        ]
-      },
-      {
-        "level": 16,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_16_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 16", "fr": "Psion 16" } },
-          { "id": "psion_16_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 16", "fr": "Psion 16" } },
-          { "id": "psion_16_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 26, "type": "base", "sourceName": { "en": "Psion 16 (PP)", "fr": "Psion 16 (PP)" } }
-        ]
-      },
-      {
-        "level": 17,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_17_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 29, "type": "base", "sourceName": { "en": "Psion 17 (PP)", "fr": "Psion 17 (PP)" } }
-        ]
-      },
-      {
-        "level": 18,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_18_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 18", "fr": "Psion 18" } },
-          { "id": "psion_18_fort", "sourceId": "class_psion", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psion 18", "fr": "Psion 18" } },
-          { "id": "psion_18_ref", "sourceId": "class_psion", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psion 18", "fr": "Psion 18" } },
-          { "id": "psion_18_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 18", "fr": "Psion 18" } },
-          { "id": "psion_18_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 30, "type": "base", "sourceName": { "en": "Psion 18 (PP)", "fr": "Psion 18 (PP)" } }
-        ]
-      },
-      {
-        "level": 19,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psion_19_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 31, "type": "base", "sourceName": { "en": "Psion 19 (PP)", "fr": "Psion 19 (PP)" } }
-        ]
-      },
-      {
-        "level": 20,
-        "grantedFeatures": ["class_feature_psion_bonus_feat_5"],
-        "grantedModifiers": [
-          { "id": "psion_20_bab", "sourceId": "class_psion", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psion 20", "fr": "Psion 20" } },
-          { "id": "psion_20_will", "sourceId": "class_psion", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psion 20", "fr": "Psion 20" } },
-          { "id": "psion_20_pp", "sourceId": "class_psion", "targetId": "resources.power_points.maxValue", "value": 32, "type": "base", "sourceName": { "en": "Psion 20 (PP)", "fr": "Psion 20 (PP)" } }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "class_psychic_warrior",
-    "category": "class",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Warrior", "fr": "Guerrier psychique" },
-    "description": {
-      "en": "The psychic warrior combines martial prowess with psionic power. Unlike the psion, the psychic warrior does not use his mind-powers to avoid combat; he uses them to enhance his fighting abilities. The psychic warrior is a formidable combatant who supplements his physical abilities with psionic power.",
-      "fr": "Le guerrier psychique combine prouesse martiale et pouvoir psionic. Contrairement au psion, le guerrier psychique n'utilise pas ses pouvoirs mentaux pour éviter le combat ; il les utilise pour améliorer ses capacités martiales. Le guerrier psychique est un redoutable combattant qui complète ses capacités physiques par le pouvoir psionic."
+      "tags": [
+        "class",
+        "base_class",
+        "psionic_manifester",
+        "class_psychic_warrior"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "psychic_warrior_hit_die",
+          "sourceId": "class_psychic_warrior",
+          "targetId": "combatStats.hit_die_type",
+          "value": 8,
+          "type": "base",
+          "sourceName": {
+            "en": "Psychic Warrior",
+            "fr": "Guerrier psychique"
+          }
+        },
+        {
+          "id": "psychic_warrior_skill_points",
+          "sourceId": "class_psychic_warrior",
+          "targetId": "attributes.skill_points_per_level",
+          "value": 2,
+          "type": "base",
+          "sourceName": {
+            "en": "Psychic Warrior",
+            "fr": "Guerrier psychique"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "proficiency_all_simple",
+        "proficiency_all_martial",
+        "proficiency_armor_light",
+        "proficiency_armor_medium",
+        "proficiency_armor_heavy",
+        "proficiency_shields_except_tower"
+      ],
+      "recommendedAttributes": [
+        "stat_strength",
+        "stat_wisdom",
+        "stat_constitution"
+      ],
+      "classSkills": [
+        "skill_autohypnosis",
+        "skill_climb",
+        "skill_concentration",
+        "skill_craft",
+        "skill_jump",
+        "skill_knowledge_psionics",
+        "skill_profession",
+        "skill_ride",
+        "skill_search",
+        "skill_swim"
+      ],
+      "levelProgression": [
+        {
+          "level": 1,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_1",
+            "class_feature_psychic_warrior_power_points",
+            "class_feature_psychic_warrior_powers_known"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_1_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 1",
+                "fr": "Guerrier psychique 1"
+              }
+            },
+            {
+              "id": "psywar_1_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 1",
+                "fr": "Guerrier psychique 1"
+              }
+            },
+            {
+              "id": "psywar_1_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 1",
+                "fr": "Guerrier psychique 1"
+              }
+            },
+            {
+              "id": "psywar_1_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 1",
+                "fr": "Guerrier psychique 1"
+              }
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_2_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 2",
+                "fr": "Guerrier psychique 2"
+              }
+            },
+            {
+              "id": "psywar_2_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 2",
+                "fr": "Guerrier psychique 2"
+              }
+            },
+            {
+              "id": "psywar_2_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 2 (PP)",
+                "fr": "Guerrier psychique 2 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_3_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 3",
+                "fr": "Guerrier psychique 3"
+              }
+            },
+            {
+              "id": "psywar_3_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 3",
+                "fr": "Guerrier psychique 3"
+              }
+            },
+            {
+              "id": "psywar_3_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 3",
+                "fr": "Guerrier psychique 3"
+              }
+            },
+            {
+              "id": "psywar_3_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 3 (PP)",
+                "fr": "Guerrier psychique 3 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_4_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 4",
+                "fr": "Guerrier psychique 4"
+              }
+            },
+            {
+              "id": "psywar_4_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 4",
+                "fr": "Guerrier psychique 4"
+              }
+            },
+            {
+              "id": "psywar_4_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 4 (PP)",
+                "fr": "Guerrier psychique 4 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_5_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 5",
+                "fr": "Guerrier psychique 5"
+              }
+            },
+            {
+              "id": "psywar_5_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 5 (PP)",
+                "fr": "Guerrier psychique 5 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_6_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 6",
+                "fr": "Guerrier psychique 6"
+              }
+            },
+            {
+              "id": "psywar_6_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 6",
+                "fr": "Guerrier psychique 6"
+              }
+            },
+            {
+              "id": "psywar_6_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 6",
+                "fr": "Guerrier psychique 6"
+              }
+            },
+            {
+              "id": "psywar_6_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 6",
+                "fr": "Guerrier psychique 6"
+              }
+            },
+            {
+              "id": "psywar_6_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 6 (PP)",
+                "fr": "Guerrier psychique 6 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_7_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 7",
+                "fr": "Guerrier psychique 7"
+              }
+            },
+            {
+              "id": "psywar_7_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 7 (PP)",
+                "fr": "Guerrier psychique 7 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_8_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 8",
+                "fr": "Guerrier psychique 8"
+              }
+            },
+            {
+              "id": "psywar_8_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 8",
+                "fr": "Guerrier psychique 8"
+              }
+            },
+            {
+              "id": "psywar_8_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 8 (PP)",
+                "fr": "Guerrier psychique 8 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_9_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 9",
+                "fr": "Guerrier psychique 9"
+              }
+            },
+            {
+              "id": "psywar_9_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 9",
+                "fr": "Guerrier psychique 9"
+              }
+            },
+            {
+              "id": "psywar_9_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 9",
+                "fr": "Guerrier psychique 9"
+              }
+            },
+            {
+              "id": "psywar_9_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 9 (PP)",
+                "fr": "Guerrier psychique 9 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_10_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 10",
+                "fr": "Guerrier psychique 10"
+              }
+            },
+            {
+              "id": "psywar_10_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 10",
+                "fr": "Guerrier psychique 10"
+              }
+            },
+            {
+              "id": "psywar_10_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 10 (PP)",
+                "fr": "Guerrier psychique 10 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_5"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_11_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 11",
+                "fr": "Guerrier psychique 11"
+              }
+            },
+            {
+              "id": "psywar_11_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 11 (PP)",
+                "fr": "Guerrier psychique 11 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_12_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 12",
+                "fr": "Guerrier psychique 12"
+              }
+            },
+            {
+              "id": "psywar_12_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 12",
+                "fr": "Guerrier psychique 12"
+              }
+            },
+            {
+              "id": "psywar_12_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 12",
+                "fr": "Guerrier psychique 12"
+              }
+            },
+            {
+              "id": "psywar_12_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 12",
+                "fr": "Guerrier psychique 12"
+              }
+            },
+            {
+              "id": "psywar_12_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 12 (PP)",
+                "fr": "Guerrier psychique 12 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_13_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 13",
+                "fr": "Guerrier psychique 13"
+              }
+            },
+            {
+              "id": "psywar_13_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 13 (PP)",
+                "fr": "Guerrier psychique 13 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 14,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_6"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_14_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 14",
+                "fr": "Guerrier psychique 14"
+              }
+            },
+            {
+              "id": "psywar_14_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 14",
+                "fr": "Guerrier psychique 14"
+              }
+            },
+            {
+              "id": "psywar_14_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 14 (PP)",
+                "fr": "Guerrier psychique 14 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 15,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_15_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 15",
+                "fr": "Guerrier psychique 15"
+              }
+            },
+            {
+              "id": "psywar_15_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 15",
+                "fr": "Guerrier psychique 15"
+              }
+            },
+            {
+              "id": "psywar_15_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 15",
+                "fr": "Guerrier psychique 15"
+              }
+            },
+            {
+              "id": "psywar_15_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 15 (PP)",
+                "fr": "Guerrier psychique 15 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 16,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_16_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 16",
+                "fr": "Guerrier psychique 16"
+              }
+            },
+            {
+              "id": "psywar_16_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 16",
+                "fr": "Guerrier psychique 16"
+              }
+            },
+            {
+              "id": "psywar_16_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 16 (PP)",
+                "fr": "Guerrier psychique 16 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 17,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_7"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_17_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 17",
+                "fr": "Guerrier psychique 17"
+              }
+            },
+            {
+              "id": "psywar_17_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 17 (PP)",
+                "fr": "Guerrier psychique 17 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 18,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_18_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 18",
+                "fr": "Guerrier psychique 18"
+              }
+            },
+            {
+              "id": "psywar_18_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 18",
+                "fr": "Guerrier psychique 18"
+              }
+            },
+            {
+              "id": "psywar_18_ref",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 18",
+                "fr": "Guerrier psychique 18"
+              }
+            },
+            {
+              "id": "psywar_18_will",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 18",
+                "fr": "Guerrier psychique 18"
+              }
+            },
+            {
+              "id": "psywar_18_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 18 (PP)",
+                "fr": "Guerrier psychique 18 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 19,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "psywar_19_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 19",
+                "fr": "Guerrier psychique 19"
+              }
+            },
+            {
+              "id": "psywar_19_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 19 (PP)",
+                "fr": "Guerrier psychique 19 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 20,
+          "grantedFeatures": [
+            "class_feature_psychic_warrior_bonus_feat_8"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "psywar_20_bab",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 20",
+                "fr": "Guerrier psychique 20"
+              }
+            },
+            {
+              "id": "psywar_20_fort",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 20",
+                "fr": "Guerrier psychique 20"
+              }
+            },
+            {
+              "id": "psywar_20_pp",
+              "sourceId": "class_psychic_warrior",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Psychic Warrior 20 (PP)",
+                "fr": "Guerrier psychique 20 (PP)"
+              }
+            }
+          ]
+        }
+      ]
     },
-    "tags": ["class", "base_class", "psionic_manifester", "class_psychic_warrior"],
-    "grantedModifiers": [
-      {
-        "id": "psychic_warrior_hit_die",
-        "sourceId": "class_psychic_warrior",
-        "targetId": "combatStats.hit_die_type",
-        "value": 8,
-        "type": "base",
-        "sourceName": { "en": "Psychic Warrior", "fr": "Guerrier psychique" }
+    {
+      "id": "class_soulknife",
+      "category": "class",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Soulknife",
+        "fr": "Lame d'âme"
       },
-      {
-        "id": "psychic_warrior_skill_points",
-        "sourceId": "class_psychic_warrior",
-        "targetId": "attributes.skill_points_per_level",
-        "value": 2,
-        "type": "base",
-        "sourceName": { "en": "Psychic Warrior", "fr": "Guerrier psychique" }
-      }
-    ],
-    "grantedFeatures": [
-      "proficiency_all_simple",
-      "proficiency_all_martial",
-      "proficiency_armor_light",
-      "proficiency_armor_medium",
-      "proficiency_armor_heavy",
-      "proficiency_shields_except_tower"
-    ],
-    "recommendedAttributes": ["stat_strength", "stat_wisdom", "stat_constitution"],
-    "classSkills": [
-      "skill_autohypnosis",
-      "skill_climb",
-      "skill_concentration",
-      "skill_craft",
-      "skill_jump",
-      "skill_knowledge_psionics",
-      "skill_profession",
-      "skill_ride",
-      "skill_search",
-      "skill_swim"
-    ],
-    "levelProgression": [
-      {
-        "level": 1,
-        "grantedFeatures": [
-          "class_feature_psychic_warrior_bonus_feat_1",
-          "class_feature_psychic_warrior_power_points",
-          "class_feature_psychic_warrior_powers_known"
-        ],
-        "grantedModifiers": [
-          { "id": "psywar_1_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 1", "fr": "Guerrier psychique 1" } },
-          { "id": "psywar_1_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 2, "type": "base", "sourceName": { "en": "Psychic Warrior 1", "fr": "Guerrier psychique 1" } },
-          { "id": "psywar_1_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 1", "fr": "Guerrier psychique 1" } },
-          { "id": "psywar_1_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 1", "fr": "Guerrier psychique 1" } }
-        ]
+      "description": {
+        "en": "A soulknife can create a blade of pure psychic energy, called a mind blade, almost at will. The blade can be altered in form, enhanced with special abilities, and imbued with psychic power to deal additional damage. The soulknife is a unique fighter who relies on psionic power to fuel a potent melee weapon.",
+        "fr": "Un lame d'âme peut créer une lame d'énergie psychique pure, appelée lame mentale, presque à volonté. La lame peut être modifiée dans sa forme, améliorée avec des capacités spéciales, et imprégnée de pouvoir psychique pour infliger des dégâts supplémentaires. La lame d'âme est un combattant unique qui s'appuie sur le pouvoir psionic pour alimenter une arme de mêlée puissante."
       },
-      {
-        "level": 2,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_2"],
-        "grantedModifiers": [
-          { "id": "psywar_2_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 2", "fr": "Guerrier psychique 2" } },
-          { "id": "psywar_2_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 2", "fr": "Guerrier psychique 2" } },
-          { "id": "psywar_2_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 2 (PP)", "fr": "Guerrier psychique 2 (PP)" } }
-        ]
-      },
-      {
-        "level": 3,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_3_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 3", "fr": "Guerrier psychique 3" } },
-          { "id": "psywar_3_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 3", "fr": "Guerrier psychique 3" } },
-          { "id": "psywar_3_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 3", "fr": "Guerrier psychique 3" } },
-          { "id": "psywar_3_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Psychic Warrior 3 (PP)", "fr": "Guerrier psychique 3 (PP)" } }
-        ]
-      },
-      {
-        "level": 4,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_4_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 4", "fr": "Guerrier psychique 4" } },
-          { "id": "psywar_4_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 4", "fr": "Guerrier psychique 4" } },
-          { "id": "psywar_4_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Psychic Warrior 4 (PP)", "fr": "Guerrier psychique 4 (PP)" } }
-        ]
-      },
-      {
-        "level": 5,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_3"],
-        "grantedModifiers": [
-          { "id": "psywar_5_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 5", "fr": "Guerrier psychique 5" } },
-          { "id": "psywar_5_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Psychic Warrior 5 (PP)", "fr": "Guerrier psychique 5 (PP)" } }
-        ]
-      },
-      {
-        "level": 6,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_6_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 6", "fr": "Guerrier psychique 6" } },
-          { "id": "psywar_6_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 6", "fr": "Guerrier psychique 6" } },
-          { "id": "psywar_6_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 6", "fr": "Guerrier psychique 6" } },
-          { "id": "psywar_6_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 6", "fr": "Guerrier psychique 6" } },
-          { "id": "psywar_6_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psychic Warrior 6 (PP)", "fr": "Guerrier psychique 6 (PP)" } }
-        ]
-      },
-      {
-        "level": 7,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_7_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 7", "fr": "Guerrier psychique 7" } },
-          { "id": "psywar_7_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psychic Warrior 7 (PP)", "fr": "Guerrier psychique 7 (PP)" } }
-        ]
-      },
-      {
-        "level": 8,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_4"],
-        "grantedModifiers": [
-          { "id": "psywar_8_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 8", "fr": "Guerrier psychique 8" } },
-          { "id": "psywar_8_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 8", "fr": "Guerrier psychique 8" } },
-          { "id": "psywar_8_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psychic Warrior 8 (PP)", "fr": "Guerrier psychique 8 (PP)" } }
-        ]
-      },
-      {
-        "level": 9,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_9_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 9", "fr": "Guerrier psychique 9" } },
-          { "id": "psywar_9_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 9", "fr": "Guerrier psychique 9" } },
-          { "id": "psywar_9_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 9", "fr": "Guerrier psychique 9" } },
-          { "id": "psywar_9_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psychic Warrior 9 (PP)", "fr": "Guerrier psychique 9 (PP)" } }
-        ]
-      },
-      {
-        "level": 10,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_10_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 10", "fr": "Guerrier psychique 10" } },
-          { "id": "psywar_10_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 10", "fr": "Guerrier psychique 10" } },
-          { "id": "psywar_10_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Psychic Warrior 10 (PP)", "fr": "Guerrier psychique 10 (PP)" } }
-        ]
-      },
-      {
-        "level": 11,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_5"],
-        "grantedModifiers": [
-          { "id": "psywar_11_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 11", "fr": "Guerrier psychique 11" } },
-          { "id": "psywar_11_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psychic Warrior 11 (PP)", "fr": "Guerrier psychique 11 (PP)" } }
-        ]
-      },
-      {
-        "level": 12,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_12_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 12", "fr": "Guerrier psychique 12" } },
-          { "id": "psywar_12_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 12", "fr": "Guerrier psychique 12" } },
-          { "id": "psywar_12_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 12", "fr": "Guerrier psychique 12" } },
-          { "id": "psywar_12_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 12", "fr": "Guerrier psychique 12" } },
-          { "id": "psywar_12_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psychic Warrior 12 (PP)", "fr": "Guerrier psychique 12 (PP)" } }
-        ]
-      },
-      {
-        "level": 13,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_13_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 13", "fr": "Guerrier psychique 13" } },
-          { "id": "psywar_13_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psychic Warrior 13 (PP)", "fr": "Guerrier psychique 13 (PP)" } }
-        ]
-      },
-      {
-        "level": 14,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_6"],
-        "grantedModifiers": [
-          { "id": "psywar_14_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 14", "fr": "Guerrier psychique 14" } },
-          { "id": "psywar_14_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 14", "fr": "Guerrier psychique 14" } },
-          { "id": "psywar_14_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psychic Warrior 14 (PP)", "fr": "Guerrier psychique 14 (PP)" } }
-        ]
-      },
-      {
-        "level": 15,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_15_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 15", "fr": "Guerrier psychique 15" } },
-          { "id": "psywar_15_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 15", "fr": "Guerrier psychique 15" } },
-          { "id": "psywar_15_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 15", "fr": "Guerrier psychique 15" } },
-          { "id": "psywar_15_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Psychic Warrior 15 (PP)", "fr": "Guerrier psychique 15 (PP)" } }
-        ]
-      },
-      {
-        "level": 16,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_16_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 16", "fr": "Guerrier psychique 16" } },
-          { "id": "psywar_16_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 16", "fr": "Guerrier psychique 16" } },
-          { "id": "psywar_16_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psychic Warrior 16 (PP)", "fr": "Guerrier psychique 16 (PP)" } }
-        ]
-      },
-      {
-        "level": 17,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_7"],
-        "grantedModifiers": [
-          { "id": "psywar_17_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Psychic Warrior 17", "fr": "Guerrier psychique 17" } },
-          { "id": "psywar_17_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psychic Warrior 17 (PP)", "fr": "Guerrier psychique 17 (PP)" } }
-        ]
-      },
-      {
-        "level": 18,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_18_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 18", "fr": "Guerrier psychique 18" } },
-          { "id": "psywar_18_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 18", "fr": "Guerrier psychique 18" } },
-          { "id": "psywar_18_ref", "sourceId": "class_psychic_warrior", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 18", "fr": "Guerrier psychique 18" } },
-          { "id": "psywar_18_will", "sourceId": "class_psychic_warrior", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 18", "fr": "Guerrier psychique 18" } },
-          { "id": "psywar_18_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psychic Warrior 18 (PP)", "fr": "Guerrier psychique 18 (PP)" } }
-        ]
-      },
-      {
-        "level": 19,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "psywar_19_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 19", "fr": "Guerrier psychique 19" } },
-          { "id": "psywar_19_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psychic Warrior 19 (PP)", "fr": "Guerrier psychique 19 (PP)" } }
-        ]
-      },
-      {
-        "level": 20,
-        "grantedFeatures": ["class_feature_psychic_warrior_bonus_feat_8"],
-        "grantedModifiers": [
-          { "id": "psywar_20_bab", "sourceId": "class_psychic_warrior", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 20", "fr": "Guerrier psychique 20" } },
-          { "id": "psywar_20_fort", "sourceId": "class_psychic_warrior", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Psychic Warrior 20", "fr": "Guerrier psychique 20" } },
-          { "id": "psywar_20_pp", "sourceId": "class_psychic_warrior", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Psychic Warrior 20 (PP)", "fr": "Guerrier psychique 20 (PP)" } }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "class_soulknife",
-    "category": "class",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Soulknife", "fr": "Lame d'âme" },
-    "description": {
-      "en": "A soulknife can create a blade of pure psychic energy, called a mind blade, almost at will. The blade can be altered in form, enhanced with special abilities, and imbued with psychic power to deal additional damage. The soulknife is a unique fighter who relies on psionic power to fuel a potent melee weapon.",
-      "fr": "Un lame d'âme peut créer une lame d'énergie psychique pure, appelée lame mentale, presque à volonté. La lame peut être modifiée dans sa forme, améliorée avec des capacités spéciales, et imprégnée de pouvoir psychique pour infliger des dégâts supplémentaires. La lame d'âme est un combattant unique qui s'appuie sur le pouvoir psionic pour alimenter une arme de mêlée puissante."
+      "tags": [
+        "class",
+        "base_class",
+        "psionic",
+        "class_soulknife"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "soulknife_hit_die",
+          "sourceId": "class_soulknife",
+          "targetId": "combatStats.hit_die_type",
+          "value": 10,
+          "type": "base",
+          "sourceName": {
+            "en": "Soulknife",
+            "fr": "Lame d'âme"
+          }
+        },
+        {
+          "id": "soulknife_skill_points",
+          "sourceId": "class_soulknife",
+          "targetId": "attributes.skill_points_per_level",
+          "value": 4,
+          "type": "base",
+          "sourceName": {
+            "en": "Soulknife",
+            "fr": "Lame d'âme"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "proficiency_all_simple",
+        "proficiency_armor_light",
+        "proficiency_shields_except_tower"
+      ],
+      "recommendedAttributes": [
+        "stat_strength",
+        "stat_dexterity",
+        "stat_wisdom"
+      ],
+      "classSkills": [
+        "skill_autohypnosis",
+        "skill_climb",
+        "skill_concentration",
+        "skill_craft",
+        "skill_hide",
+        "skill_jump",
+        "skill_knowledge_psionics",
+        "skill_listen",
+        "skill_move_silently",
+        "skill_profession",
+        "skill_spot",
+        "skill_tumble"
+      ],
+      "levelProgression": [
+        {
+          "level": 1,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade",
+            "class_feature_soulknife_weapon_focus_mind_blade",
+            "class_feature_soulknife_wild_talent"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_1_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 1",
+                "fr": "Lame d'âme 1"
+              }
+            },
+            {
+              "id": "sk_1_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 1",
+                "fr": "Lame d'âme 1"
+              }
+            },
+            {
+              "id": "sk_1_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 1",
+                "fr": "Lame d'âme 1"
+              }
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "grantedFeatures": [
+            "class_feature_soulknife_throw_mind_blade"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_2_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 2",
+                "fr": "Lame d'âme 2"
+              }
+            },
+            {
+              "id": "sk_2_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 2",
+                "fr": "Lame d'âme 2"
+              }
+            },
+            {
+              "id": "sk_2_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 2",
+                "fr": "Lame d'âme 2"
+              }
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "grantedFeatures": [
+            "class_feature_soulknife_psychic_strike_1"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_3_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 3",
+                "fr": "Lame d'âme 3"
+              }
+            },
+            {
+              "id": "sk_3_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 3",
+                "fr": "Lame d'âme 3"
+              }
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_1"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_4_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 4",
+                "fr": "Lame d'âme 4"
+              }
+            },
+            {
+              "id": "sk_4_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 4",
+                "fr": "Lame d'âme 4"
+              }
+            },
+            {
+              "id": "sk_4_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 4",
+                "fr": "Lame d'âme 4"
+              }
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "grantedFeatures": [
+            "class_feature_soulknife_free_draw",
+            "class_feature_soulknife_shape_mind_blade"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_5_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 5",
+                "fr": "Lame d'âme 5"
+              }
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_enhancement_1",
+            "class_feature_soulknife_speed_of_thought"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_6_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 6",
+                "fr": "Lame d'âme 6"
+              }
+            },
+            {
+              "id": "sk_6_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 6",
+                "fr": "Lame d'âme 6"
+              }
+            },
+            {
+              "id": "sk_6_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 6",
+                "fr": "Lame d'âme 6"
+              }
+            },
+            {
+              "id": "sk_6_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 6",
+                "fr": "Lame d'âme 6"
+              }
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "grantedFeatures": [
+            "class_feature_soulknife_psychic_strike_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_7_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 7",
+                "fr": "Lame d'âme 7"
+              }
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_8_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 8",
+                "fr": "Lame d'âme 8"
+              }
+            },
+            {
+              "id": "sk_8_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 8",
+                "fr": "Lame d'âme 8"
+              }
+            },
+            {
+              "id": "sk_8_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 8",
+                "fr": "Lame d'âme 8"
+              }
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "grantedFeatures": [
+            "class_feature_soulknife_bladewind",
+            "class_feature_soulknife_greater_weapon_focus_mind_blade"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_9_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 9",
+                "fr": "Lame d'âme 9"
+              }
+            },
+            {
+              "id": "sk_9_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 9",
+                "fr": "Lame d'âme 9"
+              }
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_enhancement_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_10_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 10",
+                "fr": "Lame d'âme 10"
+              }
+            },
+            {
+              "id": "sk_10_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 10",
+                "fr": "Lame d'âme 10"
+              }
+            },
+            {
+              "id": "sk_10_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 10",
+                "fr": "Lame d'âme 10"
+              }
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "grantedFeatures": [
+            "class_feature_soulknife_psychic_strike_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_11_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 11",
+                "fr": "Lame d'âme 11"
+              }
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_12_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 12",
+                "fr": "Lame d'âme 12"
+              }
+            },
+            {
+              "id": "sk_12_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 12",
+                "fr": "Lame d'âme 12"
+              }
+            },
+            {
+              "id": "sk_12_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 12",
+                "fr": "Lame d'âme 12"
+              }
+            },
+            {
+              "id": "sk_12_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 12",
+                "fr": "Lame d'âme 12"
+              }
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "grantedFeatures": [
+            "class_feature_soulknife_knife_to_the_soul"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_13_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 13",
+                "fr": "Lame d'âme 13"
+              }
+            }
+          ]
+        },
+        {
+          "level": 14,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_enhancement_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_14_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 14",
+                "fr": "Lame d'âme 14"
+              }
+            },
+            {
+              "id": "sk_14_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 14",
+                "fr": "Lame d'âme 14"
+              }
+            },
+            {
+              "id": "sk_14_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 14",
+                "fr": "Lame d'âme 14"
+              }
+            }
+          ]
+        },
+        {
+          "level": 15,
+          "grantedFeatures": [
+            "class_feature_soulknife_psychic_strike_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_15_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 15",
+                "fr": "Lame d'âme 15"
+              }
+            },
+            {
+              "id": "sk_15_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 15",
+                "fr": "Lame d'âme 15"
+              }
+            }
+          ]
+        },
+        {
+          "level": 16,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_16_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 16",
+                "fr": "Lame d'âme 16"
+              }
+            },
+            {
+              "id": "sk_16_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 16",
+                "fr": "Lame d'âme 16"
+              }
+            },
+            {
+              "id": "sk_16_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 16",
+                "fr": "Lame d'âme 16"
+              }
+            }
+          ]
+        },
+        {
+          "level": 17,
+          "grantedFeatures": [
+            "class_feature_soulknife_multiple_throw"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_17_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 17",
+                "fr": "Lame d'âme 17"
+              }
+            }
+          ]
+        },
+        {
+          "level": 18,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_enhancement_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_18_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 18",
+                "fr": "Lame d'âme 18"
+              }
+            },
+            {
+              "id": "sk_18_fort",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 18",
+                "fr": "Lame d'âme 18"
+              }
+            },
+            {
+              "id": "sk_18_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 18",
+                "fr": "Lame d'âme 18"
+              }
+            },
+            {
+              "id": "sk_18_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 18",
+                "fr": "Lame d'âme 18"
+              }
+            }
+          ]
+        },
+        {
+          "level": 19,
+          "grantedFeatures": [
+            "class_feature_soulknife_psychic_strike_5"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_19_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 19",
+                "fr": "Lame d'âme 19"
+              }
+            }
+          ]
+        },
+        {
+          "level": 20,
+          "grantedFeatures": [
+            "class_feature_soulknife_mind_blade_5"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "sk_20_bab",
+              "sourceId": "class_soulknife",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 20",
+                "fr": "Lame d'âme 20"
+              }
+            },
+            {
+              "id": "sk_20_ref",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 20",
+                "fr": "Lame d'âme 20"
+              }
+            },
+            {
+              "id": "sk_20_will",
+              "sourceId": "class_soulknife",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Soulknife 20",
+                "fr": "Lame d'âme 20"
+              }
+            }
+          ]
+        }
+      ]
     },
-    "tags": ["class", "base_class", "psionic", "class_soulknife"],
-    "grantedModifiers": [
-      {
-        "id": "soulknife_hit_die",
-        "sourceId": "class_soulknife",
-        "targetId": "combatStats.hit_die_type",
-        "value": 10,
-        "type": "base",
-        "sourceName": { "en": "Soulknife", "fr": "Lame d'âme" }
+    {
+      "id": "class_wilder",
+      "category": "class",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wilder",
+        "fr": "Déchaîné"
       },
-      {
-        "id": "soulknife_skill_points",
-        "sourceId": "class_soulknife",
-        "targetId": "attributes.skill_points_per_level",
-        "value": 4,
-        "type": "base",
-        "sourceName": { "en": "Soulknife", "fr": "Lame d'âme" }
-      }
-    ],
-    "grantedFeatures": [
-      "proficiency_all_simple",
-      "proficiency_armor_light",
-      "proficiency_shields_except_tower"
-    ],
-    "recommendedAttributes": ["stat_strength", "stat_dexterity", "stat_wisdom"],
-    "classSkills": [
-      "skill_autohypnosis",
-      "skill_climb",
-      "skill_concentration",
-      "skill_craft",
-      "skill_hide",
-      "skill_jump",
-      "skill_knowledge_psionics",
-      "skill_listen",
-      "skill_move_silently",
-      "skill_profession",
-      "skill_spot",
-      "skill_tumble"
-    ],
-    "levelProgression": [
-      {
-        "level": 1,
-        "grantedFeatures": [
-          "class_feature_soulknife_mind_blade",
-          "class_feature_soulknife_weapon_focus_mind_blade",
-          "class_feature_soulknife_wild_talent"
-        ],
-        "grantedModifiers": [
-          { "id": "sk_1_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Lame d'âme 1" } },
-          { "id": "sk_1_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 2, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Lame d'âme 1" } },
-          { "id": "sk_1_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Soulknife 1", "fr": "Lame d'âme 1" } }
-        ]
+      "description": {
+        "en": "A wilder is a psionic character driven by raw emotion rather than careful study. While the psion meticulously learns the rules of psionic power and how to use them efficiently, the wilder simply lets power explode outward in a torrent. The wilder is characterized by sudden, powerful manifestations that sometimes overwhelm even the wilder herself.",
+        "fr": "Un déchaîné est un personnage psionic guidé par l'émotion brute plutôt que par l'étude minutieuse. Alors que le psion apprend méticuleusement les règles du pouvoir psionic, le déchaîné laisse simplement le pouvoir exploser vers l'extérieur en un torrent. Le déchaîné se caractérise par des manifestations soudaines et puissantes qui parfois dépassent même le déchaîné lui-même."
       },
-      {
-        "level": 2,
-        "grantedFeatures": ["class_feature_soulknife_throw_mind_blade"],
-        "grantedModifiers": [
-          { "id": "sk_2_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Lame d'âme 2" } },
-          { "id": "sk_2_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Lame d'âme 2" } },
-          { "id": "sk_2_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 2", "fr": "Lame d'âme 2" } }
-        ]
-      },
-      {
-        "level": 3,
-        "grantedFeatures": ["class_feature_soulknife_psychic_strike_1"],
-        "grantedModifiers": [
-          { "id": "sk_3_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 3", "fr": "Lame d'âme 3" } },
-          { "id": "sk_3_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 3", "fr": "Lame d'âme 3" } }
-        ]
-      },
-      {
-        "level": 4,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_1"],
-        "grantedModifiers": [
-          { "id": "sk_4_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Lame d'âme 4" } },
-          { "id": "sk_4_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Lame d'âme 4" } },
-          { "id": "sk_4_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 4", "fr": "Lame d'âme 4" } }
-        ]
-      },
-      {
-        "level": 5,
-        "grantedFeatures": [
-          "class_feature_soulknife_free_draw",
-          "class_feature_soulknife_shape_mind_blade"
-        ],
-        "grantedModifiers": [
-          { "id": "sk_5_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 5", "fr": "Lame d'âme 5" } }
-        ]
-      },
-      {
-        "level": 6,
-        "grantedFeatures": [
-          "class_feature_soulknife_mind_blade_enhancement_1",
-          "class_feature_soulknife_speed_of_thought"
-        ],
-        "grantedModifiers": [
-          { "id": "sk_6_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Lame d'âme 6" } },
-          { "id": "sk_6_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Lame d'âme 6" } },
-          { "id": "sk_6_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Lame d'âme 6" } },
-          { "id": "sk_6_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 6", "fr": "Lame d'âme 6" } }
-        ]
-      },
-      {
-        "level": 7,
-        "grantedFeatures": ["class_feature_soulknife_psychic_strike_2"],
-        "grantedModifiers": [
-          { "id": "sk_7_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 7", "fr": "Lame d'âme 7" } }
-        ]
-      },
-      {
-        "level": 8,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_2"],
-        "grantedModifiers": [
-          { "id": "sk_8_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 8", "fr": "Lame d'âme 8" } },
-          { "id": "sk_8_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 8", "fr": "Lame d'âme 8" } },
-          { "id": "sk_8_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 8", "fr": "Lame d'âme 8" } }
-        ]
-      },
-      {
-        "level": 9,
-        "grantedFeatures": [
-          "class_feature_soulknife_bladewind",
-          "class_feature_soulknife_greater_weapon_focus_mind_blade"
-        ],
-        "grantedModifiers": [
-          { "id": "sk_9_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 9", "fr": "Lame d'âme 9" } },
-          { "id": "sk_9_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 9", "fr": "Lame d'âme 9" } }
-        ]
-      },
-      {
-        "level": 10,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_enhancement_2"],
-        "grantedModifiers": [
-          { "id": "sk_10_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 10", "fr": "Lame d'âme 10" } },
-          { "id": "sk_10_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 10", "fr": "Lame d'âme 10" } },
-          { "id": "sk_10_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 10", "fr": "Lame d'âme 10" } }
-        ]
-      },
-      {
-        "level": 11,
-        "grantedFeatures": ["class_feature_soulknife_psychic_strike_3"],
-        "grantedModifiers": [
-          { "id": "sk_11_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 11", "fr": "Lame d'âme 11" } }
-        ]
-      },
-      {
-        "level": 12,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_3"],
-        "grantedModifiers": [
-          { "id": "sk_12_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 12", "fr": "Lame d'âme 12" } },
-          { "id": "sk_12_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 12", "fr": "Lame d'âme 12" } },
-          { "id": "sk_12_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 12", "fr": "Lame d'âme 12" } },
-          { "id": "sk_12_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 12", "fr": "Lame d'âme 12" } }
-        ]
-      },
-      {
-        "level": 13,
-        "grantedFeatures": ["class_feature_soulknife_knife_to_the_soul"],
-        "grantedModifiers": [
-          { "id": "sk_13_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 13", "fr": "Lame d'âme 13" } }
-        ]
-      },
-      {
-        "level": 14,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_enhancement_3"],
-        "grantedModifiers": [
-          { "id": "sk_14_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 14", "fr": "Lame d'âme 14" } },
-          { "id": "sk_14_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 14", "fr": "Lame d'âme 14" } },
-          { "id": "sk_14_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 14", "fr": "Lame d'âme 14" } }
-        ]
-      },
-      {
-        "level": 15,
-        "grantedFeatures": ["class_feature_soulknife_psychic_strike_4"],
-        "grantedModifiers": [
-          { "id": "sk_15_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 15", "fr": "Lame d'âme 15" } },
-          { "id": "sk_15_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 15", "fr": "Lame d'âme 15" } }
-        ]
-      },
-      {
-        "level": 16,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_4"],
-        "grantedModifiers": [
-          { "id": "sk_16_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 16", "fr": "Lame d'âme 16" } },
-          { "id": "sk_16_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 16", "fr": "Lame d'âme 16" } },
-          { "id": "sk_16_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 16", "fr": "Lame d'âme 16" } }
-        ]
-      },
-      {
-        "level": 17,
-        "grantedFeatures": ["class_feature_soulknife_multiple_throw"],
-        "grantedModifiers": [
-          { "id": "sk_17_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Soulknife 17", "fr": "Lame d'âme 17" } }
-        ]
-      },
-      {
-        "level": 18,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_enhancement_4"],
-        "grantedModifiers": [
-          { "id": "sk_18_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 18", "fr": "Lame d'âme 18" } },
-          { "id": "sk_18_fort", "sourceId": "class_soulknife", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 18", "fr": "Lame d'âme 18" } },
-          { "id": "sk_18_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 18", "fr": "Lame d'âme 18" } },
-          { "id": "sk_18_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 18", "fr": "Lame d'âme 18" } }
-        ]
-      },
-      {
-        "level": 19,
-        "grantedFeatures": ["class_feature_soulknife_psychic_strike_5"],
-        "grantedModifiers": [
-          { "id": "sk_19_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 19", "fr": "Lame d'âme 19" } }
-        ]
-      },
-      {
-        "level": 20,
-        "grantedFeatures": ["class_feature_soulknife_mind_blade_5"],
-        "grantedModifiers": [
-          { "id": "sk_20_bab", "sourceId": "class_soulknife", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 20", "fr": "Lame d'âme 20" } },
-          { "id": "sk_20_ref", "sourceId": "class_soulknife", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 20", "fr": "Lame d'âme 20" } },
-          { "id": "sk_20_will", "sourceId": "class_soulknife", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Soulknife 20", "fr": "Lame d'âme 20" } }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "class_wilder",
-    "category": "class",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wilder", "fr": "Déchaîné" },
-    "description": {
-      "en": "A wilder is a psionic character driven by raw emotion rather than careful study. While the psion meticulously learns the rules of psionic power and how to use them efficiently, the wilder simply lets power explode outward in a torrent. The wilder is characterized by sudden, powerful manifestations that sometimes overwhelm even the wilder herself.",
-      "fr": "Un déchaîné est un personnage psionic guidé par l'émotion brute plutôt que par l'étude minutieuse. Alors que le psion apprend méticuleusement les règles du pouvoir psionic, le déchaîné laisse simplement le pouvoir exploser vers l'extérieur en un torrent. Le déchaîné se caractérise par des manifestations soudaines et puissantes qui parfois dépassent même le déchaîné lui-même."
-    },
-    "tags": ["class", "base_class", "psionic_manifester", "class_wilder"],
-    "grantedModifiers": [
-      {
-        "id": "wilder_hit_die",
-        "sourceId": "class_wilder",
-        "targetId": "combatStats.hit_die_type",
-        "value": 6,
-        "type": "base",
-        "sourceName": { "en": "Wilder", "fr": "Déchaîné" }
-      },
-      {
-        "id": "wilder_skill_points",
-        "sourceId": "class_wilder",
-        "targetId": "attributes.skill_points_per_level",
-        "value": 4,
-        "type": "base",
-        "sourceName": { "en": "Wilder", "fr": "Déchaîné" }
-      }
-    ],
-    "grantedFeatures": [
-      "proficiency_all_simple",
-      "proficiency_armor_light",
-      "proficiency_shields_except_tower"
-    ],
-    "recommendedAttributes": ["stat_charisma", "stat_constitution"],
-    "classSkills": [
-      "skill_autohypnosis",
-      "skill_balance",
-      "skill_bluff",
-      "skill_climb",
-      "skill_concentration",
-      "skill_craft",
-      "skill_escape_artist",
-      "skill_intimidate",
-      "skill_jump",
-      "skill_knowledge_psionics",
-      "skill_listen",
-      "skill_profession",
-      "skill_psicraft",
-      "skill_sense_motive",
-      "skill_spot",
-      "skill_swim",
-      "skill_tumble"
-    ],
-    "levelProgression": [
-      {
-        "level": 1,
-        "grantedFeatures": [
-          "class_feature_wilder_wild_surge_1",
-          "class_feature_wilder_psychic_enervation",
-          "class_feature_wilder_power_points",
-          "class_feature_wilder_powers_known"
-        ],
-        "grantedModifiers": [
-          { "id": "wilder_1_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Wilder 1", "fr": "Déchaîné 1" } },
-          { "id": "wilder_1_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 0, "type": "base", "sourceName": { "en": "Wilder 1", "fr": "Déchaîné 1" } },
-          { "id": "wilder_1_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 0, "type": "base", "sourceName": { "en": "Wilder 1", "fr": "Déchaîné 1" } },
-          { "id": "wilder_1_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 2, "type": "base", "sourceName": { "en": "Wilder 1", "fr": "Déchaîné 1" } },
-          { "id": "wilder_1_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 2, "type": "base", "sourceName": { "en": "Wilder 1 (PP)", "fr": "Déchaîné 1 (PP)" } }
-        ]
-      },
-      {
-        "level": 2,
-        "grantedFeatures": ["class_feature_wilder_elude_touch"],
-        "grantedModifiers": [
-          { "id": "wilder_2_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 2", "fr": "Déchaîné 2" } },
-          { "id": "wilder_2_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 2", "fr": "Déchaîné 2" } },
-          { "id": "wilder_2_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 4, "type": "base", "sourceName": { "en": "Wilder 2 (PP)", "fr": "Déchaîné 2 (PP)" } }
-        ]
-      },
-      {
-        "level": 3,
-        "grantedFeatures": ["class_feature_wilder_wild_surge_2"],
-        "grantedModifiers": [
-          { "id": "wilder_3_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 3", "fr": "Déchaîné 3" } },
-          { "id": "wilder_3_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 3", "fr": "Déchaîné 3" } },
-          { "id": "wilder_3_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 3", "fr": "Déchaîné 3" } },
-          { "id": "wilder_3_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 5, "type": "base", "sourceName": { "en": "Wilder 3 (PP)", "fr": "Déchaîné 3 (PP)" } }
-        ]
-      },
-      {
-        "level": 4,
-        "grantedFeatures": ["class_feature_wilder_surging_euphoria_1"],
-        "grantedModifiers": [
-          { "id": "wilder_4_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 4", "fr": "Déchaîné 4" } },
-          { "id": "wilder_4_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 4", "fr": "Déchaîné 4" } },
-          { "id": "wilder_4_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 6, "type": "base", "sourceName": { "en": "Wilder 4 (PP)", "fr": "Déchaîné 4 (PP)" } }
-        ]
-      },
-      {
-        "level": 5,
-        "grantedFeatures": ["class_feature_wilder_volatile_mind_1"],
-        "grantedModifiers": [
-          { "id": "wilder_5_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 8, "type": "base", "sourceName": { "en": "Wilder 5 (PP)", "fr": "Déchaîné 5 (PP)" } }
-        ]
-      },
-      {
-        "level": 6,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_6_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 6", "fr": "Déchaîné 6" } },
-          { "id": "wilder_6_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 6", "fr": "Déchaîné 6" } },
-          { "id": "wilder_6_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 6", "fr": "Déchaîné 6" } },
-          { "id": "wilder_6_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 6", "fr": "Déchaîné 6" } },
-          { "id": "wilder_6_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 10, "type": "base", "sourceName": { "en": "Wilder 6 (PP)", "fr": "Déchaîné 6 (PP)" } }
-        ]
-      },
-      {
-        "level": 7,
-        "grantedFeatures": ["class_feature_wilder_wild_surge_3"],
-        "grantedModifiers": [
-          { "id": "wilder_7_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 7", "fr": "Déchaîné 7" } },
-          { "id": "wilder_7_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 11, "type": "base", "sourceName": { "en": "Wilder 7 (PP)", "fr": "Déchaîné 7 (PP)" } }
-        ]
-      },
-      {
-        "level": 8,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_8_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 8", "fr": "Déchaîné 8" } },
-          { "id": "wilder_8_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 8", "fr": "Déchaîné 8" } },
-          { "id": "wilder_8_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 12, "type": "base", "sourceName": { "en": "Wilder 8 (PP)", "fr": "Déchaîné 8 (PP)" } }
-        ]
-      },
-      {
-        "level": 9,
-        "grantedFeatures": ["class_feature_wilder_volatile_mind_2"],
-        "grantedModifiers": [
-          { "id": "wilder_9_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 9", "fr": "Déchaîné 9" } },
-          { "id": "wilder_9_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 9", "fr": "Déchaîné 9" } },
-          { "id": "wilder_9_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 14, "type": "base", "sourceName": { "en": "Wilder 9 (PP)", "fr": "Déchaîné 9 (PP)" } }
-        ]
-      },
-      {
-        "level": 10,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_10_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 10", "fr": "Déchaîné 10" } },
-          { "id": "wilder_10_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 10", "fr": "Déchaîné 10" } },
-          { "id": "wilder_10_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 16, "type": "base", "sourceName": { "en": "Wilder 10 (PP)", "fr": "Déchaîné 10 (PP)" } }
-        ]
-      },
-      {
-        "level": 11,
-        "grantedFeatures": ["class_feature_wilder_wild_surge_4"],
-        "grantedModifiers": [
-          { "id": "wilder_11_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 11", "fr": "Déchaîné 11" } },
-          { "id": "wilder_11_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 18, "type": "base", "sourceName": { "en": "Wilder 11 (PP)", "fr": "Déchaîné 11 (PP)" } }
-        ]
-      },
-      {
-        "level": 12,
-        "grantedFeatures": ["class_feature_wilder_surging_euphoria_2"],
-        "grantedModifiers": [
-          { "id": "wilder_12_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 12", "fr": "Déchaîné 12" } },
-          { "id": "wilder_12_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 12", "fr": "Déchaîné 12" } },
-          { "id": "wilder_12_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 12", "fr": "Déchaîné 12" } },
-          { "id": "wilder_12_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 12", "fr": "Déchaîné 12" } },
-          { "id": "wilder_12_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 20, "type": "base", "sourceName": { "en": "Wilder 12 (PP)", "fr": "Déchaîné 12 (PP)" } }
-        ]
-      },
-      {
-        "level": 13,
-        "grantedFeatures": ["class_feature_wilder_volatile_mind_3"],
-        "grantedModifiers": [
-          { "id": "wilder_13_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Wilder 13", "fr": "Déchaîné 13" } },
-          { "id": "wilder_13_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 21, "type": "base", "sourceName": { "en": "Wilder 13 (PP)", "fr": "Déchaîné 13 (PP)" } }
-        ]
-      },
-      {
-        "level": 14,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_14_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 14", "fr": "Déchaîné 14" } },
-          { "id": "wilder_14_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 14", "fr": "Déchaîné 14" } },
-          { "id": "wilder_14_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 23, "type": "base", "sourceName": { "en": "Wilder 14 (PP)", "fr": "Déchaîné 14 (PP)" } }
-        ]
-      },
-      {
-        "level": 15,
-        "grantedFeatures": ["class_feature_wilder_wild_surge_5"],
-        "grantedModifiers": [
-          { "id": "wilder_15_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 15", "fr": "Déchaîné 15" } },
-          { "id": "wilder_15_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 15", "fr": "Déchaîné 15" } },
-          { "id": "wilder_15_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 15", "fr": "Déchaîné 15" } },
-          { "id": "wilder_15_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 25, "type": "base", "sourceName": { "en": "Wilder 15 (PP)", "fr": "Déchaîné 15 (PP)" } }
-        ]
-      },
-      {
-        "level": 16,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_16_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 16", "fr": "Déchaîné 16" } },
-          { "id": "wilder_16_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 16", "fr": "Déchaîné 16" } },
-          { "id": "wilder_16_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 26, "type": "base", "sourceName": { "en": "Wilder 16 (PP)", "fr": "Déchaîné 16 (PP)" } }
-        ]
-      },
-      {
-        "level": 17,
-        "grantedFeatures": ["class_feature_wilder_volatile_mind_4"],
-        "grantedModifiers": [
-          { "id": "wilder_17_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 0, "type": "base", "sourceName": { "en": "Wilder 17", "fr": "Déchaîné 17" } },
-          { "id": "wilder_17_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 29, "type": "base", "sourceName": { "en": "Wilder 17 (PP)", "fr": "Déchaîné 17 (PP)" } }
-        ]
-      },
-      {
-        "level": 18,
-        "grantedFeatures": [],
-        "grantedModifiers": [
-          { "id": "wilder_18_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 18", "fr": "Déchaîné 18" } },
-          { "id": "wilder_18_fort", "sourceId": "class_wilder", "targetId": "saves.fortitude", "value": 1, "type": "base", "sourceName": { "en": "Wilder 18", "fr": "Déchaîné 18" } },
-          { "id": "wilder_18_ref", "sourceId": "class_wilder", "targetId": "saves.reflex", "value": 1, "type": "base", "sourceName": { "en": "Wilder 18", "fr": "Déchaîné 18" } },
-          { "id": "wilder_18_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 18", "fr": "Déchaîné 18" } },
-          { "id": "wilder_18_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 30, "type": "base", "sourceName": { "en": "Wilder 18 (PP)", "fr": "Déchaîné 18 (PP)" } }
-        ]
-      },
-      {
-        "level": 19,
-        "grantedFeatures": ["class_feature_wilder_wild_surge_6"],
-        "grantedModifiers": [
-          { "id": "wilder_19_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 19", "fr": "Déchaîné 19" } },
-          { "id": "wilder_19_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 31, "type": "base", "sourceName": { "en": "Wilder 19 (PP)", "fr": "Déchaîné 19 (PP)" } }
-        ]
-      },
-      {
-        "level": 20,
-        "grantedFeatures": ["class_feature_wilder_surging_euphoria_3"],
-        "grantedModifiers": [
-          { "id": "wilder_20_bab", "sourceId": "class_wilder", "targetId": "combatStats.base_attack_bonus", "value": 1, "type": "base", "sourceName": { "en": "Wilder 20", "fr": "Déchaîné 20" } },
-          { "id": "wilder_20_will", "sourceId": "class_wilder", "targetId": "saves.will", "value": 1, "type": "base", "sourceName": { "en": "Wilder 20", "fr": "Déchaîné 20" } },
-          { "id": "wilder_20_pp", "sourceId": "class_wilder", "targetId": "resources.power_points.maxValue", "value": 32, "type": "base", "sourceName": { "en": "Wilder 20 (PP)", "fr": "Déchaîné 20 (PP)" } }
-        ]
-      }
-    ]
-  }
-]
+      "tags": [
+        "class",
+        "base_class",
+        "psionic_manifester",
+        "class_wilder"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "wilder_hit_die",
+          "sourceId": "class_wilder",
+          "targetId": "combatStats.hit_die_type",
+          "value": 6,
+          "type": "base",
+          "sourceName": {
+            "en": "Wilder",
+            "fr": "Déchaîné"
+          }
+        },
+        {
+          "id": "wilder_skill_points",
+          "sourceId": "class_wilder",
+          "targetId": "attributes.skill_points_per_level",
+          "value": 4,
+          "type": "base",
+          "sourceName": {
+            "en": "Wilder",
+            "fr": "Déchaîné"
+          }
+        }
+      ],
+      "grantedFeatures": [
+        "proficiency_all_simple",
+        "proficiency_armor_light",
+        "proficiency_shields_except_tower"
+      ],
+      "recommendedAttributes": [
+        "stat_charisma",
+        "stat_constitution"
+      ],
+      "classSkills": [
+        "skill_autohypnosis",
+        "skill_balance",
+        "skill_bluff",
+        "skill_climb",
+        "skill_concentration",
+        "skill_craft",
+        "skill_escape_artist",
+        "skill_intimidate",
+        "skill_jump",
+        "skill_knowledge_psionics",
+        "skill_listen",
+        "skill_profession",
+        "skill_psicraft",
+        "skill_sense_motive",
+        "skill_spot",
+        "skill_swim",
+        "skill_tumble"
+      ],
+      "levelProgression": [
+        {
+          "level": 1,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_1",
+            "class_feature_wilder_psychic_enervation",
+            "class_feature_wilder_power_points",
+            "class_feature_wilder_powers_known"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_1_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 1",
+                "fr": "Déchaîné 1"
+              }
+            },
+            {
+              "id": "wilder_1_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 1",
+                "fr": "Déchaîné 1"
+              }
+            },
+            {
+              "id": "wilder_1_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 1",
+                "fr": "Déchaîné 1"
+              }
+            },
+            {
+              "id": "wilder_1_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 1",
+                "fr": "Déchaîné 1"
+              }
+            },
+            {
+              "id": "wilder_1_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 2,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 1 (PP)",
+                "fr": "Déchaîné 1 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "grantedFeatures": [
+            "class_feature_wilder_elude_touch"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_2_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 2",
+                "fr": "Déchaîné 2"
+              }
+            },
+            {
+              "id": "wilder_2_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 2",
+                "fr": "Déchaîné 2"
+              }
+            },
+            {
+              "id": "wilder_2_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 4,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 2 (PP)",
+                "fr": "Déchaîné 2 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_3_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 3",
+                "fr": "Déchaîné 3"
+              }
+            },
+            {
+              "id": "wilder_3_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 3",
+                "fr": "Déchaîné 3"
+              }
+            },
+            {
+              "id": "wilder_3_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 3",
+                "fr": "Déchaîné 3"
+              }
+            },
+            {
+              "id": "wilder_3_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 5,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 3 (PP)",
+                "fr": "Déchaîné 3 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "grantedFeatures": [
+            "class_feature_wilder_surging_euphoria_1"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_4_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 4",
+                "fr": "Déchaîné 4"
+              }
+            },
+            {
+              "id": "wilder_4_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 4",
+                "fr": "Déchaîné 4"
+              }
+            },
+            {
+              "id": "wilder_4_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 6,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 4 (PP)",
+                "fr": "Déchaîné 4 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "grantedFeatures": [
+            "class_feature_wilder_volatile_mind_1"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_5_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 8,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 5 (PP)",
+                "fr": "Déchaîné 5 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_6_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 6",
+                "fr": "Déchaîné 6"
+              }
+            },
+            {
+              "id": "wilder_6_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 6",
+                "fr": "Déchaîné 6"
+              }
+            },
+            {
+              "id": "wilder_6_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 6",
+                "fr": "Déchaîné 6"
+              }
+            },
+            {
+              "id": "wilder_6_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 6",
+                "fr": "Déchaîné 6"
+              }
+            },
+            {
+              "id": "wilder_6_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 10,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 6 (PP)",
+                "fr": "Déchaîné 6 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_7_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 7",
+                "fr": "Déchaîné 7"
+              }
+            },
+            {
+              "id": "wilder_7_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 11,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 7 (PP)",
+                "fr": "Déchaîné 7 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_8_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 8",
+                "fr": "Déchaîné 8"
+              }
+            },
+            {
+              "id": "wilder_8_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 8",
+                "fr": "Déchaîné 8"
+              }
+            },
+            {
+              "id": "wilder_8_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 12,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 8 (PP)",
+                "fr": "Déchaîné 8 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "grantedFeatures": [
+            "class_feature_wilder_volatile_mind_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_9_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 9",
+                "fr": "Déchaîné 9"
+              }
+            },
+            {
+              "id": "wilder_9_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 9",
+                "fr": "Déchaîné 9"
+              }
+            },
+            {
+              "id": "wilder_9_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 14,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 9 (PP)",
+                "fr": "Déchaîné 9 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_10_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 10",
+                "fr": "Déchaîné 10"
+              }
+            },
+            {
+              "id": "wilder_10_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 10",
+                "fr": "Déchaîné 10"
+              }
+            },
+            {
+              "id": "wilder_10_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 16,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 10 (PP)",
+                "fr": "Déchaîné 10 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_11_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 11",
+                "fr": "Déchaîné 11"
+              }
+            },
+            {
+              "id": "wilder_11_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 18,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 11 (PP)",
+                "fr": "Déchaîné 11 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "grantedFeatures": [
+            "class_feature_wilder_surging_euphoria_2"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_12_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 12",
+                "fr": "Déchaîné 12"
+              }
+            },
+            {
+              "id": "wilder_12_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 12",
+                "fr": "Déchaîné 12"
+              }
+            },
+            {
+              "id": "wilder_12_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 12",
+                "fr": "Déchaîné 12"
+              }
+            },
+            {
+              "id": "wilder_12_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 12",
+                "fr": "Déchaîné 12"
+              }
+            },
+            {
+              "id": "wilder_12_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 20,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 12 (PP)",
+                "fr": "Déchaîné 12 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "grantedFeatures": [
+            "class_feature_wilder_volatile_mind_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_13_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 13",
+                "fr": "Déchaîné 13"
+              }
+            },
+            {
+              "id": "wilder_13_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 21,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 13 (PP)",
+                "fr": "Déchaîné 13 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 14,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_14_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 14",
+                "fr": "Déchaîné 14"
+              }
+            },
+            {
+              "id": "wilder_14_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 14",
+                "fr": "Déchaîné 14"
+              }
+            },
+            {
+              "id": "wilder_14_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 23,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 14 (PP)",
+                "fr": "Déchaîné 14 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 15,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_5"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_15_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 15",
+                "fr": "Déchaîné 15"
+              }
+            },
+            {
+              "id": "wilder_15_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 15",
+                "fr": "Déchaîné 15"
+              }
+            },
+            {
+              "id": "wilder_15_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 15",
+                "fr": "Déchaîné 15"
+              }
+            },
+            {
+              "id": "wilder_15_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 25,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 15 (PP)",
+                "fr": "Déchaîné 15 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 16,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_16_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 16",
+                "fr": "Déchaîné 16"
+              }
+            },
+            {
+              "id": "wilder_16_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 16",
+                "fr": "Déchaîné 16"
+              }
+            },
+            {
+              "id": "wilder_16_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 26,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 16 (PP)",
+                "fr": "Déchaîné 16 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 17,
+          "grantedFeatures": [
+            "class_feature_wilder_volatile_mind_4"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_17_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 0,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 17",
+                "fr": "Déchaîné 17"
+              }
+            },
+            {
+              "id": "wilder_17_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 29,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 17 (PP)",
+                "fr": "Déchaîné 17 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 18,
+          "grantedFeatures": [],
+          "grantedModifiers": [
+            {
+              "id": "wilder_18_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 18",
+                "fr": "Déchaîné 18"
+              }
+            },
+            {
+              "id": "wilder_18_fort",
+              "sourceId": "class_wilder",
+              "targetId": "saves.fortitude",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 18",
+                "fr": "Déchaîné 18"
+              }
+            },
+            {
+              "id": "wilder_18_ref",
+              "sourceId": "class_wilder",
+              "targetId": "saves.reflex",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 18",
+                "fr": "Déchaîné 18"
+              }
+            },
+            {
+              "id": "wilder_18_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 18",
+                "fr": "Déchaîné 18"
+              }
+            },
+            {
+              "id": "wilder_18_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 30,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 18 (PP)",
+                "fr": "Déchaîné 18 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 19,
+          "grantedFeatures": [
+            "class_feature_wilder_wild_surge_6"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_19_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 19",
+                "fr": "Déchaîné 19"
+              }
+            },
+            {
+              "id": "wilder_19_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 31,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 19 (PP)",
+                "fr": "Déchaîné 19 (PP)"
+              }
+            }
+          ]
+        },
+        {
+          "level": 20,
+          "grantedFeatures": [
+            "class_feature_wilder_surging_euphoria_3"
+          ],
+          "grantedModifiers": [
+            {
+              "id": "wilder_20_bab",
+              "sourceId": "class_wilder",
+              "targetId": "combatStats.base_attack_bonus",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 20",
+                "fr": "Déchaîné 20"
+              }
+            },
+            {
+              "id": "wilder_20_will",
+              "sourceId": "class_wilder",
+              "targetId": "saves.will",
+              "value": 1,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 20",
+                "fr": "Déchaîné 20"
+              }
+            },
+            {
+              "id": "wilder_20_pp",
+              "sourceId": "class_wilder",
+              "targetId": "resources.power_points.maxValue",
+              "value": 32,
+              "type": "base",
+              "sourceName": {
+                "en": "Wilder 20 (PP)",
+                "fr": "Déchaîné 20 (PP)"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

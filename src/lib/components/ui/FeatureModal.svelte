@@ -11,6 +11,7 @@
 <script lang="ts">
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { interpolateDescription } from '$lib/utils/mathParser';
   import { formatModifier, formatSituationalContext } from '$lib/utils/formatters';
@@ -287,27 +288,32 @@
             </section>
           {/if}
 
-          <!-- ── METADATA ────────────────────────────────────────────── -->
-          <section class="flex flex-col gap-1.5 pt-3 border-t border-border">
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-text-muted w-12 text-right shrink-0">Source</span>
-              <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded">{feature.ruleSource}</code>
-            </div>
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-text-muted w-12 text-right shrink-0">ID</span>
-              <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded break-all">{feature.id}</code>
-            </div>
-            {#if feature.tags?.length}
-              <div class="flex items-start gap-2 text-xs">
-                <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">Tags</span>
-                <div class="flex flex-wrap gap-1">
-                  {#each feature.tags as tag}
-                    <span class="badge-accent font-mono text-[10px]">{tag}</span>
-                  {/each}
-                </div>
+          <!-- ── METADATA (GM-only) ───────────────────────────────────── -->
+          <!-- Internal IDs, ruleSource, and tags are only relevant to GMs
+               authoring homebrew or debugging rule sources. Players see
+               only the user-facing label and description. -->
+          {#if sessionContext.isGameMaster}
+            <section class="flex flex-col gap-1.5 pt-3 border-t border-border">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-text-muted w-12 text-right shrink-0">Source</span>
+                <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded">{feature.ruleSource}</code>
               </div>
-            {/if}
-          </section>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-text-muted w-12 text-right shrink-0">ID</span>
+                <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded break-all">{feature.id}</code>
+              </div>
+              {#if feature.tags?.length}
+                <div class="flex items-start gap-2 text-xs">
+                  <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">Tags</span>
+                  <div class="flex flex-wrap gap-1">
+                    {#each feature.tags as tag}
+                      <span class="badge-accent font-mono text-[10px]">{tag}</span>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
+            </section>
+          {/if}
 
         </div>
       {/if}

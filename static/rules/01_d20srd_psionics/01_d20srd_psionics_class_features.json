@@ -1,1099 +1,1665 @@
-[
-  {
-    "id": "class_feature_psion_discipline",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Discipline", "fr": "Discipline" },
-    "description": {
-      "en": "Every psion must decide at 1st level which psionic discipline they want to specialize in. Choosing a discipline provides a psion with access to the class skills associated with that discipline (see above), as well as the powers restricted to that discipline.",
-      "fr": "Chaque psion doit décider au niveau 1 dans quelle discipline psionique il souhaite se spécialiser. Choisir une discipline donne au psion accès aux compétences de classe associées à cette discipline (voir ci-dessus), ainsi qu'aux pouvoirs réservés à cette discipline."
-    },
-    "tags": ["class_feature", "psion", "psionic", "psionic_discipline_choice"],
-    "choices": [
-      {
-        "choiceId": "psionic_discipline",
-        "label": { "en": "Psionic Discipline", "fr": "Discipline psionique" },
-        "optionsQuery": "tag:psionic_discipline",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_bonus_feat_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (1st level)", "fr": "Don supplémentaire (niveau 1)" },
-    "description": {
-      "en": "A psion gets a bonus feat at 1st level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
-      "fr": "Un psion obtient un don supplémentaire au niveau 1. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
-    },
-    "tags": ["class_feature", "psion", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psion_bonus_feat_1",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_bonus_feat_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (5th level)", "fr": "Don supplémentaire (niveau 5)" },
-    "description": {
-      "en": "A psion gets a bonus feat at 5th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
-      "fr": "Un psion obtient un don supplémentaire au niveau 5. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
-    },
-    "tags": ["class_feature", "psion", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psion_bonus_feat_2",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_bonus_feat_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (10th level)", "fr": "Don supplémentaire (niveau 10)" },
-    "description": {
-      "en": "A psion gets a bonus feat at 10th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
-      "fr": "Un psion obtient un don supplémentaire au niveau 10. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
-    },
-    "tags": ["class_feature", "psion", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psion_bonus_feat_3",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_bonus_feat_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (15th level)", "fr": "Don supplémentaire (niveau 15)" },
-    "description": {
-      "en": "A psion gets a bonus feat at 15th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
-      "fr": "Un psion obtient un don supplémentaire au niveau 15. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
-    },
-    "tags": ["class_feature", "psion", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psion_bonus_feat_4",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_bonus_feat_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (20th level)", "fr": "Don supplémentaire (niveau 20)" },
-    "description": {
-      "en": "A psion gets a bonus feat at 20th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
-      "fr": "Un psion obtient un don supplémentaire au niveau 20. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
-    },
-    "tags": ["class_feature", "psion", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psion_bonus_feat_5",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_power_points",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Power Points", "fr": "Points de pouvoir" },
-    "description": {
-      "en": "A psion's ability to manifest powers is limited by the power points available. A psion starts with 2 power points at 1st level. A psion can manifest any power that has a power point cost equal to or lower than his manifester level. The number of times a psion can manifest powers in a day is limited only by his daily power points.",
-      "fr": "La capacité d'un psion à manifester des pouvoirs est limitée par les points de pouvoir disponibles. Un psion commence avec 2 points de pouvoir au niveau 1. Un psion peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation. Le nombre de fois qu'un psion peut manifester des pouvoirs par jour n'est limité que par ses points de pouvoir quotidiens."
-    },
-    "tags": ["class_feature", "psion", "psionic", "power_points"],
-    "grantedModifiers": [
-      {
-        "id": "psion_pp_int_bonus",
-        "sourceId": "class_feature_psion_power_points",
-        "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_intelligence.derivedModifier",
-        "type": "base",
-        "sourceName": { "en": "Psion Intelligence Bonus PP", "fr": "Psion bonus PP Intelligence" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_powers_known",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powers Known", "fr": "Pouvoirs connus" },
-    "description": {
-      "en": "A psion begins play knowing three 1st-level powers of your choice. Each time he achieves a new level, he unlocks the knowledge of new powers. A psion can manifest any power that has a power point cost equal to or lower than his manifester level. Choose the powers known from the psion power list, or from the list of powers of your chosen discipline.",
-      "fr": "Un psion commence le jeu en connaissant trois pouvoirs de niveau 1 de votre choix. Chaque fois qu'il atteint un nouveau niveau, il découvre de nouveaux pouvoirs. Un psion peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation. Choisissez les pouvoirs connus dans la liste des pouvoirs du psion, ou dans la liste des pouvoirs de la discipline choisie."
-    },
-    "tags": ["class_feature", "psion", "psionic", "powers_known"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (1st level)", "fr": "Don supplémentaire (niveau 1)" },
-    "description": {
-      "en": "At 1st level, a psychic warrior gets a bonus combat-oriented feat in addition to the feat that any 1st-level character gets. This feat must come from the fighter bonus feat list or be a psionic feat.",
-      "fr": "Au niveau 1, un guerrier psychique obtient un don de combat supplémentaire en plus du don qu'obtient tout personnage de niveau 1. Ce don doit provenir de la liste des dons supplémentaires du guerrier ou être un don psionique."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_1",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (2nd level)", "fr": "Don supplémentaire (niveau 2)" },
-    "description": {
-      "en": "At 2nd level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 2, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_2",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (5th level)", "fr": "Don supplémentaire (niveau 5)" },
-    "description": {
-      "en": "At 5th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 5, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_3",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (8th level)", "fr": "Don supplémentaire (niveau 8)" },
-    "description": {
-      "en": "At 8th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 8, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_4",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (11th level)", "fr": "Don supplémentaire (niveau 11)" },
-    "description": {
-      "en": "At 11th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 11, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_5",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_6",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (14th level)", "fr": "Don supplémentaire (niveau 14)" },
-    "description": {
-      "en": "At 14th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 14, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_6",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_7",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (17th level)", "fr": "Don supplémentaire (niveau 17)" },
-    "description": {
-      "en": "At 17th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 17, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_7",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_bonus_feat_8",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Feat (20th level)", "fr": "Don supplémentaire (niveau 20)" },
-    "description": {
-      "en": "At 20th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
-      "fr": "Au niveau 20, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psywar_bonus_feat_8",
-        "label": { "en": "Choose a combat or psionic feat", "fr": "Choisissez un don de combat ou psionique" },
-        "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_power_points",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Power Points", "fr": "Points de pouvoir" },
-    "description": {
-      "en": "A psychic warrior's ability to manifest powers is limited by the power points available. A 1st-level psychic warrior gains no power points for his class level, but gains bonus power points (if entitled) from a high Wisdom score, his race, and feats or other sources. He can manifest the single power he knows with those power points.",
-      "fr": "La capacité d'un guerrier psychique à manifester des pouvoirs est limitée par les points de pouvoir disponibles. Un guerrier psychique de niveau 1 ne gagne aucun point de pouvoir de son niveau de classe, mais gagne des points de pouvoir bonus de sa haute Sagesse, de sa race et de ses dons ou d'autres sources."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "power_points"],
-    "grantedModifiers": [
-      {
-        "id": "psywar_pp_wis_bonus",
-        "sourceId": "class_feature_psychic_warrior_power_points",
-        "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wisdom.derivedModifier",
-        "type": "base",
-        "sourceName": { "en": "Psychic Warrior Wisdom Bonus PP", "fr": "Guerrier psychique bonus PP Sagesse" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psychic_warrior_powers_known",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powers Known", "fr": "Pouvoirs connus" },
-    "description": {
-      "en": "A psychic warrior begins play knowing one 1st-level power of your choice. Each time he achieves a new level, he unlocks the knowledge of one new power. A psychic warrior can manifest any power that has a power point cost equal to or lower than his manifester level. Choose the powers known from the psychic warrior power list.",
-      "fr": "Un guerrier psychique commence le jeu en connaissant un pouvoir de niveau 1 de votre choix. Chaque fois qu'il atteint un nouveau niveau, il découvre un nouveau pouvoir. Un guerrier psychique peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation."
-    },
-    "tags": ["class_feature", "psychic_warrior", "psionic", "powers_known"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Mind Blade", "fr": "Lame mentale" },
-    "description": {
-      "en": "As a move action, a soulknife can create a semisolid blade composed of psychic energy distilled from his own mind. The blade is identical in all ways (except visually) to a short sword of a size appropriate for its wielder. For example, a Medium soulknife wields a Medium mind blade that deals 1d6 points of damage (crit 19-20/x2). As a free action, a soulknife can sheathe or dismiss a mind blade into his mind. The blade can be rematerialized as a move action. A mind blade is considered a magic weapon for the purpose of overcoming damage reduction. A soulknife can use feats such as Power Attack or Combat Expertise in conjunction with the mind blade just as if it were a normal weapon. The soulknife can also choose feats requiring a specific weapon, such as Weapon Specialization (mind blade), as if the mind blade were a normal weapon. The soulknife's mind blade improves as the character gains higher levels. At 4th level and every four levels thereafter (+1 at 4th, +2 at 8th, +3 at 12th, +4 at 16th, +5 at 20th), the mind blade gains a cumulative enhancement bonus on its attack and damage rolls. The enhancement bonus also applies to any special abilities added to the blade. A soulknife can add special weapon abilities to his mind blade from the Mind Blade Enhancement feature as he levels up.",
-      "fr": "Par une action de mouvement, un lame d'âme peut créer une lame semi-solide composée d'énergie psychique distillée de son propre esprit. La lame est identique dans tous les aspects (sauf visuellement) à une épée courte de taille appropriée pour son manieur. Par exemple, un lame d'âme de taille Moyenne manie une lame mentale de taille Moyenne qui inflige 1d6 points de dégâts (critique 19-20/x2). Par une action gratuite, un lame d'âme peut rengainer ou renvoyer une lame mentale dans son esprit. La lame peut être rematérialisée par une action de mouvement. Une lame mentale est considérée comme une arme magique pour les besoins du franchissement de la réduction des dégâts."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural", "psionic", "mind_blade"],
-    "activation": {
-      "actionType": "move"
-    },
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_base_damage",
-        "sourceId": "class_feature_soulknife_mind_blade",
-        "targetId": "combatStats.mind_blade_damage",
-        "value": "1d6",
-        "type": "base",
-        "sourceName": { "en": "Mind Blade (base)", "fr": "Lame mentale (base)" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_weapon_focus_mind_blade",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Weapon Focus (Mind Blade)", "fr": "Spécialisation dans une arme (lame mentale)" },
-    "description": {
-      "en": "A soulknife gains Weapon Focus (mind blade) as a bonus feat at 1st level, even if he does not meet the prerequisites.",
-      "fr": "Un lame d'âme obtient le don Arme de prédilection (lame mentale) comme don supplémentaire au niveau 1, même s'il ne remplit pas les conditions requises."
-    },
-    "tags": ["class_feature", "soulknife", "bonus_feat"],
-    "grantedModifiers": [
-      {
-        "id": "sk_mind_blade_weapon_focus",
-        "sourceId": "class_feature_soulknife_weapon_focus_mind_blade",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "untyped",
-        "sourceName": { "en": "Weapon Focus (Mind Blade)", "fr": "Arme de prédilection (lame mentale)" },
-        "conditionNode": {
-          "logic": "CONDITION",
-          "targetPath": "@activeTags",
-          "operator": "has_tag",
-          "value": "mind_blade_equipped"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "class_feature_psion_discipline",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Discipline",
+        "fr": "Discipline"
+      },
+      "description": {
+        "en": "Every psion must decide at 1st level which psionic discipline they want to specialize in. Choosing a discipline provides a psion with access to the class skills associated with that discipline (see above), as well as the powers restricted to that discipline.",
+        "fr": "Chaque psion doit décider au niveau 1 dans quelle discipline psionique il souhaite se spécialiser. Choisir une discipline donne au psion accès aux compétences de classe associées à cette discipline (voir ci-dessus), ainsi qu'aux pouvoirs réservés à cette discipline."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "psionic_discipline_choice"
+      ],
+      "choices": [
+        {
+          "choiceId": "psionic_discipline",
+          "label": {
+            "en": "Psionic Discipline",
+            "fr": "Discipline psionique"
+          },
+          "optionsQuery": "tag:psionic_discipline",
+          "maxSelections": 1
         }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_wild_talent",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Talent", "fr": "Talent sauvage" },
-    "description": {
-      "en": "A soulknife gains Wild Talent as a bonus feat at 1st level. This feat provides the character with the psionic power source he needs to create his mind blade. Even if the soulknife already has the feat, this additional use of Wild Talent provides 2 bonus power points. A soulknife does not have a power point reserve unless he takes the Wild Talent feat, in which case he gains 2 power points (or gains 2 more, if he already has the feat).",
-      "fr": "Un lame d'âme obtient le don Talent sauvage comme don supplémentaire au niveau 1. Ce don fournit au personnage la source de pouvoir psionique dont il a besoin pour créer sa lame mentale."
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "psionic", "wild_talent"],
-    "grantedModifiers": [],
-    "grantedFeatures": ["feat_wild_talent"]
-  },
-  {
-    "id": "class_feature_soulknife_throw_mind_blade",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Throw Mind Blade", "fr": "Lancer la lame mentale" },
-    "description": {
-      "en": "A soulknife of 2nd level or higher can throw his mind blade as a ranged weapon with a range increment of 30 feet. Whether or not the attack hits, a thrown mind blade then dissipates. A soulknife of 3rd level or higher can imbue his thrown mind blade with psychic strike and apply it to the throw.",
-      "fr": "Un lame d'âme de niveau 2 ou plus peut lancer sa lame mentale comme une arme de tir avec un incrément de portée de 9 mètres. Que l'attaque touche ou non, une lame mentale lancée se dissipe ensuite."
+    {
+      "id": "class_feature_psion_bonus_feat_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (1st level)",
+        "fr": "Don supplémentaire (niveau 1)"
+      },
+      "description": {
+        "en": "A psion gets a bonus feat at 1st level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
+        "fr": "Un psion obtient un don supplémentaire au niveau 1. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psion_bonus_feat_1",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_psychic_strike_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Strike +1d8", "fr": "Frappe psionique +1d8" },
-    "description": {
-      "en": "As a move action, a soulknife of 3rd level or higher can imbue his mind blade with destructive psychic energy. This psychic strike is not an ability that can be used against mindless creatures or those immune to mind-affecting effects. The imbued mind blade deals an extra 1d8 points of damage to the next living, nonmindless target it hits. At 7th level the extra damage increases to 2d8, at 11th to 3d8, at 15th to 4d8, and at 19th to 5d8. Creatures that are immune to mind-affecting effects are immune to psychic strike. Animals, beasts, and vermin are not mindless and are subject to psychic strike. A soulknife can rebuke the psychic strike as a free action, dissipating the energy.",
-      "fr": "Par une action de mouvement, un lame d'âme de niveau 3 ou plus peut imprégner sa lame mentale d'énergie psychique destructrice. Cette frappe psionique ne peut pas être utilisée contre des créatures sans esprit ou immunisées contre les effets affectant l'esprit. La lame mentale imprégnée inflige 1d8 points de dégâts supplémentaires à la prochaine cible vivante et dotée d'esprit qu'elle touche."
+    {
+      "id": "class_feature_psion_bonus_feat_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (5th level)",
+        "fr": "Don supplémentaire (niveau 5)"
+      },
+      "description": {
+        "en": "A psion gets a bonus feat at 5th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
+        "fr": "Un psion obtient un don supplémentaire au niveau 5. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psion_bonus_feat_2",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural", "psionic", "psychic_strike"],
-    "activation": {
-      "actionType": "move"
+    {
+      "id": "class_feature_psion_bonus_feat_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (10th level)",
+        "fr": "Don supplémentaire (niveau 10)"
+      },
+      "description": {
+        "en": "A psion gets a bonus feat at 10th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
+        "fr": "Un psion obtient un don supplémentaire au niveau 10. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psion_bonus_feat_3",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "grantedModifiers": [
-      {
-        "id": "psychic_strike_damage_formula",
-        "sourceId": "class_feature_soulknife_psychic_strike_1",
-        "targetId": "combatStats.mind_blade_psychic_strike",
-        "value": "floor(@classLevels.class_soulknife / 4)d8",
-        "type": "untyped",
-        "sourceName": { "en": "Psychic Strike", "fr": "Frappe psionique" },
-        "conditionNode": {
-          "logic": "AND",
-          "nodes": [
-            {
-              "logic": "NOT",
-              "node": {
-                "logic": "CONDITION",
-                "targetPath": "@targetTags",
-                "operator": "has_tag",
-                "value": "mindless"
+    {
+      "id": "class_feature_psion_bonus_feat_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (15th level)",
+        "fr": "Don supplémentaire (niveau 15)"
+      },
+      "description": {
+        "en": "A psion gets a bonus feat at 15th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
+        "fr": "Un psion obtient un don supplémentaire au niveau 15. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psion_bonus_feat_4",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_bonus_feat_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (20th level)",
+        "fr": "Don supplémentaire (niveau 20)"
+      },
+      "description": {
+        "en": "A psion gets a bonus feat at 20th level. This feat must be a psionic feat, a metapsionic feat, or a psionic item creation feat.",
+        "fr": "Un psion obtient un don supplémentaire au niveau 20. Ce don doit être un don psionique, un don métapsionique ou un don de création d'objets psioniques."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psion_bonus_feat_5",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic OR tag:psionic_item_creation",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_power_points",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Power Points",
+        "fr": "Points de pouvoir"
+      },
+      "description": {
+        "en": "A psion's ability to manifest powers is limited by the power points available. A psion starts with 2 power points at 1st level. A psion can manifest any power that has a power point cost equal to or lower than his manifester level. The number of times a psion can manifest powers in a day is limited only by his daily power points.",
+        "fr": "La capacité d'un psion à manifester des pouvoirs est limitée par les points de pouvoir disponibles. Un psion commence avec 2 points de pouvoir au niveau 1. Un psion peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation. Le nombre de fois qu'un psion peut manifester des pouvoirs par jour n'est limité que par ses points de pouvoir quotidiens."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "power_points"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "psion_pp_int_bonus",
+          "sourceId": "class_feature_psion_power_points",
+          "targetId": "resources.power_points.maxValue",
+          "value": "@attributes.stat_intelligence.derivedModifier",
+          "type": "base",
+          "sourceName": {
+            "en": "Psion Intelligence Bonus PP",
+            "fr": "Psion bonus PP Intelligence"
+          }
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_powers_known",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powers Known",
+        "fr": "Pouvoirs connus"
+      },
+      "description": {
+        "en": "A psion begins play knowing three 1st-level powers of your choice. Each time he achieves a new level, he unlocks the knowledge of new powers. A psion can manifest any power that has a power point cost equal to or lower than his manifester level. Choose the powers known from the psion power list, or from the list of powers of your chosen discipline.",
+        "fr": "Un psion commence le jeu en connaissant trois pouvoirs de niveau 1 de votre choix. Chaque fois qu'il atteint un nouveau niveau, il découvre de nouveaux pouvoirs. Un psion peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation. Choisissez les pouvoirs connus dans la liste des pouvoirs du psion, ou dans la liste des pouvoirs de la discipline choisie."
+      },
+      "tags": [
+        "class_feature",
+        "psion",
+        "psionic",
+        "powers_known"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (1st level)",
+        "fr": "Don supplémentaire (niveau 1)"
+      },
+      "description": {
+        "en": "At 1st level, a psychic warrior gets a bonus combat-oriented feat in addition to the feat that any 1st-level character gets. This feat must come from the fighter bonus feat list or be a psionic feat.",
+        "fr": "Au niveau 1, un guerrier psychique obtient un don de combat supplémentaire en plus du don qu'obtient tout personnage de niveau 1. Ce don doit provenir de la liste des dons supplémentaires du guerrier ou être un don psionique."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_1",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (2nd level)",
+        "fr": "Don supplémentaire (niveau 2)"
+      },
+      "description": {
+        "en": "At 2nd level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 2, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_2",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (5th level)",
+        "fr": "Don supplémentaire (niveau 5)"
+      },
+      "description": {
+        "en": "At 5th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 5, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_3",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (8th level)",
+        "fr": "Don supplémentaire (niveau 8)"
+      },
+      "description": {
+        "en": "At 8th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 8, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_4",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (11th level)",
+        "fr": "Don supplémentaire (niveau 11)"
+      },
+      "description": {
+        "en": "At 11th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 11, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_5",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_6",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (14th level)",
+        "fr": "Don supplémentaire (niveau 14)"
+      },
+      "description": {
+        "en": "At 14th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 14, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_6",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_7",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (17th level)",
+        "fr": "Don supplémentaire (niveau 17)"
+      },
+      "description": {
+        "en": "At 17th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 17, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_7",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_bonus_feat_8",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Feat (20th level)",
+        "fr": "Don supplémentaire (niveau 20)"
+      },
+      "description": {
+        "en": "At 20th level, a psychic warrior gets a bonus combat-oriented feat or psionic feat.",
+        "fr": "Au niveau 20, un guerrier psychique obtient un don de combat ou psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psywar_bonus_feat_8",
+          "label": {
+            "en": "Choose a combat or psionic feat",
+            "fr": "Choisissez un don de combat ou psionique"
+          },
+          "optionsQuery": "tag:fighter_bonus_feat OR tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_power_points",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Power Points",
+        "fr": "Points de pouvoir"
+      },
+      "description": {
+        "en": "A psychic warrior's ability to manifest powers is limited by the power points available. A 1st-level psychic warrior gains no power points for his class level, but gains bonus power points (if entitled) from a high Wisdom score, his race, and feats or other sources. He can manifest the single power he knows with those power points.",
+        "fr": "La capacité d'un guerrier psychique à manifester des pouvoirs est limitée par les points de pouvoir disponibles. Un guerrier psychique de niveau 1 ne gagne aucun point de pouvoir de son niveau de classe, mais gagne des points de pouvoir bonus de sa haute Sagesse, de sa race et de ses dons ou d'autres sources."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "power_points"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "psywar_pp_wis_bonus",
+          "sourceId": "class_feature_psychic_warrior_power_points",
+          "targetId": "resources.power_points.maxValue",
+          "value": "@attributes.stat_wisdom.derivedModifier",
+          "type": "base",
+          "sourceName": {
+            "en": "Psychic Warrior Wisdom Bonus PP",
+            "fr": "Guerrier psychique bonus PP Sagesse"
+          }
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psychic_warrior_powers_known",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powers Known",
+        "fr": "Pouvoirs connus"
+      },
+      "description": {
+        "en": "A psychic warrior begins play knowing one 1st-level power of your choice. Each time he achieves a new level, he unlocks the knowledge of one new power. A psychic warrior can manifest any power that has a power point cost equal to or lower than his manifester level. Choose the powers known from the psychic warrior power list.",
+        "fr": "Un guerrier psychique commence le jeu en connaissant un pouvoir de niveau 1 de votre choix. Chaque fois qu'il atteint un nouveau niveau, il découvre un nouveau pouvoir. Un guerrier psychique peut manifester tout pouvoir dont le coût en points de pouvoir est égal ou inférieur à son niveau de manifestation."
+      },
+      "tags": [
+        "class_feature",
+        "psychic_warrior",
+        "psionic",
+        "powers_known"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_soulknife_mind_blade",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Mind Blade",
+        "fr": "Lame mentale"
+      },
+      "description": {
+        "en": "As a move action, a soulknife can create a semisolid blade composed of psychic energy distilled from his own mind. The blade is identical in all ways (except visually) to a short sword of a size appropriate for its wielder. For example, a Medium soulknife wields a Medium mind blade that deals 1d6 points of damage (crit 19-20/x2). As a free action, a soulknife can sheathe or dismiss a mind blade into his mind. The blade can be rematerialized as a move action. A mind blade is considered a magic weapon for the purpose of overcoming damage reduction. A soulknife can use feats such as Power Attack or Combat Expertise in conjunction with the mind blade just as if it were a normal weapon. The soulknife can also choose feats requiring a specific weapon, such as Weapon Specialization (mind blade), as if the mind blade were a normal weapon. The soulknife's mind blade improves as the character gains higher levels. At 4th level and every four levels thereafter (+1 at 4th, +2 at 8th, +3 at 12th, +4 at 16th, +5 at 20th), the mind blade gains a cumulative enhancement bonus on its attack and damage rolls. The enhancement bonus also applies to any special abilities added to the blade. A soulknife can add special weapon abilities to his mind blade from the Mind Blade Enhancement feature as he levels up.",
+        "fr": "Par une action de mouvement, un lame d'âme peut créer une lame semi-solide composée d'énergie psychique distillée de son propre esprit. La lame est identique dans tous les aspects (sauf visuellement) à une épée courte de taille appropriée pour son manieur. Par exemple, un lame d'âme de taille Moyenne manie une lame mentale de taille Moyenne qui inflige 1d6 points de dégâts (critique 19-20/x2). Par une action gratuite, un lame d'âme peut rengainer ou renvoyer une lame mentale dans son esprit. La lame peut être rematérialisée par une action de mouvement. Une lame mentale est considérée comme une arme magique pour les besoins du franchissement de la réduction des dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural",
+        "psionic",
+        "mind_blade"
+      ],
+      "activation": {
+        "actionType": "move"
+      },
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_base_damage",
+          "sourceId": "class_feature_soulknife_mind_blade",
+          "targetId": "combatStats.mind_blade_damage",
+          "value": "1d6",
+          "type": "base",
+          "sourceName": {
+            "en": "Mind Blade (base)",
+            "fr": "Lame mentale (base)"
+          }
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_soulknife_weapon_focus_mind_blade",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Weapon Focus (Mind Blade)",
+        "fr": "Spécialisation dans une arme (lame mentale)"
+      },
+      "description": {
+        "en": "A soulknife gains Weapon Focus (mind blade) as a bonus feat at 1st level, even if he does not meet the prerequisites.",
+        "fr": "Un lame d'âme obtient le don Arme de prédilection (lame mentale) comme don supplémentaire au niveau 1, même s'il ne remplit pas les conditions requises."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "bonus_feat"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "sk_mind_blade_weapon_focus",
+          "sourceId": "class_feature_soulknife_weapon_focus_mind_blade",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "untyped",
+          "sourceName": {
+            "en": "Weapon Focus (Mind Blade)",
+            "fr": "Arme de prédilection (lame mentale)"
+          },
+          "conditionNode": {
+            "logic": "CONDITION",
+            "targetPath": "@activeTags",
+            "operator": "has_tag",
+            "value": "mind_blade_equipped"
+          }
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_soulknife_wild_talent",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Talent",
+        "fr": "Talent sauvage"
+      },
+      "description": {
+        "en": "A soulknife gains Wild Talent as a bonus feat at 1st level. This feat provides the character with the psionic power source he needs to create his mind blade. Even if the soulknife already has the feat, this additional use of Wild Talent provides 2 bonus power points. A soulknife does not have a power point reserve unless he takes the Wild Talent feat, in which case he gains 2 power points (or gains 2 more, if he already has the feat).",
+        "fr": "Un lame d'âme obtient le don Talent sauvage comme don supplémentaire au niveau 1. Ce don fournit au personnage la source de pouvoir psionique dont il a besoin pour créer sa lame mentale."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "psionic",
+        "wild_talent"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "feat_wild_talent"
+      ]
+    },
+    {
+      "id": "class_feature_soulknife_throw_mind_blade",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Throw Mind Blade",
+        "fr": "Lancer la lame mentale"
+      },
+      "description": {
+        "en": "A soulknife of 2nd level or higher can throw his mind blade as a ranged weapon with a range increment of 30 feet. Whether or not the attack hits, a thrown mind blade then dissipates. A soulknife of 3rd level or higher can imbue his thrown mind blade with psychic strike and apply it to the throw.",
+        "fr": "Un lame d'âme de niveau 2 ou plus peut lancer sa lame mentale comme une arme de tir avec un incrément de portée de 9 mètres. Que l'attaque touche ou non, une lame mentale lancée se dissipe ensuite."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_soulknife_psychic_strike_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Strike +1d8",
+        "fr": "Frappe psionique +1d8"
+      },
+      "description": {
+        "en": "As a move action, a soulknife of 3rd level or higher can imbue his mind blade with destructive psychic energy. This psychic strike is not an ability that can be used against mindless creatures or those immune to mind-affecting effects. The imbued mind blade deals an extra 1d8 points of damage to the next living, nonmindless target it hits. At 7th level the extra damage increases to 2d8, at 11th to 3d8, at 15th to 4d8, and at 19th to 5d8. Creatures that are immune to mind-affecting effects are immune to psychic strike. Animals, beasts, and vermin are not mindless and are subject to psychic strike. A soulknife can rebuke the psychic strike as a free action, dissipating the energy.",
+        "fr": "Par une action de mouvement, un lame d'âme de niveau 3 ou plus peut imprégner sa lame mentale d'énergie psychique destructrice. Cette frappe psionique ne peut pas être utilisée contre des créatures sans esprit ou immunisées contre les effets affectant l'esprit. La lame mentale imprégnée inflige 1d8 points de dégâts supplémentaires à la prochaine cible vivante et dotée d'esprit qu'elle touche."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural",
+        "psionic",
+        "psychic_strike"
+      ],
+      "activation": {
+        "actionType": "move"
+      },
+      "grantedModifiers": [
+        {
+          "id": "psychic_strike_damage_formula",
+          "sourceId": "class_feature_soulknife_psychic_strike_1",
+          "targetId": "combatStats.mind_blade_psychic_strike",
+          "value": "floor(@classLevels.class_soulknife / 4)d8",
+          "type": "untyped",
+          "sourceName": {
+            "en": "Psychic Strike",
+            "fr": "Frappe psionique"
+          },
+          "conditionNode": {
+            "logic": "AND",
+            "nodes": [
+              {
+                "logic": "NOT",
+                "node": {
+                  "logic": "CONDITION",
+                  "targetPath": "@targetTags",
+                  "operator": "has_tag",
+                  "value": "mindless"
+                }
+              },
+              {
+                "logic": "NOT",
+                "node": {
+                  "logic": "CONDITION",
+                  "targetPath": "@targetTags",
+                  "operator": "has_tag",
+                  "value": "immune_mind_affecting"
+                }
               }
-            },
-            {
-              "logic": "NOT",
-              "node": {
-                "logic": "CONDITION",
-                "targetPath": "@targetTags",
-                "operator": "has_tag",
-                "value": "immune_mind_affecting"
-              }
-            }
-          ]
+            ]
+          }
         }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "+1 Mind Blade", "fr": "Lame mentale +1" },
-    "description": {
-      "en": "At 4th level, the soulknife's mind blade gains a +1 enhancement bonus on attack rolls and damage rolls. This enhancement bonus improves every four levels: +1 at 4th, +2 at 8th, +3 at 12th, +4 at 16th, +5 at 20th.",
-      "fr": "Au niveau 4, la lame mentale du lame d'âme gagne un bonus d'altération de +1 aux jets d'attaque et de dégâts. Ce bonus d'altération s'améliore tous les quatre niveaux : +1 au niveau 4, +2 au niveau 8, +3 au niveau 12, +4 au niveau 16, +5 au niveau 20."
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_enhancement_1",
-        "sourceId": "class_feature_soulknife_mind_blade_1",
-        "targetId": "combatStats.mind_blade_enhancement",
-        "value": 1,
-        "type": "enhancement",
-        "sourceName": { "en": "+1 Mind Blade", "fr": "Lame mentale +1" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_free_draw",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Draw", "fr": "Dégainage libre" },
-    "description": {
-      "en": "At 5th level, a soulknife can materialize his mind blade as a free action instead of a move action. He can make this free action once per round. He can dismiss the blade as a free action at any time.",
-      "fr": "Au niveau 5, un lame d'âme peut matérialiser sa lame mentale par une action gratuite au lieu d'une action de mouvement. Il peut effectuer cette action gratuite une fois par round. Il peut renvoyer la lame par une action gratuite à tout moment."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "activation": {
-      "actionType": "free"
-    },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_shape_mind_blade",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Shape Mind Blade", "fr": "Modeler la lame mentale" },
-    "description": {
-      "en": "At 5th level, a soulknife gains the ability to change the form of his mind blade. As a full-round action, he can change his mind blade to replicate a longsword (1d8 damage, one-handed), a bastard sword (1d10 damage, one- or two-handed), or a pair of short swords if he uses a two-weapon fighting style. The soulknife reverts to the short sword form as a free action. Creation of two short swords from a single mind blade: each blade has an enhancement bonus one lower than normal. When the soulknife reverts to a single mind blade, the enhancement bonus returns to the normal level.",
-      "fr": "Au niveau 5, un lame d'âme gagne la capacité de changer la forme de sa lame mentale. Par une action complexe, il peut modifier sa lame mentale pour répliquer une épée longue (1d8 dégâts, à une main), une épée bâtarde (1d10 dégâts, à une ou deux mains), ou une paire d'épées courtes s'il utilise un style de combat à deux armes."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "activation": {
-      "actionType": "full_round"
-    },
-    "choices": [
-      {
-        "choiceId": "mind_blade_form",
-        "label": { "en": "Mind Blade Form", "fr": "Forme de la lame mentale" },
-        "optionsQuery": "tag:mind_blade_form",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_enhancement_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Mind Blade Enhancement +1", "fr": "Amélioration de lame mentale +1" },
-    "description": {
-      "en": "At 6th level, a soulknife can add one or more of the following special weapon abilities to his mind blade: defending, keen, lucky, mighty cleaving, psychokinetic, sundering, vicious, collision, mindcrusher, psychokinetic burst, suppression, wounding, bodyfeeder, mindfeeder, or soulbreaker. The total combined value of all special ability enhancements cannot exceed +1 (and increases every 4 levels: +2 at 10th, +3 at 14th, +4 at 18th). To change the special ability assigned, the soulknife must spend 8 hours concentrating.",
-      "fr": "Au niveau 6, un lame d'âme peut ajouter une ou plusieurs des capacités spéciales d'armement suivantes à sa lame mentale. La valeur totale combinée de toutes les améliorations de capacités spéciales ne peut pas dépasser +1."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "choices": [
-      {
-        "choiceId": "mind_blade_special_ability_1",
-        "label": { "en": "Mind Blade Special Ability (+1 total)", "fr": "Capacité spéciale de lame mentale (+1 total)" },
-        "optionsQuery": "tag:mind_blade_special_ability",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_speed_of_thought",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Speed of Thought", "fr": "Vitesse de pensée" },
-    "description": {
-      "en": "At 6th level, a soulknife gains Speed of Thought as a bonus feat, even if she does not meet the prerequisites.",
-      "fr": "Au niveau 6, un lame d'âme obtient le don Vitesse de pensée comme don supplémentaire, même s'il ne remplit pas les conditions requises."
-    },
-    "tags": ["class_feature", "soulknife", "bonus_feat"],
-    "grantedModifiers": [],
-    "grantedFeatures": ["feat_speed_of_thought"]
-  },
-  {
-    "id": "class_feature_soulknife_psychic_strike_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Strike +2d8 (7th level)", "fr": "Frappe psionique +2d8 (niveau 7)" },
-    "description": {
-      "en": "At 7th level, the soulknife's psychic strike increases to deal an extra 2d8 points of damage. The formula is floor(@classLevels.class_soulknife / 4)d8, which at level 7 is 1d8 and at level 8 becomes 2d8. The upgrade at 7th level is handled by the dynamic formula — this feature grants the scaling system.",
-      "fr": "Au niveau 7, la frappe psionique du lame d'âme augmente pour infliger 2d8 points de dégâts supplémentaires."
-    },
-    "tags": ["class_feature", "soulknife", "psychic_strike"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "+2 Mind Blade", "fr": "Lame mentale +2" },
-    "description": {
-      "en": "At 8th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +2.",
-      "fr": "Au niveau 8, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +2."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_enhancement_2",
-        "sourceId": "class_feature_soulknife_mind_blade_2",
-        "targetId": "combatStats.mind_blade_enhancement",
-        "value": 1,
-        "type": "enhancement",
-        "sourceName": { "en": "+2 Mind Blade", "fr": "Lame mentale +2" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_bladewind",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bladewind", "fr": "Tourbillon de lames" },
-    "description": {
-      "en": "At 9th level, a soulknife gains the ability to momentarily fragment his mind blade into numerous identical blades, each of which strikes at a nearby opponent. As a full attack, he can give up his regular attacks and instead fragment his mind blade to make one melee attack at his full base attack bonus against each opponent within reach. Each fragment is identical to his normal mind blade. He can't make extra attacks due to a high base attack bonus, feats, or for any other reason. After the bladewind attack, the mind blade reforms.",
-      "fr": "Au niveau 9, un lame d'âme gagne la capacité de fragmenter momentanément sa lame mentale en de nombreuses lames identiques, chacune frappant un adversaire à proximité. Lors d'une attaque complète, il peut renoncer à ses attaques régulières et fragmenter sa lame mentale pour faire une attaque de mêlée à son bonus d'attaque de base complet contre chaque adversaire à portée."
-    },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "activation": { "actionType": "full_round" },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_greater_weapon_focus_mind_blade",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Greater Weapon Focus (Mind Blade)", "fr": "Spécialisation avancée dans une arme (lame mentale)" },
-    "description": {
-      "en": "At 9th level, a soulknife gains Greater Weapon Focus (mind blade) as a bonus feat, even if she does not meet the prerequisites.",
-      "fr": "Au niveau 9, un lame d'âme obtient le don Spécialisation avancée dans une arme (lame mentale) comme don supplémentaire."
-    },
-    "tags": ["class_feature", "soulknife", "bonus_feat"],
-    "grantedModifiers": [
-      {
-        "id": "sk_greater_weapon_focus",
-        "sourceId": "class_feature_soulknife_greater_weapon_focus_mind_blade",
-        "targetId": "combatStats.attack_bonus",
-        "value": 1,
-        "type": "untyped",
-        "sourceName": { "en": "Greater Weapon Focus (Mind Blade)", "fr": "Spécialisation avancée (lame mentale)" },
-        "conditionNode": {
-          "logic": "CONDITION",
-          "targetPath": "@activeTags",
-          "operator": "has_tag",
-          "value": "mind_blade_equipped"
+    {
+      "id": "class_feature_soulknife_mind_blade_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "+1 Mind Blade",
+        "fr": "Lame mentale +1"
+      },
+      "description": {
+        "en": "At 4th level, the soulknife's mind blade gains a +1 enhancement bonus on attack rolls and damage rolls. This enhancement bonus improves every four levels: +1 at 4th, +2 at 8th, +3 at 12th, +4 at 16th, +5 at 20th.",
+        "fr": "Au niveau 4, la lame mentale du lame d'âme gagne un bonus d'altération de +1 aux jets d'attaque et de dégâts. Ce bonus d'altération s'améliore tous les quatre niveaux : +1 au niveau 4, +2 au niveau 8, +3 au niveau 12, +4 au niveau 16, +5 au niveau 20."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_enhancement_1",
+          "sourceId": "class_feature_soulknife_mind_blade_1",
+          "targetId": "combatStats.mind_blade_enhancement",
+          "value": 1,
+          "type": "enhancement",
+          "sourceName": {
+            "en": "+1 Mind Blade",
+            "fr": "Lame mentale +1"
+          }
         }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_enhancement_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Mind Blade Enhancement +2", "fr": "Amélioration de lame mentale +2" },
-    "description": {
-      "en": "At 10th level, the total special ability enhancement value available for the soulknife's mind blade increases to +2.",
-      "fr": "Au niveau 10, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +2."
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "choices": [
-      {
-        "choiceId": "mind_blade_special_ability_2",
-        "label": { "en": "Mind Blade Special Abilities (+2 total value)", "fr": "Capacités spéciales de lame mentale (+2 valeur totale)" },
-        "optionsQuery": "tag:mind_blade_special_ability",
-        "maxSelections": 2
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_psychic_strike_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Strike +3d8 (11th level)", "fr": "Frappe psionique +3d8 (niveau 11)" },
-    "description": {
-      "en": "At 11th level, the soulknife's psychic strike scales to 3d8 via the formula floor(@classLevels.class_soulknife / 4)d8. This level marker exists for tracking purposes.",
-      "fr": "Au niveau 11, la frappe psionique du lame d'âme passe à 3d8."
+    {
+      "id": "class_feature_soulknife_free_draw",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Draw",
+        "fr": "Dégainage libre"
+      },
+      "description": {
+        "en": "At 5th level, a soulknife can materialize his mind blade as a free action instead of a move action. He can make this free action once per round. He can dismiss the blade as a free action at any time.",
+        "fr": "Au niveau 5, un lame d'âme peut matérialiser sa lame mentale par une action gratuite au lieu d'une action de mouvement. Il peut effectuer cette action gratuite une fois par round. Il peut renvoyer la lame par une action gratuite à tout moment."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "psychic_strike"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "+3 Mind Blade", "fr": "Lame mentale +3" },
-    "description": {
-      "en": "At 12th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +3.",
-      "fr": "Au niveau 12, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +3."
+    {
+      "id": "class_feature_soulknife_shape_mind_blade",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Shape Mind Blade",
+        "fr": "Modeler la lame mentale"
+      },
+      "description": {
+        "en": "At 5th level, a soulknife gains the ability to change the form of his mind blade. As a full-round action, he can change his mind blade to replicate a longsword (1d8 damage, one-handed), a bastard sword (1d10 damage, one- or two-handed), or a pair of short swords if he uses a two-weapon fighting style. The soulknife reverts to the short sword form as a free action. Creation of two short swords from a single mind blade: each blade has an enhancement bonus one lower than normal. When the soulknife reverts to a single mind blade, the enhancement bonus returns to the normal level.",
+        "fr": "Au niveau 5, un lame d'âme gagne la capacité de changer la forme de sa lame mentale. Par une action complexe, il peut modifier sa lame mentale pour répliquer une épée longue (1d8 dégâts, à une main), une épée bâtarde (1d10 dégâts, à une ou deux mains), ou une paire d'épées courtes s'il utilise un style de combat à deux armes."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "full_round"
+      },
+      "choices": [
+        {
+          "choiceId": "mind_blade_form",
+          "label": {
+            "en": "Mind Blade Form",
+            "fr": "Forme de la lame mentale"
+          },
+          "optionsQuery": "tag:mind_blade_form",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_enhancement_3",
-        "sourceId": "class_feature_soulknife_mind_blade_3",
-        "targetId": "combatStats.mind_blade_enhancement",
-        "value": 1,
-        "type": "enhancement",
-        "sourceName": { "en": "+3 Mind Blade", "fr": "Lame mentale +3" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_knife_to_the_soul",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Knife to the Soul", "fr": "Lame dans l'âme" },
-    "description": {
-      "en": "Beginning at 13th level, when a soulknife executes a psychic strike, he can choose to substitute ability score damage for some or all of the extra dice of damage. For each die of psychic strike damage given up, the soulknife deals 1 point of damage to the target's Intelligence, Wisdom, or Charisma score (soulknife's choice). A soulknife can combine extra dice of damage and ability score damage in any combination. The choice must be declared before the psychic strike attack is made.",
-      "fr": "À partir du niveau 13, lorsqu'un lame d'âme exécute une frappe psionique, il peut choisir de substituer des dégâts de caractéristique à certains ou à tous les dés de dégâts supplémentaires. Pour chaque dé de dégâts de frappe psionique abandonné, le lame d'âme inflige 1 point de dégâts à l'Intelligence, la Sagesse ou le Charisme de la cible."
+    {
+      "id": "class_feature_soulknife_mind_blade_enhancement_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Mind Blade Enhancement +1",
+        "fr": "Amélioration de lame mentale +1"
+      },
+      "description": {
+        "en": "At 6th level, a soulknife can add one or more of the following special weapon abilities to his mind blade: defending, keen, lucky, mighty cleaving, psychokinetic, sundering, vicious, collision, mindcrusher, psychokinetic burst, suppression, wounding, bodyfeeder, mindfeeder, or soulbreaker. The total combined value of all special ability enhancements cannot exceed +1 (and increases every 4 levels: +2 at 10th, +3 at 14th, +4 at 18th). To change the special ability assigned, the soulknife must spend 8 hours concentrating.",
+        "fr": "Au niveau 6, un lame d'âme peut ajouter une ou plusieurs des capacités spéciales d'armement suivantes à sa lame mentale. La valeur totale combinée de toutes les améliorations de capacités spéciales ne peut pas dépasser +1."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "choices": [
+        {
+          "choiceId": "mind_blade_special_ability_1",
+          "label": {
+            "en": "Mind Blade Special Ability (+1 total)",
+            "fr": "Capacité spéciale de lame mentale (+1 total)"
+          },
+          "optionsQuery": "tag:mind_blade_special_ability",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_enhancement_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Mind Blade Enhancement +3", "fr": "Amélioration de lame mentale +3" },
-    "description": {
-      "en": "At 14th level, the total special ability enhancement value available for the soulknife's mind blade increases to +3.",
-      "fr": "Au niveau 14, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +3."
+    {
+      "id": "class_feature_soulknife_speed_of_thought",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Speed of Thought",
+        "fr": "Vitesse de pensée"
+      },
+      "description": {
+        "en": "At 6th level, a soulknife gains Speed of Thought as a bonus feat, even if she does not meet the prerequisites.",
+        "fr": "Au niveau 6, un lame d'âme obtient le don Vitesse de pensée comme don supplémentaire, même s'il ne remplit pas les conditions requises."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "bonus_feat"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "feat_speed_of_thought"
+      ]
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "choices": [
-      {
-        "choiceId": "mind_blade_special_ability_3",
-        "label": { "en": "Mind Blade Special Abilities (+3 total value)", "fr": "Capacités spéciales de lame mentale (+3 valeur totale)" },
-        "optionsQuery": "tag:mind_blade_special_ability",
-        "maxSelections": 3
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_psychic_strike_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Strike +4d8 (15th level)", "fr": "Frappe psionique +4d8 (niveau 15)" },
-    "description": {
-      "en": "At 15th level, the soulknife's psychic strike scales to 4d8 via the formula floor(@classLevels.class_soulknife / 4)d8.",
-      "fr": "Au niveau 15, la frappe psionique du lame d'âme passe à 4d8."
+    {
+      "id": "class_feature_soulknife_psychic_strike_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Strike +2d8 (7th level)",
+        "fr": "Frappe psionique +2d8 (niveau 7)"
+      },
+      "description": {
+        "en": "At 7th level, the soulknife's psychic strike increases to deal an extra 2d8 points of damage. The formula is floor(@classLevels.class_soulknife / 4)d8, which at level 7 is 1d8 and at level 8 becomes 2d8. The upgrade at 7th level is handled by the dynamic formula — this feature grants the scaling system.",
+        "fr": "Au niveau 7, la frappe psionique du lame d'âme augmente pour infliger 2d8 points de dégâts supplémentaires."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "psychic_strike"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "psychic_strike"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "+4 Mind Blade", "fr": "Lame mentale +4" },
-    "description": {
-      "en": "At 16th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +4.",
-      "fr": "Au niveau 16, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +4."
+    {
+      "id": "class_feature_soulknife_mind_blade_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "+2 Mind Blade",
+        "fr": "Lame mentale +2"
+      },
+      "description": {
+        "en": "At 8th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +2.",
+        "fr": "Au niveau 8, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +2."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_enhancement_2",
+          "sourceId": "class_feature_soulknife_mind_blade_2",
+          "targetId": "combatStats.mind_blade_enhancement",
+          "value": 1,
+          "type": "enhancement",
+          "sourceName": {
+            "en": "+2 Mind Blade",
+            "fr": "Lame mentale +2"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_enhancement_4",
-        "sourceId": "class_feature_soulknife_mind_blade_4",
-        "targetId": "combatStats.mind_blade_enhancement",
-        "value": 1,
-        "type": "enhancement",
-        "sourceName": { "en": "+4 Mind Blade", "fr": "Lame mentale +4" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_multiple_throw",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Multiple Throw", "fr": "Lancers multiples" },
-    "description": {
-      "en": "At 17th level and higher, a soulknife can throw a number of mind blades per round equal to the number of melee attacks he could make.",
-      "fr": "À partir du niveau 17, un lame d'âme peut lancer un nombre de lames mentales par round égal au nombre d'attaques de mêlée qu'il pourrait effectuer."
+    {
+      "id": "class_feature_soulknife_bladewind",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bladewind",
+        "fr": "Tourbillon de lames"
+      },
+      "description": {
+        "en": "At 9th level, a soulknife gains the ability to momentarily fragment his mind blade into numerous identical blades, each of which strikes at a nearby opponent. As a full attack, he can give up his regular attacks and instead fragment his mind blade to make one melee attack at his full base attack bonus against each opponent within reach. Each fragment is identical to his normal mind blade. He can't make extra attacks due to a high base attack bonus, feats, or for any other reason. After the bladewind attack, the mind blade reforms.",
+        "fr": "Au niveau 9, un lame d'âme gagne la capacité de fragmenter momentanément sa lame mentale en de nombreuses lames identiques, chacune frappant un adversaire à proximité. Lors d'une attaque complète, il peut renoncer à ses attaques régulières et fragmenter sa lame mentale pour faire une attaque de mêlée à son bonus d'attaque de base complet contre chaque adversaire à portée."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "full_round"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_enhancement_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Mind Blade Enhancement +4", "fr": "Amélioration de lame mentale +4" },
-    "description": {
-      "en": "At 18th level, the total special ability enhancement value available for the soulknife's mind blade increases to +4.",
-      "fr": "Au niveau 18, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +4."
+    {
+      "id": "class_feature_soulknife_greater_weapon_focus_mind_blade",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Greater Weapon Focus (Mind Blade)",
+        "fr": "Spécialisation avancée dans une arme (lame mentale)"
+      },
+      "description": {
+        "en": "At 9th level, a soulknife gains Greater Weapon Focus (mind blade) as a bonus feat, even if she does not meet the prerequisites.",
+        "fr": "Au niveau 9, un lame d'âme obtient le don Spécialisation avancée dans une arme (lame mentale) comme don supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "bonus_feat"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "sk_greater_weapon_focus",
+          "sourceId": "class_feature_soulknife_greater_weapon_focus_mind_blade",
+          "targetId": "combatStats.attack_bonus",
+          "value": 1,
+          "type": "untyped",
+          "sourceName": {
+            "en": "Greater Weapon Focus (Mind Blade)",
+            "fr": "Spécialisation avancée (lame mentale)"
+          },
+          "conditionNode": {
+            "logic": "CONDITION",
+            "targetPath": "@activeTags",
+            "operator": "has_tag",
+            "value": "mind_blade_equipped"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "choices": [
-      {
-        "choiceId": "mind_blade_special_ability_4",
-        "label": { "en": "Mind Blade Special Abilities (+4 total value)", "fr": "Capacités spéciales de lame mentale (+4 valeur totale)" },
-        "optionsQuery": "tag:mind_blade_special_ability",
-        "maxSelections": 4
-      }
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_psychic_strike_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Strike +5d8 (19th level)", "fr": "Frappe psionique +5d8 (niveau 19)" },
-    "description": {
-      "en": "At 19th level, the soulknife's psychic strike scales to 5d8 via the formula floor(@classLevels.class_soulknife / 4)d8.",
-      "fr": "Au niveau 19, la frappe psionique du lame d'âme passe à 5d8."
+    {
+      "id": "class_feature_soulknife_mind_blade_enhancement_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Mind Blade Enhancement +2",
+        "fr": "Amélioration de lame mentale +2"
+      },
+      "description": {
+        "en": "At 10th level, the total special ability enhancement value available for the soulknife's mind blade increases to +2.",
+        "fr": "Au niveau 10, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +2."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "choices": [
+        {
+          "choiceId": "mind_blade_special_ability_2",
+          "label": {
+            "en": "Mind Blade Special Abilities (+2 total value)",
+            "fr": "Capacités spéciales de lame mentale (+2 valeur totale)"
+          },
+          "optionsQuery": "tag:mind_blade_special_ability",
+          "maxSelections": 2
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "psychic_strike"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_soulknife_mind_blade_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "+5 Mind Blade", "fr": "Lame mentale +5" },
-    "description": {
-      "en": "At 20th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +5, the maximum possible.",
-      "fr": "Au niveau 20, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +5, le maximum possible."
+    {
+      "id": "class_feature_soulknife_psychic_strike_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Strike +3d8 (11th level)",
+        "fr": "Frappe psionique +3d8 (niveau 11)"
+      },
+      "description": {
+        "en": "At 11th level, the soulknife's psychic strike scales to 3d8 via the formula floor(@classLevels.class_soulknife / 4)d8. This level marker exists for tracking purposes.",
+        "fr": "Au niveau 11, la frappe psionique du lame d'âme passe à 3d8."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "psychic_strike"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "soulknife", "supernatural"],
-    "grantedModifiers": [
-      {
-        "id": "mind_blade_enhancement_5",
-        "sourceId": "class_feature_soulknife_mind_blade_5",
-        "targetId": "combatStats.mind_blade_enhancement",
-        "value": 1,
-        "type": "enhancement",
-        "sourceName": { "en": "+5 Mind Blade", "fr": "Lame mentale +5" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +1", "fr": "Déferlante psionic +1" },
-    "description": {
-      "en": "A wilder can let her passion rage out of control to boost her manifester level temporarily, but at the risk of temporarily losing her psionic abilities. When manifesting a power, a wilder can choose to invoke her wild surge to increase her effective manifester level by 1 for that manifestation. No power point cost is added for this increase. However, each time she does so, she risks psychic enervation. The chance of enervation is 5% per point by which the wild surge exceeds the wilder's level. Wild surge bonus increases to +2 at 3rd level, +3 at 7th, +4 at 11th, +5 at 15th, +6 at 19th level.",
-      "fr": "Un déchaîné peut laisser sa passion se déchaîner hors de contrôle pour augmenter temporairement son niveau de manifestation, mais au risque de perdre temporairement ses capacités psioniques. Lorsqu'il manifeste un pouvoir, un déchaîné peut choisir d'invoquer sa déferlante psionic pour augmenter son niveau de manifestation effectif de 1 pour cette manifestation. Au niveau 1, le bonus de déferlante est de +1."
+    {
+      "id": "class_feature_soulknife_mind_blade_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "+3 Mind Blade",
+        "fr": "Lame mentale +3"
+      },
+      "description": {
+        "en": "At 12th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +3.",
+        "fr": "Au niveau 12, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +3."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_enhancement_3",
+          "sourceId": "class_feature_soulknife_mind_blade_3",
+          "targetId": "combatStats.mind_blade_enhancement",
+          "value": 1,
+          "type": "enhancement",
+          "sourceName": {
+            "en": "+3 Mind Blade",
+            "fr": "Lame mentale +3"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_psychic_enervation",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psychic Enervation", "fr": "Épuisement psychique" },
-    "description": {
-      "en": "Immediately following each wild surge, a wilder may be overcome by psychic enervation. Psychic enervation is a risk taken whenever the wilder uses wild surge. The chance of psychic enervation is equal to 5% per extra manifester level gained from wild surge (5% for +1, 10% for +2, etc.). If overcome by psychic enervation, the wilder is dazed until the end of her next turn and loses a number of power points equal to her wilder level. If the wilder does not have enough power points to pay this cost, she loses whatever she has.",
-      "fr": "Immédiatement après chaque déferlante psionic, un déchaîné peut être submergé par l'épuisement psychique. L'épuisement psychique est un risque pris chaque fois que le déchaîné utilise la déferlante psionic. La chance d'épuisement psychique est égale à 5% par niveau de manifestation supplémentaire gagné par la déferlante. Si submergé par l'épuisement psychique, le déchaîné est hébété jusqu'à la fin de son prochain tour et perd un nombre de points de pouvoir égal à son niveau de déchaîné."
+    {
+      "id": "class_feature_soulknife_knife_to_the_soul",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Knife to the Soul",
+        "fr": "Lame dans l'âme"
+      },
+      "description": {
+        "en": "Beginning at 13th level, when a soulknife executes a psychic strike, he can choose to substitute ability score damage for some or all of the extra dice of damage. For each die of psychic strike damage given up, the soulknife deals 1 point of damage to the target's Intelligence, Wisdom, or Charisma score (soulknife's choice). A soulknife can combine extra dice of damage and ability score damage in any combination. The choice must be declared before the psychic strike attack is made.",
+        "fr": "À partir du niveau 13, lorsqu'un lame d'âme exécute une frappe psionique, il peut choisir de substituer des dégâts de caractéristique à certains ou à tous les dés de dégâts supplémentaires. Pour chaque dé de dégâts de frappe psionique abandonné, le lame d'âme inflige 1 point de dégâts à l'Intelligence, la Sagesse ou le Charisme de la cible."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_power_points",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Power Points", "fr": "Points de pouvoir" },
-    "description": {
-      "en": "A wilder's ability to manifest powers is limited by the power points available. A wilder's key ability for bonus power points and save DCs is Charisma.",
-      "fr": "La capacité d'un déchaîné à manifester des pouvoirs est limitée par les points de pouvoir disponibles. La caractéristique clé du déchaîné pour les points de pouvoir bonus et les DD de sauvegarde est le Charisme."
+    {
+      "id": "class_feature_soulknife_mind_blade_enhancement_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Mind Blade Enhancement +3",
+        "fr": "Amélioration de lame mentale +3"
+      },
+      "description": {
+        "en": "At 14th level, the total special ability enhancement value available for the soulknife's mind blade increases to +3.",
+        "fr": "Au niveau 14, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +3."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "choices": [
+        {
+          "choiceId": "mind_blade_special_ability_3",
+          "label": {
+            "en": "Mind Blade Special Abilities (+3 total value)",
+            "fr": "Capacités spéciales de lame mentale (+3 valeur totale)"
+          },
+          "optionsQuery": "tag:mind_blade_special_ability",
+          "maxSelections": 3
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "power_points"],
-    "grantedModifiers": [
-      {
-        "id": "wilder_pp_cha_bonus",
-        "sourceId": "class_feature_wilder_power_points",
-        "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_charisma.derivedModifier",
-        "type": "base",
-        "sourceName": { "en": "Wilder Charisma Bonus PP", "fr": "Déchaîné bonus PP Charisme" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_powers_known",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powers Known", "fr": "Pouvoirs connus" },
-    "description": {
-      "en": "A wilder begins play knowing one 1st-level power of your choice from the wilder power list. At each wilder level above 1st, she gains one new power. A wilder can manifest any power from the wilder list that has a power point cost equal to or lower than her manifester level.",
-      "fr": "Un déchaîné commence le jeu en connaissant un pouvoir de niveau 1 de votre choix dans la liste des pouvoirs du déchaîné. À chaque niveau de déchaîné au-dessus du premier, il gagne un nouveau pouvoir."
+    {
+      "id": "class_feature_soulknife_psychic_strike_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Strike +4d8 (15th level)",
+        "fr": "Frappe psionique +4d8 (niveau 15)"
+      },
+      "description": {
+        "en": "At 15th level, the soulknife's psychic strike scales to 4d8 via the formula floor(@classLevels.class_soulknife / 4)d8.",
+        "fr": "Au niveau 15, la frappe psionique du lame d'âme passe à 4d8."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "psychic_strike"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "powers_known"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_elude_touch",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Elude Touch", "fr": "Esquiver le contact" },
-    "description": {
-      "en": "Starting at 2nd level, a wilder's intuition supersedes her intellect, alerting her to danger from touch attacks (including rays). She gains a bonus to AC against touch attacks equal to her Charisma bonus (if any). This bonus to AC against touch attacks can never exceed her normal AC.",
-      "fr": "À partir du niveau 2, l'intuition d'un déchaîné surpasse son intellect, l'alertant du danger des attaques de contact (y compris les rayons). Il gagne un bonus à la CA contre les attaques de contact égal à son bonus de Charisme (le cas échéant). Ce bonus à la CA contre les attaques de contact ne peut jamais dépasser sa CA normale."
+    {
+      "id": "class_feature_soulknife_mind_blade_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "+4 Mind Blade",
+        "fr": "Lame mentale +4"
+      },
+      "description": {
+        "en": "At 16th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +4.",
+        "fr": "Au niveau 16, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +4."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_enhancement_4",
+          "sourceId": "class_feature_soulknife_mind_blade_4",
+          "targetId": "combatStats.mind_blade_enhancement",
+          "value": 1,
+          "type": "enhancement",
+          "sourceName": {
+            "en": "+4 Mind Blade",
+            "fr": "Lame mentale +4"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "wilder_elude_touch_ac",
-        "sourceId": "class_feature_wilder_elude_touch",
-        "targetId": "combatStats.ac_touch",
-        "value": "@attributes.stat_charisma.derivedModifier",
-        "type": "insight",
-        "sourceName": { "en": "Elude Touch", "fr": "Esquiver le contact" }
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +2", "fr": "Déferlante psionic +2" },
-    "description": {
-      "en": "At 3rd level, the wilder's wild surge increases to +2 manifester levels.",
-      "fr": "Au niveau 3, la déferlante psionic du déchaîné passe à +2 niveaux de manifestation."
+    {
+      "id": "class_feature_soulknife_multiple_throw",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Multiple Throw",
+        "fr": "Lancers multiples"
+      },
+      "description": {
+        "en": "At 17th level and higher, a soulknife can throw a number of mind blades per round equal to the number of melee attacks he could make.",
+        "fr": "À partir du niveau 17, un lame d'âme peut lancer un nombre de lames mentales par round égal au nombre d'attaques de mêlée qu'il pourrait effectuer."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_surging_euphoria_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Surging Euphoria +1", "fr": "Euphorie déferlante +1" },
-    "description": {
-      "en": "Starting at 4th level, when a wilder uses wild surge, she gains a +1 morale bonus on attack rolls, damage rolls, and saving throws for a number of rounds equal to the intensity of the wild surge. If the wilder is overcome by psychic enervation, she does not gain the morale bonus for that use. The bonus increases to +2 at 12th level and +3 at 20th level.",
-      "fr": "À partir du niveau 4, lorsqu'un déchaîné utilise la déferlante psionic, il gagne un bonus de moral de +1 aux jets d'attaque, aux jets de dégâts et aux jets de sauvegarde pendant un nombre de rounds égal à l'intensité de la déferlante psionic."
+    {
+      "id": "class_feature_soulknife_mind_blade_enhancement_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Mind Blade Enhancement +4",
+        "fr": "Amélioration de lame mentale +4"
+      },
+      "description": {
+        "en": "At 18th level, the total special ability enhancement value available for the soulknife's mind blade increases to +4.",
+        "fr": "Au niveau 18, la valeur totale d'amélioration de capacité spéciale disponible pour la lame mentale du lame d'âme passe à +4."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "choices": [
+        {
+          "choiceId": "mind_blade_special_ability_4",
+          "label": {
+            "en": "Mind Blade Special Abilities (+4 total value)",
+            "fr": "Capacités spéciales de lame mentale (+4 valeur totale)"
+          },
+          "optionsQuery": "tag:mind_blade_special_ability",
+          "maxSelections": 4
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_volatile_mind_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Volatile Mind (1 PP)", "fr": "Esprit volatil (1 PP)" },
-    "description": {
-      "en": "A wilder's temperamental mind is hard to affect. Beginning at 5th level, any telepathy power used against the wilder costs the manifester 1 extra power point. This extra cost is above and beyond normal manifesting limitations; it does not count against the manifester's level-based power point limit. A wilder can suppress this effect for 1 round as a standard action. The extra cost increases to 2 PP at 9th level, 3 PP at 13th, and 4 PP at 17th.",
-      "fr": "L'esprit tempéramental d'un déchaîné est difficile à affecter. À partir du niveau 5, tout pouvoir de télépathie utilisé contre le déchaîné coûte au manifestateur 1 point de pouvoir supplémentaire."
+    {
+      "id": "class_feature_soulknife_psychic_strike_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Strike +5d8 (19th level)",
+        "fr": "Frappe psionique +5d8 (niveau 19)"
+      },
+      "description": {
+        "en": "At 19th level, the soulknife's psychic strike scales to 5d8 via the formula floor(@classLevels.class_soulknife / 4)d8.",
+        "fr": "Au niveau 19, la frappe psionique du lame d'âme passe à 5d8."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "psychic_strike"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +3", "fr": "Déferlante psionic +3" },
-    "description": {
-      "en": "At 7th level, the wilder's wild surge increases to +3 manifester levels.",
-      "fr": "Au niveau 7, la déferlante psionic du déchaîné passe à +3 niveaux de manifestation."
+    {
+      "id": "class_feature_soulknife_mind_blade_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "+5 Mind Blade",
+        "fr": "Lame mentale +5"
+      },
+      "description": {
+        "en": "At 20th level, the soulknife's mind blade gains an additional +1 enhancement bonus for a total of +5, the maximum possible.",
+        "fr": "Au niveau 20, la lame mentale du lame d'âme gagne un bonus d'altération supplémentaire de +1 pour un total de +5, le maximum possible."
+      },
+      "tags": [
+        "class_feature",
+        "soulknife",
+        "supernatural"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "mind_blade_enhancement_5",
+          "sourceId": "class_feature_soulknife_mind_blade_5",
+          "targetId": "combatStats.mind_blade_enhancement",
+          "value": 1,
+          "type": "enhancement",
+          "sourceName": {
+            "en": "+5 Mind Blade",
+            "fr": "Lame mentale +5"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_volatile_mind_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Volatile Mind (2 PP)", "fr": "Esprit volatil (2 PP)" },
-    "description": {
-      "en": "At 9th level, the extra power point cost for telepathy powers used against the wilder increases to 2 extra power points.",
-      "fr": "Au niveau 9, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 2 points de pouvoir supplémentaires."
+    {
+      "id": "class_feature_wilder_wild_surge_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +1",
+        "fr": "Déferlante psionic +1"
+      },
+      "description": {
+        "en": "A wilder can let her passion rage out of control to boost her manifester level temporarily, but at the risk of temporarily losing her psionic abilities. When manifesting a power, a wilder can choose to invoke her wild surge to increase her effective manifester level by 1 for that manifestation. No power point cost is added for this increase. However, each time she does so, she risks psychic enervation. The chance of enervation is 5% per point by which the wild surge exceeds the wilder's level. Wild surge bonus increases to +2 at 3rd level, +3 at 7th, +4 at 11th, +5 at 15th, +6 at 19th level.",
+        "fr": "Un déchaîné peut laisser sa passion se déchaîner hors de contrôle pour augmenter temporairement son niveau de manifestation, mais au risque de perdre temporairement ses capacités psioniques. Lorsqu'il manifeste un pouvoir, un déchaîné peut choisir d'invoquer sa déferlante psionic pour augmenter son niveau de manifestation effectif de 1 pour cette manifestation. Au niveau 1, le bonus de déferlante est de +1."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +4", "fr": "Déferlante psionic +4" },
-    "description": {
-      "en": "At 11th level, the wilder's wild surge increases to +4 manifester levels.",
-      "fr": "Au niveau 11, la déferlante psionic du déchaîné passe à +4 niveaux de manifestation."
+    {
+      "id": "class_feature_wilder_psychic_enervation",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psychic Enervation",
+        "fr": "Épuisement psychique"
+      },
+      "description": {
+        "en": "Immediately following each wild surge, a wilder may be overcome by psychic enervation. Psychic enervation is a risk taken whenever the wilder uses wild surge. The chance of psychic enervation is equal to 5% per extra manifester level gained from wild surge (5% for +1, 10% for +2, etc.). If overcome by psychic enervation, the wilder is dazed until the end of her next turn and loses a number of power points equal to her wilder level. If the wilder does not have enough power points to pay this cost, she loses whatever she has.",
+        "fr": "Immédiatement après chaque déferlante psionic, un déchaîné peut être submergé par l'épuisement psychique. L'épuisement psychique est un risque pris chaque fois que le déchaîné utilise la déferlante psionic. La chance d'épuisement psychique est égale à 5% par niveau de manifestation supplémentaire gagné par la déferlante. Si submergé par l'épuisement psychique, le déchaîné est hébété jusqu'à la fin de son prochain tour et perd un nombre de points de pouvoir égal à son niveau de déchaîné."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_surging_euphoria_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Surging Euphoria +2", "fr": "Euphorie déferlante +2" },
-    "description": {
-      "en": "At 12th level, the morale bonus from surging euphoria increases to +2 on attack rolls, damage rolls, and saving throws.",
-      "fr": "Au niveau 12, le bonus de moral de l'euphorie déferlante passe à +2 aux jets d'attaque, de dégâts et de sauvegarde."
+    {
+      "id": "class_feature_wilder_power_points",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Power Points",
+        "fr": "Points de pouvoir"
+      },
+      "description": {
+        "en": "A wilder's ability to manifest powers is limited by the power points available. A wilder's key ability for bonus power points and save DCs is Charisma.",
+        "fr": "La capacité d'un déchaîné à manifester des pouvoirs est limitée par les points de pouvoir disponibles. La caractéristique clé du déchaîné pour les points de pouvoir bonus et les DD de sauvegarde est le Charisme."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "power_points"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "wilder_pp_cha_bonus",
+          "sourceId": "class_feature_wilder_power_points",
+          "targetId": "resources.power_points.maxValue",
+          "value": "@attributes.stat_charisma.derivedModifier",
+          "type": "base",
+          "sourceName": {
+            "en": "Wilder Charisma Bonus PP",
+            "fr": "Déchaîné bonus PP Charisme"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_volatile_mind_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Volatile Mind (3 PP)", "fr": "Esprit volatil (3 PP)" },
-    "description": {
-      "en": "At 13th level, the extra power point cost for telepathy powers used against the wilder increases to 3 extra power points.",
-      "fr": "Au niveau 13, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 3 points de pouvoir supplémentaires."
+    {
+      "id": "class_feature_wilder_powers_known",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powers Known",
+        "fr": "Pouvoirs connus"
+      },
+      "description": {
+        "en": "A wilder begins play knowing one 1st-level power of your choice from the wilder power list. At each wilder level above 1st, she gains one new power. A wilder can manifest any power from the wilder list that has a power point cost equal to or lower than her manifester level.",
+        "fr": "Un déchaîné commence le jeu en connaissant un pouvoir de niveau 1 de votre choix dans la liste des pouvoirs du déchaîné. À chaque niveau de déchaîné au-dessus du premier, il gagne un nouveau pouvoir."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "powers_known"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +5", "fr": "Déferlante psionic +5" },
-    "description": {
-      "en": "At 15th level, the wilder's wild surge increases to +5 manifester levels.",
-      "fr": "Au niveau 15, la déferlante psionic du déchaîné passe à +5 niveaux de manifestation."
+    {
+      "id": "class_feature_wilder_elude_touch",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Elude Touch",
+        "fr": "Esquiver le contact"
+      },
+      "description": {
+        "en": "Starting at 2nd level, a wilder's intuition supersedes her intellect, alerting her to danger from touch attacks (including rays). She gains a bonus to AC against touch attacks equal to her Charisma bonus (if any). This bonus to AC against touch attacks can never exceed her normal AC.",
+        "fr": "À partir du niveau 2, l'intuition d'un déchaîné surpasse son intellect, l'alertant du danger des attaques de contact (y compris les rayons). Il gagne un bonus à la CA contre les attaques de contact égal à son bonus de Charisme (le cas échéant). Ce bonus à la CA contre les attaques de contact ne peut jamais dépasser sa CA normale."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "wilder_elude_touch_ac",
+          "sourceId": "class_feature_wilder_elude_touch",
+          "targetId": "combatStats.ac_touch",
+          "value": "@attributes.stat_charisma.derivedModifier",
+          "type": "insight",
+          "sourceName": {
+            "en": "Elude Touch",
+            "fr": "Esquiver le contact"
+          }
+        }
+      ],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_volatile_mind_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Volatile Mind (4 PP)", "fr": "Esprit volatil (4 PP)" },
-    "description": {
-      "en": "At 17th level, the extra power point cost for telepathy powers used against the wilder increases to 4 extra power points.",
-      "fr": "Au niveau 17, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 4 points de pouvoir supplémentaires."
+    {
+      "id": "class_feature_wilder_wild_surge_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +2",
+        "fr": "Déferlante psionic +2"
+      },
+      "description": {
+        "en": "At 3rd level, the wilder's wild surge increases to +2 manifester levels.",
+        "fr": "Au niveau 3, la déferlante psionic du déchaîné passe à +2 niveaux de manifestation."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_wild_surge_6",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Wild Surge +6", "fr": "Déferlante psionic +6" },
-    "description": {
-      "en": "At 19th level, the wilder's wild surge reaches its maximum of +6 manifester levels. The risk of psychic enervation is 30% (5% per extra level).",
-      "fr": "Au niveau 19, la déferlante psionic du déchaîné atteint son maximum de +6 niveaux de manifestation. Le risque d'épuisement psychique est de 30% (5% par niveau supplémentaire)."
+    {
+      "id": "class_feature_wilder_surging_euphoria_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Surging Euphoria +1",
+        "fr": "Euphorie déferlante +1"
+      },
+      "description": {
+        "en": "Starting at 4th level, when a wilder uses wild surge, she gains a +1 morale bonus on attack rolls, damage rolls, and saving throws for a number of rounds equal to the intensity of the wild surge. If the wilder is overcome by psychic enervation, she does not gain the morale bonus for that use. The bonus increases to +2 at 12th level and +3 at 20th level.",
+        "fr": "À partir du niveau 4, lorsqu'un déchaîné utilise la déferlante psionic, il gagne un bonus de moral de +1 aux jets d'attaque, aux jets de dégâts et aux jets de sauvegarde pendant un nombre de rounds égal à l'intensité de la déferlante psionic."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "psionic", "wild_surge", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_wilder_surging_euphoria_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Surging Euphoria +3", "fr": "Euphorie déferlante +3" },
-    "description": {
-      "en": "At 20th level, the morale bonus from surging euphoria increases to +3 on attack rolls, damage rolls, and saving throws.",
-      "fr": "Au niveau 20, le bonus de moral de l'euphorie déferlante passe à +3 aux jets d'attaque, de dégâts et de sauvegarde."
+    {
+      "id": "class_feature_wilder_volatile_mind_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Volatile Mind (1 PP)",
+        "fr": "Esprit volatil (1 PP)"
+      },
+      "description": {
+        "en": "A wilder's temperamental mind is hard to affect. Beginning at 5th level, any telepathy power used against the wilder costs the manifester 1 extra power point. This extra cost is above and beyond normal manifesting limitations; it does not count against the manifester's level-based power point limit. A wilder can suppress this effect for 1 round as a standard action. The extra cost increases to 2 PP at 9th level, 3 PP at 13th, and 4 PP at 17th.",
+        "fr": "L'esprit tempéramental d'un déchaîné est difficile à affecter. À partir du niveau 5, tout pouvoir de télépathie utilisé contre le déchaîné coûte au manifestateur 1 point de pouvoir supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "wilder", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  }
-]
+    {
+      "id": "class_feature_wilder_wild_surge_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +3",
+        "fr": "Déferlante psionic +3"
+      },
+      "description": {
+        "en": "At 7th level, the wilder's wild surge increases to +3 manifester levels.",
+        "fr": "Au niveau 7, la déferlante psionic du déchaîné passe à +3 niveaux de manifestation."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_volatile_mind_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Volatile Mind (2 PP)",
+        "fr": "Esprit volatil (2 PP)"
+      },
+      "description": {
+        "en": "At 9th level, the extra power point cost for telepathy powers used against the wilder increases to 2 extra power points.",
+        "fr": "Au niveau 9, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 2 points de pouvoir supplémentaires."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_wild_surge_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +4",
+        "fr": "Déferlante psionic +4"
+      },
+      "description": {
+        "en": "At 11th level, the wilder's wild surge increases to +4 manifester levels.",
+        "fr": "Au niveau 11, la déferlante psionic du déchaîné passe à +4 niveaux de manifestation."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_surging_euphoria_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Surging Euphoria +2",
+        "fr": "Euphorie déferlante +2"
+      },
+      "description": {
+        "en": "At 12th level, the morale bonus from surging euphoria increases to +2 on attack rolls, damage rolls, and saving throws.",
+        "fr": "Au niveau 12, le bonus de moral de l'euphorie déferlante passe à +2 aux jets d'attaque, de dégâts et de sauvegarde."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_volatile_mind_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Volatile Mind (3 PP)",
+        "fr": "Esprit volatil (3 PP)"
+      },
+      "description": {
+        "en": "At 13th level, the extra power point cost for telepathy powers used against the wilder increases to 3 extra power points.",
+        "fr": "Au niveau 13, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 3 points de pouvoir supplémentaires."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_wild_surge_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +5",
+        "fr": "Déferlante psionic +5"
+      },
+      "description": {
+        "en": "At 15th level, the wilder's wild surge increases to +5 manifester levels.",
+        "fr": "Au niveau 15, la déferlante psionic du déchaîné passe à +5 niveaux de manifestation."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_volatile_mind_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Volatile Mind (4 PP)",
+        "fr": "Esprit volatil (4 PP)"
+      },
+      "description": {
+        "en": "At 17th level, the extra power point cost for telepathy powers used against the wilder increases to 4 extra power points.",
+        "fr": "Au niveau 17, le coût en points de pouvoir supplémentaires pour les pouvoirs de télépathie utilisés contre le déchaîné passe à 4 points de pouvoir supplémentaires."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_wild_surge_6",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Wild Surge +6",
+        "fr": "Déferlante psionic +6"
+      },
+      "description": {
+        "en": "At 19th level, the wilder's wild surge reaches its maximum of +6 manifester levels. The risk of psychic enervation is 30% (5% per extra level).",
+        "fr": "Au niveau 19, la déferlante psionic du déchaîné atteint son maximum de +6 niveaux de manifestation. Le risque d'épuisement psychique est de 30% (5% par niveau supplémentaire)."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "psionic",
+        "wild_surge",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_wilder_surging_euphoria_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Surging Euphoria +3",
+        "fr": "Euphorie déferlante +3"
+      },
+      "description": {
+        "en": "At 20th level, the morale bonus from surging euphoria increases to +3 on attack rolls, damage rolls, and saving throws.",
+        "fr": "Au niveau 20, le bonus de moral de l'euphorie déferlante passe à +3 aux jets d'attaque, de dégâts et de sauvegarde."
+      },
+      "tags": [
+        "class_feature",
+        "wilder",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    }
+  ]
+}

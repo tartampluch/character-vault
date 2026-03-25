@@ -215,7 +215,9 @@ describe('Cleric class JSON — excludedBy declared on domain choices', () => {
     const mod = await import(
       '../../static/rules/00_d20srd_core/01_d20srd_core_classes.json'
     );
-    const classes = mod.default as Record<string, unknown>[];
+    // JSON files now use the metadata wrapper format: { supportedLanguages, entities }
+    const raw = mod.default as { entities: Record<string, unknown>[] } | Record<string, unknown>[];
+    const classes = Array.isArray(raw) ? raw : (raw as { entities: Record<string, unknown>[] }).entities;
     const cleric = classes.find((c) => c['id'] === 'class_cleric');
     expect(cleric).toBeDefined();
 

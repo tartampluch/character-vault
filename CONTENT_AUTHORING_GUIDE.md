@@ -85,15 +85,47 @@ static/rules/
 
 **Naming convention:** `NN_rule_source_name/NN_rule_source_name_content_type.json`
 
-Each rule file is a **JSON array** containing Feature objects (and optionally config tables). A single file can mix races, feats, and items freely.
+Each rule file uses the **metadata wrapper format**: a JSON object with a `supportedLanguages` array and an `entities` array. A single file can mix races, feats, and items freely.
 
 ```json
-[
-  { "id": "race_orc", "category": "race", ... },
-  { "id": "feat_power_attack", "category": "feat", ... },
-  { "id": "item_greataxe", "category": "item", ... }
-]
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+    { "id": "race_orc", "category": "race", ... },
+    { "id": "feat_power_attack", "category": "feat", ... },
+    { "id": "item_greataxe", "category": "item", ... }
+  ]
+}
 ```
+
+#### `supportedLanguages` field
+
+The `supportedLanguages` array declares which language codes are present in the `LocalizedString` fields of this file's entities. The engine collects all declared languages across loaded files and exposes them in the language selector dropdown.
+
+| Rule | Detail |
+|---|---|
+| If absent (legacy bare array) | English (`"en"`) is assumed. |
+| Unknown language codes | Cause graceful fallback to English in the UI for any missing string. |
+| Adding a new language | Add the code to `supportedLanguages` AND provide translations for each `label`/`description` field. |
+
+**Example — Spanish community file:**
+```json
+{
+  "supportedLanguages": ["en", "es"],
+  "entities": [
+    {
+      "id": "feat_ataque_poderoso",
+      "category": "feat",
+      "ruleSource": "homebrew_es",
+      "label": { "en": "Power Attack", "es": "Ataque poderoso" },
+      "description": { "en": "Make powerful attacks.", "es": "Realiza ataques poderosos." }
+    }
+  ]
+}
+```
+When this file is loaded, `"es"` appears in the language dropdown. All UI chrome strings (section headers, button labels, etc.) without an `"es"` key fall back silently to English.
+
+> **Legacy format:** Existing files that are bare JSON arrays (without the wrapper) remain supported for backward compatibility. The engine accepts both formats seamlessly.
 
 ---
 
@@ -2274,20 +2306,56 @@ Prefix any array element with `-` to remove it:
 
 ## 23. Localization (i18n)
 
-All `label` and `description` fields must provide values for all supported languages.
+### Language Declarations
+
+Declare which languages your file provides using the `supportedLanguages` array in the file wrapper:
+
+```json
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [ ... ]
+}
+```
+
+The engine collects all declared languages across all loaded files and presents them in the **language selector dropdown** in the sidebar. Any language code declared here will appear as an option — even if the UI chrome strings (buttons, labels, navigation) do not have a built-in translation for that code (they will fall back to English gracefully).
+
+**Fallback chain for `t()` (string resolution):**
+1. Requested language (`textObj[lang]`)
+2. English (`textObj["en"]`)
+3. First available key in the object
+4. `"??"` (sentinel — visually flags a missing translation)
+
+### Providing Translations
+
+Provide `label` and `description` in every language listed in `supportedLanguages`:
 
 ```json
 "label": {
   "en": "Power Attack",
-  "fr": "Attaque en puissance"
+  "fr": "Attaque en puissance",
+  "es": "Ataque poderoso"
 }
 ```
 
-**Supported languages:** `"en"` (English), `"fr"` (French)
+English is **always required** — it is the universal fallback. Other languages are optional but should be provided if they are declared in `supportedLanguages`.
 
-All rule values are stored in **imperial units** (feet, pounds). The display layer converts automatically:
-- French: meters (`0.3 × feet`), kilograms (`0.5 × pounds`)
-- English: feet, pounds (no conversion)
+**Built-in UI chrome languages:**
+
+| Code | Language | UI chrome fully translated |
+|---|---|:---:|
+| `"en"` | English | ✅ |
+| `"fr"` | French | ✅ |
+| Other codes | Community | ❌ (falls back to English in UI, but game data is shown in the provided language) |
+
+### Unit Conversion
+
+All rule values are stored in **imperial units** (feet, pounds). The display layer converts automatically based on the selected language:
+
+| Language | Distance | Weight |
+|---|---|---|
+| English (`en`) | feet (×1) | pounds (×1) |
+| French (`fr`) | metres (×0.3) | kilograms (×0.5) |
+| Unknown codes | feet (×1) — defaults to English | pounds (×1) |
 
 In description text, use `{@path|distance}` or `{@path|weight}` pipes for automatic unit display:
 

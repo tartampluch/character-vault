@@ -27,7 +27,6 @@
  * @see src/lib/engine/DataLoader.ts      (Phase 4.2) for enabledRuleSources use.
  */
 
-import type { SupportedLanguage } from './i18n';
 import type { ID } from './primitives';
 
 // =============================================================================
@@ -58,8 +57,14 @@ export interface CampaignSettings {
    *
    * Changing this setting at runtime causes the entire UI to re-render in the new language
    * because all text goes through reactive `$derived` calls to `engine.t()`.
+   *
+   * TYPE NOTE:
+   *   Using `string` (not `SupportedLanguage`) allows arbitrary language codes from
+   *   community JSON files to be selected. The `t()` fallback chain gracefully handles
+   *   any code that lacks a full translation set by falling back to English.
+   *   UI chrome strings (ui-strings.ts) always provide at least `en` and `fr`.
    */
-  language: SupportedLanguage;
+  language: string;
 
   // ---------------------------------------------------------------------------
   // 2. Character creation rules
@@ -350,7 +355,7 @@ export interface CampaignSettings {
  */
 export function createDefaultCampaignSettings(): CampaignSettings {
   return {
-    language: 'en',
+    language: 'en' as string,
     statGeneration: {
       method: 'point_buy',
       rerollOnes: false,

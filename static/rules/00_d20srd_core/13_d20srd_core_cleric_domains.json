@@ -1,984 +1,990 @@
-[
-  {
-    "id": "domain_air",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Air Domain",
-      "fr": "Domaine de l'Air"
-    },
-    "description": {
-      "en": "Granted Power: Turn or destroy earth creatures as a good cleric turns undead. Rebuke, command, or bolster air creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
-      "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures de terre comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures d'air comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
-    },
-    "tags": [
-      "domain",
-      "domain_air"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_air_elemental_turn_uses_max",
-        "sourceId": "domain_air",
-        "sourceName": {
-          "en": "Air Domain",
-          "fr": "Domaine de l'Air"
-        },
-        "targetId": "resources.domain_air_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_charisma.derivedModifier",
-        "type": "base"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "domain_air",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Air Domain",
+        "fr": "Domaine de l'Air"
+      },
+      "description": {
+        "en": "Granted Power: Turn or destroy earth creatures as a good cleric turns undead. Rebuke, command, or bolster air creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+        "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures de terre comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures d'air comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
+      },
+      "tags": [
+        "domain",
+        "domain_air"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_air_elemental_turn_uses_max",
+          "sourceId": "domain_air",
+          "sourceName": {
+            "en": "Air Domain",
+            "fr": "Domaine de l'Air"
+          },
+          "targetId": "resources.domain_air_elemental_turn_uses.maxValue",
+          "value": "3 + @attributes.stat_charisma.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_obscuring_mist",
+        "spell_wind_wall",
+        "spell_gaseous_form",
+        "spell_air_walk",
+        "spell_control_winds",
+        "spell_chain_lightning",
+        "spell_control_weather",
+        "spell_whirlwind",
+        "spell_elemental_swarm"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_air_elemental_turn_uses",
+          "cost": 1
+        }
       }
-    ],
-    "grantedFeatures": [
-      "spell_obscuring_mist",
-      "spell_wind_wall",
-      "spell_gaseous_form",
-      "spell_air_walk",
-      "spell_control_winds",
-      "spell_chain_lightning",
-      "spell_control_weather",
-      "spell_whirlwind",
-      "spell_elemental_swarm"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_air_elemental_turn_uses",
-        "cost": 1
+    },
+    {
+      "id": "domain_animal",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Animal Domain",
+        "fr": "Domaine des Animaux"
+      },
+      "description": {
+        "en": "Granted Powers: You can use speak with animals once per day as a spell-like ability. Add Knowledge (nature) to your list of cleric class skills.",
+        "fr": "Pouvoirs accordés : Vous pouvez utiliser communication avec les animaux une fois par jour comme une capacité innée. Ajoutez Connaissance (nature) à votre liste de compétences de classe de prêtre."
+      },
+      "tags": [
+        "domain",
+        "domain_animal"
+      ],
+      "classSkills": [
+        "skill_knowledge_nature"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_animal_speak_uses_max",
+          "sourceId": "domain_animal",
+          "sourceName": {
+            "en": "Animal Domain",
+            "fr": "Domaine des Animaux"
+          },
+          "targetId": "resources.domain_animal_speak_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_calm_animals",
+        "spell_hold_animal",
+        "spell_dominate_animal",
+        "spell_summon_natures_ally_iv",
+        "spell_commune_with_nature",
+        "spell_antilife_shell",
+        "spell_animal_shapes",
+        "spell_summon_natures_ally_viii",
+        "spell_shapechange"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_animal_speak_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_chaos",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Chaos Domain",
+        "fr": "Domaine du Chaos"
+      },
+      "description": {
+        "en": "Granted Power: You cast chaos spells at +1 caster level.",
+        "fr": "Pouvoir accordé : Vous lancez les sorts du chaos à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_chaos"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_chaos_caster_level_bonus",
+          "sourceId": "domain_chaos",
+          "sourceName": {
+            "en": "Chaos Domain",
+            "fr": "Domaine du Chaos"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_chaos_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_protection_from_law",
+        "spell_shatter",
+        "spell_magic_circle_against_law",
+        "spell_chaos_hammer",
+        "spell_dispel_law",
+        "spell_animate_objects",
+        "spell_word_of_chaos",
+        "spell_cloak_of_chaos",
+        "spell_summon_monster_ix"
+      ]
+    },
+    {
+      "id": "domain_death",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Death Domain",
+        "fr": "Domaine de la Mort"
+      },
+      "description": {
+        "en": "Granted Power: You may use a death touch once per day. Your death touch is a supernatural ability that produces a death effect. You must succeed on a melee touch attack against a living creature. When you touch, roll 1d6 per cleric level you possess. If the total at least equals the creature's current hit points, it dies (no save).",
+        "fr": "Pouvoir accordé : Vous pouvez utiliser un toucher mortel une fois par jour. Votre toucher mortel est une capacité surnaturelle qui produit un effet de mort. Vous devez réussir une attaque de contact au corps à corps contre une créature vivante. Lorsque vous touchez, lancez 1d6 par niveau de prêtre. Si le total est au moins égal aux points de vie actuels de la créature, elle meurt (sans jet de sauvegarde)."
+      },
+      "tags": [
+        "domain",
+        "domain_death"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_death_touch_uses_max",
+          "sourceId": "domain_death",
+          "sourceName": {
+            "en": "Death Domain",
+            "fr": "Domaine de la Mort"
+          },
+          "targetId": "resources.domain_death_touch_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_cause_fear",
+        "spell_death_knell",
+        "spell_animate_dead",
+        "spell_death_ward",
+        "spell_slay_living",
+        "spell_create_undead",
+        "spell_destruction",
+        "spell_create_greater_undead",
+        "spell_wail_of_the_banshee"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_death_touch_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_destruction",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Destruction Domain",
+        "fr": "Domaine de la Destruction"
+      },
+      "description": {
+        "en": "Granted Power: You gain the smite power, the supernatural ability to make a single melee attack with a +4 bonus on attack rolls and a bonus on damage rolls equal to your cleric level (if you hit). You must declare the smite before making the attack. This ability is usable once per day.",
+        "fr": "Pouvoir accordé : Vous obtenez le pouvoir de châtiment, la capacité surnaturelle d'effectuer une seule attaque au corps à corps avec un bonus de +4 aux jets d'attaque et un bonus aux jets de dégâts égal à votre niveau de prêtre (si vous touchez). Vous devez déclarer le châtiment avant d'effectuer l'attaque. Cette capacité est utilisable une fois par jour."
+      },
+      "tags": [
+        "domain",
+        "domain_destruction"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_destruction_smite_uses_max",
+          "sourceId": "domain_destruction",
+          "sourceName": {
+            "en": "Destruction Domain",
+            "fr": "Domaine de la Destruction"
+          },
+          "targetId": "resources.domain_destruction_smite_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_inflict_light_wounds",
+        "spell_shatter",
+        "spell_contagion",
+        "spell_inflict_critical_wounds",
+        "spell_inflict_light_wounds_mass",
+        "spell_harm",
+        "spell_disintegrate",
+        "spell_earthquake",
+        "spell_implosion"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_destruction_smite_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_earth",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Earth Domain",
+        "fr": "Domaine de la Terre"
+      },
+      "description": {
+        "en": "Granted Power: Turn or destroy air creatures as a good cleric turns undead. Rebuke, command, or bolster earth creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+        "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures d'air comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures de terre comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
+      },
+      "tags": [
+        "domain",
+        "domain_earth"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_earth_elemental_turn_uses_max",
+          "sourceId": "domain_earth",
+          "sourceName": {
+            "en": "Earth Domain",
+            "fr": "Domaine de la Terre"
+          },
+          "targetId": "resources.domain_earth_elemental_turn_uses.maxValue",
+          "value": "3 + @attributes.stat_charisma.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_magic_stone",
+        "spell_soften_earth_and_stone",
+        "spell_stone_shape",
+        "spell_spike_stones",
+        "spell_wall_of_stone",
+        "spell_stoneskin",
+        "spell_earthquake",
+        "spell_iron_body",
+        "spell_elemental_swarm"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_earth_elemental_turn_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_evil",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Evil Domain",
+        "fr": "Domaine du Mal"
+      },
+      "description": {
+        "en": "Granted Power: You cast evil spells at +1 caster level.",
+        "fr": "Pouvoir accordé : Vous lancez les sorts du mal à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_evil"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_evil_caster_level_bonus",
+          "sourceId": "domain_evil",
+          "sourceName": {
+            "en": "Evil Domain",
+            "fr": "Domaine du Mal"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_evil_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_protection_from_good",
+        "spell_desecrate",
+        "spell_magic_circle_against_good",
+        "spell_unholy_blight",
+        "spell_dispel_good",
+        "spell_create_undead",
+        "spell_blasphemy",
+        "spell_unholy_aura",
+        "spell_summon_monster_ix"
+      ]
+    },
+    {
+      "id": "domain_fire",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Fire Domain",
+        "fr": "Domaine du Feu"
+      },
+      "description": {
+        "en": "Granted Power: Turn or destroy water creatures as a good cleric turns undead. Rebuke, command, or bolster fire creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+        "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures d'eau comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures de feu comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
+      },
+      "tags": [
+        "domain",
+        "domain_fire"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_fire_elemental_turn_uses_max",
+          "sourceId": "domain_fire",
+          "sourceName": {
+            "en": "Fire Domain",
+            "fr": "Domaine du Feu"
+          },
+          "targetId": "resources.domain_fire_elemental_turn_uses.maxValue",
+          "value": "3 + @attributes.stat_charisma.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_burning_hands",
+        "spell_produce_flame",
+        "spell_resist_energy",
+        "spell_wall_of_fire",
+        "spell_fire_shield",
+        "spell_fire_seeds",
+        "spell_fire_storm",
+        "spell_incendiary_cloud",
+        "spell_elemental_swarm"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_fire_elemental_turn_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_good",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Good Domain",
+        "fr": "Domaine du Bien"
+      },
+      "description": {
+        "en": "Granted Power: You cast good spells at +1 caster level.",
+        "fr": "Pouvoir accordé : Vous lancez les sorts du bien à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_good"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_good_caster_level_bonus",
+          "sourceId": "domain_good",
+          "sourceName": {
+            "en": "Good Domain",
+            "fr": "Domaine du Bien"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_good_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_protection_from_evil",
+        "spell_aid",
+        "spell_magic_circle_against_evil",
+        "spell_holy_smite",
+        "spell_dispel_evil",
+        "spell_blade_barrier",
+        "spell_holy_word",
+        "spell_holy_aura",
+        "spell_summon_monster_ix"
+      ]
+    },
+    {
+      "id": "domain_healing",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Healing Domain",
+        "fr": "Domaine de la Guérison"
+      },
+      "description": {
+        "en": "Granted Power: You cast healing spells at +1 caster level.",
+        "fr": "Pouvoir accordé : Vous lancez les sorts de guérison à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_healing"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_healing_caster_level_bonus",
+          "sourceId": "domain_healing",
+          "sourceName": {
+            "en": "Healing Domain",
+            "fr": "Domaine de la Guérison"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_healing_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_cure_light_wounds",
+        "spell_cure_moderate_wounds",
+        "spell_cure_serious_wounds",
+        "spell_cure_critical_wounds",
+        "spell_cure_light_wounds_mass",
+        "spell_heal",
+        "spell_regenerate",
+        "spell_cure_critical_wounds_mass",
+        "spell_heal_mass"
+      ]
+    },
+    {
+      "id": "domain_knowledge",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Knowledge Domain",
+        "fr": "Domaine de la Connaissance"
+      },
+      "description": {
+        "en": "Granted Powers: Add all Knowledge skills to your list of cleric class skills. You cast divination spells at +1 caster level.",
+        "fr": "Pouvoirs accordés : Ajoutez toutes les compétences de Connaissance à votre liste de compétences de classe de prêtre. Vous lancez les sorts de divination à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_knowledge"
+      ],
+      "classSkills": [
+        "skill_knowledge_arcana",
+        "skill_knowledge_architecture",
+        "skill_knowledge_dungeoneering",
+        "skill_knowledge_geography",
+        "skill_knowledge_history",
+        "skill_knowledge_local",
+        "skill_knowledge_nature",
+        "skill_knowledge_nobility",
+        "skill_knowledge_planes",
+        "skill_knowledge_religion"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_knowledge_caster_level_bonus",
+          "sourceId": "domain_knowledge",
+          "sourceName": {
+            "en": "Knowledge Domain",
+            "fr": "Domaine de la Connaissance"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_divination_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_detect_secret_doors",
+        "spell_detect_thoughts",
+        "spell_clairaudience_clairvoyance",
+        "spell_divination",
+        "spell_true_seeing",
+        "spell_find_the_path",
+        "spell_legend_lore",
+        "spell_discern_location",
+        "spell_foresight"
+      ]
+    },
+    {
+      "id": "domain_law",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Law Domain",
+        "fr": "Domaine de la Loi"
+      },
+      "description": {
+        "en": "Granted Power: You cast law spells at +1 caster level.",
+        "fr": "Pouvoir accordé : Vous lancez les sorts de loi à +1 niveau de lanceur de sorts."
+      },
+      "tags": [
+        "domain",
+        "domain_law"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_law_caster_level_bonus",
+          "sourceId": "domain_law",
+          "sourceName": {
+            "en": "Law Domain",
+            "fr": "Domaine de la Loi"
+          },
+          "targetId": "stat_caster_level",
+          "value": 1,
+          "type": "untyped",
+          "situationalContext": "when_casting_law_spells"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_protection_from_chaos",
+        "spell_calm_emotions",
+        "spell_magic_circle_against_chaos",
+        "spell_orders_wrath",
+        "spell_dispel_chaos",
+        "spell_hold_monster",
+        "spell_dictum",
+        "spell_shield_of_law",
+        "spell_summon_monster_ix"
+      ]
+    },
+    {
+      "id": "domain_luck",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Luck Domain",
+        "fr": "Domaine de la Chance"
+      },
+      "description": {
+        "en": "Granted Power: You gain the power of good fortune, which is usable once per day. This extraordinary ability allows you to reroll one roll that you have just made before the game master declares whether the roll results in success or failure. You must take the result of the reroll, even if it's worse than the original roll.",
+        "fr": "Pouvoir accordé : Vous obtenez le pouvoir de bonne fortune, utilisable une fois par jour. Cette aptitude extraordinaire vous permet de relancer un jet que vous venez d'effectuer avant que le maître du jeu ne déclare si le résultat est un succès ou un échec. Vous devez accepter le résultat du nouveau jet, même s'il est pire que le jet original."
+      },
+      "tags": [
+        "domain",
+        "domain_luck"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_luck_reroll_uses_max",
+          "sourceId": "domain_luck",
+          "sourceName": {
+            "en": "Luck Domain",
+            "fr": "Domaine de la Chance"
+          },
+          "targetId": "resources.domain_luck_reroll_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_entropic_shield",
+        "spell_aid",
+        "spell_protection_from_energy",
+        "spell_freedom_of_movement",
+        "spell_break_enchantment",
+        "spell_mislead",
+        "spell_spell_turning",
+        "spell_moment_of_prescience",
+        "spell_miracle"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.domain_luck_reroll_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_magic",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Magic Domain",
+        "fr": "Domaine de la Magie"
+      },
+      "description": {
+        "en": "Granted Power: Use scrolls, wands, and other devices with spell completion or spell trigger activation as a wizard of one-half your cleric level (at least 1st level). For the purpose of using a scroll or other magic device, if you are also a wizard, actual wizard levels and these effective wizard levels stack.",
+        "fr": "Pouvoir accordé : Utilisez les parchemins, baguettes et autres objets à activation par achèvement de sort ou déclenchement de sort comme un magicien de la moitié de votre niveau de prêtre (au moins au niveau 1). Pour utiliser un parchemin ou autre objet magique, si vous êtes également magicien, vos niveaux réels de magicien et ces niveaux effectifs de magicien se cumulent."
+      },
+      "tags": [
+        "domain",
+        "domain_magic"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "spell_magic_aura",
+        "spell_identify",
+        "spell_dispel_magic",
+        "spell_imbue_with_spell_ability",
+        "spell_spell_resistance",
+        "spell_antimagic_field",
+        "spell_spell_turning",
+        "spell_protection_from_spells",
+        "spell_mages_disjunction"
+      ]
+    },
+    {
+      "id": "domain_plant",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Plant Domain",
+        "fr": "Domaine des Plantes"
+      },
+      "description": {
+        "en": "Granted Powers: Rebuke or command plant creatures as an evil cleric rebukes or commands undead. Use this ability a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability. Add Knowledge (nature) to your list of cleric class skills.",
+        "fr": "Pouvoirs accordés : Contrôlez ou subjuguez les créatures végétales comme un prêtre mauvais contrôle les morts-vivants. Utilisez cette capacité un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle. Ajoutez Connaissance (nature) à votre liste de compétences de classe de prêtre."
+      },
+      "tags": [
+        "domain",
+        "domain_plant"
+      ],
+      "classSkills": [
+        "skill_knowledge_nature"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_plant_rebuke_uses_max",
+          "sourceId": "domain_plant",
+          "sourceName": {
+            "en": "Plant Domain",
+            "fr": "Domaine des Plantes"
+          },
+          "targetId": "resources.domain_plant_rebuke_uses.maxValue",
+          "value": "3 + @attributes.stat_charisma.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_entangle",
+        "spell_barkskin",
+        "spell_plant_growth",
+        "spell_command_plants",
+        "spell_wall_of_thorns",
+        "spell_repel_wood",
+        "spell_animate_plants",
+        "spell_control_plants",
+        "spell_shambler"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_plant_rebuke_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_protection",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Protection Domain",
+        "fr": "Domaine de la Protection"
+      },
+      "description": {
+        "en": "Granted Power: You can generate a protective ward as a supernatural ability. Grant someone you touch a resistance bonus equal to your cleric level on his or her next saving throw. Activating this power is a standard action. The protective ward is an abjuration effect with a duration of 1 hour that is usable once per day.",
+        "fr": "Pouvoir accordé : Vous pouvez générer une protection surnaturelle. Accordez à une créature que vous touchez un bonus de résistance égal à votre niveau de prêtre à son prochain jet de sauvegarde. L'activation de ce pouvoir est une action simple. La protection est un effet d'abjuration d'une durée de 1 heure, utilisable une fois par jour."
+      },
+      "tags": [
+        "domain",
+        "domain_protection"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_protection_ward_uses_max",
+          "sourceId": "domain_protection",
+          "sourceName": {
+            "en": "Protection Domain",
+            "fr": "Domaine de la Protection"
+          },
+          "targetId": "resources.domain_protection_ward_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_sanctuary",
+        "spell_shield_other",
+        "spell_protection_from_energy",
+        "spell_spell_immunity",
+        "spell_spell_resistance",
+        "spell_antimagic_field",
+        "spell_repulsion",
+        "spell_mind_blank",
+        "spell_prismatic_sphere"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_protection_ward_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_strength",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Strength Domain",
+        "fr": "Domaine de la Force"
+      },
+      "description": {
+        "en": "Granted Power: You can perform a feat of strength as a supernatural ability. You gain an enhancement bonus to Strength equal to your cleric level. Activating the power is a free action, the power lasts 1 round, and it is usable once per day.",
+        "fr": "Pouvoir accordé : Vous pouvez accomplir un exploit de force en tant que capacité surnaturelle. Vous obtenez un bonus d'altération à la Force égal à votre niveau de prêtre. L'activation du pouvoir est une action libre, le pouvoir dure 1 round et il est utilisable une fois par jour."
+      },
+      "tags": [
+        "domain",
+        "domain_strength"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_strength_feat_uses_max",
+          "sourceId": "domain_strength",
+          "sourceName": {
+            "en": "Strength Domain",
+            "fr": "Domaine de la Force"
+          },
+          "targetId": "resources.domain_strength_feat_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_enlarge_person",
+        "spell_bulls_strength",
+        "spell_magic_vestment",
+        "spell_spell_immunity",
+        "spell_righteous_might",
+        "spell_stoneskin",
+        "spell_grasping_hand",
+        "spell_clenched_fist",
+        "spell_crushing_hand"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.domain_strength_feat_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_sun",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Sun Domain",
+        "fr": "Domaine du Soleil"
+      },
+      "description": {
+        "en": "Granted Power: Once per day, you can perform a greater turning against undead in place of a regular turning. The greater turning is like a normal turning except that the undead creatures that would be turned are destroyed instead.",
+        "fr": "Pouvoir accordé : Une fois par jour, vous pouvez effectuer un grand renvoi des morts-vivants à la place d'un renvoi ordinaire. Le grand renvoi est identique à un renvoi normal, sauf que les morts-vivants qui seraient renvoyés sont détruits à la place."
+      },
+      "tags": [
+        "domain",
+        "domain_sun"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_sun_greater_turning_uses_max",
+          "sourceId": "domain_sun",
+          "sourceName": {
+            "en": "Sun Domain",
+            "fr": "Domaine du Soleil"
+          },
+          "targetId": "resources.domain_sun_greater_turning_uses.maxValue",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_endure_elements",
+        "spell_heat_metal",
+        "spell_searing_light",
+        "spell_fire_shield",
+        "spell_flame_strike",
+        "spell_fire_seeds",
+        "spell_sunbeam",
+        "spell_sunburst",
+        "spell_prismatic_sphere"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_sun_greater_turning_uses",
+          "cost": 1
+        }
+      }
+    },
+    {
+      "id": "domain_travel",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Travel Domain",
+        "fr": "Domaine du Voyage"
+      },
+      "description": {
+        "en": "Granted Powers: For a total time per day of 1 round per cleric level you possess, you can act normally regardless of magical effects that impede movement as if you were affected by the spell freedom of movement. This effect occurs automatically as soon as it applies, lasts until it runs out or is no longer needed, and can operate multiple times per day (up to the total daily limit of rounds). This granted power is a supernatural ability. Add Survival to your list of cleric class skills.",
+        "fr": "Pouvoirs accordés : Pour une durée totale par jour de 1 round par niveau de prêtre, vous pouvez agir normalement quelles que soient les magies qui entravent vos mouvements, comme si vous étiez affecté par le sort liberté de mouvement. Cet effet se déclenche automatiquement dès qu'il s'applique, dure jusqu'à épuisement ou inutilité, et peut fonctionner plusieurs fois par jour (dans la limite de rounds journaliers). Ce pouvoir accordé est une capacité surnaturelle. Ajoutez Survie à votre liste de compétences de classe de prêtre."
+      },
+      "tags": [
+        "domain",
+        "domain_travel"
+      ],
+      "classSkills": [
+        "skill_survival"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_travel_freedom_rounds_max",
+          "sourceId": "domain_travel",
+          "sourceName": {
+            "en": "Travel Domain",
+            "fr": "Domaine du Voyage"
+          },
+          "targetId": "resources.domain_travel_freedom_rounds.maxValue",
+          "value": "@classLevels.class_cleric",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_longstrider",
+        "spell_locate_object",
+        "spell_fly",
+        "spell_dimension_door",
+        "spell_teleport",
+        "spell_find_the_path",
+        "spell_teleport_greater",
+        "spell_phase_door",
+        "spell_astral_projection"
+      ]
+    },
+    {
+      "id": "domain_trickery",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Trickery Domain",
+        "fr": "Domaine de la Supercherie"
+      },
+      "description": {
+        "en": "Granted Power: Add Bluff, Disguise, and Hide to your list of cleric class skills.",
+        "fr": "Pouvoir accordé : Ajoutez Bluff, Déguisement et Discrétion à votre liste de compétences de classe de prêtre."
+      },
+      "tags": [
+        "domain",
+        "domain_trickery"
+      ],
+      "classSkills": [
+        "skill_bluff",
+        "skill_disguise",
+        "skill_hide"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "spell_disguise_self",
+        "spell_invisibility",
+        "spell_nondetection",
+        "spell_confusion",
+        "spell_false_vision",
+        "spell_mislead",
+        "spell_screen",
+        "spell_polymorph_any_object",
+        "spell_time_stop"
+      ]
+    },
+    {
+      "id": "domain_war",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "War Domain",
+        "fr": "Domaine de la Guerre"
+      },
+      "description": {
+        "en": "Granted Power: Free Martial Weapon Proficiency with deity's favored weapon (if necessary) and Weapon Focus with the deity's favored weapon.",
+        "fr": "Pouvoir accordé : Maniement gratuit des armes de guerre pour l'arme de prédilection de la divinité (si nécessaire) et Arme de prédilection avec l'arme de prédilection de la divinité."
+      },
+      "tags": [
+        "domain",
+        "domain_war"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "spell_magic_weapon",
+        "spell_spiritual_weapon",
+        "spell_magic_vestment",
+        "spell_divine_power",
+        "spell_flame_strike",
+        "spell_blade_barrier",
+        "spell_power_word_blind",
+        "spell_power_word_stun",
+        "spell_power_word_kill"
+      ]
+    },
+    {
+      "id": "domain_water",
+      "category": "domain",
+      "ruleSource": "srd_core",
+      "label": {
+        "en": "Water Domain",
+        "fr": "Domaine de l'Eau"
+      },
+      "description": {
+        "en": "Granted Power: Turn or destroy fire creatures as a good cleric turns undead. Rebuke, command, or bolster water creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+        "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures de feu comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures d'eau comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
+      },
+      "tags": [
+        "domain",
+        "domain_water"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "domain_water_elemental_turn_uses_max",
+          "sourceId": "domain_water",
+          "sourceName": {
+            "en": "Water Domain",
+            "fr": "Domaine de l'Eau"
+          },
+          "targetId": "resources.domain_water_elemental_turn_uses.maxValue",
+          "value": "3 + @attributes.stat_charisma.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": [
+        "spell_obscuring_mist",
+        "spell_fog_cloud",
+        "spell_water_breathing",
+        "spell_control_water",
+        "spell_ice_storm",
+        "spell_cone_of_cold",
+        "spell_acid_fog",
+        "spell_horrid_wilting",
+        "spell_elemental_swarm"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.domain_water_elemental_turn_uses",
+          "cost": 1
+        }
       }
     }
-  },
-  {
-    "id": "domain_animal",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Animal Domain",
-      "fr": "Domaine des Animaux"
-    },
-    "description": {
-      "en": "Granted Powers: You can use speak with animals once per day as a spell-like ability. Add Knowledge (nature) to your list of cleric class skills.",
-      "fr": "Pouvoirs accordés : Vous pouvez utiliser communication avec les animaux une fois par jour comme une capacité innée. Ajoutez Connaissance (nature) à votre liste de compétences de classe de prêtre."
-    },
-    "tags": [
-      "domain",
-      "domain_animal"
-    ],
-    "classSkills": [
-      "skill_knowledge_nature"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_animal_speak_uses_max",
-        "sourceId": "domain_animal",
-        "sourceName": {
-          "en": "Animal Domain",
-          "fr": "Domaine des Animaux"
-        },
-        "targetId": "resources.domain_animal_speak_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_calm_animals",
-      "spell_hold_animal",
-      "spell_dominate_animal",
-      "spell_summon_natures_ally_iv",
-      "spell_commune_with_nature",
-      "spell_antilife_shell",
-      "spell_animal_shapes",
-      "spell_summon_natures_ally_viii",
-      "spell_shapechange"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_animal_speak_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_chaos",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Chaos Domain",
-      "fr": "Domaine du Chaos"
-    },
-    "description": {
-      "en": "Granted Power: You cast chaos spells at +1 caster level.",
-      "fr": "Pouvoir accordé : Vous lancez les sorts du chaos à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_chaos"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_chaos_caster_level_bonus",
-        "sourceId": "domain_chaos",
-        "sourceName": {
-          "en": "Chaos Domain",
-          "fr": "Domaine du Chaos"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_chaos_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_protection_from_law",
-      "spell_shatter",
-      "spell_magic_circle_against_law",
-      "spell_chaos_hammer",
-      "spell_dispel_law",
-      "spell_animate_objects",
-      "spell_word_of_chaos",
-      "spell_cloak_of_chaos",
-      "spell_summon_monster_ix"
-    ]
-  },
-  {
-    "id": "domain_death",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Death Domain",
-      "fr": "Domaine de la Mort"
-    },
-    "description": {
-      "en": "Granted Power: You may use a death touch once per day. Your death touch is a supernatural ability that produces a death effect. You must succeed on a melee touch attack against a living creature. When you touch, roll 1d6 per cleric level you possess. If the total at least equals the creature's current hit points, it dies (no save).",
-      "fr": "Pouvoir accordé : Vous pouvez utiliser un toucher mortel une fois par jour. Votre toucher mortel est une capacité surnaturelle qui produit un effet de mort. Vous devez réussir une attaque de contact au corps à corps contre une créature vivante. Lorsque vous touchez, lancez 1d6 par niveau de prêtre. Si le total est au moins égal aux points de vie actuels de la créature, elle meurt (sans jet de sauvegarde)."
-    },
-    "tags": [
-      "domain",
-      "domain_death"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_death_touch_uses_max",
-        "sourceId": "domain_death",
-        "sourceName": {
-          "en": "Death Domain",
-          "fr": "Domaine de la Mort"
-        },
-        "targetId": "resources.domain_death_touch_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_cause_fear",
-      "spell_death_knell",
-      "spell_animate_dead",
-      "spell_death_ward",
-      "spell_slay_living",
-      "spell_create_undead",
-      "spell_destruction",
-      "spell_create_greater_undead",
-      "spell_wail_of_the_banshee"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_death_touch_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_destruction",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Destruction Domain",
-      "fr": "Domaine de la Destruction"
-    },
-    "description": {
-      "en": "Granted Power: You gain the smite power, the supernatural ability to make a single melee attack with a +4 bonus on attack rolls and a bonus on damage rolls equal to your cleric level (if you hit). You must declare the smite before making the attack. This ability is usable once per day.",
-      "fr": "Pouvoir accordé : Vous obtenez le pouvoir de châtiment, la capacité surnaturelle d'effectuer une seule attaque au corps à corps avec un bonus de +4 aux jets d'attaque et un bonus aux jets de dégâts égal à votre niveau de prêtre (si vous touchez). Vous devez déclarer le châtiment avant d'effectuer l'attaque. Cette capacité est utilisable une fois par jour."
-    },
-    "tags": [
-      "domain",
-      "domain_destruction"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_destruction_smite_uses_max",
-        "sourceId": "domain_destruction",
-        "sourceName": {
-          "en": "Destruction Domain",
-          "fr": "Domaine de la Destruction"
-        },
-        "targetId": "resources.domain_destruction_smite_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_inflict_light_wounds",
-      "spell_shatter",
-      "spell_contagion",
-      "spell_inflict_critical_wounds",
-      "spell_inflict_light_wounds_mass",
-      "spell_harm",
-      "spell_disintegrate",
-      "spell_earthquake",
-      "spell_implosion"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_destruction_smite_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_earth",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Earth Domain",
-      "fr": "Domaine de la Terre"
-    },
-    "description": {
-      "en": "Granted Power: Turn or destroy air creatures as a good cleric turns undead. Rebuke, command, or bolster earth creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
-      "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures d'air comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures de terre comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
-    },
-    "tags": [
-      "domain",
-      "domain_earth"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_earth_elemental_turn_uses_max",
-        "sourceId": "domain_earth",
-        "sourceName": {
-          "en": "Earth Domain",
-          "fr": "Domaine de la Terre"
-        },
-        "targetId": "resources.domain_earth_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_charisma.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_magic_stone",
-      "spell_soften_earth_and_stone",
-      "spell_stone_shape",
-      "spell_spike_stones",
-      "spell_wall_of_stone",
-      "spell_stoneskin",
-      "spell_earthquake",
-      "spell_iron_body",
-      "spell_elemental_swarm"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_earth_elemental_turn_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_evil",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Evil Domain",
-      "fr": "Domaine du Mal"
-    },
-    "description": {
-      "en": "Granted Power: You cast evil spells at +1 caster level.",
-      "fr": "Pouvoir accordé : Vous lancez les sorts du mal à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_evil"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_evil_caster_level_bonus",
-        "sourceId": "domain_evil",
-        "sourceName": {
-          "en": "Evil Domain",
-          "fr": "Domaine du Mal"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_evil_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_protection_from_good",
-      "spell_desecrate",
-      "spell_magic_circle_against_good",
-      "spell_unholy_blight",
-      "spell_dispel_good",
-      "spell_create_undead",
-      "spell_blasphemy",
-      "spell_unholy_aura",
-      "spell_summon_monster_ix"
-    ]
-  },
-  {
-    "id": "domain_fire",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Fire Domain",
-      "fr": "Domaine du Feu"
-    },
-    "description": {
-      "en": "Granted Power: Turn or destroy water creatures as a good cleric turns undead. Rebuke, command, or bolster fire creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
-      "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures d'eau comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures de feu comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
-    },
-    "tags": [
-      "domain",
-      "domain_fire"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_fire_elemental_turn_uses_max",
-        "sourceId": "domain_fire",
-        "sourceName": {
-          "en": "Fire Domain",
-          "fr": "Domaine du Feu"
-        },
-        "targetId": "resources.domain_fire_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_charisma.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_burning_hands",
-      "spell_produce_flame",
-      "spell_resist_energy",
-      "spell_wall_of_fire",
-      "spell_fire_shield",
-      "spell_fire_seeds",
-      "spell_fire_storm",
-      "spell_incendiary_cloud",
-      "spell_elemental_swarm"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_fire_elemental_turn_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_good",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Good Domain",
-      "fr": "Domaine du Bien"
-    },
-    "description": {
-      "en": "Granted Power: You cast good spells at +1 caster level.",
-      "fr": "Pouvoir accordé : Vous lancez les sorts du bien à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_good"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_good_caster_level_bonus",
-        "sourceId": "domain_good",
-        "sourceName": {
-          "en": "Good Domain",
-          "fr": "Domaine du Bien"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_good_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_protection_from_evil",
-      "spell_aid",
-      "spell_magic_circle_against_evil",
-      "spell_holy_smite",
-      "spell_dispel_evil",
-      "spell_blade_barrier",
-      "spell_holy_word",
-      "spell_holy_aura",
-      "spell_summon_monster_ix"
-    ]
-  },
-  {
-    "id": "domain_healing",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Healing Domain",
-      "fr": "Domaine de la Guérison"
-    },
-    "description": {
-      "en": "Granted Power: You cast healing spells at +1 caster level.",
-      "fr": "Pouvoir accordé : Vous lancez les sorts de guérison à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_healing"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_healing_caster_level_bonus",
-        "sourceId": "domain_healing",
-        "sourceName": {
-          "en": "Healing Domain",
-          "fr": "Domaine de la Guérison"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_healing_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_cure_light_wounds",
-      "spell_cure_moderate_wounds",
-      "spell_cure_serious_wounds",
-      "spell_cure_critical_wounds",
-      "spell_cure_light_wounds_mass",
-      "spell_heal",
-      "spell_regenerate",
-      "spell_cure_critical_wounds_mass",
-      "spell_heal_mass"
-    ]
-  },
-  {
-    "id": "domain_knowledge",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Knowledge Domain",
-      "fr": "Domaine de la Connaissance"
-    },
-    "description": {
-      "en": "Granted Powers: Add all Knowledge skills to your list of cleric class skills. You cast divination spells at +1 caster level.",
-      "fr": "Pouvoirs accordés : Ajoutez toutes les compétences de Connaissance à votre liste de compétences de classe de prêtre. Vous lancez les sorts de divination à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_knowledge"
-    ],
-    "classSkills": [
-      "skill_knowledge_arcana",
-      "skill_knowledge_architecture",
-      "skill_knowledge_dungeoneering",
-      "skill_knowledge_geography",
-      "skill_knowledge_history",
-      "skill_knowledge_local",
-      "skill_knowledge_nature",
-      "skill_knowledge_nobility",
-      "skill_knowledge_planes",
-      "skill_knowledge_religion"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_knowledge_caster_level_bonus",
-        "sourceId": "domain_knowledge",
-        "sourceName": {
-          "en": "Knowledge Domain",
-          "fr": "Domaine de la Connaissance"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_divination_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_detect_secret_doors",
-      "spell_detect_thoughts",
-      "spell_clairaudience_clairvoyance",
-      "spell_divination",
-      "spell_true_seeing",
-      "spell_find_the_path",
-      "spell_legend_lore",
-      "spell_discern_location",
-      "spell_foresight"
-    ]
-  },
-  {
-    "id": "domain_law",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Law Domain",
-      "fr": "Domaine de la Loi"
-    },
-    "description": {
-      "en": "Granted Power: You cast law spells at +1 caster level.",
-      "fr": "Pouvoir accordé : Vous lancez les sorts de loi à +1 niveau de lanceur de sorts."
-    },
-    "tags": [
-      "domain",
-      "domain_law"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_law_caster_level_bonus",
-        "sourceId": "domain_law",
-        "sourceName": {
-          "en": "Law Domain",
-          "fr": "Domaine de la Loi"
-        },
-        "targetId": "stat_caster_level",
-        "value": 1,
-        "type": "untyped",
-        "situationalContext": "when_casting_law_spells"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_protection_from_chaos",
-      "spell_calm_emotions",
-      "spell_magic_circle_against_chaos",
-      "spell_orders_wrath",
-      "spell_dispel_chaos",
-      "spell_hold_monster",
-      "spell_dictum",
-      "spell_shield_of_law",
-      "spell_summon_monster_ix"
-    ]
-  },
-  {
-    "id": "domain_luck",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Luck Domain",
-      "fr": "Domaine de la Chance"
-    },
-    "description": {
-      "en": "Granted Power: You gain the power of good fortune, which is usable once per day. This extraordinary ability allows you to reroll one roll that you have just made before the game master declares whether the roll results in success or failure. You must take the result of the reroll, even if it's worse than the original roll.",
-      "fr": "Pouvoir accordé : Vous obtenez le pouvoir de bonne fortune, utilisable une fois par jour. Cette aptitude extraordinaire vous permet de relancer un jet que vous venez d'effectuer avant que le maître du jeu ne déclare si le résultat est un succès ou un échec. Vous devez accepter le résultat du nouveau jet, même s'il est pire que le jet original."
-    },
-    "tags": [
-      "domain",
-      "domain_luck"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_luck_reroll_uses_max",
-        "sourceId": "domain_luck",
-        "sourceName": {
-          "en": "Luck Domain",
-          "fr": "Domaine de la Chance"
-        },
-        "targetId": "resources.domain_luck_reroll_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_entropic_shield",
-      "spell_aid",
-      "spell_protection_from_energy",
-      "spell_freedom_of_movement",
-      "spell_break_enchantment",
-      "spell_mislead",
-      "spell_spell_turning",
-      "spell_moment_of_prescience",
-      "spell_miracle"
-    ],
-    "activation": {
-      "actionType": "free",
-      "resourceCost": {
-        "targetId": "resources.domain_luck_reroll_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_magic",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Magic Domain",
-      "fr": "Domaine de la Magie"
-    },
-    "description": {
-      "en": "Granted Power: Use scrolls, wands, and other devices with spell completion or spell trigger activation as a wizard of one-half your cleric level (at least 1st level). For the purpose of using a scroll or other magic device, if you are also a wizard, actual wizard levels and these effective wizard levels stack.",
-      "fr": "Pouvoir accordé : Utilisez les parchemins, baguettes et autres objets à activation par achèvement de sort ou déclenchement de sort comme un magicien de la moitié de votre niveau de prêtre (au moins au niveau 1). Pour utiliser un parchemin ou autre objet magique, si vous êtes également magicien, vos niveaux réels de magicien et ces niveaux effectifs de magicien se cumulent."
-    },
-    "tags": [
-      "domain",
-      "domain_magic"
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": [
-      "spell_magic_aura",
-      "spell_identify",
-      "spell_dispel_magic",
-      "spell_imbue_with_spell_ability",
-      "spell_spell_resistance",
-      "spell_antimagic_field",
-      "spell_spell_turning",
-      "spell_protection_from_spells",
-      "spell_mages_disjunction"
-    ]
-  },
-  {
-    "id": "domain_plant",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Plant Domain",
-      "fr": "Domaine des Plantes"
-    },
-    "description": {
-      "en": "Granted Powers: Rebuke or command plant creatures as an evil cleric rebukes or commands undead. Use this ability a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability. Add Knowledge (nature) to your list of cleric class skills.",
-      "fr": "Pouvoirs accordés : Contrôlez ou subjuguez les créatures végétales comme un prêtre mauvais contrôle les morts-vivants. Utilisez cette capacité un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle. Ajoutez Connaissance (nature) à votre liste de compétences de classe de prêtre."
-    },
-    "tags": [
-      "domain",
-      "domain_plant"
-    ],
-    "classSkills": [
-      "skill_knowledge_nature"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_plant_rebuke_uses_max",
-        "sourceId": "domain_plant",
-        "sourceName": {
-          "en": "Plant Domain",
-          "fr": "Domaine des Plantes"
-        },
-        "targetId": "resources.domain_plant_rebuke_uses.maxValue",
-        "value": "3 + @attributes.stat_charisma.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_entangle",
-      "spell_barkskin",
-      "spell_plant_growth",
-      "spell_command_plants",
-      "spell_wall_of_thorns",
-      "spell_repel_wood",
-      "spell_animate_plants",
-      "spell_control_plants",
-      "spell_shambler"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_plant_rebuke_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_protection",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Protection Domain",
-      "fr": "Domaine de la Protection"
-    },
-    "description": {
-      "en": "Granted Power: You can generate a protective ward as a supernatural ability. Grant someone you touch a resistance bonus equal to your cleric level on his or her next saving throw. Activating this power is a standard action. The protective ward is an abjuration effect with a duration of 1 hour that is usable once per day.",
-      "fr": "Pouvoir accordé : Vous pouvez générer une protection surnaturelle. Accordez à une créature que vous touchez un bonus de résistance égal à votre niveau de prêtre à son prochain jet de sauvegarde. L'activation de ce pouvoir est une action simple. La protection est un effet d'abjuration d'une durée de 1 heure, utilisable une fois par jour."
-    },
-    "tags": [
-      "domain",
-      "domain_protection"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_protection_ward_uses_max",
-        "sourceId": "domain_protection",
-        "sourceName": {
-          "en": "Protection Domain",
-          "fr": "Domaine de la Protection"
-        },
-        "targetId": "resources.domain_protection_ward_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_sanctuary",
-      "spell_shield_other",
-      "spell_protection_from_energy",
-      "spell_spell_immunity",
-      "spell_spell_resistance",
-      "spell_antimagic_field",
-      "spell_repulsion",
-      "spell_mind_blank",
-      "spell_prismatic_sphere"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_protection_ward_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_strength",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Strength Domain",
-      "fr": "Domaine de la Force"
-    },
-    "description": {
-      "en": "Granted Power: You can perform a feat of strength as a supernatural ability. You gain an enhancement bonus to Strength equal to your cleric level. Activating the power is a free action, the power lasts 1 round, and it is usable once per day.",
-      "fr": "Pouvoir accordé : Vous pouvez accomplir un exploit de force en tant que capacité surnaturelle. Vous obtenez un bonus d'altération à la Force égal à votre niveau de prêtre. L'activation du pouvoir est une action libre, le pouvoir dure 1 round et il est utilisable une fois par jour."
-    },
-    "tags": [
-      "domain",
-      "domain_strength"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_strength_feat_uses_max",
-        "sourceId": "domain_strength",
-        "sourceName": {
-          "en": "Strength Domain",
-          "fr": "Domaine de la Force"
-        },
-        "targetId": "resources.domain_strength_feat_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_enlarge_person",
-      "spell_bulls_strength",
-      "spell_magic_vestment",
-      "spell_spell_immunity",
-      "spell_righteous_might",
-      "spell_stoneskin",
-      "spell_grasping_hand",
-      "spell_clenched_fist",
-      "spell_crushing_hand"
-    ],
-    "activation": {
-      "actionType": "free",
-      "resourceCost": {
-        "targetId": "resources.domain_strength_feat_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_sun",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Sun Domain",
-      "fr": "Domaine du Soleil"
-    },
-    "description": {
-      "en": "Granted Power: Once per day, you can perform a greater turning against undead in place of a regular turning. The greater turning is like a normal turning except that the undead creatures that would be turned are destroyed instead.",
-      "fr": "Pouvoir accordé : Une fois par jour, vous pouvez effectuer un grand renvoi des morts-vivants à la place d'un renvoi ordinaire. Le grand renvoi est identique à un renvoi normal, sauf que les morts-vivants qui seraient renvoyés sont détruits à la place."
-    },
-    "tags": [
-      "domain",
-      "domain_sun"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_sun_greater_turning_uses_max",
-        "sourceId": "domain_sun",
-        "sourceName": {
-          "en": "Sun Domain",
-          "fr": "Domaine du Soleil"
-        },
-        "targetId": "resources.domain_sun_greater_turning_uses.maxValue",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_endure_elements",
-      "spell_heat_metal",
-      "spell_searing_light",
-      "spell_fire_shield",
-      "spell_flame_strike",
-      "spell_fire_seeds",
-      "spell_sunbeam",
-      "spell_sunburst",
-      "spell_prismatic_sphere"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_sun_greater_turning_uses",
-        "cost": 1
-      }
-    }
-  },
-  {
-    "id": "domain_travel",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Travel Domain",
-      "fr": "Domaine du Voyage"
-    },
-    "description": {
-      "en": "Granted Powers: For a total time per day of 1 round per cleric level you possess, you can act normally regardless of magical effects that impede movement as if you were affected by the spell freedom of movement. This effect occurs automatically as soon as it applies, lasts until it runs out or is no longer needed, and can operate multiple times per day (up to the total daily limit of rounds). This granted power is a supernatural ability. Add Survival to your list of cleric class skills.",
-      "fr": "Pouvoirs accordés : Pour une durée totale par jour de 1 round par niveau de prêtre, vous pouvez agir normalement quelles que soient les magies qui entravent vos mouvements, comme si vous étiez affecté par le sort liberté de mouvement. Cet effet se déclenche automatiquement dès qu'il s'applique, dure jusqu'à épuisement ou inutilité, et peut fonctionner plusieurs fois par jour (dans la limite de rounds journaliers). Ce pouvoir accordé est une capacité surnaturelle. Ajoutez Survie à votre liste de compétences de classe de prêtre."
-    },
-    "tags": [
-      "domain",
-      "domain_travel"
-    ],
-    "classSkills": [
-      "skill_survival"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_travel_freedom_rounds_max",
-        "sourceId": "domain_travel",
-        "sourceName": {
-          "en": "Travel Domain",
-          "fr": "Domaine du Voyage"
-        },
-        "targetId": "resources.domain_travel_freedom_rounds.maxValue",
-        "value": "@classLevels.class_cleric",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_longstrider",
-      "spell_locate_object",
-      "spell_fly",
-      "spell_dimension_door",
-      "spell_teleport",
-      "spell_find_the_path",
-      "spell_teleport_greater",
-      "spell_phase_door",
-      "spell_astral_projection"
-    ]
-  },
-  {
-    "id": "domain_trickery",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Trickery Domain",
-      "fr": "Domaine de la Supercherie"
-    },
-    "description": {
-      "en": "Granted Power: Add Bluff, Disguise, and Hide to your list of cleric class skills.",
-      "fr": "Pouvoir accordé : Ajoutez Bluff, Déguisement et Discrétion à votre liste de compétences de classe de prêtre."
-    },
-    "tags": [
-      "domain",
-      "domain_trickery"
-    ],
-    "classSkills": [
-      "skill_bluff",
-      "skill_disguise",
-      "skill_hide"
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": [
-      "spell_disguise_self",
-      "spell_invisibility",
-      "spell_nondetection",
-      "spell_confusion",
-      "spell_false_vision",
-      "spell_mislead",
-      "spell_screen",
-      "spell_polymorph_any_object",
-      "spell_time_stop"
-    ]
-  },
-  {
-    "id": "domain_war",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "War Domain",
-      "fr": "Domaine de la Guerre"
-    },
-    "description": {
-      "en": "Granted Power: Free Martial Weapon Proficiency with deity's favored weapon (if necessary) and Weapon Focus with the deity's favored weapon.",
-      "fr": "Pouvoir accordé : Maniement gratuit des armes de guerre pour l'arme de prédilection de la divinité (si nécessaire) et Arme de prédilection avec l'arme de prédilection de la divinité."
-    },
-    "tags": [
-      "domain",
-      "domain_war"
-    ],
-    "grantedModifiers": [],
-    "grantedFeatures": [
-      "spell_magic_weapon",
-      "spell_spiritual_weapon",
-      "spell_magic_vestment",
-      "spell_divine_power",
-      "spell_flame_strike",
-      "spell_blade_barrier",
-      "spell_power_word_blind",
-      "spell_power_word_stun",
-      "spell_power_word_kill"
-    ]
-  },
-  {
-    "id": "domain_water",
-    "category": "domain",
-    "ruleSource": "srd_core",
-    "label": {
-      "en": "Water Domain",
-      "fr": "Domaine de l'Eau"
-    },
-    "description": {
-      "en": "Granted Power: Turn or destroy fire creatures as a good cleric turns undead. Rebuke, command, or bolster water creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
-      "fr": "Pouvoir accordé : Renvoyez ou détruisez les créatures de feu comme un prêtre bon renvoie les morts-vivants. Contrôlez, subjuguez ou renforcez les créatures d'eau comme un prêtre mauvais contrôle les morts-vivants. Utilisez ces capacités un nombre de fois par jour égal à 3 + votre modificateur de Charisme. Ce pouvoir accordé est une capacité surnaturelle."
-    },
-    "tags": [
-      "domain",
-      "domain_water"
-    ],
-    "grantedModifiers": [
-      {
-        "id": "domain_water_elemental_turn_uses_max",
-        "sourceId": "domain_water",
-        "sourceName": {
-          "en": "Water Domain",
-          "fr": "Domaine de l'Eau"
-        },
-        "targetId": "resources.domain_water_elemental_turn_uses.maxValue",
-        "value": "3 + @attributes.stat_charisma.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": [
-      "spell_obscuring_mist",
-      "spell_fog_cloud",
-      "spell_water_breathing",
-      "spell_control_water",
-      "spell_ice_storm",
-      "spell_cone_of_cold",
-      "spell_acid_fog",
-      "spell_horrid_wilting",
-      "spell_elemental_swarm"
-    ],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": {
-        "targetId": "resources.domain_water_elemental_turn_uses",
-        "cost": 1
-      }
-    }
-  }
-]
+  ]
+}

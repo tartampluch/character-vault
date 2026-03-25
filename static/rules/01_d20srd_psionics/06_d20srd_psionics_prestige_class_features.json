@@ -1,1360 +1,2283 @@
-[
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L1)", "fr": "Avancement dual cérébromanicien (N1)" },
-    "description": {
-      "en": "At each level, a cerebremancer gains new spells per day and new powers per day as if he had also gained a level in an arcane spellcasting class he belonged to before adding the prestige class level AND as if he had also gained a level in a psionic manifesting class he belonged to before adding the prestige class level. He gains caster level, manifester level, power points per day, powers known, and spells per day accordingly. He does not gain any other benefit a character of those classes would have gained (bonus feats, improved psicrystal, and so on). This feature activates at every level.",
-      "fr": "À chaque niveau, un cérébromanicien gagne de nouveaux sorts par jour et de nouveaux pouvoirs par jour comme s'il avait gagné un niveau dans une classe de lanceur de sorts arcanique ET dans une classe de manifestation psionique. Il gagne en niveau de lanceur de sorts, niveau de manifestation, points de pouvoir par jour, pouvoirs connus et sorts par jour en conséquence."
-    },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L2)", "fr": "Avancement dual cérébromanicien (N2)" },
-    "description": {
-      "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
-      "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
-    },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L3)", "fr": "Avancement dual cérébromanicien (N3)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L4)", "fr": "Avancement dual cérébromanicien (N4)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L5)", "fr": "Avancement dual cérébromanicien (N5)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_6",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L6)", "fr": "Avancement dual cérébromanicien (N6)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_7",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L7)", "fr": "Avancement dual cérébromanicien (N7)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_8",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L8)", "fr": "Avancement dual cérébromanicien (N8)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_9",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L9)", "fr": "Avancement dual cérébromanicien (N9)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_cerebremancer_dual_advancement_10",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebremancer Dual Advancement (L10)", "fr": "Avancement dual cérébromanicien (N10)" },
-    "description": { "en": "Advances both arcane spellcasting and psionic manifesting by one level.", "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau." },
-    "tags": ["class_feature", "cerebremancer", "spellcasting_advancement", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_scorn_earth",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Scorn Earth", "fr": "Mépris de la terre" },
-    "description": {
-      "en": "At 1st level, an elocater's feet lift from the ground. From now on, she can float a foot above the ground. Instead of walking, she glides along, unconcerned with the hard earth or difficult terrain. Although she remains subject to winds and other forces (including the effect of psionic powers), difficult terrain (including stairs) poses no impediment to her movement. At 10th level, she can levitate herself to great heights — she can rise at 10 feet per round as a move action and descend at 10 feet per round as a free action, with no upper limit. She can still make melee and ranged attacks normally while hovering within 10 feet of a surface.",
-      "fr": "Au niveau 1, les pieds d'un élocataire se lèvent du sol. Il peut désormais flotter à 30 cm au-dessus du sol. Les terrains difficiles (y compris les escaliers) ne constituent aucun obstacle pour son déplacement. Au niveau 10, il peut se léviter à de grandes hauteurs."
-    },
-    "tags": ["class_feature", "elocater", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_sidestep_charge",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Sidestep Charge (Bonus Feat)", "fr": "Esquive de charge (don supplémentaire)" },
-    "description": {
-      "en": "At 1st level, an elocater gains Sidestep Charge as a bonus feat, even if she does not meet the prerequisites.",
-      "fr": "Au niveau 1, un élocataire obtient Esquive de charge comme don supplémentaire, même s'il ne remplit pas les conditions requises."
-    },
-    "tags": ["class_feature", "elocater", "bonus_feat"],
-    "grantedModifiers": [],
-    "grantedFeatures": ["feat_sidestep_charge"]
-  },
-  {
-    "id": "class_feature_elocater_manifesting_adv",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Elocater Manifesting Advancement", "fr": "Avancement de manifestation de l'élocataire" },
-    "description": {
-      "en": "At this level, the elocater advances one manifesting level in his chosen psionic class. He gains power points per day, powers known, and manifester level as if he had gained one level in that class.",
-      "fr": "À ce niveau, l'élocataire avance d'un niveau de manifestation dans sa classe psionique choisie."
-    },
-    "tags": ["class_feature", "elocater", "manifesting_advancement"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_opportunistic_strike_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Opportunistic Strike +2", "fr": "Attaque opportuniste +2" },
-    "description": {
-      "en": "Starting at 2nd level, an elocater gains an insight bonus on attack rolls and damage rolls made against an opponent that she has damaged with a melee attack since her last action. The insight bonus is +2 at 2nd level, +4 at 5th level, and +6 at 8th level.",
-      "fr": "À partir du niveau 2, un élocataire gagne un bonus de perspicacité aux jets d'attaque et de dégâts contre un adversaire qu'il a blessé au corps à corps depuis sa dernière action. Le bonus est de +2 au niveau 2, +4 au niveau 5 et +6 au niveau 8."
-    },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "elocater_opp_strike_1_attack",
-        "sourceId": "class_feature_elocater_opportunistic_strike_1",
-        "sourceName": { "en": "Opportunistic Strike +2", "fr": "Attaque opportuniste +2" },
-        "targetId": "combatStats.attack_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
+{
+  "supportedLanguages": [
+    "en",
+    "fr"
+  ],
+  "entities": [
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L1)",
+        "fr": "Avancement dual cérébromanicien (N1)"
       },
-      {
-        "id": "elocater_opp_strike_1_damage",
-        "sourceId": "class_feature_elocater_opportunistic_strike_1",
-        "sourceName": { "en": "Opportunistic Strike +2", "fr": "Attaque opportuniste +2" },
-        "targetId": "combatStats.damage_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_opportunistic_strike_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Opportunistic Strike +4", "fr": "Attaque opportuniste +4" },
-    "description": {
-      "en": "At 5th level, the opportunistic strike insight bonus increases to +4 on attack rolls and damage rolls.",
-      "fr": "Au niveau 5, le bonus de perspicacité d'attaque opportuniste passe à +4 aux jets d'attaque et de dégâts."
-    },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "elocater_opp_strike_2_attack",
-        "sourceId": "class_feature_elocater_opportunistic_strike_2",
-        "sourceName": { "en": "Opportunistic Strike +4", "fr": "Attaque opportuniste +4" },
-        "targetId": "combatStats.attack_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
+      "description": {
+        "en": "At each level, a cerebremancer gains new spells per day and new powers per day as if he had also gained a level in an arcane spellcasting class he belonged to before adding the prestige class level AND as if he had also gained a level in a psionic manifesting class he belonged to before adding the prestige class level. He gains caster level, manifester level, power points per day, powers known, and spells per day accordingly. He does not gain any other benefit a character of those classes would have gained (bonus feats, improved psicrystal, and so on). This feature activates at every level.",
+        "fr": "À chaque niveau, un cérébromanicien gagne de nouveaux sorts par jour et de nouveaux pouvoirs par jour comme s'il avait gagné un niveau dans une classe de lanceur de sorts arcanique ET dans une classe de manifestation psionique. Il gagne en niveau de lanceur de sorts, niveau de manifestation, points de pouvoir par jour, pouvoirs connus et sorts par jour en conséquence."
       },
-      {
-        "id": "elocater_opp_strike_2_damage",
-        "sourceId": "class_feature_elocater_opportunistic_strike_2",
-        "sourceName": { "en": "Opportunistic Strike +4", "fr": "Attaque opportuniste +4" },
-        "targetId": "combatStats.damage_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_opportunistic_strike_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Opportunistic Strike +6", "fr": "Attaque opportuniste +6" },
-    "description": {
-      "en": "At 8th level, the opportunistic strike insight bonus increases to +6 on attack rolls and damage rolls.",
-      "fr": "Au niveau 8, le bonus de perspicacité d'attaque opportuniste passe à +6 aux jets d'attaque et de dégâts."
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
     },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "elocater_opp_strike_3_attack",
-        "sourceId": "class_feature_elocater_opportunistic_strike_3",
-        "sourceName": { "en": "Opportunistic Strike +6", "fr": "Attaque opportuniste +6" },
-        "targetId": "combatStats.attack_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L2)",
+        "fr": "Avancement dual cérébromanicien (N2)"
       },
-      {
-        "id": "elocater_opp_strike_3_damage",
-        "sourceId": "class_feature_elocater_opportunistic_strike_3",
-        "sourceName": { "en": "Opportunistic Strike +6", "fr": "Attaque opportuniste +6" },
-        "targetId": "combatStats.damage_bonus",
-        "value": 2,
-        "type": "insight",
-        "situationalContext": "vs_opponent_already_damaged_this_turn"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_dimension_step",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Dimension Step", "fr": "Pas dimensionnel" },
-    "description": {
-      "en": "Beginning at 3rd level, an elocater can slip psionically between spaces as if using the psionic dimension door power, once per day. The manifester level for this ability is equal to the elocater's class level. The elocater can affect only herself and objects she carries with this ability.",
-      "fr": "À partir du niveau 3, un élocataire peut se glisser psioniquement entre les espaces comme si il utilisait le pouvoir de porte dimensionnelle psionique, une fois par jour. Le niveau de manifestation pour cette capacité est égal au niveau de classe de l'élocataire."
-    },
-    "tags": ["class_feature", "elocater", "supernatural"],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": { "targetId": "resources.elocater_dimension_step_uses", "cost": 1 }
-    },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_flanker",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Flanker", "fr": "En tenaille" },
-    "description": {
-      "en": "At 4th level and higher, an elocater can designate any adjacent square as the square from which flanking against an opponent is determined (instead of using her actual square). She must have line of sight to the square she designates. She makes this designation at the start of her action.",
-      "fr": "À partir du niveau 4, un élocataire peut désigner n'importe quelle case adjacente comme la case à partir de laquelle la mise en tenaille est déterminée. Il doit avoir une ligne de vue sur la case qu'il désigne."
-    },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_transporter",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Transporter", "fr": "Transporteur" },
-    "description": {
-      "en": "At 6th level, an elocater adds psionic teleport and psionic plane shift to her list of powers known, treating them as 3rd-level powers (5 power points each). These are in addition to her normally allowed powers known.",
-      "fr": "Au niveau 6, un élocataire ajoute téléportation psionique et transfert planaire psionique à sa liste de pouvoirs connus, en les traitant comme des pouvoirs de 3ème niveau (5 points de pouvoir chacun). Ceux-ci s'ajoutent aux pouvoirs connus normalement autorisés."
-    },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": ["power_psionic_teleport", "power_plane_shift_psionic"]
-  },
-  {
-    "id": "class_feature_elocater_capricious_step",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Capricious Step", "fr": "Pas capricieux" },
-    "description": {
-      "en": "At 7th level, an elocater can take an extra 5-foot step in a round, for a maximum of two 5-foot steps in that round. She can take the extra 5-foot step at any point during the round — both 5-foot steps can occur in the same phase, or one in each phase. Neither of the 5-foot steps provokes attacks of opportunity.",
-      "fr": "Au niveau 7, un élocataire peut effectuer un déplacement de 1,5m supplémentaire dans un round, pour un maximum de deux déplacements de 1,5m dans ce round. Ni l'un ni l'autre des déplacements de 1,5m ne provoque d'attaques d'opportunité."
-    },
-    "tags": ["class_feature", "elocater", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_dimension_spring_attack",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Dimension Spring Attack", "fr": "Attaque en bond dimensionnel" },
-    "description": {
-      "en": "At 9th level, an elocater can use her dimension step ability (see above) in conjunction with the Spring Attack feat. She can teleport up to 60 feet (instead of the normal dimension step distance) to appear next to an opponent, make the spring attack, then teleport back. This uses the dimension step ability for the day.",
-      "fr": "Au niveau 9, un élocataire peut utiliser sa capacité de pas dimensionnel en conjonction avec le don Attaque en bond. Il peut se téléporter jusqu'à 18m pour apparaître à côté d'un adversaire, faire l'attaque en bond, puis se téléporter en retour."
-    },
-    "tags": ["class_feature", "elocater", "supernatural"],
-    "activation": {
-      "actionType": "standard",
-      "resourceCost": { "targetId": "resources.elocater_dimension_step_uses", "cost": 1 }
-    },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elocater_accelerated_action",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Accelerated Action", "fr": "Action accélérée" },
-    "description": {
-      "en": "At 10th level, an elocater can accelerate herself and act more quickly than normal for up to 5 rounds per day. On her turn, she can take an extra attack at her full attack bonus, move an extra 30 feet, or cast/manifest an extra spell or power of 3rd level or lower. She also gains a +2 dodge bonus to Armor Class, a +2 bonus on attack rolls, and a +2 bonus on Reflex saves during the accelerated rounds.",
-      "fr": "Au niveau 10, un élocataire peut s'accélérer et agir plus rapidement jusqu'à 5 rounds par jour. À son tour, il peut effectuer une attaque supplémentaire à son bonus d'attaque complet, se déplacer de 9m supplémentaires, ou lancer/manifester un sort ou pouvoir supplémentaire de niveau 3 ou moins."
-    },
-    "tags": ["class_feature", "elocater", "supernatural"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_free_manifesting_1st",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Manifesting (1st-level)", "fr": "Manifestation gratuite (niveau 1)" },
-    "description": {
-      "en": "At 1st level, a metamind can manifest any 1st-level power she knows without paying its power point cost (3 times per day). The power points are not spent. She can still pay extra power points for augmentation as desired; only the base cost is free.",
-      "fr": "Au niveau 1, un méta-esprit peut manifester tout pouvoir de 1er niveau connu sans payer son coût en points de pouvoir (3 fois par jour). Les points de pouvoir ne sont pas dépensés."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_free_manifesting_2nd",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Manifesting (2nd-level)", "fr": "Manifestation gratuite (niveau 2)" },
-    "description": {
-      "en": "At 3rd level, a metamind can manifest any 2nd-level power she knows without paying its power point cost (3 times per day).",
-      "fr": "Au niveau 3, un méta-esprit peut manifester tout pouvoir de 2ème niveau connu sans payer son coût en points de pouvoir (3 fois par jour)."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_free_manifesting_3rd",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Manifesting (3rd-level)", "fr": "Manifestation gratuite (niveau 3)" },
-    "description": {
-      "en": "At 5th level, a metamind can manifest any 3rd-level power once per day without paying its power point cost.",
-      "fr": "Au niveau 5, un méta-esprit peut manifester tout pouvoir de 3ème niveau une fois par jour sans payer son coût en points de pouvoir."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_free_manifesting_4th",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Manifesting (4th-level)", "fr": "Manifestation gratuite (niveau 4)" },
-    "description": {
-      "en": "At 7th level, a metamind can manifest any 4th-level power once per day without paying its power point cost.",
-      "fr": "Au niveau 7, un méta-esprit peut manifester tout pouvoir de 4ème niveau une fois par jour sans payer son coût en points de pouvoir."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_free_manifesting_5th",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Free Manifesting (5th-level)", "fr": "Manifestation gratuite (niveau 5)" },
-    "description": {
-      "en": "At 9th level, a metamind can manifest any 5th-level power once per day without paying its power point cost.",
-      "fr": "Au niveau 9, un méta-esprit peut manifester tout pouvoir de 5ème niveau une fois par jour sans payer son coût en points de pouvoir."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_cognizance_5",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cognizance Psicrystal (5 PP)", "fr": "Psicristal de clairvoyance (5 PP)" },
-    "description": {
-      "en": "At 2nd level, a metamind's psicrystal gains a stored pool of 5 power points (in addition to its normal psicrystal powers). These power points are available to the metamind as a separate power point source.",
-      "fr": "Au niveau 2, le psicristal d'un méta-esprit gagne une réserve stockée de 5 points de pouvoir (en plus de ses capacités normales de psicristal)."
-    },
-    "tags": ["class_feature", "metamind", "extraordinary"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_cognizance_7",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cognizance Psicrystal (7 PP)", "fr": "Psicristal de clairvoyance (7 PP)" },
-    "description": {
-      "en": "At 4th level, the metamind's cognizance psicrystal upgrades to store 7 power points.",
-      "fr": "Au niveau 4, le psicristal de clairvoyance du méta-esprit passe à 7 points de pouvoir stockés."
-    },
-    "tags": ["class_feature", "metamind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_cognizance_9",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cognizance Psicrystal (9 PP)", "fr": "Psicristal de clairvoyance (9 PP)" },
-    "description": {
-      "en": "At 6th level, the metamind's cognizance psicrystal upgrades to store 9 power points.",
-      "fr": "Au niveau 6, le psicristal de clairvoyance du méta-esprit passe à 9 points de pouvoir stockés."
-    },
-    "tags": ["class_feature", "metamind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_cognizance_11",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cognizance Psicrystal (11 PP)", "fr": "Psicristal de clairvoyance (11 PP)" },
-    "description": {
-      "en": "At 8th level, the metamind's cognizance psicrystal upgrades to store 11 power points.",
-      "fr": "Au niveau 8, le psicristal de clairvoyance du méta-esprit passe à 11 points de pouvoir stockés."
-    },
-    "tags": ["class_feature", "metamind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_manifesting_adv",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Metamind Manifesting Advancement", "fr": "Avancement de manifestation méta-esprit" },
-    "description": {
-      "en": "At this level (even-numbered levels 2, 4, 6, 8, 10), the metamind advances one manifesting level in his chosen psionic class.",
-      "fr": "À ce niveau (niveaux pairs 2, 4, 6, 8, 10), le méta-esprit avance d'un niveau de manifestation dans sa classe psionique choisie."
-    },
-    "tags": ["class_feature", "metamind", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_metamind_font_of_power",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Font of Power", "fr": "Source de pouvoir" },
-    "description": {
-      "en": "At 10th level, once per day for up to 1 minute, a metamind can tap a virtually unlimited font of psionic energy. While active, she manifests any power from her list of powers known without paying its power point cost (no augmentation points needed either). Her eyes shine like stars during use. If she enters a metaconcert while this ability is active, her power point reserve is accessed as normal for pool purposes.",
-      "fr": "Au niveau 10, une fois par jour pendant jusqu'à 1 minute, un méta-esprit peut puiser dans une source de pouvoir pratiquement illimitée. Tant qu'elle est active, il manifeste tout pouvoir de sa liste sans payer son coût en points de pouvoir. Ses yeux brillent comme des étoiles."
-    },
-    "tags": ["class_feature", "metamind", "psionic_like"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_incorporeal_touch_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Incorporeal Touch 1d6", "fr": "Toucher intangible 1d6" },
-    "description": {
-      "en": "Beginning at 1st level, a psion uncarnate can make up to three incorporeal touch attacks per day that deal 1d6 points of damage each, dealing half damage on a miss. Against corporeal targets, this is an incorporeal touch (bypasses all armor but not Dex or shield bonus). Against incorporeal targets, it is a normal attack. The psion uncarnate's Strength modifier does not apply to this attack. While uncarnate (after 2nd level), she can make touch attacks at will (no longer limited to 3/day).",
-      "fr": "À partir du niveau 1, un psion sans corps peut effectuer jusqu'à trois attaques de contact intangible par jour infligeant chacune 1d6 points de dégâts. Contre des cibles corporelles, c'est un contact intangible (ignore toutes les armures). Contre des cibles intangibles, c'est une attaque normale."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "activation": { "actionType": "standard" },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_uncarnate_armor",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Uncarnate Armor", "fr": "Armure sans corps" },
-    "description": {
-      "en": "A psion uncarnate wearing armor is so in tune with it that armor's bonus to Armor Class applies even when she becomes incorporeal (normally, armor does not protect incorporeal creatures). Any armor the uncarnate wears still grants its full normal armor bonus to AC when incorporeal.",
-      "fr": "Un psion sans corps portant une armure est tellement en harmonie avec elle que le bonus d'armure à la CA s'applique même lorsqu'il devient intangible."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_shed_body_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Shed Body 1/day", "fr": "Abandonner le corps 1/jour" },
-    "description": {
-      "en": "Starting at 2nd level, a psion uncarnate can become incorporeal (her body fades from view) once per day as a standard action. While incorporeal, she can fly at her normal land speed with perfect maneuverability. She gains a +1 bonus on the save DC of all powers she manifests while uncarnate. She can stay incorporeal for up to 1 minute at a time. Her material armor still grants its armor bonus while incorporeal.",
-      "fr": "À partir du niveau 2, un psion sans corps peut devenir intangible (son corps disparaît de la vue) une fois par jour par une action simple. En état intangible, il peut voler à sa vitesse terrestre normale avec une maniabilité parfaite et gagne +1 au DD de sauvegarde de tous ses pouvoirs."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "activation": { "actionType": "standard" },
-    "grantedModifiers": [],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_shed_body_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Shed Body 2/day", "fr": "Abandonner le corps 2/jour" },
-    "description": {
-      "en": "At 6th level, the psion uncarnate can become incorporeal twice per day.",
-      "fr": "Au niveau 6, le psion sans corps peut devenir intangible deux fois par jour."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_assume_equipment",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Assume Equipment", "fr": "Assumer l'équipement" },
-    "description": {
-      "en": "Beginning at 3rd level, a psion uncarnate can designate up to her psion uncarnate class level in worn or carried items to become incorporeal along with her when she sheds her body. Designated items pass through physical matter normally. Nondesignated items fall to the ground in her space when she sheds her body.",
-      "fr": "À partir du niveau 3, un psion sans corps peut désigner jusqu'à un nombre d'objets portés ou transportés égal à son niveau de classe pour qu'ils deviennent intangibles avec lui lorsqu'il abandonne son corps."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_assume_likeness",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Assume Likeness", "fr": "Prendre une apparence" },
-    "description": {
-      "en": "At 4th level, while incorporeal, a psion uncarnate can assume the likeness of any Small, Medium-size, or Large creature as a standard action. This grants a +10 circumstance bonus on Disguise checks and +4 more if reading the creature's mind with a mind-reading power.",
-      "fr": "Au niveau 4, en état intangible, un psion sans corps peut prendre l'apparence de toute créature de petite, moyenne ou grande taille par une action simple. Cela accorde un bonus de circonstance de +10 aux tests de Déguisement."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_incorporeal_touch_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Incorporeal Touch 2d6", "fr": "Toucher intangible 2d6" },
-    "description": {
-      "en": "At 5th level, the psion uncarnate's incorporeal touch increases to deal 2d6 points of damage.",
-      "fr": "Au niveau 5, le toucher intangible du psion sans corps passe à 2d6 points de dégâts."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_incorporeal_touch_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Incorporeal Touch 3d6", "fr": "Toucher intangible 3d6" },
-    "description": {
-      "en": "At 9th level, the psion uncarnate's incorporeal touch increases to deal 3d6 points of damage.",
-      "fr": "Au niveau 9, le toucher intangible du psion sans corps passe à 3d6 points de dégâts."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_telekinetic_force",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Telekinetic Force", "fr": "Force télékinésique" },
-    "description": {
-      "en": "At 7th level, while incorporeal, a psion uncarnate can use a telekinetic force effect as a standard action (no attack of opportunity). While corporeal, she can use this ability 3 times per day. The save DC is 14 + key ability modifier.",
-      "fr": "Au niveau 7, en état intangible, un psion sans corps peut utiliser un effet de force télékinésique par une action simple (sans attaque d'opportunité). En état corporel, il peut utiliser cette capacité 3 fois par jour. DD = 14 + modificateur de caractéristique clé."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "activation": { "actionType": "standard" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_uncarnate_bridge",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Uncarnate Bridge", "fr": "Pont sans corps" },
-    "description": {
-      "en": "At 8th level, once per day, while incorporeal, a psion uncarnate can enter any living creature with an Intelligence score (move action, no AoO) and then pass to any other living creature with an Intelligence score within line of sight. She can exit destructively: Will save (DC 15 + key ability mod) or target takes 10d6 damage.",
-      "fr": "Au niveau 8, une fois par jour, en état intangible, un psion sans corps peut entrer dans n'importe quelle créature vivante avec une valeur d'Intelligence. Il peut sortir de manière destructive : jet de Volonté (DD 15 + mod. caractéristique clé) ou la cible subit 10d6 dégâts."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "supernatural"],
-    "activation": { "actionType": "move" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_permanently_incorporeal",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Uncarnate (Permanently Incorporeal)", "fr": "Sans corps (intangible permanent)" },
-    "description": {
-      "en": "At 10th level, a psion uncarnate becomes a being of pure thought. She becomes permanently incorporeal. She can become corporeal for up to 1 minute per day. While permanently incorporeal, she can still manifest powers and use psionic abilities, but cannot physically interact with the world except through incorporeal touch attacks and the uncarnate bridge ability.",
-      "fr": "Au niveau 10, un psion sans corps devient un être de pure pensée. Il devient définitivement intangible. Il peut devenir corporel pour jusqu'à 1 minute par jour."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "extraordinary", "incorporeal"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psion_uncarnate_manifesting_adv",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psion Uncarnate Manifesting Advancement", "fr": "Avancement de manifestation psion sans corps" },
-    "description": {
-      "en": "At this level, the psion uncarnate advances one manifesting level in his chosen psionic class.",
-      "fr": "À ce niveau, le psion sans corps avance d'un niveau de manifestation dans sa classe psionique choisie."
-    },
-    "tags": ["class_feature", "psion_uncarnate", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psionic_fist_monk_abilities",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Monk Abilities", "fr": "Capacités de moine" },
-    "description": {
-      "en": "Psionic fist levels stack with monk levels for unarmed damage, AC bonus, and unarmored speed bonus. They do NOT stack for flurry of blows, slow fall, or any other monk-specific abilities. A monk/psionic fist can continue advancing as a monk without penalty.",
-      "fr": "Les niveaux de poing psionique se cumulent avec les niveaux de moine pour les dégâts à mains nues, le bonus de CA et le bonus de vitesse sans armure. Ils ne se cumulent PAS pour le torrent de coups, la chute lente, ou d'autres capacités spécifiques au moine."
-    },
-    "tags": ["class_feature", "psionic_fist", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psionic_fist_power_points",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Power Points (Psionic Fist)", "fr": "Points de pouvoir (poing psionique)" },
-    "description": {
-      "en": "The psionic fist maintains an independent power point reserve from the psychic warrior power list. Key ability is Wisdom. Power point totals: L1=1, L2=3, L3=6, L4=10, L5=15, L6=23, L7=31, L8=43, L9=55, L10=71.",
-      "fr": "Le poing psionique maintient une réserve de points de pouvoir indépendante issus de la liste des pouvoirs du guerrier psychique. La caractéristique clé est la Sagesse."
-    },
-    "tags": ["class_feature", "psionic_fist", "power_points"],
-    "grantedModifiers": [
-      {
-        "id": "psionic_fist_pp_wis_bonus",
-        "sourceId": "class_feature_psionic_fist_power_points",
-        "sourceName": { "en": "Psionic Fist Wisdom Bonus PP", "fr": "Poing psionique bonus PP Sagesse" },
-        "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wisdom.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psionic_fist_powers_known",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powers Known (Psionic Fist)", "fr": "Pouvoirs connus (poing psionique)" },
-    "description": {
-      "en": "The psionic fist knows powers from the psychic warrior power list. She begins with 1 power known at 1st level and gains 1 additional power at each level thereafter. Maximum power level: 1st at levels 1-2, 2nd at levels 3-4, 3rd at levels 5-6, 4th at levels 7-8, 5th at levels 9-10.",
-      "fr": "Le poing psionique connaît des pouvoirs de la liste des pouvoirs du guerrier psychique. Il commence avec 1 pouvoir connu au niveau 1 et en gagne 1 supplémentaire à chaque niveau."
-    },
-    "tags": ["class_feature", "psionic_fist", "powers_known"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psionic_fist_bonus_feat_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Psionic Feat (5th level)", "fr": "Don psionique supplémentaire (niveau 5)" },
-    "description": {
-      "en": "At 5th level, the psionic fist gains a bonus psionic feat. She must meet the prerequisites for this feat.",
-      "fr": "Au niveau 5, le poing psionique obtient un don psionique supplémentaire en remplissant ses conditions."
-    },
-    "tags": ["class_feature", "psionic_fist", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psionic_fist_bonus_feat_1",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_psionic_fist_bonus_feat_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bonus Psionic Feat (10th level)", "fr": "Don psionique supplémentaire (niveau 10)" },
-    "description": {
-      "en": "At 10th level, the psionic fist gains a second bonus psionic feat.",
-      "fr": "Au niveau 10, le poing psionique obtient un deuxième don psionique supplémentaire."
-    },
-    "tags": ["class_feature", "psionic_fist", "bonus_feat"],
-    "choices": [
-      {
-        "choiceId": "psionic_fist_bonus_feat_2",
-        "label": { "en": "Choose a psionic feat", "fr": "Choisissez un don psionique" },
-        "optionsQuery": "tag:psionic OR tag:metapsionic",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_fire_lash",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Fire Lash", "fr": "Fouet de feu" },
-    "description": {
-      "en": "At 1st level, a pyrokineticist gains the ability to create a 15-foot-long whip of fire from unstable ectoplasm as a free action. The fire lash deals 1d8 points of fire damage with a successful ranged touch attack. It has a range increment of 15 feet and a maximum range of 15 feet. The ability costs 1 power point per round.",
-      "fr": "Au niveau 1, un pyrocinéticiste peut créer un fouet de feu de 4,5m de long à partir d'ectoplasme instable comme action gratuite. Le fouet de feu inflige 1d8 points de dégâts de feu avec une attaque de contact à distance réussie. Coûte 1 point de pouvoir par round."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "free", "resourceCost": { "targetId": "resources.power_points", "cost": 1 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_fire_adaptation",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Fire Adaptation", "fr": "Adaptation au feu" },
-    "description": {
-      "en": "At 2nd level, a pyrokineticist becomes resistant to fire, getting a +4 bonus on saving throws against fire spells and effects and gaining fire resistance 10. This increases to a +8 bonus and fire resistance 20 at 7th level.",
-      "fr": "Au niveau 2, un pyrocinéticiste devient résistant au feu, gagnant un bonus de +4 aux jets de sauvegarde contre les sorts et effets de feu et une résistance au feu 10. Passe à +8 et résistance au feu 20 au niveau 7."
-    },
-    "tags": ["class_feature", "pyrokineticist", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "pyro_fire_adaptation_save",
-        "sourceId": "class_feature_pyro_fire_adaptation",
-        "sourceName": { "en": "Fire Adaptation", "fr": "Adaptation au feu" },
-        "targetId": "saves.fortitude",
-        "value": 4,
-        "type": "racial",
-        "situationalContext": "vs_fire_spells_and_effects"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_hand_afire",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Hand Afire", "fr": "Main en feu" },
-    "description": {
-      "en": "At 2nd level, a pyrokineticist can activate this ability as a free action, surrounding her hand in flames. Her unarmed attacks deal an extra 2d6 points of fire damage. Costs 2 power points per round.",
-      "fr": "Au niveau 2, un pyrocinéticiste peut activer cette capacité par une action gratuite, enveloppant sa main dans les flammes. Ses attaques à mains nues infligent 2d6 points de dégâts de feu supplémentaires. Coûte 2 points de pouvoir par round."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "free", "resourceCost": { "targetId": "resources.power_points", "cost": 2 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_bolt_of_fire",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Bolt of Fire", "fr": "Éclair de feu" },
-    "description": {
-      "en": "Starting at 3rd level, a pyrokineticist can project a bolt of fire up to 60 feet as a standard action. The bolt deals 1d6 points of fire damage per class level with a successful ranged touch attack. Costs 3 power points.",
-      "fr": "À partir du niveau 3, un pyrocinéticiste peut projeter un éclair de feu jusqu'à 18m par une action simple. L'éclair inflige 1d6 points de dégâts de feu par niveau de classe avec une attaque de contact à distance réussie. Coûte 3 points de pouvoir."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "standard", "resourceCost": { "targetId": "resources.power_points", "cost": 3 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_weapon_afire",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Weapon Afire", "fr": "Arme en feu" },
-    "description": {
-      "en": "At 4th level, a pyrokineticist can activate this ability as a free action, surrounding any weapon she holds with flames. The weapon deals an extra 2d6 points of fire damage. Costs 2 power points per round.",
-      "fr": "Au niveau 4, un pyrocinéticiste peut activer cette capacité par une action gratuite, entourant toute arme qu'il tient de flammes. L'arme inflige 2d6 points de dégâts de feu supplémentaires. Coûte 2 points de pouvoir par round."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "free", "resourceCost": { "targetId": "resources.power_points", "cost": 2 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_nimbus",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Nimbus", "fr": "Nimbe" },
-    "description": {
-      "en": "At 5th level, once per day, a pyrokineticist can activate a powerful nimbus of psychokinetic fire. While active (up to 1 minute per level), the nimbus grants: +4 Charisma, 2d6 fire damage to any creature that touches or hits her in melee, DR 5/magic. Costs 7 power points.",
-      "fr": "Au niveau 5, une fois par jour, un pyrocinéticiste peut activer un puissant nimbe de feu psychocinétique. Tant qu'il est actif (jusqu'à 1 minute par niveau), le nimbe accorde : +4 Charisme, 2d6 dégâts de feu à toute créature qui le touche ou le frappe en mêlée, RD 5/magie."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "standard", "resourceCost": { "targetId": "resources.power_points", "cost": 7 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_firewalk",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Firewalk", "fr": "Marche sur le feu" },
-    "description": {
-      "en": "Beginning at 6th level, a pyrokineticist can expend her psionic focus as a free action and move through the air at her normal land speed on a thin layer of superheated air (hovering 1 foot above the surface). Costs 1 power point per round.",
-      "fr": "À partir du niveau 6, un pyrocinéticiste peut dépenser sa concentration psionique par une action gratuite et se déplacer dans les airs à sa vitesse terrestre normale sur une fine couche d'air surchauffé. Coûte 1 point de pouvoir par round."
-    },
-    "tags": ["class_feature", "pyrokineticist", "supernatural"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_fear_no_fire",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Fear No Fire", "fr": "Intrépidité face au feu" },
-    "description": {
-      "en": "At 7th level, a pyrokineticist's fire adaptation upgrades. She now gains a +8 bonus on saving throws against fire spells and effects and has fire resistance 20.",
-      "fr": "Au niveau 7, l'adaptation au feu d'un pyrocinéticiste s'améliore. Il obtient maintenant un bonus de +8 aux jets de sauvegarde contre les sorts et effets de feu et une résistance au feu 20."
-    },
-    "tags": ["class_feature", "pyrokineticist", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "pyro_fear_no_fire_save",
-        "sourceId": "class_feature_pyro_fear_no_fire",
-        "sourceName": { "en": "Fear No Fire", "fr": "Intrépidité face au feu" },
-        "targetId": "saves.fortitude",
-        "value": 4,
-        "type": "racial",
-        "situationalContext": "vs_fire_spells_and_effects"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_greater_weapon_afire",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Greater Weapon Afire", "fr": "Arme en feu supérieure" },
-    "description": {
-      "en": "At 8th level, a pyrokineticist's hand afire, weapon afire, and nimbus features all deal an extra +4d6 fire damage instead of +2d6.",
-      "fr": "Au niveau 8, les capacités main en feu, arme en feu et nimbe du pyrocinéticiste infligent toutes +4d6 dégâts de feu supplémentaires au lieu de +2d6."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_heat_death",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Heat Death", "fr": "Mort par la chaleur" },
-    "description": {
-      "en": "At 9th level, as a full attack action, a pyrokineticist can attempt to incinerate an opponent. The target must make a Fortitude save (DC 14 + Charisma modifier) or die. Even on a successful save, the target takes 4d8 points of fire damage. Costs psionic focus.",
-      "fr": "Au niveau 9, par une action d'attaque complète, un pyrocinéticiste peut tenter d'incinérer un adversaire. La cible doit effectuer un jet de Vigueur (DD 14 + modificateur de Charisme) ou mourir. Même en cas de réussite, elle subit 4d8 points de dégâts de feu."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "full_round" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_pyro_conflagration",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Conflagration", "fr": "Conflagration" },
-    "description": {
-      "en": "At 10th level, once per day, a pyrokineticist can create an instantaneous 30-foot-radius burst of fire. The burst deals 15d6 points of fire damage. Reflex save (DC 15 + Charisma modifier) for half. On a failed Reflex save, the target must also succeed on a Fortitude save (same DC) or die from the intense heat.",
-      "fr": "Au niveau 10, une fois par jour, un pyrocinéticiste peut créer une explosion instantanée de feu d'un rayon de 9m. L'explosion inflige 15d6 points de dégâts de feu. Réflexes (DD 15 + modificateur de Charisme) pour la moitié. En cas d'échec au jet de Réflexes, la cible doit aussi réussir un jet de Vigueur (même DD) ou mourir."
-    },
-    "tags": ["class_feature", "pyrokineticist", "psionic_like"],
-    "activation": { "actionType": "standard" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_favored_enemy_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Favored Enemy +2 (Psionic)", "fr": "Ennemi de prédilection +2 (psionique)" },
-    "description": {
-      "en": "At 1st level, a slayer gains a +2 bonus on Bluff, Listen, Sense Motive, Spot, and Survival checks AND attack and damage rolls against one type of psionic creature or aberration declared as his favored enemy. Must declare this enemy when gaining the feature. Bonus increases to +4 at 4th level, +6 at 7th, +8 at 10th.",
-      "fr": "Au niveau 1, un pourfendeur gagne un bonus de +2 aux tests de Bluff, Écoute, Psychologie, Observation et Survie ET aux jets d'attaque et de dégâts contre un type de créature psionique ou d'aberration déclaré comme son ennemi de prédilection."
-    },
-    "tags": ["class_feature", "slayer", "extraordinary"],
-    "choices": [
-      {
-        "choiceId": "slayer_favored_enemy_type",
-        "label": { "en": "Favored Enemy (Psionic creature type)", "fr": "Ennemi de prédilection (type de créature psionique)" },
-        "optionsQuery": "tag:psionic_creature_type",
-        "maxSelections": 1
-      }
-    ],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_favored_enemy_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Favored Enemy +4 (Psionic)", "fr": "Ennemi de prédilection +4 (psionique)" },
-    "description": {
-      "en": "At 4th level, the slayer's favored enemy bonus increases to +4.",
-      "fr": "Au niveau 4, le bonus d'ennemi de prédilection du pourfendeur passe à +4."
-    },
-    "tags": ["class_feature", "slayer", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_favored_enemy_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Favored Enemy +6 (Psionic)", "fr": "Ennemi de prédilection +6 (psionique)" },
-    "description": {
-      "en": "At 7th level, the slayer's favored enemy bonus increases to +6.",
-      "fr": "Au niveau 7, le bonus d'ennemi de prédilection du pourfendeur passe à +6."
-    },
-    "tags": ["class_feature", "slayer", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_favored_enemy_4",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Favored Enemy +8 (Psionic)", "fr": "Ennemi de prédilection +8 (psionique)" },
-    "description": {
-      "en": "At 10th level, the slayer's favored enemy bonus increases to +8.",
-      "fr": "Au niveau 10, le bonus d'ennemi de prédilection du pourfendeur passe à +8."
-    },
-    "tags": ["class_feature", "slayer", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_enemy_sense",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Enemy Sense", "fr": "Sens de l'ennemi" },
-    "description": {
-      "en": "A slayer can sense the presence of her favored enemy within 60 feet (even through walls and other barriers), although this does not reveal their exact location. This ability is always active as long as the slayer is psionically focused.",
-      "fr": "Un pourfendeur peut détecter la présence de son ennemi de prédilection à moins de 18m (même à travers les murs), bien que cela ne révèle pas leur emplacement exact. Cette capacité est toujours active tant que le pourfendeur est concentré psioniquement."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_brain_nausea",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Brain Nausea", "fr": "Nausée cérébrale" },
-    "description": {
-      "en": "At 2nd level, a slayer has developed a distaste for eating brains (mindflayer diet). Any creature attempting to eat the slayer's brain must make a Will save (DC 15 + slayer class level) or become disinclined to do so for 24 hours. This is active even when the slayer is unconscious, stunned, or helpless.",
-      "fr": "Au niveau 2, un pourfendeur a développé une répulsion pour manger des cerveaux. Toute créature tentant de manger le cerveau du pourfendeur doit effectuer un jet de Volonté (DD 15 + niveau de classe) ou être découragée pour 24 heures."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_lucid_buffer",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Lucid Buffer", "fr": "Tampon lucide" },
-    "description": {
-      "en": "At 3rd level, a slayer gains a +4 competence bonus on all saving throws against compulsions and mind-affecting effects. Active even while unconscious, stunned, or helpless.",
-      "fr": "Au niveau 3, un pourfendeur gagne un bonus de compétence de +4 à tous les jets de sauvegarde contre les contraintes et les effets affectant l'esprit. Actif même en état inconscient, étourdi ou sans défense."
-    },
-    "tags": ["class_feature", "slayer", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "slayer_lucid_buffer",
-        "sourceId": "class_feature_slayer_lucid_buffer",
-        "sourceName": { "en": "Lucid Buffer", "fr": "Tampon lucide" },
-        "targetId": "saves.will",
-        "value": 4,
-        "type": "competence",
-        "situationalContext": "vs_compulsions_and_mind_affecting"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_cerebral_blind",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebral Blind", "fr": "Aveugle cérébral" },
-    "description": {
-      "en": "At 6th level, a slayer is protected from being found via clairsentience powers and location-revealing effects such as bend reality, limited wish, miracle, reality revision, and wish when used for location. Only metafaculty can pierce this protection. Active while psionically focused.",
-      "fr": "Au niveau 6, un pourfendeur est protégé d'être trouvé via les pouvoirs de clairsentience et les effets révélant la localisation tels que tordre la réalité, souhait limité, miracle, révision de la réalité et souhait utilisés pour la localisation. Actif tant que concentré psioniquement."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_breach_power_resistance",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Breach Power Resistance", "fr": "Brèche dans la résistance aux pouvoirs" },
-    "description": {
-      "en": "At 8th level, each successful melee or ranged attack (up to 30 feet) the slayer makes against a creature with power resistance reduces that creature's PR by 1. All PR is restored 12 hours after the slayer last struck the creature. Active while psionically focused.",
-      "fr": "Au niveau 8, chaque attaque de mêlée ou de tir réussie (jusqu'à 9m) que le pourfendeur effectue contre une créature avec résistance aux pouvoirs réduit sa RP de 1. Toute la RP est restaurée 12 heures après le dernier coup. Actif tant que concentré psioniquement."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_cerebral_immunity",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Cerebral Immunity", "fr": "Immunité cérébrale" },
-    "description": {
-      "en": "At 9th level, a slayer becomes immune to all mind-influencing psionic powers, effects, and spells, including wish, miracle, and reality revision when used to influence his mind. He can selectively allow any such power or effect to influence him. Active while psionically focused.",
-      "fr": "Au niveau 9, un pourfendeur devient immunisé contre tous les pouvoirs psioniques, effets et sorts affectant l'esprit, y compris souhait, miracle et révision de la réalité utilisés pour influencer son esprit. Il peut sélectivement permettre à tout pouvoir ou effet de l'influencer. Actif tant que concentré psioniquement."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_blast_feedback",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Blast Feedback", "fr": "Retour de l'assaut" },
-    "description": {
-      "en": "At 10th level, if a slayer successfully saves against a mind blast, the mind blast rebounds back to the attacker. The attacker must make a Will save against the original DC or be affected normally by the mind blast.",
-      "fr": "Au niveau 10, si un pourfendeur réussit son jet de sauvegarde contre une explosion mentale, l'explosion rebondit sur l'attaquant. L'attaquant doit effectuer un jet de Volonté contre le DD original ou être affecté normalement par l'explosion mentale."
-    },
-    "tags": ["class_feature", "slayer", "supernatural"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_slayer_manifesting_adv",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Slayer Manifesting Advancement", "fr": "Avancement de manifestation du pourfendeur" },
-    "description": {
-      "en": "At this level, the slayer advances one manifesting level in his chosen psionic class. Available at levels 2-10 (9 of 10 levels).",
-      "fr": "À ce niveau, le pourfendeur avance d'un niveau de manifestation dans sa classe psionique choisie. Disponible aux niveaux 2-10 (9 des 10 niveaux)."
-    },
-    "tags": ["class_feature", "slayer", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_thrallherd_thrallherd",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Thrallherd", "fr": "Maître des esclaves" },
-    "description": {
-      "en": "At 1st level, a thrallherd gains a leadership-like ability to attract a thrall (cohort-equivalent) and followers (believers). Thrallherd's score = character level + Cha modifier + thrallherd class level (counted twice). The thrall's max level = total character level –1. A thrallherd cannot also have the Leadership feat. Thralls and believers arrive within 24 hours and are replaced within 24 hours if lost.",
-      "fr": "Au niveau 1, un maître des esclaves gagne une capacité similaire au don Meneur pour attirer un serviteur (équivalent compagnon) et des disciples (croyants). Score du maître des esclaves = niveau du personnage + modificateur de Charisme + niveau de classe de maître des esclaves (compté deux fois)."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_thrallherd_psionic_charm",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psionic Charm", "fr": "Charme psionique" },
-    "description": {
-      "en": "At 3rd level, the thrallherd adds psionic charm to her list of powers known (if not already known) and can manifest it once per day at reduced cost: the power point cost is reduced by the thrallherd's class level, minimum 1 power point.",
-      "fr": "Au niveau 3, le maître des esclaves ajoute charme psionique à sa liste de pouvoirs connus (s'il ne l'est pas déjà) et peut le manifester une fois par jour à coût réduit : le coût en PP est réduit du niveau de classe du maître des esclaves, minimum 1 PP."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": ["power_charm_person_psionic"]
-  },
-  {
-    "id": "class_feature_thrallherd_psionic_dominate",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Psionic Dominate", "fr": "Domination psionique" },
-    "description": {
-      "en": "At 5th level, the thrallherd adds psionic dominate to her list of powers known (if not already known) and can manifest it once per day at reduced cost: the power point cost is reduced by the thrallherd's class level, minimum 1 power point.",
-      "fr": "Au niveau 5, le maître des esclaves ajoute domination psionique à sa liste de pouvoirs connus et peut la manifester une fois par jour à coût réduit."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": ["power_dominate_psionic"]
-  },
-  {
-    "id": "class_feature_thrallherd_greater_dominate",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Greater Dominate", "fr": "Domination supérieure" },
-    "description": {
-      "en": "At 7th level, a thrallherd's psionic dominate power no longer requires the 2 extra power points normally needed to affect animals, fey, giants, magical beasts, or monstrous humanoids.",
-      "fr": "Au niveau 7, le pouvoir de domination psionique d'un maître des esclaves ne nécessite plus les 2 points de pouvoir supplémentaires normalement nécessaires pour affecter les animaux, les fées, les géants, les bêtes magiques ou les humanoïdes monstrueux."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_thrallherd_superior_dominate",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Superior Dominate", "fr": "Domination absolue" },
-    "description": {
-      "en": "At 9th level, a thrallherd's psionic dominate power no longer requires the additional power points to affect aberrations, dragons, elementals, or outsiders (in addition to the creature types from Greater Dominate).",
-      "fr": "Au niveau 9, le pouvoir de domination psionique d'un maître des esclaves ne nécessite plus les points de pouvoir supplémentaires pour affecter les aberrations, les dragons, les élémentaires ou les Extérieurs (en plus des types de créatures de Domination supérieure)."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_thrallherd_twofold_master",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Twofold Master", "fr": "Maître au carré" },
-    "description": {
-      "en": "At 10th level, a thrallherd can attract a second thrall. This second thrall's maximum level equals the thrallherd's class level minus 2.",
-      "fr": "Au niveau 10, un maître des esclaves peut attirer un deuxième serviteur. Le niveau maximum de ce deuxième serviteur est égal au niveau de classe du maître des esclaves moins 2."
-    },
-    "tags": ["class_feature", "thrallherd", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_thrallherd_manifesting_adv",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Thrallherd Manifesting Advancement", "fr": "Avancement de manifestation du maître des esclaves" },
-    "description": {
-      "en": "At this level, the thrallherd advances one manifesting level in his chosen psionic class. Available at levels 2-9 (8 of 10 levels).",
-      "fr": "À ce niveau, le maître des esclaves avance d'un niveau de manifestation dans sa classe psionique choisie. Disponible aux niveaux 2-9 (8 des 10 niveaux)."
-    },
-    "tags": ["class_feature", "thrallherd", "manifesting_advancement"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_chain_personal_superiority_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Chain of Personal Superiority +2", "fr": "Chaîne de supériorité personnelle +2" },
-    "description": {
-      "en": "At 1st level, as a free action, a war mind can use this effect up to 3 times per day to grant himself a +2 insight bonus to both Strength and Constitution for up to 1 minute. This bonus upgrades to +4 at 7th level.",
-      "fr": "Au niveau 1, par une action gratuite, un esprit guerrier peut utiliser cet effet jusqu'à 3 fois par jour pour s'accorder un bonus de perspicacité de +2 à la Force et à la Constitution pendant jusqu'à 1 minute. Ce bonus passe à +4 au niveau 7."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_chain_personal_superiority_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Chain of Personal Superiority +4", "fr": "Chaîne de supériorité personnelle +4" },
-    "description": {
-      "en": "At 7th level, the war mind's chain of personal superiority insight bonus increases to +4 Strength and +4 Constitution.",
-      "fr": "Au niveau 7, le bonus de perspicacité de la chaîne de supériorité personnelle de l'esprit guerrier passe à +4 Force et +4 Constitution."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_chain_defensive_posture_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Chain of Defensive Posture +2", "fr": "Chaîne de posture défensive +2" },
-    "description": {
-      "en": "At 2nd level, as a free action, a war mind can use this effect up to 3 times per day to grant himself a +2 insight bonus to Armor Class for up to 1 minute. This upgrades to +4 at 8th level.",
-      "fr": "Au niveau 2, par une action gratuite, un esprit guerrier peut utiliser cet effet jusqu'à 3 fois par jour pour s'accorder un bonus de perspicacité de +2 à la Classe d'armure pendant jusqu'à 1 minute."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_chain_defensive_posture_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Chain of Defensive Posture +4", "fr": "Chaîne de posture défensive +4" },
-    "description": {
-      "en": "At 8th level, the war mind's chain of defensive posture insight bonus increases to +4.",
-      "fr": "Au niveau 8, le bonus de perspicacité de la chaîne de posture défensive de l'esprit guerrier passe à +4."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_enduring_body_1",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Enduring Body DR 1/—", "fr": "Corps endurant RD 1/—" },
-    "description": {
-      "en": "At 3rd level, a war mind's skin toughens and gains damage reduction 1/—. This increases to DR 2/— at 6th level and DR 3/— at 9th level.",
-      "fr": "Au niveau 3, la peau de l'esprit guerrier se renforce et gagne une réduction des dégâts 1/—. Passe à RD 2/— au niveau 6 et RD 3/— au niveau 9."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "war_mind_dr_1",
-        "sourceId": "class_feature_war_mind_enduring_body_1",
-        "sourceName": { "en": "Enduring Body DR 1/—", "fr": "Corps endurant RD 1/—" },
-        "targetId": "combatStats.damage_reduction",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_enduring_body_2",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Enduring Body DR 2/—", "fr": "Corps endurant RD 2/—" },
-    "description": {
-      "en": "At 6th level, the war mind's damage reduction increases to DR 2/—.",
-      "fr": "Au niveau 6, la réduction des dégâts de l'esprit guerrier passe à RD 2/—."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "war_mind_dr_2",
-        "sourceId": "class_feature_war_mind_enduring_body_2",
-        "sourceName": { "en": "Enduring Body DR 2/—", "fr": "Corps endurant RD 2/—" },
-        "targetId": "combatStats.damage_reduction",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_enduring_body_3",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Enduring Body DR 3/—", "fr": "Corps endurant RD 3/—" },
-    "description": {
-      "en": "At 9th level, the war mind's damage reduction increases to DR 3/—.",
-      "fr": "Au niveau 9, la réduction des dégâts de l'esprit guerrier passe à RD 3/—."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [
-      {
-        "id": "war_mind_dr_3",
-        "sourceId": "class_feature_war_mind_enduring_body_3",
-        "sourceName": { "en": "Enduring Body DR 3/—", "fr": "Corps endurant RD 3/—" },
-        "targetId": "combatStats.damage_reduction",
-        "value": 1,
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_sweeping_strike",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Sweeping Strike", "fr": "Frappe balayante" },
-    "description": {
-      "en": "Beginning at 5th level, any melee attack a war mind makes (including attacks of opportunity and attacks from Cleave) applies to two adjacent threatened squares simultaneously. The war mind attacks both positions with a single attack roll, applying the attack to both. He cannot use Sweeping Strike if he has moved more than 10 feet since the end of his last turn.",
-      "fr": "À partir du niveau 5, toute attaque de mêlée d'un esprit guerrier (y compris les attaques d'opportunité et les attaques de la capacité Fendre) s'applique simultanément à deux cases adjacentes menacées."
-    },
-    "tags": ["class_feature", "war_mind", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_chain_overwhelming_force",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Chain of Overwhelming Force", "fr": "Chaîne de force dévastatrice" },
-    "description": {
-      "en": "At 10th level, once per day, a war mind can use this ability as a free action. The next successful attack he makes in the same round deals an extra 10d6 points of damage. If the attack misses, this ability is wasted.",
-      "fr": "Au niveau 10, une fois par jour, un esprit guerrier peut utiliser cette capacité par une action gratuite. La prochaine attaque réussie qu'il effectue dans le même round inflige 10d6 points de dégâts supplémentaires. Si l'attaque rate, la capacité est gaspillée."
-    },
-    "tags": ["class_feature", "war_mind", "supernatural"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_power_points",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Power Points (War Mind)", "fr": "Points de pouvoir (esprit guerrier)" },
-    "description": {
-      "en": "The war mind maintains an independent power point reserve from the psychic warrior power list. Key ability is Wisdom. Power point totals by level: 2, 5, 9, 14, 20, 28, 37, 47, 58, 70.",
-      "fr": "L'esprit guerrier maintient une réserve de points de pouvoir indépendante issues de la liste des pouvoirs du guerrier psychique. La caractéristique clé est la Sagesse."
-    },
-    "tags": ["class_feature", "war_mind", "power_points"],
-    "grantedModifiers": [
-      {
-        "id": "war_mind_pp_wis_bonus",
-        "sourceId": "class_feature_war_mind_power_points",
-        "sourceName": { "en": "War Mind Wisdom Bonus PP", "fr": "Esprit guerrier bonus PP Sagesse" },
-        "targetId": "resources.power_points.maxValue",
-        "value": "@attributes.stat_wisdom.derivedModifier",
-        "type": "base"
-      }
-    ],
-    "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_war_mind_powers_known",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powers Known (War Mind)", "fr": "Pouvoirs connus (esprit guerrier)" },
-    "description": {
-      "en": "The war mind knows powers from the psychic warrior power list (same list as Psychic Warrior). Knows 1 at level 1; gains 1 new power at levels 2, 4, 6, 8, 10 (5 more = 6 total). Max power level: 1st at levels 1-3, 2nd at levels 4-5, 3rd at levels 6-7, 4th at levels 8-9, 5th at level 10.",
-      "fr": "L'esprit guerrier connaît des pouvoirs de la liste des pouvoirs du guerrier psychique (même liste). Connaît 1 au niveau 1 ; en gagne 1 supplémentaire aux niveaux 2, 4, 6, 8, 10 (5 de plus = 6 au total)."
-    },
-    "tags": ["class_feature", "war_mind", "powers_known"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elan_resistance",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Resistance (Elan)", "fr": "Résistance (élan)" },
-    "description": {
-      "en": "Elans can use psionic energy to increase their resistance to various forms of attack. As an immediate action, an elan can spend 1 power point to gain a +4 racial bonus on saving throws until the beginning of her next action.",
-      "fr": "Les élans peuvent utiliser l'énergie psionique pour augmenter leur résistance à diverses formes d'attaque. Par une action immédiate, un élan peut dépenser 1 point de pouvoir pour gagner un bonus racial de +4 aux jets de sauvegarde jusqu'au début de sa prochaine action."
-    },
-    "tags": ["class_feature", "elan", "supernatural"],
-    "activation": { "actionType": "immediate", "resourceCost": { "targetId": "resources.power_points", "cost": 1 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elan_resilience",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Resilience (Elan)", "fr": "Résilience (élan)" },
-    "description": {
-      "en": "When an elan takes damage, she can spend power points as an immediate action to reduce its severity. She reduces the damage she is about to take by 2 hit points for every 1 power point she spends.",
-      "fr": "Lorsqu'un élan subit des dégâts, il peut dépenser des points de pouvoir par une action immédiate pour en réduire la gravité. Il réduit les dégâts qu'il va subir de 2 points de vie pour chaque 1 point de pouvoir dépensé."
-    },
-    "tags": ["class_feature", "elan", "supernatural"],
-    "activation": { "actionType": "immediate" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "class_feature_elan_repletion",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Repletion (Elan)", "fr": "Repletion (élan)" },
-    "description": {
-      "en": "An elan can sustain her body without need of food or water. If she spends 1 power point, an elan does not need to eat or drink for 24 hours.",
-      "fr": "Un élan peut sustenter son corps sans avoir besoin de nourriture ou d'eau. Si il dépense 1 point de pouvoir, un élan n'a pas besoin de manger ou de boire pendant 24 heures."
-    },
-    "tags": ["class_feature", "elan", "supernatural"],
-    "activation": { "actionType": "free", "resourceCost": { "targetId": "resources.power_points", "cost": 1 } },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "race_feature_half_giant_powerful_build",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Powerful Build (Half-Giant)", "fr": "Stature puissante (demi-géant)" },
-    "description": {
-      "en": "A half-giant functions in many ways as if he were one size category larger. Whenever subject to a size modifier for an opposed check (grapple, bull rush, trip), he is treated as one size larger if advantageous. Also treated as one size larger for special attacks based on size (improved grab, swallow whole). Can use weapons designed for a creature one size larger without penalty.",
-      "fr": "Un demi-géant fonctionne de nombreuses façons comme s'il était d'une catégorie de taille supérieure. Lorsqu'il est soumis à un modificateur de taille pour un test opposé (lutte, bousculade, croc-en-jambe), il est traité comme d'une taille supérieure si avantageux."
-    },
-    "tags": ["class_feature", "half_giant", "extraordinary"],
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "race_feature_maenad_outburst",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Outburst (Maenad)", "fr": "Débordement (ménade)" },
-    "description": {
-      "en": "Once per day, for up to 4 rounds, a maenad can subjugate her mentality to gain a boost of raw physical power. When she does so, she takes a −2 penalty to Intelligence and Wisdom but gains a +2 bonus to Strength.",
-      "fr": "Une fois par jour, pendant jusqu'à 4 rounds, une ménade peut attacher son esprit pour gagner un regain de puissance physique brute. Elle prend une pénalité de −2 à l'Intelligence et à la Sagesse mais gagne un bonus de +2 à la Force."
-    },
-    "tags": ["class_feature", "maenad", "extraordinary"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  },
-  {
-    "id": "race_feature_xeph_burst",
-    "category": "class_feature",
-    "ruleSource": "srd_psionics",
-    "label": { "en": "Burst (Xeph)", "fr": "Accélération (xeph)" },
-    "description": {
-      "en": "Three times per day, a xeph can put on a burst of speed to increase her speed by 10 feet, plus 10 feet per four character levels beyond 1st (to a maximum increase of 30 feet at 9th level). These bursts are a competence bonus to base speed. A burst of speed lasts 3 rounds.",
-      "fr": "Trois fois par jour, un xeph peut effectuer une accélération pour augmenter sa vitesse de 3m, plus 3m par quatre niveaux de personnage au-delà du premier (maximum +9m au niveau 9). Ces accélérations sont un bonus de compétence à la vitesse de base. Dure 3 rounds."
-    },
-    "tags": ["class_feature", "xeph", "supernatural"],
-    "activation": { "actionType": "free" },
-    "grantedModifiers": [], "grantedFeatures": []
-  }
-]
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L3)",
+        "fr": "Avancement dual cérébromanicien (N3)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L4)",
+        "fr": "Avancement dual cérébromanicien (N4)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L5)",
+        "fr": "Avancement dual cérébromanicien (N5)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_6",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L6)",
+        "fr": "Avancement dual cérébromanicien (N6)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_7",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L7)",
+        "fr": "Avancement dual cérébromanicien (N7)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_8",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L8)",
+        "fr": "Avancement dual cérébromanicien (N8)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_9",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L9)",
+        "fr": "Avancement dual cérébromanicien (N9)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_cerebremancer_dual_advancement_10",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebremancer Dual Advancement (L10)",
+        "fr": "Avancement dual cérébromanicien (N10)"
+      },
+      "description": {
+        "en": "Advances both arcane spellcasting and psionic manifesting by one level.",
+        "fr": "Avance à la fois le lancement de sorts arcaniques et la manifestation psionique d'un niveau."
+      },
+      "tags": [
+        "class_feature",
+        "cerebremancer",
+        "spellcasting_advancement",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_scorn_earth",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Scorn Earth",
+        "fr": "Mépris de la terre"
+      },
+      "description": {
+        "en": "At 1st level, an elocater's feet lift from the ground. From now on, she can float a foot above the ground. Instead of walking, she glides along, unconcerned with the hard earth or difficult terrain. Although she remains subject to winds and other forces (including the effect of psionic powers), difficult terrain (including stairs) poses no impediment to her movement. At 10th level, she can levitate herself to great heights — she can rise at 10 feet per round as a move action and descend at 10 feet per round as a free action, with no upper limit. She can still make melee and ranged attacks normally while hovering within 10 feet of a surface.",
+        "fr": "Au niveau 1, les pieds d'un élocataire se lèvent du sol. Il peut désormais flotter à 30 cm au-dessus du sol. Les terrains difficiles (y compris les escaliers) ne constituent aucun obstacle pour son déplacement. Au niveau 10, il peut se léviter à de grandes hauteurs."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_sidestep_charge",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Sidestep Charge (Bonus Feat)",
+        "fr": "Esquive de charge (don supplémentaire)"
+      },
+      "description": {
+        "en": "At 1st level, an elocater gains Sidestep Charge as a bonus feat, even if she does not meet the prerequisites.",
+        "fr": "Au niveau 1, un élocataire obtient Esquive de charge comme don supplémentaire, même s'il ne remplit pas les conditions requises."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "bonus_feat"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "feat_sidestep_charge"
+      ]
+    },
+    {
+      "id": "class_feature_elocater_manifesting_adv",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Elocater Manifesting Advancement",
+        "fr": "Avancement de manifestation de l'élocataire"
+      },
+      "description": {
+        "en": "At this level, the elocater advances one manifesting level in his chosen psionic class. He gains power points per day, powers known, and manifester level as if he had gained one level in that class.",
+        "fr": "À ce niveau, l'élocataire avance d'un niveau de manifestation dans sa classe psionique choisie."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_opportunistic_strike_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Opportunistic Strike +2",
+        "fr": "Attaque opportuniste +2"
+      },
+      "description": {
+        "en": "Starting at 2nd level, an elocater gains an insight bonus on attack rolls and damage rolls made against an opponent that she has damaged with a melee attack since her last action. The insight bonus is +2 at 2nd level, +4 at 5th level, and +6 at 8th level.",
+        "fr": "À partir du niveau 2, un élocataire gagne un bonus de perspicacité aux jets d'attaque et de dégâts contre un adversaire qu'il a blessé au corps à corps depuis sa dernière action. Le bonus est de +2 au niveau 2, +4 au niveau 5 et +6 au niveau 8."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "elocater_opp_strike_1_attack",
+          "sourceId": "class_feature_elocater_opportunistic_strike_1",
+          "sourceName": {
+            "en": "Opportunistic Strike +2",
+            "fr": "Attaque opportuniste +2"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        },
+        {
+          "id": "elocater_opp_strike_1_damage",
+          "sourceId": "class_feature_elocater_opportunistic_strike_1",
+          "sourceName": {
+            "en": "Opportunistic Strike +2",
+            "fr": "Attaque opportuniste +2"
+          },
+          "targetId": "combatStats.damage_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_opportunistic_strike_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Opportunistic Strike +4",
+        "fr": "Attaque opportuniste +4"
+      },
+      "description": {
+        "en": "At 5th level, the opportunistic strike insight bonus increases to +4 on attack rolls and damage rolls.",
+        "fr": "Au niveau 5, le bonus de perspicacité d'attaque opportuniste passe à +4 aux jets d'attaque et de dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "elocater_opp_strike_2_attack",
+          "sourceId": "class_feature_elocater_opportunistic_strike_2",
+          "sourceName": {
+            "en": "Opportunistic Strike +4",
+            "fr": "Attaque opportuniste +4"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        },
+        {
+          "id": "elocater_opp_strike_2_damage",
+          "sourceId": "class_feature_elocater_opportunistic_strike_2",
+          "sourceName": {
+            "en": "Opportunistic Strike +4",
+            "fr": "Attaque opportuniste +4"
+          },
+          "targetId": "combatStats.damage_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_opportunistic_strike_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Opportunistic Strike +6",
+        "fr": "Attaque opportuniste +6"
+      },
+      "description": {
+        "en": "At 8th level, the opportunistic strike insight bonus increases to +6 on attack rolls and damage rolls.",
+        "fr": "Au niveau 8, le bonus de perspicacité d'attaque opportuniste passe à +6 aux jets d'attaque et de dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "elocater_opp_strike_3_attack",
+          "sourceId": "class_feature_elocater_opportunistic_strike_3",
+          "sourceName": {
+            "en": "Opportunistic Strike +6",
+            "fr": "Attaque opportuniste +6"
+          },
+          "targetId": "combatStats.attack_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        },
+        {
+          "id": "elocater_opp_strike_3_damage",
+          "sourceId": "class_feature_elocater_opportunistic_strike_3",
+          "sourceName": {
+            "en": "Opportunistic Strike +6",
+            "fr": "Attaque opportuniste +6"
+          },
+          "targetId": "combatStats.damage_bonus",
+          "value": 2,
+          "type": "insight",
+          "situationalContext": "vs_opponent_already_damaged_this_turn"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_dimension_step",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Dimension Step",
+        "fr": "Pas dimensionnel"
+      },
+      "description": {
+        "en": "Beginning at 3rd level, an elocater can slip psionically between spaces as if using the psionic dimension door power, once per day. The manifester level for this ability is equal to the elocater's class level. The elocater can affect only herself and objects she carries with this ability.",
+        "fr": "À partir du niveau 3, un élocataire peut se glisser psioniquement entre les espaces comme si il utilisait le pouvoir de porte dimensionnelle psionique, une fois par jour. Le niveau de manifestation pour cette capacité est égal au niveau de classe de l'élocataire."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.elocater_dimension_step_uses",
+          "cost": 1
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_flanker",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Flanker",
+        "fr": "En tenaille"
+      },
+      "description": {
+        "en": "At 4th level and higher, an elocater can designate any adjacent square as the square from which flanking against an opponent is determined (instead of using her actual square). She must have line of sight to the square she designates. She makes this designation at the start of her action.",
+        "fr": "À partir du niveau 4, un élocataire peut désigner n'importe quelle case adjacente comme la case à partir de laquelle la mise en tenaille est déterminée. Il doit avoir une ligne de vue sur la case qu'il désigne."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_transporter",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Transporter",
+        "fr": "Transporteur"
+      },
+      "description": {
+        "en": "At 6th level, an elocater adds psionic teleport and psionic plane shift to her list of powers known, treating them as 3rd-level powers (5 power points each). These are in addition to her normally allowed powers known.",
+        "fr": "Au niveau 6, un élocataire ajoute téléportation psionique et transfert planaire psionique à sa liste de pouvoirs connus, en les traitant comme des pouvoirs de 3ème niveau (5 points de pouvoir chacun). Ceux-ci s'ajoutent aux pouvoirs connus normalement autorisés."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "power_psionic_teleport",
+        "power_plane_shift_psionic"
+      ]
+    },
+    {
+      "id": "class_feature_elocater_capricious_step",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Capricious Step",
+        "fr": "Pas capricieux"
+      },
+      "description": {
+        "en": "At 7th level, an elocater can take an extra 5-foot step in a round, for a maximum of two 5-foot steps in that round. She can take the extra 5-foot step at any point during the round — both 5-foot steps can occur in the same phase, or one in each phase. Neither of the 5-foot steps provokes attacks of opportunity.",
+        "fr": "Au niveau 7, un élocataire peut effectuer un déplacement de 1,5m supplémentaire dans un round, pour un maximum de deux déplacements de 1,5m dans ce round. Ni l'un ni l'autre des déplacements de 1,5m ne provoque d'attaques d'opportunité."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_dimension_spring_attack",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Dimension Spring Attack",
+        "fr": "Attaque en bond dimensionnel"
+      },
+      "description": {
+        "en": "At 9th level, an elocater can use her dimension step ability (see above) in conjunction with the Spring Attack feat. She can teleport up to 60 feet (instead of the normal dimension step distance) to appear next to an opponent, make the spring attack, then teleport back. This uses the dimension step ability for the day.",
+        "fr": "Au niveau 9, un élocataire peut utiliser sa capacité de pas dimensionnel en conjonction avec le don Attaque en bond. Il peut se téléporter jusqu'à 18m pour apparaître à côté d'un adversaire, faire l'attaque en bond, puis se téléporter en retour."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.elocater_dimension_step_uses",
+          "cost": 1
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elocater_accelerated_action",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Accelerated Action",
+        "fr": "Action accélérée"
+      },
+      "description": {
+        "en": "At 10th level, an elocater can accelerate herself and act more quickly than normal for up to 5 rounds per day. On her turn, she can take an extra attack at her full attack bonus, move an extra 30 feet, or cast/manifest an extra spell or power of 3rd level or lower. She also gains a +2 dodge bonus to Armor Class, a +2 bonus on attack rolls, and a +2 bonus on Reflex saves during the accelerated rounds.",
+        "fr": "Au niveau 10, un élocataire peut s'accélérer et agir plus rapidement jusqu'à 5 rounds par jour. À son tour, il peut effectuer une attaque supplémentaire à son bonus d'attaque complet, se déplacer de 9m supplémentaires, ou lancer/manifester un sort ou pouvoir supplémentaire de niveau 3 ou moins."
+      },
+      "tags": [
+        "class_feature",
+        "elocater",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_free_manifesting_1st",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Manifesting (1st-level)",
+        "fr": "Manifestation gratuite (niveau 1)"
+      },
+      "description": {
+        "en": "At 1st level, a metamind can manifest any 1st-level power she knows without paying its power point cost (3 times per day). The power points are not spent. She can still pay extra power points for augmentation as desired; only the base cost is free.",
+        "fr": "Au niveau 1, un méta-esprit peut manifester tout pouvoir de 1er niveau connu sans payer son coût en points de pouvoir (3 fois par jour). Les points de pouvoir ne sont pas dépensés."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_free_manifesting_2nd",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Manifesting (2nd-level)",
+        "fr": "Manifestation gratuite (niveau 2)"
+      },
+      "description": {
+        "en": "At 3rd level, a metamind can manifest any 2nd-level power she knows without paying its power point cost (3 times per day).",
+        "fr": "Au niveau 3, un méta-esprit peut manifester tout pouvoir de 2ème niveau connu sans payer son coût en points de pouvoir (3 fois par jour)."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_free_manifesting_3rd",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Manifesting (3rd-level)",
+        "fr": "Manifestation gratuite (niveau 3)"
+      },
+      "description": {
+        "en": "At 5th level, a metamind can manifest any 3rd-level power once per day without paying its power point cost.",
+        "fr": "Au niveau 5, un méta-esprit peut manifester tout pouvoir de 3ème niveau une fois par jour sans payer son coût en points de pouvoir."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_free_manifesting_4th",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Manifesting (4th-level)",
+        "fr": "Manifestation gratuite (niveau 4)"
+      },
+      "description": {
+        "en": "At 7th level, a metamind can manifest any 4th-level power once per day without paying its power point cost.",
+        "fr": "Au niveau 7, un méta-esprit peut manifester tout pouvoir de 4ème niveau une fois par jour sans payer son coût en points de pouvoir."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_free_manifesting_5th",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Free Manifesting (5th-level)",
+        "fr": "Manifestation gratuite (niveau 5)"
+      },
+      "description": {
+        "en": "At 9th level, a metamind can manifest any 5th-level power once per day without paying its power point cost.",
+        "fr": "Au niveau 9, un méta-esprit peut manifester tout pouvoir de 5ème niveau une fois par jour sans payer son coût en points de pouvoir."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_cognizance_5",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cognizance Psicrystal (5 PP)",
+        "fr": "Psicristal de clairvoyance (5 PP)"
+      },
+      "description": {
+        "en": "At 2nd level, a metamind's psicrystal gains a stored pool of 5 power points (in addition to its normal psicrystal powers). These power points are available to the metamind as a separate power point source.",
+        "fr": "Au niveau 2, le psicristal d'un méta-esprit gagne une réserve stockée de 5 points de pouvoir (en plus de ses capacités normales de psicristal)."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_cognizance_7",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cognizance Psicrystal (7 PP)",
+        "fr": "Psicristal de clairvoyance (7 PP)"
+      },
+      "description": {
+        "en": "At 4th level, the metamind's cognizance psicrystal upgrades to store 7 power points.",
+        "fr": "Au niveau 4, le psicristal de clairvoyance du méta-esprit passe à 7 points de pouvoir stockés."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_cognizance_9",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cognizance Psicrystal (9 PP)",
+        "fr": "Psicristal de clairvoyance (9 PP)"
+      },
+      "description": {
+        "en": "At 6th level, the metamind's cognizance psicrystal upgrades to store 9 power points.",
+        "fr": "Au niveau 6, le psicristal de clairvoyance du méta-esprit passe à 9 points de pouvoir stockés."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_cognizance_11",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cognizance Psicrystal (11 PP)",
+        "fr": "Psicristal de clairvoyance (11 PP)"
+      },
+      "description": {
+        "en": "At 8th level, the metamind's cognizance psicrystal upgrades to store 11 power points.",
+        "fr": "Au niveau 8, le psicristal de clairvoyance du méta-esprit passe à 11 points de pouvoir stockés."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_manifesting_adv",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Metamind Manifesting Advancement",
+        "fr": "Avancement de manifestation méta-esprit"
+      },
+      "description": {
+        "en": "At this level (even-numbered levels 2, 4, 6, 8, 10), the metamind advances one manifesting level in his chosen psionic class.",
+        "fr": "À ce niveau (niveaux pairs 2, 4, 6, 8, 10), le méta-esprit avance d'un niveau de manifestation dans sa classe psionique choisie."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_metamind_font_of_power",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Font of Power",
+        "fr": "Source de pouvoir"
+      },
+      "description": {
+        "en": "At 10th level, once per day for up to 1 minute, a metamind can tap a virtually unlimited font of psionic energy. While active, she manifests any power from her list of powers known without paying its power point cost (no augmentation points needed either). Her eyes shine like stars during use. If she enters a metaconcert while this ability is active, her power point reserve is accessed as normal for pool purposes.",
+        "fr": "Au niveau 10, une fois par jour pendant jusqu'à 1 minute, un méta-esprit peut puiser dans une source de pouvoir pratiquement illimitée. Tant qu'elle est active, il manifeste tout pouvoir de sa liste sans payer son coût en points de pouvoir. Ses yeux brillent comme des étoiles."
+      },
+      "tags": [
+        "class_feature",
+        "metamind",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_incorporeal_touch_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Incorporeal Touch 1d6",
+        "fr": "Toucher intangible 1d6"
+      },
+      "description": {
+        "en": "Beginning at 1st level, a psion uncarnate can make up to three incorporeal touch attacks per day that deal 1d6 points of damage each, dealing half damage on a miss. Against corporeal targets, this is an incorporeal touch (bypasses all armor but not Dex or shield bonus). Against incorporeal targets, it is a normal attack. The psion uncarnate's Strength modifier does not apply to this attack. While uncarnate (after 2nd level), she can make touch attacks at will (no longer limited to 3/day).",
+        "fr": "À partir du niveau 1, un psion sans corps peut effectuer jusqu'à trois attaques de contact intangible par jour infligeant chacune 1d6 points de dégâts. Contre des cibles corporelles, c'est un contact intangible (ignore toutes les armures). Contre des cibles intangibles, c'est une attaque normale."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "standard"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_uncarnate_armor",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Uncarnate Armor",
+        "fr": "Armure sans corps"
+      },
+      "description": {
+        "en": "A psion uncarnate wearing armor is so in tune with it that armor's bonus to Armor Class applies even when she becomes incorporeal (normally, armor does not protect incorporeal creatures). Any armor the uncarnate wears still grants its full normal armor bonus to AC when incorporeal.",
+        "fr": "Un psion sans corps portant une armure est tellement en harmonie avec elle que le bonus d'armure à la CA s'applique même lorsqu'il devient intangible."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_shed_body_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Shed Body 1/day",
+        "fr": "Abandonner le corps 1/jour"
+      },
+      "description": {
+        "en": "Starting at 2nd level, a psion uncarnate can become incorporeal (her body fades from view) once per day as a standard action. While incorporeal, she can fly at her normal land speed with perfect maneuverability. She gains a +1 bonus on the save DC of all powers she manifests while uncarnate. She can stay incorporeal for up to 1 minute at a time. Her material armor still grants its armor bonus while incorporeal.",
+        "fr": "À partir du niveau 2, un psion sans corps peut devenir intangible (son corps disparaît de la vue) une fois par jour par une action simple. En état intangible, il peut voler à sa vitesse terrestre normale avec une maniabilité parfaite et gagne +1 au DD de sauvegarde de tous ses pouvoirs."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "standard"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_shed_body_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Shed Body 2/day",
+        "fr": "Abandonner le corps 2/jour"
+      },
+      "description": {
+        "en": "At 6th level, the psion uncarnate can become incorporeal twice per day.",
+        "fr": "Au niveau 6, le psion sans corps peut devenir intangible deux fois par jour."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_assume_equipment",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Assume Equipment",
+        "fr": "Assumer l'équipement"
+      },
+      "description": {
+        "en": "Beginning at 3rd level, a psion uncarnate can designate up to her psion uncarnate class level in worn or carried items to become incorporeal along with her when she sheds her body. Designated items pass through physical matter normally. Nondesignated items fall to the ground in her space when she sheds her body.",
+        "fr": "À partir du niveau 3, un psion sans corps peut désigner jusqu'à un nombre d'objets portés ou transportés égal à son niveau de classe pour qu'ils deviennent intangibles avec lui lorsqu'il abandonne son corps."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_assume_likeness",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Assume Likeness",
+        "fr": "Prendre une apparence"
+      },
+      "description": {
+        "en": "At 4th level, while incorporeal, a psion uncarnate can assume the likeness of any Small, Medium-size, or Large creature as a standard action. This grants a +10 circumstance bonus on Disguise checks and +4 more if reading the creature's mind with a mind-reading power.",
+        "fr": "Au niveau 4, en état intangible, un psion sans corps peut prendre l'apparence de toute créature de petite, moyenne ou grande taille par une action simple. Cela accorde un bonus de circonstance de +10 aux tests de Déguisement."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_incorporeal_touch_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Incorporeal Touch 2d6",
+        "fr": "Toucher intangible 2d6"
+      },
+      "description": {
+        "en": "At 5th level, the psion uncarnate's incorporeal touch increases to deal 2d6 points of damage.",
+        "fr": "Au niveau 5, le toucher intangible du psion sans corps passe à 2d6 points de dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_incorporeal_touch_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Incorporeal Touch 3d6",
+        "fr": "Toucher intangible 3d6"
+      },
+      "description": {
+        "en": "At 9th level, the psion uncarnate's incorporeal touch increases to deal 3d6 points of damage.",
+        "fr": "Au niveau 9, le toucher intangible du psion sans corps passe à 3d6 points de dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_telekinetic_force",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Telekinetic Force",
+        "fr": "Force télékinésique"
+      },
+      "description": {
+        "en": "At 7th level, while incorporeal, a psion uncarnate can use a telekinetic force effect as a standard action (no attack of opportunity). While corporeal, she can use this ability 3 times per day. The save DC is 14 + key ability modifier.",
+        "fr": "Au niveau 7, en état intangible, un psion sans corps peut utiliser un effet de force télékinésique par une action simple (sans attaque d'opportunité). En état corporel, il peut utiliser cette capacité 3 fois par jour. DD = 14 + modificateur de caractéristique clé."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "standard"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_uncarnate_bridge",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Uncarnate Bridge",
+        "fr": "Pont sans corps"
+      },
+      "description": {
+        "en": "At 8th level, once per day, while incorporeal, a psion uncarnate can enter any living creature with an Intelligence score (move action, no AoO) and then pass to any other living creature with an Intelligence score within line of sight. She can exit destructively: Will save (DC 15 + key ability mod) or target takes 10d6 damage.",
+        "fr": "Au niveau 8, une fois par jour, en état intangible, un psion sans corps peut entrer dans n'importe quelle créature vivante avec une valeur d'Intelligence. Il peut sortir de manière destructive : jet de Volonté (DD 15 + mod. caractéristique clé) ou la cible subit 10d6 dégâts."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "move"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_permanently_incorporeal",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Uncarnate (Permanently Incorporeal)",
+        "fr": "Sans corps (intangible permanent)"
+      },
+      "description": {
+        "en": "At 10th level, a psion uncarnate becomes a being of pure thought. She becomes permanently incorporeal. She can become corporeal for up to 1 minute per day. While permanently incorporeal, she can still manifest powers and use psionic abilities, but cannot physically interact with the world except through incorporeal touch attacks and the uncarnate bridge ability.",
+        "fr": "Au niveau 10, un psion sans corps devient un être de pure pensée. Il devient définitivement intangible. Il peut devenir corporel pour jusqu'à 1 minute par jour."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "extraordinary",
+        "incorporeal"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psion_uncarnate_manifesting_adv",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psion Uncarnate Manifesting Advancement",
+        "fr": "Avancement de manifestation psion sans corps"
+      },
+      "description": {
+        "en": "At this level, the psion uncarnate advances one manifesting level in his chosen psionic class.",
+        "fr": "À ce niveau, le psion sans corps avance d'un niveau de manifestation dans sa classe psionique choisie."
+      },
+      "tags": [
+        "class_feature",
+        "psion_uncarnate",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psionic_fist_monk_abilities",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Monk Abilities",
+        "fr": "Capacités de moine"
+      },
+      "description": {
+        "en": "Psionic fist levels stack with monk levels for unarmed damage, AC bonus, and unarmored speed bonus. They do NOT stack for flurry of blows, slow fall, or any other monk-specific abilities. A monk/psionic fist can continue advancing as a monk without penalty.",
+        "fr": "Les niveaux de poing psionique se cumulent avec les niveaux de moine pour les dégâts à mains nues, le bonus de CA et le bonus de vitesse sans armure. Ils ne se cumulent PAS pour le torrent de coups, la chute lente, ou d'autres capacités spécifiques au moine."
+      },
+      "tags": [
+        "class_feature",
+        "psionic_fist",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psionic_fist_power_points",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Power Points (Psionic Fist)",
+        "fr": "Points de pouvoir (poing psionique)"
+      },
+      "description": {
+        "en": "The psionic fist maintains an independent power point reserve from the psychic warrior power list. Key ability is Wisdom. Power point totals: L1=1, L2=3, L3=6, L4=10, L5=15, L6=23, L7=31, L8=43, L9=55, L10=71.",
+        "fr": "Le poing psionique maintient une réserve de points de pouvoir indépendante issus de la liste des pouvoirs du guerrier psychique. La caractéristique clé est la Sagesse."
+      },
+      "tags": [
+        "class_feature",
+        "psionic_fist",
+        "power_points"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "psionic_fist_pp_wis_bonus",
+          "sourceId": "class_feature_psionic_fist_power_points",
+          "sourceName": {
+            "en": "Psionic Fist Wisdom Bonus PP",
+            "fr": "Poing psionique bonus PP Sagesse"
+          },
+          "targetId": "resources.power_points.maxValue",
+          "value": "@attributes.stat_wisdom.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psionic_fist_powers_known",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powers Known (Psionic Fist)",
+        "fr": "Pouvoirs connus (poing psionique)"
+      },
+      "description": {
+        "en": "The psionic fist knows powers from the psychic warrior power list. She begins with 1 power known at 1st level and gains 1 additional power at each level thereafter. Maximum power level: 1st at levels 1-2, 2nd at levels 3-4, 3rd at levels 5-6, 4th at levels 7-8, 5th at levels 9-10.",
+        "fr": "Le poing psionique connaît des pouvoirs de la liste des pouvoirs du guerrier psychique. Il commence avec 1 pouvoir connu au niveau 1 et en gagne 1 supplémentaire à chaque niveau."
+      },
+      "tags": [
+        "class_feature",
+        "psionic_fist",
+        "powers_known"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psionic_fist_bonus_feat_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Psionic Feat (5th level)",
+        "fr": "Don psionique supplémentaire (niveau 5)"
+      },
+      "description": {
+        "en": "At 5th level, the psionic fist gains a bonus psionic feat. She must meet the prerequisites for this feat.",
+        "fr": "Au niveau 5, le poing psionique obtient un don psionique supplémentaire en remplissant ses conditions."
+      },
+      "tags": [
+        "class_feature",
+        "psionic_fist",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psionic_fist_bonus_feat_1",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_psionic_fist_bonus_feat_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bonus Psionic Feat (10th level)",
+        "fr": "Don psionique supplémentaire (niveau 10)"
+      },
+      "description": {
+        "en": "At 10th level, the psionic fist gains a second bonus psionic feat.",
+        "fr": "Au niveau 10, le poing psionique obtient un deuxième don psionique supplémentaire."
+      },
+      "tags": [
+        "class_feature",
+        "psionic_fist",
+        "bonus_feat"
+      ],
+      "choices": [
+        {
+          "choiceId": "psionic_fist_bonus_feat_2",
+          "label": {
+            "en": "Choose a psionic feat",
+            "fr": "Choisissez un don psionique"
+          },
+          "optionsQuery": "tag:psionic OR tag:metapsionic",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_fire_lash",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Fire Lash",
+        "fr": "Fouet de feu"
+      },
+      "description": {
+        "en": "At 1st level, a pyrokineticist gains the ability to create a 15-foot-long whip of fire from unstable ectoplasm as a free action. The fire lash deals 1d8 points of fire damage with a successful ranged touch attack. It has a range increment of 15 feet and a maximum range of 15 feet. The ability costs 1 power point per round.",
+        "fr": "Au niveau 1, un pyrocinéticiste peut créer un fouet de feu de 4,5m de long à partir d'ectoplasme instable comme action gratuite. Le fouet de feu inflige 1d8 points de dégâts de feu avec une attaque de contact à distance réussie. Coûte 1 point de pouvoir par round."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 1
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_fire_adaptation",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Fire Adaptation",
+        "fr": "Adaptation au feu"
+      },
+      "description": {
+        "en": "At 2nd level, a pyrokineticist becomes resistant to fire, getting a +4 bonus on saving throws against fire spells and effects and gaining fire resistance 10. This increases to a +8 bonus and fire resistance 20 at 7th level.",
+        "fr": "Au niveau 2, un pyrocinéticiste devient résistant au feu, gagnant un bonus de +4 aux jets de sauvegarde contre les sorts et effets de feu et une résistance au feu 10. Passe à +8 et résistance au feu 20 au niveau 7."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "pyro_fire_adaptation_save",
+          "sourceId": "class_feature_pyro_fire_adaptation",
+          "sourceName": {
+            "en": "Fire Adaptation",
+            "fr": "Adaptation au feu"
+          },
+          "targetId": "saves.fortitude",
+          "value": 4,
+          "type": "racial",
+          "situationalContext": "vs_fire_spells_and_effects"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_hand_afire",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Hand Afire",
+        "fr": "Main en feu"
+      },
+      "description": {
+        "en": "At 2nd level, a pyrokineticist can activate this ability as a free action, surrounding her hand in flames. Her unarmed attacks deal an extra 2d6 points of fire damage. Costs 2 power points per round.",
+        "fr": "Au niveau 2, un pyrocinéticiste peut activer cette capacité par une action gratuite, enveloppant sa main dans les flammes. Ses attaques à mains nues infligent 2d6 points de dégâts de feu supplémentaires. Coûte 2 points de pouvoir par round."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 2
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_bolt_of_fire",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Bolt of Fire",
+        "fr": "Éclair de feu"
+      },
+      "description": {
+        "en": "Starting at 3rd level, a pyrokineticist can project a bolt of fire up to 60 feet as a standard action. The bolt deals 1d6 points of fire damage per class level with a successful ranged touch attack. Costs 3 power points.",
+        "fr": "À partir du niveau 3, un pyrocinéticiste peut projeter un éclair de feu jusqu'à 18m par une action simple. L'éclair inflige 1d6 points de dégâts de feu par niveau de classe avec une attaque de contact à distance réussie. Coûte 3 points de pouvoir."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 3
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_weapon_afire",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Weapon Afire",
+        "fr": "Arme en feu"
+      },
+      "description": {
+        "en": "At 4th level, a pyrokineticist can activate this ability as a free action, surrounding any weapon she holds with flames. The weapon deals an extra 2d6 points of fire damage. Costs 2 power points per round.",
+        "fr": "Au niveau 4, un pyrocinéticiste peut activer cette capacité par une action gratuite, entourant toute arme qu'il tient de flammes. L'arme inflige 2d6 points de dégâts de feu supplémentaires. Coûte 2 points de pouvoir par round."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 2
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_nimbus",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Nimbus",
+        "fr": "Nimbe"
+      },
+      "description": {
+        "en": "At 5th level, once per day, a pyrokineticist can activate a powerful nimbus of psychokinetic fire. While active (up to 1 minute per level), the nimbus grants: +4 Charisma, 2d6 fire damage to any creature that touches or hits her in melee, DR 5/magic. Costs 7 power points.",
+        "fr": "Au niveau 5, une fois par jour, un pyrocinéticiste peut activer un puissant nimbe de feu psychocinétique. Tant qu'il est actif (jusqu'à 1 minute par niveau), le nimbe accorde : +4 Charisme, 2d6 dégâts de feu à toute créature qui le touche ou le frappe en mêlée, RD 5/magie."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "standard",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 7
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_firewalk",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Firewalk",
+        "fr": "Marche sur le feu"
+      },
+      "description": {
+        "en": "Beginning at 6th level, a pyrokineticist can expend her psionic focus as a free action and move through the air at her normal land speed on a thin layer of superheated air (hovering 1 foot above the surface). Costs 1 power point per round.",
+        "fr": "À partir du niveau 6, un pyrocinéticiste peut dépenser sa concentration psionique par une action gratuite et se déplacer dans les airs à sa vitesse terrestre normale sur une fine couche d'air surchauffé. Coûte 1 point de pouvoir par round."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_fear_no_fire",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Fear No Fire",
+        "fr": "Intrépidité face au feu"
+      },
+      "description": {
+        "en": "At 7th level, a pyrokineticist's fire adaptation upgrades. She now gains a +8 bonus on saving throws against fire spells and effects and has fire resistance 20.",
+        "fr": "Au niveau 7, l'adaptation au feu d'un pyrocinéticiste s'améliore. Il obtient maintenant un bonus de +8 aux jets de sauvegarde contre les sorts et effets de feu et une résistance au feu 20."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "pyro_fear_no_fire_save",
+          "sourceId": "class_feature_pyro_fear_no_fire",
+          "sourceName": {
+            "en": "Fear No Fire",
+            "fr": "Intrépidité face au feu"
+          },
+          "targetId": "saves.fortitude",
+          "value": 4,
+          "type": "racial",
+          "situationalContext": "vs_fire_spells_and_effects"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_greater_weapon_afire",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Greater Weapon Afire",
+        "fr": "Arme en feu supérieure"
+      },
+      "description": {
+        "en": "At 8th level, a pyrokineticist's hand afire, weapon afire, and nimbus features all deal an extra +4d6 fire damage instead of +2d6.",
+        "fr": "Au niveau 8, les capacités main en feu, arme en feu et nimbe du pyrocinéticiste infligent toutes +4d6 dégâts de feu supplémentaires au lieu de +2d6."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_heat_death",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Heat Death",
+        "fr": "Mort par la chaleur"
+      },
+      "description": {
+        "en": "At 9th level, as a full attack action, a pyrokineticist can attempt to incinerate an opponent. The target must make a Fortitude save (DC 14 + Charisma modifier) or die. Even on a successful save, the target takes 4d8 points of fire damage. Costs psionic focus.",
+        "fr": "Au niveau 9, par une action d'attaque complète, un pyrocinéticiste peut tenter d'incinérer un adversaire. La cible doit effectuer un jet de Vigueur (DD 14 + modificateur de Charisme) ou mourir. Même en cas de réussite, elle subit 4d8 points de dégâts de feu."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "full_round"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_pyro_conflagration",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Conflagration",
+        "fr": "Conflagration"
+      },
+      "description": {
+        "en": "At 10th level, once per day, a pyrokineticist can create an instantaneous 30-foot-radius burst of fire. The burst deals 15d6 points of fire damage. Reflex save (DC 15 + Charisma modifier) for half. On a failed Reflex save, the target must also succeed on a Fortitude save (same DC) or die from the intense heat.",
+        "fr": "Au niveau 10, une fois par jour, un pyrocinéticiste peut créer une explosion instantanée de feu d'un rayon de 9m. L'explosion inflige 15d6 points de dégâts de feu. Réflexes (DD 15 + modificateur de Charisme) pour la moitié. En cas d'échec au jet de Réflexes, la cible doit aussi réussir un jet de Vigueur (même DD) ou mourir."
+      },
+      "tags": [
+        "class_feature",
+        "pyrokineticist",
+        "psionic_like"
+      ],
+      "activation": {
+        "actionType": "standard"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_favored_enemy_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Favored Enemy +2 (Psionic)",
+        "fr": "Ennemi de prédilection +2 (psionique)"
+      },
+      "description": {
+        "en": "At 1st level, a slayer gains a +2 bonus on Bluff, Listen, Sense Motive, Spot, and Survival checks AND attack and damage rolls against one type of psionic creature or aberration declared as his favored enemy. Must declare this enemy when gaining the feature. Bonus increases to +4 at 4th level, +6 at 7th, +8 at 10th.",
+        "fr": "Au niveau 1, un pourfendeur gagne un bonus de +2 aux tests de Bluff, Écoute, Psychologie, Observation et Survie ET aux jets d'attaque et de dégâts contre un type de créature psionique ou d'aberration déclaré comme son ennemi de prédilection."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "extraordinary"
+      ],
+      "choices": [
+        {
+          "choiceId": "slayer_favored_enemy_type",
+          "label": {
+            "en": "Favored Enemy (Psionic creature type)",
+            "fr": "Ennemi de prédilection (type de créature psionique)"
+          },
+          "optionsQuery": "tag:psionic_creature_type",
+          "maxSelections": 1
+        }
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_favored_enemy_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Favored Enemy +4 (Psionic)",
+        "fr": "Ennemi de prédilection +4 (psionique)"
+      },
+      "description": {
+        "en": "At 4th level, the slayer's favored enemy bonus increases to +4.",
+        "fr": "Au niveau 4, le bonus d'ennemi de prédilection du pourfendeur passe à +4."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_favored_enemy_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Favored Enemy +6 (Psionic)",
+        "fr": "Ennemi de prédilection +6 (psionique)"
+      },
+      "description": {
+        "en": "At 7th level, the slayer's favored enemy bonus increases to +6.",
+        "fr": "Au niveau 7, le bonus d'ennemi de prédilection du pourfendeur passe à +6."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_favored_enemy_4",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Favored Enemy +8 (Psionic)",
+        "fr": "Ennemi de prédilection +8 (psionique)"
+      },
+      "description": {
+        "en": "At 10th level, the slayer's favored enemy bonus increases to +8.",
+        "fr": "Au niveau 10, le bonus d'ennemi de prédilection du pourfendeur passe à +8."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_enemy_sense",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Enemy Sense",
+        "fr": "Sens de l'ennemi"
+      },
+      "description": {
+        "en": "A slayer can sense the presence of her favored enemy within 60 feet (even through walls and other barriers), although this does not reveal their exact location. This ability is always active as long as the slayer is psionically focused.",
+        "fr": "Un pourfendeur peut détecter la présence de son ennemi de prédilection à moins de 18m (même à travers les murs), bien que cela ne révèle pas leur emplacement exact. Cette capacité est toujours active tant que le pourfendeur est concentré psioniquement."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_brain_nausea",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Brain Nausea",
+        "fr": "Nausée cérébrale"
+      },
+      "description": {
+        "en": "At 2nd level, a slayer has developed a distaste for eating brains (mindflayer diet). Any creature attempting to eat the slayer's brain must make a Will save (DC 15 + slayer class level) or become disinclined to do so for 24 hours. This is active even when the slayer is unconscious, stunned, or helpless.",
+        "fr": "Au niveau 2, un pourfendeur a développé une répulsion pour manger des cerveaux. Toute créature tentant de manger le cerveau du pourfendeur doit effectuer un jet de Volonté (DD 15 + niveau de classe) ou être découragée pour 24 heures."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_lucid_buffer",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Lucid Buffer",
+        "fr": "Tampon lucide"
+      },
+      "description": {
+        "en": "At 3rd level, a slayer gains a +4 competence bonus on all saving throws against compulsions and mind-affecting effects. Active even while unconscious, stunned, or helpless.",
+        "fr": "Au niveau 3, un pourfendeur gagne un bonus de compétence de +4 à tous les jets de sauvegarde contre les contraintes et les effets affectant l'esprit. Actif même en état inconscient, étourdi ou sans défense."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "slayer_lucid_buffer",
+          "sourceId": "class_feature_slayer_lucid_buffer",
+          "sourceName": {
+            "en": "Lucid Buffer",
+            "fr": "Tampon lucide"
+          },
+          "targetId": "saves.will",
+          "value": 4,
+          "type": "competence",
+          "situationalContext": "vs_compulsions_and_mind_affecting"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_cerebral_blind",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebral Blind",
+        "fr": "Aveugle cérébral"
+      },
+      "description": {
+        "en": "At 6th level, a slayer is protected from being found via clairsentience powers and location-revealing effects such as bend reality, limited wish, miracle, reality revision, and wish when used for location. Only metafaculty can pierce this protection. Active while psionically focused.",
+        "fr": "Au niveau 6, un pourfendeur est protégé d'être trouvé via les pouvoirs de clairsentience et les effets révélant la localisation tels que tordre la réalité, souhait limité, miracle, révision de la réalité et souhait utilisés pour la localisation. Actif tant que concentré psioniquement."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_breach_power_resistance",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Breach Power Resistance",
+        "fr": "Brèche dans la résistance aux pouvoirs"
+      },
+      "description": {
+        "en": "At 8th level, each successful melee or ranged attack (up to 30 feet) the slayer makes against a creature with power resistance reduces that creature's PR by 1. All PR is restored 12 hours after the slayer last struck the creature. Active while psionically focused.",
+        "fr": "Au niveau 8, chaque attaque de mêlée ou de tir réussie (jusqu'à 9m) que le pourfendeur effectue contre une créature avec résistance aux pouvoirs réduit sa RP de 1. Toute la RP est restaurée 12 heures après le dernier coup. Actif tant que concentré psioniquement."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_cerebral_immunity",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Cerebral Immunity",
+        "fr": "Immunité cérébrale"
+      },
+      "description": {
+        "en": "At 9th level, a slayer becomes immune to all mind-influencing psionic powers, effects, and spells, including wish, miracle, and reality revision when used to influence his mind. He can selectively allow any such power or effect to influence him. Active while psionically focused.",
+        "fr": "Au niveau 9, un pourfendeur devient immunisé contre tous les pouvoirs psioniques, effets et sorts affectant l'esprit, y compris souhait, miracle et révision de la réalité utilisés pour influencer son esprit. Il peut sélectivement permettre à tout pouvoir ou effet de l'influencer. Actif tant que concentré psioniquement."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_blast_feedback",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Blast Feedback",
+        "fr": "Retour de l'assaut"
+      },
+      "description": {
+        "en": "At 10th level, if a slayer successfully saves against a mind blast, the mind blast rebounds back to the attacker. The attacker must make a Will save against the original DC or be affected normally by the mind blast.",
+        "fr": "Au niveau 10, si un pourfendeur réussit son jet de sauvegarde contre une explosion mentale, l'explosion rebondit sur l'attaquant. L'attaquant doit effectuer un jet de Volonté contre le DD original ou être affecté normalement par l'explosion mentale."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "supernatural"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_slayer_manifesting_adv",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Slayer Manifesting Advancement",
+        "fr": "Avancement de manifestation du pourfendeur"
+      },
+      "description": {
+        "en": "At this level, the slayer advances one manifesting level in his chosen psionic class. Available at levels 2-10 (9 of 10 levels).",
+        "fr": "À ce niveau, le pourfendeur avance d'un niveau de manifestation dans sa classe psionique choisie. Disponible aux niveaux 2-10 (9 des 10 niveaux)."
+      },
+      "tags": [
+        "class_feature",
+        "slayer",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_thrallherd_thrallherd",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Thrallherd",
+        "fr": "Maître des esclaves"
+      },
+      "description": {
+        "en": "At 1st level, a thrallherd gains a leadership-like ability to attract a thrall (cohort-equivalent) and followers (believers). Thrallherd's score = character level + Cha modifier + thrallherd class level (counted twice). The thrall's max level = total character level –1. A thrallherd cannot also have the Leadership feat. Thralls and believers arrive within 24 hours and are replaced within 24 hours if lost.",
+        "fr": "Au niveau 1, un maître des esclaves gagne une capacité similaire au don Meneur pour attirer un serviteur (équivalent compagnon) et des disciples (croyants). Score du maître des esclaves = niveau du personnage + modificateur de Charisme + niveau de classe de maître des esclaves (compté deux fois)."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_thrallherd_psionic_charm",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psionic Charm",
+        "fr": "Charme psionique"
+      },
+      "description": {
+        "en": "At 3rd level, the thrallherd adds psionic charm to her list of powers known (if not already known) and can manifest it once per day at reduced cost: the power point cost is reduced by the thrallherd's class level, minimum 1 power point.",
+        "fr": "Au niveau 3, le maître des esclaves ajoute charme psionique à sa liste de pouvoirs connus (s'il ne l'est pas déjà) et peut le manifester une fois par jour à coût réduit : le coût en PP est réduit du niveau de classe du maître des esclaves, minimum 1 PP."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "power_charm_person_psionic"
+      ]
+    },
+    {
+      "id": "class_feature_thrallherd_psionic_dominate",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Psionic Dominate",
+        "fr": "Domination psionique"
+      },
+      "description": {
+        "en": "At 5th level, the thrallherd adds psionic dominate to her list of powers known (if not already known) and can manifest it once per day at reduced cost: the power point cost is reduced by the thrallherd's class level, minimum 1 power point.",
+        "fr": "Au niveau 5, le maître des esclaves ajoute domination psionique à sa liste de pouvoirs connus et peut la manifester une fois par jour à coût réduit."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": [
+        "power_dominate_psionic"
+      ]
+    },
+    {
+      "id": "class_feature_thrallherd_greater_dominate",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Greater Dominate",
+        "fr": "Domination supérieure"
+      },
+      "description": {
+        "en": "At 7th level, a thrallherd's psionic dominate power no longer requires the 2 extra power points normally needed to affect animals, fey, giants, magical beasts, or monstrous humanoids.",
+        "fr": "Au niveau 7, le pouvoir de domination psionique d'un maître des esclaves ne nécessite plus les 2 points de pouvoir supplémentaires normalement nécessaires pour affecter les animaux, les fées, les géants, les bêtes magiques ou les humanoïdes monstrueux."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_thrallherd_superior_dominate",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Superior Dominate",
+        "fr": "Domination absolue"
+      },
+      "description": {
+        "en": "At 9th level, a thrallherd's psionic dominate power no longer requires the additional power points to affect aberrations, dragons, elementals, or outsiders (in addition to the creature types from Greater Dominate).",
+        "fr": "Au niveau 9, le pouvoir de domination psionique d'un maître des esclaves ne nécessite plus les points de pouvoir supplémentaires pour affecter les aberrations, les dragons, les élémentaires ou les Extérieurs (en plus des types de créatures de Domination supérieure)."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_thrallherd_twofold_master",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Twofold Master",
+        "fr": "Maître au carré"
+      },
+      "description": {
+        "en": "At 10th level, a thrallherd can attract a second thrall. This second thrall's maximum level equals the thrallherd's class level minus 2.",
+        "fr": "Au niveau 10, un maître des esclaves peut attirer un deuxième serviteur. Le niveau maximum de ce deuxième serviteur est égal au niveau de classe du maître des esclaves moins 2."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_thrallherd_manifesting_adv",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Thrallherd Manifesting Advancement",
+        "fr": "Avancement de manifestation du maître des esclaves"
+      },
+      "description": {
+        "en": "At this level, the thrallherd advances one manifesting level in his chosen psionic class. Available at levels 2-9 (8 of 10 levels).",
+        "fr": "À ce niveau, le maître des esclaves avance d'un niveau de manifestation dans sa classe psionique choisie. Disponible aux niveaux 2-9 (8 des 10 niveaux)."
+      },
+      "tags": [
+        "class_feature",
+        "thrallherd",
+        "manifesting_advancement"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_chain_personal_superiority_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Chain of Personal Superiority +2",
+        "fr": "Chaîne de supériorité personnelle +2"
+      },
+      "description": {
+        "en": "At 1st level, as a free action, a war mind can use this effect up to 3 times per day to grant himself a +2 insight bonus to both Strength and Constitution for up to 1 minute. This bonus upgrades to +4 at 7th level.",
+        "fr": "Au niveau 1, par une action gratuite, un esprit guerrier peut utiliser cet effet jusqu'à 3 fois par jour pour s'accorder un bonus de perspicacité de +2 à la Force et à la Constitution pendant jusqu'à 1 minute. Ce bonus passe à +4 au niveau 7."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_chain_personal_superiority_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Chain of Personal Superiority +4",
+        "fr": "Chaîne de supériorité personnelle +4"
+      },
+      "description": {
+        "en": "At 7th level, the war mind's chain of personal superiority insight bonus increases to +4 Strength and +4 Constitution.",
+        "fr": "Au niveau 7, le bonus de perspicacité de la chaîne de supériorité personnelle de l'esprit guerrier passe à +4 Force et +4 Constitution."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_chain_defensive_posture_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Chain of Defensive Posture +2",
+        "fr": "Chaîne de posture défensive +2"
+      },
+      "description": {
+        "en": "At 2nd level, as a free action, a war mind can use this effect up to 3 times per day to grant himself a +2 insight bonus to Armor Class for up to 1 minute. This upgrades to +4 at 8th level.",
+        "fr": "Au niveau 2, par une action gratuite, un esprit guerrier peut utiliser cet effet jusqu'à 3 fois par jour pour s'accorder un bonus de perspicacité de +2 à la Classe d'armure pendant jusqu'à 1 minute."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_chain_defensive_posture_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Chain of Defensive Posture +4",
+        "fr": "Chaîne de posture défensive +4"
+      },
+      "description": {
+        "en": "At 8th level, the war mind's chain of defensive posture insight bonus increases to +4.",
+        "fr": "Au niveau 8, le bonus de perspicacité de la chaîne de posture défensive de l'esprit guerrier passe à +4."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_enduring_body_1",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Enduring Body DR 1/—",
+        "fr": "Corps endurant RD 1/—"
+      },
+      "description": {
+        "en": "At 3rd level, a war mind's skin toughens and gains damage reduction 1/—. This increases to DR 2/— at 6th level and DR 3/— at 9th level.",
+        "fr": "Au niveau 3, la peau de l'esprit guerrier se renforce et gagne une réduction des dégâts 1/—. Passe à RD 2/— au niveau 6 et RD 3/— au niveau 9."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "war_mind_dr_1",
+          "sourceId": "class_feature_war_mind_enduring_body_1",
+          "sourceName": {
+            "en": "Enduring Body DR 1/—",
+            "fr": "Corps endurant RD 1/—"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_enduring_body_2",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Enduring Body DR 2/—",
+        "fr": "Corps endurant RD 2/—"
+      },
+      "description": {
+        "en": "At 6th level, the war mind's damage reduction increases to DR 2/—.",
+        "fr": "Au niveau 6, la réduction des dégâts de l'esprit guerrier passe à RD 2/—."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "war_mind_dr_2",
+          "sourceId": "class_feature_war_mind_enduring_body_2",
+          "sourceName": {
+            "en": "Enduring Body DR 2/—",
+            "fr": "Corps endurant RD 2/—"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_enduring_body_3",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Enduring Body DR 3/—",
+        "fr": "Corps endurant RD 3/—"
+      },
+      "description": {
+        "en": "At 9th level, the war mind's damage reduction increases to DR 3/—.",
+        "fr": "Au niveau 9, la réduction des dégâts de l'esprit guerrier passe à RD 3/—."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "war_mind_dr_3",
+          "sourceId": "class_feature_war_mind_enduring_body_3",
+          "sourceName": {
+            "en": "Enduring Body DR 3/—",
+            "fr": "Corps endurant RD 3/—"
+          },
+          "targetId": "combatStats.damage_reduction",
+          "value": 1,
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_sweeping_strike",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Sweeping Strike",
+        "fr": "Frappe balayante"
+      },
+      "description": {
+        "en": "Beginning at 5th level, any melee attack a war mind makes (including attacks of opportunity and attacks from Cleave) applies to two adjacent threatened squares simultaneously. The war mind attacks both positions with a single attack roll, applying the attack to both. He cannot use Sweeping Strike if he has moved more than 10 feet since the end of his last turn.",
+        "fr": "À partir du niveau 5, toute attaque de mêlée d'un esprit guerrier (y compris les attaques d'opportunité et les attaques de la capacité Fendre) s'applique simultanément à deux cases adjacentes menacées."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_chain_overwhelming_force",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Chain of Overwhelming Force",
+        "fr": "Chaîne de force dévastatrice"
+      },
+      "description": {
+        "en": "At 10th level, once per day, a war mind can use this ability as a free action. The next successful attack he makes in the same round deals an extra 10d6 points of damage. If the attack misses, this ability is wasted.",
+        "fr": "Au niveau 10, une fois par jour, un esprit guerrier peut utiliser cette capacité par une action gratuite. La prochaine attaque réussie qu'il effectue dans le même round inflige 10d6 points de dégâts supplémentaires. Si l'attaque rate, la capacité est gaspillée."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_power_points",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Power Points (War Mind)",
+        "fr": "Points de pouvoir (esprit guerrier)"
+      },
+      "description": {
+        "en": "The war mind maintains an independent power point reserve from the psychic warrior power list. Key ability is Wisdom. Power point totals by level: 2, 5, 9, 14, 20, 28, 37, 47, 58, 70.",
+        "fr": "L'esprit guerrier maintient une réserve de points de pouvoir indépendante issues de la liste des pouvoirs du guerrier psychique. La caractéristique clé est la Sagesse."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "power_points"
+      ],
+      "grantedModifiers": [
+        {
+          "id": "war_mind_pp_wis_bonus",
+          "sourceId": "class_feature_war_mind_power_points",
+          "sourceName": {
+            "en": "War Mind Wisdom Bonus PP",
+            "fr": "Esprit guerrier bonus PP Sagesse"
+          },
+          "targetId": "resources.power_points.maxValue",
+          "value": "@attributes.stat_wisdom.derivedModifier",
+          "type": "base"
+        }
+      ],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_war_mind_powers_known",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powers Known (War Mind)",
+        "fr": "Pouvoirs connus (esprit guerrier)"
+      },
+      "description": {
+        "en": "The war mind knows powers from the psychic warrior power list (same list as Psychic Warrior). Knows 1 at level 1; gains 1 new power at levels 2, 4, 6, 8, 10 (5 more = 6 total). Max power level: 1st at levels 1-3, 2nd at levels 4-5, 3rd at levels 6-7, 4th at levels 8-9, 5th at level 10.",
+        "fr": "L'esprit guerrier connaît des pouvoirs de la liste des pouvoirs du guerrier psychique (même liste). Connaît 1 au niveau 1 ; en gagne 1 supplémentaire aux niveaux 2, 4, 6, 8, 10 (5 de plus = 6 au total)."
+      },
+      "tags": [
+        "class_feature",
+        "war_mind",
+        "powers_known"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elan_resistance",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Resistance (Elan)",
+        "fr": "Résistance (élan)"
+      },
+      "description": {
+        "en": "Elans can use psionic energy to increase their resistance to various forms of attack. As an immediate action, an elan can spend 1 power point to gain a +4 racial bonus on saving throws until the beginning of her next action.",
+        "fr": "Les élans peuvent utiliser l'énergie psionique pour augmenter leur résistance à diverses formes d'attaque. Par une action immédiate, un élan peut dépenser 1 point de pouvoir pour gagner un bonus racial de +4 aux jets de sauvegarde jusqu'au début de sa prochaine action."
+      },
+      "tags": [
+        "class_feature",
+        "elan",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "immediate",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 1
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elan_resilience",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Resilience (Elan)",
+        "fr": "Résilience (élan)"
+      },
+      "description": {
+        "en": "When an elan takes damage, she can spend power points as an immediate action to reduce its severity. She reduces the damage she is about to take by 2 hit points for every 1 power point she spends.",
+        "fr": "Lorsqu'un élan subit des dégâts, il peut dépenser des points de pouvoir par une action immédiate pour en réduire la gravité. Il réduit les dégâts qu'il va subir de 2 points de vie pour chaque 1 point de pouvoir dépensé."
+      },
+      "tags": [
+        "class_feature",
+        "elan",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "immediate"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "class_feature_elan_repletion",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Repletion (Elan)",
+        "fr": "Repletion (élan)"
+      },
+      "description": {
+        "en": "An elan can sustain her body without need of food or water. If she spends 1 power point, an elan does not need to eat or drink for 24 hours.",
+        "fr": "Un élan peut sustenter son corps sans avoir besoin de nourriture ou d'eau. Si il dépense 1 point de pouvoir, un élan n'a pas besoin de manger ou de boire pendant 24 heures."
+      },
+      "tags": [
+        "class_feature",
+        "elan",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free",
+        "resourceCost": {
+          "targetId": "resources.power_points",
+          "cost": 1
+        }
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "race_feature_half_giant_powerful_build",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Powerful Build (Half-Giant)",
+        "fr": "Stature puissante (demi-géant)"
+      },
+      "description": {
+        "en": "A half-giant functions in many ways as if he were one size category larger. Whenever subject to a size modifier for an opposed check (grapple, bull rush, trip), he is treated as one size larger if advantageous. Also treated as one size larger for special attacks based on size (improved grab, swallow whole). Can use weapons designed for a creature one size larger without penalty.",
+        "fr": "Un demi-géant fonctionne de nombreuses façons comme s'il était d'une catégorie de taille supérieure. Lorsqu'il est soumis à un modificateur de taille pour un test opposé (lutte, bousculade, croc-en-jambe), il est traité comme d'une taille supérieure si avantageux."
+      },
+      "tags": [
+        "class_feature",
+        "half_giant",
+        "extraordinary"
+      ],
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "race_feature_maenad_outburst",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Outburst (Maenad)",
+        "fr": "Débordement (ménade)"
+      },
+      "description": {
+        "en": "Once per day, for up to 4 rounds, a maenad can subjugate her mentality to gain a boost of raw physical power. When she does so, she takes a −2 penalty to Intelligence and Wisdom but gains a +2 bonus to Strength.",
+        "fr": "Une fois par jour, pendant jusqu'à 4 rounds, une ménade peut attacher son esprit pour gagner un regain de puissance physique brute. Elle prend une pénalité de −2 à l'Intelligence et à la Sagesse mais gagne un bonus de +2 à la Force."
+      },
+      "tags": [
+        "class_feature",
+        "maenad",
+        "extraordinary"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    },
+    {
+      "id": "race_feature_xeph_burst",
+      "category": "class_feature",
+      "ruleSource": "srd_psionics",
+      "label": {
+        "en": "Burst (Xeph)",
+        "fr": "Accélération (xeph)"
+      },
+      "description": {
+        "en": "Three times per day, a xeph can put on a burst of speed to increase her speed by 10 feet, plus 10 feet per four character levels beyond 1st (to a maximum increase of 30 feet at 9th level). These bursts are a competence bonus to base speed. A burst of speed lasts 3 rounds.",
+        "fr": "Trois fois par jour, un xeph peut effectuer une accélération pour augmenter sa vitesse de 3m, plus 3m par quatre niveaux de personnage au-delà du premier (maximum +9m au niveau 9). Ces accélérations sont un bonus de compétence à la vitesse de base. Dure 3 rounds."
+      },
+      "tags": [
+        "class_feature",
+        "xeph",
+        "supernatural"
+      ],
+      "activation": {
+        "actionType": "free"
+      },
+      "grantedModifiers": [],
+      "grantedFeatures": []
+    }
+  ]
+}
