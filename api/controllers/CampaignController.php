@@ -48,10 +48,10 @@ class CampaignController
 
         // GMs see all campaigns; players see campaigns they own
         if ($user['is_game_master']) {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, enabled_rule_sources_json, updated_at FROM campaigns ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, updated_at FROM campaigns ORDER BY updated_at DESC');
             $stmt->execute();
         } else {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, enabled_rule_sources_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
             $stmt->execute([$user['id']]);
         }
 
@@ -59,8 +59,9 @@ class CampaignController
 
         // Decode JSON fields
         foreach ($campaigns as &$c) {
+            $c['chapters']           = json_decode($c['chapters_json'] ?? '[]', true);
             $c['enabledRuleSources'] = json_decode($c['enabled_rule_sources_json'] ?? '[]', true);
-            unset($c['enabled_rule_sources_json']);
+            unset($c['chapters_json'], $c['enabled_rule_sources_json']);
         }
 
         http_response_code(200);
@@ -93,7 +94,7 @@ class CampaignController
             INSERT INTO campaigns (id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ');
-        $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', '[]', '[]', $now]);
+        $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', '["srd_core"]', '[]', $now]);
 
         http_response_code(201);
         echo json_encode(['id' => $id, 'title' => $title, 'ownerId' => $user['id']]);

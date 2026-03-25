@@ -129,7 +129,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'core.character_name':          { en: 'Character Name', fr: 'Nom du personnage' },
   'core.player_name':             { en: 'Player Name', fr: 'Nom du joueur' },
   'core.character_name_placeholder': { en: 'e.g. Thorin Ironforge', fr: 'ex. Thorin Forgefer' },
-  'core.player_name_placeholder': { en: 'Real name of the player', fr: 'Prénom réel du joueur' },
+  'core.player_name_placeholder': { en: 'e.g. Alice, Bob…', fr: 'ex. Alice, Bob…' },
   'core.race':                    { en: 'Race', fr: 'Race' },
   'core.class':                   { en: 'Class', fr: 'Classe' },
   'core.deity':                   { en: 'Deity', fr: 'Divinité' },

@@ -93,6 +93,11 @@ class RulesController
                 continue;
             }
 
+            // Skip the static manifest (it's a list of paths, not a rule source)
+            if ($file->getFilename() === 'manifest.json') {
+                continue;
+            }
+
             // Get path relative to rules dir (e.g., "00_srd_core/00_srd_core_races.json")
             $relativePath = str_replace(
                 [$rulesDir, '\\'],

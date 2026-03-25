@@ -16,6 +16,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { storageManager, apiHeaders } from '$lib/engine/StorageManager';
+  import { dataLoader } from '$lib/engine/DataLoader';
   import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack } from '$lib/components/ui/icons';
   import { ui } from '$lib/i18n/ui-strings';
 
@@ -26,31 +27,63 @@
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
 
+  // ── Rule source file metadata (one entry per JSON file from GET /api/rules/list) ──
   interface RuleSourceFile { path: string; ruleSource: string; entityCount: number; description: string; }
-  let availableSources = $state<RuleSourceFile[]>([]);
-  let loadingError     = $state('');
+  let availableFiles = $state<RuleSourceFile[]>([]);
+  let loadingError   = $state('');
 
   async function loadAvailableSources() {
     try {
       const response = await fetch('/api/rules/list', { credentials: 'include' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      availableSources = await response.json();
+      availableFiles = await response.json();
       loadingError = '';
     } catch (err) {
       loadingError = `Could not load rule sources: ${err}`;
-      availableSources = [];
+      availableFiles = [];
     }
   }
 
   $effect(() => { if (sessionContext.isGameMaster) loadAvailableSources(); });
 
-  let enabledSources = $state<string[]>([...engine.settings.enabledRuleSources]);
-  let dragSrcIndex   = $state<number | null>(null);
+  /**
+   * Groups the flat file list by `ruleSource` ID (the logical source identifier
+   * from inside each JSON file, e.g. "srd_core", "srd_psionics").
+   * This is the level the DataLoader.loadRuleSources() filter operates on.
+   * Files with ruleSource "unknown" or "?" are omitted (they carry no game data).
+   */
+  interface SourceGroup { id: string; entityCount: number; fileCount: number; }
+  const sourceGroups = $derived.by((): SourceGroup[] => {
+    const map = new Map<string, SourceGroup>();
+    for (const f of availableFiles) {
+      const id = f.ruleSource;
+      if (!id || id === 'unknown' || id === '?' ) continue;
+      const g = map.get(id) ?? { id, entityCount: 0, fileCount: 0 };
+      map.set(id, { ...g, entityCount: g.entityCount + f.entityCount, fileCount: g.fileCount + 1 });
+    }
+    // Return in deterministic order (alphabetically by source ID)
+    return Array.from(map.values()).sort((a, b) => a.id.localeCompare(b.id));
+  });
 
-  function toggleSource(path: string) {
-    enabledSources = enabledSources.includes(path)
-      ? enabledSources.filter(s => s !== path)
-      : [...enabledSources, path];
+  // ── Enabled rule sources — stored as logical source IDs, NOT file paths ──────
+  // Initialised from the campaign's saved enabledRuleSources so that a page
+  // refresh reflects what was last saved to the database.
+  let enabledSources   = $state<string[]>([]);
+  let sourcesInitialised = false;
+  $effect(() => {
+    const sources = campaign?.enabledRuleSources;
+    if (sources && !sourcesInitialised) {
+      enabledSources     = [...sources];
+      sourcesInitialised = true;
+    }
+  });
+
+  let dragSrcIndex = $state<number | null>(null);
+
+  function toggleSource(sourceId: string) {
+    enabledSources = enabledSources.includes(sourceId)
+      ? enabledSources.filter(s => s !== sourceId)
+      : [...enabledSources, sourceId];
   }
 
   function handleDragStart(index: number) { dragSrcIndex = index; }
@@ -124,9 +157,16 @@
   async function saveSettings() {
     if (!isValidJson) return;
     isSaving = true; saveSuccess = '';
+
+    // Apply to in-memory engine state immediately (instant UI feedback)
     engine.settings.enabledRuleSources = [...enabledSources];
-    // Persist variant rule flags to engine settings
     engine.settings.variantRules = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
+
+    // Reload rule sources so character sheet dropdowns reflect new selection
+    dataLoader
+      .loadRuleSources(enabledSources, gmOverridesText)
+      .catch(e => console.warn('[Settings] DataLoader reload failed:', e));
+
     try {
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method: 'PUT',
@@ -139,10 +179,11 @@
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      if (campaign) {
-        campaign.enabledRuleSources = [...enabledSources];
-        campaign.gmGlobalOverrides = gmOverridesText;
-      }
+      // Sync the campaign store so other pages see the updated sources
+      campaignStore.updateCampaign(campaignId, {
+        enabledRuleSources: [...enabledSources],
+        gmGlobalOverrides: gmOverridesText,
+      });
       saveSuccess = 'Settings saved successfully!';
       setTimeout(() => (saveSuccess = ''), 3000);
     } catch (err) {
@@ -204,14 +245,21 @@
       </div>
     {/if}
 
+    <!--
+      Sources are displayed as LOGICAL GROUPS (by ruleSource ID, e.g. "srd_core"),
+      not as individual file paths. A single source ID like "srd_core" covers
+      17 JSON files; enabling it passes that ID to DataLoader.loadRuleSources()
+      which filters all cached entities by their ruleSource field.
+    -->
+
     <!-- Enabled (draggable) sources -->
     {#if enabledSources.length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent">
           <IconChecked size={12} aria-hidden="true" /> Enabled (drag to reorder)
         </p>
-        {#each enabledSources as sourcePath, index}
-          {@const meta = availableSources.find(s => s.path === sourcePath)}
+        {#each enabledSources as sourceId, index}
+          {@const group = sourceGroups.find(g => g.id === sourceId)}
           <div
             class="flex items-center gap-2 px-3 py-2 rounded-lg border border-accent/40 bg-surface-alt
                    cursor-grab active:cursor-grabbing transition-opacity duration-150
@@ -221,20 +269,26 @@
             ondragover={(e) => handleDragOver(e, index)}
             ondragend={handleDragEnd}
             role="listitem"
-            aria-label="{sourcePath} (drag to reorder)"
+            aria-label="{sourceId} (drag to reorder)"
           >
             <span class="text-text-muted shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
             <div class="flex-1 min-w-0">
-              <span class="text-xs font-mono text-text-primary truncate block">{sourcePath}</span>
-              {#if meta}
-                <span class="text-[10px] text-text-muted">{meta.ruleSource} · {meta.entityCount} entities</span>
+              <span class="text-xs font-mono font-semibold text-text-primary truncate block">{sourceId}</span>
+              {#if group}
+                <span class="text-[10px] text-text-muted">
+                  {group.fileCount} file{group.fileCount !== 1 ? 's' : ''} · {group.entityCount} entities
+                </span>
+              {:else}
+                <span class="text-[10px] text-amber-400/80 italic">
+                  Saved source — not found in current file list
+                </span>
               {/if}
             </div>
             <span class="badge-accent shrink-0 text-[10px]">#{index + 1}</span>
             <button
               class="shrink-0 text-xs px-2 py-0.5 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
-              onclick={() => toggleSource(sourcePath)}
-              aria-label="Disable {sourcePath}"
+              onclick={() => toggleSource(sourceId)}
+              aria-label="Disable {sourceId}"
               type="button"
             >Disable</button>
           </div>
@@ -243,24 +297,22 @@
     {/if}
 
     <!-- Available (disabled) sources -->
-    {#if availableSources.filter(s => !enabledSources.includes(s.path)).length > 0}
-      {@const disabledSources = availableSources.filter(s => !enabledSources.includes(s.path))}
+    {#if sourceGroups.filter(g => !enabledSources.includes(g.id)).length > 0}
       <div class="flex flex-col gap-1.5">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted">Available (not loaded)</p>
-        {#each disabledSources as source}
-          <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60">
+        {#each sourceGroups.filter(g => !enabledSources.includes(g.id)) as group}
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60 hover:opacity-100 transition-opacity">
             <span class="text-border shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
             <div class="flex-1 min-w-0">
-              <span class="text-xs font-mono text-text-muted truncate block">{source.path}</span>
-              <span class="text-[10px] text-text-muted">{source.ruleSource} · {source.entityCount} entities</span>
-              {#if source.description}
-                <span class="text-[10px] text-text-muted italic">{source.description}</span>
-              {/if}
+              <span class="text-xs font-mono font-semibold text-text-muted truncate block">{group.id}</span>
+              <span class="text-[10px] text-text-muted">
+                {group.fileCount} file{group.fileCount !== 1 ? 's' : ''} · {group.entityCount} entities
+              </span>
             </div>
             <button
               class="shrink-0 text-xs px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
-              onclick={() => toggleSource(source.path)}
-              aria-label="Enable {source.path}"
+              onclick={() => toggleSource(group.id)}
+              aria-label="Enable {group.id}"
               type="button"
             >Enable</button>
           </div>
@@ -268,7 +320,7 @@
       </div>
     {/if}
 
-    {#if availableSources.length === 0 && !loadingError}
+    {#if sourceGroups.length === 0 && !loadingError}
       <p class="text-xs text-text-muted italic">No rule sources found. Start the PHP API server to load sources.</p>
     {/if}
   </section>

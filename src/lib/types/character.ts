@@ -389,7 +389,7 @@ export interface Character {
   posterUrl?: string;
 
   /**
-   * The real-world name of the player controlling this character.
+   * The name of the player controlling this character (first name, nickname, etc.).
    * Displayed on the Character Card subtitle when `customSubtitle` is absent and
    * the character is a PC (not an NPC).
    */
