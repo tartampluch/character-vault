@@ -47,8 +47,8 @@
   $effect(() => { if (sessionContext.isGameMaster) loadAvailableSources(); });
 
   /**
-   * All unique ruleSource group IDs present in the available file list.
-   * Used for the "Enable all <group>" quick buttons.
+   * All distinct ruleSource group IDs present in the available file list.
+   * Used for the "Enable all / Disable all" quick-toggle buttons.
    */
   const availableGroups = $derived.by((): string[] => {
     const seen = new Set<string>();
@@ -60,13 +60,14 @@
     return Array.from(seen).sort();
   });
 
-  // ── Enabled rule sources — stored as logical source IDs (e.g. "srd_core") ──
-  // The DataLoader.loadRuleSources() filters its feature cache by these IDs.
-  // Individual file paths are NOT stored here — the DataLoader loads every file
-  // it discovers and then filters by ruleSource ID at the feature level.
+  // ── Enabled sources — stored as RELATIVE FILE PATHS ──────────────────────
+  // e.g. ["00_d20srd_core/00_d20srd_core_races.json", "config_tables.json"]
   //
-  // Initialised from the campaign's saved enabledRuleSources so that a page
-  // refresh reflects what was last persisted to the database.
+  // The DataLoader receives these paths and fetches ONLY the listed files.
+  // This gives fine-grained control: the GM can enable individual files
+  // (e.g. disable prestige classes without disabling core rules).
+  //
+  // Initialised from campaign.enabledRuleSources on first load.
   let enabledSources     = $state<string[]>([]);
   let sourcesInitialised = false;
   $effect(() => {
@@ -79,29 +80,26 @@
 
   let dragSrcIndex = $state<number | null>(null);
 
-  /** Toggle a single ruleSource ID (e.g. one specific file's source). */
-  function toggleSource(sourceId: string) {
-    enabledSources = enabledSources.includes(sourceId)
-      ? enabledSources.filter(s => s !== sourceId)
-      : [...enabledSources, sourceId];
+  /** Toggle a single file path on/off. */
+  function toggleFile(path: string) {
+    enabledSources = enabledSources.includes(path)
+      ? enabledSources.filter(p => p !== path)
+      : [...enabledSources, path];
   }
 
   /**
-   * Enable ALL file paths whose ruleSource matches `groupId` in one click.
-   * If every file in the group is already enabled, disables them all (toggle).
+   * Enable or disable ALL files belonging to a ruleSource group in one click.
+   * If ALL group files are already enabled → disables them all (toggle behaviour).
+   * Otherwise → enables all that aren't already enabled.
    */
   function toggleGroup(groupId: string) {
-    const groupSourceIds = availableFiles
-      .filter(f => f.ruleSource === groupId)
-      .map(f => f.ruleSource);   // all the same value, but gives us the distinct ID
-    // De-duplicate: for a group, there is exactly one logical source ID
-    const allEnabled = enabledSources.includes(groupId);
+    const groupPaths = availableFiles.filter(f => f.ruleSource === groupId).map(f => f.path);
+    const allEnabled = groupPaths.every(p => enabledSources.includes(p));
     if (allEnabled) {
-      enabledSources = enabledSources.filter(s => s !== groupId);
+      enabledSources = enabledSources.filter(p => !groupPaths.includes(p));
     } else {
-      if (!enabledSources.includes(groupId)) {
-        enabledSources = [...enabledSources, groupId];
-      }
+      const toAdd = groupPaths.filter(p => !enabledSources.includes(p));
+      enabledSources = [...enabledSources, ...toAdd];
     }
   }
 
@@ -277,103 +275,79 @@
         source in one click.
     -->
 
-    <!-- Quick group toggle buttons -->
+    <!--
+      FILE-BASED RULE SOURCE MANAGER
+      ────────────────────────────────
+      • Each row = one JSON file (maximum granularity).
+      • Files are sorted alphabetically by path (= load order).
+      • Quick-toggle buttons enable/disable all files of a ruleSource group at once.
+      • The DataLoader loads ONLY the enabled files — no ruleSource-ID filtering.
+    -->
+
+    <!-- Quick group enable/disable buttons -->
     {#if availableGroups.length > 0}
       <div class="flex flex-wrap gap-2 py-1">
-        <span class="text-xs text-text-muted self-center shrink-0">Quick enable:</span>
+        <span class="text-xs text-text-muted self-center shrink-0">Quick toggle:</span>
         {#each availableGroups as groupId}
-          {@const isEnabled = enabledSources.includes(groupId)}
+          {@const groupFiles = availableFiles.filter(f => f.ruleSource === groupId)}
+          {@const allOn = groupFiles.length > 0 && groupFiles.every(f => enabledSources.includes(f.path))}
+          {@const someOn = groupFiles.some(f => enabledSources.includes(f.path))}
           <button
             class="text-xs px-2.5 py-1 rounded border transition-colors
-                   {isEnabled
+                   {allOn
                      ? 'border-accent/60 bg-accent/10 text-accent hover:bg-red-950/20 hover:text-red-400 hover:border-red-700/40'
-                     : 'border-border text-text-muted hover:border-green-700/40 hover:bg-green-950/20 hover:text-green-400'}"
+                     : someOn
+                       ? 'border-yellow-600/60 bg-yellow-950/20 text-yellow-400 hover:border-accent/60 hover:bg-accent/10 hover:text-accent'
+                       : 'border-border text-text-muted hover:border-green-700/40 hover:bg-green-950/20 hover:text-green-400'}"
             onclick={() => toggleGroup(groupId)}
-            title="{isEnabled ? 'Disable' : 'Enable'} all files with source: {groupId}"
+            title="{allOn ? 'Disable all' : 'Enable all'} files for: {groupId}"
             type="button"
           >
-            {#if isEnabled}<IconChecked size={11} class="inline mr-0.5" aria-hidden="true" />{/if}{groupId}
+            {#if allOn}<IconChecked size={11} class="inline mr-0.5" aria-hidden="true" />{/if}{groupId}
           </button>
         {/each}
       </div>
     {/if}
 
-    <!-- Enabled files (draggable, ordered by load priority — one row per source ID) -->
-    {#if enabledSources.length > 0}
-      <div class="flex flex-col gap-1.5">
-        <p class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-accent">
-          <IconChecked size={12} aria-hidden="true" /> Enabled (drag to reorder load priority)
+    <!-- Full file list sorted alphabetically — one row per file -->
+    {#if availableFiles.length > 0}
+      {@const enabledSet = new Set(enabledSources)}
+      <div class="flex flex-col gap-1">
+        <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
+          All files — {enabledSources.length} / {availableFiles.length} enabled
         </p>
-        {#each enabledSources as sourceId, index}
-          {@const files = availableFiles.filter(f => f.ruleSource === sourceId)}
+        {#each availableFiles as file}
+          {@const on = enabledSet.has(file.path)}
           <div
-            class="flex flex-col gap-1 px-3 py-2 rounded-lg border border-accent/40 bg-surface-alt
-                   cursor-grab active:cursor-grabbing transition-opacity duration-150
-                   {dragSrcIndex === index ? 'opacity-40 border-dashed' : ''}"
-            draggable="true"
-            ondragstart={() => handleDragStart(index)}
-            ondragover={(e) => handleDragOver(e, index)}
-            ondragend={handleDragEnd}
-            role="listitem"
-            aria-label="{sourceId} (drag to reorder)"
+            class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all duration-150
+                   {on
+                     ? 'border-accent/40 bg-surface-alt'
+                     : 'border-border bg-surface opacity-50 hover:opacity-80'}"
           >
-            <!-- Source header row -->
-            <div class="flex items-center gap-2">
-              <span class="text-text-muted shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
-              <span class="text-xs font-mono font-bold text-accent flex-1 truncate">{sourceId}</span>
-              <span class="badge-accent shrink-0 text-[10px]">#{index + 1}</span>
-              <button
-                class="shrink-0 text-xs px-2 py-0.5 rounded border border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30 transition-colors"
-                onclick={() => toggleSource(sourceId)}
-                aria-label="Disable {sourceId}"
-                type="button"
-              >Disable</button>
-            </div>
-            <!-- Individual files in this source -->
-            {#if files.length > 0}
-              <ul class="ml-6 flex flex-col gap-0.5">
-                {#each files as file}
-                  <li class="flex items-center gap-1.5">
-                    <span class="text-[10px] font-mono text-text-muted truncate flex-1">{file.path}</span>
-                    <span class="text-[10px] text-text-muted/60 shrink-0">{file.entityCount} entities</span>
-                  </li>
-                {/each}
-              </ul>
-            {:else}
-              <p class="ml-6 text-[10px] text-amber-400/80 italic">Saved source — file list not yet loaded from API</p>
-            {/if}
-          </div>
-        {/each}
-      </div>
-    {/if}
+            <!-- ruleSource badge -->
+            <span
+              class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded
+                     {on ? 'bg-accent/15 text-accent' : 'bg-surface-alt text-text-muted'}"
+            >{file.ruleSource}</span>
 
-    <!-- Available (disabled) files — grouped visually but individually shown -->
-    {#if availableGroups.filter(g => !enabledSources.includes(g)).length > 0}
-      <div class="flex flex-col gap-1.5">
-        <p class="text-xs font-semibold uppercase tracking-wider text-text-muted">Available (not loaded)</p>
-        {#each availableGroups.filter(g => !enabledSources.includes(g)) as groupId}
-          {@const files = availableFiles.filter(f => f.ruleSource === groupId)}
-          <div class="flex flex-col gap-1 px-3 py-2 rounded-lg border border-border bg-surface-alt opacity-60 hover:opacity-100 transition-opacity">
-            <!-- Group header -->
-            <div class="flex items-center gap-2">
-              <span class="text-border shrink-0"><IconDragHandle size={14} aria-hidden="true" /></span>
-              <span class="text-xs font-mono font-bold text-text-muted flex-1 truncate">{groupId}</span>
-              <button
-                class="shrink-0 text-xs px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
-                onclick={() => toggleSource(groupId)}
-                aria-label="Enable {groupId}"
-                type="button"
-              >Enable</button>
-            </div>
-            <!-- Individual files -->
-            <ul class="ml-6 flex flex-col gap-0.5">
-              {#each files as file}
-                <li class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-mono text-text-muted/70 truncate flex-1">{file.path}</span>
-                  <span class="text-[10px] text-text-muted/50 shrink-0">{file.entityCount} entities</span>
-                </li>
-              {/each}
-            </ul>
+            <!-- File path -->
+            <span class="flex-1 text-[10px] font-mono truncate {on ? 'text-text-primary' : 'text-text-muted'}">
+              {file.path}
+            </span>
+
+            <!-- Entity count -->
+            <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount}</span>
+
+            <!-- Toggle button -->
+            <button
+              class="shrink-0 text-[10px] px-2 py-0.5 rounded border transition-colors
+                     {on
+                       ? 'border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30'
+                       : 'border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30'}"
+              onclick={() => toggleFile(file.path)}
+              aria-label="{on ? 'Disable' : 'Enable'} {file.path}"
+              type="button"
+            >{on ? 'Disable' : 'Enable'}</button>
           </div>
         {/each}
       </div>
@@ -382,6 +356,7 @@
     {#if availableFiles.length === 0 && !loadingError}
       <p class="text-xs text-text-muted italic">No rule sources found. Start the PHP API server to load sources.</p>
     {/if}
+
   </section>
 
   <!-- ── SECTION 2: VARIANT RULES (Extensions G + H) ─────────────────────── -->

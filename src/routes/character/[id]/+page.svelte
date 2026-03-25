@@ -216,6 +216,25 @@
   const totalLevel = $derived(
     Object.values(engine.character.classLevels).reduce((a, b) => a + b, 0)
   );
+
+  // ===========================================================================
+  // MANUAL SAVE
+  // ===========================================================================
+
+  let saveStatus = $state<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  async function handleManualSave() {
+    saveStatus = 'saving';
+    try {
+      storageManager.saveCharacter(engine.character);
+      await storageManager.saveCharacterToApi(engine.character);
+      saveStatus = 'saved';
+    } catch {
+      saveStatus = 'error';
+    } finally {
+      setTimeout(() => { saveStatus = 'idle'; }, 2000);
+    }
+  }
 </script>
 
 <!--
@@ -278,14 +297,28 @@
 
     </div>
 
-    <!-- Character ID chip (dev utility — always visible for debugging) -->
-    <code
-      class="shrink-0 self-start text-xs text-text-muted bg-surface-alt border border-border rounded px-2 py-0.5 font-mono"
-      aria-label="Character ID"
-      title="Character ID: {engine.character.id}"
-    >
-      {engine.character.id.slice(0, 10)}…
-    </code>
+    <!-- Right side: save button + character ID chip -->
+    <div class="flex items-start gap-2 shrink-0">
+      <button
+        class="btn-primary text-xs px-3 py-1.5 gap-1 disabled:opacity-50"
+        onclick={handleManualSave}
+        disabled={saveStatus === 'saving'}
+        aria-label="Save character"
+        type="button"
+      >
+        {#if saveStatus === 'saving'}Saving…
+        {:else if saveStatus === 'saved'}Saved ✓
+        {:else if saveStatus === 'error'}Error
+        {:else}Save{/if}
+      </button>
+
+      <!-- Character ID chip (dev utility) -->
+      <code
+        class="self-start text-xs text-text-muted bg-surface-alt border border-border rounded px-2 py-0.5 font-mono"
+        aria-label="Character ID"
+        title="Character ID: {engine.character.id}"
+      >{engine.character.id.slice(0, 10)}…</code>
+    </div>
 
   </header>
 

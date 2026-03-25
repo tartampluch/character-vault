@@ -90,13 +90,35 @@ echo "\n";
 // CAMPAIGNS
 // ============================================================
 
+// File-path based rule sources (matches DataLoader's new path-based filtering)
+$srdCorePaths = [
+    'config_tables.json',
+    '00_d20srd_core/00_d20srd_core_races.json',
+    '00_d20srd_core/01_d20srd_core_classes.json',
+    '00_d20srd_core/02_d20srd_core_class_features.json',
+    '00_d20srd_core/03_d20srd_core_feats.json',
+    '00_d20srd_core/04_d20srd_core_skills_config.json',
+    '00_d20srd_core/05_d20srd_core_spells.json',
+    '00_d20srd_core/06_d20srd_core_equipment_weapons.json',
+    '00_d20srd_core/07_d20srd_core_equipment_armor.json',
+    '00_d20srd_core/08_d20srd_core_equipment_goods.json',
+    '00_d20srd_core/09_d20srd_core_config.json',
+    '00_d20srd_core/10_d20srd_core_prestige_classes.json',
+    '00_d20srd_core/11_d20srd_core_prestige_class_features.json',
+    '00_d20srd_core/12_d20srd_core_magic_items.json',
+    '00_d20srd_core/13_d20srd_core_cleric_domains.json',
+    '00_d20srd_core/14_d20srd_core_npc_classes.json',
+    '00_d20srd_core/15_d20srd_core_special_materials.json',
+    '00_d20srd_core/16_d20srd_core_racial_features.json',
+];
+
 $campaigns = [
     [
         'id'                        => 'campaign_001',
         'title'                     => 'Reign of Winter',
         'description'               => 'A campaign of intrigue, ancient evils, and frozen wilderness.',
         'owner_id'                  => 'user_gm_001',
-        'enabled_rule_sources_json' => json_encode(['srd_core']),
+        'enabled_rule_sources_json' => json_encode($srdCorePaths),
         'gm_global_overrides_text'  => '[]',
     ],
     [
@@ -104,7 +126,7 @@ $campaigns = [
         'title'                     => 'The Darklands',
         'description'               => 'A homebrew campaign set in a world of perpetual twilight.',
         'owner_id'                  => 'user_gm_001',
-        'enabled_rule_sources_json' => json_encode(['srd_core']),
+        'enabled_rule_sources_json' => json_encode($srdCorePaths),
         'gm_global_overrides_text'  => '[]',
     ],
 ];

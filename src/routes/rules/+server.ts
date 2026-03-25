@@ -111,10 +111,11 @@ async function collectJsonFiles(dir: string): Promise<string[]> {
       // Recurse into subdirectory
       const subFiles = await collectJsonFiles(fullPath);
       files.push(...subFiles);
-    } else if (entry.endsWith('.json') && entry !== 'manifest.json') {
-      // Include .json files but exclude the manifest itself (it's a meta-file, not a rule source)
-      files.push(fullPath);
-    }
+    } else if (entry.endsWith('.json') && !['manifest.json', 'test_mock.json', 'test_override.json'].includes(entry)) {
+        // Exclude: manifest (meta-file), test_mock and test_override (test-suite only,
+        // not intended for production/API use).
+        files.push(fullPath);
+      }
   }
 
   return files;

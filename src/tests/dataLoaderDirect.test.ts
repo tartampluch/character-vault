@@ -32,7 +32,7 @@
  * @see ARCHITECTURE.md section 17 — Data Override Engine
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { DataLoader } from '$lib/engine/DataLoader';
 import type { ConfigTable } from '$lib/engine/DataLoader';
 import type { Feature } from '$lib/types/feature';
@@ -458,69 +458,229 @@ describe('DataLoader — #processEntity() via direct cache path', () => {
 });
 
 // =============================================================================
-// 8. #filterByEnabledSources() — filter behavior
+// 8. File-path based source filtering
+// =============================================================================
+// The DataLoader now filters by FILE PATH, not by ruleSource ID.
+// enabledSources is a list of relative paths like "00_d20srd_core/races.json".
+// Only files whose sortKey matches an enabled path are fetched and loaded.
+// GM overrides and homebrew are injected separately (always active).
 // =============================================================================
 
-describe('DataLoader — #filterByEnabledSources() via loadRuleSources', () => {
-  it('retains features from enabled sources', async () => {
+describe('DataLoader — file-path based source filtering via loadRuleSources', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('loads entities ONLY from the enabled file path (skips unenabled files)', async () => {
     const loader = new DataLoader();
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
-    }));
 
-    await loader.loadRuleSources(['srd_core'], JSON.stringify([
-      { id: 'feat_core', category: 'feat', ruleSource: 'srd_core', grantedModifiers: [], grantedFeatures: [], tags: [] },
-      { id: 'feat_homebrew', category: 'feat', ruleSource: 'homebrew_custom', grantedModifiers: [], grantedFeatures: [], tags: [] },
-    ]));
+    // Discovery returns TWO files; only races.json is enabled
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/races.json', '/rules/classes.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url === '/rules/races.json') {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            { id: 'race_human', category: 'race', ruleSource: 'srd_core', tags: ['race'], grantedModifiers: [], grantedFeatures: [] },
+          ]),
+        });
+      }
+      if (url === '/rules/classes.json') {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            { id: 'class_fighter', category: 'class', ruleSource: 'srd_core', tags: ['class'], grantedModifiers: [], grantedFeatures: [] },
+          ]),
+        });
+      }
+      return Promise.reject(new Error(`Unexpected fetch: ${url}`));
+    });
+    vi.stubGlobal('fetch', mockFetch);
 
-    expect(loader.getFeature('feat_core')).toBeDefined();
-    expect(loader.getFeature('feat_homebrew')).toBeUndefined(); // Filtered out
-    vi.unstubAllGlobals();
+    // Only enable races.json
+    await loader.loadRuleSources(['races.json']);
+
+    expect(loader.getFeature('race_human')).toBeDefined();      // enabled
+    expect(loader.getFeature('class_fighter')).toBeUndefined(); // not enabled
+    expect(mockFetch).toHaveBeenCalledWith('/rules/races.json');
+    expect(mockFetch).not.toHaveBeenCalledWith('/rules/classes.json');
   });
 
-  it('config tables are also filtered by enabledRuleSources', async () => {
+  it('empty enabledSources loads ALL discovered files (permissive default)', async () => {
     const loader = new DataLoader();
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
-    }));
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/races.json', '/rules/classes.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url === '/rules/races.json') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+          { id: 'race_elf', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+        ]) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        { id: 'class_rogue', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+      ]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
 
-    await loader.loadRuleSources(['srd_core'], JSON.stringify([
-      { tableId: 'config_xp_srd', ruleSource: 'srd_core', data: [{ level: 1, xp: 0 }] },
-      { tableId: 'config_xp_homebrew', ruleSource: 'homebrew_custom', data: [{ level: 1, xp: 0 }] },
-    ]));
+    await loader.loadRuleSources([]); // empty = load everything
 
-    expect(loader.getConfigTable('config_xp_srd')).toBeDefined();
-    expect(loader.getConfigTable('config_xp_homebrew')).toBeUndefined(); // Filtered
-    vi.unstubAllGlobals();
+    expect(loader.getFeature('race_elf')).toBeDefined();
+    expect(loader.getFeature('class_rogue')).toBeDefined();
   });
 
-  it('gm_override ruleSource is exempt from filtering', async () => {
+  it('enabling a subset of files fine-grained — e.g. no prestige classes', async () => {
+    const loader = new DataLoader();
+    const coreFiles: string[] = [
+      '/rules/00_d20srd_core/races.json',
+      '/rules/00_d20srd_core/classes.json',
+      '/rules/00_d20srd_core/prestige_classes.json',
+    ];
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(coreFiles),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url.includes('prestige')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+          { id: 'prestige_arcane_archer', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+        ]) });
+      }
+      if (url.includes('races')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+          { id: 'race_dwarf', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+        ]) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        { id: 'class_wizard', category: 'class', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+      ]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    // Only enable races.json — NOT prestige_classes.json
+    await loader.loadRuleSources([
+      '00_d20srd_core/races.json',
+      '00_d20srd_core/classes.json',
+    ]);
+
+    expect(loader.getFeature('race_dwarf')).toBeDefined();
+    expect(loader.getFeature('class_wizard')).toBeDefined();
+    expect(loader.getFeature('prestige_arcane_archer')).toBeUndefined(); // excluded
+  });
+
+  it('config_tables are included when their file path is enabled', async () => {
+    const loader = new DataLoader();
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/config_tables.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        { tableId: 'config_skill_definitions', ruleSource: 'srd_core', data: [{ id: 'skill_climb' }] },
+      ]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    await loader.loadRuleSources(['config_tables.json']);
+    expect(loader.getConfigTable('config_skill_definitions')).toBeDefined();
+  });
+
+  it('config_tables are excluded when their file path is NOT enabled', async () => {
+    const loader = new DataLoader();
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/config_tables.json', '/rules/races.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url.includes('config_tables')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([
+          { tableId: 'config_skill_definitions', ruleSource: 'srd_core', data: [] },
+        ]) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        { id: 'race_gnome', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+      ]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    // Only enable races.json — NOT config_tables.json
+    await loader.loadRuleSources(['races.json']);
+
+    expect(loader.getFeature('race_gnome')).toBeDefined();
+    expect(loader.getConfigTable('config_skill_definitions')).toBeUndefined();
+  });
+
+  it('GM overrides (gmGlobalOverrides param) are always loaded regardless of file paths', async () => {
     const loader = new DataLoader();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
     }));
 
-    await loader.loadRuleSources(['srd_core'], JSON.stringify([
+    await loader.loadRuleSources(['some_file.json'], JSON.stringify([
       { id: 'gm_custom_curse', category: 'condition', ruleSource: 'gm_override', grantedModifiers: [], grantedFeatures: [], tags: [] },
     ]));
 
-    // gm_override is always retained regardless of enabledRuleSources
+    // GM overrides are injected via the gmGlobalOverrides param, not file discovery
     expect(loader.getFeature('gm_custom_curse')).toBeDefined();
-    vi.unstubAllGlobals();
   });
 
-  it('empty enabledRuleSources = no filtering (accept everything)', async () => {
+  it('enabling multiple files loads entities from all of them', async () => {
     const loader = new DataLoader();
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
-    }));
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/a.json', '/rules/b.json', '/rules/c.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      const id = url.includes('a.json') ? 'feat_a' : url.includes('b.json') ? 'feat_b' : 'feat_c';
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([
+        { id, category: 'feat', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+      ]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
 
-    await loader.loadRuleSources([], JSON.stringify([
-      { id: 'feat_xsrd', category: 'feat', ruleSource: 'homebrew_anything', grantedModifiers: [], grantedFeatures: [], tags: [] },
-    ]));
+    await loader.loadRuleSources(['a.json', 'b.json']); // not c.json
 
-    expect(loader.getFeature('feat_xsrd')).toBeDefined();
-    vi.unstubAllGlobals();
+    expect(loader.getFeature('feat_a')).toBeDefined();
+    expect(loader.getFeature('feat_b')).toBeDefined();
+    expect(loader.getFeature('feat_c')).toBeUndefined();
   });
 });
 
@@ -549,11 +709,14 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
           ]),
         });
       }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
       return Promise.reject(new Error('unexpected URL'));
     });
     vi.stubGlobal('fetch', mockFetch);
 
-    await loader.loadRuleSources(['srd_core']);
+    await loader.loadRuleSources(['test_features.json']);
     expect(loader.getFeature('feat_loaded')).toBeDefined();
     expect(loader.isLoaded).toBe(true);
     vi.unstubAllGlobals();

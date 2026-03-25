@@ -941,6 +941,63 @@ export class GameEngine {
   });
 
   // ---------------------------------------------------------------------------
+  // SKILL SEEDING EFFECT — Phase 4.2
+  // ---------------------------------------------------------------------------
+  //
+  // WHAT HAPPENS HERE:
+  //   When the DataLoader finishes loading (bumpDataLoaderVersion fires), read
+  //   config_skill_definitions and add any skill entries that don't already exist
+  //   in character.skills.  Existing entries (with player-invested ranks) are
+  //   NEVER overwritten — only genuinely absent skills are created.
+  //
+  // WHY AN EFFECT AND NOT A $derived?
+  //   `character.skills` is `$state` (mutable character data that must be persisted).
+  //   A $derived cannot mutate $state.  An $effect.root() is the correct Svelte 5
+  //   pattern for "side-effect that writes to $state in response to a dependency change."
+  //
+  // DATA FORMAT:
+  //   config_skill_definitions.data is an array of objects:
+  //   { id, label, keyAbility, appliesArmorCheckPenalty, canBeUsedUntrained }
+  //   After the DataLoader normalisation fix, dict-format data is also supported.
+
+  readonly #skillSeedingEffect = $effect.root(() => {
+    $effect(() => {
+      // React to DataLoader reloads (bumpDataLoaderVersion triggers re-run).
+      void this.dataLoaderVersion;
+
+      const table = dataLoader.getConfigTable('config_skill_definitions');
+      if (!table?.data?.length) return;
+
+      let changed = false;
+      for (const row of table.data as Array<Record<string, unknown>>) {
+        const skillId = row['id'] as string | undefined;
+        if (!skillId || typeof skillId !== 'string') continue;
+
+        // Skill pipeline key matches the id from the config table directly
+        // (e.g. "skill_climb", "skill_bluff") — no prefix added here.
+        if (this.character.skills[skillId]) continue; // already seeded — never overwrite
+
+        const label = (row['label'] ?? { en: skillId }) as import('../types/i18n').LocalizedString;
+        const keyAbility = (row['keyAbility'] as string | undefined) ?? 'stat_intelligence';
+        const acp  = Boolean(row['appliesArmorCheckPenalty']);
+        const uTrained = row['canBeUsedUntrained'] !== false;
+
+        this.character.skills[skillId] = makeSkillPipeline(
+          skillId, label, keyAbility, acp, uTrained
+        );
+        changed = true;
+      }
+
+      if (changed) {
+        // Trigger Svelte to detect the new skills object entries.
+        // Direct property assignment on $state objects is reactive in Svelte 5,
+        // but reassignment ensures any derived depending on character.skills fires.
+        this.character.skills = { ...this.character.skills };
+      }
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // DAG PHASE 0 — Feature Flattening & Modifier Extraction
   // ---------------------------------------------------------------------------
   //

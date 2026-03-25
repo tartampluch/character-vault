@@ -69,33 +69,33 @@
     engine.phase0_activeTags.find(tag => tag.startsWith('alignment_')) ?? ''
   );
 
-  // ── Modifier badges helper ──────────────────────────────────────────────────
-  // Shows up to 3 ability-score modifiers in the race/class dropdown labels.
-  // Only shows attribute stats (STR/DEX/CON etc.) — speed, skill bonuses, etc.
-  // are too verbose for a dropdown badge.
-  function getModifierBadges(feature: Feature): string[] {
+  // ── Modifier pills helper ────────────────────────────────────────────────────
+  // Returns up to 4 ability-score modifier pills for the selected race.
+  // Only core attribute stats (STR/DEX/CON/INT/WIS/CHA) are shown.
+  // Each pill has { label, positive } so the template can colour them.
+  interface ModPill { label: string; positive: boolean; zero: boolean }
+  function getModifierPills(feature: Feature): ModPill[] {
     if (!feature.grantedModifiers?.length) return [];
+    const STAT_IDS = ['stat_str','stat_dex','stat_con','stat_int','stat_wis','stat_cha'];
     return feature.grantedModifiers
-      .filter(mod => {
-        if (typeof mod.value !== 'number' || mod.value === 0) return false;
-        // Only show core attribute stats in badges (skip speed, saves, skills, etc.)
-        return mod.targetId.includes('stat_str') ||
-               mod.targetId.includes('stat_dex') ||
-               mod.targetId.includes('stat_con') ||
-               mod.targetId.includes('stat_int') ||
-               mod.targetId.includes('stat_wis') ||
-               mod.targetId.includes('stat_cha');
-      })
-      .slice(0, 3)
+      .filter(mod =>
+        typeof mod.value === 'number' &&
+        mod.value !== 0 &&
+        STAT_IDS.some(s => mod.targetId.includes(s))
+      )
+      .slice(0, 4)
       .map(mod => {
-        const valStr = formatModifier(mod.value as number);
-        // Strip all known prefixes to leave just the abbreviated stat name
-        const shortTarget = mod.targetId
+        const val = mod.value as number;
+        const abbr = mod.targetId
           .replace('attributes.', '')
           .replace('stat_', '')
           .toUpperCase()
           .slice(0, 3);
-        return `${valStr} ${shortTarget}`;
+        return {
+          label:    `${val > 0 ? '+' : ''}${val} ${abbr}`,
+          positive: val > 0,
+          zero:     val === 0,
+        };
       });
   }
 
@@ -260,67 +260,82 @@
 
     <!-- RACE -->
     <div class="flex flex-col gap-1">
+      <label for="race-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        {ui('core.race', engine.settings.language)}
+      </label>
+      <!-- dropdown + (i) button side by side -->
       <div class="flex items-center gap-1.5">
-        <label for="race-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted flex-1">
-          {ui('core.race', engine.settings.language)}
-        </label>
+        <select
+          id="race-select"
+          class="select flex-1"
+          value={activeRace?.id ?? ''}
+          onchange={handleRaceChange}
+          aria-label="Select character race"
+        >
+          <option value="">{ui('core.none', engine.settings.language)}</option>
+          {#each races as race}
+            <option value={race.id}>{engine.t(race.label)}</option>
+          {/each}
+        </select>
         {#if activeRace}
           <button
-            class="btn-ghost p-1 rounded-full"
+            class="btn-ghost p-1 rounded-full shrink-0"
             onclick={() => (modalFeatureId = activeRace?.id ?? null)}
             title={ui('core.show_details', engine.settings.language)}
             aria-label="Show {engine.t(activeRace.label)} details"
             type="button"
-          >
-            <IconInfo size={14} aria-hidden="true" />
-          </button>
+          ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
       </div>
-      <select
-        id="race-select"
-        class="select"
-        value={activeRace?.id ?? ''}
-        onchange={handleRaceChange}
-        aria-label="Select character race"
-      >
-        <option value="">{ui('core.none', engine.settings.language)}</option>
-        {#each races as race}
-          <option value={race.id}>{engine.t(race.label)}</option>
-        {/each}
-      </select>
-
+      <!-- Stat modifier pills (green=positive, red=negative) -->
+      {#if activeRace}
+        {@const pills = getModifierPills(activeRace)}
+        {#if pills.length}
+          <div class="flex flex-wrap gap-1 mt-0.5">
+            {#each pills as pill}
+              <span
+                class="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full border
+                       {pill.positive
+                         ? 'bg-green-950/30 border-green-700/50 text-green-400'
+                         : pill.zero
+                           ? 'bg-surface-alt border-border text-text-muted'
+                           : 'bg-red-950/30 border-red-700/50 text-red-400'}"
+              >{pill.label}</span>
+            {/each}
+          </div>
+        {/if}
+      {/if}
     </div>
 
     <!-- CLASS -->
     <div class="flex flex-col gap-1">
+      <label for="class-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+        {ui('core.class', engine.settings.language)}
+      </label>
+      <!-- dropdown + (i) button side by side -->
       <div class="flex items-center gap-1.5">
-        <label for="class-select" class="text-xs font-semibold uppercase tracking-wider text-text-muted flex-1">
-          {ui('core.class', engine.settings.language)}
-        </label>
+        <select
+          id="class-select"
+          class="select flex-1"
+          value={activeClass?.id ?? ''}
+          onchange={handleClassChange}
+          aria-label="Select character class"
+        >
+          <option value="">{ui('core.none', engine.settings.language)}</option>
+          {#each classes as cls}
+            <option value={cls.id}>{engine.t(cls.label)}</option>
+          {/each}
+        </select>
         {#if activeClass}
           <button
-            class="btn-ghost p-1 rounded-full"
+            class="btn-ghost p-1 rounded-full shrink-0"
             onclick={() => (modalFeatureId = activeClass?.id ?? null)}
             title={ui('core.show_details', engine.settings.language)}
             aria-label="Show {engine.t(activeClass.label)} details"
             type="button"
-          >
-            <IconInfo size={14} aria-hidden="true" />
-          </button>
+          ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
       </div>
-      <select
-        id="class-select"
-        class="select"
-        value={activeClass?.id ?? ''}
-        onchange={handleClassChange}
-        aria-label="Select character class"
-      >
-        <option value="">{ui('core.none', engine.settings.language)}</option>
-        {#each classes as cls}
-          <option value={cls.id}>{engine.t(cls.label)}</option>
-        {/each}
-      </select>
       <!-- Class level input + recommended attrs -->
       {#if activeClass}
         {@const classLevel = engine.character.classLevels[activeClass.id] ?? 1}
@@ -463,12 +478,7 @@
             >
               <option value="">{ui('core.select', engine.settings.language)}</option>
               {#each options as option}
-                <option value={option.id}>
-                  {engine.t(option.label)}
-                  {#if getModifierBadges(option).length}
-                    ({getModifierBadges(option).join(', ')})
-                  {/if}
-                </option>
+                <option value={option.id}>{engine.t(option.label)}</option>
               {/each}
             </select>
 

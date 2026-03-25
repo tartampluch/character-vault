@@ -94,7 +94,28 @@ class CampaignController
             INSERT INTO campaigns (id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ');
-        $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', '["srd_core"]', '[]', $now]);
+        // Default: enable all SRD Core files (file-path based, not source-ID based)
+        $defaultSources = json_encode([
+            'config_tables.json',
+            '00_d20srd_core/00_d20srd_core_races.json',
+            '00_d20srd_core/01_d20srd_core_classes.json',
+            '00_d20srd_core/02_d20srd_core_class_features.json',
+            '00_d20srd_core/03_d20srd_core_feats.json',
+            '00_d20srd_core/04_d20srd_core_skills_config.json',
+            '00_d20srd_core/05_d20srd_core_spells.json',
+            '00_d20srd_core/06_d20srd_core_equipment_weapons.json',
+            '00_d20srd_core/07_d20srd_core_equipment_armor.json',
+            '00_d20srd_core/08_d20srd_core_equipment_goods.json',
+            '00_d20srd_core/09_d20srd_core_config.json',
+            '00_d20srd_core/10_d20srd_core_prestige_classes.json',
+            '00_d20srd_core/11_d20srd_core_prestige_class_features.json',
+            '00_d20srd_core/12_d20srd_core_magic_items.json',
+            '00_d20srd_core/13_d20srd_core_cleric_domains.json',
+            '00_d20srd_core/14_d20srd_core_npc_classes.json',
+            '00_d20srd_core/15_d20srd_core_special_materials.json',
+            '00_d20srd_core/16_d20srd_core_racial_features.json',
+        ]);
+        $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
 
         http_response_code(201);
         echo json_encode(['id' => $id, 'title' => $title, 'ownerId' => $user['id']]);

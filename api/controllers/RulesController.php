@@ -93,8 +93,9 @@ class RulesController
                 continue;
             }
 
-            // Skip the static manifest (it's a list of paths, not a rule source)
-            if ($file->getFilename() === 'manifest.json') {
+            // Skip meta/test files that are only meant for the Vitest test suite
+            $skip = ['manifest.json', 'test_mock.json', 'test_override.json'];
+            if (in_array($file->getFilename(), $skip, true)) {
                 continue;
             }
 

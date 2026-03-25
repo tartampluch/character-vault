@@ -358,10 +358,16 @@ export class DataLoader {
   loadVersion = 0;
 
   /**
-   * List of enabled rule source IDs (set during loadRuleSources()).
-   * Used for filtering after loading.
+   * Set of enabled file paths (relative, e.g. "00_d20srd_core/00_d20srd_core_races.json").
+   * When non-empty, only files whose sortKey matches an entry here are loaded.
+   * When empty, ALL discovered files are loaded (permissive default — useful in tests).
+   *
+   * This is the new file-path based filtering model. Previously, filtering was done
+   * AFTER loading by matching `entity.ruleSource` against a list of source IDs.
+   * File-path filtering is more deterministic: the GM enables exactly the files they
+   * want, and those are the only files fetched and parsed.
    */
-  private enabledRuleSources: ID[] = [];
+  private enabledFilePaths = new Set<string>();
 
   /**
    * Set of ruleSource IDs that were found in global rule files (storage/rules/).
@@ -427,7 +433,12 @@ export class DataLoader {
     campaignHomebrewRulesJson?: string
   ): Promise<void> {
     this.clearCache();
-    this.enabledRuleSources = enabledSources;
+    // Store enabled file paths as a Set for O(1) lookup during file filtering.
+    // An empty set means "load everything" (permissive — used when no campaign
+    // is active, e.g. during first-load or in Vitest unit tests).
+    this.enabledFilePaths = enabledSources.length > 0
+      ? new Set(enabledSources)
+      : new Set<string>();
 
     // -----------------------------------------------------------------------
     // Step 1a: Discover static rule files via GET /rules or manifest.json
@@ -515,10 +526,19 @@ export class DataLoader {
 
     for (const fetchUrl of staticFilePaths) {
       // Strip the "/rules/" URL prefix to derive the sort key.
-      // If for some reason the path doesn't start with "/rules/", use it verbatim.
+      // The sort key doubles as the file path used in enabledFilePaths matching:
+      //   fetchUrl  → "/rules/00_d20srd_core/00_d20srd_core_races.json"
+      //   sortKey   → "00_d20srd_core/00_d20srd_core_races.json"
       const sortKey = fetchUrl.startsWith('/rules/')
         ? fetchUrl.slice('/rules/'.length)
         : fetchUrl;
+
+      // File-path filtering: when enabledFilePaths is non-empty, skip files
+      // not explicitly selected by the campaign settings.
+      if (this.enabledFilePaths.size > 0 && !this.enabledFilePaths.has(sortKey)) {
+        continue;
+      }
+
       fileEntries.push({ sortKey, fetchUrl, isGlobal: false });
     }
 
@@ -640,24 +660,12 @@ export class DataLoader {
    *   Missing optional fields (label, description, tags, etc.) are gracefully defaulted.
    */
   /**
-   * Returns true if the given ruleSource should be included in the cache.
-   *
-   * EARLY-REJECTION FILTER:
-   *   Called during entity processing so non-enabled entities are never cached.
-   *   This prevents later-loaded files (e.g. test_mock) from overwriting
-   *   enabled entities (e.g. srd_core/race_human) with a non-enabled version —
-   *   which would then be deleted by #filterByEnabledSources(), making the
-   *   enabled entity disappear entirely.
-   *
-   *   When enabledRuleSources is empty, all sources are accepted (no filtering).
+   * No-op: filtering is now done at file-load time by path (see enabledFilePaths).
+   * Every entity in a loaded file is accepted; entities in skipped files are never
+   * seen. Kept as a shim so #processEntity call-sites compile unchanged.
    */
-  #isSourceAccepted(ruleSource: string): boolean {
-    if (this.enabledRuleSources.length === 0) return true;
-    // System sources are always exempt
-    if (ruleSource === 'user_homebrew' ||
-        ruleSource === 'gm_override'   ||
-        ruleSource.startsWith('gm_'))  return true;
-    return this.enabledRuleSources.includes(ruleSource);
+  #isSourceAccepted(_ruleSource: string): boolean {
+    return true;
   }
 
   #processEntity(entity: RawEntity): void {
@@ -666,11 +674,22 @@ export class DataLoader {
       const ruleSource = entity.ruleSource ?? 'unknown';
       // Reject entities from non-enabled sources before caching
       if (!this.#isSourceAccepted(ruleSource)) return;
+
+      // Normalize `data` to an array.
+      // Some config table JSON files use an object keyed by ID (e.g.
+      // config_skill_definitions in 04_d20srd_core_skills_config.json) while others
+      // use a plain array (e.g. config_tables.json).
+      // The engine always iterates `table.data` as an array, so we normalise here.
+      let rawData = entity.data ?? [];
+      if (!Array.isArray(rawData) && typeof rawData === 'object' && rawData !== null) {
+        rawData = Object.values(rawData as Record<string, unknown>) as Record<string, unknown>[];
+      }
+
       const configTable: ConfigTable = {
         tableId: entity.tableId,
         ruleSource,
         description: entity.description as string | undefined,
-        data: (entity.data ?? []) as Record<string, unknown>[],
+        data: rawData as Record<string, unknown>[],
       };
       // Config tables always use "replace" semantics
       this.configTableCache.set(entity.tableId, configTable);
@@ -818,31 +837,10 @@ export class DataLoader {
    *
    * NOTE: Config tables from exempt sources are also filter-immune.
    */
-  #filterByEnabledSources(): void {
-    if (this.enabledRuleSources.length === 0) return; // Empty = no filtering
-
-    /**
-     * Returns true when the given ruleSource should bypass the enabled-sources filter.
-     * Centralised here so features and config tables share the same exemption logic.
-     */
-    const isExempt = (ruleSource: string): boolean =>
-      ruleSource === 'user_homebrew' ||
-      ruleSource === 'gm_override'   ||
-      ruleSource.startsWith('gm_');
-
-    // Filter features
-    for (const [id, feature] of this.featureCache) {
-      if (!isExempt(feature.ruleSource) && !this.enabledRuleSources.includes(feature.ruleSource)) {
-        this.featureCache.delete(id);
-      }
-    }
-
-    // Filter config tables
-    for (const [tableId, table] of this.configTableCache) {
-      if (!isExempt(table.ruleSource) && !this.enabledRuleSources.includes(table.ruleSource)) {
-        this.configTableCache.delete(tableId);
-      }
-    }
+   #filterByEnabledSources(): void {
+    // No-op: filtering is now done at file-load time by path (enabledFilePaths).
+    // Only files explicitly enabled are fetched and parsed; their entities are
+    // all accepted. No post-load pruning needed.
   }
 
   // ---------------------------------------------------------------------------

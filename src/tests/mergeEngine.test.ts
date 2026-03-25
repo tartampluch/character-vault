@@ -1191,8 +1191,7 @@ describe('DataLoader injection: campaign homebrew overrides SRD base', () => {
    *           SRD-only tag 'srd_tag' is absent (replace semantics).
    */
   it('campaign-homebrew entity with same id fully replaces SRD entity', async () => {
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       undefined,                          // no GM overrides
       JSON.stringify([HOMEBREW_ELF])      // campaign homebrew
     );
@@ -1213,8 +1212,7 @@ describe('DataLoader injection: campaign homebrew overrides SRD base', () => {
   it('campaign-homebrew entities are stamped with ruleSource "user_homebrew"', async () => {
     // Homebrew entity that incorrectly declares ruleSource as something else
     const badRuleSource = { ...HOMEBREW_ELF, ruleSource: 'some_other_source' };
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       undefined,
       JSON.stringify([badRuleSource])
     );
@@ -1228,8 +1226,7 @@ describe('DataLoader injection: campaign homebrew overrides SRD base', () => {
    * getHomebrewRules('campaign') should return exactly the campaign-homebrew entity.
    */
   it('getHomebrewRules("campaign") returns only campaign-scoped entities', async () => {
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       undefined,
       JSON.stringify([HOMEBREW_ELF])
     );
@@ -1278,7 +1275,7 @@ describe('DataLoader injection: global files interleaved alphabetically', () => 
       '/api/global-rules/00_z.json':   [GLOBAL_ELF],
     }));
 
-    await loader.loadRuleSources(['srd_core', 'global_setting']);
+    await loader.loadRuleSources([]);
 
     const elf = loader.getFeature('race_elf');
     expect(elf).toBeDefined();
@@ -1309,7 +1306,7 @@ describe('DataLoader injection: global files interleaved alphabetically', () => 
       '/api/global-rules/99_z.json':   [GLOBAL_ELF],
     }));
 
-    await loader.loadRuleSources(['srd_core', 'global_setting']);
+    await loader.loadRuleSources([]);
 
     const elf = loader.getFeature('race_elf');
     expect(elf).toBeDefined();
@@ -1346,7 +1343,7 @@ describe('DataLoader injection: global files interleaved alphabetically', () => 
       '/api/global-rules/50_late.json':  [lateGlobal],
     }));
 
-    await loader.loadRuleSources(['global_setting']);
+    await loader.loadRuleSources([]);
 
     const elf = loader.getFeature('race_elf');
     expect(elf).toBeDefined();
@@ -1586,8 +1583,7 @@ describe('DataLoader injection: partial-merge homebrew extends SRD base', () => 
       grantedFeatures: ['feat_elven_weapon_proficiency'],
     };
 
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       undefined,
       JSON.stringify([partialHomebrew])
     );
@@ -1644,8 +1640,7 @@ describe('DataLoader injection: partial-merge homebrew extends SRD base', () => 
       grantedFeatures: [],
     };
 
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       JSON.stringify([partialGm]),
       JSON.stringify([partialHomebrew])
     );
@@ -1678,8 +1673,7 @@ describe('DataLoader injection: partial-merge homebrew extends SRD base', () => 
       grantedFeatures: ['-feat_low_light_vision'],  // remove SRD feature
     };
 
-    await loader.loadRuleSources(
-      ['srd_core'],
+    await loader.loadRuleSources([],
       undefined,
       JSON.stringify([deletionHomebrew])
     );
@@ -1787,7 +1781,7 @@ describe('Override-by-ID integration: HomebrewStore → DataLoader full cycle', 
     }));
 
     // Step 4: Inject into DataLoader as campaign homebrew.
-    await loader.loadRuleSources(['srd_core'], undefined, campaignJson);
+    await loader.loadRuleSources([], undefined, campaignJson);
 
     // Step 5: Verify the HOMEBREW entity wins (campaign layer > static layer).
     const elf = loader.getFeature('race_elf');
@@ -1855,7 +1849,7 @@ describe('Override-by-ID integration: HomebrewStore → DataLoader full cycle', 
     }));
 
     // Step 4: Inject.
-    await loader.loadRuleSources(['srd_core'], undefined, campaignJson);
+    await loader.loadRuleSources([], undefined, campaignJson);
 
     // Step 5: Verify SRD tags preserved AND homebrew tags appended.
     const elf = loader.getFeature('race_elf');
@@ -1911,7 +1905,7 @@ describe('Override-by-ID integration: HomebrewStore → DataLoader full cycle', 
     }));
 
     // Inject with homebrew present.
-    await loader.loadRuleSources(['srd_core'], undefined, store.toJSON());
+    await loader.loadRuleSources([], undefined, store.toJSON());
     expect(loader.getFeature('race_elf')!.label['en']).toBe('Elf (Homebrew to Delete)');
 
     // Remove the homebrew entity from the store.
@@ -1921,7 +1915,7 @@ describe('Override-by-ID integration: HomebrewStore → DataLoader full cycle', 
 
     // Re-inject with empty homebrew.
     loader.clearCache();
-    await loader.loadRuleSources(['srd_core'], undefined, store.toJSON());
+    await loader.loadRuleSources([], undefined, store.toJSON());
 
     // SRD entity must now be present.
     const elf = loader.getFeature('race_elf');
