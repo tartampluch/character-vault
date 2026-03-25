@@ -168,9 +168,22 @@
   let explodingTwenties = $state(engine.settings.diceRules?.explodingTwenties ?? false);
 
   // ── Stat Generation ───────────────────────────────────────────────────────
-  let statMethod      = $state<'roll' | 'point_buy' | 'standard_array'>(engine.settings.statGeneration?.method ?? 'point_buy');
   let rerollOnes      = $state(engine.settings.statGeneration?.rerollOnes ?? false);
   let pointBuyBudget  = $state(engine.settings.statGeneration?.pointBuyBudget ?? 25);
+  // allowedMethods: which methods the GM allows players to use (checkboxes)
+  // Default: all three enabled (backward-compatible with saved settings that don't have this field)
+  const _am = engine.settings.statGeneration?.allowedMethods ?? ['roll', 'point_buy', 'standard_array'];
+  let allowedRoll     = $state(_am.includes('roll'));
+  let allowedPointBuy = $state(_am.includes('point_buy'));
+  let allowedStdArray = $state(_am.includes('standard_array'));
+
+  const allowedMethods = $derived.by((): Array<'roll' | 'point_buy' | 'standard_array'> => {
+    const methods: Array<'roll' | 'point_buy' | 'standard_array'> = [];
+    if (allowedRoll)     methods.push('roll');
+    if (allowedPointBuy) methods.push('point_buy');
+    if (allowedStdArray) methods.push('standard_array');
+    return methods;
+  });
 
   // ── Variant Rules (Extensions G + H) ─────────────────────────────────────
   let variantGestalt = $state(engine.settings.variantRules?.gestalt ?? false);
@@ -186,7 +199,7 @@
     // Apply to in-memory engine state immediately (instant UI feedback)
     engine.settings.enabledRuleSources = [...enabledSources];
     engine.settings.diceRules      = { explodingTwenties };
-    engine.settings.statGeneration = { method: statMethod, rerollOnes, pointBuyBudget };
+    engine.settings.statGeneration = { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods };
     engine.settings.variantRules   = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
 
     // Reload rule sources so character sheet dropdowns reflect new selection
@@ -203,7 +216,7 @@
           enabledRuleSources: enabledSources,
           gmGlobalOverrides: gmOverridesText,
           diceRules:      { explodingTwenties },
-          statGeneration: { method: statMethod, rerollOnes, pointBuyBudget },
+          statGeneration: { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods },
           variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
         }),
       });
@@ -261,16 +274,16 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconSpells size={18} aria-hidden="true" /> Rule Sources
+        <IconSpells size={18} aria-hidden="true" /> {ui('settings.rule_sources.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
-        Enable or disable rule source files. Drag to reorder — sources loaded <strong class="text-text-secondary">later</strong> have higher priority (last wins on duplicate IDs).
+        {ui('settings.rule_sources.desc', engine.settings.language)}
       </p>
     </div>
 
     {#if loadingError}
       <div class="flex items-center gap-2 px-3 py-2 rounded border border-red-700/40 bg-red-950/20 text-red-400 text-xs">
-        <IconError size={12} aria-hidden="true" /> {loadingError}
+        <IconError size={12} aria-hidden="true" /> {ui('settings.rule_sources.error', engine.settings.language)}: {loadingError}
       </div>
     {/if}
 
@@ -299,7 +312,7 @@
     <!-- Quick group enable/disable buttons -->
     {#if availableGroups.length > 0}
       <div class="flex flex-wrap gap-2 py-1">
-        <span class="text-xs text-text-muted self-center shrink-0">Quick toggle:</span>
+        <span class="text-xs text-text-muted self-center shrink-0">{ui('settings.rule_sources.quick_toggle', engine.settings.language)}</span>
         {#each availableGroups as groupId}
           {@const groupFiles = availableFiles.filter(f => f.ruleSource === groupId)}
           {@const allOn = groupFiles.length > 0 && groupFiles.every(f => enabledSources.includes(f.path))}
@@ -312,7 +325,7 @@
                        ? 'border-yellow-600/60 bg-yellow-950/20 text-yellow-400 hover:border-accent/60 hover:bg-accent/10 hover:text-accent'
                        : 'border-border text-text-muted hover:border-green-700/40 hover:bg-green-950/20 hover:text-green-400'}"
             onclick={() => toggleGroup(groupId)}
-            title="{allOn ? 'Disable all' : 'Enable all'} files for: {groupId}"
+            title="{allOn ? ui('settings.rule_sources.disable_all', engine.settings.language) : ui('settings.rule_sources.enable_all', engine.settings.language)} — {groupId}"
             type="button"
           >
             {#if allOn}<IconChecked size={11} class="inline mr-0.5" aria-hidden="true" />{/if}{groupId}
@@ -326,7 +339,7 @@
       {@const enabledSet = new Set(enabledSources)}
       <div class="flex flex-col gap-1">
         <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-0.5">
-          All files — {enabledSources.length} / {availableFiles.length} enabled
+          {ui('settings.rule_sources.all_files', engine.settings.language)} — {ui('settings.rule_sources.enabled_count', engine.settings.language).replace('{enabled}', String(enabledSources.length)).replace('{total}', String(availableFiles.length))}
         </p>
         {#each availableFiles as file}
           {@const on = enabledSet.has(file.path)}
@@ -357,16 +370,16 @@
                        ? 'border-red-700/40 bg-red-950/20 text-red-400 hover:bg-red-900/30'
                        : 'border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30'}"
               onclick={() => toggleFile(file.path)}
-              aria-label="{on ? 'Disable' : 'Enable'} {file.path}"
+              aria-label="{on ? ui('settings.rule_sources.disable', engine.settings.language) : ui('settings.rule_sources.enable', engine.settings.language)} {file.path}"
               type="button"
-            >{on ? 'Disable' : 'Enable'}</button>
+            >{on ? ui('settings.rule_sources.disable', engine.settings.language) : ui('settings.rule_sources.enable', engine.settings.language)}</button>
           </div>
         {/each}
       </div>
     {/if}
 
     {#if availableFiles.length === 0 && !loadingError}
-      <p class="text-xs text-text-muted italic">No rule sources found. Start the PHP API server to load sources.</p>
+      <p class="text-xs text-text-muted italic">{ui('settings.rule_sources.none', engine.settings.language)}</p>
     {/if}
 
   </section>
@@ -414,57 +427,56 @@
       </p>
     </div>
 
-    <!-- Method selector -->
+    <!-- Allowed Methods (checkboxes) -->
     <div class="flex flex-col gap-2">
       <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">
-        {ui('settings.stat_gen.method', engine.settings.language)}
+        {ui('settings.stat_gen.allowed_methods', engine.settings.language)}
       </span>
-      <div class="flex flex-col gap-1.5">
-        {#each ([
-          ['roll',           'settings.stat_gen.roll'],
-          ['point_buy',      'settings.stat_gen.point_buy'],
-          ['standard_array', 'settings.stat_gen.standard_array'],
-        ] as const) as [value, key]}
+      <div class="flex flex-col gap-2">
+
+        <!-- Roll (4d6 drop lowest) -->
+        <div class="flex flex-col gap-1.5">
           <label class="flex items-center gap-2.5 cursor-pointer group">
-            <input
-              type="radio"
-              name="stat-gen-method"
-              {value}
-              bind:group={statMethod}
-              class="w-4 h-4 accent-accent shrink-0"
-            />
+            <input type="checkbox" bind:checked={allowedRoll} class="w-4 h-4 accent-accent rounded shrink-0" />
             <span class="text-sm text-text-primary group-hover:text-accent transition-colors">
-              {ui(key, engine.settings.language)}
+              {ui('settings.stat_gen.roll', engine.settings.language)}
             </span>
           </label>
-        {/each}
+          <!-- Reroll Ones — sub-option for roll -->
+          {#if allowedRoll}
+            <label class="flex items-start gap-2.5 cursor-pointer group ml-6">
+              <input type="checkbox" bind:checked={rerollOnes} class="w-3.5 h-3.5 accent-accent rounded shrink-0 mt-0.5" />
+              <div class="flex flex-col gap-0">
+                <span class="text-xs font-medium text-text-primary group-hover:text-accent transition-colors">
+                  {ui('settings.stat_gen.reroll_ones', engine.settings.language)}
+                </span>
+                <span class="text-[10px] text-text-muted">{ui('settings.stat_gen.reroll_ones_desc', engine.settings.language)}</span>
+              </div>
+            </label>
+          {/if}
+        </div>
+
+        <!-- Point Buy -->
+        <label class="flex items-center gap-2.5 cursor-pointer group">
+          <input type="checkbox" bind:checked={allowedPointBuy} class="w-4 h-4 accent-accent rounded shrink-0" />
+          <span class="text-sm text-text-primary group-hover:text-accent transition-colors">
+            {ui('settings.stat_gen.point_buy', engine.settings.language)}
+          </span>
+        </label>
+
+        <!-- Standard Array -->
+        <label class="flex items-center gap-2.5 cursor-pointer group">
+          <input type="checkbox" bind:checked={allowedStdArray} class="w-4 h-4 accent-accent rounded shrink-0" />
+          <span class="text-sm text-text-primary group-hover:text-accent transition-colors">
+            {ui('settings.stat_gen.standard_array', engine.settings.language)}
+          </span>
+        </label>
+
       </div>
     </div>
 
-    <!-- Reroll Ones — only relevant for roll method -->
-    {#if statMethod === 'roll'}
-      <label class="flex items-start gap-3 cursor-pointer group">
-        <div class="mt-0.5 shrink-0">
-          <input
-            type="checkbox"
-            bind:checked={rerollOnes}
-            class="w-4 h-4 accent-accent rounded"
-            aria-labelledby="stat-gen-reroll-label"
-          />
-        </div>
-        <div class="flex flex-col gap-0.5">
-          <span id="stat-gen-reroll-label" class="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
-            {ui('settings.stat_gen.reroll_ones', engine.settings.language)}
-          </span>
-          <span class="text-xs text-text-muted leading-relaxed">
-            {ui('settings.stat_gen.reroll_ones_desc', engine.settings.language)}
-          </span>
-        </div>
-      </label>
-    {/if}
-
-    <!-- Point Buy Budget — only relevant for point_buy method -->
-    {#if statMethod === 'point_buy'}
+    <!-- Point Buy Budget — only relevant when point_buy is allowed -->
+    {#if allowedPointBuy}
       <div class="flex flex-col gap-2">
         <label for="point-buy-budget" class="text-xs font-semibold uppercase tracking-wider text-text-muted">
           {ui('settings.stat_gen.budget', engine.settings.language)}

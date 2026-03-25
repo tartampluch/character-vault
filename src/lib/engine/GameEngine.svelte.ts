@@ -3831,6 +3831,29 @@ export class GameEngine {
     Object.assign(this.settings, newSettings);
   }
 
+  /**
+   * Sets the selections for a specific choice on a feature instance.
+   *
+   * This is called by the FeatureModal when a player picks a choice option
+   * (e.g., Dromite energy type, Cleric domain). The selections are stored on
+   * the `ActiveFeatureInstance` for the parent race/class feature.
+   *
+   * @param featureId  - The feature whose instance to update (e.g., "race_dromite").
+   * @param choiceId   - The choice within that feature (e.g., "chitin_energy_type").
+   * @param selectedIds - The selected option IDs (e.g., ["dromite_energy_fire"]).
+   */
+  setFeatureSelection(featureId: ID, choiceId: string, selectedIds: string[]): void {
+    const instance = this.character.activeFeatures.find(
+      afi => afi.featureId === featureId && afi.isActive,
+    );
+    if (!instance) {
+      console.warn(`[GameEngine] setFeatureSelection: no active instance for featureId="${featureId}"`);
+      return;
+    }
+    if (!instance.selections) instance.selections = {};
+    instance.selections[choiceId] = selectedIds;
+  }
+
   // ---------------------------------------------------------------------------
   // PRIVATE METHODS — DAG computation helpers
   // ---------------------------------------------------------------------------

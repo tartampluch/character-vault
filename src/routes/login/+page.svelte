@@ -9,16 +9,28 @@
     4. Redirects to `returnTo` query param or the campaign hub (/campaigns).
 
   Phase 14.2 — real PHP session auth replaces the mock SessionContext.
+
+  LANGUAGE STRATEGY:
+    The login page is outside the main app layout (no sidebar language dropdown).
+    We still want it to respect the user's stored language preference.
+
+    - `lang` is `$state` initialized to `'en'`.
+    - A `$effect` reads `localStorage` after mount and updates `lang`.
+    - A `storage` event listener reacts instantly if the user changes the
+      language in another tab while the login page is open.
+    - `engine.settings.language` is also watched (covers the case where the
+      user navigates directly from within the app, where the engine is loaded).
 -->
 
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
 
-  // Redirect destination — the page the user was trying to reach before being
-  // sent here by SessionContext.loadFromServer().
+  const LS_KEY = 'cv_user_language';
+
   const returnTo = $derived(($page.url.searchParams.get('returnTo')) ?? '/campaigns');
 
   let username  = $state('');
@@ -27,14 +39,48 @@
   let isLoading = $state(false);
 
   /**
-   * Detect the browser's preferred language and map it to a supported UI language.
-   * Defaults to 'en' if the browser language is not supported.
+   * Reactive language.
+   * Initialized to 'en' for SSR safety; updated from localStorage after mount.
+   * Also tracks engine.settings.language when the engine is loaded (in-app navigation).
    */
-  const lang = $derived.by(() => {
-    if (typeof navigator === 'undefined') return 'en';
-    const browserLang = navigator.language.slice(0, 2).toLowerCase();
-    const supported = ['en', 'fr'];
-    return supported.includes(browserLang) ? browserLang : 'en';
+  let lang = $state('en');
+
+  /** Read the stored language preference from localStorage (client only). */
+  function readStoredLang(): string {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(LS_KEY);
+        if (stored) return stored;
+      }
+    } catch { /* SSR / private browsing */ }
+    return 'en';
+  }
+
+  /**
+   * After mount: pick up the stored preference and set up a storage event
+   * listener so the page reacts if the user changes language elsewhere.
+   */
+  $effect(() => {
+    // Prefer the engine's live language (handles in-app navigation without full reload)
+    const engineLang = engine.settings.language;
+    if (engineLang && engineLang !== 'en') {
+      lang = engineLang;
+    } else {
+      lang = readStoredLang();
+    }
+
+    // React to storage changes (e.g. language dropdown in another tab)
+    function onStorage(e: StorageEvent) {
+      if (e.key === LS_KEY && e.newValue) lang = e.newValue;
+    }
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  });
+
+  // Also track engine.settings.language reactively — covers SPA navigation
+  $effect(() => {
+    const el = engine.settings.language;
+    if (el) lang = el;
   });
 
   async function handleLogin(e: SubmitEvent) {
@@ -43,7 +89,6 @@
     isLoading = true;
 
     try {
-      // 1. Authenticate — PHP creates the session cookie.
       const loginResp = await fetch('/api/auth/login', {
         method:      'POST',
         credentials: 'include',
@@ -64,10 +109,7 @@
         return;
       }
 
-      // 2. Populate reactive session state + CSRF token.
       await sessionContext.loadFromServer();
-
-      // 3. Navigate to the originally intended destination.
       await goto(decodeURIComponent(returnTo));
     } catch (err) {
       error = ui('login.error_server', lang);
@@ -147,11 +189,19 @@
       </form>
     </div>
 
-    <!-- Dev hint -->
+    <!-- Dev hint (translated) -->
     <p class="text-center text-xs text-text-muted mt-4">
-      Dev accounts: <code class="bg-surface-alt px-1 rounded">gm / gm</code> or
-      <code class="bg-surface-alt px-1 rounded">player / player</code>
-      — run <code class="bg-surface-alt px-1 rounded">php api/seed.php</code> to create them.
+      {#each ui('login.dev_hint', lang).split(/(\{gm\}|\{player\}|\{cmd\})/) as part}
+        {#if part === '{gm}'}
+          <code class="bg-surface-alt px-1 rounded">gm / gm</code>
+        {:else if part === '{player}'}
+          <code class="bg-surface-alt px-1 rounded">player / player</code>
+        {:else if part === '{cmd}'}
+          <code class="bg-surface-alt px-1 rounded">php api/seed.php</code>
+        {:else}
+          {part}
+        {/if}
+      {/each}
     </p>
 
   </div>

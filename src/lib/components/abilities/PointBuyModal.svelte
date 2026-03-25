@@ -11,9 +11,10 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
-  import { IconTabFeats, IconChecked } from '$lib/components/ui/icons';
-  import { MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
+  import { IconTabFeats, IconChecked, IconInfo } from '$lib/components/ui/icons';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
 
   interface Props { onclose: () => void; }
   let { onclose }: Props = $props();
@@ -25,6 +26,7 @@
   const MIN_SCORE = 7;
   const MAX_SCORE = 18;
 
+  const lang   = $derived(engine.settings.language);
   const budget = $derived(engine.settings.statGeneration.pointBuyBudget);
 
   function getCumulativeCost(score: number): number {
@@ -83,17 +85,23 @@
   function derivedMod(score: number) { return Math.floor((score - 10) / 2); }
 </script>
 
-<Modal open={true} onClose={onclose} title="Point Buy" size="md">
+<Modal open={true} onClose={onclose} title={ui('abilities.point_buy.title', lang)} size="md">
   {#snippet children()}
     <div class="flex flex-col gap-4">
+
+      <!-- How it works explanation -->
+      <div class="flex items-start gap-2 px-3 py-2 rounded-lg bg-surface-alt border border-border text-xs text-text-muted leading-relaxed">
+        <IconInfo size={13} class="shrink-0 mt-0.5 text-accent" aria-hidden="true" />
+        <span>{ui('abilities.point_buy.how_it_works', lang)}</span>
+      </div>
 
       <!-- Budget display + progress bar -->
       <div class="flex flex-col gap-1.5">
         <div class="flex items-center gap-2 text-sm">
-          <span class="text-text-muted">Budget:</span>
+          <span class="text-text-muted">{ui('abilities.point_buy.budget_label', lang)}:</span>
           <span class="{isOverBudget ? 'text-red-500 dark:text-red-400' : 'text-accent'} font-bold">{pointsSpent}/{budget}</span>
           <span class="text-xs {isOverBudget ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}">
-            ({pointsRemaining >= 0 ? '+' : ''}{pointsRemaining} remaining)
+            ({ui('abilities.point_buy.remaining', lang).replace('{n}', String(Math.abs(pointsRemaining))).replace(/^\d+/, pointsRemaining >= 0 ? `+${pointsRemaining}` : String(pointsRemaining))})
           </span>
         </div>
         <div
@@ -111,18 +119,23 @@
       <!-- Score rows -->
       <div class="flex flex-col gap-1.5">
         {#each MAIN_ABILITY_IDS as abilityId}
-          {@const score = workingScores[abilityId] ?? 8}
-          {@const cost  = getCumulativeCost(score)}
-          {@const isRec = recommendedIds.includes(abilityId)}
-          {@const abbr  = ABILITY_ABBRS[abilityId]}
-          {@const dMod  = derivedMod(score)}
+          {@const score     = workingScores[abilityId] ?? 8}
+          {@const cost      = getCumulativeCost(score)}
+          {@const marginal  = getMarginalCost(score + 1)}
+          {@const isRec     = recommendedIds.includes(abilityId)}
+          {@const abbr      = getAbilityAbbr(abilityId, lang)}
+          {@const fullLabel = engine.t(engine.phase2_attributes[abilityId]?.label ?? { en: abilityId })}
+          {@const dMod      = derivedMod(score)}
 
           <div
             class="flex items-center gap-2 px-3 py-2 rounded-md border
                    {isRec ? 'border-green-500/40 bg-green-950/10 dark:bg-green-950/20' : 'border-border bg-surface-alt'}"
           >
-            <!-- Abbreviation -->
-            <span class="text-xs font-bold tracking-wider text-text-muted w-8 shrink-0">{abbr}</span>
+            <!-- Abbreviation + full name -->
+            <div class="flex flex-col min-w-0 w-20 shrink-0">
+              <span class="text-xs font-bold tracking-wider text-text-muted">{abbr}</span>
+              <span class="text-[10px] text-text-muted/70 truncate">{fullLabel}</span>
+            </div>
 
             <!-- Decrement -->
             <button
@@ -148,14 +161,14 @@
             <button
               class="btn-secondary min-w-[2rem] min-h-[2rem] p-0 text-lg leading-none"
               onclick={() => increaseScore(abilityId)}
-              disabled={score >= MAX_SCORE || pointsRemaining < getMarginalCost(score + 1)}
+              disabled={score >= MAX_SCORE || pointsRemaining < marginal}
               aria-label="Increase {abbr}"
               type="button"
             >+</button>
 
-            <!-- Cost -->
+            <!-- Cost: x pts -->
             <span class="text-xs text-text-muted ml-auto shrink-0">
-              {cost >= 0 ? '+' : ''}{cost} pts
+              {ui('abilities.point_buy.cost', lang)}: {cost} {ui('abilities.point_buy.pts', lang)}
             </span>
 
             <!-- Recommended indicator -->
@@ -170,14 +183,16 @@
 
       <!-- Actions -->
       <div class="flex gap-2 justify-end pt-2 border-t border-border">
-        <button class="btn-secondary" onclick={resetAll} type="button">Reset All (8s)</button>
+        <button class="btn-secondary" onclick={resetAll} type="button">
+          {ui('abilities.point_buy.reset', lang)}
+        </button>
         <button
           class="btn-primary gap-1"
           onclick={confirmBuy}
           disabled={isOverBudget}
           type="button"
         >
-          <IconChecked size={16} aria-hidden="true" /> Confirm
+          <IconChecked size={16} aria-hidden="true" /> {ui('abilities.point_buy.confirm', lang)}
         </button>
       </div>
 

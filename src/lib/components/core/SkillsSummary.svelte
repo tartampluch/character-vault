@@ -18,9 +18,11 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import { IconSkills, IconChecked, IconUnchecked } from '$lib/components/ui/icons';
 
   const charId = $derived(engine.character.id);
+  const lang   = $derived(engine.settings.language);
 
   /** Skills sorted: trained first, then untrained, each alphabetical. */
   const sortedSkills = $derived.by(() => {
@@ -39,30 +41,31 @@
   <div class="flex items-center justify-between border-b border-border pb-2">
     <div class="section-header">
       <IconSkills size={20} aria-hidden="true" />
-      <span>Skills</span>
+      <span>{ui('core.skills', lang)}</span>
     </div>
     <a
       href="/character/{charId}?tab=abilities"
       class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
       aria-label="Open full Skills editor"
     >
-      Edit →
+      {ui('core.edit_link', lang)}
     </a>
   </div>
 
   {#if sortedSkills.length === 0}
     <!-- Empty state -->
     <div class="text-center py-4 text-text-muted">
-      <p class="text-sm">No skills loaded.</p>
+      <p class="text-sm">{ui('core.skills_empty', lang)}</p>
       <p class="text-xs italic mt-1">
-        Skills appear once <code class="bg-surface-alt px-1 rounded">config_skill_definitions</code> is loaded.
+        {ui('core.skills_empty_hint', lang).replace('{key}', 'config_skill_definitions')}
       </p>
     </div>
   {:else}
     <!-- Meta count -->
     <p class="text-xs text-text-muted">
-      {sortedSkills.filter(s => s.ranks > 0).length} trained •
-      {sortedSkills.length} total
+      {ui('core.skills_trained_total', lang)
+        .replace('{trained}', String(sortedSkills.filter(s => s.ranks > 0).length))
+        .replace('{total}', String(sortedSkills.length))}
     </p>
 
     <!-- Scrollable skill rows — capped height so the card doesn't grow indefinitely -->

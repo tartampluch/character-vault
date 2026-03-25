@@ -14,11 +14,11 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { interpolateDescription } from '$lib/utils/mathParser';
-  import { formatModifier, formatSituationalContext } from '$lib/utils/formatters';
+  import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
   import type { ID } from '$lib/types/primitives';
   import Modal from '$lib/components/ui/Modal.svelte';
-  import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd } from '$lib/components/ui/icons';
+  import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd, IconChecked } from '$lib/components/ui/icons';
 
   interface Props {
     featureId: ID | null;
@@ -104,21 +104,22 @@
 
   /**
    * Tailwind classes for a grant-type pill badge.
+   * Uses explicit light/dark pairs for readability in both themes.
    */
   function grantPillClass(category: string): string {
     const map: Record<string, string> = {
-      language:      'bg-blue-900/40 text-blue-300 border-blue-700/50',
-      sense:         'bg-cyan-900/40 text-cyan-300 border-cyan-700/40',
-      proficiency:   'bg-amber-900/40 text-amber-300 border-amber-700/40',
-      immunity:      'bg-green-900/40 text-green-400 border-green-700/50',
-      class_feature: 'bg-blue-900/30 text-blue-200 border-blue-700/30',
-      racial:        'bg-green-900/30 text-green-300 border-green-700/30',
-      feat:          'bg-yellow-900/40 text-yellow-300 border-yellow-700/40',
-      spell:         'bg-purple-900/40 text-purple-300 border-purple-700/40',
-      item:          'bg-cyan-900/30 text-cyan-300 border-cyan-700/30',
-      condition:     'bg-red-900/30 text-red-400 border-red-700/30',
+      language:      'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700/50',
+      sense:         'bg-cyan-100 text-cyan-700 border-cyan-300 dark:bg-cyan-900/50 dark:text-cyan-300 dark:border-cyan-700/50',
+      proficiency:   'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-700/50',
+      immunity:      'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700/50',
+      class_feature: 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-700/50',
+      racial:        'bg-teal-100 text-teal-700 border-teal-300 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700/50',
+      feat:          'bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700/50',
+      spell:         'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-700/50',
+      item:          'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800/50 dark:text-slate-300 dark:border-slate-600/50',
+      condition:     'bg-red-100 text-red-700 border-red-300 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50',
     };
-    return `${map[category] ?? 'bg-surface-alt text-text-muted border-border'} border text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0`;
+    return `${map[category] ?? 'bg-surface-alt text-text-secondary border-border'} border text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0`;
   }
 
   /**
@@ -156,6 +157,12 @@
     'attributes.stat_wisdom':              { en: 'Wisdom',                      fr: 'Sagesse'                      },
     'attributes.stat_charisma':            { en: 'Charisma',                    fr: 'Charisme'                     },
     'attributes.stat_size':                { en: 'Size',                        fr: 'Taille'                       },
+    // Resource pool modifiers
+    'resources.power_points.maxValue':     { en: 'Power Points (max)',          fr: 'Points de pouvoir (max)'      },
+    'resources.vitality_points.maxValue':  { en: 'Vitality Points (max)',       fr: 'Points de vitalité (max)'     },
+    'resources.wound_points.maxValue':     { en: 'Wound Points (max)',          fr: 'Points de blessure (max)'     },
+    'resources.hp.maxValue':               { en: 'Hit Points (max)',            fr: 'Points de vie (max)'          },
+    'resources.ki_points.maxValue':        { en: 'Ki Points (max)',             fr: 'Points de ki (max)'           },
   };
 
   function resolvePipelineLabel(targetId: string): string {
@@ -181,7 +188,9 @@
 
     // 4. Last resort: prettify the raw ID
     return targetId
-      .replace(/^(attributes|combatStats|skills|saves)\./, '')
+      .replace(/^(attributes|combatStats|skills|saves|resources)\./, '')
+      .replace(/\.maxValue$/, ' (max)')
+      .replace(/\.currentValue$/, ' (current)')
       .replace(/_/g, ' ')
       .replace(/\b\w/g, c => c.toUpperCase());
   }
@@ -192,19 +201,19 @@
    */
   function categoryBadgeClass(cat: string): string {
     const map: Record<string, string> = {
-      race:         'bg-green-900/40 text-green-400 border-green-700/50',
-      class:        'bg-blue-900/40 text-blue-300 border-blue-700/50',
-      feat:         'bg-yellow-900/40 text-yellow-300 border-yellow-700/50',
-      item:         'bg-cyan-900/30 text-cyan-300 border-cyan-700/30',
-      condition:    'bg-red-900/30 text-red-400 border-red-700/30',
-      magic:        'bg-purple-900/30 text-purple-300 border-purple-700/30',
-      domain:       'bg-teal-900/30 text-teal-300 border-teal-700/30',
-      class_feature:'bg-blue-900/30 text-blue-200 border-blue-700/30',
-      environment:  'bg-amber-900/30 text-amber-300 border-amber-700/30',
-      monster_type: 'bg-red-900/20 text-red-300 border-red-700/20',
-      deity:        'bg-amber-900/20 text-amber-200 border-amber-700/20',
+      race:         'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700/50',
+      class:        'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700/50',
+      feat:         'bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700/50',
+      item:         'bg-cyan-100 text-cyan-700 border-cyan-300 dark:bg-cyan-900/50 dark:text-cyan-300 dark:border-cyan-700/50',
+      condition:    'bg-red-100 text-red-700 border-red-300 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50',
+      magic:        'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-700/50',
+      domain:       'bg-teal-100 text-teal-700 border-teal-300 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700/50',
+      class_feature:'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-700/50',
+      environment:  'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-700/50',
+      monster_type: 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/50 dark:text-orange-300 dark:border-orange-700/50',
+      deity:        'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-700/50',
     };
-    return `${map[cat] ?? 'bg-surface-alt text-text-muted border-border'} border text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded`;
+    return `${map[cat] ?? 'bg-surface-alt text-text-secondary border-border'} border text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded`;
   }
 </script>
 
@@ -287,7 +296,7 @@
                     <span class="text-[10px] text-text-muted">({mod.type})</span>
                     <!-- Situational context — human-readable label -->
                     {#if mod.situationalContext}
-                      <span class="badge-accent text-[10px]">{formatSituationalContext(mod.situationalContext)}</span>
+                      <span class="badge-accent text-[10px]">{mod.situationalContext}</span>
                     {/if}
                     <!-- Conditional flag -->
                     {#if mod.conditionNode}
@@ -326,24 +335,94 @@
             </section>
           {/if}
 
-          <!-- ── CHOICES ─────────────────────────────────────────────── -->
+          <!-- ── CHOICES (interactive) ───────────────────────────────── -->
           {#if feature.choices?.length}
-            <section class="flex flex-col gap-1.5">
-              <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent border-b border-border pb-1">
-                <IconTabFeats size={14} aria-hidden="true" /> {ui('feature.section_choices', lang)}
-              </h3>
-              <ul class="flex flex-col gap-1.5">
-                {#each feature.choices as choice}
-                  <li class="flex flex-col gap-0.5 p-2.5 rounded-md border border-border bg-surface-alt text-sm">
-                    <span class="font-medium text-text-primary">{engine.t(choice.label)}</span>
-                    <span class="text-xs text-text-muted">Query: <code class="bg-surface px-1 rounded">{choice.optionsQuery}</code></span>
-                    {#if choice.maxSelections > 1}
-                      <span class="text-xs text-accent">(Pick up to {choice.maxSelections})</span>
-                    {/if}
-                  </li>
-                {/each}
-              </ul>
-            </section>
+            {@const parentInstance = engine.character.activeFeatures.find(
+              afi => afi.featureId === feature.id && afi.isActive
+            )}
+            {#each feature.choices as choice}
+              {@const options    = dataLoader.queryFeatures(choice.optionsQuery)}
+              {@const currentSel = parentInstance?.selections?.[choice.choiceId] ?? []}
+              {@const maxSel     = choice.maxSelections ?? 1}
+
+              <section class="flex flex-col gap-2">
+                <div class="flex items-center justify-between border-b border-border pb-1">
+                  <h3 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent">
+                    <IconTabFeats size={14} aria-hidden="true" /> {engine.t(choice.label)}
+                  </h3>
+                  <span class="text-[10px] text-text-muted">
+                    {maxSel === 1
+                      ? ui('feature.choice_pick_one', lang)
+                      : ui('feature.choice_pick_up_to', lang).replace('{n}', String(maxSel))}
+                    — {currentSel.length}/{maxSel}
+                  </span>
+                </div>
+
+                {#if options.length === 0}
+                  <p class="text-xs text-text-muted italic">{ui('feature.choice_no_options', lang)}</p>
+                {:else}
+                  <ul class="flex flex-col gap-1.5">
+                    {#each options as opt}
+                      {@const isSelected = currentSel.includes(opt.id)}
+                      <li class="flex items-start gap-2 px-2.5 py-2 rounded-md border transition-colors
+                                 {isSelected
+                                   ? 'border-accent/60 bg-accent/5 dark:bg-accent/10'
+                                   : 'border-border bg-surface-alt hover:border-accent/30'}">
+
+                        <!-- Option name + description -->
+                        <div class="flex-1 min-w-0">
+                          <span class="text-sm font-medium {isSelected ? 'text-accent' : 'text-text-primary'}">
+                            {engine.t(opt.label)}
+                          </span>
+                          {#if opt.description}
+                            <p class="text-xs text-text-muted mt-0.5 leading-relaxed line-clamp-2">
+                              {engine.t(opt.description)}
+                            </p>
+                          {/if}
+                        </div>
+
+                        <!-- Select / Remove button -->
+                        <div class="shrink-0 flex items-center gap-1.5 mt-0.5">
+                          {#if isSelected}
+                            <span class="flex items-center gap-1 text-[10px] font-bold text-accent uppercase tracking-wide">
+                              <IconChecked size={11} aria-hidden="true" /> {ui('feature.choice_selected', lang)}
+                            </span>
+                            {#if parentInstance}
+                              <button
+                                type="button"
+                                class="text-[10px] px-1.5 py-0.5 rounded border border-red-600/40
+                                       bg-red-100 text-red-700 dark:bg-red-950/20 dark:text-red-400
+                                       hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors"
+                                onclick={() => {
+                                  engine.setFeatureSelection(
+                                    feature.id, choice.choiceId,
+                                    currentSel.filter((id: string) => id !== opt.id)
+                                  );
+                                }}
+                              >{ui('feature.choice_remove', lang)}</button>
+                            {/if}
+                          {:else if parentInstance && currentSel.length < maxSel}
+                            <button
+                              type="button"
+                              class="text-[10px] px-1.5 py-0.5 rounded border border-accent/50
+                                     bg-accent/10 text-accent hover:bg-accent/20 transition-colors font-medium"
+                              onclick={() => {
+                                engine.setFeatureSelection(
+                                  feature.id, choice.choiceId,
+                                  maxSel === 1 ? [opt.id] : [...currentSel, opt.id]
+                                );
+                              }}
+                            >{ui('feature.choice_select', lang)}</button>
+                          {:else if currentSel.length >= maxSel}
+                            <span class="text-[10px] text-text-muted/40">—</span>
+                          {/if}
+                        </div>
+                      </li>
+                    {/each}
+                  </ul>
+                {/if}
+              </section>
+            {/each}
           {/if}
 
           <!-- ── METADATA (GM-only) ───────────────────────────────────── -->

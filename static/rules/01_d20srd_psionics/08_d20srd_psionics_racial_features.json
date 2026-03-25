@@ -1,0 +1,138 @@
+{
+  "supportedLanguages": ["en", "fr"],
+  "entities": [
+    {
+      "_comment": "================================================================================",
+      "_comment2": "SRD PSIONICS — RACIAL FEATURE DEFINITIONS",
+      "_comment3": "Sense/ability features used by grantedFeatures on psionic race entities.",
+      "_comment4": "Dromite energy-resistance choice options (tag: dromite_energy_type) and",
+      "_comment5": "universal psionic racial sense/power features.",
+      "_comment6": "================================================================================",
+      "ruleSource": "srd_psionics"
+    },
+
+    {
+      "id": "sense_scent",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Scent", "fr": "Odorat" },
+      "description": {
+        "en": "The creature can detect approaching enemies, sniff out hidden foes, and track by sense of smell. It can detect opponents within 30 feet by smell. If the opponent is upwind, the range increases to 60 feet; if downwind, it drops to 15 feet. Strong scents can be detected at twice those ranges. Overpowering scents can be detected at triple normal range. The creature can also follow tracks by smell, making a Wisdom (or Survival) check to track as if it had the Track feat, at DC 10 + 2 per hour since the quarry passed.",
+        "fr": "La créature peut détecter les ennemis qui approchent, débusquer les adversaires cachés et suivre une piste par l'odorat. Elle peut détecter des adversaires à 9 mètres par l'odorat. Si l'adversaire est dans la direction du vent, la portée passe à 18 mètres ; si le vent vient de sa direction, elle tombe à 4,5 mètres. Les odeurs fortes peuvent être détectées à deux fois ces portées. Les odeurs envahissantes peuvent être perçues à trois fois la portée normale."
+      },
+      "tags": ["racial", "sense", "sense_scent"]
+    },
+
+    {
+      "id": "psi_like_energy_ray",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Energy Ray (Psi-Like)", "fr": "Rayon d'énergie (type psi)" },
+      "description": {
+        "en": "Once per day, the dromite can use energy ray as a psi-like ability. The energy type matches its chitin resistance — fire, cold, electricity, or sonic. Manifester level equals the dromite's character level. The save DC is Charisma-based.",
+        "fr": "Une fois par jour, le dromite peut utiliser rayon d'énergie comme une aptitude de type psi. Le type d'énergie correspond à la résistance de sa chitine — feu, froid, électricité ou sonique. Le niveau de manifestation est égal au niveau de personnage du dromite. Le DD du jet de sauvegarde est basé sur le Charisme."
+      },
+      "tags": ["racial", "psi_like", "energy", "psi_like_energy_ray"]
+    },
+
+    {
+      "id": "psi_like_energy_ray_sonic_1_per_day",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Energy Ray (Sonic, 1/day, Psi-Like)", "fr": "Rayon d'énergie (sonique, 1/jour, type psi)" },
+      "description": {
+        "en": "Once per day as a psi-like ability: energy ray (sonic). Manifester level equals character level. Save DC is Charisma-based.",
+        "fr": "Une fois par jour comme une aptitude de type psi : rayon d'énergie (sonique). Le niveau de manifestation est égal au niveau de personnage. Le DD est basé sur le Charisme."
+      },
+      "tags": ["racial", "psi_like", "energy", "sonic"]
+    },
+
+    {
+      "id": "dromite_energy_fire",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Fire Chitin Caste", "fr": "Caste chitine de feu" },
+      "description": {
+        "en": "The dromite's chitinous body provides resistance to fire 10. This is a racial feature granted by the Fire Chitin Caste.",
+        "fr": "Le corps chitineux du dromite lui confère une résistance à la magie du feu 10. C'est une aptitude raciale accordée par la Caste chitine de feu."
+      },
+      "tags": ["racial", "dromite_energy_type", "energy_resistance", "fire"],
+      "grantedModifiers": [
+        {
+          "id": "dromite_fire_resistance",
+          "sourceId": "dromite_energy_fire",
+          "sourceName": { "en": "Fire Chitin Caste", "fr": "Caste chitine de feu" },
+          "targetId": "combatStats.energy_resistance_fire",
+          "value": 10,
+          "type": "racial"
+        }
+      ]
+    },
+
+    {
+      "id": "dromite_energy_cold",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Cold Chitin Caste", "fr": "Caste chitine de froid" },
+      "description": {
+        "en": "The dromite's chitinous body provides resistance to cold 10. This is a racial feature granted by the Cold Chitin Caste.",
+        "fr": "Le corps chitineux du dromite lui confère une résistance à la magie du froid 10. C'est une aptitude raciale accordée par la Caste chitine de froid."
+      },
+      "tags": ["racial", "dromite_energy_type", "energy_resistance", "cold"],
+      "grantedModifiers": [
+        {
+          "id": "dromite_cold_resistance",
+          "sourceId": "dromite_energy_cold",
+          "sourceName": { "en": "Cold Chitin Caste", "fr": "Caste chitine de froid" },
+          "targetId": "combatStats.energy_resistance_cold",
+          "value": 10,
+          "type": "racial"
+        }
+      ]
+    },
+
+    {
+      "id": "dromite_energy_electricity",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Electricity Chitin Caste", "fr": "Caste chitine d'électricité" },
+      "description": {
+        "en": "The dromite's chitinous body provides resistance to electricity 10. This is a racial feature granted by the Electricity Chitin Caste.",
+        "fr": "Le corps chitineux du dromite lui confère une résistance à la magie de l'électricité 10. C'est une aptitude raciale accordée par la Caste chitine d'électricité."
+      },
+      "tags": ["racial", "dromite_energy_type", "energy_resistance", "electricity"],
+      "grantedModifiers": [
+        {
+          "id": "dromite_electricity_resistance",
+          "sourceId": "dromite_energy_electricity",
+          "sourceName": { "en": "Electricity Chitin Caste", "fr": "Caste chitine d'électricité" },
+          "targetId": "combatStats.energy_resistance_electricity",
+          "value": 10,
+          "type": "racial"
+        }
+      ]
+    },
+
+    {
+      "id": "dromite_energy_sonic",
+      "category": "racial",
+      "ruleSource": "srd_psionics",
+      "label": { "en": "Sonic Chitin Caste", "fr": "Caste chitine de son" },
+      "description": {
+        "en": "The dromite's chitinous body provides resistance to sonic 10. This is a racial feature granted by the Sonic Chitin Caste.",
+        "fr": "Le corps chitineux du dromite lui confère une résistance à la magie sonique 10. C'est une aptitude raciale accordée par la Caste chitine de son."
+      },
+      "tags": ["racial", "dromite_energy_type", "energy_resistance", "sonic"],
+      "grantedModifiers": [
+        {
+          "id": "dromite_sonic_resistance",
+          "sourceId": "dromite_energy_sonic",
+          "sourceName": { "en": "Sonic Chitin Caste", "fr": "Caste chitine de son" },
+          "targetId": "combatStats.energy_resistance_sonic",
+          "value": 10,
+          "type": "racial"
+        }
+      ]
+    }
+  ]
+}

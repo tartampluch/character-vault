@@ -15,10 +15,12 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { formatModifier } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import { IconStats } from '$lib/components/ui/icons';
   import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
 
   const charId = $derived(engine.character.id);
+  const lang   = $derived(engine.settings.language);
 </script>
 
 <div class="card p-4 flex flex-col gap-3">
@@ -27,14 +29,14 @@
   <div class="flex items-center justify-between border-b border-border pb-2">
     <div class="section-header">
       <IconStats size={20} aria-hidden="true" />
-      <span>Ability Scores</span>
+      <span>{ui('core.ability_scores', lang)}</span>
     </div>
     <a
       href="/character/{charId}?tab=abilities"
       class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
       aria-label="Open full Ability Scores editor"
     >
-      Edit →
+      {ui('core.edit_link', lang)}
     </a>
   </div>
 
@@ -74,7 +76,7 @@
   <!-- Empty state -->
   {#if Object.keys(engine.phase2_attributes).length === 0}
     <p class="text-xs text-text-muted italic text-center py-2">
-      No attributes loaded. Load rule sources to initialise.
+      {ui('core.ability_scores_empty', lang)}
     </p>
   {/if}
 

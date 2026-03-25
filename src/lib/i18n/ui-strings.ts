@@ -86,6 +86,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'login.error_too_many':         { en: 'Too many login attempts. Please wait 15 minutes.', fr: 'Trop de tentatives de connexion. Veuillez attendre 15 minutes.' },
   'login.error_failed':           { en: 'Login failed (HTTP {status}). Please try again.', fr: 'Connexion échouée (HTTP {status}). Veuillez réessayer.' },
   'login.error_server':           { en: 'Could not reach the server. Is the PHP API running?', fr: 'Impossible de contacter le serveur. L\'API PHP est-elle démarrée ?' },
+  'login.dev_hint':               { en: 'Dev accounts: {gm} or {player} — run {cmd} to create them.', fr: 'Comptes de dev : {gm} ou {player} — lancez {cmd} pour les créer.' },
 
   // ==========================================================================
   // SIDEBAR & NAVIGATION
@@ -223,6 +224,44 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'core.choices':                 { en: 'Choices', fr: 'Choix' },
   'core.up_to':                   { en: 'up to', fr: 'jusqu\'à' },
   'core.no_options':              { en: 'No options matching', fr: 'Aucune option correspondant à' },
+
+  // ==========================================================================
+  // CORE TAB — SUMMARY PANELS
+  // ==========================================================================
+  'core.ability_scores':          { en: 'Ability Scores', fr: 'Caractéristiques' },
+  'core.saving_throws':           { en: 'Saving Throws', fr: 'Jets de sauvegarde' },
+  'core.skills':                  { en: 'Skills', fr: 'Compétences' },
+  'core.edit_link':               { en: 'Edit →', fr: 'Modifier →' },
+  'core.skills_trained_total':    { en: '{trained} trained • {total} total', fr: '{trained} entraînées • {total} total' },
+  'core.skills_empty':            { en: 'No skills loaded.', fr: 'Aucune compétence chargée.' },
+  'core.skills_empty_hint':       { en: 'Skills appear once {key} is loaded.', fr: 'Les compétences apparaissent une fois que {key} est chargé.' },
+  'core.ability_scores_empty':    { en: 'No attributes loaded. Load rule sources to initialise.', fr: 'Aucune caractéristique chargée. Chargez les sources de règles pour initialiser.' },
+
+  // ==========================================================================
+  // ABILITIES TAB — POINT BUY MODAL
+  // ==========================================================================
+  'abilities.point_buy.title':    { en: 'Point Buy', fr: 'Achat de points' },
+  'abilities.point_buy.budget_label': { en: 'Budget', fr: 'Budget' },
+  'abilities.point_buy.remaining': { en: '{n} remaining', fr: '{n} restants' },
+  'abilities.point_buy.cost':     { en: 'Cost', fr: 'Coût' },
+  'abilities.point_buy.pts':      { en: 'pts', fr: 'pts' },
+  'abilities.point_buy.how_it_works': { en: 'Scores start at 8 for free. Raising a score costs points — higher scores cost more per point (15+ costs 2 pts/step). The GM sets the budget in campaign settings.', fr: 'Les scores démarrent à 8 gratuitement. Augmenter un score coûte des points — les scores élevés coûtent plus cher par palier (15+ coûte 2 pts/palier). Le MJ définit le budget dans les paramètres de la campagne.' },
+  'abilities.point_buy.reset':    { en: 'Reset All (8s)', fr: 'Réinitialiser (8s)' },
+  'abilities.point_buy.confirm':  { en: 'Confirm', fr: 'Confirmer' },
+
+  // ==========================================================================
+  // ABILITIES TAB — ROLL STATS MODAL
+  // ==========================================================================
+  'abilities.roll.title':         { en: 'Roll Stats (4d6 Drop Lowest)', fr: 'Lancer les stats (4d6 retire le plus bas)' },
+  'abilities.roll.reroll_active': { en: 'Reroll 1s active', fr: 'Relance des 1s active' },
+  'abilities.roll.reroll_off':    { en: 'Reroll 1s: OFF', fr: 'Relance des 1s : NON' },
+  'abilities.roll.method_desc':   { en: 'Method: 4d6 drop lowest × 6', fr: 'Méthode : 4d6 retire le plus bas × 6' },
+  'abilities.roll.rolled_values': { en: 'Rolled values — click to assign:', fr: 'Valeurs lancées — cliquer pour assigner :' },
+  'abilities.roll.not_assigned':  { en: '— Not assigned —', fr: '— Non assigné —' },
+  'abilities.roll.roll':          { en: 'Roll!', fr: 'Lancer !' },
+  'abilities.roll.roll_again':    { en: 'Roll Again', fr: 'Relancer' },
+  'abilities.roll.apply':         { en: 'Apply These Scores', fr: 'Appliquer ces scores' },
+  'abilities.roll.prompt':        { en: 'Click "Roll!" to generate 6 ability scores.', fr: 'Cliquer sur "Lancer !" pour générer 6 scores de caractéristiques.' },
 
   // ==========================================================================
   // ABILITIES TAB
@@ -543,6 +582,12 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'feature.grant_type.item':      { en: 'Item', fr: 'Objet' },
   'feature.grant_type.condition': { en: 'Condition', fr: 'Condition' },
   'feature.grant_type.feature':   { en: 'Feature', fr: 'Capacité' },
+  'feature.choice_select':        { en: 'Select', fr: 'Choisir' },
+  'feature.choice_selected':      { en: 'Selected', fr: 'Sélectionné' },
+  'feature.choice_remove':        { en: 'Remove', fr: 'Retirer' },
+  'feature.choice_pick_up_to':    { en: 'Pick up to {n}', fr: 'Choisir jusqu\'à {n}' },
+  'feature.choice_pick_one':      { en: 'Pick one', fr: 'Choisir un' },
+  'feature.choice_no_options':    { en: 'No options available. Enable the relevant rule source.', fr: 'Aucune option disponible. Activez la source de règles correspondante.' },
 
   // ==========================================================================
   // DICE ROLL MODAL
@@ -663,6 +708,33 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'psionic_item.power_flushed':      { en: 'Used up', fr: 'Consommé' },
 
   // ==========================================================================
+  // LORE & LANGUAGES (Core Tab)
+  // ==========================================================================
+  'lore.personal_story':          { en: 'Personal Story', fr: 'Histoire personnelle' },
+  'lore.personal_story_placeholder': { en: "The character's backstory, motivation, personality traits, ideals, bonds, and flaws…", fr: "L'histoire personnelle du personnage, sa motivation, ses traits de personnalité, ses idéaux, ses liens et ses défauts…" },
+  'lore.languages':               { en: 'Languages', fr: 'Langues' },
+  'lore.bonus_slots':             { en: '{used}/{total} bonus slots', fr: '{used}/{total} emplacements bonus' },
+  'lore.no_bonus_slots':          { en: 'No bonus slots', fr: 'Aucun emplacement bonus' },
+  'lore.automatic':               { en: 'Automatic', fr: 'Automatiques' },
+  'lore.learned':                 { en: 'Learned', fr: 'Apprises' },
+  'lore.add_language':            { en: '— Add language ({n} slot{s} left) —', fr: '— Ajouter une langue ({n} emplacement{s} restant{s}) —' },
+  'lore.all_slots_filled':        { en: 'All bonus language slots filled. Increase INT or add Speak Language ranks for more.', fr: 'Tous les emplacements de langue bonus sont remplis. Augmentez l\'INT ou ajoutez des rangs en Langue parlée pour en obtenir plus.' },
+  'lore.no_languages_available':  { en: 'No additional languages available. Enable a rule source with language features.', fr: 'Aucune langue supplémentaire disponible. Activez une source de règles avec des capacités de langue.' },
+  'lore.appearance':              { en: 'Appearance', fr: 'Apparence' },
+  'lore.height':                  { en: 'Height', fr: 'Taille' },
+  'lore.weight':                  { en: 'Weight', fr: 'Poids' },
+  'lore.age':                     { en: 'Age', fr: 'Âge' },
+  'lore.eyes':                    { en: 'Eyes', fr: 'Yeux' },
+  'lore.hair':                    { en: 'Hair', fr: 'Cheveux' },
+  'lore.skin':                    { en: 'Skin', fr: 'Peau' },
+  'lore.height_placeholder':      { en: "5'8\"", fr: '1,72 m' },
+  'lore.weight_placeholder':      { en: '160 lb.', fr: '72 kg' },
+  'lore.age_placeholder':         { en: '24', fr: '24' },
+  'lore.eyes_placeholder':        { en: 'Brown', fr: 'Marrons' },
+  'lore.hair_placeholder':        { en: 'Dark brown', fr: 'Brun foncé' },
+  'lore.skin_placeholder':        { en: 'Olive', fr: 'Olivâtre' },
+
+  // ==========================================================================
   // ACTION BUDGET (Engine Extension F — Phase 1.3c)
   // ==========================================================================
   'action.budget_title':          { en: 'Actions This Turn', fr: 'Actions ce tour' },
@@ -680,6 +752,43 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'action.spend_full':            { en: 'Use Full-Round Action', fr: 'Utiliser action de tour complet' },
   'action.reset_turn':            { en: 'Reset Turn', fr: 'Réinitialiser le tour' },
   'action.xor_note':              { en: 'Standard OR Move — not both.', fr: 'Standard OU Déplacement — pas les deux.' },
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — GENERAL (GM settings page)
+  // ==========================================================================
+  'settings.save':                { en: 'Save Settings', fr: 'Enregistrer' },
+  'settings.saving':              { en: 'Saving…', fr: 'Enregistrement…' },
+  'settings.saved':               { en: 'Settings saved successfully!', fr: 'Paramètres enregistrés !' },
+  'settings.saved_local':         { en: 'Saved locally (API unavailable).', fr: 'Sauvegardé localement (API indisponible).' },
+  'settings.back_campaign':       { en: 'Campaign', fr: 'Campagne' },
+  'settings.gm_view':             { en: 'GM View', fr: 'Vue MJ' },
+  'settings.title':               { en: 'Campaign Settings', fr: 'Paramètres de campagne' },
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — RULE SOURCES (GM settings page)
+  // ==========================================================================
+  'settings.rule_sources.title':  { en: 'Rule Sources', fr: 'Sources de règles' },
+  'settings.rule_sources.desc':   { en: 'Enable or disable rule source files. Drag to reorder — sources loaded later have higher priority (last wins on duplicate IDs).', fr: 'Activer ou désactiver les fichiers de règles. Faites glisser pour réordonner — les sources chargées en dernier ont la priorité la plus haute (le dernier gagne en cas d\'ID dupliqué).' },
+  'settings.rule_sources.quick_toggle': { en: 'Quick toggle:', fr: 'Basculement rapide :' },
+  'settings.rule_sources.disable_all': { en: 'Disable all', fr: 'Tout désactiver' },
+  'settings.rule_sources.enable_all': { en: 'Enable all', fr: 'Tout activer' },
+  'settings.rule_sources.all_files': { en: 'All files', fr: 'Tous les fichiers' },
+  'settings.rule_sources.enabled_count': { en: '{enabled} / {total} enabled', fr: '{enabled} / {total} activés' },
+  'settings.rule_sources.enable': { en: 'Enable', fr: 'Activer' },
+  'settings.rule_sources.disable': { en: 'Disable', fr: 'Désactiver' },
+  'settings.rule_sources.none':   { en: 'No rule sources found. Start the PHP API server to load sources.', fr: 'Aucune source de règles trouvée. Démarrez le serveur PHP pour charger les sources.' },
+  'settings.rule_sources.error':  { en: 'Could not load rule sources', fr: 'Impossible de charger les sources de règles' },
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — GM OVERRIDES (GM settings page)
+  // ==========================================================================
+  'settings.overrides.title':     { en: 'GM Global Overrides', fr: 'Substitutions globales MJ' },
+  'settings.overrides.desc':      { en: 'A JSON array of Feature-like objects and/or config tables applied to ALL characters in this campaign, AFTER all rule source files.', fr: 'Un tableau JSON d\'objets Feature et/ou de tables de configuration appliqués à TOUS les personnages de la campagne, APRÈS tous les fichiers de règles.' },
+  'settings.overrides.valid':     { en: 'Valid JSON', fr: 'JSON valide' },
+  'settings.overrides.invalid':   { en: 'Invalid JSON — fix errors before saving', fr: 'JSON invalide — corrigez les erreurs avant d\'enregistrer' },
+  'settings.overrides.entries':   { en: '{n} override {entries}', fr: '{n} substitution{s}' },
+  'settings.overrides.entry':     { en: 'entry', fr: '' },
+  'settings.overrides.entries_pl': { en: 'entries', fr: '' },
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — DICE RULES (GM settings page)
@@ -702,6 +811,7 @@ export const UI_STRINGS: Record<string, LocalizedString> = {
   'settings.stat_gen.reroll_ones_desc': { en: 'Before dropping the lowest die, reroll any die showing 1 once. Produces higher average scores.', fr: 'Avant de retirer le dé le plus bas, relancez une fois tout dé affichant 1. Produit des scores moyens plus élevés.' },
   'settings.stat_gen.budget':     { en: 'Point Buy Budget', fr: 'Budget d\'achat de points' },
   'settings.stat_gen.budget_desc': { en: 'Total points to spend. Standard D&D 3.5: Low = 15, Standard = 25, High = 32, Epic = 40.', fr: 'Points totaux à dépenser. D&D 3.5 standard : Faible = 15, Standard = 25, Élevé = 32, Épique = 40.' },
+  'settings.stat_gen.allowed_methods': { en: 'Allowed Methods (players may use any checked method)', fr: 'Méthodes autorisées (les joueurs peuvent utiliser toute méthode cochée)' },
   'settings.stat_gen.preset_low':  { en: 'Low (15)', fr: 'Faible (15)' },
   'settings.stat_gen.preset_std':  { en: 'Standard (25)', fr: 'Standard (25)' },
   'settings.stat_gen.preset_high': { en: 'High (32)', fr: 'Élevé (32)' },

@@ -15,6 +15,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ID } from '$lib/types/primitives';
   import { IconLore, IconCharacter, IconLanguages, IconLocked, IconClose } from '$lib/components/ui/icons';
 
@@ -30,6 +31,8 @@
   $effect(() => {
     engine.character.customSubtitle = personalStory || undefined;
   });
+
+  const lang = $derived(engine.settings.language);
 
   // ── Language system ─────────────────────────────────────────────────────────
   const intModifier = $derived(
@@ -98,6 +101,14 @@
       (event.target as HTMLSelectElement).value = '';
     }
   }
+
+  /** Build the "Add language (N slot left)" dropdown label */
+  function addLangLabel(n: number): string {
+    const s = n > 1 ? 's' : '';
+    return ui('lore.add_language', lang)
+      .replace('{n}', String(n))
+      .replace(/\{s\}/g, s);
+  }
 </script>
 
 <div class="card p-4 flex flex-col gap-4">
@@ -112,46 +123,46 @@
     <section class="flex flex-col gap-2">
       <div class="section-header border-b border-border pb-2">
         <IconLore size={20} aria-hidden="true" />
-        <span>Personal Story</span>
+        <span>{ui('lore.personal_story', lang)}</span>
       </div>
       <textarea
         class="textarea"
         bind:value={personalStory}
-        placeholder="The character's backstory, motivation, personality traits, ideals, bonds, and flaws..."
+        placeholder={ui('lore.personal_story_placeholder', lang)}
         rows="5"
-        aria-label="Personal story and background"
+        aria-label={ui('lore.personal_story', lang)}
       ></textarea>
     </section>
 
     <!-- ── LANGUAGES ──────────────────────────────────────────────── -->
-    <section class="flex flex-col gap-2" aria-label="Languages known">
+    <section class="flex flex-col gap-2" aria-label={ui('lore.languages', lang)}>
 
-      <!-- Languages header with slot counter -->
-      <div class="flex items-center justify-between border-b border-border pb-2">
-        <div class="section-header">
-          <IconLanguages size={20} aria-hidden="true" />
-          <span>Languages</span>
-        </div>
-        <span
-          class="text-xs {remainingSlots === 0 && bonusLanguageSlots > 0 ? 'text-green-500 dark:text-green-400' : 'text-text-muted'}"
-          aria-label="{remainingSlots} language slots remaining"
-        >
-          {#if bonusLanguageSlots > 0}
-            {manualCount}/{bonusLanguageSlots} bonus slots
-          {:else}
-            No bonus slots
-          {/if}
-        </span>
+      <!-- Languages header -->
+      <div class="section-header border-b border-border pb-2">
+        <IconLanguages size={20} aria-hidden="true" />
+        <span>{ui('lore.languages', lang)}</span>
       </div>
+
+      <!-- Slot counter — always below the divider to avoid vertical misalignment -->
+      <span
+        class="text-xs {remainingSlots === 0 && bonusLanguageSlots > 0 ? 'text-green-500 dark:text-green-400' : 'text-text-muted'}"
+        aria-label="{remainingSlots} language slots remaining"
+      >
+        {#if bonusLanguageSlots > 0}
+          {ui('lore.bonus_slots', lang).replace('{used}', String(manualCount)).replace('{total}', String(bonusLanguageSlots))}
+        {:else}
+          {ui('lore.no_bonus_slots', lang)}
+        {/if}
+      </span>
 
       <!-- Automatic languages (locked, from race/class) -->
       {#if languages.automatic.length > 0}
         <div class="flex flex-col gap-1">
-          <span class="text-xs text-text-muted uppercase tracking-wider">Automatic</span>
+          <span class="text-xs text-text-muted uppercase tracking-wider">{ui('lore.automatic', lang)}</span>
           <div class="flex flex-wrap gap-1">
-            {#each languages.automatic as lang}
-              <span class="badge-green flex items-center gap-1" aria-label="{lang.name} (automatic)">
-                {lang.name}
+            {#each languages.automatic as lang_entry}
+              <span class="badge-green flex items-center gap-1" aria-label="{lang_entry.name} (automatic)">
+                {lang_entry.name}
                 <IconLocked size={10} aria-hidden="true" class="opacity-60" />
               </span>
             {/each}
@@ -162,16 +173,16 @@
       <!-- Manual languages (removable) -->
       {#if languages.manual.length > 0}
         <div class="flex flex-col gap-1">
-          <span class="text-xs text-text-muted uppercase tracking-wider">Learned</span>
+          <span class="text-xs text-text-muted uppercase tracking-wider">{ui('lore.learned', lang)}</span>
           <div class="flex flex-wrap gap-1">
-            {#each languages.manual as lang}
-              <span class="badge-accent flex items-center gap-1" aria-label="{lang.name} (removable)">
-                {lang.name}
+            {#each languages.manual as lang_entry}
+              <span class="badge-accent flex items-center gap-1" aria-label="{lang_entry.name} (removable)">
+                {lang_entry.name}
                 <button
                   class="text-accent-700 dark:text-accent-300 hover:text-red-500 transition-colors duration-100"
-                  onclick={() => removeLanguage(lang.instanceId)}
-                  aria-label="Remove {lang.name}"
-                  title="Remove {lang.name}"
+                  onclick={() => removeLanguage(lang_entry.instanceId)}
+                  aria-label="Remove {lang_entry.name}"
+                  title="Remove {lang_entry.name}"
                   type="button"
                 >
                   <IconClose size={10} aria-hidden="true" />
@@ -188,20 +199,20 @@
           class="select mt-1"
           value=""
           onchange={handleLanguageSelect}
-          aria-label="Add a language"
+          aria-label={ui('lore.add_language', lang).replace('{n}', String(remainingSlots)).replace(/\{s\}/g, remainingSlots !== 1 ? 's' : '')}
         >
-          <option value="">— Add language ({remainingSlots} slot{remainingSlots !== 1 ? 's' : ''} left) —</option>
-          {#each availableLanguages as lang}
-            <option value={lang.id}>{engine.t(lang.label)}</option>
+          <option value="">{addLangLabel(remainingSlots)}</option>
+          {#each availableLanguages as lang_feat}
+            <option value={lang_feat.id}>{engine.t(lang_feat.label)}</option>
           {/each}
         </select>
       {:else if remainingSlots === 0 && bonusLanguageSlots > 0}
         <p class="text-xs text-text-muted italic">
-          All bonus language slots filled. Increase INT or add Speak Language ranks for more.
+          {ui('lore.all_slots_filled', lang)}
         </p>
       {:else if bonusLanguageSlots > 0 && availableLanguages.length === 0}
         <p class="text-xs text-text-muted italic">
-          No additional languages available. Enable a rule source with language features.
+          {ui('lore.no_languages_available', lang)}
         </p>
       {/if}
     </section>
@@ -214,34 +225,34 @@
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
       <IconCharacter size={20} aria-hidden="true" />
-      <span>Appearance</span>
+      <span>{ui('lore.appearance', lang)}</span>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-      {#each [
-        { id: 'char-height', label: 'Height',     bind: 'height', placeholder: "5'8\"" },
-        { id: 'char-weight', label: 'Weight',     bind: 'weight', placeholder: '160 lb.' },
-        { id: 'char-age',    label: 'Age',        bind: 'age',    placeholder: '24' },
-        { id: 'char-eyes',   label: 'Eyes',       bind: 'eyes',   placeholder: 'Brown' },
-        { id: 'char-hair',   label: 'Hair',       bind: 'hair',   placeholder: 'Dark brown' },
-        { id: 'char-skin',   label: 'Skin',       bind: 'skin',   placeholder: 'Olive' },
-      ] as field}
+      {#each ([
+        { id: 'char-height', labelKey: 'lore.height', bind: 'height', placeholderKey: 'lore.height_placeholder' },
+        { id: 'char-weight', labelKey: 'lore.weight', bind: 'weight', placeholderKey: 'lore.weight_placeholder' },
+        { id: 'char-age',    labelKey: 'lore.age',    bind: 'age',    placeholderKey: 'lore.age_placeholder'    },
+        { id: 'char-eyes',   labelKey: 'lore.eyes',   bind: 'eyes',   placeholderKey: 'lore.eyes_placeholder'   },
+        { id: 'char-hair',   labelKey: 'lore.hair',   bind: 'hair',   placeholderKey: 'lore.hair_placeholder'   },
+        { id: 'char-skin',   labelKey: 'lore.skin',   bind: 'skin',   placeholderKey: 'lore.skin_placeholder'   },
+      ] as const) as field}
         <div class="flex flex-col gap-0.5">
           <label for={field.id} class="text-xs text-text-muted uppercase tracking-wider">
-            {field.label}
+            {ui(field.labelKey, lang)}
           </label>
           {#if field.bind === 'height'}
-            <input id={field.id} type="text" bind:value={height} placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="20" />
+            <input id={field.id} type="text" bind:value={height} placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="20" />
           {:else if field.bind === 'weight'}
-            <input id={field.id} type="text" bind:value={weight} placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="20" />
+            <input id={field.id} type="text" bind:value={weight} placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="20" />
           {:else if field.bind === 'age'}
-            <input id={field.id} type="text" bind:value={age}    placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="10" />
+            <input id={field.id} type="text" bind:value={age}    placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="10" />
           {:else if field.bind === 'eyes'}
-            <input id={field.id} type="text" bind:value={eyes}   placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="30" />
+            <input id={field.id} type="text" bind:value={eyes}   placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="30" />
           {:else if field.bind === 'hair'}
-            <input id={field.id} type="text" bind:value={hair}   placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="30" />
+            <input id={field.id} type="text" bind:value={hair}   placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="30" />
           {:else if field.bind === 'skin'}
-            <input id={field.id} type="text" bind:value={skin}   placeholder={field.placeholder} class="input px-2 py-1.5 text-xs" maxlength="30" />
+            <input id={field.id} type="text" bind:value={skin}   placeholder={ui(field.placeholderKey, lang)} class="input px-2 py-1.5 text-xs" maxlength="30" />
           {/if}
         </div>
       {/each}

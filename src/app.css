@@ -577,23 +577,23 @@
 	}
 
 	.badge-accent {
-		@apply bg-accent-100 text-accent-800
-		       dark:bg-accent-900 dark:text-accent-300;
+		@apply bg-accent-100 text-accent-700 border border-accent-200
+		       dark:bg-accent-900/60 dark:text-accent-300 dark:border-accent-700/50;
 	}
 
 	.badge-green {
-		@apply bg-green-100 text-green-800
-		       dark:bg-green-900 dark:text-green-300;
+		@apply bg-green-100 text-green-700 border border-green-200
+		       dark:bg-green-900/60 dark:text-green-300 dark:border-green-700/50;
 	}
 
 	.badge-red {
-		@apply bg-red-100 text-red-800
-		       dark:bg-red-900 dark:text-red-300;
+		@apply bg-red-100 text-red-700 border border-red-200
+		       dark:bg-red-900/60 dark:text-red-300 dark:border-red-700/50;
 	}
 
 	.badge-yellow {
-		@apply bg-yellow-100 text-yellow-800
-		       dark:bg-yellow-900 dark:text-yellow-300;
+		@apply bg-yellow-100 text-yellow-700 border border-yellow-200
+		       dark:bg-yellow-900/60 dark:text-yellow-300 dark:border-yellow-700/50;
 	}
 
 	/** badge-gray uses semantic tokens — auto-themes without explicit dark: override */

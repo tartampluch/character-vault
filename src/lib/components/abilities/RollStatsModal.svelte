@@ -9,12 +9,15 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { rollAllAbilityScores } from '$lib/utils/diceEngine';
   import { formatModifier } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconDiceRoll, IconChecked, IconSuccess, IconTabFeats } from '$lib/components/ui/icons';
-  import { MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
 
   interface Props { onclose: () => void; }
   let { onclose }: Props = $props();
+
+  const lang = $derived(engine.settings.language);
 
   let rolledValues = $state<[number, number, number, number, number, number] | null>(null);
   let assignments  = $state<Record<string, number>>(
@@ -73,7 +76,7 @@
   }
 </script>
 
-<Modal open={true} onClose={onclose} title="Roll Stats (4d6 Drop Lowest)" size="md">
+<Modal open={true} onClose={onclose} title={ui('abilities.roll.title', lang)} size="md">
   {#snippet children()}
     <div class="flex flex-col gap-4">
 
@@ -81,12 +84,12 @@
       <div class="flex items-center gap-2 flex-wrap">
         {#if engine.settings.statGeneration.rerollOnes}
           <span class="badge-green flex items-center gap-1">
-            <IconSuccess size={12} aria-hidden="true" /> Reroll 1s active
+            <IconSuccess size={12} aria-hidden="true" /> {ui('abilities.roll.reroll_active', lang)}
           </span>
         {:else}
-          <span class="badge-gray">Reroll 1s: OFF</span>
+          <span class="badge-gray">{ui('abilities.roll.reroll_off', lang)}</span>
         {/if}
-        <span class="text-xs text-text-muted">Method: 4d6 drop lowest × 6</span>
+        <span class="text-xs text-text-muted">{ui('abilities.roll.method_desc', lang)}</span>
       </div>
 
       <!-- Roll button -->
@@ -96,14 +99,14 @@
         type="button"
       >
         <IconDiceRoll size={18} aria-hidden="true" />
-        {rolledValues ? 'Roll Again' : 'Roll!'}
+        {rolledValues ? ui('abilities.roll.roll_again', lang) : ui('abilities.roll.roll', lang)}
       </button>
 
       {#if rolledValues}
 
         <!-- Rolled values pool -->
         <div class="flex flex-col gap-1.5">
-          <span class="text-xs text-text-muted">Rolled values — click to assign to next ability:</span>
+          <span class="text-xs text-text-muted">{ui('abilities.roll.rolled_values', lang)}</span>
           <div class="flex flex-wrap gap-2">
             {#each rolledValues as val, index}
               {@const isUsed = usedIndices.has(index)}
@@ -135,17 +138,22 @@
         <!-- Assignment rows -->
         <div class="flex flex-col gap-1.5">
           {#each MAIN_ABILITY_IDS as abilityId}
-            {@const abbr       = ABILITY_ABBRS[abilityId]}
+            {@const abbr        = getAbilityAbbr(abilityId, lang)}
+            {@const fullLabel   = engine.t(engine.phase2_attributes[abilityId]?.label ?? { en: abilityId })}
             {@const assignedIdx = assignments[abilityId]}
-            {@const score      = assignedScores[abilityId]}
-            {@const isRec      = recommendedIds.includes(abilityId)}
-            {@const dMod       = derivedMod(score)}
+            {@const score       = assignedScores[abilityId]}
+            {@const isRec       = recommendedIds.includes(abilityId)}
+            {@const dMod        = derivedMod(score)}
 
             <div
               class="flex items-center gap-2 px-3 py-1.5 rounded border
                      {isRec ? 'border-green-500/40 bg-green-950/10 dark:bg-green-950/20' : 'border-border bg-surface-alt'}"
             >
-              <span class="text-xs font-bold tracking-wider text-text-muted w-8 shrink-0">{abbr}</span>
+              <!-- Abbr + full name -->
+              <div class="flex flex-col min-w-0 w-20 shrink-0">
+                <span class="text-xs font-bold tracking-wider text-text-muted">{abbr}</span>
+                <span class="text-[10px] text-text-muted/70 truncate">{fullLabel}</span>
+              </div>
 
               <select
                 class="select flex-1 py-1 text-sm"
@@ -157,7 +165,7 @@
                 }}
                 aria-label="Assign a rolled value to {abbr}"
               >
-                <option value="-1">— Not assigned —</option>
+                <option value="-1">{ui('abilities.roll.not_assigned', lang)}</option>
                 {#each rolledValues as val, index}
                   {#if !usedIndices.has(index) || assignments[abilityId] === index}
                     <option value={index}>{val}</option>
@@ -192,13 +200,13 @@
             disabled={!allAssigned}
             type="button"
           >
-            <IconChecked size={16} aria-hidden="true" /> Apply These Scores
+            <IconChecked size={16} aria-hidden="true" /> {ui('abilities.roll.apply', lang)}
           </button>
         </div>
 
       {:else}
         <p class="text-sm text-text-muted text-center italic py-2">
-          Click "Roll!" to generate 6 ability scores.
+          {ui('abilities.roll.prompt', lang)}
         </p>
       {/if}
 

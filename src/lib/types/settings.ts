@@ -116,9 +116,21 @@ export interface CampaignSettings {
      * The GM can set any value to support custom campaign power levels.
      * Read by `PointBuyModal.svelte` (Phase 9.4) to restrict spending.
      *
-     * Only relevant when `method === "point_buy"`. Ignored for roll and standard array.
+     * Only relevant when at least `"point_buy"` is in `allowedMethods`.
      */
     pointBuyBudget: number;
+
+    /**
+     * The set of stat generation methods the GM allows for this campaign.
+     *
+     * Players may use ANY of the methods listed here when generating their
+     * ability scores. The GM controls which options are available.
+     * Defaults to all three methods if absent (backward-compatible).
+     *
+     * Displayed as checkboxes in the Campaign Settings page.
+     * Optional for backward-compatibility with existing saved settings.
+     */
+    allowedMethods?: Array<'roll' | 'point_buy' | 'standard_array'>;
   };
 
   // ---------------------------------------------------------------------------
@@ -360,6 +372,7 @@ export function createDefaultCampaignSettings(): CampaignSettings {
       method: 'point_buy',
       rerollOnes: false,
       pointBuyBudget: 25,
+      allowedMethods: ['roll', 'point_buy', 'standard_array'],
     },
     diceRules: {
       explodingTwenties: false,
