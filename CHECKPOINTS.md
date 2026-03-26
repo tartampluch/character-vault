@@ -1,6 +1,10 @@
 # Checkpoints
 
-Each checkpoint is a self-contained review prompt that can be executed **at any time** once its prerequisite phases are complete. Running Checkpoint #1 after Checkpoint #4 (or after all phases) is perfectly valid — it reviews only its own domain and remains accurate regardless of what else has been built. Prerequisites are listed at the top of each checkpoint.
+Each checkpoint is a self-contained review prompt that can be executed **at any time**, regardless of whether it has been validated before. Running Checkpoint #1 after Checkpoint #4 (or after all phases) is perfectly valid — it reviews only its own domain and remains accurate regardless of what else has been built. A checkpoint marked `[x]` in `PROGRESS.md` indicates it was previously validated; this is a historical marker only and does **not** prevent it from being re-run. Prerequisites are listed at the top of each checkpoint.
+
+**Validation standard:** A checkpoint is only considered fully passed when **all issues at all severity levels** (CRITICAL, MAJOR, and MINOR) have been resolved. No issue should be left open.
+
+**Asking questions:** If anything is unclear at any point during a checkpoint review — about the architecture, a specific requirement, or the intended behavior — ask the user for clarification before proceeding. Questions and confirmation requests are welcome at any time.
 
 ---
 
@@ -194,6 +198,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what the architecture requires. Reference the specific ARCHITECTURE.md section.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -308,6 +314,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.svelte:lineNumber` — Description. Reference the specific ARCHITECTURE.md section.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -378,6 +386,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file:lineNumber` — Description and what the architecture requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -515,6 +525,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what the architecture requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -605,6 +617,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file:lineNumber` — Description and what is expected.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -702,6 +716,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.svelte:lineNumber` — Description and what Phase 19 requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -782,6 +798,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.ts:lineNumber` — Description and what §9.8/SRD requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -913,106 +931,8 @@ Output format: A numbered markdown checklist. For each issue:
 - [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file:lineNumber` — Description and what Phase 21 / `ARCHITECTURE.md §21` requires.
 
 If no issues found in a category: "✅ [Category]: No issues found."
-```
 
----
-
-## Final Review — Complete System Validation
-
-**Prerequisites:** All phases (1–21) must be complete.
-
-```markdown
-You are a principal software architect performing a final acceptance review before v1.0 release.
-
-I have attached:
-1. `ARCHITECTURE.md` — complete engine specification
-2. `ANNEXES.md` — JSON examples and configuration tables
-3. `PROMPT.md` — the complete development checklist
-4. `PROGRESS.md` — all tasks checked off
-5. ALL source code files (TypeScript, Svelte, PHP)
-6. ALL test files (Vitest + PHPUnit) — all tests passing
-
-This is the FINAL review before release. It is comprehensive.
-
----
-
-## Part A: Architecture Conformance (Full Sweep)
-
-Walk through every section of `ARCHITECTURE.md` (§1–21) and verify the implementation:
-
-1. **§1 (ECS Philosophy):** Are Features the only source of modifiers? Is GameEngine the only processing system?
-2. **§2 (Primitives):** Do `ID`, `ModifierType` (all 23 values including "damage_reduction", "inherent", "max_dex_cap"), and `LogicOperator` match exactly?
-3. **§3 (Logic Engine):** All 4 `LogicNode` types and all 8 `LogicOperator` values handled?
-4. **§4 (Pipelines):** `Modifier`, `StatisticPipeline`, `SkillPipeline`, `ResourcePool` match? `derivedModifier` correct? `setAbsolute` behavior (§4.2)? All Math Parser paths (§4.3)? All 8 `resetCondition` values (§4.4)? `drBypassTags` (§4.5)? `attacker.*` prefix (§4.6)? Fortification (§4.7)? ASF (§4.8)? On-crit burst (§4.9)? Inherent bonuses (§4.10)? Metamagic rods (§4.11)? Staves (§4.12)? Wands (§4.13)? Scrolls (§4.14)? Cursed items (§4.15)? Intelligent items (§4.16)? Max DEX bonus (§4.17)?
-5. **§5 (Features):** Complete `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice` match? `classSkills` (§5.5)? `optionsQuery` parsing (§5.3)? `actionBudget` (§5.6)? Instance-scoped pools (§5.7)? Trigger-based activation (§5.5b)?
-6. **§15.3 (Psionic items):** All 5 item types with correct field matrices?
-7. **§15.1 (Psionic power fields):** `discipline` and `displays` present? `AugmentationRule.effectDescription` present?
-8. **§6 (Character):** `Character` interface complete? `ActiveFeatureInstance` with `itemResourcePools` and `ephemeral`? `LinkedEntity` serialization guard?
-9. **§7 (Campaign):** `Campaign` with `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
-10. **§8 (Settings & Variants):** `variantRules.gestalt` and `variantRules.vitalityWoundPoints`? Gestalt (§8.1) and V/WP (§8.2) implementations correct?
-11. **§9 (DAG):** All phases (0–4b) implemented in order? Gestalt Phase 3.7? Max DEX bonus intercept? Infinite loop detection? HP uses `characterLevel` not ECL?
-12. **§10 (Examples A–G):** Can the engine resolve all examples? Especially Example F (Monk WIS AC formula-as-value) and Example E (Indomitable Will dual-gated modifier).
-13. **§11–17 (i18n, Monsters, Environment, Epic, Psionics, Variants, Dice):** Structurally supported?
-14. **§18 (Data Override Engine):** Complete resolution chain? Partial merge and `-prefix` deletion? Config table replacement? GM override layers?
-15. **§19–20 (Polling, Routes):** Routes match §20? Polling (§19) implemented in `StorageManager`?
-16. **§21 (Content Editor System):** Homebrew API present? DataLoader injection priority correct? HomebrewStore CRUD + auto-save? All 6 picker modals implemented? Override-by-ID banner and merge semantics correct? Two-way raw JSON sync functional? All routes GM-gated? All Phase 21 tests passing?
-
-## Part B: Cross-Cutting Concerns
-
-16. **Zero Hardcoding:** Scan ENTIRE codebase for hardcoded D&D terms in logic or templates (not comments or test fixtures).
-17. **i18n Completeness:** Is every user-facing string either a `LocalizedString` via `t()` or derived from Feature JSON?
-18. **Error Handling:** Does the engine handle gracefully: missing Feature JSON, unresolved formula paths, circular dependencies, invalid GM override JSON, network failures (offline mode)?
-19. **TypeScript Strictness:** Any `any` types that should be narrower? Any unsafe `as` casts?
-20. **PHP Security:** SQL injection vectors? Missing auth checks? GM data exposed to players?
-
-## Part C: ANNEXES.md Compatibility
-
-21. **Annex A:** Pick 3 diverse examples (one class, one item, one psionic power). Trace complete resolution through the engine. Verify every field is correctly processed.
-22. **Annex B:** Verify all config tables (B.1–B.12: XP thresholds, carrying capacity, point buy costs, ability modifier table, base speed, skill synergies, standard array, size categories, multiclass XP penalty, bonus spells, TWF penalties, movement/encumbrance) are loadable via `getConfigTable(tableId)` and used where documented.
-
-## Part D: Test Coverage Assessment
-
-23. **Coverage Gaps:** List any architecture feature, edge case, or scenario from `ARCHITECTURE.md` or `ANNEXES.md` with NO corresponding test. Rank by risk.
-
-## Part E: UI Excellence (Phase 19 Validation)
-
-24. **Tailwind Migration:** All styling via Tailwind? No remaining scoped `<style>` blocks?
-25. **Theme System:** Light/dark works with FOWT prevention and cookie persistence?
-26. **Iconography:** All emoji replaced? Icon sizes consistent (16/20/24px)?
-27. **Responsive Layout:** Works at 320px–1920px? Sidebar collapsible? Full-height character sheet?
-28. **Touch & Accessibility:** Touch targets ≥44px on coarse pointer? Focus rings (`prefers-reduced-motion`)?
-29. **Design Consistency:** Cards, buttons, inputs, badges, headers, modals all consistent?
-
-## Part F: Content Editor System (Phase 21 Validation)
-
-30. **Campaign-Scope API (21.1.1):** `GET/PUT /api/campaigns/{id}/homebrew-rules` present? GM-only PUT? 403/422/413 codes correct? `updated_at` updated?
-31. **Global-Scope API (21.1.2):** `GET/PUT/DELETE /api/global-rules/{filename}` present? `storage/rules/` writable outside web root? Filename validation enforced?
-32. **DataLoader Dual-Scope Priority (21.1.3):** `storage/rules/` files sorted alongside `static/rules/`? Campaign homebrew above all files? `gmGlobalOverrides` above campaign homebrew? Injection documented in code?
-33. **HomebrewStore (21.1.4):** `add/update/remove/toJSON` correct? `isDirty/isSaving` reactive? Auto-save routes to correct endpoint based on `scope`? Filename validated before save?
-34. **Picker Modals (21.2):** All 6 present (`PipelinePicker`, `FeaturePicker`, `TagPicker`, `EntitySearch`, `ModifierTypePicker`, `ConditionNodeBuilder`)? Each handles edge cases (empty results, keyboard nav, Escape-to-close)?
-35. **FormulaBuilderInput (21.3.1):** Used in `ModifierListEditor`, `ActivationEditor`, and `ResourcePoolEditor`? Click-to-insert at cursor via `setRangeText()` works? Validation **indicator icon** (✓/✗/⚠) present? Input text unstyled (no inline token colouring, no overlay div)?
-36. **ConditionNodeBuilder (21.2.6 + 21.2.7):** AND/OR/NOT/CONDITION supported? All 8 operators with plain-English labels? Add/group/reorder interactions (▲/▼, AND↔OR switch)? Depth-4 limit? Empty tree → `undefined`?
-37. **EditorContext (21.5.4):** `editorContext.ts` module present? `setContext(EDITOR_CONTEXT_KEY, ctx)` in `EntityForm`? Sub-forms use `getContext()` with no prop-drilling of the `Feature` draft? Each sub-form independently testable via mock context?
-38. **Override-by-ID (21.3.2+21.5.4):** Amber "Override Warning" banner driven by `ctx.hasOverrideWarning`? Replace vs partial merge semantics correct in homebrew chain?
-39. **HomebrewScopePanel (21.5.1):** Scope toggle (Campaign/Global) works? Filename input visible only for global scope? Load-order tooltip present?
-40. **Raw JSON Two-Way Sync (21.5.5):** Invalid JSON does NOT corrupt form state? Form edits update textarea immediately?
-41. **Route Guards (21.6.1):** All content editor routes GM-only? Non-GMs redirected to `/campaigns`?
-42. **Test Coverage (21.7):** 2 PHPUnit test files (campaign-scope + global-scope) and 8 Vitest test files present and passing? 21.7.6 asserts icon state not border-colour?
-43. **End-to-End:** GM creates homebrew race, saves as campaign-scope, race appears in character sheet race dropdown without restart?
-
----
-
-Produce a structured report with 4 sections:
-
-**🔴 CRITICAL ISSUES** (Must fix before release — incorrect behavior, security vulnerability, data corruption risk)
-
-**🟡 MAJOR ISSUES** (Should fix — deviations from architecture, missing edge cases, incomplete implementations)
-
-**🟢 MINOR ISSUES** (Nice to fix — code style, missing comments, non-blocking inconsistencies)
-
-**✅ VALIDATION PASSED** (Categories that are fully conformant)
-
-For each issue: file path, line reference, architecture section, and specific description of what's wrong vs. what's expected.
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 ```
 
 ---
@@ -1190,13 +1110,117 @@ Your job is to verify Phase 22 is **complete, correct, and secure**. Do NOT rewr
 
 Produce a structured report with 4 sections:
 
-**🔴 CRITICAL ISSUES** (Must fix before release — incorrect behavior, security vulnerability, data corruption risk)
+**🔴 CRITICAL ISSUES** (Highest priority — incorrect behavior, security vulnerability, data corruption risk)
 
-**🟡 MAJOR ISSUES** (Should fix — deviations from architecture, missing edge cases, incomplete implementations)
+**🟡 MAJOR ISSUES** (High priority — deviations from architecture, missing edge cases, incomplete implementations)
 
-**🟢 MINOR ISSUES** (Nice to fix — code style, missing comments, non-blocking inconsistencies)
+**🟢 MINOR ISSUES** (Must also be resolved — code style, missing comments, non-blocking inconsistencies)
 
 **✅ VALIDATION PASSED** (Categories that are fully conformant)
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
+
+For each issue: file path, line reference, architecture section, and specific description of what's wrong vs. what's expected.
+```
+
+---
+
+## Final Review — Complete System Validation
+
+**Prerequisites:** All phases (1–22) must be complete.
+
+```markdown
+You are a principal software architect performing a final acceptance review before v1.0 release.
+
+I have attached:
+1. `ARCHITECTURE.md` — complete engine specification
+2. `ANNEXES.md` — JSON examples and configuration tables
+3. `PROMPT.md` — the complete development checklist
+4. `PROGRESS.md` — all tasks checked off
+5. ALL source code files (TypeScript, Svelte, PHP)
+6. ALL test files (Vitest + PHPUnit) — all tests passing
+
+This is the FINAL review before release. It is comprehensive.
+
+---
+
+## Part A: Architecture Conformance (Full Sweep)
+
+Walk through every section of `ARCHITECTURE.md` (§1–21) and verify the implementation:
+
+1. **§1 (ECS Philosophy):** Are Features the only source of modifiers? Is GameEngine the only processing system?
+2. **§2 (Primitives):** Do `ID`, `ModifierType` (all 23 values including "damage_reduction", "inherent", "max_dex_cap"), and `LogicOperator` match exactly?
+3. **§3 (Logic Engine):** All 4 `LogicNode` types and all 8 `LogicOperator` values handled?
+4. **§4 (Pipelines):** `Modifier`, `StatisticPipeline`, `SkillPipeline`, `ResourcePool` match? `derivedModifier` correct? `setAbsolute` behavior (§4.2)? All Math Parser paths (§4.3)? All 8 `resetCondition` values (§4.4)? `drBypassTags` (§4.5)? `attacker.*` prefix (§4.6)? Fortification (§4.7)? ASF (§4.8)? On-crit burst (§4.9)? Inherent bonuses (§4.10)? Metamagic rods (§4.11)? Staves (§4.12)? Wands (§4.13)? Scrolls (§4.14)? Cursed items (§4.15)? Intelligent items (§4.16)? Max DEX bonus (§4.17)?
+5. **§5 (Features):** Complete `Feature`, `ItemFeature`, `MagicFeature`, `AugmentationRule`, `FeatureChoice` match? `classSkills` (§5.5)? `optionsQuery` parsing (§5.3)? `actionBudget` (§5.6)? Instance-scoped pools (§5.7)? Trigger-based activation (§5.5b)?
+6. **§15.3 (Psionic items):** All 5 item types with correct field matrices?
+7. **§15.1 (Psionic power fields):** `discipline` and `displays` present? `AugmentationRule.effectDescription` present?
+8. **§6 (Character):** `Character` interface complete? `ActiveFeatureInstance` with `itemResourcePools` and `ephemeral`? `LinkedEntity` serialization guard?
+9. **§7 (Campaign):** `Campaign` with `gmGlobalOverrides`, `enabledRuleSources`, `updatedAt`?
+10. **§8 (Settings & Variants):** `variantRules.gestalt` and `variantRules.vitalityWoundPoints`? Gestalt (§8.1) and V/WP (§8.2) implementations correct?
+11. **§9 (DAG):** All phases (0–4b) implemented in order? Gestalt Phase 3.7? Max DEX bonus intercept? Infinite loop detection? HP uses `characterLevel` not ECL?
+12. **§10 (Examples A–G):** Can the engine resolve all examples? Especially Example F (Monk WIS AC formula-as-value) and Example E (Indomitable Will dual-gated modifier).
+13. **§11–17 (i18n, Monsters, Environment, Epic, Psionics, Variants, Dice):** Structurally supported?
+14. **§18 (Data Override Engine):** Complete resolution chain? Partial merge and `-prefix` deletion? Config table replacement? GM override layers?
+15. **§19–20 (Polling, Routes):** Routes match §20? Polling (§19) implemented in `StorageManager`?
+16. **§21 (Content Editor System):** Homebrew API present? DataLoader injection priority correct? HomebrewStore CRUD + auto-save? All 6 picker modals implemented? Override-by-ID banner and merge semantics correct? Two-way raw JSON sync functional? All routes GM-gated? All Phase 21 tests passing?
+
+## Part B: Cross-Cutting Concerns
+
+16. **Zero Hardcoding:** Scan ENTIRE codebase for hardcoded D&D terms in logic or templates (not comments or test fixtures).
+17. **i18n Completeness:** Is every user-facing string either a `LocalizedString` via `t()` or derived from Feature JSON?
+18. **Error Handling:** Does the engine handle gracefully: missing Feature JSON, unresolved formula paths, circular dependencies, invalid GM override JSON, network failures (offline mode)?
+19. **TypeScript Strictness:** Any `any` types that should be narrower? Any unsafe `as` casts?
+20. **PHP Security:** SQL injection vectors? Missing auth checks? GM data exposed to players?
+
+## Part C: ANNEXES.md Compatibility
+
+21. **Annex A:** Pick 3 diverse examples (one class, one item, one psionic power). Trace complete resolution through the engine. Verify every field is correctly processed.
+22. **Annex B:** Verify all config tables (B.1–B.12: XP thresholds, carrying capacity, point buy costs, ability modifier table, base speed, skill synergies, standard array, size categories, multiclass XP penalty, bonus spells, TWF penalties, movement/encumbrance) are loadable via `getConfigTable(tableId)` and used where documented.
+
+## Part D: Test Coverage Assessment
+
+23. **Coverage Gaps:** List any architecture feature, edge case, or scenario from `ARCHITECTURE.md` or `ANNEXES.md` with NO corresponding test. Rank by risk.
+
+## Part E: UI Excellence (Phase 19 Validation)
+
+24. **Tailwind Migration:** All styling via Tailwind? No remaining scoped `<style>` blocks?
+25. **Theme System:** Light/dark works with FOWT prevention and cookie persistence?
+26. **Iconography:** All emoji replaced? Icon sizes consistent (16/20/24px)?
+27. **Responsive Layout:** Works at 320px–1920px? Sidebar collapsible? Full-height character sheet?
+28. **Touch & Accessibility:** Touch targets ≥44px on coarse pointer? Focus rings (`prefers-reduced-motion`)?
+29. **Design Consistency:** Cards, buttons, inputs, badges, headers, modals all consistent?
+
+## Part F: Content Editor System (Phase 21 Validation)
+
+30. **Campaign-Scope API (21.1.1):** `GET/PUT /api/campaigns/{id}/homebrew-rules` present? GM-only PUT? 403/422/413 codes correct? `updated_at` updated?
+31. **Global-Scope API (21.1.2):** `GET/PUT/DELETE /api/global-rules/{filename}` present? `storage/rules/` writable outside web root? Filename validation enforced?
+32. **DataLoader Dual-Scope Priority (21.1.3):** `storage/rules/` files sorted alongside `static/rules/`? Campaign homebrew above all files? `gmGlobalOverrides` above campaign homebrew? Injection documented in code?
+33. **HomebrewStore (21.1.4):** `add/update/remove/toJSON` correct? `isDirty/isSaving` reactive? Auto-save routes to correct endpoint based on `scope`? Filename validated before save?
+34. **Picker Modals (21.2):** All 6 present (`PipelinePicker`, `FeaturePicker`, `TagPicker`, `EntitySearch`, `ModifierTypePicker`, `ConditionNodeBuilder`)? Each handles edge cases (empty results, keyboard nav, Escape-to-close)?
+35. **FormulaBuilderInput (21.3.1):** Used in `ModifierListEditor`, `ActivationEditor`, and `ResourcePoolEditor`? Click-to-insert at cursor via `setRangeText()` works? Validation **indicator icon** (✓/✗/⚠) present? Input text unstyled (no inline token colouring, no overlay div)?
+36. **ConditionNodeBuilder (21.2.6 + 21.2.7):** AND/OR/NOT/CONDITION supported? All 8 operators with plain-English labels? Add/group/reorder interactions (▲/▼, AND↔OR switch)? Depth-4 limit? Empty tree → `undefined`?
+37. **EditorContext (21.5.4):** `editorContext.ts` module present? `setContext(EDITOR_CONTEXT_KEY, ctx)` in `EntityForm`? Sub-forms use `getContext()` with no prop-drilling of the `Feature` draft? Each sub-form independently testable via mock context?
+38. **Override-by-ID (21.3.2+21.5.4):** Amber "Override Warning" banner driven by `ctx.hasOverrideWarning`? Replace vs partial merge semantics correct in homebrew chain?
+39. **HomebrewScopePanel (21.5.1):** Scope toggle (Campaign/Global) works? Filename input visible only for global scope? Load-order tooltip present?
+40. **Raw JSON Two-Way Sync (21.5.5):** Invalid JSON does NOT corrupt form state? Form edits update textarea immediately?
+41. **Route Guards (21.6.1):** All content editor routes GM-only? Non-GMs redirected to `/campaigns`?
+42. **Test Coverage (21.7):** 2 PHPUnit test files (campaign-scope + global-scope) and 8 Vitest test files present and passing? 21.7.6 asserts icon state not border-colour?
+43. **End-to-End:** GM creates homebrew race, saves as campaign-scope, race appears in character sheet race dropdown without restart?
+
+---
+
+Produce a structured report with 4 sections:
+
+**🔴 CRITICAL ISSUES** (Highest priority — incorrect behavior, security vulnerability, data corruption risk)
+
+**🟡 MAJOR ISSUES** (High priority — deviations from architecture, missing edge cases, incomplete implementations)
+
+**🟢 MINOR ISSUES** (Must also be resolved — code style, missing comments, non-blocking inconsistencies)
+
+**✅ VALIDATION PASSED** (Categories that are fully conformant)
+
+All issues at every severity level must be resolved before this checkpoint is considered passed. No issue should be left open.
 
 For each issue: file path, line reference, architecture section, and specific description of what's wrong vs. what's expected.
 ```
