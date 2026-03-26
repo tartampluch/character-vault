@@ -29,6 +29,15 @@
  *   Rules:
  *     GET    /api/rules/list                    → RulesController::list()  (returns available source files)
  *
+ *   Users (Phase 22.3 — admin-only):
+ *     GET    /api/users                    → UserController::index()
+ *     POST   /api/users                    → UserController::create()
+ *     PUT    /api/users/{id}               → UserController::update($id)
+ *     PUT    /api/users/{id}/role          → UserController::updateRole($id)
+ *     POST   /api/users/{id}/suspend       → UserController::suspend($id)
+ *     POST   /api/users/{id}/reinstate     → UserController::reinstate($id)
+ *     DELETE /api/users/{id}               → UserController::delete($id)
+ *
  *   Global Rule Sources (Phase 21.1.2 + 21.1.3):
  *     GET    /api/global-rules                  → GlobalRulesController::list()
  *     GET    /api/global-rules/{filename}       → GlobalRulesController::getFileContent($filename)
@@ -63,6 +72,7 @@ require_once __DIR__ . '/controllers/CharacterController.php';
 require_once __DIR__ . '/controllers/RulesController.php';
 require_once __DIR__ . '/controllers/GlobalRulesController.php';
 require_once __DIR__ . '/controllers/UiLocalesController.php';
+require_once __DIR__ . '/controllers/UserController.php';
 
 // ============================================================
 // GLOBAL MIDDLEWARE
@@ -205,6 +215,35 @@ try {
         // Removes a named rule file from storage/rules/.
         verifyCsrfToken();
         GlobalRulesController::delete($m[1]);
+
+    // ── User Management (Phase 22.3 — admin-only) ────────────────────────────
+    } elseif ($path === '/users' && $method === 'GET') {
+        UserController::index();
+
+    } elseif ($path === '/users' && $method === 'POST') {
+        verifyCsrfToken();
+        UserController::create();
+
+    } elseif (preg_match('#^/users/([^/]+)/role$#', $path, $m) && $method === 'PUT') {
+        // Must be matched before the bare /users/{id} PUT to avoid route shadowing.
+        verifyCsrfToken();
+        UserController::updateRole($m[1]);
+
+    } elseif (preg_match('#^/users/([^/]+)/suspend$#', $path, $m) && $method === 'POST') {
+        verifyCsrfToken();
+        UserController::suspend($m[1]);
+
+    } elseif (preg_match('#^/users/([^/]+)/reinstate$#', $path, $m) && $method === 'POST') {
+        verifyCsrfToken();
+        UserController::reinstate($m[1]);
+
+    } elseif (preg_match('#^/users/([^/]+)$#', $path, $m) && $method === 'PUT') {
+        verifyCsrfToken();
+        UserController::update($m[1]);
+
+    } elseif (preg_match('#^/users/([^/]+)$#', $path, $m) && $method === 'DELETE') {
+        verifyCsrfToken();
+        UserController::delete($m[1]);
 
     } else {
         http_response_code(404);
