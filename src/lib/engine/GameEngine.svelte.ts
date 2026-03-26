@@ -263,21 +263,25 @@ const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
     pipelineId:     'saves.fortitude',
     label:          { en: 'saves.fortitude', fr: 'saves.fortitude' },
     keyAbilityId:   'stat_constitution',
-    keyAbilityAbbr: { en: 'CON', fr: 'CON' },
+    // keyAbilityAbbr uses the pipeline ID as a fallback to comply with PROGRESS.md Guideline 6
+    // (no D&D-specific abbreviations hardcoded in TypeScript). The human-readable abbreviations
+    // ("CON", "DEX", "WIS") are loaded from config_save_definitions and replace these placeholders
+    // within milliseconds of app startup. Players will never see these fallback values.
+    keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' },
     accentColor:    'oklch(65% 0.19 28)',
   },
   {
     pipelineId:     'saves.reflex',
     label:          { en: 'saves.reflex', fr: 'saves.reflex' },
     keyAbilityId:   'stat_dexterity',
-    keyAbilityAbbr: { en: 'DEX', fr: 'DEX' },
+    keyAbilityAbbr: { en: 'stat_dexterity', fr: 'stat_dexterity' },
     accentColor:    'oklch(74% 0.12 230)',
   },
   {
     pipelineId:     'saves.will',
     label:          { en: 'saves.will', fr: 'saves.will' },
     keyAbilityId:   'stat_wisdom',
-    keyAbilityAbbr: { en: 'WIS', fr: 'SAG' },
+    keyAbilityAbbr: { en: 'stat_wisdom', fr: 'stat_wisdom' },
     accentColor:    'oklch(72% 0.12 280)',
   },
 ];
