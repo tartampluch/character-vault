@@ -20,7 +20,9 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { IconSaves } from '$lib/components/ui/icons';
 
-  const SAVES = engine.savingThrowConfig;
+  // Use $derived so the component reacts when savingThrowConfig switches from
+  // its bootstrap fallback to the JSON-driven values after the DataLoader loads.
+  const SAVES = $derived(engine.savingThrowConfig);
   const charId = $derived(engine.character.id);
   const lang   = $derived(engine.settings.language);
 </script>

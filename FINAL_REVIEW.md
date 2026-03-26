@@ -1,21 +1,91 @@
 # Final Review #7 — Complete System Validation
 
 **Reviewer:** Principal Software Architect  
-**Date:** 2026-03-21  
+**Date:** 2026-03-21 (updated 2026-03-26)  
 **Scope:** Full codebase — Svelte 5 + TypeScript + Tailwind CSS + PHP/SQLite  
-**Status:** RELEASE CANDIDATE APPROVED
+**Status:** RELEASE CANDIDATE — POST-ASSESSMENT PATCH APPLIED
 
 ---
 
-## Executive Summary
+## Patch Notes (2026-03-26)
+
+A code assessment performed after the original review found 1 CRITICAL and 4 MEDIUM issues,
+all of which have been fixed. The final test count is now 1,567 Vitest tests (up from 202).
+
+### CRITICAL — Fixed
+
+**C1: `enabledRuleSources` regression** (`settings.ts`, `CampaignStore.svelte.ts`,
+`vault/+page.svelte`, `DataLoader.ts`, `campaign.ts`)  
+Default changed from `['srd_core']` (a legacy source ID) to `[]` (permissive / load-all).
+Vault page `if (sources.length > 0)` guard removed. JSDoc updated throughout.
+
+### MEDIUM — Fixed
+
+**M2: `savingThrowConfig` hardcoded** (`GameEngine.svelte.ts`, both `SavingThrows*.svelte`)  
+Changed from a `readonly` hardcoded array to a `$derived.by(...)` that reads from the
+`config_save_definitions` JSON config table (which already existed). Added `SaveConfigEntry`
+and `DEFAULT_SAVE_CONFIG` exports. Components now use `$derived(engine.savingThrowConfig)`.
+
+**M3: `getWeaponAttackBonus/Damage` hardcoded STR/DEX** (`GameEngine.svelte.ts`, JSON)  
+Added `config_weapon_defaults` config table to `00_d20srd_core_config_tables.json`.
+Added `getWeaponDefaults()` public method and `WeaponDefaults` exported interface.
+`getWeaponAttackBonus()` / `getWeaponDamageBonus()` now read ability IDs from the table.
+
+**M4: `getSpellSaveDC` fallback hardcoded ability IDs** (`GameEngine.svelte.ts`, JSON)  
+Added `isCastingAbility: true` flag to WIS, INT, CHA rows in `config_attribute_definitions`.
+The fallback filter now reads this flag instead of comparing hardcoded ID strings.
+
+**M5: `SITUATIONAL_LABELS` English-only** (`formatters.ts`, `ModifierBreakdownModal.svelte`)  
+Changed type from `Record<string, string>` to `Record<string, LocalizedString>`. Added
+French translations for all ~100 entries. Updated `formatSituationalContext()` to accept a
+`lang` parameter. Updated the one call site to pass `engine.settings.language`.
+
+### LOW — Fixed
+
+**L6: `speed_land` base value hardcoded to 30** (`GameEngine.svelte.ts`, JSON)  
+Added `config_movement_defaults` config table to `00_d20srd_core_config_tables.json` with
+default base values for all 5 speed pipelines. Added `getSpeedDefault()` helper in
+`createEmptyCharacter()` that reads from the table, falling back to the D&D 3.5 SRD
+value (30 ft) during bootstrap. The hardcoded `30` is gone from TypeScript.
+
+**L7: Synergy `sourceName` inline EN/FR strings** (`GameEngine.svelte.ts`, `constants.ts`)  
+Added `SYNERGY_SOURCE_LABEL: LocalizedString` to `constants.ts`. Engine now builds the
+synergy modifier sourceName using this constant + the skill's localized label from the
+DataLoader (e.g., "Synergy (Diplomacy)") instead of hardcoded `'Synergy'`/`'Synergie'`.
+
+**L8: `parseAndRoll()` JSDoc structurally split** (`diceEngine.ts`)  
+Moved `resolveAttackerMods()` and its JSDoc before the `parseAndRoll()` JSDoc block.
+Merged the two detached `/** */` blocks into one comprehensive JSDoc that documents all
+10 parameters in sequence. IDEs and TypeDoc now correctly associate all parameters.
+
+**L9: `evaluateCondition` `operator: string` → `operator: LogicOperator`** (`logicEvaluator.ts`)  
+Imported `LogicOperator` from `primitives.ts`. Changed the parameter type of the internal
+`evaluateCondition()` function. TypeScript's exhaustiveness checker now enforces that every
+operator value is handled in the `switch` statement.
+
+**L10: `isGestaltAffectedPipeline()` missing JSDoc** (`gestaltRules.ts`)  
+Added a full `/** */` JSDoc block documenting the function's purpose, parameter, return
+value, and cross-references to `GESTALT_AFFECTED_PIPELINES` and `ARCHITECTURE.md §8.2`.
+
+**L11: GameEngine file header Phase 1 description stale** (`GameEngine.svelte.ts`)  
+Updated the DAG phase list in the file header: Phase 1 is "Size & Encumbrance →
+phase1_sizePipeline", not "Active Tags" (which is computed in Phase 0).
+
+**L12: `storageManager` exported singleton missing JSDoc** (`StorageManager.ts`)  
+Added a `/** */` JSDoc block describing the singleton's purpose, the APIs it wraps, and
+the standard import pattern.
+
+---
+
+## Executive Summary (original)
 
 Comprehensive pass of the entire codebase against `ARCHITECTURE.md`, `ANNEXES.md`, and `PROMPT.md` (Phase 19 spec). The review covered architecture conformance (sections 1-20), cross-cutting concerns (zero hardcoding, i18n, error handling, TypeScript strictness, PHP security), annex compatibility, test coverage, and UI excellence.
 
-- **0 CRITICAL issues**
+- **0 CRITICAL issues** (after 2026-03-26 patch)
 - **0 MAJOR issues**
 - **0 MINOR issues remaining**
 
-All 202 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings**.
+All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (the 1 pre-existing `vite.config.ts` Vitest type error and 1 a11y warning are unrelated to game logic).
 
 ---
 

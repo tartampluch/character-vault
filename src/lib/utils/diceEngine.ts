@@ -532,6 +532,61 @@ function defaultRng(faces: number): number {
 // =============================================================================
 
 /**
+ * Filters the defender's active modifiers for `attacker.*` entries, strips the
+ * prefix, and returns the resolved bonus sum to apply to the attacker's roll.
+ *
+ * ENHANCEMENT E-5 — `attacker.*` modifier convention:
+ *   A Feature on the *defender* can penalise *attackers* by setting a modifier's
+ *   `targetId` to `"attacker.<pipeline>"` (e.g., `"attacker.combatStats.attack_bonus"`).
+ *   The Dice Engine calls this helper at roll time, passes the defender's mods, and
+ *   the result is added to the attacker's `finalTotal`.
+ *
+ * EXAMPLE:
+ *   Defender has: `{ targetId: "attacker.combatStats.attack_bonus", value: -1, situationalContext: "vs_air_elementals" }`
+ *   Attacker's targetTags includes `"air_elemental"` → mod applies → returns { totalBonus: -1, ... }.
+ *
+ * @param defenderMods   - Full active-modifier list from the defender's character.
+ * @param targetTags     - The attacker's current tags (from `RollContext.targetTags`).
+ * @param targetPipeline - The pipeline being rolled (e.g., `"combatStats.attack_bonus"`).
+ *                         Only `attacker.*` mods whose stripped id matches this pipeline apply.
+ * @returns `{ totalBonus, applied }` — the net bonus and the list of matched mods.
+ * @internal Called inside `parseAndRoll` when `defenderAttackerMods` is provided.
+ */
+function resolveAttackerMods(
+  defenderMods: Modifier[],
+  targetTags: string[],
+  targetPipeline: string,
+): { totalBonus: number; applied: Modifier[] } {
+  const ATTACKER_PREFIX = 'attacker.';
+  let totalBonus = 0;
+  const applied: Modifier[] = [];
+
+  for (const mod of defenderMods) {
+    // Only process `attacker.*` modifiers
+    if (!mod.targetId.startsWith(ATTACKER_PREFIX)) continue;
+
+    // Strip the prefix to get the effective pipeline target
+    const strippedTarget = mod.targetId.slice(ATTACKER_PREFIX.length);
+
+    // Only apply when the stripped target matches the pipeline being rolled
+    if (strippedTarget !== targetPipeline) continue;
+
+    // Apply situationalContext filtering: like regular situational mods,
+    // the modifier only fires when the attacker has the matching tag.
+    if (mod.situationalContext && !targetTags.includes(mod.situationalContext)) continue;
+
+    const modValue = typeof mod.value === 'number'
+      ? mod.value
+      : parseFloat(String(mod.value)) || 0;
+
+    totalBonus += modValue;
+    applied.push(mod);
+  }
+
+  return { totalBonus, applied };
+}
+
+/**
  * Parses a compiled dice expression, rolls the dice, applies house rules,
  * evaluates situational bonuses, and returns a complete `RollResult`.
  *
@@ -574,80 +629,26 @@ function defaultRng(faces: number): number {
  *                      If absent, defaults to "20" (natural 20 only, standard D&D 3.5 behavior).
  *                      This enables weapons like longswords (19-20) and scimitars (18-20) to
  *                      correctly flag critical threats without caller-side workarounds.
+ * @param defenderAttackerMods - Optional. Active modifiers from the defender's character that
+ *                      target the `attacker.*` namespace. Resolved via `resolveAttackerMods()`.
+ *                      @see resolveAttackerMods — the internal helper that processes these.
+ *                      @see ARCHITECTURE.md section 4.6 — `attacker.*` convention.
+ * @param defenderFortificationPct - Optional. The defender's `combatStats.fortification.totalValue`
+ *                      (0–100). When > 0 and a critical hit is confirmed, the engine rolls 1d100.
+ *                      If the 1d100 result ≤ pct, the crit is negated (damage rolled normally).
+ *                      Absent / 0 = no fortification check performed.
+ *                      @see RollResult.fortification — result field carrying the roll detail.
+ *                      @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference.
+ * @param weaponOnCritDice - Optional. The equipped weapon's `weaponData.onCritDice` spec.
+ *                      When provided AND the crit is confirmed (and not negated by fortification):
+ *                      extra dice are rolled and added to `finalTotal`.
+ *                      @see OnCritDiceSpec — the type definition.
+ *                      @see RollResult.onCritDiceRolled — result field.
+ *                      @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference.
+ * @param critMultiplier - Optional. The weapon's critical hit damage multiplier (2/3/4). Default: 2.
+ *                      Required when `weaponOnCritDice.scalesWithCritMultiplier === true`.
+ *                      Used to compute scaled burst dice: ×3 weapon → 2d10 instead of 1d10.
  * @returns A fully structured `RollResult` including `targetPool` for damage routing.
- */
-/**
- * ENHANCEMENT E-5 — `attacker.*` modifier resolution helper.
- *
- * Filters the defender's active modifiers for entries whose `targetId` starts with
- * `"attacker."`, strips the prefix, and returns the resolved modifier value sum
- * that should be applied to the attacker's roll.
- *
- * EXAMPLE:
- *   Defender has `{ targetId: "attacker.combatStats.attack_bonus", value: -1, situationalContext: "vs_air_elementals" }`
- *   Attacker's targetTags includes `"air_elemental"` → mod applies → returns -1.
- *
- * @param defenderMods   - The full set of active modifiers from the defender's character.
- * @param targetTags     - The attacker's tags (from `RollContext.targetTags`).
- * @param targetPipeline - The pipeline the attacker is rolling against (e.g., "combatStats.attack_bonus").
- *                         Only `attacker.*` mods whose stripped targetId matches this are applied.
- * @returns The total penalty/bonus from matching attacker modifiers, and the list of applied modifiers.
- *
- * @internal Called inside `parseAndRoll` when `defenderAttackerMods` is provided.
- */
-function resolveAttackerMods(
-  defenderMods: Modifier[],
-  targetTags: string[],
-  targetPipeline: string,
-): { totalBonus: number; applied: Modifier[] } {
-  const ATTACKER_PREFIX = 'attacker.';
-  let totalBonus = 0;
-  const applied: Modifier[] = [];
-
-  for (const mod of defenderMods) {
-    // Only process `attacker.*` modifiers
-    if (!mod.targetId.startsWith(ATTACKER_PREFIX)) continue;
-
-    // Strip the prefix to get the effective pipeline target
-    const strippedTarget = mod.targetId.slice(ATTACKER_PREFIX.length);
-
-    // Only apply when the stripped target matches the pipeline being rolled
-    if (strippedTarget !== targetPipeline) continue;
-
-    // Apply situationalContext filtering: like regular situational mods,
-    // the modifier only fires when the attacker has the matching tag.
-    if (mod.situationalContext && !targetTags.includes(mod.situationalContext)) continue;
-
-    const modValue = typeof mod.value === 'number'
-      ? mod.value
-      : parseFloat(String(mod.value)) || 0;
-
-    totalBonus += modValue;
-    applied.push(mod);
-  }
-
-  return { totalBonus, applied };
-}
-
-/**
- * @param defenderFortificationPct  Optional. The defender's `combatStats.fortification.totalValue`
- *   (0–100). When > 0 and a critical hit is confirmed, the engine rolls 1d100.
- *   If the 1d100 result <= pct, the crit is negated (damage rolled normally).
- *   Absent / 0 = no fortification check performed.
- *   @see RollResult.fortification — result field carrying the roll detail
- *   @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
- *
- * @param weaponOnCritDice  Optional. The equipped weapon's `weaponData.onCritDice` spec.
- *   When provided AND the crit is confirmed (and not negated by fortification):
- *   extra dice are rolled and added to `finalTotal`.
- *   The result is stored in `RollResult.onCritDiceRolled`.
- *   @see OnCritDiceSpec — the type definition
- *   @see RollResult.onCritDiceRolled — result field
- *   @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference
- *
- * @param critMultiplier    Optional. The weapon's critical hit damage multiplier (2/3/4).
- *   Required when `weaponOnCritDice.scalesWithCritMultiplier === true`. Default: 2.
- *   Used to compute scaled burst dice: ×3 weapon → 2d10 instead of 1d10.
  */
 export function parseAndRoll(
   formula: string,

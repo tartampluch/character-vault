@@ -18,7 +18,7 @@
     {
       "tableId": "config_attribute_definitions",
       "ruleSource": "srd_core",
-      "description": "Localized labels for the 6 main ability score pipelines and standard attribute pipelines. Used by createEmptyCharacter() to initialize pipeline labels without hardcoding strings. Homebrew content can override or add entries by providing a partial replacement with the same tableId.",
+      "description": "Localized labels for the 6 main ability score pipelines and standard attribute pipelines. Used by createEmptyCharacter() to initialize pipeline labels without hardcoding strings. The optional `isCastingAbility: true` flag marks which ability scores are valid spell/power casting stats — the GameEngine reads this flag for its getSpellSaveDC() fallback instead of hardcoding stat IDs. Homebrew content can override or add entries by providing a replacement table with the same tableId.",
       "data": [
         {
           "id": "stat_strength",
@@ -62,7 +62,8 @@
           "abbr": {
             "en": "INT",
             "fr": "INT"
-          }
+          },
+          "isCastingAbility": true
         },
         {
           "id": "stat_wisdom",
@@ -73,7 +74,8 @@
           "abbr": {
             "en": "WIS",
             "fr": "SAG"
-          }
+          },
+          "isCastingAbility": true
         },
         {
           "id": "stat_charisma",
@@ -84,7 +86,8 @@
           "abbr": {
             "en": "CHA",
             "fr": "CHA"
-          }
+          },
+          "isCastingAbility": true
         },
         {
           "id": "stat_size",
@@ -164,6 +167,92 @@
             "fr": "SAG"
           },
           "accentColor": "#c4b5fd"
+        }
+      ]
+    },
+    {
+      "tableId": "config_weapon_defaults",
+      "ruleSource": "srd_core",
+      "description": "Default ability score IDs governing weapon attack and damage rolls. The GameEngine reads these IDs instead of hardcoding 'stat_strength'/'stat_dexterity'. Homebrew can override this table to remap the defaults (e.g., a system where all attacks use stat_agility instead of stat_dexterity). Per-weapon overrides (e.g., Weapon Finesse) are handled via the weapon Feature's modifier formulas. Key meanings:  meleeAttackAbility — ability used for melee attack rolls (D&D 3.5: STR);  rangedAttackAbility — ability used for ranged attack rolls (D&D 3.5: DEX);  meleeDamageAbility — ability added to melee damage (D&D 3.5: STR);  twoHandedDamageMultiplier — multiplier on damage ability for two-handed grip (D&D 3.5: 1.5).",
+      "data": [
+        {
+          "key": "meleeAttackAbility",
+          "abilityId": "stat_strength",
+          "label": {
+            "en": "Melee attack ability",
+            "fr": "Caractéristique d'attaque au corps-à-corps"
+          }
+        },
+        {
+          "key": "rangedAttackAbility",
+          "abilityId": "stat_dexterity",
+          "label": {
+            "en": "Ranged attack ability",
+            "fr": "Caractéristique d'attaque à distance"
+          }
+        },
+        {
+          "key": "meleeDamageAbility",
+          "abilityId": "stat_strength",
+          "label": {
+            "en": "Melee damage ability",
+            "fr": "Caractéristique de dégâts au corps-à-corps"
+          }
+        },
+        {
+          "key": "twoHandedDamageMultiplier",
+          "value": 1.5,
+          "label": {
+            "en": "Two-handed damage multiplier",
+            "fr": "Multiplicateur de dégâts à deux mains"
+          }
+        }
+      ]
+    },
+    {
+      "tableId": "config_movement_defaults",
+      "ruleSource": "srd_core",
+      "description": "Default base values for movement speed pipelines. The GameEngine reads these when initialising a new character so that the D&D 3.5 standard humanoid speed (30 ft) is not hard-coded in TypeScript. Homebrew rule sources can override this table to change the default — e.g., a system where all characters start at 25 ft, or a metric system where the base unit is 9 metres. Each entry maps a pipelineId to a defaultBaseValue (in feet). Pipelines absent from this table default to 0. Racial/creature features that grant specific speeds override these defaults via modifiers (type 'setAbsolute' or 'base').",
+      "data": [
+        {
+          "pipelineId": "combatStats.speed_land",
+          "defaultBaseValue": 30,
+          "label": {
+            "en": "Land Speed",
+            "fr": "Vitesse terrestre"
+          }
+        },
+        {
+          "pipelineId": "combatStats.speed_burrow",
+          "defaultBaseValue": 0,
+          "label": {
+            "en": "Burrow Speed",
+            "fr": "Vitesse de fouissement"
+          }
+        },
+        {
+          "pipelineId": "combatStats.speed_climb",
+          "defaultBaseValue": 0,
+          "label": {
+            "en": "Climb Speed",
+            "fr": "Vitesse d'escalade"
+          }
+        },
+        {
+          "pipelineId": "combatStats.speed_fly",
+          "defaultBaseValue": 0,
+          "label": {
+            "en": "Fly Speed",
+            "fr": "Vitesse de vol"
+          }
+        },
+        {
+          "pipelineId": "combatStats.speed_swim",
+          "defaultBaseValue": 0,
+          "label": {
+            "en": "Swim Speed",
+            "fr": "Vitesse de nage"
+          }
         }
       ]
     },

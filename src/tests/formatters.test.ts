@@ -32,6 +32,8 @@ import {
   formatCurrency,
   formatDiceRolls,
   getUnitSystem,
+  formatSituationalContext,
+  SITUATIONAL_LABELS,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
 import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, loadUiLocale } from '$lib/i18n/ui-strings';
@@ -508,5 +510,62 @@ describe('getAbilityAbbr() — ability score abbreviations', () => {
       expect(ABILITY_ABBRS[id].en).toBeTruthy();
       expect(ABILITY_ABBRS[id].fr).toBeTruthy();
     }
+  });
+});
+
+// =============================================================================
+// 9. formatSituationalContext() — localized situational modifier labels (M5 fix)
+// =============================================================================
+
+describe('formatSituationalContext() — localized situational labels', () => {
+  it('returns the English label for a known context key (default lang)', () => {
+    expect(formatSituationalContext('vs_giant')).toBe('vs. Giants');
+  });
+
+  it('returns the English label when lang="en" is explicit', () => {
+    expect(formatSituationalContext('vs_poison', 'en')).toBe('vs. Poison');
+    expect(formatSituationalContext('sneak_attack', 'en')).toBe('On sneak attack');
+    expect(formatSituationalContext('wielding_two_weapons', 'en')).toBe('While two-weapon fighting');
+  });
+
+  it('returns the French label when lang="fr"', () => {
+    expect(formatSituationalContext('vs_giant',    'fr')).toBe('contre les Géants');
+    expect(formatSituationalContext('vs_poison',   'fr')).toBe('contre le Poison');
+    expect(formatSituationalContext('sneak_attack','fr')).toBe("lors d'une attaque sournoise");
+    expect(formatSituationalContext('vs_evil',     'fr')).toBe('contre le Mal');
+    expect(formatSituationalContext('vs_good',     'fr')).toBe('contre le Bien');
+  });
+
+  it('falls back to English when requested language is absent from the entry', () => {
+    // All entries currently have en+fr; "de" (German) is not present
+    expect(formatSituationalContext('vs_fear', 'de')).toBe('vs. Fear');
+  });
+
+  it('prettifies unknown context keys as a fallback (homebrew contexts)', () => {
+    expect(formatSituationalContext('my_custom_buff', 'en')).toBe('My Custom Buff');
+    expect(formatSituationalContext('vs_custom_foe',  'en')).toBe('vs. Custom Foe');
+  });
+
+  it('handles empty string gracefully', () => {
+    // Empty key is not in map — returns empty string after prettification
+    expect(formatSituationalContext('')).toBe('');
+  });
+
+  it('every entry in SITUATIONAL_LABELS has both en and fr translations', () => {
+    // COMPLETENESS CHECK: ensures no partially-translated entry was accidentally added.
+    // If a future translator adds a key with only `en`, this test catches it.
+    for (const [key, label] of Object.entries(SITUATIONAL_LABELS)) {
+      expect(label.en, `${key}: missing 'en' translation`).toBeTruthy();
+      expect(label.fr, `${key}: missing 'fr' translation`).toBeTruthy();
+    }
+  });
+
+  it('SITUATIONAL_LABELS type is Record<string, LocalizedString> (not Record<string, string>)', () => {
+    // TYPE REGRESSION GUARD: verifies the label values are objects, not plain strings.
+    // If someone accidentally reverts the type, this test will catch it.
+    const sample = SITUATIONAL_LABELS['vs_enchantment'];
+    expect(typeof sample).toBe('object');
+    expect(typeof sample.en).toBe('string');
+    expect(typeof sample.fr).toBe('string');
   });
 });

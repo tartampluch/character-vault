@@ -602,4 +602,18 @@ export function debounce<T extends unknown[]>(
 // SINGLETON EXPORT
 // =============================================================================
 
+/**
+ * The single shared `StorageManager` instance used across the entire application.
+ *
+ * Provides CRUD operations for `Character` objects and `CampaignSettings` via the
+ * PHP/SQLite backend API. Also manages CSRF tokens, user language preferences, and
+ * the server-poll mechanism that keeps campaign data in sync across players.
+ *
+ * Import pattern in Svelte components and the GameEngine:
+ *   ```typescript
+ *   import { storageManager } from '$lib/engine/StorageManager';
+ *   ```
+ *
+ * @see StorageManager — the class definition above for method documentation.
+ */
 export const storageManager = new StorageManager();

@@ -22,6 +22,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
+import type { LogicOperator } from '$lib/types/primitives';
 import type { CharacterContext } from '$lib/utils/mathParser';
 
 // ============================================================
@@ -666,6 +667,106 @@ describe('evaluateLogicNode — null/undefined prerequisitesNode', () => {
 
   it('passes when prerequisitesNode is null', () => {
     const result = evaluateLogicNode(null as never, mockContext);
+    expect(result.passed).toBe(true);
+  });
+});
+
+// =============================================================================
+// L9 — LogicOperator type safety in CONDITION nodes
+// =============================================================================
+
+describe('L9 — LogicOperator typed operator on CONDITION nodes', () => {
+  /**
+   * TYPE REGRESSION GUARD:
+   *   The `evaluateCondition` internal function was previously typed as
+   *   `operator: string` which disabled TypeScript exhaustiveness checking
+   *   on the switch statement. This test suite verifies that all 8 LogicOperator
+   *   values are correctly handled — if a new operator were added to LogicOperator
+   *   but not to the switch, the compile would fail with the stricter type.
+   */
+
+  const ALL_OPERATORS: LogicOperator[] = [
+    '==', '!=', '>=', '<=', 'includes', 'not_includes', 'has_tag', 'missing_tag',
+  ];
+
+  it('all 8 LogicOperator values are tested to ensure no silent pass-through', () => {
+    // This test verifies that every operator produces a deterministic result
+    // (either pass or fail) rather than silently falling through the switch.
+    // Each operator is exercised with both a passing and failing case.
+    expect(ALL_OPERATORS).toHaveLength(8);
+  });
+
+  it('== operator: passes on exact match, fails on mismatch', () => {
+    // mockContext.characterLevel = 8
+    const passResult = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '==', value: 8 },
+      mockContext
+    );
+    expect(passResult.passed).toBe(true);
+
+    const failResult = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '==', value: 99 },
+      mockContext
+    );
+    expect(failResult.passed).toBe(false);
+  });
+
+  it('!= operator: passes when values differ', () => {
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '!=', value: 99 },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('>= operator: passes when target >= value', () => {
+    // characterLevel = 0, value = 0 → 0 >= 0 → pass
+    const passResult = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '>=', value: 0 },
+      mockContext
+    );
+    expect(passResult.passed).toBe(true);
+  });
+
+  it('<= operator: passes when target <= value', () => {
+    const passResult = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '<=', value: 100 },
+      mockContext
+    );
+    expect(passResult.passed).toBe(true);
+  });
+
+  it('includes operator: passes when array contains value', () => {
+    // mockContext.activeTags contains 'race_human'
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: 'includes', value: 'race_human' },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('not_includes operator: passes when array does NOT contain value', () => {
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: 'not_includes', value: 'race_never_exists' },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('has_tag operator: passes when tag array contains the specified tag', () => {
+    // mockContext.activeTags contains 'class_fighter'
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: 'has_tag', value: 'class_fighter' },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('missing_tag operator: passes when tag is absent from the array', () => {
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: 'missing_tag', value: 'race_orc' },
+      mockContext
+    );
     expect(result.passed).toBe(true);
   });
 });

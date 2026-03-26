@@ -2,15 +2,21 @@
  * Shared constants for the D&D 3.5 engine.
  *
  * These are SRD structural invariants — the 6 core ability scores and their
- * standard 3-letter abbreviations. They are used by multiple UI components
- * (AbilityScores, PointBuyModal, RollStatsModal, AbilityScoresSummary)
- * and are centralised here to avoid duplication and ensure consistency.
+ * standard 3-letter abbreviations, plus engine-internal localized labels.
+ * They are used by multiple engine files and UI components
+ * (AbilityScores, PointBuyModal, RollStatsModal, AbilityScoresSummary, GameEngine).
+ *
+ * WHY A SEPARATE CONSTANTS FILE?
+ *   Centralising these values prevents magic strings from appearing in engine code.
+ *   Any developer adding a new language adds translations here (and in the locale
+ *   JSON) rather than searching the codebase for hardcoded strings.
  *
  * Note: The abbreviations are English-only by convention (STR, DEX, CON, INT,
  * WIS, CHA are universally recognised in D&D 3.5 regardless of locale).
  */
 
 import type { ID } from '../types/primitives';
+import type { LocalizedString } from '../types/i18n';
 
 /**
  * The 6 main ability score pipeline IDs, in canonical D&D 3.5 order:
@@ -52,3 +58,30 @@ export function getAbilityAbbr(id: ID, language: string): string {
   // Use the requested language if present; fall back to English.
   return (abbrs as Record<string, string>)[language] ?? abbrs['en'];
 }
+
+// =============================================================================
+// ENGINE-INTERNAL LOCALIZED LABELS
+// =============================================================================
+
+/**
+ * Localized display prefix for auto-generated skill synergy modifiers.
+ *
+ * WHY HERE AND NOT IN ui-strings.ts?
+ *   `ui-strings.ts` provides single-language strings for the current UI locale.
+ *   The GameEngine stores modifier `sourceName` as a `LocalizedString` (all
+ *   languages at once) so that the displayed language can change without
+ *   re-running the DAG. This constant provides the localized "Synergy" word
+ *   so the engine never hard-codes language-specific text.
+ *
+ * ADDING A NEW LANGUAGE:
+ *   Add a new key matching the language code (e.g., `de: 'Synergie'`).
+ *   The engine uses `translateString(SYNERGY_SOURCE_LABEL, lang)` at display
+ *   time, so the new language will appear automatically.
+ *
+ * @example  sourceName built by the engine:
+ *   `{ en: 'Synergy (Diplomacy)', fr: 'Synergie (Diplomatie)' }`
+ */
+export const SYNERGY_SOURCE_LABEL: LocalizedString = {
+  en: 'Synergy',
+  fr: 'Synergie',
+};

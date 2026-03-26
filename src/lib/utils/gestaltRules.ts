@@ -263,6 +263,21 @@ export const GESTALT_AFFECTED_PIPELINES = new Set([
   'saves.will',
 ]);
 
+/**
+ * Checks whether a pipeline ID is subject to the Gestalt max-per-level calculation.
+ *
+ * When Gestalt mode is active (`CampaignSettings.variantRules.gestalt === true`),
+ * `"base"` type modifiers on the pipelines in `GESTALT_AFFECTED_PIPELINES` are
+ * resolved using the max-per-level algorithm (`computeGestaltBase`) instead of the
+ * normal additive sum. All other pipelines — including `combatStats.max_hp` — always
+ * use additive stacking regardless of Gestalt mode.
+ *
+ * @param pipelineId - The pipeline ID to check (e.g., `"saves.fortitude"`).
+ * @returns `true` if this pipeline uses Gestalt max-per-level for `"base"` modifiers.
+ * @see GESTALT_AFFECTED_PIPELINES — the set of affected pipeline IDs.
+ * @see computeGestaltBase — the algorithm used when this returns `true`.
+ * @see ARCHITECTURE.md section 8.2 — what is and isn't affected by Gestalt mode.
+ */
 export function isGestaltAffectedPipeline(pipelineId: string): boolean {
   return GESTALT_AFFECTED_PIPELINES.has(pipelineId);
 }

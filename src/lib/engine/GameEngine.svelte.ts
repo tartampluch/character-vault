@@ -9,9 +9,10 @@
  *     - The campaign settings (house rules, enabled sources, language)
  *     - All derived statistics (computed from character data via the DAG)
  *
- *   THE DAG (Directed Acyclic Graph) PHASES in this file:
- *     Phase 0 (3.2): Feature Flattening → flatModifiers[] (from activeFeatures + gmOverrides)
- *     Phase 1 (3.2): Active Tags        → activeTags[] (flat tag array for logic evaluation)
+  *   THE DAG (Directed Acyclic Graph) PHASES in this file:
+ *     Phase 0 (3.2): Feature Flattening  → flatModifiers[] (from activeFeatures + gmOverrides)
+ *     Phase 0 (3.2): Active Tags         → activeTags[] (flat tag array for logic evaluation)
+ *     Phase 1 (3.2): Size & Encumbrance  → phase1_sizePipeline (size modifier resolution)
  *
  *   SUBSEQUENT PHASES (3.3, 3.4) compute attributes, saves, combat stats, and skills.
  *
@@ -46,6 +47,7 @@ import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
+import { SYNERGY_SOURCE_LABEL } from '../utils/constants';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
 
@@ -210,6 +212,113 @@ export interface SkillPointsBudget {
   /** The current INT derivedModifier used in all class budget calculations. */
   intModifier: number;
 }
+
+// =============================================================================
+// SaveConfigEntry — data-driven saving throw display configuration
+// =============================================================================
+
+/**
+ * One entry in the saving throw display configuration.
+ * Consumed by SavingThrows.svelte and SavingThrowsSummary.svelte.
+ *
+ * Populated at runtime from the `config_save_definitions` JSON config table
+ * (loaded by the DataLoader). The engine falls back to `DEFAULT_SAVE_CONFIG`
+ * during bootstrap (before the DataLoader has finished loading).
+ *
+ * Fields mirror the `config_save_definitions` table rows:
+ *   pipelineId     — the save pipeline key (e.g., "saves.fortitude")
+ *   label          — localized save name (e.g., { en: "Fortitude", fr: "Vigueur" })
+ *   keyAbilityId   — governing ability pipeline ID (e.g., "stat_constitution")
+ *   keyAbilityAbbr — localized abbreviation (e.g., { en: "CON", fr: "CON" })
+ *   accentColor    — CSS color string for themed display (any valid CSS value)
+ */
+export interface SaveConfigEntry {
+  readonly pipelineId:     string;
+  readonly label:          LocalizedString;
+  readonly keyAbilityId:   string;
+  readonly keyAbilityAbbr: LocalizedString;
+  readonly accentColor:    string;
+}
+
+/**
+ * Hardcoded D&D 3.5 SRD fallback for `savingThrowConfig`.
+ * Used only during bootstrap (before `config_save_definitions` loads from the DataLoader).
+ *
+ * WHY STILL HARDCODED HERE:
+ *   `createEmptyCharacter()` and the initial render happen before `loadRuleSources()`
+ *   completes. A fallback prevents a blank UI on first paint. Once the DataLoader loads
+ *   (and `dataLoaderVersion` increments), `savingThrowConfig` switches to the JSON-driven
+ *   values automatically via its `$derived` computation.
+ *
+ * Colors are oklch perceptual-uniform values matching the app's Tailwind theme palette:
+ *   Fortitude → red-400 equivalent
+ *   Reflex    → sky-300 equivalent
+ *   Will      → indigo-300 equivalent
+ */
+const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
+  {
+    pipelineId:     'saves.fortitude',
+    label:          { en: 'Fortitude', fr: 'Vigueur' },
+    keyAbilityId:   'stat_constitution',
+    keyAbilityAbbr: { en: 'CON', fr: 'CON' },
+    accentColor:    'oklch(65% 0.19 28)',
+  },
+  {
+    pipelineId:     'saves.reflex',
+    label:          { en: 'Reflex', fr: 'Réflexes' },
+    keyAbilityId:   'stat_dexterity',
+    keyAbilityAbbr: { en: 'DEX', fr: 'DEX' },
+    accentColor:    'oklch(74% 0.12 230)',
+  },
+  {
+    pipelineId:     'saves.will',
+    label:          { en: 'Will', fr: 'Volonté' },
+    keyAbilityId:   'stat_wisdom',
+    keyAbilityAbbr: { en: 'WIS', fr: 'SAG' },
+    accentColor:    'oklch(72% 0.12 280)',
+  },
+];
+
+// =============================================================================
+// WeaponDefaults — data-driven weapon ability score defaults
+// =============================================================================
+
+/**
+ * Default ability score assignments for weapon attack and damage rolls.
+ * Populated at runtime from the `config_weapon_defaults` JSON config table.
+ * Falls back to `DEFAULT_WEAPON_CONFIG` during bootstrap.
+ *
+ * WHY THIS EXISTS:
+ *   D&D 3.5 hardwires STR for melee attack/damage and DEX for ranged attacks.
+ *   By reading these from a config table, homebrew systems can remap the defaults
+ *   (e.g., a setting that uses a custom `stat_agility` for all ranged attacks)
+ *   without modifying engine code.
+ *
+ *   Per-weapon overrides (Weapon Finesse, ranged STR via Mighty bow, psionic
+ *   INT-based attacks) are handled via the weapon Feature's modifier formulas,
+ *   NOT by changing these defaults.
+ */
+export interface WeaponDefaults {
+  /** Ability score ID used for melee attack rolls. Default: `"stat_strength"`. */
+  readonly meleeAttackAbility:        string;
+  /** Ability score ID used for ranged attack rolls. Default: `"stat_dexterity"`. */
+  readonly rangedAttackAbility:       string;
+  /** Ability score ID added to melee damage rolls. Default: `"stat_strength"`. */
+  readonly meleeDamageAbility:        string;
+  /** Multiplier on damage ability for two-handed grip. Default: `1.5` (D&D 3.5 rule). */
+  readonly twoHandedDamageMultiplier: number;
+}
+
+/**
+ * Hardcoded D&D 3.5 SRD fallback for weapon ability defaults.
+ * Active during bootstrap or when `config_weapon_defaults` is not loaded.
+ */
+const DEFAULT_WEAPON_CONFIG: WeaponDefaults = {
+  meleeAttackAbility:        'stat_strength',
+  rangedAttackAbility:       'stat_dexterity',
+  meleeDamageAbility:        'stat_strength',
+  twoHandedDamageMultiplier: 1.5,
+};
 
 // =============================================================================
 // TARGETID NORMALISATION — Handles both JSON authoring conventions
@@ -415,6 +524,38 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     return fallback;
   };
 
+  /**
+   * Reads the default base value for a movement speed pipeline from
+   * `config_movement_defaults`. Falls back to `fallbackValue` (usually 0)
+   * if the table has not loaded yet (bootstrap state).
+   *
+   * WHY A CONFIG TABLE INSTEAD OF A HARDCODED CONSTANT?
+   *   The D&D 3.5 standard land speed (30 ft) is a rule, not a universal truth.
+   *   Storing it in JSON lets homebrew rule sources change the default for all
+   *   characters (e.g., a "short races" setting defaulting to 25 ft) without
+   *   touching TypeScript. Individual races/creatures still override via
+   *   "base" or "setAbsolute" modifiers on their Feature JSON.
+   *
+   * @param pipelineId    - The speed pipeline ID (e.g., "combatStats.speed_land").
+   * @param fallbackValue - Value returned when the config table is absent.
+   */
+  const getSpeedDefault = (pipelineId: ID, fallbackValue: number): number => {
+    try {
+      const movTable = dataLoader.getConfigTable('config_movement_defaults');
+      if (movTable?.data) {
+        const row = (movTable.data as Array<Record<string, unknown>>).find(
+          r => r['pipelineId'] === pipelineId
+        );
+        if (row !== undefined && typeof row['defaultBaseValue'] === 'number') {
+          return row['defaultBaseValue'] as number;
+        }
+      }
+    } catch {
+      // DataLoader not yet initialized — use fallback silently
+    }
+    return fallbackValue;
+  };
+
   // Default fallback labels for standard attribute pipelines.
   // These are used ONLY when the `config_attribute_definitions` config table
   // has not been loaded yet (engine bootstrap) or is unavailable.
@@ -469,11 +610,15 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       'combatStats.base_attack_bonus': makePipeline('combatStats.base_attack_bonus', { en: 'Base Attack Bonus', fr: "Bonus d'attaque de base" }, 0),
       'combatStats.initiative': makePipeline('combatStats.initiative', { en: 'Initiative', fr: 'Initiative' }, 0),
       'combatStats.grapple': makePipeline('combatStats.grapple', { en: 'Grapple', fr: 'Lutte' }, 0),
-      'combatStats.speed_land': makePipeline('combatStats.speed_land', { en: 'Land Speed', fr: 'Vitesse terrestre' }, 30),
-      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'Burrow Speed', fr: 'Vitesse de fouissement' }, 0),
-      'combatStats.speed_climb': makePipeline('combatStats.speed_climb', { en: 'Climb Speed', fr: "Vitesse d'escalade" }, 0),
-      'combatStats.speed_fly': makePipeline('combatStats.speed_fly', { en: 'Fly Speed', fr: 'Vitesse de vol' }, 0),
-      'combatStats.speed_swim': makePipeline('combatStats.speed_swim', { en: 'Swim Speed', fr: 'Vitesse de nage' }, 0),
+      // Speed pipeline base values are read from `config_movement_defaults`.
+      // The fallback values here are the D&D 3.5 SRD defaults used during
+      // bootstrap (before the DataLoader has loaded the config table).
+      // Races/creatures override these defaults via "base" or "setAbsolute" modifiers.
+      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'Land Speed',   fr: 'Vitesse terrestre' },     getSpeedDefault('combatStats.speed_land',   30)),
+      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'Burrow Speed',  fr: 'Vitesse de fouissement' }, getSpeedDefault('combatStats.speed_burrow',  0)),
+      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'Climb Speed',   fr: "Vitesse d'escalade" },     getSpeedDefault('combatStats.speed_climb',   0)),
+      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'Fly Speed',     fr: 'Vitesse de vol' },         getSpeedDefault('combatStats.speed_fly',     0)),
+      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'Swim Speed',    fr: 'Vitesse de nage' },        getSpeedDefault('combatStats.speed_swim',    0)),
       'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'Armor Check Penalty', fr: "Malus d'armure aux tests" }, 0),
       'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'Max Hit Points', fr: 'Points de vie maximum' }, 0),
 
@@ -2181,11 +2326,25 @@ export class GameEngine {
         // Check if character has sufficient ranks in the source skill
         const sourceRanks = this.character.skills[sourceSkill]?.ranks ?? 0;
         if (sourceRanks >= requiredRanks) {
-          // Build the synergy modifier
+          // Resolve the source skill's localized label from the DataLoader so the
+          // modifier's sourceName reads "Synergy (Diplomacy)" instead of
+          // "Synergy (skill_diplomacy)". Falls back to the raw ID if the feature
+          // hasn't loaded yet (bootstrap) — the DAG will re-evaluate once it loads.
+          const sourceSkillFeature = dataLoader.getFeature(sourceSkill);
+          const sourceLabel: LocalizedString = sourceSkillFeature?.label
+            ?? { en: sourceSkill, fr: sourceSkill };
+
+          // Build the synergy modifier source name using the externalized
+          // SYNERGY_SOURCE_LABEL constant (no hardcoded EN/FR strings in engine code).
+          // Adding a new UI language only requires updating constants.ts + the locale
+          // JSON — no changes to this engine method.
           const synergyMod: import('../types/pipeline').Modifier = {
             id: `synergy_${sourceSkill}_to_${targetSkill}`,
             sourceId: sourceSkill,
-            sourceName: { en: `Synergy (${sourceSkill})`, fr: `Synergie (${sourceSkill})` },
+            sourceName: {
+              en: `${SYNERGY_SOURCE_LABEL.en} (${translateString(sourceLabel, 'en')})`,
+              fr: `${SYNERGY_SOURCE_LABEL.fr} (${translateString(sourceLabel, 'fr')})`,
+            },
             targetId: targetSkill,
             value: bonusValue,
             type: bonusType,
@@ -2261,44 +2420,47 @@ export class GameEngine {
   //   in the UI layer. The component reads from engine.savingThrowConfig.
 
   /**
-   * Save pipeline → key ability ID and localized abbreviation mapping.
-   * Loaded once and used by SavingThrowsSummary and SavingThrows components.
+   * Save pipeline → key ability ID, label, and display config mapping.
+   * Consumed by SavingThrowsSummary.svelte and SavingThrows.svelte.
    *
-   * DATA-DRIVENNESS NOTE (MINOR fix #2):
-   *   The save-to-ability associations are D&D 3.5 SRD invariants (Fort→CON, Ref→DEX, Will→WIS).
-   *   They will never change for any standard D&D 3.5 content.
+   * DATA-DRIVEN IMPLEMENTATION:
+   *   Reads from the `config_save_definitions` JSON config table loaded by the DataLoader.
+   *   This allows homebrew systems to define entirely different saves (e.g., an alternate
+   *   game with Brawn/Finesse/Focus saves instead of Fort/Ref/Will) by overriding the
+   *   table in their rule source JSON — with zero engine code changes.
    *
-   *   The abbreviations are now stored as LocalizedString objects (supporting EN and FR)
-   *   instead of plain English strings, resolving the i18n hardcoding issue.
-   *   Components read the abbreviation via `engine.t(entry.keyAbilityAbbr)`.
+   *   Reactive via `$derived`: re-evaluates when `dataLoaderVersion` increments
+   *   (i.e., after `loadRuleSources()` completes). Components should bind to this
+   *   property inside `$derived` (e.g., `const SAVES = $derived(engine.savingThrowConfig)`)
+   *   to receive the update from the bootstrap fallback to the JSON-driven values.
    *
-   *   For full data-drivenness, a `config_save_definitions` JSON table could replace this
-   *   in the future — but the current approach is the lowest-complexity correct solution.
+   *   FALLBACK: `DEFAULT_SAVE_CONFIG` (D&D 3.5 SRD values) is used when the
+   *   `config_save_definitions` table has not yet loaded (bootstrap state).
+   *
+   * @see DEFAULT_SAVE_CONFIG — hardcoded bootstrap fallback
+   * @see SaveConfigEntry — entry type (exported for component prop types)
+   * @see static/rules/00_d20srd_core/00_d20srd_core_config_tables.json — authoritative source
    */
-  readonly savingThrowConfig = [
-    {
-      pipelineId: 'saves.fortitude',
-      keyAbilityId: 'stat_constitution',
-      /** Localized abbreviation of the key ability for this saving throw. */
-      keyAbilityAbbr: { en: 'CON', fr: 'CON' } as { en: string; fr: string },
-      // Fortitude: red-400 equivalent in oklch — perceptually consistent across themes
-      accentColor: 'oklch(65% 0.19 28)',
-    },
-    {
-      pipelineId: 'saves.reflex',
-      keyAbilityId: 'stat_dexterity',
-      keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } as { en: string; fr: string },
-      // Reflex: sky-300 equivalent — cool blue for agility
-      accentColor: 'oklch(74% 0.12 230)',
-    },
-    {
-      pipelineId: 'saves.will',
-      keyAbilityId: 'stat_wisdom',
-      keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } as { en: string; fr: string },
-      // Will: indigo-300 equivalent — aligns with the accent palette
-      accentColor: 'oklch(72% 0.12 280)',
-    },
-  ] as const;
+  savingThrowConfig: readonly SaveConfigEntry[] = $derived.by(() => {
+    // Track the dataLoader version so this derived re-evaluates when rules reload.
+    void this.dataLoaderVersion;
+
+    const table = dataLoader.getConfigTable('config_save_definitions');
+    if (table?.data && Array.isArray(table.data) && table.data.length > 0) {
+      // Map each row from the config table to a typed SaveConfigEntry.
+      // Unknown extra fields (e.g., future homebrew extensions) are silently ignored.
+      return (table.data as Array<Record<string, unknown>>).map(row => ({
+        pipelineId:     (row['pipelineId']     as string)        ?? '',
+        label:          (row['label']          as LocalizedString) ?? { en: '', fr: '' },
+        keyAbilityId:   (row['keyAbilityId']   as string)        ?? '',
+        keyAbilityAbbr: (row['keyAbilityAbbr'] as LocalizedString) ?? { en: '', fr: '' },
+        accentColor:    (row['accentColor']    as string)        ?? '#888',
+      })) satisfies SaveConfigEntry[];
+    }
+
+    // Fallback: DataLoader not yet loaded (bootstrap) or table absent in rule sources
+    return DEFAULT_SAVE_CONFIG;
+  });
 
   // ---------------------------------------------------------------------------
   // MAGIC HELPERS — Phase 12 (Spell Save DC)
@@ -2377,19 +2539,25 @@ export class GameEngine {
         //     or "caster_ability_stat_charisma" (spontaneous arcane/psionic).
         //   See the FeatureChoice documentation in ARCHITECTURE.md section 5.
         //
-        // DATA-DRIVEN CASTING ABILITY IDS (read from config if available):
+        // DATA-DRIVEN CASTING ABILITY IDS:
+        //   Read from `config_attribute_definitions` using the `isCastingAbility: true` flag.
+        //   This replaces the old hardcoded ID check (== 'stat_wisdom' || == 'stat_intelligence'
+        //   || == 'stat_charisma'), making the fallback work for any homebrew stat system that
+        //   marks its casting abilities with `isCastingAbility: true` in the config table.
         const castingAbilityTable = dataLoader.getConfigTable('config_attribute_definitions');
         const castingAbilityIds: string[] = [];
         if (castingAbilityTable?.data && Array.isArray(castingAbilityTable.data)) {
-          // Filter to mental stats (INT, WIS, CHA) — the only valid casting abilities in D&D 3.5
           for (const row of castingAbilityTable.data as Array<Record<string, unknown>>) {
             const id = row['id'] as string | undefined;
-            if (id && (id === 'stat_wisdom' || id === 'stat_intelligence' || id === 'stat_charisma')) {
+            // Only include rows explicitly flagged as casting ability scores
+            if (id && row['isCastingAbility'] === true) {
               castingAbilityIds.push(id);
             }
           }
         }
-        // If config table not available, use hardcoded fallback (bootstrap state)
+        // Bootstrap fallback: config table not yet loaded (before first loadRuleSources()).
+        // Uses D&D 3.5 SRD mental stats. This only fires during the brief initialization
+        // window before the DataLoader completes — not in steady-state operation.
         if (castingAbilityIds.length === 0) {
           castingAbilityIds.push('stat_wisdom', 'stat_intelligence', 'stat_charisma');
         }
@@ -2413,38 +2581,100 @@ export class GameEngine {
   // Called by Attacks.svelte when the player selects a weapon.
 
   /**
-   * Computes the total attack bonus for a weapon.
-   * Formula: BAB + ability modifier (STR for melee, DEX for ranged) + enhancement.
+   * Reads weapon ability-score defaults from the `config_weapon_defaults` config table.
    *
-   * @param enhancement  - Weapon's enhancement bonus.
-   * @param isRanged     - If true, uses DEX modifier; else uses STR modifier.
-   * @returns The computed attack bonus as a number.
+   * DATA-DRIVEN FALLBACK PATTERN:
+   *   1. If the DataLoader has the table loaded, return its values.
+   *   2. Otherwise fall back to `DEFAULT_WEAPON_CONFIG` (D&D 3.5 SRD hardcoded defaults).
+   *
+   * WHY A METHOD AND NOT `$derived`:
+   *   `getWeaponAttackBonus()` and `getWeaponDamageBonus()` are called at roll time
+   *   (on-demand, not in reactive contexts), so a lightweight synchronous getter is
+   *   more appropriate than a Svelte `$derived` subscription.
+   *
+   * @returns The resolved `WeaponDefaults` — either from the config table or the fallback.
+   * @see WeaponDefaults — the return type (exported)
+   * @see DEFAULT_WEAPON_CONFIG — the hardcoded SRD fallback
+   * @see static/rules/00_d20srd_core/00_d20srd_core_config_tables.json — JSON source
+   */
+  getWeaponDefaults(): WeaponDefaults {
+    const table = dataLoader.getConfigTable('config_weapon_defaults');
+    if (table?.data && Array.isArray(table.data) && table.data.length > 0) {
+      const rows = table.data as Array<Record<string, unknown>>;
+      // Build a lookup map from "key" to row for O(1) access per field
+      const byKey = new Map(rows.map(r => [r['key'] as string, r]));
+
+      const meleeAtk  = byKey.get('meleeAttackAbility')?.['abilityId']         as string | undefined;
+      const rangedAtk = byKey.get('rangedAttackAbility')?.['abilityId']         as string | undefined;
+      const meleeDmg  = byKey.get('meleeDamageAbility')?.['abilityId']          as string | undefined;
+      const twoHanded = byKey.get('twoHandedDamageMultiplier')?.['value']        as number | undefined;
+
+      // Only override if at least one key was found (partial config tables are valid)
+      if (meleeAtk || rangedAtk || meleeDmg || twoHanded !== undefined) {
+        return {
+          meleeAttackAbility:        meleeAtk  ?? DEFAULT_WEAPON_CONFIG.meleeAttackAbility,
+          rangedAttackAbility:       rangedAtk ?? DEFAULT_WEAPON_CONFIG.rangedAttackAbility,
+          meleeDamageAbility:        meleeDmg  ?? DEFAULT_WEAPON_CONFIG.meleeDamageAbility,
+          twoHandedDamageMultiplier: twoHanded ?? DEFAULT_WEAPON_CONFIG.twoHandedDamageMultiplier,
+        };
+      }
+    }
+    return DEFAULT_WEAPON_CONFIG;
+  }
+
+  /**
+   * Computes the total attack bonus for a weapon.
+   * Formula: BAB + ability modifier (melee or ranged per `config_weapon_defaults`) + enhancement.
+   *
+   * DATA-DRIVEN:
+   *   The governing ability for melee and ranged attacks is read from the
+   *   `config_weapon_defaults` config table. In standard D&D 3.5, melee uses STR
+   *   and ranged uses DEX, but homebrew rule sources can remap these to any stat
+   *   by overriding `config_weapon_defaults` in their JSON without any code changes.
+   *
+   * @param enhancement  - Weapon's enhancement bonus (integer).
+   * @param isRanged     - If true, uses the ranged attack ability; else melee attack ability.
+   * @returns The total attack bonus as a number.
+   * @see getWeaponDefaults — reads `config_weapon_defaults` with SRD fallback
    */
   getWeaponAttackBonus(enhancement: number, isRanged: boolean): number {
     const bab = this.phase3_combatStats['combatStats.base_attack_bonus']?.totalValue ?? 0;
-    const strMod = this.phase2_attributes['stat_strength']?.derivedModifier ?? 0;
-    const dexMod = this.phase2_attributes['stat_dexterity']?.derivedModifier ?? 0;
-    const abilityMod = isRanged ? dexMod : strMod;
+    const defaults = this.getWeaponDefaults();
+    const attackAbilityId = isRanged
+      ? defaults.rangedAttackAbility
+      : defaults.meleeAttackAbility;
+    const abilityMod = this.phase2_attributes[attackAbilityId]?.derivedModifier ?? 0;
     return bab + abilityMod + enhancement;
   }
 
   /**
    * Computes the damage bonus for a weapon.
-   * Formula: STR modifier (×1.5 for two-handed weapons) + enhancement.
+   * Formula: melee damage ability modifier (×multiplier for two-handed grip) + enhancement.
    *
-   * D&D 3.5 RULE:
-   *   One-handed/Light weapons add STR modifier to damage.
-   *   Two-handed weapons add 1.5× STR modifier (rounded down).
-   *   Ranged weapons add STR modifier only if strength >= 12 (bows with mighty quality).
-   *   For simplicity, ranged weapons use 0 STR (handled by the weapon enhancement alone).
+   * DATA-DRIVEN:
+   *   The damage ability and two-handed multiplier are read from `config_weapon_defaults`.
+   *   D&D 3.5 defaults: STR for damage, ×1.5 for two-handed (rounded down).
+   *   Ranged weapons deal 0 from ability (handled via weapon modifiers if needed,
+   *   e.g. the Mighty bow quality granting a STR-based bonus modifier).
    *
-   * @param enhancement   - Weapon's enhancement bonus.
-   * @param isTwoHanded   - If true, uses 1.5× STR modifier.
-   * @returns The computed damage bonus as a number.
+   * D&D 3.5 RULES IMPLEMENTED:
+   *   - One-handed / light:   full damage ability modifier
+   *   - Two-handed:           damage ability modifier × `twoHandedDamageMultiplier` (floor)
+   *   - Ranged (pass isTwoHanded=false, enhancement only): caller should pass STR bonus
+   *     separately if applicable (e.g., Mighty bow)
+   *
+   * @param enhancement   - Weapon's enhancement bonus (integer).
+   * @param isTwoHanded   - If true, applies the two-handed damage multiplier.
+   * @returns The total damage bonus as a number.
+   * @see getWeaponDefaults — reads `config_weapon_defaults` with SRD fallback
    */
   getWeaponDamageBonus(enhancement: number, isTwoHanded: boolean): number {
-    const strMod = this.phase2_attributes['stat_strength']?.derivedModifier ?? 0;
-    const baseDamageMod = isTwoHanded ? Math.floor(strMod * 1.5) : strMod;
+    const defaults = this.getWeaponDefaults();
+    const damageAbilityId = defaults.meleeDamageAbility;
+    const abilityMod = this.phase2_attributes[damageAbilityId]?.derivedModifier ?? 0;
+    const baseDamageMod = isTwoHanded
+      ? Math.floor(abilityMod * defaults.twoHandedDamageMultiplier)
+      : abilityMod;
     return baseDamageMod + enhancement;
   }
 

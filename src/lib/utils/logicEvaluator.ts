@@ -47,6 +47,7 @@
  */
 
 import type { LogicNode } from '../types/logic';
+import type { LogicOperator } from '../types/primitives';
 import type { CharacterContext } from './mathParser';
 import { resolvePath } from './mathParser';
 
@@ -293,14 +294,17 @@ function evaluateNot(child: LogicNode, context: CharacterContext): EvaluationRes
  *   - Non-array target for `includes`: returns false, logs warning.
  *
  * @param targetPath   - The `@`-prefixed path to resolve in the context.
- * @param operator     - The comparison operator.
+ * @param operator     - The comparison operator (must be a valid `LogicOperator` value).
+ *                       Using the `LogicOperator` type instead of `string` enables
+ *                       TypeScript's exhaustiveness checker on the `switch` below —
+ *                       any missing case branch becomes a compile-time error.
  * @param rawValue     - The right-hand side (literal or `@`-prefixed path).
  * @param errorMessage - The message logged if this condition fails.
  * @param context      - Character context snapshot.
  */
 function evaluateCondition(
   targetPath: string,
-  operator: string,
+  operator: LogicOperator,
   rawValue: unknown,
   errorMessage: string | undefined,
   context: CharacterContext

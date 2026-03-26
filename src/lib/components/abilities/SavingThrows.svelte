@@ -18,7 +18,9 @@
   import type { ID } from '$lib/types/primitives';
   import { IconSaves, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
 
-  const SAVES = engine.savingThrowConfig;
+  // Use $derived so the component reacts when savingThrowConfig switches from
+  // its bootstrap fallback to the JSON-driven values after the DataLoader loads.
+  const SAVES = $derived(engine.savingThrowConfig);
 
   let breakdownSaveId = $state<ID | null>(null);
   let diceRollSaveId  = $state<ID | null>(null);
