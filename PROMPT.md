@@ -454,13 +454,11 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 ---
 
-### Phase 22
+### Phase 22: NPC & Monster Template Management
 
 _Goal: Develop a NPC (and Monster Template) Management System including a "Quick-Spawn" feature for the GM to instantiate templates in real-time._
 
----
-
-### Phase 23
+### Phase 23: Rules Library Browser
 
 _Goal: Develop a library for the GM and players to browse all data._
 
