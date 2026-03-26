@@ -3,40 +3,33 @@
  * @description User session context — who is logged in and in what capacity.
  *
  * Design philosophy:
- *   This module mocks a user session for development (Phases 6–13). It uses
- *   Svelte 5 `$state` so that session changes are reactive — components re-render
- *   automatically when `isGameMaster` is toggled or `activeCampaignId` changes.
+ *   This module uses Svelte 5 `$state` / `$derived` runes so that session
+ *   changes are reactive — components re-render automatically when `role`,
+ *   `activeCampaignId`, or `needsPasswordSetup` change.
+ *
+ *   ROLE MODEL (Phase 22):
+ *     'admin'  — user management + full GM capabilities.
+ *     'gm'     — Game Master (campaigns, characters, overrides).
+ *     'player' — restricted to own characters.
+ *
+ *   `isGameMaster` and `isAdmin` are `$derived` from `role` so there is a
+ *   single source of truth. Code that read `isGameMaster` before Phase 22
+ *   continues to work without changes.
  *
  *   REPLACEMENT CONTRACT:
- *   In Phase 14.2, this file is replaced (or wrapped) by a PHP-backed auth session.
- *   The interface MUST remain stable. Any PHP integration should:
- *     1. Keep the same exported names (`sessionContext`, `SessionContext` type).
- *     2. Populate `currentUserId` from the PHP session user ID.
- *     3. Populate `isGameMaster` from the `users.is_game_master` DB column.
- *     4. Populate `activeCampaignId` from the URL route parameter (campaigns/[id]).
- *   Component code that reads `sessionContext.isGameMaster` will work unchanged.
+ *   The interface `SessionContextType` must remain stable. Any field added here
+ *   must also be provided by the PHP `GET /api/auth/me` response.
+ *   Component code that reads `sessionContext.isGameMaster` works unchanged.
  *
- *   WHY MOCK FIRST?
- *   Building the entire UI layer (Phases 6–15) against a live PHP backend would
- *   require both systems to be developed simultaneously, creating a blocking
- *   dependency. The mock allows full UI development in isolation, then a single
- *   swap in Phase 14 replaces just THIS file.
- *
- *   VISIBILITY RULES (enforced by this context):
- *   These rules, defined in ARCHITECTURE.md Phase 7:
- *     - GM sees ALL characters in the campaign (players, NPCs, monsters).
- *     - Players see ONLY their own characters (ownerId === currentUserId)
- *       plus any LinkedEntities belonging to their characters.
- *   The `visibleCharacters` $derived in the GameEngine/VaultStore reads
- *   `sessionContext.isGameMaster` to apply this filter.
- *
- * @see src/lib/engine/GameEngine.svelte.ts for the engine that reads this context.
- * @see ARCHITECTURE.md Phase 6.1 for the specification.
- * @see ARCHITECTURE.md Phase 14.2 for the PHP replacement.
+ * @see src/lib/api/userApi.ts              for the user management API client.
+ * @see src/lib/types/user.ts               for the UserRole type.
+ * @see src/lib/engine/StorageManager.ts    for setCsrfToken / apiHeaders.
+ * @see ARCHITECTURE.md Phase 6.1 and Phase 22 for the full specification.
  */
 
 import { goto } from '$app/navigation';
 import type { ID } from '../types/primitives';
+import type { UserRole } from '../types/user';
 import { setCsrfToken } from './StorageManager';
 
 // =============================================================================
@@ -47,56 +40,59 @@ import { setCsrfToken } from './StorageManager';
  * The user session context shape.
  *
  * STABLE INTERFACE CONTRACT:
- *   This interface must not be changed without updating the PHP replacement layer.
- *   Any field added here must also be provided by the PHP `GET /api/auth/me` response.
+ *   All fields here must remain backward-compatible. Fields added in Phase 22
+ *   (`role`, `isAdmin`, `needsPasswordSetup`) are additive and do not break
+ *   any existing component code.
  */
 export interface SessionContextType {
   /**
    * The unique identifier of the currently logged-in user.
-   * In mock mode: a static string (can be changed via `setCurrentUser()`).
    * In PHP mode: the value of `$_SESSION['user_id']`.
-   *
-   * Used for ownership checks: `character.ownerId === currentUserId`
-   * determines whether a player can edit or see a specific character.
    */
   currentUserId: ID;
 
-  /**
-   * Display name of the current user (for UI labels, not for game logic).
-   * Example: "Martin" or "DM_Patrick"
-   */
+  /** Display name of the current user (for UI labels, not for game logic). */
   currentUserDisplayName: string;
 
   /**
-   * Whether the current user is a Game Master in the active campaign.
+   * The user's role — the single source of truth for permissions.
+   * `isGameMaster` and `isAdmin` are derived from this field.
+   */
+  role: UserRole;
+
+  /**
+   * Whether the current user has Game Master privileges.
+   * True when `role === 'gm' || role === 'admin'`.
    *
-   * D&D 3.5 Table roles:
-   *   GM (true):   Full access — sees all characters, NPCs, overrides.
-   *                Can create/edit campaigns, NPCs, and per-character overrides.
-   *   Player (false): Restricted access — sees only own characters.
-   *                   Cannot see GM overrides or NPC stats.
+   * DERIVED — do not set directly. Use `setGameMaster()` (legacy) or
+   * update `role` via the user management endpoints.
    *
-   * This field gates:
-   *   - The "Create Campaign" button (Phase 6.3)
-   *   - The "Add NPC/Monster" button (Phase 7.4)
-   *   - Chapter completion toggles (Phase 6.4)
-   *   - GM Dashboard and Settings routes (Phase 15)
-   *   - Character visibility in the Vault (Phase 7.1)
+   * Gates: Create Campaign, Add NPC, GM Dashboard, character visibility.
    */
   isGameMaster: boolean;
 
   /**
+   * Whether the current user has administrator privileges.
+   * True only when `role === 'admin'`.
+   *
+   * DERIVED — gates the user management admin panel (`/admin/users`).
+   */
+  isAdmin: boolean;
+
+  /**
    * The ID of the campaign currently being viewed/played.
    * `null` when on the Campaign Hub (not inside any campaign).
-   *
-   * Drives:
-   *   - Character Vault filtering (show only characters of this campaign).
-   *   - GM override loading (load overrides for this campaign).
-   *   - Campaign settings loading.
-   *
-   * Updated by the SvelteKit route system when navigating to `/campaigns/[id]`.
    */
   activeCampaignId: ID | null;
+
+  /**
+   * Whether the current session requires the user to set a password before
+   * proceeding. True after a no-password first login (new account or admin
+   * bootstrap). Clears when `PUT /api/auth/setup-password` succeeds.
+   *
+   * The layout guard redirects to `/setup-password` while this is true.
+   */
+  needsPasswordSetup: boolean;
 }
 
 // =============================================================================
@@ -106,42 +102,60 @@ export interface SessionContextType {
 /**
  * The reactive session context class.
  *
- * Uses Svelte 5 `$state` so that any component reading from this object
- * automatically re-renders when session data changes.
+ * Uses Svelte 5 `$state` / `$derived` runes so that any component reading
+ * from this object automatically re-renders when session data changes.
  *
- * MOCK USERS (for development):
- *   Two pre-defined user profiles allow testing both roles without a PHP backend:
- *     - "user_gm_001" + isGameMaster: true  → Simulates the DM's browser
- *     - "user_player_001" + isGameMaster: false → Simulates a player's browser
- *   Toggling between profiles tests all visibility and permission rules.
+ * MOCK USERS (for development / testing):
+ *   Two pre-defined profiles allow testing both roles without a PHP backend:
+ *     - "user_gm_001"     + role: 'gm'     → Simulates the GM's browser.
+ *     - "user_player_001" + role: 'player'  → Simulates a player's browser.
  */
 class SessionContext {
   // ---------------------------------------------------------------------------
-  // $state (Svelte 5 reactive state)
+  // $state (Svelte 5 reactive primitives — writable)
   // ---------------------------------------------------------------------------
 
-  /**
-   * The current user's unique identifier.
-   * Default: the mock Game Master user.
-   */
+  /** The current user's unique identifier. Default: mock GM. */
   currentUserId = $state<ID>('user_gm_001');
 
-  /**
-   * The current user's display name.
-   */
+  /** The current user's display name. */
   currentUserDisplayName = $state<string>('Game Master (Mock)');
 
   /**
-   * Whether the current user is a GM.
-   * Default: true (starts as GM for maximum test surface area).
+   * The user's role — the single source of truth for all permission checks.
+   * Default: 'gm' so the mock starts with maximum test surface area (same
+   * behaviour as the previous `isGameMaster = true` default).
    */
-  isGameMaster = $state<boolean>(true);
+  role = $state<UserRole>('gm');
+
+  /** The currently active campaign ID. Default: null (Campaign Hub). */
+  activeCampaignId = $state<ID | null>(null);
 
   /**
-   * The currently active campaign ID.
-   * Default: null (no campaign selected yet — on the Campaign Hub).
+   * Whether the session requires a password to be set before normal app use.
+   * Set to `true` after a successful no-password login; cleared on setup.
    */
-  activeCampaignId = $state<ID | null>(null);
+  needsPasswordSetup = $state<boolean>(false);
+
+  // ---------------------------------------------------------------------------
+  // $derived (Svelte 5 reactive computed values — read-only)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Whether the current user has Game Master privileges.
+   * Derived from `role`; true for both 'gm' and 'admin'.
+   *
+   * BACKWARD COMPATIBILITY:
+   *   All existing components and tests that read `sessionContext.isGameMaster`
+   *   continue to work without modification.
+   */
+  isGameMaster = $derived(this.role === 'gm' || this.role === 'admin');
+
+  /**
+   * Whether the current user has administrator privileges.
+   * Derived from `role`; true only for 'admin'.
+   */
+  isAdmin = $derived(this.role === 'admin');
 
   // ---------------------------------------------------------------------------
   // MOCK PROFILE SWITCHING — Development convenience
@@ -154,9 +168,9 @@ class SessionContext {
    * Vitest test setup to simulate a GM session.
    */
   switchToGM(): void {
-    this.currentUserId = 'user_gm_001';
+    this.currentUserId          = 'user_gm_001';
     this.currentUserDisplayName = 'Game Master (Mock)';
-    this.isGameMaster = true;
+    this.role                   = 'gm';
   }
 
   /**
@@ -166,9 +180,9 @@ class SessionContext {
    * Player sees only their own characters, no NPC stats, no override editor.
    */
   switchToPlayer(): void {
-    this.currentUserId = 'user_player_001';
+    this.currentUserId          = 'user_player_001';
     this.currentUserDisplayName = 'TestPlayer (Mock)';
-    this.isGameMaster = false;
+    this.role                   = 'player';
   }
 
   /**
@@ -184,50 +198,44 @@ class SessionContext {
   }
 
   /**
-   * Updates the GM status of the current user.
+   * Convenience toggle for dev-mode and legacy code.
    *
-   * In mock mode: called by the dev toolbar toggle.
-   * In PHP mode: this is NEVER called directly — `isGameMaster` is populated
-   * from the server session and is read-only from the client's perspective.
+   * Maps to role changes:
+   *   `setGameMaster(true)`  → role = 'gm'
+   *   `setGameMaster(false)` → role = 'player'
    *
-   * @param value - Whether the current user is a GM.
+   * Does NOT change `currentUserId` or `currentUserDisplayName` — use
+   * `switchToGM()` / `switchToPlayer()` for full profile switches.
+   *
+   * LEGACY COMPATIBILITY: this method existed before roles were introduced
+   * (Phase 22). All tests that call `ctx.setGameMaster(value)` continue
+   * to work because `isGameMaster` is now derived from `role`.
+   *
+   * @param value - If `true`, sets role to 'gm'; if `false`, sets 'player'.
    */
   setGameMaster(value: boolean): void {
-    this.isGameMaster = value;
+    this.role = value ? 'gm' : 'player';
   }
 
   // ---------------------------------------------------------------------------
-  // PHP REPLACEMENT HOOK
+  // PHP BACKEND INTEGRATION
   // ---------------------------------------------------------------------------
 
   /**
-   * Loads session data from the PHP backend.
+   * Loads session data from the PHP backend (`GET /api/auth/me`).
    *
-   * PHASE 14.2 INTEGRATION POINT:
-   *   Replace the body of this method with a `fetch('/api/auth/me')` call.
-   *   The PHP endpoint returns:
-   *   ```json
-   *   {
-   *     "userId": "...",
-   *     "displayName": "...",
-   *     "isGameMaster": true,
-   *     "activeCampaignId": null
-   *   }
-   *   ```
+   * Called in the root `+layout.svelte` `onMount()`.
+   * On 401 (no session), redirects to `/login`.
+   * On success, populates `currentUserId`, `role`, `needsPasswordSetup`, and
+   * stores the CSRF token for all subsequent state-changing requests.
    *
-   *   Current mock implementation: no-op (data is pre-seeded in $state).
-   *   When PHP is integrated:
-   *     1. Call this method in the root `+layout.svelte` `onMount()`.
-   *     2. If the API returns 401, redirect to a login page.
-   *     3. Populate `currentUserId`, `isGameMaster`, `currentUserDisplayName`.
+   * BACKWARD COMPATIBILITY for older API responses / test mocks that include
+   * only `is_game_master` (boolean) without an explicit `role` field:
+   *   role is derived as `is_game_master ? 'gm' : 'player'`.
    *
-   * @returns Promise resolving when session data is loaded (no-op in mock).
+   * @returns Promise resolving when session data is loaded.
    */
   async loadFromServer(): Promise<void> {
-    // PHASE 14.2: Fetch the real PHP session from the backend.
-    // On 401 (no session), redirect to /login so the user can authenticate.
-    // The /api/auth/me response also contains the CSRF token needed for
-    // all state-changing requests (POST/PUT/DELETE).
     try {
       const response = await fetch('/api/auth/me', { credentials: 'include' });
 
@@ -247,13 +255,21 @@ class SessionContext {
       const data = (await response.json()) as {
         id: string;
         display_name: string;
+        role?: UserRole;
         is_game_master: boolean;
-        csrfToken: string;
+        csrfToken?: string;
+        needs_password_setup?: boolean;
       };
 
       this.currentUserId          = data.id;
       this.currentUserDisplayName = data.display_name;
-      this.isGameMaster           = data.is_game_master;
+
+      // Prefer the explicit `role` field (Phase 22+).
+      // Fall back to deriving from `is_game_master` for legacy mocks / older API.
+      this.role = data.role ?? (data.is_game_master ? 'gm' : 'player');
+
+      // Phase 22 — password setup required for no-password first logins.
+      this.needsPasswordSetup = data.needs_password_setup ?? false;
 
       // Store the CSRF token so all mutating API calls (POST/PUT/DELETE) can
       // include it as the X-CSRF-Token header via StorageManager.apiHeaders().
@@ -277,8 +293,11 @@ class SessionContext {
  * ```svelte
  * <script>
  *   import { sessionContext } from '$lib/engine/SessionContext.svelte';
- *   // Read: sessionContext.isGameMaster
- *   // Mutate: sessionContext.switchToPlayer()
+ *   // Read:   sessionContext.isGameMaster  (derived from role)
+ *   //         sessionContext.isAdmin        (derived from role)
+ *   //         sessionContext.role
+ *   //         sessionContext.needsPasswordSetup
+ *   // Switch: sessionContext.switchToPlayer()
  * </script>
  * ```
  *
