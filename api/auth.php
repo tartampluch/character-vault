@@ -459,6 +459,95 @@ function handleMe(): void
 }
 
 // ============================================================
+// SETUP PASSWORD ENDPOINT
+// ============================================================
+
+/**
+ * PUT /api/auth/setup-password
+ *
+ * Sets the password for a user who logged in without one (new account or admin
+ * bootstrap). This endpoint is the mandatory next step after any login that
+ * returns `needs_password_setup: true`.
+ *
+ * GUARDS:
+ *   1. requireAuth()          — user must be authenticated (401 otherwise).
+ *   2. $_SESSION flag check   — `needs_password_setup` must be true in the session,
+ *                               preventing already-configured accounts from using
+ *                               this shortcut to change their password.
+ *
+ * WHY A SEPARATE ENDPOINT (not PUT /api/users/{id})?
+ *   PUT /api/users/{id} requires admin privileges. This endpoint is accessible
+ *   to any authenticated user whose account has no password yet — it's the
+ *   self-service activation step before normal app usage begins.
+ *
+ * REQUEST BODY (JSON):
+ *   { "password": "string" }  — new plaintext password; must be non-empty.
+ *
+ * RESPONSE 200 OK:
+ *   { "id": "...", "username": "...", "display_name": "...",
+ *     "role": "...", "is_game_master": bool }
+ *
+ * RESPONSE 400 BadRequest  — password field absent or empty.
+ * RESPONSE 403 Forbidden   — session `needs_password_setup` flag is not set
+ *                            (account already has a password).
+ * RESPONSE 401 Unauthorized — not authenticated.
+ */
+function handleSetupPassword(): void
+{
+    // Requires active authentication.
+    $user = requireAuth();
+
+    // Guard: only accounts that logged in via the no-password flow may use this
+    // endpoint. Accounts that already have a password must use a different path
+    // (future: PUT /api/users/{id}/change-password with current-password check).
+    if (empty($_SESSION['needs_password_setup'])) {
+        Logger::warn('Auth', 'setup-password rejected — needs_password_setup flag not set',
+            ['user' => $user['username']]);
+        http_response_code(403);
+        echo json_encode([
+            'error'   => 'Forbidden',
+            'message' => 'This endpoint is only available during first-login password setup.',
+        ]);
+        return;
+    }
+
+    $body     = json_decode(file_get_contents('php://input'), true) ?? [];
+    $password = $body['password'] ?? '';
+
+    // Validate: the new password must not be empty.
+    // The frontend enforces min-length but the backend must validate independently.
+    if ($password === '') {
+        http_response_code(400);
+        echo json_encode([
+            'error'   => 'BadRequest',
+            'message' => 'Password must not be empty.',
+        ]);
+        return;
+    }
+
+    // Hash and persist the new password.
+    $hash = hashPassword($password);
+    $db   = Database::getInstance();
+    $db->prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+       ->execute([$hash, $user['id']]);
+
+    // Clear the setup flag from the session so this endpoint cannot be reused.
+    unset($_SESSION['needs_password_setup']);
+
+    Logger::info('Auth', 'Password set via setup-password', ['user' => $user['username']]);
+
+    // Return the updated user object (mirrors the /api/auth/me response shape).
+    http_response_code(200);
+    echo json_encode([
+        'id'             => $user['id'],
+        'username'       => $user['username'],
+        'display_name'   => $user['display_name'],
+        'role'           => $user['role'],
+        'is_game_master' => $user['is_game_master'],
+    ]);
+}
+
+// ============================================================
 // UTILITY: PASSWORD HASHING
 // ============================================================
 

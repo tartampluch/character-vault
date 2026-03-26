@@ -5,9 +5,10 @@
  *
  * ROUTING TABLE:
  *   Auth:
- *     POST   /api/auth/login       → handleLogin()     (auth.php)
- *     POST   /api/auth/logout      → handleLogout()    (auth.php)
- *     GET    /api/auth/me          → handleMe()        (auth.php)
+ *     POST   /api/auth/login            → handleLogin()          (auth.php)
+ *     POST   /api/auth/logout           → handleLogout()         (auth.php)
+ *     GET    /api/auth/me               → handleMe()             (auth.php)
+ *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
  *
  *   Campaigns:
  *     GET    /api/campaigns                          → CampaignController::index()
@@ -128,6 +129,12 @@ try {
 
     } elseif ($path === '/auth/me' && $method === 'GET') {
         handleMe();
+
+    } elseif ($path === '/auth/setup-password' && $method === 'PUT') {
+        // First-login password activation. Requires auth + needs_password_setup session flag.
+        // CSRF token required: this is a state-changing PUT request.
+        verifyCsrfToken();
+        handleSetupPassword();
 
     } elseif ($path === '/campaigns' && $method === 'GET') {
         CampaignController::index();
