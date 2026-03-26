@@ -42,12 +42,17 @@ echo "✅ Schema ready.\n\n";
 
 $db = Database::getInstance();
 
+// Note: seed.php creates DEVELOPMENT users only — never run on production.
+// The default admin user (username: admin, no password) is created automatically
+// by migrate.php on the first run of a fresh database (admin bootstrap).
+// These seed users use simple passwords for developer convenience.
 $users = [
     [
         'id'             => 'user_gm_001',
         'username'       => 'gm',
         'password'       => 'gm',
         'display_name'   => 'Game Master',
+        'role'           => 'gm',
         'is_game_master' => 1,
     ],
     [
@@ -55,13 +60,14 @@ $users = [
         'username'       => 'player',
         'password'       => 'player',
         'display_name'   => 'Test Player',
+        'role'           => 'player',
         'is_game_master' => 0,
     ],
 ];
 
 $stmt = $db->prepare('
-    INSERT OR IGNORE INTO users (id, username, password_hash, display_name, is_game_master)
-    VALUES (:id, :username, :password_hash, :display_name, :is_game_master)
+    INSERT OR IGNORE INTO users (id, username, password_hash, display_name, role, is_game_master)
+    VALUES (:id, :username, :password_hash, :display_name, :role, :is_game_master)
 ');
 
 echo "Seeding users...\n";
@@ -73,14 +79,15 @@ foreach ($users as $user) {
         ':username'       => $user['username'],
         ':password_hash'  => $hash,
         ':display_name'   => $user['display_name'],
+        ':role'           => $user['role'],
         ':is_game_master' => $user['is_game_master'],
     ]);
 
-    $role = $user['is_game_master'] ? 'GM' : 'Player';
+    $roleLabel = $user['role'];
     if ($result && $stmt->rowCount() > 0) {
-        echo "  ✅ Created [{$role}] {$user['username']} / {$user['password']}\n";
+        echo "  ✅ Created [{$roleLabel}] {$user['username']} / {$user['password']}\n";
     } else {
-        echo "  ℹ  [{$role}] {$user['username']} already exists — skipped.\n";
+        echo "  ℹ  [{$roleLabel}] {$user['username']} already exists — skipped.\n";
     }
 }
 

@@ -12,12 +12,14 @@
  *   PHPUnit: Database::runMigrations($pdo)
  *
  * TABLES:
- *   - users     (id, username, password_hash, display_name, is_game_master)
- *   - campaigns (id, title, description, poster_url, banner_url, owner_id,
- *                chapters_json, enabled_rule_sources_json, gm_global_overrides_text,
- *                homebrew_rules_json, updated_at)
- *   - characters (id, campaign_id, owner_id, name, is_npc, character_json,
- *                 gm_overrides_json, updated_at)
+ *   - users          (id, username, password_hash, display_name, is_game_master,
+ *                     role, is_suspended, last_login_at, created_at)
+ *   - campaigns      (id, title, description, poster_url, banner_url, owner_id,
+ *                     chapters_json, enabled_rule_sources_json, gm_global_overrides_text,
+ *                     homebrew_rules_json, campaign_settings_json, updated_at)
+ *   - characters     (id, campaign_id, owner_id, name, is_npc, character_json,
+ *                     gm_overrides_json, updated_at)
+ *   - campaign_users (campaign_id, user_id, joined_at)
  *
  * WHY SEPARATE characters.character_json AND characters.gm_overrides_json?
  *   The core character state (activeFeatures, classLevels, attributes, skills, resources)
@@ -65,6 +67,60 @@ function migrate(?PDO $pdo = null): void
             created_at     INTEGER NOT NULL DEFAULT (strftime(\'%s\', \'now\'))
         )
     ');
+
+    // ============================================================
+    // ADDITIVE MIGRATIONS — users table
+    // ============================================================
+    //
+    // WHY ADDITIVE MIGRATIONS?
+    //   Production databases already have the users table with only
+    //   the original columns. ALTER TABLE adds missing columns without
+    //   losing existing data. Each block is guarded by PRAGMA table_info
+    //   to remain fully idempotent (safe to run multiple times).
+    //
+    $userCols = array_column(
+        $pdo->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_ASSOC),
+        'name'
+    );
+
+    // Phase 22.1 — role column
+    //   Replaces `is_game_master` as the canonical source of truth for permissions.
+    //   Values:
+    //     'admin'  — can manage all users AND has full GM capabilities.
+    //     'gm'     — Game Master; can manage campaigns, characters, overrides.
+    //     'player' — Regular player; can only access their own characters.
+    //
+    //   BACKFILL: existing rows with is_game_master = 1 are promoted to 'gm'
+    //   (not 'admin' — the admin role requires an explicit promotion).
+    //   The `is_game_master` column is kept for backward compatibility; all new
+    //   code derives GM status from `role IN ('gm', 'admin')` instead.
+    if (!in_array('role', $userCols, true)) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'player'");
+        // Backfill: rows with is_game_master=1 had GM privileges before roles existed.
+        // Map them to 'gm' (not 'admin' — admin is a new, more privileged role).
+        $pdo->exec("UPDATE users SET role = 'gm' WHERE is_game_master = 1");
+        Logger::info('Migrate', 'Added column users.role (backfilled from is_game_master)');
+    }
+
+    // Phase 22.1 — is_suspended column
+    //   Accounts marked suspended cannot log in. Suspension is triggered by:
+    //     a) An admin explicitly suspending the account via the user management UI.
+    //     b) A new account (password_hash = '') that first attempts login more than
+    //        7 days after creation — auto-suspended at login time (no cron required).
+    //   Admins can reinstate any suspended account.
+    if (!in_array('is_suspended', $userCols, true)) {
+        $pdo->exec('ALTER TABLE users ADD COLUMN is_suspended INTEGER NOT NULL DEFAULT 0');
+        Logger::info('Migrate', 'Added column users.is_suspended');
+    }
+
+    // Phase 22.1 — last_login_at column
+    //   Unix timestamp of the user's most recent successful login.
+    //   NULL means the user has never logged in (password not yet set).
+    //   Used in the admin user-list view to show inactivity.
+    if (!in_array('last_login_at', $userCols, true)) {
+        $pdo->exec('ALTER TABLE users ADD COLUMN last_login_at INTEGER');
+        Logger::info('Migrate', 'Added column users.last_login_at');
+    }
 
     // ============================================================
     // CAMPAIGNS TABLE
@@ -168,11 +224,75 @@ function migrate(?PDO $pdo = null): void
     ');
 
     // ============================================================
+    // CAMPAIGN_USERS JOIN TABLE (Phase 22.1)
+    // ============================================================
+    //
+    // PURPOSE:
+    //   Tracks which users are members of which campaigns.
+    //   Admins and GMs use this to explicitly invite/remove players.
+    //   This is distinct from character ownership — a user can be a campaign
+    //   member even if suspended (their characters may still be active).
+    //
+    // WHY A SEPARATE TABLE (not a JSON column on campaigns)?
+    //   A proper join table enables efficient per-user and per-campaign queries,
+    //   enforces referential integrity with foreign keys, and makes the
+    //   character-count-per-campaign query (used in the admin user list) trivial.
+    //
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS campaign_users (
+            campaign_id TEXT    NOT NULL,
+            user_id     TEXT    NOT NULL,
+            joined_at   INTEGER NOT NULL DEFAULT (strftime(\'%s\', \'now\')),
+            PRIMARY KEY (campaign_id, user_id),
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id)     REFERENCES users(id)     ON DELETE CASCADE
+        )
+    ');
+
+    // ============================================================
     // INDEXES (for common query patterns)
     // ============================================================
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_characters_campaign_id ON characters(campaign_id)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_characters_owner_id ON characters(owner_id)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_campaigns_owner_id ON campaigns(owner_id)');
+    // Phase 22.1 — campaign_users lookup by user (to find all campaigns a user belongs to)
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_campaign_users_user_id ON campaign_users(user_id)');
+
+    // ============================================================
+    // ADMIN BOOTSTRAP (Phase 22.1)
+    // ============================================================
+    //
+    // On the very first run of a fresh installation the `users` table will be
+    // empty after all migrations complete. We seed a default `admin` account so
+    // the application is immediately usable without manual DB intervention.
+    //
+    // CREDENTIALS:
+    //   username     : admin
+    //   password     : (none — password_hash = '')
+    //   role         : admin
+    //
+    // FIRST-LOGIN FLOW:
+    //   The admin must log in without a password and will be immediately
+    //   redirected to the password-setup page (handled by auth.php / frontend).
+    //   The 7-day no-password expiry is NOT applied to the admin bootstrap account
+    //   because it has role='admin' — see handleLogin() for the exemption note.
+    //   Actually, the admin IS subject to the same 7-day window; the rationale
+    //   is that the installer should set the password on the first day.
+    //
+    // IDEMPOTENT:
+    //   The COUNT check ensures this block only fires once; subsequent migrate
+    //   runs skip it because the table already has rows.
+    //
+    $userCount = (int)$pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+    if ($userCount === 0) {
+        $pdo->exec("
+            INSERT INTO users
+                (id, username, password_hash, display_name, role, is_game_master, is_suspended)
+            VALUES
+                ('user_admin_001', 'admin', '', 'Admin', 'admin', 1, 0)
+        ");
+        Logger::info('Migrate', 'Admin bootstrap: created default admin user (no password set — set on first login)');
+    }
 }
 
 // ============================================================

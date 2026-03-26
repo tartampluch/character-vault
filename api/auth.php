@@ -16,7 +16,9 @@
  *   Uses PHP native sessions ($_SESSION) with the following keys:
  *     $_SESSION['user_id']        — The authenticated user's UUID
  *     $_SESSION['username']       — For display/logging purposes
- *     $_SESSION['is_game_master'] — Boolean: whether the user has GM privileges
+ *     $_SESSION['role']           — User role: 'admin' | 'gm' | 'player'
+ *     $_SESSION['is_game_master'] — Derived boolean: true when role is 'gm' or 'admin'
+ *                                   (kept for backward compatibility with controllers)
  *
  *   WHY PHP SESSIONS AND NOT JWT?
  *     PHP sessions work seamlessly on cheap shared hosting without additional
@@ -105,7 +107,9 @@ function initSession(): void
  *   b) Check `is_game_master` before allowing GM-only operations.
  *   Returning the user avoids redundant `$_SESSION` reads in every controller.
  *
- * @return array The current user ['id', 'username', 'is_game_master', 'display_name'].
+ * @return array The current user ['id', 'username', 'role', 'is_game_master', 'display_name'].
+ *              'is_game_master' is DERIVED from 'role' (true when role is 'gm' or 'admin').
+ *              All existing controllers continue to use 'is_game_master' unchanged.
  * @throws void — Exits with 401 JSON response if unauthenticated.
  */
 function requireAuth(): array
@@ -123,11 +127,18 @@ function requireAuth(): array
         httpExit();
     }
 
+    // Derive is_game_master from role so all existing controllers remain unchanged.
+    // Both 'gm' and 'admin' have full game-master privileges.
+    $role           = $_SESSION['role'] ?? 'player';
+    $isGameMaster   = in_array($role, ['gm', 'admin'], true);
+
     $user = [
         'id'             => $_SESSION['user_id'],
         'username'       => $_SESSION['username'] ?? '',
-        'is_game_master' => (bool)($_SESSION['is_game_master'] ?? false),
         'display_name'   => $_SESSION['display_name'] ?? '',
+        'role'           => $role,
+        // Derived for backward compatibility — controllers may use either field.
+        'is_game_master' => $isGameMaster,
     ];
 
     // Register the authenticated user with the logger so request/response lines
@@ -150,6 +161,8 @@ function requireGameMaster(): array
 {
     $user = requireAuth();
 
+    // Both 'gm' and 'admin' roles have GM privileges.
+    // is_game_master is already derived from role in requireAuth().
     if (!$user['is_game_master']) {
         Logger::warn('Auth', '403 Forbidden — GM privileges required', ['user' => $user['username']]);
         http_response_code(403);
@@ -157,6 +170,36 @@ function requireGameMaster(): array
         echo json_encode([
             'error'   => 'Forbidden',
             'message' => 'This endpoint requires Game Master privileges.',
+        ]);
+        httpExit();
+    }
+
+    return $user;
+}
+
+/**
+ * Guards an admin-only endpoint. Returns the user only if role === 'admin'.
+ *
+ * The 'admin' role is distinct from 'gm': admins can manage user accounts,
+ * promote/suspend/delete users, and do everything a GM can.
+ *
+ * USAGE:
+ *   $user = requireAdmin();
+ *
+ * @return array The current admin user.
+ * @throws void — Exits with 403 JSON response if not an admin.
+ */
+function requireAdmin(): array
+{
+    $user = requireAuth();
+
+    if ($user['role'] !== 'admin') {
+        Logger::warn('Auth', '403 Forbidden — admin privileges required', ['user' => $user['username']]);
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error'   => 'Forbidden',
+            'message' => 'This endpoint requires administrator privileges.',
         ]);
         httpExit();
     }
@@ -201,28 +244,90 @@ function handleLogin(): void
     $username = trim($body['username'] ?? '');
     $password = $body['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
+    // Only the username is strictly required. The password may be absent for
+    // no-password accounts (new users and the admin bootstrap account).
+    // The password field is validated contextually below.
+    if (empty($username)) {
         http_response_code(400);
-        echo json_encode(['error' => 'BadRequest', 'message' => 'Username and password are required.']);
+        echo json_encode(['error' => 'BadRequest', 'message' => 'Username is required.']);
         return;
     }
 
     $db = Database::getInstance();
-    $stmt = $db->prepare('SELECT id, username, password_hash, display_name, is_game_master FROM users WHERE username = ?');
+    // Select role, is_suspended, and last_login_at alongside legacy is_game_master.
+    // is_game_master is kept in the SELECT for backward compatibility but GM status
+    // is now derived from role IN ('gm', 'admin') at the application layer.
+    $stmt = $db->prepare('
+        SELECT id, username, password_hash, display_name,
+               role, is_game_master, is_suspended, last_login_at, created_at
+        FROM users
+        WHERE username = ?
+    ');
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
-    // Run verification even if user not found (timing attack prevention).
-    // If user is null, verify against a dummy hash (result always false).
-    $dummyHash = '$2y$12$abcdefghijklmnopqrstuvuABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
-    $hashToCheck = $user ? $user['password_hash'] : $dummyHash;
-
-    if (!$user || !password_verify($password, $hashToCheck)) {
-        Logger::warn('Auth', 'Login failed — invalid credentials', ['user' => $username]);
-        http_response_code(401);
-        echo json_encode(['error' => 'InvalidCredentials', 'message' => 'Invalid username or password.']);
+    // ── Suspended account check (before any password verification) ──────────
+    // Suspension is checked first so that suspended users cannot probe whether
+    // their password is correct — they receive a generic "account suspended" error.
+    if ($user && (bool)$user['is_suspended']) {
+        Logger::warn('Auth', 'Login rejected — account suspended', ['user' => $username]);
+        http_response_code(403);
+        echo json_encode([
+            'error'   => 'AccountSuspended',
+            'message' => 'This account has been suspended. Contact an administrator.',
+        ]);
         return;
     }
+
+    // ── No-password accounts (new users, admin bootstrap) ───────────────────
+    // A new user created by an admin has password_hash = '' (empty string sentinel).
+    // They can log in without a password — but only within 7 days of account creation.
+    // After 7 days the account is auto-suspended at login time (no cron required).
+    $hasNoPassword = $user && $user['password_hash'] === '';
+    if ($hasNoPassword) {
+        // No-password accounts only accept an empty submitted password.
+        // Submitting a non-empty password is rejected as wrong credentials
+        // (generic error to avoid leaking that this account has no password).
+        if ($password !== '') {
+            Logger::warn('Auth', 'Login failed — password submitted for no-password account', ['user' => $username]);
+            http_response_code(401);
+            echo json_encode(['error' => 'InvalidCredentials', 'message' => 'Invalid username or password.']);
+            return;
+        }
+
+        // Check the 7-day no-login window.
+        $sevenDaysInSeconds = 7 * 24 * 3600;
+        $createdAt = (int)($user['created_at'] ?? 0);
+        if ($createdAt > 0 && (time() - $createdAt) > $sevenDaysInSeconds) {
+            // Auto-suspend: account was never activated within the allowed window.
+            $db->prepare('UPDATE users SET is_suspended = 1 WHERE id = ?')
+               ->execute([$user['id']]);
+            Logger::warn('Auth', 'Login rejected — account expired (7-day window)', ['user' => $username]);
+            http_response_code(403);
+            echo json_encode([
+                'error'   => 'AccountExpired',
+                'message' => 'This account was not activated within 7 days and has been suspended. Contact an administrator.',
+            ]);
+            return;
+        }
+
+        // Within the window: allow login without a password.
+        // Fall through to session creation below, but mark needs_password_setup.
+    } else {
+        // Standard password verification path.
+        // Run verify even if user not found (timing attack prevention).
+        $dummyHash = '$2y$12$abcdefghijklmnopqrstuvuABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
+        $hashToCheck = $user ? $user['password_hash'] : $dummyHash;
+
+        if (!$user || !password_verify($password, $hashToCheck)) {
+            Logger::warn('Auth', 'Login failed — invalid credentials', ['user' => $username]);
+            http_response_code(401);
+            echo json_encode(['error' => 'InvalidCredentials', 'message' => 'Invalid username or password.']);
+            return;
+        }
+    }
+
+    // At this point authentication succeeded (either no-password or correct password).
 
     // Regenerate session ID to prevent session fixation attacks.
     // In CLI mode (PHPUnit), session regeneration is skipped (no HTTP session in CLI).
@@ -230,25 +335,41 @@ function handleLogin(): void
         session_regenerate_id(true);
     }
 
-    // Store minimal user info in session (avoid storing sensitive data).
-    $_SESSION['user_id']        = $user['id'];
-    $_SESSION['username']       = $user['username'];
-    $_SESSION['display_name']   = $user['display_name'];
-    $_SESSION['is_game_master'] = (bool)$user['is_game_master'];
+    // Derive GM status from role (both 'gm' and 'admin' are game masters).
+    $role         = $user['role'] ?? 'player';
+    $isGameMaster = in_array($role, ['gm', 'admin'], true);
 
-    $isGM = (bool)$user['is_game_master'];
+    // Store minimal user info in session (avoid storing sensitive data).
+    $_SESSION['user_id']             = $user['id'];
+    $_SESSION['username']            = $user['username'];
+    $_SESSION['display_name']        = $user['display_name'];
+    $_SESSION['role']                = $role;
+    $_SESSION['is_game_master']      = $isGameMaster; // kept for controller backward compat
+    $_SESSION['needs_password_setup'] = $hasNoPassword;
+
+    // Record the login timestamp for the admin user-list view.
+    $db->prepare('UPDATE users SET last_login_at = ? WHERE id = ?')
+       ->execute([time(), $user['id']]);
+
     Logger::info('Auth', 'Login OK', [
-        'user' => $user['username'],
-        'role' => $isGM ? 'GM' : 'player',
+        'user'              => $user['username'],
+        'role'              => $role,
+        'needsPasswordSetup' => $hasNoPassword ? 'yes' : 'no',
     ]);
 
     http_response_code(200);
-    echo json_encode([
-        'id'             => $user['id'],
-        'username'       => $user['username'],
-        'display_name'   => $user['display_name'],
-        'is_game_master' => $isGM,
-    ]);
+    $response = [
+        'id'                 => $user['id'],
+        'username'           => $user['username'],
+        'display_name'       => $user['display_name'],
+        'role'               => $role,
+        'is_game_master'     => $isGameMaster,
+    ];
+    // Signal the frontend to redirect to the password-setup page.
+    if ($hasNoPassword) {
+        $response['needs_password_setup'] = true;
+    }
+    echo json_encode($response);
 }
 
 /**
@@ -322,13 +443,19 @@ function handleMe(): void
     $csrfToken = getCsrfToken();
 
     http_response_code(200);
-    echo json_encode([
+    $response = [
         'id'             => $user['id'],
         'username'       => $user['username'],
         'display_name'   => $user['display_name'],
+        'role'           => $user['role'],
         'is_game_master' => $user['is_game_master'],
         'csrfToken'      => $csrfToken,
-    ]);
+    ];
+    // Include needs_password_setup if the session flag is set.
+    if (!empty($_SESSION['needs_password_setup'])) {
+        $response['needs_password_setup'] = true;
+    }
+    echo json_encode($response);
 }
 
 // ============================================================
