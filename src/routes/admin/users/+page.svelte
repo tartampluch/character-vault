@@ -24,7 +24,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { listUsers, ApiError } from '$lib/api/userApi';
+  import { listUsers, suspendUser, reinstateUser, ApiError } from '$lib/api/userApi';
   import type { User } from '$lib/types/user';
   import {
     IconAdd,
@@ -33,16 +33,21 @@
     IconLocked,
     IconUnlocked,
   } from '$lib/components/ui/icons';
+  import UserFormModal    from '$lib/components/admin/UserFormModal.svelte';
+  import ConfirmDeleteModal from '$lib/components/admin/ConfirmDeleteModal.svelte';
 
   // ── State ───────────────────────────────────────────────────────────────────
   let users      = $state<User[]>([]);
   let isLoading  = $state(true);
   let loadError  = $state('');
 
-  // Modal state — wired to modal components in Phase 22.8
-  let showAddModal    = $state(false);
-  let editTarget      = $state<User | null>(null);
-  let deleteTarget    = $state<User | null>(null);
+  // Modal visibility / target state
+  let showAddModal  = $state(false);
+  let editTarget    = $state<User | null>(null);
+  let deleteTarget  = $state<User | null>(null);
+
+  // Per-row action loading (keyed by user id) — prevents double-clicks
+  let actionLoading = $state<Record<string, boolean>>({});
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -108,18 +113,42 @@
     loadUsers();
   });
 
-  // ── Action stubs (Phase 22.8 will wire these to modals) ─────────────────────
+  // ── Modal openers ────────────────────────────────────────────────────────────
 
   function openAddModal(): void {
     showAddModal = true;
   }
 
-  function openEditModal(user: User): void {
-    editTarget = user;
+  function openEditModal(u: User): void {
+    editTarget = u;
   }
 
-  function openDeleteModal(user: User): void {
-    deleteTarget = user;
+  function openDeleteModal(u: User): void {
+    deleteTarget = u;
+  }
+
+  // ── Direct row actions (no modal needed) ─────────────────────────────────────
+
+  /**
+   * Toggles suspension for a user row.
+   * Calls suspendUser() or reinstateUser() immediately, then reloads the list.
+   * Uses a per-row loading flag to prevent double-clicks.
+   */
+  async function toggleSuspend(u: User): Promise<void> {
+    if (actionLoading[u.id]) return;
+    actionLoading = { ...actionLoading, [u.id]: true };
+    try {
+      if (u.is_suspended) {
+        await reinstateUser(u.id);
+      } else {
+        await suspendUser(u.id);
+      }
+      await loadUsers();
+    } catch (e) {
+      loadError = e instanceof ApiError ? e.message : 'Action failed.';
+    } finally {
+      actionLoading = { ...actionLoading, [u.id]: false };
+    }
   }
 
   // ── Utilities ───────────────────────────────────────────────────────────────
@@ -280,16 +309,17 @@
                       <IconEdit size={15} aria-hidden="true" />
                     </button>
 
-                    <!-- Suspend / Reinstate button -->
+                    <!-- Suspend / Reinstate button — direct action, no modal -->
                     <button
                       type="button"
                       class="p-1.5 rounded-md transition-colors
-                             {self
+                             {self || actionLoading[user.id]
                                ? 'text-text-muted cursor-not-allowed opacity-40'
                                : user.is_suspended
                                  ? 'text-green-400 hover:text-green-300 hover:bg-green-900/20'
                                  : 'text-amber-400 hover:text-amber-300 hover:bg-amber-900/20'}"
-                      disabled={self}
+                      disabled={self || !!actionLoading[user.id]}
+                      onclick={() => !self && toggleSuspend(user)}
                       title={self
                         ? 'Cannot suspend your own account'
                         : user.is_suspended
@@ -337,8 +367,20 @@
 
 </div>
 
-<!--
-  Phase 22.8: Mount UserFormModal and ConfirmDeleteModal here.
-  Bind showAddModal, editTarget, and deleteTarget to trigger them.
-  After each successful action, call loadUsers() to refresh the list.
--->
+<!-- ── MODALS ────────────────────────────────────────────────────────────────── -->
+
+<!-- Add / Edit user modal -->
+<UserFormModal
+  open={showAddModal || editTarget !== null}
+  user={editTarget}
+  onClose={() => { showAddModal = false; editTarget = null; }}
+  onSuccess={loadUsers}
+/>
+
+<!-- Confirm delete modal -->
+<ConfirmDeleteModal
+  open={deleteTarget !== null}
+  user={deleteTarget}
+  onClose={() => { deleteTarget = null; }}
+  onSuccess={loadUsers}
+/>
