@@ -6,7 +6,9 @@
     1. (Phase 5.2) Basic settings toggle (Exploding 20s) → CampaignSettings reactive update.
     2. (Phase 5.2) Total Strength and Total AC display → proves Phase 2/3 DAG is working.
     3. (Phase 5.3) "Attack the Orc" button → proves situational modifiers apply at roll time.
-    4. (Phase 5.4) Merge Engine rules → proved by toggling test_override source.
+    4. (Phase 5.3) V/WP mode toggle → proves crit damage routes to res_wound_points.
+    5. (Phase 5.3) Orc attacker penalty → proves attacker.* modifiers apply at roll time.
+    6. (Phase 5.4) Merge Engine rules → proved by toggling test_override source.
 
   ARCHITECTURE PATTERN:
     - This component is intentionally "dumb": it only READS from the engine's $derived
@@ -197,6 +199,8 @@
    *   2. When we include "orc" in the RollContext.targetTags, the Dice Engine
    *      adds the +2 to `situationalBonusApplied` in the result.
    *   3. When Exploding 20s is ON and we roll a 20, the die explodes recursively.
+   *   4. The Orc's attacker.* modifier (−1 to attacker's attack roll) is applied
+   *      via the `defenderAttackerMods` parameter of parseAndRoll().
    *
    * CRITICAL: The +2 Favoured Enemy bonus does NOT appear in `bab` or `totalStr`
    * on the character sheet. It only appears in the RollResult when attacking an orc.
@@ -228,10 +232,82 @@
       isAttackOfOpportunity: false,
     };
 
-    // Roll 1d20 + BAB (static bonus) with campaign settings for Exploding 20s
+    // Collect the Orc defender's attacker.* modifiers.
+    // race_orc in test_mock.json has: { targetId: "attacker.combatStats.attack_bonus", value: -1 }
+    // These modifiers apply a −1 penalty to anyone attacking the orc.
+    // PROOF: This modifier only affects the roll when defenderAttackerMods is passed —
+    // it does NOT appear on the attacker's own character sheet (never in their pipeline totals).
+    const orcFeature = dataLoader.getFeature('race_orc');
+    const orcDefenderMods = (orcFeature?.grantedModifiers ?? []).filter(
+      m => m.targetId.startsWith('attacker.')
+    );
+
+    // Roll 1d20 + BAB (static bonus) with campaign settings for Exploding 20s.
+    // Pass orcDefenderMods as defenderAttackerMods to prove the −1 penalty applies.
     lastRollResult = parseAndRoll(
       '1d20',
       attackPipeline,
+      rollContext,                // critRange defaults to '20' via context.critRange
+      engine.settings,
+      undefined,                  // rng: use default (random)
+      undefined,                  // situationalModifiers: from pipeline only
+      orcDefenderMods.length > 0 ? orcDefenderMods : undefined
+    );
+  }
+
+  // ===================================================
+  // PHASE 5.3: V/WP mode toggle
+  // ===================================================
+
+  /**
+   * Toggle the Vitality/Wound Points variant rule.
+   * When ON: crit damage routes to res_wound_points, normal hits to res_vitality.
+   * When OFF: all damage routes to res_hp (standard D&D 3.5 mode).
+   */
+  function toggleVWPMode(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    engine.updateSettings({
+      variantRules: {
+        ...engine.settings.variantRules,
+        vitalityWoundPoints: checked,
+      },
+    });
+  }
+
+  /**
+   * Rolls a damage die to prove V/WP routing.
+   *
+   * WHAT THIS PROVES (Phase 5.3 requirement 3):
+   *   - isCriticalHit: false → targetPool = "res_vitality" (V/WP mode)
+   *   - isCriticalHit: true  → targetPool = "res_wound_points" (V/WP mode)
+   *   - vitalityWoundPoints: false → targetPool = "res_hp" always
+   */
+  let lastVWPResult = $state<RollResult | null>(null);
+  let vwpIsCrit = $state(false);
+
+  function rollVWPDamage() {
+    // Build a minimal damage pipeline (no static bonus needed for this proof)
+    const damagePipeline = {
+      id: 'damage_test',
+      label: { en: 'Damage Test' },
+      baseValue: 0,
+      activeModifiers: [],
+      situationalModifiers: [],
+      totalBonus: 0,
+      totalValue: 0,
+      derivedModifier: 0,
+    };
+
+    // Set isCriticalHit on the context based on toggle
+    const rollContext: RollContext = {
+      targetTags: [],
+      isAttackOfOpportunity: false,
+      isCriticalHit: vwpIsCrit,
+    };
+
+    lastVWPResult = parseAndRoll(
+      '1d8',
+      damagePipeline,
       rollContext,
       engine.settings
     );
@@ -433,6 +509,24 @@
             {/if}
           </div>
 
+          <!-- Attacker penalty row (Orc's attacker.* modifier, Phase 5.3 proof #4) -->
+          <div class="flex items-center gap-3 px-2 py-1.5 rounded
+            {lastRollResult.attackerPenaltiesApplied && lastRollResult.attackerPenaltiesApplied.length > 0
+              ? 'bg-red-950/20 border border-red-600/30'
+              : 'bg-surface-alt'}">
+            <span class="text-text-muted w-40 shrink-0 text-xs">Orc Aura (attacker.*):</span>
+            {#if lastRollResult.attackerPenaltiesApplied && lastRollResult.attackerPenaltiesApplied.length > 0}
+              {@const penaltyTotal = lastRollResult.attackerPenaltiesApplied.reduce((s, m) => s + (typeof m.value === 'number' ? m.value : 0), 0)}
+              <code class="font-mono text-red-400">{formatModifier(penaltyTotal)}</code>
+              <span class="text-xs text-red-400 flex items-center gap-1">
+                <IconSuccess size={12} aria-hidden="true" /> Orc −1 penalty applied to attacker!
+              </span>
+            {:else}
+              <code class="font-mono text-text-muted">+0</code>
+              <span class="text-xs text-text-muted">No attacker penalties (race_orc must be loaded)</span>
+            {/if}
+          </div>
+
           <!-- Final total row -->
           <div class="flex items-center gap-3 pt-1.5 border-t border-border">
             <span class="text-text-muted w-40 shrink-0 text-xs">Final Total:</span>
@@ -457,7 +551,94 @@
     {/if}
   </section>
 
-  <!-- SECTION 4: Merge Engine Test -->
+  <!-- SECTION 4: V/WP Mode Test (Phase 5.3 proof #3) -->
+  <section class="card p-4 flex flex-col gap-3">
+    <h2 class="section-header border-b border-border pb-2">
+      <IconAttacks size={18} aria-hidden="true" /> Vitality/Wound Points Routing Test (Phase 5.3)
+    </h2>
+    <p class="text-xs text-text-muted leading-relaxed">
+      Proves crit damage routes to <strong class="text-text-secondary">res_wound_points</strong> and normal
+      hits to <strong class="text-text-secondary">res_vitality</strong> in V/WP mode. Standard mode always
+      routes to <strong class="text-text-secondary">res_hp</strong>.
+    </p>
+
+    <!-- V/WP mode toggle -->
+    <div class="flex items-center gap-3 py-2 border-b border-border">
+      <label for="vwp-mode" class="flex-1 cursor-pointer">
+        <span class="block text-sm font-medium text-text-primary">Vitality/Wound Points Mode</span>
+        <span class="text-xs text-text-muted">When ON: normal hits → res_vitality, crits → res_wound_points.</span>
+      </label>
+      <input id="vwp-mode" type="checkbox"
+        checked={engine.settings.variantRules?.vitalityWoundPoints ?? false}
+        onchange={toggleVWPMode}
+        class="w-4 h-4 accent-accent shrink-0" />
+      <code class="text-xs bg-surface-alt border border-border px-2 py-0.5 rounded min-w-[4.5rem] text-center text-accent">
+        {(engine.settings.variantRules?.vitalityWoundPoints ?? false) ? 'ON' : 'OFF'}
+      </code>
+    </div>
+
+    <!-- Is-crit toggle -->
+    <div class="flex items-center gap-3 py-2">
+      <label for="vwp-iscrit" class="flex-1 cursor-pointer">
+        <span class="block text-sm font-medium text-text-primary">Treat as Confirmed Critical Hit</span>
+        <span class="text-xs text-text-muted">
+          When ON: passes <code>isCriticalHit: true</code> in RollContext → routes to res_wound_points (V/WP mode only).
+        </span>
+      </label>
+      <input id="vwp-iscrit" type="checkbox"
+        checked={vwpIsCrit}
+        onchange={() => (vwpIsCrit = !vwpIsCrit)}
+        class="w-4 h-4 accent-accent shrink-0" />
+      <code class="text-xs bg-surface-alt border border-border px-2 py-0.5 rounded min-w-[4.5rem] text-center text-accent">
+        {vwpIsCrit ? 'CRIT' : 'NORMAL'}
+      </code>
+    </div>
+
+    <button
+      class="btn-primary gap-2 self-start"
+      onclick={rollVWPDamage}
+      disabled={!isInitialized}
+      type="button"
+    >
+      <IconAttacks size={16} aria-hidden="true" /> Roll 1d8 Damage
+    </button>
+
+    {#if lastVWPResult}
+      {@const isVWP = engine.settings.variantRules?.vitalityWoundPoints ?? false}
+      {@const pool = lastVWPResult.targetPool}
+      {@const expectedPool = !isVWP ? 'res_hp' : (vwpIsCrit ? 'res_wound_points' : 'res_vitality')}
+      {@const routingOK = pool === expectedPool}
+      <div class="flex flex-col gap-2 p-3 rounded-lg border {routingOK ? 'border-green-600/40 bg-green-950/10' : 'border-red-600/40 bg-red-950/10'} text-sm">
+        <div class="flex items-center gap-3">
+          <span class="text-text-muted w-36 shrink-0 text-xs">Formula:</span>
+          <code class="text-text-secondary font-mono">{lastVWPResult.formula}</code>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-text-muted w-36 shrink-0 text-xs">Dice:</span>
+          <code class="text-sky-400 font-mono">[{lastVWPResult.diceRolls.join(', ')}]</code>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-text-muted w-36 shrink-0 text-xs">Final Total:</span>
+          <code class="text-yellow-400 font-bold text-lg font-mono">{lastVWPResult.finalTotal}</code>
+        </div>
+        <div class="flex items-center gap-3 px-2 py-1.5 rounded {routingOK ? 'bg-green-950/30' : 'bg-red-950/30'}">
+          <span class="text-text-muted w-36 shrink-0 text-xs">Target Pool:</span>
+          <code class="font-mono font-bold {pool === 'res_wound_points' ? 'text-red-400' : pool === 'res_vitality' ? 'text-blue-400' : 'text-green-400'}">{pool}</code>
+          {#if routingOK}
+            <span class="text-xs text-green-400 flex items-center gap-1"><IconSuccess size={12} aria-hidden="true" /> Correct!</span>
+          {:else}
+            <span class="text-xs text-red-400 flex items-center gap-1"><IconWarning size={12} aria-hidden="true" /> WRONG — expected {expectedPool}</span>
+          {/if}
+        </div>
+        <p class="text-xs text-text-muted pt-1 border-t border-border">
+          Mode: {isVWP ? 'V/WP ON' : 'Standard HP'} | Context: {vwpIsCrit ? 'isCriticalHit: true' : 'isCriticalHit: false'}
+          → Expected: <code class="bg-surface-alt px-1 rounded">{expectedPool}</code>
+        </p>
+      </div>
+    {/if}
+  </section>
+
+  <!-- SECTION 5: Merge Engine Test -->
   <section class="card p-4 flex flex-col gap-3">
     <h2 class="section-header border-b border-border pb-2">
       Merge Engine Test (Phase 5.4)

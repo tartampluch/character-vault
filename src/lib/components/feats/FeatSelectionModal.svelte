@@ -78,7 +78,7 @@
 
       <!-- Slots remaining badge -->
       <div class="flex items-center gap-2">
-        <span class="badge-accent">{engine.phase_featSlotsRemaining} {ui('feat_catalog.slots_left', engine.settings.language)}</span>
+        <span class="badge-accent">{engine.phase4_featSlotsRemaining} {ui('feat_catalog.slots_left', engine.settings.language)}</span>
         <span class="text-xs text-text-muted">{filteredFeats.length} {ui('feat_catalog.feats_found', engine.settings.language)}</span>
       </div>
 
@@ -119,7 +119,7 @@
       <div class="flex flex-col gap-2" role="list">
         {#each filteredFeats as feat}
           {@const prereq      = evalPrereqs(feat)}
-          {@const canSelect   = prereq.passed && engine.phase_featSlotsRemaining > 0}
+          {@const canSelect   = prereq.passed && engine.phase4_featSlotsRemaining > 0}
           {@const alreadyHave = engine.character.activeFeatures.some(afi => afi.featureId === feat.id)}
 
           <div

@@ -52,6 +52,7 @@
 
 import type { StatisticPipeline, Modifier } from '../types/pipeline';
 import type { CampaignSettings } from '../types/settings';
+import type { OnCritDiceSpec } from '../types/feature';
 
 // =============================================================================
 // DAMAGE ROUTING — Vitality/Wound Points variant target pool enum
@@ -88,29 +89,10 @@ export type DamageTargetPool =
 // ON-CRIT DICE SPEC — Burst weapon data passed to parseAndRoll (Enhancement E-7)
 // =============================================================================
 
-/**
- * Specification for additional dice rolled only on a confirmed critical hit.
- * Mirrors `ItemFeature.weaponData.onCritDice` but exported for use at roll-call sites.
- *
- * The caller (combat UI) extracts this from the equipped weapon's `weaponData.onCritDice`
- * and passes it as the 9th argument to `parseAndRoll()` when rolling damage for a
- * confirmed critical hit.
- *
- * @see ItemFeature.weaponData.onCritDice — the source field on weapon definitions
- * @see RollResult.onCritDiceRolled — where the result is stored
- * @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference
- */
-export interface OnCritDiceSpec {
-  /** Base dice formula for a ×2 crit. E.g., "1d10" for Flaming Burst, "1d8" for Thundering. */
-  baseDiceFormula: string;
-  /** Damage type label (for display). E.g., "fire", "cold", "electricity", "sonic". */
-  damageType: string;
-  /**
-   * When true, the count of base dice is multiplied by (critMultiplier - 1).
-   * False = always roll `baseDiceFormula` exactly once, regardless of critMultiplier.
-   */
-  scalesWithCritMultiplier: boolean;
-}
+// OnCritDiceSpec is re-exported here for callers who import dice-engine types directly.
+// The canonical definition lives in src/lib/types/feature.ts, co-located with
+// ItemFeature.weaponData.onCritDice. Importing from there keeps both in sync.
+export type { OnCritDiceSpec } from '../types/feature';
 
 // =============================================================================
 // ROLL CONTEXT — Target information for situational bonuses
@@ -193,6 +175,31 @@ export interface RollContext {
    * @see ARCHITECTURE.md section 8.3 — Vitality/Wound Points combat flow
    */
   isCriticalHit?: boolean;
+
+  /**
+   * Optional weapon critical threat range string for this specific roll.
+   *
+   * Governs the minimum natural d20 result that qualifies as a critical threat.
+   * Parsed by `parseAndRoll()` to set `RollResult.isCriticalThreat`.
+   *
+   * FORMAT:
+   *   `"20"`    (default) — natural 20 only (standard D&D 3.5 for most weapons).
+   *   `"19-20"` — longswords, rapiers, all 19-20 range weapons.
+   *   `"18-20"` — scimitars, any weapon with the Keen property or Improved Critical feat.
+   *
+   * DEFAULTS TO `"20"` when absent.
+   *
+   * WHY IN RollContext AND NOT AS A POSITIONAL PARAMETER:
+   *   `critRange` is roll-context information — it describes the conditions of THIS
+   *   particular attack roll (this weapon, this attacker). It belongs alongside the
+   *   other roll-context fields (`targetTags`, `isCriticalHit`) rather than as a
+   *   stand-alone positional parameter. Placing it here makes the `parseAndRoll()`
+   *   signature conform to `ARCHITECTURE.md §17` (10 explicit parameters).
+   *
+   * @default '20'
+   * @see ARCHITECTURE.md §17 — parseAndRoll() parameter specification
+   */
+  critRange?: string;
 }
 
 // =============================================================================
@@ -620,15 +627,19 @@ function resolveAttackerMods(
  *   For SAVES/SKILLS: Pass formula = "1d20" + staticBonus = save.totalValue.
  *
  * @param formula     - The dice expression. Examples: "1d20", "2d6 + 3", "1d8 + 1d6"
- * @param pipeline    - The relevant pipeline (used for staticBonus and situationalModifiers).
- * @param context     - Roll context: target tags and action type for situational matching.
+ * @param pipeline    - The relevant pipeline (used for staticBonus and pipeline.situationalModifiers).
+ * @param context     - Roll context: target tags, action type, `isCriticalHit`, and optional
+ *                      `critRange` (e.g., "19-20", "18-20"; defaults to "20" when absent).
+ *                      `critRange` is placed on `RollContext` rather than as a positional parameter
+ *                      because it describes the conditions of this specific roll (this weapon's
+ *                      threat range) and belongs alongside the other roll-context fields.
  * @param settings    - Campaign settings (explodingTwenties, variantRules, etc.).
  * @param rng         - Optional injectable RNG for testing. Default: Math.random-based.
- * @param critRange   - Optional weapon critical threat range string (e.g., "19-20", "18-20").
- *                      If provided, the engine parses it and uses it to determine `isCriticalThreat`.
- *                      If absent, defaults to "20" (natural 20 only, standard D&D 3.5 behavior).
- *                      This enables weapons like longswords (19-20) and scimitars (18-20) to
- *                      correctly flag critical threats without caller-side workarounds.
+ * @param situationalModifiers - Optional. Additional situational modifiers to evaluate at roll time,
+ *                      supplementing `pipeline.situationalModifiers`. Enables external sources
+ *                      (combined multi-pipeline modifiers, GM transient effects) to inject
+ *                      situational bonuses without modifying the pipeline object.
+ *                      Per ARCHITECTURE.md §17 — `situationalModifiers` parameter.
  * @param defenderAttackerMods - Optional. Active modifiers from the defender's character that
  *                      target the `attacker.*` namespace. Resolved via `resolveAttackerMods()`.
  *                      @see resolveAttackerMods — the internal helper that processes these.
@@ -656,13 +667,26 @@ export function parseAndRoll(
   context: RollContext,
   settings: CampaignSettings,
   rng: (faces: number) => number = defaultRng,
-  critRange: string = '20',
+  situationalModifiers?: Modifier[],
   defenderAttackerMods?: Modifier[],
   defenderFortificationPct: number = 0,
   weaponOnCritDice?: OnCritDiceSpec,
   critMultiplier: number = 2
 ): RollResult {
   const groups = parseDiceExpression(formula);
+
+  // Read critRange from RollContext (defaults to '20' = natural-20 only threat range).
+  // Placing critRange on RollContext aligns the positional parameter list with
+  // ARCHITECTURE.md §17 and keeps all roll-specific context in one object.
+  const critRange = context.critRange ?? '20';
+
+  // Merge situational modifiers: pipeline.situationalModifiers provides the baseline
+  // (modifiers that always travel with the pipeline/stat), while the `situationalModifiers`
+  // parameter allows callers to inject additional roll-time modifiers from external sources.
+  const effectiveSituationalMods = [
+    ...pipeline.situationalModifiers,
+    ...(situationalModifiers ?? []),
+  ];
 
   const diceRolls: number[] = [];
   let naturalTotal = 0;
@@ -737,8 +761,9 @@ export function parseAndRoll(
   // Filter and sum all situational modifiers that match the target context.
   // The matching rule: modifier.situationalContext is CONTAINED IN effectiveTargetTags.
   // We sum all matching modifiers (they are effectively "untyped" situational bonuses).
+  // Uses effectiveSituationalMods = pipeline.situationalModifiers ∪ (situationalModifiers param).
   let situationalBonusApplied = 0;
-  for (const mod of pipeline.situationalModifiers) {
+  for (const mod of effectiveSituationalMods) {
     if (mod.situationalContext && effectiveTargetTags.includes(mod.situationalContext)) {
       // The modifier's value may be a formula — for situational modifiers, we assume
       // the GameEngine has pre-resolved string formulas to numbers before storing.

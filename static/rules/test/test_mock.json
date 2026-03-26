@@ -569,6 +569,25 @@
           "value": -1,
           "type": "untyped",
           "situationalContext": "in_bright_light"
+        },
+        {
+          "_comment": "ATTACKER.* MODIFIER TEST (Phase 5.1 / Phase 5.3): This modifier imposes a -1",
+          "_comment2": "penalty on any attacker who targets the Orc. It uses the 'attacker.' prefix",
+          "_comment3": "convention (ARCHITECTURE.md §4.6): the modifier is stored on the DEFENDER (the",
+          "_comment4": "Orc), but at roll time the Dice Engine applies the penalty to the ATTACKER's",
+          "_comment5": "roll. The Combat UI extracts attacker.* mods from the defender's activeModifiers",
+          "_comment6": "and passes them as `defenderAttackerMods` to parseAndRoll().",
+          "_comment7": "Phase 5.3 proves: when a character attacks the Orc, parseAndRoll() applies",
+          "_comment8": "the -1 penalty from this modifier to the attacker's finalTotal.",
+          "id": "orc_menacing_aura",
+          "sourceId": "race_orc",
+          "sourceName": {
+            "en": "Orc Menace",
+            "fr": "Menace orque"
+          },
+          "targetId": "attacker.combatStats.attack_bonus",
+          "value": -1,
+          "type": "untyped"
         }
       ],
       "grantedFeatures": []

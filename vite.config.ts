@@ -128,7 +128,11 @@ export default defineConfig({
 			/**
 			 * all: true — show every included file even if no test imports it yet,
 			 * so zero-coverage modules are visible rather than silently absent.
+			 * Note: `all` is a valid runtime option for @vitest/coverage-v8 but the
+			 * type definitions may lag behind. This ts-expect-error suppresses the
+			 * false positive until the package types are updated.
 			 */
+			// @ts-expect-error: 'all' is a valid V8 coverage option but may be absent from the type stubs
 			all: true,
 			reporter: ['text', 'lcov'],
 		},

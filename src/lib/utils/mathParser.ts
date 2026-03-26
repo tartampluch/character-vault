@@ -221,6 +221,39 @@ export function resolvePath(path: string, context: CharacterContext): unknown {
     return context.constants?.[constantId] ?? 0;
   }
 
+  // Handle @selection.<choiceId> → first selected value (string) or empty string.
+  //
+  // ARCHITECTURE.md section 4.3: "@selection.<choiceId> → Player's selections from
+  // ActiveFeatureInstance.selections".
+  //
+  // The `selections` record maps choiceId → string[] (an array of selected Feature IDs).
+  // In arithmetic contexts (e.g., "@selection.weapon_choice" used in a math formula),
+  // this should return the first selected value (a string), NOT the raw array. Returning
+  // the raw array would cause the arithmetic evaluator to treat it as NaN → 0, AND
+  // would break logic CONDITION nodes that use:
+  //   { "operator": "includes", "value": "@selection.weapon_choice" }
+  // against "@equippedWeaponTags" — because Array.prototype.includes() compares by
+  // reference equality, so includes(["item_longsword"]) would always return false even
+  // when equippedWeaponTags contains "item_longsword".
+  //
+  // CORRECT BEHAVIOUR: return selections[choiceId][0] (first selection) or "".
+  //   "@equippedWeaponTags includes @selection.weapon_choice"
+  //   ↔  ["item_longsword", "weapon"].includes("item_longsword")  → true ✅
+  //
+  // IMPORTANT: `context.selection` contains the MERGED instance selections, injected by
+  // GameEngine.#processModifierList() at line ~4342. The general path walker CANNOT handle
+  // this special case because context.selection[choiceId] is `string[]`, not a scalar.
+  //
+  // @see ARCHITECTURE.md section 4.3 — @selection special path documentation
+  // @see ARCHITECTURE.md section 5.3 — Weapon Focus conditional modifier example
+  if (parts[0] === 'selection' && parts.length >= 2) {
+    const choiceId = parts.slice(1).join('.');  // Rejoin in case choiceId has dots
+    const selected = context.selection?.[choiceId];
+    // Return the first selected value as a scalar string, or empty string if nothing selected.
+    // This allows "includes" operator comparisons to work correctly against string arrays.
+    return (selected && selected.length > 0) ? selected[0] : '';
+  }
+
   // Walk the context object tree following the dot-path.
   // Using `Record<string, unknown>` deliberately: the path walker needs to traverse
   // an arbitrarily-nested object whose shape varies per resolution context.

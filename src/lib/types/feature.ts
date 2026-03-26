@@ -970,6 +970,53 @@ export interface Feature {
 }
 
 // =============================================================================
+// ON-CRIT DICE SPEC — Burst weapon bonus dice (Flaming Burst, Thundering, etc.)
+// =============================================================================
+
+/**
+ * Specification for additional dice rolled ONLY on a confirmed critical hit.
+ *
+ * D&D 3.5 SRD — "BURST" WEAPON ABILITIES (Flaming Burst, Icy Burst, etc.):
+ *   Burst weapons deal extra elemental / sonic dice on a confirmed crit in addition
+ *   to their standard on-hit elemental damage. The count of burst dice scales with
+ *   the weapon's crit multiplier when `scalesWithCritMultiplier === true`.
+ *
+ * This type is exported here (its canonical location in the type system) and
+ * imported by `diceEngine.ts` for use as the `weaponOnCritDice` parameter of
+ * `parseAndRoll()`. It is also used directly as the type of
+ * `ItemFeature.weaponData.onCritDice`, keeping both definitions in sync.
+ *
+ * @see ItemFeature.weaponData.onCritDice — the field on weapon definitions
+ * @see RollResult.onCritDiceRolled — where the roll result is stored
+ * @see ARCHITECTURE.md section 4.9 — On-Crit Burst Dice mechanic reference
+ */
+export interface OnCritDiceSpec {
+  /**
+   * Base dice formula for a ×2 crit multiplier weapon.
+   * Examples: "1d10" (Flaming/Icy/Shocking Burst), "1d8" (Thundering)
+   * Parsed by the dice expression parser in `diceEngine.ts`.
+   */
+  baseDiceFormula: string;
+
+  /**
+   * The energy / damage type of these bonus dice.
+   * Examples: "fire", "cold", "electricity", "sonic"
+   * Used by the UI to display "1d10 fire (on crit)" in the roll breakdown.
+   */
+  damageType: string;
+
+  /**
+   * When `true`, multiply the base dice count by (critMultiplier − 1).
+   *   ×2 crit → 1 × baseDiceFormula  (e.g., 1d10)
+   *   ×3 crit → 2 × baseDiceFormula  (e.g., 2d10)
+   *   ×4 crit → 3 × baseDiceFormula  (e.g., 3d10)
+   * When `false`, always roll `baseDiceFormula` exactly once regardless of multiplier.
+   * All SRD burst weapons use `true`.
+   */
+  scalesWithCritMultiplier: boolean;
+}
+
+// =============================================================================
 // ITEM FEATURE — Equipment, weapons, armour, magic items
 // =============================================================================
 
@@ -1945,27 +1992,14 @@ export interface ItemFeature extends Feature {
      * @see RollResult.onCritDiceRolled — the result field
      * @see parseAndRoll() — 9th parameter: weaponOnCritDice
      */
-    onCritDice?: {
-      /**
-       * Base dice formula for a ×2 crit multiplier weapon.
-       * Examples: "1d10" (Flaming/Icy/Shocking Burst), "1d8" (Thundering)
-       * Parsed by the dice expression parser.
-       */
-      baseDiceFormula: string;
-      /**
-       * The energy / damage type of these bonus dice.
-       * Examples: "fire", "cold", "electricity", "sonic"
-       * Used by the UI to display "1d10 fire (on crit)" in the roll breakdown.
-       */
-      damageType: string;
-      /**
-       * When true, multiply baseDiceFormula by (critMultiplier - 1).
-       * ×2 → 1×formula, ×3 → 2×formula, ×4 → 3×formula.
-       * Set false for fixed bonus (e.g., always 2d6 regardless of crit multiplier).
-       * Should be true for all SRD burst weapons.
-       */
-      scalesWithCritMultiplier: boolean;
-    };
+     /**
+      * On-crit burst dice spec. Uses the exported `OnCritDiceSpec` type (canonical
+      * definition at the top of this file) rather than an inline anonymous type so
+      * that `diceEngine.ts` can import and reuse the same type for `parseAndRoll()`.
+      *
+      * @see OnCritDiceSpec — the exported type definition
+      */
+     onCritDice?: OnCritDiceSpec;
   };
 
   /**

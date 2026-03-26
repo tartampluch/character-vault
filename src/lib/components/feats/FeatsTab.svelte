@@ -19,7 +19,7 @@
   import { IconTabFeats, IconLocked, IconInfo, IconAdd, IconDelete } from '$lib/components/ui/icons';
 
   const grantedFeatInstances = $derived.by(() => {
-    const grantedIds = engine.phase_grantedFeatIds;
+    const grantedIds = engine.phase4_grantedFeatIds;
     return engine.character.activeFeatures.filter(afi => {
       if (!afi.isActive) return false;
       const feature = dataLoader.getFeature(afi.featureId);
@@ -28,7 +28,7 @@
   });
 
   const manualFeatInstances = $derived.by(() => {
-    const grantedIds = engine.phase_grantedFeatIds;
+    const grantedIds = engine.phase4_grantedFeatIds;
     return engine.character.activeFeatures.filter(afi => {
       if (!afi.isActive) return false;
       const feature = dataLoader.getFeature(afi.featureId);
@@ -56,7 +56,7 @@
 
   let modalFeatId  = $state<ID | null>(null);
   let showAddModal = $state(false);
-  const isOverBudget = $derived(engine.phase_featSlotsRemaining < 0);
+  const isOverBudget = $derived(engine.phase4_featSlotsRemaining < 0);
 </script>
 
 <div class="card p-4 flex flex-col gap-4">
@@ -71,17 +71,17 @@
     <!-- Slot budget badges -->
     <div class="flex items-center gap-1.5 text-sm">
       <span class="text-text-muted text-xs">{ui('feats.available', engine.settings.language)}</span>
-      <span class="badge-accent">{engine.phase_featSlotsTotal}</span>
+      <span class="badge-accent">{engine.phase4_featSlots}</span>
       <span class="text-text-muted">|</span>
       <span class="text-xs text-text-muted">{ui('feats.remaining', engine.settings.language)}</span>
-      <span class="{isOverBudget ? 'badge-red' : 'badge-green'}">{engine.phase_featSlotsRemaining}</span>
+      <span class="{isOverBudget ? 'badge-red' : 'badge-green'}">{engine.phase4_featSlotsRemaining}</span>
     </div>
 
     <button
       class="btn-primary gap-1"
       onclick={() => (showAddModal = true)}
-      disabled={engine.phase_featSlotsRemaining <= 0}
-      aria-label="Add a new feat ({engine.phase_featSlotsRemaining} slots remaining)"
+      disabled={engine.phase4_featSlotsRemaining <= 0}
+      aria-label="Add a new feat ({engine.phase4_featSlotsRemaining} slots remaining)"
       type="button"
     >
       <IconAdd size={14} aria-hidden="true" /> {ui('feats.add', engine.settings.language)}
@@ -131,7 +131,7 @@
     {#if manualFeatInstances.length === 0}
       <p class="text-sm text-text-muted italic">
         {ui('feats.empty', engine.settings.language)}
-        {engine.phase_featSlotsTotal - grantedFeatInstances.length} {ui('feats.slots_available', engine.settings.language)}
+        {engine.phase4_featSlots - grantedFeatInstances.length} {ui('feats.slots_available', engine.settings.language)}
       </p>
     {:else}
       <div class="flex flex-col gap-1.5">

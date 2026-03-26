@@ -202,7 +202,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       airElementalContext,
       defaultSettings,
       fixedRng(10),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -234,7 +234,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       humanContext,
       defaultSettings,
       fixedRng(12),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -258,7 +258,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       emptyContext,
       defaultSettings,
       fixedRng(15),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -289,7 +289,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       emptyContext,
       defaultSettings,
       fixedRng(8),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -314,7 +314,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       airElementalContext,
       defaultSettings,
       fixedRng(14),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -349,7 +349,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       airElementalContext,
       defaultSettings,
       fixedRng(14),
-      '20',
+      undefined,
       defenderMods,
     );
 
@@ -367,8 +367,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       emptyContext,
       defaultSettings,
       fixedRng(11),
-      '20',
-      // defenderAttackerMods omitted
+      // situationalModifiers and defenderAttackerMods both omitted
     );
 
     expect(result.naturalTotal).toBe(11);
@@ -401,7 +400,7 @@ describe('attacker.* resolution — via parseAndRoll defenderAttackerMods (E-5)'
       humanContext,
       defaultSettings,
       fixedRng(9),
-      '20',
+      undefined,
       defenderMods,
     );
 

@@ -127,7 +127,7 @@ function collectClassMods(
 
 /**
  * Collect all grantedFeature IDs from levelProgression entries up to classLevel.
- * Mirrors GameEngine.phase_grantedFeatIds and levelProgression resolution.
+ * Mirrors GameEngine.phase4_grantedFeatIds and levelProgression resolution.
  */
 function collectGrantedFeatures(progression: LevelProgressionEntry[], classLevel: number): string[] {
   return progression
@@ -1243,8 +1243,8 @@ describe('Character Build: Fighter 3 / Monk 3 / Psion 1 / Wizard 1 (Level 8)', (
      * D&D 3.5 SRD: Some classes grant specific feats automatically as class features.
      * These are "granted" feats — they are NOT drawn from the character's free feat
      * slot pool. The engine models this via `grantedFeatures` (class-level resolution)
-     * which populates `phase_grantedFeatIds`; feats in that set are excluded from
-     * `phase_manualFeatCount` (the count of manually-chosen, slot-consuming feats).
+      * which populates `phase4_grantedFeatIds`; feats in that set are excluded from
+      * `phase4_manualFeatCount` (the count of manually-chosen, slot-consuming feats).
      *
      * Monk at level 1 auto-grants:
      *   - Improved Unarmed Strike (mandatory class feature, never chosen)

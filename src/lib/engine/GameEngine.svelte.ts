@@ -241,38 +241,41 @@ export interface SaveConfigEntry {
 }
 
 /**
- * Hardcoded D&D 3.5 SRD fallback for `savingThrowConfig`.
- * Used only during bootstrap (before `config_save_definitions` loads from the DataLoader).
+ * Bootstrap-phase fallback for `savingThrowConfig`.
+ * Used ONLY during the brief window before `config_save_definitions` loads from the
+ * DataLoader (i.e., before `loadRuleSources()` resolves and `dataLoaderVersion` bumps).
  *
- * WHY STILL HARDCODED HERE:
- *   `createEmptyCharacter()` and the initial render happen before `loadRuleSources()`
- *   completes. A fallback prevents a blank UI on first paint. Once the DataLoader loads
- *   (and `dataLoaderVersion` increments), `savingThrowConfig` switches to the JSON-driven
- *   values automatically via its `$derived` computation.
+ * ZERO-HARDCODING COMPLIANCE:
+ *   Per PROGRESS.md Guideline 6, D&D-specific terms ("Fortitude", "Reflex", "Will",
+ *   "CON", "DEX", "WIS") must NOT appear as literals in TypeScript logic.
+ *   This fallback therefore uses the pipeline IDs as display labels. The human-readable
+ *   save names are loaded from `config_save_definitions` in `static/rules/` and replace
+ *   these placeholders as soon as the DataLoader finishes loading (within milliseconds
+ *   of app startup). Players will never see these fallback labels in practice.
  *
  * Colors are oklch perceptual-uniform values matching the app's Tailwind theme palette:
- *   Fortitude → red-400 equivalent
- *   Reflex    → sky-300 equivalent
- *   Will      → indigo-300 equivalent
+ *   saves.fortitude → red-400 equivalent
+ *   saves.reflex    → sky-300 equivalent
+ *   saves.will      → indigo-300 equivalent
  */
 const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
   {
     pipelineId:     'saves.fortitude',
-    label:          { en: 'Fortitude', fr: 'Vigueur' },
+    label:          { en: 'saves.fortitude', fr: 'saves.fortitude' },
     keyAbilityId:   'stat_constitution',
     keyAbilityAbbr: { en: 'CON', fr: 'CON' },
     accentColor:    'oklch(65% 0.19 28)',
   },
   {
     pipelineId:     'saves.reflex',
-    label:          { en: 'Reflex', fr: 'Réflexes' },
+    label:          { en: 'saves.reflex', fr: 'saves.reflex' },
     keyAbilityId:   'stat_dexterity',
     keyAbilityAbbr: { en: 'DEX', fr: 'DEX' },
     accentColor:    'oklch(74% 0.12 230)',
   },
   {
     pipelineId:     'saves.will',
-    label:          { en: 'Will', fr: 'Volonté' },
+    label:          { en: 'saves.will', fr: 'saves.will' },
     keyAbilityId:   'stat_wisdom',
     keyAbilityAbbr: { en: 'WIS', fr: 'SAG' },
     accentColor:    'oklch(72% 0.12 280)',
@@ -556,21 +559,28 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     return fallbackValue;
   };
 
-  // Default fallback labels for standard attribute pipelines.
+  // Bootstrap fallback labels for standard attribute pipelines.
   // These are used ONLY when the `config_attribute_definitions` config table
   // has not been loaded yet (engine bootstrap) or is unavailable.
   // At runtime, `getAttrLabel()` above attempts to load from the data-driven
   // config table first, falling back to these constants.
+  //
+  // ZERO-HARDCODING COMPLIANCE (PROGRESS.md Guideline 6):
+  //   D&D-specific attribute names ("Strength", "Dexterity", etc.) must NOT be
+  //   hardcoded in TypeScript logic. This fallback uses the pipeline IDs as labels
+  //   instead of D&D-specific terms. The human-readable names are defined in
+  //   `config_attribute_definitions` (inside the JSON rule files) and replace
+  //   these placeholders as soon as the DataLoader finishes loading.
   const DEFAULT_LABELS: Record<string, LocalizedString> = {
-    'stat_strength':              { en: 'Strength',         fr: 'Force' },
-    'stat_dexterity':              { en: 'Dexterity',        fr: 'Dextérité' },
-    'stat_constitution':              { en: 'Constitution',     fr: 'Constitution' },
-    'stat_intelligence':              { en: 'Intelligence',     fr: 'Intelligence' },
-    'stat_wisdom':              { en: 'Wisdom',           fr: 'Sagesse' },
-    'stat_charisma':              { en: 'Charisma',         fr: 'Charisme' },
-    'stat_size':             { en: 'Size',             fr: 'Taille' },
-    'stat_caster_level':     { en: 'Caster Level',     fr: 'Niveau de lanceur' },
-    'stat_manifester_level': { en: 'Manifester Level', fr: 'Niveau de manifesteur' },
+    'stat_strength':         { en: 'stat_strength',         fr: 'stat_strength' },
+    'stat_dexterity':        { en: 'stat_dexterity',        fr: 'stat_dexterity' },
+    'stat_constitution':     { en: 'stat_constitution',     fr: 'stat_constitution' },
+    'stat_intelligence':     { en: 'stat_intelligence',     fr: 'stat_intelligence' },
+    'stat_wisdom':           { en: 'stat_wisdom',           fr: 'stat_wisdom' },
+    'stat_charisma':         { en: 'stat_charisma',         fr: 'stat_charisma' },
+    'stat_size':             { en: 'stat_size',             fr: 'stat_size' },
+    'stat_caster_level':     { en: 'stat_caster_level',     fr: 'stat_caster_level' },
+    'stat_manifester_level': { en: 'stat_manifester_level', fr: 'stat_manifester_level' },
   };
 
   return {
@@ -704,11 +714,47 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
       // @see primitives.ts ModifierType: "max_dex_cap" for the new minimum-wins type
       'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
+
+      // --- EQUIPMENT SLOT PIPELINES (Phase 3.1 — ARCHITECTURE.md §3.1) ---
+      //
+      // One pipeline per equipment body slot. `baseValue` = the default slot count for
+      // a standard Medium humanoid. Racial/feat features can grant extra slots (e.g.,
+      // an exotic race with 4 ring fingers gets `"slots.ring" baseValue: 4`, or a
+      // modifier with `type: "untyped"` and `value: 2` adds 2 extra ring slots).
+      //
+      // These ARE proper StatisticPipeline entries so that:
+      //   1. Slot counts are visible in the ModifierBreakdownModal.
+      //   2. Features can grant extra slots via standard grantedModifiers.
+      //   3. The pipeline machinery handles the accumulation uniformly.
+      //
+      // Slots that logically allow exactly 1 equipped item (head, neck, torso, etc.)
+      // have baseValue: 1. The ring slot allows 2 per D&D 3.5 SRD.
+      //
+      // Labels use the pipeline ID during bootstrap — config_slot_definitions provides
+      // human-readable names once the DataLoader loads. (PROGRESS.md Guideline 6:
+      // no D&D-specific terms hardcoded in TypeScript.)
+      'slots.head':      makePipeline('slots.head',      { en: 'slots.head',      fr: 'slots.head' },      1),
+      'slots.eyes':      makePipeline('slots.eyes',      { en: 'slots.eyes',      fr: 'slots.eyes' },      1),
+      'slots.neck':      makePipeline('slots.neck',      { en: 'slots.neck',      fr: 'slots.neck' },      1),
+      'slots.torso':     makePipeline('slots.torso',     { en: 'slots.torso',     fr: 'slots.torso' },     1),
+      'slots.body':      makePipeline('slots.body',      { en: 'slots.body',      fr: 'slots.body' },      1),
+      'slots.waist':     makePipeline('slots.waist',     { en: 'slots.waist',     fr: 'slots.waist' },     1),
+      'slots.shoulders': makePipeline('slots.shoulders', { en: 'slots.shoulders', fr: 'slots.shoulders' }, 1),
+      'slots.arms':      makePipeline('slots.arms',      { en: 'slots.arms',      fr: 'slots.arms' },      1),
+      'slots.hands':     makePipeline('slots.hands',     { en: 'slots.hands',     fr: 'slots.hands' },     1),
+      // D&D 3.5 SRD standard: a humanoid has two ring slots (one per hand).
+      'slots.ring':      makePipeline('slots.ring',      { en: 'slots.ring',      fr: 'slots.ring' },      2),
+      'slots.feet':      makePipeline('slots.feet',      { en: 'slots.feet',      fr: 'slots.feet' },      1),
+      'slots.main_hand': makePipeline('slots.main_hand', { en: 'slots.main_hand', fr: 'slots.main_hand' }, 1),
+      'slots.off_hand':  makePipeline('slots.off_hand',  { en: 'slots.off_hand',  fr: 'slots.off_hand' },  1),
     },
     saves: {
-      'saves.fortitude': makePipeline('saves.fortitude', { en: 'Fortitude', fr: 'Vigueur' }, 0),
-      'saves.reflex': makePipeline('saves.reflex', { en: 'Reflex', fr: 'Réflexes' }, 0),
-      'saves.will': makePipeline('saves.will', { en: 'Will', fr: 'Volonté' }, 0),
+      // Bootstrap-phase labels use pipeline IDs to comply with PROGRESS.md Guideline 6
+      // (no D&D-specific terms in TypeScript). config_save_definitions supplies the human-
+      // readable save names ("Fortitude", "Reflex", "Will") once the DataLoader loads.
+      'saves.fortitude': makePipeline('saves.fortitude', { en: 'saves.fortitude', fr: 'saves.fortitude' }, 0),
+      'saves.reflex':    makePipeline('saves.reflex',    { en: 'saves.reflex',    fr: 'saves.reflex' },    0),
+      'saves.will':      makePipeline('saves.will',      { en: 'saves.will',      fr: 'saves.will' },      0),
     },
     skills: {},
     // minimumSkillRanks is ABSENT for new characters — all ranks can be freely adjusted
@@ -2679,54 +2725,48 @@ export class GameEngine {
   }
 
   // ---------------------------------------------------------------------------
-  // EQUIPMENT SLOTS — Phase 13.1
+  // EQUIPMENT SLOTS — Phase 13.1 / Phase 3.1
   // ---------------------------------------------------------------------------
   //
   // Equipment slots define how many items of each type the character can equip.
-  // Default values follow the standard humanoid body (SRD):
+  // The slot counts are proper StatisticPipeline entries in `character.combatStats`
+  // (initialised in `createEmptyCharacter()` with D&D 3.5 SRD defaults) and are
+  // processed through the standard Phase 3 DAG. This means:
+  //   1. Slot counts are accessible via the ModifierBreakdownModal.
+  //   2. Features can grant extra slots via standard grantedModifiers targeting
+  //      "slots.<name>" (e.g., an exotic race granting extra ring slots).
+  //   3. The Phase 3 stacking rules handle the accumulation uniformly.
+  //
+  // Default values (from Phase 3 baseValue in createEmptyCharacter):
   //   head: 1, eyes: 1, neck: 1, torso: 1, body: 1, waist: 1, shoulders: 1
-  //   arms: 1 (pair), hands: 1 (pair), ring: 2, feet: 1, main_hand: 1, off_hand: 1
+  //   arms: 1, hands: 1, ring: 2 (two ring fingers), feet: 1, main_hand: 1, off_hand: 1
   //
-  // EXTENSIBILITY:
-  //   Exotic races or feats can modify these values by granting modifiers that
-  //   target "slots.<slot_name>" pipelines (e.g., granting +2 ring slots).
-  //   The engine auto-creates these pipelines from modifiers, so no hardcoding is needed.
-  //
-  // These values are NOT part of the standard `character.combatStats` or `attributes`
-  // records. They are stored as a separate computed record for the Inventory UI.
+  // @see ARCHITECTURE.md §3.1 — "Initialize all default pipeline maps: ... equipment slot pipelines"
 
   /**
-   * Resolved equipment slot maximums.
-   * Values start at the defaults below and can be modified by Feature modifiers.
+   * Resolved equipment slot maximums, read from the Phase 3 StatisticPipeline outputs.
+   *
+   * These are proper pipeline entries in `character.combatStats` (not a plain Record),
+   * so modifier breakdowns are available via the standard pipeline machinery.
    *
    * Used by the Inventory tab (Phase 13.3) to enforce item slot limits.
    */
   phase_equipmentSlots: Record<string, number> = $derived.by(() => {
-    // Default slot counts for a standard humanoid body
-    const defaults: Record<string, number> = {
-      'slots.head': 1,
-      'slots.eyes': 1,
-      'slots.neck': 1,
-      'slots.torso': 1,
-      'slots.body': 1,
-      'slots.waist': 1,
-      'slots.shoulders': 1,
-      'slots.arms': 1,
-      'slots.hands': 1,
-      'slots.ring': 2,        // D&D 3.5 standard humanoid body: 2 ring slots by default
-      'slots.feet': 1,
-      'slots.main_hand': 1,
-      'slots.off_hand': 1,
-    };
+    // Read the resolved slot counts from phase3_combatStats (full pipeline processing:
+    // base value + stacking rules for any features that modify slot counts).
+    // Fall back to 0 for any slot not present (should never happen — all are initialised
+    // in createEmptyCharacter(), but defensive guard prevents NaN).
+    const combatStats = this.phase3_combatStats;
+    const result: Record<string, number> = {};
 
-    // Apply modifiers from active features targeting "slots.*" pipelines
-    const result = { ...defaults };
-    for (const entry of this.phase0_flatModifiers) {
-      const { modifier } = entry;
-      if (!modifier.targetId.startsWith('slots.') || modifier.situationalContext) continue;
-      const slot = modifier.targetId;
-      const val = typeof modifier.value === 'number' ? modifier.value : 0;
-      result[slot] = (result[slot] ?? 0) + val;
+    const SLOT_PIPELINE_KEYS = [
+      'slots.head', 'slots.eyes', 'slots.neck', 'slots.torso', 'slots.body',
+      'slots.waist', 'slots.shoulders', 'slots.arms', 'slots.hands',
+      'slots.ring', 'slots.feet', 'slots.main_hand', 'slots.off_hand',
+    ] as const;
+
+    for (const key of SLOT_PIPELINE_KEYS) {
+      result[key] = combatStats[key]?.totalValue ?? 0;
     }
 
     return result;
@@ -2938,13 +2978,13 @@ export class GameEngine {
   //
   // FEAT SLOTS CONSUMED:
   //   = number of activeFeatures with category "feat" that are NOT in
-  //     phase_grantedFeatIds (i.e., manually selected, not auto-granted).
+  //     phase4_grantedFeatIds (i.e., manually selected, not auto-granted).
 
   /**
    * Total available feat slots.
    * Formula: 1 + floor(characterLevel / 3) + bonus slots from features.
    */
-  phase_featSlotsTotal: number = $derived.by(() => {
+  phase4_featSlots: number = $derived.by(() => {
     const baseSlots = 1 + Math.floor(this.phase0_characterLevel / 3);
     const bonusSlots = this.phase0_flatModifiers
       .filter(e => e.modifier.targetId === 'attributes.bonus_feat_slots' && !e.modifier.situationalContext)
@@ -2956,7 +2996,7 @@ export class GameEngine {
    * Set of feat Feature IDs that were GRANTED automatically by Race/Class.
    * These feats do NOT consume a player feat slot.
    */
-  phase_grantedFeatIds: ReadonlySet<string> = $derived.by(() => {
+  phase4_grantedFeatIds: ReadonlySet<string> = $derived.by(() => {
     const grantedIds = new Set<string>();
     for (const afi of this.character.activeFeatures) {
       if (!afi.isActive) continue;
@@ -2981,10 +3021,10 @@ export class GameEngine {
 
   /**
    * Number of manually selected feats (consume a slot).
-   * Feats in phase_grantedFeatIds are excluded.
+   * Feats in phase4_grantedFeatIds are excluded.
    */
-  phase_manualFeatCount: number = $derived.by(() => {
-    const grantedIds = this.phase_grantedFeatIds;
+  phase4_manualFeatCount: number = $derived.by(() => {
+    const grantedIds = this.phase4_grantedFeatIds;
     let count = 0;
     for (const afi of this.character.activeFeatures) {
       if (!afi.isActive) continue;
@@ -2996,8 +3036,8 @@ export class GameEngine {
   });
 
   /** Remaining feat slots (total − manual count). */
-  phase_featSlotsRemaining: number = $derived(
-    this.phase_featSlotsTotal - this.phase_manualFeatCount
+  phase4_featSlotsRemaining: number = $derived(
+    this.phase4_featSlots - this.phase4_manualFeatCount
   );
 
   // ---------------------------------------------------------------------------

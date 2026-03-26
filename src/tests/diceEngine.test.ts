@@ -312,7 +312,7 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
   it('roll of 19 with critRange "19-20" DOES set isCriticalThreat (Longsword/Rapier)', () => {
     // A Rapier or Longsword has a 19-20 crit range. Rolling a 19 IS a threat.
     const rng = makeSequentialRng(19);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '19-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false, critRange: '19-20' }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(true);
     // But it's NOT an automatic hit — only natural 20 is an auto hit.
@@ -322,7 +322,7 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
   it('roll of 18 with critRange "18-20" DOES set isCriticalThreat (Scimitar/Keen)', () => {
     // A Keen Scimitar has 18-20 crit range.
     const rng = makeSequentialRng(18);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '18-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false, critRange: '18-20' }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(true);
     expect(result.isAutomaticHit).toBe(false);
@@ -330,14 +330,14 @@ describe('parseAndRoll — isCriticalThreat (weapon crit range)', () => {
 
   it('roll of 17 with critRange "18-20" does NOT set isCriticalThreat', () => {
     const rng = makeSequentialRng(17);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '18-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false, critRange: '18-20' }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(false);
   });
 
   it('roll of 20 with critRange "19-20" sets BOTH isCriticalThreat AND isAutomaticHit', () => {
     const rng = makeSequentialRng(20);
-    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false }, defaultSettings, rng, '19-20');
+    const result = parseAndRoll('1d20', makePipeline(0), { targetTags: [], isAttackOfOpportunity: false, critRange: '19-20' }, defaultSettings, rng);
 
     expect(result.isCriticalThreat).toBe(true);
     expect(result.isAutomaticHit).toBe(true);
@@ -527,8 +527,8 @@ describe('RollResult.targetPool — Vitality/Wound Points mode (vitalityWoundPoi
 
   it('crit range 18-20: nat 18 is a crit threat → targetPool = "res_wound_points"', () => {
     const result = parseAndRoll(
-      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
-      vwpSettings, makeSequentialRng(18), '18-20'
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false, critRange: '18-20' },
+      vwpSettings, makeSequentialRng(18)
     );
     expect(result.isCriticalThreat).toBe(true);
     expect(result.targetPool).toBe('res_wound_points');
@@ -536,8 +536,8 @@ describe('RollResult.targetPool — Vitality/Wound Points mode (vitalityWoundPoi
 
   it('crit range 18-20: nat 17 is NOT a crit → targetPool = "res_vitality"', () => {
     const result = parseAndRoll(
-      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false },
-      vwpSettings, makeSequentialRng(17), '18-20'
+      '1d20', makePipeline(), { targetTags: [], isAttackOfOpportunity: false, critRange: '18-20' },
+      vwpSettings, makeSequentialRng(17)
     );
     expect(result.isCriticalThreat).toBe(false);
     expect(result.targetPool).toBe('res_vitality');

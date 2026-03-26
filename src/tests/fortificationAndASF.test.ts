@@ -114,7 +114,7 @@ describe('Fortification — Critical Hit Negation', () => {
   it('1. No fortification (pct=0) → fortification field absent on RollResult', () => {
     const rng = makeSeededRng([20]); // natural 20 = confirmed crit
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 0);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 0);
     expect(result.isCriticalThreat).toBe(true);
     expect(result.fortification).toBeUndefined();
   });
@@ -123,7 +123,7 @@ describe('Fortification — Critical Hit Negation', () => {
     // Roll 15 on d20, not a crit
     const rng = makeSeededRng([15, 50]); // 15 = no crit, 50 = would-be fortification roll
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 75);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 75);
     expect(result.isCriticalThreat).toBe(false);
     expect(result.fortification).toBeUndefined(); // No fortification check on non-crit
   });
@@ -131,7 +131,7 @@ describe('Fortification — Critical Hit Negation', () => {
   it('3. Light fortification (25%), d100=25 → crit NEGATED (on boundary)', () => {
     const rng = makeSeededRng([20, 25]); // d20=20 (crit), d100=25 (25 <= 25 → negated)
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 25);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 25);
     expect(result.isCriticalThreat).toBe(true);
     expect(result.fortification).toBeDefined();
     expect(result.fortification!.critNegated).toBe(true);
@@ -142,21 +142,21 @@ describe('Fortification — Critical Hit Negation', () => {
   it('4. Light fortification (25%), d100=26 → crit STANDS (just above boundary)', () => {
     const rng = makeSeededRng([20, 26]); // d20=20, d100=26 (26 > 25 → stands)
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 25);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 25);
     expect(result.fortification!.critNegated).toBe(false);
   });
 
   it('5. Moderate fortification (75%), d100=75 → crit NEGATED (on boundary)', () => {
     const rng = makeSeededRng([20, 75]);
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 75);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 75);
     expect(result.fortification!.critNegated).toBe(true);
   });
 
   it('6. Moderate fortification (75%), d100=76 → crit STANDS', () => {
     const rng = makeSeededRng([20, 76]);
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 75);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 75);
     expect(result.fortification!.critNegated).toBe(false);
   });
 
@@ -164,27 +164,27 @@ describe('Fortification — Critical Hit Negation', () => {
     // Roll d100=99 — should still be negated since 99 <= 100
     const rng = makeSeededRng([20, 99]);
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 100);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 100);
     expect(result.fortification!.critNegated).toBe(true);
 
     // Also verify with d100=1 (minimum roll)
     const rng2 = makeSeededRng([20, 1]);
     const result2 = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng2, '20', undefined, 100);
+      DEFAULT_SETTINGS, rng2, undefined, undefined, 100);
     expect(result2.fortification!.critNegated).toBe(true);
   });
 
   it('8. fortification.roll records the raw 1d100 result', () => {
     const rng = makeSeededRng([20, 42]); // d100=42 specific value
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 75);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 75);
     expect(result.fortification!.roll).toBe(42);
   });
 
   it('9. fortification.pct records the defender\'s fortification percentage', () => {
     const rng = makeSeededRng([20, 50]);
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 75);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 75);
     expect(result.fortification!.pct).toBe(75);
   });
 
@@ -192,7 +192,7 @@ describe('Fortification — Critical Hit Negation', () => {
     // The attack WAS a critical threat — fortification just prevented extra damage
     const rng = makeSeededRng([20, 10]); // d100=10 <= 25 → negated
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng, '20', undefined, 25);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 25);
     expect(result.isCriticalThreat).toBe(true);   // Still a crit threat
     expect(result.fortification!.critNegated).toBe(true); // But crit was negated
   });
@@ -201,7 +201,7 @@ describe('Fortification — Critical Hit Negation', () => {
     // A crit negated by fortification = normal hit → vitality pool
     const rng = makeSeededRng([20, 10]); // 10 <= 25 → negated
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      VWP_SETTINGS, rng, '20', undefined, 25);
+      VWP_SETTINGS, rng, undefined, undefined, 25);
     expect(result.fortification!.critNegated).toBe(true);
     expect(result.targetPool).toBe('res_vitality'); // Negated crit → normal hit routing
   });
@@ -210,7 +210,7 @@ describe('Fortification — Critical Hit Negation', () => {
     // Crit NOT negated (d100=26 > 25)
     const rng = makeSeededRng([20, 26]);
     const result = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      VWP_SETTINGS, rng, '20', undefined, 25);
+      VWP_SETTINGS, rng, undefined, undefined, 25);
     expect(result.fortification!.critNegated).toBe(false);
     expect(result.targetPool).toBe('res_wound_points'); // Crit stands → wound pool
   });
@@ -225,7 +225,7 @@ describe('Fortification — Critical Hit Negation', () => {
     };
     const result = parseAndRoll('1d6', damagePipeline,
       { targetTags: [], isAttackOfOpportunity: false, isCriticalHit: true }, // Explicitly flagged as confirmed crit
-      DEFAULT_SETTINGS, rng, '20', undefined, 25);
+      DEFAULT_SETTINGS, rng, undefined, undefined, 25);
     expect(result.fortification).toBeDefined(); // Fortification was checked
     expect(result.fortification!.roll).toBe(30);
     expect(result.fortification!.critNegated).toBe(false); // 30 > 25 → stands
@@ -234,12 +234,12 @@ describe('Fortification — Critical Hit Negation', () => {
   it('14. Boundary: pct=1, d100=1 → negated; d100=2 → stands', () => {
     const rng1 = makeSeededRng([20, 1]);
     const result1 = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng1, '20', undefined, 1);
+      DEFAULT_SETTINGS, rng1, undefined, undefined, 1);
     expect(result1.fortification!.critNegated).toBe(true); // 1 <= 1 → negated
 
     const rng2 = makeSeededRng([20, 2]);
     const result2 = parseAndRoll('1d20', EMPTY_ATTACK_PIPELINE, { targetTags: [], isAttackOfOpportunity: false },
-      DEFAULT_SETTINGS, rng2, '20', undefined, 1);
+      DEFAULT_SETTINGS, rng2, undefined, undefined, 1);
     expect(result2.fortification!.critNegated).toBe(false); // 2 > 1 → stands
   });
 });
