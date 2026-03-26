@@ -179,7 +179,7 @@ Every Feature shares the same base structure:
 |---|---|:---:|---|
 | `id` | `string` | ✅ | Unique identifier. Use `snake_case` with category prefix (e.g., `"feat_power_attack"`, `"race_elf"`). Never use hyphens. |
 | `category` | `string` | ✅ | What kind of Feature this is. See [category table](#featurecategory-values). |
-| `ruleSource` | `string` | ✅ | Which rules module this belongs to (e.g., `"srd_core"`, `"homebrew_mymod"`). Used for filtering. |
+| `ruleSource` | `string` | ✅ | Which rules module this belongs to (e.g., `"srd_core"`, `"homebrew_mymod"`). Used for attribution and the `getHomebrewRules()` scope query. Note: `CampaignSettings.enabledRuleSources` is a **file-path whitelist** (not a source ID list) — it controls which JSON files are loaded, not which `ruleSource` values are retained. |
 | `label` | `LocalizedString` | ✅ | Display name in all supported languages. |
 | `description` | `LocalizedString` | ✅ | Flavor and rules text. |
 | `tags` | `string[]` | ✅ | Labels that describe this Feature. Used for prerequisites and conditions. |
@@ -2262,6 +2262,28 @@ Config tables provide lookup data (XP thresholds, carrying capacity, etc.) using
 ```
 
 Config tables can be placed inside any rule file alongside Features. By convention, the dedicated `00_d20srd_core_config_tables.json` (loaded first) holds the SRD core config tables. A table with the same `tableId` from a later file completely replaces the earlier version — place overrides in files with higher numbers.
+
+**Engine-read config tables (complete list as of Phase 21):**
+
+| `tableId` | Purpose | Annex |
+|---|---|:---:|
+| `config_xp_thresholds` | Level-up XP thresholds | B.1 |
+| `config_carrying_capacity` | Load limits by STR score | B.2 |
+| `config_point_buy_costs` | Point-buy stat cost table | B.3 |
+| `config_ability_modifiers` | Score → modifier lookup | B.4 |
+| `config_armor_speed_reduction` | Armored movement table | B.5 |
+| `config_skill_synergies` | Auto-generated synergy bonus pairs | B.6 |
+| `config_standard_array` | Standard-array values | B.7 |
+| `config_size_categories` | Size modifier data | B.8 |
+| `config_multiclass_penalty` | XP penalty thresholds | B.9 |
+| `config_bonus_spells_per_day` | Bonus spell slots by ability mod | B.10 |
+| `config_two_weapon_fighting` | TWF attack penalty matrix | B.11 |
+| `config_encumbrance_effects` | Load penalty values | B.12 |
+| `config_save_definitions` | Save pipeline → ability mapping + display config | B.13 |
+| `config_weapon_defaults` | Default attack/damage ability IDs and two-handed multiplier | B.14 |
+| `config_movement_defaults` | Default base values for speed pipelines | B.15 |
+| `config_attribute_definitions` | Attribute labels + `isCastingAbility` flag | — |
+| `config_skill_definitions` | Skill labels and key ability IDs | — |
 
 ---
 

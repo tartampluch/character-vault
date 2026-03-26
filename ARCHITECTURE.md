@@ -1580,7 +1580,7 @@ export interface Campaign {
     id: ID; title: string; description: string;
     posterUrl?: string; bannerUrl?: string; ownerId: ID;
     chapters: { id: ID; title: LocalizedString; description: LocalizedString; isCompleted: boolean; }[];
-    enabledRuleSources: ID[];  // Ordered; last wins for overrides
+    enabledRuleSources: string[];  // FILE PATHS whitelist ([] = load all; see §18.1)
     gmGlobalOverrides: string; // Raw JSON — Features + config tables
     updatedAt: number;         // Unix timestamp
 }
@@ -1611,7 +1611,7 @@ export interface CampaignSettings {
         vitalityWoundPoints: boolean; // UA variant — crits route to res_wound_points
         gestalt: boolean;             // UA variant — BAB/saves use max-per-level
     };
-    enabledRuleSources: ID[]; // Ordered; last file loaded = highest override priority
+    enabledRuleSources: string[]; // FILE PATHS whitelist ([] = load all, see §18.1)
 }
 ```
 
@@ -2116,12 +2116,19 @@ Both are simple accessors into `phase2_attributes`. The pipelines are accumulate
 Filters `character.resources` for keys starting with `"resources.spell_slots_"` or `"resources.power_points"`. Used by the Spells/Powers tab to render casting resources.
 
 #### Saving Throw Config (`savingThrowConfig`)
-A `readonly` constant array mapping save pipeline IDs to key ability IDs and localized abbreviations:
-```typescript
-{ pipelineId: 'saves.fortitude', keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'CON', fr: 'CON' } }
-{ pipelineId: 'saves.reflex',  keyAbilityId: 'stat_dexterity', keyAbilityAbbr: { en: 'DEX', fr: 'DEX' } }
-{ pipelineId: 'saves.will', keyAbilityId: 'stat_wisdom', keyAbilityAbbr: { en: 'WIS', fr: 'SAG' } }
+
+A `$derived` reactive array of `SaveConfigEntry` objects, each mapping a save pipeline ID to its governing ability and display configuration. Re-evaluates when `dataLoaderVersion` increments (i.e., after `loadRuleSources()` completes).
+
+**Data source:** Populated from the `config_save_definitions` JSON config table (see Annex B.13). Example rows:
+```json
+{ "pipelineId": "saves.fortitude", "label": { "en": "Fortitude", "fr": "Vigueur" },
+  "keyAbilityId": "stat_constitution", "keyAbilityAbbr": { "en": "CON", "fr": "CON" }, "accentColor": "#f87171" }
 ```
+**Bootstrap fallback:** When `config_save_definitions` has not yet loaded, the engine uses `DEFAULT_SAVE_CONFIG` — the D&D 3.5 SRD hardcoded defaults (Fort→CON, Ref→DEX, Will→WIS). This ensures a consistent UI on first paint.
+
+**Extensibility:** A homebrew rule source can replace `config_save_definitions` to define entirely different saving throws (e.g., Brawn/Finesse/Focus instead of Fort/Ref/Will) without any TypeScript changes.
+
+**Component usage:** Components bind via `$derived(engine.savingThrowConfig)` to receive the live update from bootstrap fallback to JSON-driven values.
 
 #### Spell Save DC (`getSpellSaveDC(spellLevel, keyAbilityId?)`)
 
@@ -2130,18 +2137,26 @@ Formula: `10 + spellLevel + castingAbilityMod`
 Casting ability resolution (in priority order):
 1. If `keyAbilityId` explicitly provided: use `phase2_attributes[keyAbilityId].derivedModifier` directly.
 2. Scan `phase0_activeTags` for first tag starting with `"caster_ability_"`, extract the stat ID (e.g., `"caster_ability_stat_intelligence"` → `"stat_intelligence"`).
-3. Fallback: `max(WIS.derivedModifier, INT.derivedModifier, CHA.derivedModifier)`.
+3. Fallback: scan `config_attribute_definitions` for rows with `"isCastingAbility": true` (e.g., `stat_wisdom`, `stat_intelligence`, `stat_charisma`), take `max(derivedModifier)` across all flagged abilities. This makes the fallback data-driven — homebrew systems can add custom casting stats by setting the flag without changing engine code.
 
-Content convention: spellcaster class Features should include a tag like `"caster_ability_stat_intelligence"` (Wizard), `"caster_ability_stat_wisdom"` (Cleric), or `"caster_ability_stat_charisma"` (Sorcerer) to enable precise DC computation.
+**Bootstrap fallback (before DataLoader loads):** If neither the tag nor the config flag is found, hardcoded IDs `["stat_wisdom", "stat_intelligence", "stat_charisma"]` are used.
+
+Content convention: spellcaster class Features should include a tag like `"caster_ability_stat_intelligence"` (Wizard), `"caster_ability_stat_wisdom"` (Cleric), or `"caster_ability_stat_charisma"` (Sorcerer) to enable the most precise DC computation (avoids the fallback entirely).
 
 #### Weapon Attack/Damage Helpers
 
+**Data-driven:** The governing ability scores and two-handed multiplier are read from the `config_weapon_defaults` JSON config table (see Annex B.14). A homebrew rule source can remap them (e.g., a system where all attacks use a `stat_agility` instead of DEX) by overriding the table — no TypeScript change required.
+
 ```typescript
+getWeaponDefaults(): WeaponDefaults
+// Reads config_weapon_defaults; falls back to DEFAULT_WEAPON_CONFIG (D&D 3.5 SRD)
+
 getWeaponAttackBonus(enhancement: number, isRanged: boolean): number
-// = BAB + (DEX mod if ranged, STR mod if melee) + enhancement
+// = BAB + getWeaponDefaults().rangedAttackAbility (default: DEX) or .meleeAttackAbility (default: STR) + enhancement
 
 getWeaponDamageBonus(enhancement: number, isTwoHanded: boolean): number
-// = floor(STR mod × (isTwoHanded ? 1.5 : 1)) + enhancement
+// = floor(abilityMod × (isTwoHanded ? twoHandedDamageMultiplier : 1)) + enhancement
+// Default multiplier: 1.5 (D&D 3.5 two-handed rule)
 ```
 
 These methods centralize weapon math in the engine (per Critical Coding Guideline: no D&D logic in UI components).
@@ -2910,9 +2925,11 @@ The `test/` directory is a **unit-test-only zone**:
 | **Why in `static/`** | The files must be HTTP-accessible so `DataLoader.#loadRuleFile()` can `fetch()` them during Vitest tests that use `loadRuleSources(['test/test_mock.json'])`. |
 | **Deployment** | These files are physically present in the deployment package but are never served by either discovery endpoint. They are completely invisible to the running application. |
 
-`CampaignSettings.enabledRuleSources` is a **filter** (include/exclude), not a loading order control. Alphabetical file order always determines priority.
+`CampaignSettings.enabledRuleSources` is a **file-path whitelist** (not a loading order control). Alphabetical file order always determines priority; this list only determines which files are included.
 
-**Filtering by `enabledRuleSources`:** After all files are discovered and sorted, the DataLoader filters them: only entities whose `ruleSource` field matches one of the IDs in `CampaignSettings.enabledRuleSources` are retained. Files containing no entities matching any enabled source are effectively ignored.
+**Filtering by `enabledRuleSources`:** The array contains **file paths** (e.g., `"00_d20srd_core/01_d20srd_core_races.json"`) — NOT `Feature.ruleSource` ID strings (e.g., `"srd_core"`). After files are discovered and sorted, the DataLoader skips any file whose path is not in this set. An **empty array** (`[]`) is the **permissive default**: all discovered files are loaded. Non-empty arrays act as a strict whitelist managed by the Rule Source Manager (Phase 15.1).
+
+> **IMPORTANT:** Do not populate `enabledRuleSources` with `Feature.ruleSource` ID strings like `"srd_core"`. Source IDs identify content origin (a field on Feature JSON); file paths identify which JSON files to load. Passing a source ID would silently filter out all files (no file path matches a source ID), loading zero content.
 
 #### File Content Structure
 

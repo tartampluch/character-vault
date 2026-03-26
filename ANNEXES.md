@@ -3668,3 +3668,82 @@ This annex provides the reference data tables required by the engine for calcula
 ```
 
 > **AI Implementation Note:** The `speedReduction: "reduced"` value means "use the armor speed reduction table (B.5)". The engine should look up the character's base speed in that table to find the encumbered speed. The `speedReduction: 5` for overloaded means "set speed to exactly 5 ft" — this can be implemented as a `setAbsolute` modifier on the speed pipeline.
+
+
+---
+
+## B.13. Saving Throw Definitions
+
+> _Maps each saving throw pipeline to its governing ability score and display configuration. The GameEngine reads this table at runtime via `engine.savingThrowConfig` (`$derived`), replacing the previous hardcoded `readonly` array. Homebrew rule sources can replace this table to define entirely different saving throw structures._
+
+```json
+{
+  "tableId": "config_save_definitions",
+  "ruleSource": "srd_core",
+  "description": "Localized labels for saving throw pipelines and their key ability score associations.",
+  "data": [
+    { "pipelineId": "saves.fortitude", "label": { "en": "Fortitude", "fr": "Vigueur" },
+      "keyAbilityId": "stat_constitution", "keyAbilityAbbr": { "en": "CON", "fr": "CON" }, "accentColor": "#f87171" },
+    { "pipelineId": "saves.reflex",    "label": { "en": "Reflex",    "fr": "Réflexes" },
+      "keyAbilityId": "stat_dexterity",   "keyAbilityAbbr": { "en": "DEX", "fr": "DEX" }, "accentColor": "#93c5fd" },
+    { "pipelineId": "saves.will",      "label": { "en": "Will",      "fr": "Volonté" },
+      "keyAbilityId": "stat_wisdom",      "keyAbilityAbbr": { "en": "WIS", "fr": "SAG" }, "accentColor": "#c4b5fd" }
+  ]
+}
+```
+
+> **AI Implementation Note:** Components read this via `$derived(engine.savingThrowConfig)` — a reactive binding that updates from `DEFAULT_SAVE_CONFIG` (bootstrap) to these JSON-driven values after `loadRuleSources()` completes. The `accentColor` is a valid CSS color string applied inline in SavingThrows.svelte and SavingThrowsSummary.svelte.
+
+---
+
+## B.14. Weapon Ability Defaults
+
+> _Defines the default ability score IDs used for weapon attack and damage rolls. Replaces hardcoded `'stat_strength'`/`'stat_dexterity'` strings in the engine. Read via `engine.getWeaponDefaults()`. Per-weapon overrides (Weapon Finesse, Mighty bows) are handled by Feature modifier formulas, not by this table._
+
+```json
+{
+  "tableId": "config_weapon_defaults",
+  "ruleSource": "srd_core",
+  "description": "Default ability score IDs governing weapon attack and damage rolls.",
+  "data": [
+    { "key": "meleeAttackAbility",        "abilityId": "stat_strength",
+      "label": { "en": "Melee attack ability", "fr": "Caractéristique d'attaque au corps-à-corps" } },
+    { "key": "rangedAttackAbility",       "abilityId": "stat_dexterity",
+      "label": { "en": "Ranged attack ability", "fr": "Caractéristique d'attaque à distance" } },
+    { "key": "meleeDamageAbility",        "abilityId": "stat_strength",
+      "label": { "en": "Melee damage ability", "fr": "Caractéristique de dégâts au corps-à-corps" } },
+    { "key": "twoHandedDamageMultiplier", "value": 1.5,
+      "label": { "en": "Two-handed damage multiplier", "fr": "Multiplicateur de dégâts à deux mains" } }
+  ]
+}
+```
+
+> **AI Implementation Note:** `engine.getWeaponAttackBonus(enhancement, isRanged)` and `engine.getWeaponDamageBonus(enhancement, isTwoHanded)` both call `engine.getWeaponDefaults()` which reads this table. The bootstrap fallback `DEFAULT_WEAPON_CONFIG` contains the same D&D 3.5 SRD values. Adding a new ability (`stat_agility` for a custom system) requires only adding this stat to `config_attribute_definitions` and updating the ability ID here.
+
+---
+
+## B.15. Movement Speed Defaults
+
+> _Defines the default base values for movement speed pipelines in new characters. Replaces the hardcoded `30` (land speed) in `createEmptyCharacter()`. The `getSpeedDefault()` helper reads this table; a D&D 3.5 bootstrap fallback of 30 ft for land speed and 0 ft for all others is used when the table is not yet loaded._
+
+```json
+{
+  "tableId": "config_movement_defaults",
+  "ruleSource": "srd_core",
+  "description": "Default base values for movement speed pipelines. Override to change the default for all new characters.",
+  "data": [
+    { "pipelineId": "combatStats.speed_land",   "defaultBaseValue": 30,
+      "label": { "en": "Land Speed",   "fr": "Vitesse terrestre" } },
+    { "pipelineId": "combatStats.speed_burrow", "defaultBaseValue": 0,
+      "label": { "en": "Burrow Speed", "fr": "Vitesse de fouissement" } },
+    { "pipelineId": "combatStats.speed_climb",  "defaultBaseValue": 0,
+      "label": { "en": "Climb Speed",  "fr": "Vitesse d'escalade" } },
+    { "pipelineId": "combatStats.speed_fly",    "defaultBaseValue": 0,
+      "label": { "en": "Fly Speed",    "fr": "Vitesse de vol" } },
+    { "pipelineId": "combatStats.speed_swim",   "defaultBaseValue": 0,
+      "label": { "en": "Swim Speed",   "fr": "Vitesse de nage" } }
+  ]
+}
+```
+
+> **AI Implementation Note:** `defaultBaseValue` sets the initial `baseValue` on the StatisticPipeline for that speed. Racial/creature features override this via `"base"` or `"setAbsolute"` type modifiers on their Feature JSON (e.g., a Dwarf race sets `combatStats.speed_land` to 20 ft via `setAbsolute`). `defaultBaseValue: 30` for land speed is the D&D 3.5 SRD standard for Medium humanoids.

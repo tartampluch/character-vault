@@ -20,7 +20,7 @@
  * @see ARCHITECTURE.md Phase 17.2
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
 import type { LogicOperator } from '$lib/types/primitives';
 import type { CharacterContext } from '$lib/utils/mathParser';
@@ -768,5 +768,99 @@ describe('L9 — LogicOperator typed operator on CONDITION nodes', () => {
       mockContext
     );
     expect(result.passed).toBe(true);
+  });
+});
+
+// =============================================================================
+// Edge cases: vacuous AND/OR and unknown node type (lines 148-149, 172, 215)
+// =============================================================================
+
+describe('evaluateLogicNode — vacuous AND and OR edge cases', () => {
+  it('AND node with empty children passes vacuously (line 172)', () => {
+    // Vacuous truth: "all of nothing" is true.
+    const result = evaluateLogicNode(
+      { logic: 'AND', nodes: [] },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+    expect(result.errorMessages).toHaveLength(0);
+  });
+
+  it('OR node with empty children fails vacuously (line 215)', () => {
+    // Vacuous falsity: "any of nothing" is false (no viable path).
+    const result = evaluateLogicNode(
+      { logic: 'OR', nodes: [] },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toHaveLength(0);
+  });
+
+  it('unknown logic node type logs warning and fails safely (lines 148-149)', () => {
+    // TypeScript normally prevents this via exhaustiveness checking, but at runtime
+    // malformed JSON could produce an unknown node type. The engine must not crash.
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = evaluateLogicNode(
+      { logic: 'UNKNOWN_TYPE' } as never,
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(result.errorMessages).toContain('Unknown prerequisite type');
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Unknown logic node type'));
+    spy.mockRestore();
+  });
+});
+
+describe('evaluateLogicNode — CONDITION node: dynamic @-values and NaN edge cases', () => {
+  // ── Dynamic @-prefixed values (lines 317-318) ──────────────────────────────
+
+  it('resolves an @-prefixed value on the RHS dynamically (line 317-318 coverage)', () => {
+    // Both sides are resolved at evaluation time.
+    // @characterLevel on the left = 8; @characterLevel on the right = 8 → 8 == 8 → pass.
+    const result = evaluateLogicNode(
+      {
+        logic: 'CONDITION',
+        targetPath: '@characterLevel',
+        operator: '==',
+        value: '@characterLevel',   // ← dynamic RHS @-path
+      },
+      mockContext
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('dynamic RHS @-path resolves to different value → condition fails', () => {
+    const ctx = { ...mockContext, classLevels: { class_fighter: 3 }, characterLevel: 3, eclForXp: 5 };
+    // @characterLevel = 3; @eclForXp = 5 → 3 == 5 → false
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@characterLevel', operator: '==', value: '@eclForXp' },
+      ctx
+    );
+    expect(result.passed).toBe(false);
+  });
+
+  // ── NaN branch for >= and <= (lines 336-338) ──────────────────────────────
+
+  it('>= operator: returns false and warns when operand is non-numeric (NaN branch)', () => {
+    // @activeTags is an array → Number(array) = NaN → NaN branch fires on line 336-338.
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: '>=', value: 1 },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('requires numbers'));
+    spy.mockRestore();
+  });
+
+  it('<= operator: returns false and warns when operand is non-numeric (NaN branch)', () => {
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = evaluateLogicNode(
+      { logic: 'CONDITION', targetPath: '@activeTags', operator: '<=', value: 5 },
+      mockContext
+    );
+    expect(result.passed).toBe(false);
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('requires numbers'));
+    spy.mockRestore();
   });
 });

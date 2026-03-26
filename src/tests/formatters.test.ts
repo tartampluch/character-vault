@@ -568,4 +568,12 @@ describe('formatSituationalContext() — localized situational labels', () => {
     expect(typeof sample.en).toBe('string');
     expect(typeof sample.fr).toBe('string');
   });
+
+  it('falls back to entry.en when the requested language key is absent (line 473 coverage)', () => {
+    // "de" (German) is not in any SITUATIONAL_LABELS entry.
+    // The fallback chain is: entry[lang] → undefined → entry['en'] → English label.
+    // This covers the `entry['en'] ?? ctx` branch on line 473.
+    expect(formatSituationalContext('vs_giant', 'de')).toBe('vs. Giants');
+    expect(formatSituationalContext('tracking', 'de')).toBe('While tracking');
+  });
 });

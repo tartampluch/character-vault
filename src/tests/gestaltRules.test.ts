@@ -497,3 +497,105 @@ describe('Gestalt ≤ Standard invariant (for non-negative increments)', () => {
     }
   });
 });
+
+// =============================================================================
+// SECTION 8: Edge case coverage — previously uncovered branches
+// =============================================================================
+
+describe('groupBaseModifiersByClass() — classLevels missing key fallback (line 136)', () => {
+  /**
+   * When `classLevels[sourceId]` is undefined, `maxLevel` falls back to
+   * `sourceMods.length`. This is the `?? sourceMods.length` branch on line 136.
+   * It occurs when the character's class level info is not available but modifier
+   * data is still present (e.g., during incremental loading or stripped character snapshots).
+   */
+  const makeBaseMod = (sourceId: string, value: number): Modifier => ({
+    id: `mod_${sourceId}_${value}`,
+    sourceId,
+    sourceName: { en: sourceId, fr: sourceId },
+    targetId: 'combatStats.base_attack_bonus',
+    value,
+    type: 'base' as ModifierType,
+  });
+
+  it('uses sourceMods.length as maxLevel when classLevels key is absent', () => {
+    // Three base mods from 'class_unknown' but classLevels has no entry for it.
+    // maxLevel falls back to 3 (sourceMods.length) → all 3 mods are mapped.
+    const mods = [
+      makeBaseMod('class_unknown', 1),
+      makeBaseMod('class_unknown', 1),
+      makeBaseMod('class_unknown', 1),
+    ];
+    const grouped = groupBaseModifiersByClass(mods, {}); // empty classLevels
+    expect(grouped.has('class_unknown')).toBe(true);
+    const contributions = grouped.get('class_unknown')!;
+    expect(contributions[1]).toBe(1);
+    expect(contributions[2]).toBe(1);
+    expect(contributions[3]).toBe(1);
+  });
+});
+
+describe('computeGestaltBase() — empty byClass map (line 210)', () => {
+  /**
+   * Line 210: `if (byClass.size === 0) return 0;`
+   * Fires when all modifiers are non-"base" type (no "base" modifiers exist).
+   * groupBaseModifiersByClass() only groups "base" type, so if all mods are
+   * e.g. "enhancement", byClass is empty.
+   */
+  it('returns 0 when no "base" type modifiers are present', () => {
+    const nonBaseMod: Modifier = {
+      id: 'enh', sourceId: 'item', sourceName: { en: 'Ring', fr: 'Anneau' },
+      targetId: 'combatStats.base_attack_bonus', value: 3, type: 'enhancement',
+    };
+    // All mods are enhancement type → byClass is empty → returns 0
+    const result = computeGestaltBase([nonBaseMod], { item: 1 }, 1);
+    expect(result).toBe(0);
+  });
+});
+
+describe('computeGestaltBase() — level gap in contributions (line 223)', () => {
+  /**
+   * Line 223: `const contribution = contributions[level] ?? 0;`
+   * The `?? 0` branch fires when a class has no contribution at a specific level.
+   * This only runs in the multi-class branch (byClass.size > 1), because the
+   * single-class path (line 213–215) early-returns via Object.values().reduce().
+   * We need two classes where one class stops contributing before characterLevel.
+   */
+  const makeBaseMod = (sourceId: string, value: number): Modifier => ({
+    id: `gap_${sourceId}_${value}_${Math.random()}`,
+    sourceId,
+    sourceName: { en: sourceId, fr: sourceId },
+    targetId: 'saves.fortitude',
+    value,
+    type: 'base' as ModifierType,
+  });
+
+  it('fills with 0 when a class has no contribution at a given level (multi-class path)', () => {
+    // Fighter: levels 1-3 only (3 mods → contributions at levels 1,2,3).
+    // Cleric: levels 1-5 (5 mods → contributions at levels 1-5).
+    // characterLevel = 5; byClass.size = 2 → multi-class gestalt loop runs.
+    // At levels 4-5, Fighter has no contribution → contributions[4] ?? 0 fires.
+    const fighterMods = [
+      makeBaseMod('class_fighter', 2), // level 1
+      makeBaseMod('class_fighter', 0), // level 2
+      makeBaseMod('class_fighter', 1), // level 3
+    ];
+    const clericMods = [
+      makeBaseMod('class_cleric', 2), // level 1
+      makeBaseMod('class_cleric', 0), // level 2
+      makeBaseMod('class_cleric', 1), // level 3
+      makeBaseMod('class_cleric', 0), // level 4
+      makeBaseMod('class_cleric', 1), // level 5
+    ];
+    const allMods = [...fighterMods, ...clericMods];
+    const classLevels = { 'class_fighter': 3, 'class_cleric': 5 };
+
+    const result = computeGestaltBase(allMods, classLevels, 5);
+
+    // Per level max(fighter, cleric):
+    //   L1: max(2,2)=2, L2: max(0,0)=0, L3: max(1,1)=1
+    //   L4: max(0,0)=0 [fighter uses ??0], L5: max(0,1)=1 [fighter uses ??0]
+    // Total = 2+0+1+0+1 = 4
+    expect(result).toBe(4);
+  });
+});

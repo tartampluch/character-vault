@@ -28,7 +28,7 @@
  * @see ARCHITECTURE.md Phase 17.4
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { parseAndRoll, rollAllAbilityScores } from '$lib/utils/diceEngine';
 import type { DamageTargetPool, RollContext } from '$lib/utils/diceEngine';
 import type { CampaignSettings } from '$lib/types/settings';
@@ -628,5 +628,40 @@ describe('DamageTargetPool — createDefaultCampaignSettings initialises V/WP fl
     settings.variantRules.vitalityWoundPoints = true;
     expect(settings.variantRules.vitalityWoundPoints).toBe(true);
     expect(settings.variantRules.gestalt).toBe(false); // gestalt unchanged
+  });
+});
+
+// =============================================================================
+// parseDiceExpression edge cases — unknown token warning (line 509)
+// =============================================================================
+
+describe('parseAndRoll() — unknown/garbage token in formula (line 509 coverage)', () => {
+  /**
+   * Line 509: `console.warn(...)` inside `parseDiceExpression`.
+   * Fires when a token cannot be parsed as a die group (NdN), a constant (+/- int),
+   * or a valid separator. The unknown token is silently skipped after the warning.
+   * This allows partial-parse: "1d6 ? xyz" still yields the valid 1d6 portion.
+   */
+  const pipeline = {
+    id: 'test', label: { en: 'Test' }, baseValue: 0,
+    activeModifiers: [], situationalModifiers: [], totalBonus: 0, totalValue: 0,
+    derivedModifier: 0,
+  };
+  const ctx: RollContext = { targetTags: [], isAttackOfOpportunity: false };
+  const settings = createDefaultCampaignSettings();
+  const deterministicRng = () => 3; // always roll 3
+
+  it('logs a warning but still returns a result when formula has unknown tokens', () => {
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // The parser normalises whitespace first, then splits by +/-.
+    // "1d6+garbage": "1d6" is a valid dice group (rolled = 3); "+garbage" → sign=1,
+    // cleanPart="garbage" matches neither /\d+d\d+/ nor /\d+/ → warning + skip.
+    const result = parseAndRoll('1d6+garbage', pipeline, ctx, settings, deterministicRng);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Could not parse dice expression token'));
+    // 1d6 rolled deterministically (always 3) + no static bonus + no modifier = 3
+    expect(result.finalTotal).toBe(3);
+    spy.mockRestore();
   });
 });

@@ -75,6 +75,28 @@ phase1_sizePipeline", not "Active Tags" (which is computed in Phase 0).
 Added a `/** */` JSDoc block describing the singleton's purpose, the APIs it wraps, and
 the standard import pattern.
 
+### Post-Fix Documentation Updates (2026-03-26)
+
+- **`ARCHITECTURE.md`**: Updated `savingThrowConfig` description (now `$derived`, not `readonly`), `enabledRuleSources` semantics (file-path whitelist, not source IDs), `getSpellSaveDC` fallback (`isCastingAbility` flag), weapon helpers (`config_weapon_defaults`). Type definitions updated.
+- **`ANNEXES.md`**: Added Annex B.13 (`config_save_definitions`), B.14 (`config_weapon_defaults`), B.15 (`config_movement_defaults`).
+- **`CONTENT_AUTHORING_GUIDE.md`**: Clarified `ruleSource` vs `enabledRuleSources` distinction. Added complete config table reference table.
+- **`README.md`**: Updated test count badge and coverage summary (45 files, 1 594 tests).
+
+### Post-Fix Coverage Improvements (2026-03-26)
+
+Starting from 92.61% / 88.09% branches, ending at:
+- `logicEvaluator.ts`: **100% all metrics** (added: dynamic `@`-value RHS, vacuous AND/OR, unknown node type, NaN branches)
+- `gestaltRules.ts`: **100% all metrics** (added: `classLevels` missing-key fallback, empty `byClass`, level-gap `?? 0`)
+- `diceEngine.ts`: 98.42% statements, 99.14% lines (added: unknown token warning path)
+- `formatters.ts`: 100% statements (added: `entry['en'] ?? ctx` fallback, FR fallback path)
+- **Overall: 93.53% statements · 89.66% branches · 97.03% functions · 94.59% lines** (up from 92.61/88.09/97.03/93.69)
+
+Permanently uncoverable lines (documented):
+- `diceEngine.ts:527` — `defaultRng()` uses `Math.random()`; testing requires mocking
+- `formatters.ts:473` — `entry['en'] ?? ctx` right-hand branch; unreachable because all entries have valid `en` values
+- `DataLoader.ts:1071–1103` — `loadExternalLocales()` requires a live HTTP server
+- `StorageManager.ts:228,345,352,550` — API network error branches
+
 ---
 
 ## Executive Summary (original)
