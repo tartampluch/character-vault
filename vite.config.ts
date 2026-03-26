@@ -90,6 +90,15 @@ export default defineConfig({
 		environment: 'node',
 		globals: true,
 		include: ['src/tests/**/*.test.ts'],
+		/**
+		 * Global test setup: silences known engine diagnostic messages
+		 * ([MathParser], [DataLoader], [GameEngine], etc.) that appear as
+		 * expected side effects when tests exercise error-handling paths.
+		 * Tests that explicitly assert a specific warning fires use
+		 * vi.spyOn(console, 'warn') which continues to work correctly.
+		 * @see src/tests/setup.ts
+		 */
+		setupFiles: ['src/tests/setup.ts'],
 		alias: {
 			'$lib': new URL('./src/lib', import.meta.url).pathname,
 		},

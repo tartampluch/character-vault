@@ -284,7 +284,7 @@ describe('DataLoader — #processEntity() via direct cache path', () => {
   it('processes a valid feature entity from GM overrides JSON', async () => {
     const loader = new DataLoader();
 
-    // Mock fetch to return empty file list (no files to load)
+    // Mock fetch: empty file list (no static rule files) + global-rules returns empty
     const mockFetch = vi.fn().mockImplementation((url) => {
       if (typeof url === 'string' && url.includes('/rules')) {
         return Promise.resolve({
@@ -292,6 +292,9 @@ describe('DataLoader — #processEntity() via direct cache path', () => {
           headers: { get: () => 'application/json' },
           json: () => Promise.resolve([]),
         });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       return Promise.reject(new Error('unexpected URL'));
     });
@@ -831,6 +834,9 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
           json: () => Promise.resolve(['/rules/throws.json']),
         });
       }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
       return Promise.reject(new Error('Network error'));
     }));
 
@@ -850,6 +856,9 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
         return Promise.resolve({ ok: false, status: 404, headers: { get: () => 'application/json' } });
       }
       if (url === '/rules/manifest.json') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url === '/api/global-rules') {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       return Promise.reject(new Error('unexpected'));
@@ -873,6 +882,9 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
       if (url === '/rules/manifest.json') {
         return Promise.resolve({ ok: false, status: 404 }); // Manifest also not found
       }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
       return Promise.reject(new Error('unexpected'));
     }));
 
@@ -891,6 +903,9 @@ describe('DataLoader — #loadRuleFile() via loadRuleSources with non-empty file
         return Promise.resolve({ ok: true, headers: { get: () => 'text/html' }, json: () => Promise.resolve([]) });
       }
       if (url === '/rules/manifest.json') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url === '/api/global-rules') {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       }
       return Promise.reject(new Error('unexpected'));
