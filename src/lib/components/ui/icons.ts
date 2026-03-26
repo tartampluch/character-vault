@@ -104,7 +104,9 @@ export { Moon       as IconThemeDark    } from 'lucide-svelte'; // Force dark mo
 export { Check          as IconSuccess   } from 'lucide-svelte'; // Met prerequisite / success
 export { AlertCircle    as IconError     } from 'lucide-svelte'; // Error / failed prerequisite
 export { AlertTriangle  as IconWarning   } from 'lucide-svelte'; // Warning / caution
-export { Lock           as IconLocked    } from 'lucide-svelte'; // Locked / read-only
+export { Lock           as IconLocked    } from 'lucide-svelte'; // Locked / read-only / Suspend account
+export { LockOpen       as IconUnlocked  } from 'lucide-svelte'; // Unlocked / Reinstate account
+export { ShieldUser     as IconAdmin     } from 'lucide-svelte'; // Admin / user management panel
 export { CircleCheck    as IconChecked   } from 'lucide-svelte'; // Completed chapter / checked item
 export { Circle         as IconUnchecked } from 'lucide-svelte'; // Incomplete item
 

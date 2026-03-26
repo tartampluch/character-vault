@@ -74,6 +74,7 @@
     IconExpand,
     IconClose,
     IconHome,
+    IconAdmin,
   } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
@@ -463,6 +464,34 @@
         <IconSettings size={20} class="shrink-0" aria-hidden="true" />
         {#if !collapsed}
           <span class="truncate">{ui('nav.settings', engine.settings.language)}</span>
+        {/if}
+      </a>
+    {/if}
+
+    <!-- ── ADMIN TOOLS (Phase 22 — admin role only) ─────────────────────────
+         The admin panel is independent of the active campaign. It is visible
+         whenever the logged-in user has role='admin', regardless of which
+         campaign (if any) is currently active.
+    -->
+    {#if sessionContext.isAdmin}
+      <div class="pt-2 pb-1">
+        {#if !collapsed}
+          <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
+            Admin
+          </p>
+        {:else}
+          <div class="border-t border-border mx-1"></div>
+        {/if}
+      </div>
+
+      <a
+        href="/admin/users"
+        class={navLinkClass('/admin/users')}
+        title="User Management"
+      >
+        <IconAdmin size={20} class="shrink-0" aria-hidden="true" />
+        {#if !collapsed}
+          <span class="truncate">User Management</span>
         {/if}
       </a>
     {/if}
