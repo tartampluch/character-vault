@@ -1014,3 +1014,189 @@ Produce a structured report with 4 sections:
 
 For each issue: file path, line reference, architecture section, and specific description of what's wrong vs. what's expected.
 ```
+
+---
+
+## Checkpoint #9 — User Management System
+
+**Prerequisites:** Phase 22 must be complete (Phases 1–21 already reviewed).
+
+```markdown
+You are a senior code reviewer specializing in PHP/SQLite backends, Svelte 5 frontends, and web application security.
+
+I have attached `ARCHITECTURE.md` (especially §22), `PROMPT.md` (Phase 22 tasks), and all source files produced during Phase 22:
+- Backend: `api/migrate.php`, `api/auth.php`, `api/controllers/UserController.php`, `api/controllers/CampaignController.php`, `api/index.php`
+- Frontend: `src/lib/types/user.ts`, `src/lib/api/userApi.ts`, `src/lib/engine/SessionContext.svelte.ts`, `src/routes/setup-password/+page.svelte`, `src/routes/+layout.svelte`, `src/routes/admin/users/+page.svelte`, `src/lib/components/admin/UserFormModal.svelte`, `src/lib/components/admin/ConfirmDeleteModal.svelte`, `src/lib/components/admin/ChangePasswordModal.svelte`, `src/lib/components/layout/Sidebar.svelte`
+- Tests: `tests/UserManagementTest.php`, `tests/CampaignUsersTest.php`, `src/tests/userManagement.test.ts`, `src/tests/setupPasswordFlow.test.ts`
+
+Your job is to verify Phase 22 is **complete, correct, and secure**. Do NOT rewrite code. Produce a **numbered checklist of issues** with file paths, line references, and severity (CRITICAL / MAJOR / MINOR).
+
+---
+
+## 1. Database Schema & Admin Bootstrap (Phase 22.1)
+
+- Does `migrate.php` add `role TEXT NOT NULL DEFAULT 'player'` to the `users` table via `PRAGMA table_info` guard (idempotent)?
+- Does `migrate.php` add `is_suspended INTEGER NOT NULL DEFAULT 0` via the same guard?
+- Does `migrate.php` add `last_login_at INTEGER` (nullable) via the same guard?
+- Does the backfill correctly set `role = 'gm'` for existing rows with `is_game_master = 1`? Does it set 'gm' (not 'admin') for this backfill?
+- Does the `campaign_users` table exist with columns `(campaign_id TEXT, user_id TEXT, joined_at INTEGER)` and a composite `PRIMARY KEY (campaign_id, user_id)`?
+- Do the `campaign_users` foreign keys reference `campaigns(id)` and `users(id)` with `ON DELETE CASCADE`?
+- Does the admin bootstrap (seeding `admin` user) fire ONLY when `COUNT(*) FROM users = 0`?
+- Does the bootstrapped `admin` have `password_hash = ''`, `role = 'admin'`, `is_suspended = 0`?
+- Is the migration fully idempotent — running `migrate()` twice produces no errors and no duplicate data?
+
+## 2. Authentication — Login Flow Changes (Phase 22.2)
+
+- Does `handleLogin()` check `is_suspended = 1` **before** any password logic, returning 403 `AccountSuspended`?
+- Does `handleLogin()` detect no-password accounts via `password_hash === ''`?
+- For a no-password account within 7 days: does it allow login without password verification and return `needs_password_setup: true`?
+- For a no-password account after 7 days: does it set `is_suspended = 1` in the DB and return 403 `AccountExpired`? (No cron required — fired at login time.)
+- Does `handleLogin()` reject a non-empty submitted password for a no-password account (prevents brute-force probing)?
+- Does `handleLogin()` update `last_login_at` in the DB on every successful login?
+- Is `role` stored in `$_SESSION` after login?
+- Is `is_game_master` derived from `role IN ('gm', 'admin')` rather than read from the `is_game_master` DB column?
+- Is `needs_password_setup` returned in the login response body ONLY when true (not always present)?
+
+## 3. Authentication — Setup Password (Phase 22.2)
+
+- Does `PUT /api/auth/setup-password` require active authentication (`requireAuth()`)?
+- Does it require `$_SESSION['needs_password_setup'] === true` (returns 403 `Forbidden` otherwise)?
+- Does it reject an empty `password` field with 400 `BadRequest`?
+- Does it store a bcrypt hash via `hashPassword()`?
+- Does it clear `$_SESSION['needs_password_setup']` after success?
+- Is it registered in `index.php` with `verifyCsrfToken()`?
+
+## 4. Authentication — Change Password (Phase 22.14)
+
+- Does `PUT /api/auth/change-password` require active authentication (`requireAuth()`)?
+- Does it reject an empty `new_password` with 400 `BadRequest`?
+- If `password_hash !== ''` (account has a password): does it verify `current_password` via `password_verify()` and return 400 `WrongPassword` on mismatch?
+- If `password_hash === ''` (no-password account): does it skip the `current_password` check entirely?
+- Does it store the new bcrypt hash?
+- Does it clear `$_SESSION['needs_password_setup']` on success?
+- Is it registered in `index.php` with `verifyCsrfToken()`?
+
+## 5. Auth Guards — requireAdmin() vs requireGameMaster() (Phase 22.2)
+
+- Does `requireAdmin()` exist in `auth.php`? Does it return 403 for any `role !== 'admin'`?
+- Does `requireGameMaster()` accept BOTH `'gm'` AND `'admin'` roles (not only `'gm'`)?
+- Does `requireAuth()` return `role` and derive `is_game_master` from it, keeping backward compatibility?
+
+## 6. User Management REST API — UserController (Phase 22.3)
+
+- `GET /api/users`: admin-only? Returns all users with `id, username, player_name, role, is_suspended, created_at, last_login_at, campaigns[]`? Each `campaigns` entry has `id, title, character_count`?
+- `POST /api/users`: admin-only? Creates with `password_hash = ''`, `role = 'player'`, `is_suspended = 0`? Returns 409 on duplicate username?
+- `PUT /api/users/{id}`: admin-only? Updates `display_name`? Returns 400 when admin targets own account?
+- `PUT /api/users/{id}/role`: admin-only? Validates role is one of `'admin'|'gm'|'player'`? Keeps `is_game_master` column in sync? Returns 400 when admin targets own account?
+- `POST /api/users/{id}/suspend`: admin-only? Sets `is_suspended = 1`? Returns 400 when admin targets own account?
+- `POST /api/users/{id}/reinstate`: admin-only? Sets `is_suspended = 0`? No self-restriction (suspended admin can't call this anyway)?
+- `POST /api/users/{id}/reset-password`: admin-only? Sets `password_hash = ''`? **No self-edit restriction** (admin may reset own password)? Returns 200 `{id, password_reset: true}`?
+- `DELETE /api/users/{id}`: admin-only? Hard deletes; cascade removes `campaign_users` and owned characters? Returns 400 when admin targets own account?
+- Are ALL 8 routes registered in `index.php` with `verifyCsrfToken()` on mutating methods?
+
+## 7. Campaign User Management API (Phase 22.4)
+
+- `GET /api/campaigns/{id}/users`: GM+Admin? Lists ALL members including suspended?
+- `POST /api/campaigns/{id}/users`: GM+Admin? Body `{user_id}`? Accepts suspended users? Returns 201 on success, 409 on duplicate, 404 if campaign/user not found?
+- `DELETE /api/campaigns/{id}/users/{userId}`: GM+Admin? Removes membership row only (does NOT delete characters)? Returns 404 if membership not found?
+- Are all three routes registered in `index.php` before the bare `/campaigns/{id}` pattern (no route shadowing)?
+
+## 8. Frontend — Types & API Client (Phase 22.5)
+
+- Does `src/lib/types/user.ts` export `UserRole`, `User`, `CampaignMembership`, `CampaignMember`?
+- Does `src/lib/api/userApi.ts` export `ApiError` with `status: number` and `code: string`?
+- Does `userApi.ts` cover all 12 endpoints: `listUsers`, `createUser`, `updatePlayerName`, `updateRole`, `suspendUser`, `reinstateUser`, `resetUserPassword`, `deleteUser`, `getCampaignUsers`, `addCampaignUser`, `removeCampaignUser`, `changePassword`, `setupPassword`?
+- Does `apiFetch()` fall back to `'UnknownError'` / `'HTTP {status}'` when error response body lacks `error`/`message` fields?
+- Does `apiFetch()` handle JSON parse failure in error responses (`.catch(() => ({}))`)?
+
+## 9. Frontend — SessionContext (Phase 22.5)
+
+- Is `role = $state<UserRole>('gm')` the single source of truth for all permission checks?
+- Is `isGameMaster = $derived(role === 'gm' || role === 'admin')` — NOT a standalone `$state`?
+- Is `isAdmin = $derived(role === 'admin')`?
+- Is `needsPasswordSetup = $state<boolean>(false)`?
+- Does `clearPasswordSetup()` set `needsPasswordSetup = false`?
+- Does `requirePasswordSetup()` set `needsPasswordSetup = true`?
+- Does `setGameMaster(true)` set `role = 'gm'` and `setGameMaster(false)` set `role = 'player'` (backward compat)?
+- Does `loadFromServer()` read `role` from the API response? Does it fall back to deriving from `is_game_master` for legacy responses without `role`?
+- Does `loadFromServer()` set `needsPasswordSetup` from `needs_password_setup` in the response (defaults to `false` if absent)?
+
+## 10. Frontend — Force Password Setup Flow (Phase 22.6)
+
+- Does `src/routes/setup-password/+page.svelte` exist?
+- Does the form have "New Password" + "Confirm Password" fields with client-side validation (non-empty, ≥8 chars, match)?
+- Does the live mismatch hint appear below the confirm field immediately as the user types?
+- Does the submit button use `$derived` to be disabled when validation fails or while loading?
+- Does the submit handler call `setupPassword()` from `userApi`?
+- On success: does it call `sessionContext.clearPasswordSetup()` and navigate to `/campaigns`?
+- Does `onMount` redirect to `/campaigns` if `!sessionContext.needsPasswordSetup` (direct URL access guard)?
+- Does `src/routes/+layout.svelte` have a `$effect` that redirects to `/setup-password` when `sessionContext.needsPasswordSetup === true` and current path is not `/setup-password` or `/login`?
+- Does the layout guard use `$page.url.pathname` (reactive to SvelteKit navigation)?
+
+## 11. Frontend — User Management Page (Phase 22.7 + 22.8)
+
+- Does `src/routes/admin/users/+page.svelte` exist?
+- Does `onMount` call `listUsers()` and redirect to `/campaigns` on 403 (API-enforced admin guard)?
+- Are all 8 columns present: username, player name, role badge (color-coded), campaigns (name + char count), created date, last login ("Never" for null), status badge (Active/Suspended), actions?
+- Are the role badges color-coded: Admin=red, GM=amber, Player=blue?
+- Does the actions column have: Edit (pencil), Suspend/Reinstate (lock/lock-open), Reset Password (key), Delete (trash)?
+- Are Edit, Suspend, and Delete disabled/grayed for the currently authenticated admin's own row? Is Reset Password **not** disabled for own row?
+- Does `toggleSuspend()` use a per-row loading flag to prevent double-clicks?
+- Does `handleResetPassword()` show a brief inline success indicator and refresh the list?
+- Does `UserFormModal` handle create mode (username + player_name) and edit mode (player_name + role dropdown + suspend toggle)?
+- Does `ConfirmDeleteModal` show the username, a "cannot be undone" warning, and require an explicit confirmation click?
+- Does `ChangePasswordModal` have Current Password + New Password + Confirm fields? Does it call `changePassword()` from `userApi`? Is `WrongPassword` 400 shown as "Current password is incorrect."?
+
+## 12. Frontend — Campaign Members Section (Phase 22.9)
+
+- Does the campaign settings page (`/campaigns/{id}/settings`) have a collapsible "Members" section (Section 7)?
+- Is it visible only when `sessionContext.isGameMaster` is true?
+- Does it lazy-load members from `getCampaignUsers()` on first expand?
+- Does the member list show: role badge, username, player name, "(Suspended)" indicator for suspended users?
+- Does each row have a Remove button that calls `removeCampaignUser()`?
+- Does the "Add Member" button open a searchable dropdown listing ALL users (including suspended)?
+- Are suspended users shown in muted style in the picker?
+- Does the picker exclude already-member users from the list?
+- On 403 (non-admin GM cannot call `listUsers()`): is a graceful error message shown instead of crashing?
+
+## 13. Frontend — Sidebar Change Password (Phase 22.15)
+
+- Is a "Change Password" button visible in the Sidebar footer for all authenticated users?
+- In collapsed mode: is it icon-only (key icon)? In expanded mode: does it show "Change Password" label?
+- Does clicking it open `ChangePasswordModal`?
+- Is `ChangePasswordModal` mounted outside `<aside>` to avoid z-index stacking issues?
+
+## 14. Security Audit (Phase 22 — Cross-Cutting)
+
+- **Suspended account enumeration:** Does the login endpoint return 403 (not 401) for suspended accounts? This prevents attackers from distinguishing "wrong password" (401) from "account exists but suspended" (403).
+- **No-password timing:** Does the no-password login path (when `password_hash === ''`) return the same error code as a wrong-password login when a non-empty password is submitted? (Prevents probing whether a username has no password.)
+- **CSRF on all mutations:** Do ALL POST/PUT/DELETE user management endpoints call `verifyCsrfToken()` in `index.php`?
+- **Self-suspension lockout prevention:** Can an admin suspend their own account via the UI? (Should be blocked at 400.)
+- **Role escalation:** Can a GM call `POST /api/users` or `PUT /api/users/{id}/role`? (Must return 403.)
+- **Campaign membership leakage:** Does `GET /api/campaigns/{id}/users` return 403 for unauthenticated or player-role callers?
+- **Password hash leakage:** Does `GET /api/users` response ever include `password_hash`? (Must never expose it.)
+- **Reset-password self-use:** Can an admin reset their own password? (Must be allowed — no self-restriction on this endpoint.)
+
+## 15. Test Coverage (Phase 22.10, 22.11, 22.16)
+
+- **PHPUnit — `UserManagementTest.php`:** Covers admin bootstrap, no-password login within/after 7 days, setup-password (success/empty/flag-missing), change-password (success/wrong-current/empty-new/no-password-skip/unauthenticated), reset-password (success/self-allowed/non-admin-403/404/next-login-triggers-setup), UserController CRUD (create/409/update/role/suspend/reinstate/delete), self-edit restrictions (update/role/suspend/delete return 400), non-admin 403?
+- **PHPUnit — `CampaignUsersTest.php`:** Covers GM add, suspended user add, duplicate 409, remove, player 403 for all three operations, `getUsers` shape (incl. suspended members)?
+- **Vitest — `userManagement.test.ts`:** Covers all 13 `userApi` functions for correct URL, HTTP method, request body, and 4xx `ApiError` throwing? Covers `ApiError` fallback fields (empty body, missing message)?
+- **Vitest — `setupPasswordFlow.test.ts`:** Covers `needsPasswordSetup` default, `requirePasswordSetup`/`clearPasswordSetup` transitions, `loadFromServer()` flag propagation, legacy `is_game_master` fallback, form validation spec (empty/short/mismatch/valid), redirect guard contract?
+- Are all tests passing with no failures (`npm run test` and `./vendor/bin/phpunit`)?
+- Is `userApi.ts` at 100% coverage (all branches including error fallbacks)?
+
+---
+
+Produce a structured report with 4 sections:
+
+**🔴 CRITICAL ISSUES** (Must fix before release — incorrect behavior, security vulnerability, data corruption risk)
+
+**🟡 MAJOR ISSUES** (Should fix — deviations from architecture, missing edge cases, incomplete implementations)
+
+**🟢 MINOR ISSUES** (Nice to fix — code style, missing comments, non-blocking inconsistencies)
+
+**✅ VALIDATION PASSED** (Categories that are fully conformant)
+
+For each issue: file path, line reference, architecture section, and specific description of what's wrong vs. what's expected.
+```

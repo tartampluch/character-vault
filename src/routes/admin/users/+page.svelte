@@ -24,7 +24,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { listUsers, suspendUser, reinstateUser, ApiError } from '$lib/api/userApi';
+  import { listUsers, suspendUser, reinstateUser, resetUserPassword, ApiError } from '$lib/api/userApi';
   import type { User } from '$lib/types/user';
   import {
     IconAdd,
@@ -32,9 +32,10 @@
     IconDelete,
     IconLocked,
     IconUnlocked,
+    IconKey,
   } from '$lib/components/ui/icons';
-  import UserFormModal    from '$lib/components/admin/UserFormModal.svelte';
-  import ConfirmDeleteModal from '$lib/components/admin/ConfirmDeleteModal.svelte';
+  import UserFormModal      from '$lib/components/admin/UserFormModal.svelte';
+  import ConfirmDeleteModal  from '$lib/components/admin/ConfirmDeleteModal.svelte';
 
   // ── State ───────────────────────────────────────────────────────────────────
   let users      = $state<User[]>([]);
@@ -129,6 +130,9 @@
 
   // ── Direct row actions (no modal needed) ─────────────────────────────────────
 
+  // Brief inline notice shown after a successful password reset.
+  let resetNotice = $state<Record<string, boolean>>({});
+
   /**
    * Toggles suspension for a user row.
    * Calls suspendUser() or reinstateUser() immediately, then reloads the list.
@@ -146,6 +150,28 @@
       await loadUsers();
     } catch (e) {
       loadError = e instanceof ApiError ? e.message : 'Action failed.';
+    } finally {
+      actionLoading = { ...actionLoading, [u.id]: false };
+    }
+  }
+
+  /**
+   * Resets a user's password to blank, forcing them through setup-password on next login.
+   * No confirmation modal needed — the action is non-destructive (user can still log in).
+   */
+  async function handleResetPassword(u: User): Promise<void> {
+    if (actionLoading[u.id]) return;
+    actionLoading = { ...actionLoading, [u.id]: true };
+    try {
+      await resetUserPassword(u.id);
+      // Show a brief "Password reset" indicator on the row, then reload.
+      resetNotice = { ...resetNotice, [u.id]: true };
+      setTimeout(() => {
+        resetNotice = { ...resetNotice, [u.id]: false };
+      }, 3000);
+      await loadUsers();
+    } catch (e) {
+      loadError = e instanceof ApiError ? e.message : 'Reset failed.';
     } finally {
       actionLoading = { ...actionLoading, [u.id]: false };
     }
@@ -332,6 +358,23 @@
                       {:else}
                         <IconLocked size={15} aria-hidden="true" />
                       {/if}
+                    </button>
+
+                    <!-- Reset Password button — blanks the password, no self-restriction -->
+                    <button
+                      type="button"
+                      class="p-1.5 rounded-md transition-colors
+                             {actionLoading[user.id]
+                               ? 'text-text-muted opacity-40 cursor-not-allowed'
+                               : resetNotice[user.id]
+                                 ? 'text-green-400'
+                                 : 'text-text-secondary hover:text-accent hover:bg-accent/10'}"
+                      disabled={!!actionLoading[user.id]}
+                      onclick={() => handleResetPassword(user)}
+                      title="Reset password for {user.username} (forces setup on next login)"
+                      aria-label="Reset password for {user.username}"
+                    >
+                      <IconKey size={15} aria-hidden="true" />
                     </button>
 
                     <!-- Delete button -->

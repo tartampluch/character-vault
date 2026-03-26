@@ -394,6 +394,48 @@ class UserController
     }
 
     // ============================================================
+    // POST /api/users/{id}/reset-password
+    // ============================================================
+
+    /**
+     * Blanks a user's password, forcing them through the setup-password flow
+     * on their next login.
+     *
+     * ACCESS: Admin-only (requireAdmin()). Unlike other user-management
+     * endpoints, there is NO self-edit restriction — an admin may reset their
+     * own password if they have forgotten it (another admin would do this on
+     * their behalf).
+     *
+     * EFFECT: Sets password_hash = '' for the target user. On next login the
+     * backend detects the empty hash, returns needs_password_setup: true, and
+     * the frontend redirects to /setup-password.
+     *
+     * IDEMPOTENT: Resetting an already-blank password is safe (no-op effect).
+     *
+     * RESPONSE 200: { id, password_reset: true }
+     * RESPONSE 404: user not found
+     * RESPONSE 403: caller is not admin
+     */
+    public static function resetPassword(string $id): void
+    {
+        requireAdmin();
+
+        $db   = Database::getInstance();
+        $user = self::findUserOrFail($db, $id);
+        if ($user === null) return;
+
+        $db->prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+           ->execute(['', $id]);
+
+        Logger::info('User', 'Password reset (blanked)', [
+            'id'       => $id,
+            'username' => $user['username'],
+        ]);
+        http_response_code(200);
+        echo json_encode(['id' => $id, 'password_reset' => true]);
+    }
+
+    // ============================================================
     // DELETE /api/users/{id}
     // ============================================================
 

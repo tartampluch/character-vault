@@ -3422,3 +3422,116 @@ Inline token colouring inside a native `<input>` requires a transparent `<input>
 /campaigns/[id]/content-editor/new              → New entity form (GM only)
 /campaigns/[id]/content-editor/[entityId]       → Edit homebrew entity (GM only)
 ```
+
+---
+
+## §22. User Management Interface
+
+### 22.1. Role Model
+
+Three roles in descending privilege order, stored in `users.role`:
+
+| Role | `is_game_master` | User management | Campaign management | Own characters |
+|---|---|---|---|---|
+| `admin` | `true` | Full CRUD | Full | ✓ |
+| `gm` | `true` | None | Full | ✓ |
+| `player` | `false` | None | None | ✓ own only |
+
+`is_game_master` in the DB is kept in sync with `role` for backward compatibility with pre-Phase-22 code. All new code derives GM status from `role IN ('gm', 'admin')`.
+
+### 22.2. Database Schema Additions
+
+```sql
+-- Additive columns on users (PRAGMA table_info guard):
+ALTER TABLE users ADD COLUMN role          TEXT    NOT NULL DEFAULT 'player';
+ALTER TABLE users ADD COLUMN is_suspended  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE users ADD COLUMN last_login_at INTEGER;          -- NULL = never logged in
+
+-- New join table:
+CREATE TABLE campaign_users (
+    campaign_id TEXT    NOT NULL,
+    user_id     TEXT    NOT NULL,
+    joined_at   INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    PRIMARY KEY (campaign_id, user_id),
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id)     REFERENCES users(id)     ON DELETE CASCADE
+);
+```
+
+**Admin bootstrap:** `migrate()` seeds `username='admin', password_hash='', role='admin'` if the `users` table is empty on first run.
+
+### 22.3. Authentication Additions
+
+| Endpoint | Auth | Description |
+|---|---|---|
+| `POST /api/auth/login` | — | Now returns `role`, `needs_password_setup`; handles suspended/expired accounts |
+| `PUT /api/auth/setup-password` | session+flag | First-login password activation (no-password accounts) |
+| `PUT /api/auth/change-password` | `requireAuth()` | Self-service password change; validates `current_password` unless account has no password |
+
+#### Login Flow Changes (Phase 22)
+
+1. **Suspended** → 403 `AccountSuspended` (checked before any password logic).
+2. **No-password account** (`password_hash = ''`) + **submitted password = ''** + **within 7 days** → allow login, return `needs_password_setup: true`.
+3. **No-password account** + **> 7 days since creation** → auto-suspend in DB, 403 `AccountExpired`.
+4. **Normal** → `password_verify()` as before.
+
+#### `PUT /api/auth/change-password`
+
+```
+Request:  { current_password: string, new_password: string }
+Response: 200 { id, username, display_name, role, is_game_master }
+          400 BadRequest        — new_password is empty
+          400 WrongPassword     — current_password does not match stored hash
+          401 Unauthorized      — not authenticated
+```
+
+`current_password` is skipped when `password_hash = ''` (first-login state). On success the bcrypt hash is stored and `$_SESSION['needs_password_setup']` is cleared.
+
+### 22.4. User Management REST API (`UserController.php`)
+
+All endpoints guarded by `requireAdmin()`.
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/users` | List all users with campaign memberships and character counts |
+| `POST` | `/api/users` | Create account (no password); body `{username, player_name}` |
+| `PUT` | `/api/users/{id}` | Update `player_name`; 400 on self-edit |
+| `PUT` | `/api/users/{id}/role` | Set role; 400 on self-edit |
+| `POST` | `/api/users/{id}/suspend` | Suspend account; 400 on self-edit |
+| `POST` | `/api/users/{id}/reinstate` | Reinstate suspended account |
+| `POST` | `/api/users/{id}/reset-password` | Blank `password_hash` — forces setup-password flow on next login; **no self-edit restriction** |
+| `DELETE` | `/api/users/{id}` | Hard delete + cascade; 400 on self-edit |
+
+### 22.5. Campaign User Management
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/campaigns/{id}/users` | GM+Admin | List members (incl. suspended) |
+| `POST` | `/api/campaigns/{id}/users` | GM+Admin | Add user; body `{user_id}`; 409 duplicate |
+| `DELETE` | `/api/campaigns/{id}/users/{userId}` | GM+Admin | Remove membership (characters kept) |
+
+### 22.6. Frontend Architecture
+
+**New types** (`src/lib/types/user.ts`): `UserRole`, `User`, `CampaignMembership`, `CampaignMember`.
+
+**API client** (`src/lib/api/userApi.ts`): Typed fetch wrappers for all 12 endpoints above plus `setupPassword()`, `changePassword()`, `resetUserPassword()`. All throw `ApiError` on non-2xx.
+
+**SessionContext additions**: `role: UserRole` ($state), `needsPasswordSetup: boolean` ($state), `isGameMaster = $derived(role === 'gm' || role === 'admin')`, `isAdmin = $derived(role === 'admin')`, `clearPasswordSetup()`, `requirePasswordSetup()`.
+
+**New routes**:
+```
+/setup-password      — First-login password activation (layout guard redirects here when needsPasswordSetup)
+/admin/users         — Admin-only user management table
+```
+
+**New components** (`src/lib/components/admin/`):
+- `UserFormModal.svelte` — Create / edit user
+- `ConfirmDeleteModal.svelte` — Delete confirmation
+- `ChangePasswordModal.svelte` — Self-service password change (accessible from Sidebar footer)
+
+### 22.7. Security Notes
+
+- **No enumeration:** Suspended and expired accounts return 403 (not 401) to prevent confirming username existence.
+- **CSRF:** All mutating endpoints call `verifyCsrfToken()` in the router.
+- **Self-edit restrictions:** Admins cannot edit their own role, suspend themselves, or delete themselves (prevents accidental lockout). **Exception:** `reset-password` has no self-restriction — useful for the admin to reset their own forgotten password via another admin account.
+- **Cascade delete:** `campaign_users` and `characters` owned by deleted users are removed via FK `ON DELETE CASCADE`.

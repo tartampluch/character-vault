@@ -107,6 +107,7 @@ export { AlertTriangle  as IconWarning   } from 'lucide-svelte'; // Warning / ca
 export { Lock           as IconLocked    } from 'lucide-svelte'; // Locked / read-only / Suspend account
 export { LockOpen       as IconUnlocked  } from 'lucide-svelte'; // Unlocked / Reinstate account
 export { ShieldUser     as IconAdmin     } from 'lucide-svelte'; // Admin / user management panel
+export { Key            as IconKey       } from 'lucide-svelte'; // Password / key (change/reset password)
 export { CircleCheck    as IconChecked   } from 'lucide-svelte'; // Completed chapter / checked item
 export { Circle         as IconUnchecked } from 'lucide-svelte'; // Incomplete item
 

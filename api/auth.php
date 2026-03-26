@@ -548,6 +548,93 @@ function handleSetupPassword(): void
 }
 
 // ============================================================
+// CHANGE PASSWORD ENDPOINT
+// ============================================================
+
+/**
+ * PUT /api/auth/change-password
+ *
+ * Self-service password change for any authenticated user.
+ *
+ * This endpoint differs from PUT /api/auth/setup-password in two ways:
+ *   1. It is available to any authenticated user regardless of whether the
+ *      needs_password_setup session flag is set.
+ *   2. When the account already has a password it requires the caller to prove
+ *      knowledge of the current password before accepting the new one.
+ *
+ * FLOW:
+ *   a) Reject if new_password is empty.
+ *   b) Fetch the current password_hash from the DB.
+ *   c) If password_hash === '' (no-password account): skip current_password check.
+ *   d) Otherwise: verify current_password; return 400 WrongPassword on mismatch.
+ *   e) Store new bcrypt hash; clear needs_password_setup session flag.
+ *   f) Return updated user object.
+ *
+ * REQUEST BODY (JSON):
+ *   { "current_password": "string", "new_password": "string" }
+ *
+ * RESPONSE 200:  { id, username, display_name, role, is_game_master }
+ * RESPONSE 400 BadRequest    — new_password is empty.
+ * RESPONSE 400 WrongPassword — current_password does not match stored hash.
+ * RESPONSE 401 Unauthorized  — not authenticated.
+ */
+function handleChangePassword(): void
+{
+    $user = requireAuth();
+
+    $body            = json_decode(file_get_contents('php://input'), true) ?? [];
+    $currentPassword = $body['current_password'] ?? '';
+    $newPassword     = $body['new_password']     ?? '';
+
+    if ($newPassword === '') {
+        http_response_code(400);
+        echo json_encode([
+            'error'   => 'BadRequest',
+            'message' => 'New password must not be empty.',
+        ]);
+        return;
+    }
+
+    $db   = Database::getInstance();
+    $stmt = $db->prepare('SELECT password_hash FROM users WHERE id = ?');
+    $stmt->execute([$user['id']]);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // If the account has a password already, require the current one.
+    // If password_hash === '' (no-password / first-login state), skip this check —
+    // the user may not have a password yet (e.g., admin bootstrap + ongoing setup).
+    $hasExistingPassword = $row && $row['password_hash'] !== '';
+    if ($hasExistingPassword && !password_verify($currentPassword, $row['password_hash'])) {
+        Logger::warn('Auth', 'change-password rejected — wrong current password',
+            ['user' => $user['username']]);
+        http_response_code(400);
+        echo json_encode([
+            'error'   => 'WrongPassword',
+            'message' => 'Current password is incorrect.',
+        ]);
+        return;
+    }
+
+    $hash = hashPassword($newPassword);
+    $db->prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+       ->execute([$hash, $user['id']]);
+
+    // Clear setup flag in case the user was in the first-login flow.
+    unset($_SESSION['needs_password_setup']);
+
+    Logger::info('Auth', 'Password changed', ['user' => $user['username']]);
+
+    http_response_code(200);
+    echo json_encode([
+        'id'             => $user['id'],
+        'username'       => $user['username'],
+        'display_name'   => $user['display_name'],
+        'role'           => $user['role'],
+        'is_game_master' => $user['is_game_master'],
+    ]);
+}
+
+// ============================================================
 // UTILITY: PASSWORD HASHING
 // ============================================================
 

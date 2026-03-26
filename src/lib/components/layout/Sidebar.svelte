@@ -75,7 +75,9 @@
     IconClose,
     IconHome,
     IconAdmin,
+    IconKey,
   } from '$lib/components/ui/icons';
+  import ChangePasswordModal from '$lib/components/admin/ChangePasswordModal.svelte';
 
   // ---------------------------------------------------------------------------
   // PROPS
@@ -154,6 +156,9 @@
    * Drives the "Character Sheet" nav link visibility.
    */
   const characterId = $derived(engine.activeCharacterId);
+
+  // Change Password modal state — accessible from the sidebar footer.
+  let showChangePasswordModal = $state(false);
 
   /**
    * Whether the current user is a Game Master.
@@ -629,6 +634,33 @@
       {/if}
     </div>
 
+    <!--
+      Change Password button — available to all authenticated users.
+      Collapsed mode: key icon only (tooltip shows action).
+      Expanded mode: key icon + "Change Password" label.
+    -->
+    <button
+      type="button"
+      class="flex items-center gap-2 w-full px-1 py-1 rounded-md text-xs
+             text-text-muted hover:text-text-secondary hover:bg-surface-alt
+             transition-colors focus:outline-none focus-visible:ring-2
+             focus-visible:ring-accent/50"
+      onclick={() => (showChangePasswordModal = true)}
+      title="Change Password"
+      aria-label="Change Password"
+    >
+      <IconKey size={14} class="shrink-0" aria-hidden="true" />
+      {#if !collapsed}
+        <span>Change Password</span>
+      {/if}
+    </button>
+
   </div>
 
 </aside>
+
+<!-- Change Password modal — mounted outside <aside> to avoid z-index issues -->
+<ChangePasswordModal
+  open={showChangePasswordModal}
+  onClose={() => (showChangePasswordModal = false)}
+/>

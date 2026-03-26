@@ -38,6 +38,7 @@ require_once __DIR__ . '/../api/controllers/CharacterController.php';
 require_once __DIR__ . '/../api/controllers/RulesController.php';
 require_once __DIR__ . '/../api/controllers/GlobalRulesController.php';
 require_once __DIR__ . '/../api/controllers/UiLocalesController.php';
+require_once __DIR__ . '/../api/controllers/UserController.php';
 
 // 3. Shared test utilities
 require_once __DIR__ . '/TestCase.php';

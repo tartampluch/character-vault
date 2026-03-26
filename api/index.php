@@ -9,6 +9,7 @@
  *     POST   /api/auth/logout           → handleLogout()         (auth.php)
  *     GET    /api/auth/me               → handleMe()             (auth.php)
  *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
+ *     PUT    /api/auth/change-password  → handleChangePassword() (auth.php)
  *
  *   Campaigns:
  *     GET    /api/campaigns                               → CampaignController::index()
@@ -39,6 +40,7 @@
  *     PUT    /api/users/{id}/role          → UserController::updateRole($id)
  *     POST   /api/users/{id}/suspend       → UserController::suspend($id)
  *     POST   /api/users/{id}/reinstate     → UserController::reinstate($id)
+ *     POST   /api/users/{id}/reset-password → UserController::resetPassword($id)
  *     DELETE /api/users/{id}               → UserController::delete($id)
  *
  *   Global Rule Sources (Phase 21.1.2 + 21.1.3):
@@ -145,9 +147,14 @@ try {
 
     } elseif ($path === '/auth/setup-password' && $method === 'PUT') {
         // First-login password activation. Requires auth + needs_password_setup session flag.
-        // CSRF token required: this is a state-changing PUT request.
         verifyCsrfToken();
         handleSetupPassword();
+
+    } elseif ($path === '/auth/change-password' && $method === 'PUT') {
+        // Self-service password change for any authenticated user.
+        // Requires current_password (unless account has no password yet).
+        verifyCsrfToken();
+        handleChangePassword();
 
     } elseif ($path === '/campaigns' && $method === 'GET') {
         CampaignController::index();
@@ -257,6 +264,10 @@ try {
     } elseif (preg_match('#^/users/([^/]+)$#', $path, $m) && $method === 'PUT') {
         verifyCsrfToken();
         UserController::update($m[1]);
+
+    } elseif (preg_match('#^/users/([^/]+)/reset-password$#', $path, $m) && $method === 'POST') {
+        verifyCsrfToken();
+        UserController::resetPassword($m[1]);
 
     } elseif (preg_match('#^/users/([^/]+)$#', $path, $m) && $method === 'DELETE') {
         verifyCsrfToken();

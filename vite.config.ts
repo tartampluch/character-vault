@@ -112,6 +112,7 @@ export default defineConfig({
 				'src/lib/engine/**/*.ts',
 				'src/lib/i18n/**/*.ts',
 				'src/lib/utils/**/*.ts',
+				'src/lib/api/**/*.ts',
 			],
 			/**
 			 * Within the included paths, additionally exclude:

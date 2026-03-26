@@ -247,6 +247,47 @@ export async function removeCampaignUser(
 }
 
 // =============================================================================
+// PASSWORD MANAGEMENT (admin reset + self-service change)
+// =============================================================================
+
+/**
+ * Blanks a user's password, forcing them through the setup-password flow on
+ * their next login. Admin-only; no self-edit restriction.
+ *
+ * POST /api/users/{userId}/reset-password
+ *
+ * @throws ApiError 403 if caller is not admin.
+ * @throws ApiError 404 if user not found.
+ */
+export async function resetUserPassword(
+  userId: string,
+): Promise<{ id: string; password_reset: true }> {
+  return apiFetch(`/api/users/${userId}/reset-password`, { method: 'POST' });
+}
+
+/**
+ * Changes the authenticated user's own password.
+ *
+ * PUT /api/auth/change-password
+ *
+ * `currentPassword` is validated against the stored hash unless the account
+ * has no password yet (password_hash = ''), in which case it is ignored.
+ *
+ * @throws ApiError 400 BadRequest   — new_password is empty.
+ * @throws ApiError 400 WrongPassword — current_password does not match.
+ * @throws ApiError 401 Unauthorized  — not authenticated.
+ */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ id: string; username: string; display_name: string; role: UserRole; is_game_master: boolean }> {
+  return apiFetch('/api/auth/change-password', {
+    method: 'PUT',
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  });
+}
+
+// =============================================================================
 // PASSWORD SETUP ENDPOINT (authenticated user, first login only)
 // =============================================================================
 

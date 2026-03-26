@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1594_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-1671_tests-6E9F18?logo=vitest&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -64,7 +64,7 @@ character-vault/
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
-│   └── tests/                  # Vitest unit & integration tests (37 files, 1 147 tests)
+│   └── tests/                  # Vitest unit & integration tests (47 files, 1 671 tests)
 ├── api/                        # PHP backend — zero production dependencies
 │   ├── index.php               # Front-controller / router
 │   ├── migrate.php             # SQLite schema migration runner
@@ -77,7 +77,7 @@ character-vault/
 │       └── test/               # Unit-test fixtures ONLY — never loaded in any deployment
 │           ├── test_mock.json     # Base entities for the Vitest test suite
 │           └── test_override.json # Merge-engine test: partial/replace override fixtures
-├── tests/                      # PHPUnit integration tests (5 files, 40 tests)
+├── tests/                      # PHPUnit integration tests (10 files, 139 tests)
 ├── scripts/
 │   ├── build.sh                # Native build pipeline (type-check → test → package)
 │   ├── build-docker.sh         # Docker-based build (no host dependencies required)
@@ -162,8 +162,8 @@ Or use the VS Code task **Run: DB migrations**.
 ### Frontend — Vitest
 
 ```sh
-npm test                          # Run all 1 147 tests across 37 files
-npm test -- --coverage            # Run with v8 coverage report → coverage/index.html
+npm test                          # Run all 1 671 tests across 47 files
+npm run test:coverage             # Run with v8 coverage report → coverage/index.html
 npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
 ```
@@ -210,24 +210,27 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`edgeCases.test.ts`](src/tests/edgeCases.test.ts) | Multiplier modifiers, `not_includes`/`missing_tag` operators, division by zero, `@constant` paths |
 | [`coverageCompletion.test.ts`](src/tests/coverageCompletion.test.ts) | Non-stacking penalties, `has_tag` on non-array, pure constant dice formula, V/WP routing |
 | [`sceneAndPrereqs.test.ts`](src/tests/sceneAndPrereqs.test.ts) | Scene global features, character level/ECL, HP adjustment, resource resets |
+| [`userManagement.test.ts`](src/tests/userManagement.test.ts) | All `userApi` functions (list, create, update, role, suspend, reinstate, delete, campaign members, setup-password, `changePassword`, `resetUserPassword`); URL/method/body verification; 4xx `ApiError` throwing; fallback error fields |
+| [`setupPasswordFlow.test.ts`](src/tests/setupPasswordFlow.test.ts) | `SessionContext.needsPasswordSetup` state transitions; `requirePasswordSetup` / `clearPasswordSetup`; `loadFromServer()` flag propagation; password-setup form validation (empty, short, mismatch, valid); redirect guard logic |
 
 #### Coverage
 
-Coverage is measured with `npx vitest run --coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
+Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (45 test files, 1 594 tests): 93.1% statements · 89.1% branches · 97% functions · 94.1% lines**
+**Overall (47 test files, 1 671 tests): 93.59% statements · 89.79% branches · 97.35% functions · 94.62% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
+| `api/userApi.ts` | **100%** | **100%** | Full coverage incl. error fallback branches |
 | `i18n/ui-strings.ts` | **100%** | **100%** | Full UI chrome string coverage |
 | `utils/constants.ts` | **100%** | **100%** | Ability abbreviations |
 | `utils/stackingRules.ts` | **100%** | 94% | D&D 3.5 stacking rules engine |
 | `engine/SessionContext.svelte.ts` | **100%** | **100%** | Session context reactive singleton |
 | `utils/gestaltRules.ts` | 98% | 86% | |
-| `utils/diceEngine.ts` | 98% | 88% | Two uncovered edge-case branches |
-| `engine/DataLoader.ts` | 95% | 87% | Async fetch paths exercised via fetch mock |
-| `utils/formatters.ts` | 93% | 86% | |
-| `utils/logicEvaluator.ts` | 91% | 90% | |
+| `utils/diceEngine.ts` | 98% | 89% | Two uncovered edge-case branches |
+| `engine/DataLoader.ts` | 90% | 86% | Async fetch paths exercised via fetch mock |
+| `utils/formatters.ts` | **100%** | 94% | |
+| `utils/logicEvaluator.ts` | **100%** | **100%** | |
 | `utils/mathParser.ts` | 88% | 83% | |
 | `engine/StorageManager.ts` | 89% | 86% | Async API methods tested via fetch mock |
 | `engine/HomebrewStore.svelte.ts` | 97% | 97% | |
@@ -260,8 +263,13 @@ Coverage is measured with `npx vitest run --coverage` (V8 provider). Scope: `src
 | [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access: GM sees all, player sees own only (11 tests) |
 | [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility — merged vs raw view (6 tests) |
 | [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync polling mechanism (6 tests) |
+| [`GlobalRulesTest.php`](tests/GlobalRulesTest.php) | Global rule file CRUD, list, delete — GM-only enforcement (22 tests) |
+| [`HomebrewRulesTest.php`](tests/HomebrewRulesTest.php) | Per-campaign homebrew rule storage, round-trip, access control (15 tests) |
+| [`UiLocalesTest.php`](tests/UiLocalesTest.php) | UI locale file listing and content endpoints (19 tests) |
+| [`UserManagementTest.php`](tests/UserManagementTest.php) | Admin bootstrap; no-password login + 7-day auto-suspend; `setup-password`; `change-password` (success, wrong password, empty, no-password skip); `reset-password` (admin success, self-allowed, non-admin 403, 404); UserController CRUD; self-edit guards (35 tests) |
+| [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 (8 tests) |
 
-**Total: 40 PHPUnit tests, 131 assertions.**
+**Total: 139 PHPUnit tests, 432 assertions.**
 
 > `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock).
 
