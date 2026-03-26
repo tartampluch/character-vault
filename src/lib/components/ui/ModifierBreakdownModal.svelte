@@ -62,6 +62,17 @@
       deflection:  'bg-orange-950/40 text-orange-400',
       size:        'bg-surface-alt text-text-secondary',
       natural_armor: 'bg-green-950/30 text-green-300',
+      // D&D 3.5 SRD: synergy bonuses are a distinct bonus type (5+ ranks in one skill
+      // grants a +2 synergy bonus to a related skill). They must be visually distinct
+      // from untyped bonuses so players can identify them in the breakdown modal.
+      synergy:     'bg-teal-950/40 text-teal-400',
+      inherent:    'bg-rose-950/40 text-rose-400',
+      circumstance: 'bg-amber-950/40 text-amber-400',
+      luck:        'bg-indigo-950/40 text-indigo-400',
+      competence:  'bg-sky-950/40 text-sky-400',
+      resistance:  'bg-emerald-950/40 text-emerald-400',
+      profane:     'bg-red-950/40 text-red-400',
+      sacred:      'bg-yellow-950/40 text-yellow-300',
     };
     return map[type] ?? 'bg-surface-alt text-text-muted';
   }

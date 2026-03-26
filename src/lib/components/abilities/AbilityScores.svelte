@@ -13,7 +13,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, previewWithTempMod } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import PointBuyModal from './PointBuyModal.svelte';
@@ -135,7 +135,7 @@
               <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('abilities.total', engine.settings.language)}</span>
               <div class="flex items-center justify-center h-9 rounded-md bg-surface border border-border">
                 <span class="text-lg font-bold text-sky-500 dark:text-sky-400">
-                  {pipeline.totalValue + tempMod}
+                  {previewWithTempMod(pipeline.totalValue, tempMod)}
                 </span>
               </div>
             </div>

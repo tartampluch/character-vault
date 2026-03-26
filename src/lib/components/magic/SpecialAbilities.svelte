@@ -51,14 +51,15 @@
     if (!feature?.activation?.resourceCost) return; // No resource to deduct
 
     const { targetId, cost } = feature.activation.resourceCost;
-    const pool = engine.character.resources[targetId];
-    if (!pool) {
-      console.warn(`[SpecialAbilities] Resource pool "${targetId}" not found.`);
-      return;
-    }
 
+    // Resolve cost: accept both number literals and simple integer strings.
+    // Full formula evaluation (e.g., "1 + @classLevels.class_druid") is deferred
+    // to a future phase — most D&D 3.5 resource costs are simple integers.
     const resolvedCost = typeof cost === 'number' ? cost : (parseFloat(String(cost)) || 1);
-    pool.currentValue = Math.max(0, pool.currentValue - resolvedCost);
+
+    // Delegate the Math.max(0, current - cost) arithmetic to the engine method.
+    // Direct `pool.currentValue =` mutations in Svelte violate ARCHITECTURE.md §3.
+    engine.spendCharacterResource(targetId, resolvedCost);
   }
 
   const specialAbilities = $derived.by(() =>

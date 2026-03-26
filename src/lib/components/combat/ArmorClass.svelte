@@ -25,6 +25,11 @@
   let breakdownAcId = $state<ID | null>(null);
   let tempMod = $state('0');
   const tempModValue = $derived.by(() => { const v = parseInt(tempMod, 10); return isNaN(v) ? 0 : v; });
+
+  // Effective DEX to AC respects the max_dexterity_bonus cap (ARCHITECTURE.md §4.17).
+  // This is a D&D game mechanic — the formula min(dexMod, maxDexBonus) lives in the
+  // engine as phase_effectiveDexToAC so no game logic appears in this component.
+  const effectiveDexToAC = $derived(engine.phase_effectiveDexToAC);
 </script>
 
 <div class="card p-4 flex flex-col gap-4">
@@ -48,12 +53,30 @@
     </div>
   </div>
 
+  <!-- Effective DEX to AC row — shows capped DEX contribution to armor class -->
+  <div class="flex items-center gap-2 text-xs text-text-muted">
+    <span>{ui('combat.ac.effective_dex', engine.settings.language)}</span>
+    <span
+      class="font-semibold {effectiveDexToAC > 0 ? 'text-green-500 dark:text-green-400' : effectiveDexToAC < 0 ? 'text-red-500 dark:text-red-400' : 'text-text-muted'}"
+      title="{ui('combat.ac.effective_dex_tooltip', engine.settings.language)}"
+    >
+      {#if effectiveDexToAC >= 0}+{/if}{effectiveDexToAC}
+    </span>
+    {#if engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue < 99}
+      <span class="text-amber-500 text-[10px]">
+        ({ui('combat.ac.cap', engine.settings.language)} {engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue})
+      </span>
+    {/if}
+  </div>
+
   <!-- Three AC cards in a row -->
   <div class="grid grid-cols-3 gap-2">
     {#each AC_PIPELINES as acConfig}
       {@const pipeline = engine.phase3_combatStats[acConfig.id]}
       {#if pipeline}
-        {@const effectiveAc = pipeline.totalValue + tempModValue}
+        <!-- engine.getDisplayAc() adds tempModValue to the pipeline total in the engine layer
+             (zero-game-logic rule: arithmetic on pipeline values must not be in Svelte templates). -->
+        {@const effectiveAc = engine.getDisplayAc(acConfig.id, tempModValue)}
 
         <div
           class="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-border bg-surface-alt hover:border-accent/40 transition-colors duration-150 text-center"

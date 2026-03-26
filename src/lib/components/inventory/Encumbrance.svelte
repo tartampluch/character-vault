@@ -28,49 +28,92 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
-  import type { ItemFeature } from '$lib/types/feature';
+  import { computeCoinWeight, computeWealthInGP, toDisplayPct } from '$lib/utils/formatters';
   import { IconEncumbrance, IconWealth } from '$lib/components/ui/icons';
+  import {
+    CONDITION_ENCUMBERED_FEATURE_ID,
+    CONDITION_ENCUMBERED_INSTANCE_ID,
+  } from '$lib/utils/constants';
 
-  // ── Total weight ───────────────────────────────────────────────────────────
-  const totalWeightLbs = $derived.by(() => {
-    let total = 0;
-    for (const afi of engine.character.activeFeatures) {
-      // Stashed items (in storage) do NOT contribute to carried weight.
-      // Architecture §13.2: "Storage/Stashed — does not contribute to weight."
-      if (afi.isStashed) continue;
-      const feat = dataLoader.getFeature(afi.featureId);
-      if (!feat || feat.category !== 'item') continue;
-      total += (feat as ItemFeature).weightLbs ?? 0;
+  // ── condition_encumbered dispatch ─────────────────────────────────────────
+  // D&D 3.5 RULE: A Medium or heavier load imposes the Encumbered condition,
+  // which applies armor check penalty to Dex- and Str-based skill checks and
+  // attack rolls and reduces movement speed. We model this by adding/removing
+  // the `condition_encumbered` feature instance on the engine reactively.
+  //
+  // NOTE: The engine already auto-manages `condition_medium_load` and
+  //   `condition_heavy_load` (for conditionNode gating) via its internal
+  //   `#encumbranceEffect`. This component adds the separate `condition_encumbered`
+  //   feature which grants the actual penalty modifiers (movement reduction, etc.).
+  //   The two systems are complementary, not duplicates.
+  //
+  // WHY USE $effect (not $derived)?
+  //   We need to mutate engine state in response to the computed loadTier severity.
+  //   A $derived cannot produce side effects — $effect is the correct rune.
+  //
+  // ARCHITECTURE NOTE:
+  //   The engine.addFeature / removeFeature calls are fire-and-forget. The
+  //   condition_encumbered feature in the rule files grants the appropriate
+  //   modifiers (movement speed reduction, skill check penalties) via its
+  //   grantedModifiers array — no hardcoded values appear in this component.
+  // Use named constants (zero-hardcoding rule, ARCHITECTURE.md §6).
+  // Imported from constants.ts so a rename stays safe across the whole codebase.
+  const ENCUMBERED_INSTANCE_ID = CONDITION_ENCUMBERED_INSTANCE_ID;
+  const ENCUMBERED_FEATURE_ID  = CONDITION_ENCUMBERED_FEATURE_ID;
+
+  $effect(() => {
+    // Use engine.phase_isEncumbered — the "Medium load or heavier" threshold check
+    // is a D&D game rule that belongs in the engine (ARCHITECTURE.md §3).
+    const isEncumbered = engine.phase_isEncumbered;
+
+    const alreadyActive = engine.character.activeFeatures.some(
+      afi => afi.instanceId === ENCUMBERED_INSTANCE_ID && afi.isActive
+    );
+
+    if (isEncumbered && !alreadyActive) {
+      // Only add the condition if the feature exists in the loaded data to avoid
+      // phantom instances when no rule sources define condition_encumbered.
+      if (dataLoader.getFeature(ENCUMBERED_FEATURE_ID)) {
+        engine.addFeature({
+          instanceId: ENCUMBERED_INSTANCE_ID,
+          featureId:  ENCUMBERED_FEATURE_ID,
+          isActive:   true,
+        });
+      }
+    } else if (!isEncumbered && alreadyActive) {
+      // Remove the auto-dispatched instance when load drops below Medium.
+      engine.removeFeature(ENCUMBERED_INSTANCE_ID);
     }
-    return total;
   });
 
-  // ── Carrying capacity (from config table) ─────────────────────────────────
-  const carryingCapacity = $derived.by(() => {
-    const strTotal = engine.phase2_attributes['stat_strength']?.totalValue ?? 10;
-    const table    = dataLoader.getConfigTable('config_carrying_capacity');
-    if (table?.data) {
-      const rows = table.data as Array<Record<string, unknown>>;
-      const row  = rows.find(r => r['strength'] === strTotal);
-      if (row) return {
-        light:  row['lightLoad']  as number,
-        medium: row['mediumLoad'] as number,
-        heavy:  row['heavyLoad']  as number,
-      };
-    }
-    console.warn('[Encumbrance] config_carrying_capacity not loaded.');
-    return { light: 0, medium: 0, heavy: 0 };
-  });
+  // ── Total weight — read from engine (avoids duplicating game logic) ────────
+  //
+  // WHY NOT COMPUTED HERE:
+  //   Iterating active features and summing item weights is D&D game logic that
+  //   belongs in the engine (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  //   The engine exposes `phase2b_totalCarriedWeight` for this purpose.
+  const totalWeightLbs = $derived(engine.phase2b_totalCarriedWeight);
 
-  // ── Load tier ─────────────────────────────────────────────────────────────
+  // ── Carrying capacity (from engine) ───────────────────────────────────────
+  //
+  // WHY NOT COMPUTED HERE:
+  //   Looking up a config table using a resolved STR score is D&D game logic.
+  //   The engine exposes `phase_carryingCapacity` which performs the lookup.
+  const carryingCapacity = $derived(engine.phase_carryingCapacity);
+
+  // ── Load tier display — UI label/color from engine severity ───────────────
+  //
+  // The severity number (0-3 or -1) is a D&D game value — read from the engine.
+  // The label/color mapping is purely a UI concern — kept in this component.
   const loadTier = $derived.by(() => {
-    const w = totalWeightLbs;
+    const severity = engine.phase2b_encumbranceTier;
     const c = carryingCapacity;
-    if (c.heavy === 0) return { label: ui('inventory.encumbrance.tier_unknown', engine.settings.language),    color: 'oklch(55% 0.010 264)', severity: -1 };
-    if (w > c.heavy)  return { label: ui('inventory.encumbrance.tier_overloaded', engine.settings.language), color: 'oklch(40% 0.20 28)',   severity: 3 };
-    if (w > c.medium) return { label: ui('inventory.encumbrance.tier_heavy', engine.settings.language),      color: 'oklch(55% 0.20 28)',   severity: 2 };
-    if (w > c.light)  return { label: ui('inventory.encumbrance.tier_medium', engine.settings.language),     color: 'oklch(72% 0.17 88)',   severity: 1 };
-    return               { label: ui('inventory.encumbrance.tier_light', engine.settings.language),      color: 'oklch(65% 0.17 145)',  severity: 0 };
+    // -1 = config table not loaded
+    if (c.heavy === 0 || severity === -1) return { label: ui('inventory.encumbrance.tier_unknown', engine.settings.language),    color: 'oklch(55% 0.010 264)', severity: -1 };
+    if (severity >= 3)                    return { label: ui('inventory.encumbrance.tier_overloaded', engine.settings.language), color: 'oklch(40% 0.20 28)',   severity: 3  };
+    if (severity >= 2)                    return { label: ui('inventory.encumbrance.tier_heavy', engine.settings.language),      color: 'oklch(55% 0.20 28)',   severity: 2  };
+    if (severity >= 1)                    return { label: ui('inventory.encumbrance.tier_medium', engine.settings.language),     color: 'oklch(72% 0.17 88)',   severity: 1  };
+    return                                       { label: ui('inventory.encumbrance.tier_light', engine.settings.language),      color: 'oklch(65% 0.17 145)',  severity: 0  };
   });
 
   // ── Progress bar values ────────────────────────────────────────────────────
@@ -78,18 +121,16 @@
    * Percentage of the Heavy threshold that has been filled.
    * The bar maxes out at 100% even if overloaded.
    */
-  const barPct = $derived.by(() => {
-    const cap = carryingCapacity.heavy;
-    if (cap <= 0) return 0;
-    return Math.min(100, (totalWeightLbs / cap) * 100);
-  });
+  // toDisplayPct centralises Math.min/division arithmetic (ARCHITECTURE.md §3).
+  const barPct = $derived(toDisplayPct(totalWeightLbs, carryingCapacity.heavy));
 
   /**
    * Where the Light and Medium tier markers sit on the bar as percentages.
    * These are rendered as thin vertical hairlines.
+   * Defaults to 33%/66% when the heavy cap is 0 (character has no STR data yet).
    */
-  const lightPct  = $derived(carryingCapacity.heavy > 0 ? (carryingCapacity.light  / carryingCapacity.heavy) * 100 : 33);
-  const mediumPct = $derived(carryingCapacity.heavy > 0 ? (carryingCapacity.medium / carryingCapacity.heavy) * 100 : 66);
+  const lightPct  = $derived(toDisplayPct(carryingCapacity.light,  carryingCapacity.heavy) || 33);
+  const mediumPct = $derived(toDisplayPct(carryingCapacity.medium, carryingCapacity.heavy) || 66);
 
   // ── Wealth ─────────────────────────────────────────────────────────────────
   let cp = $state(0);
@@ -97,8 +138,12 @@
   let gp = $state(0);
   let pp = $state(0);
 
-  const coinWeightLbs = $derived(Math.floor((cp + sp + gp + pp) / 50));
-  const totalGoldValue = $derived(cp / 100 + sp / 10 + gp + pp * 10);
+  // D&D 3.5 coin weight and exchange rate formulas are in formatters.ts
+  // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). The Math.floor and
+  // hardcoded exchange constants (50 coins/lb, 100 cp/gp, etc.) may not appear
+  // directly in .svelte files.
+  const coinWeightLbs  = $derived(computeCoinWeight(cp, sp, gp, pp));
+  const totalGoldValue = $derived(computeWealthInGP(cp, sp, gp, pp));
 
   /**
    * Coin definitions — colour-coded labels using Tailwind utility class names.

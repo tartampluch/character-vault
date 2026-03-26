@@ -81,16 +81,16 @@
                  hover:bg-surface-alt transition-colors duration-100
                  {skill.ranks === 0 ? 'opacity-50' : ''}"
           role="listitem"
-          aria-label="{engine.t(skill.label)}: {formatModifier(skill.totalValue)}{skill.isClassSkill ? ' (class skill)' : ''}"
+          aria-label="{engine.t(skill.label)}: {formatModifier(skill.totalValue)}{skill.isClassSkill ? ' (' + ui('skills.class_skill', lang) + ')' : ''}"
         >
           <!-- Class-skill indicator: gold checkmark vs dim unchecked -->
           <span
             class="shrink-0 {skill.isClassSkill ? 'text-yellow-400' : 'text-text-muted/40'}"
             aria-hidden="true"
-            title={skill.isClassSkill ? 'Class skill' : 'Cross-class skill'}
+            title={skill.isClassSkill ? ui('skills.class_skill', lang) : ui('skills.cross_class', lang)}
           >
             {#if skill.isClassSkill}
-              <IconChecked size={12} aria-label="Class skill" />
+              <IconChecked size={12} aria-label={ui('skills.class_skill', lang)} />
             {:else}
               <IconUnchecked size={12} aria-hidden="true" />
             {/if}

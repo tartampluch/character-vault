@@ -29,7 +29,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { getAbilityAbbr } from '$lib/utils/constants';
   import { ui } from '$lib/i18n/ui-strings';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, toDisplayPct } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import HorizontalScroll from '$lib/components/ui/HorizontalScroll.svelte';
   import LevelingJournalModal from '$lib/components/abilities/LevelingJournalModal.svelte';
@@ -48,22 +48,18 @@
 
   const skillPointsAvailable = $derived(budget.totalAvailable);
 
-  const skillPointsSpent = $derived.by(() => {
-    let total = 0;
-    for (const skill of Object.values(engine.phase4_skills)) {
-      total += skill.ranks * (skill.isClassSkill ? 1 : 2);
-    }
-    return total;
-  });
+  // SP cost computation (cross-class costs 2 SP/rank, class skill costs 1 SP/rank)
+  // is D&D game logic — it lives in the engine (phase4_skillPointsSpent) rather than
+  // being duplicated in this component.
+  const skillPointsSpent = $derived(engine.phase4_skillPointsSpent);
 
-  const skillPointsRemaining = $derived(skillPointsAvailable - skillPointsSpent);
-  const isOverBudget = $derived(skillPointsRemaining < 0);
+  // Remaining SP and over-budget flag are engine-derived (ARCHITECTURE.md §3):
+  // arithmetic on engine values must not appear in .svelte files.
+  const skillPointsRemaining = $derived(engine.phase4_skillPointsRemaining);
+  const isOverBudget = $derived(engine.phase4_skillPointsBudgetExceeded);
 
-  const spPct = $derived(
-    skillPointsAvailable > 0
-      ? Math.min(100, (skillPointsSpent / skillPointsAvailable) * 100)
-      : 0
-  );
+  // toDisplayPct keeps Math.min/division out of the Svelte template (ARCHITECTURE.md §3).
+  const spPct = $derived(toDisplayPct(skillPointsSpent, skillPointsAvailable));
 
   // ── Sorted skills ─────────────────────────────────────────────────────────────
   const sortedSkills = $derived.by(() => {
@@ -77,14 +73,18 @@
    * Returns the maximum allowed ranks for a skill.
    *
    * D&D 3.5 SRD:
-   *   Class skill:       max = characterLevel + 3
-   *   Cross-class skill: max = floor((characterLevel + 3) / 2)
+   *   Class skill:       max = characterLevel + 3        (engine.phase_maxClassSkillRanks)
+   *   Cross-class skill: max = floor((characterLevel + 3) / 2) (engine.phase_maxCrossClassSkillRanks)
+   *
+   * The D&D formula lives in the engine (zero-game-logic-in-Svelte rule). This
+   * helper simply dispatches to the correct engine-derived property.
    *
    * @param isClassSkill - True if the skill is a class skill for any active class.
    */
   function getMaxRanks(isClassSkill: boolean): number {
-    const base = engine.phase0_characterLevel + 3;
-    return isClassSkill ? base : Math.floor(base / 2);
+    return isClassSkill
+      ? engine.phase_maxClassSkillRanks
+      : engine.phase_maxCrossClassSkillRanks;
   }
 
   /**
@@ -103,10 +103,10 @@
   /**
    * Handles changes to the rank input.
    *
-   * ENFORCEMENT:
-   *   - Cannot go below the locked minimum (engine.character.minimumSkillRanks[skillId]).
-   *   - Cannot go above maxRanks for the skill.
-   *   - The engine.setSkillRanks() also enforces the minimum floor.
+   * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
+   *   All arithmetic clamping (min floor, max ceiling) is delegated to
+   *   `engine.setSkillRanks()`, which now enforces both bounds internally.
+   *   This component only parses the raw input and forwards it to the engine.
    *
    * @param skillId - The skill to update.
    * @param event   - The input change event.
@@ -114,14 +114,11 @@
   function handleRanksChange(skillId: ID, event: Event) {
     const raw = parseInt((event.target as HTMLInputElement).value, 10);
     if (isNaN(raw)) return;
-    const isClassSkill = engine.phase4_skills[skillId]?.isClassSkill ?? false;
-    const maxRanks = getMaxRanks(isClassSkill);
-    const minRanks = getMinRanks(skillId);
-    // Clamp to [minRanks, maxRanks] — engine.setSkillRanks also enforces minRanks
-    const clamped = Math.max(minRanks, Math.min(raw, maxRanks));
-    engine.setSkillRanks(skillId, clamped);
-    // Immediately sync the input's displayed value to the clamped result
-    (event.target as HTMLInputElement).value = String(clamped);
+    // Delegate all clamping (min floor + max ceiling + class-skill logic) to the engine.
+    engine.setSkillRanks(skillId, raw);
+    // Sync the input's displayed value to the engine-clamped result.
+    const actual = engine.character.skills[skillId]?.ranks ?? raw;
+    (event.target as HTMLInputElement).value = String(actual);
   }
 </script>
 
@@ -204,7 +201,7 @@
           {#each sortedSkills as skill, i}
             {@const maxRanks    = getMaxRanks(skill.isClassSkill)}
             {@const minRanks    = getMinRanks(skill.id)}
-            {@const costPerRank = skill.isClassSkill ? 1 : 2}
+            {@const costPerRank = skill.costPerRank}
             {@const isAtMax     = skill.ranks >= maxRanks}
             {@const isAtMin     = skill.ranks <= minRanks && minRanks > 0}
 
@@ -231,6 +228,15 @@
                 </span>
                 {#if !skill.canBeUsedUntrained && skill.ranks === 0}
                   <span class="badge-yellow ml-1 text-[10px]" aria-label="Requires training">{ui('skills.training_required', engine.settings.language)}</span>
+                {/if}
+                {#if minRanks > 0 && !isAtMin}
+                  <!-- Minimum floor is set but rank is above it — show "Min N" indicator
+                       so the player can see the floor exists BEFORE they hit it. -->
+                  <span
+                    class="badge-blue ml-1 text-[10px]"
+                    title="{ui('skills.rank_min_tooltip', engine.settings.language).replace('{n}', String(minRanks))}"
+                    aria-label="Minimum ranks: {minRanks}"
+                  >{ui('skills.rank_min_label', engine.settings.language).replace('{n}', String(minRanks))}</span>
                 {/if}
                 {#if isAtMin}
                   <!-- Rank is at the locked minimum — visually signal the floor -->

@@ -521,6 +521,18 @@ export interface SkillPipeline extends StatisticPipeline {
    * When `false`, the engine should warn the UI when ranks = 0.
    */
   canBeUsedUntrained: boolean;
+
+  /**
+   * Skill point cost to invest 1 rank in this skill.
+   *
+   * D&D 3.5 SRD rule:
+   *   - Class skill:       1 SP per rank
+   *   - Cross-class skill: 2 SP per rank
+   *
+   * Computed by the engine during DAG Phase 4 based on `isClassSkill`.
+   * Provided here so the UI never needs to hardcode the "1 or 2" rule.
+   */
+  costPerRank: 1 | 2;
 }
 
 // =============================================================================

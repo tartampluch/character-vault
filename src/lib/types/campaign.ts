@@ -259,7 +259,7 @@ export interface Campaign {
  *
  * @returns `{ total, completed }` — use to build a progress bar or "X / Y tasks" label.
  */
-export function campaignTaskStats(chapters: Campaign['chapters']): { total: number; completed: number } {
+export function campaignTaskStats(chapters: Campaign['chapters']): { total: number; completed: number; pct: number } {
   let total = 0;
   let completed = 0;
   for (const ch of chapters) {
@@ -272,7 +272,8 @@ export function campaignTaskStats(chapters: Campaign['chapters']): { total: numb
       completed += tasks.filter(t => t.isCompleted).length;
     }
   }
-  return { total, completed };
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  return { total, completed, pct };
 }
 
 // =============================================================================

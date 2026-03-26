@@ -36,23 +36,11 @@
     });
   });
 
-  function getGrantSource(featId: string): string {
-    for (const afi of engine.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feature = dataLoader.getFeature(afi.featureId);
-      if (!feature) continue;
-      if ((feature.grantedFeatures ?? []).includes(featId)) return engine.t(feature.label);
-      if (feature.category === 'class' && feature.levelProgression) {
-        const classLevel = engine.character.classLevels[feature.id] ?? 0;
-        for (const entry of feature.levelProgression) {
-          if (entry.level <= classLevel && entry.grantedFeatures.includes(featId)) {
-            return `${engine.t(feature.label)} ${entry.level}`;
-          }
-        }
-      }
-    }
-    return 'Unknown';
-  }
+  // getGrantSource() was removed: it contained D&D game logic (iterating
+  // levelProgression, reading character.classLevels) that violates the
+  // zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
+  // Replaced by engine.getFeatGrantSource(featId) which performs the same
+  // lookup inside the engine layer where game logic belongs.
 
   let modalFeatId  = $state<ID | null>(null);
   let showAddModal = $state(false);
@@ -106,7 +94,7 @@
                         hover:border-border transition-colors duration-150">
               <div class="flex-1 flex flex-col gap-0.5 min-w-0">
                 <span class="text-sm font-medium text-text-primary truncate">{engine.t(feat.label)}</span>
-                <span class="text-xs text-green-500 dark:text-green-400">{ui('feats.from', engine.settings.language)} {getGrantSource(feat.id)}</span>
+                <span class="text-xs text-green-500 dark:text-green-400">{ui('feats.from', engine.settings.language)} {engine.getFeatGrantSource(feat.id) || ui('common.unknown', engine.settings.language)}</span>
               </div>
               <button
                 class="btn-ghost p-1.5 text-accent hover:bg-accent/10 shrink-0"
@@ -131,7 +119,14 @@
     {#if manualFeatInstances.length === 0}
       <p class="text-sm text-text-muted italic">
         {ui('feats.empty', engine.settings.language)}
-        {engine.phase4_featSlots - grantedFeatInstances.length} {ui('feats.slots_available', engine.settings.language)}
+        <!--
+          Use engine.phase4_featSlotsRemaining (total slots minus manually-selected feats)
+          rather than computing (phase4_featSlots - grantedFeatInstances.length).
+          Granted feats do NOT consume player feat slots, so the correct "available for picks"
+          count is phase4_featSlotsRemaining — not (total - granted count).
+          The previous arithmetic was also a violation of zero-game-logic-in-Svelte.
+        -->
+        {engine.phase4_featSlotsRemaining} {ui('feats.slots_available', engine.settings.language)}
       </p>
     {:else}
       <div class="flex flex-col gap-1.5">

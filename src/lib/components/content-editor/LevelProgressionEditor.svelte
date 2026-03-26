@@ -65,6 +65,13 @@
   import type { ID } from '$lib/types/primitives';
   import FeaturePickerModal   from './FeaturePickerModal.svelte';
   import LevelModifierModal   from './LevelModifierModal.svelte';
+  import {
+    BAB_FULL,
+    BAB_3_4,
+    BAB_1_2,
+    SAVE_GOOD,
+    SAVE_POOR,
+  } from '$lib/utils/classProgressionPresets';
 
   // ===========================================================================
   // CONTEXT
@@ -75,30 +82,10 @@
   // ===========================================================================
   // PRESET PROGRESSIONS  (ARCHITECTURE.md §5.4)
   // ===========================================================================
-
-  /**
-   * Each preset is an array of 20 increment values (index 0 = level 1).
-   * For BAB/saves these are 0 or 1 (or 2 at level 1 for good saves).
-   *
-   * DERIVATION:
-   *   Full BAB        : total[n] = n            → always increment 1
-   *   3/4 BAB         : total[n] = floor(3n/4)  → differences
-   *   1/2 BAB         : total[n] = floor(n/2)   → differences
-   *   Good Save       : total[n] = 2+floor(n/2) → differences (first = 2)
-   *   Poor Save       : total[n] = floor(n/3)   → differences
-   */
-  function buildIncrements(totalFn: (n: number) => number): number[] {
-    return Array.from({ length: 20 }, (_, i) => {
-      const lvl = i + 1;
-      return totalFn(lvl) - totalFn(lvl - 1);
-    });
-  }
-
-  const BAB_FULL  = buildIncrements(n => n);
-  const BAB_3_4   = buildIncrements(n => Math.floor(n * 3 / 4));
-  const BAB_1_2   = buildIncrements(n => Math.floor(n / 2));
-  const SAVE_GOOD = buildIncrements(n => 2 + Math.floor(n / 2));
-  const SAVE_POOR = buildIncrements(n => Math.floor(n / 3));
+  //
+  // The 20-element increment arrays live in src/lib/utils/classProgressionPresets.ts
+  // per the Critical Coding Guideline: no D&D game logic in .svelte files
+  // (ARCHITECTURE.md §3).  They are imported above and used directly below.
 
   // ===========================================================================
   // LEVEL PROGRESSION NORMALISATION
@@ -197,7 +184,7 @@
   // PRESET APPLICATION
   // ===========================================================================
 
-  function applyColumnPreset(targetId: string, increments: number[]): void {
+  function applyColumnPreset(targetId: string, increments: readonly number[]): void {
     const updated = [...(ctx.feature.levelProgression ?? [])];
 
     increments.forEach((inc, i) => {

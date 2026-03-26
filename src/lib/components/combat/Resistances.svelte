@@ -14,14 +14,16 @@
   import { IconResistances } from '$lib/components/ui/icons';
 
   const RESISTANCES = $derived([
-    { id: 'combatStats.resist_fire',        icon: Flame,        label: ui('combat.resistances.fire', engine.settings.language)        },
-    { id: 'combatStats.resist_cold',        icon: Snowflake,    label: ui('combat.resistances.cold', engine.settings.language)        },
-    { id: 'combatStats.resist_acid',        icon: FlaskConical, label: ui('combat.resistances.acid', engine.settings.language)        },
-    { id: 'combatStats.resist_electricity', icon: Zap,          label: ui('combat.resistances.electricity', engine.settings.language) },
-    { id: 'combatStats.resist_sonic',       icon: Volume2,      label: ui('combat.resistances.sonic', engine.settings.language)       },
-    { id: 'combatStats.spell_resistance',   icon: Sparkles,     label: ui('combat.resistances.sr', engine.settings.language)          },
-    { id: 'combatStats.power_resistance',   icon: BrainCircuit, label: ui('combat.resistances.pr', engine.settings.language)          },
-    { id: 'combatStats.fortification',      icon: ShieldAlert,  label: ui('combat.resistances.fort', engine.settings.language)       },
+    { id: 'combatStats.resist_fire',          icon: Flame,        label: ui('combat.resistances.fire', engine.settings.language)        },
+    { id: 'combatStats.resist_cold',          icon: Snowflake,    label: ui('combat.resistances.cold', engine.settings.language)        },
+    { id: 'combatStats.resist_acid',          icon: FlaskConical, label: ui('combat.resistances.acid', engine.settings.language)        },
+    { id: 'combatStats.resist_electricity',   icon: Zap,          label: ui('combat.resistances.electricity', engine.settings.language) },
+    { id: 'combatStats.resist_sonic',         icon: Volume2,      label: ui('combat.resistances.sonic', engine.settings.language)       },
+    { id: 'combatStats.spell_resistance',     icon: Sparkles,     label: ui('combat.resistances.sr', engine.settings.language)          },
+    { id: 'combatStats.power_resistance',     icon: BrainCircuit, label: ui('combat.resistances.pr', engine.settings.language)          },
+    { id: 'combatStats.fortification',        icon: ShieldAlert,  label: ui('combat.resistances.fort', engine.settings.language)        },
+    // Arcane Spell Failure — percentage chance that arcane spells in armor fail (CHECKPOINTS.md §2 §7)
+    { id: 'combatStats.arcane_spell_failure', icon: ShieldAlert,  label: ui('combat.resistances.asf', engine.settings.language)         },
   ]);
 
   let miscMods = $state<Record<string, string>>({});
@@ -40,10 +42,13 @@
 
   <div class="flex flex-col gap-1">
     {#each RESISTANCES as res}
-      {@const pipeline = engine.phase3_combatStats[res.id]}
-      {@const baseVal  = pipeline?.totalValue ?? 0}
-      {@const misc     = getMisc(res.id)}
-      {@const total    = baseVal + misc}
+      <!--
+        engine.getPipelineDisplayValue() adds the temporary misc modifier to the
+        pipeline total — arithmetic on game values must not appear in Svelte templates
+        (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). This follows the same
+        pattern as engine.getDisplayAc() used in ArmorClass.svelte.
+      -->
+      {@const total = engine.getPipelineDisplayValue(res.id, getMisc(res.id))}
 
       <div class="grid grid-cols-[1.5rem_1fr_3rem_3.5rem] items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-alt transition-colors duration-100">
 

@@ -12,7 +12,6 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { interpolateDescription } from '$lib/utils/mathParser';
   import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
@@ -40,9 +39,11 @@
     }
   });
 
+  // Prerequisite evaluation is game logic (ARCHITECTURE.md §3). Delegate to the
+  // engine method rather than calling the logicEvaluator utility directly.
   const prereqResult = $derived.by(() => {
-    if (!feature?.prerequisitesNode) return null;
-    return evaluateLogicNode(feature.prerequisitesNode, engine.phase2_context);
+    if (!feature) return null;
+    return engine.evaluateFeaturePrerequisites(feature);
   });
 
   const grantedFeatureNames = $derived.by(() => {
@@ -432,20 +433,20 @@
           {#if sessionContext.isGameMaster}
             <section class="flex flex-col gap-1.5 pt-3 border-t border-border">
               <div class="flex items-center gap-2 text-xs">
-                <span class="text-text-muted w-12 text-right shrink-0">Source</span>
+                <span class="text-text-muted w-12 text-right shrink-0">{ui('feature.label_source', lang)}</span>
                 <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded">{feature.ruleSource}</code>
               </div>
               <div class="flex items-center gap-2 text-xs">
-                <span class="text-text-muted w-12 text-right shrink-0">ID</span>
+                <span class="text-text-muted w-12 text-right shrink-0">{ui('feature.label_id', lang)}</span>
                 <code class="text-text-secondary bg-surface-alt px-1.5 py-0.5 rounded break-all">{feature.id}</code>
               </div>
               <div class="flex items-start gap-2 text-xs">
-                <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">Cat.</span>
+                <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">{ui('feature.label_category', lang)}</span>
                 <span class={categoryBadgeClass(feature.category)}>{feature.category}</span>
               </div>
               {#if feature.tags?.length}
                 <div class="flex items-start gap-2 text-xs">
-                  <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">Tags</span>
+                  <span class="text-text-muted w-12 text-right shrink-0 pt-0.5">{ui('feature.label_tags', lang)}</span>
                   <div class="flex flex-wrap gap-1">
                     {#each feature.tags as tag}
                       <span class="badge-accent font-mono text-[10px]">{tag}</span>

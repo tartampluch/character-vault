@@ -8,9 +8,9 @@
 -->
 
 <script lang="ts">
-  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { engine, GameEngine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, computeAbilityModifier, toDisplayPct } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconTabFeats, IconChecked, IconInfo } from '$lib/components/ui/icons';
@@ -19,42 +19,45 @@
   interface Props { onclose: () => void; }
   let { onclose }: Props = $props();
 
-  const FALLBACK_COSTS: Record<number, number> = {
-    7: -4, 8: 0, 9: 1, 10: 2, 11: 3, 12: 4,
-    13: 5, 14: 6, 15: 8, 16: 10, 17: 13, 18: 16,
-  };
-  const MIN_SCORE = 7;
-  const MAX_SCORE = 18;
-
   const lang   = $derived(engine.settings.language);
   const budget = $derived(engine.settings.statGeneration.pointBuyBudget);
 
-  function getCumulativeCost(score: number): number {
-    const table = dataLoader.getConfigTable('config_point_buy_costs');
-    if (table?.data) {
-      const row = (table.data as Array<Record<string, unknown>>).find(r => r['score'] === score);
-      if (row) return typeof row['cost'] === 'number' ? row['cost'] : 0;
-    }
-    return FALLBACK_COSTS[score] ?? 0;
-  }
+  // ── Point-buy bounds — read from the engine class constants (zero-game-logic rule).
+  // D&D 3.5 uses 7–18 as the valid range. These are defined in the engine so that
+  // .svelte files never hardcode D&D-specific numeric bounds (ARCHITECTURE.md §3, §6).
+  const MIN_SCORE = GameEngine.POINT_BUY_MIN_SCORE;
+  const MAX_SCORE = GameEngine.POINT_BUY_MAX_SCORE;
 
-  function getMarginalCost(score: number): number {
-    return getCumulativeCost(score) - getCumulativeCost(score - 1);
-  }
-
+  // ── Working scores — clamped via engine.clampPointBuyScore() ──────────────────
+  // Initialisation of workingScores previously used Math.min/Math.max with hardcoded
+  // D&D bounds (7–18). Delegating to engine.clampPointBuyScore() keeps the D&D
+  // arithmetic out of the Svelte component (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
   let workingScores = $state<Record<string, number>>(
     Object.fromEntries(
       MAIN_ABILITY_IDS.map(id => [
         id,
-        Math.min(MAX_SCORE, Math.max(MIN_SCORE, engine.character.attributes[id]?.baseValue ?? 8)),
+        engine.clampPointBuyScore(engine.character.attributes[id]?.baseValue ?? 8),
       ])
     )
   );
 
-  const pointsSpent     = $derived(MAIN_ABILITY_IDS.reduce((t, id) => t + getCumulativeCost(workingScores[id] ?? 8), 0));
-  const pointsRemaining = $derived(budget - pointsSpent);
-  const isOverBudget    = $derived(pointsRemaining < 0);
-  const spPct           = $derived(budget > 0 ? Math.min(100, (pointsSpent / budget) * 100) : 0);
+  // ── Total points spent — delegated to engine.getPointBuyTotalSpent() ──────────
+  // Array.reduce() with game-cost lookups is game arithmetic forbidden in .svelte
+  // files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). The engine computes
+  // this using getPointBuyCumulativeCost() for each score.
+  const pointsSpent     = $derived(engine.getPointBuyTotalSpent(workingScores));
+  // Remaining budget and over-budget flag are also delegated to the engine to stay
+  // consistent with the zero-game-logic-in-Svelte pattern (cf. phase4_skillPointsRemaining
+  // / phase4_skillPointsBudgetExceeded for skills — ARCHITECTURE.md §3).
+  const pointsRemaining = $derived(engine.getPointBuyRemaining(workingScores));
+  const isOverBudget    = $derived(engine.getPointBuyBudgetExceeded(workingScores));
+  const spPct           = $derived(toDisplayPct(pointsSpent, budget));
+  // Pre-compute the signed display string (e.g. "+5" / "-2") in the script block
+  // so that no Math function or ternary operator appears in the Svelte template
+  // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  const pointsRemainingDisplay = $derived(
+    pointsRemaining >= 0 ? `+${pointsRemaining}` : String(pointsRemaining)
+  );
 
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
@@ -68,7 +71,8 @@
   function increaseScore(id: string) {
     const cur = workingScores[id] ?? 8;
     if (cur >= MAX_SCORE) return;
-    if (pointsRemaining < getMarginalCost(cur + 1)) return;
+    // Marginal cost check delegated to engine (zero-game-logic rule, ARCHITECTURE.md §3).
+    if (pointsRemaining < engine.getPointBuyMarginalCost(cur + 1)) return;
     workingScores[id] = cur + 1;
   }
   function decreaseScore(id: string) {
@@ -82,7 +86,9 @@
     for (const id of MAIN_ABILITY_IDS) engine.setAttributeBase(id, workingScores[id] ?? 8);
     onclose();
   }
-  function derivedMod(score: number) { return Math.floor((score - 10) / 2); }
+  // derivedMod is provided by the shared formatters utility to avoid duplicating
+  // the D&D ability modifier formula (floor((score-10)/2)) in Svelte components.
+  const derivedMod = computeAbilityModifier;
 </script>
 
 <Modal open={true} onClose={onclose} title={ui('abilities.point_buy.title', lang)} size="md">
@@ -101,7 +107,7 @@
           <span class="text-text-muted">{ui('abilities.point_buy.budget_label', lang)}:</span>
           <span class="{isOverBudget ? 'text-red-500 dark:text-red-400' : 'text-accent'} font-bold">{pointsSpent}/{budget}</span>
           <span class="text-xs {isOverBudget ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}">
-            ({ui('abilities.point_buy.remaining', lang).replace('{n}', String(Math.abs(pointsRemaining))).replace(/^\d+/, pointsRemaining >= 0 ? `+${pointsRemaining}` : String(pointsRemaining))})
+            ({ui('abilities.point_buy.remaining', lang).replace('{n}', pointsRemainingDisplay)})
           </span>
         </div>
         <div
@@ -120,8 +126,8 @@
       <div class="flex flex-col gap-1.5">
         {#each MAIN_ABILITY_IDS as abilityId}
           {@const score     = workingScores[abilityId] ?? 8}
-          {@const cost      = getCumulativeCost(score)}
-          {@const marginal  = getMarginalCost(score + 1)}
+          {@const cost      = engine.getPointBuyCumulativeCost(score)}
+          {@const marginal  = engine.getPointBuyMarginalCost(score + 1)}
           {@const isRec     = recommendedIds.includes(abilityId)}
           {@const abbr      = getAbilityAbbr(abilityId, lang)}
           {@const fullLabel = engine.t(engine.phase2_attributes[abilityId]?.label ?? { en: abilityId })}

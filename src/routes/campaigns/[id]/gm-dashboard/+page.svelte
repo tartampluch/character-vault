@@ -15,7 +15,8 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { ABILITY_ABBRS } from '$lib/utils/constants';
+  import { ABILITY_ABBRS, MAIN_ABILITY_IDS } from '$lib/utils/constants';
+  import { getCharacterLevel } from '$lib/utils/formatters';
   import { IconGMDashboard, IconStats, IconSuccess, IconError, IconBack } from '$lib/components/ui/icons';
 
   $effect(() => { if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`); });
@@ -82,15 +83,47 @@
     }
   }
 
+  /**
+   * Extracts a quick stat snapshot from a character object for the GM overview panel.
+   *
+   * ZERO-HARDCODING COMPLIANCE (ARCHITECTURE.md §6):
+   *   Stat pipeline IDs are resolved via MAIN_ABILITY_IDS constants (centralized in
+   *   constants.ts) rather than hardcoded string literals like 'stat_strength'.
+   *   MAIN_ABILITY_IDS order: [strength(0), constitution(1), dexterity(2), intelligence(3), ...]
+   *
+   * NOTE: This function reads from the RAW character data object, not the active
+   *   engine's computed pipelines, because the GM dashboard shows all vault characters
+   *   (not just the currently loaded one). `engine.phase3_maxHp` is used only for the
+   *   currently selected character where the engine has loaded that character.
+   */
   function getStatSummary(char: typeof engine.character) {
     const attrs = char.attributes ?? {};
+    // Use MAIN_ABILITY_IDS constants — avoids hardcoding D&D stat names (ARCHITECTURE.md §6).
+    // MAIN_ABILITY_IDS[0] = stat_strength, [1] = stat_constitution, [2] = stat_dexterity
+    const strId = MAIN_ABILITY_IDS[0]; // stat_strength
+    const conId = MAIN_ABILITY_IDS[1]; // stat_constitution
+    const dexId = MAIN_ABILITY_IDS[2]; // stat_dexterity
     return {
-      str:   attrs['stat_strength']?.totalValue ?? attrs['stat_strength']?.baseValue ?? '?',
-      dex:   attrs['stat_dexterity']?.totalValue ?? attrs['stat_dexterity']?.baseValue ?? '?',
-      con:   attrs['stat_constitution']?.totalValue ?? attrs['stat_constitution']?.baseValue ?? '?',
+      str:   attrs[strId]?.totalValue ?? attrs[strId]?.baseValue ?? '?',
+      dex:   attrs[dexId]?.totalValue ?? attrs[dexId]?.baseValue ?? '?',
+      con:   attrs[conId]?.totalValue ?? attrs[conId]?.baseValue ?? '?',
       hp:    char.resources?.['resources.hp']?.currentValue ?? '?',
       maxHp: char.resources?.['resources.hp'] ? engine.phase3_maxHp : '?',
     };
+  }
+
+  /**
+   * Returns the total character level (sum of class levels) for any character.
+   *
+   * WHY A HELPER:
+   *   The GM dashboard reads from `allVaultCharacters` (arbitrary character objects,
+   *   not the active engine character), so `engine.phase0_characterLevel` cannot be
+   *   used. Delegates to `getCharacterLevel()` from formatters.ts which centralises
+   *   the D&D character-level formula (ARCHITECTURE.md §3 — arithmetic must not be
+   *   inline in .svelte templates).
+   */
+  function getTotalLevel(char: typeof engine.character): number {
+    return getCharacterLevel(char.classLevels);
   }
 </script>
 
@@ -126,7 +159,7 @@
         <div class="flex flex-col p-2 gap-1">
           {#each engine.allVaultCharacters as char}
             {@const isSelected    = selectedCharId === char.id}
-            {@const totalLevel    = Object.values(char.classLevels).reduce((a,b) => a+b, 0)}
+            {@const totalLevel    = getTotalLevel(char)}
             {@const hasOverrides  = (char.gmOverrides?.length ?? 0) > 0}
 
             <button
@@ -182,11 +215,11 @@
           </div>
           <div class="flex flex-wrap gap-2">
             {#each [
-              { label: ABILITY_ABBRS['stat_strength'], value: stats.str },
-              { label: ABILITY_ABBRS['stat_dexterity'], value: stats.dex },
-              { label: ABILITY_ABBRS['stat_constitution'], value: stats.con },
+              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[0]], value: stats.str },
+              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[2]], value: stats.dex },
+              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[1]], value: stats.con },
               { label: 'HP',  value: `${stats.hp}/${stats.maxHp}`, accent: true },
-              { label: ui('common.level', engine.settings.language), value: Object.values(selectedChar.classLevels).reduce((a,b) => a+b, 0) },
+              { label: ui('common.level', engine.settings.language), value: getTotalLevel(selectedChar) },
             ] as chip}
               <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border {chip.accent ? 'border-red-700/50' : 'border-border'} bg-surface-alt min-w-[3rem]">
                 <span class="text-[10px] uppercase tracking-wider text-text-muted">{chip.label}</span>

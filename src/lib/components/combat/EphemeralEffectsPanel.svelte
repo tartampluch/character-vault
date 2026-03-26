@@ -41,7 +41,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import {
     IconEphemeral,
@@ -234,10 +234,10 @@
                 {ui('effects.panel.active_badge', engine.settings.language)}
               </span>
 
-              <!-- Modifier count hint (e.g., "2 modifiers") -->
+              <!-- Modifier count hint (e.g., "2 modifiers") — localized via uiN() -->
               {#if effect.modifierCount > 0}
                 <span class="text-[10px] text-text-muted">
-                  {effect.modifierCount} modifier{effect.modifierCount !== 1 ? 's' : ''}
+                  {uiN('effects.panel.modifiers', effect.modifierCount, engine.settings.language)}
                 </span>
               {/if}
 

@@ -26,7 +26,11 @@
 
   const lang = $derived(engine.settings.language);
 
-  // ── Collect all active features with an actionBudget ─────────────────────
+  // ── Collect all active features with an actionBudget (for display labels) ─
+  // Used only for the condition-name chips shown in the header.
+  // The min-wins budget computation and XOR detection have been moved to the
+  // engine (phase_effectiveActionBudget / phase_actionBudgetHasXOR) to comply
+  // with the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
   const budgetFeatures = $derived<Feature[]>(
     engine.character.activeFeatures
       .filter(afi => afi.isActive)
@@ -37,45 +41,23 @@
   // Is there any restriction at all? If not, we hide the bar entirely.
   const hasAnyRestriction = $derived(budgetFeatures.length > 0);
 
-  // ── Effective budget: MIN across all active budgets per category ──────────
+  // ── Engine-computed effective budget (min-wins per ARCHITECTURE.md §5.6) ──
+  // The min-wins arithmetic lives in GameEngine.phase_effectiveActionBudget.
+  const effectiveBudget = $derived(engine.phase_effectiveActionBudget);
   const Inf = Infinity;
-  const effectiveBudget = $derived.by(() => {
-    let standard   = Inf;
-    let move       = Inf;
-    let swift      = Inf;
-    let immediate  = Inf;
-    let free       = Inf;
-    let full_round = Inf;
-    for (const f of budgetFeatures) {
-      const b = f.actionBudget!;
-      if (b.standard   !== undefined) standard   = Math.min(standard,   b.standard);
-      if (b.move       !== undefined) move       = Math.min(move,       b.move);
-      if (b.swift      !== undefined) swift      = Math.min(swift,      b.swift);
-      if (b.immediate  !== undefined) immediate  = Math.min(immediate,  b.immediate);
-      if (b.free       !== undefined) free       = Math.min(free,       b.free);
-      if (b.full_round !== undefined) full_round = Math.min(full_round, b.full_round);
-    }
-    return { standard, move, swift, immediate, free, full_round };
-  });
 
-  // ── XOR check: look for any active feature with "action_budget_xor" tag ──
-  const hasXOR = $derived(
-    budgetFeatures.some(f => f.tags?.includes('action_budget_xor'))
-  );
+  // ── XOR check from the engine ─────────────────────────────────────────────
+  const hasXOR = $derived(engine.phase_actionBudgetHasXOR);
 
-  // ── Names of condition features blocking actions (for tooltip) ────────────
-  function blockingConditions(category: keyof typeof effectiveBudget): string {
-    return budgetFeatures
-      .filter(f => {
-        const b = f.actionBudget!;
-        const val = b[category];
-        return val !== undefined && val === 0;
-      })
-      .map(f => engine.t(f.label))
-      .join(', ') || '?';
+  // ── Blocking condition names from the engine ──────────────────────────────
+  // Previously computed here via filter + map; moved to the engine (CHECKPOINTS.md §2 §1).
+  function blockingConditions(category: string): string {
+    return engine.phase_actionBudgetBlockers[category] || '?';
   }
 
   // ── Spent actions this turn (local state, reset each turn) ───────────────
+  // `spent` is purely a UI turn-tracking state — it is NOT game logic.
+  // It does not affect the character's data or any engine computation.
   let spent = $state({ standard: 0, move: 0, swift: 0, immediate: 0, free: 0, full_round: 0 });
 
   function spendAction(type: keyof typeof spent) {
@@ -86,23 +68,24 @@
     spent = { standard: 0, move: 0, swift: 0, immediate: 0, free: 0, full_round: 0 };
   }
 
-  // XOR mutual exclusion: if one of standard/move was spent, block the other
+  // XOR mutual exclusion: if one of standard/move was spent, block the other.
+  // This uses local `spent` state (not engine data) — it belongs in the component.
   function isXorBlocked(type: 'standard' | 'move'): boolean {
     if (!hasXOR) return false;
     const other = type === 'standard' ? 'move' : 'standard';
     return spent[other] > 0;
   }
 
-  function isBlocked(type: keyof typeof effectiveBudget): boolean {
-    const budget = effectiveBudget[type];
+  function isBlocked(type: string): boolean {
+    const budget = effectiveBudget[type] ?? Inf;
     if (budget === 0) return true; // Hard block from condition
     if (budget === Inf) return false; // No restriction
-    if (spent[type as keyof typeof spent] >= budget) return true; // Spent all
+    if ((spent as Record<string, number>)[type] >= budget) return true; // Spent all
     if ((type === 'standard' || type === 'move') && isXorBlocked(type as 'standard' | 'move')) return true;
     return false;
   }
 
-  function canSpend(type: keyof typeof effectiveBudget): boolean {
+  function canSpend(type: string): boolean {
     return !isBlocked(type);
   }
 
@@ -161,7 +144,10 @@
           title={blocked
             ? (budget === 0
                ? ui('action.blocked', lang).replace('{conditions}', blockingConditions(act.key))
-               : ui('action.spent', lang))
+               : ui('action.spent_with_conditions', lang)
+                   .replace('{spent}', String(spent[act.key as keyof typeof spent] ?? 0))
+                   .replace('{budget}', String(budget))
+                   .replace('{conditions}', blockingConditions(act.key)))
             : ui('action.available', lang)}
           type="button"
           aria-label="{ui(act.labelKey, lang)} — {blocked ? 'blocked' : 'available'}"

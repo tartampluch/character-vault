@@ -16,9 +16,17 @@
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import { IconAttacks, IconDiceRoll } from '$lib/components/ui/icons';
 
+  // Unarmed strike statistics come from the engine (zero-hardcoding rule, ARCHITECTURE.md §6).
+  // engine.phase_unarmedStrike reads from the `item_unarmed_strike` rule feature and can be
+  // overridden by class features (e.g., Monk improved unarmed strike) via the
+  // `combatStats.unarmed_damage_dice` pipeline. No D&D constants appear in this component.
   const UNARMED_OPTION = $derived({
-    id: '__unarmed__', name: ui('combat.attacks.unarmed', engine.settings.language), damageDice: '1d3', critRange: '20',
-    critMultiplier: 2, isRanged: false, enhancement: 0, stacks15Str: false, tags: [],
+    id: '__unarmed__',
+    name: ui('combat.attacks.unarmed', engine.settings.language),
+    damageDice: engine.phase_unarmedStrike.damageDice,
+    critRange: engine.phase_unarmedStrike.critRange,
+    critMultiplier: engine.phase_unarmedStrike.critMultiplier,
+    isRanged: false, enhancement: 0, stacks15Str: false, tags: [],
   });
 
   type WeaponOption = {
@@ -30,9 +38,9 @@
   function toWeaponOption(feature: ItemFeature, isActive: boolean): WeaponOption | null {
     if (!isActive || !feature.weaponData) return null;
     if (!feature.tags.some(t => t === 'weapon' || t === 'ranged')) return null;
-    const enhancement = feature.grantedModifiers
-      .filter(m => m.type === 'enhancement' && m.targetId.includes('base_attack_bonus'))
-      .reduce((sum, m) => sum + (typeof m.value === 'number' ? m.value : 0), 0);
+    // Enhancement bonus extraction delegated to engine (zero-game-logic-in-Svelte rule,
+    // ARCHITECTURE.md §3). Filtering by modifier type is D&D game logic.
+    const enhancement = engine.getWeaponEnhancementBonus(feature);
     const isRanged    = feature.tags.includes('ranged') || (feature.weaponData.rangeIncrementFt ?? 0) > 0;
     const isTwoHanded = feature.weaponData.wieldCategory === 'two_handed';
     return {

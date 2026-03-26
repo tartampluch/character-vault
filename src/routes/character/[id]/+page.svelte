@@ -176,7 +176,7 @@
         }
       } else {
         console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
-        engine.loadCharacter(createEmptyCharacter(id, 'Unknown Character'));
+        engine.loadCharacter(createEmptyCharacter(id, ui('character.unknown_name', engine.settings.language)));
       }
     }
 
@@ -213,10 +213,12 @@
   /**
    * Total character level — sum of all class levels.
    * E.g. Fighter 5 / Wizard 3 → Level 8.
+   *
+   * Uses engine.phase0_characterLevel (which is the canonical reduce of classLevels)
+   * rather than duplicating the formula here. Zero-game-logic-in-Svelte rule
+   * (ARCHITECTURE.md §3).
    */
-  const totalLevel = $derived(
-    Object.values(engine.character.classLevels).reduce((a, b) => a + b, 0)
-  );
+  const totalLevel = $derived(engine.phase0_characterLevel);
 
   // ===========================================================================
   // MANUAL SAVE
@@ -266,7 +268,7 @@
           aria-label="Back to Character Vault"
         >
           <IconBack size={12} aria-hidden="true" />
-          Vault
+          {ui('character.back_vault', engine.settings.language)}
         </a>
       {:else}
         <a
@@ -275,7 +277,7 @@
           aria-label="Back to campaigns"
         >
           <IconBack size={12} aria-hidden="true" />
-          Campaigns
+          {ui('character.back_campaigns', engine.settings.language)}
         </a>
       {/if}
 
@@ -285,15 +287,15 @@
           {engine.character.name}
         </h1>
         {#if engine.character.isNPC}
-          <span class="badge-red shrink-0" aria-label="Non-player character">NPC</span>
+          <span class="badge-red shrink-0" aria-label={ui('common.npc_aria', engine.settings.language)}>{ui('common.npc', engine.settings.language)}</span>
         {/if}
       </div>
 
       <!-- Level summary or placeholder when no class is selected -->
       {#if totalLevel > 0}
-        <p class="text-xs text-text-muted">Level {totalLevel}</p>
+        <p class="text-xs text-text-muted">{ui('common.level', engine.settings.language)} {totalLevel}</p>
       {:else}
-        <p class="text-xs text-text-muted italic">No class selected yet</p>
+        <p class="text-xs text-text-muted italic">{ui('character.no_class', engine.settings.language)}</p>
       {/if}
 
     </div>
@@ -307,10 +309,10 @@
         aria-label="Save character"
         type="button"
       >
-        {#if saveStatus === 'saving'}Saving…
-        {:else if saveStatus === 'saved'}Saved ✓
-        {:else if saveStatus === 'error'}Error
-        {:else}Save{/if}
+        {#if saveStatus === 'saving'}{ui('common.saving', engine.settings.language)}
+        {:else if saveStatus === 'saved'}{ui('common.saved', engine.settings.language)}
+        {:else if saveStatus === 'error'}{ui('common.save_error', engine.settings.language)}
+        {:else}{ui('common.save', engine.settings.language)}{/if}
       </button>
 
       <!-- Character ID chip (dev utility) -->
@@ -516,7 +518,7 @@
           onclick={() => switchTab('core')}
           type="button"
         >
-          Go to Core tab
+          {ui('character.go_to_core_tab', engine.settings.language)}
         </button>
       </div>
     {/if}

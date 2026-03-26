@@ -59,27 +59,24 @@
   const carriedItems  = $derived(allItems.filter(i => !i.isActive && !i.isStashed));
   const stashedItems  = $derived(allItems.filter(i =>  i.isStashed === true));
 
-  function canEquip(itemFeat: ItemFeature): { ok: boolean; reason?: string } {
-    const slot = itemFeat.equipmentSlot;
-    if (!slot || slot === 'none') return { ok: true };
-    if (slot === 'two_hands') {
-      const mainFull = (engine.phase_equippedSlotCounts['slots.main_hand'] ?? 0) >=
-                       (engine.phase_equipmentSlots['slots.main_hand'] ?? 1);
-      const offFull  = (engine.phase_equippedSlotCounts['slots.off_hand'] ?? 0) >=
-                       (engine.phase_equipmentSlots['slots.off_hand'] ?? 1);
-      if (mainFull || offFull) return { ok: false, reason: 'Both hand slots must be free for this weapon.' };
-      return { ok: true };
-    }
-    const slotKey = `slots.${slot}`;
-    const current = engine.phase_equippedSlotCounts[slotKey] ?? 0;
-    const max     = engine.phase_equipmentSlots[slotKey] ?? 1;
-    if (current >= max) return { ok: false, reason: `${slot} slot is full. Unequip an item first.` };
-    return { ok: true };
+  /**
+   * Translates the engine's equip-check blocker into a human-readable string.
+   *
+   * WHY A HELPER:
+   *   The engine's `getEquipCheckResult()` returns a symbolic blocker key and an
+   *   optional slot name. Translating those into a display string is a UI concern
+   *   (calls `ui()` which is i18n, not game logic), so it belongs here.
+   */
+  function equipReasonText(check: { ok: boolean; blocker: 'tattoo_limit' | 'two_hands_full' | 'slot_full' | null; slotName?: string }): string {
+    if (check.blocker === 'tattoo_limit')    return ui('inventory.tattoo.limit_exceeded', engine.settings.language);
+    if (check.blocker === 'two_hands_full')  return ui('inventory.two_hands.slots_full', engine.settings.language);
+    if (check.blocker === 'slot_full')       return ui('inventory.slot.full', engine.settings.language).replace('{slot}', check.slotName ?? '');
+    return ui('inventory.slot.full', engine.settings.language);
   }
 
   function equipItem(instanceId: ID, itemFeat: ItemFeature) {
-    const check = canEquip(itemFeat);
-    if (!check.ok) { alert(check.reason ?? 'Cannot equip.'); return; }
+    const check = engine.getEquipCheckResult(itemFeat);
+    if (!check.ok) { alert(equipReasonText(check)); return; }
     engine.setFeatureActive(instanceId, true);
   }
 
@@ -131,6 +128,20 @@
     return !!(feature as ItemFeature & { consumable?: { isConsumable: boolean } })
       .consumable?.isConsumable;
   }
+
+  /**
+   * Checks whether an item is cursed (has removalPrevention.isCursed === true).
+   *
+   * Cursed items cannot be unequipped via normal means — the Unequip button must
+   * be hidden for these items (CHECKPOINTS.md §2 Section 10). Only
+   * engine.tryRemoveCursedItem() (with a valid dispel method) can remove them.
+   */
+  function isCursed(feature: ItemFeature): boolean {
+    return feature.removalPrevention?.isCursed === true;
+  }
+
+  // NOTE: Tattoo count, slot availability, and two-handed checks have been moved to
+  // engine.getEquipCheckResult() (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
 </script>
 
 <div class="flex flex-col gap-4">
@@ -155,7 +166,7 @@
         <div class="flex items-center gap-2">
           <IconAttacks size={16} class="text-accent" aria-hidden="true" />
           <span class="text-sm font-semibold uppercase tracking-wider text-accent">
-            Equipped / Readied
+            {ui('inventory.section.equipped', engine.settings.language)}
           </span>
           <span class="badge-accent text-[10px]">{equippedItems.length}</span>
         </div>
@@ -165,7 +176,7 @@
       {#if equippedOpen}
         <div id="equipped-list" class="flex flex-col divide-y divide-border">
           {#if equippedItems.length === 0}
-            <p class="px-4 py-3 text-sm text-text-muted italic">No items equipped.</p>
+            <p class="px-4 py-3 text-sm text-text-muted italic">{ui('inventory.empty.equipped', engine.settings.language)}</p>
           {:else}
             {#each equippedItems as item}
               <div
@@ -199,13 +210,22 @@
                      aria-label="Details for {engine.t(item.feature.label)}"
                      type="button"
                    ><IconInfo size={14} aria-hidden="true" /></button>
-                   <button
-                     class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
-                     onclick={() => unequipItem(item.instanceId)}
-                     aria-label="Unequip {engine.t(item.feature.label)}"
-                     title="Unequip"
-                     type="button"
-                   ><IconUnequip size={14} aria-hidden="true" /></button>
+                   {#if isCursed(item.feature)}
+                     <!-- Cursed items cannot be unequipped via normal means -->
+                     <span
+                       class="p-1.5 text-red-600 dark:text-red-400 text-[10px] font-bold rounded border border-red-700/40 bg-red-950/20"
+                       title={ui('inventory.cursed.tooltip', engine.settings.language)}
+                       aria-label={ui('inventory.cursed.label', engine.settings.language)}
+                     >✗</span>
+                   {:else}
+                     <button
+                       class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
+                       onclick={() => unequipItem(item.instanceId)}
+                        aria-label="{ui('inventory.unequip', engine.settings.language)} {engine.t(item.feature.label)}"
+                        title={ui('inventory.unequip', engine.settings.language)}
+                       type="button"
+                     ><IconUnequip size={14} aria-hidden="true" /></button>
+                   {/if}
                  </div>
                </div>
                <!-- Psionic item data card (Extension E) -->
@@ -235,7 +255,7 @@
         <div class="flex items-center gap-2">
           <IconTabInventory size={16} class="text-text-secondary" aria-hidden="true" />
           <span class="text-sm font-semibold uppercase tracking-wider text-text-secondary">
-            Backpack / Carried
+            {ui('inventory.section.backpack', engine.settings.language)}
           </span>
           <span class="badge-gray text-[10px]">{carriedItems.length}</span>
         </div>
@@ -245,10 +265,10 @@
       {#if carriedOpen}
         <div id="carried-list" class="flex flex-col divide-y divide-border">
           {#if carriedItems.length === 0}
-            <p class="px-4 py-3 text-sm text-text-muted italic">No items in backpack.</p>
+            <p class="px-4 py-3 text-sm text-text-muted italic">{ui('inventory.empty.backpack', engine.settings.language)}</p>
           {:else}
             {#each carriedItems as item}
-              {@const check = canEquip(item.feature)}
+              {@const check = engine.getEquipCheckResult(item.feature)}
               <div
                 class="flex items-center gap-3 px-4 py-2.5
                        hover:bg-surface-alt transition-colors duration-100"
@@ -269,7 +289,7 @@
                     {/if}
                     <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
                     {#if !check.ok}
-                      <span class="badge-yellow text-[10px]" title={check.reason}>Slot full</span>
+                      <span class="badge-yellow text-[10px]" title={equipReasonText(check)}>{ui('inventory.slot.full_badge', engine.settings.language)}</span>
                     {/if}
                   </div>
                 </div>
@@ -318,7 +338,7 @@
                              disabled:opacity-30 disabled:cursor-not-allowed"
                       onclick={() => equipItem(item.instanceId, item.feature)}
                       disabled={!check.ok}
-                      title={check.ok ? 'Equip this item' : check.reason}
+                      title={check.ok ? 'Equip this item' : equipReasonText(check)}
                       aria-label="Equip {engine.t(item.feature.label)}"
                       type="button"
                     ><IconEquip size={14} aria-hidden="true" /></button>
@@ -358,12 +378,12 @@
         <div class="flex items-center gap-2">
           <IconTabInventory size={16} class="text-text-muted" aria-hidden="true" />
           <span class="text-sm font-semibold uppercase tracking-wider text-text-muted">
-            Storage / Stashed
+            {ui('inventory.section.storage', engine.settings.language)}
           </span>
           <span class="badge-gray text-[10px]">{stashedItems.length}</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-[10px] text-text-muted italic">no weight</span>
+          <span class="text-[10px] text-text-muted italic">{ui('inventory.section.storage_weight_note', engine.settings.language)}</span>
           <span class="text-text-muted text-xs">{stashedOpen ? '▲' : '▼'}</span>
         </div>
       </button>
@@ -371,7 +391,7 @@
       {#if stashedOpen}
         <div id="stashed-list" class="flex flex-col divide-y divide-border">
           {#if stashedItems.length === 0}
-            <p class="px-4 py-3 text-sm text-text-muted italic">No items in storage.</p>
+            <p class="px-4 py-3 text-sm text-text-muted italic">{ui('inventory.empty.storage', engine.settings.language)}</p>
           {:else}
             {#each stashedItems as item}
               <div class="flex items-center gap-3 px-4 py-2.5 opacity-60 hover:opacity-80 transition-opacity hover:bg-surface-alt">
@@ -390,7 +410,7 @@
                       <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
                     {/if}
                     <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
-                    <span class="badge-gray text-[10px]">not carried</span>
+                     <span class="badge-gray text-[10px]">{ui('inventory.not_carried', engine.settings.language)}</span>
                   </div>
                 </div>
 
@@ -402,16 +422,13 @@
                     aria-label="Details for {engine.t(item.feature.label)}"
                     type="button"
                   ><IconInfo size={14} aria-hidden="true" /></button>
-                  <button
-                    class="btn-ghost p-1.5 text-text-muted hover:bg-surface-alt text-xs"
-                    onclick={() => {
-                      const afi = engine.character.activeFeatures.find(a => a.instanceId === item.instanceId);
-                      if (afi) afi.isStashed = false;
-                    }}
-                    aria-label="Move {engine.t(item.feature.label)} to backpack"
-                    title="Move to backpack"
-                    type="button"
-                  ><IconUnequip size={14} aria-hidden="true" /></button>
+                   <button
+                     class="btn-ghost p-1.5 text-text-muted hover:bg-surface-alt text-xs"
+                     onclick={() => engine.moveItemFromStash(item.instanceId)}
+                     aria-label="Move {engine.t(item.feature.label)} to backpack"
+                     title="Move to backpack"
+                     type="button"
+                   ><IconUnequip size={14} aria-hidden="true" /></button>
                   <button
                     class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
                     onclick={() => engine.removeFeature(item.instanceId)}

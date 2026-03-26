@@ -400,8 +400,9 @@ describe('setAttributeBase and setSkillRanks', () => {
     engine.character = createEmptyCharacter('test', 'Skill');
     engine.character.skills['skill_climb'] = {
       id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_strength',
-      baseValue: 0, ranks: 5, isClassSkill: true, appliesArmorCheckPenalty: true,
-      canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
+      baseValue: 0, ranks: 5, isClassSkill: true, costPerRank: 1,
+      appliesArmorCheckPenalty: true, canBeUsedUntrained: true,
+      activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 5, derivedModifier: 0,
     };
     engine.setSkillRanks('skill_climb', -3);
@@ -413,8 +414,9 @@ describe('setAttributeBase and setSkillRanks', () => {
     engine.character = createEmptyCharacter('test', 'Lock');
     engine.character.skills['skill_climb'] = {
       id: 'skill_climb', label: { en: 'Climb' }, keyAbility: 'stat_strength',
-      baseValue: 0, ranks: 6, isClassSkill: true, appliesArmorCheckPenalty: true,
-      canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
+      baseValue: 0, ranks: 6, isClassSkill: true, costPerRank: 1,
+      appliesArmorCheckPenalty: true, canBeUsedUntrained: true,
+      activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 6, derivedModifier: 0,
     };
     engine.character.minimumSkillRanks = { skill_climb: 4 }; // locked at 4
@@ -427,8 +429,9 @@ describe('setAttributeBase and setSkillRanks', () => {
     engine.character = createEmptyCharacter('test', 'Lock2');
     engine.character.skills['skill_swim'] = {
       id: 'skill_swim', label: { en: 'Swim' }, keyAbility: 'stat_strength',
-      baseValue: 0, ranks: 5, isClassSkill: true, appliesArmorCheckPenalty: true,
-      canBeUsedUntrained: true, activeModifiers: [], situationalModifiers: [],
+      baseValue: 0, ranks: 5, isClassSkill: true, costPerRank: 1,
+      appliesArmorCheckPenalty: true, canBeUsedUntrained: true,
+      activeModifiers: [], situationalModifiers: [],
       totalBonus: 0, totalValue: 5, derivedModifier: 0,
     };
     engine.lockSkillRanksMin('skill_swim');

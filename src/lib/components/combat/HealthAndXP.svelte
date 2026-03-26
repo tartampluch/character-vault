@@ -10,7 +10,6 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
   import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
 
@@ -22,9 +21,11 @@
   const maxHp         = $derived(engine.phase3_maxHp);
   const currentHp     = $derived(hpPool?.currentValue ?? 0);
   const tempHp        = $derived(hpPool?.temporaryValue ?? 0);
-  const effectiveMaxHp = $derived(maxHp + tempHp);
-  const hpPercent     = $derived(maxHp > 0 ? Math.max(0, Math.min(100, (currentHp / maxHp) * 100)) : 0);
-  const tempPercent   = $derived(effectiveMaxHp > 0 ? (tempHp / effectiveMaxHp) * 100 : 0);
+  // HP bar percentages are computed in the engine (zero-game-logic-in-Svelte rule,
+  // ARCHITECTURE.md §3). Math.max / Math.min / division are forbidden in .svelte files.
+  // @see GameEngine.svelte.ts — phase_hpPercent, phase_tempHpPercent
+  const hpPercent     = $derived(engine.phase_hpPercent);
+  const tempPercent   = $derived(engine.phase_tempHpPercent);
 
   // ── Vitality / Wound Points pools (Extension H) ──────────────────────────
   const vpPool     = $derived(engine.character.resources['resources.vitality_points']);
@@ -32,25 +33,36 @@
   const maxVP      = $derived(vpPool ? (engine.phase3_combatStats['combatStats.max_vitality']?.totalValue ?? 0) : 0);
   const currentVP  = $derived(vpPool?.currentValue ?? 0);
   const currentWP  = $derived(wpPool?.currentValue ?? 0);
-  const maxWP      = $derived(wpPool ? (engine.phase2_attributes['stat_constitution']?.totalValue ?? 10) : 10);
-  const vpPercent  = $derived(maxVP > 0 ? Math.max(0, Math.min(100, (currentVP / maxVP) * 100)) : 0);
-  const wpPercent  = $derived(maxWP > 0 ? Math.max(0, Math.min(100, (currentWP / maxWP) * 100)) : 0);
+  // Max Wound Points = CON score. Use engine.phase_maxWoundPoints to avoid
+  // hard-coding the 'stat_constitution' pipeline ID in this component
+  // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  const maxWP      = $derived(wpPool ? engine.phase_maxWoundPoints : 10);
+  // VP/WP bar percentages delegated to engine (same pattern as phase_hpPercent).
+  const vpPercent  = $derived(engine.phase_vpPercent);
+  const wpPercent  = $derived(engine.phase_wpPercent);
 
-  /* Health status — colour stays inline since it's a runtime computed value */
+  // CON HP contribution (CON modifier × character level) is a D&D formula that
+  // belongs in the engine, not in the component. Read from the engine-derived property.
+  const conHpContrib = $derived(engine.phase3_conHpContrib);
+
+  // HP status key — D&D threshold logic (dead at −CON, dying, etc.) lives in the engine.
+  // The engine exposes a string key; this component maps it to a ui() label + color.
+  const hpStatusKey = $derived(engine.phase_hpStatusKey);
+
+  /** Map status key → { label (i18n key), color (oklch) } */
+  const HP_STATUS_MAP: Record<string, { labelKey: string; color: string }> = {
+    dead:        { labelKey: 'combat.hp.dead',        color: 'oklch(30% 0.18 28)'  },
+    dying:       { labelKey: 'combat.hp.dying',       color: 'oklch(40% 0.20 28)'  },
+    unconscious: { labelKey: 'combat.hp.unconscious', color: 'oklch(40% 0.18 28)'  },
+    bloodied:    { labelKey: 'combat.hp.bloodied',    color: 'oklch(55% 0.20 28)'  },
+    injured:     { labelKey: 'combat.hp.injured',     color: 'oklch(72% 0.17 88)'  },
+    healthy:     { labelKey: 'combat.hp.healthy',     color: 'oklch(65% 0.17 145)' },
+    unknown:     { labelKey: 'combat.hp.unknown',     color: 'oklch(55% 0.010 264)'},
+  };
   const hpStatus = $derived.by(() => {
-    if (!hpPool || maxHp <= 0) return { label: ui('combat.hp.unknown', engine.settings.language), color: 'oklch(55% 0.010 264)' };
-    if (currentHp <= -(engine.phase2_attributes['stat_constitution']?.totalValue ?? 10))
-      return { label: ui('combat.hp.dead', engine.settings.language),        color: 'oklch(30% 0.18 28)' };
-    if (currentHp <= -1) return { label: ui('combat.hp.dying', engine.settings.language),       color: 'oklch(40% 0.20 28)' };
-    if (currentHp ===  0) return { label: ui('combat.hp.unconscious', engine.settings.language), color: 'oklch(40% 0.18 28)' };
-    const frac = currentHp / maxHp;
-    if (frac <= 0.25) return { label: ui('combat.hp.bloodied', engine.settings.language), color: 'oklch(55% 0.20 28)' };
-    if (frac <= 0.50) return { label: ui('combat.hp.injured', engine.settings.language),  color: 'oklch(72% 0.17 88)' };
-    return { label: ui('combat.hp.healthy', engine.settings.language), color: 'oklch(65% 0.17 145)' };
+    const entry = HP_STATUS_MAP[hpStatusKey] ?? HP_STATUS_MAP['unknown'];
+    return { label: ui(entry.labelKey as Parameters<typeof ui>[0], engine.settings.language), color: entry.color };
   });
-
-  const conMod       = $derived(engine.phase2_attributes['stat_constitution']?.derivedModifier ?? 0);
-  const conHpContrib = $derived(conMod * engine.phase0_characterLevel);
 
   let healAmount   = $state('');
   let damageAmount = $state('');
@@ -70,7 +82,9 @@
   }
   function setCurrentHpDirectly(event: Event) {
     const val = parseInt((event.target as HTMLInputElement).value, 10);
-    if (!isNaN(val) && hpPool) hpPool.currentValue = Math.min(val, maxHp);
+    // Delegate to the engine which enforces the D&D "cannot exceed maxHP" cap rule.
+    // Direct mutation of hpPool.currentValue would violate zero-game-logic-in-Svelte.
+    if (!isNaN(val)) engine.setCurrentHP(val);
   }
 
   // ── Per-turn healing (Extension B) ───────────────────────────────────────
@@ -91,42 +105,25 @@
   const eclForXp = $derived(engine.phase0_eclForXp);
   const levelAdj = $derived(engine.character.levelAdjustment ?? 0);
 
-  const nextLevelXp = $derived.by(() => {
-    // Use ECL (not characterLevel) for XP threshold table lookups
-    const level = eclForXp;
-    const table = dataLoader.getConfigTable('config_xp_thresholds');
-    if (!table?.data) {
-      const fb: Record<number, number> = { 1:1000,2:3000,3:6000,4:10000,5:15000,6:21000,7:28000,8:36000,9:45000,10:55000 };
-      return fb[level + 1] ?? 999999;
-    }
-    const rows = table.data as Array<Record<string,unknown>>;
-    const row  = rows.find(r => r['level'] === level + 1);
-    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 999999;
-  });
-  const currentLevelXp = $derived.by(() => {
-    const level = eclForXp;
-    const table = dataLoader.getConfigTable('config_xp_thresholds');
-    if (!table?.data) return 0;
-    const rows = table.data as Array<Record<string,unknown>>;
-    const row  = rows.find(r => r['level'] === level);
-    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 0;
-  });
-  const currentXp   = $derived(engine.character.xp ?? 0);
-  const xpIntoLevel = $derived(currentXp - currentLevelXp);
-  const xpNeeded    = $derived(nextLevelXp - currentLevelXp);
-  const xpPercent   = $derived(xpNeeded > 0 ? Math.max(0, Math.min(100, (xpIntoLevel / xpNeeded) * 100)) : 0);
-  const canLevelUp  = $derived(currentXp >= nextLevelXp);
+  // LA reduction eligibility — D&D rule (3×LA class levels) lives in the engine.
+  const canReduceLA = $derived(engine.phase_canReduceLA);
 
-  /** Can reduce LA? Requires 3 × current LA class levels (SRD reducing LA variant) */
-  const canReduceLA = $derived(
-    levelAdj > 0 &&
-    engine.phase0_characterLevel >= levelAdj * 3
-  );
+  // XP threshold data is computed by the engine (zero-game-logic-in-Svelte rule).
+  // The engine exposes phase_nextLevelXp, phase_currentLevelXp, phase_xpIntoLevel,
+  // phase_xpNeeded, phase_xpPercent, and phase_canLevelUp as $derived properties.
+  // HealthAndXP.svelte reads them directly — no config table queries or arithmetic here.
+  const nextLevelXp = $derived(engine.phase_nextLevelXp);
+  const currentXp   = $derived(engine.character.xp ?? 0);
+  const xpIntoLevel = $derived(engine.phase_xpIntoLevel);
+  const xpNeeded    = $derived(engine.phase_xpNeeded);
+  const xpPercent   = $derived(engine.phase_xpPercent);
+  const canLevelUp  = $derived(engine.phase_canLevelUp);
 
   let xpToAdd = $state('');
   function addXp() {
     const n = parseInt(xpToAdd, 10);
-    if (!isNaN(n)) { engine.character.xp = (engine.character.xp ?? 0) + n; xpToAdd = ''; }
+    // Delegate to engine.addXp() to keep character state mutations out of the component.
+    if (!isNaN(n)) { engine.addXp(n); xpToAdd = ''; }
   }
   function reduceLA() {
     if (!canReduceLA) return;
@@ -135,7 +132,9 @@
         .replace('{current}', String(levelAdj))
         .replace('{next}', String(levelAdj - 1))
     )) return;
-    engine.character.levelAdjustment = (engine.character.levelAdjustment ?? 1) - 1;
+    // Delegate to engine.reduceLA() — direct mutation of levelAdjustment would violate
+    // the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
+    engine.reduceLA();
   }
 </script>
 
@@ -156,7 +155,7 @@
       >
         ● {hpStatus.label}
       </span>
-      <span class="text-xs text-text-muted" title="CON modifier × character level">
+      <span class="text-xs text-text-muted" title="{ui('combat.hp.con_contrib_tooltip', engine.settings.language)}">
         {ui('combat.hp.con_contrib', engine.settings.language)} {conHpContrib >= 0 ? '+' : ''}{conHpContrib}
       </span>
     </div>
@@ -417,7 +416,7 @@
     </div>
     <p class="text-xs text-text-muted">
       {xpIntoLevel.toLocaleString()} / {xpNeeded.toLocaleString()} {ui('combat.xp.to_next', engine.settings.language)} ({xpPercent.toFixed(0)}%)
-      {#if levelAdj > 0}<span class="text-amber-400/80 ml-1">(ECL {eclForXp})</span>{/if}
+      {#if levelAdj > 0}<span class="text-amber-400/80 ml-1">({ui('ecl.ecl_label', engine.settings.language)} {eclForXp})</span>{/if}
     </p>
 
     <!-- Award XP + Level Up -->
@@ -444,7 +443,7 @@
       {/if}
     </div>
 
-    {#if dataLoader.getConfigTable('config_xp_thresholds') === undefined}
+    {#if !engine.phase_xpTableLoaded}
       <p class="text-xs text-text-muted italic">
         {ui('combat.xp.config_hint', engine.settings.language)}
       </p>

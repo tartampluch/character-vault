@@ -12,7 +12,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, computeBaseSave, previewWithTempMod } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
@@ -48,7 +48,7 @@
 
       {#if pipeline}
         {@const tempMod = getTempMod(save.pipelineId)}
-        {@const effectiveTotal = pipeline.totalValue + tempMod}
+        {@const effectiveTotal = previewWithTempMod(pipeline.totalValue, tempMod)}
 
         <!--
           Top border uses the save's accent colour (runtime value from config).
@@ -94,7 +94,7 @@
             <div class="flex flex-col items-center px-2 py-1 rounded border border-border bg-surface min-w-[2.5rem]">
               <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('saves.base', engine.settings.language)}</span>
               <span class="text-sm font-semibold text-text-secondary">
-                {formatModifier(pipeline.totalBonus - abilityMod)}
+                {formatModifier(computeBaseSave(pipeline.totalBonus, abilityMod))}
               </span>
             </div>
 

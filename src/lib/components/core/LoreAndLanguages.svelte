@@ -35,13 +35,20 @@
   const lang = $derived(engine.settings.language);
 
   // ── Language system ─────────────────────────────────────────────────────────
-  const intModifier = $derived(
-    Math.max(0, engine.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0)
-  );
-  const speakLanguageRanks = $derived(
-    engine.character.skills['skill_speak_language']?.ranks ?? 0
-  );
-  const bonusLanguageSlots = $derived(intModifier + speakLanguageRanks);
+  //
+  // D&D 3.5 RULE: bonus language slots = max(0, INT modifier) + Speak Language ranks.
+  // Both the INT pipeline ID ('stat_intelligence') and the skill ID ('skill_speak_language')
+  // are internal system identifiers that must NOT be hardcoded in .svelte files
+  // (zero-hardcoding rule, ARCHITECTURE.md §6). The engine exposes
+  // `phase_bonusLanguageSlots` which performs this computation centrally.
+  //
+  // Math.max(0, intMod) + speakRanks is also D&D arithmetic forbidden in .svelte
+  // files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  const bonusLanguageSlots = $derived(engine.phase_bonusLanguageSlots);
+
+  // NOTE: `remainingSlots` is now read from the engine (below) to avoid
+  // Math.max(0, bonusLanguageSlots - manualCount) arithmetic in the component.
+  // The engine computes phase_remainingLanguageSlots using the same formula.
 
   const languages = $derived.by(() => {
     const automatic: Array<{ id: ID; name: string }> = [];
@@ -70,8 +77,11 @@
     return { automatic, manual };
   });
 
+  // manualCount is still needed for the slot-counter display (used/{total})
   const manualCount     = $derived(languages.manual.length);
-  const remainingSlots  = $derived(Math.max(0, bonusLanguageSlots - manualCount));
+  // remainingSlots: Math.max(0, bonusSlots − manualCount) was forbidden in a .svelte file.
+  // Delegated to engine.phase_remainingLanguageSlots (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+  const remainingSlots  = $derived(engine.phase_remainingLanguageSlots);
 
   const availableLanguages = $derived.by(() => {
     const selectedIds = new Set([

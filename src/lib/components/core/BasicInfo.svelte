@@ -30,7 +30,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
-  import { getAbilityAbbr } from '$lib/utils/constants';
+  import { getAbilityAbbr, MAIN_ABILITY_IDS, ALIGNMENTS } from '$lib/utils/constants';
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -41,17 +41,8 @@
   const classes = $derived(dataLoader.queryFeatures('category:class'));
   const deities = $derived(dataLoader.queryFeatures('category:deity'));
 
-  const ALIGNMENTS = [
-    { id: 'alignment_lawful_good',     label: { en: 'Lawful Good',      fr: 'Loyal Bon' } },
-    { id: 'alignment_neutral_good',    label: { en: 'Neutral Good',     fr: 'Neutre Bon' } },
-    { id: 'alignment_chaotic_good',    label: { en: 'Chaotic Good',     fr: 'Chaotique Bon' } },
-    { id: 'alignment_lawful_neutral',  label: { en: 'Lawful Neutral',   fr: 'Loyal Neutre' } },
-    { id: 'alignment_true_neutral',    label: { en: 'True Neutral',     fr: 'Vrai Neutre' } },
-    { id: 'alignment_chaotic_neutral', label: { en: 'Chaotic Neutral',  fr: 'Chaotique Neutre' } },
-    { id: 'alignment_lawful_evil',     label: { en: 'Lawful Evil',      fr: 'Loyal Mauvais' } },
-    { id: 'alignment_neutral_evil',    label: { en: 'Neutral Evil',     fr: 'Neutre Mauvais' } },
-    { id: 'alignment_chaotic_evil',    label: { en: 'Chaotic Evil',     fr: 'Chaotique Mauvais' } },
-  ];
+  // ALIGNMENTS is imported from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
+  // The 9 standard D&D 3.5 alignments are centralized as game content, not embedded here.
 
   // ── Current selections ──────────────────────────────────────────────────────
   function getActiveCategoryFeature(category: string): Feature | undefined {
@@ -77,12 +68,13 @@
   interface ModPill { label: string; positive: boolean; zero: boolean }
   function getModifierPills(feature: Feature): ModPill[] {
     if (!feature.grantedModifiers?.length) return [];
-    const STAT_IDS = ['stat_str','stat_dex','stat_con','stat_int','stat_wis','stat_cha'];
+    // Use MAIN_ABILITY_IDS from constants.ts (centralized, never hardcoded here).
+    // targetId format: 'attributes.stat_strength' — full ID substring match works correctly.
     return feature.grantedModifiers
       .filter(mod =>
         typeof mod.value === 'number' &&
         mod.value !== 0 &&
-        STAT_IDS.some(s => mod.targetId.includes(s))
+        MAIN_ABILITY_IDS.some(s => mod.targetId.includes(s))
       )
       .slice(0, 4)
       .map(mod => {
@@ -127,6 +119,8 @@
     // Remove ALL prior class feature instances AND their classLevels entries.
     // Without the classLevels cleanup, switching class accumulates entries
     // (Fighter 1 → Wizard 1 → Rogue 1 = level 3 multiclass instead of level 1).
+    // Use engine.deleteClassLevel() — no direct `classLevels` mutation in the
+    // Svelte component (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
     const previousClassIds = engine.character.activeFeatures
       .filter(afi => {
         const f = dataLoader.getFeature(afi.featureId);
@@ -137,11 +131,11 @@
     removeAllOfCategory('class');
 
     for (const prevId of previousClassIds) {
-      delete engine.character.classLevels[prevId];
+      engine.deleteClassLevel(prevId);
     }
 
     if (featureId) {
-      engine.character.classLevels[featureId] = 1;
+      engine.setClassLevel(featureId, 1);
       engine.addFeature({ instanceId: makeCategoryInstanceId('class', featureId), featureId, isActive: true });
     }
   }
@@ -193,16 +187,19 @@
   const activeClassChoices    = $derived.by(() => activeClass?.choices?.length ? activeClass.choices : []);
   const activeClassSelections = $derived.by(() => getActiveCategoryInstance('class')?.selections ?? {});
 
+  /**
+   * Called when the player selects or clears a single-select class choice
+   * (e.g. Cleric domains, Sorcerer bloodline, Wizard school).
+   *
+   * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
+   *   Direct mutation of `instance.selections` from a Svelte component violates
+   *   the dumb-UI contract. We delegate all character state writes to the engine
+   *   via `engine.setFeatureSelection()`, which handles reactivity internally.
+   */
   function handleChoiceChange(choiceId: string, featureId: string) {
     const instance = getActiveCategoryInstance('class');
     if (!instance) return;
-    if (!instance.selections) instance.selections = {};
-    if (featureId) {
-      instance.selections[choiceId] = [featureId];
-    } else {
-      delete instance.selections[choiceId];
-    }
-    engine.character.activeFeatures = [...engine.character.activeFeatures];
+    engine.setFeatureSelection(instance.featureId, choiceId, featureId ? [featureId] : []);
   }
 
   /**
@@ -381,8 +378,10 @@
             class="input w-14 text-center px-1"
             onchange={(e) => {
               const lvl = parseInt((e.target as HTMLInputElement).value, 10);
+              // Use engine.setClassLevel() — direct mutation of classLevels is
+              // prohibited in Svelte components (zero-game-logic rule, ARCHITECTURE.md §3).
               if (!isNaN(lvl) && lvl >= 1 && lvl <= 20 && activeClass) {
-                engine.character.classLevels[activeClass.id] = lvl;
+                engine.setClassLevel(activeClass.id, lvl);
               }
             }}
             aria-label="Class level"

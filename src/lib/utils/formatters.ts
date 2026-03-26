@@ -217,6 +217,45 @@ export function formatWeightWithSettings(lbs: number, settings: CampaignSettings
 }
 
 // =============================================================================
+// ABILITY SCORE MODIFIER COMPUTATION
+// =============================================================================
+
+/**
+ * Computes the D&D 3.5 ability score modifier from a raw ability score.
+ *
+ * D&D 3.5 FORMULA: modifier = floor((score − 10) / 2)
+ *
+ * This is the canonical formula used throughout the SRD:
+ *   STR 18 → modifier +4
+ *   STR 10 → modifier +0
+ *   STR  8 → modifier -1
+ *   STR  3 → modifier -4
+ *
+ * WHY IN FORMATTERS (not GameEngine)?
+ *   This is a pure stateless function with no reactive dependencies — it needs
+ *   neither character state nor campaign settings. Placing it here keeps the engine
+ *   focused on reactive DAG derivations while giving any layer (engine, math parser,
+ *   or UI wizard) access to the formula without duplicating it.
+ *
+ * UI USE CASES:
+ *   - PointBuyModal: preview modifier before committing scores to the engine.
+ *   - RollStatsModal: preview rolled modifiers before assigning them.
+ *   - ItemDataEditor: compute ego score components from INT/WIS/CHA spinners.
+ *
+ * @param score - The raw ability score (typically 3–20 for D&D characters).
+ * @returns The ability modifier (can be negative for scores below 10).
+ *
+ * @example
+ * computeAbilityModifier(18) // → 4
+ * computeAbilityModifier(10) // → 0
+ * computeAbilityModifier(8)  // → -1
+ * computeAbilityModifier(3)  // → -4
+ */
+export function computeAbilityModifier(score: number): number {
+  return Math.floor((score - 10) / 2);
+}
+
+// =============================================================================
 // MODIFIER SIGN FORMATTING
 // =============================================================================
 
@@ -479,4 +518,135 @@ export function formatSituationalContext(ctx: string, lang: string = 'en'): stri
     .replace(/_/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase())
     .replace(/\bVs\b/g, 'vs.');
+}
+
+// =============================================================================
+// COIN UTILITIES — D&D 3.5 currency helpers
+// =============================================================================
+//
+// These functions are extracted from Encumbrance.svelte to comply with the
+// zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). Mathematical calculations
+// involving D&D-specific constants (coin weight, exchange rates) must not appear
+// in .svelte files. Keeping them here as pure functions allows unit testing and
+// ensures all D&D coin math is in one auditable location.
+
+/**
+ * Computes the total weight of a coin purse in pounds.
+ *
+ * D&D 3.5 RULE: Every denomination (cp, sp, ep, gp, pp) weighs the same —
+ * 50 coins = 1 lb (Player's Handbook, Equipment chapter, Coins entry).
+ * This convention simplifies logistics and is standard across 3.0/3.5/d20.
+ *
+ * @param cp - Copper piece count
+ * @param sp - Silver piece count
+ * @param gp - Gold piece count
+ * @param pp - Platinum piece count
+ * @returns Weight in pounds (integer, rounded down per SRD encumbrance rules)
+ */
+export function computeCoinWeight(cp: number, sp: number, gp: number, pp: number): number {
+  return Math.floor((cp + sp + gp + pp) / 50);
+}
+
+/**
+ * Converts a mixed coin purse to its total gold piece equivalent.
+ *
+ * D&D 3.5 EXCHANGE RATES (Player's Handbook, Equipment):
+ *   100 cp = 1 gp
+ *    10 sp = 1 gp
+ *     1 gp = 1 gp
+ *     1 pp = 10 gp
+ *
+ * @param cp - Copper piece count
+ * @param sp - Silver piece count
+ * @param gp - Gold piece count
+ * @param pp - Platinum piece count
+ * @returns Total value in gold pieces (fractional for cp/sp)
+ */
+export function computeWealthInGP(cp: number, sp: number, gp: number, pp: number): number {
+  return cp / 100 + sp / 10 + gp + pp * 10;
+}
+
+// =============================================================================
+// DISPLAY PREVIEW HELPERS (keep arithmetic out of .svelte templates)
+// =============================================================================
+
+/**
+ * Returns the effective ability score value when a temporary modifier is applied.
+ *
+ * PURPOSE (ARCHITECTURE.md §3):
+ *   Components must not perform arithmetic in templates. The "temporary modifier"
+ *   field in the Abilities tab is a UI-only preview (not persisted to the engine),
+ *   so it cannot live in the engine. This helper keeps the addition out of the
+ *   Svelte template while remaining testable as a pure function.
+ *
+ * @param baseTotal  - The engine's computed totalValue for the pipeline.
+ * @param tempMod    - A locally entered temporary adjustment (can be negative).
+ * @returns Preview total (baseTotal + tempMod).
+ */
+export function previewWithTempMod(baseTotal: number, tempMod: number): number {
+  return baseTotal + tempMod;
+}
+
+/**
+ * Isolates the base save bonus from a saving throw pipeline.
+ *
+ * D&D 3.5 FORMULA:
+ *   baseSave = total save modifier − key ability modifier
+ *
+ * This appears in the SavingThrows component to show the class-progression
+ * contribution separately from the ability modifier.
+ *
+ * PURPOSE (ARCHITECTURE.md §3):
+ *   Subtraction of two engine-derived values must not appear inline in Svelte
+ *   templates. This pure function makes the intent explicit and keeps arithmetic
+ *   in a testable utility file.
+ *
+ * @param totalBonus  - The pipeline's totalBonus (total save modifier from all sources).
+ * @param abilityMod  - The key ability's derived modifier (CON/DEX/WIS for Fort/Ref/Will).
+ * @returns The base save bonus contributed by class progression and racial bonuses.
+ */
+export function computeBaseSave(totalBonus: number, abilityMod: number): number {
+  return totalBonus - abilityMod;
+}
+
+/**
+ * Clamps a ratio to a display percentage (0–100), avoiding division by zero.
+ *
+ * PURPOSE (ARCHITECTURE.md §3):
+ *   Progress-bar fill percentage calculations (Math.min + division + multiplication)
+ *   must not appear inline in Svelte templates. This helper centralises the pattern
+ *   used by SkillsMatrix, PointBuyModal, Encumbrance, and PsionicItemCard.
+ *
+ * @param value  - Current value (e.g., points spent, current PP).
+ * @param max    - Maximum value. Returns 0 if max ≤ 0.
+ * @returns Percentage in [0, 100] inclusive.
+ */
+export function toDisplayPct(value: number, max: number): number {
+  if (max <= 0) return 0;
+  return Math.min(100, Math.max(0, (value / max) * 100));
+}
+
+// =============================================================================
+// CHARACTER LEVEL UTILITY (keep D&D formula out of .svelte templates)
+// =============================================================================
+
+/**
+ * Computes total character level from a classLevels record.
+ *
+ * D&D 3.5 RULE:
+ *   Character level = sum of all individual class levels.
+ *   Level Adjustment is NOT included (that is eclForXp).
+ *
+ * PURPOSE (ARCHITECTURE.md §3):
+ *   CharacterCard and the GM Dashboard need the level for ARBITRARY characters
+ *   from the vault (not the currently-loaded engine character). The engine only
+ *   exposes `phase0_characterLevel` for the active character, so this utility
+ *   function makes the formula available to those components without embedding
+ *   `Object.values(classLevels).reduce()` inline in a `.svelte` file.
+ *
+ * @param classLevels - Record mapping class feature ID → level count.
+ * @returns Total character level (integer ≥ 0).
+ */
+export function getCharacterLevel(classLevels: Record<string, number>): number {
+  return Object.values(classLevels).reduce((sum: number, lvl: number) => sum + lvl, 0);
 }

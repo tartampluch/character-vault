@@ -161,7 +161,6 @@
             <!-- Chapter / task progress -->
             {#if campaign.chapters.length > 0}
               {@const stats = campaignTaskStats(campaign.chapters)}
-              {@const pct = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}
               <div class="flex items-center gap-2 mt-auto pt-1">
                 <span class="text-[10px] text-text-muted shrink-0">{stats.completed}/{stats.total}</span>
                 <div
@@ -173,10 +172,10 @@
                 >
                   <div
                     class="h-full bg-accent rounded-full transition-all duration-300"
-                    style="width: {pct}%"
+                    style="width: {stats.pct}%"
                   ></div>
                 </div>
-                <span class="text-[10px] text-accent shrink-0">{pct}%</span>
+                <span class="text-[10px] text-accent shrink-0">{stats.pct}%</span>
               </div>
             {/if}
           </div>

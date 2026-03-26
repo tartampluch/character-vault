@@ -18,7 +18,11 @@
   import type { Character } from '$lib/types/character';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { getCharacterLevel } from '$lib/utils/formatters';
+  import { ui } from '$lib/i18n/ui-strings';
   import { IconNPC, IconCharacter, IconDelete } from '$lib/components/ui/icons';
+
+  const lang = $derived(engine.settings.language);
 
   interface Props {
     character: Character;
@@ -29,9 +33,9 @@
 
   let { character, onclick, ondelete }: Props = $props();
 
-  const characterLevel = $derived(
-    Object.values(character.classLevels).reduce((sum, lvl) => sum + lvl, 0)
-  );
+  // getCharacterLevel() from formatters.ts keeps the D&D character-level formula
+  // (Object.values(classLevels).reduce) out of the .svelte file (ARCHITECTURE.md §3).
+  const characterLevel = $derived(getCharacterLevel(character.classLevels));
 
   const subtitle = $derived.by(() => {
     if (character.customSubtitle) return character.customSubtitle;
@@ -44,7 +48,7 @@
         const raceFeature = dataLoader.getFeature(raceInstance.featureId);
         if (raceFeature) return engine.t(raceFeature.label);
       }
-      return engine.t({ en: 'NPC', fr: 'PNJ' });
+      return ui('common.npc', lang);
     }
     if (character.playerRealName) return character.playerRealName;
     return '';
@@ -52,8 +56,10 @@
 
   const isNPC = $derived(character.isNPC);
 
+  // Zero-hardcoding rule: use ui() for all visible text including aria-labels.
+  // ui('vault.level_abbr') = 'Lv.' (en) / 'Nv.' (fr).
   const ariaLabel = $derived(
-    `${character.name}${subtitle ? ', ' + subtitle : ''}, Level ${characterLevel}`
+    `${character.name}${subtitle ? ', ' + subtitle : ''}, ${ui('vault.level_abbr', lang)} ${characterLevel}`
   );
 </script>
 
@@ -103,13 +109,13 @@
         </div>
       {/if}
 
-      <!-- NPC badge -->
+      <!-- NPC badge — text via ui-strings, never hardcoded (ARCHITECTURE.md §6) -->
       {#if isNPC}
         <span
           class="absolute top-2 right-2 bg-red-700/85 text-white text-[10px] font-bold
                  uppercase tracking-wider px-1.5 py-0.5 rounded pointer-events-none"
           aria-hidden="true"
-        >NPC</span>
+        >{ui('common.npc', lang)}</span>
       {/if}
     </div>
 
@@ -125,9 +131,9 @@
         <p class="text-xs text-text-muted truncate">{subtitle}</p>
       {/if}
 
-      <!-- Level badge -->
+      <!-- Level badge — label from ui-strings (zero-hardcoding rule, ARCHITECTURE.md §6) -->
       <div class="flex items-baseline gap-1 mt-auto pt-2">
-        <span class="text-[10px] uppercase tracking-wider text-text-muted">Lv.</span>
+        <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('vault.level_abbr', lang)}</span>
         <span class="text-base font-bold {isNPC ? 'text-red-400' : 'text-accent'}">
           {characterLevel}
         </span>

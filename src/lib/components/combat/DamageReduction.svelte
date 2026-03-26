@@ -13,20 +13,43 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
   import type { DREntry } from '$lib/utils/stackingRules';
+  import { DR_CUSTOM_FEATURE_PREFIX } from '$lib/utils/constants';
 
   let drValue    = $state(5);
   let drBypass   = $state<string>('—');
   let drType     = $state<'base' | 'damage_reduction'>('damage_reduction');
 
-  const DR_BYPASS_OPTIONS = [
-    '—', 'magic', 'adamantine', 'cold_iron', 'silver', 'mithral',
-    'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic', 'epic',
-  ];
+  /**
+   * Bypass tag options — loaded from `config_dr_bypass_options` config table.
+   *
+   * ZERO HARDCODING RULE (ARCHITECTURE.md §6):
+   *   D&D 3.5 DR bypass material names (adamantine, cold_iron, etc.) are game
+   *   content, not UI logic. They belong in a config table so GMs can extend or
+   *   override the list without touching component code.
+   *
+   * The fallback list matches the standard D&D 3.5 SRD materials and alignment
+   *   bypass types. It is ONLY used when the config table is absent (e.g., during
+   *   initial development or when a custom rule set omits the table).
+   */
+  const DR_BYPASS_OPTIONS = $derived.by(() => {
+    const table = dataLoader.getConfigTable('config_dr_bypass_options');
+    if (table?.data && Array.isArray(table.data)) {
+      return (table.data as Array<Record<string, unknown>>)
+        .map(r => String(r['tag'] ?? r['value'] ?? r['bypass'] ?? ''))
+        .filter(v => v.length > 0);
+    }
+    // Fallback: standard D&D 3.5 SRD bypass tags
+    return [
+      '—', 'magic', 'adamantine', 'cold_iron', 'silver', 'mithral',
+      'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic', 'epic',
+    ];
+  });
 
   // ── Active custom DRs (GM-added via this UI) ─────────────────────────────
+  // DR_CUSTOM_FEATURE_PREFIX imported from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
   const activeDRs = $derived.by(() =>
     engine.character.activeFeatures
-      .filter(afi => afi.featureId.startsWith('dr_custom_') && afi.isActive)
+      .filter(afi => afi.featureId.startsWith(DR_CUSTOM_FEATURE_PREFIX) && afi.isActive)
       .map(afi => {
         const feature = dataLoader.getFeature(afi.featureId);
         return { instanceId: afi.instanceId, label: feature ? engine.t(feature.label) : afi.featureId };
@@ -45,25 +68,10 @@
   }
 
   function addDR() {
-    if (drValue <= 0) return;
-    const tags     = drBypass === '—' ? [] : [drBypass];
-    const drId     = `dr_custom_${drValue}_${drBypass}_${Date.now()}`;
-    const drLabel  = `DR ${drValue}/${drBypass === '—' ? '—' : drBypass}`;
-    dataLoader.cacheFeature({
-      id: drId, category: 'condition',
-      label: { en: drLabel, fr: drLabel },
-      description: { en: `Damage Reduction ${drValue}/${drBypass}`, fr: `Réduction de dégâts ${drValue}/${drBypass}` },
-      tags: ['condition', 'damage_reduction', drId],
-      grantedModifiers: [{
-        id: `${drId}_mod`, sourceId: drId, sourceName: { en: drLabel, fr: drLabel },
-        targetId: 'combatStats.damage_reduction', value: drValue,
-        type: drType,
-        drBypassTags: drType === 'damage_reduction' ? tags : undefined,
-      }],
-      grantedFeatures: [],
-      ruleSource: 'gm_override',
-    });
-    engine.addFeature({ instanceId: `afi_${drId}`, featureId: drId, isActive: true });
+    // Feature construction (LocalizedString labels + modifier type) is delegated to
+    // engine.addCustomDR() to keep hardcoded D&D terms and modifier-building out of
+    // this .svelte file (ARCHITECTURE.md §3, §6).
+    engine.addCustomDR(drValue, drBypass, drType);
   }
 </script>
 
@@ -83,7 +91,7 @@
       <!-- Additive class DR (type: "base") -->
       {#if baseAddDR > 0}
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-surface-alt">
-          <span class="text-sm font-mono font-bold text-accent">DR {baseAddDR}/—</span>
+          <span class="text-sm font-mono font-bold text-accent">{ui('dr.abbr', engine.settings.language)} {baseAddDR}/—</span>
           <span class="text-[10px] text-text-muted italic ml-auto">
             {ui('dr.base_class_label', engine.settings.language)}
           </span>
@@ -94,7 +102,7 @@
         <div class="flex flex-col gap-0.5 px-3 py-1.5 rounded-md border border-border bg-surface-alt">
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm font-mono font-bold text-accent">
-              DR {entry.amount}/{formatBypassTags(entry.bypassTags)}
+              {ui('dr.abbr', engine.settings.language)} {entry.amount}/{formatBypassTags(entry.bypassTags)}
             </span>
             <span class="text-[10px] text-text-muted">
               {ui('dr.innate_label', engine.settings.language)}
@@ -158,10 +166,10 @@
       </div>
       <!-- Best-wins vs additive type toggle -->
       <div class="flex items-center gap-1.5">
-        <label for="dr-type-select" class="text-xs text-text-muted shrink-0">Type</label>
+        <label for="dr-type-select" class="text-xs text-text-muted shrink-0">{ui('combat.dr.type_label', engine.settings.language)}</label>
         <select id="dr-type-select" bind:value={drType} class="select text-xs py-1">
-          <option value="damage_reduction">Innate (best-wins)</option>
-          <option value="base">Class (additive)</option>
+          <option value="damage_reduction">{ui('combat.dr.type_innate', engine.settings.language)}</option>
+          <option value="base">{ui('combat.dr.type_class', engine.settings.language)}</option>
         </select>
       </div>
     </div>

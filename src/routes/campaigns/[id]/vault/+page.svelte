@@ -71,7 +71,7 @@
 
   function createNewCharacter() {
     const id = `char_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-    const newChar = createEmptyCharacter(id, 'New Character');
+    const newChar = createEmptyCharacter(id, ui('vault.default_char_name', engine.settings.language));
     newChar.campaignId = campaignId;
     newChar.ownerId    = sessionContext.currentUserId;
     newChar.isNPC      = false;
@@ -81,7 +81,7 @@
 
   function addNPCMonster() {
     const id = `npc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-    const newNPC = createEmptyCharacter(id, 'New NPC');
+    const newNPC = createEmptyCharacter(id, ui('vault.default_npc_name', engine.settings.language));
     newNPC.campaignId = campaignId;
     newNPC.ownerId    = sessionContext.currentUserId;
     newNPC.isNPC      = true;
@@ -111,7 +111,7 @@
    * selected character's own data is removed.
    */
   function handleDelete(character: { id: string; name: string }) {
-    if (!confirm(`Delete "${character.name}"? This cannot be undone.`)) return;
+    if (!confirm(ui('vault.delete_confirm', engine.settings.language).replace('{name}', character.name))) return;
     engine.removeCharacterFromVault(character.id);
   }
 </script>

@@ -22,28 +22,24 @@
   let searchQuery  = $state('');
   let modalSpellId = $state<ID | null>(null);
 
-  const activeSpellListIds = $derived.by(() => {
-    const listIds = new Set<string>();
-    for (const afi of engine.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feat = dataLoader.getFeature(afi.featureId);
-      if (!feat || feat.category !== 'class') continue;
-      const hasSpellSlots = (feat.grantedModifiers ?? [])
-        .concat((feat.levelProgression ?? []).flatMap(e => e.grantedModifiers))
-        .some(m => m.targetId.startsWith('resources.spell_slots_'));
-      if (hasSpellSlots) listIds.add(`list_${feat.id.replace('class_', '')}`);
-    }
-    return listIds;
-  });
+  // Spell list IDs are determined by which classes have spell slot modifiers.
+  // This game logic is delegated to the engine (zero-game-logic-in-Svelte rule,
+  // ARCHITECTURE.md §3). Grimoire.svelte reads the engine's computed Set directly.
+  const activeSpellListIds = $derived(engine.phase_activeSpellListIds);
 
-  const maxSpellLevel = $derived(Math.max(0, Math.floor(engine.phase_casterLevel / 2)));
+  // The max spell level formula (floor(CL/2)) is D&D game logic — it lives in the
+  // engine as engine.phase_maxSpellLevel rather than being computed in this component.
+  const maxSpellLevel = $derived(engine.phase_maxSpellLevel);
 
   const availableSpells = $derived.by(() => {
     const allMagic = dataLoader.queryFeatures('category:magic') as MagicFeature[];
     return allMagic.filter(spell => {
       const matches = Object.keys(spell.spellLists ?? {}).some(listId => activeSpellListIds.has(listId));
       if (!matches) return false;
-      const spellLevel = Math.max(...Object.values(spell.spellLists ?? {}));
+      // engine.getSpellEffectiveLevel() computes the minimum spell level across all lists.
+      // Using Math.min here (engine method) rather than Math.max() keeps arithmetic
+      // out of the Svelte component (zero-game-logic rule, ARCHITECTURE.md §3).
+      const spellLevel = engine.getSpellEffectiveLevel(spell.spellLists);
       if (spellLevel > maxSpellLevel) return false;
       if (searchQuery.trim()) {
         return engine.t(spell.label).toLowerCase().includes(searchQuery.toLowerCase());
@@ -111,7 +107,8 @@
       style="scrollbar-width: thin; scrollbar-color: var(--theme-border) transparent;"
     >
       {#each availableSpells as spell}
-        {@const sl    = Math.max(...Object.values(spell.spellLists))}
+        <!-- engine.getSpellEffectiveLevel() — keeps Math.min arithmetic in the engine, not in the template -->
+        {@const sl    = engine.getSpellEffectiveLevel(spell.spellLists)}
         {@const known = knownSpellIds.has(spell.id)}
 
         <div

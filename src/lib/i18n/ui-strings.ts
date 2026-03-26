@@ -167,6 +167,17 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'tab.inventory':                'Inventory',
 
   // ==========================================================================
+  // CHARACTER SHEET — PAGE CHROME
+  // ==========================================================================
+  'character.back_vault':         'Vault',
+  'character.back_campaigns':     'Campaigns',
+  'character.level_display':      'Level {n}',
+  'character.no_class':           'No class selected yet',
+  'character.go_to_core_tab':     'Go to Core tab',
+  /** Fallback name for a character that could not be found in the vault or storage. */
+  'character.unknown_name':       'Unknown Character',
+
+  // ==========================================================================
   // CAMPAIGNS HUB
   // ==========================================================================
   'campaigns.title':              'Your Campaigns',
@@ -207,6 +218,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'vault.title':                  'Your Adventurers',
   'vault.create_character':       'Create New Character',
   'vault.add_npc':                'Add NPC / Monster',
+  /** Default name assigned to a freshly-created PC before the player renames it. */
+  'vault.default_char_name':      'New Character',
+  /** Default name assigned to a freshly-created NPC / monster before the GM renames it. */
+  'vault.default_npc_name':       'New NPC',
   'vault.gm_view':                'GM View',
   'vault.player_view':            'Player View',
   'vault.characters':             'character(s)',
@@ -215,6 +230,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'vault.empty_player':           'You don\'t have any characters in this campaign yet. Click "Create New Character" to begin your journey!',
   'vault.delete_confirm':         'Delete "{name}"? This cannot be undone.',
   'vault.delete_character':       'Delete character',
+  /**
+   * Short abbreviation shown on the character-card level badge ("Lv. 5").
+   * Must be a brief abbreviation (≤ 3 characters) to fit the compact badge.
+   * French equivalent: same abbreviation "Nv." (Niveau).
+   */
+  'vault.level_abbr':             'Lv.',
 
   // ==========================================================================
   // GM DASHBOARD
@@ -349,6 +370,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'skills.cross_class_short':     'Cross-class',
   'skills.rank_locked':           'Min',
   'skills.rank_locked_tooltip':   'Minimum rank — skill points spent at a committed level-up cannot be refunded.',
+  'skills.rank_min_label':        'Min {n}',
+  'skills.rank_min_tooltip':      'Minimum rank floor: {n} — committed during a previous level-up. Cannot go below this value.',
   'skills.journal_btn':           'Journal',
   'skills.journal_tooltip':       'Open the leveling journal — explains which class contributed which skill points, BAB, and saves.',
 
@@ -385,6 +408,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'combat.hp.title':              'Hit Points',
   'combat.hp.con_contrib':        'CON contrib:',
+  'combat.hp.con_contrib_tooltip': 'Constitution modifier × character level',
   'combat.hp.current':            'Current',
   'combat.hp.max':                'Max',
   'combat.hp.temp':               '+Temp',
@@ -420,6 +444,9 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.ac.touch_desc':         'Touch AC (ignores armor/shield/natural armor)',
   'combat.ac.flat_desc':          'Flat-Footed AC (ignores DEX/dodge)',
   'combat.ac.temp_label':         'temp',
+  'combat.ac.effective_dex':      'Effective DEX to AC:',
+  'combat.ac.effective_dex_tooltip': 'DEX modifier capped by max_dexterity_bonus (e.g. from armor)',
+  'combat.ac.cap':                'Cap:',
 
   // ==========================================================================
   // COMBAT TAB — CORE COMBAT
@@ -467,6 +494,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.resistances.sr':        'SR',
   'combat.resistances.pr':        'PR',
   'combat.resistances.fort':      'Fort.',
+  'combat.resistances.asf':       'Arcane SF%',
   'combat.resistances.misc':      'Misc modifier',
 
   // ==========================================================================
@@ -477,6 +505,9 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.dr.add':                'Add DR',
   'combat.dr.value':              'Value',
   'combat.dr.bypassed_by':        'Bypassed By',
+  'combat.dr.type_label':         'Type',
+  'combat.dr.type_innate':        'Innate (best-wins)',
+  'combat.dr.type_class':         'Class (additive)',
 
   // ==========================================================================
   // INVENTORY — ENCUMBRANCE
@@ -553,11 +584,39 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'effects.panel.source':         'Source:',
   'effects.panel.active_badge':   'Active',
   'effects.panel.confirm_expire': 'End this effect?',
+  'effects.panel.modifiers':      { one: '1 modifier', other: '{n} modifiers' },
 
   'inventory.use_item':           'Use',
   'inventory.drink_potion':       'Drink',
   'inventory.apply_oil':          'Apply',
   'inventory.consumable_badge':   'Consumable',
+
+  // Inventory section headers & empty states
+  'inventory.section.equipped':   'Equipped / Readied',
+  'inventory.section.backpack':   'Backpack / Carried',
+  'inventory.section.storage':    'Storage / Stashed',
+  'inventory.section.storage_weight_note': 'no weight',
+  'inventory.empty.equipped':     'No items equipped.',
+  'inventory.empty.backpack':     'No items in backpack.',
+  'inventory.empty.storage':      'No items in storage.',
+
+  // Equip / unequip actions
+  'inventory.unequip':            'Unequip',
+
+  // Cursed item UI
+  'inventory.cursed.label':       'Cursed (cannot unequip)',
+  'inventory.cursed.tooltip':     'This item is cursed and cannot be removed by normal means.',
+
+  // Slot capacity errors
+  'inventory.two_hands.slots_full': 'Both hand slots must be free for this two-handed weapon.',
+  'inventory.slot.full':          '{slot} slot is full. Unequip an item first.',
+  'inventory.slot.full_badge':    'Slot full',
+
+  // Storage status badge (shown in stashed-items section)
+  'inventory.not_carried':        'not carried',
+
+  // Psionic tattoo limit (D&D 3.5: max 20 tattoos)
+  'inventory.tattoo.limit_exceeded': 'Cannot equip: maximum of 20 psionic tattoos reached.',
 
   // ==========================================================================
   // MAGIC TAB
@@ -572,7 +631,30 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'magic.casting.level':          'Level',
   'magic.casting.save_dc':        'Save DC:',
   'magic.casting.cast':           'Cast',
+  'magic.casting.manifest':       'Manifest',
   'magic.casting.damage':         'Damage',
+
+  // Magic item casting support
+  'magic.casting.metamagic_rods': 'Metamagic Rods',
+  'magic.casting.rod_feat':       '{feat}',
+  'magic.casting.rod_max_level':  'max spell lvl {lvl}',
+  'magic.casting.rod_applies':    'Free metamagic available for this spell',
+  'magic.casting.staves':         'Staves',
+  'magic.casting.staff_charge_cost': '{n} charge(s)',
+  'magic.casting.wands':          'Wands',
+  'magic.casting.wand_cl':        'CL {cl}',
+  'magic.casting.scrolls':        'Scrolls',
+
+  // Scroll restriction / CL check
+  'magic.scroll.wrong_type':      'Cannot use: requires {type} casting ability',
+  'magic.scroll.cl_check':        'CL check DC {dc}',
+  'magic.scroll.cl_check_tooltip': 'Your caster level is lower than the scroll\'s. Make a caster level check DC {dc}.',
+
+  // Psionic augmentation
+  'psi.augment_label':            'Augment',
+  'psi.augment_no_desc':          'No description available.',
+  'psi.pp_total':                 'Total: {pp} PP',
+  'psi.manifester_level':         'ML:',
   'magic.grimoire.title':         'Grimoire — Spell Catalog',
   'magic.grimoire.cl':            'CL',
   'magic.grimoire.max_level':     'Max Lvl',
@@ -625,6 +707,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'feature.choice_pick_up_to':    'Pick up to {n}',
   'feature.choice_pick_one':      'Pick one',
   'feature.choice_no_options':    'No options available. Enable the relevant rule source.',
+  // GM metadata section labels (ARCHITECTURE.md §6: all visible text via ui())
+  'feature.label_source':        'Source',
+  'feature.label_id':            'ID',
+  'feature.label_category':      'Cat.',
+  'feature.label_tags':          'Tags',
 
   // ==========================================================================
   // DICE ROLL MODAL
@@ -651,11 +738,18 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'common.cancel':                'Cancel',
   'common.save':                  'Save',
+  'common.saving':                'Saving…',
+  'common.saved':                 'Saved ✓',
+  'common.save_error':            'Error',
   'common.campaign':              'Campaign',
   'common.level':                 'Level',
   'common.unknown':               'Unknown',
   'common.gm':                    'GM',
   'common.player':                'Player',
+  /** Short label for a Non-Player Character. Shown as a badge on NPC cards/sheets. */
+  'common.npc':                   'NPC',
+  /** Accessible full label for NPC badge (used in aria-label). */
+  'common.npc_aria':              'Non-player character',
 
   // ==========================================================================
   // PREREQUISITE STATUS
@@ -692,6 +786,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // DAMAGE REDUCTION
   // ==========================================================================
+  'dr.abbr':                      'DR',
   'dr.groups_title':              'Active DR',
   'dr.bypass_label':              'Bypassed by:',
   'dr.none_bypass':               '— (nothing)',
@@ -721,6 +816,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'psi.display.visual':           'Vis',
   'psi.filter_discipline':        'Filter by discipline',
   'psi.all_disciplines':          'All disciplines',
+  'psi.no_powers_in_filter':      'No powers match this discipline filter.',
 
   // ==========================================================================
   // PSIONIC ITEMS
@@ -730,6 +826,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'psionic_item.power_stone':        'Power Stone',
   'psionic_item.psicrown':           'Psicrown',
   'psionic_item.psionic_tattoo':     'Psionic Tattoo',
+  /** Label for the PP bar on a Psicrown item card. */
+  'psionic_item.crown_pp_label':     'Crown PP',
   'psionic_item.stored_pp':          '{pp} / {max} PP',
   'psionic_item.charges':            '{n} / {max} charges',
   'psionic_item.attuned':            'Attuned',
@@ -743,6 +841,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'psionic_item.powers_known':       'Powers',
   'psionic_item.brainburn_risk':     '⚠ Brainburn risk (ML check DC {dc})',
   'psionic_item.power_flushed':      'Used up',
+  'psionic_item.tattoo_activate_confirm': 'Activate {name}? It will fade after use.',
+  'psionic_item.recharge_label':     'Recharge:',
 
   // ==========================================================================
   // LORE & LANGUAGES
@@ -783,6 +883,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'action.full_round':            'Full Round',
   'action.blocked':               'Blocked by: {conditions}',
   'action.spent':                 'Spent',
+  'action.spent_with_conditions': '{spent}/{budget} spent — condition: {conditions}',
   'action.available':             'Available',
   'action.spend_standard':        'Use Standard Action',
   'action.spend_move':            'Use Move Action',

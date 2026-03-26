@@ -40,14 +40,10 @@
   const budget      = $derived(engine.phase4_skillPointsBudget);
   const lang        = $derived(engine.settings.language);
 
-  // ── Skill points spent (to show remaining in the modal) ───────────────────
-  const skillPointsSpent = $derived.by(() => {
-    let total = 0;
-    for (const skill of Object.values(engine.phase4_skills)) {
-      total += skill.ranks * (skill.isClassSkill ? 1 : 2);
-    }
-    return total;
-  });
+  // ── Skill points spent — read directly from the engine to avoid duplicating
+  //    the D&D 3.5 cross-class cost formula (1 SP/rank class, 2 SP/rank cross-class).
+  //    `engine.phase4_skillPointsSpent` owns this computation (ARCHITECTURE.md §3).
+  const skillPointsSpent = $derived(engine.phase4_skillPointsSpent);
 
   const skillPointsRemaining = $derived(budget.totalAvailable - skillPointsSpent);
   const isOverBudget = $derived(skillPointsRemaining < 0);
@@ -67,13 +63,11 @@
    * D&D 3.5 SRD: any class more than 1 level below the highest class level
    * triggers a 20% XP penalty for that class. This is informational only —
    * the engine does not auto-apply penalties (that's a GM decision).
+   *
+   * Delegated to engine.phase_multiclassXpPenaltyRisk to comply with the
+   * zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
    */
-  const multiclassXpPenaltyRisk = $derived.by(() => {
-    const levels = Object.values(engine.character.classLevels);
-    if (levels.length <= 1) return false;
-    const max = Math.max(...levels);
-    return levels.some(l => max - l > 1);
-  });
+  const multiclassXpPenaltyRisk = $derived(engine.phase_multiclassXpPenaltyRisk);
 
   /**
    * Formats the SP formula for display in a journal entry card.
@@ -85,11 +79,12 @@
   function formatSpFormula(entry: LevelingJournalClassEntry): string {
     const intMod = budget.intModifier;
     const intStr = intMod >= 0 ? `+${intMod}` : String(intMod);
-    const base = Math.max(1, entry.spPerLevel + intMod) * entry.classLevel;
+    // entry.totalSp already reflects the D&D min-1-per-level rule (max(1, spPerLevel + intMod) × classLevel),
+    // computed by the engine. We read the result directly rather than recomputing it here.
     if (entry.firstLevelBonus > 0) {
       return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} + ${entry.firstLevelBonus} (×4 L1) = ${entry.totalSp}`;
     }
-    return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} = ${base}`;
+    return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} = ${entry.totalSp}`;
   }
 
   /**

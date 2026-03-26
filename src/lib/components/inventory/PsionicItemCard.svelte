@@ -19,7 +19,9 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
+  import { toDisplayPct } from '$lib/utils/formatters';
   import type { ItemFeature } from '$lib/types/feature';
+  import { DORJE_MAX_CHARGES } from '$lib/utils/constants';
 
   let { item, instanceId }: { item: ItemFeature; instanceId: string } = $props();
 
@@ -27,48 +29,48 @@
   const psi    = $derived(item.psionicItemData!);
   const type   = $derived(psi.psionicItemType);
 
-  // Manifester level for Brainburn check
-  const charML = $derived(engine.phase_casterLevel ?? 0);
+  // DORJE_MAX_CHARGES imported from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
+  // D&D 3.5 SRD: dorjes are created with 50 charges (XPH p.218).
 
-  // Cognizance Crystal / Psicrown: PP bar
-  const ppPct = $derived(
-    (psi.maxPP ?? 0) > 0
-      ? Math.max(0, Math.min(100, ((psi.storedPP ?? 0) / (psi.maxPP ?? 1)) * 100))
-      : 0
-  );
+  // Manifester level for Brainburn check.
+  // Uses phase_manifesterLevel (stat_manifester_level pipeline), which is distinct
+  // from phase_casterLevel (stat_caster_level). A multiclass caster/manifester
+  // can have different values for each. The Brainburn DC is based on manifester
+  // level, not caster level (XPH p.43).
+  const charML = $derived(engine.phase_manifesterLevel ?? 0);
+
+  // Cognizance Crystal / Psicrown: PP bar percentage.
+  // toDisplayPct keeps Math.max/Math.min/division out of the template (ARCHITECTURE.md §3).
+  const ppPct = $derived(toDisplayPct(psi.storedPP ?? 0, psi.maxPP ?? 0));
+
+  // All psionic item state mutations are delegated to engine methods.
+  // This complies with the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3):
+  // Math.max / Math.min for PP clamping must not appear in .svelte files.
 
   function toggleAttune() {
-    if (!item.psionicItemData) return;
-    item.psionicItemData.attuned = !item.psionicItemData.attuned;
+    engine.togglePsionicItemAttune(instanceId);
   }
 
   function useCharge() {
-    if (!item.psionicItemData || (item.psionicItemData.charges ?? 0) <= 0) return;
-    item.psionicItemData.charges = (item.psionicItemData.charges ?? 1) - 1;
+    engine.usePsionicItemCharge(instanceId);
   }
 
   function activateTattoo() {
     if (!item.psionicItemData || item.psionicItemData.activated) return;
-    if (!confirm(`Activate ${engine.t(item.label)}? It will fade after use.`)) return;
-    item.psionicItemData.activated = true;
+    if (!confirm(ui('psionic_item.tattoo_activate_confirm', lang).replace('{name}', engine.t(item.label)))) return;
+    engine.activatePsionicTattoo(instanceId);
   }
 
   function drawPP(amount: number) {
-    if (!item.psionicItemData) return;
-    const current = item.psionicItemData.storedPP ?? 0;
-    item.psionicItemData.storedPP = Math.max(0, current - amount);
+    engine.drawPsionicItemPP(instanceId, amount);
   }
 
   function rechargePP(amount: number) {
-    if (!item.psionicItemData) return;
-    const current = item.psionicItemData.storedPP ?? 0;
-    const max     = item.psionicItemData.maxPP ?? 0;
-    item.psionicItemData.storedPP = Math.min(max, current + amount);
+    engine.rechargePsionicItemPP(instanceId, amount);
   }
 
   function flushPower(idx: number) {
-    if (!item.psionicItemData?.powersImprinted) return;
-    item.psionicItemData.powersImprinted[idx].usedUp = true;
+    engine.flushPowerStoneEntry(instanceId, idx);
   }
 
   function getPowerName(id: string): string {
@@ -117,7 +119,7 @@
     <!-- Recharge PP controls (owner pays from personal PP) -->
     {#if psi.attuned && (psi.storedPP ?? 0) < (psi.maxPP ?? 0)}
       <div class="flex items-center gap-1.5">
-        <span class="text-[10px] text-text-muted">Recharge:</span>
+        <span class="text-[10px] text-text-muted">{ui('psionic_item.recharge_label', lang)}</span>
         <input type="number" min="1" max={psi.maxPP} bind:value={ppToRecharge}
                class="input w-12 text-center text-xs px-1 py-0.5" aria-label="PP to recharge" />
         <button
@@ -138,12 +140,12 @@
         <div class="w-16 h-1.5 rounded-full bg-surface-alt overflow-hidden border border-border">
           <div
             class="h-full rounded-full bg-purple-500 transition-all duration-300"
-            style="width: {Math.max(0, ((psi.charges ?? 0) / 50) * 100)}%;"
+            style="width: {toDisplayPct(psi.charges ?? 0, DORJE_MAX_CHARGES)}%;"
             aria-hidden="true"
           ></div>
         </div>
         <span class="font-mono text-purple-300">
-          {ui('psionic_item.charges', lang).replace('{n}', String(psi.charges ?? 0)).replace('{max}', '50')}
+          {ui('psionic_item.charges', lang).replace('{n}', String(psi.charges ?? 0)).replace('{max}', String(DORJE_MAX_CHARGES))}
         </span>
       </div>
       <button
@@ -189,7 +191,7 @@
   {:else if type === 'psicrown'}
     <!-- PP bar -->
     <div class="flex items-center gap-2 text-xs">
-      <span class="text-text-muted shrink-0">Crown PP</span>
+      <span class="text-text-muted shrink-0">{ui('psionic_item.crown_pp_label', lang)}</span>
       <div class="flex-1 h-1.5 rounded-full bg-surface-alt overflow-hidden border border-border">
         <div class="h-full rounded-full bg-purple-500 transition-all duration-300" style="width: {ppPct}%;" aria-hidden="true"></div>
       </div>

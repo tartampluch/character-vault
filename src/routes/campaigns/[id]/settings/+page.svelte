@@ -1025,6 +1025,7 @@
                     class="flex items-center gap-2 select-none transition-opacity duration-100
                            {taskDragSrc?.chapterId === chapter.id && taskDragSrc?.index === ti ? 'opacity-30' : ''}"
                     draggable="true"
+                    role="listitem"
                     ondragstart={() => handleTaskDragStart(chapter.id, ti)}
                     ondragover={(e) => handleTaskDragOver(e, chapter.id, ti)}
                     ondragend={handleTaskDragEnd}

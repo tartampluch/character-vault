@@ -8,7 +8,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { rollAllAbilityScores } from '$lib/utils/diceEngine';
-  import { formatModifier } from '$lib/utils/formatters';
+  import { formatModifier, computeAbilityModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconDiceRoll, IconChecked, IconSuccess, IconTabFeats } from '$lib/components/ui/icons';
@@ -72,7 +72,7 @@
 
   function derivedMod(score: number | null): number {
     if (score === null) return 0;
-    return Math.floor((score - 10) / 2);
+    return computeAbilityModifier(score);
   }
 </script>
 

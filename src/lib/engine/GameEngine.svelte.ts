@@ -39,10 +39,11 @@ import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
 import type { LocalizedString } from '../types/i18n';
 import type { StatisticPipeline, SkillPipeline, ResourcePool, Modifier } from '../types/pipeline';
-import type { Feature, ResourcePoolTemplate, ActivationTier } from '../types/feature';
+import type { Feature, ItemFeature, ResourcePoolTemplate, ActivationTier } from '../types/feature';
 import type { ID } from '../types/primitives';
 import { dataLoader } from './DataLoader';
-import { checkCondition } from '../utils/logicEvaluator';
+import { checkCondition, evaluateLogicNode } from '../utils/logicEvaluator';
+import type { EvaluationResult } from '../utils/logicEvaluator';
 import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
@@ -441,6 +442,8 @@ export function makeSkillPipeline(
     keyAbility,
     ranks: 0,
     isClassSkill: false,
+    // Default to cross-class cost (2); Phase 4 overrides this to 1 when isClassSkill is set.
+    costPerRank: 2,
     appliesArmorCheckPenalty,
     canBeUsedUntrained,
     activeModifiers: [],
@@ -2308,6 +2311,32 @@ export class GameEngine {
   });
 
   /**
+   * Whether the character is at risk of a multiclass XP penalty.
+   *
+   * D&D 3.5 SRD RULE:
+   *   A multiclassed character who has any class more than 1 level behind the
+   *   highest class level suffers a 20% XP penalty (for each such class).
+   *   Exception: a character's favoured class (or a class with the "any" favoured
+   *   class — usually human) is exempt from the penalty.
+   *
+   * This derivation lives in the engine (not in the Svelte component) to comply
+   * with the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
+   *
+   * CURRENT BEHAVIOUR: returns `true` if ANY class level is more than 1 below
+   * the highest class level. Favoured-class exemption is informational only —
+   * the GM decides whether to apply the actual penalty.
+   *
+   * Used by: `LevelingJournalModal.svelte` to show an informational warning.
+   */
+  phase_multiclassXpPenaltyRisk: boolean = $derived.by(() => {
+    const levels = Object.values(this.character.classLevels);
+    if (levels.length <= 1) return false;
+    const max = Math.max(...levels);
+    // D&D 3.5 SRD: penalty triggers when a class is MORE THAN 1 level behind the highest.
+    return levels.some(l => max - l > 1);
+  });
+
+  /**
    * DAG Phase 4: Resolved skill pipelines.
    *
    * Computes the total value for every skill in character.skills.
@@ -2445,6 +2474,9 @@ export class GameEngine {
       result[skillId] = {
         ...baseSkill,
         isClassSkill,
+        // D&D 3.5 SRD: class skills cost 1 SP/rank; cross-class skills cost 2 SP/rank.
+        // Exposed as an engine-derived field so the UI never hardcodes this rule.
+        costPerRank: (isClassSkill ? 1 : 2) as 1 | 2,
         activeModifiers: stacking.appliedModifiers,
         situationalModifiers: allSituationalMods,
         totalBonus: stacking.totalBonus, // Misc bonuses + synergies (not ranks + ability)
@@ -2673,6 +2705,29 @@ export class GameEngine {
   }
 
   /**
+   * Extracts the numerical enhancement bonus from an ItemFeature's granted modifiers.
+   *
+   * D&D 3.5 RULE:
+   *   A weapon's enhancement bonus is stored as an `enhancement`-type modifier
+   *   targeting `base_attack_bonus`. This function sums all such modifiers to
+   *   produce the weapon's effective enhancement bonus (e.g. +1, +2, +5).
+   *
+   * WHY IN THE ENGINE:
+   *   Filtering `grantedModifiers` by `type === 'enhancement'` is D&D game logic
+   *   and must not appear in Attacks.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param feature - The ItemFeature to inspect.
+   * @returns The total enhancement bonus (0 when no matching modifiers exist).
+   * @see src/lib/components/combat/Attacks.svelte — display consumer
+   */
+  getWeaponEnhancementBonus(feature: { grantedModifiers?: Array<{ type: string; value: unknown; targetId: string }> }): number {
+    return (feature.grantedModifiers ?? [])
+      .filter(m => m.type === 'enhancement' && m.targetId.includes('base_attack_bonus'))
+      .reduce((sum, m) => sum + (typeof m.value === 'number' ? m.value : 0), 0);
+  }
+
+  /**
    * Computes the total attack bonus for a weapon.
    * Formula: BAB + ability modifier (melee or ranged per `config_weapon_defaults`) + enhancement.
    *
@@ -2727,6 +2782,57 @@ export class GameEngine {
       : abilityMod;
     return baseDamageMod + enhancement;
   }
+
+  /**
+   * The effective unarmed strike statistics for the active character.
+   *
+   * D&D 3.5 RULE (ARCHITECTURE.md §10, SRD p. 139):
+   *   A Medium character deals 1d3 damage on an unarmed strike (×2 crit, threat 20).
+   *   Class features (Monk improved unarmed strike) can override the damage die via a
+   *   `setAbsolute` modifier targeting `combatStats.unarmed_damage_dice`. This property
+   *   reads that pipeline and falls back to the `item_unarmed_strike` feature data, then
+   *   to SRD defaults.
+   *
+   * WHY A $DERIVED (not a method):
+   *   The unarmed damage die depends on character level and active class features, so it
+   *   must re-evaluate reactively as the character changes.
+   *
+   * WHY IN THE ENGINE (not Attacks.svelte):
+   *   Hardcoding `damageDice: '1d3'` in a .svelte component violates the
+   *   zero-hardcoding rule (ARCHITECTURE.md §6). The SRD data defines
+   *   `item_unarmed_strike` in the rule JSON files; reading from it ensures GMs can
+   *   override unarmed stats without touching TypeScript.
+   *
+   * @see static/rules/00_d20srd_core/07_d20srd_core_equipment_weapons.json — item_unarmed_strike
+   * @see Attacks.svelte — display consumer
+   */
+  phase_unarmedStrike: { damageDice: string; critRange: string; critMultiplier: number } = $derived.by(() => {
+    // 1. Check for class-feature override on the `combatStats.unarmed_damage_dice` pipeline.
+    //    A Monk's Improved Unarmed Strike grants a setAbsolute modifier with the scaling die.
+    const overridePipeline = this.phase3_combatStats['combatStats.unarmed_damage_dice'];
+    if (overridePipeline && typeof overridePipeline.totalValue === 'string' && overridePipeline.totalValue !== '') {
+      return {
+        damageDice: overridePipeline.totalValue as string,
+        critRange: '20',
+        critMultiplier: 2,
+      };
+    }
+
+    // 2. Read from `item_unarmed_strike` feature loaded from rule files.
+    const unarmedFeature = dataLoader.getFeature('item_unarmed_strike') as (import('../types/feature').ItemFeature) | undefined;
+    const wd = unarmedFeature?.weaponData;
+    if (wd) {
+      return {
+        damageDice: wd.damageDice,
+        critRange: wd.critRange,
+        critMultiplier: wd.critMultiplier,
+      };
+    }
+
+    // 3. Absolute fallback: SRD defaults for a Medium character (ARCHITECTURE.md §10).
+    //    This only fires during the brief init window before DataLoader completes.
+    return { damageDice: '1d3', critRange: '20', critMultiplier: 2 };
+  });
 
   // ---------------------------------------------------------------------------
   // EQUIPMENT SLOTS — Phase 13.1 / Phase 3.1
@@ -2796,6 +2902,71 @@ export class GameEngine {
     }
     return counts;
   });
+
+  /**
+   * Checks whether an item can be equipped given the current slot availability.
+   *
+   * D&D 3.5 RULES:
+   *   - A two-handed weapon requires BOTH `main_hand` AND `off_hand` slots to be free.
+   *   - Other items require the appropriate slot to have at least one free space.
+   *   - Psionic tattoos are limited to 20 simultaneously worn (ARCHITECTURE.md §15.3).
+   *
+   * WHY IN THE ENGINE:
+   *   Slot availability arithmetic (comparing equipped counts vs max slots) is D&D
+   *   game logic that must not appear in InventoryTab.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param itemFeat - The ItemFeature to check.
+   * @returns `{ ok: true, blocker: null }` if the item can be equipped, or
+   *          `{ ok: false, blocker, slotName? }` with a blocker key that the
+   *          component translates via `ui()`.
+   *
+   * Blocker values:
+   *   `'tattoo_limit'`   — psionic tattoo limit (20) already reached
+   *   `'two_hands_full'` — two-handed item: main_hand or off_hand slot is full
+   *   `'slot_full'`      — target equipment slot is full (slotName = slot name)
+   *
+   * @see src/lib/components/inventory/InventoryTab.svelte — display consumer
+   * @see ARCHITECTURE.md §15.3 — psionic tattoo limit
+   */
+  getEquipCheckResult(itemFeat: ItemFeature): {
+    ok: boolean;
+    blocker: 'tattoo_limit' | 'two_hands_full' | 'slot_full' | null;
+    slotName?: string;
+  } {
+    const slot = itemFeat.equipmentSlot;
+    if (!slot || slot === 'none') return { ok: true, blocker: null };
+
+    // Psionic tattoo: max 20 simultaneously worn (D&D 3.5 rule, ARCHITECTURE.md §15.3)
+    const MAX_PSIONIC_TATTOOS = 20;
+    if (itemFeat.psionicItemData?.psionicItemType === 'psionic_tattoo') {
+      const tattooCount = this.character.activeFeatures.filter(afi =>
+        afi.isActive &&
+        (dataLoader.getFeature(afi.featureId) as ItemFeature | undefined)
+          ?.psionicItemData?.psionicItemType === 'psionic_tattoo'
+      ).length;
+      if (tattooCount >= MAX_PSIONIC_TATTOOS) {
+        return { ok: false, blocker: 'tattoo_limit' };
+      }
+    }
+
+    // Two-handed items require BOTH main_hand AND off_hand slots to be free
+    if (slot === 'two_hands') {
+      const mainFull = (this.phase_equippedSlotCounts['slots.main_hand'] ?? 0) >=
+                       (this.phase_equipmentSlots['slots.main_hand'] ?? 1);
+      const offFull  = (this.phase_equippedSlotCounts['slots.off_hand'] ?? 0) >=
+                       (this.phase_equipmentSlots['slots.off_hand'] ?? 1);
+      if (mainFull || offFull) return { ok: false, blocker: 'two_hands_full' };
+      return { ok: true, blocker: null };
+    }
+
+    // Standard slot: check if the target slot has space
+    const slotKey = `slots.${slot}`;
+    const current = this.phase_equippedSlotCounts[slotKey] ?? 0;
+    const max     = this.phase_equipmentSlots[slotKey] ?? 1;
+    if (current >= max) return { ok: false, blocker: 'slot_full', slotName: slot };
+    return { ok: true, blocker: null };
+  }
 
   // ---------------------------------------------------------------------------
   // ENCUMBRANCE AUTO-DISPATCH — Architecture §9 Phase 1 / §13
@@ -2871,6 +3042,49 @@ export class GameEngine {
     if (w > medium) return 2; // heavy
     if (w > light)  return 1; // medium
     return 0; // light
+  });
+
+  /**
+   * Whether the character is encumbered (Medium load or heavier).
+   *
+   * D&D 3.5 RULE: A Medium load (tier ≥ 1) imposes the Encumbered condition,
+   * applying armor check penalties and reducing movement speed (PHB p.162).
+   *
+   * Exposed here so Encumbrance.svelte does not embed the threshold comparison
+   * (a game rule) directly in the component (zero-game-logic-in-Svelte rule,
+   * ARCHITECTURE.md §3).
+   */
+  phase_isEncumbered: boolean = $derived(this.phase2b_encumbranceTier >= 1);
+
+  /**
+   * Carrying capacity thresholds (in lbs) for the character's current STR score.
+   *
+   * Returns `{ light, medium, heavy }` from the `config_carrying_capacity` table.
+   * Returns `{ light: 0, medium: 0, heavy: 0 }` when the table is not loaded.
+   *
+   * WHY IN THE ENGINE:
+   *   Looking up a config table using a resolved stat value (STR) is D&D game logic.
+   *   The zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3) requires this to be
+   *   computed here, not in `Encumbrance.svelte`.
+   *
+   * @see phase2b_totalCarriedWeight — the weight to compare against these thresholds
+   * @see phase2b_encumbranceTier   — the resulting tier (0=Light, 1=Medium, 2=Heavy, 3=Overloaded)
+   * @see src/lib/components/inventory/Encumbrance.svelte — display consumer
+   */
+  phase_carryingCapacity: { light: number; medium: number; heavy: number } = $derived.by(() => {
+    const strTotal = this.phase2_attributes['stat_strength']?.totalValue ?? 10;
+    const table    = dataLoader.getConfigTable('config_carrying_capacity');
+    if (!table?.data) return { light: 0, medium: 0, heavy: 0 };
+
+    const rows = table.data as Array<Record<string, unknown>>;
+    const row  = rows.find(r => r['strength'] === strTotal);
+    if (!row) return { light: 0, medium: 0, heavy: 0 };
+
+    return {
+      light:  (row['lightLoad']  as number) ?? 0,
+      medium: (row['mediumLoad'] as number) ?? 0,
+      heavy:  (row['heavyLoad']  as number) ?? 0,
+    };
   });
 
   /**
@@ -2956,6 +3170,448 @@ export class GameEngine {
   phase_manifesterLevel: number = $derived(
     this.phase2_attributes['stat_manifester_level']?.totalValue ?? 0
   );
+
+  /**
+   * Maximum spell level the character can cast, derived from Caster Level.
+   *
+   * D&D 3.5 FORMULA: max spell level = floor(casterLevel / 2)
+   *   - CL 1–2 → Spell Level 0 (only cantrips)
+   *   - CL 3–4 → Spell Level 1
+   *   - CL 9    → Spell Level 4
+   *   - CL 18+  → Spell Level 9
+   *
+   * This is computed here (not in Grimoire.svelte) to uphold the zero-game-logic-
+   * in-Svelte rule from ARCHITECTURE.md §1 and §21. The Grimoire reads this
+   * derived value directly rather than re-implementing the formula.
+   *
+   * IMPORTANT: "0" here means the character can still cast cantrips (level 0 spells).
+   * A character with CL 0 (non-caster) would also return 0, so the Grimoire must
+   * distinguish the two cases using the presence of known magic features.
+   *
+   * @see src/lib/components/magic/Grimoire.svelte — Grimoire component consumer
+   */
+  phase_maxSpellLevel: number = $derived(
+    Math.max(0, Math.floor(this.phase_casterLevel / 2))
+  );
+
+  /**
+   * Set of spell list IDs that the character has access to through their active classes.
+   *
+   * A spell list ID follows the convention `"list_<classId>"` where `<classId>` is
+   * derived from the class feature's ID by stripping the `"class_"` prefix.
+   * Example: class "class_wizard" → spell list "list_wizard".
+   *
+   * A class is considered a spellcasting class when it has modifiers targeting
+   * any pipeline starting with `"resources.spell_slots_"` in either its
+   * `grantedModifiers` array OR in any `levelProgression` entry's `grantedModifiers`.
+   *
+   * WHY IN THE ENGINE:
+   *   The logic of identifying which classes grant which spell lists is D&D game
+   *   knowledge. It must not appear in Grimoire.svelte (zero-game-logic-in-Svelte
+   *   rule, ARCHITECTURE.md §3). Grimoire.svelte reads this Set and filters the
+   *   spell catalog against it.
+   *
+   * EXAMPLE:
+   *   Active class "class_wizard" has spell slot modifiers → "list_wizard" is added.
+   *   Active class "class_fighter" has no spell slot modifiers → not included.
+   *
+   * @see src/lib/components/magic/Grimoire.svelte — display consumer
+   */
+  phase_activeSpellListIds: Set<string> = $derived.by(() => {
+    const listIds = new Set<string>();
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feat = dataLoader.getFeature(afi.featureId);
+      if (!feat || feat.category !== 'class') continue;
+      // Check both top-level grantedModifiers and levelProgression entries.
+      const allModifiers = [
+        ...(feat.grantedModifiers ?? []),
+        ...(feat.levelProgression ?? []).flatMap(e => e.grantedModifiers),
+      ];
+      const hasSpellSlots = allModifiers.some(m =>
+        m.targetId.startsWith('resources.spell_slots_')
+      );
+      if (hasSpellSlots) {
+        // Strip the "class_" prefix to derive the spell list ID.
+        listIds.add(`list_${feat.id.replace('class_', '')}`);
+      }
+    }
+    return listIds;
+  });
+
+  /**
+   * Effective DEX bonus to AC, respecting the max_dexterity_bonus cap.
+   *
+   * D&D 3.5 FORMULA: min(DEX_modifier, combatStats.max_dexterity_bonus.totalValue)
+   *
+   * - No armor equipped: max_dex_bonus.totalValue = 99 (uncapped) → returns full DEX modifier.
+   * - Chain mail (cap +2): min(DEX_mod, 2) → DEX is capped at +2.
+   * - DEX mod 0 or negative: already below cap → result is the DEX modifier itself.
+   *
+   * WHY HERE AND NOT IN ArmorClass.svelte?
+   *   The checkpoint (CHECKPOINTS.md §2, Section 7) requires the UI to display the
+   *   effective DEX to AC. Computing `Math.min()` of two engine values in a Svelte
+   *   template would violate the zero-game-logic-in-Svelte rule. This derived property
+   *   encapsulates the cap logic in the engine where it belongs.
+   *
+   * @see src/lib/components/combat/ArmorClass.svelte — display consumer
+   * @see ARCHITECTURE.md §4.17 — max_dexterity_bonus pipeline specification
+   */
+  phase_effectiveDexToAC: number = $derived.by(() => {
+    const dexMod = this.phase2_attributes['stat_dexterity']?.derivedModifier ?? 0;
+    const maxDex = this.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue ?? 99;
+    return Math.min(dexMod, maxDex);
+  });
+
+  /**
+   * CON modifier contribution to Maximum HP.
+   *
+   * D&D 3.5 FORMULA: CON_derivedModifier × character_level (class levels only, not ECL).
+   *
+   * This is the portion of Max HP that comes purely from the Constitution modifier.
+   * The value changes reactively when CON is modified (magic item, ability damage, etc.)
+   * or when the character gains a new class level.
+   *
+   * WHY HERE AND NOT IN HealthAndXP.svelte?
+   *   Computing `conMod * engine.phase0_characterLevel` in a Svelte component violates
+   *   the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §1). All D&D formulae that
+   *   combine engine values must live in the engine layer.
+   *
+   * DISPLAY USE:
+   *   HealthAndXP.svelte shows this as a tooltip label (e.g., "CON contrib: +12")
+   *   so the player understands how much of their Max HP comes from Constitution.
+   *
+   * @see src/lib/components/combat/HealthAndXP.svelte — display consumer
+   */
+  phase3_conHpContrib: number = $derived(
+    (this.phase2_attributes['stat_constitution']?.derivedModifier ?? 0) *
+    this.phase0_characterLevel
+  );
+
+  /**
+   * Maximum Wound Points for the character when using the Vitality/Wound-Points
+   * optional rule (ARCHITECTURE.md §10, Extension H).
+   *
+   * D&D 3.5 V/WP RULE:
+   *   Max Wound Points = Constitution score (not modifier — the score itself).
+   *   A character with CON 14 has 14 Wound Points maximum.
+   *
+   * Used by `HealthAndXP.svelte` to cap the Wound Points bar. Centralised here
+   * so the Svelte component never needs to hard-code `'stat_constitution'` or
+   * read the pipeline directly (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * Note: when V/WP mode is disabled this value is still computed but unused.
+   *
+   * @see phase2_attributes — source of the CON pipeline
+   * @see src/lib/components/combat/HealthAndXP.svelte — primary consumer
+   */
+  phase_maxWoundPoints: number = $derived(
+    this.phase2_attributes['stat_constitution']?.totalValue ?? 10
+  );
+
+  /**
+   * Maximum skill ranks for a class skill at the current character level.
+   *
+   * D&D 3.5 FORMULA: characterLevel + 3
+   *   At level 5: max ranks = 8.
+   *   At level 10: max ranks = 13.
+   *
+   * Used by SkillsMatrix.svelte to clamp rank inputs. Centralised here so the
+   * D&D formula is never duplicated in Svelte components.
+   *
+   * @see phase_maxCrossClassSkillRanks — cross-class equivalent
+   * @see src/lib/components/abilities/SkillsMatrix.svelte — primary consumer
+   */
+  phase_maxClassSkillRanks: number = $derived(
+    this.phase0_characterLevel + 3
+  );
+
+  /**
+   * Maximum skill ranks for a cross-class skill at the current character level.
+   *
+   * D&D 3.5 FORMULA: floor((characterLevel + 3) / 2)
+   *   At level 5: max cross-class ranks = 4.
+   *   At level 10: max cross-class ranks = 6 (with floor rounding).
+   *
+   * Half of the class-skill cap, floored. A cross-class skill costs 2 SP per rank
+   * and is capped at half the class-skill max.
+   *
+   * @see phase_maxClassSkillRanks — class-skill equivalent
+   */
+  phase_maxCrossClassSkillRanks: number = $derived(
+    Math.floor((this.phase0_characterLevel + 3) / 2)
+  );
+
+  // ---------------------------------------------------------------------------
+  // HP STATUS — Character vitality state (ARCHITECTURE.md Phase 10.1)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * The character's HP status key, derived from current HP relative to max HP
+   * and Constitution score (D&D 3.5 SRD death/dying/unconscious thresholds).
+   *
+   * STATUS THRESHOLDS (D&D 3.5 SRD):
+   *   "dead"        — currentHp ≤ −CON (permanently dead without resurrection)
+   *   "dying"       — currentHp < 0 and > −CON (unconscious, losing 1 hp/round)
+   *   "unconscious" — currentHp = 0 (stable but unconscious)
+   *   "bloodied"    — currentHp ≤ 25% of max (heavily wounded)
+   *   "injured"     — currentHp ≤ 50% of max (significantly wounded)
+   *   "healthy"     — currentHp > 50% of max (fit for combat)
+   *   "unknown"     — HP pool does not exist (character not fully initialised)
+   *
+   * WHY IN THE ENGINE:
+   *   The dead threshold (−CON) is a D&D rule, not a display concern.
+   *   Moving it here upholds the zero-game-logic-in-Svelte architectural rule.
+   *
+   * @see HealthAndXP.svelte — display consumer; maps status key to color + ui() label
+   */
+  phase_hpStatusKey: 'dead' | 'dying' | 'unconscious' | 'bloodied' | 'injured' | 'healthy' | 'unknown'
+    = $derived.by(() => {
+      const hp = this.character.resources['resources.hp'];
+      const maxHp = this.phase3_maxHp;
+      if (!hp || maxHp <= 0) return 'unknown';
+      const currentHp = hp.currentValue;
+      const conScore = this.phase2_attributes['stat_constitution']?.totalValue ?? 10;
+      if (currentHp <= -conScore) return 'dead';
+      if (currentHp  <  0)        return 'dying';
+      if (currentHp === 0)        return 'unconscious';
+      const frac = currentHp / maxHp;
+      if (frac <= 0.25) return 'bloodied';
+      if (frac <= 0.50) return 'injured';
+      return 'healthy';
+    });
+
+  // ---------------------------------------------------------------------------
+  // HP / VP / WP PERCENTAGE PROPERTIES — Phase 10.1
+  // ---------------------------------------------------------------------------
+  //
+  // These mirror the XP percentage pattern (phase_xpPercent): mathematical
+  // calculations (division, Math.max / Math.min) are forbidden in .svelte files
+  // by the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). Moving them here
+  // keeps HealthAndXP.svelte purely declarative.
+  //
+  // @see phase_xpPercent — XP bar percentage (same architectural pattern)
+  // @see src/lib/components/combat/HealthAndXP.svelte — display consumer
+
+  /**
+   * Standard HP bar fill percentage (0–100), clamped.
+   * Used to set `--hp-pct` CSS custom property on the `.hp-bar__fill` element.
+   */
+  phase_hpPercent: number = $derived.by(() => {
+    const hp  = this.character.resources['resources.hp'];
+    const max = this.phase3_maxHp;
+    if (!hp || max <= 0) return 0;
+    return Math.max(0, Math.min(100, (hp.currentValue / max) * 100));
+  });
+
+  /**
+   * Temporary HP overlay percentage relative to effective max HP (maxHp + tempHp).
+   * Used to set `--temp-pct` CSS custom property for the temp-HP visual overlay.
+   */
+  phase_tempHpPercent: number = $derived.by(() => {
+    const hp  = this.character.resources['resources.hp'];
+    const max = this.phase3_maxHp;
+    if (!hp || max <= 0) return 0;
+    const temp        = hp.temporaryValue ?? 0;
+    const effectiveMax = max + temp;
+    return effectiveMax > 0 ? (temp / effectiveMax) * 100 : 0;
+  });
+
+  /**
+   * Vitality Points bar fill percentage (0–100), clamped.
+   * Only meaningful when the Vitality/Wound Points variant rule is active.
+   * Used to set `--vp-pct` CSS custom property on the vitality bar.
+   */
+  phase_vpPercent: number = $derived.by(() => {
+    const pool = this.character.resources['resources.vitality_points'];
+    const max  = this.phase3_combatStats['combatStats.max_vitality']?.totalValue ?? 0;
+    if (!pool || max <= 0) return 0;
+    return Math.max(0, Math.min(100, (pool.currentValue / max) * 100));
+  });
+
+  /**
+   * Wound Points bar fill percentage (0–100), clamped.
+   * Max WP = CON score. Only meaningful when V/WP variant rule is active.
+   * Used to set `--wp-pct` CSS custom property on the wound-points bar.
+   */
+  phase_wpPercent: number = $derived.by(() => {
+    const pool = this.character.resources['resources.wound_points'];
+    const max  = this.phase_maxWoundPoints;
+    if (!pool || max <= 0) return 0;
+    return Math.max(0, Math.min(100, (pool.currentValue / max) * 100));
+  });
+
+  // ---------------------------------------------------------------------------
+  // LEVEL ADJUSTMENT — ECL management helpers
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Whether the character is eligible to pay XP to reduce their Level Adjustment.
+   *
+   * D&D 3.5 SRD VARIANT RULE (Unearthed Arcana):
+   *   A character may buy off 1 LA if they have accumulated at least
+   *   3 × current_LA class levels. The cost is a quantity of XP equal to the
+   *   XP required to advance one level at their current ECL.
+   *
+   * WHY IN THE ENGINE:
+   *   The "3×LA class levels" threshold is a D&D rule. Moving it here
+   *   upholds the zero-game-logic-in-Svelte architectural rule so that the
+   *   HealthAndXP component only reads a boolean from the engine.
+   *
+   * @see HealthAndXP.svelte — display consumer (shows the Reduce LA button)
+   */
+  phase_canReduceLA: boolean = $derived(
+    (this.character.levelAdjustment ?? 0) > 0 &&
+    this.phase0_characterLevel >= (this.character.levelAdjustment ?? 0) * 3
+  );
+
+  // ---------------------------------------------------------------------------
+  // XP THRESHOLD PROPERTIES — Phase 10.1
+  // ---------------------------------------------------------------------------
+  //
+  // All XP threshold lookups live here so that HealthAndXP.svelte contains zero
+  // game logic (ARCHITECTURE.md §3, zero-game-logic-in-Svelte rule). The component
+  // reads these $derived values directly instead of querying config tables or
+  // performing arithmetic on game data.
+  //
+  // The lookup key is `phase0_eclForXp` (not characterLevel) because monster PCs
+  // with LA > 0 need more XP to level than standard PCs at the same class-level.
+  // @see phase0_eclForXp  — ECL = classLevels sum + levelAdjustment
+
+  /**
+   * XP required to have reached the START of the character's current ECL level.
+   * Used as the left edge of the XP progress bar ("floor" of the current level).
+   *
+   * Looks up `config_xp_thresholds[eclForXp].xpRequired`.
+   * Returns 0 when no config table is loaded (graceful degradation).
+   *
+   * @see HealthAndXP.svelte — display consumer
+   */
+  phase_currentLevelXp: number = $derived.by(() => {
+    const level = this.phase0_eclForXp;
+    const table = dataLoader.getConfigTable('config_xp_thresholds');
+    if (!table?.data) return 0;
+    const rows = table.data as Array<Record<string, unknown>>;
+    const row = rows.find(r => r['level'] === level);
+    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 0;
+  });
+
+  /**
+   * XP required to reach the NEXT ECL level (current ECL + 1).
+   * Used as the right edge of the XP progress bar and the level-up threshold.
+   *
+   * Returns 999999 when no config table is loaded or the character is at the
+   * maximum tabulated level. This sentinel value is intentionally finite (not
+   * Infinity) so the UI can display it numerically.
+   *
+   * @see HealthAndXP.svelte — display consumer (shows "X / Y XP" text)
+   */
+  phase_nextLevelXp: number = $derived.by(() => {
+    const level = this.phase0_eclForXp;
+    const table = dataLoader.getConfigTable('config_xp_thresholds');
+    if (!table?.data) return 999999;
+    const rows = table.data as Array<Record<string, unknown>>;
+    const row = rows.find(r => r['level'] === level + 1);
+    return typeof row?.['xpRequired'] === 'number' ? row['xpRequired'] : 999999;
+  });
+
+  /**
+   * XP earned within the current ECL level.
+   * = character.xp − phase_currentLevelXp (the level's XP floor).
+   * Used as the numerator of the XP progress bar.
+   *
+   * @see HealthAndXP.svelte — display consumer (progress bar aria-valuenow)
+   */
+  phase_xpIntoLevel: number = $derived(
+    (this.character.xp ?? 0) - this.phase_currentLevelXp
+  );
+
+  /**
+   * Total XP span of the current ECL level (from floor to ceiling).
+   * = phase_nextLevelXp − phase_currentLevelXp.
+   * Used as the denominator of the XP progress bar (aria-valuemax).
+   *
+   * @see HealthAndXP.svelte — display consumer
+   */
+  phase_xpNeeded: number = $derived(
+    this.phase_nextLevelXp - this.phase_currentLevelXp
+  );
+
+  /**
+   * Progress percentage through the current ECL level (clamped 0–100).
+   * Used to set the CSS custom property `--progress-pct` on the XP progress bar.
+   *
+   * WHY IN THE ENGINE:
+   *   `Math.max / Math.min` are mathematical calculations that the checkpoint
+   *   explicitly forbids in `.svelte` files. Moving the percentage here keeps
+   *   HealthAndXP.svelte purely declarative.
+   *
+   * @see HealthAndXP.svelte — display consumer (--progress-pct CSS property)
+   */
+  phase_xpPercent: number = $derived(
+    this.phase_xpNeeded > 0
+      ? Math.max(0, Math.min(100, (this.phase_xpIntoLevel / this.phase_xpNeeded) * 100))
+      : 0
+  );
+
+  /**
+   * Whether the character has accumulated enough XP to level up.
+   * True when character.xp ≥ phase_nextLevelXp.
+   *
+   * @see HealthAndXP.svelte — display consumer (shows Level Up button)
+   */
+  phase_canLevelUp: boolean = $derived(
+    (this.character.xp ?? 0) >= this.phase_nextLevelXp
+  );
+
+  /**
+   * Whether the `config_xp_thresholds` config table has been loaded.
+   * Exposed so HealthAndXP.svelte can show a config hint without accessing
+   * the DataLoader directly from the template.
+   *
+   * @see HealthAndXP.svelte — display consumer (config hint paragraph)
+   */
+  phase_xpTableLoaded: boolean = $derived(
+    dataLoader.getConfigTable('config_xp_thresholds') !== undefined
+  );
+
+  /**
+   * Total skill points spent on the current skill rank allocation.
+   *
+   * D&D 3.5 COSTS:
+   *   - Class skill:       1 SP per rank
+   *   - Cross-class skill: 2 SP per rank
+   *
+   * This is computed here (not in SkillsMatrix.svelte) because the SP cost rule
+   * is D&D game logic. Keeping it in the engine upholds zero-game-logic-in-Svelte.
+   *
+   * @see phase4_skillPointsBudget.totalAvailable — the budget to compare against
+   * @see src/lib/components/abilities/SkillsMatrix.svelte — display consumer
+   */
+  phase4_skillPointsSpent: number = $derived.by(() => {
+    let total = 0;
+    for (const skill of Object.values(this.phase4_skills)) {
+      total += skill.ranks * (skill.isClassSkill ? 1 : 2);
+    }
+    return total;
+  });
+
+  /**
+   * Skill points remaining (budget − spent).
+   *
+   * Exposed as an engine-derived property so Svelte components do not need
+   * to perform arithmetic on engine-provided values (zero-game-logic-in-Svelte
+   * rule, ARCHITECTURE.md §3).
+   */
+  phase4_skillPointsRemaining: number = $derived(
+    this.phase4_skillPointsBudget.totalAvailable - this.phase4_skillPointsSpent
+  );
+
+  /**
+   * Whether the character has exceeded their skill point budget.
+   * Drives the "over budget" warning styling in SkillsMatrix.
+   */
+  phase4_skillPointsBudgetExceeded: boolean = $derived(this.phase4_skillPointsRemaining < 0);
 
   /**
    * All resource pools related to spell slots and power points.
@@ -3045,6 +3701,662 @@ export class GameEngine {
   );
 
   // ---------------------------------------------------------------------------
+  // ACTION BUDGET — Engine-side computation (ARCHITECTURE.md §5.6)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Effective action budget: min-wins across all active action-restricting conditions.
+   *
+   * D&D 3.5 conditions like Staggered, Disabled, Paralysed restrict the number of
+   * standard, move, swift, etc. actions available each round. Each condition feature
+   * carries an `actionBudget` block specifying limits per category. When multiple
+   * conditions apply, the most restrictive (minimum) limit wins.
+   *
+   * `Infinity` means no restriction for that action category.
+   *
+   * WHY IN THE ENGINE:
+   *   Computing `Math.min()` across game-feature values is game logic. It must not
+   *   live in Svelte components (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3,
+   *   CHECKPOINTS.md §2 §1). ActionBudgetBar.svelte reads this derived value directly.
+   *
+   * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
+   * @see ARCHITECTURE.md §5.6 — action budget min-wins rule
+   */
+  phase_effectiveActionBudget: Record<string, number> = $derived.by(() => {
+    const Inf = Infinity;
+    let standard   = Inf;
+    let move       = Inf;
+    let swift      = Inf;
+    let immediate  = Inf;
+    let free       = Inf;
+    let full_round = Inf;
+
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const f = dataLoader.getFeature(afi.featureId);
+      if (!f?.actionBudget) continue;
+      const b = f.actionBudget;
+      if (b.standard   !== undefined) standard   = Math.min(standard,   b.standard);
+      if (b.move       !== undefined) move       = Math.min(move,       b.move);
+      if (b.swift      !== undefined) swift      = Math.min(swift,      b.swift);
+      if (b.immediate  !== undefined) immediate  = Math.min(immediate,  b.immediate);
+      if (b.free       !== undefined) free       = Math.min(free,       b.free);
+      if (b.full_round !== undefined) full_round = Math.min(full_round, b.full_round);
+    }
+    return { standard, move, swift, immediate, free, full_round };
+  });
+
+  /**
+   * Whether any active feature has the `action_budget_xor` tag.
+   *
+   * When true, ActionBudgetBar applies XOR mutual exclusion: spending a standard
+   * action blocks move actions (and vice versa) for the rest of the turn. This
+   * models the Staggered / Disabled condition where the character may use EITHER
+   * a standard OR a move action — not both.
+   *
+   * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
+   * @see ARCHITECTURE.md §5.6 — XOR rule specification
+   */
+  phase_actionBudgetHasXOR: boolean = $derived.by(() =>
+    this.character.activeFeatures.some(afi => {
+      if (!afi.isActive) return false;
+      const f = dataLoader.getFeature(afi.featureId);
+      return !!f?.actionBudget && f.tags?.includes('action_budget_xor') === true;
+    })
+  );
+
+  /**
+   * Localized names of the condition features that hard-block each action category.
+   *
+   * A category is hard-blocked when its effective budget is 0.
+   * Returns a comma-separated list of the blocking condition names (translated),
+   * or an empty string when the category is not blocked.
+   *
+   * WHY IN THE ENGINE:
+   *   Resolving feature IDs → localized names via `this.t()` is an engine operation.
+   *   Doing it inside a Svelte component would violate the zero-game-logic rule.
+   *
+   * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
+   */
+  phase_actionBudgetBlockers: Record<string, string> = $derived.by(() => {
+    const categories = ['standard', 'move', 'swift', 'immediate', 'free', 'full_round'] as const;
+    const result: Record<string, string> = {};
+    for (const cat of categories) {
+      result[cat] = this.character.activeFeatures
+        .filter(afi => {
+          if (!afi.isActive) return false;
+          const f = dataLoader.getFeature(afi.featureId);
+          if (!f?.actionBudget) return false;
+          const val = (f.actionBudget as Record<string, unknown>)[cat];
+          return val !== undefined && val === 0;
+        })
+        .map(afi => {
+          const f = dataLoader.getFeature(afi.featureId);
+          return f ? this.t(f.label) : afi.featureId;
+        })
+        .join(', ');
+    }
+    return result;
+  });
+
+  // ---------------------------------------------------------------------------
+  // DISPLAY HELPERS — Pure display computations kept in the engine layer
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Computes the displayed AC value for a given pipeline plus an optional
+   * temporary display modifier.
+   *
+   * WHY IN THE ENGINE:
+   *   The UI "Quick temp modifier" input in ArmorClass.svelte lets the player
+   *   preview AC with a temporary buff/condition applied. Adding a modifier to
+   *   a pipeline value — even for display-only purposes — is arithmetic on game
+   *   statistics and must not appear in Svelte templates
+   *   (zero-game-logic rule, ARCHITECTURE.md §3).
+   *
+   * NOTE: `tempMod` is a local UI state value (not persisted, not affecting
+   *   character data). The engine method is used solely to keep the arithmetic
+   *   out of the Svelte template.
+   *
+   * @param pipelineId - The combatStats pipeline ID (e.g., 'combatStats.ac_normal').
+   * @param tempMod    - A quick temporary display modifier from the AC panel input (default 0).
+   * @returns The total AC value to display, including the temporary modifier.
+   *
+   * @see src/lib/components/combat/ArmorClass.svelte — display consumer
+   * @see ARCHITECTURE.md §4.14 — AC pipeline specification
+   */
+  getDisplayAc(pipelineId: string, tempMod: number = 0): number {
+    const pipeline = this.phase3_combatStats[pipelineId];
+    return (pipeline?.totalValue ?? 0) + tempMod;
+  }
+
+  /**
+   * Returns the display value for any `combatStats` pipeline, adding an optional
+   * temporary modifier (e.g., a quick "misc" input typed by the player).
+   *
+   * This is the generic equivalent of `getDisplayAc()` for pipelines outside the
+   * three AC variants — energy resistances, spell resistance, fortification, etc.
+   *
+   * WHY IN THE ENGINE:
+   *   Adding a temporary modifier to a pipeline value is arithmetic on game data.
+   *   Keeping this in the engine upholds the zero-game-logic-in-Svelte rule
+   *   (ARCHITECTURE.md §3) so Resistances.svelte does not perform arithmetic.
+   *
+   * @param pipelineId - Any `phase3_combatStats` pipeline ID.
+   * @param tempMod    - Optional flat temporary modifier to add (default 0).
+   * @returns The pipeline's `totalValue` plus `tempMod`.
+   *
+   * @see src/lib/components/combat/Resistances.svelte — display consumer
+   */
+  getPipelineDisplayValue(pipelineId: string, tempMod: number = 0): number {
+    const pipeline = this.phase3_combatStats[pipelineId];
+    return (pipeline?.totalValue ?? 0) + tempMod;
+  }
+
+  /**
+   * Returns the effective (display) level of a magic feature (spell or power)
+   * on the character's active spell lists.
+   *
+   * D&D 3.5 RULE: A spell may appear on multiple spell lists at different levels
+   * (e.g., Fireball is a Wizard/Sorcerer 3rd-level spell and a Fire Domain 3rd-level
+   * spell). The "effective level" is the level at which the character can cast it
+   * based on their active spell list. When on multiple active lists, the minimum
+   * level (i.e., the easiest access path) is returned.
+   *
+   * WHY IN THE ENGINE:
+   *   Computing `Math.min()` across game data values is game logic. Grimoire.svelte
+   *   must not contain this arithmetic (zero-game-logic-in-Svelte rule,
+   *   ARCHITECTURE.md §3). The Grimoire filter and display both delegate here.
+   *
+   * @param spellLists - The spell's `spellLists` map (list ID → level).
+   * @returns The minimum level for this spell across all lists; 0 if the map is empty.
+   *
+   * @see src/lib/components/magic/Grimoire.svelte — display consumer
+   * @see src/lib/components/magic/CastingPanel.svelte — display consumer
+   * @see ARCHITECTURE.md §12 — spell system
+   */
+  getSpellEffectiveLevel(spellLists: Record<string, number> | undefined): number {
+    if (!spellLists) return 0;
+    const values = Object.values(spellLists);
+    if (values.length === 0) return 0;
+    return Math.min(...values);
+  }
+
+  /**
+   * Returns the Concentration check DC required to suppress a psionic power's
+   * physical or mental displays while manifesting it.
+   *
+   * D&D 3.5 SRD RULE (Expanded Psionics Handbook §7):
+   *   Suppress display DC = 15 + power level.
+   *   This DC applies when a manifester wants to mask the sights, sounds, or smells
+   *   produced while manifesting a psionic power (auditory, material, mental,
+   *   olfactory, or visual displays).
+   *
+   * WHY IN THE ENGINE:
+   *   The formula `15 + power level` is a D&D game rule. CastingPanel.svelte must
+   *   not embed D&D formulas (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param spellLists - The power's `spellLists` map (list ID → level).
+   * @returns The DC to suppress the power's displays.
+   *
+   * @see src/lib/components/magic/CastingPanel.svelte — display consumer
+   * @see ARCHITECTURE.md §12.3 — psionic display suppression
+   */
+  getPsionicSuppressDC(spellLists: Record<string, number> | undefined): number {
+    const level = this.getSpellEffectiveLevel(spellLists);
+    // D&D 3.5 SRD: suppress DC = 15 + power level
+    return 15 + (isFinite(level) ? level : 0);
+  }
+
+  /**
+   * Computes the total extra PP cost for augmenting a psionic power by `steps`
+   * augmentation increments.
+   *
+   * D&D 3.5 RULE (Expanded Psionics Handbook §7):
+   *   Each augmentation entry has a `costIncrement` (the PP cost per increment).
+   *   When a manifester spends `steps` increments on an augmentation, the total
+   *   extra PP = sum of (costIncrement × steps) across all augmentation entries.
+   *
+   * WHY IN THE ENGINE:
+   *   This arithmetic involves game values (PP costs from feature data) and must
+   *   not appear in a Svelte component (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+   *   CastingPanel.svelte delegates here and only manages the `steps` UI state.
+   *
+   * @param augmentations - The power's augmentation entries.
+   * @param steps         - How many augmentation increments the player has selected.
+   * @returns Total extra PP cost for the selected number of steps.
+   *
+   * @see src/lib/components/magic/CastingPanel.svelte — display consumer (augSteps local state)
+   */
+  getPsionicAugmentCost(
+    augmentations: Array<{ costIncrement: number }> | undefined,
+    steps: number
+  ): number {
+    if (!augmentations?.length || steps <= 0) return 0;
+    return augmentations.reduce((sum, aug) => sum + (aug.costIncrement * steps), 0);
+  }
+
+  /**
+   * Maximum number of augmentation steps available for a psionic power.
+   *
+   * D&D 3.5 FORMULA: floor(manifesterLevel − basePpCost) steps, minimum 0.
+   *   A psion with ML 5 manifesting a 3-PP power can augment at most 2 extra steps.
+   *
+   * WHY IN THE ENGINE:
+   *   The subtraction `manifesterLevel − basePpCost` is D&D arithmetic and must not
+   *   appear in CastingPanel.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *   Math.max(0, …) is also forbidden in .svelte files per the same rule.
+   *
+   * @param basePpCost - The power's base PP cost before augmentation.
+   * @returns Maximum augmentation steps (≥ 0).
+   */
+  getMaxAugmentSteps(basePpCost: number): number {
+    return Math.max(0, this.phase_manifesterLevel - basePpCost);
+  }
+
+  /**
+   * Returns the total PP cost to manifest a psionic power with the selected
+   * number of augmentation increments.
+   *
+   * FORMULA: basePpCost + augmentCost(steps)
+   *
+   * WHY IN THE ENGINE:
+   *   The addition of base PP cost and augmentation cost is D&D game arithmetic
+   *   that must not appear in CastingPanel.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param basePpCost   - The power's minimum PP cost (before augmentation).
+   * @param augmentations - The power's augmentation entries.
+   * @param steps         - How many augmentation increments the player selected.
+   * @returns Total PP cost for this manifestation.
+   */
+  getTotalManifestCost(
+    basePpCost: number,
+    augmentations: Array<{ costIncrement: number }> | undefined,
+    steps: number
+  ): number {
+    return basePpCost + this.getPsionicAugmentCost(augmentations, steps);
+  }
+
+  /**
+   * Returns true if the player can add one more augmentation increment.
+   *
+   * D&D 3.5 RULES:
+   *   1. The new total PP cost must not exceed the manifester level (you cannot
+   *      spend more PP than your manifester level in a single manifestation).
+   *   2. The current step count must not exceed the maximum step limit
+   *      (floor(manifesterLevel − basePpCost) steps, computed by getMaxAugmentSteps).
+   *
+   * WHY IN THE ENGINE:
+   *   Both comparisons involve D&D game values and must not appear in
+   *   CastingPanel.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param basePpCost    - The power's minimum PP cost.
+   * @param currentSteps  - Number of augmentation increments currently selected.
+   * @param currentTotal  - Total PP cost at the current step count.
+   * @returns true when another increment can be added.
+   */
+  canAddAugmentStep(
+    basePpCost: number,
+    currentSteps: number,
+    currentTotal: number
+  ): boolean {
+    if (currentTotal >= this.phase_manifesterLevel) return false;
+    if (currentSteps >= this.getMaxAugmentSteps(basePpCost)) return false;
+    return true;
+  }
+
+  /**
+   * Determines whether a scroll entry can be cast by this character.
+   *
+   * D&D 3.5 RULES (ARCHITECTURE.md §12.3):
+   *   1. The character must have the appropriate spell type (arcane or divine),
+   *      signalled by the `arcane_caster` or `divine_caster` active tag.
+   *   2. If the character's caster level is lower than the scroll's CL, a caster
+   *      level check is required (DC = scroll.casterLevel + 1).
+   *
+   * WHY IN THE ENGINE:
+   *   The CL comparison, DC formula, and caster-type tag lookup are D&D game logic
+   *   that must not appear in CastingPanel.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param spellType - `'arcane'` or `'divine'`
+   * @param scrollCL  - The scroll's caster level.
+   * @returns `{
+   *   canUse:       true if the character can attempt to use the scroll;
+   *   needsClCheck: true if a d20 caster level check is required;
+   *   checkDC:      caster level check DC (scrollCL + 1);
+   *   wrongType:    true if the character lacks the required spell type.
+   * }`
+   *
+   * @see src/lib/components/magic/CastingPanel.svelte — display consumer
+   * @see ARCHITECTURE.md §12.3 — scroll use rules
+   */
+  getScrollUseInfo(spellType: 'arcane' | 'divine', scrollCL: number): {
+    canUse: boolean;
+    needsClCheck: boolean;
+    checkDC: number;
+    wrongType: boolean;
+  } {
+    const charCL    = this.phase_casterLevel;
+    const hasArcane = this.phase0_activeTags.includes('arcane_caster');
+    const hasDivine = this.phase0_activeTags.includes('divine_caster');
+    const hasType   = spellType === 'arcane' ? hasArcane : hasDivine;
+
+    if (!hasType) {
+      return { canUse: false, needsClCheck: false, checkDC: scrollCL + 1, wrongType: true };
+    }
+
+    // CL check required when wielder CL < scroll CL (D&D 3.5 rule)
+    const needsCheck = charCL < scrollCL;
+    return { canUse: true, needsClCheck: needsCheck, checkDC: scrollCL + 1, wrongType: false };
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREREQUISITE EVALUATION — Engine-level delegation (ARCHITECTURE.md §3)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Evaluates the prerequisite tree of any feature against the current character
+   * context.
+   *
+   * WHY IN THE ENGINE:
+   *   Prerequisite evaluation is game logic (ARCHITECTURE.md §3). Svelte files
+   *   must not call `evaluateLogicNode()` from the logicEvaluator utility directly.
+   *   Instead, they call this engine method which returns the full result
+   *   (passed/fail + met/error messages) without leaking game logic into the
+   *   component layer.
+   *
+   * @param feature - The Feature object to evaluate prerequisites for.
+   *                  If `undefined` or has no `prerequisitesNode`, returns `passed: true`.
+   * @returns An `EvaluationResult` with `passed`, `metMessages`, and `errorMessages`.
+   */
+  evaluateFeaturePrerequisites(feature: Feature | undefined): EvaluationResult {
+    return evaluateLogicNode(feature?.prerequisitesNode, this.phase2_context);
+  }
+
+  // ---------------------------------------------------------------------------
+  // CUSTOM DR — Engine factory for dynamically-created DR features
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Creates and activates a custom Damage Reduction feature.
+   *
+   * WHY IN THE ENGINE:
+   *   DamageReduction.svelte previously built the Feature object inline, which
+   *   embedded D&D modifier types and hardcoded label strings in a Svelte file.
+   *   Delegating to this method keeps both the feature construction and the
+   *   LocalizedString labels out of the component (ARCHITECTURE.md §3, §6).
+   *
+   * @param value     - DR value (e.g. 5 for "DR 5/magic").
+   * @param bypassTag - Bypass material/tag string (e.g. "magic", "—").
+   * @param type      - 'damage_reduction' (best-wins) or 'base' (class additive).
+   */
+  addCustomDR(value: number, bypassTag: string, type: 'damage_reduction' | 'base' = 'damage_reduction'): void {
+    if (value <= 0) return;
+    const bypass   = bypassTag === '—' ? '—' : bypassTag;
+    const drId     = `dr_custom_${value}_${bypass}_${Date.now()}`;
+    // LocalizedString: "DR 5/magic" is the same in both languages for the
+    // short label. The description is localized using the existing combat.dr.title key
+    // convention: "DR {value}/{bypass}" for the short abbr and the full word form
+    // for the description.
+    const drLabel: import('../types/i18n').LocalizedString = {
+      en: `DR ${value}/${bypass}`,
+      fr: `RD ${value}/${bypass}`,
+    };
+    const drDescription: import('../types/i18n').LocalizedString = {
+      en: `Damage Reduction ${value}/${bypass}`,
+      fr: `Réduction de dégâts ${value}/${bypass}`,
+    };
+    dataLoader.cacheFeature({
+      id:       drId,
+      category: 'condition',
+      label:    drLabel,
+      description: drDescription,
+      tags:     ['condition', 'damage_reduction', drId],
+      grantedModifiers: [{
+        id:         `${drId}_mod`,
+        sourceId:   drId,
+        sourceName: drLabel,
+        targetId:   'combatStats.damage_reduction',
+        value,
+        type,
+        drBypassTags: type === 'damage_reduction' ? (bypass === '—' ? [] : [bypass]) : undefined,
+      }],
+      grantedFeatures: [],
+      ruleSource: 'gm_override',
+    });
+    this.addFeature({ instanceId: `afi_${drId}`, featureId: drId, isActive: true });
+  }
+
+  // ---------------------------------------------------------------------------
+  // LANGUAGE SLOTS — For LoreAndLanguages.svelte (zero-hardcoding compliance)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Bonus language slots available to the character.
+   *
+   * D&D 3.5 RULE:
+   *   A character knows one additional language per point of Intelligence
+   *   modifier above 0. Additional ranks in the Speak Language skill
+   *   (skill_speak_language) each grant one more language slot.
+   *
+   *   Total bonus slots = max(0, INT_derivedModifier) + speak_language_ranks
+   *
+   * WHY IN THE ENGINE:
+   *   This computation references a specific ability score pipeline ID
+   *   ('stat_intelligence') and a specific skill ID ('skill_speak_language').
+   *   Hardcoding these IDs in LoreAndLanguages.svelte would violate the
+   *   zero-hardcoding rule (ARCHITECTURE.md §6). Both IDs are internal
+   *   system identifiers defined by the architecture, but .svelte files
+   *   must not embed them directly.
+   *
+   * @see src/lib/components/core/LoreAndLanguages.svelte — display consumer
+   * @see ARCHITECTURE.md §6 — zero-hardcoding rule
+   */
+  phase_bonusLanguageSlots: number = $derived.by(() => {
+    const intMod    = this.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0;
+    const speakRanks = this.character.skills['skill_speak_language']?.ranks ?? 0;
+    return Math.max(0, intMod) + speakRanks;
+  });
+
+  /**
+   * Count of manually-selected language features (language ActiveFeatureInstances
+   * directly added by the player, as opposed to those granted automatically by race/class).
+   *
+   * WHY IN THE ENGINE:
+   *   Counting active features by tag is a game data query that must not appear
+   *   in LoreAndLanguages.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *   This value is used to compute `phase_remainingLanguageSlots`.
+   */
+  private phase_manualLanguageCount: number = $derived.by(() => {
+    let count = 0;
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (feature?.tags.includes('language')) count++;
+    }
+    return count;
+  });
+
+  /**
+   * Remaining language slots available for the player to add more languages.
+   *
+   * D&D 3.5 FORMULA: max(0, phase_bonusLanguageSlots − manually_added_language_count)
+   *
+   * WHY IN THE ENGINE:
+   *   The subtraction `bonusSlots − manualCount` and the `Math.max(0, …)` clamp are
+   *   D&D arithmetic that must not appear in LoreAndLanguages.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @see src/lib/components/core/LoreAndLanguages.svelte — display consumer
+   */
+  phase_remainingLanguageSlots: number = $derived(
+    Math.max(0, this.phase_bonusLanguageSlots - this.phase_manualLanguageCount)
+  );
+
+  // ---------------------------------------------------------------------------
+  // FEAT GRANT SOURCE — For FeatsTab.svelte (zero-game-logic compliance)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns the display name of the feature that grants a given feat.
+   *
+   * D&D 3.5 RULE:
+   *   Feats can be granted by:
+   *   - Race/deity/monster-type features (via `grantedFeatures` array).
+   *   - Class features at specific levels (via `levelProgression[].grantedFeatures`).
+   *
+   * WHY IN THE ENGINE:
+   *   The search iterates through `activeFeatures`, reads `levelProgression`,
+   *   and queries `character.classLevels` — all D&D game state access that must
+   *   not appear in FeatsTab.svelte (zero-game-logic-in-Svelte rule,
+   *   ARCHITECTURE.md §3). The method uses `this.t()` to return a localized string.
+   *
+   * @param featId - The ID of the feat whose grant source to look up.
+   * @returns A localized source label (e.g. "Fighter 1") or an empty string
+   *          if no grant source is found. Callers should display a fallback
+   *          like `ui('common.unknown')` when the return value is empty.
+   *
+   * @see src/lib/components/feats/FeatsTab.svelte — display consumer
+   */
+  getFeatGrantSource(featId: ID): string {
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (!feature) continue;
+      if ((feature.grantedFeatures ?? []).includes(featId)) {
+        return this.t(feature.label);
+      }
+      if (feature.category === 'class' && feature.levelProgression) {
+        const classLevel = this.character.classLevels[feature.id] ?? 0;
+        for (const entry of feature.levelProgression) {
+          if (entry.level <= classLevel && entry.grantedFeatures.includes(featId)) {
+            return `${this.t(feature.label)} ${entry.level}`;
+          }
+        }
+      }
+    }
+    return ''; // Callers should display ui('common.unknown') as fallback
+  }
+
+  // ---------------------------------------------------------------------------
+  // POINT BUY HELPERS — For PointBuyModal.svelte (zero-game-logic compliance)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * D&D 3.5 standard point-buy cost fallback table (scores 7–18).
+   * Used when the `config_point_buy_costs` config table is not loaded.
+   */
+  private static readonly POINT_BUY_FALLBACK_COSTS: Readonly<Record<number, number>> = {
+    7: -4, 8: 0, 9: 1, 10: 2, 11: 3, 12: 4,
+    13: 5, 14: 6, 15: 8, 16: 10, 17: 13, 18: 16,
+  };
+
+  /** Minimum ability score allowed in point-buy (D&D 3.5 default). */
+  static readonly POINT_BUY_MIN_SCORE = 7;
+
+  /** Maximum ability score allowed in point-buy (D&D 3.5 default). */
+  static readonly POINT_BUY_MAX_SCORE = 18;
+
+  /**
+   * Returns the cumulative point-buy cost of an ability score.
+   *
+   * Uses the `config_point_buy_costs` config table when loaded;
+   * falls back to the D&D 3.5 standard cost table (scores 7–18).
+   *
+   * WHY IN THE ENGINE:
+   *   Config-table lookups and game-rule arithmetic belong in the engine, not
+   *   in PointBuyModal.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param score - Ability score value (typically 7–18).
+   * @returns Cumulative point cost for that score (e.g., STR 16 → 10).
+   */
+  getPointBuyCumulativeCost(score: number): number {
+    const table = dataLoader.getConfigTable('config_point_buy_costs');
+    if (table?.data) {
+      const row = (table.data as Array<Record<string, unknown>>).find(r => r['score'] === score);
+      if (row && typeof row['cost'] === 'number') return row['cost'];
+    }
+    return GameEngine.POINT_BUY_FALLBACK_COSTS[score] ?? 0;
+  }
+
+  /**
+   * Returns the marginal point-buy cost of raising a score by 1 step.
+   * Derived as: cumulative_cost(score) − cumulative_cost(score − 1).
+   *
+   * WHY IN THE ENGINE:
+   *   Arithmetic on game values is game logic forbidden in .svelte files
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param score - The target ability score.
+   * @returns Additional points needed to raise from (score − 1) to score.
+   */
+  getPointBuyMarginalCost(score: number): number {
+    return this.getPointBuyCumulativeCost(score) - this.getPointBuyCumulativeCost(score - 1);
+  }
+
+  /**
+   * Returns the total point-buy cost for a set of ability scores.
+   *
+   * WHY IN THE ENGINE:
+   *   Array.reduce() with game-cost lookups is game arithmetic forbidden
+   *   in .svelte files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param scores - Map of ability pipeline ID → score value.
+   * @returns Total cumulative cost across all provided scores.
+   */
+  getPointBuyTotalSpent(scores: Record<string, number>): number {
+    return Object.values(scores).reduce((t, s) => t + this.getPointBuyCumulativeCost(s), 0);
+  }
+
+  /**
+   * Returns how many point-buy points remain in the working score set.
+   *
+   * WHY IN THE ENGINE:
+   *   `budget - spent` is subtraction on a D&D game value (the point-buy budget
+   *   from campaign settings). Arithmetic on game values is forbidden in .svelte
+   *   files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). PointBuyModal
+   *   calls this to avoid performing the subtraction itself.
+   *
+   * @param scores - Map of ability pipeline ID → working score value.
+   * @returns Remaining points (negative means over budget).
+   */
+  getPointBuyRemaining(scores: Record<string, number>): number {
+    return (this.settings.statGeneration.pointBuyBudget ?? 0) - this.getPointBuyTotalSpent(scores);
+  }
+
+  /**
+   * Returns whether the working score set has exceeded the point-buy budget.
+   *
+   * WHY IN THE ENGINE:
+   *   `remaining < 0` on a derived game value belongs in the engine, consistent
+   *   with how `phase4_skillPointsBudgetExceeded` works for skill points.
+   *
+   * @param scores - Map of ability pipeline ID → working score value.
+   * @returns `true` when the total spent exceeds the available budget.
+   */
+  getPointBuyBudgetExceeded(scores: Record<string, number>): boolean {
+    return this.getPointBuyRemaining(scores) < 0;
+  }
+
+  /**
+   * Clamps an ability score to the valid point-buy range.
+   *
+   * WHY IN THE ENGINE:
+   *   `Math.min(max, Math.max(min, value))` with D&D-specific bounds is game
+   *   logic forbidden in .svelte files (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+   *
+   * @param score - Raw score value to clamp.
+   * @param min   - Minimum allowed score (defaults to D&D 3.5 point-buy minimum of 7).
+   * @param max   - Maximum allowed score (defaults to D&D 3.5 point-buy maximum of 18).
+   * @returns Score clamped within [min, max].
+   */
+  clampPointBuyScore(score: number, min = GameEngine.POINT_BUY_MIN_SCORE, max = GameEngine.POINT_BUY_MAX_SCORE): number {
+    return Math.min(max, Math.max(min, score));
+  }
+
+  // ---------------------------------------------------------------------------
   // LANGUAGE SHORTCUT & HELPERS
   // ---------------------------------------------------------------------------
 
@@ -3121,7 +4433,13 @@ export class GameEngine {
       // Enforce the minimum rank floor set by committed level-ups.
       // `minimumSkillRanks` is optional (absent = all zeros = free reassignment).
       const minimum = this.character.minimumSkillRanks?.[skillId] ?? 0;
-      const clamped = Math.max(minimum, Math.max(0, ranks));
+      // Enforce the maximum rank ceiling based on class-skill status.
+      // D&D 3.5: class skills cap at (characterLevel + 3), cross-class at half that.
+      // This clamp is performed here so SkillsMatrix.svelte contains zero arithmetic
+      // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+      const isClassSkill = this.phase4_classSkillSet.has(skillId);
+      const maximum  = isClassSkill ? this.phase_maxClassSkillRanks : this.phase_maxCrossClassSkillRanks;
+      const clamped  = Math.max(minimum, Math.min(Math.max(0, ranks), maximum));
       this.character.skills[skillId].ranks = clamped;
     } else {
       console.warn(`[GameEngine] setSkillRanks: skill "${skillId}" not found.`);
@@ -3189,6 +4507,60 @@ export class GameEngine {
     } else {
       hp.currentValue += delta;
     }
+  }
+
+  /**
+   * Sets the character's current HP to an absolute value, capping at maxHP.
+   *
+   * D&D 3.5 RULE: Current HP cannot exceed maximum HP through normal healing
+   * (see SRD Healing rules). This cap is enforced here so the Svelte component
+   * (HealthAndXP.svelte) only needs to call this method without knowing the
+   * cap rule.
+   *
+   * WHY IN THE ENGINE:
+   *   The "cannot exceed maxHP" constraint is a game rule. Moving it here
+   *   upholds the zero-game-logic-in-Svelte architectural rule.
+   *
+   * @param value - The absolute HP value to set (will be clamped to [0, maxHP]).
+   */
+  setCurrentHP(value: number): void {
+    const hp = this.character.resources['resources.hp'];
+    if (!hp) return;
+    hp.currentValue = Math.min(value, this.phase3_maxHp);
+  }
+
+  /**
+   * Awards XP to the character.
+   *
+   * WHY IN THE ENGINE:
+   *   Direct mutation of `character.xp` from a Svelte component would violate the
+   *   zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). This method provides a
+   *   controlled mutation point with clear intent.
+   *
+   * @param amount - The XP to add (positive to award, negative to remove).
+   */
+  addXp(amount: number): void {
+    this.character.xp = (this.character.xp ?? 0) + amount;
+  }
+
+  /**
+   * Reduces the character's Level Adjustment by 1.
+   *
+   * D&D 3.5 VARIANT RULE (Unearthed Arcana):
+   *   A character may buy off 1 LA by spending XP equal to the XP required to
+   *   advance from their current ECL. This method applies the LA reduction; the
+   *   calling UI is responsible for confirming the action and deducting XP.
+   *
+   * WHY IN THE ENGINE:
+   *   Mutating `character.levelAdjustment` is character state management. The
+   *   zero-game-logic-in-Svelte rule requires such mutations to go through the engine.
+   *
+   * @see phase_canReduceLA — eligibility check
+   * @see HealthAndXP.svelte — UI trigger (Reduce LA button)
+   */
+  reduceLA(): void {
+    if (!this.phase_canReduceLA) return; // safety guard: only reduce if eligible
+    this.character.levelAdjustment = Math.max(0, (this.character.levelAdjustment ?? 1) - 1);
   }
 
   /**
@@ -3674,6 +5046,147 @@ export class GameEngine {
   }
 
   /**
+   * Adds charges to an item instance's named pool, capped at the template's
+   * `defaultCurrent` (treated as the maximum for recharge purposes).
+   *
+   * Symmetric counterpart to `spendItemPoolCharge()`. Used by PsionicItemCard
+   * to restore PP to a cognizance crystal or psicrown without performing
+   * `Math.min(max, current + amount)` in the Svelte component (which would
+   * violate the zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   * @param poolId     - The pool to recharge.
+   * @param amount     - Number of charges to restore (default: 1). Must be > 0.
+   */
+  rechargeItemPoolCharge(instanceId: string, poolId: string, amount = 1): void {
+    if (amount <= 0) return;
+
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    if (!instance) return;
+
+    const feature = dataLoader.getFeature(instance.featureId);
+    if (feature) {
+      this.initItemResourcePools(instance, feature);
+    }
+    if (!instance.itemResourcePools) return;
+
+    // Determine the maximum value from the template's defaultCurrent.
+    const maxValue = feature?.resourcePoolTemplates?.find(
+      (t: ResourcePoolTemplate) => t.poolId === poolId,
+    )?.defaultCurrent ?? Infinity;
+
+    const current = instance.itemResourcePools[poolId] ?? 0;
+    // Ceiling at the template max — cannot exceed full charges.
+    instance.itemResourcePools[poolId] = Math.min(maxValue, current + amount);
+  }
+
+  // ---------------------------------------------------------------------------
+  // PSIONIC ITEM STATE MANAGEMENT — PsionicItemCard.svelte delegates
+  // ---------------------------------------------------------------------------
+  //
+  // PsionicItemCard interacts with psionic item state through these engine methods
+  // instead of mutating `item.psionicItemData` directly.  Direct mutation in a
+  // Svelte component violates the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3)
+  // because `Math.max` / `Math.min` clamping is game logic, not presentation logic.
+
+  /**
+   * Deducts power points from a psionic item's `storedPP`, floored at 0.
+   *
+   * Used by PsionicItemCard for cognizance crystals and psicrowns.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   * @param amount     - PP to spend (default: 1).
+   */
+  drawPsionicItemPP(instanceId: string, amount = 1): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData) return;
+    feature.psionicItemData.storedPP = Math.max(0, (feature.psionicItemData.storedPP ?? 0) - amount);
+  }
+
+  /**
+   * Restores power points to a psionic item's `storedPP`, capped at `maxPP`.
+   *
+   * Used by PsionicItemCard for cognizance crystals and psicrowns.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   * @param amount     - PP to restore (default: 1).
+   */
+  rechargePsionicItemPP(instanceId: string, amount = 1): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData) return;
+    const maxPP = feature.psionicItemData.maxPP ?? 0;
+    feature.psionicItemData.storedPP = Math.min(maxPP, (feature.psionicItemData.storedPP ?? 0) + amount);
+  }
+
+  /**
+   * Uses one charge from a dorje's charge pool, floored at 0.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   */
+  usePsionicItemCharge(instanceId: string): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData) return;
+    if ((feature.psionicItemData.charges ?? 0) <= 0) return;
+    feature.psionicItemData.charges = (feature.psionicItemData.charges ?? 1) - 1;
+  }
+
+  /**
+   * Toggles the `attuned` flag on a cognizance crystal.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   */
+  togglePsionicItemAttune(instanceId: string): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData) return;
+    feature.psionicItemData.attuned = !feature.psionicItemData.attuned;
+  }
+
+  /**
+   * Activates a psionic tattoo (sets `activated = true`).
+   * Once activated a tattoo cannot be de-activated via normal means.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   */
+  activatePsionicTattoo(instanceId: string): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData) return;
+    feature.psionicItemData.activated = true;
+  }
+
+  /**
+   * Marks a power stone imprinted power as used up.
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId`.
+   * @param entryIndex - Zero-based index into `psionicItemData.powersImprinted`.
+   */
+  flushPowerStoneEntry(instanceId: string, entryIndex: number): void {
+    const instance = this.character.activeFeatures.find(
+      (afi) => afi.instanceId === instanceId,
+    );
+    const feature = instance ? (dataLoader.getFeature(instance.featureId) as ItemFeature | undefined) : undefined;
+    if (!feature?.psionicItemData?.powersImprinted) return;
+    if (entryIndex < 0 || entryIndex >= feature.psionicItemData.powersImprinted.length) return;
+    feature.psionicItemData.powersImprinted[entryIndex].usedUp = true;
+  }
+
+  /**
    * Resets all item instance pools whose template declares the given `resetCondition`.
    *
    * Private helper invoked by `triggerDawnReset()` and `triggerWeeklyReset()` to
@@ -4129,6 +5642,69 @@ export class GameEngine {
   }
 
   // ---------------------------------------------------------------------------
+  // CLASS LEVEL MANAGEMENT — keeps classLevels mutations in the engine
+  // (ARCHITECTURE.md §3: no game logic in .svelte files)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Sets the level for a specific class, initialising classLevels if needed.
+   *
+   * Called by `BasicInfo.svelte` when the player chooses a class. Keeping this
+   * mutation in the engine ensures the DAG re-evaluates every downstream phase
+   * (phase0_characterLevel, skill-points budget, feat slots, BAB, saves …)
+   * in a single reactive cycle.
+   *
+   * @param classFeatureId - The class feature ID (e.g., "class_fighter").
+   * @param level          - The level to set. Must be ≥ 1.
+   */
+  setClassLevel(classFeatureId: ID, level: number): void {
+    if (level < 1) {
+      console.warn(`[GameEngine] setClassLevel: level must be ≥ 1 (got ${level}). Use deleteClassLevel() to remove.`);
+      return;
+    }
+    this.character.classLevels[classFeatureId] = level;
+  }
+
+  /**
+   * Removes a class from classLevels entirely.
+   *
+   * Called by `BasicInfo.svelte` when the player switches to a different class,
+   * to prevent stale class entries from inflating the total character level.
+   * Removing via the engine ensures the reactive DAG immediately re-evaluates.
+   *
+   * @param classFeatureId - The class feature ID to remove.
+   */
+  deleteClassLevel(classFeatureId: ID): void {
+    delete this.character.classLevels[classFeatureId];
+  }
+
+  // ---------------------------------------------------------------------------
+  // ITEM STASH MANAGEMENT — keeps isStashed mutations in the engine
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Moves a stashed item back into the backpack (carried) state.
+   *
+   * "Stashed" items are stored at a location other than on the character's
+   * person — they don't count toward encumbrance and are not readied for use.
+   * This method removes the stash flag so the item becomes a carried item again.
+   *
+   * Called by `InventoryTab.svelte` (Storage section "Move to backpack" button).
+   * Centralising here keeps direct `ActiveFeatureInstance` mutations out of the
+   * Svelte component (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param instanceId - The `ActiveFeatureInstance.instanceId` to un-stash.
+   */
+  moveItemFromStash(instanceId: ID): void {
+    const afi = this.character.activeFeatures.find(a => a.instanceId === instanceId);
+    if (!afi) {
+      console.warn(`[GameEngine] moveItemFromStash: instance "${instanceId}" not found.`);
+      return;
+    }
+    afi.isStashed = false;
+  }
+
+  // ---------------------------------------------------------------------------
   // PRIVATE METHODS — DAG computation helpers
   // ---------------------------------------------------------------------------
 
@@ -4505,6 +6081,40 @@ export class GameEngine {
     }
 
     return Array.from(tagSet);
+  }
+
+  // ---------------------------------------------------------------------------
+  // CHARACTER RESOURCE POOL MUTATIONS
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Spends charges from a character-scoped resource pool (e.g., Turn Undead uses,
+   * Rage uses, domain power uses stored in `character.resources`).
+   *
+   * D&D 3.5 USAGE:
+   *   Called by `SpecialAbilities.svelte` when the player clicks "Use" on a class
+   *   feature or domain ability. The `resourceCost` on `Feature.activation` specifies
+   *   which pool (`targetId`) and how many charges (`cost`) to deduct.
+   *
+   * FLOORS AT 0:
+   *   The pool cannot go negative. An already-empty pool is a no-op (the button
+   *   should be disabled in the UI, but this guard prevents data corruption).
+   *
+   * CENTRALISED HERE (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3):
+   *   The `Math.max(0, pool.currentValue - cost)` arithmetic belongs in the engine,
+   *   not in the Svelte component. All resource mutations go through engine methods.
+   *
+   * @param poolId       - The resource pool key in `character.resources` (e.g., `"resources.turn_undead"`).
+   * @param cost         - The number of charges to deduct. Must be > 0.
+   */
+  spendCharacterResource(poolId: string, cost: number): void {
+    const pool = this.character.resources[poolId];
+    if (!pool) {
+      console.warn(`[GameEngine] spendCharacterResource: pool "${poolId}" not found.`);
+      return;
+    }
+    // D&D 3.5: resource pools cannot go below 0 (uses floor at 0).
+    pool.currentValue = Math.max(0, pool.currentValue - cost);
   }
 }
 

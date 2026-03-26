@@ -19,7 +19,6 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { evaluateLogicNode } from '$lib/utils/logicEvaluator';
   import { ui } from '$lib/i18n/ui-strings';
   import type { Feature } from '$lib/types/feature';
   import Modal from '$lib/components/ui/Modal.svelte';
@@ -56,8 +55,11 @@
     });
   });
 
+  // Prerequisite evaluation is game logic (ARCHITECTURE.md §3). Delegate to the
+  // engine method rather than calling the logicEvaluator utility directly from
+  // this .svelte file.
   function evalPrereqs(feat: Feature) {
-    return evaluateLogicNode(feat.prerequisitesNode, engine.phase2_context);
+    return engine.evaluateFeaturePrerequisites(feat);
   }
 
   function selectFeat(feat: Feature) {

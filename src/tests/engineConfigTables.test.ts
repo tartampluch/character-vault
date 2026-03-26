@@ -84,7 +84,11 @@ describe('M2 — engine.savingThrowConfig — data-driven from config_save_defin
     expect(saves).toHaveLength(3);
     expect(saves[0].pipelineId).toBe('saves.fortitude');
     expect(saves[0].keyAbilityId).toBe('stat_constitution');
-    expect(saves[0].keyAbilityAbbr.en).toBe('CON');
+    // The bootstrap fallback uses the pipeline ID as the abbreviation (not 'CON') to comply
+    // with the zero-D&D-hardcoding rule (PROGRESS.md guideline 6). The human-readable
+    // abbreviation ('CON') is loaded from config_save_definitions at runtime.
+    // See DEFAULT_SAVE_CONFIG comment in GameEngine.svelte.ts for full rationale.
+    expect(saves[0].keyAbilityAbbr.en).toBe('stat_constitution');
     expect(saves[1].pipelineId).toBe('saves.reflex');
     expect(saves[1].keyAbilityId).toBe('stat_dexterity');
     expect(saves[2].pipelineId).toBe('saves.will');
