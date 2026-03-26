@@ -390,7 +390,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
   // FALLBACK LABELS:
   //   Embedded labels are used when:
   //   a) The DataLoader has not yet completed loading (engine bootstrap).
-  //   b) The 'srd_core' rule source is not in enabledRuleSources.
+  //   b) The config_tables file is not in the enabled file-path whitelist.
   //   c) The 00_d20srd_core_config_tables.json file failed to load.
   //   In all these cases, the engine remains functional with the embedded fallback labels.
   //

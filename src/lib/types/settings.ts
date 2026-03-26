@@ -316,33 +316,43 @@ export interface CampaignSettings {
   // ---------------------------------------------------------------------------
 
   /**
-   * Ordered array of rule source IDs enabled for this campaign.
+   * Ordered array of rule source FILE PATHS enabled for this campaign.
    *
-   * WHY ORDERED?
-   *   The DataLoader loads rule source files in ALPHABETICAL ORDER by file path
-   *   (the file system order determines merge priority, not this array order).
-   *   This array is a FILTER: only features whose `Feature.ruleSource` matches
-   *   one of these IDs are retained after loading.
+   * HOW IT WORKS (Phase 21 DataLoader):
+   *   `DataLoader.loadRuleSources(enabledRuleSources)` uses this array as a
+   *   FILE-PATH WHITELIST. It compares each discovered JSON file's path (the
+   *   `sortKey`, e.g. `"00_d20srd_core/01_d20srd_core_races.json"`) against
+   *   this set. Only files whose path exactly matches an entry are loaded.
    *
-   * IMPORTANT DISTINCTION:
-   *   - Loading order = alphabetical file path order (always, deterministic)
-   *   - This array = which sources to include/exclude (a whitelist filter)
+   * EMPTY ARRAY = PERMISSIVE (load everything):
+   *   When this array is empty (`[]`), the DataLoader disables file filtering
+   *   entirely and loads ALL discovered rule files. This is the recommended
+   *   default for new campaigns — it ensures all SRD content is available
+   *   immediately without requiring manual GM configuration.
    *
-   * The GM manages this list via the Rule Source Manager UI (Phase 15.1).
-   * Adding a source to this list enables all its content.
-   * Removing a source disables all content tagged with that ruleSource ID.
+   * NON-EMPTY = STRICT WHITELIST:
+   *   When non-empty, only the listed file paths are loaded. The GM populates
+   *   this list via the Rule Source Manager UI (Phase 15.1) by enabling or
+   *   disabling individual rule files. File paths use the short form:
+   *   `"00_d20srd_core/01_d20srd_core_races.json"` (no leading `/rules/`).
    *
-   * Examples of common source IDs:
-   *   - "srd_core"           : D&D 3.5 SRD core rules (PHB, DMG, MM content)
-   *   - "srd_psionics"       : Expanded Psionics Handbook content
-   *   - "srd_psionic_transparency": The Magic-Psionic Transparency rule
-   *   - "unearthed_arcana"   : UA variant rules
-   *   - "homebrew_darklands" : A custom homebrew rule source
+   * LOADING ORDER:
+   *   All admitted files are loaded in ALPHABETICAL ORDER by file path.
+   *   Prefix filenames with a number to control override priority:
+   *   `"50_homebrew_my_setting.json"` loads after all `"0*"` SRD files,
+   *   so its entities override SRD entries with the same ID.
    *
-   * NOTE: Configuration tables (XP thresholds, carrying capacity) respect this filter too.
-   * A config table's `ruleSource` must be in `enabledRuleSources` to be loaded.
+   * IMPORTANT — DO NOT store legacy source IDs here:
+   *   Values like `"srd_core"` or `"srd_psionics"` are `Feature.ruleSource`
+   *   identifiers embedded in JSON content — they are NOT file paths and will
+   *   NOT match anything in the DataLoader's file filter. Always use file paths.
+   *
+   * Examples:
+   *   - `[]`                                         → load everything (default)
+   *   - `["00_d20srd_core/01_d20srd_core_races.json"]` → one specific file only
+   *   - `["50_homebrew.json"]`                       → single homebrew file only
    */
-  enabledRuleSources: ID[];
+  enabledRuleSources: string[];
 }
 
 // =============================================================================
@@ -357,13 +367,22 @@ export interface CampaignSettings {
  *   - Standard point buy (25 points)
  *   - No reroll ones (strict 4d6 drop lowest)
  *   - No exploding 20s
- *   - Only SRD Core enabled by default
+ *   - All rule sources enabled by default (empty array = permissive mode)
  *
  * The GM can update any of these after campaign creation via the Settings page.
  *
  * WHY A FACTORY FUNCTION AND NOT A CONST?
  *   A function creates a fresh object each time, avoiding accidental mutation
  *   of a shared reference. Two different campaigns get two independent settings objects.
+ *
+ * WHY enabledRuleSources IS EMPTY BY DEFAULT:
+ *   `DataLoader.loadRuleSources([])` treats an empty array as "load everything" —
+ *   the permissive mode used during development and for new campaigns.
+ *   Non-empty arrays are strict file-path whitelists (Phase 21 Rule Source Manager).
+ *   A legacy value like `["srd_core"]` is a source ID, NOT a file path; passing it
+ *   would cause the DataLoader to load zero files because no file path equals "srd_core".
+ *   The correct way to restrict sources is via the Rule Source Manager which stores
+ *   actual file paths (e.g. "00_d20srd_core/01_d20srd_core_races.json").
  */
 export function createDefaultCampaignSettings(): CampaignSettings {
   return {
@@ -387,6 +406,9 @@ export function createDefaultCampaignSettings(): CampaignSettings {
       // @see CampaignSettings.variantRules.gestalt for full documentation.
       gestalt: false,
     },
-    enabledRuleSources: ['srd_core'],
+    // Empty array = permissive mode: DataLoader loads ALL discovered rule files.
+    // This ensures new campaigns work out-of-the-box without requiring GM setup.
+    // The GM can restrict sources later via the Rule Source Manager (Phase 15.1).
+    enabledRuleSources: [],
   };
 }

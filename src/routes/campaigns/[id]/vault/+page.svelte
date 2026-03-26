@@ -58,12 +58,15 @@
       });
     }
 
-    if (sources.length > 0) {
-      dataLoader
-        .loadRuleSources(sources, overrides)
-        .then(() => engine.bumpDataLoaderVersion())
-        .catch(err => console.warn('[Vault] Failed to load rule sources:', err));
-    }
+    // Always call loadRuleSources, even when sources is empty.
+    // An empty array is the permissive mode: DataLoader loads ALL rule files.
+    // Previously this was guarded by `if (sources.length > 0)`, which meant
+    // new campaigns with the default empty array would NEVER initialize the
+    // DataLoader, leaving the engine with no features, classes, or config tables.
+    dataLoader
+      .loadRuleSources(sources, overrides)
+      .then(() => engine.bumpDataLoaderVersion())
+      .catch(err => console.warn('[Vault] Failed to load rule sources:', err));
   });
 
   function createNewCharacter() {

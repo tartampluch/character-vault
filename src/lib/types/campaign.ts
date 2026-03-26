@@ -183,13 +183,20 @@ export interface Campaign {
   chapters: Chapter[];
 
   /**
-   * Ordered list of rule source IDs enabled for this campaign.
+   * Ordered list of rule source FILE PATHS enabled for this campaign.
    * This is the AUTHORITATIVE server record. Loaded into `CampaignSettings`
-   * in the GameEngine at startup.
+   * and passed directly to `DataLoader.loadRuleSources()` at startup.
+   *
+   * Empty array (`[]`) = permissive mode: load ALL rule files (recommended default).
+   * Non-empty = strict file-path whitelist managed by the Rule Source Manager (Phase 15.1).
+   *
+   * IMPORTANT: entries are FILE PATHS (e.g. "00_d20srd_core/01_races.json"),
+   * NOT `Feature.ruleSource` IDs (e.g. "srd_core"). Passing source IDs would
+   * silently filter out every file, loading zero content.
    *
    * @see CampaignSettings.enabledRuleSources in settings.ts for full documentation.
    */
-  enabledRuleSources: ID[];
+  enabledRuleSources: string[];
 
   /**
    * The GM's global override layer — a JSON-encoded array of Feature/config objects.

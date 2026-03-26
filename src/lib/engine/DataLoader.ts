@@ -491,18 +491,26 @@ export class DataLoader {
    *                                    campaigns.homebrew_rules_json.  All entities
    *                                    are stamped with ruleSource:"user_homebrew".
    */
-  async loadRuleSources(
-    enabledSources: ID[],
-    gmGlobalOverrides?: string,
-    campaignHomebrewRulesJson?: string
-  ): Promise<void> {
-    this.clearCache();
-    // Store enabled file paths as a Set for O(1) lookup during file filtering.
-    // An empty set means "load everything" (permissive — used when no campaign
-    // is active, e.g. during first-load or in Vitest unit tests).
-    this.enabledFilePaths = enabledSources.length > 0
-      ? new Set(enabledSources)
-      : new Set<string>();
+   async loadRuleSources(
+     enabledSources: string[],
+     gmGlobalOverrides?: string,
+     campaignHomebrewRulesJson?: string
+   ): Promise<void> {
+     this.clearCache();
+     // Store enabled file paths as a Set for O(1) lookup during file filtering.
+     //
+     // PERMISSIVE MODE (empty array):
+     //   An empty array means "load everything". This is the correct default for
+     //   new campaigns and Vitest tests. The DataLoader skips the filter entirely.
+     //
+     // STRICT MODE (non-empty array):
+     //   Each entry must be a FILE PATH (e.g. "00_d20srd_core/01_races.json"),
+     //   NOT a ruleSource ID (e.g. "srd_core"). Passing source IDs would silently
+     //   filter out every file since no file path matches a source ID string.
+     //   The Rule Source Manager UI (Phase 15.1) stores and provides file paths.
+     this.enabledFilePaths = enabledSources.length > 0
+       ? new Set(enabledSources)
+       : new Set<string>();
 
     // -----------------------------------------------------------------------
     // Step 1a: Discover static rule files via GET /rules or manifest.json

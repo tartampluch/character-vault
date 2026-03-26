@@ -162,7 +162,11 @@ class CampaignStore {
       bannerUrl: undefined,
       ownerId,
       chapters: [],
-      enabledRuleSources: ['srd_core'],
+      // Empty array = permissive mode: DataLoader loads ALL rule files.
+      // This ensures a new campaign works immediately without requiring the GM
+      // to configure rule sources first. The Rule Source Manager (Phase 15.1)
+      // can restrict this to specific file paths after creation.
+      enabledRuleSources: [],
       gmGlobalOverrides: '[]',
       updatedAt: Date.now(),
     };

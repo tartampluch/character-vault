@@ -688,6 +688,55 @@ describe('DataLoader — file-path based source filtering via loadRuleSources', 
     expect(loader.getFeature('feat_b')).toBeDefined();
     expect(loader.getFeature('feat_c')).toBeUndefined();
   });
+
+  it('passing a Feature.ruleSource ID (not a file path) silently filters all file-based entities', async () => {
+    // FOOTGUN DOCUMENTATION — enabledSources takes FILE PATHS, not ruleSource IDs.
+    //
+    // 'srd_core' is the Feature.ruleSource identifier embedded inside JSON files
+    // (e.g. { "ruleSource": "srd_core" }). It is NOT a file path.
+    //
+    // When passed to loadRuleSources(), it creates the strict whitelist { 'srd_core' }.
+    // The file-path filter checks:
+    //   enabledFilePaths.has(sortKey)  where sortKey = "00_d20srd_core/races.json"
+    // "00_d20srd_core/races.json" !== "srd_core" → every file is skipped.
+    // Result: zero file-based entities load, with NO error or warning.
+    //
+    // The historical bug: createDefaultCampaignSettings() returned ['srd_core'],
+    // which caused new campaigns to silently load nothing. Fixed by defaulting to [].
+    //
+    // Correct usage:
+    //   []                                → load everything (permissive mode)
+    //   ['00_d20srd_core/races.json']     → load only that specific file
+    const loader = new DataLoader();
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/00_d20srd_core/races.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      // This handler is for the races.json file — should NOT be called
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(wrapEntities([
+          { id: 'race_human', category: 'race', ruleSource: 'srd_core', tags: [], grantedModifiers: [], grantedFeatures: [] },
+        ])),
+      });
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    // Pass a ruleSource ID instead of a file path — the historical bug
+    await loader.loadRuleSources(['srd_core']);
+
+    // race_human is NOT loaded: sortKey "00_d20srd_core/races.json" ≠ "srd_core"
+    expect(loader.getFeature('race_human')).toBeUndefined();
+    // The races.json file was never fetched (filtered before the HTTP call)
+    expect(mockFetch).not.toHaveBeenCalledWith('/rules/00_d20srd_core/races.json');
+  });
 });
 
 // =============================================================================

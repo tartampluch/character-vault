@@ -450,6 +450,20 @@ _These reusable modals keep editor forms clean. Each opens in a `Modal.svelte` w
 
 ---
 
+### Phase 22: NPC & Monster Template Management
+
+_Goal: Develop a NPC (and Monster Template) Management System including a "Quick-Spawn" feature for the GM to instantiate templates in real-time._
+
+- [ ] **22.1** _(To be defined — see `PROMPT.md` Phase 22 for the goal description)_
+
+### Phase 23: Rules Library Browser
+
+_Goal: Develop a library for the GM and players to browse all data._
+
+- [ ] **23.1** _(To be defined — see `PROMPT.md` Phase 23 for the goal description)_
+
+---
+
 ### Final Review
 
 - [ ] **Final Review** (complete system validation — before release): Run the full architecture conformance review from `CHECKPOINTS.md`. Covers: Part A — Architecture §1–20 sweep; Part B — cross-cutting concerns (zero hardcoding, i18n completeness, error handling, TypeScript strictness, PHP security); Part C — ANNEXES.md examples A.1–A.12 traced end-to-end and Annex B config tables B.1–B.12 verified; Part D — test coverage gap analysis; Part E — UI Excellence validation. All CRITICAL issues must be zero before release.

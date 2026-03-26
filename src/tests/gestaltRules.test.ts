@@ -144,6 +144,26 @@ describe('CampaignSettings.variantRules.gestalt — type and defaults', () => {
     expect(settings.variantRules.gestalt).toBe(false);
     expect(settings.diceRules.explodingTwenties).toBe(false);
   });
+
+  it('createDefaultCampaignSettings() initializes enabledRuleSources as empty array (permissive mode)', () => {
+    // REGRESSION GUARD — This default was previously ['srd_core'], which is a
+    // Feature.ruleSource ID string, NOT a DataLoader file path.
+    //
+    // The DataLoader.loadRuleSources() filters by file-path (e.g.
+    // "00_d20srd_core/01_races.json"), not by ruleSource ID. Passing a source
+    // ID as the filter caused zero rule files to match, silently loading nothing
+    // for every new campaign.
+    //
+    // The correct default is [] (empty), which the DataLoader treats as permissive
+    // mode: all discovered rule files are loaded. GMs can restrict to specific
+    // files later via the Rule Source Manager (Phase 15.1).
+    //
+    // If this ever reverts to a non-empty array containing a source ID like
+    // 'srd_core', new campaigns will load zero game content — making the engine
+    // appear broken with no error message.
+    const settings = createDefaultCampaignSettings();
+    expect(settings.enabledRuleSources).toEqual([]);
+  });
 });
 
 // =============================================================================
