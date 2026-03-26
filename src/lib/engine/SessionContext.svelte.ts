@@ -217,6 +217,31 @@ class SessionContext {
     this.role = value ? 'gm' : 'player';
   }
 
+  /**
+   * Clears the first-login password-setup requirement flag.
+   *
+   * Called by the setup-password page after `PUT /api/auth/setup-password`
+   * succeeds so that the layout guard stops redirecting to /setup-password.
+   *
+   * We expose this as an explicit method (rather than direct field assignment)
+   * because Svelte 5's TypeScript plugin makes `$state` fields on class
+   * instances appear as read-only from external `.svelte` files.
+   */
+  clearPasswordSetup(): void {
+    this.needsPasswordSetup = false;
+  }
+
+  /**
+   * Activates the first-login password-setup requirement flag.
+   *
+   * Called when login returns `needs_password_setup: true` from the server.
+   * (loadFromServer() already handles the normal case; this method is provided
+   * for completeness and test use.)
+   */
+  requirePasswordSetup(): void {
+    this.needsPasswordSetup = true;
+  }
+
   // ---------------------------------------------------------------------------
   // PHP BACKEND INTEGRATION
   // ---------------------------------------------------------------------------

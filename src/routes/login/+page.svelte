@@ -93,11 +93,22 @@
         method:      'POST',
         credentials: 'include',
         headers:     { 'Content-Type': 'application/json' },
+        // Password may be empty for no-password accounts (new users / admin bootstrap).
         body:        JSON.stringify({ username: username.trim(), password }),
       });
 
       if (loginResp.status === 401) {
         error = ui('login.error_invalid', lang);
+        return;
+      }
+      if (loginResp.status === 403) {
+        // Account suspended or expired (7-day no-login window elapsed).
+        const body = await loginResp.json().catch(() => ({})) as { error?: string };
+        if (body.error === 'AccountExpired') {
+          error = 'This account was not activated within 7 days and has been suspended. Contact an administrator.';
+        } else {
+          error = 'This account has been suspended. Contact an administrator.';
+        }
         return;
       }
       if (loginResp.status === 429) {
@@ -109,8 +120,22 @@
         return;
       }
 
+      // Read needs_password_setup directly from the login response.
+      // This is more reliable than checking sessionContext after loadFromServer()
+      // because it is available immediately, before the session is re-fetched.
+      const loginData = await loginResp.json() as { needs_password_setup?: boolean };
+      const needsSetup = loginData.needs_password_setup === true;
+
+      // Populate sessionContext (sets role, needsPasswordSetup, csrfToken, etc.).
       await sessionContext.loadFromServer();
-      await goto(decodeURIComponent(returnTo));
+
+      // Phase 22.6: If the account requires a password to be set, redirect to
+      // the setup page instead of the original returnTo destination.
+      if (needsSetup) {
+        await goto('/setup-password');
+      } else {
+        await goto(decodeURIComponent(returnTo));
+      }
     } catch (err) {
       error = ui('login.error_server', lang);
       console.error('[Login] fetch error:', err);
@@ -180,9 +205,11 @@
 
         <button
           type="submit"
-          disabled={isLoading || !username.trim() || !password}
+          disabled={isLoading || !username.trim()}
           class="btn-primary w-full mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
+          <!-- Password field is intentionally not required for no-password accounts
+               (new users / admin bootstrap). The server validates credentials. -->
           {isLoading ? ui('login.signing_in', lang) : ui('login.sign_in', lang)}
         </button>
 

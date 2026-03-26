@@ -29,6 +29,7 @@
 	 */
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { themeManager } from '$lib/stores/ThemeManager.svelte';
 	import { sessionContext } from '$lib/engine/SessionContext.svelte';
 
@@ -59,6 +60,35 @@
 		// (avoids infinite redirect loop on the login page itself).
 		if (!$page.url.pathname.startsWith('/login')) {
 			await sessionContext.loadFromServer();
+		}
+	});
+
+	/**
+	 * Phase 22.6 — Password-setup redirect guard.
+	 *
+	 * Runs reactively whenever `sessionContext.needsPasswordSetup` changes.
+	 * If the flag is true and the user is not already on the setup or login pages,
+	 * redirect to /setup-password so they cannot access any other page.
+	 *
+	 * WHY $effect (not onMount)?
+	 *   The flag becomes true AFTER login completes (set by loadFromServer()
+	 *   which is called inside handleLogin() on the login page). At that point
+	 *   the layout's onMount has already run. A reactive $effect re-fires
+	 *   whenever the reactive dependency changes, so it catches the flag change
+	 *   regardless of when the navigation occurs.
+	 *
+	 * GUARD EXCLUSIONS:
+	 *   /login         — the user is in the process of authenticating.
+	 *   /setup-password — already on the correct page, no redirect needed.
+	 */
+	$effect(() => {
+		const path = $page.url.pathname;
+		if (
+			sessionContext.needsPasswordSetup &&
+			!path.startsWith('/setup-password') &&
+			!path.startsWith('/login')
+		) {
+			goto('/setup-password');
 		}
 	});
 </script>
