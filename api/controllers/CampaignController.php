@@ -4,13 +4,16 @@
  * @description REST controller for Campaign resources.
  *
  * ENDPOINTS:
- *   GET  /api/campaigns                              → index()
- *   POST /api/campaigns                              → create()
- *   GET  /api/campaigns/{id}                         → show($id)
- *   PUT  /api/campaigns/{id}                         → update($id)
- *   GET  /api/campaigns/{id}/sync-status             → syncStatus($id)
- *   GET  /api/campaigns/{id}/homebrew-rules          → getHomebrewRules($id)
- *   PUT  /api/campaigns/{id}/homebrew-rules          → setHomebrewRules($id)
+ *   GET    /api/campaigns                              → index()
+ *   POST   /api/campaigns                              → create()
+ *   GET    /api/campaigns/{id}                         → show($id)
+ *   PUT    /api/campaigns/{id}                         → update($id)
+ *   GET    /api/campaigns/{id}/sync-status             → syncStatus($id)
+ *   GET    /api/campaigns/{id}/homebrew-rules          → getHomebrewRules($id)
+ *   PUT    /api/campaigns/{id}/homebrew-rules          → setHomebrewRules($id)
+ *   GET    /api/campaigns/{id}/users                   → getUsers($id)
+ *   POST   /api/campaigns/{id}/users                   → addUser($id)
+ *   DELETE /api/campaigns/{id}/users/{userId}          → removeUser($id, $userId)
  *
  * VISIBILITY RULES:
  *   - All authenticated users can list campaigns they own or belong to.
@@ -18,6 +21,7 @@
  *   - Only the campaign owner (or a GM) can update a campaign.
  *   - Homebrew rules (GET) are readable by all authenticated users in the campaign.
  *   - Homebrew rules (PUT) are writable by GMs only.
+ *   - Campaign membership (GET/POST/DELETE /users) is GM+Admin only.
  *
  * @see api/auth.php for requireAuth(), requireGameMaster()
  * @see api/Database.php for Database::getInstance()
@@ -505,5 +509,190 @@ class CampaignController
         Logger::info('Campaign', 'Homebrew PUT', ['id' => $id, 'entities' => count($decoded)]);
         http_response_code(200);
         echo json_encode(['id' => $id, 'updatedAt' => $now]);
+    }
+
+    // ============================================================
+    // GET /api/campaigns/{id}/users  (Phase 22.4)
+    // ============================================================
+
+    /**
+     * Lists all members of a campaign with their user details and join date.
+     *
+     * ACCESS: GM or Admin (requireGameMaster covers both roles).
+     *
+     * WHY INCLUDE SUSPENDED USERS?
+     *   Suspended users may still have active characters in the campaign. The GM
+     *   needs to see them in the member list (marked as suspended) so they can
+     *   manage those characters or reinstate the player.
+     *
+     * RESPONSE (200):
+     *   Array of member objects:
+     *   { user_id, username, player_name, role, is_suspended, joined_at }
+     */
+    public static function getUsers(string $id): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        $stmt = $db->prepare('
+            SELECT
+                u.id           AS user_id,
+                u.username,
+                u.display_name AS player_name,
+                u.role,
+                u.is_suspended,
+                cu.joined_at
+            FROM campaign_users cu
+            JOIN users u ON u.id = cu.user_id
+            WHERE cu.campaign_id = ?
+            ORDER BY u.username ASC
+        ');
+        $stmt->execute([$id]);
+        $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Normalise types.
+        foreach ($members as &$m) {
+            $m['is_suspended'] = (bool)$m['is_suspended'];
+            $m['joined_at']    = (int)$m['joined_at'];
+        }
+        unset($m);
+
+        Logger::info('Campaign', 'Users list', ['campaign' => $id, 'count' => count($members)]);
+        http_response_code(200);
+        echo json_encode($members);
+    }
+
+    // ============================================================
+    // POST /api/campaigns/{id}/users  (Phase 22.4)
+    // ============================================================
+
+    /**
+     * Adds a user to a campaign.
+     *
+     * ACCESS: GM or Admin.
+     *
+     * Suspended users CAN be added — they may have existing characters in the
+     * campaign that the GM wants to keep active even while the player is blocked
+     * from logging in.
+     *
+     * REQUEST BODY (JSON):
+     *   { "user_id": "string" }
+     *
+     * RESPONSE 201 Created:  { campaign_id, user_id, joined_at }
+     * RESPONSE 400 BadRequest: user_id missing
+     * RESPONSE 404 NotFound:   campaign or user not found
+     * RESPONSE 409 Conflict:   user is already a member
+     */
+    public static function addUser(string $id): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        $body   = json_decode(file_get_contents('php://input'), true) ?? [];
+        $userId = trim($body['user_id'] ?? '');
+
+        if ($userId === '') {
+            http_response_code(400);
+            echo json_encode(['error' => 'BadRequest', 'message' => 'user_id is required.']);
+            return;
+        }
+
+        // Verify user exists (suspended users are allowed — no is_suspended filter).
+        $stmt = $db->prepare('SELECT id FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "User '{$userId}' not found."]);
+            return;
+        }
+
+        $now = time();
+
+        try {
+            $db->prepare('INSERT INTO campaign_users (campaign_id, user_id, joined_at) VALUES (?, ?, ?)')
+               ->execute([$id, $userId, $now]);
+        } catch (\PDOException $e) {
+            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
+                http_response_code(409);
+                echo json_encode([
+                    'error'   => 'Conflict',
+                    'message' => 'User is already a member of this campaign.',
+                ]);
+                return;
+            }
+            throw $e;
+        }
+
+        Logger::info('Campaign', 'User added', ['campaign' => $id, 'user' => $userId]);
+        http_response_code(201);
+        echo json_encode(['campaign_id' => $id, 'user_id' => $userId, 'joined_at' => $now]);
+    }
+
+    // ============================================================
+    // DELETE /api/campaigns/{id}/users/{userId}  (Phase 22.4)
+    // ============================================================
+
+    /**
+     * Removes a user from a campaign.
+     *
+     * ACCESS: GM or Admin.
+     *
+     * This does NOT delete the user's characters — it only removes the
+     * campaign_users membership row. The user's characters remain in the
+     * campaign, owned by that user. The GM can still manage those characters.
+     *
+     * RESPONSE 200: { campaign_id, user_id, removed: true }
+     * RESPONSE 404: campaign or membership not found
+     */
+    public static function removeUser(string $campaignId, string $userId): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$campaignId]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$campaignId}' not found."]);
+            return;
+        }
+
+        // Verify the membership row exists before attempting deletion.
+        $stmt = $db->prepare('SELECT campaign_id FROM campaign_users WHERE campaign_id = ? AND user_id = ?');
+        $stmt->execute([$campaignId, $userId]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode([
+                'error'   => 'NotFound',
+                'message' => "User '{$userId}' is not a member of campaign '{$campaignId}'.",
+            ]);
+            return;
+        }
+
+        $db->prepare('DELETE FROM campaign_users WHERE campaign_id = ? AND user_id = ?')
+           ->execute([$campaignId, $userId]);
+
+        Logger::info('Campaign', 'User removed', ['campaign' => $campaignId, 'user' => $userId]);
+        http_response_code(200);
+        echo json_encode(['campaign_id' => $campaignId, 'user_id' => $userId, 'removed' => true]);
     }
 }

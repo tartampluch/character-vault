@@ -11,13 +11,16 @@
  *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
  *
  *   Campaigns:
- *     GET    /api/campaigns                          → CampaignController::index()
- *     POST   /api/campaigns                          → CampaignController::create()
- *     GET    /api/campaigns/{id}                     → CampaignController::show($id)
- *     PUT    /api/campaigns/{id}                     → CampaignController::update($id)
- *     GET    /api/campaigns/{id}/sync-status         → CampaignController::syncStatus($id)
- *     GET    /api/campaigns/{id}/homebrew-rules      → CampaignController::getHomebrewRules($id)
- *     PUT    /api/campaigns/{id}/homebrew-rules      → CampaignController::setHomebrewRules($id)
+ *     GET    /api/campaigns                               → CampaignController::index()
+ *     POST   /api/campaigns                               → CampaignController::create()
+ *     GET    /api/campaigns/{id}                          → CampaignController::show($id)
+ *     PUT    /api/campaigns/{id}                          → CampaignController::update($id)
+ *     GET    /api/campaigns/{id}/sync-status              → CampaignController::syncStatus($id)
+ *     GET    /api/campaigns/{id}/homebrew-rules           → CampaignController::getHomebrewRules($id)
+ *     PUT    /api/campaigns/{id}/homebrew-rules           → CampaignController::setHomebrewRules($id)
+ *     GET    /api/campaigns/{id}/users                    → CampaignController::getUsers($id)
+ *     POST   /api/campaigns/{id}/users                    → CampaignController::addUser($id)
+ *     DELETE /api/campaigns/{id}/users/{userId}           → CampaignController::removeUser($id, $userId)
  *
  *   Characters:
  *     GET    /api/characters?campaignId=X → CharacterController::index()
@@ -172,6 +175,20 @@ try {
         // CSRF protection required: this mutates DB state and is GM-only.
         verifyCsrfToken();
         CampaignController::setHomebrewRules($m[1]);
+
+    // ── Campaign membership (Phase 22.4 — GM+Admin) ──────────────────────────
+    // These routes must be matched BEFORE the bare /campaigns/{id} patterns to
+    // avoid the {id} segment swallowing the /users sub-path.
+    } elseif (preg_match('#^/campaigns/([^/]+)/users$#', $path, $m) && $method === 'GET') {
+        CampaignController::getUsers($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/users$#', $path, $m) && $method === 'POST') {
+        verifyCsrfToken();
+        CampaignController::addUser($m[1]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/users/([^/]+)$#', $path, $m) && $method === 'DELETE') {
+        verifyCsrfToken();
+        CampaignController::removeUser($m[1], $m[2]);
 
     } elseif ($path === '/characters' && $method === 'GET') {
         CharacterController::index();
