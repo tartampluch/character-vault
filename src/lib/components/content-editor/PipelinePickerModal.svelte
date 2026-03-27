@@ -54,6 +54,8 @@
 <script lang="ts">
   import Modal from '$lib/components/ui/Modal.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ===========================================================================
   // PROPS
@@ -145,71 +147,77 @@
   /**
    * The complete static pipeline catalog.
    *
-   * WHY HARDCODED HERE?
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   Entry labels use engine.resolvePipelineLabel(id) which resolves via
+   *   PIPELINE_FALLBACK_LABELS and respects the active UI language.
+   *   Group header labels use ui() for i18n (content_editor.group.* keys).
+   *
    *   These pipelines are initialised unconditionally in GameEngine.svelte.ts
    *   (`initDefaultPipelines()`) and are always present regardless of which
-   *   rule sources are enabled. Deriving them from engine state at render time
-   *   would introduce a reactive dependency on the entire engine, which is
-   *   heavier than necessary for a lookup table that never changes at runtime.
+   *   rule sources are enabled.
    *
    *   The skill group (below) is the only group that IS data-driven because
    *   skill IDs depend on loaded config tables and can be extended by homebrew.
    */
-  const STATIC_GROUPS: PipelineGroup[] = [
-    {
-      label: 'Ability Scores',
-      key:   'attributes',
-      entries: [
-        { id: 'attributes.stat_strength', label: 'Strength',          baseValue: 10 },
-        { id: 'attributes.stat_dexterity', label: 'Dexterity',         baseValue: 10 },
-        { id: 'attributes.stat_constitution', label: 'Constitution',      baseValue: 10 },
-        { id: 'attributes.stat_intelligence', label: 'Intelligence',      baseValue: 10 },
-        { id: 'attributes.stat_wisdom', label: 'Wisdom',            baseValue: 10 },
-        { id: 'attributes.stat_charisma', label: 'Charisma',          baseValue: 10 },
-        { id: 'attributes.stat_size',              label: 'Size Modifier',       baseValue:  0 },
-        { id: 'attributes.stat_caster_level',      label: 'Caster Level',        baseValue:  0 },
-        { id: 'attributes.stat_manifester_level',  label: 'Manifester Level',    baseValue:  0 },
-      ],
-    },
-    {
-      label: 'Combat Statistics',
-      key:   'combatStats',
-      entries: [
-        { id: 'combatStats.ac_normal',            label: 'Armor Class (Normal)',        baseValue: 10 },
-        { id: 'combatStats.ac_touch',             label: 'Touch Armor Class',           baseValue: 10 },
-        { id: 'combatStats.ac_flat_footed',       label: 'Flat-Footed Armor Class',     baseValue: 10 },
-        { id: 'combatStats.base_attack_bonus',                  label: 'Base Attack Bonus',           baseValue:  0 },
-        { id: 'combatStats.initiative',                 label: 'Initiative',                  baseValue:  0 },
-        { id: 'combatStats.grapple',              label: 'Grapple Check',               baseValue:  0 },
-        { id: 'combatStats.max_hp',               label: 'Maximum Hit Points',          baseValue:  0 },
-        { id: 'combatStats.speed_land',           label: 'Land Speed (ft.)',            baseValue: 30 },
-        { id: 'combatStats.speed_burrow',         label: 'Burrow Speed (ft.)',          baseValue:  0 },
-        { id: 'combatStats.speed_climb',          label: 'Climb Speed (ft.)',           baseValue:  0 },
-        { id: 'combatStats.speed_fly',            label: 'Fly Speed (ft.)',             baseValue:  0 },
-        { id: 'combatStats.speed_swim',           label: 'Swim Speed (ft.)',            baseValue:  0 },
-        { id: 'combatStats.armor_check_penalty',  label: 'Armor Check Penalty',         baseValue:  0 },
-        { id: 'combatStats.fortification',        label: 'Fortification (%)',           baseValue:  0 },
-        { id: 'combatStats.arcane_spell_failure', label: 'Arcane Spell Failure (%)',    baseValue:  0 },
-        { id: 'combatStats.max_dexterity_bonus',        label: 'Max Dex Bonus to AC',         baseValue: 99 },
-      ],
-    },
-    {
-      label: 'Saving Throws',
-      key:   'saves',
-      entries: [
-        { id: 'saves.fortitude', label: 'Fortitude Save', baseValue: 0 },
-        { id: 'saves.reflex',  label: 'Reflex Save',    baseValue: 0 },
-        { id: 'saves.will', label: 'Will Save',      baseValue: 0 },
-      ],
-    },
-    {
-      label: 'Resources & Pools',
-      key:   'resources',
-      entries: [
-        { id: 'resources.hp', label: 'Hit Points (current)', baseValue: null },
-      ],
-    },
-  ];
+  const STATIC_GROUPS = $derived.by((): PipelineGroup[] => {
+    const lang = engine.settings.language;
+    const rpl  = (id: string) => engine.resolvePipelineLabel(id);
+    return [
+      {
+        label: ui('content_editor.group.ability_scores', lang),
+        key:   'attributes',
+        entries: [
+          { id: 'attributes.stat_strength',         label: rpl('attributes.stat_strength'),        baseValue: 10 },
+          { id: 'attributes.stat_dexterity',         label: rpl('attributes.stat_dexterity'),       baseValue: 10 },
+          { id: 'attributes.stat_constitution',      label: rpl('attributes.stat_constitution'),    baseValue: 10 },
+          { id: 'attributes.stat_intelligence',      label: rpl('attributes.stat_intelligence'),    baseValue: 10 },
+          { id: 'attributes.stat_wisdom',            label: rpl('attributes.stat_wisdom'),          baseValue: 10 },
+          { id: 'attributes.stat_charisma',          label: rpl('attributes.stat_charisma'),        baseValue: 10 },
+          { id: 'attributes.stat_size',              label: rpl('attributes.stat_size'),            baseValue:  0 },
+          { id: 'attributes.stat_caster_level',      label: rpl('attributes.stat_caster_level'),    baseValue:  0 },
+          { id: 'attributes.stat_manifester_level',  label: rpl('attributes.stat_manifester_level'),baseValue:  0 },
+        ],
+      },
+      {
+        label: ui('content_editor.group.combat_stats', lang),
+        key:   'combatStats',
+        entries: [
+          { id: 'combatStats.ac_normal',            label: rpl('combatStats.ac_normal'),            baseValue: 10 },
+          { id: 'combatStats.ac_touch',             label: rpl('combatStats.ac_touch'),             baseValue: 10 },
+          { id: 'combatStats.ac_flat_footed',       label: rpl('combatStats.ac_flat_footed'),       baseValue: 10 },
+          { id: 'combatStats.base_attack_bonus',    label: rpl('combatStats.base_attack_bonus'),    baseValue:  0 },
+          { id: 'combatStats.initiative',           label: rpl('combatStats.initiative'),           baseValue:  0 },
+          { id: 'combatStats.grapple',              label: rpl('combatStats.grapple'),              baseValue:  0 },
+          { id: 'combatStats.max_hp',               label: rpl('combatStats.max_hp'),               baseValue:  0 },
+          { id: 'combatStats.speed_land',           label: rpl('combatStats.speed_land'),           baseValue: 30 },
+          { id: 'combatStats.speed_burrow',         label: rpl('combatStats.speed_burrow'),         baseValue:  0 },
+          { id: 'combatStats.speed_climb',          label: rpl('combatStats.speed_climb'),          baseValue:  0 },
+          { id: 'combatStats.speed_fly',            label: rpl('combatStats.speed_fly'),            baseValue:  0 },
+          { id: 'combatStats.speed_swim',           label: rpl('combatStats.speed_swim'),           baseValue:  0 },
+          { id: 'combatStats.armor_check_penalty',  label: rpl('combatStats.armor_check_penalty'),  baseValue:  0 },
+          { id: 'combatStats.fortification',        label: rpl('combatStats.fortification'),        baseValue:  0 },
+          { id: 'combatStats.arcane_spell_failure', label: rpl('combatStats.arcane_spell_failure'), baseValue:  0 },
+          { id: 'combatStats.max_dexterity_bonus',  label: rpl('combatStats.max_dexterity_bonus'),  baseValue: 99 },
+        ],
+      },
+      {
+        label: ui('content_editor.group.saves', lang),
+        key:   'saves',
+        entries: [
+          { id: 'saves.fortitude', label: rpl('saves.fortitude'), baseValue: 0 },
+          { id: 'saves.reflex',    label: rpl('saves.reflex'),    baseValue: 0 },
+          { id: 'saves.will',      label: rpl('saves.will'),      baseValue: 0 },
+        ],
+      },
+      {
+        label: ui('content_editor.group.resources', lang),
+        key:   'resources',
+        entries: [
+          { id: 'resources.hp', label: rpl('resources.hp'), baseValue: null },
+        ],
+      },
+    ];
+  });
 
   // ===========================================================================
   // DYNAMIC SKILL PIPELINES (from DataLoader config tables)

@@ -630,6 +630,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'inventory.drink_potion':       'Drink',
   'inventory.apply_oil':          'Apply',
   'inventory.consumable_badge':   'Consumable',
+  /** Tooltip shown on the consume (Drink/Apply/Use) button. */
+  'inventory.consume_tooltip':    'Consume this item — it will be removed from inventory.',
 
   // Inventory section headers & empty states
   'inventory.section.equipped':   'Equipped / Readied',
@@ -710,6 +712,14 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'magic.grimoire.lvl':           'Lvl',
   'magic.grimoire.known':         'Known',
   'magic.grimoire.learn':         'Learn',
+
+  // Magic type display labels — used in Grimoire and CastingPanel to show
+  // human-readable, localizable labels for spell/power type identifiers.
+  // These must NOT be hardcoded as literal strings in .svelte templates
+  // (ARCHITECTURE.md §6 zero-hardcoding rule).
+  'magic.type.arcane':            'Arcane',
+  'magic.type.divine':            'Divine',
+  'magic.type.psionic':           'Psionic',
 
   // ==========================================================================
   // MODIFIER BREAKDOWN MODAL
@@ -1147,6 +1157,40 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // these keys to the locale JSON.
   // ==========================================================================
   'modifier.synergy':    'Synergy',
+
+  // ==========================================================================
+  // CONTENT EDITOR — PIPELINE PICKER & FORMULA BUILDER GROUP HEADERS
+  // These labels appear in GM-only authoring tools (PipelinePickerModal,
+  // FormulaBuilderInput) to group pipeline IDs by namespace.
+  // Adding a new language requires adding these keys to the locale JSON.
+  // ==========================================================================
+  'content_editor.group.ability_scores':  'Ability Scores',
+  'content_editor.group.combat_stats':    'Combat Statistics',
+  'content_editor.group.saves':           'Saving Throws',
+  'content_editor.group.resources':       'Resources & Pools',
+  'content_editor.group.skills':          'Skills',
+  'content_editor.group.class_levels':    'Class Levels',
+  'content_editor.group.constants':       'Constants & Special',
+
+  // ==========================================================================
+  // CONTENT EDITOR — FORMULA BUILDER PATH QUALIFIERS
+  // Short qualifiers appended to pipeline names in the formula assistant.
+  // e.g. 'Strength (total)', 'Strength modifier', 'Strength (base)'
+  // ==========================================================================
+  'formula.qualifier.total':    '(total)',
+  'formula.qualifier.modifier': 'modifier',
+  'formula.qualifier.base':     '(base)',
+  // Developer hint labels used as formula assistant descriptions (not game terms).
+  'formula.hint.skill_ranks':          '<skill>.ranks  — type skill ID after click',
+  'formula.hint.skill_total':          '<skill>.totalValue  — type skill ID after click',
+  'formula.hint.class_levels':         'Levels in a class  — type class ID after click',
+  'formula.hint.character_level':      'Total character level (all classes)',
+  'formula.hint.ecl_for_xp':           'ECL for XP table (characterLevel + LA)',
+  'formula.hint.selection':            'Player\'s selection on parent feature',
+  'formula.hint.active_tags':          'All active feature tags (array)',
+  'formula.hint.weapon_tags':          'Equipped weapon tags (array)',
+  'formula.hint.target_tags':          'Target creature tags (roll-time only)',
+  'formula.hint.master_class_levels':  'Master\'s class level (LinkedEntity)',
 
   // ==========================================================================
   // LANGUAGE SELECTOR

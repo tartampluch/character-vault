@@ -102,6 +102,8 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ===========================================================================
   // PROPS
@@ -142,91 +144,111 @@
     entries: PathEntry[];
   }
 
-  const PATH_GROUPS: PathGroup[] = [
-    {
-      title: 'Ability Scores',
-      entries: [
-        { path: '@attributes.stat_strength.totalValue',       label: 'Strength (total)' },
-        { path: '@attributes.stat_strength.derivedModifier',  label: 'Strength modifier' },
-        { path: '@attributes.stat_strength.baseValue',        label: 'Strength (base)' },
-        { path: '@attributes.stat_dexterity.totalValue',       label: 'Dexterity (total)' },
-        { path: '@attributes.stat_dexterity.derivedModifier',  label: 'Dexterity modifier' },
-        { path: '@attributes.stat_dexterity.baseValue',        label: 'Dexterity (base)' },
-        { path: '@attributes.stat_constitution.totalValue',       label: 'Constitution (total)' },
-        { path: '@attributes.stat_constitution.derivedModifier',  label: 'Constitution modifier' },
-        { path: '@attributes.stat_constitution.baseValue',        label: 'Constitution (base)' },
-        { path: '@attributes.stat_intelligence.totalValue',       label: 'Intelligence (total)' },
-        { path: '@attributes.stat_intelligence.derivedModifier',  label: 'Intelligence modifier' },
-        { path: '@attributes.stat_intelligence.baseValue',        label: 'Intelligence (base)' },
-        { path: '@attributes.stat_wisdom.totalValue',       label: 'Wisdom (total)' },
-        { path: '@attributes.stat_wisdom.derivedModifier',  label: 'Wisdom modifier' },
-        { path: '@attributes.stat_wisdom.baseValue',        label: 'Wisdom (base)' },
-        { path: '@attributes.stat_charisma.totalValue',       label: 'Charisma (total)' },
-        { path: '@attributes.stat_charisma.derivedModifier',  label: 'Charisma modifier' },
-        { path: '@attributes.stat_charisma.baseValue',        label: 'Charisma (base)' },
-        { path: '@attributes.stat_size.totalValue',      label: 'Size modifier' },
-        { path: '@attributes.stat_caster_level.totalValue',     label: 'Caster Level' },
-        { path: '@attributes.stat_manifester_level.totalValue', label: 'Manifester Level' },
-      ],
-    },
-    {
-      title: 'Combat Statistics',
-      entries: [
-        { path: '@combatStats.base_attack_bonus.totalValue',                  label: 'Base Attack Bonus' },
-        { path: '@combatStats.ac_normal.totalValue',            label: 'Armor Class (Normal)' },
-        { path: '@combatStats.ac_touch.totalValue',             label: 'Touch AC' },
-        { path: '@combatStats.ac_flat_footed.totalValue',       label: 'Flat-Footed AC' },
-        { path: '@combatStats.initiative.totalValue',                 label: 'Initiative' },
-        { path: '@combatStats.grapple.totalValue',              label: 'Grapple' },
-        { path: '@combatStats.max_hp.totalValue',               label: 'Max Hit Points' },
-        { path: '@combatStats.speed_land.totalValue',           label: 'Land Speed (ft.)' },
-        { path: '@combatStats.speed_fly.totalValue',            label: 'Fly Speed (ft.)' },
-        { path: '@combatStats.speed_swim.totalValue',           label: 'Swim Speed (ft.)' },
-        { path: '@combatStats.speed_climb.totalValue',          label: 'Climb Speed (ft.)' },
-        { path: '@combatStats.armor_check_penalty.totalValue',  label: 'Armor Check Penalty' },
-        { path: '@combatStats.fortification.totalValue',        label: 'Fortification (%)' },
-        { path: '@combatStats.arcane_spell_failure.totalValue', label: 'Arcane Spell Failure (%)' },
-        { path: '@combatStats.max_dexterity_bonus.totalValue',        label: 'Max DEX Bonus to AC' },
-      ],
-    },
-    {
-      title: 'Saving Throws',
-      entries: [
-        { path: '@saves.fortitude.totalValue', label: 'Fortitude Save' },
-        { path: '@saves.reflex.totalValue',  label: 'Reflex Save' },
-        { path: '@saves.will.totalValue', label: 'Will Save' },
-      ],
-    },
-    {
-      title: 'Skills',
-      entries: [
-        { path: '@skills.<id>.ranks',      label: '<skill>.ranks  — type skill ID after click' },
-        { path: '@skills.<id>.totalValue', label: '<skill>.totalValue  — type skill ID after click' },
-      ],
-    },
-    {
-      title: 'Class Levels',
-      entries: [
-        { path: '@classLevels.<classId>', label: 'Levels in a class  — type class ID after click' },
-        { path: '@characterLevel',        label: 'Total character level (all classes)' },
-        { path: '@eclForXp',              label: 'ECL for XP table (characterLevel + LA)' },
-      ],
-    },
-    {
-      title: 'Constants & Special',
-      entries: [
-        { path: '@selection.<choiceId>',  label: 'Player\'s selection on parent feature' },
-        { path: '@activeTags',            label: 'All active feature tags (array)' },
-        { path: '@equippedWeaponTags',    label: 'Equipped weapon tags (array)' },
-        { path: '@targetTags',            label: 'Target creature tags (roll-time only)' },
-        { path: '@master.classLevels.<classId>', label: 'Master\'s class level (LinkedEntity)' },
-      ],
-    },
-  ];
+  /**
+   * Formula path group catalog.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   - Group titles use ui() with content_editor.group.* keys.
+   *   - Pipeline-name labels use engine.resolvePipelineLabel() (language-aware).
+   *   - Field qualifiers use formula.qualifier.* i18n keys.
+   *   - Developer hint labels use formula.hint.* i18n keys.
+   */
+  const PATH_GROUPS = $derived.by((): PathGroup[] => {
+    const lang = engine.settings.language;
+    const rpl  = (id: string) => engine.resolvePipelineLabel(id);
+    const tot  = ui('formula.qualifier.total',    lang);  // '(total)'
+    const mod  = ui('formula.qualifier.modifier', lang);  // 'modifier'
+    const base = ui('formula.qualifier.base',     lang);  // '(base)'
+    return [
+      {
+        title: ui('content_editor.group.ability_scores', lang),
+        entries: [
+          { path: '@attributes.stat_strength.totalValue',            label: `${rpl('attributes.stat_strength')} ${tot}` },
+          { path: '@attributes.stat_strength.derivedModifier',       label: `${rpl('attributes.stat_strength')} ${mod}` },
+          { path: '@attributes.stat_strength.baseValue',             label: `${rpl('attributes.stat_strength')} ${base}` },
+          { path: '@attributes.stat_dexterity.totalValue',           label: `${rpl('attributes.stat_dexterity')} ${tot}` },
+          { path: '@attributes.stat_dexterity.derivedModifier',      label: `${rpl('attributes.stat_dexterity')} ${mod}` },
+          { path: '@attributes.stat_dexterity.baseValue',            label: `${rpl('attributes.stat_dexterity')} ${base}` },
+          { path: '@attributes.stat_constitution.totalValue',        label: `${rpl('attributes.stat_constitution')} ${tot}` },
+          { path: '@attributes.stat_constitution.derivedModifier',   label: `${rpl('attributes.stat_constitution')} ${mod}` },
+          { path: '@attributes.stat_constitution.baseValue',         label: `${rpl('attributes.stat_constitution')} ${base}` },
+          { path: '@attributes.stat_intelligence.totalValue',        label: `${rpl('attributes.stat_intelligence')} ${tot}` },
+          { path: '@attributes.stat_intelligence.derivedModifier',   label: `${rpl('attributes.stat_intelligence')} ${mod}` },
+          { path: '@attributes.stat_intelligence.baseValue',         label: `${rpl('attributes.stat_intelligence')} ${base}` },
+          { path: '@attributes.stat_wisdom.totalValue',              label: `${rpl('attributes.stat_wisdom')} ${tot}` },
+          { path: '@attributes.stat_wisdom.derivedModifier',         label: `${rpl('attributes.stat_wisdom')} ${mod}` },
+          { path: '@attributes.stat_wisdom.baseValue',               label: `${rpl('attributes.stat_wisdom')} ${base}` },
+          { path: '@attributes.stat_charisma.totalValue',            label: `${rpl('attributes.stat_charisma')} ${tot}` },
+          { path: '@attributes.stat_charisma.derivedModifier',       label: `${rpl('attributes.stat_charisma')} ${mod}` },
+          { path: '@attributes.stat_charisma.baseValue',             label: `${rpl('attributes.stat_charisma')} ${base}` },
+          { path: '@attributes.stat_size.totalValue',                label: `${rpl('attributes.stat_size')} ${tot}` },
+          { path: '@attributes.stat_caster_level.totalValue',        label: rpl('attributes.stat_caster_level') },
+          { path: '@attributes.stat_manifester_level.totalValue',    label: rpl('attributes.stat_manifester_level') },
+        ],
+      },
+      {
+        title: ui('content_editor.group.combat_stats', lang),
+        entries: [
+          { path: '@combatStats.base_attack_bonus.totalValue',       label: rpl('combatStats.base_attack_bonus') },
+          { path: '@combatStats.ac_normal.totalValue',               label: rpl('combatStats.ac_normal') },
+          { path: '@combatStats.ac_touch.totalValue',                label: rpl('combatStats.ac_touch') },
+          { path: '@combatStats.ac_flat_footed.totalValue',          label: rpl('combatStats.ac_flat_footed') },
+          { path: '@combatStats.initiative.totalValue',              label: rpl('combatStats.initiative') },
+          { path: '@combatStats.grapple.totalValue',                 label: rpl('combatStats.grapple') },
+          { path: '@combatStats.max_hp.totalValue',                  label: rpl('combatStats.max_hp') },
+          { path: '@combatStats.speed_land.totalValue',              label: rpl('combatStats.speed_land') },
+          { path: '@combatStats.speed_fly.totalValue',               label: rpl('combatStats.speed_fly') },
+          { path: '@combatStats.speed_swim.totalValue',              label: rpl('combatStats.speed_swim') },
+          { path: '@combatStats.speed_climb.totalValue',             label: rpl('combatStats.speed_climb') },
+          { path: '@combatStats.armor_check_penalty.totalValue',     label: rpl('combatStats.armor_check_penalty') },
+          { path: '@combatStats.fortification.totalValue',           label: rpl('combatStats.fortification') },
+          { path: '@combatStats.arcane_spell_failure.totalValue',    label: rpl('combatStats.arcane_spell_failure') },
+          { path: '@combatStats.max_dexterity_bonus.totalValue',     label: rpl('combatStats.max_dexterity_bonus') },
+        ],
+      },
+      {
+        title: ui('content_editor.group.saves', lang),
+        entries: [
+          { path: '@saves.fortitude.totalValue', label: rpl('saves.fortitude') },
+          { path: '@saves.reflex.totalValue',    label: rpl('saves.reflex') },
+          { path: '@saves.will.totalValue',      label: rpl('saves.will') },
+        ],
+      },
+      {
+        title: ui('content_editor.group.skills', lang),
+        entries: [
+          { path: '@skills.<id>.ranks',      label: ui('formula.hint.skill_ranks', lang) },
+          { path: '@skills.<id>.totalValue', label: ui('formula.hint.skill_total', lang) },
+        ],
+      },
+      {
+        title: ui('content_editor.group.class_levels', lang),
+        entries: [
+          { path: '@classLevels.<classId>', label: ui('formula.hint.class_levels', lang) },
+          { path: '@characterLevel',        label: ui('formula.hint.character_level', lang) },
+          { path: '@eclForXp',              label: ui('formula.hint.ecl_for_xp', lang) },
+        ],
+      },
+      {
+        title: ui('content_editor.group.constants', lang),
+        entries: [
+          { path: '@selection.<choiceId>',         label: ui('formula.hint.selection', lang) },
+          { path: '@activeTags',                   label: ui('formula.hint.active_tags', lang) },
+          { path: '@equippedWeaponTags',           label: ui('formula.hint.weapon_tags', lang) },
+          { path: '@targetTags',                   label: ui('formula.hint.target_tags', lang) },
+          { path: '@master.classLevels.<classId>', label: ui('formula.hint.master_class_levels', lang) },
+        ],
+      },
+    ];
+  });
 
-  /** Flat set of exact known @-paths (for O(1) lookup in validation). */
-  const KNOWN_PATHS_SET = new Set<string>(
-    PATH_GROUPS.flatMap(g => g.entries.map(e => e.path))
+  /**
+   * Flat set of exact known @-paths (for O(1) lookup in validation).
+   * Declared as $derived because PATH_GROUPS is now $derived (language-reactive).
+   * The path values themselves never change, so this re-computation is cheap.
+   */
+  const KNOWN_PATHS_SET = $derived(
+    new Set<string>(PATH_GROUPS.flatMap(g => g.entries.map(e => e.path)))
   );
 
   /**

@@ -40,8 +40,10 @@
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
   import type { Modifier } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
+  import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
 
   // ===========================================================================
   // CONTEXT
@@ -53,14 +55,24 @@
   // ABILITY SCORE OPTIONS (for recommendedAttributes)
   // ===========================================================================
 
-  const ABILITY_SCORES: Array<{ id: ID; label: string }> = [
-    { id: 'stat_strength', label: 'Strength (STR)' },
-    { id: 'stat_dexterity', label: 'Dexterity (DEX)' },
-    { id: 'stat_constitution', label: 'Constitution (CON)' },
-    { id: 'stat_intelligence', label: 'Intelligence (INT)' },
-    { id: 'stat_wisdom', label: 'Wisdom (WIS)' },
-    { id: 'stat_charisma', label: 'Charisma (CHA)' },
-  ];
+  /**
+   * Ability score options for the recommendedAttributes checkbox grid.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   - IDs come from MAIN_ABILITY_IDS constants (never hardcoded literal strings).
+   *   - Labels come from engine.resolvePipelineLabel() which resolves via
+   *     PIPELINE_FALLBACK_LABELS and respects the active UI language.
+   *     e.g. 'stat_strength' → 'Strength' (en) / 'Force' (fr).
+   *
+   * Note: resolvePipelineLabel() accepts the short form 'stat_strength'
+   * (without 'attributes.' prefix) because it normalises internally.
+   */
+  const ABILITY_SCORES = $derived(
+    MAIN_ABILITY_IDS.map(id => ({
+      id: id as ID,
+      label: engine.resolvePipelineLabel(id),
+    }))
+  );
 
   function hasRecommendedAttr(id: ID): boolean {
     return (ctx.feature.recommendedAttributes ?? []).includes(id);

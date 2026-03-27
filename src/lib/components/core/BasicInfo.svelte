@@ -63,26 +63,14 @@
   );
 
   // ── Selection handlers ──────────────────────────────────────────────────────
-  function makeCategoryInstanceId(category: string, featureId: ID): string {
-    return `afi_${category}_${featureId}`;
-  }
-
-  function removeAllOfCategory(category: string): void {
-    const toRemove = engine.character.activeFeatures
-      .filter(afi => {
-        const f = dataLoader.getFeature(afi.featureId);
-        return f?.category === category;
-      })
-      .map(afi => afi.instanceId);
-    for (const id of toRemove) engine.removeFeature(id);
-  }
 
   function handleRaceChange(event: Event) {
     const featureId = (event.target as HTMLSelectElement).value;
-    removeAllOfCategory('race');
-    if (featureId) {
-      engine.addFeature({ instanceId: makeCategoryInstanceId('race', featureId), featureId, isActive: true });
-    }
+    // Delegate the full race-replacement lifecycle to the engine:
+    //   remove old race instances → add new race instance.
+    // engine.replaceRace() owns all coordination so this component stays a
+    // dumb dispatcher (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+    engine.replaceRace(featureId);
   }
 
   function handleClassChange(event: Event) {
@@ -96,10 +84,10 @@
 
   function handleDeityChange(event: Event) {
     const featureId = (event.target as HTMLSelectElement).value;
-    removeAllOfCategory('deity');
-    if (featureId) {
-      engine.addFeature({ instanceId: makeCategoryInstanceId('deity', featureId), featureId, isActive: true });
-    }
+    // Delegate the full deity-replacement lifecycle to the engine:
+    //   remove old deity instances → add new deity instance.
+    // engine.replaceDeity() owns all coordination (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+    engine.replaceDeity(featureId);
   }
 
   function handleAlignmentChange(event: Event) {

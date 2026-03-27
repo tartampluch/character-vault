@@ -34,7 +34,7 @@
  */
 
 import { createDefaultCampaignSettings } from '../types/settings';
-import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight, computeCoinWeight, computeAbilityModifier, formatModifier } from '../utils/formatters';
+import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight, computeCoinWeight, computeWealthInGP, computeAbilityModifier, formatModifier } from '../utils/formatters';
 import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
 import type { LocalizedString } from '../types/i18n';
@@ -48,7 +48,7 @@ import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
-import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS, getAbilityAbbr, ATTRIBUTE_PIPELINE_NAMESPACE } from '../utils/constants';
+import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS, getAbilityAbbr, ATTRIBUTE_PIPELINE_NAMESPACE, CONDITION_ENCUMBERED_FEATURE_ID, CONDITION_ENCUMBERED_INSTANCE_ID, WEAPON_CATEGORY_TAG, RANGED_CATEGORY_TAG } from '../utils/constants';
 import { buildLocalizedString, ui } from '../i18n/ui-strings';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
@@ -2850,6 +2850,30 @@ export class GameEngine {
   }
 
   /**
+   * Determines whether an ItemFeature is a weapon that should appear in the
+   * attack panel.
+   *
+   * D&D 3.5 RULE:
+   *   An item is a weapon when it has both `weaponData` (attack/damage statistics)
+   *   AND carries either the 'weapon' (melee) or 'ranged' category tag.
+   *
+   * WHY IN THE ENGINE:
+   *   Tag-based weapon classification is game-domain logic that must not appear
+   *   in Attacks.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *   Previously Attacks.svelte called `feature.tags.some(t => t === WEAPON_CATEGORY_TAG
+   *   || t === RANGED_CATEGORY_TAG)` directly, which embedded tag-based classification
+   *   in the component. This method centralises it in the engine layer.
+   *
+   * @param feature - The ItemFeature to classify.
+   * @returns `true` if the item is a weapon; `false` otherwise.
+   * @see src/lib/components/combat/Attacks.svelte — display consumer
+   */
+  isItemWeapon(feature: ItemFeature): boolean {
+    if (!feature.weaponData) return false;
+    return feature.tags.some(t => t === WEAPON_CATEGORY_TAG || t === RANGED_CATEGORY_TAG);
+  }
+
+  /**
    * Computes the total attack bonus for a weapon.
    * Formula: BAB + ability modifier (melee or ranged per `config_weapon_defaults`) + enhancement.
    *
@@ -3145,6 +3169,37 @@ export class GameEngine {
   });
 
   /**
+   * Weight of all coins the character is carrying, in lbs.
+   *
+   * D&D 3.5 RULE: 50 coins = 1 lb, regardless of denomination (PHB p.149).
+   * This is intentionally surfaced as an engine $derived so that Encumbrance.svelte
+   * does not need to call `computeCoinWeight()` directly (zero-game-logic-in-Svelte
+   * rule, ARCHITECTURE.md §3).
+   *
+   * Returns 0 when the character has no wealth data.
+   */
+  phase_coinWeightLbs: number = $derived.by(() => {
+    const w = this.character.wealth;
+    if (!w) return 0;
+    return computeCoinWeight(w.cp, w.sp, w.gp, w.pp);
+  });
+
+  /**
+   * Total wealth value in gold pieces (GP), converted from all denominations.
+   *
+   * D&D 3.5 exchange: 1 PP = 10 GP, 1 SP = 0.1 GP, 1 CP = 0.01 GP (PHB p.112).
+   * Surfaced as an engine $derived so Encumbrance.svelte does not call
+   * `computeWealthInGP()` directly (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * Returns 0 when the character has no wealth data.
+   */
+  phase_totalWealthGP: number = $derived.by(() => {
+    const w = this.character.wealth;
+    if (!w) return 0;
+    return computeWealthInGP(w.cp, w.sp, w.gp, w.pp);
+  });
+
+  /**
    * Current encumbrance tier based on carried weight vs STR-derived carrying capacity.
    *
    * Returns 0 (light), 1 (medium), 2 (heavy), or 3 (overloaded).
@@ -3223,10 +3278,20 @@ export class GameEngine {
    * condition features in `character.activeFeatures`:
    *   - tier >= 1: adds "condition_medium_load" (tags: ["medium_load"])
    *   - tier >= 2: adds "condition_heavy_load"  (tags: ["heavy_load"])
-   *   - tier < 1:  removes both conditions
+   *   - tier >= 1: adds "condition_encumbered"  (grants armor-check penalty, speed reduction)
+   *   - tier < 1:  removes all three conditions
    *
-   * These synthetic features are identified by their instanceId prefix
-   * "enc_auto_" so they can be managed without affecting player-added features.
+   * These synthetic features are identified by well-known instanceIds so they
+   * can be managed without affecting player-added features.
+   *
+   * WHY condition_encumbered IS MANAGED HERE (not in Encumbrance.svelte):
+   *   Per ARCHITECTURE.md §3 and §13, reactive condition dispatch is game
+   *   logic that belongs in the engine. Encumbrance.svelte previously managed
+   *   this as a $effect, which violated the zero-game-logic-in-Svelte rule.
+   *   Moving it here is the correct placement alongside the other encumbrance
+   *   conditions. The condition_encumbered feature grants the actual penalty
+   *   modifiers (movement speed reduction, skill/attack check penalties) via
+   *   its grantedModifiers in the rule JSON — no values are hardcoded here.
    *
    * IMPORTANT: Mutating character.activeFeatures triggers a full DAG
    * re-derivation. The infinite loop protection (MAX_RESOLUTION_DEPTH = 3)
@@ -3239,19 +3304,25 @@ export class GameEngine {
       if (tier < 0) return; // config table not loaded, don't touch features
 
       const features = this.character.activeFeatures;
-      const hasMedium = features.some(f => f.instanceId === 'enc_auto_medium_load');
-      const hasHeavy  = features.some(f => f.instanceId === 'enc_auto_heavy_load');
+      const hasMedium     = features.some(f => f.instanceId === 'enc_auto_medium_load');
+      const hasHeavy      = features.some(f => f.instanceId === 'enc_auto_heavy_load');
+      const hasEncumbered = features.some(f => f.instanceId === CONDITION_ENCUMBERED_INSTANCE_ID && f.isActive);
 
-      const needMedium = tier >= 1;
-      const needHeavy  = tier >= 2;
+      const needMedium     = tier >= 1;
+      const needHeavy      = tier >= 2;
+      // condition_encumbered is active whenever tier >= 1 (Medium or heavier load).
+      // Only add it when the rule file is loaded so phantom instances are avoided.
+      const needEncumbered = tier >= 1 && !!dataLoader.getFeature(CONDITION_ENCUMBERED_FEATURE_ID);
 
       // Only mutate if the current state doesn't match the desired state
-      if (hasMedium === needMedium && hasHeavy === needHeavy) return;
+      if (hasMedium === needMedium && hasHeavy === needHeavy && hasEncumbered === needEncumbered) return;
 
       // Build the new feature list
       // Remove any existing auto-encumbrance entries first
       const filtered = features.filter(f =>
-        f.instanceId !== 'enc_auto_medium_load' && f.instanceId !== 'enc_auto_heavy_load'
+        f.instanceId !== 'enc_auto_medium_load' &&
+        f.instanceId !== 'enc_auto_heavy_load' &&
+        f.instanceId !== CONDITION_ENCUMBERED_INSTANCE_ID
       );
 
       if (needMedium) {
@@ -3265,6 +3336,13 @@ export class GameEngine {
         filtered.push({
           instanceId: 'enc_auto_heavy_load',
           featureId:  'condition_heavy_load',
+          isActive:   true,
+        });
+      }
+      if (needEncumbered) {
+        filtered.push({
+          instanceId: CONDITION_ENCUMBERED_INSTANCE_ID,
+          featureId:  CONDITION_ENCUMBERED_FEATURE_ID,
           isActive:   true,
         });
       }
@@ -3741,6 +3819,30 @@ export class GameEngine {
    * Drives the "over budget" warning styling in SkillsMatrix.
    */
   phase4_skillPointsBudgetExceeded: boolean = $derived(this.phase4_skillPointsRemaining < 0);
+
+  /**
+   * Set of skill IDs where the current ranks are at or below the locked minimum
+   * floor (i.e., the player cannot reduce the ranks further).
+   *
+   * WHY IN THE ENGINE:
+   *   Computing `skill.ranks <= minimumRanks && minimumRanks > 0` for each skill
+   *   is game-domain logic involving character model fields. Per ARCHITECTURE.md §3,
+   *   this comparison must not appear as an inline `@const` expression in Svelte
+   *   templates. SkillsMatrix.svelte reads this set to toggle the "Locked" badge
+   *   and the amber border on the rank input.
+   *
+   * @see src/lib/components/abilities/SkillsMatrix.svelte — display consumer
+   */
+  phase4_skillsAtMinimum: ReadonlySet<ID> = $derived.by(() => {
+    const result = new Set<ID>();
+    for (const [skillId, skillData] of Object.entries(this.character.skills)) {
+      const minRanks = this.character.minimumSkillRanks?.[skillId] ?? 0;
+      if (minRanks > 0 && skillData.ranks <= minRanks) {
+        result.add(skillId);
+      }
+    }
+    return result;
+  });
 
   /**
    * All resource pools related to spell slots and power points.
@@ -4290,23 +4392,70 @@ export class GameEngine {
   });
 
   /**
-   * Count of manually-selected language features (language ActiveFeatureInstances
-   * directly added by the player, as opposed to those granted automatically by race/class).
+   * Manually-added language features: ActiveFeatureInstances tagged 'language'
+   * that the player explicitly selected (as opposed to those granted automatically
+   * by race/class features).
    *
    * WHY IN THE ENGINE:
-   *   Counting active features by tag is a game data query that must not appear
-   *   in LoreAndLanguages.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
-   *   This value is used to compute `phase_remainingLanguageSlots`.
+   *   Iterating activeFeatures and checking feature.tags.includes('language') is
+   *   game-domain logic that must not appear in LoreAndLanguages.svelte
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). Previously this
+   *   classification was implemented directly inside the Svelte component's
+   *   $derived.by() block, which violated the rule.
+   *
+   * @see src/lib/components/core/LoreAndLanguages.svelte — display consumer
    */
-  private phase_manualLanguageCount: number = $derived.by(() => {
-    let count = 0;
+  phase_manualLanguages: Array<{ id: ID; name: string; instanceId: ID }> = $derived.by(() => {
+    const result: Array<{ id: ID; name: string; instanceId: ID }> = [];
     for (const afi of this.character.activeFeatures) {
       if (!afi.isActive) continue;
       const feature = dataLoader.getFeature(afi.featureId);
-      if (feature?.tags.includes('language')) count++;
+      if (feature?.tags.includes('language')) {
+        result.push({ id: feature.id, name: this.t(feature.label), instanceId: afi.instanceId });
+      }
     }
-    return count;
+    return result;
   });
+
+  /**
+   * Automatically-granted language features: languages that appear in the
+   * `grantedFeatures` array of any active feature (e.g. race grants Common/Elvish),
+   * excluding any that are already counted as manually-added.
+   *
+   * WHY IN THE ENGINE:
+   *   Iterating activeFeatures' grantedFeatures arrays and filtering by the
+   *   'language' tag is game-domain logic that must not appear in
+   *   LoreAndLanguages.svelte (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *   Previously this classification block was implemented inside the Svelte
+   *   component's $derived.by(), violating the rule.
+   *
+   * @see src/lib/components/core/LoreAndLanguages.svelte — display consumer
+   */
+  phase_automaticLanguages: Array<{ id: ID; name: string }> = $derived.by(() => {
+    const manualIds = new Set(this.phase_manualLanguages.map(l => l.id));
+    const seen = new Set<string>();
+    const result: Array<{ id: ID; name: string }> = [];
+    for (const afi of this.character.activeFeatures) {
+      if (!afi.isActive) continue;
+      const feature = dataLoader.getFeature(afi.featureId);
+      if (!feature) continue;
+      for (const grantedId of (feature.grantedFeatures ?? [])) {
+        if (grantedId.startsWith('-') || seen.has(grantedId) || manualIds.has(grantedId)) continue;
+        const grantedFeature = dataLoader.getFeature(grantedId);
+        if (grantedFeature?.tags.includes('language')) {
+          seen.add(grantedId);
+          result.push({ id: grantedId, name: this.t(grantedFeature.label) });
+        }
+      }
+    }
+    return result;
+  });
+
+  /**
+   * Count of manually-selected language features. Derived from phase_manualLanguages
+   * to avoid duplicating the iteration logic.
+   */
+  private phase_manualLanguageCount: number = $derived(this.phase_manualLanguages.length);
 
   /**
    * Remaining language slots available for the player to add more languages.
@@ -4572,6 +4721,29 @@ export class GameEngine {
    */
   getBrainburnDC(manifesterLevel: number): number {
     return manifesterLevel + 1;
+  }
+
+  /**
+   * Returns whether a Power Stone entry poses a Brainburn risk to this character.
+   *
+   * D&D 3.5 SRD (Expanded Psionics Handbook, p. 43):
+   *   "Using a power from a power stone that has a higher manifester level than
+   *   your own manifester level requires you to make a DC (power's manifester
+   *   level + 1) manifester level check."
+   *   A Brainburn risk exists whenever the entry is not yet used AND the stone's
+   *   imprinted manifester level exceeds the character's current manifester level.
+   *
+   * WHY IN THE ENGINE (not inline `charML < entry.manifesterLevel` in PsionicItemCard.svelte):
+   *   Comparisons between game values (manifester level vs. stone ML) are game-domain
+   *   prerequisite evaluations and must not appear in .svelte script blocks or templates
+   *   (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). This method encapsulates
+   *   the comparison so `PsionicItemCard.svelte` delegates entirely to the engine.
+   *
+   * @param entry - The PowerStoneEntry to evaluate (`usedUp`, `manifesterLevel`).
+   * @returns `true` if the entry is available and its ML exceeds the character's ML.
+   */
+  getBrainburnRisk(entry: { usedUp: boolean; manifesterLevel: number }): boolean {
+    return !entry.usedUp && (this.phase_manifesterLevel ?? 0) < entry.manifesterLevel;
   }
 
   /**
@@ -6123,6 +6295,58 @@ export class GameEngine {
         featureId:  newClassId,
         isActive:   true,
       });
+    }
+  }
+
+  /**
+   * Replaces the character's race by removing all existing race feature instances
+   * and adding the new one (or clearing if an empty string is passed).
+   *
+   * WHY IN THE ENGINE:
+   *   BasicInfo.svelte previously implemented a `removeAllOfCategory('race')` helper
+   *   that filtered activeFeatures by category — game-domain logic that violates
+   *   ARCHITECTURE.md §3 (zero-game-logic-in-Svelte). This method centralises the
+   *   race-replacement lifecycle in the engine, mirroring the pattern of `replaceClass`.
+   *
+   * @param newRaceId - The feature ID of the new race (e.g. `"race_elf"`).
+   *   Pass an empty string to clear the race entirely.
+   */
+  replaceRace(newRaceId: string): void {
+    const raceInstances = this.character.activeFeatures.filter(afi => {
+      const feature = dataLoader.getFeature(afi.featureId);
+      return feature?.category === 'race';
+    });
+    for (const afi of raceInstances) {
+      this.#removeFeatureUnchecked(afi.instanceId);
+    }
+    if (newRaceId) {
+      this.addFeature({ instanceId: `afi_race_${newRaceId}`, featureId: newRaceId, isActive: true });
+    }
+  }
+
+  /**
+   * Replaces the character's deity by removing all existing deity feature instances
+   * and adding the new one (or clearing if an empty string is passed).
+   *
+   * WHY IN THE ENGINE:
+   *   Mirrors the pattern of `replaceClass` and `replaceRace`. BasicInfo.svelte
+   *   previously implemented a `removeAllOfCategory('deity')` helper in Svelte code,
+   *   violating ARCHITECTURE.md §3 (zero-game-logic-in-Svelte). This method
+   *   centralises deity-replacement in the engine layer.
+   *
+   * @param newDeityId - The feature ID of the new deity (e.g. `"deity_heironeous"`).
+   *   Pass an empty string to clear the deity entirely.
+   */
+  replaceDeity(newDeityId: string): void {
+    const deityInstances = this.character.activeFeatures.filter(afi => {
+      const feature = dataLoader.getFeature(afi.featureId);
+      return feature?.category === 'deity';
+    });
+    for (const afi of deityInstances) {
+      this.#removeFeatureUnchecked(afi.instanceId);
+    }
+    if (newDeityId) {
+      this.addFeature({ instanceId: `afi_deity_${newDeityId}`, featureId: newDeityId, isActive: true });
     }
   }
 

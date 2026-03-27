@@ -96,8 +96,14 @@
    *
    * NOTE: This function reads from the RAW character data object, not the active
    *   engine's computed pipelines, because the GM dashboard shows all vault characters
-   *   (not just the currently loaded one). `engine.phase3_maxHp` is used only for the
-   *   currently selected character where the engine has loaded that character.
+   *   (not just the currently loaded one).
+   *
+   *   `engine.phase3_maxHp` is ONLY used when `char` is the currently active engine
+   *   character (verified by ID comparison). For any other character, maxHp falls back
+   *   to the raw resource pool value if present, or '?' when unavailable.
+   *   (ARCHITECTURE.md §3 — zero-game-logic-in-Svelte: `phase3_maxHp` belongs to the
+   *   active engine character; using it for arbitrary vault characters would return
+   *   incorrect data when the GM selects a character other than the one last loaded.)
    */
   function getStatSummary(char: typeof engine.character) {
     const attrs = char.attributes ?? {};
@@ -106,12 +112,23 @@
     const strId = MAIN_ABILITY_IDS[0]; // stat_strength
     const conId = MAIN_ABILITY_IDS[1]; // stat_constitution
     const dexId = MAIN_ABILITY_IDS[2]; // stat_dexterity
+
+    // Only use engine.phase3_maxHp when this IS the active engine character.
+    // For other vault characters, maxHp cannot be computed without loading them
+    // into the engine, so we show '?' to avoid displaying stale/incorrect data.
+    // (ARCHITECTURE.md §3 — `engine.phase3_maxHp` belongs to the active character only.)
+    const hpPool = char.resources?.[RESOURCE_HP_ID];
+    const isActiveChar = engine.character.id === char.id;
+    const maxHpValue = hpPool
+      ? (isActiveChar ? engine.phase3_maxHp : '?')
+      : '?';
+
     return {
       str:   attrs[strId]?.totalValue ?? attrs[strId]?.baseValue ?? '?',
       dex:   attrs[dexId]?.totalValue ?? attrs[dexId]?.baseValue ?? '?',
       con:   attrs[conId]?.totalValue ?? attrs[conId]?.baseValue ?? '?',
-      hp:    char.resources?.[RESOURCE_HP_ID]?.currentValue ?? '?',
-      maxHp: char.resources?.[RESOURCE_HP_ID] ? engine.phase3_maxHp : '?',
+      hp:    hpPool?.currentValue ?? '?',
+      maxHp: maxHpValue,
     };
   }
 
@@ -170,7 +187,7 @@
                      {isSelected  ? 'border-accent bg-accent/10' : 'border-border bg-surface hover:border-accent/40'}
                      {hasOverrides ? 'border-l-4 border-l-red-500' : ''}"
               onclick={() => (selectedCharId = isSelected ? null : char.id)}
-              aria-label="{char.name} — Level {totalLevel}{char.isNPC ? ' (NPC)' : ''}"
+              aria-label="{char.name} — {ui('gm.level_prefix', engine.settings.language)}{totalLevel}{char.isNPC ? ' ' + ui('gm.npc', engine.settings.language) : ''}"
               type="button"
             >
               <div class="flex-1 min-w-0">

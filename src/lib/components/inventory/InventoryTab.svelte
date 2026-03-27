@@ -338,7 +338,7 @@
                              hover:bg-amber-200 dark:hover:bg-amber-900/50
                              transition-colors"
                       onclick={() => useConsumable(item.instanceId)}
-                      title="Consume this item — it will be removed from inventory"
+                      title={ui('inventory.consume_tooltip', engine.settings.language)}
                       aria-label="{getUseLabel(item.feature)} {engine.t(item.feature.label)}"
                       type="button"
                     >

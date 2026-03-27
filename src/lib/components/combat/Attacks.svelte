@@ -15,7 +15,7 @@
   import type { ItemFeature } from '$lib/types/feature';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import { IconAttacks, IconDiceRoll } from '$lib/components/ui/icons';
-  import { WEAPON_CATEGORY_TAG, RANGED_CATEGORY_TAG, TWO_HANDED_WIELD_CATEGORY, BAB_PIPELINE_ID, WEAPON_ROLL_LABEL_KEY } from '$lib/utils/constants';
+  import { TWO_HANDED_WIELD_CATEGORY, BAB_PIPELINE_ID, WEAPON_ROLL_LABEL_KEY } from '$lib/utils/constants';
 
   // Unarmed strike statistics come from the engine (zero-hardcoding rule, ARCHITECTURE.md §6).
   // engine.phase_unarmedStrike reads from the `item_unarmed_strike` rule feature and can be
@@ -37,12 +37,15 @@
   };
 
   function toWeaponOption(feature: ItemFeature, isActive: boolean): WeaponOption | null {
-    if (!isActive || !feature.weaponData) return null;
-    if (!feature.tags.some(t => t === WEAPON_CATEGORY_TAG || t === RANGED_CATEGORY_TAG)) return null;
+    if (!isActive) return null;
+    // isItemWeapon() encapsulates the weapon classification rule (weaponData present
+    // AND 'weapon'/'ranged' category tag) in the engine layer, keeping tag checks
+    // out of this Svelte component (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+    if (!engine.isItemWeapon(feature)) return null;
+    // isItemWeapon() guarantees weaponData is non-null; explicit guard for TypeScript narrowing.
+    if (!feature.weaponData) return null;
     // Enhancement bonus and ranged classification delegated to the engine
     // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
-    // isWeaponRanged() encapsulates the D&D classification rule (ranged tag OR
-    // rangeIncrementFt > 0) so this component stays free of game logic.
     const enhancement = engine.getWeaponEnhancementBonus(feature);
     const isRanged    = engine.isWeaponRanged(feature);
     const isTwoHanded = feature.weaponData.wieldCategory === TWO_HANDED_WIELD_CATEGORY;

@@ -119,6 +119,20 @@
     return engine.getPsionicSuppressDC(spell.spellLists);
   }
 
+  /**
+   * Returns a localized, comma-separated list of psionic display mode names.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   Raw display mode strings ('auditory', 'visual', etc.) are D&D game-content
+   *   identifiers. They must not appear as display text. Each is resolved through
+   *   ui('psi.display.<mode>', lang) before being joined for the tooltip title.
+   *   This replaces the previous `spell.displays.join(', ')` which produced an
+   *   untranslated list.
+   */
+  function displayNamesLocalized(displays: PsionicDisplay[]): string {
+    return displays.map(d => ui(`psi.display.${d}`, engine.settings.language)).join(', ');
+  }
+
   function getSpellDC(spellLevel: number): number {
     return engine.getSpellSaveDC(spellLevel);
   }
@@ -386,13 +400,17 @@
                 <span class="flex-1 truncate {scrollCheck.canUse ? 'text-text-secondary' : 'text-text-muted/50 line-through'}">
                   {spellFeat ? engine.t(spellFeat.label) : (entry.spellId ?? '?')}
                 </span>
-                <!-- spellType badge (arcane/divine restriction) -->
-                <span class="badge-gray shrink-0 capitalize">{entry.spellType}</span>
+                <!-- spellType badge (arcane/divine restriction) — resolved via ui() so
+                     raw identifiers ('arcane'/'divine') never appear as display text
+                     (zero-hardcoding rule, ARCHITECTURE.md §6). -->
+                <span class="badge-gray shrink-0">{ui(`magic.type.${entry.spellType}`, engine.settings.language)}</span>
                 <span class="badge-gray shrink-0">
                   {ui('magic.casting.level', engine.settings.language)} {entry.spellLevel}
                 </span>
+                <!-- Caster level badge re-uses magic.casting.wand_cl ('CL {cl}') key;
+                     'CL' is a universal D&D magic abbreviation (ARCHITECTURE.md §6). -->
                 <span class="badge-accent shrink-0">
-                  CL {entry.casterLevel}
+                  {ui('magic.casting.wand_cl', engine.settings.language).replace('{cl}', String(entry.casterLevel))}
                 </span>
                 {#if !scrollCheck.canUse}
                   <!-- IconClose replaces ✗ symbol (zero-hardcoding rule: use icon barrel, not raw Unicode, ARCHITECTURE.md §6) -->
@@ -474,12 +492,15 @@
             {#if isPsionic && spell.discipline}
               <span class="text-[10px] text-purple-400/80 shrink-0">{disciplineLabel(spell.discipline)}</span>
             {:else}
-              <span class="text-[10px] text-text-muted shrink-0">{spell.school}</span>
+              <!-- magic.school.* keys translate the school identifier to a localised label
+                   (zero-hardcoding rule, ARCHITECTURE.md §6 — same pattern as magic.type.* in
+                   Grimoire.svelte). Falls back to the raw string for custom/unknown schools. -->
+              <span class="text-[10px] text-text-muted shrink-0">{ui(`magic.school.${spell.school}`, engine.settings.language) || spell.school}</span>
             {/if}
 
             <!-- Psionic display badges (Extension D) with suppress-DC tooltip -->
             {#if isPsionic && spell.displays && spell.displays.length > 0}
-              <span class="flex gap-0.5 shrink-0" title="{ui('psi.displays_label', engine.settings.language)}: {spell.displays.join(', ')} — suppress {ui('psi.suppress_dc', engine.settings.language).replace('{dc}', String(suppressDC(spell)))}">
+              <span class="flex gap-0.5 shrink-0" title="{ui('psi.displays_label', engine.settings.language)}: {displayNamesLocalized(spell.displays)} — suppress {ui('psi.suppress_dc', engine.settings.language).replace('{dc}', String(suppressDC(spell)))}">
                 {#each spell.displays as disp}
                   <span class="text-[9px] px-1 py-0.5 rounded font-bold {DISPLAY_COLORS[disp as PsionicDisplay] ?? 'bg-surface-alt text-text-muted'}">
                     {ui(`psi.display.${disp}`, engine.settings.language)}
@@ -493,11 +514,11 @@
               <button
                 class="text-[10px] px-1.5 py-0.5 rounded border shrink-0 transition-colors duration-150
                        {isExpanded ? 'border-purple-500/60 bg-purple-700/20 text-purple-300' : 'border-border text-text-muted hover:border-purple-500/40'}"
-                onclick={() => toggleSpellExpand(spell.id)}
-                type="button"
-                aria-expanded={isExpanded}
-                title={ui('psi.augment_label', engine.settings.language)}
-              >+PP</button>
+                 onclick={() => toggleSpellExpand(spell.id)}
+                 type="button"
+                 aria-expanded={isExpanded}
+                 title={ui('psi.augment_label', engine.settings.language)}
+               >{ui('psi.augment_label', engine.settings.language)}</button>
             {/if}
 
             <!-- Metamagic rod applicability badge -->
@@ -540,7 +561,8 @@
               type="button"
             >
               {#if isPsionic}
-                {ui('magic.casting.manifest', engine.settings.language)} ({totalCost} PP)
+                <!-- psi.pp_cost = '{pp} PP' — keeps "PP" out of template as a hardcoded D&D abbreviation (ARCHITECTURE.md §6) -->
+                {ui('magic.casting.manifest', engine.settings.language)} ({ui('psi.pp_cost', engine.settings.language).replace('{pp}', String(totalCost))})
               {:else}
                 {ui('magic.casting.cast', engine.settings.language)}
               {/if}
@@ -583,7 +605,8 @@
                 {@const isQualitative = (aug.grantedModifiers?.length ?? 0) === 0}
                 <div class="flex flex-col gap-0.5 pl-1 border-l border-purple-700/30">
                   <div class="flex items-center gap-2 text-[11px]">
-                    <span class="badge-gray shrink-0">+{aug.costIncrement} PP</span>
+                    <!-- psi.pp_cost replaces hardcoded "PP" abbreviation (ARCHITECTURE.md §6 zero-hardcoding rule) -->
+                    <span class="badge-gray shrink-0">{ui('psi.pp_cost', engine.settings.language).replace('{pp}', `+${aug.costIncrement}`)}</span>
                     {#if isQualitative && aug.effectDescription}
                       <!--
                         Qualitative augmentation: no grantedModifiers — effect is described

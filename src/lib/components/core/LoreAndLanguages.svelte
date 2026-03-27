@@ -37,51 +37,27 @@
   // ── Language system ─────────────────────────────────────────────────────────
   //
   // D&D 3.5 RULE: bonus language slots = max(0, INT modifier) + Speak Language ranks.
-  // Both the INT pipeline ID ('stat_intelligence') and the skill ID ('skill_speak_language')
-  // are internal system identifiers that must NOT be hardcoded in .svelte files
-  // (zero-hardcoding rule, ARCHITECTURE.md §6). The engine exposes
-  // `phase_bonusLanguageSlots` which performs this computation centrally.
-  //
-  // Math.max(0, intMod) + speakRanks is also D&D arithmetic forbidden in .svelte
-  // files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  // All language classification logic (automatic vs. manual, tag checks, grantedFeatures
+  // iteration) is delegated to the engine per ARCHITECTURE.md §3 (zero-game-logic-in-Svelte).
+  // The engine exposes three derived properties for this:
+  //   phase_bonusLanguageSlots   — total slots from INT mod + Speak Language ranks
+  //   phase_manualLanguages      — languages the player explicitly added
+  //   phase_automaticLanguages   — languages granted automatically by race/class features
+  //   phase_remainingLanguageSlots — max(0, bonus - manual count)
   const bonusLanguageSlots = $derived(engine.phase_bonusLanguageSlots);
 
-  // NOTE: `remainingSlots` is now read from the engine (below) to avoid
-  // Math.max(0, bonusLanguageSlots - manualCount) arithmetic in the component.
-  // The engine computes phase_remainingLanguageSlots using the same formula.
-
-  const languages = $derived.by(() => {
-    const automatic: Array<{ id: ID; name: string }> = [];
-    const manual: Array<{ id: ID; name: string; instanceId: ID }> = [];
-
-    for (const afi of engine.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feature = dataLoader.getFeature(afi.featureId);
-      if (!feature) continue;
-
-      if (feature.tags.includes('language')) {
-        manual.push({ id: feature.id, name: engine.t(feature.label), instanceId: afi.instanceId });
-      }
-
-      for (const grantedId of (feature.grantedFeatures ?? [])) {
-        if (grantedId.startsWith('-')) continue;
-        const grantedFeature = dataLoader.getFeature(grantedId);
-        if (grantedFeature?.tags.includes('language')) {
-          if (!automatic.some(l => l.id === grantedId) && !manual.some(l => l.id === grantedId)) {
-            automatic.push({ id: grantedId, name: engine.t(grantedFeature.label) });
-          }
-        }
-      }
-    }
-
-    return { automatic, manual };
+  // Read pre-computed language lists from the engine — no classification logic here.
+  // Previously this component implemented the language detection inline (ARCHITECTURE.md §3
+  // violation). Both lists are now $derived from engine properties.
+  const languages = $derived({
+    automatic: engine.phase_automaticLanguages,
+    manual:    engine.phase_manualLanguages,
   });
 
-  // manualCount is still needed for the slot-counter display (used/{total})
-  const manualCount     = $derived(languages.manual.length);
-  // remainingSlots: Math.max(0, bonusSlots − manualCount) was forbidden in a .svelte file.
-  // Delegated to engine.phase_remainingLanguageSlots (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
-  const remainingSlots  = $derived(engine.phase_remainingLanguageSlots);
+  // manualCount is still needed for the slot-counter display (used/{total}).
+  const manualCount    = $derived(languages.manual.length);
+  // remainingSlots: Math.max(0, bonusSlots − manualCount) is computed in the engine.
+  const remainingSlots = $derived(engine.phase_remainingLanguageSlots);
 
   const availableLanguages = $derived.by(() => {
     const selectedIds = new Set([

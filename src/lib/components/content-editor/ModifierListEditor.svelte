@@ -58,6 +58,7 @@
   import type { Modifier } from '$lib/types/pipeline';
   import type { LogicNode } from '$lib/types/logic';
   import type { ModifierType } from '$lib/types/primitives';
+  import { ALWAYS_STACKING_TYPES, SPECIAL_MODIFIER_TYPES } from '$lib/utils/stackingRules';
   import Modal from '$lib/components/ui/Modal.svelte';
   import PipelinePickerModal     from './PipelinePickerModal.svelte';
   import ModifierTypePickerModal from './ModifierTypePickerModal.svelte';
@@ -199,14 +200,27 @@
   // ===========================================================================
   // STACKING BADGE (type column visual hint)
   // ===========================================================================
-
-  const ALWAYS_STACKS: ModifierType[] = ['base', 'untyped', 'dodge', 'circumstance', 'synergy', 'multiplier'];
-  const SPECIAL_TYPES: ModifierType[] = ['setAbsolute', 'damage_reduction', 'max_dex_cap'];
+  //
+  // ALWAYS_STACKING_TYPES and SPECIAL_MODIFIER_TYPES are imported from
+  // stackingRules.ts — the single source of truth for stacking classification.
+  // They must NOT be redefined as local arrays in this .svelte file
+  // (zero-hardcoding rule, ARCHITECTURE.md §6).
+  //
+  // CLASSIFICATION:
+  //   ALWAYS_STACKING_TYPES  → "STACKS" green badge  (base, dodge, circumstance, synergy, untyped)
+  //   SPECIAL_MODIFIER_TYPES → "SPECIAL" purple badge (multiplier, setAbsolute, damage_reduction, max_dex_cap)
+  //   All other types        → "BEST WINS" yellow badge (armor, enhancement, luck, morale, etc.)
+  //
+  // NOTE: `multiplier` is SPECIAL (not always-stacking). It is applied after all additive
+  // bonuses using the engine's compounding rule, not summed with other multipliers.
+  // The previous inline ALWAYS_STACKS array incorrectly included `multiplier`, causing
+  // the "STACKS" badge to be shown for multiplier modifiers — now fixed by importing the
+  // authoritative set from stackingRules.ts.
 
   function typeBadgeClass(type: ModifierType): string {
-    if (ALWAYS_STACKS.includes(type))
+    if (ALWAYS_STACKING_TYPES.has(type))
       return 'bg-green-900/30 text-green-400 border-green-700/40';
-    if (SPECIAL_TYPES.includes(type))
+    if (SPECIAL_MODIFIER_TYPES.has(type))
       return 'bg-purple-900/30 text-purple-300 border-purple-700/40';
     return 'bg-yellow-900/30 text-yellow-300 border-yellow-700/40';
   }
@@ -408,9 +422,9 @@
               <code class="font-mono">{mod.type}</code>
               <span class="border text-[9px] font-bold uppercase tracking-wider px-1.5
                            py-0.5 rounded shrink-0 {typeBadgeClass(mod.type)}">
-                {ALWAYS_STACKS.includes(mod.type)
+                {ALWAYS_STACKING_TYPES.has(mod.type)
                   ? 'STACKS'
-                  : SPECIAL_TYPES.includes(mod.type)
+                  : SPECIAL_MODIFIER_TYPES.has(mod.type)
                   ? 'SPECIAL'
                   : 'BEST WINS'}
               </span>

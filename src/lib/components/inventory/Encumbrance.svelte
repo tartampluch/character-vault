@@ -26,65 +26,23 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
-  import { computeCoinWeight, computeWealthInGP, toDisplayPct } from '$lib/utils/formatters';
+  import { toDisplayPct } from '$lib/utils/formatters';
   import { IconEncumbrance, IconWealth } from '$lib/components/ui/icons';
-  import {
-    CONDITION_ENCUMBERED_FEATURE_ID,
-    CONDITION_ENCUMBERED_INSTANCE_ID,
-  } from '$lib/utils/constants';
 
   // ── condition_encumbered dispatch ─────────────────────────────────────────
-  // D&D 3.5 RULE: A Medium or heavier load imposes the Encumbered condition,
-  // which applies armor check penalty to Dex- and Str-based skill checks and
-  // attack rolls and reduces movement speed. We model this by adding/removing
-  // the `condition_encumbered` feature instance on the engine reactively.
+  // NOTE: The dispatch of `condition_encumbered` (and the companion
+  //   `condition_medium_load` / `condition_heavy_load` tags) is now managed
+  //   entirely inside `GameEngine.svelte.ts#encumbranceEffect`.
   //
-  // NOTE: The engine already auto-manages `condition_medium_load` and
-  //   `condition_heavy_load` (for conditionNode gating) via its internal
-  //   `#encumbranceEffect`. This component adds the separate `condition_encumbered`
-  //   feature which grants the actual penalty modifiers (movement reduction, etc.).
-  //   The two systems are complementary, not duplicates.
+  // This component no longer needs a $effect for this purpose because:
+  //   1. The engine's internal `#encumbranceEffect` now handles all three
+  //      encumbrance-related conditions in one place.
+  //   2. Dispatching game conditions from Svelte components violated
+  //      ARCHITECTURE.md §3 (zero-game-logic-in-Svelte).
   //
-  // WHY USE $effect (not $derived)?
-  //   We need to mutate engine state in response to the computed loadTier severity.
-  //   A $derived cannot produce side effects — $effect is the correct rune.
-  //
-  // ARCHITECTURE NOTE:
-  //   The engine.addFeature / removeFeature calls are fire-and-forget. The
-  //   condition_encumbered feature in the rule files grants the appropriate
-  //   modifiers (movement speed reduction, skill check penalties) via its
-  //   grantedModifiers array — no hardcoded values appear in this component.
-  // Use named constants (zero-hardcoding rule, ARCHITECTURE.md §6).
-  // Imported from constants.ts so a rename stays safe across the whole codebase.
-  const ENCUMBERED_INSTANCE_ID = CONDITION_ENCUMBERED_INSTANCE_ID;
-  const ENCUMBERED_FEATURE_ID  = CONDITION_ENCUMBERED_FEATURE_ID;
-
-  $effect(() => {
-    // Use engine.phase_isEncumbered — the "Medium load or heavier" threshold check
-    // is a D&D game rule that belongs in the engine (ARCHITECTURE.md §3).
-    const isEncumbered = engine.phase_isEncumbered;
-
-    const alreadyActive = engine.character.activeFeatures.some(
-      afi => afi.instanceId === ENCUMBERED_INSTANCE_ID && afi.isActive
-    );
-
-    if (isEncumbered && !alreadyActive) {
-      // Only add the condition if the feature exists in the loaded data to avoid
-      // phantom instances when no rule sources define condition_encumbered.
-      if (dataLoader.getFeature(ENCUMBERED_FEATURE_ID)) {
-        engine.addFeature({
-          instanceId: ENCUMBERED_INSTANCE_ID,
-          featureId:  ENCUMBERED_FEATURE_ID,
-          isActive:   true,
-        });
-      }
-    } else if (!isEncumbered && alreadyActive) {
-      // Remove the auto-dispatched instance when load drops below Medium.
-      engine.removeFeature(ENCUMBERED_INSTANCE_ID);
-    }
-  });
+  // All this component does is READ from engine properties and render them.
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── Total weight — read from engine (avoids duplicating game logic) ────────
   //
@@ -158,22 +116,12 @@
     engine.setCoinValue(key as 'cp' | 'sp' | 'gp' | 'pp', val);
   }
 
-  // D&D 3.5 coin weight and exchange rate formulas are in formatters.ts
-  // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). The Math.floor and
-  // hardcoded exchange constants (50 coins/lb, 100 cp/gp, etc.) may not appear
-  // directly in .svelte files.
-  const coinWeightLbs  = $derived(computeCoinWeight(
-    engine.character.wealth?.cp ?? 0,
-    engine.character.wealth?.sp ?? 0,
-    engine.character.wealth?.gp ?? 0,
-    engine.character.wealth?.pp ?? 0,
-  ));
-  const totalGoldValue = $derived(computeWealthInGP(
-    engine.character.wealth?.cp ?? 0,
-    engine.character.wealth?.sp ?? 0,
-    engine.character.wealth?.gp ?? 0,
-    engine.character.wealth?.pp ?? 0,
-  ));
+  // D&D 3.5 coin weight (50 coins/lb) and exchange rate formulas belong in the
+  // engine (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). The engine now
+  // exposes `phase_coinWeightLbs` and `phase_totalWealthGP` so this component
+  // reads engine-computed values instead of calling formatters.ts directly.
+  const coinWeightLbs  = $derived(engine.phase_coinWeightLbs);
+  const totalGoldValue = $derived(engine.phase_totalWealthGP);
 
   /**
    * Coin definitions — colour-coded labels using Tailwind utility class names.

@@ -130,8 +130,15 @@
             <span class="text-sm font-medium text-text-primary truncate">{engine.t(spell.label)}</span>
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="badge-accent text-[10px]">{ui('magic.grimoire.lvl', engine.settings.language)} {sl}</span>
-              <span class="text-[10px] text-text-muted">{spell.school}</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded border {magicTypeBadgeClass(spell.magicType)}">{spell.magicType}</span>
+              <!-- magic.school.* keys translate the school identifier to a localised label
+                   (zero-hardcoding rule, ARCHITECTURE.md §6 — same pattern as magic.type.*
+                   on the line below). Falls back to the raw string for custom/unknown schools. -->
+              <span class="text-[10px] text-text-muted">{ui(`magic.school.${spell.school}`, engine.settings.language) || spell.school}</span>
+              <!-- magic.type.* keys resolve the type identifier to a localised label (ARCHITECTURE.md §6 zero-hardcoding rule).
+                   Falls back to spell.magicType (raw identifier) for custom/unknown types. -->
+              <span class="text-[10px] px-1.5 py-0.5 rounded border {magicTypeBadgeClass(spell.magicType)}">
+                {ui(`magic.type.${spell.magicType}`, engine.settings.language) || spell.magicType}
+              </span>
             </div>
           </div>
 

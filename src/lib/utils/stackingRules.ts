@@ -97,6 +97,29 @@ export const ALWAYS_STACKING_TYPES = new Set([
   'base',
 ]);
 
+/**
+ * Modifier types that require SPECIAL handling — neither pure additive stacking
+ * nor simple best-wins.
+ *
+ * Exported for the Content Editor's `ModifierListEditor` stacking badge display
+ * so that it can classify types correctly without duplicating this rule knowledge
+ * as a local constant inside the Svelte component (zero-hardcoding rule, ARCHITECTURE.md §6).
+ *
+ *   `multiplier`       — Applied AFTER all additive bonuses; compounded, not summed.
+ *                        The engine uses the largest multiplier (SRD: combine multipliers).
+ *   `setAbsolute`      — Overrides ALL other modifiers; last-set wins on ties.
+ *   `damage_reduction` — Best-wins per bypass-tag group; multiple independent DR entries
+ *                        can coexist (e.g., DR 5/magic AND DR 10/silver).
+ *   `max_dex_cap`      — Minimum-wins; intercepted in Phase 3.5 (DAG), not the normal
+ *                        stacking pass.
+ */
+export const SPECIAL_MODIFIER_TYPES = new Set([
+  'multiplier',         // Special compounding — not additive stacking (see note above)
+  'setAbsolute',        // Bypasses stacking entirely; last-set wins
+  'damage_reduction',   // Best-wins per bypass-tag group (see DR section above)
+  'max_dex_cap',        // Minimum-wins; DAG Phase 3.5 intercept
+]);
+
 // =============================================================================
 // STACKING RESULT
 // =============================================================================

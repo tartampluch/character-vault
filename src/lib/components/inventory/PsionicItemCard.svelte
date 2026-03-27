@@ -40,13 +40,6 @@
   // DORJE_MAX_CHARGES imported from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
   // D&D 3.5 SRD: dorjes are created with 50 charges (XPH p.218).
 
-  // Manifester level for Brainburn check.
-  // Uses phase_manifesterLevel (stat_manifester_level pipeline), which is distinct
-  // from phase_casterLevel (stat_caster_level). A multiclass caster/manifester
-  // can have different values for each. The Brainburn DC is based on manifester
-  // level, not caster level (XPH p.43).
-  const charML = $derived(engine.phase_manifesterLevel ?? 0);
-
   // Cognizance Crystal / Psicrown: PP bar percentage.
   // toDisplayPct keeps Math.max/Math.min/division out of the template (ARCHITECTURE.md §3).
   const ppPct = $derived(toDisplayPct(psi.storedPP ?? 0, psi.maxPP ?? 0));
@@ -86,9 +79,11 @@
     return f ? engine.t(f.label) : id;
   }
 
-  // Brainburn DC computation is delegated to engine.getBrainburnDC() per
-  // the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). The D&D formula
-  // (power stone ML + 1) must not appear inline in .svelte files.
+  // Brainburn risk evaluation and DC computation are both delegated to the engine
+  // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  //   engine.getBrainburnRisk(entry) — encapsulates `charML < entry.manifesterLevel`
+  //   engine.getBrainburnDC(entry.manifesterLevel) — encapsulates `manifesterLevel + 1`
+  // Neither comparison nor arithmetic appears in this .svelte file.
 
   let ppToRecharge = $state(1);
 </script>
@@ -138,7 +133,7 @@
           class="px-2 py-0.5 text-xs rounded border border-purple-600/40 text-purple-400 hover:bg-purple-950/30 transition-colors duration-150"
           onclick={() => rechargePP(ppToRecharge)}
           type="button"
-        >+ {ppToRecharge} PP</button>
+        >+ {ppToRecharge} {ui('psionic_item.pp_abbr', lang)}</button>
       </div>
     {/if}
 
@@ -166,7 +161,7 @@
         onclick={useCharge}
         disabled={(psi.charges ?? 0) <= 0}
         type="button"
-        title="ML {psi.manifesterLevel ?? '?'}"
+        title="{ui('psi.manifester_level', lang)} {psi.manifesterLevel ?? '?'}"
       >{ui('psionic_item.use_charge', lang)}</button>
     </div>
 
@@ -178,9 +173,9 @@
           <span class="flex-1 truncate {entry.usedUp ? 'line-through text-text-muted' : 'text-text-primary'}">
             {getPowerName(entry.powerId)}
           </span>
-          <span class="text-text-muted shrink-0">ML {entry.manifesterLevel}</span>
+          <span class="text-text-muted shrink-0">{ui('psi.manifester_level', lang)} {entry.manifesterLevel}</span>
           <!-- Brainburn warning — IconWarning from the barrel (no raw emoji, ARCHITECTURE.md §6) -->
-          {#if !entry.usedUp && charML < entry.manifesterLevel}
+          {#if engine.getBrainburnRisk(entry)}
             {@const bbDC = engine.getBrainburnDC(entry.manifesterLevel)}
             <span
               class="text-[10px] text-amber-400 shrink-0"
@@ -237,7 +232,9 @@
       <span class="flex-1 truncate {psi.activated ? 'line-through text-text-muted' : 'text-text-primary'}">
         {psi.powerStored ? getPowerName(psi.powerStored) : '?'}
       </span>
-      <span class="text-text-muted shrink-0">ML {psi.manifesterLevel ?? '?'}</span>
+      <!-- psi.manifester_level = 'ML:' (en) — avoids the hardcoded D&D abbreviation
+           (zero-hardcoding rule, ARCHITECTURE.md §6). -->
+      <span class="text-text-muted shrink-0">{ui('psi.manifester_level', lang)} {psi.manifesterLevel ?? '?'}</span>
       {#if psi.activated}
         <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt text-text-muted">
           {ui('psionic_item.activated', lang)}

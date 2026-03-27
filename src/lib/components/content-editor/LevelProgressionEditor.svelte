@@ -72,6 +72,12 @@
     SAVE_GOOD,
     SAVE_POOR,
   } from '$lib/utils/classProgressionPresets';
+  import {
+    BAB_PIPELINE_ID,
+    SAVE_FORT_PIPELINE_ID,
+    SAVE_REFLEX_PIPELINE_ID,
+    SAVE_WILL_PIPELINE_ID,
+  } from '$lib/utils/constants';
 
   // ===========================================================================
   // CONTEXT
@@ -110,10 +116,12 @@
   // INCREMENT HELPERS
   // ===========================================================================
 
-  const BAB_TARGET  = 'combatStats.base_attack_bonus';
-  const FORT_TARGET = 'saves.fortitude';
-  const REF_TARGET  = 'saves.reflex';
-  const WILL_TARGET = 'saves.will';
+  // Pipeline IDs are imported from constants.ts — never hardcoded as magic strings
+  // in .svelte files (zero-hardcoding rule, ARCHITECTURE.md §6).
+  const BAB_TARGET  = BAB_PIPELINE_ID;
+  const FORT_TARGET = SAVE_FORT_PIPELINE_ID;
+  const REF_TARGET  = SAVE_REFLEX_PIPELINE_ID;
+  const WILL_TARGET = SAVE_WILL_PIPELINE_ID;
 
   function getIncrement(entry: LevelProgressionEntry, targetId: string): number {
     const mod = entry.grantedModifiers.find(m => m.targetId === targetId && m.type === 'base');
@@ -372,7 +380,7 @@
           {@const ref  = getIncrement(entry, REF_TARGET)}
           {@const will = getIncrement(entry, WILL_TARGET)}
           {@const nonIncMods = entry.grantedModifiers.filter(
-            m => !(m.type === 'base' && [BAB_TARGET, FORT_TARGET, REF_TARGET, WILL_TARGET].includes(m.targetId))
+            m => !(m.type === 'base' && ([BAB_TARGET, FORT_TARGET, REF_TARGET, WILL_TARGET] as string[]).includes(m.targetId))
           )}
 
           <tr class="border-b border-border/50 hover:bg-surface-alt/50 transition-colors">

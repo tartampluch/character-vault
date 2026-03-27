@@ -428,11 +428,16 @@
     if (!isValidJson) return;
     isSaving = true; saveSuccess = '';
 
-    // Apply to in-memory engine state immediately (instant UI feedback)
-    engine.settings.enabledRuleSources = [...enabledSources];
-    engine.settings.diceRules      = { explodingTwenties };
-    engine.settings.statGeneration = { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods };
-    engine.settings.variantRules   = { gestalt: variantGestalt, vitalityWoundPoints: variantVWP };
+    // Apply to in-memory engine state immediately (instant UI feedback).
+    // Use engine.updateSettings() instead of direct property mutation to go
+    // through the engine's public API (ARCHITECTURE.md §3 — all state writes
+    // must be dispatched via engine methods, not direct field assignment).
+    engine.updateSettings({
+      enabledRuleSources: [...enabledSources],
+      diceRules:      { explodingTwenties },
+      statGeneration: { method: allowedMethods[0] ?? 'point_buy', rerollOnes, pointBuyBudget, allowedMethods },
+      variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
+    });
 
     // Reload rule sources so character sheet dropdowns reflect new selection
     dataLoader
@@ -1193,11 +1198,13 @@
       </div>
     </details>
 
-    <!-- JSON error -->
+    <!-- JSON error — message already contains a localized prefix from _jsonValidation
+         (ui('settings.overrides.json_syntax_on_line',...) or ui('gm.syntax_error',...)),
+         so no additional hardcoded label is needed here. -->
     {#if jsonError}
       <div class="flex items-start gap-2 px-3 py-2 rounded border border-red-700/40 bg-red-950/20 text-red-400 text-xs font-mono" role="alert">
         <IconWarning size={12} class="mt-0.5 shrink-0" aria-hidden="true" />
-        <strong>JSON Syntax Error:</strong> {jsonError}
+        <span>{jsonError}</span>
       </div>
     {/if}
 

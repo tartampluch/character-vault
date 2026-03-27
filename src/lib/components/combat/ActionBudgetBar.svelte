@@ -158,7 +158,7 @@
                    .replace('{conditions}', blockingConditions(act.key)))
             : ui('action.available', lang)}
           type="button"
-          aria-label="{ui(act.labelKey, lang)} — {blocked ? 'blocked' : 'available'}"
+          aria-label="{ui(act.labelKey, lang)} — {blocked ? ui('action.spent', lang) : ui('action.available', lang)}"
         >
           <ActionIcon size={14} aria-hidden="true" />
           <span class="leading-none">{ui(act.labelKey, lang)}</span>

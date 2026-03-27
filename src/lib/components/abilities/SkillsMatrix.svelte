@@ -203,7 +203,9 @@
             {@const minRanks    = getMinRanks(skill.id)}
             {@const costPerRank = skill.costPerRank}
             {@const isAtMax     = skill.ranks >= maxRanks}
-            {@const isAtMin     = skill.ranks <= minRanks && minRanks > 0}
+            <!-- engine.phase4_skillsAtMinimum centralises the "ranks at locked floor" check
+                 (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). -->
+            {@const isAtMin     = engine.phase4_skillsAtMinimum.has(skill.id)}
 
             <tr
               class="data-table-row {i % 2 === 0 ? 'data-table-row--even' : 'data-table-row--odd'}

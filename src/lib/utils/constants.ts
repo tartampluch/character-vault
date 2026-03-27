@@ -320,6 +320,26 @@ export const TWO_HANDED_WIELD_CATEGORY = 'two_handed' as const;
  */
 export const BAB_PIPELINE_ID = 'combatStats.base_attack_bonus' as const;
 
+/**
+ * Canonical pipeline IDs for the three D&D 3.5 saving throws.
+ *
+ * WHY CONSTANTS (not inlined as `'saves.fortitude'` in LevelProgressionEditor.svelte):
+ *   Pipeline IDs are D&D game-system constants that must not appear as magic strings
+ *   in `.svelte` component files (zero-hardcoding rule, ARCHITECTURE.md §6).
+ *   Centralising here means a rename only requires updating these constants and the
+ *   GameEngine default pipelines — all consumers (editor, gestalt rules, etc.) follow
+ *   automatically.
+ *
+ * Used by:
+ *   - `LevelProgressionEditor.svelte` — to build base-type Modifier objects for the
+ *     BAB/save column presets in the class progression table.
+ *   - `gestaltRules.ts` — `GESTALT_AFFECTED_PIPELINES` set.
+ *   - Any other component that needs to address a save pipeline by key.
+ */
+export const SAVE_FORT_PIPELINE_ID    = 'saves.fortitude' as const;
+export const SAVE_REFLEX_PIPELINE_ID  = 'saves.reflex' as const;
+export const SAVE_WILL_PIPELINE_ID    = 'saves.will' as const;
+
 // =============================================================================
 // SYNTHETIC PIPELINE LABELS — LOCALIZED
 // =============================================================================
@@ -650,6 +670,13 @@ export const RESOURCE_HP_ID = 'resources.hp' as const;
 
 /** Pipeline ID for the Max Vitality stat (V/WP variant — maximum vitality points pool). */
 export const COMBAT_STAT_MAX_VITALITY_ID = 'combatStats.max_vitality' as const;
+
+/**
+ * Pipeline ID for the total Attack Bonus (BAB + STR/DEX modifier + size + misc).
+ * Used as `targetId` in attack modifiers (e.g., Favoured Enemy situational bonuses).
+ * The `"attacker.*"` prefix form is `"attacker.combatStats.attack_bonus"` (roll-time only).
+ */
+export const COMBAT_STAT_ATTACK_BONUS_ID = 'combatStats.attack_bonus' as const;
 
 /** Pipeline ID for Armor Class (Normal / vs all attacks). */
 export const COMBAT_STAT_AC_NORMAL_ID = 'combatStats.ac_normal' as const;

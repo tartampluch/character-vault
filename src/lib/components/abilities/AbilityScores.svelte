@@ -121,8 +121,8 @@
               <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('abilities.base', engine.settings.language)}</span>
               <input
                 type="number"
-                min="1"
-                max="30"
+                min={ABILITY_SCORE_MIN}
+                max={ABILITY_SCORE_MAX}
                 value={pipeline.baseValue}
                 class="input text-center text-sm font-bold px-1 py-1 text-sky-500 dark:text-sky-400"
                 aria-label="{engine.t(pipeline.label)} base score"
