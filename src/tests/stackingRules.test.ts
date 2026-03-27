@@ -662,6 +662,137 @@ describe('DR — Barbarian class-progression DR (type: "base" pattern)', () => {
 });
 
 // ============================================================
+// ============================================================
+// setAbsolute WITH STRING VALUES (Phase 17.3 — Missing Test Category)
+// ARCHITECTURE.md section 4: Modifier.value is `number | string`.
+// When type === "setAbsolute" with a string formula (e.g., Monk unarmed damage "1d8"),
+// the stacking rules function gracefully falls back to baseValue for the numeric pipeline.
+// The string value is preserved on the modifier for use by the Dice Engine.
+// ============================================================
+
+describe('stackingRules — setAbsolute with string formula value (Monk unarmed damage pattern)', () => {
+  /**
+   * ARCHITECTURE.md section 4, Modifier.value:
+   *   "value: number | string — A numeric bonus or a formula string (e.g. '1d8')."
+   *
+   * D&D 3.5 Monk unarmed damage is stored as an absolute formula like "1d6", "1d8", "1d10"
+   * depending on size and level. This cannot be expressed as a plain number.
+   *
+   * IMPLEMENTATION NOTE:
+   *   When applyStackingRules() encounters a setAbsolute modifier with a string value,
+   *   it cannot produce a numeric totalValue. It falls back to baseValue for the numeric
+   *   pipeline. The modifier is still stored in appliedModifiers so the GameEngine
+   *   (or Dice Engine) can inspect the string formula directly.
+   *
+   *   The GameEngine calls evaluateFormula() on string Modifier.value BEFORE
+   *   applyStackingRules() in the normal flow. However, for dice-formula setAbsolute
+   *   values (like "1d8"), the formula IS the dice specification — not a numeric formula
+   *   to be pre-resolved.
+   */
+
+  it('setAbsolute with string "1d8" (Monk unarmed damage): compiles and does not crash', () => {
+    // This test verifies TypeScript type compatibility and runtime safety.
+    const monkUnarmedDmg: Modifier = {
+      id: 'monk_unarmed_damage_1d8',
+      sourceId: 'class_feature_monk_unarmed_strike',
+      sourceName: { en: 'Monk: Unarmed Strike (1d8)', fr: 'Moine : Attaque sans arme (1d8)' },
+      targetId: 'weaponDamage.unarmed',
+      value: '1d8',  // String formula — not a numeric value
+      type: 'setAbsolute',
+    };
+
+    // Must not throw — gracefully handles string value
+    expect(() => applyStackingRules([monkUnarmedDmg], 0)).not.toThrow();
+
+    const result = applyStackingRules([monkUnarmedDmg], 0);
+
+    // The modifier is applied (not suppressed)
+    expect(result.appliedModifiers).toHaveLength(1);
+    expect(result.appliedModifiers[0].id).toBe('monk_unarmed_damage_1d8');
+    expect(result.suppressedModifiers).toHaveLength(0);
+
+    // The modifier's string value is preserved on the applied modifier object
+    expect(result.appliedModifiers[0].value).toBe('1d8');
+  });
+
+  it('setAbsolute with string "1d6" (Small Monk): string value falls back to baseValue for numeric total', () => {
+    // When a setAbsolute modifier has a string value, applyStackingRules() cannot produce
+    // a numeric totalValue — it falls back to baseValue.
+    const result = applyStackingRules([
+      {
+        id: 'monk_unarmed_damage_1d6',
+        sourceId: 'class_feature_monk_unarmed_strike',
+        sourceName: { en: 'Monk: Unarmed Strike (1d6)' },
+        targetId: 'weaponDamage.unarmed',
+        value: '1d6',
+        type: 'setAbsolute',
+      },
+    ], 5); // baseValue = 5
+
+    // Falls back to baseValue since string cannot be a numeric totalValue
+    expect(result.totalValue).toBe(5);
+    // String is preserved on the modifier for the Dice Engine to use
+    expect(result.appliedModifiers[0].value).toBe('1d6');
+  });
+
+  it('setAbsolute with string suppresses other modifiers (wild_shape STR pattern)', () => {
+    // Wild Shape sets the creature's STR absolutely; other STR bonuses are irrelevant.
+    // Even with a string value, the setAbsolute behavior (suppress all others) holds.
+    const result = applyStackingRules([
+      makeModifier('str_enhancement', 4, 'enhancement'),
+      makeModifier('str_racial', 2, 'racial'),
+      {
+        id: 'monk_1d8_setabs',
+        sourceId: 'class_monk',
+        sourceName: { en: 'Monk 1d8' },
+        targetId: 'weaponDamage.unarmed',
+        value: '1d8' as unknown as number,
+        type: 'setAbsolute' as import('$lib/types/primitives').ModifierType,
+      },
+    ], 0);
+
+    // The setAbsolute modifier wins; other modifiers are suppressed
+    expect(result.appliedModifiers).toHaveLength(1);
+    expect(result.appliedModifiers[0].id).toBe('monk_1d8_setabs');
+    expect(result.suppressedModifiers).toHaveLength(2);
+    const suppressedIds = result.suppressedModifiers.map(m => m.id);
+    expect(suppressedIds).toContain('str_enhancement');
+    expect(suppressedIds).toContain('str_racial');
+  });
+
+  it('two setAbsolute modifiers with string values: last wins, first suppressed', () => {
+    // Two Monk unarmed damage progressions — the higher-level one wins.
+    const result = applyStackingRules([
+      {
+        id: 'monk_1d6_small',
+        sourceId: 'class_monk_small',
+        sourceName: { en: 'Monk 1d6 (Small)' },
+        targetId: 'weaponDamage.unarmed',
+        value: '1d6',
+        type: 'setAbsolute',
+      },
+      {
+        id: 'monk_1d8_medium',
+        sourceId: 'class_monk_medium',
+        sourceName: { en: 'Monk 1d8 (Medium)' },
+        targetId: 'weaponDamage.unarmed',
+        value: '1d8',
+        type: 'setAbsolute',
+      },
+    ], 0);
+
+    // Last-wins: monk_1d8_medium is the last → it wins
+    expect(result.appliedModifiers).toHaveLength(1);
+    expect(result.appliedModifiers[0].id).toBe('monk_1d8_medium');
+    expect(result.appliedModifiers[0].value).toBe('1d8');
+
+    // First setAbsolute is suppressed
+    expect(result.suppressedModifiers).toHaveLength(1);
+    expect(result.suppressedModifiers[0].id).toBe('monk_1d6_small');
+  });
+});
+
+// ============================================================
 // RESISTANCE BONUS STACKING (GAP-09 fix)
 // ============================================================
 

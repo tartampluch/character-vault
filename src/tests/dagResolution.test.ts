@@ -1184,6 +1184,248 @@ describe('Choice-derived sub-tags (Phase 1.3d — choiceGrantedTagPrefix)', () =
 });
 
 // ============================================================
+// SCENARIO 8: Dual-Gated Modifier (conditionNode + situationalContext)
+// (ARCHITECTURE.md Phase 17.5 — Missing Test Category)
+// ============================================================
+
+describe('DAG dual-gated modifier: conditionNode + situationalContext both required', () => {
+  /**
+   * ARCHITECTURE.md section 9, Phase 3 — Dual-Gated Modifiers:
+   *
+   * A modifier can have BOTH:
+   *   1. `conditionNode`:    A prerequisite condition evaluated against the character
+   *                          context (e.g., must be Raging). If the condition fails,
+   *                          the modifier is NEVER applied (not even situationally).
+   *   2. `situationalContext`: A tag that must appear in the roll's targetTags at roll time
+   *                           (e.g., "vs_goblin" for Ranger's Favored Enemy).
+   *                           This routes the modifier to `situationalModifiers` (not
+   *                           `activeModifiers`).
+   *
+   * GameEngine behavior (Phase 3, #processModifierList):
+   *   - If `conditionNode` fails → modifier is completely skipped (neither active nor situational)
+   *   - If `conditionNode` passes AND `situationalContext` is set → routed to situationalModifiers
+   *   - At roll time: the situational modifier only contributes when its context matches targetTags
+   *
+   * The Ranger's Favored Enemy (Humanoid: Goblinoid) with Rage is a canonical dual-gated
+   * modifier: it applies ONLY when the Ranger is Raging (conditionNode) AND is fighting
+   * a goblin (situationalContext: "goblin").
+   *
+   * IMPLEMENTATION PATTERN (simulated here without Svelte runtime):
+   *   1. Evaluate the conditionNode against the character context.
+   *   2. If condition fails: skip modifier entirely (zero contribution).
+   *   3. If condition passes AND situationalContext is set: add to situational pool.
+   *   4. At roll time: apply from situational pool only when context tag is present.
+   *
+   * This test suite verifies the ALGORITHMIC LOGIC of the dual-gating mechanism
+   * using pure utility functions (checkCondition + applyStackingRules), mirroring
+   * the established pattern in dagResolution.test.ts scenarios 2-4.
+   */
+
+  /**
+   * Simulates how the GameEngine's #processModifierList handles dual-gated modifiers.
+   *
+   * Step 1: conditionNode gate — if condition fails, modifier contributes nothing.
+   * Step 2: situationalContext gate — if condition passes but situationalContext is set,
+   *         modifier is routed to the situational pool.
+   * Step 3: At roll time, situational modifiers apply only when their context tag is
+   *         present in the roll's effectiveTargetTags.
+   *
+   * @returns { activeBonus, situationalBonus } for verification.
+   */
+  function simulateDualGatedModifier(
+    modifier: Modifier & { conditionNode?: import('$lib/types/logic').LogicNode; situationalContext?: string },
+    characterCtx: CharacterContext,
+    rollTargetTags: string[]
+  ): { activeBonus: number; situationalBonus: number; wasSkipped: boolean } {
+    // Step 1: Check conditionNode (if present)
+    if (modifier.conditionNode) {
+      const conditionPassed = checkCondition(modifier.conditionNode, characterCtx);
+      if (!conditionPassed) {
+        // Condition fails → modifier is completely skipped
+        return { activeBonus: 0, situationalBonus: 0, wasSkipped: true };
+      }
+    }
+
+    // Step 2: Check situationalContext (if present, route to situational pool)
+    if (modifier.situationalContext) {
+      // Modifier is in the situational pool; contributes only at roll time
+      const contextMatches = rollTargetTags.includes(modifier.situationalContext);
+      const bonus = contextMatches ? (typeof modifier.value === 'number' ? modifier.value : 0) : 0;
+      return { activeBonus: 0, situationalBonus: bonus, wasSkipped: false };
+    }
+
+    // No situationalContext → always-active modifier
+    const bonus = typeof modifier.value === 'number' ? modifier.value : 0;
+    return { activeBonus: bonus, situationalBonus: 0, wasSkipped: false };
+  }
+
+  const ragingCondition: import('$lib/types/logic').LogicNode = {
+    logic: 'CONDITION',
+    targetPath: '@activeTags',
+    operator: 'has_tag',
+    value: 'raging',
+    errorMessage: 'Requires Rage',
+  };
+
+  const dualGatedModifier = {
+    id: 'ranger_favored_enemy_goblin_while_raging',
+    sourceId: 'class_feature_ranger_favored_enemy',
+    sourceName: { en: 'Favored Enemy (Goblinoid) — Rage bonus' },
+    targetId: 'combatStats.attack_bonus',
+    value: 4,  // +4 during Rage vs Goblins (combined Rage +2 ATK + Favored Enemy +2)
+    type: 'untyped' as import('$lib/types/primitives').ModifierType,
+    conditionNode: ragingCondition,
+    situationalContext: 'goblin',
+  };
+
+  it('dual-gated: condition fails → modifier completely skipped (neither active nor situational)', () => {
+    // Context: Ranger is NOT raging
+    const notRagingCtx: CharacterContext = {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: { 'class_ranger': 8 },
+      activeTags: ['class_ranger', 'race_human'],  // NO "raging" tag
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    };
+
+    // Condition fails → skipped entirely, even if target is a goblin
+    const result = simulateDualGatedModifier(dualGatedModifier, notRagingCtx, ['goblin', 'humanoid', 'evil']);
+    expect(result.wasSkipped).toBe(true);
+    expect(result.activeBonus).toBe(0);
+    expect(result.situationalBonus).toBe(0);
+  });
+
+  it('dual-gated: condition passes but wrong target → modifier in situational pool, does not apply', () => {
+    // Context: Ranger IS raging (condition passes)
+    // But target is an Orc (not a Goblin) — situationalContext "goblin" does NOT match
+    const ragingCtx: CharacterContext = {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: { 'class_ranger': 8 },
+      activeTags: ['class_ranger', 'race_human', 'raging'],  // IS raging
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    };
+
+    // Target is an Orc, not a Goblin
+    const result = simulateDualGatedModifier(dualGatedModifier, ragingCtx, ['orc', 'humanoid', 'evil']);
+    expect(result.wasSkipped).toBe(false);  // Condition passed → not skipped
+    expect(result.activeBonus).toBe(0);     // Situational modifier → not in active pool
+    expect(result.situationalBonus).toBe(0); // Context "goblin" not in ["orc", ...] → 0
+  });
+
+  it('dual-gated: BOTH condition passes AND context matches → full bonus applies', () => {
+    // Context: Ranger IS raging AND target is a Goblin
+    const ragingCtx: CharacterContext = {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: { 'class_ranger': 8 },
+      activeTags: ['class_ranger', 'race_human', 'raging'],  // IS raging
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    };
+
+    // Target is a Goblin — both gates open
+    const result = simulateDualGatedModifier(dualGatedModifier, ragingCtx, ['goblin', 'humanoid', 'evil']);
+    expect(result.wasSkipped).toBe(false);    // Condition passed
+    expect(result.activeBonus).toBe(0);       // It's situational, not always-active
+    expect(result.situationalBonus).toBe(4);  // +4 bonus: condition met + context matched
+  });
+
+  it('dual-gated contributes to roll total only when both gates are open', () => {
+    // Simulate the full pipeline: condition passed → in situational pool → context matched → apply
+    const conditionPassed = checkCondition(ragingCondition, {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: { 'class_ranger': 8 },
+      activeTags: ['class_ranger', 'raging'],
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    });
+    expect(conditionPassed).toBe(true); // Gate 1 opens
+
+    // Simulate situational application at roll time
+    const situationalMod: Modifier = {
+      id: dualGatedModifier.id,
+      sourceId: dualGatedModifier.sourceId,
+      sourceName: dualGatedModifier.sourceName,
+      targetId: dualGatedModifier.targetId,
+      value: dualGatedModifier.value,
+      type: dualGatedModifier.type,
+      situationalContext: dualGatedModifier.situationalContext,
+    };
+
+    // Roll context: target has 'goblin' tag → Gate 2 opens
+    const rollTargetTags = ['goblin', 'humanoid'];
+    const contextMatches = rollTargetTags.includes(situationalMod.situationalContext!);
+    expect(contextMatches).toBe(true); // Gate 2 opens
+
+    // Both gates open → modifier applies
+    const baseAttackResult = applyStackingRules([situationalMod], 6); // BAB 6 + situational +4
+    expect(baseAttackResult.totalBonus).toBe(4);  // Situational untyped +4
+    expect(baseAttackResult.totalValue).toBe(10); // 6 + 4
+  });
+
+  it('dual-gated: condition fails even when target context would match (order matters)', () => {
+    // Proves the condition check is PRIOR to situational routing.
+    // Even though the target is a goblin, if the character is not raging → 0 contribution.
+    const conditionFails = !checkCondition(ragingCondition, {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: {},
+      activeTags: ['class_ranger'],  // No "raging" tag
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    });
+    expect(conditionFails).toBe(true); // Condition check correctly returns false for non-raging
+
+    // With failed condition, no bonus is contributed even vs. a goblin
+    const result = simulateDualGatedModifier(dualGatedModifier, {
+      attributes: {},
+      skills: {},
+      combatStats: {},
+      saves: {},
+      characterLevel: 8,
+      eclForXp: 8,
+      classLevels: { 'class_ranger': 8 },
+      activeTags: ['class_ranger'],  // NOT raging
+      equippedWeaponTags: [],
+      selection: {},
+      constants: {},
+    }, ['goblin', 'humanoid']); // Target IS a goblin
+
+    expect(result.wasSkipped).toBe(true);
+    expect(result.situationalBonus).toBe(0);
+  });
+});
+
+// ============================================================
 // saves.all FAN-OUT stacking (GAP-04 fix)
 // Verifies that modifiers fanned out from saves.all correctly
 // interact with other save modifiers via stacking rules.
