@@ -64,7 +64,7 @@ character-vault/
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
-│   └── tests/                  # Vitest unit & integration tests (47 files, 1 671 tests)
+│   └── tests/                  # Vitest unit & integration tests (47 files, 1 756 tests)
 ├── api/                        # PHP backend — zero production dependencies
 │   ├── index.php               # Front-controller / router
 │   ├── migrate.php             # SQLite schema migration runner
@@ -162,7 +162,7 @@ Or use the VS Code task **Run: DB migrations**.
 ### Frontend — Vitest
 
 ```sh
-npm test                          # Run all 1 671 tests across 47 files
+npm test                          # Run all 1 756 tests across 47 files
 npm run test:coverage             # Run with v8 coverage report → coverage/index.html
 npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
@@ -389,6 +389,9 @@ No global Composer or PHP installation required. The script bootstraps everythin
 ./scripts/build.sh --skip-tests           # Skip test suites (faster iterations)
 ./scripts/build.sh --tag v1.2.3           # Custom version tag
 ./scripts/build.sh --env staging          # Staging environment
+./scripts/build.sh --output my-dist       # Custom tarball output directory
+./scripts/build.sh --deploy my-artifact   # Custom extracted artifact directory
+./scripts/build.sh --no-clean             # Keep intermediate build directory
 ./scripts/build.sh --help                 # All options
 ```
 
@@ -416,10 +419,13 @@ No global Composer or PHP installation required. The script bootstraps everythin
 Runs the entire pipeline inside Docker. **No Node.js, PHP, or Composer needed on the host.**
 
 ```sh
-./scripts/build-docker.sh                 # Standard build (tag from git describe)
-./scripts/build-docker.sh --tag v1.2.3   # Custom version tag
-./scripts/build-docker.sh --no-cache     # Force full rebuild
-./scripts/build-docker.sh --help         # All options
+./scripts/build-docker.sh                        # Standard build (tag from git describe)
+./scripts/build-docker.sh --tag v1.2.3           # Custom version tag
+./scripts/build-docker.sh --output my-dist       # Custom tarball output directory
+./scripts/build-docker.sh --no-cache             # Force full rebuild
+./scripts/build-docker.sh --push                 # Push builder image to registry
+./scripts/build-docker.sh --registry ghcr.io/org # Custom registry URL (with --push)
+./scripts/build-docker.sh --help                 # All options
 ```
 
 **Outputs:** same as Option A — `dist/` and `dist-pkg/`.
@@ -458,9 +464,11 @@ Serves the latest artifact in `dist/` using PHP's built-in server with a custom 
 Production-like environment (Apache + `mod_rewrite` + PHP + `pdo_sqlite`) without installing anything on the host.
 
 ```sh
-./run-docker.sh                    # Default port 8080
-./run-docker.sh --port 9000
-./run-docker.sh --no-cache         # Force rebuild of the runner image
+./run-docker.sh                             # Default port 8080
+./run-docker.sh --port 9000                 # Custom port
+./run-docker.sh --dir dist/character-vault-v1.2.3  # Custom artifact path
+./run-docker.sh --env-file /path/to/my.env  # Custom .env file
+./run-docker.sh --no-cache                  # Force rebuild of the runner image
 ./run-docker.sh --help
 ```
 

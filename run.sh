@@ -277,4 +277,16 @@ echo -e "  Press ${BOLD}Ctrl+C${RESET} to stop."
 echo ""
 
 export CHARACTER_VAULT_DIR="$APP_DIR"
-exec "$PHP_BIN" -S "localhost:${PORT}" -t "$APP_DIR" "$ROUTER"
+
+# Run PHP's built-in server in the foreground (no `exec`).
+#
+# WHY NOT `exec`:
+#   Using `exec` would replace the bash process with PHP, causing the EXIT trap
+#   (trap 'rm -f "$ROUTER"' EXIT) to never fire.  Without exec, bash waits for
+#   PHP to finish, then the trap runs and the temp router file is deleted.
+#
+# SIGNAL HANDLING:
+#   Ctrl+C sends SIGINT to the foreground process group, which includes both
+#   bash and PHP.  PHP handles SIGINT and exits; bash sees the non-zero exit
+#   code, triggers the EXIT trap (cleanup), then exits itself.
+"$PHP_BIN" -S "localhost:${PORT}" -t "$APP_DIR" "$ROUTER"

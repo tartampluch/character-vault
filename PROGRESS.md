@@ -294,7 +294,7 @@ _Goal: Zero-dependency build and deployment pipeline. Developer can clone, build
 
 - [x] **18.10 Version Control & Documentation:** Update `.gitignore` (exclude `dist/`, `dist-pkg/`, `.build-tools/`, `.env`, `*.sqlite*`). Rewrite `README.md` with comprehensive docs: structure, prerequisites, quick start, development, testing, VS Code debugging, building, running, env vars, production deployment.
 
-- [x] **Checkpoint #5 — Tooling & DX** (requires Phase 18): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding.
+- [x] **Checkpoint #5 — Tooling & DX** (requires Phase 18): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding. *(1 pass — resolved: run.sh:280 used `exec` which replaced the bash process and prevented the `trap 'rm -f "$ROUTER"' EXIT` from firing, causing the temp PHP router file to leak into /tmp/. Fixed by removing `exec` so bash waits for PHP to terminate, then the EXIT trap fires and cleans up the temp file. All other sections pass: build pipeline, Docker, VS Code configs, php-dev.sh, env vars, gitignore, README, security.)*
 
 ### Phase 19: UI Excellence — Tailwind CSS, Theming, Responsive Design & Iconography
 
