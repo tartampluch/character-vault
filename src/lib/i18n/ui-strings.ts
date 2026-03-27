@@ -798,6 +798,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'common.saved':                 'Saved ✓',
   'common.save_error':            'Error',
   'common.campaign':              'Campaign',
+  /** Short label for "Class" (e.g., column header in Leveling Journal overview table). */
+  'common.class':                 'Class',
   'common.level':                 'Level',
   'common.unknown':               'Unknown',
   'common.gm':                    'GM',

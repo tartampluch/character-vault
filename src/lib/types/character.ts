@@ -433,6 +433,33 @@ export interface Character {
    */
   classLevels: Record<ID, number>;
 
+  /**
+   * The character's favored class, identified by class Feature ID.
+   *
+   * D&D 3.5 SRD RULE ("Multiclass Characters", PHB p.59):
+   *   "Humans and half-elves can choose any class as their favored class.
+   *    All other races each have a single, fixed favored class."
+   *   The favored class is ignored when determining whether a character incurs a
+   *   multiclassing XP penalty: only NON-favored classes that are 2+ levels below
+   *   the highest non-favored class level impose the 20% XP penalty per class.
+   *
+   * OPTIONAL FIELD:
+   *   Absent during character creation or for single-class characters (no penalty
+   *   applies regardless). For human PCs the player must explicitly select their
+   *   favored class (stored here). For non-human PCs it is typically set
+   *   automatically when the race feature is activated (via `grantedModifiers`).
+   *
+   * USAGE:
+   *   Read by `GameEngine.phase_multiclassXpPenaltyRisk` to exclude the favored
+   *   class when checking whether any class level is 2+ below the highest active class.
+   *
+   * @example "class_fighter" (Human who chose Fighter as favored class)
+   * @example "class_wizard"  (Elf whose favored class is Wizard)
+   * @see ARCHITECTURE.md section 6 — Character Entity
+   * @see GameEngine.phase_multiclassXpPenaltyRisk
+   */
+  favoredClass?: ID;
+
   // ---------------------------------------------------------------------------
   // Effective Character Level (ECL) — monster PCs and level adjustment variant
   // ---------------------------------------------------------------------------

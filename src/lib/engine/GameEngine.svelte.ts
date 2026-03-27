@@ -2071,6 +2071,16 @@ export class GameEngine {
    *   ...where "Class_SP_Per_Level" is the base SP/level for the CLASS whose level
    *   was gained at that character level.
    *
+   *   INT RETROACTIVITY (SRD, "Intelligence and Skill Points" sidebar):
+   *     "If your Intelligence modifier increases … you gain retroactive skill points."
+   *     This implementation uses the CURRENT INT modifier for ALL levels — both past
+   *     and future. This is the correct SRD interpretation: a permanent INT increase
+   *     (from a level-up ASI, a tome, a wish) immediately raises the character's total
+   *     SP budget for every level they have already taken, granting the back-pay in full.
+   *     Conversely, a permanent INT decrease reduces the budget retroactively.
+   *     Temporary INT modifiers (buff spells, conditions) do NOT affect retroactive SP
+   *     because they come from situational modifiers, not from the base ability score.
+   *
    *   For MULTICLASS characters, each class contributes INDEPENDENTLY:
    *     Fighter 2 SP/level + Rogue 8 SP/level does NOT average to 5 SP/level × total level.
    *     Instead: Fighter contributes (max(1, 2+INT) × fighterLevels) and
@@ -2369,11 +2379,39 @@ export class GameEngine {
    * Used by: `LevelingJournalModal.svelte` to show an informational warning.
    */
   phase_multiclassXpPenaltyRisk: boolean = $derived.by(() => {
-    const levels = Object.values(this.character.classLevels);
-    if (levels.length <= 1) return false;
-    const max = Math.max(...levels);
-    // D&D 3.5 SRD: penalty triggers when a class is MORE THAN 1 level behind the highest.
-    return levels.some(l => max - l > 1);
+    const entries = Object.entries(this.character.classLevels);
+    if (entries.length <= 1) return false;
+
+    // D&D 3.5 SRD ("Multiclass Characters", PHB p.59):
+    //   The character's FAVORED CLASS is excluded from the penalty check entirely.
+    //   Only non-favored classes that are 2+ levels below the highest non-favored
+    //   class level impose the 20% XP penalty per offending class.
+    //
+    //   Example: Human Fighter 5 / Wizard 1 (favored = Fighter):
+    //     After excluding Fighter: only Wizard 1 remains → no penalty (single class).
+    //
+    //   Example: Elf Wizard 5 / Fighter 1 (favored = Wizard, Elf racial):
+    //     After excluding Wizard: only Fighter 1 remains → no penalty (single class).
+    //
+    //   Example: Dwarf Fighter 3 / Rogue 1 (favored = Fighter, Dwarf racial):
+    //     After excluding Fighter: only Rogue 1 remains → no penalty.
+    //
+    //   Example: Human Fighter 3 / Wizard 1 / Rogue 1 (favored = Fighter):
+    //     After excluding Fighter: Wizard 1 and Rogue 1. Max = 1. Neither is 2+ below. No penalty.
+    //
+    //   Example: Human Fighter 3 / Wizard 1 / Rogue 3 (no favored set):
+    //     Max = 3. Wizard 1 is 2 below → penalty applies.
+    const favoredClass = this.character.favoredClass;
+    const checkableEntries = favoredClass
+      ? entries.filter(([id]) => id !== favoredClass)
+      : entries;
+
+    // With only one (or zero) checkable classes, no multiclass penalty can apply.
+    if (checkableEntries.length <= 1) return false;
+
+    const max = Math.max(...checkableEntries.map(([, lvl]) => lvl));
+    // Penalty triggers when a non-favored class is MORE THAN 1 level below the highest.
+    return checkableEntries.some(([, l]) => max - l > 1);
   });
 
   /**

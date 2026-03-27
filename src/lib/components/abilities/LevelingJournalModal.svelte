@@ -163,7 +163,7 @@
         <table class="w-full text-sm min-w-[480px]">
           <thead>
             <tr class="bg-surface-alt text-text-muted text-xs uppercase tracking-wider">
-              <th class="text-left px-3 py-2">{ui('common.class', lang) || 'Class'}</th>
+              <th class="text-left px-3 py-2">{ui('common.class', lang)}</th>
               <th class="text-center px-2 py-2">{ui('journal.class_level', lang)}</th>
               <th class="text-center px-2 py-2">{ui('journal.bab', lang)}</th>
               <th class="text-center px-2 py-2">{ui('journal.fort', lang)}</th>
