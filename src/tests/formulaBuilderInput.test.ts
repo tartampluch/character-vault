@@ -158,6 +158,9 @@ const PATH_GROUPS: PathGroup[] = [
   {
     title: 'Constants & Special',
     entries: [
+      // @constant.<id> is from ARCHITECTURE.md §4.3 — named constant from config tables.
+      // The TEMPLATE_PREFIXES entry ensures @constant.some_name validates as 'valid'.
+      { path: '@constant.<id>',                label: 'Named constant — type constant ID after click' },
       { path: '@selection.<choiceId>',         label: "Player's selection" },
       { path: '@activeTags',                   label: 'All active feature tags (array)' },
       { path: '@equippedWeaponTags',           label: 'Equipped weapon tags (array)' },
@@ -469,6 +472,21 @@ describe('FormulaBuilderInput — validation: extended cases', () => {
 
   it("'@master.classLevels.class_wizard' (template prefix match) → 'valid'", () => {
     expect(validateFormula('@master.classLevels.class_wizard')).toBe('valid');
+  });
+
+  /**
+   * TEST 8b: @constant.<id> template-prefix paths → 'valid'.
+   * "@constant.<id>" is in ARCHITECTURE.md §4.3 for named numeric constants
+   * from config tables. The TEMPLATE_PREFIXES entry '@constant.' ensures
+   * "@constant.some_name" validates as 'valid' even though the full path is
+   * not in KNOWN_PATHS_SET.
+   */
+  it("'@constant.xp_threshold_level_5' (template prefix match) → 'valid'", () => {
+    expect(validateFormula('@constant.xp_threshold_level_5')).toBe('valid');
+  });
+
+  it("'@constant.point_buy_cap' (template prefix match) → 'valid'", () => {
+    expect(validateFormula('@constant.point_buy_cap')).toBe('valid');
   });
 
   /**

@@ -232,6 +232,12 @@
       {
         title: ui('content_editor.group.constants', lang),
         entries: [
+          // @constant.<id> is in ARCHITECTURE.md §4.3 as a named numeric constant
+          // from config tables (e.g. XP thresholds, point-buy costs). The GM types
+          // the constant ID after clicking. The TEMPLATE_PREFIXES entry ensures that
+          // "@constant.some_name" validates as 'valid' even though the full path is
+          // not in KNOWN_PATHS_SET.
+          { path: '@constant.<id>',                label: ui('formula.hint.constant', lang) },
           { path: '@selection.<choiceId>',         label: ui('formula.hint.selection', lang) },
           { path: '@activeTags',                   label: ui('formula.hint.active_tags', lang) },
           { path: '@equippedWeaponTags',           label: ui('formula.hint.weapon_tags', lang) },

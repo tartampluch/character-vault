@@ -1188,6 +1188,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'formula.hint.class_levels':         'Levels in a class  — type class ID after click',
   'formula.hint.character_level':      'Total character level (all classes)',
   'formula.hint.ecl_for_xp':           'ECL for XP table (characterLevel + LA)',
+  'formula.hint.constant':             'Named constant — type constant ID after click',
   'formula.hint.selection':            'Player\'s selection on parent feature',
   'formula.hint.active_tags':          'All active feature tags (array)',
   'formula.hint.weapon_tags':          'Equipped weapon tags (array)',
