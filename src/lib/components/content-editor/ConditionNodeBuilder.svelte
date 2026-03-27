@@ -879,7 +879,7 @@
         type="text"
         class="input text-xs w-full"
         value={node.errorMessage ?? ''}
-        placeholder="e.g. Requires Strength 13+"
+        placeholder="e.g. Requires stat_strength 13+"
         oninput={(e) => patchCondition({ errorMessage: (e.currentTarget as HTMLInputElement).value || undefined })}
         autocomplete="off"
       />

@@ -202,7 +202,7 @@ _Goal: Build the full Combat tab. Rely entirely on DAG pipelines. Engine handles
 
 - [x] **13.4 Encumbrance & Wealth Calculator:** Create `src/lib/components/inventory/Encumbrance.svelte`. `$derived` total weight (Equipped + Backpack). Compare vs. STR carrying capacity thresholds from `config_carrying_capacity` table. Medium/Heavy load dispatches `condition_encumbered` feature to engine. CP/SP/GP/PP inputs with coin weight (50 coins = 1 lb).
 
-- [x] **Checkpoint #2 — UI Layer Conformance** (requires Phases 1–13): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding.
+- [x] **Checkpoint #2 — UI Layer Conformance** (requires Phases 1–13): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding. *(29th pass — resolved: computeAbilityModifier in RollStatsModal, brainburnDC in PsionicItemCard, SP remaining arithmetic in LevelingJournalModal, minimumSkillRanks direct mutation in LevelingJournalModal, computeBaseSave in SavingThrows, Math.max in Encumbrance.setCoin — all moved to engine methods getBrainburnDC / getBaseSaveBonus / unlockAllSkillRanks / setCoinValue.)*
 
 ### Phase 14: PHP Backend & Frontend Integration
 

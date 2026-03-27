@@ -29,7 +29,7 @@
  *   Intl.PluralRules handles the selection automatically for any BCP-47 code.
  */
 
-import type { UiStringValue, UiLocale, UnitSystem } from '../types/i18n';
+import type { UiStringValue, UiLocale, UnitSystem, LocalizedString } from '../types/i18n';
 
 // =============================================================================
 // BUILT-IN LANGUAGE REGISTRY
@@ -174,6 +174,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'character.level_display':      'Level {n}',
   'character.no_class':           'No class selected yet',
   'character.go_to_core_tab':     'Go to Core tab',
+  /** Shown in the fallback block when an unrecognised ?tab= query parameter is encountered. */
+  'character.unknown_tab_prefix': 'Unknown tab:',
   /** Fallback name for a character that could not be found in the vault or storage. */
   'character.unknown_name':       'Unknown Character',
 
@@ -262,6 +264,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'gm.level_prefix':              'Lv.',
   'gm.override_count':            'override(s)',
   'gm.view':                      'GM View',
+  /**
+   * Short abbreviation for Hit Points displayed in the GM Dashboard quick-stats
+   * chip. English uses "HP"; French uses "PV" (Points de Vie).
+   * Kept separate from `combat.hp.title` ("Hit Points") because the GM chip
+   * needs an ultra-compact 2–3-character label, not the full title.
+   */
+  'gm.hp_abbr':                   'HP',
 
   // ==========================================================================
   // CORE TAB — BASIC INFO
@@ -462,6 +471,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.core.grapple_check':    'Grapple Check',
   'combat.core.breakdown':        'Breakdown',
   'combat.core.roll':             'Roll',
+  // Fortification (ARCHITECTURE.md §4.7) — critical hit negation percentage
+  'combat.core.fort':             'Fort.',
+  'combat.core.fort_desc':        'Fortification — chance (%) to negate a confirmed critical hit',
+  // Arcane Spell Failure (ARCHITECTURE.md §4.8) — accumulated armour penalty for arcane casters
+  'combat.core.asf':              'ASF',
+  'combat.core.asf_desc':         'Arcane Spell Failure — total % chance from equipped armour and shields',
 
   // ==========================================================================
   // COMBAT TAB — ATTACKS
@@ -839,7 +854,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'psionic_item.manifest_from_crown': 'Manifest',
   'psionic_item.draw_pp':            'Draw {pp} PP',
   'psionic_item.powers_known':       'Powers',
-  'psionic_item.brainburn_risk':     '⚠ Brainburn risk (ML check DC {dc})',
+  'psionic_item.pp_abbr':            'PP',
+  'psionic_item.brainburn_risk':     'Brainburn risk (ML check DC {dc})',
   'psionic_item.power_flushed':      'Used up',
   'psionic_item.tattoo_activate_confirm': 'Activate {name}? It will fade after use.',
   'psionic_item.recharge_label':     'Recharge:',
@@ -1006,26 +1022,97 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'settings.chapters.remove_task':      'Remove task',
 
   // ==========================================================================
+  // CAMPAIGN SETTINGS — STAT GENERATION
+  // ==========================================================================
+  'settings.stat_gen.points_unit':  'points',
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — VARIANT RULES SECTION DESCRIPTION
+  // ==========================================================================
+  'settings.variant.section_desc':  'Variant rules change core engine behaviour. These flags are saved per-campaign and applied immediately. Only enable variant rules your group has agreed to use.',
+  /** Displayed below the V/WP variant checkbox when the option is enabled. */
+  'settings.variant.vwp_warning':   'Requires {v} and {w} pools on each character.',
+
+  // ==========================================================================
+  // CAMPAIGN SETTINGS — CAMPAIGN MEMBERS SECTION
+  // ==========================================================================
+  'settings.members.title':         'Campaign Members',
+  'settings.members.loading':       'Loading members…',
+  'settings.members.empty':         'No members yet. Add players using the button below.',
+  'settings.members.suspended':     '(Suspended)',
+  'settings.members.add':           'Add Member',
+  'settings.members.search_placeholder': 'Search by username or name…',
+  'settings.members.loading_users': 'Loading users…',
+  'settings.members.no_match':      'No matching users.',
+  'settings.members.all_members':   'All users are already members.',
+  'settings.members.close_picker':  'Close',
+  /** Role display labels used in the member list badge. */
+  'settings.members.role_admin':    'Admin',
+  'settings.members.remove':        'Remove {username} from campaign',
+
+  // ==========================================================================
+  // ABILITY SCORE ABBREVIATIONS
+  // Three-letter abbreviations shown in headers, stat chips, and compact tables.
+  // French D&D 3.5 uses different abbreviations (FOR, SAG) from English (STR, WIS).
+  // Adding a new language only requires adding 'ability_abbr.*' keys to its
+  // locale JSON — no changes to constants.ts needed.
+  // ==========================================================================
+  'ability_abbr.stat_strength':     'STR',
+  'ability_abbr.stat_dexterity':    'DEX',
+  'ability_abbr.stat_constitution': 'CON',
+  'ability_abbr.stat_intelligence': 'INT',
+  'ability_abbr.stat_wisdom':       'WIS',
+  'ability_abbr.stat_charisma':     'CHA',
+
+  // ==========================================================================
+  // ALIGNMENT LABELS
+  // The 9 standard D&D 3.5 alignments. Adding a new language requires only
+  // adding 'alignment.*' keys to the locale JSON file.
+  // ==========================================================================
+  'alignment.lawful_good':     'Lawful Good',
+  'alignment.neutral_good':    'Neutral Good',
+  'alignment.chaotic_good':    'Chaotic Good',
+  'alignment.lawful_neutral':  'Lawful Neutral',
+  'alignment.true_neutral':    'True Neutral',
+  'alignment.chaotic_neutral': 'Chaotic Neutral',
+  'alignment.lawful_evil':     'Lawful Evil',
+  'alignment.neutral_evil':    'Neutral Evil',
+  'alignment.chaotic_evil':    'Chaotic Evil',
+
+  // ==========================================================================
+  // SYNTHETIC PIPELINE LABELS
+  // Labels for roll-modal pipelines built at runtime (weapon rolls, spell rolls).
+  // Adding a new language only requires adding these keys to the locale JSON.
+  // ==========================================================================
+  'combat.weapon_roll':  'Weapon Roll',
+  'magic.spell_roll':    'Spell Roll',
+
+  // ==========================================================================
+  // ENGINE MODIFIER SOURCE LABELS
+  // Source labels stored in Modifier.sourceName (LocalizedString) for display
+  // in the modifier breakdown modal. Adding a new language only requires adding
+  // these keys to the locale JSON.
+  // ==========================================================================
+  'modifier.synergy':    'Synergy',
+
+  // ==========================================================================
   // LANGUAGE SELECTOR
   // ==========================================================================
   'lang.label':                   'Language',
   'lang.select_tooltip':          'Switch display language',
 
-  // Built-in language display names.
-  // Community locale files may provide codes not listed here; those will use
-  // the raw code (e.g. "ES") as their dropdown label.
+  // English names itself here because English has no separate locale file
+  // (it is always bundled as the baseline) and because the PHP /api/locales
+  // endpoint intentionally excludes 'en' from its response.
+  //
+  // ALL OTHER languages name themselves inside their own locale JSON file
+  // (e.g. fr.json has "lang.fr": "Français", de.json has "lang.de": "Deutsch").
+  // This ensures the language dropdown always shows native names that speakers
+  // recognise, regardless of which language is currently active in the UI.
+  //
+  // DO NOT add 'lang.de', 'lang.fr', 'lang.es' etc. here — those belong in
+  // their respective locale files only.
   'lang.en':                      'English',
-  'lang.fr':                      'French',
-  'lang.de':                      'German',
-  'lang.es':                      'Spanish',
-  'lang.it':                      'Italian',
-  'lang.pt':                      'Portuguese',
-  'lang.nl':                      'Dutch',
-  'lang.pl':                      'Polish',
-  'lang.cs':                      'Czech',
-  'lang.ja':                      'Japanese',
-  'lang.ko':                      'Korean',
-  'lang.zh':                      'Chinese',
 };
 
 // =============================================================================
@@ -1090,4 +1177,69 @@ export function uiN(key: string, count: number, lang: string = 'en'): string {
   const form  = pr.select(count);
   const value = entry[form] ?? entry['other'] ?? entry['one'] ?? key;
   return value.replace('{n}', String(count));
+}
+
+/**
+ * Builds a `LocalizedString` (all-languages map) for a UI string key by
+ * consulting the English baseline and every loaded locale at the time of call.
+ *
+ * PURPOSE — WHY THIS EXISTS:
+ *   The game engine stores modifier `sourceName`, feature `label`, and similar
+ *   fields as `LocalizedString` objects (a `Record<string, string>` that maps
+ *   language codes to their translations). These objects are resolved at display
+ *   time via `engine.t()` so the active language can change without re-running
+ *   the DAG. Previously, such objects were constructed with inline translations
+ *   (e.g. `{ en: 'Synergy', fr: 'Synergie' }`), which forced every new language
+ *   to modify TypeScript source files.
+ *
+ *   `buildLocalizedString(key)` replaces that pattern: the English baseline
+ *   comes from `UI_STRINGS` and all other languages from their loaded locale
+ *   files. Adding a new language never requires changes to `constants.ts` or
+ *   the engine — only a new entry in the locale JSON file is needed.
+ *
+ * WHEN TO CALL:
+ *   Call inside reactive engine methods (e.g. inside `$derived.by()`) or
+ *   component handlers — NOT at module-level constant initialisation time,
+ *   because locale files are loaded asynchronously after boot. By the time
+ *   any user action triggers these paths, all locales are already cached.
+ *
+ * @param key - A `ui-strings.ts` key whose value must be a plain string
+ *              (not a plural object).
+ * @returns A `LocalizedString` populated with the English value and every
+ *          currently loaded locale's translation for that key.
+ */
+export function buildLocalizedString(key: string): LocalizedString {
+  const en = typeof UI_STRINGS[key] === 'string'
+    ? (UI_STRINGS[key] as string)
+    : key; // Graceful fallback if the key is missing or is a plural object.
+
+  const result: Record<string, string> = { en };
+
+  for (const [code, locale] of _loadedLocales.entries()) {
+    const entry = locale[key];
+    if (typeof entry === 'string') result[code] = entry;
+  }
+
+  return result;
+}
+
+/**
+ * Injects a locale object directly into the cache without an HTTP fetch.
+ *
+ * INTENDED FOR TESTING ONLY.
+ *   Unit tests cannot fetch `/locales/fr.json` from the filesystem.
+ *   Call this helper at the top of a describe block to prime the locale cache
+ *   with the translations the test needs.
+ *
+ * @example
+ *   loadUiLocaleFromObject('fr', { 'ability_abbr.stat_strength': 'FOR' });
+ *   expect(getAbilityAbbr('stat_strength', 'fr')).toBe('FOR');
+ *
+ * @param code         - BCP-47 language code (e.g., 'fr', 'de').
+ * @param translations - Partial locale map to inject.
+ */
+export function loadUiLocaleFromObject(code: string, translations: UiLocale): void {
+  if (code === 'en') return; // English is always served from the bundled baseline.
+  const existing = _loadedLocales.get(code) ?? {};
+  _loadedLocales.set(code, { ...existing, ...translations });
 }

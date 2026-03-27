@@ -123,78 +123,10 @@
     return `${map[category] ?? 'bg-surface-alt text-text-secondary border-border'} border text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0`;
   }
 
-  /**
-   * Static fallback labels for pipeline targetIds that are not modelled as
-   * runtime pipelines (e.g. saves.all, combatStats.hit_die_type, …).
-   * These are modifier targets that exist in the JSON data but have no
-   * corresponding runtime StatisticPipeline in phase2/3.
-   */
-  const PIPELINE_FALLBACK_LABELS: Record<string, { en: string; fr: string }> = {
-    'saves.all':                           { en: 'All Saving Throws',          fr: 'Jets de sauvegarde (tous)'    },
-    'saves.fortitude':                     { en: 'Fortitude Save',              fr: 'Jet de Vigueur'               },
-    'saves.reflex':                        { en: 'Reflex Save',                 fr: 'Jet de Réflexes'              },
-    'saves.will':                          { en: 'Will Save',                   fr: 'Jet de Volonté'               },
-    'combatStats.attack_bonus':            { en: 'Attack Bonus',                fr: "Bonus d'attaque"              },
-    'combatStats.stability_check':         { en: 'Stability Check',             fr: 'Test de stabilité'            },
-    'combatStats.hit_die_type':            { en: 'Hit Die',                     fr: 'Dé de vie'                    },
-    'combatStats.speed_land':              { en: 'Land Speed',                  fr: 'Vitesse terrestre'            },
-    'combatStats.speed_fly':               { en: 'Fly Speed',                   fr: 'Vitesse de vol'               },
-    'combatStats.speed_swim':              { en: 'Swim Speed',                  fr: 'Vitesse de nage'              },
-    'combatStats.speed_climb':             { en: 'Climb Speed',                 fr: "Vitesse d'escalade"           },
-    'combatStats.speed_burrow':            { en: 'Burrow Speed',                fr: 'Vitesse de fouissement'       },
-    'combatStats.ac_normal':               { en: 'Armor Class',                 fr: "Classe d'armure"              },
-    'combatStats.ac_touch':                { en: 'Touch AC',                    fr: 'CA de contact'                },
-    'combatStats.ac_flat_footed':          { en: 'Flat-Footed AC',              fr: 'CA pris au dépourvu'          },
-    'attributes.speed_land':               { en: 'Land Speed',                  fr: 'Vitesse terrestre'            },
-    'attributes.skill_points_per_level':   { en: 'Skill Points / Level',        fr: 'Points de compétence / niveau'},
-    'attributes.bonus_skill_points_per_level': { en: 'Bonus Skill Points / Level', fr: 'Points bonus / niveau'    },
-    'attributes.bonus_skill_points_1st_level': { en: 'Bonus Skill Points (1st Level)', fr: 'Points bonus (niveau 1)' },
-    'attributes.bonus_feat_slots':         { en: 'Bonus Feat Slots',            fr: 'Emplacements de don bonus'    },
-    'attributes.spell_dc_illusion':        { en: 'Illusion Spell DC',           fr: 'DD des sorts d\'illusion'     },
-    'attributes.stat_strength':            { en: 'Strength',                    fr: 'Force'                        },
-    'attributes.stat_dexterity':           { en: 'Dexterity',                   fr: 'Dextérité'                    },
-    'attributes.stat_constitution':        { en: 'Constitution',                fr: 'Constitution'                 },
-    'attributes.stat_intelligence':        { en: 'Intelligence',                fr: 'Intelligence'                 },
-    'attributes.stat_wisdom':              { en: 'Wisdom',                      fr: 'Sagesse'                      },
-    'attributes.stat_charisma':            { en: 'Charisma',                    fr: 'Charisme'                     },
-    'attributes.stat_size':                { en: 'Size',                        fr: 'Taille'                       },
-    // Resource pool modifiers
-    'resources.power_points.maxValue':     { en: 'Power Points (max)',          fr: 'Points de pouvoir (max)'      },
-    'resources.vitality_points.maxValue':  { en: 'Vitality Points (max)',       fr: 'Points de vitalité (max)'     },
-    'resources.wound_points.maxValue':     { en: 'Wound Points (max)',          fr: 'Points de blessure (max)'     },
-    'resources.hp.maxValue':               { en: 'Hit Points (max)',            fr: 'Points de vie (max)'          },
-    'resources.ki_points.maxValue':        { en: 'Ki Points (max)',             fr: 'Points de ki (max)'           },
-  };
-
-  function resolvePipelineLabel(targetId: string): string {
-    // 1. Normalize: "attributes.stat_strength" → "stat_strength"
-    const normalised = targetId.startsWith('attributes.') ? targetId.slice('attributes.'.length) : targetId;
-
-    // 2. Try live pipelines first (most accurate, language-reactive)
-    const attrPipeline   = engine.phase2_attributes[normalised];
-    if (attrPipeline?.label) return engine.t(attrPipeline.label);
-
-    const combatPipeline = engine.phase3_combatStats[targetId];
-    if (combatPipeline?.label) return engine.t(combatPipeline.label);
-
-    // skills: phase4_skills is keyed by bare skill ID (e.g. "skill_listen")
-    // but targetId may have "skills." prefix (e.g. "skills.skill_listen")
-    const skillId = targetId.startsWith('skills.') ? targetId.slice('skills.'.length) : targetId;
-    const skillPipeline = engine.phase4_skills[skillId];
-    if (skillPipeline?.label) return engine.t(skillPipeline.label);
-
-    // 3. Static fallback map for targetIds with no runtime pipeline
-    const fallback = PIPELINE_FALLBACK_LABELS[targetId] ?? PIPELINE_FALLBACK_LABELS[`attributes.${targetId}`];
-    if (fallback) return engine.t(fallback);
-
-    // 4. Last resort: prettify the raw ID
-    return targetId
-      .replace(/^(attributes|combatStats|skills|saves|resources)\./, '')
-      .replace(/\.maxValue$/, ' (max)')
-      .replace(/\.currentValue$/, ' (current)')
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, c => c.toUpperCase());
-  }
+  // Pipeline label resolution is delegated to engine.resolvePipelineLabel()
+  // (ARCHITECTURE.md §3, §6 — zero game logic and zero hardcoding in .svelte files).
+  // The fallback map of D&D stat names and pipeline labels lives in GameEngine as
+  // GameEngine.PIPELINE_FALLBACK_LABELS; it is never embedded in this component.
 
   /**
    * Category badge Tailwind classes.
@@ -291,8 +223,8 @@
                       : 'text-text-muted'}">
                       {numVal !== null ? formatModifier(numVal) : mod.value}
                     </span>
-                    <!-- Target -->
-                    <span class="text-sky-400">{resolvePipelineLabel(mod.targetId)}</span>
+                    <!-- Target — label resolved by the engine (ARCHITECTURE.md §6: no hardcoded stat names in .svelte) -->
+                    <span class="text-sky-400">{engine.resolvePipelineLabel(mod.targetId)}</span>
                     <!-- Type -->
                     <span class="text-[10px] text-text-muted">({mod.type})</span>
                     <!-- Situational context — human-readable label -->

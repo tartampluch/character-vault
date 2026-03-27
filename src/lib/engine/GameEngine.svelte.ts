@@ -34,7 +34,7 @@
  */
 
 import { createDefaultCampaignSettings } from '../types/settings';
-import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight } from '../utils/formatters';
+import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight, computeCoinWeight, computeAbilityModifier } from '../utils/formatters';
 import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
 import type { LocalizedString } from '../types/i18n';
@@ -48,7 +48,8 @@ import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
-import { SYNERGY_SOURCE_LABEL } from '../utils/constants';
+import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS } from '../utils/constants';
+import { buildLocalizedString, ui } from '../i18n/ui-strings';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
 
@@ -1019,6 +1020,27 @@ export class GameEngine {
   addCharacterToVault(char: Character): void {
     storageManager.saveCharacter(char);
     this.allVaultCharacters.push(char);
+  }
+
+  /**
+   * Registers an already-persisted character in the vault's in-memory list
+   * WITHOUT saving it again to storage.
+   *
+   * WHY A SEPARATE METHOD:
+   *   When navigating directly to `/character/[id]`, the character is loaded from
+   *   `storageManager.loadCharacter()` (already on disk) and added to the in-memory
+   *   vault list for vault-page rendering. Using `addCharacterToVault()` would
+   *   trigger a redundant write; this method is write-free.
+   *
+   *   Using an engine method (rather than direct `push` in the route) satisfies
+   *   the zero-game-logic-in-Svelte rule — vault list management is character state.
+   *
+   * @param char - The character to register.
+   */
+  registerCharacterInVault(char: Character): void {
+    if (!this.allVaultCharacters.some(c => c.id === char.id)) {
+      this.allVaultCharacters.push(char);
+    }
   }
 
   /**
@@ -2413,17 +2435,26 @@ export class GameEngine {
           const sourceLabel: LocalizedString = sourceSkillFeature?.label
             ?? { en: sourceSkill, fr: sourceSkill };
 
-          // Build the synergy modifier source name using the externalized
-          // SYNERGY_SOURCE_LABEL constant (no hardcoded EN/FR strings in engine code).
-          // Adding a new UI language only requires updating constants.ts + the locale
-          // JSON — no changes to this engine method.
+          // Build the synergy modifier source name.
+          //
+          // `buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY)` constructs a full
+          // LocalizedString from every loaded locale at the time this $derived
+          // block re-runs. The "Synergy" word in each language comes from
+          // `ui-strings.ts` (English baseline) and `static/locales/*.json` (other
+          // languages) — no translations live in TypeScript source files.
+          //
+          // Adding a new UI language only requires adding a `"modifier.synergy"` key
+          // to the new locale JSON file. No changes to constants.ts or the engine.
+          const synergyLabel = buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY);
           const synergyMod: import('../types/pipeline').Modifier = {
             id: `synergy_${sourceSkill}_to_${targetSkill}`,
             sourceId: sourceSkill,
-            sourceName: {
-              en: `${SYNERGY_SOURCE_LABEL.en} (${translateString(sourceLabel, 'en')})`,
-              fr: `${SYNERGY_SOURCE_LABEL.fr} (${translateString(sourceLabel, 'fr')})`,
-            },
+            sourceName: Object.fromEntries(
+              Object.keys(synergyLabel).map(lang => [
+                lang,
+                `${synergyLabel[lang]} (${translateString(sourceLabel, lang)})`,
+              ])
+            ) as LocalizedString,
             targetId: targetSkill,
             value: bonusValue,
             type: bonusType,
@@ -2653,6 +2684,50 @@ export class GameEngine {
   }
 
   // ---------------------------------------------------------------------------
+  // SPELL DICE HELPERS — Phase 12.3 support
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns true if the spell has at least one modifier that targets a damage pipeline.
+   *
+   * WHY IN THE ENGINE (ARCHITECTURE.md §3 — zero game logic in .svelte files):
+   *   "Does this spell deal damage?" is a D&D game rule — it controls whether a dice
+   *   roll button appears in CastingPanel.svelte. Moving the check here prevents a
+   *   heuristic (`targetId.includes('damage')`) from leaking into the UI layer.
+   *
+   * @param spell - The MagicFeature to inspect.
+   * @returns true when at least one grantedModifier targets a damage pipeline.
+   */
+  spellHasDamageRoll(spell: import('../types/feature').MagicFeature): boolean {
+    return spell.grantedModifiers?.some(m => m.targetId.includes('damage')) ?? false;
+  }
+
+  /**
+   * Returns the dice formula for the primary damage roll of a spell.
+   *
+   * Resolution order:
+   *   1. The first grantedModifier whose targetId includes "damage" and whose
+   *      value is a non-empty string (e.g. "5d6" for Fireball at CL 5).
+   *   2. "1d6" as a fallback (content authoring error guard — avoids a broken
+   *      roll modal for spells that claim to deal damage but have no dice formula).
+   *
+   * WHY IN THE ENGINE:
+   *   Extracting a formula from Feature modifier data is rule-adjacent logic that
+   *   belongs here, not in CastingPanel.svelte (ARCHITECTURE.md §3).
+   *
+   * @param spell - The MagicFeature whose damage dice to resolve.
+   * @returns A valid dice formula string (e.g. "5d6", "2d4", "1d6").
+   */
+  getSpellDiceFormula(spell: import('../types/feature').MagicFeature): string {
+    const damageMod = spell.grantedModifiers?.find(m => m.targetId.includes('damage'));
+    if (damageMod && typeof damageMod.value === 'string' && damageMod.value.length > 0) {
+      return damageMod.value;
+    }
+    // Fallback: content authoring error — damage modifier exists but value is not a dice string.
+    return '1d6';
+  }
+
+  // ---------------------------------------------------------------------------
   // WEAPON ATTACK & DAMAGE HELPERS — Phase 10.4
   // ---------------------------------------------------------------------------
   //
@@ -2725,6 +2800,35 @@ export class GameEngine {
     return (feature.grantedModifiers ?? [])
       .filter(m => m.type === 'enhancement' && m.targetId.includes('base_attack_bonus'))
       .reduce((sum, m) => sum + (typeof m.value === 'number' ? m.value : 0), 0);
+  }
+
+  /**
+   * Determines whether a weapon item is a ranged weapon.
+   *
+   * D&D 3.5 SRD RULE:
+   *   A weapon is considered ranged when it either:
+   *     1. Carries the "ranged" category tag (explicit ranged categorisation in the rule JSON), OR
+   *     2. Has a `rangeIncrementFt` value greater than 0 (thrown/projectile weapon with a
+   *        range increment defined by its data, even without an explicit tag).
+   *
+   * WHY IN THE ENGINE:
+   *   This classification drives real game decisions (which ability score applies to attack,
+   *   whether point-blank shot and other ranged feats apply, etc.). Per ARCHITECTURE.md §3,
+   *   all game logic must reside in `GameEngine.svelte.ts` or utility functions rather than
+   *   being inlined in Svelte components. Components call this method and receive a boolean.
+   *
+   * @param feature - The ItemFeature to classify. Must have `tags` and `weaponData` defined.
+   * @returns `true` if the weapon is ranged; `false` for melee.
+   * @see src/lib/components/combat/Attacks.svelte — display consumer
+   * @see src/lib/utils/constants.ts — RANGED_CATEGORY_TAG
+   */
+  isWeaponRanged(feature: { tags?: string[]; weaponData?: { rangeIncrementFt?: number } }): boolean {
+    // Check 1: explicit "ranged" tag (most common — ranged weapons carry this tag in JSON data).
+    if ((feature.tags ?? []).includes('ranged')) return true;
+    // Check 2: non-zero range increment (handles thrown weapons like javelins and daggers that
+    // may not always carry the "ranged" tag but DO have a rangeIncrementFt value in weaponData).
+    if ((feature.weaponData?.rangeIncrementFt ?? 0) > 0) return true;
+    return false;
   }
 
   /**
@@ -3011,6 +3115,13 @@ export class GameEngine {
       const feat = dataLoader.getFeature(afi.featureId);
       if (!feat || feat.category !== 'item') continue;
       total += (feat as import('../types/feature').ItemFeature).weightLbs ?? 0;
+    }
+    // D&D 3.5 RULE: Coins count toward encumbrance at 50 coins = 1 lb (PHB p.149).
+    // This ensures `phase2b_encumbranceTier` and `phase_isEncumbered` correctly
+    // reflect carried coin weight (ARCHITECTURE.md §3 — no game logic in .svelte files).
+    const w = this.character.wealth;
+    if (w) {
+      total += computeCoinWeight(w.cp, w.sp, w.gp, w.pp);
     }
     return total;
   });
@@ -4356,6 +4467,109 @@ export class GameEngine {
     return Math.min(max, Math.max(min, score));
   }
 
+  /**
+   * Returns the D&D ability modifier for a preview (not-yet-applied) score.
+   *
+   * Formula: floor((score − 10) / 2)  (Player's Handbook, Chapter 1).
+   *
+   * WHY IN THE ENGINE:
+   *   `Math.floor((score − 10) / 2)` is the canonical D&D ability-modifier
+   *   formula. Calling it directly in a .svelte component violates the
+   *   zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3) because it is
+   *   a mathematical game calculation, not a formatting helper.
+   *
+   *   This method is needed by `PointBuyModal.svelte` to display the modifier
+   *   preview for WORKING scores (not-yet-committed to the character), which is
+   *   why `engine.phase2_attributes[id].derivedModifier` cannot be used here
+   *   (it reflects the currently committed score, not the modal's working score).
+   *
+   * @param score - Raw ability score (e.g., 8–18 in the point-buy modal).
+   * @returns The derived modifier (e.g., 18 → +4, 10 → 0, 8 → -1).
+   */
+  previewAbilityModifier(score: number): number {
+    return computeAbilityModifier(score);
+  }
+
+  /**
+   * Computes the Brainburn saving throw DC for a Power Stone entry.
+   *
+   * D&D 3.5 SRD (Expanded Psionics Handbook, p. 43):
+   *   "Using a power from a power stone that has a higher manifester level than
+   *   your own manifester level requires you to make a DC (power's manifester
+   *   level + 1) manifester level check."
+   *
+   * WHY IN THE ENGINE (not inline `manifesterLevel + 1` in PsionicItemCard.svelte):
+   *   Mathematical calculations must not appear in Svelte templates or script
+   *   blocks (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). This method
+   *   encapsulates the +1 offset so .svelte files only call a named engine method.
+   *
+   * @param manifesterLevel - The manifester level imprinted on the power stone entry.
+   * @returns The DC for the manifester level check.
+   */
+  getBrainburnDC(manifesterLevel: number): number {
+    return manifesterLevel + 1;
+  }
+
+  /**
+   * Returns the base save bonus for a saving throw pipeline, factoring out the
+   * key ability modifier.
+   *
+   * D&D 3.5 RULE:
+   *   Total Save = Base Save (class progression + racial) + Key Ability Modifier
+   *   + Misc Modifiers. This method isolates the "Base Save" chip displayed in
+   *   the SavingThrows component: totalBonus − abilityMod.
+   *
+   * WHY IN THE ENGINE (not inline subtraction in SavingThrows.svelte):
+   *   Even trivial arithmetic on game modifier values must not appear in Svelte
+   *   files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param pipelineId   - e.g. "saves.fortitude"
+   * @param keyAbilityId - e.g. "stat_constitution"
+   * @returns Base save bonus, or 0 when pipelines are not yet resolved.
+   */
+  getBaseSaveBonus(pipelineId: string, keyAbilityId: string): number {
+    const pipeline   = this.phase3_combatStats[pipelineId];
+    const abilityMod = this.phase2_attributes[keyAbilityId]?.derivedModifier ?? 0;
+    return (pipeline?.totalBonus ?? 0) - abilityMod;
+  }
+
+  /**
+   * Unlocks all skill rank minimums, allowing ranks to be freely lowered.
+   *
+   * This is the complement of `lockAllSkillRanks()` — it clears the
+   * `character.minimumSkillRanks` map entirely, removing all previously
+   * committed level-up floors.
+   *
+   * WHY IN THE ENGINE (not `engine.character.minimumSkillRanks = {}` inline):
+   *   Direct character state mutations from .svelte files bypass the engine's
+   *   ownership of character data and violate the zero-game-logic-in-Svelte
+   *   rule (ARCHITECTURE.md §3). Methods on the engine are the single
+   *   sanctioned mutation point.
+   */
+  unlockAllSkillRanks(): void {
+    this.character.minimumSkillRanks = {};
+  }
+
+  /**
+   * Clamps a coin input value to zero or above and persists it to the character.
+   *
+   * WHY IN THE ENGINE (not `Math.max(0, val)` inline in Encumbrance.svelte):
+   *   The "cannot have negative coins" constraint is a game/data integrity rule.
+   *   Moving it here upholds the zero-game-logic-in-Svelte architectural rule
+   *   (ARCHITECTURE.md §3) and ensures coin weight (phase2b_totalCarriedWeight)
+   *   recalculates automatically via Svelte reactivity.
+   *
+   * @param key - One of 'cp', 'sp', 'gp', 'pp'.
+   * @param val - Raw value from the input element (may be negative or NaN).
+   */
+  setCoinValue(key: 'cp' | 'sp' | 'gp' | 'pp', val: number): void {
+    if (!this.character.wealth) {
+      this.character.wealth = { cp: 0, sp: 0, gp: 0, pp: 0 };
+    }
+    const clamped = Math.max(0, isNaN(val) ? 0 : val);
+    this.character.wealth[key] = clamped;
+  }
+
   // ---------------------------------------------------------------------------
   // LANGUAGE SHORTCUT & HELPERS
   // ---------------------------------------------------------------------------
@@ -4381,6 +4595,51 @@ export class GameEngine {
   /** Converts pounds to the locale-appropriate weight string ("10 lb." or "5 kg"). */
   formatWeight(lbs: number): string {
     return fmtWeight(lbs, this.settings.language);
+  }
+
+  /**
+   * Returns the display name for a language code as it should appear in the
+   * language selector dropdown — always in that language's own script.
+   *
+   * Resolution order (highest priority first):
+   *   1. `dataLoader.getLocaleDisplayName(code)` — the `$meta.language` value
+   *      from the locale JSON file, returned by `GET /api/locales`.
+   *      This is the canonical self-name set by the file's translator
+   *      (e.g. "Français" for fr, "Deutsch" for de, "Kiswahili" for sw).
+   *      Reliable for every server-dropped locale file.
+   *   2. `ui('lang.<code>', code)` — looks up the self-naming key in the
+   *      language's OWN locale (NOT the active UI language). This covers
+   *      English, which is excluded from the API response and bundled as the
+   *      baseline (`UI_STRINGS['lang.en'] = 'English'`). Other locales may
+   *      also declare this key as a redundant fallback.
+   *   3. `code.toUpperCase()` — absolute last resort (API unavailable + locale
+   *      not loaded + no self-naming key).
+   *
+   * WHY SELF-NAMED (not translated into the active language):
+   *   A speaker looking for their language in the dropdown must be able to
+   *   recognise it without understanding the currently active language.
+   *   "Français" is recognisable to a French speaker; "French" or "Chinois" is not.
+   *
+   * @param code - BCP-47 language code (e.g. 'en', 'fr', 'de', 'sw').
+   * @returns Self-name of the language (e.g. 'English', 'Français', 'Deutsch').
+   */
+  getLanguageDisplayName(code: string): string {
+    // 1. Native name from the server's /api/locales response ($meta.language in the
+    //    locale JSON). This is the most reliable source: it comes from the file
+    //    itself and is always the language's own name (e.g. "Français", "Deutsch").
+    const native = dataLoader.getLocaleDisplayName(code);
+    if (native) return native;
+
+    // 2. ui('lang.{code}', code) — looks up the key in the language's OWN locale,
+    //    not in the currently active UI language. Falls back to UI_STRINGS which
+    //    only registers 'lang.en = "English"' (English has no separate locale file
+    //    and is excluded from the /api/locales response).
+    const uiKey  = `lang.${code}`;
+    const fromUi = ui(uiKey, code);
+    if (fromUi !== uiKey) return fromUi;
+
+    // 3. Last resort: uppercase code. Better than an empty string or raw key.
+    return code.toUpperCase();
   }
 
   // ---------------------------------------------------------------------------
@@ -5679,6 +5938,84 @@ export class GameEngine {
   }
 
   // ---------------------------------------------------------------------------
+  // ALIGNMENT — keeps synthetic feature construction in the engine
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Sets the character's alignment.
+   *
+   * D&D 3.5 context: Alignment is a character property that affects interaction
+   * with spells, powers, and items (e.g., Holy Avenger requires Good alignment).
+   * It is modelled as a synthetic `Feature` instance with a unique tag so that
+   * `@activeTags` and `prerequisitesNode` checks can reference it.
+   *
+   * DESIGN:
+   *   Alignments may or may not exist as full Feature entries in the loaded rule
+   *   files (a campaign might define them, or might not). This method handles
+   *   both cases:
+   *     1. If the alignment Feature is already in the DataLoader cache (from a
+   *        rule file), it is used as-is.
+   *     2. Otherwise, a minimal synthetic Feature is registered in the DataLoader
+   *        cache using the localized label from the `ALIGNMENTS` constant in
+   *        `constants.ts`. The synthetic feature grants no modifiers — it only
+   *        exists so that `@activeTags` emits the alignment tag for logic nodes.
+   *
+   * ZERO-GAME-LOGIC-IN-SVELTE RULE (ARCHITECTURE.md §3):
+   *   Previously, `BasicInfo.svelte` called `dataLoader.cacheFeature()` directly
+   *   to synthesize alignment features. This violated the rule that game entity
+   *   construction must not happen in `.svelte` files. This method centralises
+   *   that logic in the engine layer.
+   *
+   * @param alignmentId - One of the canonical alignment IDs (e.g.,
+   *   `'alignment_lawful_good'`). Pass an empty string to clear the alignment.
+   */
+  setAlignment(alignmentId: string): void {
+    // 1. Remove all existing alignment feature instances.
+    const toRemove = this.character.activeFeatures
+      .filter(afi => afi.featureId.startsWith('alignment_'))
+      .map(afi => afi.instanceId);
+    for (const instanceId of toRemove) {
+      this.#removeFeatureUnchecked(instanceId);
+    }
+
+    if (!alignmentId) return; // Clearing alignment — done.
+
+    // 2. Ensure the alignment feature is in the DataLoader cache.
+    //    If a rule file already defined it, the cache hit short-circuits.
+    if (!dataLoader.getFeature(alignmentId)) {
+      const config = ALIGNMENTS.find(a => a.id === alignmentId);
+      if (!config) {
+        console.warn(`[GameEngine] setAlignment: unknown alignment ID "${alignmentId}". Skipping.`);
+        return;
+      }
+      // Build the localized label from the ui-strings.ts key.
+      // `buildLocalizedString(config.ui_key)` reads all currently loaded locale
+      // files so every supported language resolves correctly. Translations live
+      // in `static/locales/fr.json` etc.; no inline language strings in engine code.
+      const alignLabel = buildLocalizedString(config.ui_key);
+      // Register the synthetic feature. It has no modifiers — the alignment tag
+      // is the only thing that matters for prerequisite and logic-node checks.
+      dataLoader.cacheFeature({
+        id:              alignmentId,
+        category:        'condition',
+        label:           alignLabel,
+        description:     alignLabel,
+        tags:            [alignmentId],
+        grantedModifiers: [],
+        grantedFeatures: [],
+        ruleSource:      'core_system',
+      });
+    }
+
+    // 3. Add the alignment as an active feature instance.
+    this.addFeature({
+      instanceId: `afi_alignment_${alignmentId}`,
+      featureId:  alignmentId,
+      isActive:   true,
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // ITEM STASH MANAGEMENT — keeps isStashed mutations in the engine
   // ---------------------------------------------------------------------------
 
@@ -6115,6 +6452,135 @@ export class GameEngine {
     }
     // D&D 3.5: resource pools cannot go below 0 (uses floor at 0).
     pool.currentValue = Math.max(0, pool.currentValue - cost);
+  }
+
+  /**
+   * Resolves the numeric cost from an activation `resourceCost.cost` value.
+   *
+   * WHY IN THE ENGINE (ARCHITECTURE.md §3 — zero game logic in .svelte files):
+   *   `Feature.activation.resourceCost.cost` is typed as `number | string` because
+   *   simple integer strings ("2") and future formula strings
+   *   ("1 + @classLevels.class_druid") are both valid. Parsing this to a usable
+   *   number is cost-resolution logic — it must not live in a Svelte component.
+   *
+   *   Full formula evaluation (e.g., `"1 + @classLevels.class_druid"`) is deferred
+   *   to a future phase. For now this handles the common cases:
+   *     - `number`  → returned as-is.
+   *     - `string`  → parsed as a float; falls back to 1 if unparseable.
+   *
+   * @param cost - The raw cost from `activation.resourceCost.cost`.
+   * @returns The resolved numeric cost (always ≥ 1).
+   */
+  resolveActivationCost(cost: number | string): number {
+    if (typeof cost === 'number') return cost;
+    const parsed = parseFloat(String(cost));
+    return isNaN(parsed) ? 1 : parsed;
+  }
+
+  // ---------------------------------------------------------------------------
+  // PIPELINE LABEL RESOLUTION — for FeatureModal and CastingPanel
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Static fallback labels for pipeline `targetId` values that have no
+   * corresponding runtime `StatisticPipeline` in phase2/3/4.
+   *
+   * WHY IN THE ENGINE (ARCHITECTURE.md §6 — zero hardcoding in .svelte files):
+   *   D&D ability-score names ("Strength", "Dexterity", etc.) and system stat
+   *   names are game content. They must not appear as literal strings in Svelte
+   *   components. Centralising the fallback map here keeps all game-term
+   *   localisation in a single source of truth and out of the UI layer.
+   *
+   * These are `LocalizedString`-compatible objects so they are routed through
+   * `engine.t()` exactly like every other label in the system.
+   */
+  static readonly PIPELINE_FALLBACK_LABELS: Record<string, { en: string; fr: string }> = {
+    'saves.all':                                { en: 'All Saving Throws',               fr: 'Jets de sauvegarde (tous)'       },
+    'saves.fortitude':                          { en: 'Fortitude Save',                  fr: 'Jet de Vigueur'                  },
+    'saves.reflex':                             { en: 'Reflex Save',                     fr: 'Jet de Réflexes'                 },
+    'saves.will':                               { en: 'Will Save',                       fr: 'Jet de Volonté'                  },
+    'combatStats.attack_bonus':                 { en: 'Attack Bonus',                    fr: "Bonus d'attaque"                 },
+    'combatStats.stability_check':              { en: 'Stability Check',                 fr: 'Test de stabilité'               },
+    'combatStats.hit_die_type':                 { en: 'Hit Die',                         fr: 'Dé de vie'                       },
+    'combatStats.speed_land':                   { en: 'Land Speed',                      fr: 'Vitesse terrestre'               },
+    'combatStats.speed_fly':                    { en: 'Fly Speed',                       fr: 'Vitesse de vol'                  },
+    'combatStats.speed_swim':                   { en: 'Swim Speed',                      fr: 'Vitesse de nage'                 },
+    'combatStats.speed_climb':                  { en: 'Climb Speed',                     fr: "Vitesse d'escalade"              },
+    'combatStats.speed_burrow':                 { en: 'Burrow Speed',                    fr: 'Vitesse de fouissement'          },
+    'combatStats.ac_normal':                    { en: 'Armor Class',                     fr: "Classe d'armure"                 },
+    'combatStats.ac_touch':                     { en: 'Touch AC',                        fr: 'CA de contact'                   },
+    'combatStats.ac_flat_footed':               { en: 'Flat-Footed AC',                  fr: 'CA pris au dépourvu'             },
+    'attributes.speed_land':                    { en: 'Land Speed',                      fr: 'Vitesse terrestre'               },
+    'attributes.skill_points_per_level':        { en: 'Skill Points / Level',            fr: 'Points de compétence / niveau'  },
+    'attributes.bonus_skill_points_per_level':  { en: 'Bonus Skill Points / Level',      fr: 'Points bonus / niveau'          },
+    'attributes.bonus_skill_points_1st_level':  { en: 'Bonus Skill Points (1st Level)',  fr: 'Points bonus (niveau 1)'        },
+    'attributes.bonus_feat_slots':              { en: 'Bonus Feat Slots',                fr: 'Emplacements de don bonus'       },
+    'attributes.spell_dc_illusion':             { en: 'Illusion Spell DC',               fr: "DD des sorts d'illusion"        },
+    'attributes.stat_strength':                 { en: 'Strength',                        fr: 'Force'                          },
+    'attributes.stat_dexterity':                { en: 'Dexterity',                       fr: 'Dextérité'                       },
+    'attributes.stat_constitution':             { en: 'Constitution',                    fr: 'Constitution'                   },
+    'attributes.stat_intelligence':             { en: 'Intelligence',                    fr: 'Intelligence'                   },
+    'attributes.stat_wisdom':                   { en: 'Wisdom',                          fr: 'Sagesse'                         },
+    'attributes.stat_charisma':                 { en: 'Charisma',                        fr: 'Charisme'                        },
+    'attributes.stat_size':                     { en: 'Size',                            fr: 'Taille'                          },
+    'resources.power_points.maxValue':          { en: 'Power Points (max)',              fr: 'Points de pouvoir (max)'         },
+    'resources.vitality_points.maxValue':       { en: 'Vitality Points (max)',           fr: 'Points de vitalité (max)'        },
+    'resources.wound_points.maxValue':          { en: 'Wound Points (max)',              fr: 'Points de blessure (max)'        },
+    'resources.hp.maxValue':                    { en: 'Hit Points (max)',                fr: 'Points de vie (max)'             },
+    'resources.ki_points.maxValue':             { en: 'Ki Points (max)',                 fr: 'Points de ki (max)'              },
+  };
+
+  /**
+   * Resolves a human-readable label for a modifier `targetId`.
+   *
+   * WHY IN THE ENGINE (ARCHITECTURE.md §3, §6 — zero game logic and zero
+   * hardcoding in .svelte files):
+   *   Mapping pipeline IDs (e.g. `"attributes.stat_strength"`) to display names
+   *   (e.g. "Strength") is both data-access logic (checking live pipelines) and
+   *   game-term localisation. Neither belongs in a Svelte component.
+   *
+   * RESOLUTION ORDER:
+   *   1. Live `phase2_attributes` pipeline — most accurate; carries the
+   *      language-reactive label from the JSON rule files.
+   *   2. Live `phase3_combatStats` pipeline — for combat stat targets.
+   *   3. Live `phase4_skills` pipeline — for skill targets (with/without
+   *      the "skills." prefix).
+   *   4. `GameEngine.PIPELINE_FALLBACK_LABELS` — covers targetIds that have
+   *      no runtime pipeline (e.g. `saves.all`, `combatStats.hit_die_type`).
+   *   5. Last-resort prettification of the raw ID string.
+   *
+   * @param targetId - The modifier `targetId` to resolve (e.g. `"attributes.stat_strength"`).
+   * @returns A localised human-readable label in the current engine language.
+   */
+  resolvePipelineLabel(targetId: string): string {
+    // 1. Normalize: "attributes.stat_strength" → "stat_strength"
+    const normalised = targetId.startsWith('attributes.') ? targetId.slice('attributes.'.length) : targetId;
+
+    // 2. Try live attribute pipelines first (most accurate, language-reactive)
+    const attrPipeline = this.phase2_attributes[normalised];
+    if (attrPipeline?.label) return this.t(attrPipeline.label);
+
+    // 3. Try live combat stat pipelines
+    const combatPipeline = this.phase3_combatStats[targetId];
+    if (combatPipeline?.label) return this.t(combatPipeline.label);
+
+    // 4. Try live skill pipelines (targetId may have "skills." prefix)
+    const skillId = targetId.startsWith('skills.') ? targetId.slice('skills.'.length) : targetId;
+    const skillPipeline = this.phase4_skills[skillId];
+    if (skillPipeline?.label) return this.t(skillPipeline.label);
+
+    // 5. Static fallback map for targetIds with no runtime pipeline
+    const fallback = GameEngine.PIPELINE_FALLBACK_LABELS[targetId]
+      ?? GameEngine.PIPELINE_FALLBACK_LABELS[`attributes.${targetId}`];
+    if (fallback) return this.t(fallback);
+
+    // 6. Last resort: prettify the raw ID
+    return targetId
+      .replace(/^(attributes|combatStats|skills|saves|resources)\./, '')
+      .replace(/\.maxValue$/, ' (max)')
+      .replace(/\.currentValue$/, ' (current)')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase());
   }
 }
 

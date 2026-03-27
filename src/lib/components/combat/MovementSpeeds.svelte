@@ -7,22 +7,26 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { Footprints, Pickaxe, Mountain, Wind, Waves } from 'lucide-svelte';
-  import { IconWarning } from '$lib/components/ui/icons';
+  // All icons from the centralized barrel (no direct lucide-svelte imports, ARCHITECTURE.md §6).
+  // IconSpeedLand/Burrow/Climb/Fly/Swim are the semantic barrel aliases for the movement icons.
+  import {
+    IconWarning,
+    IconSpeedLand, IconSpeedBurrow, IconSpeedClimb, IconSpeedFly, IconSpeedSwim,
+  } from '$lib/components/ui/icons';
 
   const SPEED_PIPELINES = [
-    { id: 'combatStats.speed_land',   icon: Footprints },
-    { id: 'combatStats.speed_burrow', icon: Pickaxe    },
-    { id: 'combatStats.speed_climb',  icon: Mountain   },
-    { id: 'combatStats.speed_fly',    icon: Wind       },
-    { id: 'combatStats.speed_swim',   icon: Waves      },
+    { id: 'combatStats.speed_land',   icon: IconSpeedLand   },
+    { id: 'combatStats.speed_burrow', icon: IconSpeedBurrow },
+    { id: 'combatStats.speed_climb',  icon: IconSpeedClimb  },
+    { id: 'combatStats.speed_fly',    icon: IconSpeedFly    },
+    { id: 'combatStats.speed_swim',   icon: IconSpeedSwim   },
   ];
 </script>
 
 <div class="card p-4 flex flex-col gap-3">
 
   <div class="section-header border-b border-border pb-2">
-    <Footprints size={20} aria-hidden="true" />
+    <IconSpeedLand size={20} aria-hidden="true" />
     <span>{ui('combat.movement.title', engine.settings.language)}</span>
   </div>
 

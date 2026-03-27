@@ -30,7 +30,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
-  import { getAbilityAbbr, MAIN_ABILITY_IDS, ALIGNMENTS } from '$lib/utils/constants';
+  import { getAbilityAbbr, MAIN_ABILITY_IDS, ALIGNMENTS, MAX_CLASS_LEVEL } from '$lib/utils/constants';
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -150,29 +150,11 @@
 
   function handleAlignmentChange(event: Event) {
     const alignmentId = (event.target as HTMLSelectElement).value;
-    const toRemove = engine.character.activeFeatures
-      .filter(afi => afi.featureId.startsWith('alignment_'))
-      .map(afi => afi.instanceId);
-    for (const id of toRemove) engine.removeFeature(id);
-
-    if (alignmentId) {
-      if (!dataLoader.getFeature(alignmentId)) {
-        const alignmentConfig = ALIGNMENTS.find(a => a.id === alignmentId);
-        if (alignmentConfig) {
-          dataLoader.cacheFeature({
-            id: alignmentId,
-            category: 'condition',
-            label: alignmentConfig.label,
-            description: alignmentConfig.label,
-            tags: [alignmentId],
-            grantedModifiers: [],
-            grantedFeatures: [],
-            ruleSource: 'core_system',
-          });
-        }
-      }
-      engine.addFeature({ instanceId: `afi_alignment_${alignmentId}`, featureId: alignmentId, isActive: true });
-    }
+    // Delegate all alignment logic (removal, feature synthesis, instance addition) to the
+    // engine. Previously this function called dataLoader.cacheFeature() directly, which
+    // violated the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). The engine method
+    // engine.setAlignment() now owns the full alignment lifecycle.
+    engine.setAlignment(alignmentId);
   }
 
   // ── Phase 8.4: FeatureChoice sub-selections ─────────────────────────────────
@@ -373,14 +355,15 @@
             id="class-level-input"
             type="number"
             min="1"
-            max="20"
+            max={MAX_CLASS_LEVEL}
             value={classLevel}
             class="input w-14 text-center px-1"
             onchange={(e) => {
               const lvl = parseInt((e.target as HTMLInputElement).value, 10);
               // Use engine.setClassLevel() — direct mutation of classLevels is
               // prohibited in Svelte components (zero-game-logic rule, ARCHITECTURE.md §3).
-              if (!isNaN(lvl) && lvl >= 1 && lvl <= 20 && activeClass) {
+              // MAX_CLASS_LEVEL from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
+              if (!isNaN(lvl) && lvl >= 1 && lvl <= MAX_CLASS_LEVEL && activeClass) {
                 engine.setClassLevel(activeClass.id, lvl);
               }
             }}
@@ -449,7 +432,10 @@
       >
         <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each ALIGNMENTS as alignment}
-          <option value={alignment.id}>{engine.t(alignment.label)}</option>
+          <!-- alignment.ui_key (e.g. 'alignment.lawful_good') resolves via
+               ui-strings.ts baseline and loaded locale JSON files. No inline
+               translations in constants.ts (ARCHITECTURE.md §6). -->
+          <option value={alignment.id}>{ui(alignment.ui_key, engine.settings.language)}</option>
         {/each}
       </select>
     </div>

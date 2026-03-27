@@ -498,7 +498,7 @@ _Goal: Replace direct database user management with a proper web interface. The 
 
 - [ ] **22.16 Tests & Final Coverage Update:** PHPUnit — add to `tests/UserManagementTest.php`: `handleChangePassword` success (stores hash, clears flag); `handleChangePassword` wrong current password → 400 `WrongPassword`; empty new password → 400; no-password account skips current-password check; `UserController::resetPassword` admin success (sets hash to ''); non-admin → 403; unknown user → 404. Vitest — add to `src/tests/userManagement.test.ts`: `changePassword()` API wrapper (correct URL/method/body, 400 error propagation); `resetUserPassword()` wrapper (correct URL/method). Run `npm run test` (Vitest) and `./vendor/bin/phpunit`; confirm all tests pass. Run `npm run test:coverage`; update `README.md` with final test counts and coverage percentages.
 
-- [x] **Checkpoint #9 — User Management System** (requires Phase 22): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding.
+- [ ] **Checkpoint #9 — User Management System** (requires Phase 22): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding.
 
 ---
 

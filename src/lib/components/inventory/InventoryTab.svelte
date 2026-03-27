@@ -31,9 +31,10 @@
     IconTabInventory, IconAttacks, IconInfo,
     IconEquip, IconUnequip, IconDelete,
     IconPotion, IconOil,
+    IconInventory,
   } from '$lib/components/ui/icons';
   import { ui } from '$lib/i18n/ui-strings';
-  import { Package } from 'lucide-svelte';
+  import { POTION_ITEM_TAG, OIL_ITEM_TAG, STASHED_ITEM_TAG, EQUIPMENT_SLOT_NONE } from '$lib/utils/constants';
 
   let modalItemId = $state<ID | null>(null);
 
@@ -55,7 +56,13 @@
       .filter(item => item.feature !== undefined)
   );
 
-  const equippedItems = $derived(allItems.filter(i =>  i.isActive && !i.feature.tags?.includes('stashed')));
+  // STASHED_ITEM_TAG / EQUIPMENT_SLOT_NONE imported from constants.ts
+  // (zero-hardcoding rule: item state tags and model sentinel values must
+  // not be literal strings in .svelte files, ARCHITECTURE.md §6).
+  // NOTE: The `isStashed` field is the canonical stash-state flag (line 52 above).
+  // The tag check is kept for backward compatibility with items tagged before the
+  // isStashed field was introduced, but uses the named constant instead of a literal.
+  const equippedItems = $derived(allItems.filter(i =>  i.isActive && !i.feature.tags?.includes(STASHED_ITEM_TAG)));
   const carriedItems  = $derived(allItems.filter(i => !i.isActive && !i.isStashed));
   const stashedItems  = $derived(allItems.filter(i =>  i.isStashed === true));
 
@@ -105,10 +112,12 @@
    * Potions → "Drink", Oils → "Apply", anything else → "Use".
    */
   function getUseLabel(feature: ItemFeature): string {
-    if (feature.tags?.includes('potion')) {
+    // POTION_ITEM_TAG / OIL_ITEM_TAG are constants from constants.ts
+    // (zero-hardcoding rule: D&D item category names must not be magic strings, ARCHITECTURE.md §6).
+    if (feature.tags?.includes(POTION_ITEM_TAG)) {
       return ui('inventory.drink_potion', engine.settings.language);
     }
-    if (feature.tags?.includes('oil')) {
+    if (feature.tags?.includes(OIL_ITEM_TAG)) {
       return ui('inventory.apply_oil', engine.settings.language);
     }
     return ui('inventory.use_item', engine.settings.language);
@@ -184,9 +193,9 @@
                        bg-green-950/10 dark:bg-green-950/20
                        hover:bg-green-950/20 transition-colors duration-100"
               >
-                <!-- Item icon -->
+                <!-- Item icon — IconInventory from the centralized barrel (no direct lucide import, ARCHITECTURE.md §6) -->
                 <span class="text-green-500 dark:text-green-400 shrink-0" aria-hidden="true">
-                  <Package size={16} />
+                  <IconInventory size={16} />
                 </span>
 
                 <!-- Item info -->
@@ -195,7 +204,7 @@
                     {item.customName ?? engine.t(item.feature.label)}
                   </span>
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
+                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== EQUIPMENT_SLOT_NONE}
                       <span class="badge-green font-mono text-[10px]">{item.feature.equipmentSlot}</span>
                     {/if}
                     <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
@@ -275,7 +284,7 @@
               >
                 <!-- Item icon -->
                 <span class="text-text-muted shrink-0" aria-hidden="true">
-                  <Package size={16} />
+                  <IconInventory size={16} />
                 </span>
 
                 <!-- Item info -->
@@ -284,8 +293,8 @@
                     {item.customName ?? engine.t(item.feature.label)}
                   </span>
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
-                      <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
+                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== EQUIPMENT_SLOT_NONE}
+                       <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
                     {/if}
                     <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
                     {#if !check.ok}
@@ -324,14 +333,14 @@
                       aria-label="{getUseLabel(item.feature)} {engine.t(item.feature.label)}"
                       type="button"
                     >
-                      {#if item.feature.tags?.includes('potion')}
+                      {#if item.feature.tags?.includes(POTION_ITEM_TAG)}
                         <IconPotion size={12} aria-hidden="true" />
-                      {:else if item.feature.tags?.includes('oil')}
+                      {:else if item.feature.tags?.includes(OIL_ITEM_TAG)}
                         <IconOil size={12} aria-hidden="true" />
                       {/if}
                       {getUseLabel(item.feature)}
                     </button>
-                  {:else if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
+                  {:else if item.feature.equipmentSlot && item.feature.equipmentSlot !== EQUIPMENT_SLOT_NONE}
                     <!-- Non-consumable equippable items: show standard Equip button -->
                     <button
                       class="btn-ghost p-1.5 text-green-500 dark:text-green-400 hover:bg-green-500/10
@@ -397,7 +406,7 @@
               <div class="flex items-center gap-3 px-4 py-2.5 opacity-60 hover:opacity-80 transition-opacity hover:bg-surface-alt">
                 <!-- Item icon -->
                 <span class="text-text-muted shrink-0" aria-hidden="true">
-                  <Package size={16} />
+                  <IconInventory size={16} />
                 </span>
 
                 <!-- Item info -->
@@ -406,8 +415,8 @@
                     {item.customName ?? engine.t(item.feature.label)}
                   </span>
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== 'none'}
-                      <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
+                    {#if item.feature.equipmentSlot && item.feature.equipmentSlot !== EQUIPMENT_SLOT_NONE}
+                       <span class="badge-gray font-mono text-[10px]">{item.feature.equipmentSlot}</span>
                     {/if}
                     <span class="text-[10px] text-text-muted">{engine.formatWeight(item.feature.weightLbs)}</span>
                      <span class="badge-gray text-[10px]">{ui('inventory.not_carried', engine.settings.language)}</span>

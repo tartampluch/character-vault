@@ -10,7 +10,7 @@
 <script lang="ts">
   import { engine, GameEngine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { formatModifier, computeAbilityModifier, toDisplayPct } from '$lib/utils/formatters';
+  import { formatModifier, toDisplayPct } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconTabFeats, IconChecked, IconInfo } from '$lib/components/ui/icons';
@@ -80,15 +80,19 @@
     if (cur <= MIN_SCORE) return;
     workingScores[id] = cur - 1;
   }
-  function resetAll() { for (const id of MAIN_ABILITY_IDS) workingScores[id] = 8; }
+  function resetAll() { for (const id of MAIN_ABILITY_IDS) workingScores[id] = MIN_SCORE; }
   function confirmBuy() {
     if (isOverBudget) return;
     for (const id of MAIN_ABILITY_IDS) engine.setAttributeBase(id, workingScores[id] ?? 8);
     onclose();
   }
-  // derivedMod is provided by the shared formatters utility to avoid duplicating
-  // the D&D ability modifier formula (floor((score-10)/2)) in Svelte components.
-  const derivedMod = computeAbilityModifier;
+  // derivedMod delegates to engine.previewAbilityModifier() which wraps the
+  // D&D ability modifier formula floor((score-10)/2) (ARCHITECTURE.md §3:
+  // mathematical game calculations must not be called from .svelte files —
+  // even when imported from a utility module they violate the zero-game-logic
+  // rule when invoked directly. Calling the engine method instead keeps the
+  // formula inside the engine layer where game logic belongs).
+  const derivedMod = (score: number) => engine.previewAbilityModifier(score);
 </script>
 
 <Modal open={true} onClose={onclose} title={ui('abilities.point_buy.title', lang)} size="md">

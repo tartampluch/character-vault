@@ -17,7 +17,7 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { storageManager, apiHeaders } from '$lib/engine/StorageManager';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack, IconAdd, IconDelete, IconChevronDown, IconChevronUp, IconVault } from '$lib/components/ui/icons';
+  import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack, IconAdd, IconDelete, IconChevronDown, IconChevronUp, IconVault, IconDiceRoll, IconStats, IconRuleSources, IconJournal } from '$lib/components/ui/icons';
   import { ui, uiN } from '$lib/i18n/ui-strings';
   import { getCampaignUsers, addCampaignUser, removeCampaignUser, listUsers, ApiError } from '$lib/api/userApi';
   import type { CampaignMember, User } from '$lib/types/user';
@@ -573,6 +573,20 @@
       default:       return `${base} bg-blue-900/30  text-blue-400  border-blue-700/40`;
     }
   }
+
+  /**
+   * Localized role display label for a campaign member.
+   * Delegates D&D/app terminology to ui() — no hardcoded English literals in templates.
+   * ARCHITECTURE.md §2 zero-hardcoding rule.
+   */
+  function memberRoleLabel(role: CampaignMember['role']): string {
+    const lang = engine.settings.language;
+    switch (role) {
+      case 'admin':  return ui('settings.members.role_admin', lang);
+      case 'gm':     return ui('common.gm', lang);
+      default:       return ui('common.player', lang);
+    }
+  }
 </script>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
@@ -768,7 +782,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        🎲 {ui('settings.dice_rules.title', engine.settings.language)}
+        <IconDiceRoll size={18} aria-hidden="true" /> {ui('settings.dice_rules.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.dice_rules.desc', engine.settings.language)}
@@ -800,7 +814,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        ⚀ {ui('settings.stat_gen.title', engine.settings.language)}
+        <IconStats size={18} aria-hidden="true" /> {ui('settings.stat_gen.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.stat_gen.desc', engine.settings.language)}
@@ -897,7 +911,7 @@
             class="input w-24 text-center text-sm font-bold text-sky-500 dark:text-sky-400"
             aria-label="Point buy budget"
           />
-          <span class="text-xs text-text-muted">{ui('common.level', engine.settings.language).toLowerCase()} points</span>
+          <span class="text-xs text-text-muted">{ui('settings.stat_gen.points_unit', engine.settings.language)}</span>
         </div>
       </div>
     {/if}
@@ -907,11 +921,10 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        ⚗ {ui('variant.title', engine.settings.language)}
+        <IconRuleSources size={18} aria-hidden="true" /> {ui('variant.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
-        Variant rules change core engine behaviour. These flags are saved per-campaign and applied immediately.
-        Only enable variant rules your group has agreed to use.
+        {ui('settings.variant.section_desc', engine.settings.language)}
       </p>
     </div>
 
@@ -954,8 +967,9 @@
         </span>
         {#if variantVWP}
           <p class="text-xs text-amber-400/80 italic mt-0.5">
-            ⚠ Requires <code class="bg-surface-alt px-1 rounded">resources.vitality_points</code> and
-            <code class="bg-surface-alt px-1 rounded">resources.wound_points</code> pools on each character.
+            <IconWarning size={14} aria-hidden="true" /> {ui('settings.variant.vwp_warning', engine.settings.language)
+              .replace('{v}', 'resources.vitality_points')
+              .replace('{w}', 'resources.wound_points')}
           </p>
         {/if}
       </div>
@@ -966,7 +980,7 @@
   <section class="card p-5 flex flex-col gap-4" id="chapters">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        📖 {ui('settings.chapters.title', engine.settings.language)}
+        <IconJournal size={18} aria-hidden="true" /> {ui('settings.chapters.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.chapters.desc', engine.settings.language)}
@@ -1126,7 +1140,7 @@
       {
         "id":       "feat_pa_custom_penalty",
         "sourceId": "feat_power_attack",
-        "targetId": "combat.attack_bonus",
+        "targetId": "combatStats.base_attack_bonus",
         "value":    -2,
         "type":     "untyped"
       }
@@ -1218,7 +1232,7 @@
     >
       <h2 class="flex items-center gap-2 text-base font-semibold text-text-primary">
         <IconVault size={18} aria-hidden="true" />
-        Campaign Members
+        {ui('settings.members.title', engine.settings.language)}
         {#if members.length > 0}
           <span class="text-xs font-normal text-text-muted">({members.length})</span>
         {/if}
@@ -1244,11 +1258,11 @@
         {#if membersLoading}
           <div class="flex items-center gap-2 text-text-muted text-sm py-2">
             <span class="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full shrink-0" aria-hidden="true"></span>
-            Loading members…
+            {ui('settings.members.loading', engine.settings.language)}
           </div>
 
         {:else if members.length === 0}
-          <p class="text-sm text-text-muted">No members yet. Add players using the button below.</p>
+          <p class="text-sm text-text-muted">{ui('settings.members.empty', engine.settings.language)}</p>
 
         {:else}
           <!-- Member list -->
@@ -1256,9 +1270,9 @@
             {#each members as member (member.user_id)}
               <li class="flex items-center justify-between gap-3 px-3 py-2.5">
                 <div class="flex items-center gap-2 min-w-0">
-                  <!-- Role badge -->
+                   <!-- Role badge -->
                   <span class={memberRoleBadge(member.role)}>
-                    {{ admin: 'Admin', gm: 'GM', player: 'Player' }[member.role]}
+                    {memberRoleLabel(member.role)}
                   </span>
                   <!-- Username + player name -->
                   <span class="text-sm font-medium text-text-primary truncate">
@@ -1267,9 +1281,9 @@
                   <span class="text-xs text-text-muted truncate hidden sm:inline">
                     {member.player_name}
                   </span>
-                  <!-- Suspended indicator -->
+                   <!-- Suspended indicator -->
                   {#if member.is_suspended}
-                    <span class="text-xs text-orange-400 font-medium shrink-0">(Suspended)</span>
+                    <span class="text-xs text-orange-400 font-medium shrink-0">{ui('settings.members.suspended', engine.settings.language)}</span>
                   {/if}
                 </div>
                 <!-- Remove button -->
@@ -1279,8 +1293,8 @@
                          transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   disabled={!!memberActionLoading[member.user_id]}
                   onclick={() => handleRemoveMember(member.user_id)}
-                  title="Remove {member.username} from campaign"
-                  aria-label="Remove {member.username} from campaign"
+                  title={ui('settings.members.remove', engine.settings.language).replace('{username}', member.username)}
+                  aria-label={ui('settings.members.remove', engine.settings.language).replace('{username}', member.username)}
                 >
                   <IconDelete size={14} aria-hidden="true" />
                 </button>
@@ -1297,7 +1311,7 @@
             onclick={openPicker}
           >
             <IconAdd size={14} aria-hidden="true" />
-            Add Member
+            {ui('settings.members.add', engine.settings.language)}
           </button>
 
           {#if pickerOpen}
@@ -1317,7 +1331,7 @@
                   type="search"
                   bind:this={pickerInputEl}
                   bind:value={pickerSearch}
-                  placeholder="Search by username or name…"
+                  placeholder={ui('settings.members.search_placeholder', engine.settings.language)}
                   class="input text-sm w-full"
                 />
               </div>
@@ -1325,14 +1339,14 @@
               <!-- User list -->
               <div class="overflow-y-auto max-h-60">
                 {#if pickerLoading}
-                  <div class="p-4 text-sm text-text-muted text-center">Loading users…</div>
+                  <div class="p-4 text-sm text-text-muted text-center">{ui('settings.members.loading_users', engine.settings.language)}</div>
 
                 {:else if pickerError}
                   <div class="p-4 text-sm text-red-400 text-center">{pickerError}</div>
 
                 {:else if filteredPickerUsers.length === 0}
                   <div class="p-4 text-sm text-text-muted text-center">
-                    {pickerSearch ? 'No matching users.' : 'All users are already members.'}
+                    {pickerSearch ? ui('settings.members.no_match', engine.settings.language) : ui('settings.members.all_members', engine.settings.language)}
                   </div>
 
                 {:else}
@@ -1354,10 +1368,10 @@
                           </span>
                           <span class="flex items-center gap-1.5 shrink-0 ml-2">
                             <span class={memberRoleBadge(u.role)}>
-                              {{ admin: 'Admin', gm: 'GM', player: 'Player' }[u.role]}
+                              {memberRoleLabel(u.role)}
                             </span>
                             {#if u.is_suspended}
-                              <span class="text-xs text-orange-400">(Suspended)</span>
+                              <span class="text-xs text-orange-400">{ui('settings.members.suspended', engine.settings.language)}</span>
                             {/if}
                           </span>
                         </button>
@@ -1374,7 +1388,7 @@
                   class="text-xs text-text-muted hover:text-text-secondary w-full text-center"
                   onclick={() => (pickerOpen = false)}
                 >
-                  Close
+                  {ui('settings.members.close_picker', engine.settings.language)}
                 </button>
               </div>
             </div>

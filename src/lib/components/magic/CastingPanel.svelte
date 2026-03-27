@@ -29,14 +29,15 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, buildLocalizedString } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ItemFeature, MagicFeature } from '$lib/types/feature';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
-  import { IconTabMagic, IconInfo, IconDiceRoll, IconTabInventory } from '$lib/components/ui/icons';
+  import { IconTabMagic, IconInfo, IconDiceRoll, IconTabInventory, IconClose, IconMagicWand } from '$lib/components/ui/icons';
+  import { SPELL_ROLL_LABEL_KEY } from '$lib/utils/constants';
 
   import type { PsionicDiscipline, PsionicDisplay } from '$lib/types/feature';
 
@@ -120,9 +121,12 @@
     return engine.getSpellSaveDC(spellLevel);
   }
 
-  function buildSpellPipeline(): StatisticPipeline {
-    return {
-      id: 'synthetic_spell_roll', label: { en: 'Spell' }, baseValue: 0,
+   function buildSpellPipeline(): StatisticPipeline {
+     return {
+       // buildLocalizedString(SPELL_ROLL_LABEL_KEY) builds the label from
+       // ui-strings.ts (English) and all loaded locale files at call time.
+       // No inline EN/FR translations in .svelte files (ARCHITECTURE.md §6).
+       id: 'synthetic_spell_roll', label: buildLocalizedString(SPELL_ROLL_LABEL_KEY), baseValue: 0,
       activeModifiers: [], situationalModifiers: [],
       totalBonus: engine.phase_casterLevel, totalValue: engine.phase_casterLevel, derivedModifier: 0,
     };
@@ -351,7 +355,10 @@
                   CL {entry.casterLevel}
                 </span>
                 {#if !scrollCheck.canUse}
-                  <span class="text-[10px] text-red-400 shrink-0" title={scrollWrongTypeReason(entry.spellType)}>✗</span>
+                  <!-- IconClose replaces ✗ symbol (zero-hardcoding rule: use icon barrel, not raw Unicode, ARCHITECTURE.md §6) -->
+                  <span class="shrink-0" title={scrollWrongTypeReason(entry.spellType)}>
+                    <IconClose size={10} class="text-red-400" aria-hidden="true" />
+                  </span>
                 {:else if scrollCheck.needsClCheck}
                   <!-- CL check required: DC = scroll.casterLevel + 1 (ARCHITECTURE.md §12.3) -->
                   <span
@@ -456,10 +463,11 @@
             <!-- Metamagic rod applicability badge -->
             {#each activeRodEffects as rod}
               {#if level <= rod.maxSpellLevel}
+                <!-- IconMagicWand replaces ⚗ symbol for metamagic rod applicability (zero-hardcoding rule, ARCHITECTURE.md §6) -->
                 <span
-                  class="text-[9px] px-1 py-0.5 rounded font-bold bg-purple-900/30 text-purple-400 border border-purple-800/40 shrink-0"
+                  class="inline-flex items-center px-1 py-0.5 rounded font-bold bg-purple-900/30 text-purple-400 border border-purple-800/40 shrink-0"
                   title="{rod.label} — {ui('magic.casting.rod_applies', engine.settings.language)}"
-                >⚗</span>
+                ><IconMagicWand size={9} aria-hidden="true" /></span>
               {/if}
             {/each}
 
@@ -470,7 +478,7 @@
               type="button"
             ><IconInfo size={13} aria-hidden="true" /></button>
 
-            {#if spell.grantedModifiers?.some(m => m.targetId.includes('damage'))}
+            {#if engine.spellHasDamageRoll(spell)}
               <button
                 class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10 shrink-0"
                 onclick={() => (diceSpellId = spell.id)}
@@ -538,10 +546,14 @@
                       -->
                       <span class="text-text-secondary">{engine.t(aug.effectDescription)}</span>
                     {:else if aug.grantedModifiers?.length}
-                      <!-- Mechanical augmentation: summarise modifiers -->
+                      <!-- Mechanical augmentation: summarise modifiers.
+                           engine.resolvePipelineLabel() converts raw targetIds
+                           (e.g. "combatStats.attack_bonus") to localised labels.
+                           Per ARCHITECTURE.md §6, raw pipeline IDs must never
+                           appear as display text in .svelte templates. -->
                       <span class="text-text-secondary">
                         {aug.grantedModifiers.map(m =>
-                          `${formatModifier(typeof m.value === 'number' ? m.value : 0)} ${m.targetId}`
+                          `${formatModifier(typeof m.value === 'number' ? m.value : 0)} ${engine.resolvePipelineLabel(m.targetId)}`
                         ).join(', ')}
                       </span>
                     {:else}
@@ -566,7 +578,7 @@
 
 {#if diceSpellId && currentDiceSpell}
   <DiceRollModal
-    formula={currentDiceSpell.grantedModifiers?.[0]?.targetId.includes('damage') ? '1d6' : '1d20'}
+    formula={engine.spellHasDamageRoll(currentDiceSpell) ? engine.getSpellDiceFormula(currentDiceSpell) : '1d20'}
     pipeline={buildSpellPipeline()}
     label="{engine.t(currentDiceSpell.label)} {ui('magic.casting.damage', engine.settings.language)}"
     onclose={() => (diceSpellId = null)}

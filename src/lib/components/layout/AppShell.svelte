@@ -176,6 +176,13 @@
     // they appear in the language dropdown.  Non-critical: no-op on failure.
     await dataLoader.loadExternalLocales();
 
+    // Force engine.availableLanguages (a $derived that depends on dataLoaderVersion)
+    // to re-evaluate immediately after locale discovery. Without this bump, the
+    // dropdown would only update the next time loadRuleSources() is called (e.g.
+    // when the vault page mounts). On pages that never call loadRuleSources()
+    // (e.g. the campaign hub), the new language codes would never appear.
+    engine.bumpDataLoaderVersion();
+
     // Load the active language's locale file if it is not English.
     // This ensures translated UI chrome is ready before the first interaction.
     const lang = engine.settings.language;

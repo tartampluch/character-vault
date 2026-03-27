@@ -171,9 +171,9 @@
       const fromStorage = storageManager.loadCharacter(id);
       if (fromStorage) {
         engine.loadCharacter(fromStorage);
-        if (!engine.allVaultCharacters.some(c => c.id === id)) {
-          engine.allVaultCharacters.push(fromStorage);
-        }
+        // Register in vault list without re-saving (character was loaded from storage).
+        // Uses engine method instead of direct array mutation (ARCHITECTURE.md §3).
+        engine.registerCharacterInVault(fromStorage);
       } else {
         console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
         engine.loadCharacter(createEmptyCharacter(id, ui('character.unknown_name', engine.settings.language)));
@@ -512,7 +512,8 @@
     ----------------------------------------------------------------------- -->
     {:else}
       <div class="flex flex-col items-center justify-center gap-3 py-16 text-center text-text-muted">
-        <p class="text-text-secondary font-medium">Unknown tab: <code class="bg-surface-alt px-2 py-0.5 rounded text-sm">{activeTab}</code></p>
+        <!-- ui('character.unknown_tab_prefix') = 'Unknown tab:' / 'Onglet inconnu :' (zero-hardcoding rule, ARCHITECTURE.md §6) -->
+        <p class="text-text-secondary font-medium">{ui('character.unknown_tab_prefix', engine.settings.language)} <code class="bg-surface-alt px-2 py-0.5 rounded text-sm">{activeTab}</code></p>
         <button
           class="btn-secondary"
           onclick={() => switchTab('core')}

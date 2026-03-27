@@ -12,7 +12,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { formatModifier, computeBaseSave, previewWithTempMod } from '$lib/utils/formatters';
+  import { formatModifier, previewWithTempMod } from '$lib/utils/formatters';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
@@ -93,8 +93,14 @@
             <!-- Base save bonus -->
             <div class="flex flex-col items-center px-2 py-1 rounded border border-border bg-surface min-w-[2.5rem]">
               <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('saves.base', engine.settings.language)}</span>
+              <!--
+                Base save = totalBonus − abilityMod. Delegated to
+                engine.getBaseSaveBonus() per the zero-game-logic-in-Svelte
+                rule (ARCHITECTURE.md §3): arithmetic on modifier values must
+                not appear in .svelte files.
+              -->
               <span class="text-sm font-semibold text-text-secondary">
-                {formatModifier(computeBaseSave(pipeline.totalBonus, abilityMod))}
+                {formatModifier(engine.getBaseSaveBonus(save.pipelineId, save.keyAbilityId))}
               </span>
             </div>
 

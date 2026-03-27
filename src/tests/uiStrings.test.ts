@@ -329,11 +329,22 @@ describe('UI_STRINGS', () => {
     expect(typeof UI_STRINGS['common.save']).toBe('string');
   });
 
-  it('language selector namespace: string values for known language codes', () => {
-    const langKeys = ['lang.label', 'lang.en', 'lang.fr', 'lang.de', 'lang.es'];
+  it('language selector namespace: UI chrome keys are strings', () => {
+    // Only lang.label, lang.select_tooltip, and lang.en live in the English baseline.
+    // All other language self-names (lang.fr = "Français", lang.de = "Deutsch", …)
+    // live exclusively in their own locale JSON files — not in UI_STRINGS.
+    const langKeys = ['lang.label', 'lang.select_tooltip', 'lang.en'];
     for (const key of langKeys) {
       expect(typeof UI_STRINGS[key], `key "${key}"`).toBe('string');
     }
+  });
+
+  it('language selector: lang.fr / lang.de are NOT in the English baseline', () => {
+    // Each language self-names only in its own locale file.
+    // Cross-language entries like "lang.fr = French" were removed to prevent
+    // speakers from seeing their language listed in a foreign name (e.g. "Chinois").
+    expect(UI_STRINGS['lang.fr']).toBeUndefined();
+    expect(UI_STRINGS['lang.de']).toBeUndefined();
   });
 
   it('"settings.rule_sources.entities" is a plural object with both forms', () => {

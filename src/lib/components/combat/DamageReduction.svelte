@@ -13,7 +13,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
   import type { DREntry } from '$lib/utils/stackingRules';
-  import { DR_CUSTOM_FEATURE_PREFIX } from '$lib/utils/constants';
+  import { DR_CUSTOM_FEATURE_PREFIX, DR_BYPASS_TAGS_FALLBACK } from '$lib/utils/constants';
 
   let drValue    = $state(5);
   let drBypass   = $state<string>('—');
@@ -38,11 +38,10 @@
         .map(r => String(r['tag'] ?? r['value'] ?? r['bypass'] ?? ''))
         .filter(v => v.length > 0);
     }
-    // Fallback: standard D&D 3.5 SRD bypass tags
-    return [
-      '—', 'magic', 'adamantine', 'cold_iron', 'silver', 'mithral',
-      'slashing', 'bludgeoning', 'piercing', 'good', 'evil', 'lawful', 'chaotic', 'epic',
-    ];
+    // Fallback: standard D&D 3.5 SRD bypass tags from constants.ts
+    // (zero-hardcoding rule: D&D material names must not be literal strings in .svelte files,
+    //  ARCHITECTURE.md §6). DR_BYPASS_TAGS_FALLBACK is the single source of truth.
+    return [...DR_BYPASS_TAGS_FALLBACK];
   });
 
   // ── Active custom DRs (GM-added via this UI) ─────────────────────────────
@@ -113,8 +112,8 @@
             <div class="flex flex-wrap gap-1 mt-0.5">
               {#each entry.suppressedModifiers as sup}
                 <span class="text-[10px] text-text-muted line-through opacity-60 px-1.5 py-0.5 rounded border border-border/50">
-                  DR {sup.value}/{formatBypassTags((sup as {drBypassTags?: string[]}).drBypassTags ?? [])}
-                  ({sup.sourceName?.en ?? sup.sourceId})
+                  {ui('dr.abbr', engine.settings.language)} {sup.value}/{formatBypassTags((sup as {drBypassTags?: string[]}).drBypassTags ?? [])}
+                  ({sup.sourceName?.[engine.settings.language] ?? sup.sourceName?.en ?? sup.sourceId})
                 </span>
               {/each}
             </div>

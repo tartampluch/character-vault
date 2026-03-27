@@ -36,7 +36,7 @@ import {
   SITUATIONAL_LABELS,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
-import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, loadUiLocale } from '$lib/i18n/ui-strings';
+import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, UI_STRINGS, loadUiLocaleFromObject } from '$lib/i18n/ui-strings';
 import { getAbilityAbbr, MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
 
 // =============================================================================
@@ -398,28 +398,18 @@ describe('formatWeight() with community language codes', () => {
 // =============================================================================
 
 describe('ui() — UI string lookup', () => {
-  // The new ui-strings architecture loads non-English locales on demand via
-  // loadUiLocale(). Seed a minimal French locale so the "fr" tests work without
-  // a running server. Only the keys exercised in this section are needed.
-  beforeAll(async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            '$meta': { code: 'fr', language: 'Français' },
-            'lang.en':             'Anglais',
-            'lang.label':          'Langue',
-            'lang.select_tooltip': 'Changer la langue',
-            'lang.fr':             'Français',
-            'combat.hp.title':     'Points de vie',
-            'combat.ac.title':     'Classe d\'armure',
-          }),
-      }),
-    );
-    await loadUiLocale('fr');
-    vi.unstubAllGlobals();
+  // Seed a minimal French locale synchronously using the test helper, so the
+  // "fr" tests work without a running HTTP server. Only the keys exercised in
+  // this section are needed.
+  beforeAll(() => {
+    loadUiLocaleFromObject('fr', {
+      'lang.en':             'Anglais',
+      'lang.label':          'Langue',
+      'lang.select_tooltip': 'Changer la langue',
+      'lang.fr':             'Français',
+      'combat.hp.title':     'Points de vie',
+      'combat.ac.title':     "Classe d'armure",
+    });
   });
 
   it('returns English string for a known key with lang "en"', () => {
@@ -437,7 +427,10 @@ describe('ui() — UI string lookup', () => {
   });
 
   it('defaults lang to "en" when no lang argument is supplied', () => {
-    expect(ui('lang.fr')).toBe('French');
+    // lang.en is the only language-name key in the English baseline — English
+    // names itself. Other languages removed their cross-language entries: their
+    // self-names now live in their own locale files only.
+    expect(ui('lang.en')).toBe('English');
   });
 
   it('returns the key itself and logs a warning for an unknown key', () => {
@@ -450,11 +443,12 @@ describe('ui() — UI string lookup', () => {
     warnSpy.mockRestore();
   });
 
-  it('all keys that exist for "en" also exist for "fr"', () => {
-    // Verify a representative sample of UI_STRINGS keys: calling ui(key, 'fr')
-    // must never return the key string itself (which would signal a missing entry).
+  it('representative UI chrome keys resolve for both "en" and "fr"', () => {
+    // Verify that core UI chrome keys translate correctly.
+    // Note: 'lang.fr' is intentionally absent from the English baseline —
+    // French names itself in fr.json only ('lang.fr' = 'Français').
     const knownKeys = [
-      'lang.label', 'lang.select_tooltip', 'lang.en', 'lang.fr',
+      'lang.label', 'lang.select_tooltip', 'lang.en',
       'combat.hp.title', 'combat.ac.title',
     ];
     for (const key of knownKeys) {
@@ -469,6 +463,20 @@ describe('ui() — UI string lookup', () => {
 // =============================================================================
 
 describe('getAbilityAbbr() — ability score abbreviations', () => {
+  // Inject French abbreviations via the test helper (no HTTP fetch needed).
+  // In production, these come from static/locales/fr.json; here we inject them
+  // directly so the test suite is self-contained.
+  beforeAll(() => {
+    loadUiLocaleFromObject('fr', {
+      'ability_abbr.stat_strength':     'FOR',
+      'ability_abbr.stat_dexterity':    'DEX',
+      'ability_abbr.stat_constitution': 'CON',
+      'ability_abbr.stat_intelligence': 'INT',
+      'ability_abbr.stat_wisdom':       'SAG',
+      'ability_abbr.stat_charisma':     'CHA',
+    });
+  });
+
   it('returns English abbreviation for each of the 6 ability scores', () => {
     expect(getAbilityAbbr('stat_strength',     'en')).toBe('STR');
     expect(getAbilityAbbr('stat_dexterity',    'en')).toBe('DEX');
@@ -478,7 +486,9 @@ describe('getAbilityAbbr() — ability score abbreviations', () => {
     expect(getAbilityAbbr('stat_charisma',     'en')).toBe('CHA');
   });
 
-  it('returns French abbreviation for each ability score', () => {
+  it('returns French abbreviation for each ability score (from locale, not constants.ts)', () => {
+    // Translations live in static/locales/fr.json, injected above via loadUiLocaleFromObject.
+    // If this test fails, check that fr.json contains the ability_abbr.* keys.
     expect(getAbilityAbbr('stat_strength',     'fr')).toBe('FOR');
     expect(getAbilityAbbr('stat_dexterity',    'fr')).toBe('DEX');
     expect(getAbilityAbbr('stat_constitution', 'fr')).toBe('CON');
@@ -504,11 +514,19 @@ describe('getAbilityAbbr() — ability score abbreviations', () => {
     expect(MAIN_ABILITY_IDS).toContain('stat_charisma');
   });
 
-  it('ABILITY_ABBRS has an entry for every ID in MAIN_ABILITY_IDS', () => {
+  it('UI_STRINGS has an ability_abbr key for every ID in MAIN_ABILITY_IDS', () => {
+    // English baseline must exist in ui-strings.ts so getAbilityAbbr works offline.
+    for (const id of MAIN_ABILITY_IDS) {
+      const key = `ability_abbr.${id}`;
+      expect(UI_STRINGS[key]).toBeTruthy();
+    }
+  });
+
+  it('ABILITY_ABBRS still exports an English fallback for every standard ability ID', () => {
+    // ABILITY_ABBRS is now English-only; other languages come from locale files.
     for (const id of MAIN_ABILITY_IDS) {
       expect(ABILITY_ABBRS[id]).toBeDefined();
       expect(ABILITY_ABBRS[id].en).toBeTruthy();
-      expect(ABILITY_ABBRS[id].fr).toBeTruthy();
     }
   });
 });

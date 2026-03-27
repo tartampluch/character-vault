@@ -15,7 +15,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { ABILITY_ABBRS, MAIN_ABILITY_IDS } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
   import { getCharacterLevel } from '$lib/utils/formatters';
   import { IconGMDashboard, IconStats, IconSuccess, IconError, IconBack } from '$lib/components/ui/icons';
 
@@ -215,10 +215,10 @@
           </div>
           <div class="flex flex-wrap gap-2">
             {#each [
-              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[0]], value: stats.str },
-              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[2]], value: stats.dex },
-              { label: ABILITY_ABBRS[MAIN_ABILITY_IDS[1]], value: stats.con },
-              { label: 'HP',  value: `${stats.hp}/${stats.maxHp}`, accent: true },
+              { label: getAbilityAbbr(MAIN_ABILITY_IDS[0], engine.settings.language), value: stats.str },
+              { label: getAbilityAbbr(MAIN_ABILITY_IDS[2], engine.settings.language), value: stats.dex },
+              { label: getAbilityAbbr(MAIN_ABILITY_IDS[1], engine.settings.language), value: stats.con },
+              { label: ui('gm.hp_abbr', engine.settings.language),  value: `${stats.hp}/${stats.maxHp}`, accent: true },
               { label: ui('common.level', engine.settings.language), value: getTotalLevel(selectedChar) },
             ] as chip}
               <div class="flex flex-col items-center px-3 py-1.5 rounded-lg border {chip.accent ? 'border-red-700/50' : 'border-border'} bg-surface-alt min-w-[3rem]">

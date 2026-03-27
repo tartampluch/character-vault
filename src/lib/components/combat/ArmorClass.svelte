@@ -12,6 +12,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
+  import { MAX_DEX_CAP_UNCAPPED_VALUE } from '$lib/utils/constants';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconAC, IconInfo } from '$lib/components/ui/icons';
@@ -30,6 +31,20 @@
   // This is a D&D game mechanic — the formula min(dexMod, maxDexBonus) lives in the
   // engine as phase_effectiveDexToAC so no game logic appears in this component.
   const effectiveDexToAC = $derived(engine.phase_effectiveDexToAC);
+
+  /**
+   * True when a DEX cap modifier is actively reducing the max_dexterity_bonus below
+   * the uncapped sentinel value (99). Used to conditionally show the cap badge.
+   *
+   * The comparison is moved here (script block) rather than inlined in the template
+   * to comply with the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3):
+   * all expressions involving engine pipeline values must live in $derived blocks,
+   * not in template conditional expressions.
+   */
+  const isMaxDexCapped = $derived(
+    (engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue ?? MAX_DEX_CAP_UNCAPPED_VALUE)
+      < MAX_DEX_CAP_UNCAPPED_VALUE
+  );
 </script>
 
 <div class="card p-4 flex flex-col gap-4">
@@ -62,7 +77,7 @@
     >
       {#if effectiveDexToAC >= 0}+{/if}{effectiveDexToAC}
     </span>
-    {#if engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue < 99}
+    {#if isMaxDexCapped}
       <span class="text-amber-500 text-[10px]">
         ({ui('combat.ac.cap', engine.settings.language)} {engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue})
       </span>

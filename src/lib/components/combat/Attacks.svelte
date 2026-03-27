@@ -8,13 +8,14 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, buildLocalizedString } from '$lib/i18n/ui-strings';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { formatModifier } from '$lib/utils/formatters';
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ItemFeature } from '$lib/types/feature';
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import { IconAttacks, IconDiceRoll } from '$lib/components/ui/icons';
+  import { WEAPON_CATEGORY_TAG, RANGED_CATEGORY_TAG, TWO_HANDED_WIELD_CATEGORY, BAB_PIPELINE_ID, WEAPON_ROLL_LABEL_KEY } from '$lib/utils/constants';
 
   // Unarmed strike statistics come from the engine (zero-hardcoding rule, ARCHITECTURE.md §6).
   // engine.phase_unarmedStrike reads from the `item_unarmed_strike` rule feature and can be
@@ -37,12 +38,14 @@
 
   function toWeaponOption(feature: ItemFeature, isActive: boolean): WeaponOption | null {
     if (!isActive || !feature.weaponData) return null;
-    if (!feature.tags.some(t => t === 'weapon' || t === 'ranged')) return null;
-    // Enhancement bonus extraction delegated to engine (zero-game-logic-in-Svelte rule,
-    // ARCHITECTURE.md §3). Filtering by modifier type is D&D game logic.
+    if (!feature.tags.some(t => t === WEAPON_CATEGORY_TAG || t === RANGED_CATEGORY_TAG)) return null;
+    // Enhancement bonus and ranged classification delegated to the engine
+    // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+    // isWeaponRanged() encapsulates the D&D classification rule (ranged tag OR
+    // rangeIncrementFt > 0) so this component stays free of game logic.
     const enhancement = engine.getWeaponEnhancementBonus(feature);
-    const isRanged    = feature.tags.includes('ranged') || (feature.weaponData.rangeIncrementFt ?? 0) > 0;
-    const isTwoHanded = feature.weaponData.wieldCategory === 'two_handed';
+    const isRanged    = engine.isWeaponRanged(feature);
+    const isTwoHanded = feature.weaponData.wieldCategory === TWO_HANDED_WIELD_CATEGORY;
     return {
       id: feature.id, name: engine.t(feature.label),
       damageDice: feature.weaponData.damageDice, critRange: feature.weaponData.critRange,
@@ -78,13 +81,40 @@
   type RollTarget = 'main_attack' | 'main_damage';
   let rollTarget = $state<RollTarget | null>(null);
 
-  function buildWeaponPipeline(attackBonus: number, damageBonus: number, isDamage: boolean): StatisticPipeline {
-    return {
-      id: 'synthetic_weapon_roll',
-      label: { en: 'Weapon Roll' },
+  /**
+   * Builds a synthetic `StatisticPipeline` used only for the `DiceRollModal`.
+   *
+   * WHY SYNTHETIC (not reading a real engine pipeline):
+   *   Weapon attack and damage bonuses are computed by `engine.getWeaponAttackBonus()`
+   *   and `engine.getWeaponDamageBonus()`, which aggregate contributions from BAB,
+   *   STR/DEX modifiers, enhancement bonuses, and other active modifiers. The
+   *   `DiceRollModal` accepts a `StatisticPipeline` to render the breakdown and to
+   *   read situational modifiers at roll time. We therefore construct a minimal
+   *   synthetic pipeline that wraps the pre-computed total and passes through the
+   *   BAB situational modifiers (which may add, for example, flanking bonuses).
+   *
+   * CONSTANTS USED:
+   *   - `BAB_PIPELINE_ID`  — pipeline key for the BAB situational mods pass-through.
+   *     (ARCHITECTURE.md §6 — no magic strings in .svelte files)
+    *   - `WEAPON_ROLL_LABEL_KEY` — ui-strings.ts key for the pipeline label.
+    *     `buildLocalizedString(key)` reads all loaded locale files at call time
+    *     so no inline translations exist in TypeScript source (ARCHITECTURE.md §6).
+    *
+    * @param attackBonus - The total attack bonus (from engine.getWeaponAttackBonus()).
+    * @param damageBonus - The total damage bonus (from engine.getWeaponDamageBonus()).
+    * @param isDamage    - `true` for a damage roll, `false` for an attack roll.
+    */
+   function buildWeaponPipeline(attackBonus: number, damageBonus: number, isDamage: boolean): StatisticPipeline {
+     return {
+       id: 'synthetic_weapon_roll',
+       // buildLocalizedString builds the label from ui-strings.ts + all loaded
+       // locale files — no inline EN/FR translations in .svelte files.
+       label: buildLocalizedString(WEAPON_ROLL_LABEL_KEY),
       baseValue: 0,
       activeModifiers: [],
-      situationalModifiers: engine.phase3_combatStats['combatStats.base_attack_bonus']?.situationalModifiers ?? [],
+      // Pass through situational modifiers from the BAB pipeline (flanking, etc.).
+      // BAB_PIPELINE_ID constant avoids a magic string literal here.
+      situationalModifiers: engine.phase3_combatStats[BAB_PIPELINE_ID]?.situationalModifiers ?? [],
       totalBonus: isDamage ? damageBonus : attackBonus,
       totalValue: isDamage ? damageBonus : attackBonus,
       derivedModifier: 0,

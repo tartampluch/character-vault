@@ -40,6 +40,10 @@
   import type { ItemFeature } from '$lib/types/feature';
   import TagPickerModal from './TagPickerModal.svelte';
   import FeaturePickerModal from './FeaturePickerModal.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { computeAbilityModifier, computeIntelligentItemEgo } from '$lib/utils/formatters';
+  import { ALIGNMENTS } from '$lib/utils/constants';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ===========================================================================
   // CONTEXT
@@ -236,35 +240,45 @@
   /** Whether the GM is manually overriding the auto-computed ego score. */
   let egoManualOverride = $state(false);
 
-  /** Auto-computed Ego score from the intelligent item stats (SRD formula). */
+  /**
+   * Auto-computed Ego score from the intelligent item stats (SRD formula).
+   *
+   * The complete D&D 3.5 Ego formula is encapsulated in `computeIntelligentItemEgo()`
+   * from `formatters.ts` (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   * No D&D arithmetic — not even `Math.max` with SRD coefficients — may appear
+   * directly in a `.svelte` file; it belongs in a pure utility function.
+   *
+   * @see src/lib/utils/formatters.ts `computeIntelligentItemEgo()` for formula details.
+   */
   const autoEgo = $derived.by((): number => {
     const d = (ctx.feature as ItemFeature).intelligentItemData;
     if (!d) return 0;
-    const intBonus  = Math.floor((d.intelligenceScore - 10) / 2);
-    const wisBonus  = Math.floor((d.wisdomScore       - 10) / 2);
-    const chaBonus  = Math.floor((d.charismaScore     - 10) / 2);
-    const teleBonus = d.communication === 'telepathy' ? 1 : 0;
-    const purposeBonus = (d.specialPurpose && d.dedicatedPower) ? 4 : 0;
-    return Math.max(0,
-      (d.lesserPowers  * 1)
-      + (d.greaterPowers * 2)
-      + purposeBonus
-      + teleBonus
-      + intBonus + wisBonus + chaBonus
-    );
+    // Delegate the entire SRD Ego formula to formatters.ts — zero arithmetic here.
+    return computeIntelligentItemEgo(d);
   });
 
-  const ALIGNMENT_OPTIONS = [
-    { value: 'lawful_good',    label: 'Lawful Good' },
-    { value: 'lawful_neutral', label: 'Lawful Neutral' },
-    { value: 'lawful_evil',    label: 'Lawful Evil' },
-    { value: 'neutral_good',   label: 'Neutral Good' },
-    { value: 'true_neutral',   label: 'True Neutral' },
-    { value: 'neutral_evil',   label: 'Neutral Evil' },
-    { value: 'chaotic_good',   label: 'Chaotic Good' },
-    { value: 'chaotic_neutral',label: 'Chaotic Neutral' },
-    { value: 'chaotic_evil',   label: 'Chaotic Evil' },
-  ];
+  /**
+   * Alignment options for the intelligent item alignment dropdown.
+   *
+   * Derived from the `ALIGNMENTS` constant in constants.ts (zero-hardcoding rule,
+   * ARCHITECTURE.md §6). Alignment names must not be hardcoded as English strings in
+   * `.svelte` files — they must come from the centralised constants or config tables.
+   *
+   * The `value` is the bare alignment key (e.g. `'lawful_good'`), stripped of the
+   * `'alignment_'` feature-ID prefix used in ALIGNMENTS. The intelligent item data
+   * stores alignment as a bare key, not as a feature ID.
+   */
+  /**
+   * Alignment options resolved via ui() so translations live in locale JSON files.
+   * `alignment.ui_key` (e.g. 'alignment.lawful_good') is looked up in the loaded
+   * locale — no inline translations in constants.ts (ARCHITECTURE.md §6).
+   */
+  const ALIGNMENT_OPTIONS = $derived(
+    ALIGNMENTS.map(a => ({
+      value: a.id.replace(/^alignment_/, ''),
+      label: ui(a.ui_key, engine.settings.language),
+    }))
+  );
 </script>
 
 <!-- Damage type pickers -->

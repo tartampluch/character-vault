@@ -56,6 +56,7 @@
   "character.back_campaigns":     "Campagnes",
   "character.level_display":      "Niveau {n}",
   "character.no_class":           "Aucune classe sélectionnée",
+  "character.unknown_tab_prefix": "Onglet inconnu :",
   "character.unknown_name":       "Personnage inconnu",
 
   "campaigns.title":              "Vos Campagnes",
@@ -123,6 +124,7 @@
   "gm.level_prefix":              "Nv.",
   "gm.override_count":            "override(s)",
   "gm.view":                      "Vue MJ",
+  "gm.hp_abbr":                   "PV",
 
   "core.basic_info":              "Informations générales",
   "core.character_name":          "Nom du personnage",
@@ -549,7 +551,8 @@
   "psionic_item.manifest_from_crown": "Manifester",
   "psionic_item.draw_pp":            "Puiser {pp} PM",
   "psionic_item.powers_known":       "Pouvoirs",
-  "psionic_item.brainburn_risk":     "⚠ Risque d'incandescence (jet ML DD {dc})",
+  "psionic_item.pp_abbr":            "PM",
+  "psionic_item.brainburn_risk":     "Risque d'incandescence (jet ML DD {dc})",
   "psionic_item.power_flushed":      "Consommé",
 
   "lore.personal_story":          "Histoire personnelle",
@@ -683,18 +686,30 @@
   "settings.chapters.task_placeholder": "Titre de la tâche…",
   "settings.chapters.remove_task":      "Supprimer la tâche",
 
+  "ability_abbr.stat_strength":     "FOR",
+  "ability_abbr.stat_dexterity":    "DEX",
+  "ability_abbr.stat_constitution": "CON",
+  "ability_abbr.stat_intelligence": "INT",
+  "ability_abbr.stat_wisdom":       "SAG",
+  "ability_abbr.stat_charisma":     "CHA",
+
+  "alignment.lawful_good":     "Loyal Bon",
+  "alignment.neutral_good":    "Neutre Bon",
+  "alignment.chaotic_good":    "Chaotique Bon",
+  "alignment.lawful_neutral":  "Loyal Neutre",
+  "alignment.true_neutral":    "Vrai Neutre",
+  "alignment.chaotic_neutral": "Chaotique Neutre",
+  "alignment.lawful_evil":     "Loyal Mauvais",
+  "alignment.neutral_evil":    "Neutre Mauvais",
+  "alignment.chaotic_evil":    "Chaotique Mauvais",
+
+  "combat.weapon_roll":  "Jet d'arme",
+  "magic.spell_roll":    "Jet de sort",
+
+  "modifier.synergy":    "Synergie",
+
   "lang.label":                   "Langue",
   "lang.select_tooltip":          "Changer la langue d'affichage",
-  "lang.en":                      "Anglais",
-  "lang.fr":                      "Français",
-  "lang.de":                      "Allemand",
-  "lang.es":                      "Espagnol",
-  "lang.it":                      "Italien",
-  "lang.pt":                      "Portugais",
-  "lang.nl":                      "Néerlandais",
-  "lang.pl":                      "Polonais",
-  "lang.cs":                      "Tchèque",
-  "lang.ja":                      "Japonais",
-  "lang.ko":                      "Coréen",
-  "lang.zh":                      "Chinois"
+
+  "lang.fr":                      "Français"
 }

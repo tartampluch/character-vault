@@ -20,6 +20,12 @@
     { id: 'combatStats.base_attack_bonus',     shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
     { id: 'combatStats.initiative',    shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
     { id: 'combatStats.grapple', shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
+    // Fortification: percentage chance to negate a confirmed critical hit (ARCHITECTURE.md §4.7).
+    // baseValue = 0 (no fortification by default). Light=25%, Moderate=75%, Heavy=100%.
+    { id: 'combatStats.fortification',         shortName: ui('combat.core.fort', engine.settings.language),       description: ui('combat.core.fort_desc', engine.settings.language),                showDice: false,                      color: 'oklch(78% 0.14 200)' },
+    // Arcane Spell Failure: accumulated % from equipped armour/shields (ARCHITECTURE.md §4.8).
+    // baseValue = 0 (unarmoured casters have 0% ASF by default).
+    { id: 'combatStats.arcane_spell_failure',  shortName: ui('combat.core.asf', engine.settings.language),        description: ui('combat.core.asf_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(75% 0.12 280)' },
   ] as const);
 
   let breakdownId = $state<ID | null>(null);

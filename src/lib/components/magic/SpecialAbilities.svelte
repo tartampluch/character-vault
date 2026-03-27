@@ -52,10 +52,11 @@
 
     const { targetId, cost } = feature.activation.resourceCost;
 
-    // Resolve cost: accept both number literals and simple integer strings.
-    // Full formula evaluation (e.g., "1 + @classLevels.class_druid") is deferred
-    // to a future phase — most D&D 3.5 resource costs are simple integers.
-    const resolvedCost = typeof cost === 'number' ? cost : (parseFloat(String(cost)) || 1);
+    // Delegate cost resolution to the engine (zero-game-logic-in-Svelte rule,
+    // ARCHITECTURE.md §3). engine.resolveActivationCost() handles both number
+    // literals and simple integer strings; full formula evaluation is deferred
+    // to a future phase by the engine.
+    const resolvedCost = engine.resolveActivationCost(cost);
 
     // Delegate the Math.max(0, current - cost) arithmetic to the engine method.
     // Direct `pool.currentValue =` mutations in Svelte violate ARCHITECTURE.md §3.

@@ -23,6 +23,11 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { ui } from '$lib/i18n/ui-strings';
   import type { Feature } from '$lib/types/feature';
+  import {
+    IconActionStandard, IconActionMove, IconActionSwift,
+    IconActionFullRound, IconActionFree,
+    IconWarning, IconReset, IconClose,
+  } from '$lib/components/ui/icons';
 
   const lang = $derived(engine.settings.language);
 
@@ -89,13 +94,15 @@
     return !isBlocked(type);
   }
 
-  // The actions to display (only show categories that are restricted)
+  // The actions to display (only show categories that are restricted).
+  // Icons are Lucide Svelte components — zero emoji (zero-hardcoding rule, ARCHITECTURE.md §6).
+  // Stored as component references so the template can render them with <svelte:component>.
   const SHOWN_ACTIONS = [
-    { key: 'standard',   labelKey: 'action.standard',   icon: '⚔' },
-    { key: 'move',       labelKey: 'action.move',        icon: '🏃' },
-    { key: 'swift',      labelKey: 'action.swift',       icon: '⚡' },
-    { key: 'full_round', labelKey: 'action.full_round',  icon: '⊙' },
-    { key: 'free',       labelKey: 'action.free',        icon: '💬' },
+    { key: 'standard',   labelKey: 'action.standard',   icon: IconActionStandard  },
+    { key: 'move',       labelKey: 'action.move',        icon: IconActionMove      },
+    { key: 'swift',      labelKey: 'action.swift',       icon: IconActionSwift     },
+    { key: 'full_round', labelKey: 'action.full_round',  icon: IconActionFullRound },
+    { key: 'free',       labelKey: 'action.free',        icon: IconActionFree      },
   ] as const;
 </script>
 
@@ -104,15 +111,15 @@
 
   <!-- Header -->
   <div class="flex items-center justify-between">
-    <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">
-      ⚠ {ui('action.budget_title', lang)}
+    <span class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-amber-400">
+      <IconWarning size={13} aria-hidden="true" /> {ui('action.budget_title', lang)}
     </span>
     <button
-      class="text-[10px] text-text-muted hover:text-accent px-1.5 py-0.5 rounded border border-border hover:border-accent/30 transition-colors duration-150"
+      class="flex items-center gap-1 text-[10px] text-text-muted hover:text-accent px-1.5 py-0.5 rounded border border-border hover:border-accent/30 transition-colors duration-150"
       onclick={resetTurn}
       type="button"
       title={ui('action.reset_turn', lang)}
-    >↺ {ui('action.reset_turn', lang)}</button>
+    ><IconReset size={11} aria-hidden="true" /> {ui('action.reset_turn', lang)}</button>
   </div>
 
   <!-- XOR note for Staggered/Disabled -->
@@ -134,6 +141,7 @@
       {#if budget !== Inf}
         {@const blocked = isBlocked(act.key)}
         {@const spentCount = spent[act.key as keyof typeof spent] ?? 0}
+        {@const ActionIcon = act.icon}
         <button
           class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors duration-150
                  {blocked
@@ -152,13 +160,13 @@
           type="button"
           aria-label="{ui(act.labelKey, lang)} — {blocked ? 'blocked' : 'available'}"
         >
-          <span class="text-base leading-none">{act.icon}</span>
+          <ActionIcon size={14} aria-hidden="true" />
           <span class="leading-none">{ui(act.labelKey, lang)}</span>
           <!-- Budget counter: show X/budget or BLOCKED -->
           {#if budget > 0 && budget !== Inf}
             <span class="text-[9px] opacity-70">{spentCount}/{budget}</span>
           {:else if budget === 0}
-            <span class="text-[9px] text-red-500">✗</span>
+            <IconClose size={9} class="text-red-500" aria-hidden="true" />
           {/if}
         </button>
       {/if}

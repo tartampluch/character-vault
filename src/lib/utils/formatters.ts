@@ -256,6 +256,73 @@ export function computeAbilityModifier(score: number): number {
 }
 
 // =============================================================================
+// INTELLIGENT ITEM EGO SCORE FORMULA
+// =============================================================================
+
+/**
+ * Computes the D&D 3.5 SRD Intelligent Item Ego score from the item's stats.
+ *
+ * D&D 3.5 SRD — INTELLIGENT ITEM EGO FORMULA (Dungeon Master's Guide, Chapter 8):
+ *   Ego = INT modifier + WIS modifier + CHA modifier
+ *       + lesser special abilities (each × 1)
+ *       + greater special abilities (each × 2)
+ *       + 1 if communication is telepathy
+ *       + 4 if the item has a special purpose and dedicated power
+ *   Minimum value: 0 (floor at 0 per SRD)
+ *
+ * WHY IN FORMATTERS (not GameEngine)?
+ *   This is a pure, stateless formula with no reactive dependencies.
+ *   Placing it here enforces the zero-game-logic-in-Svelte rule
+ *   (ARCHITECTURE.md §3): `ItemDataEditor.svelte` MUST NOT contain D&D arithmetic.
+ *   `computeAbilityModifier()` (INT/WIS/CHA modifiers) is also here, so this
+ *   function consolidates the complete Ego formula in one place.
+ *
+ * NOTE: The `egoScore` field on `IntelligentItemData` stores the *pre-computed*
+ *   value from this formula (or a manual GM override). The real-time auto-preview
+ *   in `ItemDataEditor` calls this function reactively while the GM edits the form.
+ *
+ * @param data - A subset of `IntelligentItemData` fields needed for Ego computation.
+ * @returns The computed Ego score (minimum 0).
+ *
+ * @example
+ * computeIntelligentItemEgo({ intelligenceScore: 17, wisdomScore: 14, charismaScore: 10,
+ *   communication: 'telepathy', lesserPowers: 2, greaterPowers: 1,
+ *   specialPurpose: 'Slay undead', dedicatedPower: '+4 to attacks vs undead' })
+ * // INT 17 → +3, WIS 14 → +2, CHA 10 → +0 = 5 ability mods
+ * // + telepathy bonus 1
+ * // + lesser 2×1 = 2
+ * // + greater 1×2 = 2
+ * // + purpose+power 4
+ * // = 14
+ */
+export function computeIntelligentItemEgo(data: {
+  intelligenceScore: number;
+  wisdomScore: number;
+  charismaScore: number;
+  communication: string;
+  lesserPowers: number;
+  greaterPowers: number;
+  specialPurpose: string | null;
+  dedicatedPower: string | null;
+}): number {
+  const intBonus     = computeAbilityModifier(data.intelligenceScore);
+  const wisBonus     = computeAbilityModifier(data.wisdomScore);
+  const chaBonus     = computeAbilityModifier(data.charismaScore);
+  // Telepathy grants +1 Ego point (SRD: "telepathic items gain +1 to Ego")
+  const teleBonus    = data.communication === 'telepathy' ? 1 : 0;
+  // Special purpose + dedicated power combo grants +4 Ego points
+  const purposeBonus = (data.specialPurpose && data.dedicatedPower) ? 4 : 0;
+  // Each lesser special ability adds 1 Ego point; greater adds 2
+  return Math.max(0,
+    intBonus + wisBonus + chaBonus
+    + teleBonus
+    + purposeBonus
+    + (data.lesserPowers  * 1)
+    + (data.greaterPowers * 2),
+  );
+}
+
+// =============================================================================
 // MODIFIER SIGN FORMATTING
 // =============================================================================
 

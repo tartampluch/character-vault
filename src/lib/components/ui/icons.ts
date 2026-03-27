@@ -143,6 +143,20 @@ export { Sparkles     as IconSpellSR      } from 'lucide-svelte'; // Spell Resis
 export { BrainCircuit as IconPowerPR      } from 'lucide-svelte'; // Power Resistance (psionic)
 export { ShieldAlert  as IconFortification } from 'lucide-svelte'; // Fortification %
 
+// ─── ACTION ECONOMY ICONS ────────────────────────────────────────────────────
+// Used in ActionBudgetBar.svelte for action type indicators
+export { Swords         as IconActionStandard  } from 'lucide-svelte'; // Standard action (attack, cast)
+export { Footprints     as IconActionMove      } from 'lucide-svelte'; // Move action
+export { Zap            as IconActionSwift     } from 'lucide-svelte'; // Swift action (once per turn)
+export { RotateCcw      as IconActionFullRound } from 'lucide-svelte'; // Full-round action
+export { MessageSquare  as IconActionFree      } from 'lucide-svelte'; // Free action (talking, etc.)
+
+// ─── REST & ENCOUNTER ICONS ──────────────────────────────────────────────────
+// Used in HealthAndXP.svelte for turn/rest/encounter controls
+export { Timer          as IconStartTurn       } from 'lucide-svelte'; // Start turn / tick (fast healing)
+export { Swords         as IconEncounterReset  } from 'lucide-svelte'; // New encounter / reset encounter slots
+export { Moon           as IconLongRest        } from 'lucide-svelte'; // Long rest / full rest
+
 // ─── MOVEMENT ICONS ──────────────────────────────────────────────────────────
 // Used in the Movement Speeds panel (Phase 10.5)
 export { Footprints   as IconSpeedLand    } from 'lucide-svelte'; // Land speed

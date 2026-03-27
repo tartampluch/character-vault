@@ -40,13 +40,13 @@
   const budget      = $derived(engine.phase4_skillPointsBudget);
   const lang        = $derived(engine.settings.language);
 
-  // ── Skill points spent — read directly from the engine to avoid duplicating
-  //    the D&D 3.5 cross-class cost formula (1 SP/rank class, 2 SP/rank cross-class).
-  //    `engine.phase4_skillPointsSpent` owns this computation (ARCHITECTURE.md §3).
-  const skillPointsSpent = $derived(engine.phase4_skillPointsSpent);
-
-  const skillPointsRemaining = $derived(budget.totalAvailable - skillPointsSpent);
-  const isOverBudget = $derived(skillPointsRemaining < 0);
+  // ── Skill points spent/remaining — read directly from the engine.
+  //    The D&D 3.5 cross-class cost formula (1 SP/rank class, 2 SP/rank cross-class)
+  //    and the remaining/exceeded computations live in `engine.phase4_skill*`
+  //    (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+  const skillPointsSpent     = $derived(engine.phase4_skillPointsSpent);
+  const skillPointsRemaining = $derived(engine.phase4_skillPointsRemaining);
+  const isOverBudget         = $derived(engine.phase4_skillPointsBudgetExceeded);
 
   /**
    * Returns whether any skill rank minimums are currently locked.
@@ -100,7 +100,10 @@
   }
 
   function unlockAllRanks(): void {
-    engine.character.minimumSkillRanks = {};
+    // Delegates to engine.unlockAllSkillRanks() rather than mutating
+    // `engine.character.minimumSkillRanks` directly — engine methods are the
+    // sanctioned mutation point (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+    engine.unlockAllSkillRanks();
   }
 </script>
 

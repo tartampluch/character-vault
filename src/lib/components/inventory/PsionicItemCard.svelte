@@ -22,6 +22,7 @@
   import { toDisplayPct } from '$lib/utils/formatters';
   import type { ItemFeature } from '$lib/types/feature';
   import { DORJE_MAX_CHARGES } from '$lib/utils/constants';
+  import { IconWarning } from '$lib/components/ui/icons';
 
   let { item, instanceId }: { item: ItemFeature; instanceId: string } = $props();
 
@@ -78,6 +79,10 @@
     return f ? engine.t(f.label) : id;
   }
 
+  // Brainburn DC computation is delegated to engine.getBrainburnDC() per
+  // the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). The D&D formula
+  // (power stone ML + 1) must not appear inline in .svelte files.
+
   let ppToRecharge = $state(1);
 </script>
 
@@ -93,9 +98,9 @@
 
   <!-- ── COGNIZANCE CRYSTAL ───────────────────────────────────────────── -->
   {#if type === 'cognizance_crystal'}
-    <!-- PP bar -->
+    <!-- PP bar — label via ui() key (zero-hardcoding rule, ARCHITECTURE.md §6) -->
     <div class="flex items-center gap-2 text-xs">
-      <span class="text-text-muted shrink-0">PP</span>
+      <span class="text-text-muted shrink-0">{ui('psionic_item.pp_abbr', lang)}</span>
       <div class="flex-1 h-1.5 rounded-full bg-surface-alt overflow-hidden border border-border">
         <div class="h-full rounded-full bg-purple-500 transition-all duration-300" style="width: {ppPct}%;" aria-hidden="true"></div>
       </div>
@@ -167,12 +172,16 @@
             {getPowerName(entry.powerId)}
           </span>
           <span class="text-text-muted shrink-0">ML {entry.manifesterLevel}</span>
-          <!-- Brainburn warning -->
+          <!-- Brainburn warning — IconWarning from the barrel (no raw emoji, ARCHITECTURE.md §6) -->
           {#if !entry.usedUp && charML < entry.manifesterLevel}
+            {@const bbDC = engine.getBrainburnDC(entry.manifesterLevel)}
             <span
               class="text-[10px] text-amber-400 shrink-0"
-              title={ui('psionic_item.brainburn_risk', lang).replace('{dc}', String(entry.manifesterLevel + 1))}
-            >⚠</span>
+              title={ui('psionic_item.brainburn_risk', lang).replace('{dc}', String(bbDC))}
+              aria-label={ui('psionic_item.brainburn_risk', lang).replace('{dc}', String(bbDC))}
+            >
+              <IconWarning size={12} aria-hidden="true" />
+            </span>
           {/if}
           {#if entry.usedUp}
             <span class="text-[10px] text-text-muted">{ui('psionic_item.power_flushed', lang)}</span>

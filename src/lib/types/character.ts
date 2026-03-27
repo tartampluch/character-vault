@@ -658,6 +658,31 @@ export interface Character {
   linkedEntities: LinkedEntity[];
 
   // ---------------------------------------------------------------------------
+  // Wealth — coin purse (stored, not derived)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * The character's current coin purse.
+   *
+   * D&D 3.5 RULE (PHB p.149):
+   *   Coins weigh 50 per pound regardless of type. Carrying coin counts toward
+   *   encumbrance exactly like any other item. The engine includes `wealth` in
+   *   `phase2b_totalCarriedWeight` so the encumbrance tier and `phase_isEncumbered`
+   *   reflect coins automatically.
+   *
+   * UNIT: integer count per denomination.
+   *   cp = copper pieces, sp = silver pieces, gp = gold pieces, pp = platinum pieces.
+   *
+   * Default: absent (treated as all-zero — new characters start with no coin).
+   */
+  wealth?: {
+    cp: number;
+    sp: number;
+    gp: number;
+    pp: number;
+  };
+
+  // ---------------------------------------------------------------------------
   // GM Secret Overrides
   // ---------------------------------------------------------------------------
 

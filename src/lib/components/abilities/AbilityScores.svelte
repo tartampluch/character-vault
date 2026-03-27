@@ -20,7 +20,7 @@
   import RollStatsModal from './RollStatsModal.svelte';
   import { IconStats, IconTabFeats, IconDiceRoll, IconInfo } from '$lib/components/ui/icons';
   import type { ID } from '$lib/types/primitives';
-  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr, ABILITY_SCORE_MIN, ABILITY_SCORE_MAX } from '$lib/utils/constants';
 
   const recommendedIds = $derived.by(() => {
     for (const afi of engine.character.activeFeatures) {
@@ -46,7 +46,7 @@
 
   function handleBaseScoreChange(pipelineId: ID, event: Event) {
     const val = parseInt((event.target as HTMLInputElement).value, 10);
-    if (!isNaN(val) && val >= 1 && val <= 30) {
+    if (!isNaN(val) && val >= ABILITY_SCORE_MIN && val <= ABILITY_SCORE_MAX) {
       engine.setAttributeBase(pipelineId, val);
     }
   }

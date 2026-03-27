@@ -11,7 +11,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { IconHealth, IconXP, IconHeal, IconDamage } from '$lib/components/ui/icons';
+  import { IconHealth, IconXP, IconHeal, IconDamage, IconStartTurn, IconEncounterReset, IconLongRest } from '$lib/components/ui/icons';
 
   // ── Variant detection ────────────────────────────────────────────────────
   const isVWPMode  = $derived(engine.settings.variantRules?.vitalityWoundPoints === true);
@@ -315,12 +315,12 @@
       <div class="flex flex-wrap gap-2 items-center">
         {#each perTurnPools as pool}
           <span class="badge-accent text-xs px-2 py-0.5 rounded-full">
-            {pool.label?.en ?? pool.id}: {ui('heal.per_turn_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
+            {engine.t(pool.label) ?? pool.id}: {ui('heal.per_turn_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
           </span>
         {/each}
         {#each perRoundPools as pool}
           <span class="badge-accent text-xs px-2 py-0.5 rounded-full opacity-70">
-            {pool.label?.en ?? pool.id}: {ui('heal.per_round_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
+            {engine.t(pool.label) ?? pool.id}: {ui('heal.per_round_badge', engine.settings.language).replace('{n}', String(pool.rechargeAmount ?? '?'))}
           </span>
         {/each}
         <button
@@ -330,7 +330,7 @@
           type="button"
           aria-label={ui('heal.tick_button', engine.settings.language)}
         >
-          ⏱ {ui('heal.tick_button', engine.settings.language)}
+          <IconStartTurn size={12} aria-hidden="true" /> {ui('heal.tick_button', engine.settings.language)}
         </button>
       </div>
     </section>
@@ -339,17 +339,17 @@
   <!-- ── REST / ENCOUNTER BUTTONS ─────────────────────────────────────── -->
   <section class="flex gap-2 flex-wrap">
     <button
-      class="flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-accent hover:text-accent transition-colors duration-150"
+      class="flex items-center justify-center gap-1 flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-accent hover:text-accent transition-colors duration-150"
       onclick={onNewEncounter}
       title="Reset encounter-slot abilities"
       type="button"
-    >⚔ {ui('heal.encounter_reset', engine.settings.language)}</button>
+    ><IconEncounterReset size={12} aria-hidden="true" /> {ui('heal.encounter_reset', engine.settings.language)}</button>
     <button
-      class="flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-sky-500 hover:text-sky-400 transition-colors duration-150"
+      class="flex items-center justify-center gap-1 flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-sky-500 hover:text-sky-400 transition-colors duration-150"
       onclick={onLongRest}
       title="Restore all long-rest resources"
       type="button"
-    >🌙 {ui('heal.long_rest', engine.settings.language)}</button>
+    ><IconLongRest size={12} aria-hidden="true" /> {ui('heal.long_rest', engine.settings.language)}</button>
   </section>
 
   <!-- ── EXPERIENCE ──────────────────────────────────────────────────────── -->

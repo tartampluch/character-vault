@@ -149,7 +149,7 @@
 
               <!-- Description snippet -->
               <p class="text-xs text-text-secondary leading-snug line-clamp-2">
-                {engine.t(feat.description).slice(0, 120)}…
+                {engine.t(feat.description)}
               </p>
 
               <!-- Tag badges -->

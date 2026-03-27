@@ -555,11 +555,12 @@
           title="{ui('lang.select_tooltip', engine.settings.language)}"
         >
           {#each engine.availableLanguages as lang}
-            <option value={lang}>
-              {ui(`lang.${lang}`, engine.settings.language) !== `lang.${lang}`
-                ? ui(`lang.${lang}`, engine.settings.language)
-                : lang.toUpperCase()}
-            </option>
+            <!-- engine.getLanguageDisplayName() resolves via:
+                 1. ui('lang.{code}') — ui-strings.ts / loaded locale
+                 2. dataLoader.getLocaleDisplayName() — native name from /api/locales
+                 3. code.toUpperCase() — last resort
+                 Centralised in the engine so no fallback logic lives in .svelte. -->
+            <option value={lang}>{engine.getLanguageDisplayName(lang)}</option>
           {/each}
         </select>
       {/if}

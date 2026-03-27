@@ -421,7 +421,7 @@ export class DataLoader {
    *
    *   This set is cleared in `clearCache()` so it stays in sync with the cache.
    */
-  private _globalRuleSourceIds = new Set<string>();
+   private _globalRuleSourceIds = new Set<string>();
 
   /**
    * Set of language codes available to the user in the language selector dropdown.
@@ -430,23 +430,32 @@ export class DataLoader {
    * These are the languages that have full built-in UI chrome translations, and they
    * are always available regardless of which JSON rule files are loaded.
    *
-   * Additional language codes (e.g., `"es"`, `"de"`) are merged in when a loaded JSON
-   * file declares them in its `supportedLanguages` array. Community files providing
-   * Spanish data will cause `"es"` to appear in the dropdown even if `ui-strings.ts`
-   * has no Spanish chrome translations (those fall back to English).
+   * Additional language codes are added from two sources:
+   *   1. `supportedLanguages[]` arrays in loaded JSON rule files.
+   *   2. `loadExternalLocales()` — server-dropped files in static/locales/.
    *
-   * This set is exposed via `getAvailableLanguages()` and drives the language selector
-   * dropdown in the sidebar. It is reset to the built-in seed in `clearCache()` so it
-   * always reflects the currently loaded file set plus the built-in languages.
-   *
-   * WHY NOT HARDCODE ['en', 'fr'] HERE?
-   *   `ui-strings.ts` is the single source of truth for which languages have full
-   *   UI chrome coverage. Deriving the seed from there means adding a new built-in
-   *   language (e.g., 'de') only requires a change in `ui-strings.ts`.
+   * `clearCache()` resets this set to the built-in seed and then re-adds all
+   * externally discovered locales (from `_externalLocales`), so that dropping a
+   * new `xx.json` locale file into static/locales/ survives campaign reloads
+   * without requiring a server restart.
    */
   private _availableLanguages = new Set<string>(
     SUPPORTED_UI_LANGUAGES.map(l => l.code)
   );
+
+  /**
+   * Locale metadata discovered from the server via `loadExternalLocales()`.
+   *
+   * Maps language code → `{ language, unitSystem }` as returned by
+   * `GET /api/locales`. Persists through `clearCache()` so the dropdown
+   * retains server-dropped locale files when the DataLoader reloads
+   * (e.g. on campaign switch).
+   *
+   * Also used by `getLocaleDisplayName()` to provide native-language names
+   * (e.g. "Deutsch") for codes that are not pre-registered in `UI_STRINGS`
+   * (e.g. `lang.de = 'German'` is the English name; the native name comes here).
+   */
+  private _externalLocales = new Map<string, { language: string; unitSystem: UnitSystem }>();
 
   // ---------------------------------------------------------------------------
   // LOADING API
@@ -1046,9 +1055,20 @@ export class DataLoader {
     this.featureCache.clear();
     this.configTableCache.clear();
     this._globalRuleSourceIds.clear();
+
     // Reset available languages to the built-in seed from ui-strings.ts.
     // SUPPORTED_UI_LANGUAGES is the single source of truth for built-in UI languages.
     this._availableLanguages = new Set<string>(SUPPORTED_UI_LANGUAGES.map(l => l.code));
+
+    // Re-add all externally discovered locale codes so that server-dropped
+    // locale files (static/locales/xx.json) survive cache reloads (e.g. on
+    // campaign switch). Without this, languages discovered by loadExternalLocales()
+    // would disappear from the dropdown every time loadRuleSources() is called.
+    for (const [code, meta] of this._externalLocales.entries()) {
+      this._availableLanguages.add(code);
+      registerLangUnitSystem(code, meta.unitSystem);
+    }
+
     this.isLoaded = false;
   }
 
@@ -1098,13 +1118,36 @@ export class DataLoader {
         language: string;
         unitSystem: UnitSystem;
       }>;
-      for (const { code, unitSystem } of locales) {
+      for (const { code, language, unitSystem } of locales) {
+        // Persist metadata so it survives clearCache() calls (campaign switches).
+        this._externalLocales.set(code, { language, unitSystem });
+        // Make the code immediately available in the dropdown.
         this._availableLanguages.add(code);
         registerLangUnitSystem(code, unitSystem);
       }
     } catch {
       // Non-critical — built-in languages always available.
     }
+  }
+
+  /**
+   * Returns the self-name for a language code as declared in the locale file's
+   * `$meta.language` field, returned by `GET /api/locales`.
+   *
+   * This is always the language's own name (e.g. "Français" for 'fr',
+   * "Deutsch" for 'de', "Kiswahili" for 'sw') — never a translation of it.
+   * Translators set this value when they author the locale file.
+   *
+   * English ('en') is excluded from the API response (it has no separate locale
+   * file), so this method returns `undefined` for 'en'. The engine falls back
+   * to `ui('lang.en', 'en')` = "English" (registered in the bundled baseline).
+   *
+   * @param code - BCP-47 language code (e.g., 'fr', 'de', 'sw').
+   * @returns Self-name of the language, or `undefined` for 'en' or codes not
+   *          discovered via `loadExternalLocales()`.
+   */
+  getLocaleDisplayName(code: string): string | undefined {
+    return this._externalLocales.get(code)?.language;
   }
 }
 

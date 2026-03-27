@@ -8,7 +8,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { rollAllAbilityScores } from '$lib/utils/diceEngine';
-  import { formatModifier, computeAbilityModifier } from '$lib/utils/formatters';
+  import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconDiceRoll, IconChecked, IconSuccess, IconTabFeats } from '$lib/components/ui/icons';
@@ -70,9 +70,15 @@
     onclose();
   }
 
+  /**
+   * Preview ability modifier for a rolled score not yet applied to the character.
+   * Delegates to engine.previewAbilityModifier() to comply with the
+   * zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). The D&D formula
+   * floor((score − 10) / 2) must not appear inline in .svelte files.
+   */
   function derivedMod(score: number | null): number {
     if (score === null) return 0;
-    return computeAbilityModifier(score);
+    return engine.previewAbilityModifier(score);
   }
 </script>
 

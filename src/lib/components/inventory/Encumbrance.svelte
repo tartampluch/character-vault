@@ -133,17 +133,47 @@
   const mediumPct = $derived(toDisplayPct(carryingCapacity.medium, carryingCapacity.heavy) || 66);
 
   // ── Wealth ─────────────────────────────────────────────────────────────────
-  let cp = $state(0);
-  let sp = $state(0);
-  let gp = $state(0);
-  let pp = $state(0);
+  // WHY engine.character.wealth (not local $state)?
+  //   Coin counts must persist between sessions (saved with the character JSON).
+  //   Storing them as local $state would lose the values on navigation.
+  //   More critically, engine.phase2b_totalCarriedWeight now reads wealth from
+  //   character state so that coin weight correctly affects the encumbrance tier
+  //   and phase_isEncumbered without any game-logic duplication here.
+  //   (zero-game-logic-in-Svelte rule + zero-local-state-for-character-data,
+  //   ARCHITECTURE.md §3.)
+
+  /** Reads one coin denomination from the character's wealth field (defaults to 0). */
+  function getCoin(key: string): number {
+    const w = engine.character.wealth;
+    if (!w) return 0;
+    return key === 'pp' ? w.pp : key === 'gp' ? w.gp : key === 'sp' ? w.sp : w.cp;
+  }
+
+  /**
+   * Delegates coin mutation to engine.setCoinValue() per the
+   * zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
+   * Math.max clamping and NaN handling belong in the engine, not here.
+   */
+  function setCoin(key: string, val: number) {
+    engine.setCoinValue(key as 'cp' | 'sp' | 'gp' | 'pp', val);
+  }
 
   // D&D 3.5 coin weight and exchange rate formulas are in formatters.ts
   // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3). The Math.floor and
   // hardcoded exchange constants (50 coins/lb, 100 cp/gp, etc.) may not appear
   // directly in .svelte files.
-  const coinWeightLbs  = $derived(computeCoinWeight(cp, sp, gp, pp));
-  const totalGoldValue = $derived(computeWealthInGP(cp, sp, gp, pp));
+  const coinWeightLbs  = $derived(computeCoinWeight(
+    engine.character.wealth?.cp ?? 0,
+    engine.character.wealth?.sp ?? 0,
+    engine.character.wealth?.gp ?? 0,
+    engine.character.wealth?.pp ?? 0,
+  ));
+  const totalGoldValue = $derived(computeWealthInGP(
+    engine.character.wealth?.cp ?? 0,
+    engine.character.wealth?.sp ?? 0,
+    engine.character.wealth?.gp ?? 0,
+    engine.character.wealth?.pp ?? 0,
+  ));
 
   /**
    * Coin definitions — colour-coded labels using Tailwind utility class names.
@@ -159,15 +189,6 @@
     { key: 'cp', label: ui('inventory.coins.cp', engine.settings.language), colorClass: 'text-amber-600  dark:text-amber-400',  title: ui('inventory.coins.cp_title', engine.settings.language) },
   ]);
 
-  function getCoin(key: string): number {
-    return key === 'pp' ? pp : key === 'gp' ? gp : key === 'sp' ? sp : cp;
-  }
-  function setCoin(key: string, val: number) {
-    if (key === 'pp') pp = val;
-    else if (key === 'gp') gp = val;
-    else if (key === 'sp') sp = val;
-    else cp = val;
-  }
 </script>
 
 <div class="card p-4 flex flex-col gap-3">

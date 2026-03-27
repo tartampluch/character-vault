@@ -32,7 +32,8 @@ import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
 import { dataLoader } from '$lib/engine/DataLoader';
 import type { SaveConfigEntry, WeaponDefaults } from '$lib/engine/GameEngine.svelte';
 import type { ConfigTable } from '$lib/engine/DataLoader';
-import { SYNERGY_SOURCE_LABEL } from '$lib/utils/constants';
+import { SYNERGY_SOURCE_LABEL, SYNERGY_SOURCE_LABEL_KEY } from '$lib/utils/constants';
+import { UI_STRINGS, ui, loadUiLocaleFromObject } from '$lib/i18n/ui-strings';
 
 // =============================================================================
 // HELPERS
@@ -389,21 +390,34 @@ describe('L6 — createEmptyCharacter() — speed_land base value from config_mo
 });
 
 // =============================================================================
-// L7 — SYNERGY_SOURCE_LABEL constant: no inline EN/FR strings in engine code
+// L7 — SYNERGY_SOURCE_LABEL_KEY: i18n key lives in ui-strings.ts, not constants.ts
 // =============================================================================
 
-describe('L7 — SYNERGY_SOURCE_LABEL — externalized i18n constant in constants.ts', () => {
+describe('L7 — SYNERGY_SOURCE_LABEL_KEY — externalized i18n key in constants.ts', () => {
 
-  it('SYNERGY_SOURCE_LABEL is exported and has EN and FR translations', () => {
-    // TYPE REGRESSION GUARD: ensures the constant is a LocalizedString (not a plain string)
-    // and that both required languages are present.
-    expect(typeof SYNERGY_SOURCE_LABEL).toBe('object');
-    expect(SYNERGY_SOURCE_LABEL.en).toBe('Synergy');
-    expect(SYNERGY_SOURCE_LABEL.fr).toBe('Synergie');
+  it('SYNERGY_SOURCE_LABEL_KEY is the ui-strings.ts key "modifier.synergy"', () => {
+    expect(SYNERGY_SOURCE_LABEL_KEY).toBe('modifier.synergy');
   });
 
-  it('SYNERGY_SOURCE_LABEL.en and .fr are non-empty strings', () => {
-    expect(SYNERGY_SOURCE_LABEL.en.length).toBeGreaterThan(0);
-    expect(SYNERGY_SOURCE_LABEL.fr.length).toBeGreaterThan(0);
+  it('English "Synergy" baseline is registered in UI_STRINGS', () => {
+    // The translation must live in ui-strings.ts, not in constants.ts.
+    expect(UI_STRINGS[SYNERGY_SOURCE_LABEL_KEY]).toBe('Synergy');
+  });
+
+  it('ui() resolves to "Synergy" in English', () => {
+    expect(ui(SYNERGY_SOURCE_LABEL_KEY, 'en')).toBe('Synergy');
+  });
+
+  it('ui() resolves to French "Synergie" when the locale is loaded', () => {
+    // Inject the French translation via the test helper (no HTTP fetch needed).
+    // In production this comes from static/locales/fr.json.
+    loadUiLocaleFromObject('fr', { [SYNERGY_SOURCE_LABEL_KEY]: 'Synergie' });
+    expect(ui(SYNERGY_SOURCE_LABEL_KEY, 'fr')).toBe('Synergie');
+  });
+
+  // Backward-compat: the deprecated SYNERGY_SOURCE_LABEL shim still resolves
+  // the English value at access time. Remove this test when the shim is removed.
+  it('deprecated SYNERGY_SOURCE_LABEL shim returns the English string', () => {
+    expect(SYNERGY_SOURCE_LABEL.en).toBe('Synergy');
   });
 });
