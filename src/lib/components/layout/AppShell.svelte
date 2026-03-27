@@ -367,8 +367,10 @@
        `transition-opacity duration-200` fades in/out smoothly.
   ======================================================================== -->
   {#if mobileOpen}
+    <!-- Backdrop is only rendered on mobile (<768px). At tablet (768–1023px) the
+         sidebar is always visible as an inline column, so no backdrop is needed. -->
     <div
-      class="fixed inset-0 z-30 bg-black/50 lg:hidden"
+      class="fixed inset-0 z-30 bg-black/50 md:hidden"
       onclick={handleClose}
       onkeydown={(e) => e.key === 'Escape' && handleClose()}
       role="button"
@@ -388,8 +390,8 @@
 
     <!-- ======================================================================
          MOBILE TOP BAR
-         Shown only on mobile/tablet (hidden at lg+ breakpoint where the sidebar
-         is visible and takes over the navigation role).
+         Shown only on mobile (<768px, hidden at md+ breakpoint where the sidebar
+         is always visible as an icon-only column and takes over the navigation role).
 
          Contains three zones (left / center / right):
            Left:   Hamburger button to open the sidebar drawer
@@ -398,7 +400,7 @@
     ====================================================================== -->
     <header
       class="
-        lg:hidden
+        md:hidden
         flex items-center gap-2 px-3 h-12
         bg-surface border-b border-border
         shrink-0

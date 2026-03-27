@@ -332,7 +332,7 @@
                       title={self ? 'Cannot edit your own account' : `Edit ${user.username}`}
                       aria-label="Edit {user.username}"
                     >
-                      <IconEdit size={15} aria-hidden="true" />
+                      <IconEdit size={16} aria-hidden="true" />
                     </button>
 
                     <!-- Suspend / Reinstate button — direct action, no modal -->
@@ -354,9 +354,9 @@
                       aria-label="{user.is_suspended ? 'Reinstate' : 'Suspend'} {user.username}"
                     >
                       {#if user.is_suspended}
-                        <IconUnlocked size={15} aria-hidden="true" />
+                        <IconUnlocked size={16} aria-hidden="true" />
                       {:else}
-                        <IconLocked size={15} aria-hidden="true" />
+                        <IconLocked size={16} aria-hidden="true" />
                       {/if}
                     </button>
 
@@ -374,7 +374,7 @@
                       title="Reset password for {user.username} (forces setup on next login)"
                       aria-label="Reset password for {user.username}"
                     >
-                      <IconKey size={15} aria-hidden="true" />
+                      <IconKey size={16} aria-hidden="true" />
                     </button>
 
                     <!-- Delete button -->
@@ -389,7 +389,7 @@
                       title={self ? 'Cannot delete your own account' : `Delete ${user.username}`}
                       aria-label="Delete {user.username}"
                     >
-                      <IconDelete size={15} aria-hidden="true" />
+                      <IconDelete size={16} aria-hidden="true" />
                     </button>
 
                   </div>

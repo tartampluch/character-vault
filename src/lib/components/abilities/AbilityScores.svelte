@@ -174,14 +174,14 @@
                 title={ui('abilities.show_breakdown', engine.settings.language)}
                 aria-label="Show {engine.t(pipeline.label)} breakdown"
                 type="button"
-              ><IconInfo size={15} aria-hidden="true" /></button>
+              ><IconInfo size={16} aria-hidden="true" /></button>
               <button
                 class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollPipelineId = abilityId)}
                 title="Roll a {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
                 aria-label="Roll {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
                 type="button"
-              ><IconDiceRoll size={15} aria-hidden="true" /></button>
+              ><IconDiceRoll size={16} aria-hidden="true" /></button>
             </div>
           </div>
 

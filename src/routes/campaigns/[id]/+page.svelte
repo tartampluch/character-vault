@@ -98,9 +98,15 @@
           class="w-full h-full object-cover"
         />
       {:else}
+        <!--
+          Placeholder gradient: Tailwind light/dark classes replace the
+          previous inline style with hardcoded dark oklch values.
+          Light: pale accent tint; Dark: deep atmospheric navy.
+        -->
         <div
-          class="w-full h-full flex items-center justify-center"
-          style="background: linear-gradient(135deg, oklch(25% 0.08 280) 0%, oklch(30% 0.15 280) 50%, oklch(20% 0.10 280) 100%);"
+          class="w-full h-full flex items-center justify-center
+                 bg-gradient-to-br from-accent-100 to-accent-50
+                 dark:from-accent-950 dark:to-accent-900"
           aria-hidden="true"
         >
           <IconCampaign size={72} class="opacity-20 text-accent" />
@@ -150,7 +156,7 @@
       <section aria-label="Campaign chapters">
         <div class="flex items-center gap-4 flex-wrap mb-4">
           <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
-            <IconSpells size={18} aria-hidden="true" /> {ui('campaign.chapters_title', engine.settings.language)}
+            <IconSpells size={20} aria-hidden="true" /> {ui('campaign.chapters_title', engine.settings.language)}
           </h2>
           {#if chapterStats.total > 0}
             <div class="flex items-center gap-2 flex-1 min-w-[160px]">

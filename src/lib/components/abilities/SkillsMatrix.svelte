@@ -162,7 +162,7 @@
   <!-- Progress bar for skill points -->
   <div
     class="progress-bar"
-    style="--progress-pct: {spPct}%; --progress-color: {isOverBudget ? 'oklch(55% 0.20 28)' : 'var(--theme-accent)'};"
+    style="--progress-pct: {spPct}%; --progress-color: {isOverBudget ? 'var(--color-red-600)' : 'var(--theme-accent)'};"
     role="progressbar"
     aria-valuenow={skillPointsSpent}
     aria-valuemin={0}

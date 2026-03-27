@@ -133,9 +133,15 @@
                 class="w-full h-full object-cover"
               />
             {:else}
+              <!--
+                Placeholder gradient: Tailwind light/dark classes replace the
+                previous inline style with hardcoded dark oklch values.
+                Light: pale accent tint; Dark: deep atmospheric navy.
+              -->
               <div
-                class="w-full h-full flex items-center justify-center"
-                style="background: linear-gradient(135deg, oklch(25% 0.08 280) 0%, oklch(30% 0.15 280) 60%, oklch(20% 0.10 280) 100%);"
+                class="w-full h-full flex items-center justify-center
+                       bg-gradient-to-br from-accent-100 to-accent-50
+                       dark:from-accent-950 dark:to-accent-900"
                 aria-hidden="true"
               >
                 <IconCampaign size={48} class="opacity-30 text-accent" />

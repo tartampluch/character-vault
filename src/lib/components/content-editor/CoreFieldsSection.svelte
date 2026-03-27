@@ -191,7 +191,7 @@
   {#if hasOverride}
     <div class="flex items-start gap-3 rounded-lg border border-amber-600/40
                 bg-amber-900/20 px-4 py-3 text-sm text-amber-300">
-      <span class="text-lg leading-none shrink-0">⚠</span>
+      <span class="text-lg leading-none shrink-0" aria-hidden="true">⚠</span>
       <div class="flex flex-col gap-1">
         <p class="font-semibold">
           This ID matches an existing SRD entity — it will be overridden.

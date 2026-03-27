@@ -172,7 +172,16 @@
   function scrollToDot(index: number): void {
     const el = scrollEl;
     if (!el) return;
-    el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' });
+    // Respect prefers-reduced-motion: the CSS rule in app.css suppresses
+    // `scroll-behavior: smooth` via CSS, but JS-driven `behavior: 'smooth'`
+    // bypasses that. We must check the media query directly here.
+    const reducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollTo({
+      left: index * el.clientWidth,
+      behavior: reducedMotion ? 'instant' : 'smooth',
+    });
   }
 
   // ---------------------------------------------------------------------------

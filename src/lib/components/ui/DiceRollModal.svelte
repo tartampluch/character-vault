@@ -60,7 +60,7 @@
     <!-- Custom header content: title + formula chip -->
     <div class="flex items-center gap-2 mb-4">
       <div class="flex items-center gap-2 flex-1 min-w-0">
-        <IconDiceRoll size={18} aria-hidden="true" class="text-yellow-500 dark:text-yellow-400 shrink-0" />
+        <IconDiceRoll size={20} aria-hidden="true" class="text-yellow-500 dark:text-yellow-400 shrink-0" />
         <span class="font-semibold text-text-primary truncate">{label}</span>
       </div>
       <code class="shrink-0 text-xs bg-surface-alt border border-border rounded px-2 py-0.5 text-sky-500 dark:text-sky-400 font-mono">
@@ -116,7 +116,7 @@
         aria-label="Roll {formula}"
         type="button"
       >
-        <IconDiceRoll size={18} aria-hidden="true" />
+        <IconDiceRoll size={20} aria-hidden="true" />
         {#if isRolling}{ui('dice.rolling', engine.settings.language)}{:else if lastResult}{ui('dice.roll_again', engine.settings.language)}{:else}{ui('dice.roll', engine.settings.language)}{/if}
       </button>
 

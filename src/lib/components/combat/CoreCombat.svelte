@@ -23,16 +23,19 @@
     COMBAT_STAT_ARCANE_SPELL_FAILURE_ID,
   } from '$lib/utils/constants';
 
+  // Each stat card uses a distinct CSS custom property for its accent colour.
+  // The actual oklch() values are defined in app.css (:root) as --color-stat-*
+  // variables, keeping all hardcoded colour values out of .svelte files per Phase 19.
   const CORE_STATS = $derived([
-    { id: BAB_PIPELINE_ID,                    shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
-    { id: COMBAT_STAT_INITIATIVE_ID,           shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
-    { id: COMBAT_STAT_GRAPPLE_ID,              shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
+    { id: BAB_PIPELINE_ID,                    shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'var(--color-stat-bab)'           },
+    { id: COMBAT_STAT_INITIATIVE_ID,           shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'var(--color-stat-initiative)'    },
+    { id: COMBAT_STAT_GRAPPLE_ID,              shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'var(--color-stat-grapple)'       },
     // Fortification: percentage chance to negate a confirmed critical hit (ARCHITECTURE.md §4.7).
     // baseValue = 0 (no fortification by default). Light=25%, Moderate=75%, Heavy=100%.
-    { id: COMBAT_STAT_FORTIFICATION_ID,        shortName: ui('combat.core.fort', engine.settings.language),       description: ui('combat.core.fort_desc', engine.settings.language),                showDice: false,                      color: 'oklch(78% 0.14 200)' },
+    { id: COMBAT_STAT_FORTIFICATION_ID,        shortName: ui('combat.core.fort', engine.settings.language),       description: ui('combat.core.fort_desc', engine.settings.language),                showDice: false,                      color: 'var(--color-stat-fortification)' },
     // Arcane Spell Failure: accumulated % from equipped armour/shields (ARCHITECTURE.md §4.8).
     // baseValue = 0 (unarmoured casters have 0% ASF by default).
-    { id: COMBAT_STAT_ARCANE_SPELL_FAILURE_ID, shortName: ui('combat.core.asf', engine.settings.language),        description: ui('combat.core.asf_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(75% 0.12 280)' },
+    { id: COMBAT_STAT_ARCANE_SPELL_FAILURE_ID, shortName: ui('combat.core.asf', engine.settings.language),        description: ui('combat.core.asf_desc', engine.settings.language),                 showDice: false,                      color: 'var(--color-stat-asf)'           },
   ] as const);
 
   let breakdownId = $state<ID | null>(null);

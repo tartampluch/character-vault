@@ -102,30 +102,57 @@
 
   /**
    * Tracks whether the viewport is below the `lg` breakpoint (1024px).
-   * Used to conditionally set the `inert` HTML attribute on the sidebar.
-   *
-   * WHY: On mobile, when the drawer is closed, the sidebar is translated
-   * off-screen but technically still in the DOM. Without `inert`, keyboard
-   * users could accidentally Tab into the invisible sidebar. On desktop
-   * (≥1024px), the sidebar is always visible — `inert` must NOT be set.
+   * Used to determine tablet mode (768–1023px) for sidebar behavior.
    */
   let isBelowLg = $state(false);
 
+  /**
+   * Tracks whether the viewport is below the `md` breakpoint (768px), i.e. mobile.
+   * On mobile, the sidebar is a hidden overlay drawer — it should be `inert` when
+   * closed to prevent keyboard users from Tab-navigating into invisible links.
+   * At tablet (768–1023px), the sidebar is always visible as an icon-only column,
+   * so `inert` must NOT be set there.
+   */
+  let isBelowMd = $state(false);
+
   $effect(() => {
     if (typeof window === 'undefined') return;
-    const mql = window.matchMedia('(max-width: 1023.98px)');
-    isBelowLg = mql.matches;
-    const handler = (e: MediaQueryListEvent) => { isBelowLg = e.matches; };
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
+
+    // lg breakpoint: 1024px
+    const mqlLg = window.matchMedia('(max-width: 1023.98px)');
+    isBelowLg = mqlLg.matches;
+    const handlerLg = (e: MediaQueryListEvent) => { isBelowLg = e.matches; };
+    mqlLg.addEventListener('change', handlerLg);
+
+    // md breakpoint: 768px
+    const mqlMd = window.matchMedia('(max-width: 767.98px)');
+    isBelowMd = mqlMd.matches;
+    const handlerMd = (e: MediaQueryListEvent) => { isBelowMd = e.matches; };
+    mqlMd.addEventListener('change', handlerMd);
+
+    return () => {
+      mqlLg.removeEventListener('change', handlerLg);
+      mqlMd.removeEventListener('change', handlerMd);
+    };
   });
 
   /**
    * When true, the `inert` attribute is applied to the sidebar `<aside>` element.
-   * This disables all focus, click, and assistive-technology interaction with the
-   * off-screen sidebar on mobile, improving keyboard accessibility.
+   * Only mobile (<768px) requires `inert` — the drawer is hidden off-screen there.
+   * At tablet (768–1023px) the sidebar is always visible (inline column), so never inert.
    */
-  const shouldBeInert = $derived(isBelowLg && !mobileOpen);
+  const shouldBeInert = $derived(isBelowMd && !mobileOpen);
+
+  /**
+   * Whether the sidebar should behave as icon-only (no labels visible).
+   * True when:
+   *  - `collapsed` prop is true (user explicitly collapsed on desktop), OR
+   *  - viewport is tablet (768–1023px), where the sidebar is always icon-only.
+   * This derived value is used in the template instead of raw `collapsed` to ensure
+   * labels are never shown at tablet width even if the `collapsed` cookie is false.
+   */
+  const isTablet = $derived(isBelowLg && !isBelowMd);
+  const effectivelyCollapsed = $derived(collapsed || isTablet);
 
   // ---------------------------------------------------------------------------
   // DERIVED VALUES
@@ -184,13 +211,16 @@
       'flex flex-col h-screen bg-surface border-r border-border',
       'overflow-x-hidden overflow-y-auto',
       'transition-all duration-200 ease-in-out shrink-0',
-      // Mobile: fixed overlay
+      // Mobile (<768px): fixed overlay drawer
       'fixed inset-y-0 left-0 z-40',
       // Mobile: reveal/hide via translate
       mobileOpen ? 'translate-x-0 w-64 shadow-xl' : '-translate-x-full w-64',
-      // Desktop/tablet: override mobile styles — normal flow, no translate
+      // Tablet (768–1023px): always-visible icon-only column (md overrides fixed/translate).
+      // w-16 = 64px, always icon-only at this breakpoint regardless of `collapsed` cookie.
+      'md:relative md:translate-x-0 md:shadow-none md:w-16',
+      // Desktop (≥1024px): override tablet — normal flow, width depends on collapsed state.
+      // lg:w-16 / lg:w-64 override md:w-16 at desktop.
       'lg:relative lg:translate-x-0 lg:shadow-none',
-      // Desktop width based on collapsed state
       collapsed ? 'lg:w-16' : 'lg:w-64',
     ].join(' ')
   );
@@ -230,7 +260,12 @@
   function navLinkClass(href: string): string {
     const base =
       'relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ' +
-      'transition-colors duration-150 w-full ' +
+      // min-h-[44px] satisfies WCAG 2.5.5 on coarse-pointer devices.
+      // The global `@media (pointer: coarse)` anchor rule excludes links that contain
+      // `text-*` classes (to spare pure inline text links from getting 44px height).
+      // Nav links intentionally carry `text-sm`, so we must set the minimum height
+      // explicitly here to guarantee compliance on touch devices.
+      'min-h-[44px] transition-colors duration-150 w-full ' +
       'hover:bg-surface-alt hover:text-text-primary ' +
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50';
 
@@ -313,16 +348,16 @@
       </svg>
 
       <!--
-        App title — hidden in collapsed mode (desktop) and in icon-only tablet.
-        `overflow-hidden whitespace-nowrap` prevents layout reflow during the
-        CSS width transition by clipping text as the sidebar shrinks.
+        App title — hidden in collapsed mode (desktop) and always hidden on tablet
+        (icon-only). `overflow-hidden` on the aside clips text that overflows the
+        64px width, but we conditionally hide it to avoid unnecessary DOM nodes.
       -->
-      {#if !collapsed}
+      {#if !effectivelyCollapsed}
         <span class="font-semibold text-base truncate">{ui('app.title', engine.settings.language)}</span>
       {/if}
     </a>
 
-    <!-- Desktop-only: collapse/expand toggle button -->
+    <!-- Desktop-only: collapse/expand toggle button (hidden on tablet — always icon-only there) -->
     <div class="hidden lg:flex items-center">
       <button
         class="btn-ghost p-1.5 ml-1 shrink-0"
@@ -339,9 +374,9 @@
       </button>
     </div>
 
-    <!-- Mobile-only: close drawer button -->
+    <!-- Mobile-only: close drawer button (hidden at tablet+ where sidebar is always visible) -->
     <button
-      class="lg:hidden btn-ghost p-1.5 ml-1 shrink-0"
+      class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
       onclick={onClose}
       title={ui('nav.close_navigation', engine.settings.language)}
       aria-label={ui('nav.close_navigation', engine.settings.language)}
@@ -369,14 +404,14 @@
     <!-- 1. CAMPAIGNS — always visible -->
     <a href="/campaigns" class={navLinkClass('/campaigns')} title={ui('nav.campaigns', engine.settings.language)}>
       <IconCampaign size={20} class="shrink-0" aria-hidden="true" />
-      {#if !collapsed}
+      {#if !effectivelyCollapsed}
         <span class="truncate">{ui('nav.campaigns', engine.settings.language)}</span>
       {/if}
     </a>
 
     <!--
       2. CHARACTER VAULT — contextual: only when inside a campaign.
-      Shows the campaign name as a subtitle (collapsed: only icon + tooltip).
+      Shows the campaign name as a subtitle (icon-only: only icon + tooltip).
     -->
     {#if campaignId}
       <a
@@ -385,7 +420,7 @@
         title={activeCampaign ? `${ui('nav.vault', engine.settings.language)} — ${activeCampaign.title}` : ui('app.title', engine.settings.language)}
       >
         <IconVault size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">
             {ui('nav.vault', engine.settings.language)}
             {#if activeCampaign}
@@ -409,7 +444,7 @@
         title={engine.character.name ?? ui('nav.character_sheet', engine.settings.language)}
       >
         <IconCharacter size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">
             {ui('nav.character', engine.settings.language)}
             <span class="block text-xs text-text-muted font-normal truncate">
@@ -427,7 +462,7 @@
     {#if isGM && campaignId}
       <!-- Visual divider separating player nav from GM tools -->
       <div class="pt-2 pb-1">
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
             {ui('nav.gm_tools', engine.settings.language)}
           </p>
@@ -443,7 +478,7 @@
         title={ui('nav.gm_dashboard', engine.settings.language)}
       >
         <IconGMDashboard size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">{ui('nav.gm_dashboard', engine.settings.language)}</span>
         {/if}
       </a>
@@ -455,7 +490,7 @@
         title={ui('nav.content_editor', engine.settings.language)}
       >
         <IconEdit size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">{ui('nav.content_editor', engine.settings.language)}</span>
         {/if}
       </a>
@@ -467,7 +502,7 @@
         title={ui('nav.campaign_settings', engine.settings.language)}
       >
         <IconSettings size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">{ui('nav.settings', engine.settings.language)}</span>
         {/if}
       </a>
@@ -480,7 +515,7 @@
     -->
     {#if sessionContext.isAdmin}
       <div class="pt-2 pb-1">
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
             Admin
           </p>
@@ -495,7 +530,7 @@
         title="User Management"
       >
         <IconAdmin size={20} class="shrink-0" aria-hidden="true" />
-        {#if !collapsed}
+        {#if !effectivelyCollapsed}
           <span class="truncate">User Management</span>
         {/if}
       </a>
@@ -510,12 +545,12 @@
 
     <!-- Theme toggle button — uses existing ThemeToggle component (Phase 19.2) -->
     <div class="flex items-center">
-      <ThemeToggle showLabel={!collapsed} />
+      <ThemeToggle showLabel={!effectivelyCollapsed} />
     </div>
 
     <!-- Language switcher — dropdown populated from loaded rule files -->
     <div class="flex items-center gap-1 px-1 py-0.5">
-      {#if collapsed}
+      {#if effectivelyCollapsed}
         <!-- Icon-only mode: compact language badge showing active code -->
         <button
           class="flex items-center justify-center w-full h-8 rounded-md text-xs font-bold
@@ -543,7 +578,7 @@
           id="sidebar-lang-select"
           class="flex-1 text-xs py-1 px-1.5 rounded-md border border-border
                  bg-surface text-text-primary cursor-pointer
-                 hover:border-accent focus:border-accent focus:outline-none
+                 hover:border-accent focus-visible:border-accent focus-visible:outline-none
                  transition-colors"
           value={engine.settings.language}
           onchange={async (e) => {
@@ -597,7 +632,7 @@
         {sessionContext.currentUserDisplayName.charAt(0).toUpperCase()}
       </div>
 
-      {#if !collapsed}
+      {#if !effectivelyCollapsed}
         <div class="min-w-0 flex-1">
           <p class="text-xs font-medium text-text-primary truncate">
             {sessionContext.currentUserDisplayName}
@@ -651,7 +686,7 @@
       aria-label="Change Password"
     >
       <IconKey size={14} class="shrink-0" aria-hidden="true" />
-      {#if !collapsed}
+      {#if !effectivelyCollapsed}
         <span>Change Password</span>
       {/if}
     </button>

@@ -5,7 +5,8 @@
 
   Three AC values displayed as prominent cards in a row.
   Each card has: short label, large value, breakdown button.
-  Top border colour driven by inline style (runtime accentColor per AC type).
+   Top border colour driven by inline style referencing CSS custom properties
+   (--color-ac-normal / --color-ac-touch / --color-ac-flat defined in app.css).
 -->
 
 <script lang="ts">
@@ -23,10 +24,13 @@
   import type { ID } from '$lib/types/primitives';
   import { IconAC, IconInfo } from '$lib/components/ui/icons';
 
+  // Each AC card uses a distinct CSS custom property for its accent colour.
+  // The actual oklch() values live in app.css (:root) as --color-ac-* variables,
+  // keeping all hardcoded colour literals out of .svelte files per Phase 19.
   const AC_PIPELINES = $derived([
-    { id: COMBAT_STAT_AC_NORMAL_ID,      shortName: ui('combat.ac.normal', engine.settings.language),    description: ui('combat.ac.normal_desc', engine.settings.language),                              accentColor: 'oklch(72% 0.14 220)' },
-    { id: COMBAT_STAT_AC_TOUCH_ID,       shortName: ui('combat.ac.touch', engine.settings.language), description: ui('combat.ac.touch_desc', engine.settings.language),   accentColor: 'oklch(72% 0.17 145)' },
-    { id: COMBAT_STAT_AC_FLAT_FOOTED_ID, shortName: ui('combat.ac.flat', engine.settings.language),  description: ui('combat.ac.flat_desc', engine.settings.language),             accentColor: 'oklch(78% 0.17 88)'  },
+    { id: COMBAT_STAT_AC_NORMAL_ID,      shortName: ui('combat.ac.normal', engine.settings.language),    description: ui('combat.ac.normal_desc', engine.settings.language), accentColor: 'var(--color-ac-normal)' },
+    { id: COMBAT_STAT_AC_TOUCH_ID,       shortName: ui('combat.ac.touch', engine.settings.language),     description: ui('combat.ac.touch_desc', engine.settings.language),  accentColor: 'var(--color-ac-touch)'  },
+    { id: COMBAT_STAT_AC_FLAT_FOOTED_ID, shortName: ui('combat.ac.flat', engine.settings.language),      description: ui('combat.ac.flat_desc', engine.settings.language),   accentColor: 'var(--color-ac-flat)'   },
   ] as const);
 
   let breakdownAcId = $state<ID | null>(null);

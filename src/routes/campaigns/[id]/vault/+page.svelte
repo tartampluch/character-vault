@@ -134,11 +134,11 @@
 
     <div class="flex items-center gap-2 flex-wrap">
       <button class="btn-primary gap-1" onclick={createNewCharacter} type="button">
-        <IconAddCharacter size={15} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
+        <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
       </button>
       {#if sessionContext.isGameMaster}
         <button class="btn-secondary gap-1 text-red-400 border-red-800/60 hover:border-red-600" onclick={addNPCMonster} type="button">
-          <IconNPC size={15} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
+          <IconNPC size={16} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
         </button>
       {/if}
     </div>

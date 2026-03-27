@@ -337,8 +337,7 @@
     scrolls horizontally so all 6 tabs are reachable on small screens (320px).
   -->
   <div
-    class="shrink-0 flex overflow-x-auto bg-surface border-b border-border"
-    style="scrollbar-width: none; scroll-snap-type: x mandatory;"
+    class="shrink-0 flex overflow-x-auto bg-surface border-b border-border snap-x snap-mandatory scrollbar-none"
     aria-label="Character sheet sections"
     role="tablist"
   >
@@ -351,13 +350,15 @@
         Mobile: `md:gap-2` — icon + label on desktop, `md:` prefix shows label;
           on mobile (<md), the label is hidden (`hidden md:inline`) leaving only
           the icon. This keeps touch targets compact but still clear.
-        Touch target: min-h-[44px] via the @media rule in app.css for coarse pointers.
+        Touch target: min-h-[44px] explicitly set (utility class takes precedence over
+          the @layer base coarse-pointer rule in app.css, so we must set it directly
+          here to guarantee 44px on touch devices per WCAG 2.1 SC 2.5.5).
       -->
       <button
         class="
           flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium
           border-b-2 whitespace-nowrap transition-colors duration-150
-          min-h-[40px] snap-start
+          min-h-[44px] snap-start
           {activeTab === tab.key
             ? 'border-accent text-accent bg-accent/5'
             : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-surface-alt'}

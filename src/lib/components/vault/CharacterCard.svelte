@@ -94,11 +94,19 @@
           height="176"
         />
       {:else}
+        <!--
+          Placeholder gradient (no poster URL): uses Tailwind light/dark utility
+          classes so the background adapts correctly in both themes.
+          Light mode: pale tint (accent-100→50 for PC; red-100→50 for NPC).
+          Dark mode: deep atmospheric gradient (accent-950→900 / red-950→900).
+          This replaces the previous inline style with hardcoded dark oklch values
+          that were inappropriate in light mode.
+        -->
         <div
-          class="w-full h-full flex items-center justify-center"
-          style="background: {isNPC
-            ? 'linear-gradient(135deg, oklch(22% 0.08 28) 0%, oklch(28% 0.14 28) 60%, oklch(18% 0.08 28) 100%)'
-            : 'linear-gradient(135deg, oklch(25% 0.08 280) 0%, oklch(30% 0.15 280) 60%, oklch(20% 0.10 280) 100%)'};"
+          class="w-full h-full flex items-center justify-center bg-gradient-to-br
+                 {isNPC
+                   ? 'from-red-100 to-red-50 dark:from-red-950 dark:to-red-900'
+                   : 'from-accent-100 to-accent-50 dark:from-accent-950 dark:to-accent-900'}"
           aria-hidden="true"
         >
           {#if isNPC}

@@ -134,14 +134,14 @@
               aria-label="Show {engine.t(pipeline.label)} breakdown"
               title={ui('saves.show_breakdown', engine.settings.language)}
               type="button"
-            ><IconInfo size={15} aria-hidden="true" /></button>
+            ><IconInfo size={16} aria-hidden="true" /></button>
             <button
               class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
               onclick={() => (diceRollSaveId = save.pipelineId)}
               aria-label="Roll {engine.t(pipeline.label)} save"
               title={ui('saves.roll', engine.settings.language)}
               type="button"
-            ><IconDiceRoll size={15} aria-hidden="true" /></button>
+            ><IconDiceRoll size={16} aria-hidden="true" /></button>
           </div>
 
         </div>

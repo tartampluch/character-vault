@@ -129,6 +129,43 @@
 	/* Accent: indigo-600 — solid contrast on white backgrounds */
 	--theme-accent: var(--color-indigo-600);
 
+	/**
+	 * GOLD — fixed semantic color (not theme-aware; same in light and dark).
+	 * Used for "achievement" / "level-up" UI (HealthAndXP level-up button)
+	 * and as the yellow midpoint of the HP bar gradient (app.css hp-bar__fill).
+	 * oklch(72% 0.17 88) ≈ amber-400 in perceptual lightness.
+	 */
+	--color-gold: oklch(72% 0.17 88);
+
+	/**
+	 * COMBAT STAT ACCENT COLORS — decorative, theme-invariant.
+	 * Each combat stat card (CoreCombat, ArmorClass) uses a distinct hue to help
+	 * the user quickly identify which stat they're looking at. These are intentionally
+	 * NOT theme-aware (they look good on both light and dark surfaces) and are
+	 * defined here as CSS custom properties to avoid hardcoding oklch() literals
+	 * directly in .svelte files (Phase 19 requirement).
+	 *
+	 * CoreCombat stats:
+	 *   BAB            — red-orange  (hue 28°):  aggressive, martial feel
+	 *   Initiative     — gold/amber  (hue 88°):  "go first" urgency
+	 *   Grapple        — purple      (hue 300°): physical prowess / strength
+	 *   Fortification  — teal        (hue 200°): defensive, damage negation
+	 *   Arcane Spell Failure — blue  (hue 280°): arcane / magical interference
+	 *
+	 * ArmorClass stats:
+	 *   AC Normal      — blue        (hue 220°): standard defense
+	 *   AC Touch       — green       (hue 145°): nimble / evasion
+	 *   AC Flat-Footed — gold/amber  (hue 88°):  caution / vulnerable state
+	 */
+	--color-stat-bab:           oklch(65% 0.20 28);  /* red-orange: Base Attack Bonus      */
+	--color-stat-initiative:    oklch(78% 0.17 88);  /* gold/amber: Initiative              */
+	--color-stat-grapple:       oklch(70% 0.17 300); /* purple:     Grapple                 */
+	--color-stat-fortification: oklch(78% 0.14 200); /* teal:       Fortification           */
+	--color-stat-asf:           oklch(75% 0.12 280); /* blue:       Arcane Spell Failure    */
+	--color-ac-normal:          oklch(72% 0.14 220); /* blue:       Armor Class (Normal)    */
+	--color-ac-touch:           oklch(72% 0.17 145); /* green:      Armor Class (Touch)     */
+	--color-ac-flat:            oklch(78% 0.17 88);  /* gold/amber: Armor Class (Flat-Foot) */
+
 	/* Page/panel backgrounds */
 	--theme-surface:     oklch(100% 0 0);             /* #ffffff — primary surface     */
 	--theme-surface-alt: oklch(97.3% 0.003 264);      /* ≈ gray-50 w/ tint — inputs    */
@@ -521,9 +558,17 @@
 		.btn-primary,
 		.btn-secondary,
 		.btn-danger,
-		.btn-ghost {
+		.btn-danger-outline,
+		.btn-ghost,
+		.btn-icon {
 			@apply min-h-[44px];
 		}
+
+		/*
+		 * btn-icon is square (aspect-ratio: 1) — min-h-[44px] makes it at least
+		 * 44×44 CSS pixels, satisfying WCAG 2.1 SC 2.5.5 on touch devices.
+		 * aspect-ratio: 1 is still applied from the base .btn-icon rule.
+		 */
 	}
 
 	/* -------------------------------------------------------------------------
@@ -584,7 +629,8 @@
 	.badge-green,
 	.badge-red,
 	.badge-yellow,
-	.badge-gray {
+	.badge-gray,
+	.badge-blue {
 		@apply inline-flex items-center gap-1
 		       px-2 py-0.5 rounded-full text-xs font-medium;
 	}
@@ -612,6 +658,15 @@
 	/** badge-gray uses semantic tokens — auto-themes without explicit dark: override */
 	.badge-gray {
 		@apply bg-surface-alt text-text-secondary border border-border;
+	}
+
+	/**
+	 * badge-blue — informational/neutral level indicators (character level, class level).
+	 * Blue conveys information without urgency — suitable for level badges.
+	 */
+	.badge-blue {
+		@apply bg-blue-100 text-blue-700 border border-blue-200
+		       dark:bg-blue-900/60 dark:text-blue-300 dark:border-blue-700/50;
 	}
 
 	/* -------------------------------------------------------------------------
@@ -775,12 +830,15 @@
 	.hp-bar__fill {
 		height: 100%;
 		width: var(--hp-pct, 100%);
-		/* Gradient: green (full) → yellow (medium) → red (critical) */
+		/* Gradient: green (full) → gold (medium) → red (critical).
+		   Colors use oklch for perceptual uniformity; --color-gold re-uses the
+		   same value as the level-up button gradient and the HP status "injured"
+		   indicator in HealthAndXP.svelte. */
 		background: linear-gradient(
 			to right,
-			oklch(55% 0.16 145),   /* green    — 0%  of gradient */
-			oklch(72% 0.17 88),    /* yellow   — 50% of gradient */
-			oklch(55% 0.20 28)     /* red      — 100% of gradient */
+			oklch(55% 0.16 145),       /* green    — 0%  of gradient */
+			var(--color-gold),          /* gold     — 50% of gradient */
+			oklch(55% 0.20 28)          /* red      — 100% of gradient */
 		);
 		border-radius: inherit;
 		transition: width 0.4s ease-out;
@@ -810,13 +868,63 @@
 	}
 
 	/* -------------------------------------------------------------------------
-	   FOCUS TRAP OVERLAY
-	   A transparent full-screen overlay placed BEHIND modals and drawers.
-	   Prevents focus from escaping the modal via `inert` attribute on content
-	   behind it. The actual z-index management is in Modal.svelte.
+	   MODAL BACKDROP
+	   Full-screen fixed overlay used by Modal.svelte. Acts as:
+	     1. A semi-transparent dim layer behind the modal panel.
+	     2. A flex container that positions the panel:
+	          - Mobile (<768px): anchored to the bottom of the screen (bottom sheet).
+	          - Desktop (≥768px): centered in the viewport.
+	   backdrop-filter: blur gives the frosted-glass effect on top of the page.
+	   z-50 places it above sidebar (z-40) and all content.
+	   The flex layout lives here (not in Modal.svelte's <style> block) so the
+	   component style block can be kept to keyframes-only per §19.14.
 	   ------------------------------------------------------------------------- */
 	.modal-backdrop {
-		@apply fixed inset-0 z-50 bg-black/50;
+		@apply fixed inset-0 z-50 bg-black/50 flex flex-col justify-end items-stretch;
 		backdrop-filter: blur(2px);
 	}
+
+	/* Desktop: center the panel horizontally and vertically with padding. */
+	@media (min-width: 768px) {
+		.modal-backdrop {
+			@apply justify-center items-center p-4;
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	   SCROLLBAR HIDDEN UTILITY
+	   Hides the scrollbar track and thumb without disabling scroll behaviour.
+	   Needed on elements where a scrollbar should be invisible on ALL pointer
+	   types (e.g. the character-sheet tab bar), unlike the global @layer base
+	   rule which only hides scrollbars on pointer:coarse devices.
+
+	   Usage: <div class="scrollbar-none overflow-x-auto">
+	   ------------------------------------------------------------------------- */
+	.scrollbar-none {
+		scrollbar-width: none;
+		&::-webkit-scrollbar { display: none; }
+	}
+
+	/* -------------------------------------------------------------------------
+	   LEVEL-UP PULSING BUTTON
+	   Used in HealthAndXP.svelte for the "Level Up!" call-to-action button.
+	   The gradient background (accent → gold) cannot be expressed as standard
+	   Tailwind utilities because the gold endpoint uses a non-palette oklch literal.
+	   The animation keyframe is defined below.
+	   ------------------------------------------------------------------------- */
+	.level-up-btn {
+		background: linear-gradient(135deg, var(--color-accent-600), var(--color-gold));
+		animation: pulse-glow 1.5s ease infinite;
+	}
+}
+
+/**
+ * KEYFRAME: pulse-glow
+ * Used by the .level-up-btn in HealthAndXP.svelte.
+ * Defined outside @layer components so the keyframe is globally available
+ * regardless of layer cascade order.
+ */
+@keyframes pulse-glow {
+	0%, 100% { opacity: 1; }
+	50%       { opacity: 0.75; }
 }

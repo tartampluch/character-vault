@@ -63,16 +63,29 @@
   //
   // The severity number (0-3 or -1) is a D&D game value — read from the engine.
   // The label/color mapping is purely a UI concern — kept in this component.
-  const loadTier = $derived.by(() => {
-    const severity = engine.phase2b_encumbranceTier;
-    const c = carryingCapacity;
-    // -1 = config table not loaded
-    if (c.heavy === 0 || severity === -1) return { label: ui('inventory.encumbrance.tier_unknown', engine.settings.language),    color: 'oklch(55% 0.010 264)', severity: -1 };
-    if (severity >= 3)                    return { label: ui('inventory.encumbrance.tier_overloaded', engine.settings.language), color: 'oklch(40% 0.20 28)',   severity: 3  };
-    if (severity >= 2)                    return { label: ui('inventory.encumbrance.tier_heavy', engine.settings.language),      color: 'oklch(55% 0.20 28)',   severity: 2  };
-    if (severity >= 1)                    return { label: ui('inventory.encumbrance.tier_medium', engine.settings.language),     color: 'oklch(72% 0.17 88)',   severity: 1  };
-    return                                       { label: ui('inventory.encumbrance.tier_light', engine.settings.language),      color: 'oklch(65% 0.17 145)',  severity: 0  };
-  });
+	/**
+	 * Load tier display data. Colors reference CSS custom properties so they
+	 * resolve correctly in both light and dark themes.
+	 * When used as `style="color: {loadTier.color}"` the browser resolves the
+	 * var() at paint time — no JavaScript involvement needed for theme-awareness.
+	 *
+	 * Color semantics:
+	 *   unknown   → text-muted (neutral gray)
+	 *   overloaded → red-800  (deep danger)
+	 *   heavy     → red-600   (danger)
+	 *   medium    → gold      (caution; same token as the XP bar)
+	 *   light     → green-600 (safe)
+	 */
+	const loadTier = $derived.by(() => {
+		const severity = engine.phase2b_encumbranceTier;
+		const c = carryingCapacity;
+		// -1 = config table not loaded
+		if (c.heavy === 0 || severity === -1) return { label: ui('inventory.encumbrance.tier_unknown', engine.settings.language),    color: 'var(--theme-text-muted)', severity: -1 };
+		if (severity >= 3)                    return { label: ui('inventory.encumbrance.tier_overloaded', engine.settings.language), color: 'var(--color-red-800)',    severity: 3  };
+		if (severity >= 2)                    return { label: ui('inventory.encumbrance.tier_heavy', engine.settings.language),      color: 'var(--color-red-600)',    severity: 2  };
+		if (severity >= 1)                    return { label: ui('inventory.encumbrance.tier_medium', engine.settings.language),     color: 'var(--color-gold)',       severity: 1  };
+		return                                       { label: ui('inventory.encumbrance.tier_light', engine.settings.language),      color: 'var(--color-green-600)',  severity: 0  };
+	});
 
   // ── Progress bar values ────────────────────────────────────────────────────
   /**

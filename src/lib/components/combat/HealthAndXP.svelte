@@ -55,16 +55,22 @@
   // The engine exposes a string key; this component maps it to a ui() label + color.
   const hpStatusKey = $derived(engine.phase_hpStatusKey);
 
-  /** Map status key → { label (i18n key), color (oklch) } */
-  const HP_STATUS_MAP: Record<string, { labelKey: string; color: string }> = {
-    dead:        { labelKey: 'combat.hp.dead',        color: 'oklch(30% 0.18 28)'  },
-    dying:       { labelKey: 'combat.hp.dying',       color: 'oklch(40% 0.20 28)'  },
-    unconscious: { labelKey: 'combat.hp.unconscious', color: 'oklch(40% 0.18 28)'  },
-    bloodied:    { labelKey: 'combat.hp.bloodied',    color: 'oklch(55% 0.20 28)'  },
-    injured:     { labelKey: 'combat.hp.injured',     color: 'oklch(72% 0.17 88)'  },
-    healthy:     { labelKey: 'combat.hp.healthy',     color: 'oklch(65% 0.17 145)' },
-    unknown:     { labelKey: 'combat.hp.unknown',     color: 'oklch(55% 0.010 264)'},
-  };
+	/**
+	 * Map status key → { label (i18n key), color (CSS variable) }.
+	 * Colors reference CSS custom properties so they resolve correctly in both
+	 * light and dark themes without hardcoding oklch values here.
+	 * The inline `style="color: {hpStatus.color}"` accepts CSS variable strings
+	 * such as `"var(--color-red-600)"` — browsers resolve them at render time.
+	 */
+	const HP_STATUS_MAP: Record<string, { labelKey: string; color: string }> = {
+		dead:        { labelKey: 'combat.hp.dead',        color: 'var(--color-red-900)'    },
+		dying:       { labelKey: 'combat.hp.dying',       color: 'var(--color-red-800)'    },
+		unconscious: { labelKey: 'combat.hp.unconscious', color: 'var(--color-red-800)'    },
+		bloodied:    { labelKey: 'combat.hp.bloodied',    color: 'var(--color-red-600)'    },
+		injured:     { labelKey: 'combat.hp.injured',     color: 'var(--color-gold)'       },
+		healthy:     { labelKey: 'combat.hp.healthy',     color: 'var(--color-green-500)'  },
+		unknown:     { labelKey: 'combat.hp.unknown',     color: 'var(--theme-text-muted)' },
+	};
   const hpStatus = $derived.by(() => {
     const entry = HP_STATUS_MAP[hpStatusKey] ?? HP_STATUS_MAP['unknown'];
     return { label: ui(entry.labelKey as Parameters<typeof ui>[0], engine.settings.language), color: entry.color };
@@ -411,7 +417,7 @@
     <!-- XP progress bar — uses ECL for threshold lookup -->
     <div
       class="progress-bar"
-      style="--progress-pct: {xpPercent}%; --progress-color: oklch(72% 0.17 88);"
+      style="--progress-pct: {xpPercent}%; --progress-color: var(--color-gold);"
       role="progressbar"
       aria-valuenow={xpIntoLevel}
       aria-valuemin={0}
@@ -458,19 +464,11 @@
 
 </div>
 
-<style>
-  /*
-   * Level-Up pulsing button gradient.
-   * Kept here because CSS keyframe animations and gradient backgrounds cannot
-   * be expressed as Tailwind utility classes (spec §19.14 exemption for keyframes).
-   */
-  .level-up-btn {
-    background: linear-gradient(135deg, var(--color-accent-600), oklch(72% 0.17 88));
-    animation: pulse-glow 1.5s ease infinite;
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.75; }
-  }
-</style>
+<!--
+  NOTE: The .level-up-btn gradient and @keyframes pulse-glow are defined in
+  src/app.css (@layer components + global @keyframes block) so this component
+  has no <style> block — in compliance with Phase 19.14 Tailwind migration
+  completeness requirement. The --color-gold CSS token (oklch 72% 0.17 88) is
+  declared in :root in app.css and reused by the level-up button gradient,
+  the hp-bar gradient midpoint, and the XP progress bar fill color.
+-->

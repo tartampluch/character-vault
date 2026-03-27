@@ -112,6 +112,7 @@
   onClose={onclose}
   title={ui('journal.title', lang)}
   size="xl"
+  fullscreen={true}
 >
   <div class="flex flex-col gap-5 pb-2">
 

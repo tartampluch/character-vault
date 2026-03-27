@@ -104,7 +104,7 @@
         onclick={rollAll}
         type="button"
       >
-        <IconDiceRoll size={18} aria-hidden="true" />
+        <IconDiceRoll size={20} aria-hidden="true" />
         {rolledValues ? ui('abilities.roll.roll_again', lang) : ui('abilities.roll.roll', lang)}
       </button>
 

@@ -650,7 +650,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconSpells size={18} aria-hidden="true" /> {ui('settings.rule_sources.title', engine.settings.language)}
+        <IconSpells size={20} aria-hidden="true" /> {ui('settings.rule_sources.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.rule_sources.desc', engine.settings.language)}
@@ -807,7 +807,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconDiceRoll size={18} aria-hidden="true" /> {ui('settings.dice_rules.title', engine.settings.language)}
+        <IconDiceRoll size={20} aria-hidden="true" /> {ui('settings.dice_rules.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.dice_rules.desc', engine.settings.language)}
@@ -839,7 +839,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconStats size={18} aria-hidden="true" /> {ui('settings.stat_gen.title', engine.settings.language)}
+        <IconStats size={20} aria-hidden="true" /> {ui('settings.stat_gen.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.stat_gen.desc', engine.settings.language)}
@@ -946,7 +946,7 @@
   <section class="card p-5 flex flex-col gap-4">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconRuleSources size={18} aria-hidden="true" /> {ui('variant.title', engine.settings.language)}
+        <IconRuleSources size={20} aria-hidden="true" /> {ui('variant.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.variant.section_desc', engine.settings.language)}
@@ -1008,7 +1008,7 @@
   <section class="card p-5 flex flex-col gap-4" id="chapters">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconJournal size={18} aria-hidden="true" /> {ui('settings.chapters.title', engine.settings.language)}
+        <IconJournal size={20} aria-hidden="true" /> {ui('settings.chapters.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed">
         {ui('settings.chapters.desc', engine.settings.language)}
@@ -1112,7 +1112,7 @@
   <section class="card p-5 flex flex-col gap-3">
     <div>
       <h2 class="section-header text-base border-b border-border pb-2">
-        <IconGMDashboard size={18} aria-hidden="true" /> {ui('settings.overrides.title', engine.settings.language)}
+        <IconGMDashboard size={20} aria-hidden="true" /> {ui('settings.overrides.title', engine.settings.language)}
       </h2>
       <p class="mt-2 text-xs text-text-muted leading-relaxed [&_code]:bg-surface-alt [&_code]:px-1 [&_code]:rounded">
         {@html ui('settings.overrides.desc', engine.settings.language)}
@@ -1261,7 +1261,7 @@
       aria-expanded={membersOpen}
     >
       <h2 class="flex items-center gap-2 text-base font-semibold text-text-primary">
-        <IconVault size={18} aria-hidden="true" />
+        <IconVault size={20} aria-hidden="true" />
         {ui('settings.members.title', engine.settings.language)}
         {#if members.length > 0}
           <span class="text-xs font-normal text-text-muted">({members.length})</span>

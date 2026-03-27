@@ -425,35 +425,9 @@
 
 <!--
   BOTTOM-SHEET POSITIONING ON MOBILE:
-  The backdrop `.modal-backdrop` is `fixed inset-0` (covers the full screen).
-  Inside it, we use `flex flex-col justify-end md:justify-center` to push the
-  panel to the bottom on mobile and center it on desktop.
-  The backdrop `display: flex` is achieved via `.modal-backdrop` in app.css,
-  which we need to extend here so that the panel aligns correctly.
+  The backdrop `.modal-backdrop` is `fixed inset-0 flex flex-col` (covers the full
+  screen and acts as a flex container). The flex layout (justify-end on mobile,
+  justify-center on md+) is defined in `src/app.css` under the `.modal-backdrop`
+  component class — keeping this component's <style> block to keyframes-only
+  per the Phase 19.14 Tailwind migration completeness rule.
 -->
-<style>
-  /*
-   * Override the .modal-backdrop class to add flex layout needed for:
-   *   - Mobile: panel anchored to the bottom (justify-end)
-   *   - Desktop: panel centered (md:justify-center)
-   *
-   * Note: We cannot use @apply of custom class here since this is a
-   * scoped <style> block in a Svelte component. We directly add flex
-   * positioning without touching the global .modal-backdrop definition.
-   * The result is: backdrop covers viewport + panel is positioned correctly.
-   */
-  :global(.modal-backdrop) {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: stretch;
-  }
-
-  @media (min-width: 768px) {
-    :global(.modal-backdrop) {
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
-  }
-</style>

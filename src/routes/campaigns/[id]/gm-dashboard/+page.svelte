@@ -156,7 +156,7 @@
       <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', engine.settings.language)}
     </a>
     <h1 class="flex items-center gap-2 text-lg font-bold text-text-primary flex-1">
-      <IconGMDashboard size={18} aria-hidden="true" /> {ui('gm.dashboard', engine.settings.language)}
+      <IconGMDashboard size={20} aria-hidden="true" /> {ui('gm.dashboard', engine.settings.language)}
     </h1>
     <span class="badge-accent flex items-center gap-1 text-xs">
       <IconGMDashboard size={11} aria-hidden="true" /> {ui('gm.view', engine.settings.language)}
