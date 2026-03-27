@@ -14,6 +14,7 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { apiHeaders } from '$lib/engine/StorageManager';
   import { ui } from '$lib/i18n/ui-strings';
   import { MAIN_ABILITY_IDS, getAbilityAbbr, RESOURCE_HP_ID } from '$lib/utils/constants';
   import { getCharacterLevel } from '$lib/utils/formatters';
@@ -64,7 +65,7 @@
     try {
       const response = await fetch(`/api/characters/${charId}/gm-overrides`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: apiHeaders(),
         credentials: 'include',
         body: JSON.stringify({ gmOverrides: overrides }),
       });
