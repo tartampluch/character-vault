@@ -15,17 +15,24 @@
   import DiceRollModal from '$lib/components/ui/DiceRollModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconTabCombat, IconInfo, IconDiceRoll } from '$lib/components/ui/icons';
+  import {
+    BAB_PIPELINE_ID,
+    COMBAT_STAT_INITIATIVE_ID,
+    COMBAT_STAT_GRAPPLE_ID,
+    COMBAT_STAT_FORTIFICATION_ID,
+    COMBAT_STAT_ARCANE_SPELL_FAILURE_ID,
+  } from '$lib/utils/constants';
 
   const CORE_STATS = $derived([
-    { id: 'combatStats.base_attack_bonus',     shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
-    { id: 'combatStats.initiative',    shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
-    { id: 'combatStats.grapple', shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
+    { id: BAB_PIPELINE_ID,                    shortName: ui('combat.core.bab', engine.settings.language),        description: ui('combat.core.bab_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(65% 0.20 28)'  },
+    { id: COMBAT_STAT_INITIATIVE_ID,           shortName: ui('combat.core.initiative', engine.settings.language), description: ui('combat.core.initiative_desc', engine.settings.language),  showDice: true, diceLabel: ui('combat.core.initiative_roll', engine.settings.language),   color: 'oklch(78% 0.17 88)'  },
+    { id: COMBAT_STAT_GRAPPLE_ID,              shortName: ui('combat.core.grapple', engine.settings.language),    description: ui('combat.core.grapple_desc', engine.settings.language), showDice: true, diceLabel: ui('combat.core.grapple_check', engine.settings.language), color: 'oklch(70% 0.17 300)' },
     // Fortification: percentage chance to negate a confirmed critical hit (ARCHITECTURE.md §4.7).
     // baseValue = 0 (no fortification by default). Light=25%, Moderate=75%, Heavy=100%.
-    { id: 'combatStats.fortification',         shortName: ui('combat.core.fort', engine.settings.language),       description: ui('combat.core.fort_desc', engine.settings.language),                showDice: false,                      color: 'oklch(78% 0.14 200)' },
+    { id: COMBAT_STAT_FORTIFICATION_ID,        shortName: ui('combat.core.fort', engine.settings.language),       description: ui('combat.core.fort_desc', engine.settings.language),                showDice: false,                      color: 'oklch(78% 0.14 200)' },
     // Arcane Spell Failure: accumulated % from equipped armour/shields (ARCHITECTURE.md §4.8).
     // baseValue = 0 (unarmoured casters have 0% ASF by default).
-    { id: 'combatStats.arcane_spell_failure',  shortName: ui('combat.core.asf', engine.settings.language),        description: ui('combat.core.asf_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(75% 0.12 280)' },
+    { id: COMBAT_STAT_ARCANE_SPELL_FAILURE_ID, shortName: ui('combat.core.asf', engine.settings.language),        description: ui('combat.core.asf_desc', engine.settings.language),                 showDice: false,                      color: 'oklch(75% 0.12 280)' },
   ] as const);
 
   let breakdownId = $state<ID | null>(null);
@@ -70,7 +77,7 @@
               <button
                 class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollId = stat.id)}
-                aria-label="Roll dice"
+                aria-label={ui('combat.core.roll_dice_aria', engine.settings.language)}
                 title={ui('combat.core.roll', engine.settings.language)}
                 type="button"
               ><IconDiceRoll size={14} aria-hidden="true" /></button>

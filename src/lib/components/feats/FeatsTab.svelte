@@ -69,7 +69,7 @@
       class="btn-primary gap-1"
       onclick={() => (showAddModal = true)}
       disabled={engine.phase4_featSlotsRemaining <= 0}
-      aria-label="Add a new feat ({engine.phase4_featSlotsRemaining} slots remaining)"
+      aria-label={ui('feats.add_aria', engine.settings.language).replace('{n}', String(engine.phase4_featSlotsRemaining))}
       type="button"
     >
       <IconAdd size={14} aria-hidden="true" /> {ui('feats.add', engine.settings.language)}

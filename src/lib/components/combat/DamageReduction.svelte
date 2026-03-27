@@ -13,7 +13,11 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
   import type { DREntry } from '$lib/utils/stackingRules';
-  import { DR_CUSTOM_FEATURE_PREFIX, DR_BYPASS_TAGS_FALLBACK } from '$lib/utils/constants';
+  import {
+    DR_CUSTOM_FEATURE_PREFIX,
+    DR_BYPASS_TAGS_FALLBACK,
+    COMBAT_STAT_DAMAGE_REDUCTION_ID,
+  } from '$lib/utils/constants';
 
   let drValue    = $state(5);
   let drBypass   = $state<string>('—');
@@ -57,7 +61,7 @@
 
   // ── Resolved drEntries from the combat stat pipeline (Extension C) ───────
   // The pipeline's stacking result contains drEntries grouped by bypass signature.
-  const drPipeline  = $derived(engine.phase3_combatStats['combatStats.damage_reduction']);
+  const drPipeline  = $derived(engine.phase3_combatStats[COMBAT_STAT_DAMAGE_REDUCTION_ID]);
   const baseAddDR   = $derived(drPipeline?.totalValue ?? 0); // class-progression additive DR
   const drEntries   = $derived<DREntry[]>((drPipeline as unknown as { drEntries?: DREntry[] })?.drEntries ?? []);
 

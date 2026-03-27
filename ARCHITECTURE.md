@@ -1376,7 +1376,7 @@ export interface ActiveFeatureInstance {
 export interface Character {
     id: ID; name: string;
     campaignId?: ID; ownerId?: ID; isNPC: boolean;
-    posterUrl?: string; playerRealName?: string; customSubtitle?: string;
+    posterUrl?: string; playerName?: string; customSubtitle?: string;
 
     classLevels: Record<ID, number>; // { "class_fighter": 5, "class_wizard": 3 }
     levelAdjustment: number;          // LA for monster PCs; default 0 for standard races

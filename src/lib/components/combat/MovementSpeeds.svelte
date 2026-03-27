@@ -13,13 +13,20 @@
     IconWarning,
     IconSpeedLand, IconSpeedBurrow, IconSpeedClimb, IconSpeedFly, IconSpeedSwim,
   } from '$lib/components/ui/icons';
+  import {
+    COMBAT_STAT_SPEED_LAND_ID,
+    COMBAT_STAT_SPEED_BURROW_ID,
+    COMBAT_STAT_SPEED_CLIMB_ID,
+    COMBAT_STAT_SPEED_FLY_ID,
+    COMBAT_STAT_SPEED_SWIM_ID,
+  } from '$lib/utils/constants';
 
   const SPEED_PIPELINES = [
-    { id: 'combatStats.speed_land',   icon: IconSpeedLand   },
-    { id: 'combatStats.speed_burrow', icon: IconSpeedBurrow },
-    { id: 'combatStats.speed_climb',  icon: IconSpeedClimb  },
-    { id: 'combatStats.speed_fly',    icon: IconSpeedFly    },
-    { id: 'combatStats.speed_swim',   icon: IconSpeedSwim   },
+    { id: COMBAT_STAT_SPEED_LAND_ID,   icon: IconSpeedLand   },
+    { id: COMBAT_STAT_SPEED_BURROW_ID, icon: IconSpeedBurrow },
+    { id: COMBAT_STAT_SPEED_CLIMB_ID,  icon: IconSpeedClimb  },
+    { id: COMBAT_STAT_SPEED_FLY_ID,    icon: IconSpeedFly    },
+    { id: COMBAT_STAT_SPEED_SWIM_ID,   icon: IconSpeedSwim   },
   ];
 </script>
 

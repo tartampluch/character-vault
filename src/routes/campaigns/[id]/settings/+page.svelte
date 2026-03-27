@@ -19,6 +19,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconSettings, IconGMDashboard, IconSpells, IconChecked, IconError, IconWarning, IconSuccess, IconDragHandle, IconBack, IconAdd, IconDelete, IconChevronDown, IconChevronUp, IconVault, IconDiceRoll, IconStats, IconRuleSources, IconJournal } from '$lib/components/ui/icons';
   import { ui, uiN } from '$lib/i18n/ui-strings';
+  import { RESOURCE_VITALITY_POINTS_ID, RESOURCE_WOUND_POINTS_ID } from '$lib/utils/constants';
   import { getCampaignUsers, addCampaignUser, removeCampaignUser, listUsers, ApiError } from '$lib/api/userApi';
   import type { CampaignMember, User } from '$lib/types/user';
 
@@ -291,12 +292,19 @@
 
   /**
    * Reactive JSON validation — recomputes synchronously whenever gmOverridesText
-   * changes. Using $derived.by() guarantees re-evaluation on every edit, unlike
-   * the previous $effect approach which could lag or silently no-op.
+   * or the active language changes. Using $derived.by() guarantees re-evaluation
+   * on every edit, unlike the previous $effect approach which could lag or silently
+   * no-op.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   All user-facing error and warning messages are resolved via ui() so they
+   *   are translated when the GM switches languages. The active language is
+   *   referenced explicitly here so $derived tracks it as a reactive dependency.
    */
   const _jsonValidation = $derived.by(() => {
-    const text     = gmOverridesText;
-    const trimmed  = text.trim();
+    const text = gmOverridesText;
+    const lang = engine.settings.language; // reactive dependency — re-runs on lang change
+    const trimmed = text.trim();
 
     if (!trimmed || trimmed === '[]') {
       return { valid: true, error: '', warnings: [] as string[] };
@@ -312,29 +320,41 @@
       if (posMatch) {
         const pos     = parseInt(posMatch[1], 10);
         const lineNum = text.slice(0, pos).split('\n').length;
-        errMsg = `Syntax error on line ${lineNum}: ${err.message}`;
+        errMsg = `${ui('settings.overrides.json_syntax_on_line', lang).replace('{line}', String(lineNum))} ${err.message}`;
       } else {
-        errMsg = `Syntax error: ${err.message}`;
+        errMsg = `${ui('gm.syntax_error', lang)} ${err.message}`;
       }
       return { valid: false, error: errMsg, warnings: [] as string[] };
     }
 
     if (!Array.isArray(parsed)) {
-      return { valid: false, error: 'Override JSON must be an array ([ ... ]).', warnings: [] as string[] };
+      return { valid: false, error: ui('settings.overrides.json_not_array', lang), warnings: [] as string[] };
     }
 
     const warnings: string[] = [];
     for (let i = 0; i < (parsed as unknown[]).length; i++) {
       const entry = (parsed as Record<string, unknown>[])[i];
       if (!entry || typeof entry !== 'object') {
-        warnings.push(`Entry ${i}: expected object, got ${typeof entry}.`);
+        warnings.push(
+          ui('settings.overrides.json_entry_bad_type', lang)
+            .replace('{n}', String(i))
+            .replace('{type}', typeof entry)
+        );
         continue;
       }
       if (!entry['tableId'] && (!entry['id'] || !entry['category'])) {
-        warnings.push(`Entry ${i} ("${entry['id'] ?? '?'}"): missing 'id' or 'category'.`);
+        warnings.push(
+          ui('settings.overrides.json_entry_no_id', lang)
+            .replace('{n}', String(i))
+            .replace('{id}', String(entry['id'] ?? '?'))
+        );
       }
       if (entry['tableId'] && !entry['data']) {
-        warnings.push(`Entry ${i} (tableId: "${entry['tableId']}"): missing 'data' array.`);
+        warnings.push(
+          ui('settings.overrides.json_entry_no_data', lang)
+            .replace('{n}', String(i))
+            .replace('{tableId}', String(entry['tableId']))
+        );
       }
     }
     return { valid: true, error: '', warnings };
@@ -504,7 +524,7 @@
     try {
       members = await getCampaignUsers(campaignId);
     } catch (e) {
-      membersError = e instanceof ApiError ? e.message : 'Failed to load members.';
+      membersError = e instanceof ApiError ? e.message : ui('settings.members.error_load', engine.settings.language);
     } finally {
       membersLoading = false;
     }
@@ -529,9 +549,9 @@
         pickerUsers = await listUsers();
       } catch (e) {
         if (e instanceof ApiError && e.status === 403) {
-          pickerError = 'Only administrators can browse the full user list.';
+          pickerError = ui('settings.members.admin_only', engine.settings.language);
         } else {
-          pickerError = e instanceof ApiError ? e.message : 'Failed to load users.';
+          pickerError = e instanceof ApiError ? e.message : ui('settings.members.error_load_users', engine.settings.language);
         }
       } finally {
         pickerLoading = false;
@@ -545,7 +565,7 @@
       await addCampaignUser(campaignId, userId);
       await loadMembers();
     } catch (e) {
-      membersError = e instanceof ApiError ? e.message : 'Failed to add member.';
+      membersError = e instanceof ApiError ? e.message : ui('settings.members.error_add', engine.settings.language);
     }
   }
 
@@ -557,7 +577,7 @@
       // Remove from local state immediately for instant feedback, then reload.
       members = members.filter(m => m.user_id !== userId);
     } catch (e) {
-      membersError = e instanceof ApiError ? e.message : 'Failed to remove member.';
+      membersError = e instanceof ApiError ? e.message : ui('settings.members.error_remove', engine.settings.language);
       await loadMembers(); // Reload to restore consistent state
     } finally {
       memberActionLoading = { ...memberActionLoading, [userId]: false };
@@ -966,10 +986,13 @@
           {ui('variant.vitality_wound_desc', engine.settings.language)}
         </span>
         {#if variantVWP}
+          <!-- ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+               Resource pool IDs are system constants — imported from constants.ts,
+               never inlined as string literals in .svelte template code. -->
           <p class="text-xs text-amber-400/80 italic mt-0.5">
             <IconWarning size={14} aria-hidden="true" /> {ui('settings.variant.vwp_warning', engine.settings.language)
-              .replace('{v}', 'resources.vitality_points')
-              .replace('{w}', 'resources.wound_points')}
+              .replace('{v}', RESOURCE_VITALITY_POINTS_ID)
+              .replace('{w}', RESOURCE_WOUND_POINTS_ID)}
           </p>
         {/if}
       </div>

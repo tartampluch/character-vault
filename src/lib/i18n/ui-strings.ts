@@ -232,6 +232,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'vault.empty_player':           'You don\'t have any characters in this campaign yet. Click "Create New Character" to begin your journey!',
   'vault.delete_confirm':         'Delete "{name}"? This cannot be undone.',
   'vault.delete_character':       'Delete character',
+  /** Accessible label for the per-card delete button. {name} = character name. */
+  'vault.delete_aria':            'Delete {name}',
   /**
    * Short abbreviation shown on the character-card level badge ("Lv. 5").
    * Must be a brief abbreviation (≤ 3 characters) to fit the compact badge.
@@ -293,6 +295,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'core.choices':                 'Choices',
   'core.up_to':                   'up to',
   'core.no_options':              'No options matching',
+  /** Accessible label for the (i) info button next to a choice dropdown. */
+  'core.show_option_details_aria': 'Show selected option details',
 
   // ==========================================================================
   // CORE TAB — SUMMARY PANELS
@@ -424,6 +428,14 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.hp.heal':               'Heal',
   'combat.hp.damage':             'Damage',
   'combat.hp.add_temp':           '+ Temp',
+  // Accessible labels for HP/XP control inputs and buttons (ARCHITECTURE.md §6)
+  'combat.hp.heal_amount_aria':   'Healing amount',
+  'combat.hp.apply_heal_aria':    'Apply healing',
+  'combat.hp.damage_amount_aria': 'Damage amount',
+  'combat.hp.apply_damage_aria':  'Apply damage',
+  'combat.hp.temp_amount_aria':   'Temporary HP amount',
+  'combat.hp.add_temp_aria':      'Add temporary HP',
+  'combat.hp.current_aria':       'Current HP',
   'combat.hp.unknown':            'Unknown',
   'combat.hp.dead':               'Dead',
   'combat.hp.dying':              'Dying',
@@ -439,6 +451,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.xp.add_placeholder':    'Add XP…',
   'combat.xp.award':              '+ Award XP',
   'combat.xp.level_up':           'Level Up!',
+  // Accessible labels for XP controls (ARCHITECTURE.md §6)
+  'combat.xp.add_aria':           'XP to add',
+  'combat.xp.award_aria':         'Award XP',
+  'combat.xp.level_up_aria':      'Level Up',
   'combat.xp.config_hint':        'Load config_xp_thresholds for accurate XP thresholds.',
 
   // ==========================================================================
@@ -456,6 +472,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.ac.effective_dex':      'Effective DEX to AC:',
   'combat.ac.effective_dex_tooltip': 'DEX modifier capped by max_dexterity_bonus (e.g. from armor)',
   'combat.ac.cap':                'Cap:',
+  /** Accessible label for AC breakdown buttons. {description} = AC type name. */
+  'combat.ac.show_breakdown_aria': 'Show {description} breakdown',
 
   // ==========================================================================
   // COMBAT TAB — CORE COMBAT
@@ -471,6 +489,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.core.grapple_check':    'Grapple Check',
   'combat.core.breakdown':        'Breakdown',
   'combat.core.roll':             'Roll',
+  // Accessible label for the dice-roll button in CoreCombat stat cards (ARCHITECTURE.md §6)
+  'combat.core.roll_dice_aria':   'Roll dice',
   // Fortification (ARCHITECTURE.md §4.7) — critical hit negation percentage
   'combat.core.fort':             'Fort.',
   'combat.core.fort_desc':        'Fortification — chance (%) to negate a confirmed critical hit',
@@ -489,6 +509,9 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.attacks.crit':          'Crit:',
   'combat.attacks.attack':        'Attack',
   'combat.attacks.damage':        'Damage',
+  // Accessible labels for roll buttons (ARCHITECTURE.md §6)
+  'combat.attacks.roll_attack_aria': 'Roll attack',
+  'combat.attacks.roll_damage_aria': 'Roll damage',
 
   // ==========================================================================
   // COMBAT TAB — MOVEMENT
@@ -570,6 +593,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'feats.slots_available':        'slot(s) available.',
   'feats.remove_tooltip':         'Remove this feat (frees a slot)',
   'feats.unknown_source':         'Unknown',
+  /** Accessible label for Add Feat button. {n} = remaining slots. */
+  'feats.add_aria':               'Add feat ({n} slots remaining)',
 
   // ==========================================================================
   // FEAT CATALOG MODAL
@@ -648,6 +673,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'magic.casting.cast':           'Cast',
   'magic.casting.manifest':       'Manifest',
   'magic.casting.damage':         'Damage',
+  // Accessible labels and feedback for Cast/Manifest buttons (ARCHITECTURE.md §6)
+  'magic.casting.roll_damage_aria': 'Roll damage',
+  'magic.casting.cast_aria':      'Cast {name}',
+  'magic.casting.manifest_aria':  'Manifest {name} ({pp} PP)',
+  'magic.casting.insufficient_pp':     'Not enough power points to manifest.',
+  'magic.casting.no_slot_available':   'No spell slots available at this level.',
 
   // Magic item casting support
   'magic.casting.metamagic_rods': 'Metamagic Rods',
@@ -954,6 +985,23 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'settings.overrides.ex_table_label': 'Config table — replace a lookup table',
 
   // ==========================================================================
+  // CAMPAIGN SETTINGS — JSON OVERRIDE VALIDATOR (settings page)
+  // These keys are used by the inline $derived JSON validator in
+  // src/routes/campaigns/[id]/settings/+page.svelte to produce localized
+  // error and warning messages without hardcoded English strings.
+  // ==========================================================================
+  /** Prefix for a syntax error that includes the line number. {line} = line number. */
+  'settings.overrides.json_syntax_on_line': 'Syntax error on line {line}:',
+  /** Used when the JSON is not a top-level array. */
+  'settings.overrides.json_not_array':      'Override JSON must be a JSON array ([ ... ]).',
+  /** Warning when an array entry is not an object. {n} = index, {type} = JS typeof result. */
+  'settings.overrides.json_entry_bad_type': 'Entry {n}: expected object, got {type}.',
+  /** Warning when an entry is missing required id/category fields. {n} = index, {id} = resolved id or "?". */
+  'settings.overrides.json_entry_no_id':    'Entry {n} ("{id}"): missing id or category.',
+  /** Warning when a tableId entry is missing its data array. {n} = index, {tableId} = tableId value. */
+  'settings.overrides.json_entry_no_data':  'Entry {n} (tableId: "{tableId}"): missing data array.',
+
+  // ==========================================================================
   // CAMPAIGN SETTINGS — DICE RULES
   // ==========================================================================
   'settings.dice_rules.title':    'Dice Rules',
@@ -1049,6 +1097,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   /** Role display labels used in the member list badge. */
   'settings.members.role_admin':    'Admin',
   'settings.members.remove':        'Remove {username} from campaign',
+  'settings.members.error_load':    'Failed to load members.',
+  'settings.members.error_add':     'Failed to add member.',
+  'settings.members.error_remove':  'Failed to remove member.',
+  'settings.members.error_load_users': 'Failed to load users.',
+  'settings.members.admin_only':    'Only administrators can browse the full user list.',
 
   // ==========================================================================
   // ABILITY SCORE ABBREVIATIONS

@@ -61,7 +61,7 @@ Your job is to perform a **strict conformance review** against the architecture 
 - Does `ActiveFeatureInstance` have `ephemeral?: { isEphemeral: true; appliedAtRound?; sourceItemInstanceId?; durationHint? }`?
 - Does `Character` have `minimumSkillRanks?: Record<ID, number>` (optional)?
 - Does `Character` have `levelAdjustment: number` (default 0) and `xp: number` (default 0)?
-- Does `Character` have all UI metadata fields: `campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerRealName`, `customSubtitle`?
+- Does `Character` have all UI metadata fields: `campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerName`, `customSubtitle`?
 - Is `LinkedEntity` serialization guard unidirectional (prevents circular back-references)?
 - Does `CampaignSettings` have `variantRules: { vitalityWoundPoints: boolean; gestalt: boolean }`?
 - Does `createDefaultCampaignSettings()` initialize `variantRules: { vitalityWoundPoints: false, gestalt: false }`?
@@ -239,7 +239,7 @@ Scan ALL `.svelte` and `.ts` files for hardcoded D&D terms (class names, race na
 ## 4. Character Vault (Phase 7)
 
 - Does `visibleCharacters` implement all 3 rules (campaign filter, GM sees all, player sees own + LinkedEntities)?
-- Does `CharacterCard` apply subtitle priority: `customSubtitle` → Race label (NPC) → `playerRealName` (PC)?
+- Does `CharacterCard` apply subtitle priority: `customSubtitle` → Race label (NPC) → `playerName` (PC)?
 - Does the level badge compute from `Object.values(classLevels).reduce()`?
 
 ## 5. Core Tab (Phase 8)

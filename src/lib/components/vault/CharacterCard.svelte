@@ -50,7 +50,7 @@
       }
       return ui('common.npc', lang);
     }
-    if (character.playerRealName) return character.playerRealName;
+    if (character.playerName) return character.playerName;
     return '';
   });
 
@@ -152,8 +152,8 @@
              focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1
              focus-visible:ring-red-500"
       onclick={ondelete}
-      aria-label="Delete {character.name}"
-      title="Delete {character.name}"
+      aria-label={ui('vault.delete_aria', lang).replace('{name}', character.name)}
+      title={ui('vault.delete_aria', lang).replace('{name}', character.name)}
       type="button"
     >
       <IconDelete size={14} aria-hidden="true" />

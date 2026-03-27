@@ -151,7 +151,7 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 
 ### 6. Section 6 — Character
 **VALIDATED.** `src/lib/types/character.ts`
-- All fields including `classLevels`, `gmOverrides?`, UI metadata (`campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerRealName`, `customSubtitle`)
+- All fields including `classLevels`, `gmOverrides?`, UI metadata (`campaignId`, `ownerId`, `isNPC`, `posterUrl`, `playerName`, `customSubtitle`)
 - `LinkedEntity` unidirectional (no back-reference)
 
 ### 7-8. Sections 7-8 — Campaign & Settings

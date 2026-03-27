@@ -392,12 +392,16 @@ export interface Character {
    * The name of the player controlling this character (first name, nickname, etc.).
    * Displayed on the Character Card subtitle when `customSubtitle` is absent and
    * the character is a PC (not an NPC).
+   *
+   * This can be a first name, nickname, or any other identifier the table uses to
+   * associate a character with the person playing it — useful when a single person
+   * plays multiple characters (followers, companions, hirelings).
    */
-  playerRealName?: string;
+  playerName?: string;
 
   /**
    * Optional custom subtitle shown on the Character Card.
-   * Overrides the default subtitle (playerRealName for PCs, race label for NPCs).
+   * Overrides the default subtitle (playerName for PCs, race label for NPCs).
    * Example: "The Shadow Blade", "Former Merchant Prince"
    */
   customSubtitle?: string;

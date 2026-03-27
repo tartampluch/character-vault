@@ -18,18 +18,29 @@
     IconFire, IconCold, IconAcid, IconElectricity, IconSonic,
     IconSpellSR, IconPowerPR, IconFortification,
   } from '$lib/components/ui/icons';
+  import {
+    COMBAT_STAT_RESIST_FIRE_ID,
+    COMBAT_STAT_RESIST_COLD_ID,
+    COMBAT_STAT_RESIST_ACID_ID,
+    COMBAT_STAT_RESIST_ELECTRICITY_ID,
+    COMBAT_STAT_RESIST_SONIC_ID,
+    COMBAT_STAT_SPELL_RESISTANCE_ID,
+    COMBAT_STAT_POWER_RESISTANCE_ID,
+    COMBAT_STAT_FORTIFICATION_ID,
+    COMBAT_STAT_ARCANE_SPELL_FAILURE_ID,
+  } from '$lib/utils/constants';
 
   const RESISTANCES = $derived([
-    { id: 'combatStats.resist_fire',          icon: IconFire,         label: ui('combat.resistances.fire', engine.settings.language)        },
-    { id: 'combatStats.resist_cold',          icon: IconCold,         label: ui('combat.resistances.cold', engine.settings.language)        },
-    { id: 'combatStats.resist_acid',          icon: IconAcid,         label: ui('combat.resistances.acid', engine.settings.language)        },
-    { id: 'combatStats.resist_electricity',   icon: IconElectricity,  label: ui('combat.resistances.electricity', engine.settings.language) },
-    { id: 'combatStats.resist_sonic',         icon: IconSonic,        label: ui('combat.resistances.sonic', engine.settings.language)       },
-    { id: 'combatStats.spell_resistance',     icon: IconSpellSR,      label: ui('combat.resistances.sr', engine.settings.language)          },
-    { id: 'combatStats.power_resistance',     icon: IconPowerPR,      label: ui('combat.resistances.pr', engine.settings.language)          },
-    { id: 'combatStats.fortification',        icon: IconFortification, label: ui('combat.resistances.fort', engine.settings.language)       },
+    { id: COMBAT_STAT_RESIST_FIRE_ID,          icon: IconFire,         label: ui('combat.resistances.fire', engine.settings.language)        },
+    { id: COMBAT_STAT_RESIST_COLD_ID,          icon: IconCold,         label: ui('combat.resistances.cold', engine.settings.language)        },
+    { id: COMBAT_STAT_RESIST_ACID_ID,          icon: IconAcid,         label: ui('combat.resistances.acid', engine.settings.language)        },
+    { id: COMBAT_STAT_RESIST_ELECTRICITY_ID,   icon: IconElectricity,  label: ui('combat.resistances.electricity', engine.settings.language) },
+    { id: COMBAT_STAT_RESIST_SONIC_ID,         icon: IconSonic,        label: ui('combat.resistances.sonic', engine.settings.language)       },
+    { id: COMBAT_STAT_SPELL_RESISTANCE_ID,     icon: IconSpellSR,      label: ui('combat.resistances.sr', engine.settings.language)          },
+    { id: COMBAT_STAT_POWER_RESISTANCE_ID,     icon: IconPowerPR,      label: ui('combat.resistances.pr', engine.settings.language)          },
+    { id: COMBAT_STAT_FORTIFICATION_ID,        icon: IconFortification, label: ui('combat.resistances.fort', engine.settings.language)       },
     // Arcane Spell Failure — percentage chance that arcane spells in armor fail (CHECKPOINTS.md §2 §7)
-    { id: 'combatStats.arcane_spell_failure', icon: IconFortification, label: ui('combat.resistances.asf', engine.settings.language)        },
+    { id: COMBAT_STAT_ARCANE_SPELL_FAILURE_ID, icon: IconFortification, label: ui('combat.resistances.asf', engine.settings.language)        },
   ]);
 
   let miscMods = $state<Record<string, string>>({});

@@ -31,7 +31,8 @@
     IconTabInventory, IconAttacks, IconInfo,
     IconEquip, IconUnequip, IconDelete,
     IconPotion, IconOil,
-    IconInventory,
+    IconInventory, IconClose,
+    IconChevronUp, IconChevronDown,
   } from '$lib/components/ui/icons';
   import { ui } from '$lib/i18n/ui-strings';
   import { POTION_ITEM_TAG, OIL_ITEM_TAG, STASHED_ITEM_TAG, EQUIPMENT_SLOT_NONE } from '$lib/utils/constants';
@@ -179,7 +180,10 @@
           </span>
           <span class="badge-accent text-[10px]">{equippedItems.length}</span>
         </div>
-        <span class="text-text-muted text-xs">{equippedOpen ? '▲' : '▼'}</span>
+        <!-- IconChevronUp/Down from icon barrel (zero-hardcoding rule: no raw Unicode symbols, ARCHITECTURE.md §6) -->
+        <span class="text-text-muted" aria-hidden="true">
+          {#if equippedOpen}<IconChevronUp size={14} />{:else}<IconChevronDown size={14} />{/if}
+        </span>
       </button>
 
       {#if equippedOpen}
@@ -220,12 +224,15 @@
                      type="button"
                    ><IconInfo size={14} aria-hidden="true" /></button>
                    {#if isCursed(item.feature)}
-                     <!-- Cursed items cannot be unequipped via normal means -->
-                     <span
-                       class="p-1.5 text-red-600 dark:text-red-400 text-[10px] font-bold rounded border border-red-700/40 bg-red-950/20"
-                       title={ui('inventory.cursed.tooltip', engine.settings.language)}
-                       aria-label={ui('inventory.cursed.label', engine.settings.language)}
-                     >✗</span>
+                      <!-- Cursed items cannot be unequipped via normal means.
+                           IconClose replaces raw Unicode ✗ (zero-hardcoding rule:
+                           symbols must come from the icon barrel, not inline
+                           characters, ARCHITECTURE.md §6). -->
+                      <span
+                        class="inline-flex items-center justify-center p-1.5 text-red-600 dark:text-red-400 rounded border border-red-700/40 bg-red-950/20"
+                        title={ui('inventory.cursed.tooltip', engine.settings.language)}
+                        aria-label={ui('inventory.cursed.label', engine.settings.language)}
+                      ><IconClose size={12} aria-hidden="true" /></span>
                    {:else}
                      <button
                        class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
@@ -268,7 +275,9 @@
           </span>
           <span class="badge-gray text-[10px]">{carriedItems.length}</span>
         </div>
-        <span class="text-text-muted text-xs">{carriedOpen ? '▲' : '▼'}</span>
+        <span class="text-text-muted" aria-hidden="true">
+          {#if carriedOpen}<IconChevronUp size={14} />{:else}<IconChevronDown size={14} />{/if}
+        </span>
       </button>
 
       {#if carriedOpen}
@@ -393,7 +402,9 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[10px] text-text-muted italic">{ui('inventory.section.storage_weight_note', engine.settings.language)}</span>
-          <span class="text-text-muted text-xs">{stashedOpen ? '▲' : '▼'}</span>
+          <span class="text-text-muted" aria-hidden="true">
+            {#if stashedOpen}<IconChevronUp size={14} />{:else}<IconChevronDown size={14} />{/if}
+          </span>
         </div>
       </button>
 

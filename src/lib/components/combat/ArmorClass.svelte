@@ -12,15 +12,21 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { formatModifier } from '$lib/utils/formatters';
-  import { MAX_DEX_CAP_UNCAPPED_VALUE } from '$lib/utils/constants';
+  import {
+    MAX_DEX_CAP_UNCAPPED_VALUE,
+    COMBAT_STAT_AC_NORMAL_ID,
+    COMBAT_STAT_AC_TOUCH_ID,
+    COMBAT_STAT_AC_FLAT_FOOTED_ID,
+    COMBAT_STAT_MAX_DEX_BONUS_ID,
+  } from '$lib/utils/constants';
   import ModifierBreakdownModal from '$lib/components/ui/ModifierBreakdownModal.svelte';
   import type { ID } from '$lib/types/primitives';
   import { IconAC, IconInfo } from '$lib/components/ui/icons';
 
   const AC_PIPELINES = $derived([
-    { id: 'combatStats.ac_normal',      shortName: ui('combat.ac.normal', engine.settings.language),    description: ui('combat.ac.normal_desc', engine.settings.language),                              accentColor: 'oklch(72% 0.14 220)' },
-    { id: 'combatStats.ac_touch',       shortName: ui('combat.ac.touch', engine.settings.language), description: ui('combat.ac.touch_desc', engine.settings.language),   accentColor: 'oklch(72% 0.17 145)' },
-    { id: 'combatStats.ac_flat_footed', shortName: ui('combat.ac.flat', engine.settings.language),  description: ui('combat.ac.flat_desc', engine.settings.language),             accentColor: 'oklch(78% 0.17 88)'  },
+    { id: COMBAT_STAT_AC_NORMAL_ID,      shortName: ui('combat.ac.normal', engine.settings.language),    description: ui('combat.ac.normal_desc', engine.settings.language),                              accentColor: 'oklch(72% 0.14 220)' },
+    { id: COMBAT_STAT_AC_TOUCH_ID,       shortName: ui('combat.ac.touch', engine.settings.language), description: ui('combat.ac.touch_desc', engine.settings.language),   accentColor: 'oklch(72% 0.17 145)' },
+    { id: COMBAT_STAT_AC_FLAT_FOOTED_ID, shortName: ui('combat.ac.flat', engine.settings.language),  description: ui('combat.ac.flat_desc', engine.settings.language),             accentColor: 'oklch(78% 0.17 88)'  },
   ] as const);
 
   let breakdownAcId = $state<ID | null>(null);
@@ -42,7 +48,7 @@
    * not in template conditional expressions.
    */
   const isMaxDexCapped = $derived(
-    (engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue ?? MAX_DEX_CAP_UNCAPPED_VALUE)
+    (engine.phase3_combatStats[COMBAT_STAT_MAX_DEX_BONUS_ID]?.totalValue ?? MAX_DEX_CAP_UNCAPPED_VALUE)
       < MAX_DEX_CAP_UNCAPPED_VALUE
   );
 </script>
@@ -79,7 +85,7 @@
     </span>
     {#if isMaxDexCapped}
       <span class="text-amber-500 text-[10px]">
-        ({ui('combat.ac.cap', engine.settings.language)} {engine.phase3_combatStats['combatStats.max_dexterity_bonus']?.totalValue})
+        ({ui('combat.ac.cap', engine.settings.language)}       {engine.phase3_combatStats[COMBAT_STAT_MAX_DEX_BONUS_ID]?.totalValue})
       </span>
     {/if}
   </div>
@@ -119,7 +125,7 @@
           <button
             class="btn-ghost p-1 text-accent hover:bg-accent/10 rounded-full"
             onclick={() => (breakdownAcId = acConfig.id)}
-            aria-label="Show {acConfig.description} breakdown"
+            aria-label={ui('combat.ac.show_breakdown_aria', engine.settings.language).replace('{description}', acConfig.description)}
             title="Show breakdown"
             type="button"
           ><IconInfo size={14} aria-hidden="true" /></button>

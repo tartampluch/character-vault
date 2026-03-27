@@ -34,7 +34,7 @@
  */
 
 import { createDefaultCampaignSettings } from '../types/settings';
-import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight, computeCoinWeight, computeAbilityModifier } from '../utils/formatters';
+import { t as translateString, formatDistance as fmtDistance, formatWeight as fmtWeight, computeCoinWeight, computeAbilityModifier, formatModifier } from '../utils/formatters';
 import type { Character, ActiveFeatureInstance } from '../types/character';
 import type { CampaignSettings } from '../types/settings';
 import type { LocalizedString } from '../types/i18n';
@@ -48,7 +48,7 @@ import { evaluateFormula } from '../utils/mathParser';
 import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
-import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS } from '../utils/constants';
+import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS, getAbilityAbbr, ATTRIBUTE_PIPELINE_NAMESPACE } from '../utils/constants';
 import { buildLocalizedString, ui } from '../i18n/ui-strings';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
@@ -1041,6 +1041,24 @@ export class GameEngine {
     if (!this.allVaultCharacters.some(c => c.id === char.id)) {
       this.allVaultCharacters.push(char);
     }
+  }
+
+  /**
+   * Updates the `gmOverrides` field for a specific character in the vault.
+   *
+   * WHY AN ENGINE METHOD (not a direct mutation in gm-dashboard/+page.svelte):
+   *   Direct property assignment on objects inside `allVaultCharacters` from a
+   *   route component violates the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3):
+   *   all character state mutations must go through the GameEngine. Using a dedicated
+   *   method keeps all write paths in one auditable place and ensures the update is
+   *   visible via Svelte's reactive system.
+   *
+   * @param characterId - The ID of the character to update.
+   * @param overrides   - The new GM overrides array (validated JSON before calling).
+   */
+  setCharacterGmOverrides(characterId: ID, overrides: ActiveFeatureInstance[]): void {
+    const char = this.allVaultCharacters.find(c => c.id === characterId);
+    if (char) char.gmOverrides = overrides;
   }
 
   /**
@@ -4491,6 +4509,52 @@ export class GameEngine {
   }
 
   /**
+   * Returns up to 4 ability-score modifier "pills" for display on a Feature card
+   * (e.g., the race panel in BasicInfo.svelte).
+   *
+   * A "pill" is a small badge showing the sign-prefixed value and abbreviated stat
+   * name (e.g., "+2 STR", "−2 INT"). Only numeric modifiers targeting one of the
+   * 6 core ability-score pipelines are included; zero values are excluded.
+   *
+   * WHY IN THE ENGINE (not inline in BasicInfo.svelte):
+   *   This function filters and processes `feature.grantedModifiers`, which is game-
+   *   domain modifier data. "Which modifiers are ability-score modifiers?" is a game
+   *   question that depends on MAIN_ABILITY_IDS (a D&D concept). The function also
+   *   strips the `ATTRIBUTE_PIPELINE_NAMESPACE` prefix and applies locale-aware
+   *   abbreviation — all of which constitute "direct manipulation of pipeline values"
+   *   forbidden in .svelte files (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+   *
+   * @param feature  - Any Feature (typically a race or magic item feature).
+   * @param language - Active UI locale passed from `engine.settings.language`.
+   * @returns Up to 4 pill descriptors, each with a `label`, `positive`, and `zero` flag.
+   */
+  getFeatureAbilityModifierPills(
+    feature: { grantedModifiers?: Array<{ value: unknown; targetId: string }> },
+    language: string,
+  ): Array<{ label: string; positive: boolean; zero: boolean }> {
+    if (!feature.grantedModifiers?.length) return [];
+    return feature.grantedModifiers
+      .filter(mod =>
+        typeof mod.value === 'number' &&
+        (mod.value as number) !== 0 &&
+        MAIN_ABILITY_IDS.some(id => mod.targetId.includes(id)),
+      )
+      .slice(0, 4)
+      .map(mod => {
+        const val = mod.value as number;
+        // Strip the "attributes." namespace prefix to obtain the bare stat ID
+        // (e.g., "attributes.stat_strength" → "stat_strength"), then localise it.
+        const statKey = mod.targetId.replace(ATTRIBUTE_PIPELINE_NAMESPACE, '');
+        const abbr    = getAbilityAbbr(statKey, language);
+        return {
+          label:    `${formatModifier(val)} ${abbr}`,
+          positive: val > 0,
+          zero:     false, // zero values are already filtered out above
+        };
+      });
+  }
+
+  /**
    * Computes the Brainburn saving throw DC for a Power Stone entry.
    *
    * D&D 3.5 SRD (Expanded Psionics Handbook, p. 43):
@@ -4658,9 +4722,24 @@ export class GameEngine {
     this.activeCharacterId = id;
   }
 
-  /** Sets the character's name. */
+  /** Sets the character's in-game name. */
   setCharacterName(name: string): void {
     this.character.name = name;
+  }
+
+  /**
+   * Sets the player name associated with this character.
+   *
+   * Pass `undefined` (or an empty string, which is normalised to `undefined`)
+   * to clear the field. The player name is shown as the Character Card subtitle
+   * for PCs when no `customSubtitle` is set, helping the GM identify which real
+   * person or nickname is associated with each character at the table.
+   *
+   * @param name - The player's name, nickname, or any other identifier. Pass
+   *               `undefined` or an empty string to clear.
+   */
+  setPlayerName(name: string | undefined): void {
+    this.character.playerName = name || undefined;
   }
 
   /** Sets the base value of an attribute pipeline (e.g., STR base score). */
@@ -4830,6 +4909,64 @@ export class GameEngine {
     const hp = this.character.resources['resources.hp'];
     if (!hp) return;
     hp.temporaryValue = Math.max(hp.temporaryValue, amount);
+  }
+
+  // ---------------------------------------------------------------------------
+  // SPELL SLOT & POWER POINT SPENDING
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Spends one spell slot of the given level.
+   *
+   * D&D 3.5 RULE:
+   *   A caster expends one slot of the spell's level when they cast a spell.
+   *   Slot pools are stored in `character.resources` as
+   *   `"resources.spell_slots_{level}"` (e.g. `"resources.spell_slots_3"`
+   *   for a 3rd-level slot). The current value represents slots remaining.
+   *
+   * WHY IN THE ENGINE:
+   *   Direct mutation of `character.resources` from a Svelte component would
+   *   violate the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3). This
+   *   method provides the single controlled mutation point.
+   *
+   * RETURN VALUE:
+   *   `true`  — a slot was successfully spent.
+   *   `false` — no slots available at this level (pool absent or already 0).
+   *
+   * @param level - Spell level (0–9). Level 0 = cantrips.
+   */
+  useSpellSlot(level: number): boolean {
+    const poolId = `resources.spell_slots_${level}`;
+    const pool = this.character.resources[poolId];
+    if (!pool || pool.currentValue <= 0) return false;
+    pool.currentValue = Math.max(0, pool.currentValue - 1);
+    return true;
+  }
+
+  /**
+   * Spends power points from the character's PP pool.
+   *
+   * D&D 3.5 PSIONICS RULE:
+   *   A manifester expends PP equal to a power's base cost plus any chosen
+   *   augmentation. PP are stored in `character.resources['resources.power_points']`.
+   *   The current value falls to 0 at minimum (never negative).
+   *
+   * WHY IN THE ENGINE:
+   *   Direct mutation of `character.resources` from a Svelte component would
+   *   violate the zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3).
+   *
+   * RETURN VALUE:
+   *   `true`  — PP were successfully spent.
+   *   `false` — insufficient PP or pool absent.
+   *
+   * @param amount - Number of PP to spend. Must be > 0.
+   */
+  spendPowerPoints(amount: number): boolean {
+    if (amount <= 0) return false;
+    const pool = this.character.resources['resources.power_points'];
+    if (!pool || pool.currentValue < amount) return false;
+    pool.currentValue = Math.max(0, pool.currentValue - amount);
+    return true;
   }
 
   // ---------------------------------------------------------------------------
@@ -5921,7 +6058,13 @@ export class GameEngine {
       console.warn(`[GameEngine] setClassLevel: level must be ≥ 1 (got ${level}). Use deleteClassLevel() to remove.`);
       return;
     }
-    this.character.classLevels[classFeatureId] = level;
+    // Clamp to MAX_CLASS_LEVEL (20 by default, per ARCHITECTURE.md §6 / constants.ts).
+    // Validation lives here — not in .svelte files (zero-game-logic rule, ARCHITECTURE.md §3).
+    const clamped = Math.min(level, MAX_CLASS_LEVEL);
+    if (clamped !== level) {
+      console.warn(`[GameEngine] setClassLevel: level ${level} exceeds MAX_CLASS_LEVEL (${MAX_CLASS_LEVEL}). Clamped to ${clamped}.`);
+    }
+    this.character.classLevels[classFeatureId] = clamped;
   }
 
   /**
@@ -5935,6 +6078,52 @@ export class GameEngine {
    */
   deleteClassLevel(classFeatureId: ID): void {
     delete this.character.classLevels[classFeatureId];
+  }
+
+  /**
+   * Atomically replaces the character's current class with a new one.
+   *
+   * ZERO-GAME-LOGIC-IN-SVELTE RULE (ARCHITECTURE.md §3):
+   *   Previously `BasicInfo.svelte` orchestrated this multi-step operation:
+   *     1. Reading `engine.character.activeFeatures` to collect previous class IDs.
+   *     2. Calling `engine.removeFeature()` for each.
+   *     3. Calling `engine.deleteClassLevel()` for each.
+   *     4. Adding the new class feature and setting level = 1.
+   *   This coordination logic involves knowledge of the character's internal
+   *   data model (classLevels, activeFeatures, the "one active class" invariant)
+   *   and therefore belongs here, not in a .svelte component.
+   *
+   * D&D 3.5 CONTEXT:
+   *   A character may only have one primary class in the single-class selector
+   *   on the Core tab. Switching class removes all prior class feature instances
+   *   and clears their classLevels entries so the character level is not inflated.
+   *   Multiclassing is handled by additional class rows, not by this method.
+   *
+   * @param newClassId - The feature ID of the class to switch to (e.g.,
+   *   `"class_fighter"`). Pass an empty string to clear the class entirely.
+   */
+  replaceClass(newClassId: string): void {
+    // Collect all current class feature instances (by category lookup).
+    const classInstances = this.character.activeFeatures.filter(afi => {
+      const feature = dataLoader.getFeature(afi.featureId);
+      return feature?.category === 'class';
+    });
+
+    // Remove each class instance and delete its classLevels entry.
+    for (const afi of classInstances) {
+      this.#removeFeatureUnchecked(afi.instanceId);
+      delete this.character.classLevels[afi.featureId];
+    }
+
+    // If a new class was selected, initialise it at level 1 and add the instance.
+    if (newClassId) {
+      this.setClassLevel(newClassId, 1);
+      this.addFeature({
+        instanceId: `afi_class_${newClassId}`,
+        featureId:  newClassId,
+        isActive:   true,
+      });
+    }
   }
 
   // ---------------------------------------------------------------------------

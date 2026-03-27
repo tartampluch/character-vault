@@ -15,7 +15,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { MAIN_ABILITY_IDS, getAbilityAbbr } from '$lib/utils/constants';
+  import { MAIN_ABILITY_IDS, getAbilityAbbr, RESOURCE_HP_ID } from '$lib/utils/constants';
   import { getCharacterLevel } from '$lib/utils/formatters';
   import { IconGMDashboard, IconStats, IconSuccess, IconError, IconBack } from '$lib/components/ui/icons';
 
@@ -69,13 +69,16 @@
         body: JSON.stringify({ gmOverrides: overrides }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const char = engine.allVaultCharacters.find(c => c.id === charId);
-      if (char) char.gmOverrides = overrides;
+      // Delegate vault character mutation to the engine (ARCHITECTURE.md §3:
+      // all character state writes must go through the GameEngine, not direct
+      // property assignment from a route component).
+      engine.setCharacterGmOverrides(charId, overrides);
       saveSuccessIds[charId] = ui('gm.saved', engine.settings.language);
       setTimeout(() => { saveSuccessIds[charId] = ''; }, 3000);
     } catch (err) {
-      const char = engine.allVaultCharacters.find(c => c.id === charId);
-      if (char) char.gmOverrides = overrides;
+      // API unavailable — update local state so the GM sees their changes immediately.
+      // Delegate to engine method for the same reason as the success branch above.
+      engine.setCharacterGmOverrides(charId, overrides);
       saveSuccessIds[charId] = ui('gm.saved_locally', engine.settings.language);
       setTimeout(() => { saveSuccessIds[charId] = ''; }, 5000);
     } finally {
@@ -107,8 +110,8 @@
       str:   attrs[strId]?.totalValue ?? attrs[strId]?.baseValue ?? '?',
       dex:   attrs[dexId]?.totalValue ?? attrs[dexId]?.baseValue ?? '?',
       con:   attrs[conId]?.totalValue ?? attrs[conId]?.baseValue ?? '?',
-      hp:    char.resources?.['resources.hp']?.currentValue ?? '?',
-      maxHp: char.resources?.['resources.hp'] ? engine.phase3_maxHp : '?',
+      hp:    char.resources?.[RESOURCE_HP_ID]?.currentValue ?? '?',
+      maxHp: char.resources?.[RESOURCE_HP_ID] ? engine.phase3_maxHp : '?',
     };
   }
 

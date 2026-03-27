@@ -15,6 +15,7 @@
   import { interpolateDescription } from '$lib/utils/mathParser';
   import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
+  import { FEATURE_ID_CATEGORY_PREFIXES } from '$lib/utils/constants';
   import type { ID } from '$lib/types/primitives';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { IconInfo, IconSuccess, IconError, IconWarning, IconAbilities, IconTabFeats, IconAdd, IconChecked } from '$lib/components/ui/icons';
@@ -69,18 +70,17 @@
   /**
    * Guess a grant category from the ID when the feature is not loaded,
    * for pill display purposes.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   The ID prefix → category mapping is centralised in `FEATURE_ID_CATEGORY_PREFIXES`
+   *   in `constants.ts` so that D&D category name strings do not appear as string
+   *   literals inside this .svelte file. Any new category prefix requires only a
+   *   change in constants.ts, not a search across components.
    */
   function guessGrantCategory(id: string): string {
-    if (id.startsWith('language_'))    return 'language';
-    if (id.startsWith('sense_'))       return 'sense';
-    if (id.startsWith('proficiency_')) return 'proficiency';
-    if (id.startsWith('immunity_'))    return 'immunity';
-    if (id.startsWith('class_feature_')) return 'class_feature';
-    if (id.startsWith('racial_feature_')) return 'racial';
-    if (id.startsWith('feat_'))        return 'feat';
-    if (id.startsWith('spell_'))       return 'spell';
-    if (id.startsWith('item_'))        return 'item';
-    if (id.startsWith('condition_'))   return 'condition';
+    for (const { prefix, category } of FEATURE_ID_CATEGORY_PREFIXES) {
+      if (id.startsWith(prefix)) return category;
+    }
     return 'feature';
   }
 

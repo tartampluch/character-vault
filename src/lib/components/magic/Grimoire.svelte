@@ -18,6 +18,7 @@
   import type { MagicFeature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import { IconSpells, IconSearch, IconInfo, IconAdd, IconChecked } from '$lib/components/ui/icons';
+  import { MAGIC_TYPE_ARCANE, MAGIC_TYPE_DIVINE, MAGIC_TYPE_PSIONIC } from '$lib/utils/constants';
 
   let searchQuery  = $state('');
   let modalSpellId = $state<ID | null>(null);
@@ -57,11 +58,19 @@
     engine.addFeature({ instanceId: `afi_spell_${spellId}_${Date.now()}`, featureId: spellId, isActive: true });
   }
 
-  /** Map magic type to a Tailwind badge class */
+  /**
+   * Map magic type to a Tailwind badge class.
+   *
+   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
+   *   Magic type identifiers are D&D game-content strings — they must not appear
+   *   as literal values in `.svelte` TypeScript logic. Instead they are imported
+   *   from `constants.ts` (MAGIC_TYPE_ARCANE / MAGIC_TYPE_DIVINE / MAGIC_TYPE_PSIONIC)
+   *   so a rename propagates automatically to all usage sites.
+   */
   function magicTypeBadgeClass(type: string): string {
-    return type === 'arcane'  ? 'bg-purple-900/40 text-purple-400 border-purple-800/40'
-         : type === 'divine'  ? 'bg-yellow-900/30 text-yellow-400 border-yellow-800/30'
-         : type === 'psionic' ? 'bg-cyan-900/30 text-cyan-400 border-cyan-800/30'
+    return type === MAGIC_TYPE_ARCANE  ? 'bg-purple-900/40 text-purple-400 border-purple-800/40'
+         : type === MAGIC_TYPE_DIVINE  ? 'bg-yellow-900/30 text-yellow-400 border-yellow-800/30'
+         : type === MAGIC_TYPE_PSIONIC ? 'bg-cyan-900/30 text-cyan-400 border-cyan-800/30'
          : 'bg-surface-alt text-text-muted border-border';
   }
 </script>

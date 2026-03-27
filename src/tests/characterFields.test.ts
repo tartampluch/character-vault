@@ -1,12 +1,12 @@
 /**
  * @file src/tests/characterFields.test.ts
- * @description Unit tests for the character `name` and `playerRealName` fields
+ * @description Unit tests for the character `name` and `playerName` fields
  *              introduced in the BasicInfo panel update.
  *
  * SCOPE:
- *   - `Character.name`           — the in-game character name, always present.
- *   - `Character.playerRealName` — optional real-world player name, PCs only.
- *   - `Character.isNPC`          — discriminator between PCs and NPCs.
+ *   - `Character.name`       — the in-game character name, always present.
+ *   - `Character.playerName` — optional player name / nickname, PCs only.
+ *   - `Character.isNPC`      — discriminator between PCs and NPCs.
  *   - `StorageManager` round-trip — both fields survive save → load.
  *   - `canDelete` permission logic — extracted as a pure helper and tested in
  *     isolation (the same logic used in the vault page).
@@ -17,7 +17,7 @@
  *     The StorageManager.deleteCharacterFromApi() it delegates to is covered in
  *     storageManager.test.ts.
  *
- * @see src/lib/components/core/BasicInfo.svelte   — name / playerRealName inputs
+ * @see src/lib/components/core/BasicInfo.svelte   — name / playerName inputs
  * @see src/lib/types/character.ts                 — Character type definition
  * @see src/lib/engine/StorageManager.ts           — persistence layer
  * @see src/lib/components/vault/CharacterCard.svelte — subtitle display logic
@@ -111,34 +111,35 @@ describe('Character.name — initialization and mutation', () => {
 });
 
 // =============================================================================
-// 2. Character.playerRealName — optional PC-only field
+// 2. Character.playerName — optional PC-only field
 // =============================================================================
 
-describe('Character.playerRealName — optional PC-only field', () => {
+describe('Character.playerName — optional PC-only field', () => {
   it('is undefined by default on a freshly created character', () => {
     const char = makePC('char_010');
-    expect(char.playerRealName).toBeUndefined();
+    expect(char.playerName).toBeUndefined();
   });
 
   it('can be set to a non-empty string for a PC', () => {
     const char = makePC('char_011');
-    char.playerRealName = 'Alice';
-    expect(char.playerRealName).toBe('Alice');
+    char.playerName = 'Alice';
+    expect(char.playerName).toBe('Alice');
   });
 
   it('can be cleared back to undefined (empty input → undefined)', () => {
     const char = makePC('char_012');
-    char.playerRealName = 'Alice';
-    char.playerRealName = undefined;
-    expect(char.playerRealName).toBeUndefined();
+    char.playerName = 'Alice';
+    char.playerName = undefined;
+    expect(char.playerName).toBeUndefined();
   });
 
-  it('NPC characters can technically carry playerRealName but the UI hides it', () => {
-    // The Business rule (hide input for NPCs) is enforced in the UI.
-    // The type itself does not restrict the field to PCs.
+  it('NPC characters can technically carry playerName but the UI hides it', () => {
+    // The business rule (hide input for NPCs) is enforced in the UI.
+    // The type itself does not restrict the field to PCs — a GM could use it
+    // to note which person is voicing an NPC or follower.
     const npc = makeNPC('npc_013');
-    npc.playerRealName = 'GM Note';
-    expect(npc.playerRealName).toBe('GM Note');
+    npc.playerName = 'GM Note';
+    expect(npc.playerName).toBe('GM Note');
   });
 });
 
@@ -169,10 +170,10 @@ describe('Character.isNPC — PC vs NPC discriminator', () => {
 });
 
 // =============================================================================
-// 4. StorageManager round-trip — name and playerRealName survive save/load
+// 4. StorageManager round-trip — name and playerName survive save/load
 // =============================================================================
 
-describe('StorageManager — name and playerRealName round-trip', () => {
+describe('StorageManager — name and playerName round-trip', () => {
   it('persists character name and retrieves it intact', () => {
     const sm   = new StorageManager();
     const char = makePC('char_030', 'Selûne Dawnbringer');
@@ -182,24 +183,24 @@ describe('StorageManager — name and playerRealName round-trip', () => {
     expect(loaded?.name).toBe('Selûne Dawnbringer');
   });
 
-  it('persists playerRealName and retrieves it intact', () => {
+  it('persists playerName and retrieves it intact', () => {
     const sm   = new StorageManager();
     const char = makePC('char_031');
-    char.playerRealName = 'Martin';
+    char.playerName = 'Martin';
     sm.saveCharacter(char);
 
     const loaded = sm.loadCharacter('char_031');
-    expect(loaded?.playerRealName).toBe('Martin');
+    expect(loaded?.playerName).toBe('Martin');
   });
 
-  it('loaded character has playerRealName = undefined when none was set', () => {
+  it('loaded character has playerName = undefined when none was set', () => {
     const sm   = new StorageManager();
     const char = makePC('char_032');
-    // No playerRealName set
+    // No playerName set
     sm.saveCharacter(char);
 
     const loaded = sm.loadCharacter('char_032');
-    expect(loaded?.playerRealName).toBeUndefined();
+    expect(loaded?.playerName).toBeUndefined();
   });
 
   it('persists isNPC flag as true for NPCs', () => {
@@ -222,16 +223,16 @@ describe('StorageManager — name and playerRealName round-trip', () => {
     expect(sm.loadCharacter('char_034')?.name).toBe('New Name');
   });
 
-  it('overwriting playerRealName to undefined removes it from stored data', () => {
+  it('overwriting playerName to undefined removes it from stored data', () => {
     const sm   = new StorageManager();
     const char = makePC('char_035');
-    char.playerRealName = 'Bob';
+    char.playerName = 'Bob';
     sm.saveCharacter(char);
 
-    char.playerRealName = undefined;
+    char.playerName = undefined;
     sm.saveCharacter(char);
 
-    expect(sm.loadCharacter('char_035')?.playerRealName).toBeUndefined();
+    expect(sm.loadCharacter('char_035')?.playerName).toBeUndefined();
   });
 });
 

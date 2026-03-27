@@ -21,7 +21,14 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { toDisplayPct } from '$lib/utils/formatters';
   import type { ItemFeature } from '$lib/types/feature';
-  import { DORJE_MAX_CHARGES } from '$lib/utils/constants';
+  import {
+    DORJE_MAX_CHARGES,
+    PSIONIC_ITEM_TYPE_CRYSTAL,
+    PSIONIC_ITEM_TYPE_DORJE,
+    PSIONIC_ITEM_TYPE_STONE,
+    PSIONIC_ITEM_TYPE_PSICROWN,
+    PSIONIC_ITEM_TYPE_TATTOO,
+  } from '$lib/utils/constants';
   import { IconWarning } from '$lib/components/ui/icons';
 
   let { item, instanceId }: { item: ItemFeature; instanceId: string } = $props();
@@ -97,7 +104,7 @@
   </div>
 
   <!-- ── COGNIZANCE CRYSTAL ───────────────────────────────────────────── -->
-  {#if type === 'cognizance_crystal'}
+  {#if type === PSIONIC_ITEM_TYPE_CRYSTAL}
     <!-- PP bar — label via ui() key (zero-hardcoding rule, ARCHITECTURE.md §6) -->
     <div class="flex items-center gap-2 text-xs">
       <span class="text-text-muted shrink-0">{ui('psionic_item.pp_abbr', lang)}</span>
@@ -136,7 +143,7 @@
     {/if}
 
   <!-- ── DORJE ────────────────────────────────────────────────────────── -->
-  {:else if type === 'dorje'}
+  {:else if type === PSIONIC_ITEM_TYPE_DORJE}
     <div class="flex items-center gap-3 text-xs">
       <!-- Power stored -->
       <span class="text-purple-300 truncate">{psi.powerStored ? getPowerName(psi.powerStored) : '?'}</span>
@@ -164,7 +171,7 @@
     </div>
 
   <!-- ── POWER STONE ──────────────────────────────────────────────────── -->
-  {:else if type === 'power_stone'}
+  {:else if type === PSIONIC_ITEM_TYPE_STONE}
     <div class="flex flex-col gap-1">
       {#each psi.powersImprinted ?? [] as entry, idx}
         <div class="flex items-center gap-2 text-xs {entry.usedUp ? 'opacity-40' : ''}">
@@ -197,7 +204,7 @@
     </div>
 
   <!-- ── PSICROWN ─────────────────────────────────────────────────────── -->
-  {:else if type === 'psicrown'}
+  {:else if type === PSIONIC_ITEM_TYPE_PSICROWN}
     <!-- PP bar -->
     <div class="flex items-center gap-2 text-xs">
       <span class="text-text-muted shrink-0">{ui('psionic_item.crown_pp_label', lang)}</span>
@@ -225,7 +232,7 @@
     {/if}
 
   <!-- ── PSIONIC TATTOO ────────────────────────────────────────────────── -->
-  {:else if type === 'psionic_tattoo'}
+  {:else if type === PSIONIC_ITEM_TYPE_TATTOO}
     <div class="flex items-center gap-2 text-xs">
       <span class="flex-1 truncate {psi.activated ? 'line-through text-text-muted' : 'text-text-primary'}">
         {psi.powerStored ? getPowerName(psi.powerStored) : '?'}

@@ -20,17 +20,18 @@
     - Reads: `engine.character.activeFeatures`, `engine.phase0_activeTags`
     - Reads: `dataLoader.queryFeatures()` for dropdown populations
     - Writes: `engine.addFeature()`, `engine.removeFeature()`,
-              direct mutation of `engine.character.classLevels`,
-              direct mutation of `activeFeatureInstance.selections[choiceId]`
+              `engine.setClassLevel()`, `engine.deleteClassLevel()` (never direct
+              mutation of `character.classLevels`),
+              `engine.setFeatureSelection()` (never direct mutation of
+              `activeFeatureInstance.selections`)
     - No D&D rules computed here — only feature lookup and engine dispatching.
 -->
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { formatModifier } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
-  import { getAbilityAbbr, MAIN_ABILITY_IDS, ALIGNMENTS, MAX_CLASS_LEVEL } from '$lib/utils/constants';
+  import { getAbilityAbbr, ALIGNMENTS, MAX_CLASS_LEVEL } from '$lib/utils/constants';
   import type { Feature } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
@@ -61,35 +62,6 @@
     engine.phase0_activeTags.find(tag => tag.startsWith('alignment_')) ?? ''
   );
 
-  // ── Modifier pills helper ────────────────────────────────────────────────────
-  // Returns up to 4 ability-score modifier pills for the selected race.
-  // Only core attribute stats (STR/DEX/CON/INT/WIS/CHA) are shown.
-  // Each pill has { label, positive } so the template can colour them.
-  interface ModPill { label: string; positive: boolean; zero: boolean }
-  function getModifierPills(feature: Feature): ModPill[] {
-    if (!feature.grantedModifiers?.length) return [];
-    // Use MAIN_ABILITY_IDS from constants.ts (centralized, never hardcoded here).
-    // targetId format: 'attributes.stat_strength' — full ID substring match works correctly.
-    return feature.grantedModifiers
-      .filter(mod =>
-        typeof mod.value === 'number' &&
-        mod.value !== 0 &&
-        MAIN_ABILITY_IDS.some(s => mod.targetId.includes(s))
-      )
-      .slice(0, 4)
-      .map(mod => {
-        const val = mod.value as number;
-          // Normalize "attributes.stat_strength" → "stat_strength" then to localized abbr
-          const statKey = mod.targetId.replace('attributes.', '');
-          const abbr = getAbilityAbbr(statKey, engine.settings.language);
-        return {
-          label:    `${val > 0 ? '+' : ''}${val} ${abbr}`,
-          positive: val > 0,
-          zero:     val === 0,
-        };
-      });
-  }
-
   // ── Selection handlers ──────────────────────────────────────────────────────
   function makeCategoryInstanceId(category: string, featureId: ID): string {
     return `afi_${category}_${featureId}`;
@@ -115,29 +87,11 @@
 
   function handleClassChange(event: Event) {
     const featureId = (event.target as HTMLSelectElement).value;
-
-    // Remove ALL prior class feature instances AND their classLevels entries.
-    // Without the classLevels cleanup, switching class accumulates entries
-    // (Fighter 1 → Wizard 1 → Rogue 1 = level 3 multiclass instead of level 1).
-    // Use engine.deleteClassLevel() — no direct `classLevels` mutation in the
-    // Svelte component (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
-    const previousClassIds = engine.character.activeFeatures
-      .filter(afi => {
-        const f = dataLoader.getFeature(afi.featureId);
-        return f?.category === 'class';
-      })
-      .map(afi => afi.featureId);
-
-    removeAllOfCategory('class');
-
-    for (const prevId of previousClassIds) {
-      engine.deleteClassLevel(prevId);
-    }
-
-    if (featureId) {
-      engine.setClassLevel(featureId, 1);
-      engine.addFeature({ instanceId: makeCategoryInstanceId('class', featureId), featureId, isActive: true });
-    }
+    // Delegate the full class-replacement lifecycle to the engine:
+    //   remove old instances + classLevels entries → add new class at level 1.
+    // The engine.replaceClass() method owns all multi-step coordination so this
+    // component stays a dumb dispatcher (zero-game-logic-in-Svelte, ARCHITECTURE.md §3).
+    engine.replaceClass(featureId);
   }
 
   function handleDeityChange(event: Event) {
@@ -241,7 +195,7 @@
         value={engine.character.name}
         placeholder={ui('core.character_name_placeholder', engine.settings.language)}
         maxlength="80"
-        oninput={(e) => { engine.character.name = (e.target as HTMLInputElement).value; }}
+        oninput={(e) => engine.setCharacterName((e.target as HTMLInputElement).value)}
         aria-label={ui('core.character_name', engine.settings.language)}
       />
     </div>
@@ -256,10 +210,10 @@
           id="player-name-input"
           type="text"
           class="input"
-          value={engine.character.playerRealName ?? ''}
+          value={engine.character.playerName ?? ''}
           placeholder={ui('core.player_name_placeholder', engine.settings.language)}
           maxlength="80"
-          oninput={(e) => { engine.character.playerRealName = (e.target as HTMLInputElement).value || undefined; }}
+          oninput={(e) => engine.setPlayerName((e.target as HTMLInputElement).value)}
           aria-label={ui('core.player_name', engine.settings.language)}
         />
       </div>
@@ -301,9 +255,12 @@
           ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
       </div>
-      <!-- Stat modifier pills — same style as class recommended-attrs badges -->
+      <!-- Stat modifier pills — same style as class recommended-attrs badges.
+           Delegated to engine.getFeatureAbilityModifierPills() per the
+           zero-game-logic-in-Svelte rule (ARCHITECTURE.md §3): filtering
+           grantedModifiers by ability-score pipeline IDs is game-domain logic. -->
       {#if activeRace}
-        {@const pills = getModifierPills(activeRace)}
+        {@const pills = engine.getFeatureAbilityModifierPills(activeRace, engine.settings.language)}
         {#if pills.length}
           <div class="flex flex-wrap gap-1 mt-0.5">
             {#each pills as pill}
@@ -360,10 +317,10 @@
             class="input w-14 text-center px-1"
             onchange={(e) => {
               const lvl = parseInt((e.target as HTMLInputElement).value, 10);
-              // Use engine.setClassLevel() — direct mutation of classLevels is
-              // prohibited in Svelte components (zero-game-logic rule, ARCHITECTURE.md §3).
-              // MAX_CLASS_LEVEL from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6).
-              if (!isNaN(lvl) && lvl >= 1 && lvl <= MAX_CLASS_LEVEL && activeClass) {
+              // Delegate to engine.setClassLevel() — all bounds clamping (≥ 1,
+              // ≤ MAX_CLASS_LEVEL) is validated inside the engine method, not here
+              // (zero-game-logic-in-Svelte rule, ARCHITECTURE.md §3).
+              if (!isNaN(lvl) && activeClass) {
                 engine.setClassLevel(activeClass.id, lvl);
               }
             }}
@@ -491,8 +448,8 @@
                 <button
                   class="btn-ghost p-1 rounded-full shrink-0"
                   onclick={() => (modalFeatureId = currentSelection)}
-                  aria-label="Show selected option details"
-                  title="Show details for selected option"
+                  aria-label={ui('core.show_option_details_aria', engine.settings.language)}
+                  title={ui('core.show_details', engine.settings.language)}
                   type="button"
                 ><IconInfo size={14} aria-hidden="true" /></button>
               {/if}

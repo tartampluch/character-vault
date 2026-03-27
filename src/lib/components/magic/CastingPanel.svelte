@@ -37,7 +37,7 @@
   import type { StatisticPipeline } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
   import { IconTabMagic, IconInfo, IconDiceRoll, IconTabInventory, IconClose, IconMagicWand } from '$lib/components/ui/icons';
-  import { SPELL_ROLL_LABEL_KEY } from '$lib/utils/constants';
+  import { SPELL_ROLL_LABEL_KEY, MAGIC_TYPE_PSIONIC } from '$lib/utils/constants';
 
   import type { PsionicDiscipline, PsionicDisplay } from '$lib/types/feature';
 
@@ -63,12 +63,14 @@
   );
 
   /** True if any known power is psionic — enables discipline filter UI */
-  const hasPsionicPowers = $derived(knownSpells.some(s => s.magicType === 'psionic'));
+  // MAGIC_TYPE_PSIONIC from constants.ts (zero-hardcoding rule, ARCHITECTURE.md §6):
+  // the magic type identifier must never appear as a literal string in .svelte files.
+  const hasPsionicPowers = $derived(knownSpells.some(s => s.magicType === MAGIC_TYPE_PSIONIC));
 
   /** All disciplines present in known psionic powers */
   const presentDisciplines = $derived<PsionicDiscipline[]>(
     [...new Set(knownSpells
-      .filter(s => s.magicType === 'psionic' && s.discipline)
+      .filter(s => s.magicType === MAGIC_TYPE_PSIONIC && s.discipline)
       .map(s => s.discipline!))]
   );
 
@@ -76,7 +78,7 @@
     activeDisciplineFilter === 'all'
       ? knownSpells
       : knownSpells.filter(s =>
-          s.magicType !== 'psionic' || s.discipline === activeDisciplineFilter
+          s.magicType !== MAGIC_TYPE_PSIONIC || s.discipline === activeDisciplineFilter
         )
   );
 
@@ -234,6 +236,44 @@
 
   function toggleSpellExpand(spellId: ID) {
     expandedSpellId = expandedSpellId === spellId ? null : spellId;
+  }
+
+  /**
+   * Handles the Cast button for a known arcane/divine spell.
+   *
+   * Calls `engine.useSpellSlot(level)` which decrements the slot pool and
+   * returns `false` when no slots are available. A browser alert notifies the
+   * player in that case (Phase 13 stub; will be upgraded to a toast in Phase 19.14).
+   *
+   * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
+   *   The slot deduction and pool validation are delegated entirely to the engine
+   *   method `engine.useSpellSlot()`. No arithmetic or resource mutation occurs
+   *   in this component.
+   */
+  function handleCast(spell: MagicFeature, spellLevel: number): void {
+    const ok = engine.useSpellSlot(spellLevel);
+    if (!ok) {
+      alert(ui('magic.casting.no_slot_available', engine.settings.language));
+    }
+  }
+
+  /**
+   * Handles the Manifest button for a psionic power.
+   *
+   * Calls `engine.spendPowerPoints(totalCost)` which decrements the PP pool and
+   * returns `false` when insufficient PP remain.
+   *
+   * ZERO-GAME-LOGIC RULE (ARCHITECTURE.md §3):
+   *   PP validation and deduction are entirely within the engine method.
+   */
+  function handleManifest(spell: MagicFeature, ppCost: number): void {
+    const ok = engine.spendPowerPoints(ppCost);
+    if (!ok) {
+      alert(ui('magic.casting.insufficient_pp', engine.settings.language));
+    } else {
+      // Reset augmentation steps to 0 after a successful manifestation.
+      augSteps[spell.id] = 0;
+    }
   }
 </script>
 
@@ -418,7 +458,7 @@
 
         <!-- Spell/power rows within this level -->
         {#each spellsByLevel[level] ?? [] as spell}
-          {@const isPsionic = spell.magicType === 'psionic'}
+          {@const isPsionic = spell.magicType === MAGIC_TYPE_PSIONIC}
           {@const hasAugmentations = isPsionic && (spell.augmentations?.length ?? 0) > 0}
           {@const steps = augSteps[spell.id] ?? 0}
           {@const baseCost = spellBasePpCost(spell)}
@@ -482,15 +522,21 @@
               <button
                 class="btn-ghost p-1 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10 shrink-0"
                 onclick={() => (diceSpellId = spell.id)}
-                aria-label="Roll damage"
+                aria-label={ui('magic.casting.roll_damage_aria', engine.settings.language)}
                 type="button"
               ><IconDiceRoll size={13} aria-hidden="true" /></button>
             {/if}
 
-            <!-- Cast / Manifest button -->
+            <!-- Cast / Manifest button
+                 onclick: engine.useSpellSlot(level) for arcane/divine spells;
+                          engine.spendPowerPoints(totalCost) for psionic powers.
+                 Both methods live in the engine (zero-game-logic rule, ARCHITECTURE.md §3). -->
             <button
               class="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20 transition-colors duration-150"
-              aria-label="{isPsionic ? 'Manifest' : 'Cast'} {engine.t(spell.label)}"
+              aria-label={isPsionic
+                ? ui('magic.casting.manifest_aria', engine.settings.language).replace('{name}', engine.t(spell.label)).replace('{pp}', String(totalCost))
+                : ui('magic.casting.cast_aria', engine.settings.language).replace('{name}', engine.t(spell.label))}
+              onclick={() => isPsionic ? handleManifest(spell, totalCost) : handleCast(spell, level)}
               type="button"
             >
               {#if isPsionic}

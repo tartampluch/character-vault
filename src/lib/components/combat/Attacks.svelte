@@ -178,7 +178,7 @@
           class="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium
                  bg-green-800/40 text-green-300 hover:bg-green-700/40 transition-colors duration-150"
           onclick={() => (rollTarget = 'main_attack')}
-          aria-label="Roll attack"
+          aria-label={ui('combat.attacks.roll_attack_aria', engine.settings.language)}
           type="button"
         >
           <IconDiceRoll size={14} aria-hidden="true" /> {ui('combat.attacks.attack', engine.settings.language)}
@@ -187,7 +187,7 @@
           class="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium
                  bg-red-800/40 text-red-300 hover:bg-red-700/40 transition-colors duration-150"
           onclick={() => (rollTarget = 'main_damage')}
-          aria-label="Roll damage"
+          aria-label={ui('combat.attacks.roll_damage_aria', engine.settings.language)}
           type="button"
         >
           <IconDiceRoll size={14} aria-hidden="true" /> {ui('combat.attacks.damage', engine.settings.language)}

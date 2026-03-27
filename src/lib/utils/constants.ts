@@ -174,6 +174,44 @@ export const CONDITION_ENCUMBERED_INSTANCE_ID = 'afi_condition_encumbered_auto' 
 export const DORJE_MAX_CHARGES = 50 as const;
 
 // =============================================================================
+// PSIONIC ITEM TYPE IDENTIFIERS
+// =============================================================================
+
+/**
+ * Canonical identifier for a Cognizance Crystal psionic item.
+ *
+ * WHY A CONSTANT (not inlined as `'cognizance_crystal'` in PsionicItemCard.svelte):
+ *   Psionic item type names are D&D game-content identifiers that must not appear
+ *   as string literals in `.svelte` component files (zero-hardcoding rule,
+ *   ARCHITECTURE.md §6). This follows the same pattern as MAGIC_TYPE_PSIONIC.
+ */
+export const PSIONIC_ITEM_TYPE_CRYSTAL  = 'cognizance_crystal' as const;
+
+/**
+ * Canonical identifier for a Dorje psionic item (psionic wand equivalent).
+ * Same rationale as PSIONIC_ITEM_TYPE_CRYSTAL above.
+ */
+export const PSIONIC_ITEM_TYPE_DORJE    = 'dorje'              as const;
+
+/**
+ * Canonical identifier for a Power Stone psionic item.
+ * Same rationale as PSIONIC_ITEM_TYPE_CRYSTAL above.
+ */
+export const PSIONIC_ITEM_TYPE_STONE    = 'power_stone'        as const;
+
+/**
+ * Canonical identifier for a Psicrown psionic item.
+ * Same rationale as PSIONIC_ITEM_TYPE_CRYSTAL above.
+ */
+export const PSIONIC_ITEM_TYPE_PSICROWN = 'psicrown'           as const;
+
+/**
+ * Canonical identifier for a Psionic Tattoo item.
+ * Same rationale as PSIONIC_ITEM_TYPE_CRYSTAL above.
+ */
+export const PSIONIC_ITEM_TYPE_TATTOO   = 'psionic_tattoo'     as const;
+
+// =============================================================================
 // CUSTOM DR PREFIX
 // =============================================================================
 
@@ -220,6 +258,23 @@ export const ABILITY_SCORE_MIN = 1 as const;
  * totalValue, which can exceed this through modifiers.
  */
 export const ABILITY_SCORE_MAX = 30 as const;
+
+// =============================================================================
+// PIPELINE NAMESPACE PREFIXES
+// =============================================================================
+
+/**
+ * Namespace prefix for ability-score pipelines (e.g. `attributes.stat_strength`).
+ *
+ * DAG Phase 0 stores all ability score statistics under this namespace. Some
+ * modifier `targetId` values include this prefix (e.g. `"attributes.stat_strength"`),
+ * while the engine's own pipeline map keys use just the stat ID segment
+ * (e.g. `"stat_strength"`). Components that need to normalise a full pipeline path
+ * into a bare stat ID must import this constant rather than hardcoding the string.
+ *
+ * Centralised here per the zero-hardcoding rule (ARCHITECTURE.md §6).
+ */
+export const ATTRIBUTE_PIPELINE_NAMESPACE = 'attributes.' as const;
 
 // =============================================================================
 // WEAPON CLASSIFICATION CONSTANTS
@@ -402,6 +457,102 @@ export const EQUIPMENT_SLOT_NONE = 'none' as const;
  *   the alignment is injected as a condition feature instance. They MUST remain
  *   stable across sessions.
  */
+// =============================================================================
+// CONDITION NODE BUILDER — KNOWN @-PATHS AUTOCOMPLETE
+// =============================================================================
+
+/**
+ * All known @-paths from ARCHITECTURE.md §4.3.
+ * Used as a `<datalist>` autocomplete source in `ConditionNodeBuilder.svelte`.
+ *
+ * WHY IN CONSTANTS (not inlined in the component)?
+ *   These are D&D 3.5 pipeline IDs — game-system constants that must not appear
+ *   as string literals in `.svelte` component files (zero-hardcoding rule,
+ *   ARCHITECTURE.md §6). Centralising here allows:
+ *     • The same list to be reused by future validator utilities.
+ *     • Additions/renames to be made in one place.
+ *
+ * Skill paths are dynamic (@skills.<id>.ranks), but listing common SRD skills
+ * here provides adequate autocomplete coverage. The input is always freeform so
+ * GMs can type any custom path not in this list.
+ */
+export const CONDITION_NODE_KNOWN_PATHS: readonly string[] = [
+  // Ability scores
+  '@attributes.stat_strength.totalValue',
+  '@attributes.stat_strength.derivedModifier',
+  '@attributes.stat_strength.baseValue',
+  '@attributes.stat_dexterity.totalValue',
+  '@attributes.stat_dexterity.derivedModifier',
+  '@attributes.stat_dexterity.baseValue',
+  '@attributes.stat_constitution.totalValue',
+  '@attributes.stat_constitution.derivedModifier',
+  '@attributes.stat_constitution.baseValue',
+  '@attributes.stat_intelligence.totalValue',
+  '@attributes.stat_intelligence.derivedModifier',
+  '@attributes.stat_intelligence.baseValue',
+  '@attributes.stat_wisdom.totalValue',
+  '@attributes.stat_wisdom.derivedModifier',
+  '@attributes.stat_wisdom.baseValue',
+  '@attributes.stat_charisma.totalValue',
+  '@attributes.stat_charisma.derivedModifier',
+  '@attributes.stat_charisma.baseValue',
+  // Combat
+  '@combatStats.base_attack_bonus.totalValue',
+  '@combatStats.ac_normal.totalValue',
+  '@combatStats.ac_touch.totalValue',
+  '@combatStats.ac_flat_footed.totalValue',
+  '@combatStats.initiative.totalValue',
+  '@combatStats.grapple.totalValue',
+  '@combatStats.max_hp.totalValue',
+  '@combatStats.speed_land.totalValue',
+  // Saves
+  '@saves.fortitude.totalValue',
+  '@saves.reflex.totalValue',
+  '@saves.will.totalValue',
+  // Level
+  '@characterLevel',
+  '@eclForXp',
+  // Tags
+  '@activeTags',
+  '@equippedWeaponTags',
+  '@targetTags',
+  // Skills (common SRD skills — freeform entry for others)
+  '@skills.skill_balance.ranks',      '@skills.skill_balance.totalValue',
+  '@skills.skill_bluff.ranks',        '@skills.skill_bluff.totalValue',
+  '@skills.skill_climb.ranks',        '@skills.skill_climb.totalValue',
+  '@skills.skill_concentration.ranks','@skills.skill_concentration.totalValue',
+  '@skills.skill_diplomacy.ranks',    '@skills.skill_diplomacy.totalValue',
+  '@skills.skill_disable_device.ranks',
+  '@skills.skill_disguise.ranks',
+  '@skills.skill_escape_artist.ranks',
+  '@skills.skill_handle_animal.ranks',
+  '@skills.skill_heal.ranks',         '@skills.skill_heal.totalValue',
+  '@skills.skill_hide.ranks',         '@skills.skill_hide.totalValue',
+  '@skills.skill_intimidate.ranks',   '@skills.skill_intimidate.totalValue',
+  '@skills.skill_jump.ranks',         '@skills.skill_jump.totalValue',
+  '@skills.skill_knowledge_arcana.ranks',
+  '@skills.skill_knowledge_dungeoneering.ranks',
+  '@skills.skill_knowledge_history.ranks',
+  '@skills.skill_knowledge_local.ranks',
+  '@skills.skill_knowledge_nature.ranks',
+  '@skills.skill_knowledge_planes.ranks',
+  '@skills.skill_knowledge_religion.ranks',
+  '@skills.skill_listen.ranks',       '@skills.skill_listen.totalValue',
+  '@skills.skill_move_silently.ranks',
+  '@skills.skill_open_lock.ranks',
+  '@skills.skill_perform.ranks',
+  '@skills.skill_ride.ranks',
+  '@skills.skill_search.ranks',
+  '@skills.skill_sense_motive.ranks',
+  '@skills.skill_sleight_of_hand.ranks',
+  '@skills.skill_spellcraft.ranks',   '@skills.skill_spellcraft.totalValue',
+  '@skills.skill_spot.ranks',         '@skills.skill_spot.totalValue',
+  '@skills.skill_survival.ranks',     '@skills.skill_survival.totalValue',
+  '@skills.skill_swim.ranks',
+  '@skills.skill_tumble.ranks',       '@skills.skill_tumble.totalValue',
+  '@skills.skill_use_magic_device.ranks',
+] as const;
+
 export const ALIGNMENTS: ReadonlyArray<{ id: string; ui_key: string }> = [
   { id: 'alignment_lawful_good',     ui_key: 'alignment.lawful_good'     },
   { id: 'alignment_neutral_good',    ui_key: 'alignment.neutral_good'    },
@@ -413,3 +564,165 @@ export const ALIGNMENTS: ReadonlyArray<{ id: string; ui_key: string }> = [
   { id: 'alignment_neutral_evil',    ui_key: 'alignment.neutral_evil'    },
   { id: 'alignment_chaotic_evil',    ui_key: 'alignment.chaotic_evil'    },
 ] as const;
+
+/**
+ * ID prefix → feature category mapping.
+ *
+ * Used by `FeatureModal.svelte` as a display fallback when a granted feature
+ * ID is not present in the DataLoader cache (e.g. from a rule source not
+ * currently enabled). The map allows inferring a category badge colour from
+ * the naming convention without embedding D&D term strings in the .svelte
+ * file (zero-hardcoding rule, ARCHITECTURE.md §6).
+ *
+ * Keys are the lowercase ID prefixes that precede an underscore.
+ * Values are the corresponding `FeatureCategory` strings.
+ *
+ * WHY A CONSTANT?
+ *   Centralising these strings here means a rename or new category requires a
+ *   single change in this file rather than a grep across all components. It
+ *   also makes the mapping visible and reviewable as an architectural concern
+ *   rather than buried in display logic.
+ */
+// =============================================================================
+// MAGIC TYPE IDENTIFIERS
+// =============================================================================
+
+/**
+ * Canonical identifier for arcane magic features (wizard, sorcerer, bard spells).
+ *
+ * WHY A CONSTANT (not inlined as `'arcane'` in Grimoire.svelte):
+ *   Magic type names are D&D game-content identifiers that must not appear as
+ *   string literals in `.svelte` component files (zero-hardcoding rule,
+ *   ARCHITECTURE.md §6). Centralising here ensures a future rename (e.g., a
+ *   homebrew-extended magic system) only requires changing this one constant.
+ *
+ * Used by:
+ *   - `Grimoire.svelte`  — badge colour selection in `magicTypeBadgeClass()`
+ *   - Any other component or utility that needs to identify arcane magic features.
+ */
+export const MAGIC_TYPE_ARCANE  = 'arcane'  as const;
+
+/**
+ * Canonical identifier for divine magic features (cleric, druid, paladin spells).
+ * Same rationale as MAGIC_TYPE_ARCANE above.
+ */
+export const MAGIC_TYPE_DIVINE  = 'divine'  as const;
+
+/**
+ * Canonical identifier for psionic power features (psion, wilder, psychic warrior).
+ * Same rationale as MAGIC_TYPE_ARCANE above.
+ */
+export const MAGIC_TYPE_PSIONIC = 'psionic' as const;
+
+// =============================================================================
+// RESOURCE POOL PIPELINE IDs
+// =============================================================================
+
+/**
+ * Pipeline / resource pool ID for Vitality Points (V/WP variant rule, Phase H).
+ *
+ * WHY A CONSTANT (not inlined as `'resources.vitality_points'` in settings/+page.svelte):
+ *   Pipeline IDs are internal system constants that must not appear as string
+ *   literals in `.svelte` template or logic code (zero-hardcoding rule,
+ *   ARCHITECTURE.md §6). Centralising here allows the ID to be renamed once
+ *   without hunting across component files.
+ */
+export const RESOURCE_VITALITY_POINTS_ID = 'resources.vitality_points' as const;
+
+/**
+ * Pipeline / resource pool ID for Wound Points (V/WP variant rule, Phase H).
+ * Same rationale as RESOURCE_VITALITY_POINTS_ID above.
+ */
+export const RESOURCE_WOUND_POINTS_ID = 'resources.wound_points' as const;
+
+/**
+ * Pipeline / resource pool ID for standard Hit Points.
+ * Used in HealthAndXP.svelte and the GM dashboard to access the character's HP pool.
+ * Same rationale as RESOURCE_VITALITY_POINTS_ID above.
+ */
+export const RESOURCE_HP_ID = 'resources.hp' as const;
+
+// =============================================================================
+// COMBAT STAT PIPELINE IDs
+// =============================================================================
+
+/** @see RESOURCE_VITALITY_POINTS_ID for the rationale behind naming all pipeline IDs as constants. */
+
+/** Pipeline ID for the Max Vitality stat (V/WP variant — maximum vitality points pool). */
+export const COMBAT_STAT_MAX_VITALITY_ID = 'combatStats.max_vitality' as const;
+
+/** Pipeline ID for Armor Class (Normal / vs all attacks). */
+export const COMBAT_STAT_AC_NORMAL_ID = 'combatStats.ac_normal' as const;
+
+/** Pipeline ID for Touch Armor Class (vs touch attacks). */
+export const COMBAT_STAT_AC_TOUCH_ID = 'combatStats.ac_touch' as const;
+
+/** Pipeline ID for Flat-Footed Armor Class (when denied Dex bonus). */
+export const COMBAT_STAT_AC_FLAT_FOOTED_ID = 'combatStats.ac_flat_footed' as const;
+
+/** Pipeline ID for Maximum Dexterity Bonus to AC (set by armour — minimum-wins). */
+export const COMBAT_STAT_MAX_DEX_BONUS_ID = 'combatStats.max_dexterity_bonus' as const;
+
+/** Pipeline ID for Initiative (DEX modifier + miscellaneous bonuses). */
+export const COMBAT_STAT_INITIATIVE_ID = 'combatStats.initiative' as const;
+
+/** Pipeline ID for Grapple Check (BAB + STR modifier + size modifier). */
+export const COMBAT_STAT_GRAPPLE_ID = 'combatStats.grapple' as const;
+
+/** Pipeline ID for Fortification percentage (chance to negate a confirmed critical hit). */
+export const COMBAT_STAT_FORTIFICATION_ID = 'combatStats.fortification' as const;
+
+/** Pipeline ID for Arcane Spell Failure percentage (accumulated from armour/shields). */
+export const COMBAT_STAT_ARCANE_SPELL_FAILURE_ID = 'combatStats.arcane_spell_failure' as const;
+
+/** Pipeline ID for Damage Reduction (innate/racial DR — best-wins per bypass group). */
+export const COMBAT_STAT_DAMAGE_REDUCTION_ID = 'combatStats.damage_reduction' as const;
+
+/** Pipeline ID for Land (walking) movement speed in feet. */
+export const COMBAT_STAT_SPEED_LAND_ID = 'combatStats.speed_land' as const;
+
+/** Pipeline ID for Burrow movement speed in feet. */
+export const COMBAT_STAT_SPEED_BURROW_ID = 'combatStats.speed_burrow' as const;
+
+/** Pipeline ID for Climb movement speed in feet. */
+export const COMBAT_STAT_SPEED_CLIMB_ID = 'combatStats.speed_climb' as const;
+
+/** Pipeline ID for Fly movement speed in feet. */
+export const COMBAT_STAT_SPEED_FLY_ID = 'combatStats.speed_fly' as const;
+
+/** Pipeline ID for Swim movement speed in feet. */
+export const COMBAT_STAT_SPEED_SWIM_ID = 'combatStats.speed_swim' as const;
+
+/** Pipeline ID for Fire energy resistance (points of fire damage ignored per hit). */
+export const COMBAT_STAT_RESIST_FIRE_ID = 'combatStats.resist_fire' as const;
+
+/** Pipeline ID for Cold energy resistance. */
+export const COMBAT_STAT_RESIST_COLD_ID = 'combatStats.resist_cold' as const;
+
+/** Pipeline ID for Acid energy resistance. */
+export const COMBAT_STAT_RESIST_ACID_ID = 'combatStats.resist_acid' as const;
+
+/** Pipeline ID for Electricity energy resistance. */
+export const COMBAT_STAT_RESIST_ELECTRICITY_ID = 'combatStats.resist_electricity' as const;
+
+/** Pipeline ID for Sonic energy resistance. */
+export const COMBAT_STAT_RESIST_SONIC_ID = 'combatStats.resist_sonic' as const;
+
+/** Pipeline ID for Spell Resistance (SR — must overcome to affect with spells). */
+export const COMBAT_STAT_SPELL_RESISTANCE_ID = 'combatStats.spell_resistance' as const;
+
+/** Pipeline ID for Power Resistance (PR — psionic equivalent of SR). */
+export const COMBAT_STAT_POWER_RESISTANCE_ID = 'combatStats.power_resistance' as const;
+
+export const FEATURE_ID_CATEGORY_PREFIXES: ReadonlyArray<{ prefix: string; category: string }> = [
+  { prefix: 'language_',       category: 'language'      },
+  { prefix: 'sense_',          category: 'sense'         },
+  { prefix: 'proficiency_',    category: 'proficiency'   },
+  { prefix: 'immunity_',       category: 'immunity'      },
+  { prefix: 'class_feature_',  category: 'class_feature' },
+  { prefix: 'racial_feature_', category: 'racial'        },
+  { prefix: 'feat_',           category: 'feat'          },
+  { prefix: 'spell_',          category: 'spell'         },
+  { prefix: 'item_',           category: 'item'          },
+  { prefix: 'condition_',      category: 'condition'     },
+];

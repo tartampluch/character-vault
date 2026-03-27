@@ -12,12 +12,18 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { IconHealth, IconXP, IconHeal, IconDamage, IconStartTurn, IconEncounterReset, IconLongRest } from '$lib/components/ui/icons';
+  import {
+    RESOURCE_HP_ID,
+    RESOURCE_VITALITY_POINTS_ID,
+    RESOURCE_WOUND_POINTS_ID,
+    COMBAT_STAT_MAX_VITALITY_ID,
+  } from '$lib/utils/constants';
 
   // ── Variant detection ────────────────────────────────────────────────────
   const isVWPMode  = $derived(engine.settings.variantRules?.vitalityWoundPoints === true);
 
   // ── Standard HP pool ─────────────────────────────────────────────────────
-  const hpPool        = $derived(engine.character.resources['resources.hp']);
+  const hpPool        = $derived(engine.character.resources[RESOURCE_HP_ID]);
   const maxHp         = $derived(engine.phase3_maxHp);
   const currentHp     = $derived(hpPool?.currentValue ?? 0);
   const tempHp        = $derived(hpPool?.temporaryValue ?? 0);
@@ -28,9 +34,9 @@
   const tempPercent   = $derived(engine.phase_tempHpPercent);
 
   // ── Vitality / Wound Points pools (Extension H) ──────────────────────────
-  const vpPool     = $derived(engine.character.resources['resources.vitality_points']);
-  const wpPool     = $derived(engine.character.resources['resources.wound_points']);
-  const maxVP      = $derived(vpPool ? (engine.phase3_combatStats['combatStats.max_vitality']?.totalValue ?? 0) : 0);
+  const vpPool     = $derived(engine.character.resources[RESOURCE_VITALITY_POINTS_ID]);
+  const wpPool     = $derived(engine.character.resources[RESOURCE_WOUND_POINTS_ID]);
+  const maxVP      = $derived(vpPool ? (engine.phase3_combatStats[COMBAT_STAT_MAX_VITALITY_ID]?.totalValue ?? 0) : 0);
   const currentVP  = $derived(vpPool?.currentValue ?? 0);
   const currentWP  = $derived(wpPool?.currentValue ?? 0);
   // Max Wound Points = CON score. Use engine.phase_maxWoundPoints to avoid
@@ -169,7 +175,7 @@
           class="w-16 text-center text-xl font-bold rounded border border-border bg-surface px-1 py-0.5 text-red-400 focus:outline-none focus:border-red-400"
           value={currentHp}
           onchange={setCurrentHpDirectly}
-          aria-label="Current HP"
+          aria-label={ui('combat.hp.current_aria', engine.settings.language)}
         />
       </div>
       <span class="text-xl text-text-muted self-center">/</span>
@@ -219,14 +225,14 @@
           placeholder="0"
           min="1"
           class="input w-14 text-center px-1"
-          aria-label="Healing amount"
+          aria-label={ui('combat.hp.heal_amount_aria', engine.settings.language)}
           onkeydown={(e) => e.key === 'Enter' && doHeal()}
         />
         <button
           class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
                  px-2 py-2 bg-green-800/60 text-green-300 hover:bg-green-700/60 transition-colors duration-150"
           onclick={doHeal}
-          aria-label="Apply healing"
+          aria-label={ui('combat.hp.apply_heal_aria', engine.settings.language)}
           type="button"
         >
           <IconHeal size={14} aria-hidden="true" /> {ui('combat.hp.heal', engine.settings.language)}
@@ -241,14 +247,14 @@
           placeholder="0"
           min="1"
           class="input w-14 text-center px-1"
-          aria-label="Damage amount"
+          aria-label={ui('combat.hp.damage_amount_aria', engine.settings.language)}
           onkeydown={(e) => e.key === 'Enter' && doDamage()}
         />
         <button
           class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
                  px-2 py-2 bg-red-800/60 text-red-300 hover:bg-red-700/60 transition-colors duration-150"
           onclick={doDamage}
-          aria-label="Apply damage"
+          aria-label={ui('combat.hp.apply_damage_aria', engine.settings.language)}
           type="button"
         >
           <IconDamage size={14} aria-hidden="true" /> {ui('combat.hp.damage', engine.settings.language)}
@@ -263,14 +269,14 @@
           placeholder="0"
           min="1"
           class="input w-14 text-center px-1"
-          aria-label="Temporary HP amount"
+          aria-label={ui('combat.hp.temp_amount_aria', engine.settings.language)}
           onkeydown={(e) => e.key === 'Enter' && addTempHp()}
         />
         <button
           class="flex-1 flex items-center justify-center gap-1 rounded-md text-sm font-medium
                  px-2 py-2 bg-emerald-800/60 text-emerald-300 hover:bg-emerald-700/60 transition-colors duration-150"
           onclick={addTempHp}
-          aria-label="Add temporary HP"
+          aria-label={ui('combat.hp.add_temp_aria', engine.settings.language)}
           type="button"
         >
           {ui('combat.hp.add_temp', engine.settings.language)}
@@ -426,16 +432,16 @@
         bind:value={xpToAdd}
         placeholder={ui('combat.xp.add_placeholder', engine.settings.language)}
         class="input flex-1 min-w-[8rem]"
-        aria-label="XP to add"
+        aria-label={ui('combat.xp.add_aria', engine.settings.language)}
         onkeydown={(e) => e.key === 'Enter' && addXp()}
       />
-      <button class="btn-secondary" onclick={addXp} aria-label="Award XP" type="button">
+      <button class="btn-secondary" onclick={addXp} aria-label={ui('combat.xp.award_aria', engine.settings.language)} type="button">
         {ui('combat.xp.award', engine.settings.language)}
       </button>
       {#if canLevelUp}
         <button
           class="level-up-btn flex items-center gap-1 px-3 py-2 rounded-md text-sm font-bold text-white"
-          aria-label="Level Up"
+          aria-label={ui('combat.xp.level_up_aria', engine.settings.language)}
           type="button"
         >
           <IconXP size={16} aria-hidden="true" /> {ui('combat.xp.level_up', engine.settings.language)}
