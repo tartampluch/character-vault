@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1671_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-1756_tests-6E9F18?logo=vitest&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -203,7 +203,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`inherentBonus.test.ts`](src/tests/inherentBonus.test.ts) | Tome/Manual inherent bonuses, highest-wins among inherent type |
 | [`intelligentItems.test.ts`](src/tests/intelligentItems.test.ts) | Intelligent item metadata, Ego formula, communication tiers |
 | [`triggerActivation.test.ts`](src/tests/triggerActivation.test.ts) | `"reaction"` / `"passive"` actionTypes, `getReactionFeaturesByTrigger()` |
-| [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting utilities — `getUnitSystem()`, `SUPPORTED_UI_LANGUAGES` integrity, distance/weight per unit system (imperial & metric), modifier sign, currency, dice |
+| [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting and game-math utilities — `computeAbilityModifier()`, `computeIntelligentItemEgo()`, `computeCoinWeight()`, `computeWealthInGP()`, `previewWithTempMod()`, `computeBaseSave()`, `toDisplayPct()`, `getCharacterLevel()`, distance/weight per unit system (imperial & metric), modifier sign, currency, dice, situational labels |
 | [`sessionContext.test.ts`](src/tests/sessionContext.test.ts) | GM / player profile switching, active campaign context |
 | [`storageManager.test.ts`](src/tests/storageManager.test.ts) | localStorage CRUD, polling, async API methods, LinkedEntity depth guard |
 | [`contextKeyFix.test.ts`](src/tests/contextKeyFix.test.ts) | **Regression** — `@combatStats.base_attack_bonus.totalValue` prerequisite paths resolve correctly |
@@ -217,28 +217,28 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (47 test files, 1 671 tests): 93.59% statements · 89.79% branches · 97.35% functions · 94.62% lines**
+**Overall (47 test files, 1 756 tests): 95.90% statements · 91.70% branches · 94.76% functions · 97.34% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
 | `api/userApi.ts` | **100%** | **100%** | Full coverage incl. error fallback branches |
-| `i18n/ui-strings.ts` | **100%** | **100%** | Full UI chrome string coverage |
+| `i18n/ui-strings.ts` | **100%** | **100%** | Full UI chrome string coverage incl. `buildLocalizedString()` |
 | `utils/constants.ts` | **100%** | **100%** | Ability abbreviations |
 | `utils/stackingRules.ts` | **100%** | 94% | D&D 3.5 stacking rules engine |
-| `engine/SessionContext.svelte.ts` | **100%** | **100%** | Session context reactive singleton |
-| `utils/gestaltRules.ts` | 98% | 86% | |
-| `utils/diceEngine.ts` | 98% | 89% | Two uncovered edge-case branches |
-| `engine/DataLoader.ts` | 90% | 86% | Async fetch paths exercised via fetch mock |
-| `utils/formatters.ts` | **100%** | 94% | |
+| `utils/formatters.ts` | **100%** | 96% | All extracted UI helpers: `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, `previewWithTempMod`, `computeBaseSave`, `toDisplayPct`, `getCharacterLevel` |
 | `utils/logicEvaluator.ts` | **100%** | **100%** | |
-| `utils/mathParser.ts` | 88% | 83% | |
-| `engine/StorageManager.ts` | 89% | 86% | Async API methods tested via fetch mock |
+| `utils/gestaltRules.ts` | **100%** | **100%** | |
+| `engine/SessionContext.svelte.ts` | **100%** | **100%** | Session context reactive singleton |
+| `engine/DataLoader.ts` | 99% | 91% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `engine/StorageManager.ts` | 96% | 88% | localStorage CRUD, error catch branches, async API paths |
+| `utils/diceEngine.ts` | 98% | 90% | One defensive edge-case branch |
+| `utils/mathParser.ts` | 89% | 85% | |
 | `engine/HomebrewStore.svelte.ts` | 97% | 97% | |
 | `engine/GameEngine.svelte.ts` | ~17% | ~8% | See note below |
 
 > **Why is `GameEngine.svelte.ts` coverage low?**
 >
-> `GameEngine.svelte.ts` is a 4 054-line Svelte 5 class. Its core logic — `phase0_flatModifiers`, `phase2_attributes`, `phase3_combatStats`, `phase4_skills` — lives inside `$derived` closures. These are **lazy**: they only execute when accessed AND when their reactive dependencies have changed.
+> `GameEngine.svelte.ts` is a 6 600-line Svelte 5 class. Its core logic — `phase0_flatModifiers`, `phase2_attributes`, `phase3_combatStats`, `phase4_skills` — lives inside `$derived` closures. These are **lazy**: they only execute when accessed AND when their reactive dependencies have changed.
 >
 > In Vitest's Node.js environment, the `$derived` phases do run (Svelte 5 runes are framework-agnostic), but they require *data*: a character with active features that exist in the `DataLoader` singleton. Without loading rule files (which requires HTTP or a mocked fetch at test setup), the phases iterate empty feature lists and most branches are never reached.
 >

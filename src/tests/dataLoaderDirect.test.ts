@@ -959,3 +959,283 @@ describe('DataLoader — replace and partial merge via processEntity', () => {
     vi.unstubAllGlobals();
   });
 });
+
+// =============================================================================
+// 10. DataLoader — locale discovery methods
+// =============================================================================
+
+describe('DataLoader — getAvailableLanguages()', () => {
+  it('fresh instance always includes the built-in UI languages (en, fr)', () => {
+    const loader = new DataLoader();
+    const langs = loader.getAvailableLanguages();
+    expect(langs).toContain('en');
+    expect(langs).toContain('fr');
+  });
+
+  it('returns a sorted array', () => {
+    const loader = new DataLoader();
+    const langs = loader.getAvailableLanguages();
+    const sorted = [...langs].sort();
+    expect(langs).toEqual(sorted);
+  });
+
+  it('clearCache() preserves built-in languages', () => {
+    const loader = new DataLoader();
+    loader.clearCache();
+    expect(loader.getAvailableLanguages()).toContain('en');
+    expect(loader.getAvailableLanguages()).toContain('fr');
+  });
+});
+
+describe('DataLoader — loadRuleSources() error path: manifest.json fetch throws', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('logs a warn and continues when fetch("/rules/manifest.json") throws', async () => {
+    const consoleSpy  = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpy2 = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        // Simulate non-JSON response body so DataLoader falls back to manifest
+        return Promise.resolve({ ok: true, headers: { get: () => 'text/html' }, json: () => Promise.resolve([]) });
+      }
+      if (url === '/rules/manifest.json') {
+        // Throw on the manifest fetch to hit line 554
+        return Promise.reject(new Error('manifest network failure'));
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      return Promise.reject(new Error('unexpected url: ' + url));
+    }));
+
+    await loader.loadRuleSources([]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to load manifest.json'),
+      expect.anything(),
+    );
+    consoleSpy.mockRestore();
+    consoleSpy2.mockRestore();
+  });
+});
+
+describe('DataLoader — loadRuleSources() error paths: /api/global-rules', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('logs a warn when /api/global-rules returns non-404 HTTP error (e.g. 401)', async () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]) });
+      if (url === '/api/global-rules') return Promise.resolve({ ok: false, status: 401 });
+      return Promise.reject(new Error('unexpected'));
+    }));
+
+    await loader.loadRuleSources([]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('GET /api/global-rules returned HTTP'),
+      401,
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('logs a debug message and continues when /api/global-rules fetch throws', async () => {
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]) });
+      if (url === '/api/global-rules') return Promise.reject(new Error('no backend'));
+      return Promise.reject(new Error('unexpected'));
+    }));
+
+    // Must not throw — network failure on global-rules is non-fatal
+    await expect(loader.loadRuleSources([])).resolves.toBeUndefined();
+    expect(debugSpy).toHaveBeenCalledWith(
+      expect.stringContaining('GET /api/global-rules unavailable'),
+    );
+    debugSpy.mockRestore();
+  });
+});
+
+describe('DataLoader — #applyCampaignHomebrew() error branches', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('silently ignores malformed JSON passed as campaign homebrew rules', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
+    }));
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // 3rd param is campaignHomebrewRulesJson; pass invalid JSON
+    await loader.loadRuleSources([], undefined, '{{not json at all}}');
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to parse campaign homebrew rules JSON'),
+      expect.anything(),
+    );
+    expect(loader.getAllFeatures()).toHaveLength(0);
+    warnSpy.mockRestore();
+    vi.unstubAllGlobals();
+  });
+
+  it('silently ignores a valid JSON value that is not an array (e.g. an object)', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
+    }));
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // 3rd param: a JSON object (not an array) — the non-array guard fires
+    await loader.loadRuleSources([], undefined, JSON.stringify({ id: 'feat_foo' }));
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('not a JSON array'),
+    );
+    warnSpy.mockRestore();
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('DataLoader — object-keyed config table normalisation (line 770)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('normalises an object-keyed config table data field to an array', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
+    }));
+
+    // 3rd param: campaign homebrew — inject a config table with object-keyed data
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        tableId: 'config_test_object_keyed',
+        ruleSource: 'srd_core',
+        data: {
+          row_a: { key: 'A', value: 1 },
+          row_b: { key: 'B', value: 2 },
+        },
+      },
+    ]));
+
+    const table = loader.getConfigTable('config_test_object_keyed');
+    expect(table).toBeDefined();
+    // After normalisation, data should be an array of the object's values
+    expect(Array.isArray(table!.data)).toBe(true);
+    expect(table!.data).toHaveLength(2);
+    vi.unstubAllGlobals();
+  });
+});
+
+describe('DataLoader — getHomebrewRules("global") branch', () => {
+  it('returns an empty array when no global rule sources are registered', () => {
+    const loader = new DataLoader();
+    // No files loaded → _globalRuleSourceIds is empty
+    expect(loader.getHomebrewRules('global')).toEqual([]);
+  });
+
+  it('returns only features whose ruleSource is tracked as a global source', () => {
+    const loader = new DataLoader();
+    // Directly populate the cache with two features from different sources
+    const globalFeat  = makeFeature('feat_global',   'my_global_rules');
+    const campaignFeat = makeFeature('feat_campaign', 'user_homebrew');
+    loader.cacheFeature(globalFeat);
+    loader.cacheFeature(campaignFeat);
+
+    // Manually register one ruleSource as "global"
+    (loader as unknown as { _globalRuleSourceIds: Set<string> })
+      ._globalRuleSourceIds.add('my_global_rules');
+
+    const results = loader.getHomebrewRules('global');
+    expect(results).toHaveLength(1);
+    expect(results[0].id).toBe('feat_global');
+  });
+});
+
+describe('DataLoader — loadExternalLocales() and getLocaleDisplayName()', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('adds community language codes to available languages on success', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([
+        { code: 'de', language: 'Deutsch', unitSystem: 'metric' },
+        { code: 'es', language: 'Español', unitSystem: 'imperial' },
+      ]),
+    }));
+
+    await loader.loadExternalLocales();
+
+    const langs = loader.getAvailableLanguages();
+    expect(langs).toContain('de');
+    expect(langs).toContain('es');
+  });
+
+  it('getLocaleDisplayName() returns the self-name provided by the API', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([
+        { code: 'de', language: 'Deutsch', unitSystem: 'metric' },
+      ]),
+    }));
+
+    await loader.loadExternalLocales();
+    expect(loader.getLocaleDisplayName('de')).toBe('Deutsch');
+  });
+
+  it('getLocaleDisplayName() returns undefined for codes not in external locales', () => {
+    const loader = new DataLoader();
+    // No fetch call — external locales are empty
+    expect(loader.getLocaleDisplayName('de')).toBeUndefined();
+    expect(loader.getLocaleDisplayName('en')).toBeUndefined(); // en is built-in, not external
+  });
+
+  it('silently ignores a non-ok response (offline mode)', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+    }));
+
+    // Must not throw; available languages remain unchanged
+    await expect(loader.loadExternalLocales()).resolves.toBeUndefined();
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('silently ignores a network error (offline mode)', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
+
+    await expect(loader.loadExternalLocales()).resolves.toBeUndefined();
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('clearCache() preserves external locales so they survive campaign switches', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([
+        { code: 'de', language: 'Deutsch', unitSystem: 'metric' },
+      ]),
+    }));
+
+    await loader.loadExternalLocales();
+    loader.clearCache(); // Simulates campaign switch
+
+    // External locale code must survive the clear
+    expect(loader.getAvailableLanguages()).toContain('de');
+    expect(loader.getLocaleDisplayName('de')).toBe('Deutsch');
+  });
+});

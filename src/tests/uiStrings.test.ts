@@ -42,9 +42,11 @@ import {
   LANG_UNIT_SYSTEM,
   registerLangUnitSystem,
   loadUiLocale,
+  loadUiLocaleFromObject,
   UI_STRINGS,
   ui,
   uiN,
+  buildLocalizedString,
 } from '$lib/i18n/ui-strings';
 import type { UnitSystem } from '$lib/types/i18n';
 
@@ -593,5 +595,69 @@ describe('uiN() — count-aware plural resolution', () => {
     expect(uiN('settings.rule_sources.files', 1, 'es')).toMatch(/file/i);
     // With {n} key: 'es' not loaded → UI_STRINGS → count=5 → 'other' → '5 override entries'
     expect(uiN('settings.overrides.entry', 5, 'es')).toBe('5 override entries');
+  });
+});
+
+// =============================================================================
+// 8. buildLocalizedString() — constructs LocalizedString from a ui-strings key
+// =============================================================================
+
+describe('buildLocalizedString() — build LocalizedString from a ui-strings key', () => {
+  // Pre-load a synthetic Italian ('it') locale so we can verify that loaded
+  // locales are included in the returned object.
+  beforeAll(() => {
+    loadUiLocaleFromObject('it', {
+      'lang.en':         'Inglese',
+      'combat.hp.title': 'Punti ferita',
+    });
+  });
+
+  it('returns an object with at least an "en" key for a known string key', () => {
+    const result = buildLocalizedString('lang.en');
+    expect(typeof result).toBe('object');
+    expect(result.en).toBe('English');
+  });
+
+  it('includes loaded-locale translations when the key exists in a loaded locale', () => {
+    // 'it' was injected above with 'lang.en' → 'Inglese'
+    const result = buildLocalizedString('lang.en');
+    expect(result.it).toBe('Inglese');
+  });
+
+  it('omits loaded-locale code when that code does not have the key', () => {
+    // 'it' locale has 'lang.en' but NOT 'lang.label'
+    const result = buildLocalizedString('lang.label');
+    expect(result.en).toBeTruthy(); // English baseline is always present
+    expect(result.it).toBeUndefined();
+  });
+
+  it('falls back to the key itself as the "en" value when the key is missing from UI_STRINGS', () => {
+    // An entirely unknown key produces { en: key } as graceful fallback.
+    const result = buildLocalizedString('totally.unknown.key.xyz');
+    expect(result.en).toBe('totally.unknown.key.xyz');
+  });
+
+  it('falls back to the key for a plural-object value (not a plain string)', () => {
+    // Plural keys are objects like { one: '…', other: '…' }.
+    // buildLocalizedString() expects plain strings; for plurals it falls back to the key.
+    // 'settings.rule_sources.files' is a plural key in UI_STRINGS.
+    const result = buildLocalizedString('settings.rule_sources.files');
+    expect(result.en).toBe('settings.rule_sources.files');
+  });
+});
+
+// =============================================================================
+// 9. loadUiLocaleFromObject() — 'en' guard branch
+// =============================================================================
+
+describe('loadUiLocaleFromObject() — "en" is a no-op (English is always built-in)', () => {
+  it('calling with code "en" does not modify _loadedLocales (guard branch)', () => {
+    // The function has an early return for 'en' to protect the bundled baseline.
+    // This test just verifies it doesn't throw and has no observable side-effect.
+    const enBefore = ui('lang.en', 'en');
+    loadUiLocaleFromObject('en', { 'lang.en': 'OVERRIDDEN' });
+    const enAfter = ui('lang.en', 'en');
+    // English should remain unchanged — the injection was silently ignored.
+    expect(enAfter).toBe(enBefore);
   });
 });

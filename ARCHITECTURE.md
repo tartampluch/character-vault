@@ -2420,14 +2420,60 @@ export class GameEngine {
 
 Language preference is persisted at user level (not campaign level) via `storageManager.saveUserLanguage()` / `loadUserLanguage()`.
 
-### 11.6. UI Chrome Strings
+### 11.6. UI Chrome Strings and Locale Files
 
-All static UI text is stored in `src/lib/i18n/ui-strings.ts`. Community codes not in `UI_STRINGS` fall back to English.
+**Two-tier translation architecture:**
+
+| Tier | What | File location | Format |
+|---|---|---|---|
+| UI chrome | Buttons, labels, nav, error messages | `static/locales/{code}.json` | Flat JSON |
+| Game content | Feature names, descriptions | `static/rules/**/*.json` | `LocalizedString` objects |
+
+**English baseline** is bundled at build time in `src/lib/i18n/ui-strings.ts` as `UI_STRINGS`. Every UI string must have an English entry here.
+
+**Other languages** are loaded lazily from `static/locales/{code}.json`. French ships with the app (`fr.json`). Community translators add new files; no code change is needed.
+
+#### Locale file format (`static/locales/{code}.json`)
+
+```json
+{
+  "$meta": {
+    "language": "Français",
+    "code": "fr",
+    "unitSystem": "metric",
+    "author": "Character Vault core team",
+    "version": 1
+  },
+  "login.title":        "Connectez-vous pour continuer",
+  "combat.hp.title":    "Points de vie",
+  "settings.rule_sources.files": {
+    "one":   "1 fichier",
+    "other": "{n} fichiers"
+  }
+}
+```
+
+The `$meta` block is stripped by `loadUiLocale()` before caching. It is never exposed to the rest of the app. `unitSystem` in `$meta` registers the language's unit system via `registerLangUnitSystem()` so distance/weight formatting works correctly without any bundled code change.
+
+#### Resolution chain
 
 ```typescript
-ui('combat.hp.title', 'fr')  // → "Points de vie"
-ui('combat.hp.title', 'es')  // → "Hit Points" (falls back to English)
+ui('combat.hp.title', 'fr')  // → "Points de vie"  (from fr.json)
+ui('combat.hp.title', 'es')  // → "Hit Points"     (English fallback, es not loaded)
+ui('nonexistent.key',  'en') // → "nonexistent.key" + console.warn
 ```
+
+`uiN(key, count, lang)` handles plural forms via `Intl.PluralRules`:
+```typescript
+uiN('settings.rule_sources.files', 1, 'fr')  // → "1 fichier"
+uiN('settings.rule_sources.files', 5, 'fr')  // → "5 fichiers"
+```
+
+#### Discovery mechanism
+
+`GET /api/locales` (served by `UiLocalesController.php`) scans `static/locales/*.json` and returns `[{ code, language, unitSystem }]`. `DataLoader.loadExternalLocales()` calls this on startup and registers each code in `_availableLanguages` so it appears in the language dropdown.
+
+`buildLocalizedString(key)` constructs a `LocalizedString` object from a `UI_STRINGS` key, including all currently loaded locale translations. Used by the engine to create localized `sourceName` strings for dynamically generated modifiers (e.g., synergy bonuses).
 
 ### 11.7. GM-Only Internal IDs
 

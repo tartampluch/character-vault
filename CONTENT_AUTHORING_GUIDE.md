@@ -2392,6 +2392,81 @@ English is **always required** — it is the universal fallback. Other languages
 
 To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPPORTED_UI_LANGUAGES` and translate all `UI_STRINGS` keys.
 
+### UI Chrome Locale Files
+
+**Two separate translation systems exist in Character Vault:**
+
+| System | What it translates | Where it lives | Format |
+|---|---|---|---|
+| **Rule content** | `label`, `description` on Features | JSON rule files (`static/rules/`) | `LocalizedString` objects |
+| **UI chrome** | Buttons, labels, navigation, error messages | Locale files (`static/locales/`) | Flat JSON key-value file |
+
+**UI chrome locale files** live at `static/locales/{code}.json`. French ships with the app as `static/locales/fr.json`. Community translators can contribute by dropping additional locale files in the same directory.
+
+#### Locale file format
+
+```json
+{
+  "$meta": {
+    "language": "Français",
+    "code": "fr",
+    "unitSystem": "metric",
+    "author": "Character Vault core team",
+    "version": 1,
+    "notes": "Traduction française officielle."
+  },
+
+  "login.title":      "Connectez-vous pour continuer",
+  "login.username":   "Identifiant",
+  "nav.campaigns":    "Campagnes",
+  "combat.hp.title":  "Points de vie",
+
+  "settings.rule_sources.files": {
+    "one":   "1 fichier",
+    "other": "{n} fichiers"
+  }
+}
+```
+
+**Key rules:**
+
+| Rule | Detail |
+|---|---|
+| `$meta` block | Required. Declares `language` (self-name, e.g. "Français"), `code` (BCP-47, e.g. `"fr"`), `unitSystem` (`"imperial"` or `"metric"`). The engine strips `$meta` before caching. |
+| Simple strings | Plain key-value pairs. `{placeholder}` syntax for variable substitution (caller does `.replace('{x}', value)`). |
+| Plural strings | Object with CLDR plural category keys (`one`, `other`, and optionally `few`, `many`, `zero`). Use `uiN(key, count, lang)` at the call site. |
+| `{n}` in plurals | Replaced with the count value by `uiN()`. |
+| Fallback | Any key absent from the locale file falls back to the English baseline in `UI_STRINGS`. UI never breaks from a missing translation. |
+
+#### Loading mechanism
+
+Locale files are loaded lazily via `GET /api/locales` (served by `UiLocalesController.php`). The endpoint returns an array of `{ code, language, unitSystem }` descriptors. `DataLoader.loadExternalLocales()` calls this at app startup and registers each code in the language dropdown.
+
+The `ui(key, lang)` function resolves strings:
+1. Loaded locale for `lang` (if the locale file was fetched)
+2. English baseline in `UI_STRINGS` (always available, bundled at build time)
+3. The raw key itself (fallback sentinel — logs a `console.warn`)
+
+The `uiN(key, count, lang)` function resolves plurals using `Intl.PluralRules` for automatic CLDR plural category selection.
+
+#### Adding a community locale
+
+1. Create `static/locales/{code}.json` with the `$meta` block and translations.
+2. Deploy the file to the server — no code change required.
+3. On the next page load, `GET /api/locales` returns it and the language appears in the dropdown.
+4. Any UI key without a translation silently falls back to English.
+
+#### Testing locale behavior
+
+In Vitest, use the `loadUiLocaleFromObject(code, translations)` helper (exported from `ui-strings.ts`) to inject locale data without an HTTP fetch:
+
+```typescript
+import { loadUiLocaleFromObject, ui } from '$lib/i18n/ui-strings';
+
+loadUiLocaleFromObject('it', { 'combat.hp.title': 'Punti ferita' });
+expect(ui('combat.hp.title', 'it')).toBe('Punti ferita');
+```
+
 ### Unit Conversion
 
 All rule values are stored in **imperial units** (feet, pounds). The display layer converts automatically based on the **unit system** of the active language:

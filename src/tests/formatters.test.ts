@@ -34,6 +34,14 @@ import {
   getUnitSystem,
   formatSituationalContext,
   SITUATIONAL_LABELS,
+  computeAbilityModifier,
+  computeIntelligentItemEgo,
+  computeCoinWeight,
+  computeWealthInGP,
+  previewWithTempMod,
+  computeBaseSave,
+  toDisplayPct,
+  getCharacterLevel,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
 import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, UI_STRINGS, loadUiLocaleFromObject } from '$lib/i18n/ui-strings';
@@ -593,5 +601,295 @@ describe('formatSituationalContext() — localized situational labels', () => {
     // This covers the `entry['en'] ?? ctx` branch on line 473.
     expect(formatSituationalContext('vs_giant', 'de')).toBe('vs. Giants');
     expect(formatSituationalContext('tracking', 'de')).toBe('While tracking');
+  });
+});
+
+// =============================================================================
+// 14. computeAbilityModifier() — D&D 3.5 ability score → modifier formula
+// =============================================================================
+
+describe('computeAbilityModifier() — floor((score − 10) / 2)', () => {
+  // D&D 3.5 SRD: modifier = floor((score − 10) / 2)
+  it('10 → +0 (neutral, most common default)', () => {
+    expect(computeAbilityModifier(10)).toBe(0);
+  });
+
+  it('11 → +0 (same floor as 10)', () => {
+    expect(computeAbilityModifier(11)).toBe(0);
+  });
+
+  it('18 → +4 (high STR like starting fighter with racial bonus)', () => {
+    expect(computeAbilityModifier(18)).toBe(4);
+  });
+
+  it('8 → −1 (slightly below average)', () => {
+    expect(computeAbilityModifier(8)).toBe(-1);
+  });
+
+  it('3 → −4 (minimum possible ability score)', () => {
+    expect(computeAbilityModifier(3)).toBe(-4);
+  });
+
+  it('20 → +5 (common for boosted primary stat)', () => {
+    expect(computeAbilityModifier(20)).toBe(5);
+  });
+
+  it('30 → +10 (epic-level or god-touched score)', () => {
+    expect(computeAbilityModifier(30)).toBe(10);
+  });
+
+  it('floors correctly for odd scores (e.g. 15 → +2, not +2.5)', () => {
+    expect(computeAbilityModifier(15)).toBe(2);
+    expect(computeAbilityModifier(13)).toBe(1);
+    expect(computeAbilityModifier(9)).toBe(-1);
+    expect(computeAbilityModifier(7)).toBe(-2);
+  });
+});
+
+// =============================================================================
+// 15. computeIntelligentItemEgo() — DMG Chapter 8 Ego formula
+// =============================================================================
+
+describe('computeIntelligentItemEgo() — SRD Ego score formula', () => {
+  // Base fixture: INT 12 (+1), WIS 12 (+1), CHA 12 (+1) = 3 ability mods
+  function baseData(overrides: Partial<Parameters<typeof computeIntelligentItemEgo>[0]> = {}) {
+    return {
+      intelligenceScore: 12,
+      wisdomScore:       12,
+      charismaScore:     12,
+      communication:     'speech',
+      lesserPowers:      0,
+      greaterPowers:     0,
+      specialPurpose:    null,
+      dedicatedPower:    null,
+      ...overrides,
+    };
+  }
+
+  it('base ability mods only: INT+1, WIS+1, CHA+1 = Ego 3', () => {
+    expect(computeIntelligentItemEgo(baseData())).toBe(3);
+  });
+
+  it('each lesser power adds +1 Ego', () => {
+    expect(computeIntelligentItemEgo(baseData({ lesserPowers: 2 }))).toBe(5);
+  });
+
+  it('each greater power adds +2 Ego', () => {
+    expect(computeIntelligentItemEgo(baseData({ greaterPowers: 3 }))).toBe(9);
+  });
+
+  it('telepathy communication adds +1 Ego', () => {
+    expect(computeIntelligentItemEgo(baseData({ communication: 'telepathy' }))).toBe(4);
+  });
+
+  it('special purpose + dedicated power adds +4 Ego', () => {
+    expect(computeIntelligentItemEgo(baseData({
+      specialPurpose: 'Slay undead',
+      dedicatedPower: '+4 to attacks vs undead',
+    }))).toBe(7);
+  });
+
+  it('special purpose WITHOUT dedicated power does NOT add the bonus', () => {
+    // The +4 bonus requires BOTH fields to be non-null.
+    expect(computeIntelligentItemEgo(baseData({
+      specialPurpose: 'Slay undead',
+      dedicatedPower: null,
+    }))).toBe(3);
+  });
+
+  it('full high-tier item: telepathy + 2 lesser + 1 greater + purpose/power', () => {
+    // INT 17 (+3), WIS 14 (+2), CHA 10 (+0) = 5 ability mods
+    // + telepathy 1 + lesser 2 + greater 2 + purpose 4 = 14
+    expect(computeIntelligentItemEgo({
+      intelligenceScore: 17,
+      wisdomScore:       14,
+      charismaScore:     10,
+      communication:     'telepathy',
+      lesserPowers:      2,
+      greaterPowers:     1,
+      specialPurpose:    'Slay undead',
+      dedicatedPower:    '+4 to attacks vs undead',
+    })).toBe(14);
+  });
+
+  it('floors at 0 when all stats are very low (minimum Ego = 0)', () => {
+    // INT 3 (−4), WIS 3 (−4), CHA 3 (−4) = −12 → clamped to 0
+    expect(computeIntelligentItemEgo(baseData({
+      intelligenceScore: 3,
+      wisdomScore:       3,
+      charismaScore:     3,
+    }))).toBe(0);
+  });
+});
+
+// =============================================================================
+// 16. computeCoinWeight() — 50 coins = 1 lb (SRD encumbrance rule)
+// =============================================================================
+
+describe('computeCoinWeight() — 50 coins = 1 lb', () => {
+  it('50 coins of a single denomination = 1 lb', () => {
+    expect(computeCoinWeight(50, 0, 0, 0)).toBe(1);
+    expect(computeCoinWeight(0, 0, 50, 0)).toBe(1);
+    expect(computeCoinWeight(0, 0, 0, 50)).toBe(1);
+  });
+
+  it('0 coins = 0 lbs', () => {
+    expect(computeCoinWeight(0, 0, 0, 0)).toBe(0);
+  });
+
+  it('mixed denominations add up: 100 cp + 100 gp = 200 coins = 4 lbs', () => {
+    expect(computeCoinWeight(100, 0, 100, 0)).toBe(4);
+  });
+
+  it('floors fractional pounds: 49 coins → 0 lb', () => {
+    expect(computeCoinWeight(49, 0, 0, 0)).toBe(0);
+  });
+
+  it('typical adventurer coin purse: 10 gp, 5 sp, 20 cp = 35 coins → 0 lb', () => {
+    expect(computeCoinWeight(20, 5, 10, 0)).toBe(0);
+  });
+
+  it('large treasure hoard: 500 gp = 10 lbs', () => {
+    expect(computeCoinWeight(0, 0, 500, 0)).toBe(10);
+  });
+});
+
+// =============================================================================
+// 17. computeWealthInGP() — D&D 3.5 exchange rates
+// =============================================================================
+
+describe('computeWealthInGP() — exchange rate: 100cp=1gp, 10sp=1gp, 1pp=10gp', () => {
+  it('100 cp = 1 gp', () => {
+    expect(computeWealthInGP(100, 0, 0, 0)).toBeCloseTo(1.0);
+  });
+
+  it('10 sp = 1 gp', () => {
+    expect(computeWealthInGP(0, 10, 0, 0)).toBeCloseTo(1.0);
+  });
+
+  it('1 gp = 1 gp', () => {
+    expect(computeWealthInGP(0, 0, 1, 0)).toBe(1.0);
+  });
+
+  it('1 pp = 10 gp', () => {
+    expect(computeWealthInGP(0, 0, 0, 1)).toBe(10.0);
+  });
+
+  it('mixed coins: 200cp + 30sp + 5gp + 1pp = 2 + 3 + 5 + 10 = 20 gp', () => {
+    expect(computeWealthInGP(200, 30, 5, 1)).toBeCloseTo(20.0);
+  });
+
+  it('zero coins = 0 gp', () => {
+    expect(computeWealthInGP(0, 0, 0, 0)).toBe(0.0);
+  });
+});
+
+// =============================================================================
+// 18. previewWithTempMod() — temporary ability modifier preview (Abilities tab)
+// =============================================================================
+
+describe('previewWithTempMod() — UI preview for temporary ability adjustment', () => {
+  it('adds a positive temporary bonus to the base total', () => {
+    // e.g. STR 14 (base) + Belt of STR +4 (temp preview) = 18
+    expect(previewWithTempMod(14, 4)).toBe(18);
+  });
+
+  it('adds a negative temporary mod (ability damage preview)', () => {
+    expect(previewWithTempMod(14, -4)).toBe(10);
+  });
+
+  it('zero temp modifier returns base total unchanged', () => {
+    expect(previewWithTempMod(20, 0)).toBe(20);
+  });
+
+  it('works with base total of 0', () => {
+    expect(previewWithTempMod(0, 5)).toBe(5);
+  });
+});
+
+// =============================================================================
+// 19. computeBaseSave() — isolate class-progression save from ability mod
+// =============================================================================
+
+describe('computeBaseSave() — base save = totalBonus − abilityMod', () => {
+  it('Fighter 3 Fortitude: total +5, CON +2 → base +3', () => {
+    // Good save: +3 at level 3. CON +2 brings total to +5.
+    expect(computeBaseSave(5, 2)).toBe(3);
+  });
+
+  it('negative CON mod: total −1, CON −2 → base +1', () => {
+    expect(computeBaseSave(-1, -2)).toBe(1);
+  });
+
+  it('zero ability mod: total equals base save', () => {
+    expect(computeBaseSave(4, 0)).toBe(4);
+  });
+
+  it('same total and ability mod: base save = 0 (no class progression)', () => {
+    expect(computeBaseSave(3, 3)).toBe(0);
+  });
+});
+
+// =============================================================================
+// 20. toDisplayPct() — progress-bar percentage clamp (0–100, no div-by-zero)
+// =============================================================================
+
+describe('toDisplayPct() — percentage clamp [0, 100], div-by-zero safe', () => {
+  it('50 of 100 = 50%', () => {
+    expect(toDisplayPct(50, 100)).toBe(50);
+  });
+
+  it('0 of 100 = 0%', () => {
+    expect(toDisplayPct(0, 100)).toBe(0);
+  });
+
+  it('100 of 100 = 100%', () => {
+    expect(toDisplayPct(100, 100)).toBe(100);
+  });
+
+  it('value > max is clamped to 100% (overflow)', () => {
+    expect(toDisplayPct(120, 100)).toBe(100);
+  });
+
+  it('negative value is clamped to 0% (underflow)', () => {
+    expect(toDisplayPct(-10, 100)).toBe(0);
+  });
+
+  it('max ≤ 0 returns 0% to prevent division by zero', () => {
+    expect(toDisplayPct(50, 0)).toBe(0);
+    expect(toDisplayPct(50, -5)).toBe(0);
+  });
+
+  it('3 PP remaining of 7 max PP ≈ 42.86%', () => {
+    const result = toDisplayPct(3, 7);
+    expect(result).toBeCloseTo(42.86, 1);
+  });
+});
+
+// =============================================================================
+// 21. getCharacterLevel() — sum of classLevels (CharacterCard / GM Dashboard)
+// =============================================================================
+
+describe('getCharacterLevel() — sum of classLevels record (excludes LA)', () => {
+  it('empty record = level 0', () => {
+    expect(getCharacterLevel({})).toBe(0);
+  });
+
+  it('single class: Fighter 5 = level 5', () => {
+    expect(getCharacterLevel({ class_fighter: 5 })).toBe(5);
+  });
+
+  it('two-class multiclass: Fighter 3 / Rogue 2 = level 5', () => {
+    expect(getCharacterLevel({ class_fighter: 3, class_rogue: 2 })).toBe(5);
+  });
+
+  it('three-class multiclass: Fighter 3 / Monk 3 / Wizard 1 = level 7', () => {
+    expect(getCharacterLevel({ class_fighter: 3, class_monk: 3, class_wizard: 1 })).toBe(7);
+  });
+
+  it('Level Adjustment (LA) is stored separately — classLevels contains only class levels', () => {
+    // A Drow Rogue 5 (LA +2) still has classLevels = { class_rogue: 5 } → level 5.
+    // The +2 LA lives on character.levelAdjustment, NOT in classLevels.
+    expect(getCharacterLevel({ class_rogue: 5 })).toBe(5);
   });
 });

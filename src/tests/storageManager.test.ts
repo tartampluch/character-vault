@@ -793,3 +793,228 @@ describe('debounce() — call deferral helper', () => {
     vi.useRealTimers();
   });
 });
+
+// =============================================================================
+// Additional coverage for uncovered branches
+// =============================================================================
+
+/**
+ * Creates a localStorage mock that:
+ *  - PASSES the availability check (setItem for '__test__' key succeeds),
+ *  - THROWS on setItem/getItem for any key matching `failKey`.
+ * This ensures `isAvailable = true` in the StorageManager so catch blocks
+ * inside the actual operations are reachable.
+ */
+function createThrowingMock(failKey: string, mode: 'setItem' | 'getItem' | 'both' = 'setItem') {
+  const store = new Map<string, string>();
+  return {
+    getItem: (key: string) => {
+      if ((mode === 'getItem' || mode === 'both') && key === failKey) {
+        throw new Error('SecurityError');
+      }
+      return store.get(key) ?? null;
+    },
+    setItem: (key: string, value: string) => {
+      if ((mode === 'setItem' || mode === 'both') && key === failKey) {
+        throw new Error('QuotaExceededError');
+      }
+      store.set(key, value);
+    },
+    removeItem: (key: string) => { store.delete(key); },
+    clear:      () => { store.clear(); },
+    key:        (i: number) => Array.from(store.keys())[i] ?? null,
+    get length() { return store.size; },
+  };
+}
+
+describe('StorageManager — saveCharacter() / deleteCharacter() catch branches', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('saveCharacter() returns false when localStorage.setItem throws for the character key', () => {
+    vi.stubGlobal('window', {});
+    // Throw specifically on character data keys (cv_character_*) but allow __test__ and index
+    const store = new Map<string, string>();
+    vi.stubGlobal('localStorage', {
+      getItem:    (k: string) => store.get(k) ?? null,
+      setItem:    (k: string, v: string) => {
+        if (k.startsWith('cv_character_') && k !== 'cv_character_index') {
+          throw new Error('QuotaExceededError');
+        }
+        store.set(k, v);
+      },
+      removeItem: (k: string) => { store.delete(k); },
+      clear:      () => { store.clear(); },
+      key:        (i: number) => Array.from(store.keys())[i] ?? null,
+      get length() { return store.size; },
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    // Use a properly-shaped character so validateLinkDepth doesn't throw before setItem
+    const char = createEmptyCharacter('char_test', 'Test Char');
+    const result = sm.saveCharacter(char);
+    expect(result).toBe(false);
+    warnSpy.mockRestore();
+  });
+
+  it('deleteCharacter() returns false when localStorage operations throw', () => {
+    vi.stubGlobal('window', {});
+    const store = new Map<string, string>([
+      ['cv_character_index', JSON.stringify(['char_del'])],
+      ['cv_character_char_del', JSON.stringify({ id: 'char_del' })],
+    ]);
+    vi.stubGlobal('localStorage', {
+      getItem:    (k: string) => store.get(k) ?? null,
+      setItem:    (k: string, _v: string) => {
+        if (k === 'cv_character_index') throw new Error('StorageError'); // throw on index update
+        store.set(k, _v);
+      },
+      removeItem: (k: string) => { store.delete(k); },
+      clear:      () => { store.clear(); },
+      key:        (i: number) => Array.from(store.keys())[i] ?? null,
+      get length() { return store.size; },
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    const result = sm.deleteCharacter('char_del');
+    expect(result).toBe(false);
+    warnSpy.mockRestore();
+  });
+});
+
+describe('StorageManager — saveSettings() / loadSettings() catch branches', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('saveSettings() returns false when localStorage.setItem throws for the settings key', () => {
+    vi.stubGlobal('window', {});
+    // The mock passes the __test__ availability check but throws for cv_campaign_settings
+    vi.stubGlobal('localStorage', createThrowingMock('cv_campaign_settings', 'setItem'));
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    const result = sm.saveSettings({} as Parameters<typeof sm.saveSettings>[0]);
+    expect(result).toBe(false);
+    warnSpy.mockRestore();
+  });
+
+  it('loadSettings() returns defaults when JSON parsing throws (corrupt data)', () => {
+    vi.stubGlobal('window', {});
+    const store = new Map<string, string>([['cv_campaign_settings', '{{invalid json}}']]);
+    vi.stubGlobal('localStorage', {
+      getItem:    (k: string) => store.get(k) ?? null,
+      setItem:    (k: string, v: string) => { store.set(k, v); },
+      removeItem: (k: string) => { store.delete(k); },
+      clear:      () => { store.clear(); },
+      key:        (i: number) => Array.from(store.keys())[i] ?? null,
+      get length() { return store.size; },
+    });
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    const settings = sm.loadSettings();
+    expect(settings).toBeDefined();
+    expect(settings.language).toBe('en');
+    warnSpy.mockRestore();
+  });
+
+  it('listCharacterIds() returns [] when JSON parsing of the index throws', () => {
+    vi.stubGlobal('window', {});
+    const store = new Map<string, string>([['cv_character_index', '{{not valid json}}']]);
+    vi.stubGlobal('localStorage', {
+      getItem:    (k: string) => store.get(k) ?? null,
+      setItem:    (k: string, v: string) => { store.set(k, v); },
+      removeItem: (k: string) => { store.delete(k); },
+      clear:      () => { store.clear(); },
+      key:        (i: number) => Array.from(store.keys())[i] ?? null,
+      get length() { return store.size; },
+    });
+    const sm = new StorageManager();
+    expect(sm.listCharacterIds()).toEqual([]);
+  });
+});
+
+describe('StorageManager — saveUserLanguage() catch branch', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('does not throw when localStorage.setItem fails for saveUserLanguage', () => {
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('localStorage', createThrowingMock('cv_user_language', 'setItem'));
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sm = new StorageManager();
+    // Must not throw; the error is swallowed with a console.warn
+    expect(() => sm.saveUserLanguage('fr')).not.toThrow();
+    warnSpy.mockRestore();
+  });
+});
+
+describe('StorageManager — saveActiveCharacterId(null) branch', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('localStorage', createLocalStorageMock());
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('saveActiveCharacterId(null) removes the key from localStorage', () => {
+    const sm = new StorageManager();
+    // First save a non-null ID
+    sm.saveActiveCharacterId('char_001');
+    expect(sm.loadActiveCharacterId()).toBe('char_001');
+
+    // Passing null must remove it
+    sm.saveActiveCharacterId(null);
+    expect(sm.loadActiveCharacterId()).toBeNull();
+  });
+});
+
+describe('StorageManager — loadUserLanguage() catch branch', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('returns "en" when localStorage.getItem throws', () => {
+    // Simulate a broken localStorage (e.g. QuotaExceededError on read in
+    // some privacy-mode browsers).
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('localStorage', {
+      getItem:    () => { throw new Error('Security error'); },
+      setItem:    () => {},
+      removeItem: () => {},
+      clear:      () => {},
+      key:        () => null,
+      length:     0,
+    });
+
+    const sm = new StorageManager();
+    expect(sm.loadUserLanguage()).toBe('en');
+  });
+});
+
+describe('StorageManager — polling failure branch (isApiReachable = false)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+  });
+
+  it('sets isApiReachable to false when the poll fetch rejects', async () => {
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('localStorage', createLocalStorageMock());
+    // Reject on every call — simulates a downed server.
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network down')));
+
+    const sm = new StorageManager();
+    sm.startPolling('campaign_1', () => {}, () => {}, 60_000);
+
+    // startPolling calls poll() immediately (synchronously schedules the async work).
+    // Flush all pending micro-tasks so the catch branch executes.
+    await Promise.resolve(); // Schedules the async fetch chain
+    await Promise.resolve(); // Flush catch branch
+
+    expect(sm.isApiReachable).toBe(false);
+    sm.stopPolling();
+  });
+});

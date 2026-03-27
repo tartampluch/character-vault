@@ -1122,6 +1122,45 @@ Use the official Wizards of the Coast French translation (Éditions Spécial Jeu
 | Damage Reduction | Réduction des dégâts |
 | Spell Resistance | Résistance à la magie |
 
+### UI Chrome vs. Game Content Translations
+
+**Do not confuse the two translation systems:**
+
+| System | Scope | Authored by | File |
+|---|---|---|---|
+| **Game content** | Feature `label`, `description` in rule JSON | Content authors | `static/rules/**/*.json` |
+| **UI chrome** | Buttons, nav, error messages, tab names | Translators | `static/locales/{code}.json` |
+
+When migrating D&D 3.5 content, you only produce **game content** translations (`label`/`description` in rule JSON). The UI chrome (`static/locales/fr.json`, etc.) is maintained separately by translators and requires no change.
+
+### UI Locale JSON File Format
+
+If you need to explain a UI locale file structure to a downstream translator or automation tool, the format is:
+
+```json
+{
+  "$meta": {
+    "language": "Français",
+    "code": "fr",
+    "unitSystem": "metric",
+    "author": "Character Vault core team",
+    "version": 1
+  },
+  "login.title":     "Connectez-vous pour continuer",
+  "combat.hp.title": "Points de vie",
+  "settings.rule_sources.files": {
+    "one":   "1 fichier",
+    "other": "{n} fichiers"
+  }
+}
+```
+
+- The `$meta` block is informational only; the loader strips it before caching.
+- Simple string values use `{placeholder}` for template variables.
+- Plural values use CLDR category keys (`one`, `other`, etc.); `{n}` is replaced with the count by `uiN()`.
+- Any key absent from the locale file silently falls back to the English baseline.
+- Drop the file in `static/locales/` — no code change required. It appears in the language dropdown on the next page load.
+
 ### Distance and Weight in Description Text
 
 Rule values are always in imperial units (feet, pounds). The display layer uses `UNIT_SYSTEM_CONFIG` keyed by `UnitSystem` (`"imperial"` or `"metric"`), with the language→unit-system mapping coming from `LANG_UNIT_SYSTEM` in `ui-strings.ts`. Community languages not in that map default to `imperial`.
