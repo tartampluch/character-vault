@@ -52,195 +52,20 @@ import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS
 import { buildLocalizedString, ui } from '../i18n/ui-strings';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
-
-// =============================================================================
-// CONSTANTS
-// =============================================================================
-
-/**
- * Maximum times a pipeline can be re-evaluated in a single resolution cycle.
- * Prevents infinite loops from circular feature dependencies.
- * @see ARCHITECTURE.md section 9.1 for the protection strategy.
- */
-const MAX_RESOLUTION_DEPTH = 3;
-
-// =============================================================================
-// SKILL POINTS BUDGET — exported type for UI consumption
-// =============================================================================
-
-/**
- * Per-class contribution to the skill point budget.
- *
- * D&D 3.5 MULTICLASS RULE:
- *   Each class level grants skill points equal to its base SP/level plus the
- *   character's INT modifier (minimum 1 per level). In multiclass characters,
- *   each class contributes SEPARATELY — the Fighter's 2 SP/level is NOT averaged
- *   with the Rogue's 8 SP/level. The totals are summed independently.
- *
- * FIRST LEVEL BONUS:
- *   At character level 1, the first class taken grants 4× the normal SP (SRD rule).
- *   The engine identifies the "first class" via JavaScript object insertion order on
- *   `character.classLevels` — the first key corresponds to the class the player added
- *   first in the UI, which is the class taken at character level 1.
- *   `firstLevelBonus = 3 × pointsPerLevel` (the extra 3 multiples beyond the normal 1×).
- *   `totalPoints` includes this bonus: `(pointsPerLevel × classLevel) + firstLevelBonus`.
- */
-export interface ClassSkillPointsEntry {
-  /** The class Feature ID (e.g., "class_fighter"). */
-  classId: ID;
-  /** Localized class name for display in the journal. */
-  classLabel: LocalizedString;
-  /** Base skill points per level as declared in the class Feature's modifier. */
-  spPerLevel: number;
-  /** The character's current level count in this class. */
-  classLevel: number;
-  /**
-   * The INT modifier applied at calculation time.
-   * Uses the CURRENT INT modifier (most character builders use this retroactive approach).
-   * D&D 3.5 rules technically make INT bonuses retroactive for previously gained levels.
-   */
-  intModifier: number;
-  /** max(1, spPerLevel + intModifier) — effective SP per level (after INT and minimum-1 rule). */
-  pointsPerLevel: number;
-  /**
-   * Extra skill points from the first-level 4× bonus (D&D 3.5 SRD).
-   * = 3 × pointsPerLevel for the class taken at character level 1; 0 for all other classes.
-   * Always 0 if this class did not contribute character level 1 (i.e., is not the first class).
-   */
-  firstLevelBonus: number;
-  /**
-   * Total skill point contribution from this class.
-   * = (pointsPerLevel × classLevel) + firstLevelBonus
-   * Includes the first-level 4× bonus for whichever class was taken first.
-   */
-  totalPoints: number;
-}
-
-/**
- * Per-class entry in the Leveling Journal.
- *
- * Aggregates all the mechanical contributions from one class to the character sheet.
- * The LevelingJournalModal renders one card per entry to explain WHERE each bonus came from.
- */
-export interface LevelingJournalClassEntry {
-  /** Class Feature ID (e.g., "class_fighter"). */
-  classId: ID;
-  /** Localized class name. */
-  classLabel: LocalizedString;
-  /** The character's level in this class. */
-  classLevel: number;
-  /** Total BAB contribution from this class (type "base" modifiers on "combatStats.base_attack_bonus"). */
-  totalBab: number;
-  /** Total Fortitude save base from this class (type "base" modifiers on "saves.fortitude"). */
-  totalFort: number;
-  /** Total Reflex save base from this class (type "base" modifiers on "saves.reflex"). */
-  totalRef: number;
-  /** Total Will save base from this class (type "base" modifiers on "saves.will"). */
-  totalWill: number;
-  /** Base SP/level from this class (before INT modifier). */
-  spPerLevel: number;
-  /** Effective SP per level: max(1, spPerLevel + intMod). */
-  spPointsPerLevel: number;
-  /** First-level 4× bonus SP (3 × spPointsPerLevel if this was the first class; else 0). */
-  firstLevelBonus: number;
-  /** Skill points contributed by this class: (spPointsPerLevel × classLevel) + firstLevelBonus. */
-  totalSp: number;
-  /** Class skill IDs declared by this class. */
-  classSkills: ID[];
-  /** Localized class skill names for display. */
-  classSkillLabels: Array<{ id: ID; label: LocalizedString }>;
-  /**
-   * IDs of features granted by levelProgression entries (up to classLevel).
-   * Used to show "Class Features Gained" in the journal.
-   */
-  grantedFeatureIds: string[];
-}
-
-/**
- * Complete leveling journal for the character.
- *
- * Contains the per-class breakdown of all mechanical contributions, making it
- * easy to verify that BAB, saves, HP, and skill points are correctly tracked.
- */
-export interface LevelingJournal {
-  /** Breakdown per active class. */
-  perClassBreakdown: LevelingJournalClassEntry[];
-  /** Sum of BAB contributions from all classes. */
-  totalBab: number;
-  /** Sum of Fort save base from all classes. */
-  totalFort: number;
-  /** Sum of Ref save base from all classes. */
-  totalRef: number;
-  /** Sum of Will save base from all classes. */
-  totalWill: number;
-  /** Total skill points available. */
-  totalSp: number;
-  /** Total character level (sum of all class levels). */
-  characterLevel: number;
-}
-
-/**
- * Complete skill point budget for the character.
- *
- * Consumed by the SkillsMatrix and LevelingJournalModal to correctly display
- * and enforce the per-class, per-level skill point allocation for D&D 3.5.
- */
-export interface SkillPointsBudget {
-  /**
-   * Breakdown of skill points contributed by each active class.
-   * Empty for characters with no active classes.
-   */
-  perClassBreakdown: ClassSkillPointsEntry[];
-
-  /**
-   * Sum of bonus SP/level from racial or feat sources (e.g., Human +1 SP/level).
-   * These are added uniformly per total character level, not per-class level.
-   *
-   * Example:
-   *   Human racial trait grants `attributes.bonus_skill_points_per_level: 1`.
-   *   A Fighter 5 / Rogue 3 Human gets: bonus = 1 × 8 = 8 extra SP.
-   */
-  bonusSpPerLevel: number;
-
-  /** Total bonus skill points: bonusSpPerLevel × totalCharacterLevel. */
-  totalBonusPoints: number;
-
-  /** Sum of all ClassSkillPointsEntry.totalPoints across all classes. */
-  totalClassPoints: number;
-
-  /** Grand total: totalClassPoints + totalBonusPoints. */
-  totalAvailable: number;
-
-  /** The current INT derivedModifier used in all class budget calculations. */
-  intModifier: number;
-}
-
-// =============================================================================
-// SaveConfigEntry — data-driven saving throw display configuration
-// =============================================================================
-
-/**
- * One entry in the saving throw display configuration.
- * Consumed by SavingThrows.svelte and SavingThrowsSummary.svelte.
- *
- * Populated at runtime from the `config_save_definitions` JSON config table
- * (loaded by the DataLoader). The engine falls back to `DEFAULT_SAVE_CONFIG`
- * during bootstrap (before the DataLoader has finished loading).
- *
- * Fields mirror the `config_save_definitions` table rows:
- *   pipelineId     — the save pipeline key (e.g., "saves.fortitude")
- *   label          — localized save name (e.g., { en: "Fortitude", fr: "Vigueur" })
- *   keyAbilityId   — governing ability pipeline ID (e.g., "stat_constitution")
- *   keyAbilityAbbr — localized abbreviation (e.g., { en: "CON", fr: "CON" })
- *   accentColor    — CSS color string for themed display (any valid CSS value)
- */
-export interface SaveConfigEntry {
-  readonly pipelineId:     string;
-  readonly label:          LocalizedString;
-  readonly keyAbilityId:   string;
-  readonly keyAbilityAbbr: LocalizedString;
-  readonly accentColor:    string;
-}
+import { MAX_RESOLUTION_DEPTH } from '../types/engine';
+export type { ClassSkillPointsEntry, LevelingJournalClassEntry, LevelingJournal, SkillPointsBudget, SaveConfigEntry, WeaponDefaults, FlatModifierEntry } from '../types/engine';
+import type { ClassSkillPointsEntry, LevelingJournalClassEntry, LevelingJournal, SkillPointsBudget, SaveConfigEntry, WeaponDefaults, FlatModifierEntry } from '../types/engine';
+export { makeSkillPipeline, createEmptyCharacter } from './CharacterFactory';
+import { makeSkillPipeline, createEmptyCharacter } from './CharacterFactory';
+import { computeActiveTags, computePhase0Result } from './phases/phase0Modifiers';
+import { buildSizePipeline } from './phases/phase1Size';
+import { buildAttributePipelines, buildPhase2Context } from './phases/phase2Attributes';
+import { buildCombatStatPipelines, buildPhase3Context } from './phases/phase3CombatStats';
+import { buildClassSkillSet, buildSkillPointsBudget, buildLevelingJournal, computeMulticlassXpPenaltyRisk, buildSkillPipelines } from './phases/phase4Skills';
+import { buildSavingThrowConfig } from './phases/phaseSavingThrows';
+import { buildEquipmentSlots, buildEquippedSlotCounts } from './phases/phaseEquipmentSlots';
+import { computeFeatSlots, computeGrantedFeatIds, computeManualFeatCount } from './phases/phaseFeatSlots';
+import { computeEffectiveActionBudget, computeActionBudgetHasXOR, computeActionBudgetBlockers } from './phases/phaseActionBudget';
 
 /**
  * Bootstrap-phase fallback for `savingThrowConfig`.
@@ -288,36 +113,6 @@ const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
   },
 ];
 
-// =============================================================================
-// WeaponDefaults — data-driven weapon ability score defaults
-// =============================================================================
-
-/**
- * Default ability score assignments for weapon attack and damage rolls.
- * Populated at runtime from the `config_weapon_defaults` JSON config table.
- * Falls back to `DEFAULT_WEAPON_CONFIG` during bootstrap.
- *
- * WHY THIS EXISTS:
- *   D&D 3.5 hardwires STR for melee attack/damage and DEX for ranged attacks.
- *   By reading these from a config table, homebrew systems can remap the defaults
- *   (e.g., a setting that uses a custom `stat_agility` for all ranged attacks)
- *   without modifying engine code.
- *
- *   Per-weapon overrides (Weapon Finesse, ranged STR via Mighty bow, psionic
- *   INT-based attacks) are handled via the weapon Feature's modifier formulas,
- *   NOT by changing these defaults.
- */
-export interface WeaponDefaults {
-  /** Ability score ID used for melee attack rolls. Default: `"stat_strength"`. */
-  readonly meleeAttackAbility:        string;
-  /** Ability score ID used for ranged attack rolls. Default: `"stat_dexterity"`. */
-  readonly rangedAttackAbility:       string;
-  /** Ability score ID added to melee damage rolls. Default: `"stat_strength"`. */
-  readonly meleeDamageAbility:        string;
-  /** Multiplier on damage ability for two-handed grip. Default: `1.5` (D&D 3.5 rule). */
-  readonly twoHandedDamageMultiplier: number;
-}
-
 /**
  * Hardcoded D&D 3.5 SRD fallback for weapon ability defaults.
  * Active during bootstrap or when `config_weapon_defaults` is not loaded.
@@ -329,470 +124,8 @@ const DEFAULT_WEAPON_CONFIG: WeaponDefaults = {
   twoHandedDamageMultiplier: 1.5,
 };
 
-// =============================================================================
-// TARGETID NORMALISATION — Handles both JSON authoring conventions
-// =============================================================================
 
-/**
- * Normalises a modifier's `targetId` to the internal pipeline key convention used
- * for `Character.attributes`, `Character.combatStats`, `Character.saves`, and
- * `Character.skills`.
- *
- * WHY THIS EXISTS — THE TWO-CONVENTION PROBLEM:
- *   The GameEngine stores pipelines in several `Record<ID, StatisticPipeline>` maps
- *   on the `Character` object. The map KEYS are the canonical IDs:
- *
- *     character.attributes   → keyed by  "stat_strength", "stat_dexterity", ...  (NO prefix)
- *     character.combatStats  → keyed by  "combatStats.base_attack_bonus", "combatStats.ac_normal"  (WITH prefix)
- *     character.saves        → keyed by  "saves.fortitude", "saves.reflex"  (WITH prefix)
- *     character.skills       → keyed by  "skill_climb", "skill_jump"  (NO prefix)
- *
- *   However, ARCHITECTURE.md section 4.3 and ANNEXES.md Annex A use the
- *   `"attributes."` prefix in Math Parser @-paths AND sometimes in targetId fields:
- *
- *     @-paths    : "@attributes.stat_strength.totalValue"  (always with namespace)
- *     targetId?  : "attributes.stat_strength" OR "stat_strength"  (both appear in examples)
- *
- *   The normaliser strips the `"attributes."` prefix from attribute targetIds so
- *   that JSON authors can use either convention and the engine processes them identically.
- *
- *   OTHER NAMESPACES (combatStats.*, saves.*, skill_*) do NOT need normalisation:
- *     - "combatStats.ac_normal" is used consistently both in JSON and as a map key.
- *     - "saves.fortitude" is used consistently both in JSON and as a map key.
- *     - "skill_climb" is used consistently both in JSON and as the map key.
- *   Only the 6 main attribute stats (and custom homebrew stats) have this ambiguity.
- *
- * @param targetId - The raw `targetId` from a Modifier JSON field.
- * @returns The normalised pipeline key used as a map key in `Character.attributes`.
- */
-function normaliseModifierTargetId(targetId: ID): ID {
-  // Strip namespace prefixes to produce the canonical map key used internally.
-  //
-  // SUPPORTED NORMALISATIONS:
-  //   "attributes.stat_strength"          → "stat_strength"                (Character.attributes key)
-  //   "skills.skill_climb"           → "skill_climb"             (Character.skills key)
-  //   "resources.X.maxValue"         → "combatStats.X_max"       (virtual max pipeline)
-  //
-  // WHY TWO FORMS EXIST IN JSON:
-  //   Content authors have historically used two conventions:
-  //     - Bare form:       "stat_strength",   "skill_climb"   (matches the map key directly)
-  //     - Namespaced form: "attributes.stat_strength", "skills.skill_climb"  (more readable)
-  //   Both are valid; this function normalises both to the map-key form so that all
-  //   downstream comparisons work regardless of which convention the JSON uses.
-  //
-  // "resources.X.maxValue" CONVENTION (GAP-01 fix):
-  //   Content authors use "resources.barbarian_rage_uses.maxValue" to target the
-  //   maximum capacity of a resource pool — a natural and readable convention.
-  //   The engine does NOT have a pipeline keyed "resources.X.maxValue"; instead,
-  //   each pool's max is looked up from the pipeline pointed to by its `maxPipelineId`.
-  //   To bridge this, we normalise "resources.X.maxValue" → "combatStats.X_max".
-  //   The `#getEffectiveMax()` method has been updated to look up "combatStats.X_max"
-  //   as the fallback pipeline when the pool's `maxPipelineId` resolves to nothing.
-  //   This lets modifiers like "+1 per 4 Barbarian levels" accumulate in the
-  //   combatStats pipeline and be read back as the pool's effective maximum.
-  //
-  // OTHER NAMESPACES are returned unchanged — they ARE the map key already:
-  //   "combatStats.base_attack_bonus", "saves.fortitude", "resources.hp", "slots.ring"
-  if (targetId.startsWith('attributes.')) {
-    return targetId.slice('attributes.'.length);
-  }
-  if (targetId.startsWith('skills.')) {
-    return targetId.slice('skills.'.length);
-  }
-  // "resources.X.maxValue" → "combatStats.X_max"
-  if (targetId.startsWith('resources.') && targetId.endsWith('.maxValue')) {
-    const poolId = targetId.slice('resources.'.length, -'.maxValue'.length);
-    return `combatStats.${poolId}_max`;
-  }
-  return targetId;
-}
 
-// =============================================================================
-// PIPELINE FACTORY HELPERS — Public utilities for tests and DataLoader
-// =============================================================================
-
-/**
- * Creates a blank `SkillPipeline` with default values.
- *
- * EXPORTED UTILITY:
- *   Used by:
- *   - Phase 4.2 (DataLoader): When populating `Character.skills` from the
- *     `config_skill_definitions` config table, the DataLoader creates fresh
- *     SkillPipeline entries for each defined skill.
- *   - Phase 17 (Tests): Test helpers call this to build mock skill pipelines
- *     without importing the full character factory.
- *
- * @param pipelineId             - Unique skill pipeline ID (e.g., "skill_climb").
- * @param label                  - Localised display name.
- * @param keyAbility             - The governing ability score ID (e.g., "stat_strength").
- * @param appliesArmorCheckPenalty - Whether armour check penalty affects this skill.
- * @param canBeUsedUntrained     - Whether the skill can be used without any ranks.
- * @returns A blank SkillPipeline ready for injection into `Character.skills`.
- */
-export function makeSkillPipeline(
-  pipelineId: ID,
-  label: LocalizedString,
-  keyAbility: ID,
-  appliesArmorCheckPenalty = false,
-  canBeUsedUntrained = true
-): SkillPipeline {
-  return {
-    id: pipelineId,
-    label,
-    baseValue: 0,
-    keyAbility,
-    ranks: 0,
-    isClassSkill: false,
-    // Default to cross-class cost (2); Phase 4 overrides this to 1 when isClassSkill is set.
-    costPerRank: 2,
-    appliesArmorCheckPenalty,
-    canBeUsedUntrained,
-    activeModifiers: [],
-    situationalModifiers: [],
-    totalBonus: 0,
-    totalValue: 0,
-    derivedModifier: 0,
-  };
-}
-
-// =============================================================================
-// EMPTY CHARACTER FACTORY
-// =============================================================================
-
-/**
- * Creates a blank, empty character with default pipeline structures.
- *
- * All standard pipelines are pre-initialised to avoid null-checks everywhere.
- *
- * PIPELINE LABEL DATA-DRIVENNESS (MINOR fix #3):
- *   Attribute labels (e.g., "Strength"/"Force") are loaded from the `config_attribute_definitions`
- *   config table when the DataLoader is available and the table is loaded. If the table is not
- *   yet available (e.g., at engine bootstrap before rule sources are loaded), the code falls back
- *   to embedded labels — this ensures the engine always starts in a consistent state even before
- *   the DataLoader has finished loading.
- *
- * @param id   - Unique character ID (UUID).
- * @param name - Character display name.
- * @returns A blank Character with all standard pipelines initialised to base values.
- */
-export function createEmptyCharacter(id: ID, name: string): Character {
-  // Helper to create a blank StatisticPipeline with sensible defaults
-  const makePipeline = (pipelineId: ID, label: LocalizedString, baseValue = 0): StatisticPipeline => ({
-    id: pipelineId,
-    label,
-    baseValue,
-    activeModifiers: [],
-    situationalModifiers: [],
-    totalBonus: 0,
-    totalValue: baseValue,
-    derivedModifier: 0,
-  });
-
-  // Helper to create a blank ResourcePool.
-  // `rechargeAmount` is omitted here (undefined) — incremental pools define it in JSON.
-  // The default `resetCondition: 'long_rest'` covers all standard daily-use resources.
-  // @see ResourcePool.resetCondition for 'per_turn' / 'per_round' variants.
-  const makeResource = (resourceId: ID, label: LocalizedString, maxPipelineId: ID): ResourcePool => ({
-    id: resourceId,
-    label,
-    maxPipelineId,
-    currentValue: 0,
-    temporaryValue: 0,
-    resetCondition: 'long_rest',
-    // rechargeAmount: undefined — only set for 'per_turn' / 'per_round' pools
-  });
-
-  // --- Attribute label resolution (data-driven when available) ---
-  //
-  // Try to load attribute labels from the `config_attribute_definitions` config table.
-  // This allows homebrew content to override stat names without code changes.
-  //
-  // FALLBACK LABELS:
-  //   Embedded labels are used when:
-  //   a) The DataLoader has not yet completed loading (engine bootstrap).
-  //   b) The config_tables file is not in the enabled file-path whitelist.
-  //   c) The 00_d20srd_core_config_tables.json file failed to load.
-  //   In all these cases, the engine remains functional with the embedded fallback labels.
-  //
-  // WHY NOT FULLY LAZY?
-  //   `createEmptyCharacter` is called before `loadRuleSources` at engine init. We cannot
-  //   wait for the DataLoader. The data-driven labels update naturally when the character
-  //   sheet re-renders because pipeline labels are read from `phase2_attributes` (derived)
-  //   not from the initial `character.attributes` ($state) directly.
-  const getAttrLabel = (statId: ID, fallback: LocalizedString): LocalizedString => {
-    try {
-      // DataLoader is a singleton — it may or may not have data yet at this point.
-      const attrTable = dataLoader.getConfigTable('config_attribute_definitions');
-      if (attrTable?.data) {
-        const row = (attrTable.data as Array<Record<string, unknown>>).find(r => r['id'] === statId);
-        if (row?.['label'] && typeof row['label'] === 'object') {
-          return row['label'] as LocalizedString;
-        }
-      }
-    } catch {
-      // DataLoader not yet initialized or table not found — use fallback silently
-    }
-    return fallback;
-  };
-
-  /**
-   * Reads the default base value for a movement speed pipeline from
-   * `config_movement_defaults`. Falls back to `fallbackValue` (usually 0)
-   * if the table has not loaded yet (bootstrap state).
-   *
-   * WHY A CONFIG TABLE INSTEAD OF A HARDCODED CONSTANT?
-   *   The D&D 3.5 standard land speed (30 ft) is a rule, not a universal truth.
-   *   Storing it in JSON lets homebrew rule sources change the default for all
-   *   characters (e.g., a "short races" setting defaulting to 25 ft) without
-   *   touching TypeScript. Individual races/creatures still override via
-   *   "base" or "setAbsolute" modifiers on their Feature JSON.
-   *
-   * @param pipelineId    - The speed pipeline ID (e.g., "combatStats.speed_land").
-   * @param fallbackValue - Value returned when the config table is absent.
-   */
-  const getSpeedDefault = (pipelineId: ID, fallbackValue: number): number => {
-    try {
-      const movTable = dataLoader.getConfigTable('config_movement_defaults');
-      if (movTable?.data) {
-        const row = (movTable.data as Array<Record<string, unknown>>).find(
-          r => r['pipelineId'] === pipelineId
-        );
-        if (row !== undefined && typeof row['defaultBaseValue'] === 'number') {
-          return row['defaultBaseValue'] as number;
-        }
-      }
-    } catch {
-      // DataLoader not yet initialized — use fallback silently
-    }
-    return fallbackValue;
-  };
-
-  // Bootstrap fallback labels for standard attribute pipelines.
-  // These are used ONLY when the `config_attribute_definitions` config table
-  // has not been loaded yet (engine bootstrap) or is unavailable.
-  // At runtime, `getAttrLabel()` above attempts to load from the data-driven
-  // config table first, falling back to these constants.
-  //
-  // ZERO-HARDCODING COMPLIANCE (PROGRESS.md Guideline 6):
-  //   D&D-specific attribute names ("Strength", "Dexterity", etc.) must NOT be
-  //   hardcoded in TypeScript logic. This fallback uses the pipeline IDs as labels
-  //   instead of D&D-specific terms. The human-readable names are defined in
-  //   `config_attribute_definitions` (inside the JSON rule files) and replace
-  //   these placeholders as soon as the DataLoader finishes loading.
-  const DEFAULT_LABELS: Record<string, LocalizedString> = {
-    'stat_strength':         { en: 'stat_strength',         fr: 'stat_strength' },
-    'stat_dexterity':        { en: 'stat_dexterity',        fr: 'stat_dexterity' },
-    'stat_constitution':     { en: 'stat_constitution',     fr: 'stat_constitution' },
-    'stat_intelligence':     { en: 'stat_intelligence',     fr: 'stat_intelligence' },
-    'stat_wisdom':           { en: 'stat_wisdom',           fr: 'stat_wisdom' },
-    'stat_charisma':         { en: 'stat_charisma',         fr: 'stat_charisma' },
-    'stat_size':             { en: 'stat_size',             fr: 'stat_size' },
-    'stat_caster_level':     { en: 'stat_caster_level',     fr: 'stat_caster_level' },
-    'stat_manifester_level': { en: 'stat_manifester_level', fr: 'stat_manifester_level' },
-  };
-
-  return {
-    id,
-    name,
-    isNPC: false,
-    classLevels: {},
-    // Level Adjustment is 0 for all standard PC races.
-    // Set > 0 for monster PCs (e.g. Drow LA+2, Half-Dragon LA+3).
-    // ECL for XP = sum(classLevels) + levelAdjustment.
-    // @see ARCHITECTURE.md section 6 — levelAdjustment, @eclForXp path
-    levelAdjustment: 0,
-    // XP earned by this character. New characters start at 0.
-    // Compared against config_xp_table thresholds using ECL (classLevels sum + LA).
-    // @see ARCHITECTURE.md section 6 — xp field
-    xp: 0,
-    // Hit die results per character level — empty for a new character.
-    // Populated by the Level Up mechanic (Phase 10.1).
-    // Key: character level (1-indexed), Value: die result at that level.
-    // @see ARCHITECTURE.md section 9, Phase 3: Max HP = sum(hitDieResults) + CON_mod × level
-    hitDieResults: {},
-    attributes: {
-      'stat_strength':             makePipeline('stat_strength',             getAttrLabel('stat_strength',             DEFAULT_LABELS['stat_strength']),              10),
-      'stat_dexterity':             makePipeline('stat_dexterity',             getAttrLabel('stat_dexterity',             DEFAULT_LABELS['stat_dexterity']),              10),
-      'stat_constitution':             makePipeline('stat_constitution',             getAttrLabel('stat_constitution',             DEFAULT_LABELS['stat_constitution']),              10),
-      'stat_intelligence':             makePipeline('stat_intelligence',             getAttrLabel('stat_intelligence',             DEFAULT_LABELS['stat_intelligence']),              10),
-      'stat_wisdom':             makePipeline('stat_wisdom',             getAttrLabel('stat_wisdom',             DEFAULT_LABELS['stat_wisdom']),              10),
-      'stat_charisma':             makePipeline('stat_charisma',             getAttrLabel('stat_charisma',             DEFAULT_LABELS['stat_charisma']),              10),
-      'stat_size':            makePipeline('stat_size',            getAttrLabel('stat_size',            DEFAULT_LABELS['stat_size']),              0),
-      'stat_caster_level':    makePipeline('stat_caster_level',    getAttrLabel('stat_caster_level',    DEFAULT_LABELS['stat_caster_level']),      0),
-      'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',DEFAULT_LABELS['stat_manifester_level']),  0),
-    },
-    combatStats: {
-      'combatStats.ac_normal': makePipeline('combatStats.ac_normal', { en: 'Armor Class', fr: "Classe d'armure" }, 10),
-      'combatStats.ac_touch': makePipeline('combatStats.ac_touch', { en: 'Touch AC', fr: 'CA de contact' }, 10),
-      'combatStats.ac_flat_footed': makePipeline('combatStats.ac_flat_footed', { en: 'Flat-Footed AC', fr: 'CA pris au dépourvu' }, 10),
-      'combatStats.base_attack_bonus': makePipeline('combatStats.base_attack_bonus', { en: 'Base Attack Bonus', fr: "Bonus d'attaque de base" }, 0),
-      'combatStats.initiative': makePipeline('combatStats.initiative', { en: 'Initiative', fr: 'Initiative' }, 0),
-      'combatStats.grapple': makePipeline('combatStats.grapple', { en: 'Grapple', fr: 'Lutte' }, 0),
-      // Speed pipeline base values are read from `config_movement_defaults`.
-      // The fallback values here are the D&D 3.5 SRD defaults used during
-      // bootstrap (before the DataLoader has loaded the config table).
-      // Races/creatures override these defaults via "base" or "setAbsolute" modifiers.
-      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'Land Speed',   fr: 'Vitesse terrestre' },     getSpeedDefault('combatStats.speed_land',   30)),
-      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'Burrow Speed',  fr: 'Vitesse de fouissement' }, getSpeedDefault('combatStats.speed_burrow',  0)),
-      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'Climb Speed',   fr: "Vitesse d'escalade" },     getSpeedDefault('combatStats.speed_climb',   0)),
-      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'Fly Speed',     fr: 'Vitesse de vol' },         getSpeedDefault('combatStats.speed_fly',     0)),
-      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'Swim Speed',    fr: 'Vitesse de nage' },        getSpeedDefault('combatStats.speed_swim',    0)),
-      'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'Armor Check Penalty', fr: "Malus d'armure aux tests" }, 0),
-      'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'Max Hit Points', fr: 'Points de vie maximum' }, 0),
-
-      // --- FORTIFICATION (SRD: Magic Armor special ability) ---
-      // Percentage chance to negate a critical hit or sneak attack.
-      // Light = 25%, Moderate = 75%, Heavy = 100%.
-      // D&D 3.5 SRD: "When a critical hit or sneak attack is scored on the wearer,
-      //   there is a chance that the critical hit or sneak attack is negated and
-      //   damage is instead rolled normally."
-      //
-      // CONTENT AUTHORING:
-      //   Items grant fortification via a grantedModifier:
-      //     { targetId: "combatStats.fortification", value: 25, type: "untyped" }
-      //   Multiple sources stack (unusual — but two Fortification items never appear
-      //   on the same character; the SRD says "if you roll a special ability twice,
-      //   use the better"). In practice only one value is active. Stored as percentage
-      //   integer (0–100). baseValue = 0 (no fortification by default).
-      //
-      // DICE ENGINE CONTRACT:
-      //   When parseAndRoll() confirms a critical hit, it reads the defender's
-      //   combatStats.fortification.totalValue. If > 0, it rolls 1d100:
-      //   if the roll <= fortificationPct, the crit is negated (damage rolled normally).
-      //   @see diceEngine.ts — defenderFortificationPct parameter
-      //   @see ARCHITECTURE.md section 4.7 — Fortification mechanic reference
-      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'Fortification', fr: 'Fortification' }, 0),
-
-      // --- ARCANE SPELL FAILURE (SRD: Armor & Shields) ---
-      // Percentage chance that an arcane spell fails when cast while wearing armor.
-      // D&D 3.5 SRD: armor with arcane spell failure chance requires an arcane
-      //   spellcaster to roll 1d100 before casting; if the roll <= ASF%, the spell
-      //   fails and the spell slot is expended.
-      //
-      // STACKING RULE (SRD):
-      //   ASF percentages from multiple pieces of armor ADD together (not best-wins).
-      //   A character wearing a chain shirt (20%) and carrying a heavy steel shield (15%)
-      //   has a total ASF of 35%. This is why type "untyped" is used — untyped modifiers
-      //   always stack, correctly modeling additive ASF.
-      //
-      // CONTENT AUTHORING:
-      //   Each armor/shield item contributes via grantedModifier:
-      //     { targetId: "combatStats.arcane_spell_failure", value: 20, type: "untyped" }
-      //   Masterwork and mithral items reduce ASF separately via additional modifiers.
-      //   baseValue = 0 (no spell failure by default — unarmored character).
-      //
-      // DICE ENGINE CONTRACT:
-      //   The CastingPanel UI (Phase 12.3) reads combatStats.arcane_spell_failure.totalValue
-      //   and rolls 1d100 before every arcane spell cast. If roll <= ASF%, the spell fails.
-      //   @see ARCHITECTURE.md section 4.8 — Arcane Spell Failure mechanic reference
-      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'Arcane Spell Failure', fr: "Risque d'échec des sorts arcaniques" }, 0),
-
-      // --- MAX DEX BONUS TO AC (`combatStats.max_dexterity_bonus`) ---
-      //
-      // The maximum Dexterity modifier a character may apply to their Armor Class
-      // while wearing armor, carrying a shield with a restriction, or under encumbrance.
-      //
-      // D&D 3.5 SRD rule: "If your armor has a maximum Dexterity bonus, this is the
-      //   highest Dexterity modifier you can add to your Armor Class while wearing it."
-      //
-      // STACKING MODEL (MINIMUM-WINS per Phase 3 special handling):
-      //   Armor and conditions impose a CAP via `type: "max_dex_cap"` modifiers.
-      //   Multiple `max_dex_cap` sources → MINIMUM value applies (most restrictive wins).
-      //   Additive bonuses (e.g., Mithral +2) use `type: "untyped"` and are applied AFTER
-      //   the cap is determined. See Phase 3 special case in phase3_combatStats.
-      //
-      // BASE VALUE = 99:
-      //   An unarmored character (no active `max_dex_cap` modifier) has a cap of 99,
-      //   which effectively means "no restriction — full DEX applies to AC".
-      //
-      // CONTENT AUTHORING:
-      //   Armor/shield restricting DEX:
-      //     { type: "max_dex_cap", targetId: "combatStats.max_dexterity_bonus", value: 3 }
-      //   Heavy Load condition (cap of +1):
-      //     { type: "max_dex_cap", targetId: "combatStats.max_dexterity_bonus", value: 1 }
-      //   Mithral special material (+2 to the cap):
-      //     { type: "untyped", targetId: "combatStats.max_dexterity_bonus", value: 2 }
-      //
-      // UI CONTRACT:
-      //   The ArmorClass panel reads `combatStats.max_dexterity_bonus.totalValue` and caps
-      //   the DEX modifier contribution to AC at that value. A totalValue of 99 means
-      //   "no cap" (full DEX applies). The pipeline value is also displayed in the
-      //   ArmorClass breakdown for player transparency.
-      //
-      // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
-      // @see primitives.ts ModifierType: "max_dex_cap" for the new minimum-wins type
-      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
-
-      // --- EQUIPMENT SLOT PIPELINES (Phase 3.1 — ARCHITECTURE.md §3.1) ---
-      //
-      // One pipeline per equipment body slot. `baseValue` = the default slot count for
-      // a standard Medium humanoid. Racial/feat features can grant extra slots (e.g.,
-      // an exotic race with 4 ring fingers gets `"slots.ring" baseValue: 4`, or a
-      // modifier with `type: "untyped"` and `value: 2` adds 2 extra ring slots).
-      //
-      // These ARE proper StatisticPipeline entries so that:
-      //   1. Slot counts are visible in the ModifierBreakdownModal.
-      //   2. Features can grant extra slots via standard grantedModifiers.
-      //   3. The pipeline machinery handles the accumulation uniformly.
-      //
-      // Slots that logically allow exactly 1 equipped item (head, neck, torso, etc.)
-      // have baseValue: 1. The ring slot allows 2 per D&D 3.5 SRD.
-      //
-      // Labels use the pipeline ID during bootstrap — config_slot_definitions provides
-      // human-readable names once the DataLoader loads. (PROGRESS.md Guideline 6:
-      // no D&D-specific terms hardcoded in TypeScript.)
-      'slots.head':      makePipeline('slots.head',      { en: 'slots.head',      fr: 'slots.head' },      1),
-      'slots.eyes':      makePipeline('slots.eyes',      { en: 'slots.eyes',      fr: 'slots.eyes' },      1),
-      'slots.neck':      makePipeline('slots.neck',      { en: 'slots.neck',      fr: 'slots.neck' },      1),
-      'slots.torso':     makePipeline('slots.torso',     { en: 'slots.torso',     fr: 'slots.torso' },     1),
-      'slots.body':      makePipeline('slots.body',      { en: 'slots.body',      fr: 'slots.body' },      1),
-      'slots.waist':     makePipeline('slots.waist',     { en: 'slots.waist',     fr: 'slots.waist' },     1),
-      'slots.shoulders': makePipeline('slots.shoulders', { en: 'slots.shoulders', fr: 'slots.shoulders' }, 1),
-      'slots.arms':      makePipeline('slots.arms',      { en: 'slots.arms',      fr: 'slots.arms' },      1),
-      'slots.hands':     makePipeline('slots.hands',     { en: 'slots.hands',     fr: 'slots.hands' },     1),
-      // D&D 3.5 SRD standard: a humanoid has two ring slots (one per hand).
-      'slots.ring':      makePipeline('slots.ring',      { en: 'slots.ring',      fr: 'slots.ring' },      2),
-      'slots.feet':      makePipeline('slots.feet',      { en: 'slots.feet',      fr: 'slots.feet' },      1),
-      'slots.main_hand': makePipeline('slots.main_hand', { en: 'slots.main_hand', fr: 'slots.main_hand' }, 1),
-      'slots.off_hand':  makePipeline('slots.off_hand',  { en: 'slots.off_hand',  fr: 'slots.off_hand' },  1),
-    },
-    saves: {
-      // Bootstrap-phase labels use pipeline IDs to comply with PROGRESS.md Guideline 6
-      // (no D&D-specific terms in TypeScript). config_save_definitions supplies the human-
-      // readable save names ("Fortitude", "Reflex", "Will") once the DataLoader loads.
-      'saves.fortitude': makePipeline('saves.fortitude', { en: 'saves.fortitude', fr: 'saves.fortitude' }, 0),
-      'saves.reflex':    makePipeline('saves.reflex',    { en: 'saves.reflex',    fr: 'saves.reflex' },    0),
-      'saves.will':      makePipeline('saves.will',      { en: 'saves.will',      fr: 'saves.will' },      0),
-    },
-    skills: {},
-    // minimumSkillRanks is ABSENT for new characters — all ranks can be freely adjusted
-    // during character creation. Call engine.lockAllSkillRanks() after each level-up commit
-    // to lock in the current ranks as the irreducible minimum.
-    // @see Character.minimumSkillRanks and GameEngine.lockSkillRanksMin()
-    resources: {
-      'resources.hp': makeResource('resources.hp', { en: 'Hit Points', fr: 'Points de vie' }, 'combatStats.max_hp'),
-    },
-    activeFeatures: [],
-    linkedEntities: [],
-  };
-}
-
-// =============================================================================
-// FLAT MODIFIER ENTRY — used by the DAG flattening phase
-// =============================================================================
-
-/**
- * A modifier with context about which feature instance it came from.
- * Used internally by the DAG to trace modifier origins for debugging and breakdown display.
- */
-interface FlatModifierEntry {
-  /** The resolved Modifier with numeric value (string formulas already evaluated). */
-  modifier: Modifier;
-  /** The ID of the feature instance that granted this modifier. */
-  sourceInstanceId: ID;
-  /** The ID of the feature definition that contains this modifier. */
-  sourceFeatureId: ID;
-}
 
 // =============================================================================
 // GAME ENGINE CLASS
@@ -1478,12 +811,18 @@ export class GameEngine {
    * Internal combined result from Phase 0 flattening.
    * Contains both the resolved modifier list and the set of disabled instance IDs.
    */
-  #phase0_result: { modifiers: FlatModifierEntry[]; disabledInstanceIds: Set<ID> } = $derived.by(() => {
-    // IMPORTANT: Explicitly read both upstream $derived values before passing them
-    // to the helper. This ensures Svelte 5 correctly tracks them as dependencies.
+   #phase0_result: { modifiers: FlatModifierEntry[]; disabledInstanceIds: Set<ID> } = $derived.by(() => {
     const activeTags = this.phase0_activeTags;
     const context = this.phase0_context;
-    return this.#computeFlatModifiers(activeTags, context);
+    return computePhase0Result(
+      this.character.activeFeatures,
+      this.character.gmOverrides,
+      this.sceneState.activeGlobalFeatures,
+      this.character.classLevels,
+      this.settings.language,
+      activeTags,
+      context
+    );
   });
 
   /**
@@ -1520,11 +859,15 @@ export class GameEngine {
    *
    * Includes ALL tags from ALL ACTIVE features' tag arrays, deduplicated.
    */
-  phase0_activeTags: string[] = $derived.by(() => {
+   phase0_activeTags: string[] = $derived.by(() => {
     // Reading dataLoaderVersion creates a reactive dependency so the entire
     // DAG re-runs when loadRuleSources() completes and new feature data is available.
     void this.dataLoaderVersion;
-    return this.#computeActiveTags();
+    return computeActiveTags(
+      this.character.activeFeatures,
+      this.character.gmOverrides,
+      this.sceneState.activeGlobalFeatures
+    );
   });
 
   /**
@@ -1685,31 +1028,9 @@ export class GameEngine {
    * The engine stores these as literal numeric modifiers from Race features.
    * (Zero hardcoding: there's no enum for size — just modifier values in JSON.)
    */
-  phase1_sizePipeline: StatisticPipeline = $derived.by(() => {
-    const base = this.character.attributes['stat_size'];
-    if (!base) return { id: 'stat_size', label: { en: 'Size', fr: 'Taille' }, baseValue: 0, activeModifiers: [], situationalModifiers: [], totalBonus: 0, totalValue: 0, derivedModifier: 0 };
-
-    // Collect all modifiers targeting stat_size
-    const sizeMods = this.phase0_flatModifiers
-      .filter(e => e.modifier.targetId === 'stat_size' && !e.modifier.situationalContext)
-      .map(e => e.modifier);
-
-    const situationalSizeMods = this.phase0_flatModifiers
-      .filter(e => e.modifier.targetId === 'stat_size' && e.modifier.situationalContext)
-      .map(e => e.modifier);
-
-    const stacking = applyStackingRules(sizeMods, base.baseValue);
-    const derivedMod = computeDerivedModifier(stacking.totalValue);
-
-    return {
-      ...base,
-      activeModifiers: stacking.appliedModifiers,
-      situationalModifiers: situationalSizeMods,
-      totalBonus: stacking.totalBonus,
-      totalValue: stacking.totalValue,
-      derivedModifier: derivedMod,
-    };
-  });
+   phase1_sizePipeline: StatisticPipeline = $derived.by(() =>
+    buildSizePipeline(this.character.attributes['stat_size'], this.phase0_flatModifiers)
+  );
 
   // ---------------------------------------------------------------------------
   // DAG PHASE 2 — Main Attributes (6 Ability Scores)
@@ -1746,41 +1067,9 @@ export class GameEngine {
    * MAIN ABILITY SCORE IDs: stat_strength, stat_dexterity, stat_constitution, stat_intelligence, stat_wisdom, stat_charisma
    * Also processes any other attribute pipelines (stat_size, custom homebrew stats).
    */
-  phase2_attributes: Record<ID, StatisticPipeline> = $derived.by(() => {
-    const result: Record<ID, StatisticPipeline> = {};
-    const flatMods = this.phase0_flatModifiers;
-
-    for (const [pipelineId, basePipeline] of Object.entries(this.character.attributes)) {
-      // Collect modifiers targeting this attribute pipeline
-      const activeMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      const situationalMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      // Apply stacking rules to compute totalBonus and totalValue
-      const stacking = applyStackingRules(activeMods, basePipeline.baseValue);
-
-      // Compute the D&D 3.5 ability modifier: floor((totalValue - 10) / 2)
-      // This is meaningful only for the 6 main ability scores (STR/DEX/CON/INT/WIS/CHA).
-      // For other pipelines (stat_size, stat_caster_level), derivedModifier is still computed
-      // but effectively unused (it just returns 0 for non-ability-score-like values).
-      const derivedMod = computeDerivedModifier(stacking.totalValue);
-
-      result[pipelineId] = {
-        ...basePipeline,
-        activeModifiers: stacking.appliedModifiers,
-        situationalModifiers: situationalMods,
-        totalBonus: stacking.totalBonus,
-        totalValue: stacking.totalValue,
-        derivedModifier: derivedMod,
-      };
-    }
-
-    return result;
-  });
+   phase2_attributes: Record<ID, StatisticPipeline> = $derived.by(() =>
+    buildAttributePipelines(this.character.attributes, this.phase0_flatModifiers)
+  );
 
   /**
    * DAG Phase 2b: Updated CharacterContext with Phase 2 attribute values.
@@ -1795,25 +1084,9 @@ export class GameEngine {
    *   Now that attributes are fully resolved, Phase 3 formulas can read accurate values.
    *   Without this upgrade, CON-based formulas in HP modifiers would use stale base values.
    */
-  phase2_context: CharacterContext = $derived.by(() => {
-    // Start from the Phase 0 context snapshot
-    const base = this.phase0_context;
-
-    // Upgrade the attributes section with Phase 2 resolved values
-    const upgradedAttributes: CharacterContext['attributes'] = {};
-    for (const [id, pipeline] of Object.entries(this.phase2_attributes)) {
-      upgradedAttributes[id] = {
-        baseValue: pipeline.baseValue,
-        totalValue: pipeline.totalValue,
-        derivedModifier: pipeline.derivedModifier,
-      };
-    }
-
-    return {
-      ...base,
-      attributes: upgradedAttributes,
-    };
-  });
+   phase2_context: CharacterContext = $derived.by(() =>
+    buildPhase2Context(this.phase0_context, this.phase2_attributes)
+  );
 
   // ---------------------------------------------------------------------------
   // DAG PHASE 3 — Combat Statistics & Saving Throws
@@ -1868,195 +1141,18 @@ export class GameEngine {
     *   @see src/lib/utils/gestaltRules.ts — computeGestaltBase() implementation
     *   @see ARCHITECTURE.md section 8.2 — Gestalt variant documentation
     */
-   phase3_combatStats: Record<ID, StatisticPipeline> = $derived.by(() => {
-     const result: Record<ID, StatisticPipeline> = {};
-     const flatMods = this.phase0_flatModifiers;
-     const attributes = this.phase2_attributes;
-     const characterLevel = this.phase0_characterLevel;
-     const isGestalt = this.settings.variantRules?.gestalt ?? false;
-
-    // --- Max HP Special Calculation ---
-    // D&D 3.5 formula: sum(hitDieResults per level) + CON_modifier × characterLevel
-    // Since hit die results per level are stored in the character's resource pool
-    // (rolled or set at level-up), we compute the CON contribution here and add
-    // it to the base pipeline (which holds the sum of hit die rolls).
-    // CON modifier × character level is added as a runtime bonus.
-    const conDerivedMod = attributes['stat_constitution']?.derivedModifier ?? 0;
-    const conHpContrib = conDerivedMod * characterLevel;
-
-    // Process each combat stat pipeline
-    for (const [pipelineId, basePipeline] of Object.entries(this.character.combatStats)) {
-      const activeMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      const situationalMods = flatMods
-        .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      let effectiveBaseValue = basePipeline.baseValue;
-
-      // --- Max HP: sum hit die results + CON modifier × character level ---
-      if (pipelineId === 'combatStats.max_hp') {
-        // D&D 3.5 Max HP Formula (ARCHITECTURE.md section 9, Phase 3):
-        //   Max HP = sum(hitDieResults.values()) + (CON_derivedModifier × character_level)
-        //
-        // `hitDieResults` is a Record<number, number> on the `Character` type (MAJOR fix #1).
-        // Key = character level (1-indexed), Value = die result rolled at that level during level-up.
-        //
-        // For a brand-new character with an empty hitDieResults record:
-        //   Sum of die rolls = 0     (no levels yet)
-        //   CON contribution = conDerivedMod * characterLevel  (still contributes)
-        //
-        // When the Level Up mechanic (Phase 10.1 UI) assigns die results:
-        //   hitDieResults = { 1: 8, 2: 5, 3: 10 }  (e.g., Fighter 3 with d10 hit die)
-        //   This produces: sumDice = 23, then + (CON_mod × 3) = totalMaxHP
-        //
-        // WHY USE hitDieResults DIRECTLY (not basePipeline.baseValue)?
-        //   `basePipeline.baseValue` would require the Level Up mechanic to update it
-        //   after every die roll, creating a redundant storage point. Directly computing
-        //   from `hitDieResults` ensures the DAG always reflects the current record state
-        //   reactively — any change to `hitDieResults` triggers an automatic HP update.
-        //
-        // @see src/lib/types/character.ts → Character.hitDieResults for full documentation.
-        // @see ARCHITECTURE.md section 9, Phase 3: HP Calculation specification.
-        const sumDiceRolls = Object.values(this.character.hitDieResults)
-          .reduce((total, roll) => total + roll, 0);
-        effectiveBaseValue = sumDiceRolls + conHpContrib;
-      }
-
-      // --- Max DEX Bonus to AC: minimum-wins among armor/condition caps ---
-      //
-      // `combatStats.max_dexterity_bonus` uses a special stacking model:
-      //   - `max_dex_cap` modifiers represent CONSTRAINTS (armor, encumbrance, conditions).
-      //     The most restrictive cap wins: if chain mail (cap=2) and tower shield (cap=2)
-      //     are both active, the effective cap is min(2, 2) = 2.
-      //   - Other modifier types (e.g., `untyped` +2 from Mithral, or enhancement bonuses
-      //     from magical items) are applied AFTER the cap is established via normal stacking.
-      //
-      // WHY NOT setAbsolute?
-      //   Using setAbsolute for armor caps prevents additive bonuses (like Mithral's +2)
-      //   from stacking on top. The `max_dex_cap` type solves this by separating the
-      //   "cap from armor" from "bonus to cap from special material".
-      //
-      //   Example: mithral chainmail
-      //     - chain mail max_dex_cap = 2  → effectiveBaseValue = 2
-      //     - mithral untyped = +2        → totalValue = 2 + 2 = 4
-      //     Combined: "max DEX bonus to AC is +4" (chainmail base 2, mithral adds 2).
-      //
-      // BASE VALUE = 99:
-      //   No armor worn → no max_dex_cap modifiers → effectiveBaseValue = 99 (no restriction).
-      //   Additive bonuses on an unarmored character (unusual but possible) still stack.
-      //
-      // @see primitives.ts — ModifierType "max_dex_cap" documentation
-      // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
-      if (pipelineId === 'combatStats.max_dexterity_bonus') {
-        // Separate the cap-imposing modifiers from additive bonuses
-        const capMods = activeMods.filter(m => m.type === 'max_dex_cap');
-        // After we extract capMods, only the non-cap modifiers go through normal stacking
-        // (we reassign activeMods below — TypeScript requires a local override)
-        const remainingMods = activeMods.filter(m => m.type !== 'max_dex_cap');
-
-        if (capMods.length > 0) {
-          // MINIMUM-WINS: most restrictive armor/condition cap applies
-          effectiveBaseValue = Math.min(...capMods.map(m => Number(m.value)));
-        } else {
-          // No armor / no condition restricting DEX → use base of 99 (no cap)
-          effectiveBaseValue = basePipeline.baseValue; // 99
-        }
-
-        // Apply non-cap modifiers (e.g., Mithral's untyped +2) via normal stacking.
-        // Gestalt mode has no effect on this pipeline (it's not BAB/saves).
-        const stackingResult = applyStackingRules(remainingMods, effectiveBaseValue);
-
-        result[pipelineId] = {
-          ...basePipeline,
-          // Expose ALL source modifiers in activeModifiers for the UI breakdown:
-          // cap mods + applied non-cap mods, so the player can see what imposed the cap
-          // and what bonuses were added on top.
-          activeModifiers: [...capMods, ...stackingResult.appliedModifiers],
-          situationalModifiers: situationalMods,
-          totalBonus: stackingResult.totalBonus,
-          totalValue: stackingResult.totalValue,
-          derivedModifier: 0,
-        };
-        continue; // Skip the general processing loop for this pipeline
-      }
-
-       // GESTALT MODE (Phase 3.7):
-       //   For BAB and saves, replace the standard "sum all base mods" with
-       //   computeGestaltBase() which applies max-per-level then sums.
-       //   Non-"base" modifiers (enhancement, luck, etc.) still go through
-       //   applyStackingRules() normally in both standard and gestalt modes.
-       let gestaltBaseAdjustment = 0;
-       let nonBaseMods = activeMods;
-       if (isGestalt && isGestaltAffectedPipeline(pipelineId)) {
-         const baseMods = activeMods.filter(m => m.type === 'base');
-         nonBaseMods = activeMods.filter(m => m.type !== 'base');
-         // computeGestaltBase replaces the standard sum of all "base" modifiers
-         gestaltBaseAdjustment = computeGestaltBase(
-           baseMods,
-           { ...this.character.classLevels },
-           characterLevel
-         );
-       }
-
-       const stacking = applyStackingRules(nonBaseMods, isGestalt && isGestaltAffectedPipeline(pipelineId)
-         ? effectiveBaseValue + gestaltBaseAdjustment
-         : effectiveBaseValue);
-
-       // Combat stats don't have a "derivedModifier" in the ability score sense (always 0)
-       result[pipelineId] = {
-         ...basePipeline,
-         activeModifiers: stacking.appliedModifiers,
-         situationalModifiers: situationalMods,
-         totalBonus: stacking.totalBonus,
-         totalValue: stacking.totalValue,
-         derivedModifier: 0, // Combat stats have no derived modifier
-       };
-     }
-
-     // Process each saving throw pipeline
-     for (const [pipelineId, basePipeline] of Object.entries(this.character.saves)) {
-       const activeMods = flatMods
-         .filter(e => e.modifier.targetId === pipelineId && !e.modifier.situationalContext)
-         .map(e => e.modifier);
-
-       const situationalMods = flatMods
-         .filter(e => e.modifier.targetId === pipelineId && e.modifier.situationalContext)
-         .map(e => e.modifier);
-
-       // GESTALT MODE for saves: same max-per-level logic as BAB above
-       let gestaltSaveAdjustment = 0;
-       let nonBaseSaveMods = activeMods;
-       if (isGestalt && isGestaltAffectedPipeline(pipelineId)) {
-         const baseSaveMods = activeMods.filter(m => m.type === 'base');
-         nonBaseSaveMods = activeMods.filter(m => m.type !== 'base');
-         gestaltSaveAdjustment = computeGestaltBase(
-           baseSaveMods,
-           { ...this.character.classLevels },
-           characterLevel
-         );
-       }
-
-       const stacking = applyStackingRules(
-         nonBaseSaveMods,
-         isGestalt && isGestaltAffectedPipeline(pipelineId)
-           ? basePipeline.baseValue + gestaltSaveAdjustment
-           : basePipeline.baseValue
-       );
-       result[pipelineId] = {
-         ...basePipeline,
-         activeModifiers: stacking.appliedModifiers,
-         situationalModifiers: situationalMods,
-         totalBonus: stacking.totalBonus,
-         totalValue: stacking.totalValue,
-         derivedModifier: 0,
-       };
-     }
-
-    return result;
-  });
+    phase3_combatStats: Record<ID, StatisticPipeline> = $derived.by(() =>
+     buildCombatStatPipelines(
+       this.character.combatStats,
+       this.character.saves,
+       this.character.hitDieResults,
+       this.character.classLevels,
+       this.phase0_flatModifiers,
+       this.phase2_attributes,
+       this.phase0_characterLevel,
+       this.settings.variantRules?.gestalt ?? false
+     )
+   );
 
   /**
    * DAG Phase 3b: Max HP from the resolved max_hp combat stat pipeline.
@@ -2071,33 +1167,9 @@ export class GameEngine {
    * DAG Phase 3c: Updated CharacterContext with Phase 3 combat stat values.
    * Used by Phase 4 (skills) formulas that reference combat stats (e.g., synergy bonuses).
    */
-  phase3_context: CharacterContext = $derived.by(() => {
-    const base = this.phase2_context;
-
-    // Strip "combatStats." prefix — see phase0_context for the full rationale.
-    const combatStats: CharacterContext['combatStats'] = {};
-    for (const [id, stat] of Object.entries(this.phase3_combatStats)) {
-      if (!id.startsWith('saves.')) {
-        const flatKey = id.startsWith('combatStats.') ? id.slice('combatStats.'.length) : id;
-        combatStats[flatKey] = { totalValue: stat.totalValue };
-      }
-    }
-
-    // Strip "saves." prefix — @saves.fortitude.totalValue needs context.saves["fortitude"].
-    const saves: CharacterContext['saves'] = {};
-    for (const [id, save] of Object.entries(this.phase3_combatStats)) {
-      if (id.startsWith('saves.')) {
-        const flatKey = id.slice('saves.'.length);
-        saves[flatKey] = { totalValue: save.totalValue };
-      }
-    }
-
-    return {
-      ...base,
-      combatStats,
-      saves,
-    };
-  });
+   phase3_context: CharacterContext = $derived.by(() =>
+    buildPhase3Context(this.phase2_context, this.phase3_combatStats)
+  );
 
   // ---------------------------------------------------------------------------
   // DAG PHASE 4 — Skills & Abilities
@@ -2131,34 +1203,9 @@ export class GameEngine {
    * The engine reads Feature.classSkills from the DataLoader for each active feature instance.
    * A missing feature (DataLoader stub) contributes nothing (graceful empty skip).
    */
-   phase4_classSkillSet: ReadonlySet<ID> = $derived.by(() => {
-    // Reading dataLoaderVersion creates a reactive dependency so this $derived
-    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    phase4_classSkillSet: ReadonlySet<ID> = $derived.by(() => {
     void this.dataLoaderVersion;
-
-    const classSkillIds = new Set<ID>();
-    const allInstances = [
-      ...this.character.activeFeatures,
-      ...(this.character.gmOverrides ?? []),
-    ];
-
-    for (const instance of allInstances) {
-      if (!instance.isActive) continue;
-      const feature = dataLoader.getFeature(instance.featureId);
-      if (!feature || !feature.classSkills) continue;
-
-      // For class features: only contribute classSkills if the character has at least 1 level
-      if (feature.category === 'class') {
-        const classLevel = this.character.classLevels[feature.id] ?? 0;
-        if (classLevel < 1) continue;
-      }
-
-      for (const skillId of feature.classSkills) {
-        classSkillIds.add(skillId);
-      }
-    }
-
-    return classSkillIds;
+    return buildClassSkillSet(this.character.activeFeatures, this.character.gmOverrides, this.character.classLevels);
   });
 
   /**
@@ -2206,120 +1253,14 @@ export class GameEngine {
    *   Non-class sources (racial, racial features) targeting the same pipeline are
    *   treated as bonus-per-level (since they don't have a matching classLevels entry).
    */
-  phase4_skillPointsBudget: SkillPointsBudget = $derived.by(() => {
-    // INT modifier: actual value; max(1, ...) applied per level below.
-    const intMod = this.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0;
-
-    // --- D&D 3.5 FIRST-LEVEL 4× BONUS ---
-    //
-    // At character level 1, the class taken grants 4× the normal SP (SRD rule, "Skills" chapter).
-    //   "At 1st level, you get four times the number of skill points you normally get
-    //    for a level in that class."
-    //
-    // IDENTIFYING THE "FIRST CLASS":
-    //   character.classLevels is a plain JS object. Modern JS (ES2015+) preserves insertion
-    //   order for string keys, so Object.keys(classLevels)[0] is the class the player added
-    //   first in the UI — which corresponds to the class taken at character level 1.
-    //   This is a sound heuristic and matches how BasicInfo.svelte builds classLevels.
-    //
-    // The bonus is represented as `firstLevelBonus = 3 × pointsPerLevel` (3 extra multiples,
-    // taking the effective count from 1× to 4× for that first level).
-    const firstClassId = Object.keys(this.character.classLevels)[0] as ID | undefined;
-
-    const classEntries: ClassSkillPointsEntry[] = [];
-    // Track which sourceIds have been processed as class SP sources to avoid double-counting
-    const processedClassSPSources = new Set<ID>();
-
-    // --- Step 1: Collect class-based SP/level modifiers ---
-    //
-    // Scan all active flat modifiers for those targeting `attributes.skill_points_per_level`.
-    // Each such modifier SHOULD come from a class Feature (sourceId = class Feature ID).
-    // We verify by checking character.classLevels[sourceId] exists.
-    //
-    // WHY FLAT MODIFIERS (not directly from feature.grantedModifiers)?
-    //   Phase 0 already resolved all level-gated and conditional modifiers.
-    //   Reading from phase0_flatModifiers ensures we respect isActive, forbiddenTags,
-    //   conditionNodes, and the full resolution chain — consistent with all other DAG phases.
-    for (const entry of this.phase0_flatModifiers) {
-      const mod = entry.modifier;
-      if (mod.targetId !== 'attributes.skill_points_per_level') continue;
-      if (mod.situationalContext) continue; // Ignore situational SP modifiers
-
-      const sourceId = mod.sourceId;
-      if (processedClassSPSources.has(sourceId)) continue; // De-duplicate per source
-
-      const classLevel = this.character.classLevels[sourceId];
-      if (classLevel === undefined || classLevel < 1) {
-        // This SP/level modifier comes from a non-class source (racial trait etc.)
-        // Treat it as a bonus — will be accumulated below with the bonus pass.
-        continue;
-      }
-
-      // Found a class-based SP/level source.
-      processedClassSPSources.add(sourceId);
-
-      const spPerLevel = typeof mod.value === 'number' ? mod.value : 0;
-      const pointsPerLevel = Math.max(1, spPerLevel + intMod);
-
-      // Apply the first-level 4× bonus to whichever class was taken at character level 1.
-      const isFirstClass = sourceId === firstClassId;
-      const firstLevelBonus = isFirstClass ? 3 * pointsPerLevel : 0;
-      const totalPoints = pointsPerLevel * classLevel + firstLevelBonus;
-
-      // Look up the class feature label for display in the journal
-      const classFeature = dataLoader.getFeature(sourceId);
-      const classLabel: LocalizedString = classFeature?.label ?? { en: sourceId, fr: sourceId };
-
-      classEntries.push({
-        classId: sourceId,
-        classLabel,
-        spPerLevel,
-        classLevel,
-        intModifier: intMod,
-        pointsPerLevel,
-        firstLevelBonus,
-        totalPoints,
-      });
-    }
-
-    // --- Step 2: Collect bonus SP/level modifiers (racial, feat, etc.) ---
-    //
-    // These modifiers target `attributes.bonus_skill_points_per_level`.
-    // They apply uniformly per TOTAL CHARACTER LEVEL (not per-class level).
-    // Example: Human racial "+1 SP/level" adds 1 SP for every level the character has.
-    let bonusSpPerLevel = 0;
-    for (const entry of this.phase0_flatModifiers) {
-      const mod = entry.modifier;
-      if (mod.targetId !== 'attributes.bonus_skill_points_per_level') continue;
-      if (mod.situationalContext) continue;
-      bonusSpPerLevel += typeof mod.value === 'number' ? mod.value : 0;
-    }
-
-    // Also check for non-class sources targeting `attributes.skill_points_per_level` —
-    // these are treated as bonus SP per total level (same treatment as bonus_skill_points_per_level).
-    for (const entry of this.phase0_flatModifiers) {
-      const mod = entry.modifier;
-      if (mod.targetId !== 'attributes.skill_points_per_level') continue;
-      if (mod.situationalContext) continue;
-      const sourceId = mod.sourceId;
-      if (processedClassSPSources.has(sourceId)) continue; // Already handled as class SP
-      // Not a class source — treat as bonus per total character level
-      bonusSpPerLevel += typeof mod.value === 'number' ? mod.value : 0;
-    }
-
-    const totalClassPoints = classEntries.reduce((sum, e) => sum + e.totalPoints, 0);
-    const totalBonusPoints = bonusSpPerLevel * this.phase0_characterLevel;
-    const totalAvailable = totalClassPoints + totalBonusPoints;
-
-    return {
-      perClassBreakdown: classEntries,
-      bonusSpPerLevel,
-      totalBonusPoints,
-      totalClassPoints,
-      totalAvailable,
-      intModifier: intMod,
-    };
-  });
+   phase4_skillPointsBudget: SkillPointsBudget = $derived.by(() =>
+    buildSkillPointsBudget(
+      this.phase0_flatModifiers,
+      this.character.classLevels,
+      this.phase2_attributes['stat_intelligence']?.derivedModifier ?? 0,
+      this.phase0_characterLevel
+    )
+  );
 
   /**
    * DAG Phase 4: Leveling journal — per-class contribution breakdown.
@@ -2341,123 +1282,14 @@ export class GameEngine {
    *   - phase4_skillPointsBudget (correct per-class SP)
    *   - DataLoader (feature labels and classSkills arrays)
    */
-  phase4_levelingJournal: LevelingJournal = $derived.by(() => {
-    const flatMods = this.phase0_flatModifiers;
-    const budget = this.phase4_skillPointsBudget;
-    const classSPMap = new Map<ID, ClassSkillPointsEntry>(
-      budget.perClassBreakdown.map(e => [e.classId, e])
-    );
-
-    const perClassBreakdown: LevelingJournalClassEntry[] = [];
-
-    for (const [classId, classLevel] of Object.entries(this.character.classLevels)) {
-      if (classLevel < 1) continue;
-
-      // Get the class Feature definition for labels, classSkills, etc.
-      const classFeature = dataLoader.getFeature(classId);
-      const classLabel: LocalizedString = classFeature?.label ?? { en: classId, fr: classId };
-
-      // --- BAB and saves: sum all "base" type modifiers from this class source ---
-      //
-      // The modifier.sourceId tells us which class contributed each increment.
-      // We filter by sourceId = classId to get only THIS class's contributions.
-      // "base" type modifiers stack, so summing gives the correct total per class.
-      const babMods = flatMods.filter(
-        e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'combatStats.base_attack_bonus'
-          && e.modifier.type === 'base'
-          && !e.modifier.situationalContext
-      );
-      const fortMods = flatMods.filter(
-        e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'saves.fortitude'
-          && e.modifier.type === 'base'
-          && !e.modifier.situationalContext
-      );
-      const refMods = flatMods.filter(
-        e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'saves.reflex'
-          && e.modifier.type === 'base'
-          && !e.modifier.situationalContext
-      );
-      const willMods = flatMods.filter(
-        e => e.modifier.sourceId === classId
-          && e.modifier.targetId === 'saves.will'
-          && e.modifier.type === 'base'
-          && !e.modifier.situationalContext
-      );
-
-      const totalBab  = babMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
-      const totalFort = fortMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
-      const totalRef  = refMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
-      const totalWill = willMods.reduce((s, e) => s + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
-
-      // Skill points from the per-class SP budget (includes first-level bonus if applicable)
-      const spEntry = classSPMap.get(classId);
-      const totalSp         = spEntry?.totalPoints    ?? 0;
-      const spPerLevel      = spEntry?.spPerLevel     ?? 0;
-      const spPointsPerLevel = spEntry?.pointsPerLevel ?? 0;
-      const firstLevelBonus = spEntry?.firstLevelBonus ?? 0;
-
-      // Class skills from the Feature definition
-      const classSkills: ID[] = classFeature?.classSkills ?? [];
-      const classSkillLabels = classSkills.map(skillId => {
-        const skillDef = dataLoader.getFeature(skillId);
-        return {
-          id: skillId,
-          label: skillDef?.label ?? ({ en: skillId } as LocalizedString),
-        };
-      });
-
-      // Granted features from levelProgression up to classLevel
-      const grantedFeatureIds: string[] = [];
-      if (classFeature?.levelProgression) {
-        for (const entry of classFeature.levelProgression) {
-          if (entry.level <= classLevel) {
-            for (const fid of entry.grantedFeatures) {
-              if (fid && !fid.startsWith('-') && !grantedFeatureIds.includes(fid)) {
-                grantedFeatureIds.push(fid);
-              }
-            }
-          }
-        }
-      }
-
-      perClassBreakdown.push({
-        classId,
-        classLabel,
-        classLevel,
-        totalBab,
-        totalFort,
-        totalRef,
-        totalWill,
-        totalSp,
-        spPerLevel,
-        spPointsPerLevel,
-        firstLevelBonus,
-        classSkills,
-        classSkillLabels,
-        grantedFeatureIds,
-      });
-    }
-
-    const totalBab  = perClassBreakdown.reduce((s, e) => s + e.totalBab,  0);
-    const totalFort = perClassBreakdown.reduce((s, e) => s + e.totalFort, 0);
-    const totalRef  = perClassBreakdown.reduce((s, e) => s + e.totalRef,  0);
-    const totalWill = perClassBreakdown.reduce((s, e) => s + e.totalWill, 0);
-    const totalSp   = perClassBreakdown.reduce((s, e) => s + e.totalSp,   0)
-      + budget.totalBonusPoints;
-
-    return {
-      perClassBreakdown,
-      totalBab,
-      totalFort,
-      totalRef,
-      totalWill,
-      totalSp,
-      characterLevel: this.phase0_characterLevel,
-    };
-  });
+   phase4_levelingJournal: LevelingJournal = $derived.by(() =>
+    buildLevelingJournal(
+      this.character.classLevels,
+      this.phase0_flatModifiers,
+      this.phase4_skillPointsBudget,
+      this.phase0_characterLevel
+    )
+  );
 
   /**
    * Whether the character is at risk of a multiclass XP penalty.
@@ -2477,41 +1309,9 @@ export class GameEngine {
    *
    * Used by: `LevelingJournalModal.svelte` to show an informational warning.
    */
-  phase_multiclassXpPenaltyRisk: boolean = $derived.by(() => {
-    const entries = Object.entries(this.character.classLevels);
-    if (entries.length <= 1) return false;
-
-    // D&D 3.5 SRD ("Multiclass Characters", PHB p.59):
-    //   The character's FAVORED CLASS is excluded from the penalty check entirely.
-    //   Only non-favored classes that are 2+ levels below the highest non-favored
-    //   class level impose the 20% XP penalty per offending class.
-    //
-    //   Example: Human Fighter 5 / Wizard 1 (favored = Fighter):
-    //     After excluding Fighter: only Wizard 1 remains → no penalty (single class).
-    //
-    //   Example: Elf Wizard 5 / Fighter 1 (favored = Wizard, Elf racial):
-    //     After excluding Wizard: only Fighter 1 remains → no penalty (single class).
-    //
-    //   Example: Dwarf Fighter 3 / Rogue 1 (favored = Fighter, Dwarf racial):
-    //     After excluding Fighter: only Rogue 1 remains → no penalty.
-    //
-    //   Example: Human Fighter 3 / Wizard 1 / Rogue 1 (favored = Fighter):
-    //     After excluding Fighter: Wizard 1 and Rogue 1. Max = 1. Neither is 2+ below. No penalty.
-    //
-    //   Example: Human Fighter 3 / Wizard 1 / Rogue 3 (no favored set):
-    //     Max = 3. Wizard 1 is 2 below → penalty applies.
-    const favoredClass = this.character.favoredClass;
-    const checkableEntries = favoredClass
-      ? entries.filter(([id]) => id !== favoredClass)
-      : entries;
-
-    // With only one (or zero) checkable classes, no multiclass penalty can apply.
-    if (checkableEntries.length <= 1) return false;
-
-    const max = Math.max(...checkableEntries.map(([, lvl]) => lvl));
-    // Penalty triggers when a non-favored class is MORE THAN 1 level below the highest.
-    return checkableEntries.some(([, l]) => max - l > 1);
-  });
+   phase_multiclassXpPenaltyRisk: boolean = $derived.by(() =>
+    computeMulticlassXpPenaltyRisk(this.character.classLevels, this.character.favoredClass)
+  );
 
   /**
    * DAG Phase 4: Resolved skill pipelines.
@@ -2526,152 +1326,15 @@ export class GameEngine {
    * The armor check penalty from phase3_combatStats is read here and injected
    * as a bonus (negative value) for skills with appliesArmorCheckPenalty === true.
    */
-  phase4_skills: Record<ID, import('../types/pipeline').SkillPipeline> = $derived.by(() => {
-    // Reading dataLoaderVersion creates a reactive dependency so this $derived
-    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    phase4_skills: Record<ID, import('../types/pipeline').SkillPipeline> = $derived.by(() => {
     void this.dataLoaderVersion;
-
-    const result: Record<ID, import('../types/pipeline').SkillPipeline> = {};
-    const flatMods = this.phase0_flatModifiers;
-    const attributes = this.phase2_attributes;
-    const classSkillSet = this.phase4_classSkillSet;
-
-    // The armor check penalty is stored as a negative number on its pipeline
-    const armorCheckPenalty = this.phase3_combatStats['combatStats.armor_check_penalty']?.totalValue ?? 0;
-
-    // --- SYNERGY MODIFIERS (ARCHITECTURE.md section 9, Phase 4 & ANNEXES.md B.6) ---
-    //
-    // Auto-generate synergy modifiers from the config_skill_synergies config table.
-    // Per the SRD: if a character has 5 or more ranks in a "source skill", they gain
-    // a +2 synergy bonus to a "target skill". These bonuses stack (type: "synergy").
-    //
-    // WHY AUTO-GENERATED?
-    //   Synergy bonuses could be manually authored in Feature JSON, but there are 30+
-    //   synergy pairs in the SRD (Annex B.6). Manually authoring each one on every
-    //   class/race Feature would be redundant. Auto-generation from the config table
-    //   is cleaner, data-driven, and requires zero Feature JSON changes.
-    //
-    // HOW IT WORKS:
-    //   1. Load the `config_skill_synergies` table from the DataLoader.
-    //   2. For each synergy pair {sourceSkill, targetSkill}:
-    //      a. Check if character has >= 5 ranks in sourceSkill.
-    //      b. If yes, add a synergy Modifier to the targetSkill's modifier list.
-    //   3. Synergy modifiers participate in stacking resolution (type "synergy" always stacks).
-    //
-    // SITUATIONAL SYNERGIES:
-    //   Some synergy pairs have a `condition` field (e.g., "Bluff → Disguise when acting").
-    //   These are treated as situational modifiers (added to situationalModifiers, not active).
-    const synergyTable = dataLoader.getConfigTable('config_skill_synergies');
-    const synergyMods = new Map<string, import('../types/pipeline').Modifier[]>(); // target → mods
-
-    // Access top-level metadata fields via unknown cast for safe type widening.
-    // ConfigTable stores typed `data: Record<string, unknown>[]` but its own metadata
-    // fields (requiredRanks, bonusValue, bonusType) are in the raw JSON and thus accessed
-    // via the broader unknown cast to avoid TypeScript's index signature requirement.
-    const synergyTableAny = synergyTable as unknown as Record<string, unknown>;
-    if (synergyTable?.data && Array.isArray(synergyTable.data)) {
-      const requiredRanks = typeof synergyTableAny['requiredRanks'] === 'number' ? synergyTableAny['requiredRanks'] as number : 5;
-      const bonusValue = typeof synergyTableAny['bonusValue'] === 'number' ? synergyTableAny['bonusValue'] as number : 2;
-      const bonusType = (typeof synergyTableAny['bonusType'] === 'string' ? synergyTableAny['bonusType'] as string : 'synergy') as import('../types/primitives').ModifierType;
-
-      for (const row of synergyTable.data as Array<Record<string, unknown>>) {
-        const sourceSkill = row['sourceSkill'] as string;
-        const targetSkill = row['targetSkill'] as string;
-        const conditionStr = row['condition'] as string | undefined;
-
-        // Check if character has sufficient ranks in the source skill
-        const sourceRanks = this.character.skills[sourceSkill]?.ranks ?? 0;
-        if (sourceRanks >= requiredRanks) {
-          // Resolve the source skill's localized label from the DataLoader so the
-          // modifier's sourceName reads "Synergy (Diplomacy)" instead of
-          // "Synergy (skill_diplomacy)". Falls back to the raw ID if the feature
-          // hasn't loaded yet (bootstrap) — the DAG will re-evaluate once it loads.
-          const sourceSkillFeature = dataLoader.getFeature(sourceSkill);
-          const sourceLabel: LocalizedString = sourceSkillFeature?.label
-            ?? { en: sourceSkill, fr: sourceSkill };
-
-          // Build the synergy modifier source name.
-          //
-          // `buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY)` constructs a full
-          // LocalizedString from every loaded locale at the time this $derived
-          // block re-runs. The "Synergy" word in each language comes from
-          // `ui-strings.ts` (English baseline) and `static/locales/*.json` (other
-          // languages) — no translations live in TypeScript source files.
-          //
-          // Adding a new UI language only requires adding a `"modifier.synergy"` key
-          // to the new locale JSON file. No changes to constants.ts or the engine.
-          const synergyLabel = buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY);
-          const synergyMod: import('../types/pipeline').Modifier = {
-            id: `synergy_${sourceSkill}_to_${targetSkill}`,
-            sourceId: sourceSkill,
-            sourceName: Object.fromEntries(
-              Object.keys(synergyLabel).map(lang => [
-                lang,
-                `${synergyLabel[lang]} (${translateString(sourceLabel, lang)})`,
-              ])
-            ) as LocalizedString,
-            targetId: targetSkill,
-            value: bonusValue,
-            type: bonusType,
-            // If the synergy has a condition string, it's situational
-            situationalContext: conditionStr ? `synergy_${conditionStr}` : undefined,
-          };
-
-          if (!synergyMods.has(targetSkill)) {
-            synergyMods.set(targetSkill, []);
-          }
-          synergyMods.get(targetSkill)!.push(synergyMod);
-        }
-      }
-    }
-
-    for (const [skillId, baseSkill] of Object.entries(this.character.skills)) {
-      const isClassSkill = classSkillSet.has(skillId);
-
-      // Get the key ability modifier for this skill
-      const keyAbilityMod = attributes[baseSkill.keyAbility]?.derivedModifier ?? 0;
-
-      // Collect all misc modifiers targeting this skill pipeline from features
-      const featureActiveMods = flatMods
-        .filter(e => e.modifier.targetId === skillId && !e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      const featureSituationalMods = flatMods
-        .filter(e => e.modifier.targetId === skillId && e.modifier.situationalContext)
-        .map(e => e.modifier);
-
-      // Add auto-generated synergy modifiers
-      const skillSynergyMods = synergyMods.get(skillId) ?? [];
-      const activeSynergyMods = skillSynergyMods.filter(m => !m.situationalContext);
-      const situationalSynergyMods = skillSynergyMods.filter(m => m.situationalContext);
-
-      // Combine feature mods with synergy mods for stacking resolution
-      const allActiveMods = [...featureActiveMods, ...activeSynergyMods];
-      const allSituationalMods = [...featureSituationalMods, ...situationalSynergyMods];
-
-      // Apply stacking rules to all active modifiers combined
-      // (synergy type always stacks with other synergy bonuses)
-      const stacking = applyStackingRules(allActiveMods, 0);
-
-      // Total = ranks + keyAbilityModifier + miscBonuses (incl. synergies) + armorCheckPenalty
-      const totalValue = baseSkill.ranks + keyAbilityMod + stacking.totalBonus
-        + (baseSkill.appliesArmorCheckPenalty ? armorCheckPenalty : 0);
-
-      result[skillId] = {
-        ...baseSkill,
-        isClassSkill,
-        // D&D 3.5 SRD: class skills cost 1 SP/rank; cross-class skills cost 2 SP/rank.
-        // Exposed as an engine-derived field so the UI never hardcodes this rule.
-        costPerRank: (isClassSkill ? 1 : 2) as 1 | 2,
-        activeModifiers: stacking.appliedModifiers,
-        situationalModifiers: allSituationalMods,
-        totalBonus: stacking.totalBonus, // Misc bonuses + synergies (not ranks + ability)
-        totalValue,
-        derivedModifier: 0, // Skills don't have a derivedModifier in D&D 3.5 sense
-      };
-    }
-
-    return result;
+    return buildSkillPipelines(
+      this.character.skills,
+      this.phase0_flatModifiers,
+      this.phase2_attributes,
+      this.phase4_classSkillSet,
+      this.phase3_combatStats['combatStats.armor_check_penalty']?.totalValue ?? 0
+    );
   });
 
   // ---------------------------------------------------------------------------
@@ -2709,25 +1372,9 @@ export class GameEngine {
    * @see SaveConfigEntry — entry type (exported for component prop types)
    * @see static/rules/00_d20srd_core/00_d20srd_core_config_tables.json — authoritative source
    */
-  savingThrowConfig: readonly SaveConfigEntry[] = $derived.by(() => {
-    // Track the dataLoader version so this derived re-evaluates when rules reload.
+   savingThrowConfig: readonly SaveConfigEntry[] = $derived.by(() => {
     void this.dataLoaderVersion;
-
-    const table = dataLoader.getConfigTable('config_save_definitions');
-    if (table?.data && Array.isArray(table.data) && table.data.length > 0) {
-      // Map each row from the config table to a typed SaveConfigEntry.
-      // Unknown extra fields (e.g., future homebrew extensions) are silently ignored.
-      return (table.data as Array<Record<string, unknown>>).map(row => ({
-        pipelineId:     (row['pipelineId']     as string)        ?? '',
-        label:          (row['label']          as LocalizedString) ?? { en: '', fr: '' },
-        keyAbilityId:   (row['keyAbilityId']   as string)        ?? '',
-        keyAbilityAbbr: (row['keyAbilityAbbr'] as LocalizedString) ?? { en: '', fr: '' },
-        accentColor:    (row['accentColor']    as string)        ?? '#888',
-      })) satisfies SaveConfigEntry[];
-    }
-
-    // Fallback: DataLoader not yet loaded (bootstrap) or table absent in rule sources
-    return DEFAULT_SAVE_CONFIG;
+    return buildSavingThrowConfig();
   });
 
   // ---------------------------------------------------------------------------
@@ -3144,47 +1791,17 @@ export class GameEngine {
    *
    * Used by the Inventory tab (Phase 13.3) to enforce item slot limits.
    */
-  phase_equipmentSlots: Record<string, number> = $derived.by(() => {
-    // Read the resolved slot counts from phase3_combatStats (full pipeline processing:
-    // base value + stacking rules for any features that modify slot counts).
-    // Fall back to 0 for any slot not present (should never happen — all are initialised
-    // in createEmptyCharacter(), but defensive guard prevents NaN).
-    const combatStats = this.phase3_combatStats;
-    const result: Record<string, number> = {};
-
-    const SLOT_PIPELINE_KEYS = [
-      'slots.head', 'slots.eyes', 'slots.neck', 'slots.torso', 'slots.body',
-      'slots.waist', 'slots.shoulders', 'slots.arms', 'slots.hands',
-      'slots.ring', 'slots.feet', 'slots.main_hand', 'slots.off_hand',
-    ] as const;
-
-    for (const key of SLOT_PIPELINE_KEYS) {
-      result[key] = combatStats[key]?.totalValue ?? 0;
-    }
-
-    return result;
-  });
+   phase_equipmentSlots: Record<string, number> = $derived.by(() =>
+    buildEquipmentSlots(this.phase3_combatStats)
+  );
 
   /**
    * The current count of equipped items per slot.
    * Used by Phase 13.3 to check if a slot is full before equipping.
    */
-  phase_equippedSlotCounts: Record<string, number> = $derived.by(() => {
-    const counts: Record<string, number> = {};
-    for (const afi of this.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      // Look up the Feature definition to check if it is an ItemFeature with an equipmentSlot
-      const feature = dataLoader.getFeature(afi.featureId);
-      if (!feature || (feature as import('../types/feature').ItemFeature).equipmentSlot === undefined) continue;
-      const itemFeat = feature as import('../types/feature').ItemFeature;
-      const slot = itemFeat.equipmentSlot;
-      if (!slot || slot === 'none') continue;
-      // Map slot name to slots.* key for comparison with phase_equipmentSlots
-      const slotKey = `slots.${slot}`;
-      counts[slotKey] = (counts[slotKey] ?? 0) + 1;
-    }
-    return counts;
-  });
+   phase_equippedSlotCounts: Record<string, number> = $derived.by(() =>
+    buildEquippedSlotCounts(this.character.activeFeatures)
+  );
 
   /**
    * Checks whether an item can be equipped given the current slot availability.
@@ -4012,56 +2629,25 @@ export class GameEngine {
    * Total available feat slots.
    * Formula: 1 + floor(characterLevel / 3) + bonus slots from features.
    */
-  phase4_featSlots: number = $derived.by(() => {
-    const baseSlots = 1 + Math.floor(this.phase0_characterLevel / 3);
-    const bonusSlots = this.phase0_flatModifiers
-      .filter(e => e.modifier.targetId === 'attributes.bonus_feat_slots' && !e.modifier.situationalContext)
-      .reduce((sum, e) => sum + (typeof e.modifier.value === 'number' ? e.modifier.value : 0), 0);
-    return baseSlots + bonusSlots;
-  });
+   phase4_featSlots: number = $derived.by(() =>
+    computeFeatSlots(this.phase0_characterLevel, this.phase0_flatModifiers)
+  );
 
   /**
    * Set of feat Feature IDs that were GRANTED automatically by Race/Class.
    * These feats do NOT consume a player feat slot.
    */
-  phase4_grantedFeatIds: ReadonlySet<string> = $derived.by(() => {
-    const grantedIds = new Set<string>();
-    for (const afi of this.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feature = dataLoader.getFeature(afi.featureId);
-      if (!feature) continue;
-      for (const id of (feature.grantedFeatures ?? [])) {
-        if (id && !id.startsWith('-')) grantedIds.add(id);
-      }
-      if (feature.category === 'class' && feature.levelProgression) {
-        const classLevel = this.character.classLevels[feature.id] ?? 0;
-        for (const entry of feature.levelProgression) {
-          if (entry.level <= classLevel) {
-            for (const id of entry.grantedFeatures) {
-              if (id && !id.startsWith('-')) grantedIds.add(id);
-            }
-          }
-        }
-      }
-    }
-    return grantedIds;
-  });
+   phase4_grantedFeatIds: ReadonlySet<string> = $derived.by(() =>
+    computeGrantedFeatIds(this.character.activeFeatures, this.character.classLevels)
+  );
 
   /**
    * Number of manually selected feats (consume a slot).
    * Feats in phase4_grantedFeatIds are excluded.
    */
-  phase4_manualFeatCount: number = $derived.by(() => {
-    const grantedIds = this.phase4_grantedFeatIds;
-    let count = 0;
-    for (const afi of this.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const feature = dataLoader.getFeature(afi.featureId);
-      if (feature?.category !== 'feat') continue;
-      if (!grantedIds.has(afi.featureId)) count++;
-    }
-    return count;
-  });
+   phase4_manualFeatCount: number = $derived.by(() =>
+    computeManualFeatCount(this.character.activeFeatures, this.phase4_grantedFeatIds)
+  );
 
   /** Remaining feat slots (total − manual count). */
   phase4_featSlotsRemaining: number = $derived(
@@ -4090,29 +2676,9 @@ export class GameEngine {
    * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
    * @see ARCHITECTURE.md §5.6 — action budget min-wins rule
    */
-  phase_effectiveActionBudget: Record<string, number> = $derived.by(() => {
-    const Inf = Infinity;
-    let standard   = Inf;
-    let move       = Inf;
-    let swift      = Inf;
-    let immediate  = Inf;
-    let free       = Inf;
-    let full_round = Inf;
-
-    for (const afi of this.character.activeFeatures) {
-      if (!afi.isActive) continue;
-      const f = dataLoader.getFeature(afi.featureId);
-      if (!f?.actionBudget) continue;
-      const b = f.actionBudget;
-      if (b.standard   !== undefined) standard   = Math.min(standard,   b.standard);
-      if (b.move       !== undefined) move       = Math.min(move,       b.move);
-      if (b.swift      !== undefined) swift      = Math.min(swift,      b.swift);
-      if (b.immediate  !== undefined) immediate  = Math.min(immediate,  b.immediate);
-      if (b.free       !== undefined) free       = Math.min(free,       b.free);
-      if (b.full_round !== undefined) full_round = Math.min(full_round, b.full_round);
-    }
-    return { standard, move, swift, immediate, free, full_round };
-  });
+   phase_effectiveActionBudget: Record<string, number> = $derived.by(() =>
+    computeEffectiveActionBudget(this.character.activeFeatures)
+  );
 
   /**
    * Whether any active feature has the `action_budget_xor` tag.
@@ -4125,12 +2691,8 @@ export class GameEngine {
    * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
    * @see ARCHITECTURE.md §5.6 — XOR rule specification
    */
-  phase_actionBudgetHasXOR: boolean = $derived.by(() =>
-    this.character.activeFeatures.some(afi => {
-      if (!afi.isActive) return false;
-      const f = dataLoader.getFeature(afi.featureId);
-      return !!f?.actionBudget && f.tags?.includes('action_budget_xor') === true;
-    })
+   phase_actionBudgetHasXOR: boolean = $derived.by(() =>
+    computeActionBudgetHasXOR(this.character.activeFeatures)
   );
 
   /**
@@ -4146,26 +2708,9 @@ export class GameEngine {
    *
    * @see src/lib/components/combat/ActionBudgetBar.svelte — display consumer
    */
-  phase_actionBudgetBlockers: Record<string, string> = $derived.by(() => {
-    const categories = ['standard', 'move', 'swift', 'immediate', 'free', 'full_round'] as const;
-    const result: Record<string, string> = {};
-    for (const cat of categories) {
-      result[cat] = this.character.activeFeatures
-        .filter(afi => {
-          if (!afi.isActive) return false;
-          const f = dataLoader.getFeature(afi.featureId);
-          if (!f?.actionBudget) return false;
-          const val = (f.actionBudget as Record<string, unknown>)[cat];
-          return val !== undefined && val === 0;
-        })
-        .map(afi => {
-          const f = dataLoader.getFeature(afi.featureId);
-          return f ? this.t(f.label) : afi.featureId;
-        })
-        .join(', ');
-    }
-    return result;
-  });
+   phase_actionBudgetBlockers: Record<string, string> = $derived.by(() =>
+    computeActionBudgetBlockers(this.character.activeFeatures, this.settings.language)
+  );
 
   // ---------------------------------------------------------------------------
   // DISPLAY HELPERS — Pure display computations kept in the engine layer
@@ -6719,384 +5264,6 @@ export class GameEngine {
     afi.isStashed = false;
   }
 
-  // ---------------------------------------------------------------------------
-  // PRIVATE METHODS — DAG computation helpers
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Builds the flat list of all valid active modifiers from all active features.
-   *
-   * RECEIVES explicit parameters (activeTags and context) instead of reading
-   * $derived values internally. This ensures Svelte 5's reactivity graph correctly
-   * registers the upstream $derived dependencies (phase0_activeTags, phase0_context)
-   * on the $derived property that calls this method.
-   *
-   * @param activeTags - Pre-computed active tags (from phase0_activeTags).
-   * @param context    - Pre-computed character context snapshot (from phase0_context).
-   *
-   * ALGORITHM:
-   *   1. Collect all instances: character.activeFeatures + character.gmOverrides.
-   *   2. For each isActive instance:
-   *      a. Look up the Feature from the DataLoader.
-   *      b. Skip if Feature not found (logs warning; graceful degradation).
-   *      c. Check forbiddenTags: if any forbidden tag is in activeTags, skip this feature.
-   *      d. Collect modifiers from grantedModifiers (base feature modifiers).
-   *      e. For class features: collect modifiers from levelProgression entries
-   *         where entry.level <= classLevels[featureId].
-   *      f. Recursively collect from grantedFeatures (up to MAX_RESOLUTION_DEPTH).
-   *      g. For each collected modifier:
-   *         - Evaluate conditionNode (if present) using the provided context.
-   *         - Resolve string `value` formulas to numbers.
-   *         - Route to active or situational list based on situationalContext presence.
-   *
-   * GM OVERRIDE MERGE:
-   *   gmOverrides are appended AFTER regular activeFeatures so their modifiers
-   *   are processed last. For setAbsolute-type modifiers, last wins. This ensures
-   *   GM overrides always take precedence over player features.
-   */
-  #computeFlatModifiers(activeTags: string[], context: CharacterContext): { modifiers: FlatModifierEntry[]; disabledInstanceIds: Set<ID> } {
-    const result: FlatModifierEntry[] = [];
-    // Track feature instances whose prerequisitesNode is no longer satisfied.
-    // These features are "owned" by the character but their modifiers are suspended.
-    // The UI renders them grayed-out with a warning (e.g., "Dexterity dropped below 15").
-    const disabledInstanceIds = new Set<ID>();
-
-    // --- Build the complete list of feature instances to process ---
-    //
-    // Resolution order (last processed = highest priority for setAbsolute):
-    //   1. Character's own activeFeatures  (player choices)
-    //   2. Scene's activeGlobalFeatures    (GM global environment, same priority as character features)
-    //   3. Character's gmOverrides         (GM per-character overrides, highest priority)
-    //
-    // SCENE GLOBAL FEATURES (ARCHITECTURE.md section 13):
-    //   Features in `sceneState.activeGlobalFeatures` are virtually injected as if they
-    //   were in every character's `activeFeatures`. This implements the "Global Aura" concept:
-    //   when the GM activates "environment_extreme_heat", ALL characters immediately receive
-    //   its modifiers (speed reduction, save penalty). Characters with appropriate protections
-    //   (e.g., the "endure_elements" tag from an active spell) block these modifiers via
-    //   their `conditionNode` logic — no special engine handling needed.
-    //
-    // WHY SYNTHETIC INSTANCES FOR SCENE FEATURES?
-    //   `#collectModifiersFromInstance` expects `ActiveFeatureInstance` objects.
-    //   We create synthetic instances for each scene feature with stable instanceIds
-    //   so the engine can process them identically to character features.
-    const sceneInstances: ActiveFeatureInstance[] = this.sceneState.activeGlobalFeatures.map(featureId => ({
-      instanceId: `scene_global_${featureId}`,
-      featureId,
-      isActive: true,
-    }));
-
-    const allInstances: ActiveFeatureInstance[] = [
-      ...this.character.activeFeatures,
-      ...sceneInstances,                      // Global scene features (injected for all characters)
-      ...(this.character.gmOverrides ?? []),  // GM per-character overrides (processed last = highest priority)
-    ];
-
-    // Track visited feature IDs to prevent recursive loops
-    const visitedFeatureIds = new Set<ID>();
-
-    for (const instance of allInstances) {
-      if (!instance.isActive) continue;
-
-      this.#collectModifiersFromInstance(
-        instance,
-        activeTags,
-        context,
-        result,
-        visitedFeatureIds,
-        disabledInstanceIds,
-        0 // initial depth
-      );
-    }
-
-    return { modifiers: result, disabledInstanceIds };
-  }
-
-  /**
-   * Recursively collects modifiers from a feature instance.
-   *
-   * @param instance            - The ActiveFeatureInstance to process.
-   * @param activeTags          - Current character tag set (for forbiddenTags and conditionNode checks).
-   * @param context             - Preliminary character context (for formula resolution).
-   * @param result              - Output array to push FlatModifierEntry objects into.
-   * @param visitedFeatureIds   - Set of already-visited feature IDs (cycle prevention).
-   * @param disabledInstanceIds - Set to record instances whose prerequisites are no longer met.
-   * @param depth               - Current recursion depth (prevent infinite loops).
-   */
-  #collectModifiersFromInstance(
-    instance: ActiveFeatureInstance,
-    activeTags: string[],
-    context: CharacterContext,
-    result: FlatModifierEntry[],
-    visitedFeatureIds: Set<ID>,
-    disabledInstanceIds: Set<ID>,
-    depth: number
-  ): void {
-    // Depth guard: prevent infinite recursion from circular grantedFeatures references.
-    // Architecture §9.1 specifies a maximum of 3 re-evaluations. The initial call starts
-    // at depth 0, so depth >= 3 means we've already done 3 recursive expansions.
-    if (depth >= MAX_RESOLUTION_DEPTH) {
-      console.warn(`[GameEngine] Phase 0: Max resolution depth (${MAX_RESOLUTION_DEPTH}) reached for feature "${instance.featureId}". Stopping recursion.`);
-      return;
-    }
-
-    // Look up the feature definition
-    const feature = dataLoader.getFeature(instance.featureId);
-    if (!feature) {
-      // Feature not loaded yet (DataLoader stub) — graceful skip
-      return;
-    }
-
-    // Cycle prevention: skip if we've already processed this feature definition
-    if (visitedFeatureIds.has(feature.id)) return;
-    visitedFeatureIds.add(feature.id);
-
-    // --- Check forbiddenTags ---
-    // If the character has any of the forbidden tags, this feature's modifiers are suppressed
-    if (feature.forbiddenTags && feature.forbiddenTags.some(tag => activeTags.includes(tag))) {
-      return; // Feature suppressed by a conflicting tag (e.g., Druid + metal_armor)
-    }
-
-    // --- Check prerequisitesNode at RUNTIME ---
-    // D&D 3.5 rule: If a character's stats change (ability drain, level loss, curse)
-    // such that a feat's prerequisites are no longer met, the feat's bonuses are
-    // suspended. The feat is NOT removed — it remains on the character sheet
-    // (displayed grayed-out) and reactivates automatically if prerequisites are met again.
-    //
-    // Example: Two-Weapon Fighting requires DEX 15. If the character's DEX drops
-    // below 15 (due to poison, a curse, etc.), the feat's attack modifiers are
-    // suspended until DEX is restored.
-    //
-    // We only check at depth 0 (player's own features), not for recursively-granted
-    // sub-features (those are governed by their parent's gating).
-    // Race, class, and class_feature categories are exempt — their "prerequisites"
-    // are structural (you chose this race/class), not stat-dependent.
-    if (depth === 0 && feature.prerequisitesNode) {
-      const exemptCategories = new Set(['race', 'class', 'class_feature', 'condition', 'environment', 'monster_type']);
-      if (!exemptCategories.has(feature.category)) {
-        const prereqContext: CharacterContext = { ...context, activeTags };
-        if (!checkCondition(feature.prerequisitesNode, prereqContext)) {
-          // Prerequisites failed — mark this instance as disabled and skip its modifiers.
-          disabledInstanceIds.add(instance.instanceId);
-          return; // Feature's modifiers are suspended (not collected).
-        }
-      }
-    }
-
-    // --- Collect base feature modifiers ---
-    this.#processModifierList(
-      feature.grantedModifiers,
-      instance,
-      feature,
-      activeTags,
-      context,
-      result
-    );
-
-    // --- Class level progression gating ---
-    // For class features, only include modifiers from levelProgression entries
-    // where entry.level <= character.classLevels[featureId].
-    if (feature.category === 'class' && feature.levelProgression) {
-      const classLevel = this.character.classLevels[feature.id] ?? 0;
-      for (const entry of feature.levelProgression) {
-        if (entry.level <= classLevel) {
-          this.#processModifierList(
-            entry.grantedModifiers,
-            instance,
-            feature,
-            activeTags,
-            context,
-            result
-          );
-        }
-      }
-    }
-
-    // --- Recursively process granted features ---
-    if (feature.grantedFeatures && feature.grantedFeatures.length > 0) {
-      // For class features, also check levelProgression grantedFeatures
-      const grantedFeatureIds = new Set<ID>([...feature.grantedFeatures]);
-
-      if (feature.category === 'class' && feature.levelProgression) {
-        const classLevel = this.character.classLevels[feature.id] ?? 0;
-        for (const entry of feature.levelProgression) {
-          if (entry.level <= classLevel) {
-            for (const gfId of entry.grantedFeatures) {
-              grantedFeatureIds.add(gfId);
-            }
-          }
-        }
-      }
-
-      for (const grantedFeatureId of grantedFeatureIds) {
-        // Skip deletion markers (from partial merge, should be resolved by DataLoader)
-        if (grantedFeatureId.startsWith('-')) continue;
-
-        const syntheticInstance: ActiveFeatureInstance = {
-          instanceId: `${instance.instanceId}_granted_${grantedFeatureId}`,
-          featureId: grantedFeatureId,
-          isActive: true,
-          selections: instance.selections, // Pass parent selections through
-        };
-
-        this.#collectModifiersFromInstance(
-          syntheticInstance,
-          activeTags,
-          context,
-          result,
-          new Set(visitedFeatureIds), // Clone set to allow separate branches
-          disabledInstanceIds,
-          depth + 1
-        );
-      }
-    }
-  }
-
-  /**
-   * Processes a list of Modifier objects, evaluating conditions and routing to output.
-   *
-   * TARGETID NORMALISATION:
-   *   Before pushing a modifier to the result, its `targetId` is normalised via
-   *   `normaliseModifierTargetId()`. This allows JSON authors to use either:
-   *     - "stat_strength"           (short form — the Character.attributes map key)
-   *     - "attributes.stat_strength" (long form — as used in ARCHITECTURE.md Annex A examples)
-   *   Both forms resolve to the same pipeline. See `normaliseModifierTargetId()` for details.
-   */
-  #processModifierList(
-    modifiers: Modifier[],
-    instance: ActiveFeatureInstance,
-    feature: Feature,
-    activeTags: string[],
-    context: CharacterContext,
-    result: FlatModifierEntry[]
-  ): void {
-    // Build a per-instance context that includes this instance's selections
-    const instanceContext: CharacterContext = {
-      ...context,
-      activeTags,
-      selection: { ...context.selection, ...(instance.selections ?? {}) },
-    };
-
-    for (const mod of modifiers) {
-      // --- Evaluate conditionNode (if present) ---
-      // Only include the modifier if the condition passes (or no condition).
-      if (mod.conditionNode && !checkCondition(mod.conditionNode, instanceContext)) {
-        continue; // Condition failed — modifier is not active right now
-      }
-
-      // --- Normalise the targetId convention ---
-      // Strips the optional "attributes." prefix so both "stat_strength" and
-      // "attributes.stat_strength" target the same Character.attributes pipeline.
-      // Also strips the "skills." prefix: "skills.skill_climb" → "skill_climb".
-      // This is a non-destructive normalisation — the original JSON is not mutated.
-      const normalisedTargetId = normaliseModifierTargetId(mod.targetId);
-
-      // --- saves.all fan-out ---
-      // "saves.all" is a broadcast shorthand: apply this modifier to ALL three saves.
-      // Used by Divine Grace, Resistance spells, Cloaks of Resistance, etc.
-      // Fan out into three independent modifier entries targeting saves.fortitude/reflex/will.
-      if (normalisedTargetId === 'saves.all') {
-        const saveTargets = ['saves.fortitude', 'saves.reflex', 'saves.will'] as const;
-        for (const saveTarget of saveTargets) {
-          const suffix = saveTarget.split('.')[1]; // "fortitude" | "reflex" | "will"
-          let fanMod: Modifier = { ...mod, targetId: saveTarget, id: `${mod.id}_${suffix}` };
-          if (typeof fanMod.value === 'string') {
-            const resolved = evaluateFormula(fanMod.value, instanceContext, this.settings.language);
-            fanMod = { ...fanMod, value: typeof resolved === 'number' ? resolved : parseFloat(String(resolved)) || 0 };
-          }
-          result.push({ modifier: fanMod, sourceInstanceId: instance.instanceId, sourceFeatureId: feature.id });
-        }
-        continue; // Already pushed fan-out entries; skip the default push below
-      }
-
-      // --- Resolve string value formulas to numbers ---
-      // Build the resolved modifier with the normalised targetId and numeric value.
-      let resolvedModifier: Modifier = normalisedTargetId !== mod.targetId
-        ? { ...mod, targetId: normalisedTargetId }  // targetId changed → new object
-        : mod;                                        // targetId unchanged → reuse reference
-
-      if (typeof mod.value === 'string') {
-        const resolved = evaluateFormula(mod.value, instanceContext, this.settings.language);
-        const numericValue = typeof resolved === 'number' ? resolved : parseFloat(String(resolved)) || 0;
-        resolvedModifier = { ...resolvedModifier, value: numericValue };
-      }
-
-      result.push({
-        modifier: resolvedModifier,
-        sourceInstanceId: instance.instanceId,
-        sourceFeatureId: feature.id,
-      });
-    }
-  }
-
-  /**
-   * Computes the flat array of all active tags from all isActive features.
-   *
-   * Tags are deduplicated. All tags from ALL active features are included
-   * (regardless of prerequisite status — this is the intentionally inclusive
-   * list used for @activeTags path resolution).
-   *
-   * INCLUDES SCENE FEATURES (MAJOR fix #2 — ARCHITECTURE.md section 13):
-   *   Scene global features (from `sceneState.activeGlobalFeatures`) also contribute
-   *   their tags to the active tag set. This is critical for:
-   *     - Environment features indicating their active condition (e.g., "underwater", "heat")
-   *     - Characters checking if a global condition is active via `@activeTags has_tag X`
-   *   Example: `environment_extreme_heat` has tag "heat". Characters check
-   *   `NOT has_tag endure_elements` to determine if the heat penalty applies.
-   *   The scene feature's "heat" tag in `@activeTags` is what other features react to.
-   *   @see sceneState and activateSceneFeature/deactivateSceneFeature methods.
-   */
-  #computeActiveTags(): string[] {
-    const tagSet = new Set<string>();
-
-    // Include scene features (synthetic instances for global environment conditions)
-    const sceneInstances: ActiveFeatureInstance[] = this.sceneState.activeGlobalFeatures.map(featureId => ({
-      instanceId: `scene_global_${featureId}`,
-      featureId,
-      isActive: true,
-    }));
-
-    const allInstances = [
-      ...this.character.activeFeatures,
-      ...sceneInstances,
-      ...(this.character.gmOverrides ?? []),
-    ];
-
-    for (const instance of allInstances) {
-      if (!instance.isActive) continue;
-      const feature = dataLoader.getFeature(instance.featureId);
-      if (!feature) continue;
-
-      // 1. Add the feature's own static tags
-      for (const tag of feature.tags) {
-        tagSet.add(tag);
-      }
-
-      // 2. Emit choice-derived sub-tags from choices with `choiceGrantedTagPrefix`.
-      //    For each FeatureChoice that has a `choiceGrantedTagPrefix`, every selected
-      //    item ID is combined with the prefix to produce a specific active tag.
-      //
-      //    Example: feat_weapon_focus with choiceId="weapon_choice", prefix="feat_weapon_focus_"
-      //    and selection ["item_longbow"] → emits "feat_weapon_focus_item_longbow"
-      //
-      //    This allows prerequisite conditions on OTHER features to precisely check
-      //    parameterized feat selections using the standard `has_tag` operator.
-      if (feature.choices && instance.selections) {
-        for (const choice of feature.choices) {
-          if (!choice.choiceGrantedTagPrefix) continue;
-          const selected = instance.selections[choice.choiceId];
-          if (!selected) continue;
-          for (const selectedId of selected) {
-            if (selectedId) {
-              tagSet.add(`${choice.choiceGrantedTagPrefix}${selectedId}`);
-            }
-          }
-        }
-      }
-    }
-
-    return Array.from(tagSet);
-  }
 
   // ---------------------------------------------------------------------------
   // CHARACTER RESOURCE POOL MUTATIONS
