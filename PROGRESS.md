@@ -529,6 +529,19 @@ _Goal: A focused iteration addressing player-facing visibility rules, the authen
 
 - [x] **23.10 Language Dropdown — Fix Reactive Signal Path:** `loadExternalLocales()` was updating `dataLoader._availableLanguages` but no Svelte reactive signal was fired, so `engine.availableLanguages` never recomputed and the login page dropdown stayed hidden. Root cause: `bumpDataLoaderVersion()` mirrors `dataLoader.loadVersion`, which is only incremented by `loadRuleSources()` — never by `loadExternalLocales()`. Fix: added a dedicated `DataLoader.localesVersion` counter (incremented at the end of each successful `loadExternalLocales()` call), a matching `engine.localesVersion = $state(0)` reactive counter, and `engine.bumpLocalesVersion()` to sync them. `engine.availableLanguages` now depends on BOTH `dataLoaderVersion` (rule files) and `localesVersion` (locale files) — the separation avoids triggering the heavy game-mechanics `$derived` pipelines on locale discovery. `AppShell.onMount` and the login page `$effect` both call `bumpLocalesVersion()` after `loadExternalLocales()`. Dev hint (`login.dev_hint`) removed from login page, `ui-strings.ts`, and `fr.json`. Two new tests added: `localesVersion` starts at 0, increments per successful call, stays 0 on failure. All 47 test files — **1 773 tests** — pass. `README.md` updated.
 
+- [x] **23.11 Sidebar UX Overhaul — User Menu, Flag Picker, Collapsed Layout:**
+  - **GM View pills removed** from vault, GM dashboard, and campaign settings pages.
+  - **View-as-player dev toggle** removed from campaign list and `SessionContext` — role is server-authoritative only.
+  - **User section** moved from the sidebar footer to just below the header, with a click-to-open dropdown containing "Change Password" and "Log out" actions. `logout()` added to `userApi.ts` (`POST /api/auth/logout`).
+  - **Sidebar footer** redesigned: theme icon + language picker on one row (expanded) or stacked vertically flag-only (collapsed).
+  - **`ThemeLanguagePicker.svelte`** created as a shared component used by both the sidebar and the login page. Handles cookie-based language persistence (`cv_language` cookie, replacing the `cv_user_language` localStorage key). Shows a "currently unavailable" disabled entry when the stored language preference is not yet loaded.
+  - **Country flags** added to the language picker via `flag-icons` (npm, SVG-based, cross-platform — works on Windows unlike emoji flags). `flag-icons/css/flag-icons.min.css` imported in `app.css`.
+  - **`$meta.countryCode`** added as a mandatory field to all locale JSON files (ISO 3166-1 alpha-2). `UiLocalesController.php` now requires and returns `countryCode`; `DataLoader` stores it; `GameEngine.getLanguageCountryCode()` exposes it.
+  - **Collapsed sidebar header** fixed: when `collapsed=true` at desktop (lg+), only the expand chevron is shown (logo hidden to prevent overlap). Logo visible on tablet/mobile and in expanded mode.
+  - **Overflow fix:** `overflow-x-hidden` moved from `<aside>` to `<nav>` so that user and language dropdowns can escape the 64 px collapsed sidebar bounds without clipping.
+  - **Login page**: `ThemeLanguagePicker` moved from fixed top-right corner to centered below the login card; dropdown opens upward.
+  - **Language persistence**: migrated from `localStorage` (`cv_user_language`) to cookie (`cv_language`). `src/lib/utils/languageCookie.ts` created. Unavailable-language logic: cookie preference preserved without overwriting when the locale is not yet available; auto-applied when the campaign locale loads. All 47 test files — **1 765 tests** — pass. svelte-check: 0 errors, 0 warnings.
+
 ---
 
 ### Phase 24: NPC & Monster Template Management

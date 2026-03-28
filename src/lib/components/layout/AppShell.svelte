@@ -89,7 +89,8 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { loadUiLocale } from '$lib/i18n/ui-strings';
+  import { loadUiLocale, loadUiLocaleFromCache } from '$lib/i18n/ui-strings';
+  import { readLanguageCookie } from '$lib/utils/languageCookie';
   import { IconMenu } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
@@ -102,6 +103,36 @@
   }
 
   let { children }: Props = $props();
+
+  // ---------------------------------------------------------------------------
+  // LOCALE INITIALISATION — synchronous pre-render restore
+  // ---------------------------------------------------------------------------
+  //
+  // This block runs once, synchronously, as part of AppShell's script
+  // initialisation — before Svelte produces the first paint.  AppShell sits
+  // above every page component AND the Sidebar, so setting
+  // engine.settings.language here means ALL child components' initial render
+  // already uses the correct language.
+  //
+  // Warm cache  (cv_locale_fr in localStorage, < 24 h old):
+  //   loadUiLocaleFromCache() populates _loadedLocales synchronously →
+  //   localeReady = true → first paint is in French, zero visible flash.
+  //
+  // Cold cache  (first ever load, or expired):
+  //   localeReady = false → spinner shown → onMount fetches locale file →
+  //   sets language → localeReady = true → content renders directly in French.
+  //
+  const _storedLang = readLanguageCookie();
+  const _cacheHit   = _storedLang === 'en' || loadUiLocaleFromCache(_storedLang);
+  if (_cacheHit && _storedLang !== 'en') {
+    engine.settings.language = _storedLang;
+  }
+
+  /**
+   * Gates all content rendering until locale strings are loaded.
+   * Starts `true` on a warm cache hit; `false` on a cold start (shows spinner).
+   */
+  let localeReady = $state(_cacheHit);
 
   // ---------------------------------------------------------------------------
   // SIDEBAR STATE
@@ -166,26 +197,48 @@
   // ---------------------------------------------------------------------------
 
   /**
-   * On mount (browser-only): read the cookie to restore the previous sidebar state.
-   * Must happen in onMount because `document.cookie` is not available in SSR.
+   * On mount (browser-only): restore sidebar state and ensure the correct locale
+   * is applied before releasing the rendering gate.
+   *
+   * SEQUENCE (SSR is disabled, so this always runs in a real browser):
+   *
+   *   1. Sidebar cookie — fast synchronous read, no async needed.
+   *
+   *   2. Locale gate — cold start only (warm start already set language + gate
+   *      in the synchronous script block above via loadUiLocaleFromCache):
+   *        • fetch /locales/{code}.json
+   *        • set engine.settings.language
+   *
+   *   3. localeReady = true — releases the {#if !localeReady} spinner gate so
+   *      content renders for the first time (cold) or is already visible (warm,
+   *      this is a no-op state write).
+   *
+   *   4. External locales (background, fire-and-forget) — discovers server-dropped
+   *      locale files so they appear in the language dropdown.  This does NOT block
+   *      content rendering; the dropdown just updates a moment later.
+   *      Also triggers a stale-while-revalidate refresh of the active locale cache.
    */
   onMount(async () => {
     sidebarCollapsed = readSidebarCookie();
 
-    // Discover server-dropped locale files (static/locales/*.json) and register
-    // them so they appear in the language dropdown. Non-critical: no-op on failure.
-    await dataLoader.loadExternalLocales();
+    // Cold start only: locale wasn't in localStorage cache — fetch it first so
+    // the first render is in the correct language, not English.
+    if (_storedLang !== 'en' && !_cacheHit) {
+      await loadUiLocale(_storedLang);
+      engine.settings.language = _storedLang;
+    }
 
-    // Sync engine.localesVersion → invalidates engine.availableLanguages so the
-    // language dropdown re-renders with the newly discovered codes and display names.
-    // Uses a dedicated version counter (not dataLoaderVersion) to avoid forcing
-    // the heavy game-mechanics $derived pipelines to recompute unnecessarily.
-    engine.bumpLocalesVersion();
+    // Release the rendering gate.
+    localeReady = true;
 
-    // Load the active language's locale file if it is not English.
-    // This ensures translated UI chrome is ready before the first interaction.
-    const lang = engine.settings.language;
-    if (lang && lang !== 'en') await loadUiLocale(lang);
+    // Background: discover server-dropped locale files (populates the language
+    // dropdown) and silently revalidate the active locale cache.
+    // Fire-and-forget — content is already rendering above.
+    dataLoader.loadExternalLocales().then(() => {
+      engine.bumpLocalesVersion();
+      // Stale-while-revalidate: refresh the cached locale strings quietly.
+      if (_storedLang !== 'en') loadUiLocale(_storedLang);
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -353,6 +406,38 @@
 <!--
   APP SHELL ROOT
 
+  When the locale is not yet loaded (cold start — no localStorage cache),
+  the entire UI is replaced with a centred spinner so the user never sees a
+  flash of untranslated English content.
+
+  On a warm cache hit (subsequent page loads), localeReady is already true
+  when this component first renders, so the spinner is never painted.
+-->
+{#if !localeReady}
+  <!-- ── LOCALE LOADING SPINNER ───────────────────────────────────────────── -->
+  <div class="flex h-screen items-center justify-center bg-surface" aria-label="Loading…" aria-live="polite">
+    <svg
+      class="h-9 w-9 animate-spin"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12" cy="12" r="10"
+        stroke="currentColor" stroke-width="3"
+        class="text-border opacity-30"
+      />
+      <path
+        fill="currentColor"
+        class="text-accent"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+      />
+    </svg>
+  </div>
+{:else}
+
+<!--
   The outermost container is a full-viewport flex row (sidebar | content).
   `h-screen overflow-hidden` ensures the overall page does not scroll —
   only the content area inside scrolls.
@@ -501,3 +586,5 @@
   </div>
 
 </div>
+
+{/if}<!-- localeReady -->

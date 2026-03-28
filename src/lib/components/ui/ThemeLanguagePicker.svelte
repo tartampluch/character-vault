@@ -3,43 +3,69 @@
   @description Shared theme toggle + language picker widget.
 
   Used in:
-    - Sidebar footer (expanded: flag + full name; collapsed: flag only)
-    - Login page (centered below login card)
+    - Sidebar footer (expanded: horizontal flag + full name; collapsed: vertical flag-only stack)
+    - Login page (horizontal, centered below card)
 
-  LAYOUT:
-    A flex row containing two equal-height (h-8) buttons:
-      1. Theme toggle  — square icon button cycling system → light → dark.
-      2. Language pick — flag + name (or flag-only when collapsed), opens dropdown.
+  ── LAYOUTS ──────────────────────────────────────────────────────────────────
 
-  LANGUAGE COOKIE:
-    Reads `cv_language` cookie on mount. If the stored language is present in
-    `engine.availableLanguages`, it is applied immediately. If not, the UI falls
-    back to English but shows the stored language as a disabled "(unavailable)"
-    entry in the dropdown so the user knows their preference is remembered.
+  showLabel=true  (default — sidebar expanded, login page):
+    Horizontal row — theme icon button + language button with flag + full name + chevron.
 
-    A `$effect` watches `engine.availableLanguages`: as soon as the stored
-    language becomes available (e.g. when a campaign locale loads), it is
-    applied automatically WITHOUT writing the cookie again (preference unchanged).
+    [☀]  [🇬🇧  English  ▾]
 
-    The cookie is written ONLY when the user explicitly picks a language.
+  showLabel=false (sidebar collapsed, 64 px):
+    Vertical stack — theme icon above, flag below. Both fill the full width.
+    Dropdown opens to the RIGHT (escapes the narrow sidebar).
 
-  FLAGS:
-    Uses `flag-icons` CSS classes (`.fi .fi-{ISO-3166-1-alpha-2}`).
-    The LANG_FLAGS map translates BCP-47 language codes → country codes.
-    Extend this map when new locales are added.
+    [☀]
+    [🇬🇧]
 
-  PROPS:
-    showLabel  — true: flag + full language name (sidebar expanded, login page).
-                 false: flag only, no label (sidebar collapsed icon-only mode).
-    dropdownUp — open the language dropdown upward (default true, sidebar footer).
-                 Set to false when the picker is near the top of the viewport.
+  ── LANGUAGE COOKIE ──────────────────────────────────────────────────────────
+
+  Reads `cv_language` cookie on mount. If the language is in availableLanguages,
+  it is applied immediately (without writing). If not, it is stored as `pendingLang`
+  and auto-applied when the locale becomes available (e.g. campaign load).
+  The cookie is written ONLY on explicit user selection.
+
+  ── FLAGS ─────────────────────────────────────────────────────────────────────
+
+  Uses `flag-icons` CSS (`flag-icons/css/flag-icons.min.css` imported in app.css).
+  The component delegates flag lookup to `engine.getLanguageCountryCode(code)`,
+  which reads the `countryCode` field from the locale's `$meta` block (mandatory).
+  LANG_FLAGS provides a hardcoded fallback for built-in English ('gb') and any
+  locale that hasn't loaded its metadata yet.
+
+  ── PROPS ────────────────────────────────────────────────────────────────────
+
+  showLabel   true  → horizontal: flag + full language name + chevron.
+              false → vertical stack: flag icon only (tooltip = full name).
+  dropdownUp  true  → language panel opens upward (sidebar footer, default).
+              false → language panel opens downward (login page top).
 -->
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui, loadUiLocale } from '$lib/i18n/ui-strings';
+  import { ui, loadUiLocale, loadUiLocaleFromCache } from '$lib/i18n/ui-strings';
   import { themeManager } from '$lib/stores/ThemeManager.svelte';
   import { readLanguageCookie, writeLanguageCookie } from '$lib/utils/languageCookie';
+
+  // ── SYNCHRONOUS PRE-RENDER LOCALE RESTORATION ────────────────────────────
+  // This block runs once, synchronously, as part of the component's script
+  // initialisation — before Svelte produces the first paint.
+  //
+  // If the user's preferred locale is cached in localStorage (written by the
+  // async path on a previous load), we restore it here so the very first
+  // render already uses the correct language. No flash, no re-render needed.
+  //
+  // On the very first ever page load (cold cache) there is no entry in
+  // localStorage; the async $effect path takes over and fetches the locale
+  // file, which writes the cache so subsequent loads are instant.
+  {
+    const _preLang = readLanguageCookie();
+    if (_preLang !== 'en' && loadUiLocaleFromCache(_preLang)) {
+      engine.settings.language = _preLang;
+    }
+  }
   import {
     IconThemeSystem, IconThemeLight, IconThemeDark,
     IconChevronDown, IconChevronUp,
@@ -51,14 +77,14 @@
 
   interface Props {
     /**
-     * true  → show the full language display name beside the flag (sidebar expanded,
-     *          login page).
-     * false → show the flag icon only, no text label (sidebar collapsed icon-only mode).
+     * true  (default) — horizontal: flag + full language name.
+     * false — vertical stack: flag icon only (sidebar collapsed mode).
      */
     showLabel?: boolean;
     /**
-     * Open the language dropdown upward (true, default) or downward (false).
-     * Use false when the component is at the very top of the visible area.
+     * Direction the language dropdown opens.
+     * true (default) — upward (sidebar footer).
+     * false          — downward (login page, picker is near top).
      */
     dropdownUp?: boolean;
   }
@@ -66,16 +92,23 @@
   let { showLabel = true, dropdownUp = true }: Props = $props();
 
   // ---------------------------------------------------------------------------
-  // FLAG MAP — BCP-47 language code → ISO 3166-1 alpha-2 country code
+  // FALLBACK FLAG MAP (BCP-47 → ISO 3166-1 alpha-2)
+  // Used for built-in English ('en' → 'gb') and as a safety net before
+  // locale metadata loads. Engine.getLanguageCountryCode() is the primary source.
   // ---------------------------------------------------------------------------
 
-  const LANG_FLAGS: Record<string, string> = {
+  const FALLBACK_FLAGS: Record<string, string> = {
     en: 'gb', fr: 'fr', de: 'de', es: 'es', it: 'it', pt: 'pt',
     nl: 'nl', pl: 'pl', cs: 'cz', ru: 'ru', ja: 'jp', ko: 'kr', zh: 'cn',
   };
 
+  /**
+   * Returns the ISO 3166-1 alpha-2 country code for a language, or undefined.
+   * Prefers the engine's data (from $meta.countryCode in the locale file);
+   * falls back to the hardcoded FALLBACK_FLAGS map.
+   */
   function langFlag(code: string): string | undefined {
-    return LANG_FLAGS[code];
+    return engine.getLanguageCountryCode(code) ?? FALLBACK_FLAGS[code];
   }
 
   // ---------------------------------------------------------------------------
@@ -98,26 +131,35 @@
   // LANGUAGE STATE
   // ---------------------------------------------------------------------------
 
-  /**
-   * The language code stored in the cookie that is not yet in availableLanguages.
-   * Kept reactive so the "unavailable" entry appears / disappears dynamically.
-   */
-  let pendingLang = $state<string | null>(null);
-
+  let pendingLang  = $state<string | null>(null);
   const currentLang    = $derived(engine.settings.language);
   const availableLangs = $derived(engine.availableLanguages);
 
   /**
-   * On mount: read the cookie and apply the language if available, or mark as
-   * pending so it activates once the locale is discovered.
-   * Never writes the cookie — the stored preference must survive until the user
-   * explicitly changes it.
+   * Display name of the current language — reactive to BOTH the active language
+   * AND locale loading.
+   *
+   * Problem without this: on hard refresh, `engine.settings.language` may already
+   * be 'fr' (restored from cookie/store) before `loadExternalLocales()` finishes.
+   * `getLanguageDisplayName('fr')` then returns 'FR' (the fallback code). Once
+   * locales load, `applyLanguage` is called but `engine.settings.language` is
+   * already 'fr' — no change, no re-render, display stays 'FR'.
+   *
+   * Fix: reading `availableLangs` here creates a reactive dependency on
+   * `engine.localesVersion` (via the `availableLanguages` $derived). When the
+   * locale file loads and `availableLangs` updates, this derived recomputes and
+   * `getLanguageDisplayName` now finds the full name in `_externalLocales`.
    */
+  const currentLangDisplayName = $derived.by(() => {
+    void availableLangs; // reactive dep — recompute when locales finish loading
+    return engine.getLanguageDisplayName(currentLang);
+  });
+
+  /** On mount: restore cookie preference or mark as pending. */
   $effect(() => {
     themeManager.init(); // idempotent
     const stored = readLanguageCookie();
     if (stored === 'en') return;
-
     if (availableLangs.includes(stored)) {
       applyLanguage(stored, false);
       pendingLang = null;
@@ -126,10 +168,7 @@
     }
   });
 
-  /**
-   * Auto-apply the pending language as soon as it appears in availableLanguages.
-   * This fires when a campaign loads a new locale file.
-   */
+  /** Auto-apply pending language once its locale becomes available. */
   $effect(() => {
     if (!pendingLang) return;
     if (availableLangs.includes(pendingLang)) {
@@ -138,13 +177,11 @@
     }
   });
 
-  /**
-   * Apply a language: load the locale file and update the engine.
-   * @param code        - BCP-47 language code.
-   * @param writeCookie - Persist the choice to the cookie (only on explicit user action).
-   */
   async function applyLanguage(code: string, writeCookie: boolean): Promise<void> {
     await loadUiLocale(code);
+    // The engine always initialises with language = 'en', so this assignment is
+    // always a genuine 'en' → code value change. Svelte sees the change and
+    // re-renders all ui() call sites with the freshly-loaded locale data.
     engine.settings.language = code;
     if (writeCookie) {
       writeLanguageCookie(code);
@@ -162,16 +199,11 @@
     showLangDropdown = !showLangDropdown;
   }
 
-  /**
-   * Select a language: close the dropdown, apply the language, and persist.
-   * Closing first (synchronously) prevents any visual flicker.
-   */
   async function selectLanguage(code: string): Promise<void> {
     showLangDropdown = false;
     await applyLanguage(code, true);
   }
 
-  // Close the dropdown on any click outside the picker container.
   $effect(() => {
     if (!showLangDropdown) return;
     function onOutside(e: MouseEvent) {
@@ -183,159 +215,196 @@
     return () => document.removeEventListener('click', onOutside);
   });
 
-  /**
-   * Disabled entry shown when the stored cookie language is not yet available.
-   * Gives visual feedback that the preference is saved and will activate later.
-   */
   const unavailableEntry = $derived(
     pendingLang && !availableLangs.includes(pendingLang) ? pendingLang : null
   );
+
+  // ---------------------------------------------------------------------------
+  // DROPDOWN POSITION CLASSES
+  // ---------------------------------------------------------------------------
+
+  /**
+   * In vertical/collapsed mode (showLabel=false) the sidebar is only 64 px wide.
+   * The dropdown opens to the RIGHT (left-full) so it is never clipped.
+   * In horizontal mode (showLabel=true) the dropdown opens up or down per dropdownUp.
+   */
+  const dropdownPosClass = $derived(
+    !showLabel
+      ? 'left-full top-auto bottom-0 ml-1'            // → right of the flag button
+      : dropdownUp
+        ? 'bottom-full left-0 mb-1'                    // ↑ upward (sidebar footer)
+        : 'top-full left-0 mt-1'                       // ↓ downward (login page)
+  );
 </script>
 
-<!--
-  Two equal-height (h-8) controls in a flex row.
-  The parent is responsible for width/positioning.
--->
-<div class="flex items-center gap-1 w-full">
+{#if showLabel}
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       HORIZONTAL LAYOUT (expanded sidebar, login page)
+       [☀]  [🇬🇧  English  ▾]
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div class="flex items-center gap-1 w-full">
 
-  <!-- ── THEME TOGGLE ──────────────────────────────────────────────────────── -->
-  <button
-    type="button"
-    class="
-      h-8 w-8 shrink-0 rounded-md
-      flex items-center justify-center
-      text-text-muted hover:text-text-primary hover:bg-surface-alt
-      transition-colors duration-150
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50
-    "
-    onclick={() => themeManager.cycle()}
-    title={themeTooltip}
-    aria-label={themeTooltip}
-  >
-    <themeState.icon size={16} aria-hidden="true" />
-  </button>
-
-  <!-- ── LANGUAGE PICKER ───────────────────────────────────────────────────── -->
-  <div class="relative flex-1 min-w-0" data-lang-picker>
-
-    <!-- Trigger button -->
+    <!-- Theme button -->
     <button
       type="button"
-      class="
-        h-8 w-full rounded-md
-        flex items-center gap-1.5 px-2
-        text-xs text-text-muted hover:text-text-primary hover:bg-surface-alt
-        transition-colors duration-150
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50
-      "
-      onclick={toggleLangDropdown}
-      title={showLabel
-        ? ui('lang.select_tooltip', currentLang)
-        : engine.getLanguageDisplayName(currentLang)}
-      aria-label={ui('lang.select_tooltip', currentLang)}
-      aria-expanded={showLangDropdown}
-      aria-haspopup="listbox"
+      class="h-8 w-8 shrink-0 rounded-md flex items-center justify-center
+             text-text-muted hover:text-text-primary hover:bg-surface-alt
+             transition-colors duration-150
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+      onclick={() => themeManager.cycle()}
+      title={themeTooltip}
+      aria-label={themeTooltip}
     >
-      <!-- Country flag -->
-      {#if langFlag(currentLang)}
-        <span
-          class="fi fi-{langFlag(currentLang)} shrink-0"
-          style="width:1.1em;height:0.85em;border-radius:2px;"
-          aria-hidden="true"
-        ></span>
-      {/if}
+      <themeState.icon size={16} aria-hidden="true" />
+    </button>
 
-      {#if showLabel}
-        <!-- Full language name + chevron -->
+    <!-- Language button + dropdown -->
+    <div class="relative flex-1 min-w-0" data-lang-picker>
+      <button
+        type="button"
+        class="h-8 w-full rounded-md flex items-center gap-1.5 px-2
+               text-xs text-text-muted hover:text-text-primary hover:bg-surface-alt
+               transition-colors duration-150
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+        onclick={toggleLangDropdown}
+        title={ui('lang.select_tooltip', currentLang)}
+        aria-label={ui('lang.select_tooltip', currentLang)}
+        aria-expanded={showLangDropdown}
+        aria-haspopup="listbox"
+      >
+        {#if langFlag(currentLang)}
+          <span class="fi fi-{langFlag(currentLang)} shrink-0"
+                style="width:1.1em;height:0.85em;border-radius:2px;"
+                aria-hidden="true"></span>
+        {/if}
         <span class="flex-1 min-w-0 truncate text-left">
-          {engine.getLanguageDisplayName(currentLang)}
+          {currentLangDisplayName}
         </span>
         {#if showLangDropdown}
           <IconChevronUp  size={11} class="shrink-0" aria-hidden="true" />
         {:else}
           <IconChevronDown size={11} class="shrink-0" aria-hidden="true" />
         {/if}
+      </button>
+
+      {#if showLangDropdown}
+        {@render langDropdown()}
       {/if}
-      <!-- When showLabel=false: flag only (collapsed sidebar). Tooltip shows the full name. -->
+    </div>
+
+  </div>
+
+{:else}
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VERTICAL STACK LAYOUT (collapsed sidebar, 64 px)
+       [☀]
+       [🇬🇧]
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div class="flex flex-col items-stretch gap-1 w-full">
+
+    <!-- Theme button -->
+    <button
+      type="button"
+      class="h-8 w-full rounded-md flex items-center justify-center
+             text-text-muted hover:text-text-primary hover:bg-surface-alt
+             transition-colors duration-150
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+      onclick={() => themeManager.cycle()}
+      title={themeTooltip}
+      aria-label={themeTooltip}
+    >
+      <themeState.icon size={16} aria-hidden="true" />
     </button>
 
-    <!-- Dropdown panel -->
-    {#if showLangDropdown}
-      <div
-        role="listbox"
+    <!-- Language flag button + dropdown (opens to the right) -->
+    <div class="relative w-full" data-lang-picker>
+      <button
+        type="button"
+        class="h-8 w-full rounded-md flex items-center justify-center
+               text-text-muted hover:text-text-primary hover:bg-surface-alt
+               transition-colors duration-150
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+        onclick={toggleLangDropdown}
+        title={currentLangDisplayName}
         aria-label={ui('lang.select_tooltip', currentLang)}
-        class="
-          absolute {dropdownUp ? 'bottom-full mb-1' : 'top-full mt-1'}
-          left-0 z-50
-          min-w-[11rem] max-h-60 overflow-y-auto
-          bg-surface border border-border rounded-lg shadow-lg py-1
-        "
+        aria-expanded={showLangDropdown}
+        aria-haspopup="listbox"
       >
-        <!-- Available languages -->
-        {#each availableLangs as code}
-          {@const flag       = langFlag(code)}
-          {@const isSelected = code === currentLang}
-          <button
-            type="button"
-            role="option"
-            aria-selected={isSelected}
-            class="
-              flex items-center gap-2 w-full px-3 py-2 text-xs
-              transition-colors duration-100
-              {isSelected
-                ? 'bg-accent-50 text-accent-700 dark:bg-accent-950 dark:text-accent-300 font-medium'
-                : 'text-text-secondary hover:bg-surface-alt hover:text-text-primary'}
-            "
-            onclick={() => selectLanguage(code)}
-          >
-            {#if flag}
-              <span
-                class="fi fi-{flag} shrink-0"
-                style="width:1.15em;height:0.9em;border-radius:2px;"
-                aria-hidden="true"
-              ></span>
-            {:else}
-              <span class="shrink-0 inline-block w-[1.15em] h-[0.9em] rounded-sm bg-surface-alt" aria-hidden="true"></span>
-            {/if}
-            <span class="truncate">{engine.getLanguageDisplayName(code)}</span>
-            {#if isSelected}
-              <span class="ml-auto shrink-0 text-accent" aria-hidden="true">✓</span>
-            {/if}
-          </button>
-        {/each}
-
-        <!--
-          Unavailable language entry — shown when the stored cookie preference is not
-          yet available. Non-interactive but visible so the user understands their
-          preference is remembered and will activate automatically.
-        -->
-        {#if unavailableEntry}
-          {@const flag = langFlag(unavailableEntry)}
-          <div class="border-t border-border mt-1 pt-1" aria-hidden="true"></div>
-          <div
-            role="option"
-            aria-selected="false"
-            aria-disabled="true"
-            class="flex items-center gap-2 w-full px-3 py-2 text-xs
-                   text-text-muted opacity-50 cursor-not-allowed select-none"
-          >
-            {#if flag}
-              <span
-                class="fi fi-{flag} shrink-0"
-                style="width:1.15em;height:0.9em;border-radius:2px;"
-                aria-hidden="true"
-              ></span>
-            {:else}
-              <span class="shrink-0 inline-block w-[1.15em] h-[0.9em] rounded-sm bg-surface-alt" aria-hidden="true"></span>
-            {/if}
-            <span class="truncate italic">
-              {engine.getLanguageDisplayName(unavailableEntry)}
-              <span class="not-italic text-[10px]"> — {ui('lang.unavailable', currentLang)}</span>
-            </span>
-          </div>
+        {#if langFlag(currentLang)}
+          <span class="fi fi-{langFlag(currentLang)}"
+                style="width:1.3em;height:1em;border-radius:2px;"
+                aria-hidden="true"></span>
+        {:else}
+          <!-- Fallback if no flag available -->
+          <span class="text-[10px] font-bold uppercase">{currentLang}</span>
         {/if}
+      </button>
+
+      {#if showLangDropdown}
+        {@render langDropdown()}
+      {/if}
+    </div>
+
+  </div>
+{/if}
+
+<!-- ── Shared dropdown panel (rendered via snippet) ─────────────────────── -->
+{#snippet langDropdown()}
+  <div
+    role="listbox"
+    aria-label={ui('lang.select_tooltip', currentLang)}
+    class="absolute {dropdownPosClass} z-50
+           min-w-[11rem] max-h-60 overflow-y-auto
+           bg-surface border border-border rounded-lg shadow-lg py-1"
+  >
+    {#each availableLangs as code}
+      {@const flag       = langFlag(code)}
+      {@const isSelected = code === currentLang}
+      <button
+        type="button"
+        role="option"
+        aria-selected={isSelected}
+        class="flex items-center gap-2 w-full px-3 py-2 text-xs
+               transition-colors duration-100
+               {isSelected
+                 ? 'bg-accent-50 text-accent-700 dark:bg-accent-950 dark:text-accent-300 font-medium'
+                 : 'text-text-secondary hover:bg-surface-alt hover:text-text-primary'}"
+        onclick={() => selectLanguage(code)}
+      >
+        {#if flag}
+          <span class="fi fi-{flag} shrink-0"
+                style="width:1.15em;height:0.9em;border-radius:2px;"
+                aria-hidden="true"></span>
+        {:else}
+          <span class="shrink-0 inline-block w-[1.15em] h-[0.9em] rounded-sm bg-surface-alt"
+                aria-hidden="true"></span>
+        {/if}
+        <span class="truncate">{engine.getLanguageDisplayName(code)}</span>
+        {#if isSelected}
+          <span class="ml-auto shrink-0 text-accent" aria-hidden="true">✓</span>
+        {/if}
+      </button>
+    {/each}
+
+    {#if unavailableEntry}
+      {@const flag = langFlag(unavailableEntry)}
+      <div class="border-t border-border mt-1 pt-1" aria-hidden="true"></div>
+      <div role="option" aria-selected="false" aria-disabled="true"
+           class="flex items-center gap-2 w-full px-3 py-2 text-xs
+                  text-text-muted opacity-50 cursor-not-allowed select-none">
+        {#if flag}
+          <span class="fi fi-{flag} shrink-0"
+                style="width:1.15em;height:0.9em;border-radius:2px;"
+                aria-hidden="true"></span>
+        {:else}
+          <span class="shrink-0 inline-block w-[1.15em] h-[0.9em] rounded-sm bg-surface-alt"
+                aria-hidden="true"></span>
+        {/if}
+        <span class="truncate italic">
+          {engine.getLanguageDisplayName(unavailableEntry)}
+          <span class="not-italic text-[10px]"> — {ui('lang.unavailable', currentLang)}</span>
+        </span>
       </div>
     {/if}
   </div>
-
-</div>
+{/snippet}

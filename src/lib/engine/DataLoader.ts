@@ -472,7 +472,7 @@ export class DataLoader {
    * (e.g. "Deutsch") for codes that are not pre-registered in `UI_STRINGS`
    * (e.g. `lang.de = 'German'` is the English name; the native name comes here).
    */
-  private _externalLocales = new Map<string, { language: string; unitSystem: UnitSystem }>();
+  private _externalLocales = new Map<string, { language: string; countryCode: string; unitSystem: UnitSystem }>();
 
   // ---------------------------------------------------------------------------
   // LOADING API
@@ -1134,11 +1134,12 @@ export class DataLoader {
       const locales = await res.json() as Array<{
         code: string;
         language: string;
+        countryCode: string;
         unitSystem: UnitSystem;
       }>;
-      for (const { code, language, unitSystem } of locales) {
+      for (const { code, language, countryCode, unitSystem } of locales) {
         // Persist metadata so it survives clearCache() calls (campaign switches).
-        this._externalLocales.set(code, { language, unitSystem });
+        this._externalLocales.set(code, { language, countryCode, unitSystem });
         // Make the code immediately available in the dropdown.
         this._availableLanguages.add(code);
         registerLangUnitSystem(code, unitSystem);
@@ -1171,6 +1172,22 @@ export class DataLoader {
    */
   getLocaleDisplayName(code: string): string | undefined {
     return this._externalLocales.get(code)?.language;
+  }
+
+  /**
+   * Returns the ISO 3166-1 alpha-2 country code for the given language, as
+   * declared in the locale file's `$meta.countryCode` field.
+   *
+   * This is a mandatory field — every locale file must include it so that a
+   * country flag can be rendered in the language picker.
+   *
+   * Returns `undefined` for 'en' (built-in, no locale file) or codes not yet
+   * discovered. The caller should fall back to a hardcoded map in those cases.
+   *
+   * @param code - BCP-47 language code (e.g. 'fr', 'de').
+   */
+  getLocaleCountryCode(code: string): string | undefined {
+    return this._externalLocales.get(code)?.countryCode;
   }
 }
 

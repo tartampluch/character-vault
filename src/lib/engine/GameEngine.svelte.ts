@@ -814,14 +814,20 @@ export class GameEngine {
    * The active campaign settings (language, house rules, enabled sources).
    *
    * NOTE ON LANGUAGE INITIALIZATION:
-   *   `settings.language` is initialized from user-level localStorage
-   *   (`storageManager.loadUserLanguage()`) rather than the campaign-settings
-   *   default. This ensures the user's language preference persists across
-   *   all campaigns and app restarts independent of campaign data.
+   *   `settings.language` always starts as `'en'`. The user's language preference
+   *   is persisted in the `cv_language` browser cookie and restored asynchronously
+   *   by `ThemeLanguagePicker` after the locale file has been fetched. Starting
+   *   with `'en'` guarantees that the very first render is in a consistent state
+   *   (English, locale always available) and that the transition to the preferred
+   *   language happens exactly once, cleanly, after the locale data is ready.
+   *
+   *   Previously the language was read from localStorage (`loadUserLanguage()`),
+   *   which caused a race: the engine started with e.g. `'fr'` before `fr.json`
+   *   was fetched, producing an English render followed by a re-render flash.
    */
   settings = $state<CampaignSettings>({
     ...createDefaultCampaignSettings(),
-    language: storageManager.loadUserLanguage(),
+    language: 'en', // ThemeLanguagePicker restores the real preference after locale load
   });
 
   /** The currently active character. Replacing this triggers full DAG re-evaluation. */
@@ -1209,20 +1215,12 @@ export class GameEngine {
     });
   });
 
-  /**
-   * Auto-save $effect: persists the language preference at the USER level
-   * (independently of campaign settings) whenever it changes.
-   *
-   * WHY SEPARATE FROM autoSaveSettingsEffect?
-   *   Campaign settings are campaign-scoped. The language preference must
-   *   survive campaign changes and be restored next time the user logs in,
-   *   regardless of which campaign they are in.
-   */
-  readonly #autoSaveLanguageEffect = $effect.root(() => {
-    $effect(() => {
-      storageManager.saveUserLanguage(this.settings.language);
-    });
-  });
+  // NOTE: Language is no longer persisted via localStorage.
+  //   The `cv_language` cookie (written by `ThemeLanguagePicker` on every
+  //   explicit user selection) is now the sole persistence mechanism. This
+  //   avoids the startup race where `loadUserLanguage()` would seed
+  //   `settings.language = 'fr'` before the locale file was fetched, causing
+  //   an English flash followed by a re-render.
 
   /**
    * Language validation $effect: ensures the selected language is supported by
@@ -5015,6 +5013,25 @@ export class GameEngine {
 
     // 3. Last resort: uppercase code. Better than an empty string or raw key.
     return code.toUpperCase();
+  }
+
+  /**
+   * Returns the ISO 3166-1 alpha-2 country code for a language, used to render
+   * a country flag in the language picker (flag-icons CSS library).
+   *
+   * Source: `$meta.countryCode` in the locale JSON, returned by `GET /api/locales`
+   * and stored in `DataLoader._externalLocales`. This field is MANDATORY in all
+   * locale files.
+   *
+   * Returns `undefined` for the built-in English locale ('en'), which has no
+   * locale file. The `ThemeLanguagePicker` component handles this with a hardcoded
+   * fallback (`'gb'`).
+   *
+   * @param code - BCP-47 language code (e.g. 'fr', 'de').
+   * @returns ISO 3166-1 alpha-2 country code (e.g. 'fr', 'de'), or `undefined`.
+   */
+  getLanguageCountryCode(code: string): string | undefined {
+    return dataLoader.getLocaleCountryCode(code);
   }
 
   // ---------------------------------------------------------------------------

@@ -105,15 +105,86 @@ const _pluralCache = new Map<string, Intl.PluralRules>();
  * Call this once when the user selects a language (Sidebar.svelte) and once
  * on app startup for the active language (AppShell.svelte).
  */
+// =============================================================================
+// LOCALE CACHE — localStorage persistence for instant restoration on refresh
+// =============================================================================
+
+const LOCALE_CACHE_PREFIX = 'cv_locale_';
+/** Refresh cached locale after 24 h (background re-fetch on next load). */
+const LOCALE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface StoredLocaleEntry {
+  /** Unix timestamp (ms) when the entry was written. */
+  ts: number;
+  /** Parsed locale strings, identical to what _loadedLocales stores. */
+  data: UiLocale;
+}
+
+/**
+ * Set of locale codes that were loaded from localStorage cache this session.
+ * Used by `loadUiLocale` to decide whether to background-refresh the cache
+ * even when `_loadedLocales` already has an entry.
+ */
+const _fromCache = new Set<string>();
+
+/**
+ * Synchronously restores a locale from the localStorage cache.
+ *
+ * Call this in a component's script block (before first render) to eliminate
+ * the brief English flash that occurs when locale data must be fetched async.
+ * If the cached entry is absent or older than LOCALE_CACHE_TTL_MS, returns
+ * `false` and the normal async fetch path handles it.
+ *
+ * English ('en') is always available — returns `true` immediately.
+ *
+ * @param code - BCP-47 language code (e.g. 'fr').
+ * @returns `true` if the locale is now available in `_loadedLocales`.
+ */
+export function loadUiLocaleFromCache(code: string): boolean {
+  if (code === 'en') return true;
+  // Already freshly fetched this session — nothing to do.
+  if (_loadedLocales.has(code) && !_fromCache.has(code)) return true;
+  if (typeof localStorage === 'undefined') return false;
+  try {
+    const raw = localStorage.getItem(LOCALE_CACHE_PREFIX + code);
+    if (!raw) return false;
+    const entry = JSON.parse(raw) as StoredLocaleEntry;
+    if (!entry?.data || Date.now() - entry.ts > LOCALE_CACHE_TTL_MS) {
+      // Stale — evict so the async fetch stores a fresh copy.
+      localStorage.removeItem(LOCALE_CACHE_PREFIX + code);
+      return false;
+    }
+    _loadedLocales.set(code, entry.data);
+    _fromCache.add(code);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function loadUiLocale(code: string): Promise<void> {
-  if (code === 'en' || _loadedLocales.has(code)) return;
+  if (code === 'en') return;
+  // Skip only if the locale was freshly fetched this session (not just from
+  // cache). Cache entries are always background-refreshed so the next page
+  // load benefits from up-to-date translations.
+  if (_loadedLocales.has(code) && !_fromCache.has(code)) return;
   try {
     const res = await fetch(`/locales/${code}.json`);
     if (!res.ok) return;
     const raw = await res.json() as Record<string, unknown>;
     // Strip the $meta block — it is translator metadata, not a string key.
     const { $meta: _ignored, ...strings } = raw;
-    _loadedLocales.set(code, strings as UiLocale);
+    const locale = strings as UiLocale;
+    _loadedLocales.set(code, locale);
+    _fromCache.delete(code); // mark as freshly fetched
+
+    // Persist to localStorage so the next page load can restore synchronously.
+    try {
+      localStorage.setItem(
+        LOCALE_CACHE_PREFIX + code,
+        JSON.stringify({ ts: Date.now(), data: locale } satisfies StoredLocaleEntry),
+      );
+    } catch { /* quota exceeded — silently skip */ }
   } catch {
     // Non-critical: the UI will display English strings as a graceful fallback.
   }

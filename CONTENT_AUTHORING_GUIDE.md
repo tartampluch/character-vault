@@ -2408,12 +2408,13 @@ To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPP
 ```json
 {
   "$meta": {
-    "language": "Français",
-    "code": "fr",
-    "unitSystem": "metric",
-    "author": "Character Vault core team",
-    "version": 1,
-    "notes": "Traduction française officielle."
+    "language":    "Français",
+    "code":        "fr",
+    "countryCode": "fr",
+    "unitSystem":  "metric",
+    "author":      "Character Vault core team",
+    "version":     1,
+    "notes":       "Traduction française officielle."
   },
 
   "login.title":      "Connectez-vous pour continuer",
@@ -2432,7 +2433,7 @@ To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPP
 
 | Rule | Detail |
 |---|---|
-| `$meta` block | Required. Declares `language` (self-name, e.g. "Français"), `code` (BCP-47, e.g. `"fr"`), `unitSystem` (`"imperial"` or `"metric"`). The engine strips `$meta` before caching. |
+| `$meta` block | Required. Declares `language` (self-name, e.g. "Français"), `code` (BCP-47, e.g. `"fr"`), `countryCode` (ISO 3166-1 alpha-2, e.g. `"fr"` — **mandatory**, used for the country flag in the language picker), `unitSystem` (`"imperial"` or `"metric"`). The engine strips `$meta` before caching. **Locale files missing `countryCode` are skipped by the server and will not appear in the language dropdown.** |
 | Simple strings | Plain key-value pairs. `{placeholder}` syntax for variable substitution (caller does `.replace('{x}', value)`). |
 | Plural strings | Object with CLDR plural category keys (`one`, `other`, and optionally `few`, `many`, `zero`). Use `uiN(key, count, lang)` at the call site. |
 | `{n}` in plurals | Replaced with the count value by `uiN()`. |
@@ -2440,7 +2441,7 @@ To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPP
 
 #### Loading mechanism
 
-Locale files are loaded lazily via `GET /api/locales` (served by `UiLocalesController.php`). The endpoint returns an array of `{ code, language, unitSystem }` descriptors. `DataLoader.loadExternalLocales()` calls this at app startup and registers each code in the language dropdown.
+Locale files are loaded lazily via `GET /api/locales` (served by `UiLocalesController.php`). The endpoint returns an array of `{ code, language, countryCode, unitSystem }` descriptors — only files with a valid `countryCode` are included. `DataLoader.loadExternalLocales()` calls this at app startup and registers each code in the language dropdown.
 
 The `ui(key, lang)` function resolves strings:
 1. Loaded locale for `lang` (if the locale file was fetched)
@@ -2452,8 +2453,12 @@ The `uiN(key, count, lang)` function resolves plurals using `Intl.PluralRules` f
 #### Adding a community locale
 
 1. Create `static/locales/{code}.json` with the `$meta` block and translations.
+   - `$meta.countryCode` is **mandatory** (ISO 3166-1 alpha-2). Files without it are skipped by the server.
+   - `$meta.countryCode` drives the flag icon in `ThemeLanguagePicker` (via `flag-icons` CSS).
+   - Example: German → `"code": "de", "countryCode": "de"`.
+   - For languages where the BCP-47 code differs from the country code, use the country: e.g., English → `"code": "en", "countryCode": "gb"` (but English has no locale file — it is always bundled).
 2. Deploy the file to the server — no code change required.
-3. On the next page load, `GET /api/locales` returns it and the language appears in the dropdown.
+3. On the next page load, `GET /api/locales` returns it and the language (with its flag) appears in the dropdown.
 4. Any UI key without a translation silently falls back to English.
 
 #### Testing locale behavior

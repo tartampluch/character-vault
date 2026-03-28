@@ -164,7 +164,6 @@
   const asideClass = $derived(
     [
       'flex flex-col h-screen bg-surface border-r border-border',
-      'overflow-x-hidden overflow-y-auto',
       'transition-all duration-200 ease-in-out shrink-0',
       'fixed inset-y-0 left-0 z-40',
       mobileOpen ? 'translate-x-0 w-64 shadow-xl' : '-translate-x-full w-64',
@@ -211,58 +210,68 @@
 
   <!-- =========================================================================
        HEADER — Logo + Title + Collapse button
+
+       When desktop-collapsed (collapsed=true, at lg+):
+         Only the expand-chevron is rendered, centered. The logo is hidden to
+         prevent it from overlapping the 64 px-wide column.
+       When expanded, tablet, or mobile:
+         Logo + title (title hidden at tablet via effectivelyCollapsed) + buttons.
   ========================================================================== -->
-  <div class="flex items-center justify-between px-3 py-3 border-b border-border shrink-0">
-    <a
-      href="/"
-      class="flex items-center gap-2 min-w-0 text-text-primary hover:text-accent transition-colors duration-150"
-      title="Character Vault"
-    >
-      <svg
-        width="28" height="28" viewBox="0 0 28 28" fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="shrink-0 text-accent" aria-hidden="true"
-      >
-        <path d="M14 2L4 7V14C4 19.5 8.5 24.7 14 26C19.5 24.7 24 19.5 24 14V7L14 2Z"
-          fill="currentColor" opacity="0.15"/>
-        <path d="M14 2L4 7V14C4 19.5 8.5 24.7 14 26C19.5 24.7 24 19.5 24 14V7L14 2Z"
-          stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M10 14L13 17L18 11"
-          stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+  <div class="flex items-center border-b border-border shrink-0
+              {collapsed ? 'justify-center px-1 py-3' : 'justify-between px-3 py-3'}">
 
-      {#if !effectivelyCollapsed}
-        <span class="font-semibold text-base truncate">{ui('app.title', engine.settings.language)}</span>
-      {/if}
-    </a>
-
-    <!-- Desktop collapse/expand toggle -->
-    <div class="hidden lg:flex items-center">
-      <button
-        class="btn-ghost p-1.5 ml-1 shrink-0"
-        onclick={onCollapse}
-        title={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
-        aria-label={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
-        type="button"
+    {#if !collapsed}
+      <!-- Logo / title link — hidden in desktop-collapsed state -->
+      <a
+        href="/"
+        class="flex items-center gap-2 min-w-0 text-text-primary hover:text-accent transition-colors duration-150"
+        title="Character Vault"
       >
-        {#if collapsed}
-          <IconExpand size={16} aria-hidden="true" />
-        {:else}
-          <IconCollapse size={16} aria-hidden="true" />
+        <svg
+          width="28" height="28" viewBox="0 0 28 28" fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="shrink-0 text-accent" aria-hidden="true"
+        >
+          <path d="M14 2L4 7V14C4 19.5 8.5 24.7 14 26C19.5 24.7 24 19.5 24 14V7L14 2Z"
+            fill="currentColor" opacity="0.15"/>
+          <path d="M14 2L4 7V14C4 19.5 8.5 24.7 14 26C19.5 24.7 24 19.5 24 14V7L14 2Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 14L13 17L18 11"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {#if !effectivelyCollapsed}
+          <span class="font-semibold text-base truncate">{ui('app.title', engine.settings.language)}</span>
         {/if}
-      </button>
-    </div>
+      </a>
+    {/if}
 
-    <!-- Mobile close drawer button -->
+    <!-- Desktop collapse/expand toggle (lg+ only) -->
     <button
-      class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
-      onclick={onClose}
-      title={ui('nav.close_navigation', engine.settings.language)}
-      aria-label={ui('nav.close_navigation', engine.settings.language)}
+      class="hidden lg:flex btn-ghost p-1.5 shrink-0"
+      onclick={onCollapse}
+      title={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
+      aria-label={collapsed ? ui('nav.expand_sidebar', engine.settings.language) : ui('nav.collapse_sidebar', engine.settings.language)}
       type="button"
     >
-      <IconClose size={20} aria-hidden="true" />
+      {#if collapsed}
+        <IconExpand size={16} aria-hidden="true" />
+      {:else}
+        <IconCollapse size={16} aria-hidden="true" />
+      {/if}
     </button>
+
+    <!-- Mobile close drawer button (mobile only) -->
+    {#if !collapsed}
+      <button
+        class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
+        onclick={onClose}
+        title={ui('nav.close_navigation', engine.settings.language)}
+        aria-label={ui('nav.close_navigation', engine.settings.language)}
+        type="button"
+      >
+        <IconClose size={20} aria-hidden="true" />
+      </button>
+    {/if}
   </div>
 
   <!-- =========================================================================
@@ -316,12 +325,13 @@
       {/if}
     </button>
 
-    <!-- Dropdown menu -->
+    <!-- Dropdown menu — min-w-[12rem] so it is readable even in collapsed (64px) mode -->
     {#if showUserMenu}
       <div
         role="menu"
         class="
-          absolute left-2 right-2 top-full mt-1 z-50
+          absolute left-1 top-full mt-1 z-50
+          min-w-[12rem]
           bg-surface border border-border rounded-lg shadow-lg
           overflow-hidden py-1
         "
@@ -359,7 +369,7 @@
   <!-- =========================================================================
        NAVIGATION LINKS — middle section, vertically scrollable
   ========================================================================== -->
-  <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5" aria-label="Main navigation">
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5" aria-label="Main navigation">
 
     <!-- 1. CAMPAIGNS — always visible -->
     <a href="/campaigns" class={navLinkClass('/campaigns')} title={ui('nav.campaigns', engine.settings.language)}>

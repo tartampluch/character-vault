@@ -2443,11 +2443,12 @@ Language preference is persisted at user level (not campaign level) via `storage
 ```json
 {
   "$meta": {
-    "language": "Français",
-    "code": "fr",
-    "unitSystem": "metric",
-    "author": "Character Vault core team",
-    "version": 1
+    "language":    "Français",
+    "code":        "fr",
+    "countryCode": "fr",
+    "unitSystem":  "metric",
+    "author":      "Character Vault core team",
+    "version":     1
   },
   "login.title":        "Connectez-vous pour continuer",
   "combat.hp.title":    "Points de vie",
@@ -2458,7 +2459,10 @@ Language preference is persisted at user level (not campaign level) via `storage
 }
 ```
 
-The `$meta` block is stripped by `loadUiLocale()` before caching. It is never exposed to the rest of the app. `unitSystem` in `$meta` registers the language's unit system via `registerLangUnitSystem()` so distance/weight formatting works correctly without any bundled code change.
+The `$meta` block is stripped by `loadUiLocale()` before caching. It is never exposed to the rest of the app.
+
+- `unitSystem` registers the language's unit system via `registerLangUnitSystem()`.
+- `countryCode` **is mandatory** — it is an ISO 3166-1 alpha-2 code (e.g. `"fr"`, `"de"`) used by `ThemeLanguagePicker` to render a country flag via the `flag-icons` CSS library. Locale files missing `countryCode` are silently skipped by `UiLocalesController.php` and will not appear in the language dropdown.
 
 #### Resolution chain
 
@@ -2476,7 +2480,7 @@ uiN('settings.rule_sources.files', 5, 'fr')  // → "5 fichiers"
 
 #### Discovery mechanism
 
-`GET /api/locales` (served by `UiLocalesController.php`) scans `static/locales/*.json` and returns `[{ code, language, unitSystem }]`. `DataLoader.loadExternalLocales()` calls this on startup and registers each code in `_availableLanguages` so it appears in the language dropdown.
+`GET /api/locales` (served by `UiLocalesController.php`) scans `static/locales/*.json` and returns `[{ code, language, countryCode, unitSystem }]`. Only files that declare a valid `countryCode` are included. `DataLoader.loadExternalLocales()` calls this on startup and stores the metadata (including `countryCode`) in `_externalLocales`, registering each code in `_availableLanguages` so it appears in the language dropdown. `GameEngine.getLanguageCountryCode(code)` exposes the country code for UI rendering.
 
 `buildLocalizedString(key)` constructs a `LocalizedString` object from a `UI_STRINGS` key, including all currently loaded locale translations. Used by the engine to create localized `sourceName` strings for dynamically generated modifiers (e.g., synergy bonuses).
 

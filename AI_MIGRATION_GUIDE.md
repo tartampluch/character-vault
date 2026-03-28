@@ -1140,11 +1140,12 @@ If you need to explain a UI locale file structure to a downstream translator or 
 ```json
 {
   "$meta": {
-    "language": "Français",
-    "code": "fr",
-    "unitSystem": "metric",
-    "author": "Character Vault core team",
-    "version": 1
+    "language":    "Français",
+    "code":        "fr",
+    "countryCode": "fr",
+    "unitSystem":  "metric",
+    "author":      "Character Vault core team",
+    "version":     1
   },
   "login.title":     "Connectez-vous pour continuer",
   "combat.hp.title": "Points de vie",
@@ -1156,6 +1157,7 @@ If you need to explain a UI locale file structure to a downstream translator or 
 ```
 
 - The `$meta` block is informational only; the loader strips it before caching.
+- **`$meta.countryCode` is mandatory** (ISO 3166-1 alpha-2, e.g. `"fr"`, `"de"`). It is used to render the country flag in the language picker (`flag-icons` CSS library). Files missing this field are skipped by `UiLocalesController.php` and will not appear in the language dropdown.
 - Simple string values use `{placeholder}` for template variables.
 - Plural values use CLDR category keys (`one`, `other`, etc.); `{n}` is replaced with the count by `uiN()`.
 - Any key absent from the locale file silently falls back to the English baseline.

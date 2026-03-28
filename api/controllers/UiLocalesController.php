@@ -20,7 +20,14 @@
  * HOW TO ADD A COMMUNITY LANGUAGE
  *   Drop a valid locale JSON file in static/locales/{code}.json.
  *   The file must contain a top-level "$meta" object with at least:
- *     { "code": "de", "language": "Deutsch", "unitSystem": "metric" }
+ *     {
+ *       "code": "de",
+ *       "language": "Deutsch",
+ *       "countryCode": "de",
+ *       "unitSystem": "metric"
+ *     }
+ *   `countryCode` is a mandatory ISO 3166-1 alpha-2 code used to render the
+ *   country flag in the language picker (via the flag-icons CSS library).
  *   On the next page load, the language will appear in the dropdown.
  *   No code change or server restart is required.
  *
@@ -87,12 +94,14 @@ class UiLocalesController {
             $meta = $data['$meta'] ?? null;
             if (!is_array($meta)) continue;
 
-            $code       = $meta['code']       ?? null;
-            $language   = $meta['language']   ?? null;
-            $unitSystem = $meta['unitSystem'] ?? 'imperial';
+            $code        = $meta['code']        ?? null;
+            $language    = $meta['language']    ?? null;
+            $countryCode = $meta['countryCode'] ?? null;
+            $unitSystem  = $meta['unitSystem']  ?? 'imperial';
 
-            // Require at minimum a code and a display name.
+            // Require at minimum a code, a display name, and a country code.
             if (!is_string($code) || $code === '' || !is_string($language)) continue;
+            if (!is_string($countryCode) || $countryCode === '') continue;
 
             // Skip English — it is always bundled in the frontend.
             if ($code === 'en') continue;
@@ -103,9 +112,10 @@ class UiLocalesController {
             }
 
             $locales[] = [
-                'code'       => $code,
-                'language'   => $language,
-                'unitSystem' => $unitSystem,
+                'code'        => $code,
+                'language'    => $language,
+                'countryCode' => $countryCode,
+                'unitSystem'  => $unitSystem,
             ];
         }
 
