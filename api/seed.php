@@ -395,7 +395,12 @@ $db->prepare('
 ')->execute([
     $campaignId,
     'The Shattered Throne',
-    'When the Crown of Binding is stolen from the Vault of Ages, a group of unlikely heroes must pursue its thief through labyrinthine city streets, haunted ruins, flooded ancient cities, and a storm-wracked lich fortress—before an unkillable evil reclaims its seat of power. A complete 1-shot adventure for four 7th-level characters.',
+    // Stored as a JSON-encoded LocalizedString so the frontend can translate it.
+    // The campaign page parses this with a safe helper and falls back to plain text.
+    json_encode([
+        'en' => 'When the Crown of Binding is stolen from the Vault of Ages, a group of unlikely heroes must pursue its thief through labyrinthine city streets, haunted ruins, flooded ancient cities, and a storm-wracked lich fortress—before an unkillable evil reclaims its seat of power. A complete 1-shot adventure for four 7th-level characters.',
+        'fr' => 'Lorsque la Couronne du Lien est dérobée de la Chambre des Âges, un groupe de héros improbables doit pourchasser le voleur à travers les rues labyrinthiques d\'une ville, des ruines hantées, des cités antiques inondées et une forteresse de liche balayée par les tempêtes — avant qu\'un mal indestructible ne reprenne son trône. Une aventure complète en une session pour quatre personnages de niveau 7.',
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
     'user_gm_001',
     '[]',
     json_encode($allRuleSources),
@@ -704,17 +709,34 @@ $now = time();
 
 // ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
 // CHARACTER 1: Kael Shadowstep
-//   Race : Human (SRD core)
-//   Class: Soulknife 7 (SRD psionics)
-//   Role : Melee striker / psionic ambusher
+//   Race      : Human (SRD core)
+//   Class     : Soulknife 7 (SRD psionics)
+//   Alignment : Chaotic Neutral
+//   Role      : Melee striker / psionic ambusher
+//   Player    : Matthieu "Shadow" Renard
 //
 // BUILD NOTES (D&D 3.5 SRD):
-//   STR 16 / DEX 14 (→16 w/ Gloves of Dexterity +2) / CON 14 / INT 10 / WIS 12 / CHA 8
-//   HP: 7d10+14(CON) = 55(dice) + 14 = 69 total  — using good but not max rolls
-//   BAB: +5 (¾ progression, level 7)
-//   Saves: Fort +4(base)+2(CON)=+6 | Ref +5(base)+2(DEX*)+5=+7 | Will +5(base)+1(WIS)=+6
-//     (* DEX total = 16, mod = +3 — but without Gloves active the base is +2)
-//   AC: 10 + 4(mithral_shirt) + 2(DEX) + 1(amulet_natural) + 1(ring_protection) = 18
+//   Base: STR 16 / DEX 14 / CON 14 / INT 10 / WIS 12 / CHA 8
+//   With Gloves of Dexterity +2 → effective DEX 16 (mod +3)
+//   With Cloak of Resistance +1 → +1 to all saves
+//
+//   HP: 7d10 = 10+8+7+9+8+7+6 = 55 dice + CON 14(mod+2)×7 = 55+14 = 69 total
+//   BAB: +5 (¾ progression, Soulknife 7)
+//   AC: 10 + 4(mithral_shirt) + 3(DEX w/gloves) + 1(amulet_natural) + 1(ring_prot) = 19
+//   Saves:
+//     Fort  +4(base) + 2(CON) + 1(cloak) = +7
+//     Ref   +5(base) + 3(DEX) + 1(cloak) = +9
+//     Will  +5(base) + 1(WIS) + 1(cloak) = +7
+//   Initiative: +3(DEX) + 4(Improved Initiative) = +7
+//
+//   SOULKNIFE SPECIAL MECHANICS:
+//   The Soulknife forges a Mind Blade from pure psionic energy — this is NOT a
+//   psi-pool power. It requires no power points to manifest. It is always available
+//   as a free action. The blade scales with Soulknife level:
+//     +2 Mind Blade (Lv7 enhancement), Psychic Strike +2d8, Knife to the Soul.
+//   Attacks with Weapon Finesse (DEX-to-hit for light blades), Two-Weapon Fighting.
+//   Main hand: +2 Mind Blade (light blade, Finesse)
+//   Off hand:  +2 Mind Blade (light blade, Finesse)
 //
 //   CLASS FEATURES (auto-granted by engine from class_soulknife levelProgression):
 //     Lv1: Mind Blade, Weapon Focus (Mind Blade), Wild Talent
@@ -726,19 +748,39 @@ $now = time();
 //     Lv7: +2 Mind Blade, Knife to the Soul
 //
 //   MANUALLY CHOSEN FEATS (stored in activeFeatures):
-//     Lv1         : Two-Weapon Fighting (DEX 15 req ✓ — total DEX 16)
+//     Lv1         : Two-Weapon Fighting (DEX 15 req ✓ — DEX 14 base + Gloves +2 = 16)
 //     Lv1 (Human) : Improved Initiative (+4 init)
-//     Lv3         : Psionic Body (+2 HP per psionic feat; stacks with Wild Talent)
-//     Lv6         : Weapon Finesse (use DEX for light-weapon attack rolls)
+//     Lv3         : Psionic Body (+2 HP per psionic feat owned: Wild Talent, this feat = +4 HP)
+//     Lv6         : Weapon Finesse (use DEX mod for Mind Blade attack rolls)
 //
-//   SKILL POINTS: (4 base + 0 INT + 1 Human) × 4(1st lvl bonus) + (5 × 6) = 50
-//     skill_autohypnosis  10 ranks → total +11 (WIS 12, mod +1)
-//     skill_concentration 10 ranks → total +12 (CON 14, mod +2)
-//     skill_tumble        10 ranks → total +12 (DEX 16, mod +3; cross-class if not SK)
-//     skill_hide           7 ranks → total +9  (DEX 16, mod +3)
-//     skill_move_silently  7 ranks → total +9  (DEX 16, mod +3)
-//     skill_spot           6 ranks → total +7  (WIS 12, mod +1)
+//   LANGUAGES: Common only (INT 10 = no bonus language slots)
+//
+//   SKILL POINTS: (4 base + 0 INT + 1 Human) × 4(1st lvl bonus) + (5 × 6) = 50 total
+//     skill_autohypnosis  10 ranks → total +11 (WIS +1)
+//     skill_concentration 10 ranks → total +12 (CON +2)
+//     skill_tumble        10 ranks → total +13 (DEX +3 w/gloves; cross-class penalty
+//                                               NOT applied if Tumble is a SK class skill)
+//     skill_hide           7 ranks → total +10 (DEX +3 w/gloves)
+//     skill_move_silently  7 ranks → total +10 (DEX +3 w/gloves)
+//     skill_spot           6 ranks → total  +7 (WIS +1)
 //     Total spent: 50 ✓
+//
+//   PERSONAL STORY:
+//   Born in the slums of Thornhaven, Kael discovered his psionic gift at age 14
+//   when he manifested a shimmering blade during a street brawl. Trained by a
+//   wandering Soulknife mentor, he has spent years honing his craft as a blade-for-hire,
+//   never staying anywhere long. He took the name "Shadowstep" after vanishing
+//   from the Thieves' Guild he once served — the same guild that now hunts him.
+//   Chaotic and self-reliant, Kael trusts no one completely, but the Arcane Council's
+//   gold is good and the Crown of Binding won't retrieve itself.
+//
+//   PHYSICAL DESCRIPTION:
+//   Height: 5'11" (180 cm) — lean, wiry build
+//   Weight: 165 lb. (75 kg)
+//   Age: 27
+//   Eyes: Cold grey, constantly scanning
+//   Hair: Short black, always slightly disheveled
+//   Skin: Olive-tanned from years of outdoor work
 // ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
 
 $kaelData = [
@@ -747,8 +789,30 @@ $kaelData = [
     'campaignId' => $campaignId,
     'ownerId'    => 'user_player1_001',
     'isNPC'      => false,
-    'playerName' => 'Player One',
-    'customSubtitle' => 'Human Soulknife 7',
+    'playerName' => 'Matthieu Renard',    // Real player name
+    'customSubtitle' => 'Chaotic Neutral · Human Soulknife 7',
+
+    // ── Notes / Personal Story ────────────────────────────────────────────
+    'notes' => 'Born in the slums of Thornhaven, Kael discovered his psionic gift at age 14 '
+              . 'when he manifested a shimmering blade of pure mental energy during a street brawl. '
+              . 'Trained by a wandering Soulknife master who vanished one morning without explanation, '
+              . 'he spent years as a blade-for-hire — never staying anywhere long enough to form '
+              . 'attachments. He took the name "Shadowstep" after disappearing from the Thornhaven '
+              . 'Thieves\' Guild he once served; the same guild whose captain now wants his head. '
+              . "Chaotic and deeply self-reliant, Kael's loyalty is to the next paycheck and the "
+              . "thrill of a clean vanish. The Arcane Council's gold is good, the mission is "
+              . "interesting, and — if the Crown of Binding truly holds the undead armies in check — "
+              . "maybe this one is worth seeing through to the end.",
+
+    // ── Physical Traits ───────────────────────────────────────────────────
+    'physicalTraits' => [
+        'height' => "5'11\" (180 cm)",
+        'weight' => '165 lb. (75 kg)',
+        'age'    => '27',
+        'eyes'   => 'Cold grey, always scanning',
+        'hair'   => 'Short black, slightly disheveled',
+        'skin'   => 'Olive-tanned',
+    ],
 
     // ── Advancement ──────────────────────────────────────────────────────
     // classLevels is the authoritative multiclass map (DAG Phase 0 reads this).
@@ -760,20 +824,20 @@ $kaelData = [
 
     // ── Hit Die Results (stored, not recomputed) ─────────────────────────
     // Soulknife uses d10. Level 1 result is the maximum by house-rule convenience.
-    // Levels 2-7 are realistic rolls. Max HP = sum + (CON_mod × characterLevel).
+    // Levels 2-7 are realistic-ish rolls. Max HP = sum + (CON_mod × characterLevel).
     'hitDieResults' => [1 => 10, 2 => 8, 3 => 7, 4 => 9, 5 => 8, 6 => 7, 7 => 6],
-    // Max HP = 55 + (2 × 7) = 69
+    // Max HP = 55 dice + CON_mod(+2) × 7 levels = 55 + 14 = 69
 
     // ── Ability Scores (baseValue only; racial/item modifiers applied by engine) ──
-    // Human has no racial stat adjustments, so base = total.
+    // Human has no racial stat adjustments, so base = effective total (before items).
     // Gloves of Dexterity +2 grant +2 enhancement (applied via item feature modifier).
     'attributes' => [
-        'stat_strength'     => ['baseValue' => 16],
-        'stat_dexterity'    => ['baseValue' => 14], // +2 from Gloves = 16 effective
-        'stat_constitution' => ['baseValue' => 14],
-        'stat_intelligence' => ['baseValue' => 10],
-        'stat_wisdom'       => ['baseValue' => 12],
-        'stat_charisma'     => ['baseValue' =>  8],
+        'stat_strength'     => ['baseValue' => 16],  // Melee damage
+        'stat_dexterity'    => ['baseValue' => 14],  // +2 from Gloves = 16 effective (mod +3)
+        'stat_constitution' => ['baseValue' => 14],  // mod +2 → HP and Fort
+        'stat_intelligence' => ['baseValue' => 10],  // mod 0  → no bonus languages
+        'stat_wisdom'       => ['baseValue' => 12],  // mod +1 → Will save, Autohypnosis
+        'stat_charisma'     => ['baseValue' =>  8],  // mod -1 → dump stat
     ],
 
     // ── Skill Ranks (stored; engine adds ability mod + class-skill bonuses) ─
@@ -815,7 +879,18 @@ $kaelData = [
         // class_soulknife levelProgression (up to level 7) is resolved by the
         // GameEngine, which auto-grants class features listed in grantedFeatures
         // arrays (Mind Blade, Wild Talent, Speed of Thought, etc.).
+        // NOTE: Soulknife does NOT use psi-pool — the Mind Blade is a class feature,
+        // not a psionic power. All Soulknife abilities are at-will or per-encounter.
         ['instanceId' => 'afi_class_kael', 'featureId' => 'class_soulknife', 'isActive' => true],
+
+        // ── Alignment ─────────────────────────────────────────────────────
+        // Chaotic Neutral: freedom over law, neither good nor evil.
+        // Relevant for spell interactions (e.g. Holy Avenger, Detect Evil/Good).
+        ['instanceId' => 'afi_alignment_kael', 'featureId' => 'alignment_chaotic_neutral', 'isActive' => true],
+
+        // ── Language ──────────────────────────────────────────────────────
+        // Human automatically speaks Common. INT 10 = 0 bonus language slots.
+        ['instanceId' => 'afi_lang_common_kael', 'featureId' => 'language_common', 'isActive' => true],
 
         // ── Manually Chosen Feats ─────────────────────────────────────────
         // These are player-selected general feat slots + human bonus feat slot.
@@ -835,7 +910,7 @@ $kaelData = [
         ['instanceId' => 'afi_ring_kael',   'featureId' => 'item_ring_protection_1',             'isActive' => true],
         // Cloak of Resistance +1: +1 resistance bonus to all saves.
         ['instanceId' => 'afi_cloak_kael',  'featureId' => 'item_cloak_of_resistance_1',         'isActive' => true],
-        // Gloves of Dexterity +2: +2 enhancement to DEX (raises effective DEX to 16).
+        // Gloves of Dexterity +2: +2 enhancement to DEX (raises effective DEX to 16, mod +3).
         ['instanceId' => 'afi_gloves_kael', 'featureId' => 'item_gloves_of_dexterity_2',         'isActive' => true],
 
         // ── Backpack / Carried Gear (isActive: false = weight counts, no bonuses) ──
@@ -863,16 +938,27 @@ $kaelData = [
 
 // ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
 // CHARACTER 2: Sylara Moonwhisper
-//   Race : Elf (SRD core)
-//   Class: Druid 7 (SRD core)
-//   Role : Divine caster / nature controller / healer
+//   Race      : Elf (SRD core)
+//   Class     : Druid 7 (SRD core)
+//   Alignment : Neutral Good
+//   Role      : Divine caster / nature controller / healer
+//   Player    : Sophie Delacourt
 //
 // BUILD NOTES (D&D 3.5 SRD):
-//   STR 10 / DEX 16 (+2 racial) / CON 12 (-2 racial, base 14) / INT 12 / WIS 18 (+2 Periapt) / CHA 10
-//   HP: 7d8+7(CON) = 47(dice) + 7 = 54 total  — average rolls
-//   BAB: +5 (¾ progression, level 7)
-//   Saves: Fort +5(base)+1(CON)=+6 | Ref +2(base)+3(DEX)=+5 | Will +5(base)+4(WIS)=+9
-//   AC: 10 + 4(rhino_hide) + 2(darkwood_shield) + 1(amulet_natural) + 1(ring_prot) + 3(DEX) = 21
+//   Base: STR 10 / DEX 14 / CON 14 / INT 12 / WIS 16 / CHA 10
+//   Elf racial: +2 DEX → effective DEX 16 (mod +3)
+//   Elf racial: -2 CON → effective CON 12 (mod +1)
+//   Periapt of Wisdom +2 → effective WIS 18 (mod +4)
+//   Cloak of Resistance +2 → +2 to all saves
+//
+//   HP: 7d8 = 8+6+7+5+8+6+7 = 47 dice + CON_mod(+1) × 7 = 47 + 7 = 54 total
+//   BAB: +5 (¾ progression, Druid 7)
+//   AC: 10 + 5(rhino_hide) + 2(darkwood_shield) + 2(DEX — capped by rhino +2 max_dex)
+//       + 1(amulet_natural) + 1(ring_prot) = 21
+//   Saves (with Cloak of Resistance +2):
+//     Fort  +5(base) + 1(CON) + 2(cloak) = +8
+//     Ref   +2(base) + 3(DEX) + 2(cloak) = +7
+//     Will  +5(base) + 4(WIS) + 2(cloak) = +11
 //
 //   CLASS FEATURES (auto-granted by engine from class_druid levelProgression):
 //     Lv1: Animal Companion, Nature Sense, Wild Empathy, Druid Bonus Languages
@@ -888,22 +974,44 @@ $kaelData = [
 //     Lv3: Spell Focus (Conjuration)  (prerequisite for Augment Summoning)
 //     Lv6: Augment Summoning  (+4 STR/CON to summoned creatures)
 //
-//   SPELL SLOTS (Druid 7, WIS 18 = +4 bonus spells):
-//     0th: 6 (no bonus for 0th) = 6/day
-//     1st: 5 + 1(domain) + 1(WIS) = 6+1 = prepared from full druid list
-//     2nd: 4 + 1(domain) + 1(WIS) = 5+1
-//     3rd: 3 + 1(domain) + 1(WIS) = 4+1
-//     4th: 1 + 1(domain) + 1(WIS) = 2+1
-//     (Domain spells computed separately by engine from chosen domain)
+//   SPELL SLOTS (Druid 7, WIS 18 = mod +4 → +1 bonus spell per level 1-4):
+//     0th: 6/day (cantrips, no bonus for 0-level)
+//     1st: 5 + 1(WIS bonus) = 6/day
+//     2nd: 4 + 1(WIS bonus) = 5/day
+//     3rd: 3 + 1(WIS bonus) = 4/day
+//     4th: 1 + 1(WIS bonus) = 2/day
+//     (Domain spells add 1 per level from chosen domain)
 //
-//   SKILL POINTS: (4 base + 1 INT + 0 Elf bonus) × 4(1st) + (5 × 6) = 50
-//     skill_concentration   10 ranks → total +11 (CON 12, mod +1)
+//   LANGUAGES:
+//     Elven racial automatic: Common, Elvish, Sylvan, Druidic (class)
+//     INT 12 = mod +1 → 1 bonus language slot → Draconic (for ancient ruins)
+//
+//   SKILL POINTS: (4 base + 1 INT + 0 Elf) × 4(1st) + (5 × 6) = 50 total
+//     skill_concentration    10 ranks → total +11 (CON 12, mod +1)
 //     skill_knowledge_nature 10 ranks → total +11 (INT 12, mod +1) — class skill
 //     skill_spellcraft       10 ranks → total +11 (INT 12, mod +1) — class skill
 //     skill_survival         10 ranks → total +14 (WIS 18, mod +4) — class skill
-//     skill_spot              5 ranks → total +9  (WIS 18, mod +4; +2 Elf racial = +11)
-//     skill_listen            5 ranks → total +9  (WIS 18, mod +4; +2 Elf racial = +11)
+//     skill_spot              5 ranks → total  +9 (WIS +4; Elf racial +2 = +11 total)
+//     skill_listen            5 ranks → total  +9 (WIS +4; Elf racial +2 = +11 total)
 //     Total spent: 50 ✓
+//
+//   PERSONAL STORY:
+//   Sylara grew up among the ancient elven forest enclaves of the Deepwood — the same
+//   forest now corrupted in Chapter 2. She left her people after a fire elemental
+//   summoned by a young apprentice (her mistake, her fire) destroyed a sacred grove.
+//   Carrying that guilt, she joined the Arcane Council's naturalists to learn how to
+//   prevent such disasters. Her druidic vow of atonement — Neutral Good, serving the
+//   greater good through nature — drives her every action. The corruption spreading
+//   through the Deepwood is personal. The Crown of Binding must be stopped before
+//   the undead armies reach the last living forests.
+//
+//   PHYSICAL DESCRIPTION:
+//   Height: 5'6" (168 cm) — graceful, slightly taller than average for elves
+//   Weight: 110 lb. (50 kg)
+//   Age: 142 (appears mid-20s by human standards)
+//   Eyes: Silver-violet, shifting slightly in moonlight
+//   Hair: Silver-white, long and braided with tiny silver oak-leaf charms
+//   Skin: Pale silver-grey, bears a burn scar on her left forearm
 // ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
 
 $sylaraData = [
@@ -912,13 +1020,34 @@ $sylaraData = [
     'campaignId' => $campaignId,
     'ownerId'    => 'user_player2_001',
     'isNPC'      => false,
-    'playerName' => 'Player Two',
-    'customSubtitle' => 'Elf Druid 7',
+    'playerName' => 'Sophie Delacourt',   // Real player name
+    'customSubtitle' => 'Neutral Good · Elf Druid 7',
+
+    // ── Notes / Personal Story ────────────────────────────────────────────
+    'notes' => 'Sylara grew up among the ancient elven enclaves deep within the Deepwood — '
+              . 'the same forest now slowly dying under psionic and undead corruption. She left '
+              . 'her people after a summoning accident during her apprenticeship burned a sacred grove. '
+              . 'The fire elemental was her mistake; the devastation her burden. '
+              . "Driven by guilt, she joined the Arcane Council's naturalists to master protective "
+              . 'druidic techniques, earning her place among the adventuring party sent to recover '
+              . 'the Crown of Binding. The corrupted Deepwood is personal — its suffering is her '
+              . 'fault by proxy. Her vow is simple: restore what was broken, protect what remains, '
+              . "and ensure no one else's mistake becomes the world's ruin.",
+
+    // ── Physical Traits ───────────────────────────────────────────────────
+    'physicalTraits' => [
+        'height' => "5'6\" (168 cm)",
+        'weight' => '110 lb. (50 kg)',
+        'age'    => '142 (appears mid-20s)',
+        'eyes'   => 'Silver-violet, moonlight-shifting',
+        'hair'   => 'Silver-white, braided with oak-leaf charms',
+        'skin'   => 'Pale silver-grey, burn scar on left forearm',
+    ],
 
     // ── Advancement ──────────────────────────────────────────────────────
     'classLevels'     => ['class_druid' => 7],
     // Elf favored class in D&D 3.5 is Wizard, but this character ignores that
-    // (single-classed, so no XP penalty regardless).
+    // (single-classed Druid 7, so no XP penalty regardless of favored class).
     'favoredClass'    => 'class_druid',
     'levelAdjustment' => 0,
     'xp'              => 21000,
@@ -926,18 +1055,18 @@ $sylaraData = [
     // ── Hit Die Results ───────────────────────────────────────────────────
     // Druid uses d8. Average to good rolls across levels.
     'hitDieResults' => [1 => 8, 2 => 6, 3 => 7, 4 => 5, 5 => 8, 6 => 6, 7 => 7],
-    // Max HP = 47 + (1 × 7) = 54  (CON 14 base - 2 racial = 12, mod = +1)
+    // Max HP = 47 dice + CON_mod(+1) × 7 levels = 47 + 7 = 54
 
     // ── Ability Scores (baseValue before racial adjustments) ──────────────
-    // Elf racial: +2 DEX, -2 CON.
-    // Periapt of Wisdom +2 provides +2 enhancement to WIS (via item modifier).
+    // Elf racial: +2 DEX, -2 CON (applied by race_elf feature modifiers in engine).
+    // Periapt of Wisdom +2: +2 enhancement to WIS (applied by item feature).
     'attributes' => [
-        'stat_strength'     => ['baseValue' => 10],
-        'stat_dexterity'    => ['baseValue' => 14], // +2 racial → effective 16
-        'stat_constitution' => ['baseValue' => 14], // -2 racial → effective 12
-        'stat_intelligence' => ['baseValue' => 12],
-        'stat_wisdom'       => ['baseValue' => 16], // +2 Periapt → effective 18
-        'stat_charisma'     => ['baseValue' => 10],
+        'stat_strength'     => ['baseValue' => 10],  // mod  0  → average melee
+        'stat_dexterity'    => ['baseValue' => 14],  // +2 racial = 16 effective (mod +3)
+        'stat_constitution' => ['baseValue' => 14],  // -2 racial = 12 effective (mod +1) → HP/Fort
+        'stat_intelligence' => ['baseValue' => 12],  // mod +1 → 1 bonus language slot
+        'stat_wisdom'       => ['baseValue' => 16],  // +2 Periapt = 18 effective (mod +4) → spells/Will
+        'stat_charisma'     => ['baseValue' => 10],  // mod  0  → Wild Empathy baseline
     ],
 
     // ── Skill Ranks ───────────────────────────────────────────────────────
@@ -967,9 +1096,9 @@ $sylaraData = [
     // ── Active Feature Instances ──────────────────────────────────────────
     'activeFeatures' => [
         // ── Race ──────────────────────────────────────────────────────────
-        // race_elf grants: +2 DEX, -2 CON, low-light vision, immunity to magic
-        // sleep, +2 saves vs. enchantments, Spot/Listen/Search bonuses,
-        // Elven weapon proficiency.
+        // race_elf grants: +2 DEX, -2 CON, low-light vision, immunity to magic sleep,
+        // +2 saves vs. enchantments, Spot/Listen/Search racial bonuses,
+        // Elven weapon proficiency (longsword, rapier, elven composite shortbow).
         ['instanceId' => 'afi_race_sylara',  'featureId' => 'race_elf',   'isActive' => true],
 
         // ── Class ─────────────────────────────────────────────────────────
@@ -977,42 +1106,59 @@ $sylaraData = [
         // Auto-grants: Animal Companion, Woodland Stride, Wild Shape, etc.
         ['instanceId' => 'afi_class_sylara', 'featureId' => 'class_druid', 'isActive' => true],
 
+        // ── Alignment ─────────────────────────────────────────────────────
+        // Neutral Good: protects nature and the innocent without rigid codes.
+        // Relevant for spell interactions (alignment-dependent features).
+        // Druids must be neutral on at least one axis — NG qualifies (Neutral on law/chaos).
+        ['instanceId' => 'afi_alignment_sylara', 'featureId' => 'alignment_neutral_good', 'isActive' => true],
+
+        // ── Languages ─────────────────────────────────────────────────────
+        // Elves automatically know Common and Elvish (via race_elf grantedFeatures).
+        // Druids automatically know Druidic (via class_druid grantedFeatures).
+        // Elves also know Sylvan as a bonus language (auto-granted by race).
+        // INT 12 = mod +1 → 1 bonus language slot → Draconic (useful for ancient ruins).
+        ['instanceId' => 'afi_lang_common_sylara',  'featureId' => 'language_common',  'isActive' => true],
+        ['instanceId' => 'afi_lang_elven_sylara',   'featureId' => 'language_elven',   'isActive' => true],
+        ['instanceId' => 'afi_lang_sylvan_sylara',  'featureId' => 'language_sylvan',  'isActive' => true],
+        ['instanceId' => 'afi_lang_draconic_sylara','featureId' => 'language_draconic','isActive' => true], // INT bonus slot
+
         // ── Manually Chosen Feats ─────────────────────────────────────────
         // Natural Spell: allows spellcasting in Wild Shape form — core druid feat.
         ['instanceId' => 'afi_ns_sylara',   'featureId' => 'feat_natural_spell',     'isActive' => true],
         // Spell Focus (Conjuration): +1 DC to Conjuration spells; prerequisite for
-        // Augment Summoning. The school selection will be prompted by the engine UI.
+        // Augment Summoning.
         ['instanceId' => 'afi_sf_sylara',   'featureId' => 'feat_spell_focus',       'isActive' => true],
         // Augment Summoning: summoned creatures gain +4 STR and +4 CON.
-        // Requires Spell Focus (Conjuration). Dramatically improves summons.
+        // Requires Spell Focus (Conjuration). Dramatically improves summon nature's ally.
         ['instanceId' => 'afi_as_sylara',   'featureId' => 'feat_augment_summoning', 'isActive' => true],
 
         // ── Equipped Magic Items ───────────────────────────────────────────
-        // Rhino Hide: unique named item — non-metal medium armor (druid-legal).
-        //   AC +5, max DEX +2 (limits DEX to +2), ACP -2. Price: 5,165 gp.
-        //   Grants the wearer the ability to make a powerful charge attack 1/day.
-        ['instanceId' => 'afi_armor_sylara',   'featureId' => 'item_armor_specific_rhino_hide',   'isActive' => true],
+        // Rhino Hide: unique named non-metal medium armor (druid-legal, no arcane failure).
+        //   AC +5, max DEX +2 (caps DEX bonus at +2), ACP -2. Price: 5,165 gp.
+        //   Grants the wearer a powerful charge attack 1/day (bonus vs. objects/structures).
+        ['instanceId' => 'afi_armor_sylara',   'featureId' => 'item_armor_specific_rhino_hide',       'isActive' => true],
         // Darkwood Shield: wooden heavy shield (druid-legal, no metal).
-        //   AC +2 shield bonus, ACP 0 (masterwork darkwood reduces to 0).
+        //   AC +2 shield bonus. Darkwood is masterwork; ACP reduced to 0.
         ['instanceId' => 'afi_shield_sylara',  'featureId' => 'item_shield_specific_darkwood_shield', 'isActive' => true],
         // Amulet of Natural Armor +1: +1 natural armor bonus to AC.
-        ['instanceId' => 'afi_amulet_sylara',  'featureId' => 'item_amulet_of_natural_armor_1',   'isActive' => true],
+        ['instanceId' => 'afi_amulet_sylara',  'featureId' => 'item_amulet_of_natural_armor_1',       'isActive' => true],
         // Ring of Protection +1: +1 deflection bonus to AC.
-        ['instanceId' => 'afi_ring_sylara',    'featureId' => 'item_ring_protection_1',            'isActive' => true],
+        ['instanceId' => 'afi_ring_sylara',    'featureId' => 'item_ring_protection_1',                'isActive' => true],
         // Cloak of Resistance +2: +2 resistance bonus to all saves.
-        ['instanceId' => 'afi_cloak_sylara',   'featureId' => 'item_cloak_of_resistance_2',        'isActive' => true],
-        // Periapt of Wisdom +2: +2 enhancement to WIS (raises WIS to 18, DC+1 for spells).
-        ['instanceId' => 'afi_periapt_sylara', 'featureId' => 'item_periapt_of_wisdom_2',          'isActive' => true],
+        ['instanceId' => 'afi_cloak_sylara',   'featureId' => 'item_cloak_of_resistance_2',           'isActive' => true],
+        // Periapt of Wisdom +2: +2 enhancement to WIS (raises WIS to 18, mod +4;
+        //   +1 DC to all druid spells, +1 bonus spell per level 1-4).
+        ['instanceId' => 'afi_periapt_sylara', 'featureId' => 'item_periapt_of_wisdom_2',             'isActive' => true],
 
         // ── Readied Items ─────────────────────────────────────────────────
         // Wand of Cure Light Wounds: 50 charges remaining.
         //   Used out of combat to conserve prepared spell slots.
         //   itemResourcePools tracks per-instance charges (see ARCHITECTURE.md §5.7).
         [
-            'instanceId'       => 'afi_wand_sylara',
-            'featureId'        => 'item_wand_cure_light_wounds',
-            'isActive'         => false,
-            'itemResourcePools'=> ['charges' => 50],
+            'instanceId'        => 'afi_wand_sylara',
+            'featureId'         => 'item_wand_cure_light_wounds',
+            'isActive'          => false,
+            'itemResourcePools' => ['charges' => 50],
         ],
 
         // ── Backpack / Carried Gear ───────────────────────────────────────
@@ -1034,7 +1180,9 @@ $sylaraData = [
     'linkedEntities' => [],
 
     // ── Wealth ───────────────────────────────────────────────────────────
-    // WBL ~19,000 gp. Most spent on Rhino Hide, Periapt of Wisdom, Cloak +2.
+    // WBL ~19,000 gp. Most spent on Rhino Hide (5,165 gp), Periapt of Wisdom +2 (4,000 gp),
+    // Cloak of Resistance +2 (4,000 gp), darkwood shield, amulet, ring.
+    // Remaining: ~420 gp for consumables and travel expenses.
     'wealth' => ['cp' => 0, 'sp' => 0, 'gp' => 420, 'pp' => 0],
 ];
 
@@ -1047,8 +1195,8 @@ $stmtChar = $db->prepare('
 ');
 
 $characters = [
-    ['data' => $kaelData,   'label' => 'Human Soulknife 7'],
-    ['data' => $sylaraData, 'label' => 'Elf Druid 7'],
+    ['data' => $kaelData,   'label' => 'Human Soulknife 7 (Chaotic Neutral)'],
+    ['data' => $sylaraData, 'label' => 'Elf Druid 7 (Neutral Good)'],
 ];
 
 foreach ($characters as $entry) {
@@ -1079,6 +1227,6 @@ echo "  Player 1  →  username: player1  /  password: player1\n";
 echo "  Player 2  →  username: player2  /  password: player2\n";
 echo "─────────────────────────────────────────────────────\n";
 echo "  Campaign  →  The Shattered Throne (5 chapters, 31 tasks)\n";
-echo "  Char 1    →  Kael Shadowstep    — Human Soulknife 7 (player1)\n";
-echo "  Char 2    →  Sylara Moonwhisper — Elf Druid 7      (player2)\n";
+echo "  Char 1    →  Kael Shadowstep    — Human Soulknife 7  (player: Matthieu) — Chaotic Neutral\n";
+echo "  Char 2    →  Sylara Moonwhisper — Elf Druid 7      (player: Sophie)   — Neutral Good\n";
 echo "─────────────────────────────────────────────────────\n\n";

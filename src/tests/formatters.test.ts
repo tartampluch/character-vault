@@ -44,8 +44,19 @@ import {
   getCharacterLevel,
 } from '$lib/utils/formatters';
 import type { LocalizedString } from '$lib/types/i18n';
-import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, ui, UI_STRINGS, loadUiLocaleFromObject } from '$lib/i18n/ui-strings';
+import { SUPPORTED_UI_LANGUAGES, LANG_UNIT_SYSTEM, registerLangUnitSystem, ui, UI_STRINGS, loadUiLocaleFromObject } from '$lib/i18n/ui-strings';
 import { getAbilityAbbr, MAIN_ABILITY_IDS, ABILITY_ABBRS } from '$lib/utils/constants';
+
+// =============================================================================
+// GLOBAL SETUP — simulate loadExternalLocales() for locale-aware formatter tests
+// =============================================================================
+// At runtime, DataLoader.loadExternalLocales() calls registerLangUnitSystem() for
+// every locale file returned by GET /api/locales. Tests must reproduce that call
+// so that formatDistance/formatWeight produce metric output for French, exactly as
+// they would in a live browser session after the locale API has responded.
+beforeAll(() => {
+  registerLangUnitSystem('fr', 'metric');
+});
 
 // =============================================================================
 // HELPERS
@@ -317,7 +328,10 @@ describe('getUnitSystem() — language to unit system mapping', () => {
     expect(getUnitSystem('en')).toBe('imperial');
   });
 
-  it('French → "metric"', () => {
+  it('French → "metric" after registerLangUnitSystem() (simulating loadExternalLocales)', () => {
+    // 'fr' is not pre-seeded — it arrives via loadExternalLocales() at runtime.
+    // The file-level beforeAll simulates that call. Any code NOT registered falls
+    // back to 'imperial' (see the 'unknown community language' test below).
     expect(getUnitSystem('fr')).toBe('metric');
   });
 
@@ -345,8 +359,9 @@ describe('getUnitSystem() — language to unit system mapping', () => {
 // =============================================================================
 
 describe('SUPPORTED_UI_LANGUAGES registry integrity', () => {
-  it('has at least two entries (en and fr)', () => {
-    expect(SUPPORTED_UI_LANGUAGES.length).toBeGreaterThanOrEqual(2);
+  it('has exactly one entry — only English is a compile-time built-in', () => {
+    // French and all other locales are runtime-discovered via /api/locales.
+    expect(SUPPORTED_UI_LANGUAGES.length).toBe(1);
   });
 
   it('always includes "en" with unitSystem "imperial"', () => {
@@ -355,10 +370,8 @@ describe('SUPPORTED_UI_LANGUAGES registry integrity', () => {
     expect(en!.unitSystem).toBe('imperial');
   });
 
-  it('always includes "fr" with unitSystem "metric"', () => {
-    const fr = SUPPORTED_UI_LANGUAGES.find(l => l.code === 'fr');
-    expect(fr).toBeDefined();
-    expect(fr!.unitSystem).toBe('metric');
+  it('does NOT contain "fr" — French unit system arrives via registerLangUnitSystem at runtime', () => {
+    expect(SUPPORTED_UI_LANGUAGES.find(l => l.code === 'fr')).toBeUndefined();
   });
 
   it('every entry has a non-empty code and a valid unitSystem', () => {

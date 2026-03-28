@@ -642,31 +642,8 @@
           </p>
         </div>
 
-        <!--
-          DEV-ONLY: Role switch buttons.
-          These are visible only in development mode to test GM vs Player views.
-          In production (Phase 14), authentication is server-side and cannot be
-          spoofed from the client.
-
-          Svelte logic: We check the build-time constant `import.meta.env.DEV`.
-        -->
-        {#if import.meta.env.DEV}
-          <button
-            class="btn-ghost p-1 text-xs shrink-0"
-            onclick={() => {
-              if (isGM) {
-                sessionContext.switchToPlayer();
-              } else {
-                sessionContext.switchToGM();
-              }
-            }}
-            title={isGM ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
-            aria-label={isGM ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
-            type="button"
-          >
-            {isGM ? `→ ${ui('nav.role_player', engine.settings.language)}` : `→ ${ui('nav.role_gm', engine.settings.language)}`}
-          </button>
-        {/if}
+        <!-- Role is determined by server-side authentication (Phase 14). -->
+        <!-- Dev role-switch was removed — use separate player/gm accounts instead. -->
       {/if}
     </div>
 

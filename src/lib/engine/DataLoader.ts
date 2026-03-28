@@ -395,7 +395,18 @@ export class DataLoader {
    *   - When `loadVersion` is incremented here, the engine's `$state` is bumped
    *     via `engine.bumpDataLoaderVersion()`, which invalidates all dependent derivations.
    */
-  loadVersion = 0;
+   loadVersion = 0;
+
+  /**
+   * Incremented each time `loadExternalLocales()` completes successfully.
+   *
+   * Kept separate from `loadVersion` (which only tracks rule-file loads) so that
+   * bumping the locale version does NOT invalidate the heavy game-mechanics
+   * `$derived` pipelines (combat stats, skills, saves, etc.) that depend on
+   * `engine.dataLoaderVersion`.  Only `engine.availableLanguages` (and any other
+   * locale-awareness $derived) reads this counter.
+   */
+  localesVersion = 0;
 
   /**
    * Set of enabled file paths (relative, e.g. "00_d20srd_core/01_d20srd_core_races.json").
@@ -426,22 +437,28 @@ export class DataLoader {
   /**
    * Set of language codes available to the user in the language selector dropdown.
    *
-   * SEED: Initialized from `SUPPORTED_UI_LANGUAGES` (defined in `ui-strings.ts`).
-   * These are the languages that have full built-in UI chrome translations, and they
-   * are always available regardless of which JSON rule files are loaded.
+   * SEED: Only `"en"` (English) — the one language that is truly built-in (no locale
+   * file, never returned by /api/locales, always available).
    *
-   * Additional language codes are added from two sources:
-   *   1. `supportedLanguages[]` arrays in loaded JSON rule files.
-   *   2. `loadExternalLocales()` — server-dropped files in static/locales/.
+   * All other languages are discovered at runtime from two sources and added here
+   * as they arrive:
+   *   1. `supportedLanguages[]` arrays in loaded JSON rule files (game content).
+   *   2. `loadExternalLocales()` → GET /api/locales (UI chrome locale files).
    *
-   * `clearCache()` resets this set to the built-in seed and then re-adds all
-   * externally discovered locales (from `_externalLocales`), so that dropping a
-   * new `xx.json` locale file into static/locales/ survives campaign reloads
-   * without requiring a server restart.
+   * WHY NOT `SUPPORTED_UI_LANGUAGES`:
+   *   `SUPPORTED_UI_LANGUAGES` drives `LANG_UNIT_SYSTEM` (metric/imperial mapping for
+   *   formatters) and is a compile-time constant. The language DROPDOWN is intentionally
+   *   decoupled from it: a language only appears in the dropdown once the runtime
+   *   discovery has confirmed it exists AND retrieved its display name. This ensures
+   *   `getLanguageDisplayName(code)` always succeeds without fallbacks or warnings,
+   *   because the code is only added to this set inside `loadExternalLocales()` —
+   *   which simultaneously populates `_externalLocales` with the native name.
+   *
+   * `clearCache()` resets this set to `["en"]` then re-adds all externally discovered
+   * locales (from `_externalLocales`), so server-dropped locale files survive campaign
+   * reloads without requiring a server restart.
    */
-  private _availableLanguages = new Set<string>(
-    SUPPORTED_UI_LANGUAGES.map(l => l.code)
-  );
+  private _availableLanguages = new Set<string>(['en']);
 
   /**
    * Locale metadata discovered from the server via `loadExternalLocales()`.
@@ -1056,9 +1073,10 @@ export class DataLoader {
     this.configTableCache.clear();
     this._globalRuleSourceIds.clear();
 
-    // Reset available languages to the built-in seed from ui-strings.ts.
-    // SUPPORTED_UI_LANGUAGES is the single source of truth for built-in UI languages.
-    this._availableLanguages = new Set<string>(SUPPORTED_UI_LANGUAGES.map(l => l.code));
+    // Reset to the single truly built-in language: English.
+    // All other languages are re-added below from the already-discovered locales,
+    // or will be re-added on the next loadExternalLocales() / rule-file load.
+    this._availableLanguages = new Set<string>(['en']);
 
     // Re-add all externally discovered locale codes so that server-dropped
     // locale files (static/locales/xx.json) survive cache reloads (e.g. on
@@ -1125,6 +1143,11 @@ export class DataLoader {
         this._availableLanguages.add(code);
         registerLangUnitSystem(code, unitSystem);
       }
+      // Signal that locale discovery has completed. Engine code that reads
+      // `localesVersion` (via engine.bumpLocalesVersion) will invalidate the
+      // `availableLanguages` $derived without touching the heavier rule-file
+      // pipeline derivations that depend on `dataLoaderVersion`.
+      this.localesVersion++;
     } catch {
       // Non-critical — built-in languages always available.
     }

@@ -965,11 +965,16 @@ describe('DataLoader — replace and partial merge via processEntity', () => {
 // =============================================================================
 
 describe('DataLoader — getAvailableLanguages()', () => {
-  it('fresh instance always includes the built-in UI languages (en, fr)', () => {
+  it('fresh instance only includes "en" — other languages are runtime-discovered', () => {
+    // English is the only compile-time built-in: it has no locale file and is
+    // excluded from /api/locales. All other languages (fr, de, …) are added
+    // dynamically by loadExternalLocales() or by rule files' supportedLanguages
+    // arrays. This ensures the dropdown never shows a language before its
+    // display name is available in _externalLocales / the loaded locale file.
     const loader = new DataLoader();
     const langs = loader.getAvailableLanguages();
     expect(langs).toContain('en');
-    expect(langs).toContain('fr');
+    expect(langs).not.toContain('fr'); // 'fr' arrives via loadExternalLocales()
   });
 
   it('returns a sorted array', () => {
@@ -979,11 +984,69 @@ describe('DataLoader — getAvailableLanguages()', () => {
     expect(langs).toEqual(sorted);
   });
 
-  it('clearCache() preserves built-in languages', () => {
+  it('clearCache() resets to only "en" when no locales have been discovered', () => {
+    // After clearCache() on a fresh loader (no loadExternalLocales() called),
+    // only 'en' is present. Previously discovered locales are re-added from
+    // _externalLocales, but a fresh instance has none.
     const loader = new DataLoader();
     loader.clearCache();
     expect(loader.getAvailableLanguages()).toContain('en');
+    expect(loader.getAvailableLanguages()).not.toContain('fr');
+  });
+
+  it('clearCache() re-adds locales that were discovered before the clear', async () => {
+    // Simulates what happens on a campaign switch: rule files are reloaded
+    // (clearCache → loadRuleSources), but previously discovered locale files
+    // must persist in the dropdown.
+    const loader = new DataLoader();
+
+    // Simulate a prior loadExternalLocales() call having stored fr metadata.
+    // We bypass the real fetch by directly invoking the internal registration
+    // path via a mocked loadExternalLocales call.
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ code: 'fr', language: 'Français', unitSystem: 'metric' }],
+    } as Response));
+    await loader.loadExternalLocales();
+
+    // Clear cache simulating a campaign switch — fr must survive.
+    loader.clearCache();
+    expect(loader.getAvailableLanguages()).toContain('en');
     expect(loader.getAvailableLanguages()).toContain('fr');
+
+    vi.unstubAllGlobals();
+  });
+
+  it('localesVersion starts at 0 and increments after each successful loadExternalLocales()', async () => {
+    const loader = new DataLoader();
+    expect(loader.localesVersion).toBe(0);
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ code: 'fr', language: 'Français', unitSystem: 'metric' }],
+    } as Response));
+    await loader.loadExternalLocales();
+    expect(loader.localesVersion).toBe(1);
+
+    // A second call increments again (e.g. after a campaign switch that re-runs discovery).
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ code: 'fr', language: 'Français', unitSystem: 'metric' }],
+    } as Response));
+    await loader.loadExternalLocales();
+    expect(loader.localesVersion).toBe(2);
+
+    vi.unstubAllGlobals();
+  });
+
+  it('localesVersion does NOT increment when the fetch fails or returns !ok', async () => {
+    const loader = new DataLoader();
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({ ok: false } as Response));
+    await loader.loadExternalLocales();
+    expect(loader.localesVersion).toBe(0); // unchanged — no locales discovered
+
+    vi.unstubAllGlobals();
   });
 });
 

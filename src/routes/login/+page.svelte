@@ -27,7 +27,10 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, loadUiLocale } from '$lib/i18n/ui-strings';
+  import { dataLoader } from '$lib/engine/DataLoader';
+  import { themeManager } from '$lib/stores/ThemeManager.svelte';
+  import { IconThemeSystem, IconThemeLight, IconThemeDark } from '$lib/components/ui/icons';
 
   const LS_KEY = 'cv_user_language';
 
@@ -57,10 +60,34 @@
   }
 
   /**
+   * On mount: discover server locale files so the language dropdown is populated.
+   *
+   * AppShell.onMount also calls loadExternalLocales(), but AppShell is the parent
+   * component so its onMount fires AFTER the login page renders. Calling it here
+   * ensures the dropdown appears immediately after the locale API responds, without
+   * depending on the parent's lifecycle order.
+   *
+   * After discovery, bumpDataLoaderVersion() forces engine.availableLanguages
+   * (a $derived on dataLoaderVersion) to recompute, which in turn updates the
+   * `availableLangs` derived on this page and causes the dropdown to render.
+   */
+  $effect(() => {
+    (async () => {
+      await dataLoader.loadExternalLocales();
+      // Sync the dedicated locales version counter so engine.availableLanguages
+      // (and therefore the language dropdown) re-evaluates with the new codes.
+      engine.bumpLocalesVersion();
+    })();
+  });
+
+  /**
    * After mount: pick up the stored preference and set up a storage event
    * listener so the page reacts if the user changes language elsewhere.
    */
   $effect(() => {
+    // Initialize themeManager so the toggle works on the login page
+    themeManager.init();
+
     // Prefer the engine's live language (handles in-app navigation without full reload)
     const engineLang = engine.settings.language;
     if (engineLang && engineLang !== 'en') {
@@ -82,6 +109,23 @@
     const el = engine.settings.language;
     if (el) lang = el;
   });
+
+  /** The icon config for the current theme preference. */
+  const themeState = $derived({
+    icon: themeManager.preference === 'dark'  ? IconThemeDark  :
+          themeManager.preference === 'light' ? IconThemeLight :
+          IconThemeSystem,
+  });
+
+  /** Available languages — at minimum ['en'], expanded if locales are loaded. */
+  const availableLangs = $derived(engine.availableLanguages);
+
+  async function changeLanguage(code: string) {
+    await loadUiLocale(code);
+    engine.settings.language = code;
+    lang = code;
+    try { localStorage.setItem(LS_KEY, code); } catch { /* SSR / private */ }
+  }
 
   async function handleLogin(e: SubmitEvent) {
     e.preventDefault();
@@ -150,6 +194,36 @@
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center px-4 bg-background">
+
+  <!-- Theme + Language controls (top-right corner) -->
+  <div class="fixed top-3 right-3 flex items-center gap-1 z-10">
+    <!-- Theme toggle -->
+    <button
+      class="btn-ghost p-2 text-text-muted hover:text-text-primary"
+      onclick={() => themeManager.cycle()}
+      title="{themeManager.preference}"
+      aria-label="Toggle theme"
+      type="button"
+    >
+      <themeState.icon size={18} aria-hidden="true" />
+    </button>
+    <!-- Language selector -->
+    {#if availableLangs.length > 1}
+      <select
+        class="text-xs py-1 px-1.5 rounded-md border border-border bg-surface text-text-primary
+               cursor-pointer hover:border-accent focus-visible:border-accent
+               focus-visible:outline-none transition-colors"
+        value={lang}
+        onchange={async (e) => changeLanguage((e.target as HTMLSelectElement).value)}
+        aria-label="Select language"
+      >
+        {#each availableLangs as code}
+          <option value={code}>{engine.getLanguageDisplayName(code)}</option>
+        {/each}
+      </select>
+    {/if}
+  </div>
+
   <div class="w-full max-w-sm">
 
     <!-- Header -->
@@ -215,21 +289,6 @@
 
       </form>
     </div>
-
-    <!-- Dev hint (translated) -->
-    <p class="text-center text-xs text-text-muted mt-4">
-      {#each ui('login.dev_hint', lang).split(/(\{gm\}|\{player\}|\{cmd\})/) as part}
-        {#if part === '{gm}'}
-          <code class="bg-surface-alt px-1 rounded">gm / gm</code>
-        {:else if part === '{player}'}
-          <code class="bg-surface-alt px-1 rounded">player / player</code>
-        {:else if part === '{cmd}'}
-          <code class="bg-surface-alt px-1 rounded">php api/seed.php</code>
-        {:else}
-          {part}
-        {/if}
-      {/each}
-    </p>
 
   </div>
 </div>

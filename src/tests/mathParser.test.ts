@@ -30,9 +30,16 @@
  * @see ARCHITECTURE.md Phase 17.1
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { evaluateFormula, interpolateDescription } from '$lib/utils/mathParser';
 import type { CharacterContext } from '$lib/utils/mathParser';
+import { registerLangUnitSystem } from '$lib/i18n/ui-strings';
+
+// Simulate loadExternalLocales() so |distance / |weight pipes produce metric
+// output for French, matching real browser behavior after locale discovery.
+beforeAll(() => {
+  registerLangUnitSystem('fr', 'metric');
+});
 
 // ============================================================
 // MOCK CONTEXT

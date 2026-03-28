@@ -17,7 +17,7 @@
   "login.error_too_many":         "Trop de tentatives de connexion. Veuillez attendre 15 minutes.",
   "login.error_failed":           "Connexion échouée (HTTP {status}). Veuillez réessayer.",
   "login.error_server":           "Impossible de contacter le serveur. L'API PHP est-elle démarrée ?",
-  "login.dev_hint":               "Comptes de dev : {gm} ou {player} — lancez {cmd} pour les créer.",
+
 
   "app.title":                    "Character Vault",
   "nav.campaigns":                "Campagnes",

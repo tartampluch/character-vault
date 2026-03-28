@@ -860,6 +860,28 @@ export class GameEngine {
   }
 
   /**
+   * Mirrors `dataLoader.localesVersion`. Incremented by `bumpLocalesVersion()`
+   * after every `loadExternalLocales()` call.
+   *
+   * Kept separate from `dataLoaderVersion` so that locale discovery does NOT
+   * cause the heavy game-mechanics $derived (combat stats, saves, skills, etc.)
+   * to recompute — those only need to re-run when rule files change.
+   *
+   * Only `availableLanguages` reads this counter so the reactive invalidation
+   * is surgical: exactly the dropdown, nothing else.
+   */
+  localesVersion = $state(0);
+
+  /**
+   * Called by AppShell.onMount and the login page after loadExternalLocales()
+   * resolves. Syncing the $state value triggers availableLanguages to recompute,
+   * which in turn re-renders the language dropdown everywhere in the app.
+   */
+  bumpLocalesVersion(): void {
+    this.localesVersion = dataLoader.localesVersion;
+  }
+
+  /**
    * The set of language codes available across all currently loaded rule files.
    *
    * Derived reactively from `dataLoader.getAvailableLanguages()`. Re-evaluated
@@ -874,9 +896,16 @@ export class GameEngine {
    *   reactively to all `engine.t()` and `ui()` calls across the UI.
    */
   availableLanguages: string[] = $derived.by(() => {
-    // Reading dataLoaderVersion creates a reactive dependency so this $derived
-    // re-runs when loadRuleSources() completes and bumpDataLoaderVersion() is called.
+    // Reading both version counters creates reactive dependencies so this $derived
+    // re-runs when EITHER:
+    //   • loadRuleSources() completes and bumpDataLoaderVersion() is called
+    //     (adds languages declared in rule file supportedLanguages arrays), OR
+    //   • loadExternalLocales() completes and bumpLocalesVersion() is called
+    //     (adds languages from server-dropped static/locales/*.json files).
+    // The two counters are intentionally separate so locale discovery does NOT
+    // invalidate the heavy game-mechanics $derived (combat stats, saves, etc.).
     void this.dataLoaderVersion;
+    void this.localesVersion;
     return dataLoader.getAvailableLanguages();
   });
 
@@ -5054,12 +5083,45 @@ export class GameEngine {
       };
     }
 
-    // --- Step 2: pipeline maps that are NOT stored ---
-    // combatStats and saves are fully derived by Phase 3.  Start from empty
-    // so Object.entries() in phase0_context never throws on a bare API response.
-    // Phase 3 fills the real values from features and class levels.
-    const combatStats = char.combatStats ?? {};
-    const saves       = char.saves       ?? {};
+    // --- Step 2: combat stat and save pipelines ---
+    //
+    // These pipelines are "fully derived" — Phase 3 adds all the modifiers from
+    // features, class levels, and ability scores. However, Phase 3 only creates
+    // result entries for pipelines that ALREADY EXIST in `character.combatStats`
+    // and `character.saves` (it iterates over Object.entries of each map).
+    //
+    // The template guarantees that all standard pipeline keys are present
+    // (e.g., "combatStats.ac_normal", "saves.fortitude"). Without this merge,
+    // characters loaded from the DB or seed.php (which omit these maps entirely)
+    // would have an empty `phase3_combatStats` — causing AC, BAB, and saving
+    // throws to show nothing in the UI.
+    //
+    // STRATEGY (mirrors the attributes approach above):
+    //   1. Start from the template (all standard pipeline keys present, baseValue
+    //      already set to the correct defaults: 10 for AC, 0 for saves, 99 for
+    //      max_dex_bonus, etc.).
+    //   2. Overlay any stored baseValues from the persisted character data
+    //      (preserves custom homebrew pipelines and any explicitly stored baseValues).
+    //   3. Include any extra pipelines from the stored data that the template
+    //      doesn't know about (homebrew/prestige-class combat stats).
+    const combatStats: Record<ID, StatisticPipeline> = {};
+    for (const [id, tpl] of Object.entries(template.combatStats)) {
+      const stored = (char.combatStats ?? {})[id];
+      combatStats[id] = { ...tpl, baseValue: stored?.baseValue ?? tpl.baseValue };
+    }
+    for (const [id, stored] of Object.entries(char.combatStats ?? {})) {
+      if (!combatStats[id]) combatStats[id] = stored;
+    }
+
+    const saves: Record<ID, StatisticPipeline> = {};
+    for (const [id, tpl] of Object.entries(template.saves)) {
+      // Saves always have baseValue 0 (class progression is applied via flat modifiers
+      // in Phase 3, not stored as baseValue). Template values are authoritative.
+      saves[id] = { ...tpl };
+    }
+    for (const [id, stored] of Object.entries(char.saves ?? {})) {
+      if (!saves[id]) saves[id] = stored;
+    }
 
     this.character = {
       ...char,

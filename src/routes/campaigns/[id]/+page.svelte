@@ -73,6 +73,22 @@
   function t(textObj: Record<string, string> | string): string {
     return engine.t(textObj);
   }
+
+  /**
+   * Resolves the campaign description, which may be a plain string or a
+   * JSON-encoded LocalizedString `{"en":"...", "fr":"..."}`.
+   * Falls back gracefully to the raw string if JSON parsing fails.
+   */
+  function resolveDescription(desc: string): string {
+    if (!desc) return '';
+    try {
+      const parsed = JSON.parse(desc);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return engine.t(parsed as Record<string, string>);
+      }
+    } catch { /* not JSON — plain string */ }
+    return desc;
+  }
 </script>
 
 {#if !campaign}
@@ -147,9 +163,9 @@
         {/if}
       </div>
 
-      <!-- Description -->
+      <!-- Description (may be a plain string or JSON-encoded LocalizedString) -->
       {#if campaign.description}
-        <p class="text-text-secondary text-sm leading-relaxed">{campaign.description}</p>
+        <p class="text-text-secondary text-sm leading-relaxed">{resolveDescription(campaign.description)}</p>
       {/if}
 
       <!-- ── CHAPTERS ────────────────────────────────────────────────────── -->
@@ -196,6 +212,8 @@
         {:else}
           <ol class="flex flex-col gap-2" aria-label="List of chapters">
             {#each campaign.chapters as chapter, index (chapter.id)}
+              <!-- Players only see completed chapters — hide incomplete ones to avoid spoilers -->
+              {#if sessionContext.isGameMaster || chapter.isCompleted}
               <li
                 class="flex items-start gap-3 rounded-xl border px-4 py-3 transition-colors duration-150
                        {chapter.isCompleted
@@ -231,6 +249,8 @@
                   {#if chapter.tasks && chapter.tasks.length > 0}
                     <ul class="mt-2 flex flex-col gap-1" aria-label="Tasks for {t(chapter.title)}">
                       {#each chapter.tasks as task (task.id)}
+                        <!-- Players only see completed tasks -->
+                        {#if sessionContext.isGameMaster || task.isCompleted}
                         <li class="flex items-center gap-2 text-xs">
                           {#if sessionContext.isGameMaster}
                             <label class="flex items-center gap-2 cursor-pointer group flex-1 min-w-0">
@@ -252,17 +272,14 @@
                             </label>
                           {:else}
                             <span class="shrink-0 w-3 h-3 flex items-center justify-center">
-                              {#if task.isCompleted}
-                                <IconChecked size={10} class="text-green-400" aria-hidden="true" />
-                              {:else}
-                                <span class="w-2.5 h-2.5 rounded-sm border border-border inline-block" aria-hidden="true"></span>
-                              {/if}
+                              <IconChecked size={10} class="text-green-400" aria-hidden="true" />
                             </span>
-                            <span class="truncate {task.isCompleted ? 'text-text-muted line-through decoration-green-600/40' : 'text-text-secondary'}">
+                            <span class="truncate text-text-muted line-through decoration-green-600/40">
                               {t(task.title)}
                             </span>
                           {/if}
                         </li>
+                        {/if}
                       {/each}
                     </ul>
                   {/if}
@@ -297,6 +314,7 @@
                   </span>
                 {/if}
               </li>
+              {/if}
             {/each}
           </ol>
         {/if}

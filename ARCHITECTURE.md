@@ -1377,6 +1377,8 @@ export interface Character {
     id: ID; name: string;
     campaignId?: ID; ownerId?: ID; isNPC: boolean;
     posterUrl?: string; playerName?: string; customSubtitle?: string;
+    notes?: string;                           // Long-form personal story / backstory (Lore tab)
+    physicalTraits?: Record<string, string>;  // Appearance map: { height, weight, age, eyes, hair, skin }
 
     classLevels: Record<ID, number>; // { "class_fighter": 5, "class_wizard": 3 }
     levelAdjustment: number;          // LA for monster PCs; default 0 for standard races
@@ -1401,6 +1403,9 @@ export interface Character {
 - `attributes.*.baseValue`, `skills.*.ranks`
 - `resources.*.currentValue`, `resources.*.temporaryValue`
 - `activeFeatures`, `linkedEntities`, `gmOverrides`
+- `notes` (long-form backstory), `physicalTraits` (appearance record)
+
+**Important:** `combatStats` and `saves` are **not stored** — they are fully reconstructed by the DAG (Phase 3) at load time. `loadCharacter()` bootstraps them from the template (`createEmptyCharacter()`) so that all standard pipeline keys are always present, even for characters loaded from a bare API response that omits these maps.
 
 Computed values (`totalBonus`, `totalValue`, `derivedModifier`, `activeModifiers`, `isClassSkill`) are reconstructed by the engine at load time.
 

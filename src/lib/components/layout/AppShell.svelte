@@ -172,16 +172,15 @@
   onMount(async () => {
     sidebarCollapsed = readSidebarCookie();
 
-    // Discover community locale files from the server and register them so
-    // they appear in the language dropdown.  Non-critical: no-op on failure.
+    // Discover server-dropped locale files (static/locales/*.json) and register
+    // them so they appear in the language dropdown. Non-critical: no-op on failure.
     await dataLoader.loadExternalLocales();
 
-    // Force engine.availableLanguages (a $derived that depends on dataLoaderVersion)
-    // to re-evaluate immediately after locale discovery. Without this bump, the
-    // dropdown would only update the next time loadRuleSources() is called (e.g.
-    // when the vault page mounts). On pages that never call loadRuleSources()
-    // (e.g. the campaign hub), the new language codes would never appear.
-    engine.bumpDataLoaderVersion();
+    // Sync engine.localesVersion → invalidates engine.availableLanguages so the
+    // language dropdown re-renders with the newly discovered codes and display names.
+    // Uses a dedicated version counter (not dataLoaderVersion) to avoid forcing
+    // the heavy game-mechanics $derived pipelines to recompute unnecessarily.
+    engine.bumpLocalesVersion();
 
     // Load the active language's locale file if it is not English.
     // This ensures translated UI chrome is ready before the first interaction.
@@ -340,6 +339,15 @@
 
   /** Ancestor breadcrumbs: all segments except the last. */
   const ancestorCrumbs = $derived(breadcrumbs.slice(0, -1));
+
+  /**
+   * Whether the current page is an authentication page (/login, /setup-password).
+   * On auth pages, the sidebar is hidden — users are not yet logged in.
+   */
+  const isAuthPage = $derived(
+    $page.url.pathname.startsWith('/login') ||
+    $page.url.pathname.startsWith('/setup-password')
+  );
 </script>
 
 <!--
@@ -356,15 +364,18 @@
 
   <!-- ========================================================================
        SIDEBAR
+       Hidden on auth pages (/login, /setup-password).
        Rendered as a flex-column child on desktop; fixed overlay on mobile.
        All state (collapsed, mobileOpen) and callbacks are passed as props.
   ======================================================================== -->
+  {#if !isAuthPage}
   <Sidebar
     collapsed={sidebarCollapsed}
     mobileOpen={mobileOpen}
     onCollapse={handleCollapse}
     onClose={handleClose}
   />
+  {/if}
 
   <!-- ========================================================================
        MOBILE BACKDROP
@@ -399,14 +410,10 @@
 
     <!-- ======================================================================
          MOBILE TOP BAR
-         Shown only on mobile (<768px, hidden at md+ breakpoint where the sidebar
-         is always visible as an icon-only column and takes over the navigation role).
-
-         Contains three zones (left / center / right):
-           Left:   Hamburger button to open the sidebar drawer
-           Center: Page title (last breadcrumb segment) + ancestor breadcrumbs
-           Right:  Reserved for future actions (notifications, quick settings)
+         Shown only on mobile (<768px) and only when NOT on an auth page.
+         On auth pages (login, setup-password), there is no navigation to show.
     ====================================================================== -->
+    {#if !isAuthPage}
     <header
       class="
         md:hidden
@@ -453,6 +460,7 @@
       </div>
 
     </header>
+    {/if}
 
     <!-- ======================================================================
          SCROLLABLE CONTENT AREA

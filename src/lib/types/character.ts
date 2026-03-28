@@ -406,6 +406,29 @@ export interface Character {
    */
   customSubtitle?: string;
 
+  /**
+   * Free-form personal story / backstory text for the character.
+   *
+   * Displayed in the "Personal Story" section of the Lore & Languages tab.
+   * Unlike `customSubtitle` (a short one-liner for the Character Card),
+   * this field is intended for a longer narrative description (paragraphs).
+   *
+   * Not used for game mechanics — purely cosmetic / roleplay information.
+   */
+  notes?: string;
+
+  /**
+   * Physical appearance traits: height, weight, age, eye colour, hair, skin.
+   *
+   * Stored as a flat key→value record so new traits can be added without
+   * schema changes. Standard keys: "height", "weight", "age", "eyes", "hair", "skin".
+   *
+   * Example: `{ height: "5'10\"", weight: "175 lb.", age: "27", eyes: "Green", hair: "Black", skin: "Tanned" }`
+   *
+   * Not used for game mechanics — purely cosmetic / roleplay information.
+   */
+  physicalTraits?: Record<string, string>;
+
   // ---------------------------------------------------------------------------
   // Multiclassing
   // ---------------------------------------------------------------------------

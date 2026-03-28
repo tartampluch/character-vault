@@ -20,16 +20,24 @@
   import { IconLore, IconCharacter, IconLanguages, IconLocked, IconClose } from '$lib/components/ui/icons';
 
   // ── Lore state ──────────────────────────────────────────────────────────────
-  let personalStory = $state(engine.character.customSubtitle ?? '');
-  let height = $state('');
-  let weight = $state('');
-  let age    = $state('');
-  let eyes   = $state('');
-  let hair   = $state('');
-  let skin   = $state('');
+  // Personal story persisted in `engine.character.notes` (long backstory text).
+  // Physical traits persisted in `engine.character.physicalTraits` (flat record).
+  let personalStory = $state(engine.character.notes ?? '');
+  let height = $state(engine.character.physicalTraits?.['height'] ?? '');
+  let weight = $state(engine.character.physicalTraits?.['weight'] ?? '');
+  let age    = $state(engine.character.physicalTraits?.['age']    ?? '');
+  let eyes   = $state(engine.character.physicalTraits?.['eyes']   ?? '');
+  let hair   = $state(engine.character.physicalTraits?.['hair']   ?? '');
+  let skin   = $state(engine.character.physicalTraits?.['skin']   ?? '');
 
   $effect(() => {
-    engine.character.customSubtitle = personalStory || undefined;
+    engine.character.notes = personalStory || undefined;
+  });
+
+  $effect(() => {
+    engine.character.physicalTraits = {
+      height, weight, age, eyes, hair, skin,
+    };
   });
 
   const lang = $derived(engine.settings.language);

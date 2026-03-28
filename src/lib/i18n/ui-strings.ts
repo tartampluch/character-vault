@@ -43,9 +43,28 @@ import type { UiStringValue, UiLocale, UnitSystem, LocalizedString } from '../ty
  * Community languages (dropped in static/locales/) are discovered dynamically
  * via GET /api/locales and registered at runtime — no entry needed here.
  */
+/**
+ * The one truly built-in UI language.
+ *
+ * English is the ONLY compile-time entry: it has no locale file on the server,
+ * is never returned by GET /api/locales, and is always available regardless of
+ * deployment configuration. It is the hardcoded fallback for every ui() call.
+ *
+ * EVERY other language — including the bundled fr.json — is treated as a
+ * server-side locale file. Its code, native name, and unit system are discovered
+ * at runtime via DataLoader.loadExternalLocales() → GET /api/locales. This means:
+ *   • A deployed server can freely add or remove locale files without any code change.
+ *   • The language dropdown only shows a language AFTER its metadata is available,
+ *     so getLanguageDisplayName() never needs a compile-time fallback table.
+ *   • Unit system registration (registerLangUnitSystem) is also runtime-only for
+ *     all non-English languages; getUnitSystem() falls back to 'imperial' until the
+ *     locale is fetched.
+ *
+ * To add a new locale: create static/locales/<code>.json with a valid $meta block
+ * (language, code, unitSystem) and translated strings. No TypeScript changes needed.
+ */
 export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: UnitSystem }> = [
   { code: 'en', unitSystem: 'imperial' },
-  { code: 'fr', unitSystem: 'metric'   },
 ];
 
 /**
@@ -122,7 +141,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'login.error_too_many':         'Too many login attempts. Please wait 15 minutes.',
   'login.error_failed':           'Login failed (HTTP {status}). Please try again.',
   'login.error_server':           'Could not reach the server. Is the PHP API running?',
-  'login.dev_hint':               'Dev accounts: {gm} or {player} — run {cmd} to create them.',
+
 
   // ==========================================================================
   // SIDEBAR & NAVIGATION
@@ -1201,17 +1220,19 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'lang.label':                   'Language',
   'lang.select_tooltip':          'Switch display language',
 
-  // English names itself here because English has no separate locale file
-  // (it is always bundled as the baseline) and because the PHP /api/locales
-  // endpoint intentionally excludes 'en' from its response.
+  // English names itself here because it is the only language that has NO
+  // separate locale file: it is the hardcoded baseline and is intentionally
+  // excluded from the /api/locales response.
   //
-  // ALL OTHER languages name themselves inside their own locale JSON file
-  // (e.g. fr.json has "lang.fr": "Français", de.json has "lang.de": "Deutsch").
-  // This ensures the language dropdown always shows native names that speakers
-  // recognise, regardless of which language is currently active in the UI.
+  // ALL OTHER languages (including the bundled fr.json) are discovered at
+  // runtime via loadExternalLocales() → GET /api/locales.  Their native name
+  // comes from the `$meta.language` field inside each locale file
+  // (e.g. fr.json declares "lang.fr": "Français").  The dropdown only shows a
+  // language once the API response has been processed, which guarantees that
+  // getLanguageDisplayName() always has the display name ready.
   //
-  // DO NOT add 'lang.de', 'lang.fr', 'lang.es' etc. here — those belong in
-  // their respective locale files only.
+  // DO NOT add 'lang.de', 'lang.fr', 'lang.es' etc. here.  Those belong
+  // exclusively in their respective locale files.
   'lang.en':                      'English',
 };
 

@@ -100,9 +100,11 @@ afterEach(() => {
 // =============================================================================
 
 describe('SUPPORTED_UI_LANGUAGES', () => {
-  it('is a non-empty array', () => {
+  it('contains exactly one entry — English is the only compile-time built-in', () => {
+    // All other languages are runtime-discovered via /api/locales.
+    // Removing or adding a locale file on the server requires zero code changes.
     expect(Array.isArray(SUPPORTED_UI_LANGUAGES)).toBe(true);
-    expect(SUPPORTED_UI_LANGUAGES.length).toBeGreaterThanOrEqual(2);
+    expect(SUPPORTED_UI_LANGUAGES.length).toBe(1);
   });
 
   it('contains an "en" entry with unitSystem "imperial"', () => {
@@ -111,10 +113,8 @@ describe('SUPPORTED_UI_LANGUAGES', () => {
     expect(en!.unitSystem).toBe('imperial');
   });
 
-  it('contains a "fr" entry with unitSystem "metric"', () => {
-    const fr = SUPPORTED_UI_LANGUAGES.find(l => l.code === 'fr');
-    expect(fr).toBeDefined();
-    expect(fr!.unitSystem).toBe('metric');
+  it('does NOT contain "fr" — French is a runtime locale file, not a compile-time constant', () => {
+    expect(SUPPORTED_UI_LANGUAGES.find(l => l.code === 'fr')).toBeUndefined();
   });
 
   it('every entry has a non-empty string code', () => {
@@ -151,8 +151,13 @@ describe('LANG_UNIT_SYSTEM', () => {
     expect(LANG_UNIT_SYSTEM.get('en')).toBe('imperial');
   });
 
-  it('maps "fr" → "metric"', () => {
-    expect(LANG_UNIT_SYSTEM.get('fr')).toBe('metric');
+  it('"fr" is NOT pre-registered — unit system arrives via registerLangUnitSystem() at runtime', () => {
+    // French (and all non-English locales) are registered by loadExternalLocales()
+    // only after GET /api/locales resolves. Before that call, 'fr' is absent from
+    // the map and getUnitSystem('fr') falls back to 'imperial'.
+    // (Note: other tests in this file may register 'fr' via registerLangUnitSystem;
+    // this assertion is placed before any such call.)
+    expect(LANG_UNIT_SYSTEM.has('fr')).toBe(false);
   });
 
   it('returns undefined for an unregistered code', () => {
@@ -192,9 +197,14 @@ describe('registerLangUnitSystem()', () => {
     expect(LANG_UNIT_SYSTEM.get('en')).toBe('imperial');
   });
 
-  it('is a no-op for "fr" — existing built-in "metric" is preserved', () => {
-    registerLangUnitSystem('fr', 'imperial'); // attempt to overwrite
-    expect(LANG_UNIT_SYSTEM.get('fr')).toBe('metric');
+  it('registers "fr" as "metric" on first call — no prior built-in entry to protect', () => {
+    // 'fr' is not pre-seeded; the first call claims the slot.
+    // (Uses a unique test code to avoid cross-test interference.)
+    registerLangUnitSystem('test-fr-like', 'metric');
+    expect(LANG_UNIT_SYSTEM.get('test-fr-like')).toBe('metric');
+    // Second call with a different value must be a no-op (first-wins rule).
+    registerLangUnitSystem('test-fr-like', 'imperial');
+    expect(LANG_UNIT_SYSTEM.get('test-fr-like')).toBe('metric');
   });
 
   it('first registration wins — subsequent calls with the same code are ignored', () => {
@@ -341,12 +351,18 @@ describe('UI_STRINGS', () => {
     }
   });
 
-  it('language selector: lang.fr / lang.de are NOT in the English baseline', () => {
-    // Each language self-names only in its own locale file.
-    // Cross-language entries like "lang.fr = French" were removed to prevent
-    // speakers from seeing their language listed in a foreign name (e.g. "Chinois").
+  it('language selector: only lang.en lives in the English baseline — all others belong in their locale files', () => {
+    // English is the only language that has no separate locale file (it IS the
+    // baseline) and is excluded from /api/locales, so it must name itself here.
+    expect(UI_STRINGS['lang.en']).toBe('English');
+
+    // Every other language names itself inside its own locale file
+    // (fr.json → "lang.fr": "Français", de.json → "lang.de": "Deutsch", …).
+    // The dropdown only shows a code after loadExternalLocales() has resolved
+    // its display name, so getLanguageDisplayName() never needs a fallback here.
     expect(UI_STRINGS['lang.fr']).toBeUndefined();
     expect(UI_STRINGS['lang.de']).toBeUndefined();
+    expect(UI_STRINGS['lang.es']).toBeUndefined();
   });
 
   it('"settings.rule_sources.entities" is a plural object with both forms', () => {
