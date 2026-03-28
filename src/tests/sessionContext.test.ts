@@ -9,9 +9,7 @@
  * COVERAGE TARGET: SessionContext.svelte.ts — all public methods.
  *
  * WHAT IS TESTED:
- *   - Default state initialization (GM user, no active campaign)
- *   - switchToGM() — restores GM profile
- *   - switchToPlayer() — switches to player profile
+ *   - Default state initialization (no active campaign, role defaults to 'gm')
  *   - setActiveCampaign(id) — sets/clears active campaign
  *   - setGameMaster(value) — explicit GM status toggle
  *   - loadFromServer() — Phase 14.2 real implementation:
@@ -40,14 +38,14 @@ describe('SessionContext — default initial state', () => {
     expect(ctx.isGameMaster).toBe(true);
   });
 
-  it('defaults to GM user ID "user_gm_001"', () => {
+  it('defaults to empty userId before server load', () => {
     const ctx = new SessionContextClass();
-    expect(ctx.currentUserId).toBe('user_gm_001');
+    expect(ctx.currentUserId).toBe('');
   });
 
-  it('defaults to "Game Master (Mock)" display name', () => {
+  it('defaults to empty display name before server load', () => {
     const ctx = new SessionContextClass();
-    expect(ctx.currentUserDisplayName).toBe('Game Master (Mock)');
+    expect(ctx.currentUserDisplayName).toBe('');
   });
 
   it('defaults to null active campaign (on the Campaign Hub)', () => {
@@ -57,65 +55,7 @@ describe('SessionContext — default initial state', () => {
 });
 
 // =============================================================================
-// 2. switchToPlayer()
-// =============================================================================
-
-describe('SessionContext — switchToPlayer()', () => {
-  it('sets isGameMaster to false', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    expect(ctx.isGameMaster).toBe(false);
-  });
-
-  it('changes currentUserId to "user_player_001"', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    expect(ctx.currentUserId).toBe('user_player_001');
-  });
-
-  it('changes display name to TestPlayer', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    expect(ctx.currentUserDisplayName).toBe('TestPlayer (Mock)');
-  });
-});
-
-// =============================================================================
-// 3. switchToGM()
-// =============================================================================
-
-describe('SessionContext — switchToGM()', () => {
-  it('restores isGameMaster to true after switching to player', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    ctx.switchToGM();
-    expect(ctx.isGameMaster).toBe(true);
-  });
-
-  it('restores currentUserId to "user_gm_001"', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    ctx.switchToGM();
-    expect(ctx.currentUserId).toBe('user_gm_001');
-  });
-
-  it('restores display name to "Game Master (Mock)"', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
-    ctx.switchToGM();
-    expect(ctx.currentUserDisplayName).toBe('Game Master (Mock)');
-  });
-
-  it('calling switchToGM() when already GM is idempotent', () => {
-    const ctx = new SessionContextClass();
-    ctx.switchToGM(); // Already GM
-    expect(ctx.isGameMaster).toBe(true);
-    expect(ctx.currentUserId).toBe('user_gm_001');
-  });
-});
-
-// =============================================================================
-// 4. setActiveCampaign()
+// 2. setActiveCampaign()
 // =============================================================================
 
 describe('SessionContext — setActiveCampaign()', () => {
@@ -141,7 +81,7 @@ describe('SessionContext — setActiveCampaign()', () => {
 });
 
 // =============================================================================
-// 5. setGameMaster()
+// 3. setGameMaster()
 // =============================================================================
 
 describe('SessionContext — setGameMaster()', () => {
@@ -158,16 +98,16 @@ describe('SessionContext — setGameMaster()', () => {
     expect(ctx.isGameMaster).toBe(true);
   });
 
-  it('setGameMaster(false) does NOT change userId or display name (unlike switchToPlayer)', () => {
+  it('setGameMaster(false) does NOT change userId or display name', () => {
     const ctx = new SessionContextClass();
-    // setGameMaster only changes the flag, not the profile
+    // setGameMaster only changes the role, not the profile fields
     ctx.setGameMaster(false);
-    expect(ctx.currentUserId).toBe('user_gm_001'); // unchanged
+    expect(ctx.currentUserId).toBe(''); // unchanged from default
   });
 });
 
 // =============================================================================
-// 6. loadFromServer() — Phase 14.2 real implementation
+// 4. loadFromServer() — Phase 14.2 real implementation
 // =============================================================================
 
 describe('SessionContext — loadFromServer() with mocked fetch', () => {
@@ -188,7 +128,7 @@ describe('SessionContext — loadFromServer() with mocked fetch', () => {
     }));
 
     const ctx = new SessionContextClass();
-    ctx.switchToPlayer(); // Start as player to verify the 200 overwrites state
+    ctx.setGameMaster(false); // Start as player to verify the 200 overwrites state
     await ctx.loadFromServer();
 
     expect(ctx.currentUserId).toBe('user_gm_001');
@@ -233,7 +173,7 @@ describe('SessionContext — loadFromServer() with mocked fetch', () => {
     // loadFromServer should not throw even when 401 triggers navigation
     await expect(ctx.loadFromServer()).resolves.not.toThrow();
     // State should remain at default (the redirect prevented any update)
-    expect(ctx.currentUserId).toBe('user_gm_001'); // unchanged default
+    expect(ctx.currentUserId).toBe(''); // unchanged default
   });
 
   it('logs a warning and leaves state unchanged on a non-401 error response', async () => {
@@ -245,12 +185,12 @@ describe('SessionContext — loadFromServer() with mocked fetch', () => {
     }));
 
     const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
+    ctx.setGameMaster(false); // start as player to verify state is NOT overwritten
 
     await ctx.loadFromServer();
 
     // State is NOT overwritten by a 500 error
-    expect(ctx.currentUserId).toBe('user_player_001');
+    expect(ctx.isGameMaster).toBe(false);
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('[SessionContext]'),
       expect.anything()
@@ -263,7 +203,7 @@ describe('SessionContext — loadFromServer() with mocked fetch', () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')));
 
     const ctx = new SessionContextClass();
-    ctx.switchToPlayer();
+    ctx.setGameMaster(false);
 
     await expect(ctx.loadFromServer()).resolves.not.toThrow();
 
@@ -287,30 +227,6 @@ describe('SessionContext — loadFromServer() with mocked fetch', () => {
 
     const ctx = new SessionContextClass();
     await expect(ctx.loadFromServer()).resolves.not.toThrow();
-    expect(ctx.currentUserId).toBe('user_gm_001');
-  });
-});
-
-// =============================================================================
-// 7. Profile toggle cycle (player → GM → player)
-// =============================================================================
-
-describe('SessionContext — profile round-trip', () => {
-  it('GM → Player → GM cycle preserves expected state at each step', () => {
-    const ctx = new SessionContextClass();
-
-    // Start: GM
-    expect(ctx.isGameMaster).toBe(true);
-    expect(ctx.currentUserId).toBe('user_gm_001');
-
-    // Switch to Player
-    ctx.switchToPlayer();
-    expect(ctx.isGameMaster).toBe(false);
-    expect(ctx.currentUserId).toBe('user_player_001');
-
-    // Switch back to GM
-    ctx.switchToGM();
-    expect(ctx.isGameMaster).toBe(true);
     expect(ctx.currentUserId).toBe('user_gm_001');
   });
 });

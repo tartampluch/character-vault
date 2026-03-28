@@ -55,6 +55,12 @@
 @import "tailwindcss";
 
 /* =============================================================================
+   1b. FLAG ICONS — SVG-based country flags (cross-platform, no emoji)
+   Usage: <span class="fi fi-fr"></span>  (fi-{ISO 3166-1 alpha-2 code})
+   ============================================================================= */
+@import "flag-icons/css/flag-icons.min.css";
+
+/* =============================================================================
    2. DARK MODE VARIANT — CLASS-BASED STRATEGY
    Override the default `dark:` variant (which responds to `prefers-color-scheme`)
    to instead activate when any ancestor element (including <html>) carries the

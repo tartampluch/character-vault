@@ -187,7 +187,7 @@ describe('SessionContext — loadFromServer() sets needsPasswordSetup', () => {
     }));
 
     const ctx = new SessionContextClass();
-    ctx.switchToPlayer(); // start as player to verify overwrite
+    ctx.setGameMaster(false); // start as player to verify overwrite
     await ctx.loadFromServer();
 
     expect(ctx.role).toBe('admin');

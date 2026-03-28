@@ -161,9 +161,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'nav.close_navigation':         'Close navigation',
   'nav.role_gm':                  'Game Master',
   'nav.role_player':              'Player',
-  'nav.switch_to_player':         'Switch to Player mode',
-  'nav.switch_to_gm':             'Switch to GM mode',
-  'nav.dev_prefix':               'Dev:',
+
+  // ==========================================================================
+  // USER MENU
+  // ==========================================================================
+  'user.logout':                  'Log out',
+  'user.change_password':         'Change Password',
+  'user.menu_label':              'User options',
 
   // ==========================================================================
   // THEME TOGGLE
@@ -1219,6 +1223,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'lang.label':                   'Language',
   'lang.select_tooltip':          'Switch display language',
+  'lang.unavailable':             'currently unavailable',
 
   // English names itself here because it is the only language that has NO
   // separate locale file: it is the hardcoded baseline and is intentionally

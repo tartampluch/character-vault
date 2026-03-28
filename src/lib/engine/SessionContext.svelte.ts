@@ -105,21 +105,17 @@ export interface SessionContextType {
  * Uses Svelte 5 `$state` / `$derived` runes so that any component reading
  * from this object automatically re-renders when session data changes.
  *
- * MOCK USERS (for development / testing):
- *   Two pre-defined profiles allow testing both roles without a PHP backend:
- *     - "user_gm_001"     + role: 'gm'     → Simulates the GM's browser.
- *     - "user_player_001" + role: 'player'  → Simulates a player's browser.
  */
 class SessionContext {
   // ---------------------------------------------------------------------------
   // $state (Svelte 5 reactive primitives — writable)
   // ---------------------------------------------------------------------------
 
-  /** The current user's unique identifier. Default: mock GM. */
-  currentUserId = $state<ID>('user_gm_001');
+  /** The current user's unique identifier. Populated by loadFromServer(). */
+  currentUserId = $state<ID>('');
 
-  /** The current user's display name. */
-  currentUserDisplayName = $state<string>('Game Master (Mock)');
+  /** The current user's display name. Populated by loadFromServer(). */
+  currentUserDisplayName = $state<string>('');
 
   /**
    * The user's role — the single source of truth for all permission checks.
@@ -157,41 +153,13 @@ class SessionContext {
    */
   isAdmin = $derived(this.role === 'admin');
 
-  // ---------------------------------------------------------------------------
-  // MOCK PROFILE SWITCHING — Development convenience
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Switches to the mock Game Master user profile.
-   *
-   * Used by the dev toolbar (visible only in development mode) and by
-   * Vitest test setup to simulate a GM session.
-   */
-  switchToGM(): void {
-    this.currentUserId          = 'user_gm_001';
-    this.currentUserDisplayName = 'Game Master (Mock)';
-    this.role                   = 'gm';
-  }
-
-  /**
-   * Switches to the mock Player user profile.
-   *
-   * Used by the dev toolbar to test the restricted "player view" of the UI.
-   * Player sees only their own characters, no NPC stats, no override editor.
-   */
-  switchToPlayer(): void {
-    this.currentUserId          = 'user_player_001';
-    this.currentUserDisplayName = 'TestPlayer (Mock)';
-    this.role                   = 'player';
-  }
-
   /**
    * Sets the active campaign context when navigating into a campaign.
    *
    * Called by the SvelteKit `+layout.svelte` for routes under `/campaigns/[id]/`.
    * Must be called with `null` when navigating back to the Campaign Hub.
    *
-   * @param campaignId - The campaign ID from the URL parameter, or null.
+   * @param campaignId - The campaign ID from the URL parameter, or `null`.
    */
   setActiveCampaign(campaignId: ID | null): void {
     this.activeCampaignId = campaignId;
@@ -204,11 +172,10 @@ class SessionContext {
    *   `setGameMaster(true)`  → role = 'gm'
    *   `setGameMaster(false)` → role = 'player'
    *
-   * Does NOT change `currentUserId` or `currentUserDisplayName` — use
-   * `switchToGM()` / `switchToPlayer()` for full profile switches.
+   * Does NOT change `currentUserId` or `currentUserDisplayName`.
    *
    * LEGACY COMPATIBILITY: this method existed before roles were introduced
-   * (Phase 22). All tests that call `ctx.setGameMaster(value)` continue
+   * (Phase 22). All code that calls `ctx.setGameMaster(value)` continues
    * to work because `isGameMaster` is now derived from `role`.
    *
    * @param value - If `true`, sets role to 'gm'; if `false`, sets 'player'.
@@ -322,7 +289,6 @@ class SessionContext {
  *   //         sessionContext.isAdmin        (derived from role)
  *   //         sessionContext.role
  *   //         sessionContext.needsPasswordSetup
- *   // Switch: sessionContext.switchToPlayer()
  * </script>
  * ```
  *

@@ -6,7 +6,6 @@
   LAYOUT: max-w-5xl centered, responsive grid of campaign cards.
   Campaign cards: poster image (160px tall) + card body + hover CTA.
   "Create Campaign" button: visible only to GMs.
-  Dev toolbar: always shown in DEV builds for role switching.
 -->
 
 <script lang="ts">
@@ -17,7 +16,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { goto } from '$app/navigation';
   import { campaignTaskStats } from '$lib/types/campaign';
-  import { IconCampaign, IconAdd, IconClose, IconGMDashboard, IconCharacter } from '$lib/components/ui/icons';
+  import { IconCampaign, IconAdd, IconClose } from '$lib/components/ui/icons';
 
   // Load campaigns from the PHP API when the hub mounts.
   // The store starts with mock data so the UI is never empty during the load.
@@ -195,26 +194,5 @@
     </div>
   {/if}
 
-  <!-- ── DEV TOOLBAR ───────────────────────────────────────────────────────── -->
-  {#if import.meta.env.DEV}
-    <div class="flex items-center gap-3 flex-wrap mt-4 p-3 rounded-lg border border-dashed border-border text-xs text-text-muted" aria-label="Developer toolbar">
-      <span class="font-bold">{ui('nav.dev_prefix', engine.settings.language)}</span>
-      <span class="{sessionContext.isGameMaster ? 'badge-accent' : 'badge-gray'} flex items-center gap-1">
-        {#if sessionContext.isGameMaster}
-          <IconGMDashboard size={11} aria-hidden="true" /> {ui('nav.role_gm', engine.settings.language)}
-        {:else}
-          <IconCharacter size={11} aria-hidden="true" /> {ui('nav.role_player', engine.settings.language)}
-        {/if}
-        ({sessionContext.currentUserDisplayName})
-      </span>
-      <button
-        class="btn-ghost px-2 py-1 text-xs ml-auto"
-        onclick={() => sessionContext.isGameMaster ? sessionContext.switchToPlayer() : sessionContext.switchToGM()}
-        type="button"
-      >
-        {sessionContext.isGameMaster ? ui('nav.switch_to_player', engine.settings.language) : ui('nav.switch_to_gm', engine.settings.language)}
-      </button>
-    </div>
-  {/if}
 
 </div>

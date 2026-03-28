@@ -2,6 +2,7 @@
   "$meta": {
     "language": "Français",
     "code": "fr",
+    "countryCode": "fr",
     "unitSystem": "metric",
     "author": "Character Vault core team",
     "version": 1,
@@ -34,9 +35,11 @@
   "nav.close_navigation":         "Fermer la navigation",
   "nav.role_gm":                  "Maître du Jeu",
   "nav.role_player":              "Joueur",
-  "nav.switch_to_player":         "Passer en mode Joueur",
-  "nav.switch_to_gm":             "Passer en mode MJ",
-  "nav.dev_prefix":               "Dev :",
+
+  "user.logout":                  "Déconnexion",
+  "user.change_password":         "Changer le mot de passe",
+  "user.menu_label":              "Options utilisateur",
+  "lang.unavailable":             "indisponible pour le moment",
 
   "theme.system":                 "Système",
   "theme.light":                  "Clair",

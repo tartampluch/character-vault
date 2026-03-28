@@ -31,6 +31,7 @@
 		"vitest": "^4.1.0"
 	},
 	"dependencies": {
+		"flag-icons": "^7.5.0",
 		"lucide-svelte": "^0.577.0"
 	}
 }

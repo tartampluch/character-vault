@@ -625,9 +625,6 @@
       <IconSettings size={20} aria-hidden="true" /> {ui('settings.title', engine.settings.language)}
     </h1>
     <div class="flex items-center gap-2">
-      <span class="badge-accent flex items-center gap-1 text-xs">
-        <IconGMDashboard size={12} aria-hidden="true" /> {ui('settings.gm_view', engine.settings.language)}
-      </span>
       <button
         class="btn-primary"
         onclick={saveSettings}

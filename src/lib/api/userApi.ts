@@ -288,6 +288,29 @@ export async function changePassword(
 }
 
 // =============================================================================
+// LOGOUT ENDPOINT
+// =============================================================================
+
+/**
+ * Terminates the current PHP session.
+ *
+ * POST /api/auth/logout
+ *
+ * Destroys the server-side session and clears the session cookie.
+ * After calling this, the browser should be redirected to /login.
+ *
+ * Does not throw on network errors — the caller should navigate to /login
+ * regardless, to ensure the user is always signed out from the client side.
+ */
+export async function logout(): Promise<void> {
+  try {
+    await apiFetch('/api/auth/logout', { method: 'POST' });
+  } catch {
+    // Ignore errors — the caller navigates to /login unconditionally.
+  }
+}
+
+// =============================================================================
 // PASSWORD SETUP ENDPOINT (authenticated user, first login only)
 // =============================================================================
 

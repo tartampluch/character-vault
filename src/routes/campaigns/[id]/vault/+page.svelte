@@ -19,7 +19,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { createDefaultCampaignSettings } from '$lib/types/settings';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
-  import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCharacter, IconCampaign, IconBack } from '$lib/components/ui/icons';
+  import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCampaign, IconBack } from '$lib/components/ui/icons';
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
@@ -146,20 +146,6 @@
     </div>
   </header>
 
-  <!-- ── VISIBILITY INFO ──────────────────────────────────────────────────── -->
-  <div aria-live="polite">
-    {#if sessionContext.isGameMaster}
-      <span class="badge-accent flex items-center gap-1 w-fit text-xs">
-        <IconGMDashboard size={12} aria-hidden="true" />
-        {ui('vault.gm_view', engine.settings.language)} — {engine.visibleCharacters.length} {ui('vault.characters', engine.settings.language)}
-      </span>
-    {:else}
-      <span class="badge-gray flex items-center gap-1 w-fit text-xs">
-        <IconCharacter size={12} aria-hidden="true" />
-        {ui('vault.player_view', engine.settings.language)} — {engine.visibleCharacters.length} {ui('vault.characters', engine.settings.language)}
-      </span>
-    {/if}
-  </div>
 
   <!-- ── CHARACTER GRID or EMPTY STATE ─────────────────────────────────────── -->
   {#if engine.visibleCharacters.length === 0}
