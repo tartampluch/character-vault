@@ -33,12 +33,17 @@
     const campaign = await campaignStore.createInApi(newCampaignTitle.trim(), sessionContext.currentUserId);
     newCampaignTitle = '';
     showCreateForm = false;
-    goto(`/campaigns/${campaign.id}`);
+    await goto(`/campaigns/${campaign.id}`);
   }
 
-  function openCampaign(campaignId: string) {
+  async function openCampaign(campaignId: string) {
+    // Set the active campaign immediately so the sidebar contextual links
+    // (Vault, GM Dashboard) reflect the new campaign before the navigation
+    // transition completes.
     sessionContext.setActiveCampaign(campaignId);
-    goto(`/campaigns/${campaignId}`);
+    // Await the navigation so any caller can sequence after it if needed,
+    // and so unhandled-rejection errors surface rather than being silently lost.
+    await goto(`/campaigns/${campaignId}`);
   }
 </script>
 

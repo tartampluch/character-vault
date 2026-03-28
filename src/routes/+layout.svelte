@@ -106,7 +106,26 @@
   Phase 19.4 — AppShell replaces the bare {@render children()} call that was
   here in previous phases. The AppShell itself uses {@render children()} internally
   to insert the page content into the correct slot.
+
+  WHY {children} SHORTHAND INSTEAD OF <AppShell>{@render children()}</AppShell>?
+
+  In Svelte 5, writing:
+    <AppShell>
+      {@render children()}
+    </AppShell>
+  creates a STABLE IMPLICIT SNIPPET whose function reference never changes.
+  AppShell's internal `{@render children()}` tracks that stable reference as its
+  reactive dependency.  When SvelteKit swaps the routing snippet on navigation,
+  AppShell's reactive block never sees a reference change — the old page DOM is
+  NOT torn down, and the new page renders as additional DOM appended below it.
+  Result: both the campaign list and the campaign detail are simultaneously in the
+  DOM (the exact "content appearing under the list" bug).
+
+  Passing the routing snippet DIRECTLY as a prop:
+    <AppShell {children} />
+  makes AppShell's reactive `{@render children()}` track the routing snippet
+  reference itself. Every client-side navigation produces a new routing snippet
+  reference, the reactive block fires, the old DOM is unmounted, and the new page
+  renders in its place — the intended behaviour.
 -->
-<AppShell>
-	{@render children()}
-</AppShell>
+<AppShell {children} />

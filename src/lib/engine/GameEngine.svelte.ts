@@ -1004,21 +1004,64 @@ export class GameEngine {
    * Loads all characters for the active campaign into the vault.
    * Called when entering the Character Vault page.
    *
-   * In Phase 4.1 (localStorage): loads all characters and filters in-memory.
-   * In Phase 14.6 (PHP API): replaced by `GET /api/characters?campaignId=X`.
+   * LOADING STRATEGY:
+   *   When a `campaignId` is provided, this method fetches characters from the
+   *   PHP API (`GET /api/characters?campaignId=X`). The API enforces the correct
+   *   visibility rules server-side:
+   *     - GMs receive ALL characters in the campaign (including other players').
+   *     - Players receive only their own characters (with GM overrides merged in).
+   *
+   *   The API response is also written to localStorage as a cache by
+   *   `storageManager.loadAllCharactersFromApi()`, so offline fallback works.
+   *
+   *   When no `campaignId` is provided (edge case: visiting /vault without a
+   *   campaign context), falls back to reading all characters from localStorage.
+   *
+   * WHY FIRE-AND-FORGET (not async/await)?
+   *   The vault page's `$effect` cannot `await` — it runs synchronously.
+   *   The Promise returned by `loadAllCharactersFromApi` resolves in the
+   *   background; assigning to `this.allVaultCharacters` inside `.then()` is a
+   *   Svelte 5 `$state` assignment that triggers a reactive re-render
+   *   automatically, so the vault grid updates as soon as the data arrives.
+   *
+   * @param campaignId - The campaign to load characters for (preferred).
    */
-  loadVaultCharacters(): void {
-    this.allVaultCharacters = storageManager.loadAllCharacters();
+  loadVaultCharacters(campaignId?: string): void {
+    if (campaignId) {
+      // API path: server-side visibility filtering by role + campaign membership.
+      storageManager.loadAllCharactersFromApi(campaignId)
+        .then(chars => {
+          this.allVaultCharacters = chars;
+        })
+        .catch(err => {
+          console.warn('[GameEngine] loadVaultCharacters: API unavailable, falling back to localStorage.', err);
+          this.allVaultCharacters = storageManager.loadAllCharacters();
+        });
+    } else {
+      // localStorage fallback: no campaign context (e.g. first load before API responds).
+      this.allVaultCharacters = storageManager.loadAllCharacters();
+    }
   }
 
   /**
    * Adds a character to the vault's in-memory list and persists it.
    * Called when creating a new character from the Vault page (Phase 7.4).
    *
+   * PERSISTENCE STRATEGY:
+   *   Uses POST /api/characters (via storageManager.createCharacterOnApi) so the
+   *   new character is immediately visible to the GM and other campaign members
+   *   without waiting for a full vault reload.
+   *
+   *   The subsequent auto-save $effect (debounced PUT) picks up from here; using
+   *   PUT for the very first write would fail with 404 because the record does not
+   *   exist yet in the DB.
+   *
    * @param char - The character to add.
    */
   addCharacterToVault(char: Character): void {
-    storageManager.saveCharacter(char);
+    // Fire-and-forget: POST creates the record in the DB. Errors fall back to
+    // localStorage (storageManager.createCharacterOnApi always saves locally first).
+    storageManager.createCharacterOnApi(char);
     this.allVaultCharacters.push(char);
   }
 
@@ -1293,16 +1336,40 @@ export class GameEngine {
 
         // Skill pipeline key matches the id from the config table directly
         // (e.g. "skill_climb", "skill_bluff") — no prefix added here.
-        if (this.character.skills[skillId]) continue; // already seeded — never overwrite
+        //
+        // GUARD: skip only when the pipeline is FULLY initialised (has a label).
+        //
+        // WHY NOT `if (skills[id]) continue`?
+        //   Characters loaded from the PHP API store only `{ranks: N}` for each
+        //   skill (ARCHITECTURE.md: "STORED: ranks"). When loadCharacter() sets
+        //   character.skills from that API response, every entry is a bare
+        //   SkillPipeline with `label: undefined`, `keyAbility: undefined`, etc.
+        //   The old guard (`if (skills[id])`) treated these truthy-but-incomplete
+        //   objects as "already seeded" and skipped them, leaving `label: undefined`
+        //   for the lifetime of the session — causing crashes in skill-label UI.
+        //
+        //   By checking `?.label` we only skip entries that already carry the full
+        //   pipeline structure. Minimal stored entries are completed here, with their
+        //   stored `ranks` value preserved below.
+        if (this.character.skills[skillId]?.label) continue;
 
         const label = (row['label'] ?? { en: skillId }) as import('../types/i18n').LocalizedString;
         const keyAbility = (row['keyAbility'] as string | undefined) ?? 'stat_intelligence';
         const acp  = Boolean(row['appliesArmorCheckPenalty']);
         const uTrained = row['canBeUsedUntrained'] !== false;
 
+        // Preserve any ranks that were already stored in the minimal entry.
+        const existingRanks = this.character.skills[skillId]?.ranks ?? 0;
+
         this.character.skills[skillId] = makeSkillPipeline(
           skillId, label, keyAbility, acp, uTrained
         );
+
+        // Re-apply stored ranks so player-invested points are not lost.
+        if (existingRanks > 0) {
+          this.character.skills[skillId].ranks = existingRanks;
+        }
+
         changed = true;
       }
 
@@ -1523,8 +1590,13 @@ export class GameEngine {
     // The path @combatStats.base_attack_bonus.totalValue splits into ["combatStats","base_attack_bonus","totalValue"]
     // and indexes context.combatStats["base_attack_bonus"] — which requires the flat key.
     // @see ARCHITECTURE.md section 9.10 — CharacterContext key conventions
+    //
+    // DEFENSIVE GUARD: `combatStats` and `saves` are NOT stored in save files (they are
+    // recomputed by Phase 3 at runtime). Characters loaded from the API/localStorage may
+    // lack these fields entirely. Using `?? {}` prevents `Object.entries(undefined)` from
+    // throwing a TypeError if `loadCharacter()` is called with a raw API response directly.
     const combatStats: CharacterContext['combatStats'] = {};
-    for (const [id, stat] of Object.entries(char.combatStats)) {
+    for (const [id, stat] of Object.entries(char.combatStats ?? {})) {
       const flatKey = id.startsWith('combatStats.') ? id.slice('combatStats.'.length) : id;
       combatStats[flatKey] = { totalValue: stat.totalValue };
     }
@@ -1532,7 +1604,7 @@ export class GameEngine {
     // Build saves snapshot — strip "saves." prefix for the same reason.
     // @saves.fortitude.totalValue requires context.saves["fortitude"], not context.saves["saves.fortitude"].
     const saves: CharacterContext['saves'] = {};
-    for (const [id, save] of Object.entries(char.saves)) {
+    for (const [id, save] of Object.entries(char.saves ?? {})) {
       const flatKey = id.startsWith('saves.') ? id.slice('saves.'.length) : id;
       saves[flatKey] = { totalValue: save.totalValue };
     }
@@ -4920,9 +4992,85 @@ export class GameEngine {
   // CHARACTER MANAGEMENT
   // ---------------------------------------------------------------------------
 
-  /** Loads a character as the active character (triggers full DAG re-evaluation). */
+  /**
+   * Loads a character as the active character (triggers full DAG re-evaluation).
+   *
+   * NORMALIZATION — WHY REQUIRED:
+   *   Characters persisted to the PHP API or localStorage only store the
+   *   "source of truth" fields (ARCHITECTURE.md):
+   *     STORED   : classLevels, activeFeatures, attributes.*.baseValue,
+   *                skills.*.ranks, resources.*.currentValue, linkedEntities, …
+   *     NOT STORED: combatStats.*, saves.* — derived at runtime by the DAG
+   *
+   *   Additionally, the per-pipeline metadata (label, id, keyAbility, …) for
+   *   attributes is NOT stored — only `baseValue` is. These metadata fields
+   *   come from the DataLoader's config tables at runtime.
+   *
+   *   If we assign a bare `{baseValue: 16}` attribute object directly into
+   *   `character.attributes`, downstream `$derived` values that read
+   *   `pipeline.label` (e.g. AbilityScoresSummary) receive `undefined` and crash.
+   *
+   * STRATEGY:
+   *   Build a fresh template via `createEmptyCharacter()`.  By call-time the
+   *   DataLoader has already loaded rule sources (the vault page ensures this),
+   *   so the template's attribute pipelines carry the correct DataLoader labels.
+   *   We then overlay the stored `baseValue` onto the template entries, giving
+   *   every attribute a fully-formed pipeline with the correct runtime label.
+   *
+   *   Skills are handled separately: the engine's `$effect` at line ~1325
+   *   seeds skill pipelines from `config_skill_definitions` whenever
+   *   `dataLoaderVersion` bumps. That effect guards with `?.label` so it
+   *   will now complete any minimal `{ranks: N}` entries left by storage.
+   */
   loadCharacter(char: Character): void {
-    this.character = char;
+    // --- Step 1: attribute pipelines ---
+    // Start from the template (provides label, id, keyAbility, defaults).
+    // Apply the stored baseValue on top so the DAG uses the saved score.
+    const template = createEmptyCharacter(char.id, char.name);
+
+    const attributes: Record<ID, StatisticPipeline> = {};
+
+    // Standard attributes: template provides structure, stored provides baseValue.
+    for (const [id, tpl] of Object.entries(template.attributes)) {
+      const stored = char.attributes?.[id];
+      attributes[id] = {
+        ...tpl,
+        baseValue: stored?.baseValue ?? tpl.baseValue,
+      };
+    }
+
+    // Custom / homebrew attributes not in the template (e.g. from prestige classes).
+    for (const [id, stored] of Object.entries(char.attributes ?? {})) {
+      if (attributes[id]) continue; // already handled above
+      attributes[id] = {
+        id:                    stored.id    ?? id,
+        label:                 stored.label ?? { en: id, fr: id },
+        baseValue:             stored.baseValue             ?? 0,
+        totalValue:            stored.baseValue             ?? 0,
+        derivedModifier:       0,
+        totalBonus:            0,
+        activeModifiers:       [],
+        situationalModifiers:  [],
+      };
+    }
+
+    // --- Step 2: pipeline maps that are NOT stored ---
+    // combatStats and saves are fully derived by Phase 3.  Start from empty
+    // so Object.entries() in phase0_context never throws on a bare API response.
+    // Phase 3 fills the real values from features and class levels.
+    const combatStats = char.combatStats ?? {};
+    const saves       = char.saves       ?? {};
+
+    this.character = {
+      ...char,
+      attributes,
+      combatStats,
+      saves,
+      // Skills: keep stored entries as-is; the DataLoader $effect at line ~1325
+      // will complete any minimal {ranks: N} entry that is missing a label.
+      skills:         char.skills         ?? {},
+      linkedEntities: char.linkedEntities ?? [],
+    };
     this.activeCharacterId = char.id;
   }
 

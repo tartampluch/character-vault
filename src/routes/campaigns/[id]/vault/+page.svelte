@@ -26,7 +26,9 @@
 
   $effect(() => {
     sessionContext.setActiveCampaign(campaignId);
-    engine.loadVaultCharacters();
+    // Pass campaignId so the engine fetches from the API (server-side visibility
+    // rules: GMs see all characters, players see only their own).
+    engine.loadVaultCharacters(campaignId);
   });
 
   // Reload rule sources whenever the campaign's enabledRuleSources changes.

@@ -249,10 +249,19 @@
    * Reset the main content scroll position to the top after every navigation.
    *
    * WHY: SvelteKit's built-in scroll restoration targets `window.scrollY`, but
-   * this app uses a custom scroll container (`<main id="main-content">`  with
+   * this app uses a custom scroll container (`<main id="main-content">` with
    * `overflow-y-auto`) instead of body scroll. Without this hook, navigating
    * between pages leaves `main.scrollTop` at its previous value, making the
-   * new page's content appear below the visible area rather than replacing it.
+   * new page's content appear "below" the visible area rather than replacing it.
+   *
+   * WHY SYNCHRONOUS (no await tick())?
+   *   afterNavigate fires AFTER the new page has been fully mounted and all
+   *   synchronous Svelte effects have run. Resetting scrollTop synchronously
+   *   here means the reset happens BEFORE the browser has a chance to paint the
+   *   intermediate scroll state. If the callback were async (await tick()), the
+   *   async suspension would let the browser paint one frame at the old scroll
+   *   position — visually showing the new page "below" the old content — before
+   *   the reset fires. The synchronous version is paint-safe.
    */
   afterNavigate(() => {
     const mainEl = document.getElementById('main-content');
@@ -453,7 +462,32 @@
          (the main element is not interactive).
     ====================================================================== -->
     <main class="flex-1 overflow-y-auto" id="main-content">
-      {@render children()}
+      <!--
+        {#key $page.url.pathname} — WHY THIS IS REQUIRED
+
+        In the version of Svelte 5 used by this project, changing the snippet
+        prop passed to {@render children()} does NOT automatically destroy the
+        previously rendered DOM before mounting the new one. Instead the new
+        page's DOM is appended after the old one, causing every page since the
+        initial /campaigns visit to stack vertically in the content area.
+
+        {#key expression} is the explicit Svelte primitive for "destroy the
+        entire subtree when the key changes and create a fresh one". Keying on
+        the URL pathname means every client-side navigation tears down the
+        previous page component tree and mounts the new one cleanly — exactly
+        the unmount/remount cycle that {@render children()} alone was failing
+        to perform.
+
+        WHY pathname AND NOT the full URL (including search/hash)?
+        · Tab switches on the character sheet use goto(url, { replaceState: true })
+          where only the ?tab=… query param changes. The pathname stays the same,
+          so {#key} does NOT re-mount on tab changes — component state is preserved.
+        · True navigations (/campaigns → /campaigns/[id] → /vault → /character/…)
+          all change the pathname, so they always get a clean mount.
+      -->
+      {#key $page.url.pathname}
+        {@render children()}
+      {/key}
     </main>
 
   </div>

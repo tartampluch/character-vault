@@ -24,7 +24,7 @@
 
   const campaignId = $derived($page.params.id ?? '');
 
-  $effect(() => { if (sessionContext.isGameMaster) engine.loadVaultCharacters(); });
+  $effect(() => { if (sessionContext.isGameMaster) engine.loadVaultCharacters(campaignId); });
 
   let selectedCharId = $state<string | null>(null);
   const selectedChar = $derived(

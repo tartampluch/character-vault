@@ -375,6 +375,38 @@ export class StorageManager {
   // ---------------------------------------------------------------------------
 
   /**
+   * Creates a new character on the PHP API via POST /api/characters.
+   * Falls back to localStorage-only if the API is unreachable.
+   *
+   * WHY POST AND NOT PUT?
+   *   PUT /api/characters/{id} requires the character to already exist in the DB
+   *   (CharacterController::update() returns 404 if the id is unknown). For new
+   *   characters created from the vault UI, we must POST to create the record first.
+   *   Subsequent auto-saves (debounced) then use PUT via saveCharacterToApi().
+   *
+   * @param char - The new character to persist server-side.
+   */
+  async createCharacterOnApi(char: Character): Promise<void> {
+    // Always persist locally first so the UI is responsive offline.
+    this.saveCharacter(char);
+
+    try {
+      const response = await fetch('/api/characters', {
+        method: 'POST',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(char),
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] createCharacterOnApi: API unavailable. Using localStorage only. (${err})`);
+    }
+  }
+
+  /**
    * Saves a character to the PHP API via PUT /api/characters/{id}.
    * Falls back to localStorage if the API is unreachable.
    *
