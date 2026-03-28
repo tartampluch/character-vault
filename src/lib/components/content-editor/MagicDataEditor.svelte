@@ -97,9 +97,9 @@
         Magic Type
       </legend>
       <div class="flex flex-wrap gap-4">
-        {#each ([['arcane','Arcane','Wizard, Sorcerer, Bard — INT/CHA based, ASF applies'],
-                 ['divine','Divine','Cleric, Druid, Paladin, Ranger — WIS based, no ASF'],
-                 ['psionic','Psionic','Psion, Wilder — PP based, no verbal/somatic components']] as const) as [val, lbl, hint] (val)}
+        {#each ([['arcane','Arcane','INT/CHA based, ASF applies'],
+                 ['divine','Divine','WIS based, no ASF'],
+                 ['psionic','Psionic','PP based, no verbal/somatic components']] as const) as [val, lbl, hint] (val)}
           <label class="flex items-start gap-2 cursor-pointer text-xs select-none">
             <input type="radio" name={fid('mtype')} class="mt-0.5 accent-accent"
                    value={val}

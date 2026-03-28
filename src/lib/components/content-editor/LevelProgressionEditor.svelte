@@ -301,17 +301,17 @@
     <span class="text-[10px] text-text-muted self-center">BAB:</span>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_FULL)}
-            title="BAB = +1 every level (Fighter, Paladin, Ranger, Barbarian)">
+            title="BAB = +1 every level">
       Full BAB
     </button>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_3_4)}
-            title="BAB = floor(level × 3/4) (Cleric, Rogue, Bard)">
+            title="BAB = floor(level × 3/4)">
       ¾ BAB
     </button>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_1_2)}
-            title="BAB = floor(level / 2) (Wizard, Sorcerer, Druid)">
+            title="BAB = floor(level / 2)">
       ½ BAB
     </button>
 

@@ -24,8 +24,11 @@
 
   const chapterStats = $derived.by(() => {
     if (!campaign) return { total: 0, completed: 0, percent: 0 };
-    const { total, completed } = campaignTaskStats(campaign.chapters);
-    return { total, completed, percent: total > 0 ? Math.round((completed / total) * 100) : 0 };
+    // campaignTaskStats() computes `pct` via Math.round internally — use it directly
+    // rather than duplicating the arithmetic here (zero-arithmetic-in-Svelte,
+    // ARCHITECTURE.md §3). The `pct` field is the canonical campaign progress percentage.
+    const { total, completed, pct } = campaignTaskStats(campaign.chapters);
+    return { total, completed, percent: pct };
   });
 
   $effect(() => {
