@@ -2337,29 +2337,26 @@ export const UNIT_SYSTEM_CONFIG: Record<UnitSystem, LocalizationConfig> = {
 
 _Target file: `src/lib/i18n/ui-strings.ts`_
 
-**`ui-strings.ts` is the only file that needs changes when adding a new built-in language.** It owns:
-
-1. `SUPPORTED_UI_LANGUAGES` — the array of `{ code, unitSystem }` objects for all languages with full UI chrome translations.
-2. `LANG_UNIT_SYSTEM` — a `Map<string, UnitSystem>` built from the above for O(1) lookup.
-3. All `UI_STRINGS` key translations for every declared language code.
+`SUPPORTED_UI_LANGUAGES` contains **only English** — the single language that has no server-side locale file and is always available regardless of deployment:
 
 ```typescript
-// In ui-strings.ts:
 export const SUPPORTED_UI_LANGUAGES: ReadonlyArray<{ code: string; unitSystem: UnitSystem }> = [
     { code: 'en', unitSystem: 'imperial' },
-    { code: 'fr', unitSystem: 'metric'   },
-    // Add new built-in languages here. Add their strings to UI_STRINGS below.
+    // English is the only compile-time entry.
+    // All other languages are runtime locale files discovered via GET /api/locales.
 ];
-
-export const LANG_UNIT_SYSTEM: ReadonlyMap<string, UnitSystem> =
-    new Map(SUPPORTED_UI_LANGUAGES.map(({ code, unitSystem }) => [code, unitSystem]));
 ```
 
-**Adding a new built-in language (e.g., German) requires exactly these changes in `ui-strings.ts`:**
-1. Add `{ code: 'de', unitSystem: 'metric' }` to `SUPPORTED_UI_LANGUAGES`.
-2. Add `"de"` keys to every `UI_STRINGS` entry.
+All other languages — including the bundled `fr.json` — are treated as **server-side runtime locale files**. Their code, native name, unit system, and country code arrive via `DataLoader.loadExternalLocales()` → `GET /api/locales`. This means:
+- Dropping a new `{code}.json` file in `static/locales/` on any server is sufficient to add a language.
+- No TypeScript change is ever needed.
+- The language dropdown never shows a code before its metadata is confirmed.
 
-No other file needs modification.
+`LANG_UNIT_SYSTEM` starts as `{ en → imperial }` and is extended at runtime via `registerLangUnitSystem(code, unitSystem)` as each locale's `$meta` is processed.
+
+**Adding a new language** requires only:
+1. Create `static/locales/{code}.json` with a valid `$meta` block and translated strings.
+2. Deploy the file. No code changes.
 
 ### 11.3. Unit System Resolution
 
@@ -2500,6 +2497,64 @@ Internal identifiers (`feature.id`, `feature.ruleSource`, tags) are only visible
 The `|distance` pipe calls `formatDistance(value, lang)`. Output: `"12 m"` (metric) or `"40 ft."` (imperial). Unknown language codes default to imperial.
 
 All rule values are stored in **reference units** (feet, pounds). The `|distance` and `|weight` pipe operators in description strings call `formatDistance()` and `formatWeight()` for localized display.
+
+### 11.9. Locale Loading Lifecycle (CSR-only, no SSR)
+
+The application runs as a **pure client-side SPA** (`src/routes/+layout.ts` exports `ssr = false`). Server-side rendering is intentionally disabled for two reasons:
+
+1. **No SEO benefit** — every page requires authentication; crawlers never see content.
+2. **Locale flash prevention** — on the server, `readLanguageCookie()` cannot access `document.cookie` and always returns `'en'`, which would cause the SSR HTML to be in English. The client would then hydrate and switch to the user's language (e.g. French), creating a visible flash of English content before the correct language renders.
+
+**With CSR-only rendering**, the full lifecycle in `AppShell.svelte` is:
+
+| Scenario | Behaviour |
+|---|---|
+| **Warm cache** (localStorage hit, < 24 h) | Script block: `loadUiLocaleFromCache()` restores locale synchronously → `localeReady = true` → first paint is in the user's language. Zero spinner, zero flash. |
+| **Cold cache** (first visit or expired) | Script block: `localeReady = false` → spinner shows → `onMount` fetches `/locales/{code}.json` → locale cached in localStorage → `localeReady = true` → content renders in correct language. |
+
+`DataLoader.loadExternalLocales()` (GET /api/locales — populates the language dropdown) is always fire-and-forget after `localeReady = true`. It uses an in-flight promise to deduplicate concurrent callers (login page `$effect` + AppShell `onMount` both fire at startup).
+
+`ThemeLanguagePicker` never loads locales or sets `engine.settings.language` on mount. AppShell owns that responsibility. The picker only manages the `pendingLang` UI state (shows a greyed-out "unavailable" entry when the dropdown metadata hasn't loaded yet).
+
+---
+
+## 11.10. Multi-Backend Architecture — Electron Roadmap
+
+The frontend and backend are **cleanly separated** with a pure HTTP REST boundary:
+
+- Every `fetch()` call in `src/` uses a **relative URL** (`/api/...` or `/locales/...`) — no hardcoded hostnames.
+- The frontend contains **zero PHP imports or references**. Coupling is 100% via network requests.
+- All business logic (game engine, math parser, logic evaluator) runs entirely in the browser.
+
+This design enables a future **Electron desktop application** with two modes:
+
+| Mode | Backend | Data storage |
+|---|---|---|
+| **Standalone** | Local Node.js server (bundled) | Local SQLite file + `static/rules/` from app bundle |
+| **Connected** | Remote PHP server | Server SQLite via REST API |
+
+**What needs changing for the Node.js backend:**
+
+| PHP feature | Node.js equivalent |
+|---|---|
+| `$_SESSION` + session cookies | `express-session` (in-memory or SQLite store) |
+| `password_hash` / `password_verify` | `bcryptjs` |
+| PDO + SQLite (same schema) | `better-sqlite3` |
+| CSRF token (per-session random bytes) | `csrf` npm package or manual |
+| Rate limiting (file-based) | `express-rate-limit` |
+| `storage/rules/` file gating | Express static middleware |
+| `GET /api/rules/list` (fs scan) | Already Node.js in `src/routes/rules/+server.ts` — reuse |
+
+**What requires zero change:**
+- The entire SvelteKit frontend (`src/`) — all fetch calls, credentials, and headers remain identical.
+- The SQLite database schema (`api/migrate.php` → port schema to Node migration).
+- All JSON rule files and locale files.
+- The `+page.server.ts` cookie guards (Electron's Chromium handles cookies normally).
+
+**Electron-specific notes:**
+- The local Node.js server runs on `localhost:PORT`; a single environment variable or Electron IPC call configures the frontend base URL.
+- In standalone mode, CSRF can be simplified (no cross-origin threat in a local-only context) while remaining transparent to the frontend.
+- Session store is purely in-memory for single-user standalone mode.
 
 ---
 

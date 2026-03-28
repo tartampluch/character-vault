@@ -130,10 +130,10 @@ const _fromCache = new Set<string>();
 /**
  * Synchronously restores a locale from the localStorage cache.
  *
- * Call this in a component's script block (before first render) to eliminate
- * the brief English flash that occurs when locale data must be fetched async.
- * If the cached entry is absent or older than LOCALE_CACHE_TTL_MS, returns
- * `false` and the normal async fetch path handles it.
+ * Called in AppShell's script block (before first render) to allow the warm
+ * start path to render directly in the user's language without a spinner.
+ * If the cached entry is absent or older than LOCALE_CACHE_TTL_MS returns
+ * `false` and the async fetch path (onMount) handles the cold start.
  *
  * English ('en') is always available — returns `true` immediately.
  *

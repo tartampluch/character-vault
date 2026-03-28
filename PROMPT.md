@@ -502,11 +502,69 @@ _Goal: Replace direct database user management with a proper web interface. The 
 
 ---
 
-### Phase 23: NPC & Monster Template Management
+### Phase 23: UI/UX Polish — Campaign, Auth & Character Data
+
+_Goal: A focused iteration addressing player-facing visibility rules, the authentication flow, persistent character lore fields, seed data quality, and locale loading reliability._
+
+- [ ] **23.1 Campaign Description Localisation:** The campaign `description` field (plain TEXT in SQLite) now supports a JSON-encoded `LocalizedString` stored as text. `api/seed.php` writes `json_encode({"en":"…","fr":"…"})`. The campaign detail page (`src/routes/campaigns/[id]/+page.svelte`) adds a `resolveDescription(desc)` helper that safely parses the value: if it is a JSON object it is translated via `engine.t()`; otherwise the raw string is returned unchanged. Fully backward-compatible — existing plain-text descriptions continue to work.
+
+- [ ] **23.2 Player Spoiler Guard on Campaign Page:** Players no longer see chapters or tasks that the GM has not marked complete. The `{#each campaign.chapters}` and the inner `{#each chapter.tasks}` loops now gate on `sessionContext.isGameMaster || item.isCompleted`. GMs retain full interactive view (checkboxes, Mark Done buttons). Completed tasks shown to players are always rendered in read-only struck-through style (no ambiguous unchecked appearance).
+
+- [ ] **23.3 Sidebar-Free Login & Auth Pages:** `AppShell.svelte` gains an `isAuthPage` derived (`/login` and `/setup-password` paths). When true: (a) the `<Sidebar>` is not rendered; (b) the mobile top bar `<header>` is not rendered. The result is a full-screen, distraction-free login experience.
+
+- [ ] **23.4 Language & Theme Controls on Login Page:** `src/routes/login/+page.svelte` now shows a fixed overlay (top-right corner) with a three-state theme toggle button and a language selector dropdown. Controls mirror the sidebar equivalents: `themeManager.cycle()` for the toggle, `loadUiLocale + engine.settings.language` assignment for the dropdown. Both appear once `engine.availableLanguages` has more than one entry (i.e., after external locale files are discovered). `themeManager.init()` is called in the login page's `$effect` to ensure the toggle works immediately.
+
+- [ ] **23.5 Remove Dev Role-Switch Button:** The `{#if import.meta.env.DEV}` block in `Sidebar.svelte` that rendered a "→ Player / → GM" toggle button has been removed entirely. Role is determined exclusively by server-side authentication. Dev testing uses separate `player1`/`player2` accounts seeded by `api/seed.php`.
+
+- [ ] **23.6 Fix Saving Throws (and Combat Stats) Missing After DB Load:** `GameEngine.loadCharacter()` previously initialised `combatStats` and `saves` from `char.combatStats ?? {}` / `char.saves ?? {}`. Because `api/seed.php` characters do not include these maps in their JSON, both resolved to empty objects, causing `phase3_combatStats` to return `{}` — making AC, BAB, Fort, Ref, Will all invisible. The fix merges the **template** (`createEmptyCharacter()`) pipelines as the baseline: all standard pipeline keys are present with correct base values (10 for AC, 99 for max DEX cap, 0 for saves), and any stored `baseValue` from the persisted JSON is overlaid on top. Custom/homebrew pipelines absent from the template are preserved. This mirrors the existing attribute normalization pattern.
+
+- [ ] **23.7 Character Lore Fields — `notes` and `physicalTraits`:** Two new optional fields are added to the `Character` interface in `src/lib/types/character.ts`:
+  - `notes?: string` — long-form personal story/backstory (replaces the `customSubtitle` repurposing).
+  - `physicalTraits?: Record<string, string>` — flat key/value appearance map (`height`, `weight`, `age`, `eyes`, `hair`, `skin`).
+  `src/lib/components/core/LoreAndLanguages.svelte` is updated to read/write both fields reactively via `$effect`. Physical trait inputs now persist across page reloads. `customSubtitle` reverts to its intended short-subtitle role (e.g. "Chaotic Neutral · Human Soulknife 7").
+
+- [ ] **23.8 Seed Data — Full Level-7 Character Sheets:** Both seed characters in `api/seed.php` are brought to "real level 7" standard:
+  - **Kael Shadowstep** (Human Soulknife 7, Chaotic Neutral, player Matthieu Renard): `alignment_chaotic_neutral` feature; `language_common` (INT 10 = 0 bonus slots); full physical traits; personal backstory in `notes`; `customSubtitle` updated to include alignment.
+  - **Sylara Moonwhisper** (Elf Druid 7, Neutral Good, player Sophie Delacourt): `alignment_neutral_good` feature; `language_common`, `language_elven`, `language_sylvan` (racial auto-grants), `language_draconic` (INT +1 bonus slot); full physical traits; personal backstory in `notes`; `customSubtitle` updated.
+  - Campaign description upgraded to bilingual JSON (EN + FR).
+  - Seed summary output updated to show player names and alignments.
+
+- [ ] **23.9 Language Dropdown — Full Runtime Discovery:** `fr` is removed from `SUPPORTED_UI_LANGUAGES` entirely. `SUPPORTED_UI_LANGUAGES` now contains only `en` — the one language that has no server-side locale file. `LANG_UNIT_SYSTEM` starts with only `en → imperial`; all other unit system mappings (including `fr → metric`) arrive at runtime via `registerLangUnitSystem()` called from `DataLoader.loadExternalLocales()`. `_availableLanguages` in `DataLoader` starts with `['en']` only; other codes enter at runtime from locale files or rule-file `supportedLanguages` arrays. The `[i18n] Missing UI string key: "lang.fr"` warning is eliminated: the dropdown never shows a language before its display name is confirmed. Removing `fr.json` from a deployed server has zero compile-time impact. Updated `uiStrings.test.ts`, `formatters.test.ts`, and `dataLoaderDirect.test.ts` to reflect the new contract; added `beforeAll(() => registerLangUnitSystem('fr', 'metric'))` to formatter and math-parser test files to simulate runtime locale registration.
+
+- [ ] **23.10 Language Dropdown — Fix Reactive Signal Path:** `loadExternalLocales()` was updating `dataLoader._availableLanguages` but no Svelte reactive signal was fired, so `engine.availableLanguages` never recomputed and the login page dropdown stayed hidden. Root cause: `bumpDataLoaderVersion()` mirrors `dataLoader.loadVersion`, which is only incremented by `loadRuleSources()` — never by `loadExternalLocales()`. Fix: added a dedicated `DataLoader.localesVersion` counter (incremented at the end of each successful `loadExternalLocales()` call), a matching `engine.localesVersion = $state(0)` reactive counter, and `engine.bumpLocalesVersion()` to sync them. `engine.availableLanguages` now depends on BOTH `dataLoaderVersion` (rule files) and `localesVersion` (locale files) — the separation avoids triggering the heavy game-mechanics `$derived` pipelines on locale discovery. `AppShell.onMount` and the login page `$effect` both call `bumpLocalesVersion()` after `loadExternalLocales()`. Dev hint (`login.dev_hint`) removed from login page, `ui-strings.ts`, and `fr.json`. Two new tests added: `localesVersion` starts at 0, increments per successful call, stays 0 on failure.
+
+- [ ] **23.11 Sidebar UX Overhaul — User Menu, Flag Picker, Collapsed Layout:**
+  - **GM View pills removed** from vault, GM dashboard, and campaign settings pages.
+  - **View-as-player dev toggle** removed from campaign list and `SessionContext` — role is server-authoritative only.
+  - **User section** moved from the sidebar footer to just below the header, with a click-to-open dropdown containing "Change Password" and "Log out" actions. `logout()` added to `userApi.ts` (`POST /api/auth/logout`).
+  - **Sidebar footer** redesigned: theme icon + language picker on one row (expanded) or stacked vertically flag-only (collapsed).
+  - **`ThemeLanguagePicker.svelte`** created as a shared component used by both the sidebar and the login page. Handles cookie-based language persistence (`cv_language` cookie, replacing the `cv_user_language` localStorage key). Shows a "currently unavailable" disabled entry when the stored language preference is not yet loaded.
+  - **Country flags** added to the language picker via `flag-icons` (npm, SVG-based, cross-platform — works on Windows unlike emoji flags). `flag-icons/css/flag-icons.min.css` imported in `app.css`.
+  - **`$meta.countryCode`** added as a mandatory field to all locale JSON files (ISO 3166-1 alpha-2). `UiLocalesController.php` now requires and returns `countryCode`; `DataLoader` stores it; `GameEngine.getLanguageCountryCode()` exposes it.
+  - **Collapsed sidebar header** fixed: when `collapsed=true` at desktop (lg+), only the expand chevron is shown (logo hidden to prevent overlap). Logo visible on tablet/mobile and in expanded mode.
+  - **Overflow fix:** `overflow-x-hidden` moved from `<aside>` to `<nav>` so that user and language dropdowns can escape the 64 px collapsed sidebar bounds without clipping.
+  - **Login page**: `ThemeLanguagePicker` moved from fixed top-right corner to centered below the login card; dropdown opens upward.
+  - **Language persistence**: migrated from `localStorage` (`cv_user_language`) to cookie (`cv_language`). `src/lib/utils/languageCookie.ts` created. Unavailable-language logic: cookie preference preserved without overwriting when the locale is not yet available; auto-applied when the campaign locale loads.
+
+- [ ] **23.12 Locale Flash Fix — Disable SSR:** Create `src/routes/+layout.ts` with `export const ssr = false`. Character Vault is a fully auth-gated SPA; SSR provides no SEO value and is the root cause of a "flash of English" on first render. During SSR, `readLanguageCookie()` cannot access `document.cookie` (unavailable in Node.js), always returning `'en'`, so the server renders the full page in English. When the client hydrates and applies the user's actual language (e.g. French), a visible flash occurs. With CSR-only rendering the browser always has `document.cookie` and `localStorage` available, so `loadUiLocaleFromCache()` can restore the locale synchronously before the first paint. Note: the PHP backend cannot run Node anyway, making SSR impractical by definition.
+
+- [ ] **23.13 AppShell Locale Gate Simplification:** Simplify `AppShell.onMount` to release `localeReady` as soon as the locale is ready — before `loadExternalLocales()` completes. The spinner must not remain visible for the duration of the external-locales API call since that call only populates the language dropdown (not content). Move external locales loading to fire-and-forget background (`.then()`).
+
+- [ ] **23.14 ThemeLanguagePicker — Remove Redundant Locale Logic:** Remove the synchronous pre-render locale-restore block and mount-time `applyLanguage` calls from `ThemeLanguagePicker.svelte`. AppShell gates all content behind `localeReady` and owns locale loading; by the time `ThemeLanguagePicker` renders, the locale is already applied. The picker manages only `pendingLang` (dropdown UI state for not-yet-available languages) and responds to explicit user selection via `selectLanguage`.
+
+- [ ] **23.15 DataLoader.loadExternalLocales() — Concurrent-Call Deduplication:** Add `_localesLoadPromise: Promise<void> | null` to `DataLoader`. Concurrent callers (login page `$effect` and AppShell `onMount` both fire at startup) must share the same in-flight GET /api/locales request. Clear the promise in a `finally` block so deliberate re-calls (e.g. after a campaign switch) still trigger a fresh fetch.
+
+- [ ] **23.16 Architecture Documentation — SPA/CSR and Electron Roadmap:** Update `ARCHITECTURE.md` §11.2 to reflect that `SUPPORTED_UI_LANGUAGES` contains only `en`. Add §11.9 documenting the CSR-only rendering choice and locale loading lifecycle (warm/cold cache table). Add §11.10 documenting the multi-backend architecture vision: a future Electron desktop app can use a local Node.js backend (standalone mode) or a remote PHP server (connected mode) — the frontend requires zero changes since all API calls already use relative URLs.
+
+- [ ] **Checkpoint #10 — SPA Rendering, Locale Loading & Architecture Integrity** (requires Phase 23): Run from `CHECKPOINTS.md`. Resolve ALL issues (CRITICAL, MAJOR, and MINOR) before proceeding.
+
+---
+
+### Phase 24: NPC & Monster Template Management
 
 _Goal: Develop a NPC (and Monster Template) Management System including a "Quick-Spawn" feature for the GM to instantiate templates in real-time._
 
-### Phase 24: Rules Library Browser
+### Phase 25: Rules Library Browser
 
 _Goal: Develop a library for the GM and players to browse all data._
 

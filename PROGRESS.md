@@ -542,6 +542,17 @@ _Goal: A focused iteration addressing player-facing visibility rules, the authen
   - **Login page**: `ThemeLanguagePicker` moved from fixed top-right corner to centered below the login card; dropdown opens upward.
   - **Language persistence**: migrated from `localStorage` (`cv_user_language`) to cookie (`cv_language`). `src/lib/utils/languageCookie.ts` created. Unavailable-language logic: cookie preference preserved without overwriting when the locale is not yet available; auto-applied when the campaign locale loads. All 47 test files — **1 765 tests** — pass. svelte-check: 0 errors, 0 warnings.
 
+
+- [x] **23.12 Locale Flash Fix — Disable SSR:** Created `src/routes/+layout.ts` with `export const ssr = false`. Character Vault is a fully auth-gated SPA; SSR provides no SEO value and was the root cause of a "flash of English" on first render. During SSR, `readLanguageCookie()` cannot access `document.cookie` (unavailable in Node.js), always returning `'en'`, so the server rendered the full page in English. When the client hydrated and applied the user's actual language (e.g. French), a visible flash occurred. With CSR-only rendering the browser always has `document.cookie` and `localStorage` available, so `loadUiLocaleFromCache()` can restore the locale synchronously before the first paint. Note: the PHP backend cannot run Node anyway, making SSR impractical by definition.
+
+- [x] **23.13 AppShell Locale Gate Simplification:** Simplified `AppShell.onMount` to release `localeReady` as soon as the locale is ready — before `loadExternalLocales()` completes. Previously the spinner was shown for the duration of the external-locales API call even though that call only populates the language dropdown (not content). External locales now load fire-and-forget in background.
+
+- [x] **23.14 ThemeLanguagePicker — Remove Redundant Locale Logic:** Removed the synchronous pre-render locale-restore block and mount-time `applyLanguage` calls from `ThemeLanguagePicker.svelte`. AppShell gates all content behind `localeReady` and owns locale loading; by the time `ThemeLanguagePicker` renders, the locale is already applied. The picker now only manages `pendingLang` (dropdown UI state for not-yet-available languages) and responds to explicit user selection via `selectLanguage`.
+
+- [x] **23.15 DataLoader.loadExternalLocales() — Concurrent-Call Deduplication:** Added `_localesLoadPromise` to `DataLoader`. Concurrent callers (login page `$effect` and AppShell `onMount` both fire at startup) now share the same in-flight GET /api/locales request. The promise is cleared on settlement so deliberate re-calls (e.g. after a campaign switch) still trigger a fresh fetch. All 47 Vitest test files (1 765 tests) pass.
+
+- [x] **23.16 Architecture Documentation — SPA/CSR and Electron Roadmap:** Updated `ARCHITECTURE.md` §11.2 to reflect that `SUPPORTED_UI_LANGUAGES` contains only `en`. Added §11.9 documenting the CSR-only rendering choice and locale loading lifecycle. Added §11.10 documenting the multi-backend architecture vision: a future Electron desktop app can use a local Node.js backend (standalone mode) or a remote PHP server (connected mode). The frontend requires zero changes — all API calls already use relative URLs.
+
 ---
 
 ### Phase 24: NPC & Monster Template Management

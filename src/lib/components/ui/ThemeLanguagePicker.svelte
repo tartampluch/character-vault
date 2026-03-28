@@ -45,27 +45,9 @@
 
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui, loadUiLocale, loadUiLocaleFromCache } from '$lib/i18n/ui-strings';
+  import { ui, loadUiLocale } from '$lib/i18n/ui-strings';
   import { themeManager } from '$lib/stores/ThemeManager.svelte';
   import { readLanguageCookie, writeLanguageCookie } from '$lib/utils/languageCookie';
-
-  // ── SYNCHRONOUS PRE-RENDER LOCALE RESTORATION ────────────────────────────
-  // This block runs once, synchronously, as part of the component's script
-  // initialisation — before Svelte produces the first paint.
-  //
-  // If the user's preferred locale is cached in localStorage (written by the
-  // async path on a previous load), we restore it here so the very first
-  // render already uses the correct language. No flash, no re-render needed.
-  //
-  // On the very first ever page load (cold cache) there is no entry in
-  // localStorage; the async $effect path takes over and fetches the locale
-  // file, which writes the cache so subsequent loads are instant.
-  {
-    const _preLang = readLanguageCookie();
-    if (_preLang !== 'en' && loadUiLocaleFromCache(_preLang)) {
-      engine.settings.language = _preLang;
-    }
-  }
   import {
     IconThemeSystem, IconThemeLight, IconThemeDark,
     IconChevronDown, IconChevronUp,
@@ -155,33 +137,34 @@
     return engine.getLanguageDisplayName(currentLang);
   });
 
-  /** On mount: restore cookie preference or mark as pending. */
+  /**
+   * Track whether the cookie-stored language preference is currently available
+   * in the dropdown. If not yet (external locales haven't loaded), set
+   * `pendingLang` so the UI shows the unavailable entry in the dropdown.
+   * Clears automatically when `availableLangs` updates (reactive dependency).
+   *
+   * Locale loading and `engine.settings.language` are intentionally NOT touched
+   * here — AppShell handles both before this component ever renders (it gates all
+   * content behind `localeReady`). This effect only manages dropdown state.
+   */
   $effect(() => {
-    themeManager.init(); // idempotent
+    themeManager.init(); // idempotent — safe to call multiple times
     const stored = readLanguageCookie();
-    if (stored === 'en') return;
-    if (availableLangs.includes(stored)) {
-      applyLanguage(stored, false);
-      pendingLang = null;
-    } else {
-      pendingLang = stored;
-    }
+    pendingLang = (stored !== 'en' && !availableLangs.includes(stored)) ? stored : null;
   });
 
-  /** Auto-apply pending language once its locale becomes available. */
-  $effect(() => {
-    if (!pendingLang) return;
-    if (availableLangs.includes(pendingLang)) {
-      applyLanguage(pendingLang, false);
-      pendingLang = null;
-    }
-  });
-
+  /**
+   * Apply a language selection triggered by explicit user interaction.
+   *
+   * Loads the locale strings (no-op if already cached), updates the engine
+   * reactive state so all ui() call sites re-render, and optionally persists
+   * the choice to the browser cookie.
+   *
+   * NOT called on mount — AppShell gates all rendering behind `localeReady`
+   * and applies the cookie language before the first paint.
+   */
   async function applyLanguage(code: string, writeCookie: boolean): Promise<void> {
     await loadUiLocale(code);
-    // The engine always initialises with language = 'en', so this assignment is
-    // always a genuine 'en' → code value change. Svelte sees the change and
-    // re-renders all ui() call sites with the freshly-loaded locale data.
     engine.settings.language = code;
     if (writeCookie) {
       writeLanguageCookie(code);

@@ -1125,6 +1125,74 @@ For each issue: file path, line reference, architecture section, and specific de
 
 ---
 
+## Checkpoint #10 — SPA Rendering, Locale Loading & Architecture Integrity
+
+**Prerequisites:** Post-Phase 23 infrastructure items (I-1 through I-5) must be complete.
+
+```markdown
+You are a senior code reviewer specializing in TypeScript, Svelte 5, SvelteKit, and client-side rendering architectures.
+
+I have attached `ARCHITECTURE.md`, `PROGRESS.md`, and the source files changed in the Post-Phase 23 infrastructure work. Your job is to verify the correctness and completeness of the CSR rendering fix and locale loading simplification.
+
+---
+
+## 1. SSR Disable
+
+- Does `src/routes/+layout.ts` export `ssr = false`?
+- Is the file minimal and focused — no unrelated exports?
+- Do the three `+page.server.ts` files (`/`, `/campaigns/[id]/gm-dashboard`, `/campaigns/[id]/settings`) still function correctly with `ssr = false`? (Server load functions including redirects still execute regardless of this flag.)
+
+## 2. AppShell Locale Gate
+
+- In `AppShell.svelte`, does the synchronous script block call `readLanguageCookie()` and `loadUiLocaleFromCache()` before first render?
+- Does `localeReady` start as `_cacheHit` (true on warm cache, false on cold)?
+- In `onMount`: is `localeReady = true` set AFTER the locale fetch (cold start) but BEFORE `loadExternalLocales()` completes? External locales must not block the spinner removal.
+- Is `loadExternalLocales()` fire-and-forget (`.then()`) in `onMount`, not `await`-ed?
+- Does the stale-while-revalidate path call `loadUiLocale(_storedLang)` inside the `.then()` for non-English locales?
+
+## 3. ThemeLanguagePicker Simplification
+
+- Is the synchronous pre-render locale-restore block gone from `ThemeLanguagePicker.svelte`?
+- Are `loadUiLocaleFromCache` and its import gone from `ThemeLanguagePicker.svelte`?
+- Does the single remaining `$effect` only update `pendingLang` — not call `applyLanguage` on mount?
+- Is `applyLanguage` still called correctly from `selectLanguage()` for explicit user language changes?
+- Does the `$effect` correctly react to `availableLangs` changes so `pendingLang` clears when the dropdown metadata arrives?
+
+## 4. DataLoader Deduplication
+
+- Does `DataLoader` have a `_localesLoadPromise: Promise<void> | null` field?
+- Does `loadExternalLocales()` return the in-flight promise if called while a fetch is in progress?
+- Is the promise cleared in a `finally` block so re-calls after settlement trigger fresh fetches?
+- Does `dataLoaderDirect.test.ts` confirm that sequential calls after completion still increment `localesVersion`?
+
+## 5. Architecture Documentation
+
+- Does `ARCHITECTURE.md §11.2` correctly state that `SUPPORTED_UI_LANGUAGES` contains only `en`, and that all other languages are runtime locale files?
+- Does `ARCHITECTURE.md §11.9` document: (a) why SSR is disabled, (b) warm cache vs cold cache lifecycle table, (c) fire-and-forget external locales?
+- Does `ARCHITECTURE.md §11.10` document the Electron roadmap with standalone/connected modes, PHP→Node.js equivalents, and the zero-change frontend contract?
+
+## 6. Test Suite
+
+- Do all 47 Vitest test files pass with zero failures?
+- Is the test count 1 765?
+
+---
+
+Produce a structured report with 4 sections:
+
+**🔴 CRITICAL ISSUES** (Locale flash regression, broken auth flow, incorrect rendering behavior)
+
+**🟡 MAJOR ISSUES** (Deviations from architecture, missing edge cases, incomplete simplification)
+
+**🟢 MINOR ISSUES** (Code style, missing comments, non-blocking inconsistencies)
+
+**✅ VALIDATION PASSED** (Categories that are fully conformant)
+
+All issues at every severity level must be resolved before this checkpoint is considered passed.
+```
+
+---
+
 ## Final Review — Complete System Validation
 
 **Prerequisites:** All phases (1–22) must be complete.

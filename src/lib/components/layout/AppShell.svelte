@@ -108,19 +108,22 @@
   // LOCALE INITIALISATION — synchronous pre-render restore
   // ---------------------------------------------------------------------------
   //
-  // This block runs once, synchronously, as part of AppShell's script
-  // initialisation — before Svelte produces the first paint.  AppShell sits
-  // above every page component AND the Sidebar, so setting
+  // SSR is disabled for this app (see src/routes/+layout.ts). This script block
+  // therefore always runs in a real browser, where document.cookie and
+  // localStorage are both available.
+  //
+  // The block runs once, synchronously, before Svelte produces the first paint.
+  // AppShell wraps every page component AND the Sidebar, so setting
   // engine.settings.language here means ALL child components' initial render
   // already uses the correct language.
   //
-  // Warm cache  (cv_locale_fr in localStorage, < 24 h old):
-  //   loadUiLocaleFromCache() populates _loadedLocales synchronously →
-  //   localeReady = true → first paint is in French, zero visible flash.
+  // Warm cache  (cv_locale_<code> in localStorage, < 24 h old):
+  //   loadUiLocaleFromCache() restores the locale synchronously →
+  //   localeReady = true → first paint is in the user's language, zero flash.
   //
   // Cold cache  (first ever load, or expired):
-  //   localeReady = false → spinner shown → onMount fetches locale file →
-  //   sets language → localeReady = true → content renders directly in French.
+  //   localeReady = false → spinner shown → onMount fetches the locale file →
+  //   sets language → localeReady = true → content renders in correct language.
   //
   const _storedLang = readLanguageCookie();
   const _cacheHit   = _storedLang === 'en' || loadUiLocaleFromCache(_storedLang);

@@ -474,6 +474,19 @@ export class DataLoader {
    */
   private _externalLocales = new Map<string, { language: string; countryCode: string; unitSystem: UnitSystem }>();
 
+  /**
+   * In-flight promise for `loadExternalLocales()`.
+   *
+   * Stored so that concurrent callers (e.g. login page's `$effect` and
+   * AppShell's `onMount` both fire at startup) share the same network
+   * request and both await the same result — rather than making two
+   * parallel GET /api/locales calls.
+   *
+   * Cleared when the promise settles so that a subsequent deliberate call
+   * (e.g. after a campaign switch) can still trigger a fresh discovery.
+   */
+  private _localesLoadPromise: Promise<void> | null = null;
+
   // ---------------------------------------------------------------------------
   // LOADING API
   // ---------------------------------------------------------------------------
@@ -1122,36 +1135,50 @@ export class DataLoader {
    * The built-in locales (en, fr) are always present regardless of the API
    * response — this method only adds *additional* community-contributed files.
    *
-   * Non-critical: if the endpoint is unreachable the app continues normally
-   * with only the built-in languages.
-   *
-   * Call once on app startup (AppShell.svelte onMount), after rule files load.
-   */
+    * Non-critical: if the endpoint is unreachable the app continues normally
+    * with only the built-in languages.
+    *
+    * Safe to call from multiple places (login page, AppShell) — concurrent
+    * calls share the same in-flight promise via `_localesLoadPromise`, so
+    * only one GET /api/locales request is ever made per app lifetime.
+    */
   async loadExternalLocales(): Promise<void> {
-    try {
-      const res = await fetch('/api/locales');
-      if (!res.ok) return;
-      const locales = await res.json() as Array<{
-        code: string;
-        language: string;
-        countryCode: string;
-        unitSystem: UnitSystem;
-      }>;
-      for (const { code, language, countryCode, unitSystem } of locales) {
-        // Persist metadata so it survives clearCache() calls (campaign switches).
-        this._externalLocales.set(code, { language, countryCode, unitSystem });
-        // Make the code immediately available in the dropdown.
-        this._availableLanguages.add(code);
-        registerLangUnitSystem(code, unitSystem);
+    // Deduplicate concurrent calls: if a fetch is already in flight, return the
+    // same promise so both callers await the single network request.
+    // The promise is cleared when it settles, so deliberate re-calls (e.g. after
+    // a campaign switch) always trigger a fresh GET /api/locales.
+    if (this._localesLoadPromise !== null) return this._localesLoadPromise;
+
+    this._localesLoadPromise = (async () => {
+      try {
+        const res = await fetch('/api/locales');
+        if (!res.ok) return;
+        const locales = await res.json() as Array<{
+          code: string;
+          language: string;
+          countryCode: string;
+          unitSystem: UnitSystem;
+        }>;
+        for (const { code, language, countryCode, unitSystem } of locales) {
+          // Persist metadata so it survives clearCache() calls (campaign switches).
+          this._externalLocales.set(code, { language, countryCode, unitSystem });
+          // Make the code immediately available in the dropdown.
+          this._availableLanguages.add(code);
+          registerLangUnitSystem(code, unitSystem);
+        }
+        // Signal that locale discovery has completed. Engine code that reads
+        // `localesVersion` (via engine.bumpLocalesVersion) will invalidate the
+        // `availableLanguages` $derived without touching the heavier rule-file
+        // pipeline derivations that depend on `dataLoaderVersion`.
+        this.localesVersion++;
+      } catch {
+        // Non-critical — built-in languages always available.
+      } finally {
+        // Clear so a subsequent deliberate call can trigger a fresh request.
+        this._localesLoadPromise = null;
       }
-      // Signal that locale discovery has completed. Engine code that reads
-      // `localesVersion` (via engine.bumpLocalesVersion) will invalidate the
-      // `availableLanguages` $derived without touching the heavier rule-file
-      // pipeline derivations that depend on `dataLoaderVersion`.
-      this.localesVersion++;
-    } catch {
-      // Non-critical — built-in languages always available.
-    }
+    })();
+    return this._localesLoadPromise;
   }
 
   /**

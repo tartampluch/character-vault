@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1773_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-1765_tests-6E9F18?logo=vitest&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -64,7 +64,7 @@ character-vault/
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
-│   └── tests/                  # Vitest unit & integration tests (47 files, 1 773 tests)
+│   └── tests/                  # Vitest unit & integration tests (47 files, 1 765 tests)
 ├── api/                        # PHP backend — zero production dependencies
 │   ├── index.php               # Front-controller / router
 │   ├── migrate.php             # SQLite schema migration runner
@@ -162,7 +162,7 @@ Or use the VS Code task **Run: DB migrations**.
 ### Frontend — Vitest
 
 ```sh
-npm test                          # Run all 1 773 tests across 47 files
+npm test                          # Run all 1 765 tests across 47 files
 npm run test:coverage             # Run with v8 coverage report → coverage/index.html
 npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
