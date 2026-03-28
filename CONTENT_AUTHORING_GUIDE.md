@@ -146,7 +146,7 @@ The `supportedLanguages` array declares which language codes are present in the 
 ```
 When this file is loaded, `"es"` appears in the language dropdown. All UI chrome strings (section headers, button labels, etc.) without an `"es"` key fall back silently to English.
 
-> **Legacy format:** Existing files that are bare JSON arrays (without the wrapper) remain supported for backward compatibility. The engine accepts both formats seamlessly.
+> **Simplified format:** Files that are bare JSON arrays (without the wrapper object) are also accepted. The engine handles both formats seamlessly.
 
 ---
 

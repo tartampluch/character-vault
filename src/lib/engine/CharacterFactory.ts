@@ -307,37 +307,45 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       'stat_manifester_level':makePipeline('stat_manifester_level',getAttrLabel('stat_manifester_level',DEFAULT_LABELS['stat_manifester_level']),  0),
     },
     combatStats: {
-      'combatStats.ac_normal': makePipeline('combatStats.ac_normal', { en: 'Armor Class', fr: "Classe d'armure" }, 10),
-      'combatStats.ac_touch': makePipeline('combatStats.ac_touch', { en: 'Touch AC', fr: 'CA de contact' }, 10),
-      'combatStats.ac_flat_footed': makePipeline('combatStats.ac_flat_footed', { en: 'Flat-Footed AC', fr: 'CA pris au dépourvu' }, 10),
-      'combatStats.base_attack_bonus': makePipeline('combatStats.base_attack_bonus', { en: 'Base Attack Bonus', fr: "Bonus d'attaque de base" }, 0),
-      'combatStats.initiative': makePipeline('combatStats.initiative', { en: 'Initiative', fr: 'Initiative' }, 0),
-      'combatStats.grapple': makePipeline('combatStats.grapple', { en: 'Grapple', fr: 'Lutte' }, 0),
+      // ZERO-HARDCODING COMPLIANCE (PROGRESS.md Guideline 6):
+      //   Bootstrap labels use pipeline IDs (e.g. 'combatStats.ac_normal') instead of
+      //   D&D-specific display names (e.g. 'Armor Class'). Human-readable names are
+      //   loaded from `config_combat_stat_definitions` in the JSON rule files and replace
+      //   these placeholders as soon as the DataLoader finishes loading — exactly the
+      //   same pattern used for attribute labels and save labels. Players never see
+      //   the pipeline-ID fallbacks in practice; they are only visible during the
+      //   ~100 ms bootstrap window before rule sources are loaded.
+      'combatStats.ac_normal':          makePipeline('combatStats.ac_normal',          { en: 'combatStats.ac_normal',          fr: 'combatStats.ac_normal'          }, 10),
+      'combatStats.ac_touch':           makePipeline('combatStats.ac_touch',           { en: 'combatStats.ac_touch',           fr: 'combatStats.ac_touch'           }, 10),
+      'combatStats.ac_flat_footed':     makePipeline('combatStats.ac_flat_footed',     { en: 'combatStats.ac_flat_footed',     fr: 'combatStats.ac_flat_footed'     }, 10),
+      'combatStats.base_attack_bonus':  makePipeline('combatStats.base_attack_bonus',  { en: 'combatStats.base_attack_bonus',  fr: 'combatStats.base_attack_bonus'  }, 0),
+      'combatStats.initiative':         makePipeline('combatStats.initiative',         { en: 'combatStats.initiative',         fr: 'combatStats.initiative'         }, 0),
+      'combatStats.grapple':            makePipeline('combatStats.grapple',            { en: 'combatStats.grapple',            fr: 'combatStats.grapple'            }, 0),
       // Speed pipeline base values are read from `config_movement_defaults`.
       // The fallback values here are the D&D 3.5 SRD defaults used during
       // bootstrap (before the DataLoader has loaded the config table).
       // Races/creatures override these defaults via "base" or "setAbsolute" modifiers.
-      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'Land Speed',   fr: 'Vitesse terrestre' },     getSpeedDefault('combatStats.speed_land',   30)),
-      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'Burrow Speed',  fr: 'Vitesse de fouissement' }, getSpeedDefault('combatStats.speed_burrow',  0)),
-      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'Climb Speed',   fr: "Vitesse d'escalade" },     getSpeedDefault('combatStats.speed_climb',   0)),
-      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'Fly Speed',     fr: 'Vitesse de vol' },         getSpeedDefault('combatStats.speed_fly',     0)),
-      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'Swim Speed',    fr: 'Vitesse de nage' },        getSpeedDefault('combatStats.speed_swim',    0)),
-      'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'Armor Check Penalty', fr: "Malus d'armure aux tests" }, 0),
-      'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'Max Hit Points', fr: 'Points de vie maximum' }, 0),
+      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'combatStats.speed_land',   fr: 'combatStats.speed_land'   }, getSpeedDefault('combatStats.speed_land',   30)),
+      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'combatStats.speed_burrow', fr: 'combatStats.speed_burrow' }, getSpeedDefault('combatStats.speed_burrow',  0)),
+      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'combatStats.speed_climb',  fr: 'combatStats.speed_climb'  }, getSpeedDefault('combatStats.speed_climb',   0)),
+      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'combatStats.speed_fly',    fr: 'combatStats.speed_fly'    }, getSpeedDefault('combatStats.speed_fly',     0)),
+      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'combatStats.speed_swim',   fr: 'combatStats.speed_swim'   }, getSpeedDefault('combatStats.speed_swim',    0)),
+      'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'combatStats.armor_check_penalty', fr: 'combatStats.armor_check_penalty' }, 0),
+      'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'combatStats.max_hp', fr: 'combatStats.max_hp' }, 0),
 
       // --- FORTIFICATION (SRD: Magic Armor special ability) ---
       // Percentage chance to negate a critical hit or sneak attack.
       // Light = 25%, Moderate = 75%, Heavy = 100%.
-      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'Fortification', fr: 'Fortification' }, 0),
+      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'combatStats.fortification', fr: 'combatStats.fortification' }, 0),
 
       // --- ARCANE SPELL FAILURE (SRD: Armor & Shields) ---
       // Percentage chance that an arcane spell fails when cast while wearing armor.
-      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'Arcane Spell Failure', fr: "Risque d'échec des sorts arcaniques" }, 0),
+      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'combatStats.arcane_spell_failure', fr: 'combatStats.arcane_spell_failure' }, 0),
 
       // --- MAX DEX BONUS TO AC (`combatStats.max_dexterity_bonus`) ---
       // BASE VALUE = 99 means "no restriction — full DEX applies to AC".
       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
-      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'Max Dex Bonus', fr: 'Bonus de Dex maximum' }, 99),
+      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'combatStats.max_dexterity_bonus', fr: 'combatStats.max_dexterity_bonus' }, 99),
 
       // --- EQUIPMENT SLOT PIPELINES (Phase 3.1 — ARCHITECTURE.md §3.1) ---
       // One pipeline per equipment body slot. `baseValue` = default count for a

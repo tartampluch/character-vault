@@ -505,7 +505,7 @@ Your job is to verify the test suite is **exhaustive** relative to the architect
 - `scrollSpells.test.ts`: `spellType` is strict `"arcane"|"divine"` (not plain string)? `spellLevel` REQUIRED per entry? CL check DC = `casterLevel + 1`? Arcane/divine restriction enforced?
 - `cursedItemRemoval.test.ts`: `removeFeature()` blocks cursed, allows non-cursed? Logs warning? `tryRemoveCursedItem()` returns true/false/null correctly? `consumeItem`/`expireEffect` unaffected?
 - `intelligentItems.test.ts`: all 9 alignment values valid? All 3 communication values? `egoScore` stored pre-computed?
-- `augmentationRule.test.ts`: `effectDescription` optional (backward compat)? Qualitative augmentation (empty `grantedModifiers`) compiles? CastingPanel fallback: `effectDescription` wins over `sourceName`?
+- `augmentationRule.test.ts`: `effectDescription` optional? Qualitative augmentation (empty `grantedModifiers`) compiles? CastingPanel fallback: `effectDescription` wins over `sourceName`?
 - `maxDexBonus.test.ts`: no armor → totalValue = 99? Single `"max_dex_cap"` mod applied? Mithral untyped +2 adds to cap? Multiple caps → minimum wins? Mithral + full plate (2 cap) → totalValue = 4?
 
 ## 10. Missing Test Categories
@@ -1000,7 +1000,7 @@ Your job is to verify Phase 22 is **complete, correct, and secure**. Do NOT rewr
 
 - Does `requireAdmin()` exist in `auth.php`? Does it return 403 for any `role !== 'admin'`?
 - Does `requireGameMaster()` accept BOTH `'gm'` AND `'admin'` roles (not only `'gm'`)?
-- Does `requireAuth()` return `role` and derive `is_game_master` from it, keeping backward compatibility?
+- Does `requireAuth()` return `role` and derive `is_game_master` from it?
 
 ## 6. User Management REST API — UserController (Phase 22.3)
 
@@ -1037,7 +1037,7 @@ Your job is to verify Phase 22 is **complete, correct, and secure**. Do NOT rewr
 - Is `needsPasswordSetup = $state<boolean>(false)`?
 - Does `clearPasswordSetup()` set `needsPasswordSetup = false`?
 - Does `requirePasswordSetup()` set `needsPasswordSetup = true`?
-- Does `setGameMaster(true)` set `role = 'gm'` and `setGameMaster(false)` set `role = 'player'` (backward compat)?
+- Does `setGameMaster(true)` set `role = 'gm'` and `setGameMaster(false)` set `role = 'player'`?
 - Does `loadFromServer()` read `role` from the API response? Does it fall back to deriving from `is_game_master` for legacy responses without `role`?
 - Does `loadFromServer()` set `needsPasswordSetup` from `needs_password_setup` in the response (defaults to `false` if absent)?
 

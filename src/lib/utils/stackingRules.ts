@@ -324,13 +324,24 @@ export function applyStackingRules(
     };
   }
 
-  // --- Step 2: Separate multipliers, DR, and regular modifiers ---
+  // --- Step 2: Separate multipliers, DR, max_dex_cap, and regular modifiers ---
+  //
+  // `max_dex_cap` is intercepted in DAG Phase 3 (buildCombatStatPipelines) BEFORE
+  // this function is called for the `combatStats.max_dexterity_bonus` pipeline.
+  // Phase 3 separates cap mods, computes min() as effectiveBaseValue, then passes
+  // only the remaining non-cap mods here. Excluding `max_dex_cap` from regularMods
+  // ensures this function is also correct if called with such mods unexpectedly
+  // (avoids applying the wrong "highest wins" semantics to a minimum-wins type).
+  //
+  // @see phase3CombatStats.ts — max_dex_cap interception logic
+  // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
   const multiplierMods = modifiers.filter(m => m.type === 'multiplier');
   const drMods = modifiers.filter(m => m.type === 'damage_reduction');
   const regularMods = modifiers.filter(m =>
     m.type !== 'multiplier' &&
     m.type !== 'setAbsolute' &&
-    m.type !== 'damage_reduction'
+    m.type !== 'damage_reduction' &&
+    m.type !== 'max_dex_cap'   // Intercepted in DAG Phase 3 — NOT handled here
   );
 
   // --- Step 3: Group regular modifiers by type ---

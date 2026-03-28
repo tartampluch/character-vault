@@ -3547,7 +3547,7 @@ Three roles in descending privilege order, stored in `users.role`:
 | `gm` | `true` | None | Full | ✓ |
 | `player` | `false` | None | None | ✓ own only |
 
-`is_game_master` in the DB is kept in sync with `role` for backward compatibility with pre-Phase-22 code. All new code derives GM status from `role IN ('gm', 'admin')`.
+`is_game_master` in the DB is kept in sync with `role` for data consistency during the Phase 22 migration. All code derives GM status from `role IN ('gm', 'admin')`.
 
 ### 22.2. Database Schema Additions
 

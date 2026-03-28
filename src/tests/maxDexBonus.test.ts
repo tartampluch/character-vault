@@ -124,19 +124,18 @@ describe('maxDexBonus — stacking rules behavior', () => {
     expect(result.totalValue).toBe(101);
   });
 
-  it('T03 — single max_dex_cap mod in applyStackingRules: treated as non-stacking type', () => {
-    // max_dex_cap is NOT in ALWAYS_STACKING_TYPES, so applyStackingRules keeps only the highest
-    // (Phase 3 interceptsmax_dex_cap BEFORE calling applyStackingRules, but we test in isolation)
+  it('T03 — single max_dex_cap mod in applyStackingRules: explicitly excluded (no effect)', () => {
+    // max_dex_cap modifiers are excluded from regularMods in applyStackingRules.
+    // They are intercepted in DAG Phase 3 (buildCombatStatPipelines) BEFORE this function
+    // is called for the combatStats.max_dexterity_bonus pipeline.
+    // If max_dex_cap mods are passed to this function directly (should not happen in practice),
+    // they are now correctly ignored — neither totalBonus nor totalValue is affected.
+    // @see stackingRules.ts Step 2 comment — max_dex_cap exclusion
     const mods: Modifier[] = [makeModifier('cap1', 'max_dex_cap', 2)];
     const result = applyStackingRules(mods, 99);
-    // Standard non-stacking: takes the highest value → baseValue=99, mod=2 → total = 99+2 = 101?
-    // No — setAbsolute semantics don't apply; non-stacking takes highest BONUS.
-    // Actually "max_dex_cap" would be grouped with same type; only highest applies.
-    // With a single modifier and base=99: the modifier IS applied.
-    // The real behavior: base=99, one cap modifier of 2 → totalBonus=2 → totalValue=101
-    // But this is NOT the correct semantics for max_dexterity_bonus!
-    // This test documents that Phase 3 must intercept BEFORE calling applyStackingRules.
-    expect(result.totalBonus).toBe(2); // cap mod is treated as regular additive by stackingRules
+    // cap mod is excluded → totalBonus = 0, totalValue = floor((99 + 0) * 1) = 99
+    expect(result.totalBonus).toBe(0);
+    expect(result.totalValue).toBe(99);
   });
 
   it('T04 — computeMaxDexBonus: two max_dex_cap → minimum wins', () => {
