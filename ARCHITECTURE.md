@@ -3645,3 +3645,83 @@ All endpoints guarded by `requireAdmin()`.
 - **CSRF:** All mutating endpoints call `verifyCsrfToken()` in the router.
 - **Self-edit restrictions:** Admins cannot edit their own role, suspend themselves, or delete themselves (prevents accidental lockout). **Exception:** `reset-password` has no self-restriction — useful for the admin to reset their own forgotten password via another admin account.
 - **Cascade delete:** `campaign_users` and `characters` owned by deleted users are removed via FK `ON DELETE CASCADE`.
+
+---
+
+## §23. Component Split Architecture
+
+**Rule:** No game logic may live in `.svelte` files (see `ARCHITECTURE.md §1`). All engine computation
+stays in `GameEngine.svelte.ts` or pure utility functions. UI components are display + intent
+dispatchers only.
+
+When a single `.svelte` file grows beyond ~600 lines, it is split into focused sub-components
+following one of two communication patterns:
+
+### 23.1. Settings Panel Pattern (`$bindable()` props — F1a–F1f)
+
+Settings panels communicate with their orchestrating parent via Svelte 5 `$bindable()` props.
+Each panel owns its internal async state (loading, errors) while exposing only the values the
+parent needs to persist.
+
+```
+src/routes/campaigns/[id]/settings/+page.svelte   ← orchestrator (~260 lines after split)
+src/lib/components/settings/
+  ├── RuleSourcesPanel.svelte       (F1a) — bind:enabledSources
+  ├── CharacterCreationPanel.svelte (F1b) — bind:explodingTwenties, bind:rerollOnes, …
+  ├── VariantRulesPanel.svelte      (F1c) — bind:variantGestalt, bind:variantVWP
+  ├── ChaptersPanel.svelte          (F1d) — bind:editableChapters, bind:chaptersAreDirty
+  ├── GmOverridesPanel.svelte       (F1e) — bind:gmOverridesText, bind:isValidJson
+  └── MembershipPanel.svelte        (F1f) — campaignId (read-only)
+```
+
+**Key contract:** `GmOverridesPanel` exposes `bind:isValidJson` so the parent save button can
+disable itself on malformed JSON without reimplementing validation logic.
+
+### 23.2. EditorContext Pattern (content-editor sub-forms — F2, F4, F5, F6)
+
+Content-editor sub-forms read and write directly through the `EditorContext` (set by
+`EntityForm.svelte`). No prop-drilling. Sub-components call `getContext(EDITOR_CONTEXT_KEY)` and
+mutate `ctx.feature` directly via Svelte 5 reactive assignment.
+
+```
+src/lib/components/content-editor/
+  ItemDataEditor.svelte     ← ~300 lines after split (was 1257)
+    ├── WeaponFieldsEditor.svelte     (F2a) — ctx.feature.weaponData
+    ├── ArmorFieldsEditor.svelte      (F2b) — ctx.feature.armorData
+    ├── ChargedItemsEditor.svelte     (F2c) — ctx.feature.wandSpell / staffSpells / scrollSpells / metamagicEffect
+    ├── CursedItemEditor.svelte       (F2d) — ctx.feature.removalPrevention
+    └── IntelligentItemEditor.svelte  (F2e) — ctx.feature.intelligentItemData
+
+  ModifierListEditor.svelte ← ~150 lines after split (was 619)
+    └── ModifierRow.svelte            (F4)  — modifier, index, onchange, ondelete, onduplicate callbacks
+
+  MagicDataEditor.svelte    ← ~190 lines after split (was 560)
+    ├── SpellListsSection.svelte      (F5a) — ctx.feature.spellLists
+    └── PsionicDataSection.svelte     (F5b) — ctx.feature.discipline / displays / augmentations
+
+  ActivationEditor.svelte   ← ~365 lines after split (was 553)
+    └── TieredCostsEditor.svelte      (F6)  — ctx.feature.activation.tieredResourceCosts
+```
+
+### 23.3. Props + Callbacks Pattern (magic sub-components — F3a, F3b)
+
+Magic casting sub-components receive data as props and emit user actions as typed callback functions.
+No Svelte store access is needed at the leaf level beyond reading `engine.*` for display.
+
+```
+src/lib/components/magic/
+  CastingPanel.svelte               ← ~260 lines after split (was 655)
+    ├── MagicItemsCastingSubpanel.svelte  (F3a) — equippedItems[], onCastWand, onCastStaff, onCastScroll
+    └── SpellRowItem.svelte               (F3b) — spell, augStep, onAugChange, onCast, onInfo, onDice
+```
+
+### 23.4. Split Size Targets
+
+| File | Before | After | Target |
+|---|---|---|---|
+| `settings/+page.svelte` | 1430 | ~260 | ~300 |
+| `ItemDataEditor.svelte` | 1257 | ~300 | ~300 |
+| `CastingPanel.svelte` | 655 | ~260 | — |
+| `ModifierListEditor.svelte` | 619 | ~150 | — |
+| `MagicDataEditor.svelte` | 560 | ~190 | — |
+| `ActivationEditor.svelte` | 553 | ~365 | — |

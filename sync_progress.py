@@ -62,8 +62,6 @@ PROGRESS_PATH = _ROOT / "PROGRESS.md"
 # automatically marked [x], no matter what LAST_CHECKED_TASK is set to.
 NEVER_CHECK: frozenset[str] = frozenset(
     {
-        "22.",  # Phase 22 — all tasks (22.1 … 22.13, Checkpoint #9)
-        "Checkpoint #9",  # Phase 22 checkpoint
         "Final Review",  # Pre-release final review
     }
 )

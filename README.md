@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1765_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-1825_tests-6E9F18?logo=vitest&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -64,7 +64,7 @@ character-vault/
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
-│   └── tests/                  # Vitest unit & integration tests (47 files, 1 765 tests)
+│   └── tests/                  # Vitest unit & integration tests (48 files, 1 825 tests)
 ├── api/                        # PHP backend — zero production dependencies
 │   ├── index.php               # Front-controller / router
 │   ├── migrate.php             # SQLite schema migration runner
@@ -162,7 +162,7 @@ Or use the VS Code task **Run: DB migrations**.
 ### Frontend — Vitest
 
 ```sh
-npm test                          # Run all 1 765 tests across 47 files
+npm test                          # Run all 1 825 tests across 48 files
 npm run test:coverage             # Run with v8 coverage report → coverage/index.html
 npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
@@ -212,12 +212,13 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`sceneAndPrereqs.test.ts`](src/tests/sceneAndPrereqs.test.ts) | Scene global features, character level/ECL, HP adjustment, resource resets |
 | [`userManagement.test.ts`](src/tests/userManagement.test.ts) | All `userApi` functions (list, create, update, role, suspend, reinstate, delete, campaign members, setup-password, `changePassword`, `resetUserPassword`); URL/method/body verification; 4xx `ApiError` throwing; fallback error fields |
 | [`setupPasswordFlow.test.ts`](src/tests/setupPasswordFlow.test.ts) | `SessionContext.needsPasswordSetup` state transitions; `requirePasswordSetup` / `clearPasswordSetup`; `loadFromServer()` flag propagation; password-setup form validation (empty, short, mismatch, valid); redirect guard logic |
+| [`componentSplits.test.ts`](src/tests/componentSplits.test.ts) | Component split contract: `GmOverridesPanel` JSON validation, `TieredCostsEditor` tier management, `MagicItemsCastingSubpanel` item filtering, `ModifierRow` source-field defaulting, structural line-count and file-existence checks for all 16 new sub-components |
 
 #### Coverage
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (47 test files, 1 773 tests): 95.37% statements · 91.57% branches · 94.21% functions · 96.78% lines**
+**Overall (48 test files, 1 825 tests): 95.37% statements · 91.57% branches · 94.21% functions · 96.78% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|

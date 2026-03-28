@@ -1173,8 +1173,7 @@ I have attached `ARCHITECTURE.md`, `PROGRESS.md`, and the source files changed i
 
 ## 6. Test Suite
 
-- Do all 47 Vitest test files pass with zero failures?
-- Is the test count 1 765?
+- Do all Vitest test files pass with zero failures?
 
 ---
 
@@ -1187,6 +1186,106 @@ Produce a structured report with 4 sections:
 **🟢 MINOR ISSUES** (Code style, missing comments, non-blocking inconsistencies)
 
 **✅ VALIDATION PASSED** (Categories that are fully conformant)
+
+All issues at every severity level must be resolved before this checkpoint is considered passed.
+```
+
+---
+
+## Checkpoint #11 — Component Architecture Conformance
+
+**Prerequisites:** Phase 23 structure enforcement and component split sub-tasks (23.17–23.26) must be complete.
+
+```markdown
+You are a senior Svelte 5 code reviewer specializing in component architecture and reactive patterns.
+
+I have attached `ARCHITECTURE.md` (§3 rule: no game logic in .svelte files; §23 component split
+patterns), and all new/modified files from the Phase 23 component split work.
+
+Your job is to verify the split was performed correctly. Do NOT rewrite code. Produce a numbered
+checklist of issues.
+
+---
+
+## 1. Zero Game Logic in New Components (ARCHITECTURE.md §3)
+
+Scan ALL new sub-components in:
+- `src/lib/components/settings/`
+- `src/lib/components/content-editor/` (new files only: WeaponFieldsEditor, ArmorFieldsEditor,
+  ChargedItemsEditor, CursedItemEditor, IntelligentItemEditor, ModifierRow, SpellListsSection,
+  PsionicDataSection, TieredCostsEditor)
+- `src/lib/components/magic/MagicItemsCastingSubpanel.svelte`
+- `src/lib/components/magic/SpellRowItem.svelte`
+
+Flag ANY file containing:
+- Mathematical stacking rule calculations (not delegated to GameEngine)
+- DAG pipeline direct manipulation
+- Prerequisite evaluation logic
+
+All game logic MUST remain in `GameEngine.svelte.ts` or pure utility functions.
+
+## 2. Settings Panel Props Contract (F1a–F1f)
+
+For each panel in `src/lib/components/settings/`:
+- Does it use `$bindable()` for all props that modify parent state?
+- Does it NOT access engine pipelines directly for values that should come through props?
+- Does `GmOverridesPanel.svelte` expose `bind:isValidJson` so the parent can gate the Save button?
+- Does `MembershipPanel.svelte` receive `campaignId` as a read-only prop?
+- Does `RuleSourcesPanel.svelte` receive `bind:enabledSources` as the only cross-boundary value?
+- Does `VariantRulesPanel.svelte` receive only `bind:variantGestalt` and `bind:variantVWP`?
+
+## 3. EditorContext Sub-Forms (F2a–F2e, F4, F5a–F5b, F6)
+
+For each new content-editor sub-form:
+- Does it call `getContext(EDITOR_CONTEXT_KEY)` (NOT `$props()`) to obtain the feature draft?
+- Does it mutate `ctx.feature.*` directly (reactive assignment) rather than emitting events?
+- Is all modal state (`showDamageTypePicker`, etc.) scoped locally inside the sub-component?
+- For `ModifierRow.svelte` (F4): does it use `onchange(updatedModifier)` / `ondelete()` /
+  `onduplicate()` callbacks?
+
+## 4. Magic Sub-Component Props + Callbacks (F3a, F3b)
+
+- Does `MagicItemsCastingSubpanel.svelte` receive `equippedItems: ItemFeature[]` as a prop?
+- Does it NOT read `engine.phase3_combatStats` or any DAG pipeline directly (that stays in parent)?
+- Does `SpellRowItem.svelte` receive `spell: MagicFeature`, `augStep: number`, `isExpanded: boolean`,
+  `spellLevel: number`, `onAugChange`, `onToggleExpand`, `onCast`, `onInfo`, `onDice?` as props?
+- Are all callback props typed (no `any`)?
+
+## 5. Parent Orchestrator Shrinkage
+
+- `settings/+page.svelte`: ≤350 lines?
+- `ItemDataEditor.svelte`: ≤350 lines?
+- `CastingPanel.svelte`: ≤350 lines?
+- `ModifierListEditor.svelte`: ≤200 lines?
+- `MagicDataEditor.svelte`: ≤250 lines?
+- `ActivationEditor.svelte`: ≤400 lines?
+
+## 6. No Duplicate Logic
+
+- Is the JSON validation logic ONLY in `GmOverridesPanel.svelte` (not also in `settings/+page.svelte`)?
+- Is the modifier row UI ONLY in `ModifierRow.svelte` (not duplicated in `ModifierListEditor.svelte`)?
+- Is the tiered-cost array management ONLY in `TieredCostsEditor.svelte`?
+- Is the spell row UI ONLY in `SpellRowItem.svelte`?
+
+## 7. TypeScript Correctness
+
+- Does `npx tsc --noEmit` pass with 0 errors?
+- Are all new component prop interfaces fully typed (no implicit `any`)?
+- Does `npx vitest run` pass with all tests?
+
+## 8. Test Coverage for Component Splits
+
+- Does `src/tests/componentSplits.test.ts` exist with all required tests?
+- Does it cover: GmOverridesPanel JSON validation, TieredCostsEditor tier management,
+  MagicItemsCastingSubpanel item filtering, ModifierRow source-field defaulting,
+  and structural existence + line-count checks for all 16 new components?
+
+---
+
+Output format: A numbered markdown checklist. For each issue:
+- [ ] **[CRITICAL/MAJOR/MINOR]** `path/to/file.svelte:lineNumber` — Description.
+
+If no issues found in a category: "✅ [Category]: No issues found."
 
 All issues at every severity level must be resolved before this checkpoint is considered passed.
 ```
