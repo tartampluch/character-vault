@@ -97,7 +97,7 @@
           <!-- Header: name + action type badge -->
           <div class="flex items-start justify-between gap-2">
             <span class="text-sm font-semibold text-text-primary leading-tight">{engine.t(feature.label)}</span>
-            <span class="badge-accent text-[10px] shrink-0">{feature.activation?.actionType ?? '—'}</span>
+            <span class="badge-accent text-[10px] shrink-0">{feature.activation?.actionType ? (ui(`action.${feature.activation.actionType}`, engine.settings.language) || feature.activation.actionType) : '—'}</span>
           </div>
 
           <!-- Description snippet -->

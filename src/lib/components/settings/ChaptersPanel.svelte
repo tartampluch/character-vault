@@ -183,7 +183,7 @@
                     oninput={(e) => { chaptersAreDirty = true; task.title = { ...task.title, [engine.settings.language]: e.currentTarget.value }; }}
                     class="input flex-1 text-xs cursor-text select-text"
                     placeholder={ui('settings.chapters.task_placeholder', engine.settings.language)}
-                    aria-label="{ui('settings.chapters.tasks_label', engine.settings.language)} {index + 1}, task {ti + 1}"
+                    aria-label="{ui('settings.chapters.tasks_label', engine.settings.language)} {index + 1}, {ui('settings.chapters.task_n', engine.settings.language).replace('{n}', String(ti + 1))}"
                   />
                   <button
                     type="button"

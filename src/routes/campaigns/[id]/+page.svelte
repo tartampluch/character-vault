@@ -113,7 +113,7 @@
       {#if campaign.bannerUrl}
         <img
           src={campaign.bannerUrl}
-          alt="{campaign.title} banner"
+          alt={ui('campaign.banner_alt', engine.settings.language).replace('{title}', campaign.title)}
           class="w-full h-full object-cover"
         />
       {:else}

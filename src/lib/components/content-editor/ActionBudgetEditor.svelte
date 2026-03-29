@@ -171,8 +171,8 @@
           value={val}
           placeholder="∞"
           oninput={(e) => setValue(field.key, (e.currentTarget as HTMLInputElement).value)}
-          title="{ui(field.hintKey, lang)}. Blank = unlimited. 0 = blocked."
-          aria-label="{ui(field.labelKey, lang)} action budget. {ui(field.hintKey, lang)}. Blank means unlimited, 0 means blocked."
+          title="{ui(field.hintKey, lang)}. {ui('editor.action_budget.input_title_suffix', lang)}"
+          aria-label={ui('editor.action_budget.input_aria_label', lang).replace('{label}', ui(field.labelKey, lang)).replace('{hint}', ui(field.hintKey, lang))}
         />
         <p class="text-[10px] text-text-muted leading-tight">
           {ui(field.hintKey, lang)}

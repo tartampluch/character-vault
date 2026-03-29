@@ -15,6 +15,7 @@
   "login.password":               "Mot de passe",
   "login.sign_in":                "Se connecter",
   "login.signing_in":             "Connexion…",
+  "login.password_placeholder":   "••••••••",
   "login.error_invalid":          "Identifiant ou mot de passe incorrect.",
   "login.error_too_many":         "Trop de tentatives de connexion. Veuillez attendre 15 minutes.",
   "login.error_failed":           "Connexion échouée (HTTP {status}). Veuillez réessayer.",
@@ -92,6 +93,7 @@
   "campaign.active_sources":      "Sources de règles actives",
   "campaign.manage_sources_hint": "Gérez les sources de règles dans les Paramètres MJ.",
   "campaign.tasks_total":         "{completed}/{total} tâches",
+  "campaign.banner_alt":          "Bannière de {title}",
 
   "vault.title":                  "Vos Aventuriers",
   "vault.create_character":       "Créer un personnage",
@@ -567,6 +569,7 @@
   "common.npc_aria":              "Personnage non-joueur",
 
   "prereq.disabled":              "Prérequis non remplis — effets suspendus",
+  "prereq.unknown_type":          "Type de prérequis inconnu",
 
   "ecl.title":                    "Ajustement de niveau",
   "ecl.la_label":                 "AN",
@@ -679,6 +682,10 @@
   "action.immediate":             "Immédiate",
   "action.free":                  "Libre",
   "action.full_round":            "Tour complet",
+  "action.minutes":               "Minutes",
+  "action.hours":                 "Heures",
+  "action.passive":               "Passif",
+  "action.reaction":              "Réaction",
   "action.blocked":               "Bloqué par : {conditions}",
   "action.spent":                 "Dépensée",
   "action.spent_with_conditions": "{spent}/{budget} utilisées — condition : {conditions}",
@@ -806,6 +813,7 @@
   "settings.chapters.add_task":         "+ Ajouter une tâche",
   "settings.chapters.task_placeholder": "Titre de la tâche…",
   "settings.chapters.remove_task":      "Supprimer la tâche",
+  "settings.chapters.task_n":           "tâche {n}",
 
   "ability_abbr.stat_strength":     "FOR",
   "ability_abbr.stat_dexterity":    "DEX",
@@ -943,6 +951,9 @@
   "situation.earth_elemental":                       "sous forme d'Élémentaire de la Terre",
   "situation.fire_elemental":                        "sous forme d'Élémentaire du Feu",
   "situation.water_elemental":                       "sous forme d'Élémentaire de l'Eau",
+
+  "pipeline.suffix_max":                                     "(max)",
+  "pipeline.suffix_current":                                 "(actuel)",
 
   "pipeline_label.saves.all":                                "Jets de sauvegarde (tous)",
   "pipeline_label.saves.fortitude":                          "Jet de Vigueur",
@@ -1562,6 +1573,9 @@
   "editor.level_prog.will_aria":               "Incrément Volonté au niveau {n}",
   "editor.level_prog.remove_feature_aria":     "Supprimer {id} du niveau {n}",
   "editor.level_prog.add_feature_title":       "Ajouter une capacité au niveau {n}",
+  "editor.level_prog.input_fort": "vig",
+  "editor.level_prog.input_ref":  "refl",
+  "editor.level_prog.input_will": "vol",
 
   "editor.race_class.race_section_title":        "Extras de race",
   "editor.race_class.race_section_hint":         "Champs spécifiques aux entités de catégorie : « race ».",
@@ -1594,7 +1608,9 @@
   "editor.item.weight_label":                  "Poids (lb.)",
   "editor.item.cost_label":                    "Coût (po)",
   "editor.item.hardness_label":                "Solidité",
+  "editor.item.hardness_placeholder":          "ex. 5",
   "editor.item.hp_max_label":                  "PV max de l'objet",
+  "editor.item.hp_max_placeholder":            "ex. 20",
   "editor.item.unique_label":                  "Objet unique",
   "editor.item.unique_hint":                   "(ajoute le tag unique ; empêche l'équipement en double)",
   "editor.item.artifact_tier_label":           "Niveau d'artefact",
@@ -1716,6 +1732,7 @@
   "editor.condition.move_down_title":          "Déplacer vers le bas",
   "editor.condition.move_down_aria":           "Déplacer la condition vers le bas",
   "editor.condition.target_path_label":        "Chemin cible",
+  "editor.condition.target_path_placeholder":  "@activeTags",
   "editor.condition.operator_label":           "Opérateur",
   "editor.condition.value_label":              "Valeur",
   "editor.condition.click_to_pick_tag":        "Cliquer pour choisir un tag…",
@@ -1758,7 +1775,9 @@
   "editor.action_budget.preset_stunned_label":      "Étourdi",
   "editor.action_budget.preset_stunned_desc":       "Impossible de prendre une action, quel qu'en soit le type.",
   "editor.action_budget.preset_paralyzed_label":    "Paralysé",
-  "editor.action_budget.preset_paralyzed_desc":     "Impossible de se déplacer ou d'agir ; les actions mentales (gratuites) sont implicitement autorisées.",
+  "editor.action_budget.preset_paralyzed_desc":       "Impossible de se déplacer ou d'agir ; les actions mentales (gratuites) sont implicitement autorisées.",
+  "editor.action_budget.input_title_suffix":          "Vide = illimité. 0 = bloqué.",
+  "editor.action_budget.input_aria_label":            "{label} budget d'action. {hint}. Vide signifie illimité, 0 signifie bloqué.",
 
   "editor.tiered_costs.intro":                 "Chaque palier offre un niveau de puissance différent à un coût de charge différent. Le joueur choisit un palier au moment de l'activation.",
   "editor.tiered_costs.tier_label":            "Palier {n}",
@@ -2068,6 +2087,7 @@
   "editor.tiered_costs.label_fr_placeholder":  "ex. 2 Charges : 2d6 dégâts",
   "editor.tiered_costs.pool_id_placeholder":   "ex. charges",
   "editor.tiered_costs.cost_placeholder":      "ex. 1, 2, 3",
+  "formula.value_placeholder":                 "ex. 5, 1d6, @attributes.stat_strength.derivedModifier",
   "formula.insert_title":                      "Insérer : {path}",
 
   "editor.core.lang_en_label":  "Anglais",

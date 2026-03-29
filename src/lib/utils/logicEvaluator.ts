@@ -50,6 +50,7 @@ import type { LogicNode } from '../types/logic';
 import type { LogicOperator } from '../types/primitives';
 import type { CharacterContext } from './mathParser';
 import { resolvePath } from './mathParser';
+import { ui } from '../i18n/ui-strings';
 
 // =============================================================================
 // EVALUATION RESULT
@@ -121,7 +122,8 @@ export interface EvaluationResult {
  */
 export function evaluateLogicNode(
   node: LogicNode | undefined,
-  context: CharacterContext
+  context: CharacterContext,
+  lang: string = 'en'
 ): EvaluationResult {
   // An absent prerequisite node always passes (the feature has no requirements)
   if (!node) {
@@ -146,7 +148,7 @@ export function evaluateLogicNode(
     default:
       // TypeScript exhaustiveness check — should never happen with proper typing
       console.warn('[LogicEvaluator] Unknown logic node type encountered. Failing safely.');
-      return { passed: false, errorMessages: ['Unknown prerequisite type'], metMessages: [] };
+      return { passed: false, errorMessages: [ui('prereq.unknown_type', lang)], metMessages: [] };
   }
 }
 

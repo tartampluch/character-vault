@@ -287,7 +287,7 @@
         <div
           class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
                  overflow-auto bg-surface-alt"
-          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', 'English')}
+          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', ui('editor.core.lang_en_label', lang))}
         >
           {locGet(ctx.feature.description as Record<string,string>, 'en') || ui('editor.core.no_description_en', lang)}
         </div>

@@ -218,9 +218,9 @@
               const save = prompt(ui('editor.level_prog.good_save_prompt', lang));
               if (!save) return;
               const t = save.trim().toLowerCase();
-              if (t === 'fort') applyColumnPreset(FORT_TARGET, SAVE_GOOD);
-              else if (t === 'ref') applyColumnPreset(REF_TARGET, SAVE_GOOD);
-              else if (t === 'will') applyColumnPreset(WILL_TARGET, SAVE_GOOD);
+              if (t === ui('editor.level_prog.input_fort', lang)) applyColumnPreset(FORT_TARGET, SAVE_GOOD);
+              else if (t === ui('editor.level_prog.input_ref', lang)) applyColumnPreset(REF_TARGET, SAVE_GOOD);
+              else if (t === ui('editor.level_prog.input_will', lang)) applyColumnPreset(WILL_TARGET, SAVE_GOOD);
             }}
             title={ui('editor.level_prog.good_save_title', lang)}>
       {ui('editor.level_prog.good_save_btn', lang)}
@@ -230,26 +230,29 @@
               const save = prompt(ui('editor.level_prog.poor_save_prompt', lang));
               if (!save) return;
               const t = save.trim().toLowerCase();
-              if (t === 'fort') applyColumnPreset(FORT_TARGET, SAVE_POOR);
-              else if (t === 'ref') applyColumnPreset(REF_TARGET, SAVE_POOR);
-              else if (t === 'will') applyColumnPreset(WILL_TARGET, SAVE_POOR);
+              if (t === ui('editor.level_prog.input_fort', lang)) applyColumnPreset(FORT_TARGET, SAVE_POOR);
+              else if (t === ui('editor.level_prog.input_ref', lang)) applyColumnPreset(REF_TARGET, SAVE_POOR);
+              else if (t === ui('editor.level_prog.input_will', lang)) applyColumnPreset(WILL_TARGET, SAVE_POOR);
             }}
             title={ui('editor.level_prog.poor_save_title', lang)}>
       {ui('editor.level_prog.poor_save_btn', lang)}
     </button>
 
-    <!-- Per-save preset buttons (no prompt) -->
+    <!-- Per-save preset buttons (no prompt) — labels from i18n column headers -->
     <div class="flex flex-wrap gap-1 w-full mt-1 text-[10px] text-text-muted">
       <span class="self-center">{ui('editor.level_prog.quick_fill_label', lang)}</span>
-      {#each ['fort', 'ref', 'will'] as save}
-        {@const target = save === 'fort' ? FORT_TARGET : save === 'ref' ? REF_TARGET : WILL_TARGET}
+      {#each [
+        { colKey: 'editor.level_prog.col_fort', target: FORT_TARGET },
+        { colKey: 'editor.level_prog.col_ref',  target: REF_TARGET  },
+        { colKey: 'editor.level_prog.col_will', target: WILL_TARGET },
+      ] as saveSpec}
         <button type="button" class="btn-ghost text-[10px] py-0 px-1.5 h-auto text-green-400"
-                onclick={() => applyColumnPreset(target, SAVE_GOOD)}>
-          {save} {ui('editor.level_prog.good_save_btn', lang).toLowerCase()}
+                onclick={() => applyColumnPreset(saveSpec.target, SAVE_GOOD)}>
+          {ui(saveSpec.colKey, lang)} {ui('editor.level_prog.good_save_btn', lang).toLowerCase()}
         </button>
         <button type="button" class="btn-ghost text-[10px] py-0 px-1.5 h-auto text-amber-400"
-                onclick={() => applyColumnPreset(target, SAVE_POOR)}>
-          {save} {ui('editor.level_prog.poor_save_btn', lang).toLowerCase()}
+                onclick={() => applyColumnPreset(saveSpec.target, SAVE_POOR)}>
+          {ui(saveSpec.colKey, lang)} {ui('editor.level_prog.poor_save_btn', lang).toLowerCase()}
         </button>
       {/each}
     </div>

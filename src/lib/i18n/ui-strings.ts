@@ -212,6 +212,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'login.signing_in':             'Signing in…',
   'login.error_account_expired':   'This account was not activated within 7 days and has been suspended. Contact an administrator.',
   'login.error_account_suspended': 'This account has been suspended. Contact an administrator.',
+  /** Placeholder for the password field on the login page (visual mask hint). */
+  'login.password_placeholder':   '••••••••',
   'login.error_invalid':          'Invalid username or password.',
   'login.error_too_many':         'Too many login attempts. Please wait 15 minutes.',
   'login.error_failed':           'Login failed (HTTP {status}). Please try again.',
@@ -317,6 +319,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'campaign.active_sources':      'Active Rule Sources',
   'campaign.manage_sources_hint': 'Manage rule sources in GM Settings.',
   'campaign.tasks_total':         '{completed}/{total} tasks',
+  /** Alt text for the campaign banner image. {title} = campaign title. */
+  'campaign.banner_alt':          '{title} banner',
 
   // ==========================================================================
   // CHARACTER VAULT
@@ -943,6 +947,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // PREREQUISITE STATUS
   // ==========================================================================
   'prereq.disabled':              'Prerequisites no longer met — effects suspended',
+  /** Defensive fallback shown when a LogicNode has an unrecognised type (TypeScript exhaustiveness guard). */
+  'prereq.unknown_type':          'Unknown prerequisite type',
 
   // ==========================================================================
   // ECL / LEVEL ADJUSTMENT
@@ -1096,6 +1102,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'action.immediate':             'Immediate',
   'action.free':                  'Free',
   'action.full_round':            'Full Round',
+  'action.minutes':               'Minutes',
+  'action.hours':                 'Hours',
+  'action.passive':               'Passive',
+  'action.reaction':              'Reaction',
   'action.blocked':               'Blocked by: {conditions}',
   'action.spent':                 'Spent',
   'action.spent_with_conditions': '{spent}/{budget} spent — condition: {conditions}',
@@ -1236,6 +1246,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'settings.chapters.add_task':         '+ Add task',
   'settings.chapters.task_placeholder': 'Task title…',
   'settings.chapters.remove_task':      'Remove task',
+  /** Aria-label suffix for an individual task input. {n} = 1-based task index. */
+  'settings.chapters.task_n':           'task {n}',
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — STAT GENERATION
@@ -1435,6 +1447,23 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'reset_condition.per_turn.hint':     "Recharges at start of this character's own turn",
   'reset_condition.per_round.label':   'Per Round',
   'reset_condition.per_round.hint':    'Recharges once per round at a fixed initiative point',
+
+  // ==========================================================================
+  // PIPELINE PRETTIFIER SUFFIXES
+  // Used by GameEngine.resolvePipelineLabel() last-resort prettifier to
+  // append human-readable suffixes to raw pipeline IDs that end in
+  // .maxValue / .currentValue and have no dedicated pipeline_label.* key.
+  // ==========================================================================
+  /**
+   * Suffix appended when a pipeline ID ends in ".maxValue" and has no dedicated label.
+   * Example: "resources.shadow_points.maxValue" → "Shadow Points (max)"
+   */
+  'pipeline.suffix_max':          '(max)',
+  /**
+   * Suffix appended when a pipeline ID ends in ".currentValue" and has no dedicated label.
+   * Example: "resources.shadow_points.currentValue" → "Shadow Points (current)"
+   */
+  'pipeline.suffix_current':      '(current)',
 
   // ==========================================================================
   // PIPELINE FALLBACK LABELS
@@ -1836,6 +1865,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // FORMULA BUILDER INPUT — validation & UI chrome (FormulaBuilderInput.svelte)
   // ==========================================================================
+  /** Default placeholder for the FormulaBuilderInput component when no override is provided. */
+  'formula.value_placeholder':  'e.g. 5, 1d6, @attributes.stat_strength.derivedModifier',
   /** Title on the formula assistant entry buttons. {path} = the @-path to insert. */
   'formula.insert_title':       'Insert: {path}',
   /** Dice notation example descriptions (shown in the help popup). */
@@ -2245,6 +2276,16 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.level_prog.will_aria':               'Will increment at level {n}',
   'editor.level_prog.remove_feature_aria':     'Remove {id} from level {n}',
   'editor.level_prog.add_feature_title':       'Add feature at level {n}',
+  /**
+   * Single-word abbreviations accepted as input in the save-preset prompt.
+   * Must match exactly what the corresponding good/poor save prompt strings
+   * instruct the user to type.  Keep these lower-case.
+   * EN: 'fort' / 'ref' / 'will'
+   * FR: 'vig'  / 'refl' / 'vol'   (see editor.level_prog.good_save_prompt in fr.json)
+   */
+  'editor.level_prog.input_fort': 'fort',
+  'editor.level_prog.input_ref':  'ref',
+  'editor.level_prog.input_will': 'will',
 
   // ==========================================================================
   // CONTENT EDITOR — RACE / CLASS EXTRAS EDITOR (RaceClassExtrasEditor.svelte)
@@ -2283,8 +2324,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.item.slot_label':                    'Equipment Slot',
   'editor.item.weight_label':                  'Weight (lb.)',
   'editor.item.cost_label':                    'Cost (gp)',
-  'editor.item.hardness_label':                'Hardness',
-  'editor.item.hp_max_label':                  'Item HP Max',
+   'editor.item.hardness_label':                'Hardness',
+   /** Placeholder for the Hardness numeric input. */
+   'editor.item.hardness_placeholder':          'e.g. 5',
+   'editor.item.hp_max_label':                  'Item HP Max',
+   /** Placeholder for the Item HP Max numeric input. */
+   'editor.item.hp_max_placeholder':            'e.g. 20',
   'editor.item.unique_label':                  'Unique item',
   'editor.item.unique_hint':                   '(adds tag unique; prevents duplicate equipping)',
   'editor.item.artifact_tier_label':           'Artifact Tier',
@@ -2440,8 +2485,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.condition.move_up_aria':             'Move condition up',
   'editor.condition.move_down_title':          'Move down',
   'editor.condition.move_down_aria':           'Move condition down',
-  'editor.condition.target_path_label':        'Target path',
-  'editor.condition.operator_label':           'Operator',
+   'editor.condition.target_path_label':        'Target path',
+   /** Placeholder for the target path input — shows a typical @-path example. */
+   'editor.condition.target_path_placeholder':  '@activeTags',
+   'editor.condition.operator_label':           'Operator',
   'editor.condition.value_label':              'Value',
   'editor.condition.click_to_pick_tag':        'Click to pick a tag…',
   'editor.condition.click_to_pick_tag_title':  'Click to open tag picker',
@@ -2486,8 +2533,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.action_budget.preset_nauseated_desc':     'Only a single move action; everything else blocked.',
   'editor.action_budget.preset_stunned_label':      'Stunned',
   'editor.action_budget.preset_stunned_desc':       'Cannot take any actions of any type.',
-  'editor.action_budget.preset_paralyzed_label':    'Paralyzed',
-  'editor.action_budget.preset_paralyzed_desc':     'Cannot move or act; mental-only (free) actions are implicitly allowed.',
+   'editor.action_budget.preset_paralyzed_label':    'Paralyzed',
+   'editor.action_budget.preset_paralyzed_desc':     'Cannot move or act; mental-only (free) actions are implicitly allowed.',
+   /** Appended to the input title tooltip: explains blank vs. 0. */
+   'editor.action_budget.input_title_suffix':        'Blank = unlimited. 0 = blocked.',
+   /** Full aria-label for a budget input field. {label} = field label, {hint} = hint text. */
+   'editor.action_budget.input_aria_label':          '{label} action budget. {hint}. Blank means unlimited, 0 means blocked.',
 
   // ==========================================================================
   // CONTENT EDITOR — TIERED COSTS EDITOR (TieredCostsEditor.svelte)

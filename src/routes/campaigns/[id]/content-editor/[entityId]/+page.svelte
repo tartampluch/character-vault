@@ -143,7 +143,7 @@
       </h1>
       {#if entity}
         <p class="text-xs text-text-muted">
-          {entity.category} · {entity.ruleSource}
+          {ui(`editor.category.${entity.category}`, lang) || entity.category} · {entity.ruleSource}
         </p>
       {/if}
     </div>

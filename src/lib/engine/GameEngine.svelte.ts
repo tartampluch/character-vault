@@ -2985,7 +2985,7 @@ export class GameEngine {
    * @returns An `EvaluationResult` with `passed`, `metMessages`, and `errorMessages`.
    */
   evaluateFeaturePrerequisites(feature: Feature | undefined): EvaluationResult {
-    return evaluateLogicNode(feature?.prerequisitesNode, this.phase2_context);
+    return evaluateLogicNode(feature?.prerequisitesNode, this.phase2_context, this.lang);
   }
 
   // ---------------------------------------------------------------------------
@@ -5429,8 +5429,8 @@ export class GameEngine {
     // 6. Last resort: prettify the raw ID
     return targetId
       .replace(/^(attributes|combatStats|skills|saves|resources)\./, '')
-      .replace(/\.maxValue$/, ' (max)')
-      .replace(/\.currentValue$/, ' (current)')
+      .replace(/\.maxValue$/, ' ' + ui('pipeline.suffix_max', this.lang))
+      .replace(/\.currentValue$/, ' ' + ui('pipeline.suffix_current', this.lang))
       .replace(/_/g, ' ')
       .replace(/\b\w/g, c => c.toUpperCase());
   }

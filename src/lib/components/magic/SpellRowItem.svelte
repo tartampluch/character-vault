@@ -105,7 +105,7 @@
 
   <!-- Psionic display badges (Extension D) with suppress-DC tooltip -->
   {#if isPsionic && spell.displays && spell.displays.length > 0}
-    <span class="flex gap-0.5 shrink-0" title="{ui('psi.displays_label', engine.settings.language)}: {displayNamesLocalized(spell.displays)} — suppress {ui('psi.suppress_dc', engine.settings.language).replace('{dc}', String(suppressDC(spell)))}">
+    <span class="flex gap-0.5 shrink-0" title="{ui('psi.displays_label', engine.settings.language)}: {displayNamesLocalized(spell.displays)} — {ui('psi.suppress_displays', engine.settings.language)} {ui('psi.suppress_dc', engine.settings.language).replace('{dc}', String(suppressDC(spell)))}">
       {#each spell.displays as disp}
         <span class="text-[9px] px-1 py-0.5 rounded font-bold {DISPLAY_COLORS[disp as PsionicDisplay] ?? 'bg-surface-alt text-text-muted'}">
           {ui(`psi.display.${disp}`, engine.settings.language)}

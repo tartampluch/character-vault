@@ -116,7 +116,7 @@
       </label>
       <input id={fid('hard')} type="number" class="input text-xs" min="0"
              value={item.hardness ?? ''}
-             placeholder="5"
+             placeholder={ui('editor.item.hardness_placeholder', lang)}
              oninput={(e) => {
                const v = (e.currentTarget as HTMLInputElement).value.trim();
                (ctx.feature as ItemFeature).hardness = v ? parseInt(v) : undefined;
@@ -131,7 +131,7 @@
       </label>
       <input id={fid('hp')} type="number" class="input text-xs" min="0"
              value={item.hpMax ?? ''}
-             placeholder="20"
+             placeholder={ui('editor.item.hp_max_placeholder', lang)}
              oninput={(e) => {
                const v = (e.currentTarget as HTMLInputElement).value.trim();
                (ctx.feature as ItemFeature).hpMax = v ? parseInt(v) : undefined;

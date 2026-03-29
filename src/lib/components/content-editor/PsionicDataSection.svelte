@@ -253,7 +253,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid(`aug-en-${i}`)}
                        class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', 'EN')}
+                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', ui('editor.core.lang_en_label', lang))}
                 </label>
                 <textarea id={fid(`aug-en-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"
@@ -265,7 +265,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid(`aug-fr-${i}`)}
                        class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', 'FR')}
+                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', ui('editor.core.lang_fr_label', lang))}
                 </label>
                 <textarea id={fid(`aug-fr-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"

@@ -226,7 +226,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid('scr')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.crit_range_label', lang)}</label>
                 <input id={fid('scr')} type="text" class="input font-mono text-xs"
-                       value={sec.critRange} placeholder="20"
+                       value={sec.critRange} placeholder={ui('editor.weapon.crit_range_placeholder', lang)}
                        oninput={(e) => { sec.critRange = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">

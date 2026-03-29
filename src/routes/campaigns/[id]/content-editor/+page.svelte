@@ -482,12 +482,12 @@
                   <code class="font-mono text-xs text-text-primary">{entity.id}</code>
                 </td>
 
-                <!-- Category badge -->
-                <td class="px-3 py-2.5">
-                  <span class={categoryBadgeClass(entity.category)}>
-                    {entity.category}
-                  </span>
-                </td>
+                 <!-- Category badge -->
+                 <td class="px-3 py-2.5">
+                   <span class={categoryBadgeClass(entity.category)}>
+                     {ui(`editor.category.${entity.category}`, lang) || entity.category}
+                   </span>
+                 </td>
 
                 <!-- Label -->
                 <td class="px-3 py-2.5 text-text-primary">

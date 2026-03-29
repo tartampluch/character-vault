@@ -128,9 +128,15 @@
     value,
     onValueChanged,
     id,
-    placeholder = 'e.g. 5, 1d6, @attributes.stat_strength.derivedModifier',
+    placeholder,
     disabled = false,
   }: Props = $props();
+
+  // Resolve the effective placeholder: use the caller-supplied value if provided,
+  // otherwise fall back to the localised default so it updates with language changes.
+  const effectivePlaceholder = $derived(
+    placeholder ?? ui('formula.value_placeholder', engine.settings.language)
+  );
 
   // ===========================================================================
   // KNOWN @-PATH CATALOG (Formula Assistant + Validation)
@@ -501,7 +507,7 @@
       type="text"
       class="input flex-1 pr-20 font-mono text-sm"
       value={currentText}
-      {placeholder}
+      placeholder={effectivePlaceholder}
       {disabled}
       oninput={handleInput}
       autocomplete="off"

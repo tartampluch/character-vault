@@ -429,7 +429,7 @@
         class="input font-mono text-xs w-full"
         list={datalistId}
         value={node.targetPath}
-        placeholder="@activeTags"
+        placeholder={ui('editor.condition.target_path_placeholder', lang)}
         oninput={(e) => patchCondition({ targetPath: (e.currentTarget as HTMLInputElement).value })}
         autocomplete="off"
         spellcheck="false"
