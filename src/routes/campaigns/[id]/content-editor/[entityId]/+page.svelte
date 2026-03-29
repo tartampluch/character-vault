@@ -31,6 +31,7 @@
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import { IconBack } from '$lib/components/ui/icons';
   import type { Feature } from '$lib/types/feature';
   import EntityForm from '$lib/components/content-editor/EntityForm.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
@@ -125,41 +126,39 @@
 <div class="flex flex-col gap-6 p-4 md:p-6 max-w-4xl mx-auto">
 
   <!-- Header row: back link + title + delete button -->
-  <div class="flex items-center gap-3">
-    <a href="/campaigns/{campaignId}/content-editor"
-       class="text-text-muted hover:text-text-primary transition-colors shrink-0"
-       aria-label={ui('content_editor.back_to_library_aria', lang)}>
-      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </a>
-
-    <div class="flex-1 min-w-0">
-      <h1 class="text-xl font-bold text-text-primary truncate">
-        {ui('content_editor.edit.heading', lang).replace('{id}', '')}
-        <code class="font-mono">{entityId}</code>
-      </h1>
-      {#if entity}
-        <p class="text-xs text-text-muted">
-          {ui(`editor.category.${entity.category}`, lang) || entity.category} · {entity.ruleSource}
-        </p>
-      {/if}
+  <header class="flex items-start justify-between gap-3 flex-wrap">
+    <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+      <a href="/campaigns/{campaignId}/content-editor"
+         class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+        <IconBack size={12} aria-hidden="true" /> {ui('nav.content_editor', lang)}
+      </a>
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold text-text-primary truncate">
+          {ui('content_editor.edit.heading', lang).replace('{id}', '')}
+          <code class="font-mono">{entityId}</code>
+        </h1>
+        {#if entity}
+          <p class="text-xs text-text-muted">
+            {ui(`editor.category.${entity.category}`, lang) || entity.category} · {entity.ruleSource}
+          </p>
+        {/if}
+      </div>
     </div>
 
-    <!-- Delete button (prominent, top-right) -->
+    <!-- Delete button (top-right action) -->
     {#if entity}
-      <button
-        type="button"
-        class="btn-ghost text-sm text-danger hover:bg-danger/10 border border-danger/30
-               hover:border-danger/50 transition-colors shrink-0"
-        onclick={() => (showDeleteConfirm = true)}
-      >
-        {ui('content_editor.edit.delete_btn', lang)}
-      </button>
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          class="btn-ghost text-sm text-danger hover:bg-danger/10 border border-danger/30
+                 hover:border-danger/50 transition-colors"
+          onclick={() => (showDeleteConfirm = true)}
+        >
+          {ui('content_editor.edit.delete_btn', lang)}
+        </button>
+      </div>
     {/if}
-  </div>
+  </header>
 
   <!-- ── ENTITY NOT FOUND ──────────────────────────────────────────────── -->
   {#if !entity}

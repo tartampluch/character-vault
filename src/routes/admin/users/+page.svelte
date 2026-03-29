@@ -327,12 +327,12 @@
 
                 <!-- Actions -->
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <div class="flex items-center justify-end gap-1">
+                  <div class="flex items-center justify-end gap-0.5">
 
                     <!-- Edit button -->
                     <button
                       type="button"
-                      class="p-1.5 rounded-md transition-colors
+                      class="p-2.5 rounded-md transition-colors
                              {self
                                ? 'text-text-muted cursor-not-allowed opacity-40'
                                : 'text-text-secondary hover:text-accent hover:bg-accent/10'}"
@@ -347,7 +347,7 @@
                     <!-- Suspend / Reinstate button — direct action, no modal -->
                     <button
                       type="button"
-                      class="p-1.5 rounded-md transition-colors
+                      class="p-2.5 rounded-md transition-colors
                              {self || actionLoading[user.id]
                                ? 'text-text-muted cursor-not-allowed opacity-40'
                                : user.is_suspended
@@ -374,7 +374,7 @@
                     <!-- Reset Password button — blanks the password, no self-restriction -->
                     <button
                       type="button"
-                      class="p-1.5 rounded-md transition-colors
+                      class="p-2.5 rounded-md transition-colors
                              {actionLoading[user.id]
                                ? 'text-text-muted opacity-40 cursor-not-allowed'
                                : resetNotice[user.id]
@@ -391,7 +391,7 @@
                     <!-- Delete button -->
                     <button
                       type="button"
-                      class="p-1.5 rounded-md transition-colors
+                      class="p-2.5 rounded-md transition-colors
                              {self
                                ? 'text-text-muted cursor-not-allowed opacity-40'
                                : 'text-text-secondary hover:text-red-400 hover:bg-red-900/20'}"

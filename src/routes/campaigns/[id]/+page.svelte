@@ -258,14 +258,14 @@
                       {#each chapter.tasks as task (task.id)}
                         <!-- Players only see completed tasks -->
                         {#if sessionContext.isGameMaster || task.isCompleted}
-                        <li class="flex items-center gap-2 text-xs">
+                        <li class="flex items-center gap-2 text-xs py-1">
                           {#if sessionContext.isGameMaster}
                             <label class="flex items-center gap-2 cursor-pointer group flex-1 min-w-0">
                               <input
                                 type="checkbox"
                                 checked={task.isCompleted}
                                 onchange={() => toggleTask(chapter.id, task.id)}
-                                class="w-3 h-3 accent-accent shrink-0"
+                                class="w-4 h-4 accent-accent shrink-0"
                                 aria-label="{task.isCompleted
                                   ? ui('campaign.task_done', engine.settings.language)
                                   : ui('campaign.task_mark_done', engine.settings.language)}: {t(task.title)}"
@@ -306,7 +306,7 @@
                       class="sr-only"
                     />
                     <span
-                      class="text-xs border rounded px-2 py-0.5 cursor-pointer flex items-center gap-1 transition-colors duration-150
+                      class="text-xs border rounded px-3 py-2 cursor-pointer flex items-center gap-1 transition-colors duration-150
                              {chapter.isCompleted
                                ? 'border-green-600/50 text-green-400 hover:bg-green-900/20'
                                : 'border-border text-accent hover:bg-accent/10'}"

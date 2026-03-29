@@ -54,6 +54,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import Modal from '$lib/components/ui/Modal.svelte';
+  import { IconBack } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // ROUTE PARAMS + AUTH GUARD
@@ -286,17 +287,14 @@
 <div class="flex flex-col gap-6 p-4 md:p-6 max-w-6xl mx-auto">
 
   <!-- PAGE TITLE -->
-  <div class="flex items-center gap-3">
-    <a href="/campaigns/{campaignId}" class="text-text-muted hover:text-text-primary transition-colors"
-       aria-label={ui('settings.back_to_campaign_aria', lang)}>
-      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </a>
-    <h1 class="text-xl font-bold text-text-primary">{ui('nav.content_editor', engine.settings.language)}</h1>
-  </div>
+  <header class="flex items-start justify-between gap-3 flex-wrap">
+    <div class="flex flex-col gap-0.5">
+      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+        <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', lang)}
+      </a>
+      <h1 class="text-2xl font-bold text-text-primary">{ui('nav.content_editor', lang)}</h1>
+    </div>
+  </header>
 
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   <!-- HOMEBREW SCOPE PANEL                                                     -->
@@ -395,7 +393,7 @@
       <input
         id="entity-search"
         type="search"
-        class="input pl-8 text-sm w-56"
+        class="input pl-8 text-sm w-full sm:w-56"
         placeholder={ui('content_editor.lib.filter_placeholder', lang)}
         bind:value={searchInput}
         autocomplete="off"
@@ -504,14 +502,14 @@
                   <div class="flex items-center justify-end gap-1.5">
                     <a
                       href="/campaigns/{campaignId}/content-editor/{encodeURIComponent(entity.id)}"
-                      class="btn-ghost text-xs py-0.5 px-2 h-auto"
+                      class="btn-ghost text-xs py-2 px-3"
                       title={ui('content_editor.lib.edit_entity_title', lang).replace('{id}', entity.id)}
                     >
                       {ui('common.edit', lang)}
                     </a>
                     <button
                       type="button"
-                      class="btn-ghost text-xs py-0.5 px-2 h-auto"
+                      class="btn-ghost text-xs py-2 px-3"
                       onclick={() => cloneEntity(entity.id)}
                       title={ui('content_editor.lib.clone_entity_title', lang).replace('{id}', entity.id)}
                     >
@@ -519,7 +517,7 @@
                     </button>
                     <button
                       type="button"
-                      class="btn-ghost text-xs py-0.5 px-2 h-auto text-danger hover:bg-danger/10"
+                      class="btn-ghost text-xs py-2 px-3 text-danger hover:bg-danger/10"
                       onclick={() => (deleteConfirmId = entity.id)}
                       title={ui('content_editor.lib.delete_entity_title2', lang).replace('{id}', entity.id)}
                     >

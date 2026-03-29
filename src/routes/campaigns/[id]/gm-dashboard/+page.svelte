@@ -170,13 +170,15 @@
 <div class="flex flex-col h-full overflow-hidden">
 
   <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
-  <header class="flex items-center gap-3 flex-wrap px-4 sm:px-6 py-3 bg-surface-alt border-b border-border shrink-0">
-    <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-      <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', engine.settings.language)}
-    </a>
-    <h1 class="flex items-center gap-2 text-lg font-bold text-text-primary flex-1">
-      <IconGMDashboard size={20} aria-hidden="true" /> {ui('gm.dashboard', engine.settings.language)}
-    </h1>
+  <header class="flex items-start justify-between gap-3 flex-wrap px-4 sm:px-6 py-3 bg-surface-alt border-b border-border shrink-0">
+    <div class="flex flex-col gap-0.5">
+      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+        <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', engine.settings.language)}
+      </a>
+      <h1 class="flex items-center gap-2 text-2xl font-bold text-text-primary">
+        <IconGMDashboard size={22} aria-hidden="true" /> {ui('gm.dashboard', engine.settings.language)}
+      </h1>
+    </div>
   </header>
 
   <!-- ── TWO-COLUMN LAYOUT ─────────────────────────────────────────────────── -->
@@ -200,7 +202,7 @@
             {@const hasOverrides  = (char.gmOverrides?.length ?? 0) > 0}
 
             <button
-              class="flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-colors duration-150
+              class="flex items-center gap-2 px-3 py-3 rounded-lg border text-left transition-colors duration-150
                      {isSelected  ? 'border-accent bg-accent/10' : 'border-border bg-surface hover:border-accent/40'}
                      {hasOverrides ? 'border-l-4 border-l-red-500' : ''}"
               onclick={() => (selectedCharId = isSelected ? null : char.id)}

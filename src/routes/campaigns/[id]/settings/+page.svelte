@@ -249,14 +249,16 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
 
   <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
-  <header class="flex items-center gap-3 flex-wrap border-b border-border pb-4">
-    <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors shrink-0">
-      <IconBack size={12} aria-hidden="true" /> {ui('settings.back_campaign', engine.settings.language)}
-    </a>
-    <h1 class="flex items-center gap-2 text-xl font-bold text-text-primary flex-1">
-      <IconSettings size={20} aria-hidden="true" /> {ui('settings.title', engine.settings.language)}
-    </h1>
-    <div class="flex items-center gap-2">
+  <header class="flex items-start justify-between gap-3 flex-wrap border-b border-border pb-4">
+    <div class="flex flex-col gap-0.5">
+      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+        <IconBack size={12} aria-hidden="true" /> {ui('settings.back_campaign', engine.settings.language)}
+      </a>
+      <h1 class="flex items-center gap-2 text-2xl font-bold text-text-primary">
+        <IconSettings size={22} aria-hidden="true" /> {ui('settings.title', engine.settings.language)}
+      </h1>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
       <button
         class="btn-primary"
         onclick={saveSettings}

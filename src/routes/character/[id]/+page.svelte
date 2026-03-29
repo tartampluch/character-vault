@@ -303,7 +303,7 @@
     <!-- Right side: save button + character ID chip -->
     <div class="flex items-start gap-2 shrink-0">
       <button
-        class="btn-primary text-xs px-3 py-1.5 gap-1 disabled:opacity-50"
+        class="btn-primary text-xs px-3 py-2.5 gap-1 disabled:opacity-50 min-h-[44px]"
         onclick={handleManualSave}
         disabled={saveStatus === 'saving'}
         aria-label={ui('character.save_aria', engine.settings.language)}

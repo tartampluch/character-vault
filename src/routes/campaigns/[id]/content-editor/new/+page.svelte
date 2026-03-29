@@ -27,6 +27,7 @@
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import { IconBack } from '$lib/components/ui/icons';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import EntityTypeSelector from '$lib/components/content-editor/EntityTypeSelector.svelte';
   import EntitySearchModal from '$lib/components/content-editor/EntitySearchModal.svelte';
@@ -123,25 +124,20 @@
 <div class="flex flex-col gap-6 p-4 md:p-6 max-w-4xl mx-auto">
 
   <!-- Back link + title -->
-  <div class="flex items-center gap-3">
-    <a href="/campaigns/{campaignId}/content-editor"
-       class="text-text-muted hover:text-text-primary transition-colors"
-       aria-label={ui('content_editor.back_to_library_aria', lang)}>
-      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </a>
-    <div>
-      <h1 class="text-xl font-bold text-text-primary">{ui('content_editor.new.title', lang)}</h1>
+  <header class="flex items-start justify-between gap-3 flex-wrap">
+    <div class="flex flex-col gap-0.5">
+      <a href="/campaigns/{campaignId}/content-editor"
+         class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+        <IconBack size={12} aria-hidden="true" /> {ui('nav.content_editor', lang)}
+      </a>
+      <h1 class="text-2xl font-bold text-text-primary">{ui('content_editor.new.title', lang)}</h1>
       {#if step !== 'type' && selectedCategory}
         <p class="text-xs text-text-muted">
           {ui('content_editor.new.category_note', lang).replace('{category}', selectedCategory)}
         </p>
       {/if}
     </div>
-  </div>
+  </header>
 
   <!-- ── STEP INDICATOR ──────────────────────────────────────────────────── -->
   {#if !cloneFrom}
