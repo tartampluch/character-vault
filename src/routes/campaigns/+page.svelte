@@ -16,6 +16,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { goto } from '$app/navigation';
   import { campaignTaskStats } from '$lib/types/campaign';
+  import type { LocalizedString } from '$lib/types/i18n';
   import { IconCampaign, IconAdd, IconClose } from '$lib/components/ui/icons';
 
   // Load campaigns from the PHP API when the hub mounts.
@@ -33,6 +34,25 @@
     newCampaignTitle = '';
     showCreateForm = false;
     await goto(`/campaigns/${campaign.id}`);
+  }
+
+  /**
+   * Resolves a LocalizedString | string field (title or description) to the
+   * active language. Handles three forms:
+   *   1. Already-decoded LocalizedString object → engine.t() directly.
+   *   2. JSON-encoded string `{"en":"…","fr":"…"}` → JSON.parse then engine.t().
+   *   3. Plain string → returned as-is.
+   */
+  function resolveLocalized(field: LocalizedString | string | undefined): string {
+    if (!field) return '';
+    if (typeof field !== 'string') return engine.t(field);
+    try {
+      const parsed = JSON.parse(field);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return engine.t(parsed as Record<string, string>);
+      }
+    } catch { /* not JSON — plain string */ }
+    return field;
   }
 
   async function openCampaign(campaignId: string) {
@@ -125,7 +145,7 @@
                  hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           onclick={() => openCampaign(campaign.id)}
-          aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', campaign.title)}
+          aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
           type="button"
         >
           <!-- Poster / placeholder -->
@@ -133,7 +153,7 @@
             {#if campaign.posterUrl}
               <img
                 src={campaign.posterUrl}
-                alt={campaign.title}
+                alt={resolveLocalized(campaign.title)}
                 class="w-full h-full object-cover"
               />
             {:else}
@@ -162,10 +182,10 @@
 
           <!-- Card body -->
           <div class="flex flex-col gap-2 p-4 flex-1">
-            <h2 class="text-base font-semibold text-text-primary leading-tight">{campaign.title}</h2>
+            <h2 class="text-base font-semibold text-text-primary leading-tight">{resolveLocalized(campaign.title)}</h2>
 
             {#if campaign.description}
-              <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{campaign.description}</p>
+              <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{resolveLocalized(campaign.description)}</p>
             {/if}
 
             <!-- Chapter / task progress -->

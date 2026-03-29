@@ -394,9 +394,13 @@ $db->prepare('
         (?, ?, ?, ?, ?, ?, ?, ?)
 ')->execute([
     $campaignId,
-    'The Shattered Throne',
-    // Stored as a JSON-encoded LocalizedString so the frontend can translate it.
-    // The campaign page parses this with a safe helper and falls back to plain text.
+    // Title stored as a JSON-encoded LocalizedString so the frontend resolves
+    // the active language via engine.t() and the settings page can add translations.
+    json_encode([
+        'en' => 'The Shattered Throne',
+        'fr' => 'Le Trône Brisé',
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    // Description stored as a JSON-encoded LocalizedString (same convention).
     json_encode([
         'en' => 'When the Crown of Binding is stolen from the Vault of Ages, a group of unlikely heroes must pursue its thief through labyrinthine city streets, haunted ruins, flooded ancient cities, and a storm-wracked lich fortress—before an unkillable evil reclaims its seat of power. A complete 1-shot adventure for four 7th-level characters.',
         'fr' => 'Lorsque la Couronne du Lien est dérobée de la Chambre des Âges, un groupe de héros improbables doit pourchasser le voleur à travers les rues labyrinthiques d\'une ville, des ruines hantées, des cités antiques inondées et une forteresse de liche balayée par les tempêtes — avant qu\'un mal indestructible ne reprenne son trône. Une aventure complète en une session pour quatre personnages de niveau 7.',

@@ -142,16 +142,19 @@ export interface Campaign {
 
   /**
    * The campaign's display name.
-   * Example: "Reign of Winter", "Curse of Strahd", "Homebrew: The Darklands"
-   * NOT localised — campaigns are always named in one language by the GM.
+   * May be a plain string (legacy / just-created campaigns) or a
+   * `LocalizedString` (`{ en: "…", fr: "…" }`) edited via the Campaign
+   * Info panel in settings.  Always resolved through `engine.t()` for display.
    */
-  title: string;
+  title: LocalizedString | string;
 
   /**
    * A short description of the campaign, shown on the Campaign Hub card.
-   * Can be multi-line markdown text.
+   * Can be a plain string or a `LocalizedString` (`{ en: "...", fr: "..." }`).
+   * The API stores this as a JSON-encoded string; components must resolve it
+   * via `engine.t()` after parsing.
    */
-  description: string;
+  description: LocalizedString | string;
 
   /**
    * URL to the campaign's poster/thumbnail image.

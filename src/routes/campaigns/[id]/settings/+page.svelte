@@ -6,12 +6,13 @@
 
   LAYOUT:
     Sticky page header (back link, title, GM badge, Save button).
-    Panel 1: Rule Sources     (RuleSourcesPanel)
-    Panel 2+3: Dice + Stats   (CharacterCreationPanel)
-    Panel 4: Variant Rules    (VariantRulesPanel)
-    Panel 5: Chapters         (ChaptersPanel)
-    Panel 6: GM Overrides     (GmOverridesPanel)
-    Panel 7: Members          (MembershipPanel)
+    Panel 0: Campaign Info    (CampaignInfoPanel)   ← title + description (localised)
+    Panel 1: Chapters         (ChaptersPanel)
+    Panel 2: Members          (MembershipPanel)
+    Panel 3: Rule Sources     (RuleSourcesPanel)
+    Panel 4+5: Dice + Stats   (CharacterCreationPanel)
+    Panel 6: Variant Rules    (VariantRulesPanel)
+    Panel 7: GM Overrides     (GmOverridesPanel)
 -->
 
 <script lang="ts">
@@ -25,6 +26,7 @@
   import { IconSettings, IconBack, IconSuccess } from '$lib/components/ui/icons';
   import { ui } from '$lib/i18n/ui-strings';
 
+  import CampaignInfoPanel     from '$lib/components/settings/CampaignInfoPanel.svelte';
   import RuleSourcesPanel      from '$lib/components/settings/RuleSourcesPanel.svelte';
   import CharacterCreationPanel from '$lib/components/settings/CharacterCreationPanel.svelte';
   import VariantRulesPanel     from '$lib/components/settings/VariantRulesPanel.svelte';
@@ -53,6 +55,39 @@
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
+
+  // ── Campaign Info (title & description) ──────────────────────────────────
+  /**
+   * Normalises a LocalizedString | string value to a plain Record<string,string>
+   * suitable for LocalizedStringEditor:
+   *   - LocalizedString object   → used as-is
+   *   - JSON-encoded string      → JSON.parsed
+   *   - Plain string             → wrapped as { en: value }
+   *   - Empty / missing          → { en: '' }
+   */
+  function toLocalizedRecord(field: Record<string, string> | string | undefined): Record<string, string> {
+    if (!field) return { en: '' };
+    if (typeof field !== 'string') return { ...field };
+    try {
+      const parsed = JSON.parse(field);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return parsed as Record<string, string>;
+      }
+    } catch { /* not JSON */ }
+    return { en: field };
+  }
+
+  let editableTitle       = $state<Record<string, string>>({ en: '' });
+  let editableDescription = $state<Record<string, string>>({ en: '' });
+  let infoInitialised     = false;
+
+  $effect(() => {
+    const c = campaign;
+    if (!c || infoInitialised) return;
+    editableTitle       = toLocalizedRecord(c.title as Record<string, string> | string);
+    editableDescription = toLocalizedRecord(c.description as Record<string, string> | string);
+    infoInitialised = true;
+  });
 
   // ── Enabled rule sources ──────────────────────────────────────────────────
   let enabledSources     = $state<string[]>([]);
@@ -175,6 +210,8 @@
         headers: apiHeaders(),
         credentials: 'include',
         body: JSON.stringify({
+          title:       editableTitle,
+          description: editableDescription,
           enabledRuleSources: enabledSources,
           gmGlobalOverrides: gmOverridesText,
           chapters: chaptersPayload,
@@ -185,6 +222,8 @@
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       campaignStore.updateCampaign(campaignId, {
+        title:       { ...editableTitle },
+        description: { ...editableDescription },
         enabledRuleSources: [...enabledSources],
         gmGlobalOverrides: gmOverridesText,
         chapters: chaptersPayload,
@@ -236,6 +275,12 @@
     </div>
   {/if}
 
+  <CampaignInfoPanel bind:editableTitle bind:editableDescription />
+
+  <ChaptersPanel bind:editableChapters bind:chaptersAreDirty />
+
+  <MembershipPanel {campaignId} />
+
   <RuleSourcesPanel bind:enabledSources />
 
   <CharacterCreationPanel
@@ -249,10 +294,6 @@
 
   <VariantRulesPanel bind:variantGestalt bind:variantVWP />
 
-  <ChaptersPanel bind:editableChapters bind:chaptersAreDirty />
-
   <GmOverridesPanel bind:gmOverridesText bind:isValidJson />
-
-  <MembershipPanel {campaignId} />
 
 </div>

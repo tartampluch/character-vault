@@ -94,8 +94,17 @@ class CampaignController
         $id    = 'camp_' . bin2hex(random_bytes(8));
         $now   = time();
 
-        $title       = $body['title']       ?? 'New Campaign';
-        $description = $body['description'] ?? '';
+        // Accept a plain string or a LocalizedString array for title/description.
+        // Always store as a JSON-encoded LocalizedString so the frontend can resolve
+        // translations via engine.t() after parsing.
+        $rawTitle       = $body['title']       ?? 'New Campaign';
+        $rawDescription = $body['description'] ?? '';
+        $title       = is_array($rawTitle)
+            ? json_encode($rawTitle, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            : json_encode(['en' => (string)$rawTitle], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $description = is_array($rawDescription)
+            ? json_encode($rawDescription, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            : ($rawDescription !== '' ? json_encode(['en' => (string)$rawDescription], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '');
         $posterUrl   = $body['posterUrl']   ?? null;
         $bannerUrl   = $body['bannerUrl']   ?? null;
 
@@ -227,11 +236,17 @@ class CampaignController
 
         if (isset($body['title'])) {
             $fields[] = 'title = ?';
-            $params[] = $body['title'];
+            // Accept either a plain string or a LocalizedString object (array).
+            // Objects are JSON-encoded so they can be stored and parsed back later.
+            $params[] = is_array($body['title'])
+                ? json_encode($body['title'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                : $body['title'];
         }
         if (isset($body['description'])) {
             $fields[] = 'description = ?';
-            $params[] = $body['description'];
+            $params[] = is_array($body['description'])
+                ? json_encode($body['description'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                : $body['description'];
         }
         if (isset($body['chapters'])) {
             $fields[] = 'chapters_json = ?';

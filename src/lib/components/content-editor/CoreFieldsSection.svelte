@@ -267,7 +267,6 @@
       {lang}
       placeholder={ui('editor.core.desc_en_placeholder', lang)}
       extraPlaceholder={ui('editor.lang.desc_translation_placeholder', lang)}
-      showPreview={true}
     />
   </fieldset>
 

@@ -350,7 +350,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'campaign.not_found_desc':      "The campaign with this ID doesn't exist.",
   'campaign.back_to_hub':         'Back to Campaign Hub',
   'campaign.character_vault':     'Character Vault',
-  'campaign.chapters_title':      'Chapters & Acts',
+  'campaign.chapters_title':      'Chapters',
   'campaign.chapters_empty_gm':   'No chapters yet. Add chapters in Campaign Settings.',
   'campaign.chapters_empty_player': 'No chapters have been added to this campaign yet.',
   'campaign.completed':           'Completed',
@@ -1172,6 +1172,17 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'settings.title':               'Campaign Settings',
 
   // ==========================================================================
+  // CAMPAIGN SETTINGS — CAMPAIGN INFO (title & description)
+  // ==========================================================================
+  'settings.info.title':                        'Campaign Info',
+  'settings.info.desc':                         'Edit the campaign title and description. Add translations so players can read in their own language.',
+  'settings.info.field_title':                  'Campaign Title',
+  'settings.info.field_title_placeholder':      'e.g. Curse of Strahd',
+  'settings.info.field_description':            'Description',
+  'settings.info.field_description_placeholder': 'A short introduction to the campaign, shown on the Campaign Hub card.',
+  'settings.info.field_description_extra_placeholder': 'Campaign description in this language',
+
+  // ==========================================================================
   // CAMPAIGN SETTINGS — RULE SOURCES
   // ==========================================================================
   'settings.rule_sources.title':  'Rule Sources',
@@ -1277,11 +1288,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CAMPAIGN SETTINGS — CHAPTERS & ACTS
   // ==========================================================================
-  'settings.chapters.title':        'Chapters & Acts',
+  'settings.chapters.title':        'Chapters',
   'settings.chapters.desc':         "Manage the campaign's narrative chapters and acts, visible to all players. Changes are saved with the rest of the settings.",
   'settings.chapters.add':          'Add Chapter',
   'settings.chapters.empty':        'No chapters yet. Click "Add Chapter" below to create the first one.',
-  'settings.chapters.title_label':  'Title',
+  'settings.chapters.title_label':  'Chapter',
   'settings.chapters.desc_label':   'Description (optional)',
   'settings.chapters.remove':       'Remove',
   'settings.chapters.title_placeholder': 'e.g. Act I: The Beginning',

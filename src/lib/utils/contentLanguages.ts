@@ -214,7 +214,7 @@ export function getContentLangDisplayName(code: string): string {
  * a flag icon/emoji in the language selector.
  *
  * RESOLUTION ORDER (first match wins):
- *   1. 'en' → 'gb' (UK flag is the conventional English-language flag)
+  *   1. 'en' → 'us' (US flag — en without region defaults to American English)
  *   2. Regional variant extraction — for 'xx-yy', the region part IS the country code
  *      (e.g. 'en-gb' → 'gb', 'fr-be' → 'be', 'pt-br' → 'br')
  *   3. DataLoader external locales — from `/api/locales` server files ($meta.countryCode)
@@ -230,7 +230,7 @@ export function getContentLangDisplayName(code: string): string {
  * @returns ISO 3166-1 alpha-2 country code string (e.g. 'fr', 'gb', 'br').
  */
 export function getContentLangCountryCode(code: string): string {
-  if (code === 'en') return 'gb';
+  if (code === 'en') return 'us';
 
   // For regional variants (e.g. 'en-gb', 'fr-be'), extract the region tag.
   // The region tag IS the ISO 3166-1 country code — no further lookup needed.

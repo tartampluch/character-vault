@@ -156,8 +156,10 @@ class CampaignStore {
   createCampaign(title: string, ownerId: ID): Campaign {
     const newCampaign: Campaign = {
       id: `campaign_${Date.now()}`,
-      title,
-      description: '',
+      // Wrap the plain string as a LocalizedString so LocalizedStringEditor
+      // can edit it immediately if the GM opens settings after creation.
+      title: { en: title },
+      description: { en: '' },
       posterUrl: undefined,
       bannerUrl: undefined,
       ownerId,

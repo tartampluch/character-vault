@@ -71,11 +71,6 @@
     extraPlaceholder?: string;
     /** Additional CSS class applied to every <input> or <textarea> element. */
     inputClass?: string;
-    /**
-     * When true (only meaningful for textarea mode), show a Preview / Edit toggle
-     * per language. The preview renders the raw text in a read-only div.
-     */
-    showPreview?: boolean;
   }
 
   let {
@@ -88,7 +83,6 @@
     placeholder    = '',
     extraPlaceholder = '',
     inputClass     = '',
-    showPreview    = false,
   }: Props = $props();
 
   // ===========================================================================
@@ -122,24 +116,6 @@
     const all         = [...new Set([...fromEngine, ...fromPremade])];
     return all.filter(code => code !== 'en' && !active.has(code));
   });
-
-  // ===========================================================================
-  // PREVIEW STATE (textarea mode)
-  // ===========================================================================
-
-  /**
-   * Per-language preview toggle state.
-   * Key: language code, Value: true = showing preview, false = showing textarea.
-   */
-  let previewStates = $state<Record<string, boolean>>({});
-
-  function isPreviewActive(code: string): boolean {
-    return previewStates[code] ?? false;
-  }
-
-  function togglePreview(code: string): void {
-    previewStates = { ...previewStates, [code]: !isPreviewActive(code) };
-  }
 
   // ===========================================================================
   // ADD LANGUAGE STATE
@@ -251,7 +227,7 @@
     {@const countryCode  = getContentLangCountryCode(code)}
     {@const isMandatory  = code === 'en'}
     {@const currentValue = value[code] ?? ''}
-    {@const inPreview    = showPreview && mode === 'textarea' && isPreviewActive(code)}
+
 
     <div class="flex flex-col gap-1">
 
@@ -274,17 +250,6 @@
         </span>
 
         <div class="flex items-center gap-2 shrink-0">
-          <!-- Preview / Edit toggle (textarea mode only) -->
-          {#if showPreview && mode === 'textarea'}
-            <button
-              type="button"
-              class="text-[10px] text-text-muted underline hover:text-text-primary"
-              onclick={() => togglePreview(code)}
-            >
-              {inPreview ? ui('editor.core.edit_btn', lang) : ui('editor.core.preview_btn', lang)}
-            </button>
-          {/if}
-
           <!-- Remove button (non-mandatory languages only) -->
           {#if !isMandatory}
             <button
@@ -314,16 +279,6 @@
           placeholder={isMandatory ? placeholder : (extraPlaceholder || placeholder)}
           oninput={(e) => setTranslation(code, (e.currentTarget as HTMLInputElement).value)}
         />
-
-      {:else if inPreview}
-        <!-- Preview mode: read-only div showing raw text -->
-        <div
-          class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
-                 overflow-auto bg-surface-alt {inputClass}"
-          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', displayName)}
-        >
-          {currentValue || ui('editor.lang.no_description', lang)}
-        </div>
 
       {:else}
         <!-- Edit mode: resizable textarea -->

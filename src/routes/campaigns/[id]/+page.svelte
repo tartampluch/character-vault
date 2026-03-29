@@ -16,6 +16,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { apiHeaders } from '$lib/engine/StorageManager';
   import { campaignTaskStats } from '$lib/types/campaign';
+  import type { LocalizedString } from '$lib/types/i18n';
   import { ui } from '$lib/i18n/ui-strings';
   import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
 
@@ -78,19 +79,22 @@
   }
 
   /**
-   * Resolves the campaign description, which may be a plain string or a
-   * JSON-encoded LocalizedString `{"en":"...", "fr":"..."}`.
-   * Falls back gracefully to the raw string if JSON parsing fails.
+   * Resolves a LocalizedString | string field (title or description) to the
+   * active language. Handles three forms:
+   *   1. Already-decoded LocalizedString object → engine.t() directly.
+   *   2. JSON-encoded string `{"en":"…","fr":"…"}` → JSON.parse then engine.t().
+   *   3. Plain string → returned as-is.
    */
-  function resolveDescription(desc: string): string {
-    if (!desc) return '';
+  function resolveLocalized(field: LocalizedString | string | undefined): string {
+    if (!field) return '';
+    if (typeof field !== 'string') return engine.t(field);
     try {
-      const parsed = JSON.parse(desc);
+      const parsed = JSON.parse(field);
       if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
         return engine.t(parsed as Record<string, string>);
       }
     } catch { /* not JSON — plain string */ }
-    return desc;
+    return field;
   }
 </script>
 
@@ -113,7 +117,7 @@
       {#if campaign.bannerUrl}
         <img
           src={campaign.bannerUrl}
-          alt={ui('campaign.banner_alt', engine.settings.language).replace('{title}', campaign.title)}
+          alt={ui('campaign.banner_alt', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
           class="w-full h-full object-cover"
         />
       {:else}
@@ -144,7 +148,7 @@
         >
           <IconBack size={12} aria-hidden="true" /> {ui('nav.campaigns', engine.settings.language)}
         </a>
-        <h1 class="text-2xl font-bold text-white text-shadow-sm">{campaign.title}</h1>
+        <h1 class="text-2xl font-bold text-white text-shadow-sm">{resolveLocalized(campaign.title)}</h1>
       </div>
     </div>
 
@@ -168,7 +172,7 @@
 
       <!-- Description (may be a plain string or JSON-encoded LocalizedString) -->
       {#if campaign.description}
-        <p class="text-text-secondary text-sm leading-relaxed">{resolveDescription(campaign.description)}</p>
+        <p class="text-text-secondary text-sm leading-relaxed">{resolveLocalized(campaign.description)}</p>
       {/if}
 
       <!-- ── CHAPTERS ────────────────────────────────────────────────────── -->
