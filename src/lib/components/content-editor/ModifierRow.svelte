@@ -44,7 +44,7 @@
 
   function defaultSourceName(): string {
     const lbl = ctx.feature.label as Record<string, string>;
-    return lbl?.['en'] || ctx.feature.id || 'Feature';
+    return lbl?.['en'] || ctx.feature.id || ui('editor.modifier.fallback_feature', lang);
   }
 
   function patch(p: Partial<Modifier>): void {
@@ -77,9 +77,9 @@
 
   function conditionSummary(node: LogicNode | undefined): string {
     if (!node) return '';
-    if (node.logic === 'AND') return `AND (${node.nodes.length} conditions)`;
-    if (node.logic === 'OR')  return `OR (${node.nodes.length} conditions)`;
-    if (node.logic === 'NOT') return 'NOT (…)';
+    if (node.logic === 'AND') return ui('editor.modifier.condition_and_summary', lang).replace('{n}', String(node.nodes.length));
+    if (node.logic === 'OR')  return ui('editor.modifier.condition_or_summary', lang).replace('{n}', String(node.nodes.length));
+    if (node.logic === 'NOT') return ui('editor.modifier.condition_not_summary', lang);
     return `${node.targetPath} ${node.operator} ${JSON.stringify(node.value)}`;
   }
 

@@ -231,7 +231,7 @@
               ? ui('editor.feature_picker.feature_count_match', lang).replace('{n}', String(filteredFeatures.length)).replace('{s}', filteredFeatures.length === 1 ? '' : 's')
               : ui('editor.feature_picker.feature_count_available', lang).replace('{n}', String(filteredFeatures.length)).replace('{s}', filteredFeatures.length === 1 ? '' : 's')}
             {#if multiple && selectedIds.size > 0}
-              — <span class="text-accent font-medium">{selectedIds.size} selected</span>
+              — <span class="text-accent font-medium">{ui('editor.tag_picker.selected_suffix', lang).replace('{n}', String(selectedIds.size)).replace('{s}', selectedIds.size === 1 ? '' : 's')}</span>
             {/if}
           {/if}
         </p>
@@ -343,7 +343,7 @@
                     <span class="badge font-mono text-[9px]">{tag}</span>
                   {/each}
                   {#if previewFeature.tags.length > 5}
-                    <span class="text-[9px] text-text-muted">+{previewFeature.tags.length - 5} more</span>
+                    <span class="text-[9px] text-text-muted">{ui('editor.choices.sample_more', lang).replace('{n}', String(previewFeature.tags.length - 5))}</span>
                   {/if}
                 </div>
               {/if}

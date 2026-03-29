@@ -312,7 +312,7 @@
                     <span class="badge font-mono text-[9px]">{tag}</span>
                   {/each}
                   {#if f.tags.length > 8}
-                    <span class="text-[9px] text-text-muted">+{f.tags.length - 8} more</span>
+                    <span class="text-[9px] text-text-muted">{ui('editor.choices.sample_more', lang).replace('{n}', String(f.tags.length - 8))}</span>
                   {/if}
                 </div>
               {/if}

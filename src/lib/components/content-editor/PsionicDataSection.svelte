@@ -258,7 +258,7 @@
                 <textarea id={fid(`aug-en-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"
                           value={(aug.effectDescription as Record<string,string>)?.['en'] ?? ''}
-                          placeholder="e.g. For every 2 additional PP, damage increases by 1d10."
+                           placeholder={ui('content_editor.psi.effect_desc_en_placeholder', lang)}
                           oninput={(e) => setAugDesc(i, 'en', (e.currentTarget as HTMLTextAreaElement).value)}
                 ></textarea>
               </div>
@@ -270,7 +270,7 @@
                 <textarea id={fid(`aug-fr-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"
                           value={(aug.effectDescription as Record<string,string>)?.['fr'] ?? ''}
-                          placeholder="ex. Pour chaque 2 PP supplémentaires, les dégâts augmentent de 1d10."
+                           placeholder={ui('content_editor.psi.effect_desc_fr_placeholder', lang)}
                           oninput={(e) => setAugDesc(i, 'fr', (e.currentTarget as HTMLTextAreaElement).value)}
                 ></textarea>
               </div>

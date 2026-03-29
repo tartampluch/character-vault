@@ -2906,6 +2906,90 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   /** aria-label for the ✕ close button inside the modal header. */
   'modal.close_dialog_aria':      'Close dialog',
 
+  // ==========================================================================
+  // CONTENT EDITOR — ACTIVATION EDITOR reaction suggestions (datalist)
+  // ==========================================================================
+  'editor.activation.suggestion_targeted_by_attack':    'When targeted by an attack',
+  'editor.activation.suggestion_ally_hit':              'When an ally within 30 ft. is hit',
+  'editor.activation.suggestion_spell_cast':            'When a spell is cast within range',
+  'editor.activation.suggestion_below_half_hp':         'When reduced below half HP',
+  'editor.activation.suggestion_threatened_square':     'When entering a threatened square',
+  'editor.activation.suggestion_damage_to_zero':        'When damage would reduce HP to 0',
+
+  // ==========================================================================
+  // CONTENT EDITOR — LIBRARY PAGE LOAD ORDER TOOLTIP
+  // ==========================================================================
+  'content_editor.lib.load_order_tooltip': 'Files are loaded alphabetically — prefix with a number like `50_` to control priority. Example: "50_my_setting.json" loads after all SRD files (00_*) but before any 90_* overrides.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — MODIFIER ROW condition summary labels
+  // Used in conditionSummary() to build a compact human-readable description
+  // of the top-level logic node shown next to the Condition field.
+  // ==========================================================================
+  /** Compact AND group summary shown in ModifierRow condition field. {n} = child count. */
+  'editor.modifier.condition_and_summary': 'AND ({n} conditions)',
+  /** Compact OR group summary shown in ModifierRow condition field. {n} = child count. */
+  'editor.modifier.condition_or_summary':  'OR ({n} conditions)',
+  /** Compact NOT group summary shown in ModifierRow condition field. */
+  'editor.modifier.condition_not_summary': 'NOT (…)',
+  /** Fallback source-name label when a feature has no English label. */
+  'editor.modifier.fallback_feature':      'Feature',
+
+  // ==========================================================================
+  // CONTENT EDITOR — TAG PICKER group tag count
+  // ==========================================================================
+  /** Count of tags in a grouped prefix section in TagPickerModal. {n} = count. */
+  'editor.tag_picker.group_tag_count': { one: '{n} tag', other: '{n} tags' },
+
+  // ==========================================================================
+  // CONTENT EDITOR — INTELLIGENT ITEM EDITOR sense range options
+  // ==========================================================================
+  /** Label for a vision/darkvision dropdown option. {n} = range value. */
+  'editor.intelligent.sense_ft_option': '{n} ft.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ARCANE SCHOOL NAMES
+  // Localised display names for the ARCANE_SCHOOLS identifier list.
+  // Adding a new language requires adding editor.school.* keys to its locale JSON.
+  // ==========================================================================
+  'editor.school.abjuration':    'Abjuration',
+  'editor.school.conjuration':   'Conjuration',
+  'editor.school.divination':    'Divination',
+  'editor.school.enchantment':   'Enchantment',
+  'editor.school.evocation':     'Evocation',
+  'editor.school.illusion':      'Illusion',
+  'editor.school.necromancy':    'Necromancy',
+  'editor.school.transmutation': 'Transmutation',
+  'editor.school.universal':     'Universal',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CHOICES EDITOR label + query placeholders
+  // ==========================================================================
+  /** Placeholder for the EN label input in the choice row. */
+  'editor.choices.label_en_placeholder': 'e.g. Choose a weapon type',
+  /** Placeholder for the FR label input in the choice row. */
+  'editor.choices.label_fr_placeholder': "ex. Choisissez un type d'arme",
+  /** First part of the inline example shown when a prefix is set. */
+  'editor.choices.prefix_example_selects': 'Example: player selects',
+  /** Arrow separator between example entity and emitted tag. */
+  'editor.choices.prefix_example_tag':     '→ tag',
+
+  // ==========================================================================
+  // CONTENT EDITOR — PSIONIC DATA SECTION effect description placeholders
+  // ==========================================================================
+  /** Placeholder for the EN augmentation effect description textarea. */
+  'content_editor.psi.effect_desc_en_placeholder': 'e.g. For every 2 additional PP, damage increases by 1d10.',
+  /** Placeholder for the FR augmentation effect description textarea. */
+  'content_editor.psi.effect_desc_fr_placeholder': 'ex. Pour chaque 2 PP supplémentaires, les dégâts augmentent de 1d10.',
+
+  // ==========================================================================
+  // LEVELING JOURNAL — first-level SP multiplier abbreviation
+  // Appended to the SP formula when the first-level bonus is active.
+  // "L1" = "Level 1" (EN); "N1" = "Niveau 1" (FR).
+  // ==========================================================================
+  /** Compact "(×4 at level 1)" note appended to the SP formula. */
+  'journal.sp_first_level_abbr': '(×4 L1)',
+
   // English names itself here because it is the only language that has NO
   // separate locale file: it is the hardcoded baseline and is intentionally
   // excluded from the /api/locales response.

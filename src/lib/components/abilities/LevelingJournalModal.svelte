@@ -82,7 +82,7 @@
     // entry.totalSp already reflects the D&D min-1-per-level rule (max(1, spPerLevel + intMod) × classLevel),
     // computed by the engine. We read the result directly rather than recomputing it here.
     if (entry.firstLevelBonus > 0) {
-      return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} + ${entry.firstLevelBonus} (×4 L1) = ${entry.totalSp}`;
+      return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} + ${entry.firstLevelBonus} ${ui('journal.sp_first_level_abbr', lang)} = ${entry.totalSp}`;
     }
     return `(${entry.spPerLevel} ${intStr}) × ${entry.classLevel} = ${entry.totalSp}`;
   }

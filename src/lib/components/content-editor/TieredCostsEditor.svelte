@@ -7,7 +7,7 @@
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
   import type { ActivationTier } from '$lib/types/feature';
   import type { Modifier } from '$lib/types/pipeline';
   import FormulaBuilderInput from './FormulaBuilderInput.svelte';
@@ -179,7 +179,7 @@
       <div class="flex items-center gap-2">
         {#if tier.grantedModifiers.length > 0}
           <span class="badge text-[10px]">
-            {tier.grantedModifiers.length} modifier{tier.grantedModifiers.length === 1 ? '' : 's'}
+            {uiN('content_editor.psi.modifier_count', tier.grantedModifiers.length, lang)}
           </span>
         {:else}
           <span class="text-[10px] text-text-muted italic">{ui('editor.tiered_costs.no_modifiers', lang)}</span>

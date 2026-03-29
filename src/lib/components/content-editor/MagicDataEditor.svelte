@@ -102,7 +102,7 @@
                   onchange={(e) => { (ctx.feature as MagicFeature).school = (e.currentTarget as HTMLSelectElement).value; }}>
             <option value="">{ui('editor.magic.select_school', lang)}</option>
             {#each ARCANE_SCHOOLS as s (s)}
-              <option value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+              <option value={s}>{ui(`editor.school.${s}`, lang)}</option>
             {/each}
           </select>
         {:else}

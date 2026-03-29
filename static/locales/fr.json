@@ -2049,5 +2049,43 @@
   "content_editor.lib.download_all_title":   "Télécharger toutes les entités en fichier JSON",
   "content_editor.lib.edit_entity_title":    "Modifier {id}",
   "content_editor.lib.clone_entity_title":   "Dupliquer {id}",
-  "content_editor.lib.delete_entity_title2": "Supprimer {id}"
+  "content_editor.lib.delete_entity_title2": "Supprimer {id}",
+
+  "editor.activation.suggestion_targeted_by_attack":    "Lorsque ciblé par une attaque",
+  "editor.activation.suggestion_ally_hit":              "Lorsqu'un allié à 9 m ou moins est touché",
+  "editor.activation.suggestion_spell_cast":            "Lorsqu'un sort est lancé à portée",
+  "editor.activation.suggestion_below_half_hp":         "Lorsque réduit à moins de la moitié des PV",
+  "editor.activation.suggestion_threatened_square":     "Lorsqu'on entre dans une case menacée",
+  "editor.activation.suggestion_damage_to_zero":        "Lorsque des dégâts réduiraient les PV à 0",
+
+  "content_editor.lib.load_order_tooltip": "Les fichiers sont chargés par ordre alphabétique — préfixez avec un nombre comme `50_` pour contrôler la priorité. Exemple : « 50_mon_cadre.json » se charge après tous les fichiers SRD (00_*) mais avant les surcharges 90_*.",
+
+  "editor.modifier.condition_and_summary": "ET ({n} conditions)",
+  "editor.modifier.condition_or_summary":  "OU ({n} conditions)",
+  "editor.modifier.condition_not_summary": "NON (…)",
+  "editor.modifier.fallback_feature":      "Capacité",
+
+  "editor.tag_picker.group_tag_count": { "one": "{n} tag", "other": "{n} tags" },
+
+  "editor.intelligent.sense_ft_option": "{n} pi.",
+
+  "editor.school.abjuration":    "Abjuration",
+  "editor.school.conjuration":   "Invocation",
+  "editor.school.divination":    "Divination",
+  "editor.school.enchantment":   "Enchantement",
+  "editor.school.evocation":     "Évocation",
+  "editor.school.illusion":      "Illusion",
+  "editor.school.necromancy":    "Nécromancie",
+  "editor.school.transmutation": "Transmutation",
+  "editor.school.universal":     "Universel",
+
+  "editor.choices.label_en_placeholder": "e.g. Choose a weapon type",
+  "editor.choices.label_fr_placeholder": "ex. Choisissez un type d'arme",
+  "editor.choices.prefix_example_selects": "Exemple : le joueur sélectionne",
+  "editor.choices.prefix_example_tag":     "→ tag",
+
+  "content_editor.psi.effect_desc_en_placeholder": "e.g. For every 2 additional PP, damage increases by 1d10.",
+  "content_editor.psi.effect_desc_fr_placeholder": "ex. Pour chaque 2 PP supplémentaires, les dégâts augmentent de 1d10.",
+
+  "journal.sp_first_level_abbr": "(×4 N1)"
 }

@@ -320,7 +320,7 @@
         <div
           class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
                  overflow-auto bg-surface-alt"
-          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', 'Français')}
+          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', ui('editor.core.lang_fr_label', lang))}
         >
           {locGet(ctx.feature.description as Record<string,string>, 'fr') || ui('editor.core.no_description_fr', lang)}
         </div>

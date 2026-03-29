@@ -8,7 +8,7 @@
   import Modal from '$lib/components/ui/Modal.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
-  import { ui } from '$lib/i18n/ui-strings';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
   import { IconClose } from '$lib/components/ui/icons';
 
   interface Props {
@@ -183,8 +183,8 @@
                   <span class="flex items-center gap-2">
                     <code class="font-mono">{group.prefix}_*</code>
                     <span class="text-[10px] font-normal text-text-muted">
-                      {group.entries.filter(matchesSearch).length} tag{group.entries.filter(matchesSearch).length === 1 ? '' : 's'}
-                    </span>
+                       {uiN('editor.tag_picker.group_tag_count', group.entries.filter(matchesSearch).length, lang)}
+                     </span>
                     {#if group.entries.some(e => selectedTags.has(e.tag))}
                       <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent"
                             title={ui('editor.tag_picker.some_selected_title', lang)}

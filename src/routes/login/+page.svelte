@@ -106,7 +106,7 @@
 </script>
 
 <svelte:head>
-  <title>Sign In — Character Vault</title>
+  <title>{ui('login.sign_in', lang)} — {ui('app.title', lang)}</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center px-4 bg-background">
@@ -115,7 +115,7 @@
 
     <!-- Header -->
     <div class="text-center">
-      <h1 class="text-2xl font-bold text-text-primary mb-1">Character Vault</h1>
+      <h1 class="text-2xl font-bold text-text-primary mb-1">{ui('app.title', lang)}</h1>
       <p class="text-sm text-text-muted">{ui('login.title', lang)}</p>
     </div>
 

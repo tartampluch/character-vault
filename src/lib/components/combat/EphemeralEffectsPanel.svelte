@@ -293,7 +293,7 @@
                 setTimeout(() => cancelExpire(effect.instanceId), 200);
               }}
               title={ui('effects.panel.expire_tooltip', engine.settings.language)}
-              aria-label="{isPendingExpire ? 'Confirm expire' : 'Expire'} {effect.feature ? engine.t(effect.feature.label) : effect.featureId}"
+              aria-label="{isPendingExpire ? ui('effects.panel.confirm_expire', engine.settings.language) : ui('effects.panel.expire', engine.settings.language)} {effect.feature ? engine.t(effect.feature.label) : effect.featureId}"
               aria-pressed={isPendingExpire}
               type="button"
             >

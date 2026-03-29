@@ -80,9 +80,7 @@
   // SCOPE PANEL
   // ===========================================================================
 
-  const LOAD_ORDER_TOOLTIP =
-    'Files are loaded alphabetically — prefix with a number like `50_` to control priority. ' +
-    'Example: "50_my_setting.json" loads after all SRD files (00_*) but before any 90_* overrides.';
+  const LOAD_ORDER_TOOLTIP = $derived(ui('content_editor.lib.load_order_tooltip', lang));
 
   // ===========================================================================
   // CATEGORY BADGE HELPER
@@ -197,7 +195,7 @@
       showImportModal = false;
       importText = '';
     } catch (err) {
-      importError = err instanceof Error ? err.message : 'Invalid JSON';
+      importError = err instanceof Error ? err.message : ui('gm.invalid_json', lang);
     }
   }
 

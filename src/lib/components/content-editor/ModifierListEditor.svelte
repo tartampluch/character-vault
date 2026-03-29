@@ -21,7 +21,7 @@
 
   function defaultSourceName(): string {
     const lbl = ctx.feature.label as Record<string, string>;
-    return lbl?.['en'] || ctx.feature.id || 'Feature';
+    return lbl?.['en'] || ctx.feature.id || ui('editor.modifier.fallback_feature', lang);
   }
 
   function makeBlankModifier(): Modifier {

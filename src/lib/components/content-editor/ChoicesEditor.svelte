@@ -226,7 +226,7 @@
               type="text"
               class="input text-sm"
               value={(choice.label as Record<string,string>)?.['en'] ?? ''}
-              placeholder="e.g. Choose a weapon type"
+              placeholder={ui('editor.choices.label_en_placeholder', lang)}
               oninput={(e) => setChoiceLabel(i, 'en', (e.currentTarget as HTMLInputElement).value)}
             />
           </div>
@@ -244,7 +244,7 @@
               type="text"
               class="input text-sm"
               value={(choice.label as Record<string,string>)?.['fr'] ?? ''}
-              placeholder="ex. Choisissez un type d'arme"
+              placeholder={ui('editor.choices.label_fr_placeholder', lang)}
               oninput={(e) => setChoiceLabel(i, 'fr', (e.currentTarget as HTMLInputElement).value)}
             />
           </div>
@@ -346,8 +346,8 @@
               </p>
               {#if choice.choiceGrantedTagPrefix}
                 <p class="text-accent/80">
-                  Example: player selects <code class="font-mono">item_longbow</code>
-                  → tag <code class="font-mono">{choice.choiceGrantedTagPrefix}item_longbow</code>
+                  {ui('editor.choices.prefix_example_selects', lang)} <code class="font-mono">item_longbow</code>
+                  {ui('editor.choices.prefix_example_tag', lang)} <code class="font-mono">{choice.choiceGrantedTagPrefix}item_longbow</code>
                 </p>
               {:else}
                 <p>

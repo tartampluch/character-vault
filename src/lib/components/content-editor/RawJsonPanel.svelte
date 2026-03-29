@@ -55,7 +55,7 @@
         userEditing = false;
         onRawJsonChange(parsed as Feature);
       } catch (err) {
-        parseError = err instanceof Error ? err.message : 'Invalid JSON';
+        parseError = err instanceof Error ? err.message : ui('gm.invalid_json', engine.settings.language);
       }
     }, 300);
     return () => clearTimeout(timer);

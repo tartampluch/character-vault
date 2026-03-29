@@ -33,15 +33,15 @@
     { value: 'reaction',   label: ui('editor.activation.action_reaction_label',   lang), hint: ui('editor.activation.action_reaction_hint',   lang) },
   ]);
 
-  // Suggested trigger events for the reaction field (code values, not translated)
-  const REACTION_SUGGESTIONS = [
-    'When targeted by an attack',
-    'When an ally within 30 ft. is hit',
-    'When a spell is cast within range',
-    'When reduced below half HP',
-    'When entering a threatened square',
-    'When damage would reduce HP to 0',
-  ];
+  // Suggested trigger events for the reaction field — localised via ui()
+  const REACTION_SUGGESTIONS = $derived([
+    ui('editor.activation.suggestion_targeted_by_attack',  lang),
+    ui('editor.activation.suggestion_ally_hit',            lang),
+    ui('editor.activation.suggestion_spell_cast',          lang),
+    ui('editor.activation.suggestion_below_half_hp',       lang),
+    ui('editor.activation.suggestion_threatened_square',   lang),
+    ui('editor.activation.suggestion_damage_to_zero',      lang),
+  ]);
 
   type CostMode = 'none' | 'fixed' | 'tiered';
 

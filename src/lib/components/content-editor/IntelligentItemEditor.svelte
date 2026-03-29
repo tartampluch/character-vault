@@ -72,9 +72,9 @@
 
       <!-- Ability scores + Ego -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {#each [['int','intelligenceScore','INT'],['wis','wisdomScore','WIS'],['cha','charismaScore','CHA']] as [k, field, lbl] (k)}
+        {#each [['int','intelligenceScore','ability_abbr.stat_intelligence'],['wis','wisdomScore','ability_abbr.stat_wisdom'],['cha','charismaScore','ability_abbr.stat_charisma']] as [k, field, abilityKey] (k)}
           <div class="flex flex-col gap-1">
-            <label for={fid(`ii-${k}`)} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{lbl}</label>
+            <label for={fid(`ii-${k}`)} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui(abilityKey, lang)}</label>
             <input id={fid(`ii-${k}`)} type="number" class="input text-xs text-center" min="10" max="19"
                    value={(id as unknown as Record<string,number>)[field]}
                    oninput={(e) => {
@@ -140,9 +140,9 @@
                     value={id.senses.visionFt}
                     onchange={(e) => { id.senses.visionFt = parseInt((e.currentTarget as HTMLSelectElement).value) as 0|30|60|120; }}>
               <option value="0">{ui('editor.intelligent.vision_none', lang)}</option>
-              <option value="30">30 ft.</option>
-              <option value="60">60 ft.</option>
-              <option value="120">120 ft.</option>
+              <option value="30">{ui('editor.intelligent.sense_ft_option', lang).replace('{n}', '30')}</option>
+              <option value="60">{ui('editor.intelligent.sense_ft_option', lang).replace('{n}', '60')}</option>
+              <option value="120">{ui('editor.intelligent.sense_ft_option', lang).replace('{n}', '120')}</option>
             </select>
           </div>
           <div class="flex flex-col gap-1">
@@ -151,8 +151,8 @@
                     value={id.senses.darkvisionFt}
                     onchange={(e) => { id.senses.darkvisionFt = parseInt((e.currentTarget as HTMLSelectElement).value) as 0|60|120; }}>
               <option value="0">{ui('editor.intelligent.vision_none', lang)}</option>
-              <option value="60">60 ft.</option>
-              <option value="120">120 ft.</option>
+              <option value="60">{ui('editor.intelligent.sense_ft_option', lang).replace('{n}', '60')}</option>
+              <option value="120">{ui('editor.intelligent.sense_ft_option', lang).replace('{n}', '120')}</option>
             </select>
           </div>
           <div class="flex items-center gap-2 pt-4">
