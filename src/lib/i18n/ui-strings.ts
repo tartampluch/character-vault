@@ -357,6 +357,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'gm.saving':                    'Saving…',
   'gm.save_overrides':            'Save Overrides',
   'gm.syntax_error':              'Syntax error:',
+  /**
+   * Shown when JSON.parse throws and a character-offset position is extractable.
+   * Replace the `{line}` placeholder at call sites with the computed line number.
+   * Example output: "Syntax error on line 3: Unexpected token '}'"
+   */
+  'gm.json_syntax_on_line':      'Syntax error on line {line}:',
   'gm.level_prefix':              'Lv.',
   'gm.override_count':            'override(s)',
   'gm.view':                      'GM View',

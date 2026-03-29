@@ -124,6 +124,7 @@
   "gm.saving":                    "Enregistrement…",
   "gm.save_overrides":            "Enregistrer les overrides",
   "gm.syntax_error":              "Erreur de syntaxe :",
+  "gm.json_syntax_on_line":      "Erreur de syntaxe à la ligne {line} :",
   "gm.level_prefix":              "Nv.",
   "gm.override_count":            "override(s)",
   "gm.view":                      "Vue MJ",

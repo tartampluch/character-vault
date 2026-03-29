@@ -110,7 +110,7 @@ class UiLocalesTest extends TestCase
     public function test_valid_locale_file_returns_descriptor(): void
     {
         $this->putLocale('de', [
-            '$meta' => ['code' => 'de', 'language' => 'Deutsch', 'unitSystem' => 'metric'],
+            '$meta' => ['code' => 'de', 'language' => 'Deutsch', 'countryCode' => 'de', 'unitSystem' => 'metric'],
             'nav.campaigns' => 'Kampagnen',
         ]);
 
@@ -228,13 +228,37 @@ class UiLocalesTest extends TestCase
     }
 
     // =========================================================================
+    // 11b — $meta with missing countryCode is skipped
+    // =========================================================================
+
+    public function test_meta_without_country_code_is_skipped(): void
+    {
+        // countryCode is mandatory so the language picker can render the flag icon.
+        // A locale file that omits it is considered incomplete and must be skipped.
+        $this->putLocale('nocountry', ['$meta' => ['code' => 'nocountry', 'language' => 'NoCo', 'unitSystem' => 'metric']]);
+        $result = $this->getLocales();
+        $this->assertSame([], $result);
+    }
+
+    // =========================================================================
+    // 11c — $meta with empty countryCode string is skipped
+    // =========================================================================
+
+    public function test_meta_with_empty_country_code_is_skipped(): void
+    {
+        $this->putLocale('emptycountry', ['$meta' => ['code' => 'emptycountry', 'language' => 'EmptyCo', 'countryCode' => '', 'unitSystem' => 'metric']]);
+        $result = $this->getLocales();
+        $this->assertSame([], $result);
+    }
+
+    // =========================================================================
     // 12 — Invalid unitSystem is normalised to "imperial"
     // =========================================================================
 
     public function test_invalid_unit_system_normalised_to_imperial(): void
     {
         $this->putLocale('pl', [
-            '$meta' => ['code' => 'pl', 'language' => 'Polski', 'unitSystem' => 'whatever'],
+            '$meta' => ['code' => 'pl', 'language' => 'Polski', 'countryCode' => 'pl', 'unitSystem' => 'whatever'],
         ]);
 
         $result = $this->getLocales();
@@ -249,7 +273,7 @@ class UiLocalesTest extends TestCase
     public function test_missing_unit_system_defaults_to_imperial(): void
     {
         $this->putLocale('cs', [
-            '$meta' => ['code' => 'cs', 'language' => 'Čeština'],
+            '$meta' => ['code' => 'cs', 'language' => 'Čeština', 'countryCode' => 'cz'],
         ]);
 
         $result = $this->getLocales();
@@ -264,7 +288,7 @@ class UiLocalesTest extends TestCase
     public function test_metric_unit_system_is_preserved(): void
     {
         $this->putLocale('es', [
-            '$meta' => ['code' => 'es', 'language' => 'Español', 'unitSystem' => 'metric'],
+            '$meta' => ['code' => 'es', 'language' => 'Español', 'countryCode' => 'es', 'unitSystem' => 'metric'],
         ]);
 
         $result = $this->getLocales();
@@ -278,9 +302,9 @@ class UiLocalesTest extends TestCase
 
     public function test_multiple_locales_returned_sorted_by_code(): void
     {
-        $this->putLocale('zh', ['$meta' => ['code' => 'zh', 'language' => '中文',      'unitSystem' => 'metric']]);
-        $this->putLocale('de', ['$meta' => ['code' => 'de', 'language' => 'Deutsch',   'unitSystem' => 'metric']]);
-        $this->putLocale('it', ['$meta' => ['code' => 'it', 'language' => 'Italiano',  'unitSystem' => 'metric']]);
+        $this->putLocale('zh', ['$meta' => ['code' => 'zh', 'language' => '中文',      'countryCode' => 'cn', 'unitSystem' => 'metric']]);
+        $this->putLocale('de', ['$meta' => ['code' => 'de', 'language' => 'Deutsch',   'countryCode' => 'de', 'unitSystem' => 'metric']]);
+        $this->putLocale('it', ['$meta' => ['code' => 'it', 'language' => 'Italiano',  'countryCode' => 'it', 'unitSystem' => 'metric']]);
 
         $result = $this->getLocales();
 
@@ -296,9 +320,9 @@ class UiLocalesTest extends TestCase
 
     public function test_en_excluded_while_others_are_returned(): void
     {
-        $this->putLocale('en', ['$meta' => ['code' => 'en', 'language' => 'English',  'unitSystem' => 'imperial']]);
-        $this->putLocale('de', ['$meta' => ['code' => 'de', 'language' => 'Deutsch',  'unitSystem' => 'metric']]);
-        $this->putLocale('fr', ['$meta' => ['code' => 'fr', 'language' => 'Français', 'unitSystem' => 'metric']]);
+        $this->putLocale('en', ['$meta' => ['code' => 'en', 'language' => 'English',  'countryCode' => 'gb', 'unitSystem' => 'imperial']]);
+        $this->putLocale('de', ['$meta' => ['code' => 'de', 'language' => 'Deutsch',  'countryCode' => 'de', 'unitSystem' => 'metric']]);
+        $this->putLocale('fr', ['$meta' => ['code' => 'fr', 'language' => 'Français', 'countryCode' => 'fr', 'unitSystem' => 'metric']]);
 
         $result = $this->getLocales();
 
@@ -316,7 +340,7 @@ class UiLocalesTest extends TestCase
     public function test_translation_keys_not_leaked_into_descriptor(): void
     {
         $this->putLocale('pt', [
-            '$meta'        => ['code' => 'pt', 'language' => 'Português', 'unitSystem' => 'metric'],
+            '$meta'        => ['code' => 'pt', 'language' => 'Português', 'countryCode' => 'pt', 'unitSystem' => 'metric'],
             'nav.campaigns' => 'Campanhas',
             'nav.vault'     => 'Cofre',
         ]);
@@ -324,13 +348,14 @@ class UiLocalesTest extends TestCase
         $result = $this->getLocales();
         $this->assertCount(1, $result);
         $descriptor = $result[0];
-        // Only code, language, unitSystem should be present
-        $this->assertArrayHasKey('code',       $descriptor);
-        $this->assertArrayHasKey('language',   $descriptor);
-        $this->assertArrayHasKey('unitSystem', $descriptor);
+        // Only code, language, countryCode, and unitSystem should be present — not raw translation keys.
+        $this->assertArrayHasKey('code',        $descriptor);
+        $this->assertArrayHasKey('language',    $descriptor);
+        $this->assertArrayHasKey('countryCode', $descriptor);
+        $this->assertArrayHasKey('unitSystem',  $descriptor);
         $this->assertArrayNotHasKey('nav.campaigns', $descriptor);
         $this->assertArrayNotHasKey('nav.vault',     $descriptor);
-        $this->assertCount(3, $descriptor);
+        $this->assertCount(4, $descriptor);
     }
 
     // =========================================================================

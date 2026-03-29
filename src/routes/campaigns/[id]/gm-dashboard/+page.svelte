@@ -50,7 +50,26 @@
       if (!Array.isArray(parsed)) { overrideErrors[charId] = ui('gm.must_be_json_array', engine.settings.language); overrideValid[charId] = false; return; }
       overrideErrors[charId] = ''; overrideValid[charId] = true;
     } catch (e: unknown) {
-      overrideErrors[charId] = `${ui('gm.syntax_error', engine.settings.language)} ${(e as Error).message}`;
+      // Extract the character position from the JSON parse error message and
+      // map it to a human-readable line number — mirrors GmOverridesPanel.svelte.
+      // Example Chrome error:  "Unexpected token '}' at position 42"
+      // Example Firefox error: "JSON.parse: unexpected character at line 3 column 5"
+      const err = e as Error;
+      const lang = engine.settings.language;
+      const posMatch = err.message.match(/position (\d+)/);
+      let errMsg: string;
+      if (posMatch) {
+        // Compute which line the character offset falls on so the GM can jump
+        // directly to the offending character without manually counting.
+        const pos     = parseInt(posMatch[1], 10);
+        const lineNum = text.slice(0, pos).split('\n').length;
+        errMsg = `${ui('gm.json_syntax_on_line', lang).replace('{line}', String(lineNum))} ${err.message}`;
+      } else {
+        // Firefox / Safari include the line number in the raw message already;
+        // fall back to the generic prefix when the position pattern is absent.
+        errMsg = `${ui('gm.syntax_error', lang)} ${err.message}`;
+      }
+      overrideErrors[charId] = errMsg;
       overrideValid[charId] = false;
     }
   }
