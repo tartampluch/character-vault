@@ -200,7 +200,7 @@
               </span>
               <button type="button"
                       class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-danger"
-                      onclick={() => removeAugmentation(i)} aria-label="Delete augmentation {i+1}">
+                      onclick={() => removeAugmentation(i)} aria-label={ui('content_editor.psi.augmentation_label', lang).replace('{n}', String(i + 1)) + ' — ' + ui('common.delete', lang)}>
                 <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

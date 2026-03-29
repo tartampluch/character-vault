@@ -60,6 +60,7 @@
   // ===========================================================================
 
   const campaignId = $derived($page.params.id ?? '');
+  const lang       = $derived(engine.settings.language);
 
   /** Non-GM users are redirected to the campaign root. */
   $effect(() => {
@@ -220,19 +221,18 @@
 
 <!-- ── DELETE CONFIRM MODAL ────────────────────────────────────────────────── -->
 {#if deleteConfirmId !== null}
-  <Modal open={true} onClose={() => (deleteConfirmId = null)} title="Delete Entity" size="sm">
+  <Modal open={true} onClose={() => (deleteConfirmId = null)} title={ui('content_editor.lib.delete_entity_title', lang)} size="sm">
     {#snippet children()}
       <div class="flex flex-col gap-4">
         <p class="text-sm text-text-primary">
-          Delete <code class="font-mono text-accent">{deleteConfirmId}</code>?
-          This cannot be undone.
+          {ui('content_editor.lib.delete_prompt', lang).replace('{id}', deleteConfirmId ?? '')}
         </p>
         <div class="flex justify-end gap-2">
           <button type="button" class="btn-ghost" onclick={() => (deleteConfirmId = null)}>
-            Cancel
+            {ui('common.cancel', lang)}
           </button>
           <button type="button" class="btn-danger" onclick={confirmDelete}>
-            Delete
+            {ui('common.delete', lang)}
           </button>
         </div>
       </div>
@@ -242,13 +242,11 @@
 
 <!-- ── IMPORT JSON MODAL ────────────────────────────────────────────────────── -->
 {#if showImportModal}
-  <Modal open={true} onClose={() => (showImportModal = false)} title="Import JSON" size="lg">
+  <Modal open={true} onClose={() => (showImportModal = false)} title={ui('content_editor.lib.import_modal_title', lang)} size="lg">
     {#snippet children()}
       <div class="flex flex-col gap-4">
         <p class="text-xs text-text-muted">
-          Paste a JSON array of Feature objects. Each entity is <strong>merged by ID</strong>:
-          existing entities with matching IDs are updated; new IDs are added;
-          entities already in the store that are <em>absent</em> from the import are left untouched.
+          {ui('content_editor.lib.import_desc', lang)}
         </p>
 
         {#if importError}
@@ -261,14 +259,14 @@
         <textarea
           class="input font-mono text-xs min-h-[16rem] resize-y"
           bind:value={importText}
-          placeholder="Paste JSON array here…"
+          placeholder={ui('content_editor.lib.import_placeholder', lang)}
           spellcheck="false"
           autocomplete="off"
         ></textarea>
 
         <div class="flex justify-end gap-2">
           <button type="button" class="btn-ghost" onclick={() => (showImportModal = false)}>
-            Cancel
+            {ui('common.cancel', lang)}
           </button>
           <button
             type="button"
@@ -276,7 +274,7 @@
             disabled={!importText.trim()}
             onclick={handleImport}
           >
-            Import
+            {ui('content_editor.lib.import_submit', lang)}
           </button>
         </div>
       </div>
@@ -306,12 +304,14 @@
   <!-- HOMEBREW SCOPE PANEL                                                     -->
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   <div class="rounded-lg border border-border bg-surface-alt p-4 flex flex-col gap-4">
-    <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Homebrew Scope</p>
+    <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">{ui('content_editor.lib.scope_title', lang)}</p>
 
     <!-- Scope toggle -->
     <div class="flex gap-2">
-      {#each ([['campaign','Campaign','Stored in this campaign\'s database record'],
-               ['global','Global','Stored as a JSON file on the server (shared across campaigns)']] as const) as [s, lbl, hint] (s)}
+      {#each ([
+        ['campaign', ui('content_editor.lib.scope_campaign', lang), ui('content_editor.lib.scope_campaign_hint', lang)],
+        ['global',   ui('content_editor.lib.scope_global',   lang), ui('content_editor.lib.scope_global_hint',   lang)],
+      ] as const) as [s, lbl, hint] (s)}
         <button
           type="button"
           class="flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors text-left
@@ -331,7 +331,7 @@
     {#if homebrewStore.scope === 'global'}
       <div class="flex flex-col gap-1">
         <label for="filename" class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Filename
+          {ui('content_editor.lib.filename_label', lang)}
         </label>
         <input
           id="filename"
@@ -352,18 +352,18 @@
     <div class="flex items-center gap-2 text-xs">
       {#if homebrewStore.isSaving}
         <span class="inline-block h-3 w-3 rounded-full border-2 border-accent border-t-transparent
-                     animate-spin shrink-0" aria-label="Saving…"></span>
-        <span class="text-text-muted">Saving…</span>
+                     animate-spin shrink-0" aria-label={ui('content_editor.lib.saving', lang)}></span>
+        <span class="text-text-muted">{ui('content_editor.lib.saving', lang)}</span>
       {:else if homebrewStore.isDirty}
         <span class="inline-block h-2 w-2 rounded-full bg-amber-400 shrink-0"
-              aria-label="Unsaved changes"></span>
-        <span class="text-amber-400">Unsaved changes</span>
+              aria-label={ui('content_editor.lib.unsaved', lang)}></span>
+        <span class="text-amber-400">{ui('content_editor.lib.unsaved', lang)}</span>
       {:else if homebrewStore.entities.length > 0}
         <span class="inline-block h-2 w-2 rounded-full bg-green-500 shrink-0"
-              aria-label="Saved"></span>
-        <span class="text-green-400">Saved</span>
+              aria-label={ui('content_editor.lib.saved', lang)}></span>
+        <span class="text-green-400">{ui('content_editor.lib.saved', lang)}</span>
       {:else}
-        <span class="text-text-muted">Ready</span>
+        <span class="text-text-muted">{ui('content_editor.lib.ready', lang)}</span>
       {/if}
     </div>
   </div>
@@ -376,29 +376,29 @@
       href="/campaigns/{campaignId}/content-editor/new"
       class="btn-primary text-sm"
     >
-      + New Entity
+      {ui('content_editor.lib.new_entity', lang)}
     </a>
 
     <button type="button" class="btn-ghost text-sm"
             onclick={() => (showImportModal = true)}>
-      Import JSON
+      {ui('content_editor.lib.import_json', lang)}
     </button>
 
     <button type="button" class="btn-ghost text-sm"
             onclick={exportAll}
             disabled={homebrewStore.entities.length === 0}
             title="Download all entities as a JSON file">
-      Export All ({homebrewStore.entities.length})
+      {ui('content_editor.lib.export_all', lang).replace('{n}', String(homebrewStore.entities.length))}
     </button>
 
     <!-- Search -->
     <div class="relative ml-auto">
-      <label for="entity-search" class="sr-only">Filter entities</label>
+      <label for="entity-search" class="sr-only">{ui('content_editor.lib.filter_placeholder', lang)}</label>
       <input
         id="entity-search"
         type="search"
         class="input pl-8 text-sm w-56"
-        placeholder="Filter entities…"
+        placeholder={ui('content_editor.lib.filter_placeholder', lang)}
         bind:value={searchInput}
         autocomplete="off"
       />
@@ -418,9 +418,9 @@
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   {#if homebrewStore.entities.length === 0}
     <div class="rounded-lg border border-dashed border-border px-6 py-12 text-center">
-      <p class="text-text-muted italic text-sm">No homebrew entities yet.</p>
+      <p class="text-text-muted italic text-sm">{ui('content_editor.lib.empty_title', lang)}</p>
       <p class="text-text-muted text-xs mt-1">
-        Click "+ New Entity" to author your first homebrew race, feat, spell, or item.
+        {ui('content_editor.lib.empty_hint', lang)}
       </p>
     </div>
 
@@ -430,11 +430,11 @@
         <thead>
           <tr class="bg-surface-alt border-b border-border">
 
-            <th class="px-3 py-2 text-left">
+              <th class="px-3 py-2 text-left">
               <button type="button"
                       class="text-xs font-semibold text-text-muted hover:text-text-primary"
                       onclick={() => toggleSort('id')}>
-                ID{sortIndicator('id')}
+                {ui('content_editor.lib.col_id', lang)}{sortIndicator('id')}
               </button>
             </th>
 
@@ -442,7 +442,7 @@
               <button type="button"
                       class="text-xs font-semibold text-text-muted hover:text-text-primary"
                       onclick={() => toggleSort('category')}>
-                Category{sortIndicator('category')}
+                {ui('content_editor.lib.col_category', lang)}{sortIndicator('category')}
               </button>
             </th>
 
@@ -450,7 +450,7 @@
               <button type="button"
                       class="text-xs font-semibold text-text-muted hover:text-text-primary"
                       onclick={() => toggleSort('label')}>
-                Label{sortIndicator('label')}
+                {ui('content_editor.lib.col_label', lang)}{sortIndicator('label')}
               </button>
             </th>
 
@@ -458,12 +458,12 @@
               <button type="button"
                       class="text-xs font-semibold text-text-muted hover:text-text-primary"
                       onclick={() => toggleSort('ruleSource')}>
-                Source{sortIndicator('ruleSource')}
+                {ui('content_editor.lib.col_source', lang)}{sortIndicator('ruleSource')}
               </button>
             </th>
 
             <th class="px-3 py-2 text-right">
-              <span class="text-xs font-semibold text-text-muted">Actions</span>
+              <span class="text-xs font-semibold text-text-muted">{ui('content_editor.lib.col_actions', lang)}</span>
             </th>
 
           </tr>
@@ -472,7 +472,7 @@
           {#if filteredEntities.length === 0}
             <tr>
               <td colspan="5" class="px-4 py-6 text-center text-sm text-text-muted italic">
-                No entities match "{debouncedSearch}".
+                {ui('content_editor.lib.no_match', lang).replace('{search}', debouncedSearch)}
               </td>
             </tr>
           {:else}
@@ -509,7 +509,7 @@
                       class="btn-ghost text-xs py-0.5 px-2 h-auto"
                       title="Edit {entity.id}"
                     >
-                      Edit
+                      {ui('common.edit', lang)}
                     </a>
                     <button
                       type="button"
@@ -517,7 +517,7 @@
                       onclick={() => cloneEntity(entity.id)}
                       title="Clone {entity.id}"
                     >
-                      Clone
+                      {ui('common.clone', lang)}
                     </button>
                     <button
                       type="button"
@@ -525,7 +525,7 @@
                       onclick={() => (deleteConfirmId = entity.id)}
                       title="Delete {entity.id}"
                     >
-                      Delete
+                      {ui('common.delete', lang)}
                     </button>
                   </div>
                 </td>
@@ -538,8 +538,10 @@
     </div>
 
     <p class="text-xs text-text-muted text-right -mt-2">
-      {filteredEntities.length} of {homebrewStore.entities.length} entities
-      {#if debouncedSearch}(filtered){/if}
+      {ui('content_editor.lib.entity_count', lang)
+        .replace('{filtered}', String(filteredEntities.length))
+        .replace('{total}', String(homebrewStore.entities.length))}
+      {#if debouncedSearch}{ui('content_editor.lib.entity_count_filtered', lang)}{/if}
     </p>
   {/if}
 

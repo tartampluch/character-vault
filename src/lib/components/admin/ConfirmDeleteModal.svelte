@@ -1,46 +1,33 @@
 <!--
   @file src/lib/components/admin/ConfirmDeleteModal.svelte
   @description Confirmation dialog for permanent user account deletion (Phase 22.8).
-
-  PURPOSE:
-    Prevents accidental deletion by requiring an explicit "Delete" click after
-    seeing the username and an "irreversible" warning. A Cancel button and
-    Escape key both close without action.
-
-  FLOW:
-    1. Parent opens modal with a `user` prop set to the target User.
-    2. Admin reads the warning and clicks "Delete [username]".
-    3. Modal calls deleteUser(user.id) via userApi.
-    4. On success: calls onSuccess() then onClose() so the parent refreshes.
-    5. On error: shows an inline error banner; modal stays open.
 -->
 
 <script lang="ts">
   import Modal from '$lib/components/ui/Modal.svelte';
   import { deleteUser, ApiError } from '$lib/api/userApi';
   import type { User } from '$lib/types/user';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ── Props ────────────────────────────────────────────────────────────────────
 
   interface Props {
-    /** Whether the modal is visible. */
     open: boolean;
-    /** Close callback — called on cancel or after successful delete. */
     onClose: () => void;
-    /** The user to delete. When null the modal renders nothing meaningful. */
     user: User | null;
-    /** Called after successful deletion so the parent can refresh the list. */
     onSuccess: () => void;
   }
 
   let { open, onClose, user, onSuccess }: Props = $props();
+
+  const lang = $derived(engine.settings.language);
 
   // ── State ─────────────────────────────────────────────────────────────────
 
   let isLoading = $state(false);
   let error     = $state('');
 
-  // Clear error whenever the modal opens / target changes.
   $effect(() => {
     if (open) {
       isLoading = false;
@@ -63,7 +50,7 @@
       if (e instanceof ApiError) {
         error = e.message;
       } else {
-        error = 'An unexpected error occurred. Please try again.';
+        error = ui('common.error_unexpected', lang);
       }
     } finally {
       isLoading = false;
@@ -71,17 +58,15 @@
   }
 </script>
 
-<Modal {open} {onClose} title="Delete User" size="sm">
+<Modal {open} {onClose} title={ui('admin.delete_modal.title', lang)} size="sm">
   {#if user}
     <div class="flex flex-col gap-4">
 
       <!-- Warning block -->
       <div class="rounded-lg border border-red-700/40 bg-red-950/20 px-4 py-3 text-sm text-red-300">
-        <p class="font-semibold mb-1">This action cannot be undone.</p>
+        <p class="font-semibold mb-1">{ui('admin.delete_modal.warning_title', lang)}</p>
         <p class="text-red-400/80">
-          The account <span class="font-mono font-bold text-red-300">{user.username}</span>
-          and all their characters will be permanently deleted.
-          Campaign memberships will also be removed.
+          {ui('admin.delete_modal.warning_desc', lang).replace('{username}', user.username)}
         </p>
       </div>
 
@@ -100,7 +85,7 @@
           disabled={isLoading}
           class="btn-secondary"
         >
-          Cancel
+          {ui('common.cancel', lang)}
         </button>
         <button
           type="button"
@@ -108,7 +93,9 @@
           disabled={isLoading}
           class="btn-danger disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Deleting…' : `Delete ${user.username}`}
+          {isLoading
+            ? ui('admin.delete_modal.deleting', lang)
+            : ui('admin.delete_modal.confirm_btn', lang).replace('{username}', user.username)}
         </button>
       </div>
 

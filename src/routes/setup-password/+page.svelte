@@ -29,7 +29,11 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import { setupPassword, ApiError } from '$lib/api/userApi';
+
+  const lang = $derived(engine.settings.language);
 
   // ── State ──────────────────────────────────────────────────────────────────
   let newPassword     = $state('');
@@ -44,10 +48,10 @@
    * Evaluated reactively so the submit button can enable/disable immediately.
    */
   const validationError = $derived((): string => {
-    if (newPassword.length === 0)      return 'Please enter a new password.';
-    if (newPassword.length < 8)        return 'Password must be at least 8 characters.';
-    if (confirmPassword.length === 0)  return 'Please confirm your password.';
-    if (newPassword !== confirmPassword) return 'Passwords do not match.';
+    if (newPassword.length === 0)        return ui('setup_password.val_enter',   lang);
+    if (newPassword.length < 8)          return ui('setup_password.val_min8',    lang);
+    if (confirmPassword.length === 0)    return ui('setup_password.val_confirm', lang);
+    if (newPassword !== confirmPassword) return ui('setup_password.val_mismatch',lang);
     return '';
   });
 
@@ -91,7 +95,7 @@
         }
         error = err.message;
       } else {
-        error = 'An unexpected error occurred. Please try again.';
+        error = ui('common.error_unexpected', lang);
         console.error('[SetupPassword] unexpected error:', err);
       }
     } finally {
@@ -101,7 +105,7 @@
 </script>
 
 <svelte:head>
-  <title>Set Your Password — Character Vault</title>
+  <title>{ui('setup_password.subtitle', lang)} — Character Vault</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center px-4 bg-background">
@@ -109,8 +113,8 @@
 
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-text-primary mb-1">Character Vault</h1>
-      <p class="text-sm text-text-muted">Set your password to continue</p>
+      <h1 class="text-2xl font-bold text-text-primary mb-1">{ui('app.title', lang)}</h1>
+      <p class="text-sm text-text-muted">{ui('setup_password.subtitle', lang)}</p>
     </div>
 
     <!-- Card -->
@@ -118,8 +122,7 @@
 
       <!-- Info banner -->
       <div class="px-3 py-2 rounded border border-accent/30 bg-accent/10 text-sm text-text-secondary">
-        Your account requires a password before you can use the application.
-        Choose a strong password — you will use it for all future logins.
+        {ui('setup_password.info', lang)}
       </div>
 
       <!-- Error banner -->
@@ -135,7 +138,7 @@
         <!-- New password -->
         <div class="flex flex-col gap-1.5">
           <label for="new-password" class="text-xs font-medium text-text-secondary">
-            New Password
+            {ui('setup_password.new_label', lang)}
           </label>
           <input
             id="new-password"
@@ -147,14 +150,14 @@
             class="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary
                    placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent/50
                    focus:border-accent transition-colors disabled:opacity-50"
-            placeholder="At least 8 characters"
+            placeholder={ui('setup_password.placeholder_min8', lang)}
           />
         </div>
 
         <!-- Confirm password -->
         <div class="flex flex-col gap-1.5">
           <label for="confirm-password" class="text-xs font-medium text-text-secondary">
-            Confirm Password
+            {ui('setup_password.confirm_label', lang)}
           </label>
           <input
             id="confirm-password"
@@ -166,11 +169,11 @@
             class="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary
                    placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent/50
                    focus:border-accent transition-colors disabled:opacity-50"
-            placeholder="Repeat your password"
+            placeholder={ui('setup_password.placeholder_repeat', lang)}
           />
           <!-- Live mismatch hint -->
           {#if confirmPassword.length > 0 && newPassword !== confirmPassword}
-            <p class="text-xs text-red-400 mt-0.5">Passwords do not match.</p>
+            <p class="text-xs text-red-400 mt-0.5">{ui('setup_password.mismatch_hint', lang)}</p>
           {/if}
         </div>
 
@@ -179,7 +182,7 @@
           disabled={!canSubmit}
           class="btn-primary w-full mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Saving…' : 'Set Password & Continue'}
+          {isLoading ? ui('common.saving', lang) : ui('setup_password.submit', lang)}
         </button>
 
       </form>

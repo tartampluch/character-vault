@@ -29,9 +29,13 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Feature } from '$lib/types/feature';
   import EntityForm from '$lib/components/content-editor/EntityForm.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
+
+  const lang = $derived(engine.settings.language);
 
   // ===========================================================================
   // ROUTE PARAMS + AUTH GUARD
@@ -92,25 +96,22 @@
 
 <!-- Delete confirmation modal -->
 {#if showDeleteConfirm}
-  <Modal open={true} onClose={() => (showDeleteConfirm = false)} title="Delete Entity" size="sm">
+  <Modal open={true} onClose={() => (showDeleteConfirm = false)} title={ui('content_editor.edit.delete_entity_title', lang)} size="sm">
     {#snippet children()}
       <div class="flex flex-col gap-4">
         <p class="text-sm text-text-primary">
-          Permanently delete
-          <code class="font-mono text-accent">{entityId}</code>?
-          This cannot be undone.
+          {ui('content_editor.edit.delete_prompt', lang).replace('{id}', entityId)}
         </p>
         <p class="text-xs text-text-muted">
-          The entity will be removed from the homebrew store and will no longer be
-          available in the DataLoader after the next reload.
+          {ui('content_editor.edit.delete_desc', lang)}
         </p>
         <div class="flex justify-end gap-2">
           <button type="button" class="btn-ghost"
                   onclick={() => (showDeleteConfirm = false)}>
-            Cancel
+            {ui('common.cancel', lang)}
           </button>
           <button type="button" class="btn-danger" onclick={confirmDelete}>
-            Delete permanently
+            {ui('content_editor.edit.delete_permanently', lang)}
           </button>
         </div>
       </div>
@@ -127,7 +128,7 @@
   <div class="flex items-center gap-3">
     <a href="/campaigns/{campaignId}/content-editor"
        class="text-text-muted hover:text-text-primary transition-colors shrink-0"
-       aria-label="Back to Content Library">
+       aria-label={ui('content_editor.back_to_library_aria', lang)}>
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -137,7 +138,8 @@
 
     <div class="flex-1 min-w-0">
       <h1 class="text-xl font-bold text-text-primary truncate">
-        Edit: <code class="font-mono">{entityId}</code>
+        {ui('content_editor.edit.heading', lang).replace('{id}', '')}
+        <code class="font-mono">{entityId}</code>
       </h1>
       {#if entity}
         <p class="text-xs text-text-muted">
@@ -154,7 +156,7 @@
                hover:border-danger/50 transition-colors shrink-0"
         onclick={() => (showDeleteConfirm = true)}
       >
-        Delete
+        {ui('content_editor.edit.delete_btn', lang)}
       </button>
     {/if}
   </div>
@@ -163,12 +165,13 @@
   {#if !entity}
     <div class="rounded-lg border border-border px-6 py-12 text-center">
       <p class="text-text-muted italic text-sm">
-        Loading entity <code class="font-mono">{entityId}</code>…
+        {ui('content_editor.edit.loading', lang).replace('{id}', '')}
+        <code class="font-mono">{entityId}</code>…
       </p>
       <p class="text-xs text-text-muted mt-2">
-        If this message persists the entity may not exist in the current homebrew store.
+        {ui('content_editor.edit.loading_hint', lang)}
         <a href="/campaigns/{campaignId}/content-editor"
-           class="underline hover:text-text-primary">Return to library.</a>
+           class="underline hover:text-text-primary">{ui('content_editor.edit.return_link', lang)}</a>
       </p>
     </div>
 

@@ -953,6 +953,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'dr.add_innate':                'Add Innate DR',
   'dr.base_class_label':          'Class DR (additive):',
   'dr.innate_label':              'Innate / Racial DR:',
+  /**
+   * Templates used to build the label and description of a custom DR feature.
+   * {value} = numeric DR value, {bypass} = bypass material/tag string.
+   * Called via buildLocalizedString() + template replacement at runtime.
+   */
+  'dr.label_template':       'DR {value}/{bypass}',
+  'dr.description_template': 'Damage Reduction {value}/{bypass}',
 
   // ==========================================================================
   // PSIONIC POWERS
@@ -1392,6 +1399,178 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'reset_condition.per_round.hint':    'Recharges once per round at a fixed initiative point',
 
   // ==========================================================================
+  // PIPELINE FALLBACK LABELS
+  // English baseline for GameEngine.PIPELINE_FALLBACK_LABELS.
+  // These labels are shown in modifier breakdown modals for stats that have
+  // no runtime pipeline (e.g. saves, resources, combat stats).
+  // French translations live in fr.json under the same keys.
+  // Adding a new language requires only adding these keys to its locale JSON.
+  // ==========================================================================
+  'pipeline_label.saves.all':                                'All Saving Throws',
+  'pipeline_label.saves.fortitude':                          'Fortitude Save',
+  'pipeline_label.saves.reflex':                             'Reflex Save',
+  'pipeline_label.saves.will':                               'Will Save',
+  'pipeline_label.combatStats.attack_bonus':                 'Attack Bonus',
+  'pipeline_label.combatStats.stability_check':              'Stability Check',
+  'pipeline_label.combatStats.hit_die_type':                 'Hit Die',
+  'pipeline_label.combatStats.speed_land':                   'Land Speed',
+  'pipeline_label.combatStats.speed_fly':                    'Fly Speed',
+  'pipeline_label.combatStats.speed_swim':                   'Swim Speed',
+  'pipeline_label.combatStats.speed_climb':                  'Climb Speed',
+  'pipeline_label.combatStats.speed_burrow':                 'Burrow Speed',
+  'pipeline_label.combatStats.ac_normal':                    'Armor Class',
+  'pipeline_label.combatStats.ac_touch':                     'Touch AC',
+  'pipeline_label.combatStats.ac_flat_footed':               'Flat-Footed AC',
+  'pipeline_label.attributes.speed_land':                    'Land Speed',
+  'pipeline_label.attributes.skill_points_per_level':        'Skill Points / Level',
+  'pipeline_label.attributes.bonus_skill_points_per_level':  'Bonus Skill Points / Level',
+  'pipeline_label.attributes.bonus_skill_points_1st_level':  'Bonus Skill Points (1st Level)',
+  'pipeline_label.attributes.bonus_feat_slots':              'Bonus Feat Slots',
+  'pipeline_label.attributes.spell_dc_illusion':             'Illusion Spell DC',
+  'pipeline_label.attributes.stat_strength':                 'Strength',
+  'pipeline_label.attributes.stat_dexterity':                'Dexterity',
+  'pipeline_label.attributes.stat_constitution':             'Constitution',
+  'pipeline_label.attributes.stat_intelligence':             'Intelligence',
+  'pipeline_label.attributes.stat_wisdom':                   'Wisdom',
+  'pipeline_label.attributes.stat_charisma':                 'Charisma',
+  'pipeline_label.attributes.stat_size':                     'Size',
+  'pipeline_label.resources.power_points.maxValue':          'Power Points (max)',
+  'pipeline_label.resources.vitality_points.maxValue':       'Vitality Points (max)',
+  'pipeline_label.resources.wound_points.maxValue':          'Wound Points (max)',
+  'pipeline_label.resources.hp.maxValue':                    'Hit Points (max)',
+  'pipeline_label.resources.ki_points.maxValue':             'Ki Points (max)',
+
+  // ==========================================================================
+  // SITUATIONAL CONTEXT LABELS
+  // English baseline for statFormatters.SITUATIONAL_LABELS.
+  // These are shown in modifier breakdown modals for situational modifiers.
+  // French translations live in fr.json under the same keys.
+  // Adding a new language requires only adding situation.* keys to its locale JSON.
+  // ==========================================================================
+  // Spell / magic save contexts
+  'situation.vs_enchantment':                        'vs. Enchantment',
+  'situation.vs_poison':                             'vs. Poison',
+  'situation.vs_spells_and_spell_like':              'vs. Spells & Spell-likes',
+  'situation.vs_spells_and_spell_like_effects':      'vs. Spells & Spell-likes',
+  'situation.vs_fear':                               'vs. Fear',
+  'situation.vs_charm_or_fear':                      'vs. Charm or Fear',
+  'situation.vs_illusion':                           'vs. Illusion',
+  'situation.vs_mind_affecting_and_compulsion':      'vs. Mind-affecting & Compulsions',
+  'situation.vs_mind_affecting_compulsion':          'vs. Mind-affecting & Compulsions',
+  'situation.vs_compulsions_and_mind_affecting':     'vs. Compulsions & Mind-affecting',
+  'situation.vs_divination':                         'vs. Divination',
+  'situation.vs_power_resistance':                   'vs. Power Resistance',
+  'situation.vs_powers_spells_and_spell_like_effects': 'vs. Powers & Spells',
+  // Alignment-based
+  'situation.vs_evil':                               'vs. Evil',
+  'situation.vs_good':                               'vs. Good',
+  'situation.vs_chaotic':                            'vs. Chaos',
+  'situation.vs_lawful':                             'vs. Law',
+  // Creature type / race
+  'situation.vs_giant':                              'vs. Giants',
+  'situation.vs_giant_type':                         'vs. Giant type',
+  'situation.vs_orc_goblinoid':                      'vs. Orcs & Goblinoids',
+  'situation.vs_orcs_and_goblinoids':                'vs. Orcs & Goblinoids',
+  'situation.vs_kobold_goblinoid':                   'vs. Kobolds & Goblinoids',
+  'situation.vs_outsider':                           'vs. Outsiders',
+  'situation.vs_construct':                          'vs. Constructs',
+  'situation.vs_shapechanger':                       'vs. Shapechangers',
+  'situation.vs_fey_spell_like':                     'vs. Fey spell-likes',
+  'situation.vs_elemental':                          'vs. Elementals',
+  'situation.vs_aquatic_creature':                   'vs. Aquatic creatures',
+  'situation.vs_forest_creature':                    'vs. Forest creatures',
+  'situation.vs_desert_creature':                    'vs. Desert creatures',
+  'situation.vs_hills_creature':                     'vs. Hills creatures',
+  'situation.vs_marsh_creature':                     'vs. Marsh creatures',
+  'situation.vs_mountain_creature':                  'vs. Mountain creatures',
+  'situation.vs_plains_creature':                    'vs. Plains creatures',
+  'situation.vs_underground_creature':               'vs. Underground creatures',
+  'situation.vs_air_planar_creature':                'vs. Air planar creatures',
+  'situation.vs_cavernous_plane_creature':           'vs. Cavernous planar creatures',
+  'situation.vs_shifting_plane_creature':            'vs. Shifting planar creatures',
+  'situation.vs_aligned_plane_creature':             'vs. Aligned planar creatures',
+  // Elemental subtypes
+  'situation.vs_fire_creature':                      'vs. Fire creatures',
+  'situation.vs_fire_effects':                       'vs. Fire effects',
+  'situation.vs_fire_spells_and_effects':            'vs. Fire spells & effects',
+  'situation.vs_fire_elementals':                    'vs. Fire elementals',
+  'situation.vs_cold_creature':                      'vs. Cold creatures',
+  'situation.vs_air_or_electricity_effects':         'vs. Air / Electricity',
+  'situation.vs_earth_effects':                      'vs. Earth effects',
+  'situation.vs_water_or_cold_effects':              'vs. Water / Cold effects',
+  'situation.vs_air_elementals':                     'vs. Air elementals',
+  'situation.vs_earth_elementals':                   'vs. Earth elementals',
+  'situation.vs_water_elementals':                   'vs. Water elementals',
+  'situation.vs_spider_poison':                      'vs. Spider poison',
+  // Favored / designated enemy
+  'situation.vs_designated_foe':                     'vs. Designated foe',
+  'situation.vs_designated_target':                  'vs. Designated target',
+  'situation.vs_favored_enemy_1':                    'vs. Favored Enemy 1',
+  'situation.vs_favored_enemy_2':                    'vs. Favored Enemy 2',
+  'situation.vs_favored_enemy_3':                    'vs. Favored Enemy 3',
+  'situation.vs_favored_enemy_4':                    'vs. Favored Enemy 4',
+  'situation.vs_favored_enemy_5':                    'vs. Favored Enemy 5',
+  'situation.vs_sworn_enemy':                        'vs. Sworn Enemy',
+  // Terrain / environment
+  'situation.vs_unusual_stonework':                  'vs. Unusual stonework',
+  'situation.unusual_stonework':                     'Near unusual stonework',
+  'situation.underwater':                            'While underwater',
+  'situation.in_saltwater':                          'In saltwater',
+  'situation.in_bright_or_absolute_darkness':        'In bright light or darkness',
+  'situation.outdoors_temperate':                    'In temperate outdoors',
+  'situation.near_wall':                             'When adjacent to a wall',
+  // Trap / stonework expertise
+  'situation.vs_trap':                               'vs. Traps',
+  'situation.vs_traps':                              'vs. Traps',
+  'situation.appraise_stone_metal_items':            'Appraising stone/metal items',
+  'situation.craft_stone_metal_items':               'Crafting stone/metal items',
+  'situation.tracking':                              'While tracking',
+  // Combat maneuver contexts
+  'situation.vs_bull_rush_or_trip':                  'vs. Bull Rush / Trip',
+  'situation.vs_bull_rush_or_trip_on_ground':        'vs. Bull Rush / Trip (standing)',
+  'situation.vs_charge_attacks':                     'vs. Charge attacks',
+  'situation.vs_ranged_attacks':                     'vs. Ranged attacks',
+  'situation.vs_attacks_of_opportunity_on_movement': 'vs. AoOs on movement',
+  'situation.vs_attacks_of_opportunity_while_moving': 'vs. AoOs while moving',
+  // Attack / damage conditions
+  'situation.sneak_attack':                          'On sneak attack',
+  'situation.on_hit':                                'On hit',
+  'situation.on_hit_fire':                           'On hit (fire)',
+  'situation.on_hit_cold':                           'On hit (cold)',
+  'situation.on_hit_electricity':                    'On hit (electricity)',
+  'situation.on_hit_nonlethal':                      'On hit (nonlethal)',
+  'situation.target_flat_footed_or_flanked':         'vs. Flat-footed / flanked',
+  'situation.vs_opponent_already_damaged_this_turn': 'vs. Already-damaged opponent',
+  'situation.puncture_touch_attack':                 'On puncture touch attack',
+  'situation.shield_bash':                           'On shield bash',
+  // Fighting style / stance contexts
+  'situation.casting_defensively_or_grappled':       'Casting defensively / grappled',
+  'situation.fighting_defensively_or_total_defense': 'While fighting defensively',
+  'situation.wielding_two_weapons':                  'While two-weapon fighting',
+  'situation.single_piercing_weapon_no_offhand':     'Single piercing weapon, no off-hand',
+  'situation.using_bow':                             'While using a bow',
+  'situation.thrown_weapons_and_slings':             'With thrown weapons & slings',
+  'situation.ranged_within_30ft':                    'Ranged within 30 ft.',
+  'situation.unarmed_or_natural':                    'Unarmed / natural attacks',
+  // Spell school / casting contexts
+  'situation.when_casting_chaos_spells':             'When casting Chaos spells',
+  'situation.when_casting_divination_spells':        'When casting Divination spells',
+  'situation.when_casting_evil_spells':              'When casting Evil spells',
+  'situation.when_casting_good_spells':              'When casting Good spells',
+  'situation.when_casting_healing_spells':           'When casting Healing spells',
+  'situation.when_casting_law_spells':               'When casting Law spells',
+  // Psionic contexts
+  'situation.becoming_psionically_focused':          'When becoming psionically focused',
+  'situation.manifesting_on_defensive_or_grappling': 'When manifesting defensively',
+  // Special item / class ability contexts
+  'situation.wielded_by_paladin':                    'When wielded by a paladin',
+  // Elemental form (wild shape / polymorph)
+  'situation.air_elemental':                         'While air elemental',
+  'situation.earth_elemental':                       'While earth elemental',
+  'situation.fire_elemental':                        'While fire elemental',
+  'situation.water_elemental':                       'While water elemental',
+
+  // ==========================================================================
   // STAT LABELS
   // Fallback labels for synthetic stat pipelines built at runtime.
   // Used when no rule source has defined the stat (e.g. stat_size fallback).
@@ -1404,6 +1583,211 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'lang.label':                   'Language',
   'lang.select_tooltip':          'Switch display language',
   'lang.unavailable':             'currently unavailable',
+
+  // ==========================================================================
+  // COMMON / SHARED
+  // ==========================================================================
+  'common.close':  'Close',
+  'common.delete': 'Delete',
+  'common.edit':   'Edit',
+  'common.clone':  'Clone',
+  'common.import': 'Import',
+  'common.export': 'Export',
+  'common.never':  'Never',
+  'common.error_unexpected': 'An unexpected error occurred. Please try again.',
+
+  // ==========================================================================
+  // ADMIN — SIDEBAR SECTION
+  // ==========================================================================
+  'admin.nav.section_title':   'Admin',
+  'admin.nav.user_management': 'User Management',
+
+  // ==========================================================================
+  // ADMIN — USER MANAGEMENT PAGE (src/routes/admin/users/+page.svelte)
+  // ==========================================================================
+  'admin.users.title':         'User Management',
+  'admin.users.subtitle':      'Manage accounts, roles, and campaign memberships.',
+  'admin.users.add':           'Add User',
+  'admin.users.loading':       'Loading users…',
+  'admin.users.none':          'No users found.',
+  'admin.users.col_username':  'Username',
+  'admin.users.col_player':    'Player Name',
+  'admin.users.col_role':      'Role',
+  'admin.users.col_campaigns': 'Campaigns (chars)',
+  'admin.users.col_created':   'Created',
+  'admin.users.col_last_login':'Last Login',
+  'admin.users.col_status':    'Status',
+  'admin.users.col_actions':   'Actions',
+  'admin.users.you':           '(you)',
+  'admin.users.status_suspended': 'Suspended',
+  'admin.users.status_active':    'Active',
+  'admin.users.role_admin':    'Admin',
+  'admin.users.role_gm':       'GM',
+  'admin.users.role_player':   'Player',
+  'admin.users.count': { one: '{n} user', other: '{n} users' },
+  'admin.users.cannot_edit_self':    'Cannot edit your own account',
+  'admin.users.edit_title':          'Edit {username}',
+  'admin.users.cannot_suspend_self': 'Cannot suspend your own account',
+  'admin.users.reinstate_title':     'Reinstate {username}',
+  'admin.users.suspend_title':       'Suspend {username}',
+  'admin.users.reset_password_title':'Reset password for {username} (forces setup on next login)',
+  'admin.users.cannot_delete_self':  'Cannot delete your own account',
+  'admin.users.delete_title':        'Delete {username}',
+  'admin.users.error_load':          'Failed to load users.',
+  'admin.users.error_action':        'Action failed.',
+  'admin.users.error_reset':         'Reset failed.',
+
+  // ==========================================================================
+  // ADMIN — USER FORM MODAL (UserFormModal.svelte)
+  // ==========================================================================
+  'admin.user_form.edit_title':         'Edit "{username}"',
+  'admin.user_form.username_label':     'Username',
+  'admin.user_form.username_placeholder': 'e.g. alice',
+  'admin.user_form.username_desc':      'Used to log in. Must be unique.',
+  'admin.user_form.player_name_label':  'Player Name',
+  'admin.user_form.player_name_placeholder': 'e.g. Alice',
+  'admin.user_form.player_name_desc':   'In-game display name shown to the GM.',
+  'admin.user_form.role_label':         'Role',
+  'admin.user_form.role_player':        'Player',
+  'admin.user_form.role_gm':            'GM (Game Master)',
+  'admin.user_form.role_admin':         'Admin',
+  'admin.user_form.role_desc':          'Admin can manage users. GM can manage campaigns and characters.',
+  'admin.user_form.suspended_label':    'Account Suspended',
+  'admin.user_form.suspended_desc':     'Suspended accounts cannot log in.',
+  'admin.user_form.reinstate_title':    'Click to reinstate',
+  'admin.user_form.suspend_title':      'Click to suspend',
+  'admin.user_form.error_taken':        'Username "{username}" is already taken.',
+  'admin.user_form.save_changes':       'Save Changes',
+  'admin.user_form.create_user':        'Create User',
+
+  // ==========================================================================
+  // ADMIN — CONFIRM DELETE MODAL (ConfirmDeleteModal.svelte)
+  // ==========================================================================
+  'admin.delete_modal.title':          'Delete User',
+  'admin.delete_modal.warning_title':  'This action cannot be undone.',
+  'admin.delete_modal.warning_desc':   'The account {username} and all their characters will be permanently deleted. Campaign memberships will also be removed.',
+  'admin.delete_modal.deleting':       'Deleting…',
+  'admin.delete_modal.confirm_btn':    'Delete {username}',
+
+  // ==========================================================================
+  // ADMIN — CHANGE PASSWORD MODAL (ChangePasswordModal.svelte)
+  // ==========================================================================
+  'admin.change_password.current_label':       'Current Password',
+  'admin.change_password.current_placeholder': 'Your current password',
+  'admin.change_password.new_label':           'New Password',
+  'admin.change_password.new_placeholder':     'At least 8 characters',
+  'admin.change_password.confirm_label':       'Confirm New Password',
+  'admin.change_password.confirm_placeholder': 'Repeat your new password',
+  'admin.change_password.mismatch_hint':       'Passwords do not match.',
+  'admin.change_password.error_wrong':         'Current password is incorrect.',
+  'admin.change_password.val_enter_new':       'Please enter a new password.',
+  'admin.change_password.val_min_8':           'New password must be at least 8 characters.',
+  'admin.change_password.val_confirm_empty':   'Please confirm your new password.',
+  'admin.change_password.val_mismatch':        'New passwords do not match.',
+
+  // ==========================================================================
+  // SETUP PASSWORD PAGE (src/routes/setup-password/+page.svelte)
+  // ==========================================================================
+  'setup_password.subtitle':        'Set your password to continue',
+  'setup_password.info':            'Your account requires a password before you can use the application. Choose a strong password — you will use it for all future logins.',
+  'setup_password.new_label':       'New Password',
+  'setup_password.confirm_label':   'Confirm Password',
+  'setup_password.placeholder_min8': 'At least 8 characters',
+  'setup_password.placeholder_repeat': 'Repeat your password',
+  'setup_password.mismatch_hint':   'Passwords do not match.',
+  'setup_password.submit':          'Set Password & Continue',
+  'setup_password.val_enter':       'Please enter a new password.',
+  'setup_password.val_min8':        'Password must be at least 8 characters.',
+  'setup_password.val_confirm':     'Please confirm your password.',
+  'setup_password.val_mismatch':    'Passwords do not match.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — LIBRARY PAGE (content-editor/+page.svelte)
+  // ==========================================================================
+  'content_editor.lib.scope_title':          'Homebrew Scope',
+  'content_editor.lib.scope_campaign':       'Campaign',
+  'content_editor.lib.scope_campaign_hint':  "Stored in this campaign's database record",
+  'content_editor.lib.scope_global':         'Global',
+  'content_editor.lib.scope_global_hint':    'Stored as a JSON file on the server (shared across campaigns)',
+  'content_editor.lib.filename_label':       'Filename',
+  'content_editor.lib.saving':               'Saving…',
+  'content_editor.lib.unsaved':              'Unsaved changes',
+  'content_editor.lib.saved':                'Saved',
+  'content_editor.lib.ready':                'Ready',
+  'content_editor.lib.new_entity':           '+ New Entity',
+  'content_editor.lib.import_json':          'Import JSON',
+  /** {n} = entity count. */
+  'content_editor.lib.export_all':           'Export All ({n})',
+  'content_editor.lib.filter_placeholder':   'Filter entities…',
+  'content_editor.lib.col_id':               'ID',
+  'content_editor.lib.col_category':         'Category',
+  'content_editor.lib.col_label':            'Label',
+  'content_editor.lib.col_source':           'Source',
+  'content_editor.lib.col_actions':          'Actions',
+  /** {search} = the current search query. */
+  'content_editor.lib.no_match':             'No entities match "{search}".',
+  'content_editor.lib.empty_title':          'No homebrew entities yet.',
+  'content_editor.lib.empty_hint':           'Click "+ New Entity" to author your first homebrew race, feat, spell, or item.',
+  /** {filtered} = visible count, {total} = total count. */
+  'content_editor.lib.entity_count':         '{filtered} of {total} entities',
+  'content_editor.lib.entity_count_filtered':'(filtered)',
+  'content_editor.lib.delete_entity_title':  'Delete Entity',
+  /** {id} = entity ID. */
+  'content_editor.lib.delete_prompt':        'Delete {id}? This cannot be undone.',
+  'content_editor.lib.import_modal_title':   'Import JSON',
+  'content_editor.lib.import_desc':          'Paste a JSON array of Feature objects. Each entity is merged by ID: existing entities with matching IDs are updated; new IDs are added; entities already in the store that are absent from the import are left untouched.',
+  'content_editor.lib.import_placeholder':   'Paste JSON array here…',
+  'content_editor.lib.import_submit':        'Import',
+
+  // ==========================================================================
+  // CONTENT EDITOR — NEW ENTITY WIZARD (content-editor/new/+page.svelte)
+  // ==========================================================================
+  'content_editor.new.title':           'New Entity',
+  /** {category} = FeatureCategory value. */
+  'content_editor.new.category_note':   'Category: {category}',
+  'content_editor.new.step_type':       'Choose Type',
+  'content_editor.new.step_origin':     'Starting point',
+  'content_editor.new.step_author':     'Author',
+  'content_editor.new.how_to_start':    'How would you like to start?',
+  'content_editor.new.scratch_title':   'Start from Scratch',
+  'content_editor.new.scratch_desc':    'Open an empty form for a brand-new entity. All fields start at their defaults.',
+  'content_editor.new.clone_title':     'Clone an Existing Entity',
+  'content_editor.new.clone_desc':      'Search the full SRD + homebrew catalog, copy a record as a starting point, and give it a new ID.',
+  'content_editor.new.back_category':   '← Back to category selection',
+  'content_editor.back_to_library_aria':'Back to Content Library',
+
+  // ==========================================================================
+  // CONTENT EDITOR — EDIT ENTITY PAGE (content-editor/[entityId]/+page.svelte)
+  // ==========================================================================
+  /** {id} = entity ID. */
+  'content_editor.edit.heading':               'Edit: {id}',
+  'content_editor.edit.delete_btn':            'Delete',
+  /** {id} = entity ID. */
+  'content_editor.edit.loading':               'Loading entity {id}…',
+  'content_editor.edit.loading_hint':          'If this message persists the entity may not exist in the current homebrew store.',
+  'content_editor.edit.return_link':           'Return to library.',
+  'content_editor.edit.delete_entity_title':   'Delete Entity',
+  /** {id} = entity ID. */
+  'content_editor.edit.delete_prompt':         'Permanently delete {id}? This cannot be undone.',
+  'content_editor.edit.delete_desc':           'The entity will be removed from the homebrew store and will no longer be available in the DataLoader after the next reload.',
+  'content_editor.edit.delete_permanently':    'Delete permanently',
+
+  // ==========================================================================
+  // FORMULA BUILDER INPUT — validation & UI chrome (FormulaBuilderInput.svelte)
+  // ==========================================================================
+  'formula.validation.valid':   'Valid formula or @-path',
+  'formula.validation.partial': 'Partial @-path — add a suffix (e.g. class ID or skill ID)',
+  'formula.validation.invalid': 'Unrecognised @-path — check the Formula Assistant for valid paths',
+  'formula.clear_title':        'Clear value',
+  'formula.clear_aria':         'Clear formula input',
+  'formula.dice_help_aria':     'Dice notation help',
+  'formula.dice_examples_title':'Dice notation examples',
+  'formula.assistant_title':    'Formula Assistant',
+
+  // ==========================================================================
+  // LEVELING JOURNAL MODAL — minor gap
+  // ==========================================================================
+  'journal.sp_min_note': '(min 1 per level)',
 
   // English names itself here because it is the only language that has NO
   // separate locale file: it is the hardcoded baseline and is intentionally

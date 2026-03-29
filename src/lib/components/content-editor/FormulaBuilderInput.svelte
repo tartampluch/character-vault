@@ -141,6 +141,7 @@
   }
 
   interface PathGroup {
+    key:     string;   // stable identifier — never translated (used for group-specific logic)
     title:   string;
     entries: PathEntry[];
   }
@@ -162,6 +163,7 @@
     const base = ui('formula.qualifier.base',     lang);  // '(base)'
     return [
       {
+        key: 'ability_scores',
         title: ui('content_editor.group.ability_scores', lang),
         entries: [
           { path: '@attributes.stat_strength.totalValue',            label: `${rpl('attributes.stat_strength')} ${tot}` },
@@ -188,6 +190,7 @@
         ],
       },
       {
+        key: 'combat_stats',
         title: ui('content_editor.group.combat_stats', lang),
         entries: [
           { path: '@combatStats.base_attack_bonus.totalValue',       label: rpl('combatStats.base_attack_bonus') },
@@ -208,6 +211,7 @@
         ],
       },
       {
+        key: 'saves',
         title: ui('content_editor.group.saves', lang),
         entries: [
           { path: '@saves.fortitude.totalValue', label: rpl('saves.fortitude') },
@@ -216,6 +220,7 @@
         ],
       },
       {
+        key: 'skills',
         title: ui('content_editor.group.skills', lang),
         entries: [
           { path: '@skills.<id>.ranks',      label: ui('formula.hint.skill_ranks', lang) },
@@ -223,6 +228,7 @@
         ],
       },
       {
+        key: 'class_levels',
         title: ui('content_editor.group.class_levels', lang),
         entries: [
           { path: '@classLevels.<classId>', label: ui('formula.hint.class_levels', lang) },
@@ -231,6 +237,7 @@
         ],
       },
       {
+        key: 'constants',
         title: ui('content_editor.group.constants', lang),
         entries: [
           // @constant.<id> is in ARCHITECTURE.md §4.3 as a named numeric constant
@@ -443,9 +450,10 @@
   });
 
   const validationTitle = $derived.by((): string => {
-    if (validationState === 'valid')   return 'Valid formula or @-path';
-    if (validationState === 'partial') return 'Partial @-path — add a suffix (e.g. class ID or skill ID)';
-    if (validationState === 'invalid') return 'Unrecognised @-path — check the Formula Assistant for valid paths';
+    const lang = engine.settings.language;
+    if (validationState === 'valid')   return ui('formula.validation.valid',   lang);
+    if (validationState === 'partial') return ui('formula.validation.partial', lang);
+    if (validationState === 'invalid') return ui('formula.validation.invalid', lang);
     return '';
   });
 
@@ -519,14 +527,14 @@
         </span>
       {/if}
 
-      <!-- Clear button — uses IconClose per Phase 19.3 (no raw Unicode characters) -->
+          <!-- Clear button — uses IconClose per Phase 19.3 (no raw Unicode characters) -->
       {#if currentText && !disabled}
         <button
           type="button"
           class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-text-primary"
           onclick={handleClear}
-          title="Clear value"
-          aria-label="Clear formula input"
+          title={ui('formula.clear_title', engine.settings.language)}
+          aria-label={ui('formula.clear_aria', engine.settings.language)}
         >
           <IconClose size={12} aria-hidden="true" />
         </button>
@@ -539,8 +547,8 @@
           class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-text-primary
                  text-xs font-semibold leading-none"
           onclick={() => (diceHelpOpen = !diceHelpOpen)}
-          aria-label="Dice notation help"
-          title="Dice notation help"
+          aria-label={ui('formula.dice_help_aria', engine.settings.language)}
+          title={ui('formula.dice_help_aria', engine.settings.language)}
         >
           ?
         </button>
@@ -552,7 +560,7 @@
                    bg-surface shadow-xl p-3 text-xs"
             role="tooltip"
           >
-            <p class="font-semibold text-text-primary mb-2">Dice notation examples</p>
+            <p class="font-semibold text-text-primary mb-2">{ui('formula.dice_examples_title', engine.settings.language)}</p>
             <ul class="space-y-1 text-text-secondary font-mono">
               <li><code>5</code> — plain number</li>
               <li><code>1d6</code> — roll 1 six-sided die</li>
@@ -566,7 +574,7 @@
               class="mt-2 text-[10px] text-text-muted underline"
               onclick={() => (diceHelpOpen = false)}
             >
-              Close
+              {ui('common.close', engine.settings.language)}
             </button>
           </div>
         {/if}
@@ -591,7 +599,7 @@
       >
         <polyline points="9 18 15 12 9 6"/>
       </svg>
-      Formula Assistant
+      {ui('formula.assistant_title', engine.settings.language)}
     </summary>
 
     <!--
@@ -601,7 +609,7 @@
     -->
     <div class="mt-1 rounded-lg border border-border bg-surface-alt overflow-hidden">
 
-      {#each PATH_GROUPS as group (group.title)}
+      {#each PATH_GROUPS as group (group.key)}
         <details class="group/pathgroup border-b border-border last:border-b-0">
           <summary
             class="flex items-center justify-between px-3 py-1.5 cursor-pointer
@@ -641,7 +649,7 @@
             {/each}
 
             <!-- Dynamic skills (only shown in Skills group) -->
-            {#if group.title === 'Skills' && dynamicSkillEntries.length > 0}
+            {#if group.key === 'skills' && dynamicSkillEntries.length > 0}
               <div class="mt-1 pt-1 border-t border-border/50">
                 <p class="text-[9px] text-text-muted mb-0.5 px-2">Loaded skills:</p>
                 {#each dynamicSkillEntries as entry (entry.path)}

@@ -3009,18 +3009,16 @@ export class GameEngine {
     if (value <= 0) return;
     const bypass   = bypassTag === '—' ? '—' : bypassTag;
     const drId     = `dr_custom_${value}_${bypass}_${Date.now()}`;
-    // LocalizedString: "DR 5/magic" is the same in both languages for the
-    // short label. The description is localized using the existing combat.dr.title key
-    // convention: "DR {value}/{bypass}" for the short abbr and the full word form
-    // for the description.
-    const drLabel: import('../types/i18n').LocalizedString = {
-      en: `DR ${value}/${bypass}`,
-      fr: `RD ${value}/${bypass}`,
-    };
-    const drDescription: import('../types/i18n').LocalizedString = {
-      en: `Damage Reduction ${value}/${bypass}`,
-      fr: `Réduction de dégâts ${value}/${bypass}`,
-    };
+    // Build fully-localized labels from UI_STRINGS templates so any loaded
+    // locale (fr, de, …) is reflected without hardcoding per-language strings.
+    const applyVars = (tmpl: string) =>
+      tmpl.replace('{value}', String(value)).replace('{bypass}', bypass);
+    const drLabel: import('../types/i18n').LocalizedString = Object.fromEntries(
+      Object.entries(buildLocalizedString('dr.label_template')).map(([l, t]) => [l, applyVars(t)])
+    );
+    const drDescription: import('../types/i18n').LocalizedString = Object.fromEntries(
+      Object.entries(buildLocalizedString('dr.description_template')).map(([l, t]) => [l, applyVars(t)])
+    );
     dataLoader.cacheFeature({
       id:       drId,
       category: 'condition',
@@ -5415,16 +5413,16 @@ export class GameEngine {
     if (skillPipeline?.label) return this.t(skillPipeline.label);
 
     // 5. Static fallback map for targetIds with no runtime pipeline.
-    // For non-English, try the locale system first (keys are registered as
-    // "pipeline_label.<targetId>" in each locale file, e.g. fr.json).
+    // English baseline is now in UI_STRINGS (pipeline_label.* keys); all
+    // languages — including English — are resolved via ui().
     const fallback = GameEngine.PIPELINE_FALLBACK_LABELS[targetId]
       ?? GameEngine.PIPELINE_FALLBACK_LABELS[`attributes.${targetId}`];
     if (fallback) {
-      if (this.lang !== 'en') {
-        const uiKey = `pipeline_label.${targetId}`;
-        const translated = ui(uiKey, this.lang);
-        if (translated !== uiKey) return translated;
-      }
+      const uiKey = `pipeline_label.${targetId}`;
+      const translated = ui(uiKey, this.lang);
+      // ui() returns the key itself only when it is missing from both the loaded
+      // locale and UI_STRINGS — treat that as a last-resort fallback.
+      if (translated !== uiKey) return translated;
       return fallback.en;
     }
 

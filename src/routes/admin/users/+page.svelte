@@ -24,6 +24,8 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
   import { listUsers, suspendUser, reinstateUser, resetUserPassword, ApiError } from '$lib/api/userApi';
   import type { User } from '$lib/types/user';
   import {
@@ -36,6 +38,8 @@
   } from '$lib/components/ui/icons';
   import UserFormModal      from '$lib/components/admin/UserFormModal.svelte';
   import ConfirmDeleteModal  from '$lib/components/admin/ConfirmDeleteModal.svelte';
+
+  const lang = $derived(engine.settings.language);
 
   // ── State ───────────────────────────────────────────────────────────────────
   let users      = $state<User[]>([]);
@@ -57,8 +61,8 @@
    * Returns "Never" for null timestamps (user has never logged in).
    */
   function formatDate(ts: number | null): string {
-    if (ts === null) return 'Never';
-    return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(ts * 1000));
+    if (ts === null) return ui('common.never', lang);
+    return new Intl.DateTimeFormat(lang, { dateStyle: 'medium' }).format(new Date(ts * 1000));
   }
 
   /**
@@ -76,7 +80,12 @@
 
   /** Human-readable role label. */
   function roleLabel(role: User['role']): string {
-    return { admin: 'Admin', gm: 'GM', player: 'Player' }[role] ?? role;
+    const map: Record<string, string> = {
+      admin:  ui('admin.users.role_admin',  lang),
+      gm:     ui('admin.users.role_gm',     lang),
+      player: ui('admin.users.role_player', lang),
+    };
+    return map[role] ?? role;
   }
 
   /**
@@ -103,7 +112,7 @@
         await goto('/campaigns');
         return;
       }
-      loadError = e instanceof ApiError ? e.message : 'Failed to load users.';
+      loadError = e instanceof ApiError ? e.message : ui('admin.users.error_load', lang);
       console.error('[AdminUsers] loadUsers error:', e);
     } finally {
       isLoading = false;
@@ -149,7 +158,7 @@
       }
       await loadUsers();
     } catch (e) {
-      loadError = e instanceof ApiError ? e.message : 'Action failed.';
+      loadError = e instanceof ApiError ? e.message : ui('admin.users.error_action', lang);
     } finally {
       actionLoading = { ...actionLoading, [u.id]: false };
     }
@@ -171,7 +180,7 @@
       }, 3000);
       await loadUsers();
     } catch (e) {
-      loadError = e instanceof ApiError ? e.message : 'Reset failed.';
+      loadError = e instanceof ApiError ? e.message : ui('admin.users.error_reset', lang);
     } finally {
       actionLoading = { ...actionLoading, [u.id]: false };
     }
@@ -186,7 +195,7 @@
 </script>
 
 <svelte:head>
-  <title>User Management — Character Vault</title>
+  <title>{ui('admin.users.title', lang)} — Character Vault</title>
 </svelte:head>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
@@ -194,9 +203,9 @@
   <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
   <header class="flex items-start justify-between gap-4 flex-wrap">
     <div>
-      <h1 class="text-2xl font-bold text-text-primary">User Management</h1>
+      <h1 class="text-2xl font-bold text-text-primary">{ui('admin.users.title', lang)}</h1>
       <p class="mt-1 text-sm text-text-muted">
-        Manage accounts, roles, and campaign memberships.
+        {ui('admin.users.subtitle', lang)}
       </p>
     </div>
 
@@ -205,7 +214,7 @@
       onclick={openAddModal}
     >
       <IconAdd size={16} aria-hidden="true" />
-      Add User
+      {ui('admin.users.add', lang)}
     </button>
   </header>
 
@@ -223,12 +232,12 @@
       <!-- Loading skeleton -->
       <div class="p-8 flex items-center justify-center text-text-muted text-sm gap-2">
         <span class="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" aria-hidden="true"></span>
-        Loading users…
+        {ui('admin.users.loading', lang)}
       </div>
 
     {:else if users.length === 0 && !loadError}
       <div class="p-8 text-center text-text-muted text-sm">
-        No users found.
+        {ui('admin.users.none', lang)}
       </div>
 
     {:else}
@@ -238,14 +247,14 @@
 
           <thead>
             <tr class="border-b border-border bg-surface-alt text-xs uppercase tracking-wider text-text-muted">
-              <th class="px-4 py-3 font-semibold">Username</th>
-              <th class="px-4 py-3 font-semibold">Player Name</th>
-              <th class="px-4 py-3 font-semibold">Role</th>
-              <th class="px-4 py-3 font-semibold">Campaigns (chars)</th>
-              <th class="px-4 py-3 font-semibold">Created</th>
-              <th class="px-4 py-3 font-semibold">Last Login</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
-              <th class="px-4 py-3 font-semibold text-right">Actions</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_username', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_player', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_role', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_campaigns', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_created', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_last_login', lang)}</th>
+              <th class="px-4 py-3 font-semibold">{ui('admin.users.col_status', lang)}</th>
+              <th class="px-4 py-3 font-semibold text-right">{ui('admin.users.col_actions', lang)}</th>
             </tr>
           </thead>
 
@@ -259,7 +268,7 @@
                 <td class="px-4 py-3 font-mono text-text-primary font-medium whitespace-nowrap">
                   {user.username}
                   {#if self}
-                    <span class="ml-1.5 text-xs text-text-muted">(you)</span>
+                    <span class="ml-1.5 text-xs text-text-muted">{ui('admin.users.you', lang)}</span>
                   {/if}
                 </td>
 
@@ -306,12 +315,12 @@
                   {#if user.is_suspended}
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
                                  border bg-orange-900/30 text-orange-400 border-orange-700/40">
-                      Suspended
+                      {ui('admin.users.status_suspended', lang)}
                     </span>
                   {:else}
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold
                                  border bg-green-900/30 text-green-400 border-green-700/40">
-                      Active
+                      {ui('admin.users.status_active', lang)}
                     </span>
                   {/if}
                 </td>
@@ -329,8 +338,8 @@
                                : 'text-text-secondary hover:text-accent hover:bg-accent/10'}"
                       disabled={self}
                       onclick={() => !self && openEditModal(user)}
-                      title={self ? 'Cannot edit your own account' : `Edit ${user.username}`}
-                      aria-label="Edit {user.username}"
+                       title={self ? ui('admin.users.cannot_edit_self', lang) : ui('admin.users.edit_title', lang).replace('{username}', user.username)}
+                      aria-label={ui('admin.users.edit_title', lang).replace('{username}', user.username)}
                     >
                       <IconEdit size={16} aria-hidden="true" />
                     </button>
@@ -346,12 +355,14 @@
                                  : 'text-amber-400 hover:text-amber-300 hover:bg-amber-900/20'}"
                       disabled={self || !!actionLoading[user.id]}
                       onclick={() => !self && toggleSuspend(user)}
-                      title={self
-                        ? 'Cannot suspend your own account'
-                        : user.is_suspended
-                          ? `Reinstate ${user.username}`
-                          : `Suspend ${user.username}`}
-                      aria-label="{user.is_suspended ? 'Reinstate' : 'Suspend'} {user.username}"
+                       title={self
+                         ? ui('admin.users.cannot_suspend_self', lang)
+                         : user.is_suspended
+                           ? ui('admin.users.reinstate_title', lang).replace('{username}', user.username)
+                           : ui('admin.users.suspend_title', lang).replace('{username}', user.username)}
+                      aria-label={user.is_suspended
+                        ? ui('admin.users.reinstate_title', lang).replace('{username}', user.username)
+                        : ui('admin.users.suspend_title', lang).replace('{username}', user.username)}
                     >
                       {#if user.is_suspended}
                         <IconUnlocked size={16} aria-hidden="true" />
@@ -371,8 +382,8 @@
                                  : 'text-text-secondary hover:text-accent hover:bg-accent/10'}"
                       disabled={!!actionLoading[user.id]}
                       onclick={() => handleResetPassword(user)}
-                      title="Reset password for {user.username} (forces setup on next login)"
-                      aria-label="Reset password for {user.username}"
+                       title={ui('admin.users.reset_password_title', lang).replace('{username}', user.username)}
+                      aria-label={ui('admin.users.reset_password_title', lang).replace('{username}', user.username)}
                     >
                       <IconKey size={16} aria-hidden="true" />
                     </button>
@@ -386,8 +397,8 @@
                                : 'text-text-secondary hover:text-red-400 hover:bg-red-900/20'}"
                       disabled={self}
                       onclick={() => !self && openDeleteModal(user)}
-                      title={self ? 'Cannot delete your own account' : `Delete ${user.username}`}
-                      aria-label="Delete {user.username}"
+                       title={self ? ui('admin.users.cannot_delete_self', lang) : ui('admin.users.delete_title', lang).replace('{username}', user.username)}
+                      aria-label={ui('admin.users.delete_title', lang).replace('{username}', user.username)}
                     >
                       <IconDelete size={16} aria-hidden="true" />
                     </button>
@@ -403,7 +414,7 @@
 
       <!-- Row count footer -->
       <div class="px-4 py-2 border-t border-border text-xs text-text-muted">
-        {users.length} {users.length === 1 ? 'user' : 'users'}
+        {uiN('admin.users.count', users.length, lang)}
       </div>
     {/if}
   </div>

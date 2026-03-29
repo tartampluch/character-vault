@@ -13,6 +13,7 @@ import type { StatisticPipeline, SkillPipeline, ResourcePool } from '../types/pi
 import type { LocalizedString } from '../types/i18n';
 import type { ID } from '../types/primitives';
 import { dataLoader } from './DataLoader';
+import { buildLocalizedString } from '../i18n/ui-strings';
 
 // =============================================================================
 // TARGETID NORMALISATION — Handles both JSON authoring conventions
@@ -367,9 +368,9 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     },
     saves: {
       // Bootstrap-phase labels use pipeline IDs to comply with PROGRESS.md Guideline 6.
-      'saves.fortitude': makePipeline('saves.fortitude', { en: 'saves.fortitude' }, 0),
-      'saves.reflex':    makePipeline('saves.reflex',    { en: 'saves.reflex'    }, 0),
-      'saves.will':      makePipeline('saves.will',      { en: 'saves.will'      }, 0),
+      'saves.fortitude': makePipeline('saves.fortitude', buildLocalizedString('pipeline_label.saves.fortitude'), 0),
+      'saves.reflex':    makePipeline('saves.reflex',    buildLocalizedString('pipeline_label.saves.reflex'),    0),
+      'saves.will':      makePipeline('saves.will',      buildLocalizedString('pipeline_label.saves.will'),      0),
     },
     skills: {},
     // minimumSkillRanks is ABSENT for new characters — all ranks can be freely adjusted
@@ -377,7 +378,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     // to lock in the current ranks as the irreducible minimum.
     // @see Character.minimumSkillRanks and GameEngine.lockSkillRanksMin()
     resources: {
-      'resources.hp': makeResource('resources.hp', { en: 'Hit Points' }, 'combatStats.max_hp'),
+      'resources.hp': makeResource('resources.hp', buildLocalizedString('combat.hp.title'), 'combatStats.max_hp'),
     },
     activeFeatures: [],
     linkedEntities: [],

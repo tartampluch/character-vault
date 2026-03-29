@@ -31,6 +31,8 @@
     ApiError,
   } from '$lib/api/userApi';
   import type { User, UserRole } from '$lib/types/user';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ── Props ────────────────────────────────────────────────────────────────────
 
@@ -50,10 +52,14 @@
 
   let { open, onClose, user, onSuccess }: Props = $props();
 
+  const lang = $derived(engine.settings.language);
+
   // ── Derived mode ─────────────────────────────────────────────────────────────
 
   const isEditMode = $derived(user !== null);
-  const title      = $derived(isEditMode ? `Edit "${user!.username}"` : 'Add User');
+  const title      = $derived(isEditMode
+    ? ui('admin.user_form.edit_title', lang).replace('{username}', user!.username)
+    : ui('admin.users.add', lang));
 
   // ── Form state — reset whenever modal opens ───────────────────────────────
 
@@ -134,14 +140,14 @@
     } catch (e) {
       if (e instanceof ApiError) {
         if (e.status === 409) {
-          error = `Username "${username.trim()}" is already taken.`;
+          error = ui('admin.user_form.error_taken', lang).replace('{username}', username.trim());
         } else if (e.status === 400) {
           error = e.message;
         } else {
-          error = e.message || 'An unexpected error occurred.';
+          error = e.message || ui('common.error_unexpected', lang);
         }
       } else {
-        error = 'An unexpected error occurred. Please try again.';
+        error = ui('common.error_unexpected', lang);
       }
     } finally {
       isLoading = false;
@@ -163,7 +169,7 @@
     {#if !isEditMode}
       <div class="flex flex-col gap-1.5">
         <label for="uf-username" class="text-xs font-medium text-text-secondary">
-          Username <span class="text-red-400" aria-hidden="true">*</span>
+          {ui('admin.user_form.username_label', lang)} <span class="text-red-400" aria-hidden="true">*</span>
         </label>
         <input
           id="uf-username"
@@ -172,17 +178,17 @@
           autocomplete="off"
           required
           disabled={isLoading}
-          placeholder="e.g. alice"
+          placeholder={ui('admin.user_form.username_placeholder', lang)}
           class="input"
         />
-        <p class="text-xs text-text-muted">Used to log in. Must be unique.</p>
+        <p class="text-xs text-text-muted">{ui('admin.user_form.username_desc', lang)}</p>
       </div>
     {/if}
 
     <!-- ── PLAYER NAME (both modes) ──────────────────────────────────────── -->
     <div class="flex flex-col gap-1.5">
       <label for="uf-player-name" class="text-xs font-medium text-text-secondary">
-        Player Name <span class="text-red-400" aria-hidden="true">*</span>
+        {ui('admin.user_form.player_name_label', lang)} <span class="text-red-400" aria-hidden="true">*</span>
       </label>
       <input
         id="uf-player-name"
@@ -191,10 +197,10 @@
         autocomplete="off"
         required
         disabled={isLoading}
-        placeholder="e.g. Alice"
+        placeholder={ui('admin.user_form.player_name_placeholder', lang)}
         class="input"
       />
-      <p class="text-xs text-text-muted">In-game display name shown to the GM.</p>
+      <p class="text-xs text-text-muted">{ui('admin.user_form.player_name_desc', lang)}</p>
     </div>
 
     <!-- ── EDIT-ONLY FIELDS ───────────────────────────────────────────────── -->
@@ -202,22 +208,22 @@
 
       <!-- Role dropdown -->
       <div class="flex flex-col gap-1.5">
-        <label for="uf-role" class="text-xs font-medium text-text-secondary">Role</label>
+        <label for="uf-role" class="text-xs font-medium text-text-secondary">{ui('admin.user_form.role_label', lang)}</label>
         <select id="uf-role" bind:value={role} disabled={isLoading} class="input">
-          <option value="player">Player</option>
-          <option value="gm">GM (Game Master)</option>
-          <option value="admin">Admin</option>
+          <option value="player">{ui('admin.user_form.role_player', lang)}</option>
+          <option value="gm">{ui('admin.user_form.role_gm', lang)}</option>
+          <option value="admin">{ui('admin.user_form.role_admin', lang)}</option>
         </select>
         <p class="text-xs text-text-muted">
-          Admin can manage users. GM can manage campaigns and characters.
+          {ui('admin.user_form.role_desc', lang)}
         </p>
       </div>
 
       <!-- Suspend toggle -->
       <div class="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2.5">
         <div>
-          <p class="text-sm font-medium text-text-primary">Account Suspended</p>
-          <p class="text-xs text-text-muted">Suspended accounts cannot log in.</p>
+          <p class="text-sm font-medium text-text-primary">{ui('admin.user_form.suspended_label', lang)}</p>
+          <p class="text-xs text-text-muted">{ui('admin.user_form.suspended_desc', lang)}</p>
         </div>
         <button
           type="button"
@@ -229,7 +235,7 @@
                  transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent/50
                  disabled:opacity-50 disabled:cursor-not-allowed
                  {isSuspended ? 'bg-orange-500 dark:bg-orange-400' : 'bg-border'}"
-          title={isSuspended ? 'Click to reinstate' : 'Click to suspend'}
+          title={isSuspended ? ui('admin.user_form.reinstate_title', lang) : ui('admin.user_form.suspend_title', lang)}
         >
           <!-- Toggle thumb: bg-white is conventional for toggle knobs and provides
                the required contrast against both orange (suspended) and gray (active) tracks. -->
@@ -251,14 +257,18 @@
         disabled={isLoading}
         class="btn-secondary"
       >
-        Cancel
+        {ui('common.cancel', lang)}
       </button>
       <button
         type="submit"
         disabled={!canSubmit}
         class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isLoading ? 'Saving…' : isEditMode ? 'Save Changes' : 'Create User'}
+        {isLoading
+          ? ui('common.saving', lang)
+          : isEditMode
+            ? ui('admin.user_form.save_changes', lang)
+            : ui('admin.user_form.create_user', lang)}
       </button>
     </div>
 

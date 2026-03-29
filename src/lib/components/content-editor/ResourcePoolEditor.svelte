@@ -201,7 +201,7 @@
             type="button"
             class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger"
             onclick={() => deletePool(i)}
-            aria-label="Delete pool {i + 1}"
+            aria-label={ui('content_editor.pool.entry_label', lang).replace('{n}', String(i + 1)) + ' — ' + ui('common.delete', lang)}
           >
             <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2"

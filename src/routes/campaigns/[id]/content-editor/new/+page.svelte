@@ -25,6 +25,8 @@
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import EntityTypeSelector from '$lib/components/content-editor/EntityTypeSelector.svelte';
   import EntitySearchModal from '$lib/components/content-editor/EntitySearchModal.svelte';
@@ -35,6 +37,7 @@
   // ===========================================================================
 
   const campaignId = $derived($page.params.id ?? '');
+  const lang       = $derived(engine.settings.language);
 
   $effect(() => {
     if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`);
@@ -123,7 +126,7 @@
   <div class="flex items-center gap-3">
     <a href="/campaigns/{campaignId}/content-editor"
        class="text-text-muted hover:text-text-primary transition-colors"
-       aria-label="Back to Content Library">
+       aria-label={ui('content_editor.back_to_library_aria', lang)}>
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -131,9 +134,11 @@
       </svg>
     </a>
     <div>
-      <h1 class="text-xl font-bold text-text-primary">New Entity</h1>
+      <h1 class="text-xl font-bold text-text-primary">{ui('content_editor.new.title', lang)}</h1>
       {#if step !== 'type' && selectedCategory}
-        <p class="text-xs text-text-muted">Category: <code class="font-mono">{selectedCategory}</code></p>
+        <p class="text-xs text-text-muted">
+          {ui('content_editor.new.category_note', lang).replace('{category}', selectedCategory)}
+        </p>
       {/if}
     </div>
   </div>
@@ -141,7 +146,11 @@
   <!-- ── STEP INDICATOR ──────────────────────────────────────────────────── -->
   {#if !cloneFrom}
     <ol class="flex items-center gap-2 text-xs text-text-muted">
-      {#each ([['type','Choose Type'],['origin','Starting point'],['form','Author']] as const) as [s, lbl], i (s)}
+      {#each ([
+        ['type',   ui('content_editor.new.step_type',   lang)],
+        ['origin', ui('content_editor.new.step_origin', lang)],
+        ['form',   ui('content_editor.new.step_author', lang)],
+      ] as const) as [s, lbl], i (s)}
         <li class="flex items-center gap-2">
           <span class="rounded-full h-5 w-5 flex items-center justify-center text-[10px] font-bold
                        {step === s ? 'bg-accent text-white' :
@@ -170,7 +179,7 @@
   {:else if step === 'origin'}
     <div class="flex flex-col gap-4">
       <p class="text-sm text-text-primary font-semibold">
-        How would you like to start?
+        {ui('content_editor.new.how_to_start', lang)}
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -181,9 +190,9 @@
                  hover:border-accent/50 hover:bg-accent/5 transition-colors cursor-pointer"
           onclick={startScratch}
         >
-          <span class="text-sm font-bold text-text-primary">Start from Scratch</span>
+          <span class="text-sm font-bold text-text-primary">{ui('content_editor.new.scratch_title', lang)}</span>
           <span class="text-xs text-text-muted leading-snug">
-            Open an empty form for a brand-new entity. All fields start at their defaults.
+            {ui('content_editor.new.scratch_desc', lang)}
           </span>
         </button>
 
@@ -194,10 +203,9 @@
                  hover:border-accent/50 hover:bg-accent/5 transition-colors cursor-pointer"
           onclick={() => (showClonePicker = true)}
         >
-          <span class="text-sm font-bold text-text-primary">Clone an Existing Entity</span>
+          <span class="text-sm font-bold text-text-primary">{ui('content_editor.new.clone_title', lang)}</span>
           <span class="text-xs text-text-muted leading-snug">
-            Search the full SRD + homebrew catalog, copy a record as a starting point,
-            and give it a new ID.
+            {ui('content_editor.new.clone_desc', lang)}
           </span>
         </button>
       </div>
@@ -207,7 +215,7 @@
         class="btn-ghost text-xs w-fit"
         onclick={() => { step = 'type'; selectedCategory = null; }}
       >
-        ← Back to category selection
+        {ui('content_editor.new.back_category', lang)}
       </button>
     </div>
 

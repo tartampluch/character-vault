@@ -371,14 +371,14 @@ export const SITUATIONAL_LABELS: Readonly<Record<string, { en: string }>> = {
 export function formatSituationalContext(ctx: string, lang: string = 'en'): string {
   const entry = SITUATIONAL_LABELS[ctx];
   if (entry) {
-    // For non-English, try the locale system (keys are registered as
-    // "situation.<ctx>" in each locale file, e.g. fr.json).
-    if (lang !== 'en') {
-      const uiKey = `situation.${ctx}`;
-      const translated = ui(uiKey, lang);
-      // ui() returns the key itself when not found; a real translation differs.
-      if (translated !== uiKey) return translated;
-    }
+    // English baseline is now in UI_STRINGS (situation.* keys); all languages
+    // — including English — are resolved via ui() so a single code path handles
+    // every locale. entry.en is kept as a last-resort safety net.
+    const uiKey = `situation.${ctx}`;
+    const translated = ui(uiKey, lang);
+    // ui() returns the key itself only when it is missing from both the loaded
+    // locale and UI_STRINGS — treat that as a last-resort fallback.
+    if (translated !== uiKey) return translated;
     return entry.en;
   }
   // Fallback: prettify the raw key.

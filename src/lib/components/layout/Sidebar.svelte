@@ -494,7 +494,7 @@
       <div class="pt-2 pb-1">
         {#if !effectivelyCollapsed}
           <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Admin
+            {ui('admin.nav.section_title', engine.settings.language)}
           </p>
         {:else}
           <div class="border-t border-border mx-1"></div>
@@ -504,11 +504,11 @@
       <a
         href="/admin/users"
         class={navLinkClass('/admin/users')}
-        title="User Management"
+        title={ui('admin.nav.user_management', engine.settings.language)}
       >
         <IconAdmin size={20} class="shrink-0" aria-hidden="true" />
         {#if !effectivelyCollapsed}
-          <span class="truncate">User Management</span>
+          <span class="truncate">{ui('admin.nav.user_management', engine.settings.language)}</span>
         {/if}
       </a>
     {/if}

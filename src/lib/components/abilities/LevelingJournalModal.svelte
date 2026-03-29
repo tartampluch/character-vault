@@ -245,7 +245,7 @@
               <span class="font-medium text-text-secondary">{ui('journal.skill_points', lang)}: </span>
               {formatSpFormula(entry)}
               {#if budget.intModifier < 0}
-                <span class="text-amber-400 ml-1">(min 1 per level)</span>
+                <span class="text-amber-400 ml-1">{ui('journal.sp_min_note', lang)}</span>
               {/if}
             </div>
 

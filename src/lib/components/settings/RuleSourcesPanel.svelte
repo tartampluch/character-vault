@@ -27,7 +27,7 @@
       availableFiles = await response.json();
       loadingError = '';
     } catch (err) {
-      loadingError = `Could not load rule sources: ${err}`;
+      loadingError = `${ui('settings.rule_sources.error', engine.settings.language)}: ${err}`;
       availableFiles = [];
     }
   }
