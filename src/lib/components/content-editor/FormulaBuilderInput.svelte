@@ -105,6 +105,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import { IconSuccess, IconWarning, IconError, IconClose } from '$lib/components/ui/icons';
+  import type { LocalizedString } from '$lib/types/i18n';
 
   // ===========================================================================
   // PROPS
@@ -461,7 +462,7 @@
   // SKILL PATHS (dynamic — populated from DataLoader)
   // ===========================================================================
 
-  interface SkillDef { id: string; label?: { en?: string } }
+  interface SkillDef { id: string; label?: { en?: string; fr?: string; [lang: string]: string | undefined } }
 
   /**
    * Dynamic skill entries from the DataLoader config table.
@@ -472,10 +473,11 @@
     const table = dataLoader.getConfigTable('config_skill_definitions');
     if (!table?.data) return [];
     const raw = table.data as unknown as Record<string, SkillDef>;
+    const ranksSuffix = ui('formula.skill_ranks_suffix', engine.settings.language);
     return Object.values(raw)
       .map(def => ({
         path:  `@skills.${def.id}.ranks`,
-        label: `${def.label?.en ?? def.id} — ranks`,
+        label: `${def.label ? engine.t(def.label as LocalizedString) : def.id}${ranksSuffix}`,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   });

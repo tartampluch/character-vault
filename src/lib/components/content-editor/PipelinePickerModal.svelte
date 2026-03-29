@@ -112,7 +112,7 @@
     return Object.values(rawData)
       .map((def): PipelineEntry => ({
         id:         `skills.${def.id}`,
-        label:      (def.label?.en ?? def.id),
+        label:      (engine.t(def.label as Record<string, string>) ?? def.id),
         baseValue:  0,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));

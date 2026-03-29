@@ -11,6 +11,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import type { Modifier } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
+  import type { LocalizedString } from '$lib/types/i18n';
   import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
   import { IconClose } from '$lib/components/ui/icons';
 
@@ -35,19 +36,24 @@
       : current.filter(a => a !== id);
   }
 
-  interface SkillDef { id: string; label?: { en?: string } }
+  interface SkillDef { id: string; label?: { en?: string; fr?: string; [lang: string]: string | undefined } }
 
   const skillDefs = $derived.by((): SkillDef[] => {
     const table = dataLoader.getConfigTable('config_skill_definitions');
     if (!table?.data) return [];
     const raw = table.data as unknown as Record<string, SkillDef>;
     return Object.values(raw)
-      .sort((a, b) => (a.label?.en ?? a.id).localeCompare(b.label?.en ?? b.id));
+      .sort((a, b) => {
+        const la = a.label ? engine.t(a.label as LocalizedString) : a.id;
+        const lb = b.label ? engine.t(b.label as LocalizedString) : b.id;
+        return la.localeCompare(lb);
+      });
   });
 
   function skillLabel(id: string): string {
     const def = skillDefs.find(s => s.id === id);
-    return def?.label?.en ?? id;
+    if (!def) return id;
+    return def.label ? engine.t(def.label as LocalizedString) : id;
   }
 
   const existingClassSkills = $derived(new Set(ctx.feature.classSkills ?? []));
@@ -209,7 +215,7 @@
           >
             <option value="">{ui('editor.race_class.select_skill_placeholder', lang)}</option>
             {#each skillDefs.filter(s => !existingClassSkills.has(s.id)) as s (s.id)}
-              <option value={s.id}>{s.label?.en ?? s.id}</option>
+              <option value={s.id}>{s.label ? engine.t(s.label as LocalizedString) : s.id}</option>
             {/each}
           </select>
           <button type="button" class="btn-primary text-xs py-0.5 px-3 h-auto"
@@ -355,7 +361,7 @@
           >
             <option value="">{ui('editor.race_class.select_skill_placeholder', lang)}</option>
             {#each skillDefs.filter(s => !existingClassSkills.has(s.id)) as s (s.id)}
-              <option value={s.id}>{s.label?.en ?? s.id}</option>
+              <option value={s.id}>{s.label ? engine.t(s.label as LocalizedString) : s.id}</option>
             {/each}
           </select>
           <button

@@ -13,6 +13,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { IconDR, IconAdd, IconDelete } from '$lib/components/ui/icons';
   import type { DREntry } from '$lib/utils/stackingRules';
+  import type { LocalizedString } from '$lib/types/i18n';
   import {
     DR_CUSTOM_FEATURE_PREFIX,
     DR_BYPASS_TAGS_FALLBACK,
@@ -117,7 +118,7 @@
               {#each entry.suppressedModifiers as sup}
                 <span class="text-[10px] text-text-muted line-through opacity-60 px-1.5 py-0.5 rounded border border-border/50">
                   {ui('dr.abbr', engine.settings.language)} {sup.value}/{formatBypassTags((sup as {drBypassTags?: string[]}).drBypassTags ?? [])}
-                  ({sup.sourceName?.[engine.settings.language] ?? sup.sourceName?.en ?? sup.sourceId})
+                  ({sup.sourceName ? engine.t(sup.sourceName as LocalizedString) : (sup.sourceId ?? '')})
                 </span>
               {/each}
             </div>

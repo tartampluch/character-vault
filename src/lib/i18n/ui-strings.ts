@@ -835,6 +835,20 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'magic.type.divine':            'Divine',
   'magic.type.psionic':           'Psionic',
 
+  // Magic school display labels — used in Grimoire and SpellRowItem to show
+  // localised school names for each spell.  These are the player-facing versions;
+  // the GM content-editor uses editor.school.* (which share the same values).
+  // Falls back to the raw spell.school identifier for custom/unknown schools.
+  'magic.school.abjuration':    'Abjuration',
+  'magic.school.conjuration':   'Conjuration',
+  'magic.school.divination':    'Divination',
+  'magic.school.enchantment':   'Enchantment',
+  'magic.school.evocation':     'Evocation',
+  'magic.school.illusion':      'Illusion',
+  'magic.school.necromancy':    'Necromancy',
+  'magic.school.transmutation': 'Transmutation',
+  'magic.school.universal':     'Universal',
+
   // ==========================================================================
   // MODIFIER BREAKDOWN MODAL
   // ==========================================================================
@@ -1822,6 +1836,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'formula.dice_ex_2d8':        '— roll 2d8, add 3',
   /** Loaded skills label in FormulaBuilderInput. */
   'formula.loaded_skills_label': 'Loaded skills:',
+  /** Suffix appended to each skill name in the formula assistant path list (e.g. "Acrobatics — ranks"). */
+  'formula.skill_ranks_suffix':  ' — ranks',
   'formula.validation.valid':   'Valid formula or @-path',
   'formula.validation.partial': 'Partial @-path — add a suffix (e.g. class ID or skill ID)',
   'formula.validation.invalid': 'Unrecognised @-path — check the Formula Assistant for valid paths',

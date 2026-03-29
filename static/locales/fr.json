@@ -2024,6 +2024,7 @@
   "formula.dice_ex_1d6":        "— lancer 1 dé à 6 faces",
   "formula.dice_ex_2d8":        "— lancer 2d8, ajouter 3",
   "formula.loaded_skills_label": "Compétences chargées :",
+  "formula.skill_ranks_suffix":  " — rangs",
 
   "editor.tag_picker.some_selected_title":     "Certains tags de ce groupe sont sélectionnés",
   "editor.armor.acp_sign_hint":                "Saisissez un nombre négatif (ex. -6) ou un nombre positif (stocké tel quel)",
@@ -2087,5 +2088,15 @@
   "content_editor.psi.effect_desc_en_placeholder": "e.g. For every 2 additional PP, damage increases by 1d10.",
   "content_editor.psi.effect_desc_fr_placeholder": "ex. Pour chaque 2 PP supplémentaires, les dégâts augmentent de 1d10.",
 
-  "journal.sp_first_level_abbr": "(×4 N1)"
+  "journal.sp_first_level_abbr": "(×4 N1)",
+
+  "magic.school.abjuration":    "Abjuration",
+  "magic.school.conjuration":   "Invocation",
+  "magic.school.divination":    "Divination",
+  "magic.school.enchantment":   "Enchantement",
+  "magic.school.evocation":     "Évocation",
+  "magic.school.illusion":      "Illusion",
+  "magic.school.necromancy":    "Nécromancie",
+  "magic.school.transmutation": "Transmutation",
+  "magic.school.universal":     "Universel"
 }
