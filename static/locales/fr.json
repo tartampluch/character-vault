@@ -370,6 +370,7 @@
   "feat_catalog.feats_found":     "don(s) trouvé(s)",
   "feat_catalog.search":          "Rechercher des dons…",
   "feat_catalog.all_tags":        "Tous les tags",
+  "feat_catalog.filter_by_tag":   "Filtrer par tag",
   "feat_catalog.empty":           "Chargez une source de règles contenant des dons pour remplir ce catalogue.",
   "feat_catalog.have":            "Acquis",
   "feat_catalog.select":          "Choisir",

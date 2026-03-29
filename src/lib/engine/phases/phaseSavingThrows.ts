@@ -8,9 +8,9 @@ import type { LocalizedString } from '../../types/i18n';
 import { dataLoader } from '../DataLoader';
 
 const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
-  { pipelineId: 'saves.fortitude', label: { en: 'saves.fortitude', fr: 'saves.fortitude' }, keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' }, accentColor: 'oklch(65% 0.19 28)' },
-  { pipelineId: 'saves.reflex',    label: { en: 'saves.reflex',    fr: 'saves.reflex'    }, keyAbilityId: 'stat_dexterity',    keyAbilityAbbr: { en: 'stat_dexterity',    fr: 'stat_dexterity'    }, accentColor: 'oklch(74% 0.12 230)' },
-  { pipelineId: 'saves.will',      label: { en: 'saves.will',      fr: 'saves.will'      }, keyAbilityId: 'stat_wisdom',       keyAbilityAbbr: { en: 'stat_wisdom',       fr: 'stat_wisdom'       }, accentColor: 'oklch(72% 0.12 280)' },
+  { pipelineId: 'saves.fortitude', label: { en: 'saves.fortitude', fr: 'saves.fortitude' }, keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' }, accentColor: 'var(--color-save-fort)' },
+  { pipelineId: 'saves.reflex',    label: { en: 'saves.reflex',    fr: 'saves.reflex'    }, keyAbilityId: 'stat_dexterity',    keyAbilityAbbr: { en: 'stat_dexterity',    fr: 'stat_dexterity'    }, accentColor: 'var(--color-save-ref)'  },
+  { pipelineId: 'saves.will',      label: { en: 'saves.will',      fr: 'saves.will'      }, keyAbilityId: 'stat_wisdom',       keyAbilityAbbr: { en: 'stat_wisdom',       fr: 'stat_wisdom'       }, accentColor: 'var(--color-save-will)' },
 ];
 
 /**
@@ -25,7 +25,7 @@ export function buildSavingThrowConfig(): readonly SaveConfigEntry[] {
       label:          (row['label']          as LocalizedString) ?? { en: '', fr: '' },
       keyAbilityId:   (row['keyAbilityId']   as string)         ?? '',
       keyAbilityAbbr: (row['keyAbilityAbbr'] as LocalizedString) ?? { en: '', fr: '' },
-      accentColor:    (row['accentColor']    as string)         ?? '#888',
+      accentColor:    (row['accentColor']    as string)         ?? 'var(--theme-text-muted)',
     })) satisfies SaveConfigEntry[];
   }
   return DEFAULT_SAVE_CONFIG;

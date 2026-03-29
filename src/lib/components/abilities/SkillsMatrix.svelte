@@ -128,7 +128,7 @@
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-3">
     <div class="flex items-center gap-2">
       <div class="section-header">
-        <IconSkills size={20} aria-hidden="true" />
+        <IconSkills size={24} aria-hidden="true" />
         <span>{ui('skills.title', engine.settings.language)}</span>
       </div>
     </div>
@@ -277,6 +277,7 @@
                   class="w-12 text-center text-sm font-medium rounded border px-1 py-0.5
                          bg-surface text-accent border-border
                          focus:outline-none focus:ring-1 focus:ring-accent/50
+                         [@media(pointer:coarse)]:min-h-[44px]
                          {isAtMax ? 'border-yellow-400 text-yellow-500 dark:text-yellow-400' : ''}
                          {isAtMin ? 'border-amber-700 cursor-not-allowed' : ''}"
                   aria-label="{engine.t(skill.label)} ranks (min {minRanks}, max {maxRanks})"

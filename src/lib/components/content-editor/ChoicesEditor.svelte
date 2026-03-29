@@ -72,6 +72,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import type { FeatureChoice } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
+  import { IconWarning, IconSuccess } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -389,14 +390,18 @@
                 aria-live="polite"
               >
                 {#if qResult.count === 0}
-                  <span class="font-semibold text-amber-400">⚠ 0 matches</span>
+                  <span class="flex items-center gap-1 font-semibold text-amber-400">
+                    <IconWarning size={14} aria-hidden="true" />
+                    0 matches
+                  </span>
                   <span class="text-amber-400/80">
                     No features match this query in the current DataLoader cache.
                     Check that the rule sources containing the target features are enabled.
                   </span>
                 {:else}
-                  <span class="font-semibold">
-                    ✓ {qResult.count} feature{qResult.count === 1 ? '' : 's'} match
+                  <span class="flex items-center gap-1 font-semibold">
+                    <IconSuccess size={14} aria-hidden="true" />
+                    {qResult.count} feature{qResult.count === 1 ? '' : 's'} match
                   </span>
                   {#if qResult.sample.length > 0}
                     <span class="text-text-muted">

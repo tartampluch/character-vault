@@ -91,7 +91,7 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { loadUiLocale, loadUiLocaleFromCache } from '$lib/i18n/ui-strings';
   import { readLanguageCookie } from '$lib/utils/languageCookie';
-  import { IconMenu } from '$lib/components/ui/icons';
+  import { IconMenu, IconLoading } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
   // PROPS
@@ -418,25 +418,14 @@
 -->
 {#if !localeReady}
   <!-- ── LOCALE LOADING SPINNER ───────────────────────────────────────────── -->
+  <!--
+    Uses IconLoading (Lucide's LoaderCircle) per Phase 19.3 icon convention:
+    all icons must be imported as Svelte components, not raw SVG strings.
+    animate-spin applies a CSS rotation animation; text-accent sets the stroke
+    color via currentColor inheritance.
+  -->
   <div class="flex h-screen items-center justify-center bg-surface" aria-label="Loading…" aria-live="polite">
-    <svg
-      class="h-9 w-9 animate-spin"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12" cy="12" r="10"
-        stroke="currentColor" stroke-width="3"
-        class="text-border opacity-30"
-      />
-      <path
-        fill="currentColor"
-        class="text-accent"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
-    </svg>
+    <IconLoading size={36} class="animate-spin text-accent" aria-hidden="true" />
   </div>
 {:else}
 
@@ -534,11 +523,18 @@
             Each segment ends with a › character separator.
           -->
           <nav class="flex items-center gap-1 text-xs text-text-muted truncate" aria-label="Breadcrumb">
-            {#each ancestorCrumbs as crumb, i}
+            {#each ancestorCrumbs as crumb}
               <span class="truncate">{crumb}</span>
-              {#if i < ancestorCrumbs.length - 1}
-                <span class="shrink-0" aria-hidden="true">›</span>
-              {/if}
+              <!--
+                Separator between each ancestor crumb AND between the last ancestor
+                and the current page title. A single unconditional `›` per crumb
+                achieves this cleanly:
+                  1 ancestor:  "Campaigns ›" + "Vault"
+                  2 ancestors: "Campaigns ›" + "Realm Name ›" + "Vault"
+                Previously there was an additional {#if i < length-1} block that
+                rendered a SECOND separator for all non-last ancestors, producing
+                e.g. "Campaigns ›› Realm Name ›" (double chevron). Removed.
+              -->
               <span class="shrink-0" aria-hidden="true">›</span>
             {/each}
           </nav>

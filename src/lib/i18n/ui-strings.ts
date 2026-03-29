@@ -704,6 +704,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'feat_catalog.feats_found':     'feat(s) found',
   'feat_catalog.search':          'Search feats…',
   'feat_catalog.all_tags':        'All tags',
+  'feat_catalog.filter_by_tag':   'Filter by tag',
   'feat_catalog.empty':           'Load a rule source with feats to populate this catalog.',
   'feat_catalog.have':            'Have',
   'feat_catalog.select':          'Select',
@@ -895,7 +896,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'common.cancel':                'Cancel',
   'common.save':                  'Save',
   'common.saving':                'Saving…',
-  'common.saved':                 'Saved ✓',
+  'common.saved':                 'Saved',
   'common.save_error':            'Error',
   'common.campaign':              'Campaign',
   /** Short label for "Class" (e.g., column header in Leveling Journal overview table). */

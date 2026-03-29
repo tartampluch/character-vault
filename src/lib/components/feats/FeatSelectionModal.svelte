@@ -95,13 +95,13 @@
             bind:value={searchQuery}
             placeholder={ui('feat_catalog.search', engine.settings.language)}
             class="input pl-8 text-sm w-full"
-            aria-label="Search feats by name or description"
+            aria-label={ui('feat_catalog.search', engine.settings.language)}
           />
         </div>
         <select
           bind:value={selectedTagFilter}
           class="select text-sm max-w-[140px]"
-          aria-label="Filter by tag"
+          aria-label={ui('feat_catalog.filter_by_tag', engine.settings.language)}
         >
           <option value="">{ui('feat_catalog.all_tags', engine.settings.language)}</option>
           {#each allTags as tag}

@@ -72,12 +72,13 @@
     SAVE_GOOD,
     SAVE_POOR,
   } from '$lib/utils/classProgressionPresets';
-  import {
+   import {
     BAB_PIPELINE_ID,
     SAVE_FORT_PIPELINE_ID,
     SAVE_REFLEX_PIPELINE_ID,
     SAVE_WILL_PIPELINE_ID,
   } from '$lib/utils/constants';
+  import { IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -454,7 +455,7 @@
                       class="text-text-muted hover:text-danger leading-none"
                       onclick={() => removeFeatureAtLevel(entry.level, fid)}
                       aria-label="Remove {fid} from level {entry.level}"
-                    >×</button>
+                    ><IconClose size={12} aria-hidden="true" /></button>
                   </span>
                 {/each}
                 <button

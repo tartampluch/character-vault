@@ -164,3 +164,7 @@ export { Pickaxe      as IconSpeedBurrow  } from 'lucide-svelte'; // Burrow spee
 export { Mountain     as IconSpeedClimb   } from 'lucide-svelte'; // Climb speed
 export { Wind         as IconSpeedFly     } from 'lucide-svelte'; // Fly speed
 export { Waves        as IconSpeedSwim    } from 'lucide-svelte'; // Swim speed
+
+// ─── LOADING / ASYNC STATE ────────────────────────────────────────────────────
+// Used in AppShell.svelte locale-loading spinner (Phase 19.4)
+export { LoaderCircle as IconLoading      } from 'lucide-svelte'; // Indeterminate loading spinner (use with animate-spin)

@@ -24,7 +24,7 @@
 <section class="card p-5 flex flex-col gap-4">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconRuleSources size={20} aria-hidden="true" /> {ui('variant.title', engine.settings.language)}
+      <IconRuleSources size={24} aria-hidden="true" /> {ui('variant.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed">
       {ui('settings.variant.section_desc', engine.settings.language)}

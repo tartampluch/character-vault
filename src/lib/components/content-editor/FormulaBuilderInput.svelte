@@ -104,6 +104,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import { IconSuccess, IconWarning, IconError, IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // PROPS
@@ -434,13 +435,6 @@
   // VALIDATION ICON / COLOUR HELPERS
   // ===========================================================================
 
-  const validationIcon = $derived.by((): string => {
-    if (validationState === 'valid')   return '✓';
-    if (validationState === 'partial') return '⚠';
-    if (validationState === 'invalid') return '✗';
-    return '';
-  });
-
   const validationColor = $derived.by((): string => {
     if (validationState === 'valid')   return 'text-green-400';
     if (validationState === 'partial') return 'text-amber-400';
@@ -507,29 +501,34 @@
     <!-- Right-side decorations (validation icon, clear, dice help) -->
     <div class="absolute right-1 flex items-center gap-0.5">
 
-      <!-- Validation indicator (debounced 150 ms) -->
+      <!-- Validation indicator (debounced 150 ms) — uses Lucide icons per Phase 19.3 -->
       {#if validationState !== 'empty'}
         <span
-          class="text-sm font-bold {validationColor} w-5 text-center select-none"
+          class="flex items-center justify-center {validationColor} w-5 select-none"
           title={validationTitle}
           aria-live="polite"
           aria-label={validationTitle}
         >
-          {validationIcon}
+          {#if validationState === 'valid'}
+            <IconSuccess size={14} aria-hidden="true" />
+          {:else if validationState === 'partial'}
+            <IconWarning size={14} aria-hidden="true" />
+          {:else if validationState === 'invalid'}
+            <IconError size={14} aria-hidden="true" />
+          {/if}
         </span>
       {/if}
 
-      <!-- × Clear button -->
+      <!-- Clear button — uses IconClose per Phase 19.3 (no raw Unicode characters) -->
       {#if currentText && !disabled}
         <button
           type="button"
-          class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-text-primary
-                 text-xs leading-none"
+          class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-text-primary"
           onclick={handleClear}
           title="Clear value"
           aria-label="Clear formula input"
         >
-          ×
+          <IconClose size={12} aria-hidden="true" />
         </button>
       {/if}
 

@@ -36,7 +36,7 @@
 
   <!-- Header -->
   <div class="section-header border-b border-border pb-2">
-    <IconSaves size={20} aria-hidden="true" />
+    <IconSaves size={24} aria-hidden="true" />
     <span>{ui('saves.title', engine.settings.language)}</span>
   </div>
 
@@ -76,7 +76,7 @@
             <!-- Key ability block (CON/DEX/WIS) -->
             <div
               class="flex flex-col items-center px-2 py-1 rounded border bg-surface min-w-[2.5rem]"
-              style="border-color: {save.accentColor}40;"
+              style="border-color: color-mix(in oklch, {save.accentColor} 25%, transparent);"
             >
               <span class="text-[10px] uppercase tracking-wider text-text-muted">{engine.t(save.keyAbilityAbbr)}</span>
               <span

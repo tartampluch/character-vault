@@ -44,6 +44,7 @@
   import type { Modifier } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
   import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
+  import { IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -275,8 +276,8 @@
             {skillLabel(skillId)}
             <button type="button"
                     class="text-text-muted hover:text-danger ml-0.5"
-                    onclick={() => removeClassSkill(skillId)}
-                    aria-label="Remove {skillId}">×</button>
+                     onclick={() => removeClassSkill(skillId)}
+                     aria-label="Remove {skillId}"><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {:else}
           <span class="text-xs text-text-muted italic">No racial class skills.</span>
@@ -427,8 +428,8 @@
             {skillLabel(skillId)}
             <button type="button"
                     class="text-text-muted hover:text-danger ml-0.5 leading-none"
-                    onclick={() => removeClassSkill(skillId)}
-                    aria-label="Remove {skillId} from class skills">×</button>
+                     onclick={() => removeClassSkill(skillId)}
+                     aria-label="Remove {skillId} from class skills"><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {:else}
           <span class="text-xs text-text-muted italic">No class skills defined.</span>

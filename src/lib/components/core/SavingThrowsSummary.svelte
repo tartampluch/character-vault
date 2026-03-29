@@ -32,7 +32,7 @@
   <!-- Header -->
   <div class="flex items-center justify-between border-b border-border pb-2">
     <div class="section-header">
-      <IconSaves size={20} aria-hidden="true" />
+      <IconSaves size={24} aria-hidden="true" />
       <span>{ui('core.saving_throws', lang)}</span>
     </div>
     <a

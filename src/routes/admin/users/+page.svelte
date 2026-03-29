@@ -62,15 +62,15 @@
   }
 
   /**
-   * Returns Tailwind badge classes for a given user role.
-   * Admin = red, GM = amber, Player = blue.
+   * Returns design-system badge classes for a given user role.
+   * Uses .badge-red (Admin), .badge-amber (GM), .badge-blue (Player) from app.css,
+   * which provide correct light/dark theme variants automatically.
    */
   function roleBadgeClass(role: User['role']): string {
-    const base = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border';
     switch (role) {
-      case 'admin':  return `${base} bg-red-900/30  text-red-400  border-red-700/40`;
-      case 'gm':     return `${base} bg-amber-900/30 text-amber-400 border-amber-700/40`;
-      default:       return `${base} bg-blue-900/30  text-blue-400  border-blue-700/40`;
+      case 'admin':  return 'badge badge-red';
+      case 'gm':     return 'badge badge-amber';
+      default:       return 'badge badge-blue';
     }
   }
 

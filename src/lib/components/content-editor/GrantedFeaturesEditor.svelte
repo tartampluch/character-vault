@@ -58,6 +58,7 @@
   import type { ID } from '$lib/types/primitives';
   import FeaturePickerModal from './FeaturePickerModal.svelte';
   import FeatureModal from '$lib/components/ui/FeatureModal.svelte';
+  import { IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -270,7 +271,7 @@
             onclick={() => removeFeature(id)}
             aria-label="Remove {rawId} from granted features"
           >
-            ×
+            <IconClose size={12} aria-hidden="true" />
           </button>
         </div>
       {/each}

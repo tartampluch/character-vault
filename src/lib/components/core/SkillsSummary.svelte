@@ -40,7 +40,7 @@
   <!-- Header -->
   <div class="flex items-center justify-between border-b border-border pb-2">
     <div class="section-header">
-      <IconSkills size={20} aria-hidden="true" />
+      <IconSkills size={24} aria-hidden="true" />
       <span>{ui('core.skills', lang)}</span>
     </div>
     <a

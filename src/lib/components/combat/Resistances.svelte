@@ -53,7 +53,7 @@
 <div class="card p-4 flex flex-col gap-3">
 
   <div class="section-header border-b border-border pb-2">
-    <IconResistances size={20} aria-hidden="true" />
+    <IconResistances size={24} aria-hidden="true" />
     <span>{ui('combat.resistances.title', engine.settings.language)}</span>
   </div>
 
@@ -85,7 +85,7 @@
           type="number"
           class="input text-center text-xs px-1 py-0.5 text-yellow-500 dark:text-yellow-400"
           value={miscMods[res.id] ?? '0'}
-          aria-label="{res.label} misc modifier"
+          aria-label="{res.label} — {ui('combat.resistances.misc', engine.settings.language)}"
           title={ui('combat.resistances.misc', engine.settings.language)}
           oninput={(e) => (miscMods[res.id] = (e.target as HTMLInputElement).value)}
         />

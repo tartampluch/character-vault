@@ -140,7 +140,7 @@
             "en": "CON",
             "fr": "CON"
           },
-          "accentColor": "#f87171"
+          "accentColor": "var(--color-save-fort)"
         },
         {
           "pipelineId": "saves.reflex",
@@ -153,7 +153,7 @@
             "en": "DEX",
             "fr": "DEX"
           },
-          "accentColor": "#93c5fd"
+          "accentColor": "var(--color-save-ref)"
         },
         {
           "pipelineId": "saves.will",
@@ -166,7 +166,7 @@
             "en": "WIS",
             "fr": "SAG"
           },
-          "accentColor": "#c4b5fd"
+          "accentColor": "var(--color-save-will)"
         }
       ]
     },

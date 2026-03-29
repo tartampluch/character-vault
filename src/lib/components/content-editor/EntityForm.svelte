@@ -38,6 +38,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import type { LogicNode } from '$lib/types/logic';
+  import { IconWarning, IconSuccess } from '$lib/components/ui/icons';
 
   import CoreFieldsSection       from './CoreFieldsSection.svelte';
   import ConditionNodeBuilder    from './ConditionNodeBuilder.svelte';
@@ -175,7 +176,7 @@
       aria-live="polite"
       data-testid="override-warning-banner"
     >
-      <span class="text-lg leading-none select-none" aria-hidden="true">⚠</span>
+      <IconWarning size={18} class="shrink-0" aria-hidden="true" />
       <div class="flex flex-col gap-0.5">
         <p class="font-semibold">Override Warning</p>
         <p class="text-xs text-amber-400/80">
@@ -265,7 +266,10 @@
     {#if saveError}
       <p class="text-sm text-red-400 flex-1" role="alert">{saveError}</p>
     {:else if saveSuccess}
-      <p class="text-sm text-green-400 flex-1">✓ Saved successfully.</p>
+      <p class="flex items-center gap-1.5 text-sm text-green-400 flex-1">
+        <IconSuccess size={14} aria-hidden="true" />
+        Saved successfully.
+      </p>
     {:else}
       <p class="text-xs text-text-muted flex-1">
         {mode === 'create' ? 'Creating new entity' : 'Editing entity'}

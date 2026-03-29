@@ -31,7 +31,7 @@
 <section class="card p-5 flex flex-col gap-4">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconDiceRoll size={20} aria-hidden="true" /> {ui('settings.dice_rules.title', engine.settings.language)}
+      <IconDiceRoll size={24} aria-hidden="true" /> {ui('settings.dice_rules.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed">
       {ui('settings.dice_rules.desc', engine.settings.language)}
@@ -63,7 +63,7 @@
 <section class="card p-5 flex flex-col gap-4">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconStats size={20} aria-hidden="true" /> {ui('settings.stat_gen.title', engine.settings.language)}
+      <IconStats size={24} aria-hidden="true" /> {ui('settings.stat_gen.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed">
       {ui('settings.stat_gen.desc', engine.settings.language)}

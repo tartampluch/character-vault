@@ -272,6 +272,7 @@
     class="overflow-x-auto overflow-y-hidden scroll-smooth"
     class:snap-x={snapStep !== null}
     class:snap-mandatory={snapStep !== null}
+    data-snap-align={snapStep ?? undefined}
     onscroll={updateScrollState}
     role="region"
     aria-label={ariaLabel}
@@ -315,25 +316,36 @@
 
 <style>
   /*
-   * When snapStep is active, direct children of the scroll container should
-   * snap. The `snap-start` / `snap-center` class needs to be on the CHILDREN,
-   * but since they live in the `children` snippet (external content), we use
-   * a CSS child combinator: .snap-x > * { scroll-snap-align: start/center; }
+   * PERMITTED STYLE BLOCK — Phase 19.14 exemption: pseudo-element hacks and
+   * :global selectors that target slotted children cannot be expressed with
+   * Tailwind utilities (which can only add classes to the component's own elements,
+   * not to slot children). This block is the minimal exception.
    *
-   * Svelte scoped styles won't bleed into the slot - we use :global to reach
-   * the children. The `:where()` wrapper limits specificity to keep it
-   * overridable by consumer styles.
+   * 1. scroll-snap-align on slot children:
+   *    When snapStep is active, direct children of the scroll container should
+   *    snap to the alignment specified by the `snapStep` prop.
+   *
+   *    We use a `data-snap-align` attribute on the container (set by Svelte) to
+   *    differentiate between 'start' and 'center' alignments. A plain
+   *    `.snap-x > *` selector would apply only one alignment for ALL snap
+   *    containers in the page; the data attribute makes it scoped to this
+   *    component's container.
+   *
+   *    Svelte scoped styles won't bleed into the slot children — we use :global
+   *    with an attribute ancestor selector to reach those children.
+   *
+   * 2. Scrollbar styling on the scroll region:
+   *    Component-specific scrollbar overrides (different from global app.css rules).
+   *    Thin scrollbar on desktop; hidden on touch devices (swipe still works).
    */
-  :global(.snap-x > *) {
+  :global([data-snap-align="start"] > *) {
     scroll-snap-align: start;
   }
 
-  /*
-   * Touch devices: hide scrollbar entirely (swipe gesture still works).
-   * Desktop: thin scrollbar to indicate scrollability.
-   * These are set here because they're component-specific — different from
-   * the global scrollbar rules in app.css which apply to the full page.
-   */
+  :global([data-snap-align="center"] > *) {
+    scroll-snap-align: center;
+  }
+
   div :global([role="region"]) {
     scrollbar-width: thin;
     scrollbar-color: var(--theme-border) transparent;

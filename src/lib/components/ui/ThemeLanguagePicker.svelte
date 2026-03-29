@@ -51,6 +51,7 @@
   import {
     IconThemeSystem, IconThemeLight, IconThemeDark,
     IconChevronDown, IconChevronUp,
+    IconSuccess,
   } from '$lib/components/ui/icons';
 
   // ---------------------------------------------------------------------------
@@ -227,7 +228,10 @@
   ══════════════════════════════════════════════════════════════════════════ -->
   <div class="flex items-center gap-1 w-full">
 
-    <!-- Theme button -->
+    <!-- Theme button.
+         h-8 (32px) on desktop; min-height: 44px enforced on touch devices by the
+         global @media (pointer: coarse) rule in app.css (CSS spec: min-height always
+         wins over height when min-height > height, so the 44px tap target is guaranteed). -->
     <button
       type="button"
       class="h-8 w-8 shrink-0 rounded-md flex items-center justify-center
@@ -285,7 +289,9 @@
   ══════════════════════════════════════════════════════════════════════════ -->
   <div class="flex flex-col items-stretch gap-1 w-full">
 
-    <!-- Theme button -->
+    <!-- Theme button (collapsed layout, flag-only row).
+         Touch target: h-8 (32px) visual size; min-height: 44px guaranteed on touch
+         by the global @media (pointer: coarse) rule in app.css. -->
     <button
       type="button"
       class="h-8 w-full rounded-md flex items-center justify-center
@@ -364,7 +370,7 @@
         {/if}
         <span class="truncate">{engine.getLanguageDisplayName(code)}</span>
         {#if isSelected}
-          <span class="ml-auto shrink-0 text-accent" aria-hidden="true">✓</span>
+          <IconSuccess size={14} class="ml-auto shrink-0 text-accent" aria-hidden="true" />
         {/if}
       </button>
     {/each}

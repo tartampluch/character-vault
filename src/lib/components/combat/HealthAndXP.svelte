@@ -155,7 +155,7 @@
   <!-- ── HIT POINTS ──────────────────────────────────────────────────────── -->
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
-      <IconHealth size={20} aria-hidden="true" />
+      <IconHealth size={24} aria-hidden="true" />
       <span>{ui('combat.hp.title', engine.settings.language)}</span>
     </div>
 
@@ -178,7 +178,7 @@
         <span class="text-[10px] uppercase tracking-wider text-text-muted">{ui('combat.hp.current', engine.settings.language)}</span>
         <input
           type="number"
-          class="w-16 text-center text-xl font-bold rounded border border-border bg-surface px-1 py-0.5 text-red-400 focus:outline-none focus:border-red-400"
+          class="w-16 text-center text-xl font-bold rounded border border-border bg-surface px-1 py-0.5 text-red-400 focus:outline-none focus:border-red-400 [@media(pointer:coarse)]:min-h-[44px]"
           value={currentHp}
           onchange={setCurrentHpDirectly}
           aria-label={ui('combat.hp.current_aria', engine.settings.language)}
@@ -367,7 +367,7 @@
   <!-- ── EXPERIENCE ──────────────────────────────────────────────────────── -->
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
-      <IconXP size={20} aria-hidden="true" />
+      <IconXP size={24} aria-hidden="true" />
       <span>{ui('combat.xp.title', engine.settings.language)}</span>
     </div>
 

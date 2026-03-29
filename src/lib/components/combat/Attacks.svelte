@@ -141,7 +141,7 @@
 <div class="card p-4 flex flex-col gap-4">
 
   <div class="section-header border-b border-border pb-2">
-    <IconAttacks size={20} aria-hidden="true" />
+    <IconAttacks size={24} aria-hidden="true" />
     <span>{ui('combat.attacks.title', engine.settings.language)}</span>
   </div>
 

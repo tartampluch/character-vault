@@ -156,7 +156,7 @@
 
   <!-- ── Header ──────────────────────────────────────────────────────────── -->
   <div class="section-header border-b border-border pb-2">
-    <IconEncumbrance size={20} aria-hidden="true" />
+    <IconEncumbrance size={24} aria-hidden="true" />
     <span>{ui('inventory.encumbrance.title', engine.settings.language)}</span>
   </div>
 

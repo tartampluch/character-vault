@@ -162,7 +162,7 @@
 
   <!-- Section header -->
   <div class="section-header border-b border-border pb-2">
-    <IconInfo size={20} aria-hidden="true" />
+    <IconInfo size={24} aria-hidden="true" />
     <span>{ui('core.basic_info', engine.settings.language)}</span>
   </div>
 
@@ -312,7 +312,6 @@
                 engine.setClassLevel(activeClass.id, lvl);
               }
             }}
-            aria-label="Class level"
           />
         </div>
         {#if activeClass.recommendedAttributes?.length}

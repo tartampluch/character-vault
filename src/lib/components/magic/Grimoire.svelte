@@ -80,7 +80,7 @@
   <!-- Header -->
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-2">
     <div class="section-header">
-      <IconSpells size={20} aria-hidden="true" />
+      <IconSpells size={24} aria-hidden="true" />
       <span>{ui('magic.grimoire.title', engine.settings.language)}</span>
     </div>
     <div class="flex gap-1.5">
@@ -99,7 +99,7 @@
       bind:value={searchQuery}
       placeholder={ui('magic.grimoire.search', engine.settings.language)}
       class="input pl-8 text-sm w-full"
-      aria-label="Search spell catalog"
+      aria-label={ui('magic.grimoire.search', engine.settings.language)}
     />
   </div>
 

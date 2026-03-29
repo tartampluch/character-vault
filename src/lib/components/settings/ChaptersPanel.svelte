@@ -14,7 +14,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { IconJournal, IconDragHandle } from '$lib/components/ui/icons';
+  import { IconJournal, IconDragHandle, IconClose } from '$lib/components/ui/icons';
 
   interface EditableTask {
     id: string;
@@ -112,7 +112,7 @@
 <section class="card p-5 flex flex-col gap-4" id="chapters">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconJournal size={20} aria-hidden="true" /> {ui('settings.chapters.title', engine.settings.language)}
+      <IconJournal size={24} aria-hidden="true" /> {ui('settings.chapters.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed">
       {ui('settings.chapters.desc', engine.settings.language)}
@@ -190,7 +190,7 @@
                     class="shrink-0 text-xs px-1.5 py-0.5 btn-danger-outline"
                     onclick={() => removeTask(chapter.id, task.id)}
                     aria-label="{ui('settings.chapters.remove_task', engine.settings.language)} {ti + 1}"
-                  >×</button>
+                  ><IconClose size={12} aria-hidden="true" /></button>
                 </div>
               {/each}
             {/if}

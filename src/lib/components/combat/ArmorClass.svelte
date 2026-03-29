@@ -62,7 +62,7 @@
   <!-- Header + temp modifier -->
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-2">
     <div class="section-header">
-      <IconAC size={20} aria-hidden="true" />
+      <IconAC size={24} aria-hidden="true" />
       <span>{ui('combat.ac.title', engine.settings.language)}</span>
     </div>
     <div class="flex items-center gap-2">

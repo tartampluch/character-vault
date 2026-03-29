@@ -11,7 +11,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui, uiN } from '$lib/i18n/ui-strings';
-  import { IconGMDashboard, IconWarning, IconError, IconSuccess } from '$lib/components/ui/icons';
+  import { IconGMDashboard, IconWarning, IconError, IconSuccess, IconChevronRight } from '$lib/components/ui/icons';
 
   let {
     gmOverridesText = $bindable('[]'),
@@ -96,7 +96,7 @@
 <section class="card p-5 flex flex-col gap-3">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconGMDashboard size={20} aria-hidden="true" /> {ui('settings.overrides.title', engine.settings.language)}
+      <IconGMDashboard size={24} aria-hidden="true" /> {ui('settings.overrides.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed [&_code]:bg-surface-alt [&_code]:px-1 [&_code]:rounded">
       {@html ui('settings.overrides.desc', engine.settings.language)}
@@ -107,7 +107,7 @@
   <details class="group rounded-lg border border-border">
     <summary class="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-xs font-medium text-text-muted
                     hover:text-text-primary transition-colors list-none [&::-webkit-details-marker]:hidden">
-      <span class="transition-transform duration-150 group-open:rotate-90" aria-hidden="true">▶</span>
+      <IconChevronRight size={12} class="transition-transform duration-150 group-open:rotate-90" aria-hidden="true" />
       {ui('settings.overrides.examples', engine.settings.language)}
     </summary>
     <div class="flex flex-col gap-3 px-3 pb-3 pt-1">

@@ -211,16 +211,31 @@
   <!-- =========================================================================
        HEADER — Logo + Title + Collapse button
 
-       When desktop-collapsed (collapsed=true, at lg+):
+       When desktop-collapsed (collapsed=true, at lg+) AND NOT mobile:
          Only the expand-chevron is rendered, centered. The logo is hidden to
          prevent it from overlapping the 64 px-wide column.
-       When expanded, tablet, or mobile:
+       When expanded, tablet, or mobile (mobileOpen=true):
          Logo + title (title hidden at tablet via effectivelyCollapsed) + buttons.
+
+       IMPORTANT: The mobile close button is rendered UNCONDITIONALLY (outside
+       {#if !collapsed}) to ensure it is always available when the mobile drawer
+       is open — even if the user previously collapsed the sidebar on desktop
+       (which writes sidebar_collapsed=true to the cookie). Without this, a user
+       visiting on mobile after having collapsed the sidebar on desktop would see
+       the open drawer with no X close button.
+       The button already has `class="md:hidden"` which prevents it from showing
+       on desktop.
   ========================================================================== -->
   <div class="flex items-center border-b border-border shrink-0
-              {collapsed ? 'justify-center px-1 py-3' : 'justify-between px-3 py-3'}">
+              {collapsed && !mobileOpen ? 'justify-center px-1 py-3' : 'justify-between px-3 py-3'}">
 
-    {#if !collapsed}
+    <!--
+      Logo is shown when:
+        - Sidebar is not desktop-collapsed (normal expanded state), OR
+        - The mobile drawer is open (mobileOpen=true), regardless of collapsed state.
+      This ensures the logo/title is always visible in the open mobile drawer.
+    -->
+    {#if !collapsed || mobileOpen}
       <!-- Logo / title link — hidden in desktop-collapsed state -->
       <a
         href="/"
@@ -260,18 +275,24 @@
       {/if}
     </button>
 
-    <!-- Mobile close drawer button (mobile only) -->
-    {#if !collapsed}
-      <button
-        class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
-        onclick={onClose}
-        title={ui('nav.close_navigation', engine.settings.language)}
-        aria-label={ui('nav.close_navigation', engine.settings.language)}
-        type="button"
-      >
-        <IconClose size={20} aria-hidden="true" />
-      </button>
-    {/if}
+    <!--
+      Mobile close drawer button (mobile only, via md:hidden).
+      ALWAYS rendered — NOT inside {#if !collapsed}.
+      Rationale: the `collapsed` prop reflects the desktop sidebar state stored
+      in a cookie. A user who collapsed the sidebar on desktop and then opens
+      the app on mobile would see the collapsed state (cookie value). Without
+      this unconditional render, the X button would be absent from the mobile
+      drawer, leaving backdrop-tap as the only way to close.
+    -->
+    <button
+      class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
+      onclick={onClose}
+      title={ui('nav.close_navigation', engine.settings.language)}
+      aria-label={ui('nav.close_navigation', engine.settings.language)}
+      type="button"
+    >
+      <IconClose size={20} aria-hidden="true" />
+    </button>
   </div>
 
   <!-- =========================================================================

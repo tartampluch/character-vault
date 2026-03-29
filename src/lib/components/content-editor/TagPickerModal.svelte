@@ -57,6 +57,7 @@
   import { untrack } from 'svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // PROPS
@@ -426,7 +427,7 @@
                   onclick={() => toggleTag(tag)}
                   aria-label="Remove tag {tag}"
                 >
-                  ×
+                  <IconClose size={12} aria-hidden="true" />
                 </button>
               </span>
             {/each}

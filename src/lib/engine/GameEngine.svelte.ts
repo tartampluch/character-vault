@@ -95,21 +95,21 @@ const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
     // ("CON", "DEX", "WIS") are loaded from config_save_definitions and replace these placeholders
     // within milliseconds of app startup. Players will never see these fallback values.
     keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' },
-    accentColor:    'oklch(65% 0.19 28)',
+    accentColor:    'var(--color-save-fort)',
   },
   {
     pipelineId:     'saves.reflex',
     label:          { en: 'saves.reflex', fr: 'saves.reflex' },
     keyAbilityId:   'stat_dexterity',
     keyAbilityAbbr: { en: 'stat_dexterity', fr: 'stat_dexterity' },
-    accentColor:    'oklch(74% 0.12 230)',
+    accentColor:    'var(--color-save-ref)',
   },
   {
     pipelineId:     'saves.will',
     label:          { en: 'saves.will', fr: 'saves.will' },
     keyAbilityId:   'stat_wisdom',
     keyAbilityAbbr: { en: 'stat_wisdom', fr: 'stat_wisdom' },
-    accentColor:    'oklch(72% 0.12 280)',
+    accentColor:    'var(--color-save-will)',
   },
 ];
 

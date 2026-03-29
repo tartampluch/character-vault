@@ -116,7 +116,7 @@
     <!-- ── PERSONAL STORY ─────────────────────────────────────────── -->
     <section class="flex flex-col gap-2">
       <div class="section-header border-b border-border pb-2">
-        <IconLore size={20} aria-hidden="true" />
+        <IconLore size={24} aria-hidden="true" />
         <span>{ui('lore.personal_story', lang)}</span>
       </div>
       <textarea
@@ -133,7 +133,7 @@
 
       <!-- Languages header -->
       <div class="section-header border-b border-border pb-2">
-        <IconLanguages size={20} aria-hidden="true" />
+        <IconLanguages size={24} aria-hidden="true" />
         <span>{ui('lore.languages', lang)}</span>
       </div>
 
@@ -218,7 +218,7 @@
   <!-- ================================================================= -->
   <section class="flex flex-col gap-2">
     <div class="section-header border-b border-border pb-2">
-      <IconCharacter size={20} aria-hidden="true" />
+      <IconCharacter size={24} aria-hidden="true" />
       <span>{ui('lore.appearance', lang)}</span>
     </div>
 

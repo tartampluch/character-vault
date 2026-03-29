@@ -23,6 +23,7 @@
   import { getContext, untrack } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import type { Feature } from '$lib/types/feature';
+  import { IconSuccess } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -151,7 +152,12 @@
       </button>
       <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
               onclick={copyToClipboard}>
-        {copySuccess ? '✓ Copied!' : 'Copy to Clipboard'}
+        {#if copySuccess}
+          <IconSuccess size={14} aria-hidden="true" />
+          Copied!
+        {:else}
+          Copy to Clipboard
+        {/if}
       </button>
       <span class="text-[10px] text-text-muted ml-auto">
         {textareaValue.length.toLocaleString()} chars

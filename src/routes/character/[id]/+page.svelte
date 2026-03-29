@@ -111,7 +111,7 @@
   import {
     IconTabCore, IconTabAbilities, IconTabCombat,
     IconTabFeats, IconTabMagic, IconTabInventory,
-    IconBack,
+    IconBack, IconSuccess,
   } from '$lib/components/ui/icons';
 
   // ===========================================================================
@@ -310,7 +310,7 @@
         type="button"
       >
         {#if saveStatus === 'saving'}{ui('common.saving', engine.settings.language)}
-        {:else if saveStatus === 'saved'}{ui('common.saved', engine.settings.language)}
+        {:else if saveStatus === 'saved'}<IconSuccess size={14} aria-hidden="true" />{ui('common.saved', engine.settings.language)}
         {:else if saveStatus === 'error'}{ui('common.save_error', engine.settings.language)}
         {:else}{ui('common.save', engine.settings.language)}{/if}
       </button>

@@ -172,6 +172,21 @@
 	--color-ac-touch:           oklch(72% 0.17 145); /* green:      Armor Class (Touch)     */
 	--color-ac-flat:            oklch(78% 0.17 88);  /* gold/amber: Armor Class (Flat-Foot) */
 
+	/**
+	 * SAVING THROW ACCENT COLORS — fixed semantic colors (theme-invariant).
+	 * Each saving throw (Fortitude / Reflex / Will) uses a distinct hue to
+	 * quickly distinguish the three saves at a glance. Defined as CSS custom
+	 * properties so .svelte components reference var(--color-save-*) rather
+	 * than hardcoding oklch() literals (Phase 19 no-hardcoded-color rule).
+	 *
+	 *   Fortitude — red-orange (hue 28°): strength/constitution, physical toughness
+	 *   Reflex    — blue      (hue 230°): dexterity, evasive reflexes
+	 *   Will      — purple    (hue 280°): wisdom/charisma, mental fortitude
+	 */
+	--color-save-fort: oklch(65% 0.19 28);  /* Fortitude — red-orange */
+	--color-save-ref:  oklch(74% 0.12 230); /* Reflex    — blue       */
+	--color-save-will: oklch(72% 0.12 280); /* Will      — purple     */
+
 	/* Page/panel backgrounds */
 	--theme-surface:     oklch(100% 0 0);             /* #ffffff — primary surface     */
 	--theme-surface-alt: oklch(97.3% 0.003 264);      /* ≈ gray-50 w/ tint — inputs    */
@@ -635,6 +650,7 @@
 	.badge-green,
 	.badge-red,
 	.badge-yellow,
+	.badge-amber,
 	.badge-gray,
 	.badge-blue {
 		@apply inline-flex items-center gap-1
@@ -659,6 +675,15 @@
 	.badge-yellow {
 		@apply bg-yellow-100 text-yellow-700 border border-yellow-200
 		       dark:bg-yellow-900/60 dark:text-yellow-300 dark:border-yellow-700/50;
+	}
+
+	/**
+	 * badge-amber — GM role indicator, warning states requiring attention.
+	 * Amber conveys caution/authority — suitable for GM role badges.
+	 */
+	.badge-amber {
+		@apply bg-amber-100 text-amber-700 border border-amber-200
+		       dark:bg-amber-900/60 dark:text-amber-300 dark:border-amber-700/50;
 	}
 
 	/** badge-gray uses semantic tokens — auto-themes without explicit dark: override */

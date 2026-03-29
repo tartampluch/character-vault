@@ -59,6 +59,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import TagPickerModal from './TagPickerModal.svelte';
   import type { FeatureCategory } from '$lib/types/feature';
+  import { IconWarning, IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
   // CONTEXT
@@ -191,7 +192,7 @@
   {#if hasOverride}
     <div class="flex items-start gap-3 rounded-lg border border-amber-600/40
                 bg-amber-900/20 px-4 py-3 text-sm text-amber-300">
-      <span class="text-lg leading-none shrink-0" aria-hidden="true">⚠</span>
+      <IconWarning size={18} class="shrink-0" aria-hidden="true" />
       <div class="flex flex-col gap-1">
         <p class="font-semibold">
           This ID matches an existing SRD entity — it will be overridden.
@@ -425,7 +426,7 @@
               class="text-text-muted hover:text-danger transition-colors leading-none ml-0.5"
               onclick={() => removeTag('tags', tag)}
               aria-label="Remove tag {tag}"
-            >×</button>
+            ><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {/each}
       {/if}
@@ -468,7 +469,7 @@
               class="text-red-400/60 hover:text-danger transition-colors leading-none ml-0.5"
               onclick={() => removeTag('forbiddenTags', tag)}
               aria-label="Remove forbidden tag {tag}"
-            >×</button>
+            ><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {/each}
       {/if}

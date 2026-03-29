@@ -52,7 +52,7 @@
   <!-- Header: title + slot budget + add button -->
   <div class="flex items-center flex-wrap gap-2 border-b border-border pb-3">
     <div class="section-header flex-1">
-      <IconTabFeats size={20} aria-hidden="true" />
+      <IconTabFeats size={24} aria-hidden="true" />
       <span>{ui('feats.title', engine.settings.language)}</span>
     </div>
 

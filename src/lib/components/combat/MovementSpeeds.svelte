@@ -33,7 +33,7 @@
 <div class="card p-4 flex flex-col gap-3">
 
   <div class="section-header border-b border-border pb-2">
-    <IconSpeedLand size={20} aria-hidden="true" />
+    <IconSpeedLand size={24} aria-hidden="true" />
     <span>{ui('combat.movement.title', engine.settings.language)}</span>
   </div>
 

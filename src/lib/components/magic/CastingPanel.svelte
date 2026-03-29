@@ -171,7 +171,7 @@
 <div class="card p-4 flex flex-col gap-3">
 
   <div class="section-header border-b border-border pb-2">
-    <IconTabMagic size={20} aria-hidden="true" />
+    <IconTabMagic size={24} aria-hidden="true" />
     <span>{ui('magic.casting.title', engine.settings.language)}</span>
   </div>
 

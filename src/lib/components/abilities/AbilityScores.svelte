@@ -57,7 +57,7 @@
   <!-- Header with wizard buttons -->
   <div class="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-3">
     <div class="section-header">
-      <IconStats size={20} aria-hidden="true" />
+      <IconStats size={24} aria-hidden="true" />
       <span>{ui('abilities.title', engine.settings.language)}</span>
     </div>
     <div class="flex gap-2">

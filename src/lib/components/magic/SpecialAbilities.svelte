@@ -78,7 +78,7 @@
 <div class="card p-4 flex flex-col gap-3">
 
   <div class="section-header border-b border-border pb-2">
-    <IconAbilities size={20} aria-hidden="true" />
+    <IconAbilities size={24} aria-hidden="true" />
     <span>{ui('magic.abilities.title', engine.settings.language)}</span>
   </div>
 

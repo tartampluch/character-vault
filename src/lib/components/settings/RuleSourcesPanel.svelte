@@ -120,7 +120,7 @@
 <section class="card p-5 flex flex-col gap-4">
   <div>
     <h2 class="section-header text-base border-b border-border pb-2">
-      <IconSpells size={20} aria-hidden="true" /> {ui('settings.rule_sources.title', engine.settings.language)}
+      <IconSpells size={24} aria-hidden="true" /> {ui('settings.rule_sources.title', engine.settings.language)}
     </h2>
     <p class="mt-2 text-xs text-text-muted leading-relaxed">
       {ui('settings.rule_sources.desc', engine.settings.language)}
