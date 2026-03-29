@@ -197,7 +197,7 @@
                   ondragover={(e) => handleTaskDragOver(e, chapter.id, ti)}
                   ondragend={handleTaskDragEnd}
                 >
-                  <IconDragHandle size={12} class="text-text-muted/40 shrink-0 cursor-grab mt-2" aria-hidden="true" />
+                  <IconDragHandle size={12} class="text-text-muted/40 shrink-0 cursor-grab" aria-hidden="true" />
                   <div class="flex-1 min-w-0">
                     <LocalizedStringEditor
                       value={task.title}
@@ -213,7 +213,7 @@
                   </div>
                   <button
                     type="button"
-                    class="shrink-0 p-1 btn-danger-outline mt-1"
+                    class="shrink-0 p-1 btn-danger-outline"
                     onclick={() => removeTask(chapter.id, task.id)}
                     aria-label="{ui('settings.chapters.remove_task', lang)} {ti + 1}"
                   ><IconClose size={12} aria-hidden="true" /></button>
