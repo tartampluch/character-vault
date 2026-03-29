@@ -12,30 +12,33 @@
   import type { MagicFeature, AugmentationRule, PsionicDiscipline, PsionicDisplay } from '$lib/types/feature';
   import type { Modifier } from '$lib/types/pipeline';
   import LevelModifierModal from './LevelModifierModal.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui, uiN } from '$lib/i18n/ui-strings';
 
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
   const magic = $derived(ctx.feature as unknown as MagicFeature);
+  const lang = $derived(engine.settings.language);
 
   // ===========================================================================
   // PSIONIC METADATA
   // ===========================================================================
 
-  const DISCIPLINES: Array<{ value: PsionicDiscipline; label: string; hint: string }> = [
-    { value: 'clairsentience',   label: 'Clairsentience',   hint: 'Information, scrying, precognition' },
-    { value: 'metacreativity',   label: 'Metacreativity',   hint: 'Matter creation, astral constructs' },
-    { value: 'psychokinesis',    label: 'Psychokinesis',    hint: 'Energy manipulation, force' },
-    { value: 'psychometabolism', label: 'Psychometabolism', hint: 'Body alteration, healing' },
-    { value: 'psychoportation',  label: 'Psychoportation',  hint: 'Movement, teleportation' },
-    { value: 'telepathy',        label: 'Telepathy',        hint: 'Mind reading, charm, compulsion' },
-  ];
+  const DISCIPLINES = $derived<Array<{ value: PsionicDiscipline; label: string; hint: string }>>([
+    { value: 'clairsentience',   label: ui('psi.discipline.clairsentience',        lang), hint: ui('psi.discipline.clairsentience.hint',   lang) },
+    { value: 'metacreativity',   label: ui('psi.discipline.metacreativity',        lang), hint: ui('psi.discipline.metacreativity.hint',   lang) },
+    { value: 'psychokinesis',    label: ui('psi.discipline.psychokinesis',         lang), hint: ui('psi.discipline.psychokinesis.hint',    lang) },
+    { value: 'psychometabolism', label: ui('psi.discipline.psychometabolism',      lang), hint: ui('psi.discipline.psychometabolism.hint', lang) },
+    { value: 'psychoportation',  label: ui('psi.discipline.psychoportation',       lang), hint: ui('psi.discipline.psychoportation.hint',  lang) },
+    { value: 'telepathy',        label: ui('psi.discipline.telepathy',             lang), hint: ui('psi.discipline.telepathy.hint',        lang) },
+  ]);
 
-  const DISPLAYS: Array<{ value: PsionicDisplay; label: string; hint: string }> = [
-    { value: 'auditory', label: 'Auditory', hint: 'Bass hum; heard up to 100 ft.' },
-    { value: 'material', label: 'Material', hint: 'Ectoplasmic coating; evaporates in 1 round' },
-    { value: 'mental',   label: 'Mental',   hint: 'Subtle chime in nearby minds (15 ft.)' },
-    { value: 'olfactory',label: 'Olfactory',hint: 'Odd scent; spreads 20 ft., fades quickly' },
-    { value: 'visual',   label: 'Visual',   hint: 'Silver eye-fire + rainbow flash' },
-  ];
+  const DISPLAYS = $derived<Array<{ value: PsionicDisplay; label: string; hint: string }>>([
+    { value: 'auditory', label: ui('psi.display.auditory.label', lang), hint: ui('psi.display.auditory.hint', lang) },
+    { value: 'material', label: ui('psi.display.material.label', lang), hint: ui('psi.display.material.hint', lang) },
+    { value: 'mental',   label: ui('psi.display.mental.label',   lang), hint: ui('psi.display.mental.hint',   lang) },
+    { value: 'olfactory',label: ui('psi.display.olfactory.label',lang), hint: ui('psi.display.olfactory.hint',lang) },
+    { value: 'visual',   label: ui('psi.display.visual.label',   lang), hint: ui('psi.display.visual.hint',   lang) },
+  ]);
 
   function hasDisplay(d: PsionicDisplay): boolean {
     return (magic.displays ?? []).includes(d);
@@ -105,7 +108,7 @@
 <details class="group/ps rounded-lg border border-border overflow-hidden">
   <summary class="flex items-center justify-between px-4 py-2 bg-surface-alt cursor-pointer
                   select-none list-none hover:bg-accent/5 font-semibold text-sm text-text-primary">
-    Psionic Data
+    {ui('content_editor.psi.section_title', lang)}
     <svg class="h-4 w-4 text-text-muted transition-transform group-open/ps:rotate-180"
          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -120,7 +123,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <div class="flex flex-col gap-1">
         <label for={fid('disc')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Discipline
+          {ui('psi.discipline_label', lang)}
         </label>
         <select id={fid('disc')} class="input text-sm"
                 value={magic.discipline ?? ''}
@@ -128,7 +131,7 @@
                   const v = (e.currentTarget as HTMLSelectElement).value;
                   (ctx.feature as MagicFeature).discipline = v ? (v as PsionicDiscipline) : undefined;
                 }}>
-          <option value="">— Not set</option>
+          <option value="">{ui('content_editor.psi.not_set', lang)}</option>
           {#each DISCIPLINES as d (d.value)}
             <option value={d.value}>{d.label} — {d.hint}</option>
           {/each}
@@ -137,7 +140,7 @@
 
       <div class="flex flex-col gap-1">
         <label for={fid('ppbase')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Base PP Cost
+          {ui('content_editor.psi.base_pp_cost_label', lang)}
         </label>
         <input id={fid('ppbase')} type="number" class="input text-xs w-24" min="1" max="17"
                value={(magic as unknown as { basePpCost?: number }).basePpCost ?? ''}
@@ -146,14 +149,14 @@
                  const v = (e.currentTarget as HTMLInputElement).value.trim();
                  (ctx.feature as unknown as { basePpCost?: number }).basePpCost = v ? parseInt(v) : undefined;
                }}/>
-        <p class="text-[10px] text-text-muted">Power points spent per manifestation (1–17).</p>
+        <p class="text-[10px] text-text-muted">{ui('content_editor.psi.base_pp_cost_desc', lang)}</p>
       </div>
     </div>
 
     <!-- Displays (multi-select checkboxes) -->
     <fieldset class="flex flex-col gap-2">
       <legend class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Displays (sensory effects on manifestation)
+        {ui('content_editor.psi.displays_legend', lang)}
       </legend>
       <div class="flex flex-wrap gap-3">
         {#each DISPLAYS as d (d.value)}
@@ -173,27 +176,27 @@
     <div class="flex flex-col gap-3">
       <div class="flex items-center justify-between">
         <span class="text-sm font-semibold text-text-primary">
-          Augmentations
+          {ui('content_editor.psi.augmentations_title', lang)}
           {#if (magic.augmentations ?? []).length > 0}
             <span class="ml-1.5 badge text-xs font-normal">{magic.augmentations?.length}</span>
           {/if}
         </span>
         <button type="button" class="btn-primary text-xs py-1 px-3 h-auto"
                 onclick={addAugmentation}>
-          + Add Augmentation
+          {ui('content_editor.psi.add_augmentation', lang)}
         </button>
       </div>
 
       {#if (magic.augmentations ?? []).length === 0}
         <p class="text-xs text-text-muted italic">
-          No augmentations. The base power is manifested at its standard effect.
+          {ui('content_editor.psi.no_augmentations', lang)}
         </p>
       {:else}
         {#each (magic.augmentations ?? []) as aug, i (i)}
           <div class="rounded border border-border bg-surface p-3 flex flex-col gap-2">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-                Augmentation #{i + 1}
+                {ui('content_editor.psi.augmentation_label', lang).replace('{n}', String(i + 1))}
               </span>
               <button type="button"
                       class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-danger"
@@ -211,7 +214,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid(`aug-pp-${i}`)}
                        class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  PP Cost Increment
+                  {ui('content_editor.psi.pp_cost_increment', lang)}
                 </label>
                 <input id={fid(`aug-pp-${i}`)} type="number" class="input text-xs" min="1" max="17"
                        value={aug.costIncrement}
@@ -224,8 +227,8 @@
                   <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
                          checked={aug.isRepeatable}
                          onchange={(e) => patchAugmentation(i, { isRepeatable: (e.currentTarget as HTMLInputElement).checked })}/>
-                  <span>Repeatable</span>
-                  <span class="text-text-muted text-[10px]">(can apply multiple times)</span>
+                  <span>{ui('content_editor.psi.repeatable', lang)}</span>
+                  <span class="text-text-muted text-[10px]">{ui('content_editor.psi.repeatable_hint', lang)}</span>
                 </label>
               </div>
 
@@ -233,13 +236,13 @@
               <div class="flex flex-col gap-1 justify-end">
                 <div class="flex items-center gap-2">
                   {#if aug.grantedModifiers.length > 0}
-                    <span class="badge text-[10px]">{aug.grantedModifiers.length} modifier{aug.grantedModifiers.length === 1 ? '' : 's'}</span>
+                    <span class="badge text-[10px]">{uiN('content_editor.psi.modifier_count', aug.grantedModifiers.length, lang)}</span>
                   {:else}
-                    <span class="text-[10px] text-text-muted italic">No modifiers</span>
+                    <span class="text-[10px] text-text-muted italic">{ui('content_editor.psi.no_modifiers', lang)}</span>
                   {/if}
                   <button type="button" class="text-[10px] text-text-muted underline hover:text-accent"
                           onclick={() => (augModalState = { index: i, modifiers: aug.grantedModifiers })}>
-                    {aug.grantedModifiers.length > 0 ? 'Edit' : '+ Add'} modifiers
+                    {aug.grantedModifiers.length > 0 ? ui('content_editor.psi.edit_modifiers', lang) : ui('content_editor.psi.add_modifiers', lang)}
                   </button>
                 </div>
               </div>
@@ -250,7 +253,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid(`aug-en-${i}`)}
                        class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  Effect Description (EN)
+                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', 'EN')}
                 </label>
                 <textarea id={fid(`aug-en-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"
@@ -262,7 +265,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid(`aug-fr-${i}`)}
                        class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  Effect Description (FR)
+                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', 'FR')}
                 </label>
                 <textarea id={fid(`aug-fr-${i}`)}
                           class="input text-xs min-h-[4rem] resize-y font-sans"

@@ -51,12 +51,15 @@
   import type { ResourcePool } from '$lib/types/pipeline';
   import PipelinePickerModal from './PipelinePickerModal.svelte';
   import FormulaBuilderInput from './FormulaBuilderInput.svelte';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ===========================================================================
   // CONTEXT
   // ===========================================================================
 
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
 
   // ===========================================================================
   // RESET CONDITION METADATA
@@ -64,16 +67,16 @@
 
   type ResetCondition = ResourcePool['resetCondition'];
 
-  const RESET_CONDITIONS: Array<{ value: ResetCondition; label: string; hint: string }> = [
-    { value: 'never',      label: 'Never',             hint: 'Finite charges — wands, Ring of the Ram (use until empty)' },
-    { value: 'per_day',    label: 'Per Day (at dawn)',  hint: 'X/day items; resets at dawn regardless of sleep' },
-    { value: 'long_rest',  label: 'Long Rest',          hint: '8 hours restful sleep — standard D&D 3.5 spell/HP recovery' },
-    { value: 'short_rest', label: 'Short Rest',         hint: 'House-rule variant; non-default D&D 3.5' },
-    { value: 'encounter',  label: 'Per Encounter',      hint: 'Resets at the start of each new combat encounter' },
-    { value: 'per_week',   label: 'Per Week',           hint: 'Calendar weekly ability — e.g. Elemental Command chain lightning' },
-    { value: 'per_turn',   label: 'Per Turn',           hint: 'Recharges at start of this character\'s own turn' },
-    { value: 'per_round',  label: 'Per Round',          hint: 'Recharges once per round at a fixed initiative point' },
-  ];
+  const RESET_CONDITIONS = $derived<Array<{ value: ResetCondition; label: string; hint: string }>>([
+    { value: 'never',      label: ui('reset_condition.never.label',       lang), hint: ui('reset_condition.never.hint',       lang) },
+    { value: 'per_day',    label: ui('reset_condition.per_day.label',     lang), hint: ui('reset_condition.per_day.hint',     lang) },
+    { value: 'long_rest',  label: ui('reset_condition.long_rest.label',   lang), hint: ui('reset_condition.long_rest.hint',   lang) },
+    { value: 'short_rest', label: ui('reset_condition.short_rest.label',  lang), hint: ui('reset_condition.short_rest.hint',  lang) },
+    { value: 'encounter',  label: ui('reset_condition.encounter.label',   lang), hint: ui('reset_condition.encounter.hint',   lang) },
+    { value: 'per_week',   label: ui('reset_condition.per_week.label',    lang), hint: ui('reset_condition.per_week.hint',    lang) },
+    { value: 'per_turn',   label: ui('reset_condition.per_turn.label',    lang), hint: ui('reset_condition.per_turn.hint',    lang) },
+    { value: 'per_round',  label: ui('reset_condition.per_round.label',   lang), hint: ui('reset_condition.per_round.hint',   lang) },
+  ]);
 
   /** Returns true when the reset condition supports / requires a rechargeAmount. */
   function needsRechargeAmount(c: ResetCondition): boolean {
@@ -151,7 +154,7 @@
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-0.5">
       <span class="text-sm font-semibold text-text-primary">
-        Resource Pool Templates
+        {ui('content_editor.pool.section_title', lang)}
         {#if (ctx.feature.resourcePoolTemplates ?? []).length > 0}
           <span class="ml-1.5 text-xs font-normal text-text-muted badge">
             {ctx.feature.resourcePoolTemplates?.length}
@@ -159,8 +162,7 @@
         {/if}
       </span>
       <span class="text-[11px] text-text-muted">
-        Declares charge or usage pools stamped onto each item instance when equipped.
-        Use for charged items (wands, rods, rings with limited uses).
+        {ui('content_editor.pool.section_desc', lang)}
       </span>
     </div>
     <button
@@ -168,17 +170,16 @@
       class="btn-primary text-xs py-1 px-3 h-auto shrink-0"
       onclick={addPool}
     >
-      + Add Pool
+      {ui('content_editor.pool.add', lang)}
     </button>
   </div>
 
   <!-- Empty state -->
   {#if (ctx.feature.resourcePoolTemplates ?? []).length === 0}
     <div class="rounded border border-dashed border-border px-4 py-5 text-center">
-      <p class="text-xs text-text-muted italic">No resource pools defined.</p>
+      <p class="text-xs text-text-muted italic">{ui('content_editor.pool.empty', lang)}</p>
       <p class="text-xs text-text-muted mt-1">
-        Add a pool for charged items (e.g., Ring of the Ram uses "charges") or
-        limited-use abilities that reset on a schedule.
+        {ui('content_editor.pool.empty_hint', lang)}
       </p>
     </div>
 
@@ -191,7 +192,7 @@
         <!-- Entry header: index + delete -->
         <div class="flex items-center justify-between">
           <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">
-            Pool #{i + 1}
+            {ui('content_editor.pool.entry_label', lang).replace('{n}', String(i + 1))}
             {#if pool.poolId}
               <code class="ml-1 font-mono text-[9px] opacity-60">{pool.poolId}</code>
             {/if}
@@ -221,21 +222,20 @@
               for={fid(`pid-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Pool ID
+              {ui('content_editor.pool.pool_id_label', lang)}
             </label>
             <input
               id={fid(`pid-${i}`)}
               type="text"
               class="input font-mono text-xs"
               value={pool.poolId}
-              placeholder="e.g. charges, daily_call, spell_uses"
+              placeholder={ui('content_editor.pool.pool_id_placeholder', lang)}
               oninput={(e) => patchPool(i, { poolId: (e.currentTarget as HTMLInputElement).value })}
               autocomplete="off"
               spellcheck="false"
             />
             <p class="text-[10px] text-text-muted">
-              Key in <code class="font-mono">ActiveFeatureInstance.itemResourcePools</code>.
-              Convention: short noun in snake_case.
+              {ui('content_editor.pool.pool_id_desc', lang)}
             </p>
           </div>
 
@@ -245,7 +245,7 @@
               for={fid(`def-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Default Current
+              {ui('content_editor.pool.default_current_label', lang)}
             </label>
             <input
               id={fid(`def-${i}`)}
@@ -258,8 +258,7 @@
               })}
             />
             <p class="text-[10px] text-text-muted">
-              Charges when the item is first created. Looted items start here too
-              unless the GM overrides in the item instance.
+              {ui('content_editor.pool.default_current_desc', lang)}
             </p>
           </div>
 
@@ -269,14 +268,14 @@
               for={fid(`lbl-en-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Label (English)
+              {ui('content_editor.pool.label_en', lang)}
             </label>
             <input
               id={fid(`lbl-en-${i}`)}
               type="text"
               class="input text-sm"
               value={(pool.label as Record<string,string>)?.['en'] ?? ''}
-              placeholder="e.g. Ram Charges"
+              placeholder={ui('content_editor.pool.label_en_placeholder', lang)}
               oninput={(e) => setPoolLabel(i, 'en', (e.currentTarget as HTMLInputElement).value)}
             />
           </div>
@@ -287,14 +286,14 @@
               for={fid(`lbl-fr-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Label (Français)
+              {ui('content_editor.pool.label_fr', lang)}
             </label>
             <input
               id={fid(`lbl-fr-${i}`)}
               type="text"
               class="input text-sm"
               value={(pool.label as Record<string,string>)?.['fr'] ?? ''}
-              placeholder="ex. Charges du bélier"
+              placeholder={ui('content_editor.pool.label_fr_placeholder', lang)}
               oninput={(e) => setPoolLabel(i, 'fr', (e.currentTarget as HTMLInputElement).value)}
             />
           </div>
@@ -305,7 +304,7 @@
               for={fid(`maxpl-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Max Pipeline ID
+              {ui('content_editor.pool.max_pipeline_label', lang)}
             </label>
             <button
               id={fid(`maxpl-${i}`)}
@@ -313,9 +312,9 @@
               class="input text-xs text-left flex items-center gap-2 font-mono
                      {pool.maxPipelineId ? 'text-text-primary' : 'text-text-muted italic'}"
               onclick={() => (pickerOpenForIndex = i)}
-              title="Click to pick the pipeline that defines the maximum charges"
+              title={ui('content_editor.pool.max_pipeline_title', lang)}
             >
-              {pool.maxPipelineId || 'Click to pick max pipeline…'}
+              {pool.maxPipelineId || ui('content_editor.pool.max_pipeline_empty', lang)}
               <svg class="h-3 w-3 text-text-muted ml-auto shrink-0"
                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                    fill="none" stroke="currentColor" stroke-width="2"
@@ -338,7 +337,7 @@
               for={fid(`rst-${i}`)}
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Reset Condition
+              {ui('content_editor.pool.reset_condition_label', lang)}
             </label>
             <select
               id={fid(`rst-${i}`)}
@@ -364,9 +363,11 @@
                 for={fid(`rech-${i}`)}
                 class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
               >
-                Recharge Amount
+                {ui('content_editor.pool.recharge_amount_label', lang)}
                 <span class="ml-1 text-[9px] font-normal normal-case text-text-muted">
-                  (restored each {pool.resetCondition === 'per_turn' ? 'turn' : 'round'})
+                  {pool.resetCondition === 'per_turn'
+                    ? ui('content_editor.pool.recharge_restored_turn', lang)
+                    : ui('content_editor.pool.recharge_restored_round', lang)}
                 </span>
               </label>
               <FormulaBuilderInput
@@ -389,7 +390,7 @@
 
     <!-- Bottom add button -->
     <button type="button" class="btn-ghost text-sm w-full py-2" onclick={addPool}>
-      + Add Pool
+      {ui('content_editor.pool.add', lang)}
     </button>
   {/if}
 

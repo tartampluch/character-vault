@@ -9,6 +9,7 @@ import type { StatisticPipeline } from '../../types/pipeline';
 import type { ID } from '../../types/primitives';
 import type { FlatModifierEntry } from '../../types/engine';
 import { applyStackingRules, computeDerivedModifier } from '../../utils/stackingRules';
+import { buildLocalizedString } from '../../i18n/ui-strings';
 
 /**
  * Resolves the size pipeline from Phase 0 flat modifiers.
@@ -24,7 +25,7 @@ export function buildSizePipeline(
   if (!sizeBaseAttribute) {
     return {
       id: 'stat_size',
-      label: { en: 'Size' },
+      label: buildLocalizedString('stat.size'),
       baseValue: 0,
       activeModifiers: [],
       situationalModifiers: [],

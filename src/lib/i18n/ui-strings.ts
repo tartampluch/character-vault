@@ -976,6 +976,25 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'psi.filter_discipline':        'Filter by discipline',
   'psi.all_disciplines':          'All disciplines',
   'psi.no_powers_in_filter':      'No powers match this discipline filter.',
+  // Hint strings for psionic disciplines (content editor dropdown)
+  'psi.discipline.clairsentience.hint':   'Information, scrying, precognition',
+  'psi.discipline.metacreativity.hint':   'Matter creation, astral constructs',
+  'psi.discipline.psychokinesis.hint':    'Energy manipulation, force',
+  'psi.discipline.psychometabolism.hint': 'Body alteration, healing',
+  'psi.discipline.psychoportation.hint':  'Movement, teleportation',
+  'psi.discipline.telepathy.hint':        'Mind reading, charm, compulsion',
+  // Full display names for psionic manifestation displays (the psi.display.* keys are abbreviations)
+  'psi.display.auditory.label':  'Auditory',
+  'psi.display.material.label':  'Material',
+  'psi.display.mental.label':    'Mental',
+  'psi.display.olfactory.label': 'Olfactory',
+  'psi.display.visual.label':    'Visual',
+  // Hint strings for psionic displays (content editor checkboxes)
+  'psi.display.auditory.hint':   'Bass hum; heard up to 100 ft.',
+  'psi.display.material.hint':   'Ectoplasmic coating; evaporates in 1 round',
+  'psi.display.mental.hint':     'Subtle chime in nearby minds (15 ft.)',
+  'psi.display.olfactory.hint':  'Odd scent; spreads 20 ft., fades quickly',
+  'psi.display.visual.hint':     'Silver eye-fire + rainbow flash',
 
   // ==========================================================================
   // PSIONIC ITEMS
@@ -1295,6 +1314,89 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'formula.hint.weapon_tags':          'Equipped weapon tags (array)',
   'formula.hint.target_tags':          'Target creature tags (roll-time only)',
   'formula.hint.master_class_levels':  'Master\'s class level (LinkedEntity)',
+
+  // ==========================================================================
+  // CONTENT EDITOR — PSIONIC DATA SECTION (PsionicDataSection.svelte)
+  // All GM-facing strings in the psionic data authoring panel.
+  // ==========================================================================
+  'content_editor.psi.section_title':       'Psionic Data',
+  'content_editor.psi.not_set':             '— Not set',
+  'content_editor.psi.base_pp_cost_label':  'Base PP Cost',
+  'content_editor.psi.base_pp_cost_desc':   'Power points spent per manifestation (1–17).',
+  'content_editor.psi.displays_legend':     'Displays (sensory effects on manifestation)',
+  'content_editor.psi.augmentations_title': 'Augmentations',
+  'content_editor.psi.add_augmentation':    '+ Add Augmentation',
+  'content_editor.psi.no_augmentations':    'No augmentations. The base power is manifested at its standard effect.',
+  /** {n} is replaced with the 1-based augmentation number. */
+  'content_editor.psi.augmentation_label':  'Augmentation #{n}',
+  'content_editor.psi.pp_cost_increment':   'PP Cost Increment',
+  'content_editor.psi.repeatable':          'Repeatable',
+  'content_editor.psi.repeatable_hint':     '(can apply multiple times)',
+  'content_editor.psi.modifier_count':      { one: '{n} modifier', other: '{n} modifiers' },
+  'content_editor.psi.no_modifiers':        'No modifiers',
+  'content_editor.psi.edit_modifiers':      'Edit modifiers',
+  'content_editor.psi.add_modifiers':       '+ Add modifiers',
+  /** {lang} is replaced with the target language code (EN, FR, …). */
+  'content_editor.psi.effect_desc_label':   'Effect Description ({lang})',
+
+  // ==========================================================================
+  // CONTENT EDITOR — RESOURCE POOL EDITOR (ResourcePoolEditor.svelte)
+  // All GM-facing strings in the resource pool authoring panel.
+  // ==========================================================================
+  'content_editor.pool.section_title':             'Resource Pool Templates',
+  'content_editor.pool.section_desc':              'Declares charge or usage pools stamped onto each item instance when equipped. Use for charged items (wands, rods, rings with limited uses).',
+  'content_editor.pool.add':                       '+ Add Pool',
+  'content_editor.pool.empty':                     'No resource pools defined.',
+  'content_editor.pool.empty_hint':                'Add a pool for charged items (e.g., Ring of the Ram uses "charges") or limited-use abilities that reset on a schedule.',
+  /** {n} is replaced with the 1-based pool number. */
+  'content_editor.pool.entry_label':               'Pool #{n}',
+  'content_editor.pool.pool_id_label':             'Pool ID',
+  'content_editor.pool.pool_id_placeholder':       'e.g. charges, daily_call, spell_uses',
+  'content_editor.pool.pool_id_desc':              'Key in ActiveFeatureInstance.itemResourcePools. Convention: short noun in snake_case.',
+  'content_editor.pool.default_current_label':     'Default Current',
+  'content_editor.pool.default_current_desc':      'Charges when the item is first created. Looted items start here too unless the GM overrides in the item instance.',
+  'content_editor.pool.label_en':                  'Label (English)',
+  'content_editor.pool.label_fr':                  'Label (Français)',
+  'content_editor.pool.label_en_placeholder':      'e.g. Ram Charges',
+  'content_editor.pool.label_fr_placeholder':      'ex. Charges du bélier',
+  'content_editor.pool.max_pipeline_label':        'Max Pipeline ID',
+  'content_editor.pool.max_pipeline_empty':        'Click to pick max pipeline…',
+  'content_editor.pool.max_pipeline_title':        'Click to pick the pipeline that defines the maximum charges',
+  'content_editor.pool.reset_condition_label':     'Reset Condition',
+  'content_editor.pool.recharge_amount_label':     'Recharge Amount',
+  /** Shown next to the recharge amount field when resetCondition === 'per_turn'. */
+  'content_editor.pool.recharge_restored_turn':    '(restored each turn)',
+  /** Shown next to the recharge amount field when resetCondition === 'per_round'. */
+  'content_editor.pool.recharge_restored_round':   '(restored each round)',
+
+  // ==========================================================================
+  // RESET CONDITIONS (ResourcePoolEditor dropdown values)
+  // Label + hint for each of the 8 reset conditions.
+  // Adding a new language requires adding reset_condition.* keys to its locale JSON.
+  // ==========================================================================
+  'reset_condition.never.label':       'Never',
+  'reset_condition.never.hint':        'Finite charges — wands, Ring of the Ram (use until empty)',
+  'reset_condition.per_day.label':     'Per Day (at dawn)',
+  'reset_condition.per_day.hint':      'X/day items; resets at dawn regardless of sleep',
+  'reset_condition.long_rest.label':   'Long Rest',
+  'reset_condition.long_rest.hint':    '8 hours restful sleep — standard D&D 3.5 spell/HP recovery',
+  'reset_condition.short_rest.label':  'Short Rest',
+  'reset_condition.short_rest.hint':   'House-rule variant; non-default D&D 3.5',
+  'reset_condition.encounter.label':   'Per Encounter',
+  'reset_condition.encounter.hint':    'Resets at the start of each new combat encounter',
+  'reset_condition.per_week.label':    'Per Week',
+  'reset_condition.per_week.hint':     'Calendar weekly ability — e.g. Elemental Command chain lightning',
+  'reset_condition.per_turn.label':    'Per Turn',
+  'reset_condition.per_turn.hint':     "Recharges at start of this character's own turn",
+  'reset_condition.per_round.label':   'Per Round',
+  'reset_condition.per_round.hint':    'Recharges once per round at a fixed initiative point',
+
+  // ==========================================================================
+  // STAT LABELS
+  // Fallback labels for synthetic stat pipelines built at runtime.
+  // Used when no rule source has defined the stat (e.g. stat_size fallback).
+  // ==========================================================================
+  'stat.size': 'Size',
 
   // ==========================================================================
   // LANGUAGE SELECTOR
