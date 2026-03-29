@@ -73,8 +73,8 @@
       if (loginResp.status === 403) {
         const body = await loginResp.json().catch(() => ({})) as { error?: string };
         error = body.error === 'AccountExpired'
-          ? 'This account was not activated within 7 days and has been suspended. Contact an administrator.'
-          : 'This account has been suspended. Contact an administrator.';
+          ? ui('login.error_account_expired', lang)
+          : ui('login.error_account_suspended', lang);
         return;
       }
       if (loginResp.status === 429) {

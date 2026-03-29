@@ -2,87 +2,20 @@
   @file src/lib/components/content-editor/ChoicesEditor.svelte
   @description Editor for Feature.choices — the list of player-facing selection
   prompts that let players choose a weapon type, domain, skill focus, etc.
-
-  ────────────────────────────────────────────────────────────────────────────
-  PURPOSE
-  ────────────────────────────────────────────────────────────────────────────
-  D&D 3.5 feats and class features often require a one-time player choice:
-    • Weapon Focus — pick a weapon type
-    • Cleric — pick two domains
-    • Knowledge — pick a subcategory
-    • Greater Weapon Focus — pick the same weapon chosen for Weapon Focus
-
-  Each `FeatureChoice` defines one such prompt. The player's answer is stored
-  in `ActiveFeatureInstance.selections[choiceId]` and is referenced in
-  conditional logic via `@selection.<choiceId>`.
-
-  ────────────────────────────────────────────────────────────────────────────
-  FIELDS PER ENTRY
-  ────────────────────────────────────────────────────────────────────────────
-  choiceId            — slug identifier; referenced by @selection.<choiceId>
-  label (EN / FR)     — prompt shown above the selector
-  optionsQuery        — query syntax for populating the dropdown (see below)
-  maxSelections       — how many items the player can pick (usually 1)
-  choiceGrantedTagPrefix — optional tag prefix for derived sub-tags (see below)
-
-  ────────────────────────────────────────────────────────────────────────────
-  OPTIONSQUERY SYNTAX
-  ────────────────────────────────────────────────────────────────────────────
-  Three supported formats (per ARCHITECTURE.md §5.3):
-
-    tag:<tag>                   All features with this tag.
-                                Example:  tag:weapon
-                                Example:  tag:domain
-
-    category:<category>         All features of a given FeatureCategory.
-                                Example:  category:feat
-                                Example:  category:domain
-
-    tag:<t1>+tag:<t2>           Intersection — must have ALL listed tags.
-                                Example:  tag:weapon+tag:martial
-                                Example:  tag:arcane_school
-
-  The "Test Query" button runs the query against the live DataLoader cache and
-  displays the number of matching features.  This lets GMs verify that the
-  query returns a sensible set before saving.
-
-  ────────────────────────────────────────────────────────────────────────────
-  CHOICEGRANTEDTAGPREFIX
-  ────────────────────────────────────────────────────────────────────────────
-  When set, the GameEngine emits a sub-tag for each selected item at Phase 0:
-    `<choiceGrantedTagPrefix><selectedId>`
-
-  Example — Weapon Focus picks `item_longbow`:
-    prefix  = "feat_weapon_focus_"
-    tag     = "feat_weapon_focus_item_longbow"
-
-  This enables specific prerequisites like "requires Weapon Focus (longbow)"
-  expressed as `has_tag: "feat_weapon_focus_item_longbow"`.  Without the prefix
-  there is no way to distinguish "Weapon Focus (any)" from "Weapon Focus (X)".
-
-  ────────────────────────────────────────────────────────────────────────────
-  @see src/lib/types/feature.ts    for FeatureChoice interface
-  @see editorContext.ts            for EditorContext
-  @see ARCHITECTURE.md §5.3        for full FeatureChoice specification
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { FeatureChoice } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import { IconWarning, IconSuccess } from '$lib/components/ui/icons';
 
-  // ===========================================================================
-  // CONTEXT
-  // ===========================================================================
-
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
-
-  // ===========================================================================
-  // FACTORY
-  // ===========================================================================
+  const lang = $derived(engine.settings.language);
 
   function makeBlankChoice(): FeatureChoice {
     return {
@@ -92,10 +25,6 @@
       maxSelections:  1,
     };
   }
-
-  // ===========================================================================
-  // MUTATIONS (immutable array updates)
-  // ===========================================================================
 
   function addChoice(): void {
     ctx.feature.choices = [...(ctx.feature.choices ?? []), makeBlankChoice()];
@@ -111,34 +40,16 @@
     ctx.feature.choices = arr;
   }
 
-  function setChoiceLabel(index: number, lang: string, value: string): void {
+  function setChoiceLabel(index: number, langCode: string, value: string): void {
     const choice = (ctx.feature.choices ?? [])[index];
     if (!choice) return;
     patchChoice(index, {
-      label: { ...(choice.label as Record<string, string>), [lang]: value },
+      label: { ...(choice.label as Record<string, string>), [langCode]: value },
     });
   }
 
-  // ===========================================================================
-  // optionsQuery — LIVE TEST
-  // ===========================================================================
-
-  /**
-   * Map from entry index → test result.
-   * Null means "not tested yet"; populated when the GM clicks "Test Query".
-   */
   let queryResults = $state<Map<number, { count: number; sample: string[] }>>(new Map());
 
-  /**
-   * Runs a FeatureChoice optionsQuery against the live DataLoader cache.
-   *
-   * Supported operators:
-   *   tag:<tag>          — feature.tags includes <tag>
-   *   category:<cat>     — feature.category === <cat>
-   *   tag:<t1>+tag:<t2>  — all parts must match (AND semantics)
-   *
-   * Returns { count, sample } where `sample` contains up to 5 matching labels.
-   */
   function runQuery(query: string): { count: number; sample: string[] } {
     const q = query.trim();
     if (!q) return { count: 0, sample: [] };
@@ -155,7 +66,6 @@
           const cat = part.slice(9).trim();
           return f.category === cat;
         }
-        // Unknown operator — no match
         return false;
       });
     });
@@ -179,7 +89,6 @@
     queryResults = next;
   }
 
-  // Clear cached result when optionsQuery changes
   function onQueryInput(index: number, value: string): void {
     patchChoice(index, { optionsQuery: value });
     const next = new Map(queryResults);
@@ -197,7 +106,7 @@
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-0.5">
       <span class="text-sm font-semibold text-text-primary">
-        Player Choices
+        {ui('editor.choices.section_title', lang)}
         {#if (ctx.feature.choices ?? []).length > 0}
           <span class="ml-1.5 text-xs font-normal text-text-muted badge">
             {ctx.feature.choices?.length}
@@ -205,9 +114,7 @@
         {/if}
       </span>
       <span class="text-[11px] text-text-muted">
-        Prompts shown to the player when they add this entity to their character.
-        Selections are stored in <code class="font-mono">ActiveFeatureInstance.selections</code>
-        and referenced via <code class="font-mono">@selection.&lt;choiceId&gt;</code>.
+        {ui('editor.choices.section_hint', lang)}
       </span>
     </div>
     <button
@@ -215,16 +122,16 @@
       class="btn-primary text-xs py-1 px-3 h-auto shrink-0"
       onclick={addChoice}
     >
-      + Add Choice
+      {ui('editor.choices.add_choice_btn', lang)}
     </button>
   </div>
 
   <!-- Empty state -->
   {#if (ctx.feature.choices ?? []).length === 0}
     <div class="rounded border border-dashed border-border px-4 py-6 text-center">
-      <p class="text-xs text-text-muted italic">No choices defined.</p>
+      <p class="text-xs text-text-muted italic">{ui('editor.choices.no_choices', lang)}</p>
       <p class="text-xs text-text-muted mt-1">
-        Add a choice for feats like Weapon Focus (weapon type) or Cleric domains.
+        {ui('editor.choices.no_choices_hint', lang)}
       </p>
     </div>
 
@@ -237,14 +144,14 @@
         <!-- Entry header: index + delete -->
         <div class="flex items-center justify-between">
           <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">
-            Choice #{i + 1}
+            {ui('editor.choices.entry_label', lang).replace('{n}', String(i + 1))}
           </span>
           <button
             type="button"
             class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger"
             onclick={() => deleteChoice(i)}
-            title="Delete choice #{i + 1}"
-            aria-label="Delete choice {i + 1}"
+            title={ui('editor.choices.delete_title', lang).replace('{n}', String(i + 1))}
+            aria-label={ui('editor.choices.delete_aria', lang).replace('{n}', String(i + 1))}
           >
             <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2"
@@ -265,7 +172,7 @@
               for="choice-id-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Choice ID
+              {ui('editor.choices.choice_id_label', lang)}
             </label>
             <input
               id="choice-id-{i}"
@@ -278,8 +185,7 @@
               spellcheck="false"
             />
             <p class="text-[10px] text-text-muted">
-              Referenced as <code class="font-mono">@selection.{choice.choiceId || 'choiceId'}</code>
-              in modifier conditions.
+              {ui('editor.choices.choice_id_ref', lang).replace('{id}', choice.choiceId || 'choiceId')}
             </p>
           </div>
 
@@ -289,7 +195,7 @@
               for="choice-max-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Max Selections
+              {ui('editor.choices.max_selections_label', lang)}
             </label>
             <input
               id="choice-max-{i}"
@@ -303,7 +209,7 @@
               })}
             />
             <p class="text-[10px] text-text-muted">
-              Usually 1. Use 2+ for "choose N domains", "choose N feats", etc.
+              {ui('editor.choices.max_selections_hint', lang)}
             </p>
           </div>
 
@@ -313,7 +219,7 @@
               for="choice-lbl-en-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Label (English)
+              {ui('editor.choices.label_en_label', lang)}
             </label>
             <input
               id="choice-lbl-en-{i}"
@@ -331,7 +237,7 @@
               for="choice-lbl-fr-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Label (Français)
+              {ui('editor.choices.label_fr_label', lang)}
             </label>
             <input
               id="choice-lbl-fr-{i}"
@@ -349,7 +255,7 @@
               for="choice-query-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Options Query
+              {ui('editor.choices.options_query_label', lang)}
             </label>
 
             <div class="flex gap-2">
@@ -368,17 +274,17 @@
                 class="btn-ghost text-xs py-1 px-3 h-auto shrink-0"
                 onclick={() => testQuery(i)}
                 disabled={!choice.optionsQuery?.trim()}
-                title="Run this query against the current DataLoader cache"
+                title={ui('editor.choices.test_query_title', lang)}
               >
-                Test Query
+                {ui('editor.choices.test_query_btn', lang)}
               </button>
             </div>
 
             <!-- Query syntax reference -->
             <div class="text-[10px] text-text-muted flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
-              <span><code class="font-mono">tag:&lt;tag&gt;</code> — features with that tag</span>
-              <span><code class="font-mono">category:&lt;cat&gt;</code> — features of that category</span>
-              <span><code class="font-mono">tag:t1+tag:t2</code> — must match all parts (AND)</span>
+              <span><code class="font-mono">tag:&lt;tag&gt;</code> — {ui('editor.choices.syntax_tag_hint', lang)}</span>
+              <span><code class="font-mono">category:&lt;cat&gt;</code> — {ui('editor.choices.syntax_category_hint', lang)}</span>
+              <span><code class="font-mono">tag:t1+tag:t2</code> — {ui('editor.choices.syntax_intersection_hint', lang)}</span>
             </div>
 
             <!-- Live test result -->
@@ -392,20 +298,19 @@
                 {#if qResult.count === 0}
                   <span class="flex items-center gap-1 font-semibold text-amber-400">
                     <IconWarning size={14} aria-hidden="true" />
-                    0 matches
+                    {ui('editor.choices.zero_matches_label', lang)}
                   </span>
                   <span class="text-amber-400/80">
-                    No features match this query in the current DataLoader cache.
-                    Check that the rule sources containing the target features are enabled.
+                    {ui('editor.choices.zero_matches_desc', lang)}
                   </span>
                 {:else}
                   <span class="flex items-center gap-1 font-semibold">
                     <IconSuccess size={14} aria-hidden="true" />
-                    {qResult.count} feature{qResult.count === 1 ? '' : 's'} match
+                    {ui('editor.choices.matches_label', lang).replace('{n}', String(qResult.count)).replace('{s}', qResult.count === 1 ? '' : 's')}
                   </span>
                   {#if qResult.sample.length > 0}
                     <span class="text-text-muted">
-                      Sample: {qResult.sample.join(', ')}{qResult.count > qResult.sample.length ? `, +${qResult.count - qResult.sample.length} more…` : ''}
+                      {ui('editor.choices.sample_label', lang)}{qResult.sample.join(', ')}{qResult.count > qResult.sample.length ? `, +${qResult.count - qResult.sample.length} more…` : ''}
                     </span>
                   {/if}
                 {/if}
@@ -419,8 +324,8 @@
               for="choice-prefix-{i}"
               class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
             >
-              Choice Granted Tag Prefix
-              <span class="ml-1 text-[9px] font-normal normal-case">(optional)</span>
+              {ui('editor.choices.prefix_label', lang)}
+              <span class="ml-1 text-[9px] font-normal normal-case">{ui('editor.choices.prefix_optional', lang)}</span>
             </label>
             <input
               id="choice-prefix-{i}"
@@ -437,9 +342,7 @@
             />
             <div class="text-[10px] text-text-muted space-y-0.5">
               <p>
-                When set, the engine emits
-                <code class="font-mono">&lt;prefix&gt;&lt;selectedId&gt;</code>
-                as an active tag for each selection.
+                {ui('editor.choices.prefix_engine_hint', lang)}
               </p>
               {#if choice.choiceGrantedTagPrefix}
                 <p class="text-accent/80">
@@ -448,9 +351,7 @@
                 </p>
               {:else}
                 <p>
-                  Needed for parameterized prerequisites (Weapon Focus (X), Spell Focus (school)).
-                  Convention: end with <code class="font-mono">_</code>
-                  and mirror this feat's ID, e.g. <code class="font-mono">feat_weapon_focus_</code>.
+                  {ui('editor.choices.prefix_convention_hint', lang)}
                 </p>
               {/if}
             </div>
@@ -462,7 +363,7 @@
 
     <!-- Bottom add button when list is non-empty -->
     <button type="button" class="btn-ghost text-sm w-full py-2" onclick={addChoice}>
-      + Add Choice
+      {ui('editor.choices.add_choice_btn', lang)}
     </button>
   {/if}
 

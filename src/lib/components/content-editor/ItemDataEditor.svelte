@@ -1,39 +1,13 @@
 <!--
   @file src/lib/components/content-editor/ItemDataEditor.svelte
   @description Specialised editor for ItemFeature fields (category: "item" only).
-
-  ────────────────────────────────────────────────────────────────────────────
-  SECTIONS (all collapsible <details>):
-
-    §1  GENERAL           — slot, weightLbs, costGp, hardness, hpMax,
-                            isUnique toggle, artifactTier dropdown
-    §2  WEAPON DATA        — WeaponFieldsEditor (extracted F2a)
-    §3  ARMOR DATA         — ArmorFieldsEditor (extracted F2b)
-    §4  CONSUMABLE         — collapse-toggle; isConsumable, durationHint
-    §5  CHARGED ITEMS      — ChargedItemsEditor (extracted F2c)
-    §6  CURSED             — CursedItemEditor (extracted F2d)
-    §7  INTELLIGENT ITEM   — IntelligentItemEditor (extracted F2e)
-
-  ────────────────────────────────────────────────────────────────────────────
-  CONTEXT USAGE
-  ────────────────────────────────────────────────────────────────────────────
-  Reads/writes via EditorContext — no props.
-  Casts ctx.feature to ItemFeature for TypeScript to access item-specific fields.
-  Mutations write directly to the $state proxy; Svelte 5 propagates reactivity.
-
-  ────────────────────────────────────────────────────────────────────────────
-  @see src/lib/types/feature.ts   ItemFeature, ActivationTier, etc.
-  @see editorContext.ts           EditorContext
-  @see WeaponFieldsEditor.svelte  §2
-  @see ArmorFieldsEditor.svelte   §3
-  @see ChargedItemsEditor.svelte  §5
-  @see CursedItemEditor.svelte    §6
-  @see IntelligentItemEditor.svelte §7
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ItemFeature } from '$lib/types/feature';
   import WeaponFieldsEditor    from './WeaponFieldsEditor.svelte';
   import ArmorFieldsEditor     from './ArmorFieldsEditor.svelte';
@@ -41,44 +15,28 @@
   import CursedItemEditor      from './CursedItemEditor.svelte';
   import IntelligentItemEditor from './IntelligentItemEditor.svelte';
 
-  // ===========================================================================
-  // CONTEXT
-  // ===========================================================================
-
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
-
-  /**
-   * The feature cast to ItemFeature for TypeScript access to item-specific fields.
-   * Because ctx.feature is a $state proxy, all reads and writes are reactive.
-   */
+  const lang = $derived(engine.settings.language);
   const item = $derived(ctx.feature as unknown as ItemFeature);
 
-  // ===========================================================================
-  // EQUIPMENT SLOT OPTIONS
-  // ===========================================================================
-
-  const SLOT_OPTIONS = [
-    { value: '',          label: '— (none / carry in inventory)' },
-    { value: 'head',      label: 'Head' },
-    { value: 'eyes',      label: 'Eyes' },
-    { value: 'neck',      label: 'Neck' },
-    { value: 'torso',     label: 'Torso' },
-    { value: 'body',      label: 'Body' },
-    { value: 'waist',     label: 'Waist' },
-    { value: 'shoulders', label: 'Shoulders' },
-    { value: 'arms',      label: 'Arms / Bracers' },
-    { value: 'hands',     label: 'Hands / Gloves' },
-    { value: 'ring',      label: 'Ring (x2 by default)' },
-    { value: 'feet',      label: 'Feet / Boots' },
-    { value: 'main_hand', label: 'Main Hand (weapon / shield)' },
-    { value: 'off_hand',  label: 'Off Hand (weapon / shield)' },
-    { value: 'two_hands', label: 'Two Hands (requires both)' },
-    { value: 'none',      label: 'None — unslotted item (can carry many)' },
-  ];
-
-  // ===========================================================================
-  // CONSUMABLE TOGGLE
-  // ===========================================================================
+  const SLOT_OPTIONS = $derived([
+    { value: '',          labelKey: 'editor.item.slot_none_option' },
+    { value: 'head',      labelKey: 'editor.item.slot_head' },
+    { value: 'eyes',      labelKey: 'editor.item.slot_eyes' },
+    { value: 'neck',      labelKey: 'editor.item.slot_neck' },
+    { value: 'torso',     labelKey: 'editor.item.slot_torso' },
+    { value: 'body',      labelKey: 'editor.item.slot_body' },
+    { value: 'waist',     labelKey: 'editor.item.slot_waist' },
+    { value: 'shoulders', labelKey: 'editor.item.slot_shoulders' },
+    { value: 'arms',      labelKey: 'editor.item.slot_arms' },
+    { value: 'hands',     labelKey: 'editor.item.slot_hands' },
+    { value: 'ring',      labelKey: 'editor.item.slot_ring' },
+    { value: 'feet',      labelKey: 'editor.item.slot_feet' },
+    { value: 'main_hand', labelKey: 'editor.item.slot_main_hand' },
+    { value: 'off_hand',  labelKey: 'editor.item.slot_off_hand' },
+    { value: 'two_hands', labelKey: 'editor.item.slot_two_hands' },
+    { value: 'none',      labelKey: 'editor.item.slot_none' },
+  ]);
 
   function toggleConsumable(on: boolean): void {
     (ctx.feature as ItemFeature).consumable = on
@@ -86,7 +44,6 @@
       : undefined;
   }
 
-  // Unique uid for label->input ids
   const uid = Math.random().toString(36).slice(2, 7);
   const fid = (name: string) => `ide-${uid}-${name}`;
 </script>
@@ -97,7 +54,7 @@
 <details class="group/gen rounded-lg border border-border overflow-hidden" open>
   <summary class="flex items-center justify-between px-4 py-2 bg-surface-alt cursor-pointer
                   select-none list-none hover:bg-accent/5 font-semibold text-sm text-text-primary">
-    General
+    {ui('editor.item.general_section', lang)}
     <svg class="h-4 w-4 text-text-muted transition-transform group-open/gen:rotate-180"
          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -111,7 +68,7 @@
     <!-- Equipment slot -->
     <div class="flex flex-col gap-1 md:col-span-3">
       <label for={fid('slot')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Equipment Slot
+        {ui('editor.item.slot_label', lang)}
       </label>
       <select
         id={fid('slot')}
@@ -125,7 +82,7 @@
         }}
       >
         {#each SLOT_OPTIONS as opt (opt.value)}
-          <option value={opt.value}>{opt.label}</option>
+          <option value={opt.value}>{ui(opt.labelKey, lang)}</option>
         {/each}
       </select>
     </div>
@@ -133,7 +90,7 @@
     <!-- Weight -->
     <div class="flex flex-col gap-1">
       <label for={fid('wt')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Weight (lb.)
+        {ui('editor.item.weight_label', lang)}
       </label>
       <input id={fid('wt')} type="number" class="input text-xs" min="0" step="0.5"
              value={item.weightLbs ?? 0}
@@ -144,7 +101,7 @@
     <!-- Cost -->
     <div class="flex flex-col gap-1">
       <label for={fid('gp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Cost (gp)
+        {ui('editor.item.cost_label', lang)}
       </label>
       <input id={fid('gp')} type="number" class="input text-xs" min="0"
              value={item.costGp ?? 0}
@@ -155,7 +112,7 @@
     <!-- Hardness -->
     <div class="flex flex-col gap-1">
       <label for={fid('hard')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Hardness <span class="text-[9px] font-normal">(optional)</span>
+        {ui('editor.item.hardness_label', lang)} <span class="text-[9px] font-normal">(optional)</span>
       </label>
       <input id={fid('hard')} type="number" class="input text-xs" min="0"
              value={item.hardness ?? ''}
@@ -170,7 +127,7 @@
     <!-- HP Max -->
     <div class="flex flex-col gap-1">
       <label for={fid('hp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Item HP Max <span class="text-[9px] font-normal">(optional)</span>
+        {ui('editor.item.hp_max_label', lang)} <span class="text-[9px] font-normal">(optional)</span>
       </label>
       <input id={fid('hp')} type="number" class="input text-xs" min="0"
              value={item.hpMax ?? ''}
@@ -197,13 +154,13 @@
               : base.filter(t => t !== 'unique');
           }}
         />
-        <span class="font-medium text-text-primary">Unique item</span>
-        <span class="text-text-muted">(adds tag <code class="font-mono">unique</code>; prevents duplicate equipping)</span>
+        <span class="font-medium text-text-primary">{ui('editor.item.unique_label', lang)}</span>
+        <span class="text-text-muted">{ui('editor.item.unique_hint', lang)}</span>
       </label>
 
       <div class="flex flex-col gap-1">
         <label for={fid('atier')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Artifact Tier <span class="font-normal text-[9px]">(optional — leave blank for non-artifacts)</span>
+          {ui('editor.item.artifact_tier_label', lang)} <span class="font-normal text-[9px]">{ui('editor.item.artifact_tier_hint', lang)}</span>
         </label>
         <select
           id={fid('atier')}
@@ -214,9 +171,9 @@
             (ctx.feature as ItemFeature).artifactTier = v ? (v as 'minor' | 'major') : undefined;
           }}
         >
-          <option value="">— Not an artifact</option>
-          <option value="minor">Minor Artifact</option>
-          <option value="major">Major Artifact</option>
+          <option value="">{ui('editor.item.artifact_not_artifact', lang)}</option>
+          <option value="minor">{ui('editor.item.artifact_minor', lang)}</option>
+          <option value="major">{ui('editor.item.artifact_major', lang)}</option>
         </select>
       </div>
     </div>
@@ -225,12 +182,12 @@
 </details>
 
 <!-- ======================================================================= -->
-<!-- SECTION 2 — WEAPON DATA (extracted to WeaponFieldsEditor)                 -->
+<!-- SECTION 2 — WEAPON DATA                                                   -->
 <!-- ======================================================================= -->
 <WeaponFieldsEditor />
 
 <!-- ======================================================================= -->
-<!-- SECTION 3 — ARMOR DATA (extracted to ArmorFieldsEditor)                   -->
+<!-- SECTION 3 — ARMOR DATA                                                    -->
 <!-- ======================================================================= -->
 <ArmorFieldsEditor />
 
@@ -245,7 +202,7 @@
              checked={!!item.consumable}
              onchange={(e) => toggleConsumable((e.currentTarget as HTMLInputElement).checked)}
              onclick={(e) => e.stopPropagation()}/>
-      Consumable (potion, oil, single-use scroll)
+      {ui('editor.item.consumable_section', lang)}
     </label>
     <svg class="h-4 w-4 text-text-muted transition-transform group-open/con:rotate-180"
          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -258,13 +215,11 @@
   {#if item.consumable}
     <div class="p-4 flex flex-col gap-3">
       <p class="text-[11px] text-text-muted">
-        When the player uses this item, it is consumed (removed from inventory) and
-        its <code class="font-mono">grantedModifiers</code> become active as an
-        ephemeral effect the player can expire manually.
+        {ui('editor.item.consumable_hint', lang)}
       </p>
       <div class="flex flex-col gap-1 w-64">
         <label for={fid('dur')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Duration Hint <span class="font-normal text-[9px]">(optional — purely cosmetic)</span>
+          {ui('editor.item.duration_hint_label', lang)} <span class="font-normal text-[9px]">{ui('editor.item.duration_hint_optional', lang)}</span>
         </label>
         <input id={fid('dur')} type="text" class="input text-sm"
                value={item.consumable.durationHint ?? ''}
@@ -279,23 +234,22 @@
     </div>
   {:else}
     <div class="px-4 py-3 text-xs text-text-muted italic">
-      Enable for potions, oils, and single-use scrolls that are destroyed on use.
-      Charged items (wands, rods, rings) use Resource Pools instead — they are not consumed.
+      {ui('editor.item.consumable_empty', lang)}
     </div>
   {/if}
 </details>
 
 <!-- ======================================================================= -->
-<!-- SECTION 5 — CHARGED ITEMS (extracted to ChargedItemsEditor)               -->
+<!-- SECTION 5 — CHARGED ITEMS                                                 -->
 <!-- ======================================================================= -->
 <ChargedItemsEditor />
 
 <!-- ======================================================================= -->
-<!-- SECTION 6 — CURSED (extracted to CursedItemEditor)                        -->
+<!-- SECTION 6 — CURSED                                                        -->
 <!-- ======================================================================= -->
 <CursedItemEditor />
 
 <!-- ======================================================================= -->
-<!-- SECTION 7 — INTELLIGENT ITEM (extracted to IntelligentItemEditor)         -->
+<!-- SECTION 7 — INTELLIGENT ITEM                                              -->
 <!-- ======================================================================= -->
 <IntelligentItemEditor />

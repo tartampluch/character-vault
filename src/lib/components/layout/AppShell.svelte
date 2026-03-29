@@ -89,7 +89,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { loadUiLocale, loadUiLocaleFromCache } from '$lib/i18n/ui-strings';
+  import { loadUiLocale, loadUiLocaleFromCache, ui } from '$lib/i18n/ui-strings';
   import { readLanguageCookie } from '$lib/utils/languageCookie';
   import { IconMenu, IconLoading } from '$lib/components/ui/icons';
 
@@ -331,14 +331,14 @@
    * Segment display name mapping for well-known URL segments.
    * These are human-readable labels for non-ID path parts.
    */
-  const SEGMENT_LABELS: Record<string, string> = {
-    campaigns:    'Campaigns',
-    vault:        'Vault',
-    settings:     'Settings',
-    'gm-dashboard': 'GM Dashboard',
-    character:    'Character',
-    rules:        'Rules',
-  };
+  const SEGMENT_LABELS = $derived<Record<string, string>>({
+    campaigns:    ui('nav.campaigns',   engine.settings.language),
+    vault:        ui('nav.vault',       engine.settings.language),
+    settings:     ui('nav.settings',    engine.settings.language),
+    'gm-dashboard': ui('nav.gm_dashboard', engine.settings.language),
+    character:    ui('nav.character',   engine.settings.language),
+    rules:        ui('nav.rules',       engine.settings.language),
+  });
 
   /**
    * Convert a URL segment to a human-readable label.
@@ -472,7 +472,7 @@
       onkeydown={(e) => e.key === 'Escape' && handleClose()}
       role="button"
       tabindex="0"
-      aria-label="Close navigation"
+      aria-label={ui('nav.close_navigation', engine.settings.language)}
     ></div>
   {/if}
 
@@ -498,15 +498,15 @@
         bg-surface border-b border-border
         shrink-0
       "
-      aria-label="Mobile navigation bar"
+      aria-label={ui('nav.mobile_nav_aria', engine.settings.language)}
     >
 
       <!-- Hamburger: opens the mobile sidebar drawer -->
       <button
         class="btn-ghost p-2 -ml-1 shrink-0"
         onclick={handleOpenMobile}
-        title="Open navigation"
-        aria-label="Open navigation"
+        title={ui('nav.open_navigation', engine.settings.language)}
+        aria-label={ui('nav.open_navigation', engine.settings.language)}
         aria-expanded={mobileOpen}
         aria-controls="sidebar"
         type="button"

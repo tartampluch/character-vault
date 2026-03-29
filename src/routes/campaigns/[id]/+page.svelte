@@ -140,7 +140,7 @@
         <a
           href="/campaigns"
           class="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white transition-colors w-fit"
-          aria-label="Back to Campaign Hub"
+          aria-label={ui('nav.back_to_campaign_hub', engine.settings.language)}
         >
           <IconBack size={12} aria-hidden="true" /> {ui('nav.campaigns', engine.settings.language)}
         </a>

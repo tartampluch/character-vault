@@ -1,25 +1,26 @@
 <!--
   @file src/lib/components/content-editor/WeaponFieldsEditor.svelte
   @description Weapon Data section (Section 2) for ItemDataEditor.
-  Extracted from ItemDataEditor.svelte as part of F2a refactoring.
-  Reads/writes via EditorContext (no props).
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ItemFeature } from '$lib/types/feature';
   import TagPickerModal from './TagPickerModal.svelte';
 
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
   const item = $derived(ctx.feature as unknown as ItemFeature);
 
-  const WIELD_OPTIONS = [
-    { value: 'light',      label: 'Light',      hint: 'One-handed; off-hand without penalty' },
-    { value: 'one_handed', label: 'One-Handed',  hint: 'Standard grip; 1.5× STR when 2-handed' },
-    { value: 'two_handed', label: 'Two-Handed',  hint: 'Always requires both hands' },
-    { value: 'double',     label: 'Double',      hint: 'Two attack ends (quarterstaff, dire flail)' },
-  ];
+  const WIELD_OPTIONS = $derived([
+    { value: 'light',      labelKey: 'editor.weapon.wield_light_label',      hintKey: 'editor.weapon.wield_light_hint' },
+    { value: 'one_handed', labelKey: 'editor.weapon.wield_one_handed_label',  hintKey: 'editor.weapon.wield_one_handed_hint' },
+    { value: 'two_handed', labelKey: 'editor.weapon.wield_two_handed_label',  hintKey: 'editor.weapon.wield_two_handed_hint' },
+    { value: 'double',     labelKey: 'editor.weapon.wield_double_label',      hintKey: 'editor.weapon.wield_double_hint' },
+  ]);
 
   let showDamageTypePicker    = $state(false);
   let showSecDamageTypePicker = $state(false);
@@ -89,7 +90,7 @@
         onchange={(e) => toggleWeaponData((e.currentTarget as HTMLInputElement).checked)}
         onclick={(e) => e.stopPropagation()}
       />
-      Weapon Data
+      {ui('editor.weapon.section_label', lang)}
     </label>
     <svg class="h-4 w-4 text-text-muted transition-transform group-open/wpn:rotate-180"
          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -106,13 +107,13 @@
       <!-- Wield Category -->
       <div class="flex flex-col gap-1 md:col-span-2">
         <label for={fid('wcat')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Wield Category
+          {ui('editor.weapon.wield_label', lang)}
         </label>
         <select id={fid('wcat')} class="input text-sm"
                 value={wd.wieldCategory}
                 onchange={(e) => { wd.wieldCategory = (e.currentTarget as HTMLSelectElement).value as typeof wd.wieldCategory; }}>
           {#each WIELD_OPTIONS as wo (wo.value)}
-            <option value={wo.value}>{wo.label} — {wo.hint}</option>
+            <option value={wo.value}>{ui(wo.labelKey, lang)} — {ui(wo.hintKey, lang)}</option>
           {/each}
         </select>
       </div>
@@ -120,7 +121,7 @@
       <!-- Damage Dice -->
       <div class="flex flex-col gap-1">
         <label for={fid('ddice')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Damage Dice
+          {ui('editor.weapon.damage_dice_label', lang)}
         </label>
         <input id={fid('ddice')} type="text" class="input font-mono text-xs"
                value={wd.damageDice} placeholder="e.g. 1d8"
@@ -131,16 +132,16 @@
       <!-- Damage Types (chips) -->
       <div class="flex flex-col gap-1 md:col-span-2">
         <div class="flex items-center justify-between">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Damage Types</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.damage_types_label', lang)}</span>
           <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
-                  onclick={() => (showDamageTypePicker = true)}>Edit Tags</button>
+                  onclick={() => (showDamageTypePicker = true)}>{ui('common.edit', lang)}</button>
         </div>
         <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
           {#each (wd.damageType ?? []) as dt (dt)}
             <span class="badge font-mono text-[10px]">{dt}</span>
           {/each}
           {#if !(wd.damageType ?? []).length}
-            <span class="text-xs text-text-muted italic">No damage types.</span>
+            <span class="text-xs text-text-muted italic">{ui('editor.weapon.no_damage_types', lang)}</span>
           {/if}
         </div>
       </div>
@@ -148,7 +149,7 @@
       <!-- Crit Range -->
       <div class="flex flex-col gap-1">
         <label for={fid('cr')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Crit Range
+          {ui('editor.weapon.crit_range_label', lang)}
         </label>
         <input id={fid('cr')} type="text" class="input font-mono text-xs"
                value={wd.critRange} placeholder="e.g. 20 or 19-20"
@@ -159,7 +160,7 @@
       <!-- Crit Multiplier -->
       <div class="flex flex-col gap-1">
         <label for={fid('cm')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Crit Multiplier (×)
+          {ui('editor.weapon.crit_mult_label', lang)}
         </label>
         <input id={fid('cm')} type="number" class="input text-xs" min="2" max="6"
                value={wd.critMultiplier}
@@ -169,7 +170,7 @@
       <!-- Reach -->
       <div class="flex flex-col gap-1">
         <label for={fid('rch')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Reach (ft.)
+          {ui('editor.weapon.reach_label', lang)}
         </label>
         <input id={fid('rch')} type="number" class="input text-xs" min="0" step="5"
                value={wd.reachFt}
@@ -179,7 +180,7 @@
       <!-- Range Increment -->
       <div class="flex flex-col gap-1">
         <label for={fid('ri')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Range Increment (ft.) <span class="font-normal text-[9px]">— ranged only</span>
+          {ui('editor.weapon.range_increment_label', lang)} <span class="font-normal text-[9px]">{ui('editor.weapon.range_ranged_hint', lang)}</span>
         </label>
         <input id={fid('ri')} type="number" class="input text-xs" min="0" step="10"
                value={wd.rangeIncrementFt ?? ''}
@@ -200,36 +201,36 @@
                      checked={!!wd.secondaryWeaponData}
                      onchange={(e) => toggleSecondaryWeapon((e.currentTarget as HTMLInputElement).checked)}
                      onclick={(e) => e.stopPropagation()}/>
-              Secondary Weapon End (double weapons)
+              {ui('editor.weapon.secondary_weapon_section', lang)}
             </label>
           </summary>
           {#if wd.secondaryWeaponData}
             {@const sec = wd.secondaryWeaponData}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-3">
               <div class="flex flex-col gap-1">
-                <label for={fid('sdice')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Damage Dice</label>
+                <label for={fid('sdice')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.damage_dice_label', lang)}</label>
                 <input id={fid('sdice')} type="text" class="input font-mono text-xs"
                        value={sec.damageDice} placeholder="e.g. 1d6"
                        oninput={(e) => { sec.damageDice = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Damage Types</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.damage_types_label', lang)}</span>
                 <div class="flex flex-wrap gap-1 mt-0.5">
                   {#each (sec.damageType ?? []) as dt (dt)}
                     <span class="badge font-mono text-[10px]">{dt}</span>
                   {/each}
                   <button type="button" class="btn-ghost text-[10px] py-0 px-1.5 h-auto"
-                          onclick={() => (showSecDamageTypePicker = true)}>Edit</button>
+                          onclick={() => (showSecDamageTypePicker = true)}>{ui('common.edit', lang)}</button>
                 </div>
               </div>
               <div class="flex flex-col gap-1">
-                <label for={fid('scr')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Crit Range</label>
+                <label for={fid('scr')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.crit_range_label', lang)}</label>
                 <input id={fid('scr')} type="text" class="input font-mono text-xs"
                        value={sec.critRange} placeholder="20"
                        oninput={(e) => { sec.critRange = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">
-                <label for={fid('scm')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Crit ×</label>
+                <label for={fid('scm')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.crit_mult_label', lang)}</label>
                 <input id={fid('scm')} type="number" class="input text-xs" min="2" max="6"
                        value={sec.critMultiplier}
                        oninput={(e) => { sec.critMultiplier = parseInt((e.currentTarget as HTMLInputElement).value) || 2; }}/>
@@ -249,20 +250,20 @@
                      checked={!!wd.onCritDice}
                      onchange={(e) => toggleOnCritDice((e.currentTarget as HTMLInputElement).checked)}
                      onclick={(e) => e.stopPropagation()}/>
-              On-Crit Bonus Dice (Burst weapons: Flaming Burst, Thundering, etc.)
+              {ui('editor.weapon.on_crit_section', lang)}
             </label>
           </summary>
           {#if wd.onCritDice}
             {@const ocd = wd.onCritDice}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3">
               <div class="flex flex-col gap-1">
-                <label for={fid('ocdf')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Dice Formula (×2 baseline)</label>
+                <label for={fid('ocdf')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.on_crit_dice_label', lang)}</label>
                 <input id={fid('ocdf')} type="text" class="input font-mono text-xs"
                        value={ocd.baseDiceFormula} placeholder="e.g. 1d10"
                        oninput={(e) => { ocd.baseDiceFormula = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">
-                <label for={fid('ocdt')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Damage Type</label>
+                <label for={fid('ocdt')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.on_crit_type_label', lang)}</label>
                 <input id={fid('ocdt')} type="text" class="input font-mono text-xs"
                        value={ocd.damageType} placeholder="e.g. fire, cold, sonic"
                        oninput={(e) => { ocd.damageType = (e.currentTarget as HTMLInputElement).value; }}/>
@@ -272,7 +273,7 @@
                   <input type="checkbox" class="h-3.5 w-3.5 accent-accent"
                          checked={ocd.scalesWithCritMultiplier}
                          onchange={(e) => { ocd.scalesWithCritMultiplier = (e.currentTarget as HTMLInputElement).checked; }}/>
-                  <span>Scales with crit multiplier (×2→+1d, ×3→+2d, ×4→+3d)</span>
+                  <span>{ui('editor.weapon.on_crit_scales_label', lang)}</span>
                 </label>
               </div>
             </div>
@@ -283,7 +284,7 @@
     </div>
   {:else}
     <div class="px-4 py-3 text-xs text-text-muted italic">
-      Enable the checkbox above to add weapon statistics to this item.
+      {ui('editor.weapon.empty_hint', lang)}
     </div>
   {/if}
 </details>

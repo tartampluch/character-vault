@@ -1,17 +1,18 @@
 <!--
   @file src/lib/components/content-editor/CursedItemEditor.svelte
   @description Cursed Item section (Section 6) for ItemDataEditor.
-  Extracted from ItemDataEditor.svelte as part of F2d refactoring.
-  Reads/writes via EditorContext (no props).
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ItemFeature } from '$lib/types/feature';
   import TagPickerModal from './TagPickerModal.svelte';
 
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
 
   function toggleCursed(on: boolean): void {
     (ctx.feature as ItemFeature).removalPrevention = on
@@ -48,7 +49,7 @@
              checked={!!(ctx.feature as ItemFeature).removalPrevention}
              onchange={(e) => toggleCursed((e.currentTarget as HTMLInputElement).checked)}
              onclick={(e) => e.stopPropagation()}/>
-      Cursed (cannot be voluntarily removed)
+      {ui('editor.cursed.section_label', lang)}
     </label>
     <svg class="h-4 w-4 text-text-muted transition-transform group-open/crs:rotate-180"
          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -64,27 +65,26 @@
       <div class="flex flex-col gap-1.5">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            Removable By (tags)
+            {ui('editor.cursed.removable_by_label', lang)}
           </span>
           <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
-                  onclick={() => (showCursedTagPicker = true)}>Edit</button>
+                  onclick={() => (showCursedTagPicker = true)}>{ui('common.edit', lang)}</button>
         </div>
         <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
           {#each (rp.removableBy ?? []) as tag (tag)}
             <span class="badge font-mono text-[10px] bg-red-900/20 text-red-300 border-red-700/30">{tag}</span>
           {:else}
-            <span class="text-xs text-text-muted italic">Nothing — cannot be removed by any means.</span>
+            <span class="text-xs text-text-muted italic">{ui('editor.cursed.nothing_removes', lang)}</span>
           {/each}
         </div>
         <p class="text-[10px] text-text-muted">
-          SRD methods: <code class="font-mono">remove_curse</code>, <code class="font-mono">limited_wish</code>,
-          <code class="font-mono">wish</code>, <code class="font-mono">miracle</code>
+          {ui('editor.cursed.srd_methods_hint', lang)}
         </p>
       </div>
       <!-- Prevention note -->
       <div class="flex flex-col gap-1">
         <label for={fid('note')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Prevention Note <span class="font-normal text-[9px]">(optional flavour text)</span>
+          {ui('editor.cursed.prevention_note_label', lang)} <span class="font-normal text-[9px]">{ui('editor.cursed.prevention_note_hint', lang)}</span>
         </label>
         <input id={fid('note')} type="text" class="input text-sm"
                value={rp.preventionNote ?? ''}
@@ -96,7 +96,7 @@
     </div>
   {:else}
     <div class="px-4 py-3 text-xs text-text-muted italic">
-      Enable for items that cannot be voluntarily unequipped (Necklace of Strangulation, etc.).
+      {ui('editor.cursed.empty_hint', lang)}
     </div>
   {/if}
 </details>

@@ -1,39 +1,6 @@
 <!--
   @file src/lib/components/content-editor/RaceClassExtrasEditor.svelte
   @description Extra fields for Race and Class entities in the Content Editor.
-
-  ────────────────────────────────────────────────────────────────────────────
-  RENDERS WHEN: category === "race" OR category === "class"
-  Returns nothing for all other categories (clean null render).
-  ────────────────────────────────────────────────────────────────────────────
-
-  RACE FIELDS:
-    recommendedAttributes  — Checkbox grid of the 6 ability scores.
-                             A cosmetic UX hint shown in the Point Buy UI
-                             (green = recommended, orange = useful, red = dump).
-                             Engine reads Feature.recommendedAttributes.
-
-  CLASS FIELDS:
-    classSkills            — Chip list of skill IDs drawn from
-                             config_skill_definitions (DataLoader).
-                             Skills are NOT features — we use a dropdown
-                             populated from the config table, not FeaturePickerModal.
-                             Engine reads Feature.classSkills.
-
-    spPerLevel             — Skill points gained per level + 1 per INT mod.
-                             Stored as a base modifier targeting
-                             "attributes.skill_points_per_level" in grantedModifiers.
-                             Engine reads GameEngine.#computeSkillPoints().
-
-    hitDie                 — Hit die type (d4 / d6 / d8 / d10 / d12).
-                             Stored as a base modifier targeting "combatStats.max_hp"
-                             whose value is the dice expression string ("d10" etc.).
-                             Engine rolls this die per level when the player gains HP.
-
-  ────────────────────────────────────────────────────────────────────────────
-  @see src/lib/types/feature.ts   Feature.recommendedAttributes / classSkills
-  @see editorContext.ts           EditorContext
-  @see ARCHITECTURE.md §5.5       classSkills spec
 -->
 
 <script lang="ts">
@@ -41,33 +8,15 @@
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Modifier } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
   import { MAIN_ABILITY_IDS } from '$lib/utils/constants';
   import { IconClose } from '$lib/components/ui/icons';
 
-  // ===========================================================================
-  // CONTEXT
-  // ===========================================================================
-
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
 
-  // ===========================================================================
-  // ABILITY SCORE OPTIONS (for recommendedAttributes)
-  // ===========================================================================
-
-  /**
-   * Ability score options for the recommendedAttributes checkbox grid.
-   *
-   * ZERO-HARDCODING RULE (ARCHITECTURE.md §6):
-   *   - IDs come from MAIN_ABILITY_IDS constants (never hardcoded literal strings).
-   *   - Labels come from engine.resolvePipelineLabel() which resolves via
-   *     PIPELINE_FALLBACK_LABELS and respects the active UI language.
-   *     e.g. 'stat_strength' → 'Strength' (en) / 'Force' (fr).
-   *
-   * Note: resolvePipelineLabel() accepts the short form 'stat_strength'
-   * (without 'attributes.' prefix) because it normalises internally.
-   */
   const ABILITY_SCORES = $derived(
     MAIN_ABILITY_IDS.map(id => ({
       id: id as ID,
@@ -86,16 +35,8 @@
       : current.filter(a => a !== id);
   }
 
-  // ===========================================================================
-  // SKILL DEFINITIONS (for classSkills chip editor)
-  // ===========================================================================
-
   interface SkillDef { id: string; label?: { en?: string } }
 
-  /**
-   * All skill IDs available from config_skill_definitions, sorted alphabetically
-   * by English label.  Populated dynamically from DataLoader.
-   */
   const skillDefs = $derived.by((): SkillDef[] => {
     const table = dataLoader.getConfigTable('config_skill_definitions');
     if (!table?.data) return [];
@@ -109,7 +50,6 @@
     return def?.label?.en ?? id;
   }
 
-  /** Skill IDs already in classSkills (for duplicate-prevention). */
   const existingClassSkills = $derived(new Set(ctx.feature.classSkills ?? []));
 
   function addClassSkill(skillId: string): void {
@@ -123,16 +63,8 @@
 
   let classSkillDropdownValue = $state('');
 
-  // ===========================================================================
-  // spPerLevel — read/write via grantedModifiers
-  // ===========================================================================
-
   const SP_TARGET = 'attributes.skill_points_per_level';
 
-  /**
-   * Finds the base modifier targeting SP_TARGET in grantedModifiers.
-   * Returns its numeric value, or 2 as a sensible default.
-   */
   function readSpPerLevel(): number {
     const mod = ctx.feature.grantedModifiers.find(
       m => m.targetId === SP_TARGET && m.type === 'base'
@@ -140,9 +72,6 @@
     return typeof mod?.value === 'number' ? mod.value : 2;
   }
 
-  /**
-   * Sets the spPerLevel by updating or inserting the base modifier.
-   */
   function writeSpPerLevel(value: number): void {
     const existing = ctx.feature.grantedModifiers;
     const idx = existing.findIndex(m => m.targetId === SP_TARGET && m.type === 'base');
@@ -166,18 +95,10 @@
     }
   }
 
-  // ===========================================================================
-  // hitDie — read/write via grantedModifiers
-  // ===========================================================================
-
   const HP_TARGET = 'combatStats.max_hp';
   const HIT_DICE = ['d4', 'd6', 'd8', 'd10', 'd12'] as const;
   type HitDie = typeof HIT_DICE[number];
 
-  /**
-   * Finds the base modifier targeting HP_TARGET in grantedModifiers.
-   * Returns its string value ('d10' etc.), defaulting to 'd8'.
-   */
   function readHitDie(): HitDie {
     const mod = ctx.feature.grantedModifiers.find(
       m => m.targetId === HP_TARGET && m.type === 'base'
@@ -188,9 +109,6 @@
       : 'd8';
   }
 
-  /**
-   * Sets the hitDie by updating or inserting the base modifier.
-   */
   function writeHitDie(die: HitDie): void {
     const existing = ctx.feature.grantedModifiers;
     const idx = existing.findIndex(m => m.targetId === HP_TARGET && m.type === 'base');
@@ -214,7 +132,6 @@
     }
   }
 
-  // Unique uid for label->input ids
   const uid = Math.random().toString(36).slice(2, 7);
   const fid = (n: string) => `rce-${uid}-${n}`;
 </script>
@@ -226,18 +143,18 @@
 
   <div class="flex flex-col gap-4 rounded-lg border border-border p-4">
     <div class="flex flex-col gap-0.5">
-      <span class="text-sm font-semibold text-text-primary">Race Extras</span>
+      <span class="text-sm font-semibold text-text-primary">{ui('editor.race_class.race_section_title', lang)}</span>
       <span class="text-[11px] text-text-muted">
-        Fields specific to <code class="font-mono">category: "race"</code> entities.
+        {ui('editor.race_class.race_section_hint', lang)}
       </span>
     </div>
 
     <!-- Recommended Attributes -->
     <fieldset class="flex flex-col gap-2">
       <legend class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Recommended Attributes
+        {ui('editor.race_class.recommended_attrs_legend', lang)}
         <span class="ml-1 font-normal text-[9px]">
-          (cosmetic UX guidance for Point Buy — no mechanical effect)
+          {ui('editor.race_class.recommended_attrs_hint', lang)}
         </span>
       </legend>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -256,17 +173,16 @@
         {/each}
       </div>
       <p class="text-[10px] text-text-muted">
-        Checked stats are highlighted green in the Point Buy UI during character creation.
-        Example: Fighter → STR, CON, DEX; Wizard → INT, DEX, CON.
+        {ui('editor.race_class.race_attrs_desc', lang)}
       </p>
     </fieldset>
 
-    <!-- Class Skills (races can also grant class skills — e.g. Elf gets Spot as class skill) -->
+    <!-- Class Skills (races can also grant class skills) -->
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Class Skills
-          <span class="ml-1 font-normal text-[9px]">(optional — racial bonus class skills)</span>
+          {ui('editor.race_class.race_class_skills_label', lang)}
+          <span class="ml-1 font-normal text-[9px]">{ui('editor.race_class.race_class_skills_hint', lang)}</span>
         </span>
       </div>
       <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
@@ -277,21 +193,21 @@
             <button type="button"
                     class="text-text-muted hover:text-danger ml-0.5"
                      onclick={() => removeClassSkill(skillId)}
-                     aria-label="Remove {skillId}"><IconClose size={12} aria-hidden="true" /></button>
+                     aria-label={ui('editor.race_class.remove_skill_aria', lang).replace('{id}', skillId)}><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {:else}
-          <span class="text-xs text-text-muted italic">No racial class skills.</span>
+          <span class="text-xs text-text-muted italic">{ui('editor.race_class.no_racial_class_skills', lang)}</span>
         {/each}
       </div>
       {#if skillDefs.length > 0}
         <div class="flex gap-2">
-          <label for={fid('race-skill-add')} class="sr-only">Add class skill</label>
+          <label for={fid('race-skill-add')} class="sr-only">{ui('editor.race_class.add_class_skill_aria', lang)}</label>
           <select
             id={fid('race-skill-add')}
             class="input text-xs flex-1"
             bind:value={classSkillDropdownValue}
           >
-            <option value="">— Select a skill to add</option>
+            <option value="">{ui('editor.race_class.select_skill_placeholder', lang)}</option>
             {#each skillDefs.filter(s => !existingClassSkills.has(s.id)) as s (s.id)}
               <option value={s.id}>{s.label?.en ?? s.id}</option>
             {/each}
@@ -299,12 +215,12 @@
           <button type="button" class="btn-primary text-xs py-0.5 px-3 h-auto"
                   onclick={() => { addClassSkill(classSkillDropdownValue); classSkillDropdownValue = ''; }}
                   disabled={!classSkillDropdownValue}>
-            + Add
+            {ui('common.add', lang)}
           </button>
         </div>
       {:else}
         <p class="text-[10px] text-text-muted italic">
-          Load rule sources to populate the skill list.
+          {ui('editor.race_class.load_skills_hint', lang)}
         </p>
       {/if}
     </div>
@@ -318,9 +234,9 @@
 
   <div class="flex flex-col gap-4 rounded-lg border border-border p-4">
     <div class="flex flex-col gap-0.5">
-      <span class="text-sm font-semibold text-text-primary">Class Extras</span>
+      <span class="text-sm font-semibold text-text-primary">{ui('editor.race_class.class_section_title', lang)}</span>
       <span class="text-[11px] text-text-muted">
-        Fields specific to <code class="font-mono">category: "class"</code> entities.
+        {ui('editor.race_class.class_section_hint', lang)}
       </span>
     </div>
 
@@ -330,7 +246,7 @@
       <!-- Hit Die -->
       <div class="flex flex-col gap-1.5">
         <label for={fid('hitdie')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Hit Die
+          {ui('editor.race_class.hit_die_label', lang)}
         </label>
         <div class="flex gap-2 flex-wrap">
           {#each HIT_DICE as die (die)}
@@ -349,17 +265,14 @@
           {/each}
         </div>
         <p class="text-[10px] text-text-muted">
-          Stored as a <code class="font-mono">base</code> modifier on
-          <code class="font-mono">combatStats.max_hp</code>.
-          Each class level rolls this die to determine HP gained.
-          D&D 3.5 standard: d6/d8/d10/d12 for most classes.
+          {ui('editor.race_class.hit_die_hint', lang)}
         </p>
       </div>
 
       <!-- Skill Points Per Level -->
       <div class="flex flex-col gap-1.5">
         <label for={fid('sp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Skill Points per Level <span class="font-normal text-[9px]">(before INT modifier)</span>
+          {ui('editor.race_class.sp_per_level_label', lang)} <span class="font-normal text-[9px]">{ui('editor.race_class.sp_before_int_hint', lang)}</span>
         </label>
         <input
           id={fid('sp')}
@@ -372,11 +285,7 @@
           oninput={(e) => writeSpPerLevel(parseInt((e.currentTarget as HTMLInputElement).value) || 2)}
         />
         <p class="text-[10px] text-text-muted">
-          Stored as a <code class="font-mono">base</code> modifier on
-          <code class="font-mono">attributes.skill_points_per_level</code>.
-          Actual SP/lvl = max(1, this value + INT modifier). SRD convention: 2/4/6/8 (×4 at level 1).
-          Human racial feature grants +1 via
-          <code class="font-mono">attributes.bonus_skill_points_per_level</code>.
+          {ui('editor.race_class.sp_per_level_hint', lang)}
         </p>
       </div>
 
@@ -385,8 +294,8 @@
     <!-- Recommended Attributes (classes also use this) -->
     <fieldset class="flex flex-col gap-2">
       <legend class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Recommended Attributes
-        <span class="ml-1 font-normal text-[9px]">(cosmetic UX hint — no mechanical effect)</span>
+        {ui('editor.race_class.recommended_attrs_legend', lang)}
+        <span class="ml-1 font-normal text-[9px]">{ui('editor.race_class.recommended_attrs_hint2', lang)}</span>
       </legend>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
         {#each ABILITY_SCORES as attr (attr.id)}
@@ -409,15 +318,14 @@
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Class Skills
+          {ui('editor.race_class.race_class_skills_label', lang)}
           {#if (ctx.feature.classSkills ?? []).length > 0}
             <span class="ml-1.5 badge font-normal text-[9px]">{ctx.feature.classSkills?.length}</span>
           {/if}
         </span>
       </div>
       <p class="text-[11px] text-text-muted -mt-1">
-        Skills on this list cost ×1 SP per rank for characters in this class.
-        All other skills cost ×2 SP (cross-class).
+        {ui('editor.race_class.class_skills_hint', lang)}
       </p>
 
       <!-- Chip list -->
@@ -429,23 +337,23 @@
             <button type="button"
                     class="text-text-muted hover:text-danger ml-0.5 leading-none"
                      onclick={() => removeClassSkill(skillId)}
-                     aria-label="Remove {skillId} from class skills"><IconClose size={12} aria-hidden="true" /></button>
+                     aria-label={ui('editor.race_class.remove_class_skill_aria', lang).replace('{id}', skillId)}><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {:else}
-          <span class="text-xs text-text-muted italic">No class skills defined.</span>
+          <span class="text-xs text-text-muted italic">{ui('editor.race_class.no_class_skills', lang)}</span>
         {/each}
       </div>
 
       <!-- Add dropdown -->
       {#if skillDefs.length > 0}
         <div class="flex gap-2 mt-1">
-          <label for={fid('skill-add')} class="sr-only">Add class skill</label>
+          <label for={fid('skill-add')} class="sr-only">{ui('editor.race_class.add_class_skill_aria', lang)}</label>
           <select
             id={fid('skill-add')}
             class="input text-xs flex-1"
             bind:value={classSkillDropdownValue}
           >
-            <option value="">— Select a skill to add</option>
+            <option value="">{ui('editor.race_class.select_skill_placeholder', lang)}</option>
             {#each skillDefs.filter(s => !existingClassSkills.has(s.id)) as s (s.id)}
               <option value={s.id}>{s.label?.en ?? s.id}</option>
             {/each}
@@ -456,7 +364,7 @@
             onclick={() => { addClassSkill(classSkillDropdownValue); classSkillDropdownValue = ''; }}
             disabled={!classSkillDropdownValue}
           >
-            + Add
+            {ui('common.add', lang)}
           </button>
         </div>
 
@@ -470,15 +378,15 @@
                 if (!existingClassSkills.has(s.id)) addClassSkill(s.id);
               }
             }}
-            title="Add all {skillDefs.length} skills as class skills (for Rogue-style all-class-skills)"
+            title={ui('editor.race_class.add_all_skills_title', lang).replace('{n}', String(skillDefs.length))}
           >
-            + Add all {skillDefs.length} skills
+            {ui('editor.race_class.add_all_skills_btn', lang).replace('{n}', String(skillDefs.length))}
           </button>
         {/if}
 
       {:else}
         <p class="text-[10px] text-text-muted italic">
-          Load rule sources to populate the skill list.
+          {ui('editor.race_class.load_skills_hint', lang)}
         </p>
       {/if}
     </div>

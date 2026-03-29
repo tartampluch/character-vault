@@ -222,7 +222,7 @@
         class="btn-primary"
         onclick={saveSettings}
         disabled={isSaving || !isValidJson}
-        aria-label="Save campaign settings"
+        aria-label={ui('nav.save_campaign_settings_aria', engine.settings.language)}
         type="button"
       >
         {isSaving ? ui('settings.saving', engine.settings.language) : ui('settings.save', engine.settings.language)}

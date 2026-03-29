@@ -1,36 +1,20 @@
 <!--
   @file src/lib/components/content-editor/TieredCostsEditor.svelte
   @description Tiered-resource-costs array editor for ActivationEditor.
-  Manages the `activation.tieredResourceCosts` field via EditorContext.
-
-  Each tier represents a different power level at a different charge cost
-  (Ring of the Ram pattern). The user can add / remove tiers, edit label
-  EN/FR, pool ID, charge cost (FormulaBuilderInput), and per-tier transient
-  modifiers (via LevelModifierModal).
-
-  Reads/writes `ctx.feature.activation.tieredResourceCosts` via EditorContext.
-
-  @see ActivationEditor.svelte  for cost-mode radio selector and fixed-cost fields
-  @see LevelModifierModal.svelte for per-tier modifier editing
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { ActivationTier } from '$lib/types/feature';
   import type { Modifier } from '$lib/types/pipeline';
   import FormulaBuilderInput from './FormulaBuilderInput.svelte';
   import LevelModifierModal  from './LevelModifierModal.svelte';
 
-  // ===========================================================================
-  // CONTEXT
-  // ===========================================================================
-
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
-
-  // ===========================================================================
-  // TIERED COST MUTATIONS
-  // ===========================================================================
+  const lang = $derived(engine.settings.language);
 
   function makeBlankTier(): ActivationTier {
     return {
@@ -64,20 +48,15 @@
     ctx.feature.activation = { ...ctx.feature.activation, tieredResourceCosts: tiers };
   }
 
-  function setTierLabel(i: number, lang: string, value: string): void {
+  function setTierLabel(i: number, langCode: string, value: string): void {
     const tier = ctx.feature.activation?.tieredResourceCosts?.[i];
     if (!tier) return;
-    patchTier(i, { label: { ...(tier.label as Record<string, string>), [lang]: value } });
+    patchTier(i, { label: { ...(tier.label as Record<string, string>), [langCode]: value } });
   }
-
-  // ===========================================================================
-  // MODAL STATE (per-tier modifier editor)
-  // ===========================================================================
 
   type ModalState = { kind: 'tier-modifiers'; tierIndex: number; modifiers: Modifier[] } | null;
   let modalState = $state<ModalState>(null);
 
-  // Unique uid for label↔input id associations
   const uid = Math.random().toString(36).slice(2, 7);
   const fid = (name: string) => `tce-${uid}-${name}`;
 </script>
@@ -100,8 +79,7 @@
 <!-- ======================================================================= -->
 <div class="flex flex-col gap-2 mt-2">
   <p class="text-[11px] text-text-muted">
-    Each tier offers a different power level at a different charge cost.
-    The player chooses a tier at activation time.
+    {ui('editor.tiered_costs.intro', lang)}
   </p>
 
   {#each (ctx.feature.activation?.tieredResourceCosts ?? []) as tier, i (i)}
@@ -109,13 +87,13 @@
 
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-          Tier {i + 1}
+          {ui('editor.tiered_costs.tier_label', lang).replace('{n}', String(i + 1))}
         </span>
         <button
           type="button"
           class="btn-ghost btn-icon h-6 w-6 p-0 text-text-muted hover:text-danger"
           onclick={() => deleteTier(i)}
-          aria-label="Delete tier {i + 1}"
+          aria-label={ui('editor.tiered_costs.delete_aria', lang).replace('{n}', String(i + 1))}
         >
           <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2"
@@ -133,7 +111,7 @@
         <div class="flex flex-col gap-1">
           <label for={fid(`tier-lbl-en-${i}`)}
                  class="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
-            Label (EN)
+            {ui('editor.tiered_costs.label_en', lang)}
           </label>
           <input
             id={fid(`tier-lbl-en-${i}`)}
@@ -149,7 +127,7 @@
         <div class="flex flex-col gap-1">
           <label for={fid(`tier-lbl-fr-${i}`)}
                  class="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
-            Label (FR)
+            {ui('editor.tiered_costs.label_fr', lang)}
           </label>
           <input
             id={fid(`tier-lbl-fr-${i}`)}
@@ -165,7 +143,7 @@
         <div class="flex flex-col gap-1">
           <label for={fid(`tier-pool-${i}`)}
                  class="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
-            Pool ID
+            {ui('editor.tiered_costs.pool_id_label', lang)}
           </label>
           <input
             id={fid(`tier-pool-${i}`)}
@@ -183,7 +161,7 @@
         <div class="flex flex-col gap-1">
           <label for={fid(`tier-cost-${i}`)}
                  class="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
-            Charge cost
+            {ui('editor.tiered_costs.charge_cost_label', lang)}
           </label>
           <FormulaBuilderInput
             id={fid(`tier-cost-${i}`)}
@@ -204,7 +182,7 @@
             {tier.grantedModifiers.length} modifier{tier.grantedModifiers.length === 1 ? '' : 's'}
           </span>
         {:else}
-          <span class="text-[10px] text-text-muted italic">No transient modifiers.</span>
+          <span class="text-[10px] text-text-muted italic">{ui('editor.tiered_costs.no_modifiers', lang)}</span>
         {/if}
         <button
           type="button"
@@ -215,7 +193,7 @@
             modifiers: tier.grantedModifiers,
           })}
         >
-          {tier.grantedModifiers.length > 0 ? 'Edit' : '+ Add'} modifiers
+          {tier.grantedModifiers.length > 0 ? ui('editor.tiered_costs.edit_modifiers_btn', lang) : ui('editor.tiered_costs.add_modifiers_btn', lang)}
         </button>
       </div>
 
@@ -227,6 +205,6 @@
     class="btn-ghost text-xs py-1 px-3 h-auto w-full"
     onclick={addTier}
   >
-    + Add Tier
+    {ui('editor.tiered_costs.add_tier_btn', lang)}
   </button>
 </div>

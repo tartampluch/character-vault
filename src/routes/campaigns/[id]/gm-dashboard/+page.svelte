@@ -297,7 +297,7 @@
             oninput={(e) => setOverrideText(selectedChar.id, (e.target as HTMLTextAreaElement).value)}
             spellcheck="false"
             rows="10"
-            aria-label="GM overrides for {selectedChar.name}"
+            aria-label={ui('gm.overrides_for_aria', engine.settings.language).replace('{name}', selectedChar.name)}
           ></textarea>
 
           <div class="flex items-center gap-3 flex-wrap">
@@ -318,7 +318,7 @@
               class="btn-primary shrink-0"
               onclick={() => saveGmOverrides(selectedChar.id)}
               disabled={savingIds[selectedChar.id] || overrideValid[selectedChar.id] === false}
-              aria-label="Save GM overrides for {selectedChar.name}"
+              aria-label={ui('gm.save_overrides_for_aria', engine.settings.language).replace('{name}', selectedChar.name)}
               type="button"
             >
               {savingIds[selectedChar.id] ? ui('gm.saving', engine.settings.language) : ui('gm.save_overrides', engine.settings.language)}

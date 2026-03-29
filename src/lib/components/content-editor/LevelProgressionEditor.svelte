@@ -1,65 +1,14 @@
 <!--
   @file src/lib/components/content-editor/LevelProgressionEditor.svelte
   @description Editor for Feature.levelProgression (class entities only).
-
-  ────────────────────────────────────────────────────────────────────────────
-  PURPOSE
-  ────────────────────────────────────────────────────────────────────────────
-  Displayed only when ctx.feature.category === 'class', this component renders
-  a 20-row progression table and lets GMs configure per-level grants:
-
-    COLUMNS:
-      Level       — read-only label (1–20)
-      BAB         — base attack bonus increment (0 or 1 per D&D 3.5)
-      Fort        — Fortitude save increment
-      Ref         — Reflex save increment
-      Will        — Will save increment
-      Features    — feature ID chips; "+ Add" opens FeaturePickerModal
-      Modifiers   — compact count badge; "Edit" opens LevelModifierModal
-
-  The BAB and save columns are backed by base-type `Modifier` objects inside
-  `LevelProgressionEntry.grantedModifiers`.  The human-readable 0/1 inputs
-  are translated to/from those modifier objects by helper functions.
-
-  ────────────────────────────────────────────────────────────────────────────
-  PRESET FILL BUTTONS (ARCHITECTURE.md §5.4)
-  ────────────────────────────────────────────────────────────────────────────
-  Buttons above the table fill an entire column with a standard D&D 3.5 pattern:
-
-  BAB presets:
-    Full BAB    +1 every level        [1,1,1,1,1,…] (Fighter, Paladin, Ranger)
-    3/4 BAB     floor(level × 3/4)    Rogue, Bard, Cleric
-    1/2 BAB     floor(level / 2)      Wizard, Sorcerer, Druid (spellcasters)
-
-  Save presets (per save column):
-    Good Save   2 + floor(level / 2)  [2,1,0,1,0,…] (starting +2 at level 1)
-    Poor Save   floor(level / 3)      [0,0,1,0,0,…]
-
-  ────────────────────────────────────────────────────────────────────────────
-  DATA MODEL
-  ────────────────────────────────────────────────────────────────────────────
-  ctx.feature.levelProgression?: LevelProgressionEntry[]
-
-  The array may be sparse (class defined 10 levels instead of 20) or absent.
-  The editor normalises it to a full 20-entry array for display; unused tail
-  entries with no data are trimmed before saving to keep the JSON compact.
-
-  Each LevelProgressionEntry.grantedModifiers contains:
-    { targetId: 'combatStats.base_attack_bonus', type: 'base', value: 1 }  for the BAB incr.
-    { targetId: 'saves.fortitude',      type: 'base', value: 1 }  for the Fort incr.
-    etc.
-
-  ────────────────────────────────────────────────────────────────────────────
-  @see src/lib/types/feature.ts          for LevelProgressionEntry
-  @see LevelModifierModal.svelte         for per-level modifier editing
-  @see FeaturePickerModal.svelte         for per-level feature selection
-  @see ARCHITECTURE.md §5.4             for preset progressions
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { LevelProgressionEntry } from '$lib/types/feature';
   import type { Modifier } from '$lib/types/pipeline';
   import type { ID } from '$lib/types/primitives';
@@ -72,7 +21,7 @@
     SAVE_GOOD,
     SAVE_POOR,
   } from '$lib/utils/classProgressionPresets';
-   import {
+  import {
     BAB_PIPELINE_ID,
     SAVE_FORT_PIPELINE_ID,
     SAVE_REFLEX_PIPELINE_ID,
@@ -80,30 +29,11 @@
   } from '$lib/utils/constants';
   import { IconClose } from '$lib/components/ui/icons';
 
-  // ===========================================================================
-  // CONTEXT
-  // ===========================================================================
-
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
-
-  // ===========================================================================
-  // PRESET PROGRESSIONS  (ARCHITECTURE.md §5.4)
-  // ===========================================================================
-  //
-  // The 20-element increment arrays live in src/lib/utils/classProgressionPresets.ts
-  // per the Critical Coding Guideline: no D&D game logic in .svelte files
-  // (ARCHITECTURE.md §3).  They are imported above and used directly below.
-
-  // ===========================================================================
-  // LEVEL PROGRESSION NORMALISATION
-  // ===========================================================================
+  const lang = $derived(engine.settings.language);
 
   const MAX_LEVELS = 20;
 
-  /**
-   * Returns the 20-entry normalised array for display.
-   * Missing entries are created as blank (no modifiers, no features).
-   */
   const rows = $derived.by((): LevelProgressionEntry[] => {
     const existing = ctx.feature.levelProgression ?? [];
     return Array.from({ length: MAX_LEVELS }, (_, i) => {
@@ -113,12 +43,6 @@
     });
   });
 
-  // ===========================================================================
-  // INCREMENT HELPERS
-  // ===========================================================================
-
-  // Pipeline IDs are imported from constants.ts — never hardcoded as magic strings
-  // in .svelte files (zero-hardcoding rule, ARCHITECTURE.md §6).
   const BAB_TARGET  = BAB_PIPELINE_ID;
   const FORT_TARGET = SAVE_FORT_PIPELINE_ID;
   const REF_TARGET  = SAVE_REFLEX_PIPELINE_ID;
@@ -129,11 +53,6 @@
     return typeof mod?.value === 'number' ? mod.value : 0;
   }
 
-  /**
-   * Returns a new grantedModifiers array with the base modifier for `targetId`
-   * set to `value`.  Creates a new Modifier if one doesn't exist.
-   * Removes the modifier if value === 0 and there was one (keeps data tidy).
-   */
   function withIncrement(
     entry: LevelProgressionEntry,
     targetId: string,
@@ -142,7 +61,7 @@
     const existing = entry.grantedModifiers.filter(
       m => !(m.targetId === targetId && m.type === 'base')
     );
-    if (value === 0) return existing; // removes the modifier
+    if (value === 0) return existing;
 
     const id = `base_${targetId.replace(/\./g, '_')}_${entry.level}`;
     const newMod: Modifier = {
@@ -156,15 +75,6 @@
     return [...existing, newMod];
   }
 
-  // ===========================================================================
-  // LEVEL ENTRY MUTATIONS
-  // ===========================================================================
-
-  /**
-   * Updates one level entry in the progression array.
-   * Keeps the array sorted by level; removes trailing empty entries to keep
-   * the JSON compact (unless they have data).
-   */
   function patchLevelEntry(
     levelNumber: number,
     patch: Partial<LevelProgressionEntry>
@@ -178,7 +88,6 @@
       existing.push({ level: levelNumber, grantedFeatures: [], grantedModifiers: [], ...patch });
     }
 
-    // Sort and trim truly empty trailing entries
     const sorted = existing.sort((a, b) => a.level - b.level);
     ctx.feature.levelProgression = sorted;
   }
@@ -188,10 +97,6 @@
     const newMods = withIncrement(entry, targetId, value);
     patchLevelEntry(levelNumber, { grantedModifiers: newMods });
   }
-
-  // ===========================================================================
-  // PRESET APPLICATION
-  // ===========================================================================
 
   function applyColumnPreset(targetId: string, increments: readonly number[]): void {
     const updated = [...(ctx.feature.levelProgression ?? [])];
@@ -211,10 +116,6 @@
 
     ctx.feature.levelProgression = updated.sort((a, b) => a.level - b.level);
   }
-
-  // ===========================================================================
-  // FEATURE CHIP HELPERS
-  // ===========================================================================
 
   function featureLabelFor(id: ID): string {
     const f = dataLoader.getFeature(id);
@@ -238,10 +139,6 @@
       grantedFeatures: entry.grantedFeatures.filter(f => f !== id),
     });
   }
-
-  // ===========================================================================
-  // MODAL STATE
-  // ===========================================================================
 
   type ModalState =
     | { kind: 'feature-picker'; levelNumber: number }
@@ -285,93 +182,91 @@
 
   <!-- Section header -->
   <div class="flex flex-col gap-0.5">
-    <span class="text-sm font-semibold text-text-primary">Level Progression</span>
+    <span class="text-sm font-semibold text-text-primary">{ui('editor.level_prog.section_title', lang)}</span>
     <span class="text-[11px] text-text-muted">
-      Defines what each class level grants. BAB and save values are
-      <strong>increments</strong> accumulated by the engine — not totals.
+      {ui('editor.level_prog.section_hint', lang)}
     </span>
   </div>
 
   <!-- ── PRESET BUTTONS ──────────────────────────────────────────────────── -->
   <div class="flex flex-wrap gap-2 p-3 rounded-lg border border-border bg-surface-alt">
     <span class="text-[11px] font-semibold text-text-muted self-center mr-1 w-full md:w-auto">
-      Fill entire column with preset:
+      {ui('editor.level_prog.fill_column_hint', lang)}
     </span>
 
     <!-- BAB presets -->
-    <span class="text-[10px] text-text-muted self-center">BAB:</span>
+    <span class="text-[10px] text-text-muted self-center">{ui('editor.level_prog.bab_prefix', lang)}</span>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_FULL)}
-            title="BAB = +1 every level">
-      Full BAB
+            title={ui('editor.level_prog.full_bab_title', lang)}>
+      {ui('editor.level_prog.full_bab_btn', lang)}
     </button>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_3_4)}
-            title="BAB = floor(level × 3/4)">
-      ¾ BAB
+            title={ui('editor.level_prog.3_4_bab_title', lang)}>
+      {ui('editor.level_prog.3_4_bab_btn', lang)}
     </button>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => applyColumnPreset(BAB_TARGET, BAB_1_2)}
-            title="BAB = floor(level / 2)">
-      ½ BAB
+            title={ui('editor.level_prog.1_2_bab_title', lang)}>
+      {ui('editor.level_prog.1_2_bab_btn', lang)}
     </button>
 
-    <span class="text-[10px] text-text-muted self-center ml-2">Fort / Ref / Will:</span>
+    <span class="text-[10px] text-text-muted self-center ml-2">{ui('editor.level_prog.save_prefix', lang)}</span>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto text-green-400"
             onclick={() => {
-              const save = prompt('Apply Good Save to which save? Enter: fort, ref, or will');
+              const save = prompt(ui('editor.level_prog.good_save_prompt', lang));
               if (!save) return;
               const t = save.trim().toLowerCase();
               if (t === 'fort') applyColumnPreset(FORT_TARGET, SAVE_GOOD);
               else if (t === 'ref') applyColumnPreset(REF_TARGET, SAVE_GOOD);
               else if (t === 'will') applyColumnPreset(WILL_TARGET, SAVE_GOOD);
             }}
-            title="Good Save = 2 + floor(level / 2). Prompts for Fort, Ref, or Will.">
-      Good Save
+            title={ui('editor.level_prog.good_save_title', lang)}>
+      {ui('editor.level_prog.good_save_btn', lang)}
     </button>
     <button type="button" class="btn-ghost text-xs py-0.5 px-2 h-auto text-amber-400"
             onclick={() => {
-              const save = prompt('Apply Poor Save to which save? Enter: fort, ref, or will');
+              const save = prompt(ui('editor.level_prog.poor_save_prompt', lang));
               if (!save) return;
               const t = save.trim().toLowerCase();
               if (t === 'fort') applyColumnPreset(FORT_TARGET, SAVE_POOR);
               else if (t === 'ref') applyColumnPreset(REF_TARGET, SAVE_POOR);
               else if (t === 'will') applyColumnPreset(WILL_TARGET, SAVE_POOR);
             }}
-            title="Poor Save = floor(level / 3). Prompts for Fort, Ref, or Will.">
-      Poor Save
+            title={ui('editor.level_prog.poor_save_title', lang)}>
+      {ui('editor.level_prog.poor_save_btn', lang)}
     </button>
 
     <!-- Per-save preset buttons (no prompt) -->
     <div class="flex flex-wrap gap-1 w-full mt-1 text-[10px] text-text-muted">
-      <span class="self-center">Quick fill:</span>
+      <span class="self-center">{ui('editor.level_prog.quick_fill_label', lang)}</span>
       {#each ['fort', 'ref', 'will'] as save}
         {@const target = save === 'fort' ? FORT_TARGET : save === 'ref' ? REF_TARGET : WILL_TARGET}
         <button type="button" class="btn-ghost text-[10px] py-0 px-1.5 h-auto text-green-400"
                 onclick={() => applyColumnPreset(target, SAVE_GOOD)}>
-          {save} good
+          {save} {ui('editor.level_prog.good_save_btn', lang).toLowerCase()}
         </button>
         <button type="button" class="btn-ghost text-[10px] py-0 px-1.5 h-auto text-amber-400"
                 onclick={() => applyColumnPreset(target, SAVE_POOR)}>
-          {save} poor
+          {save} {ui('editor.level_prog.poor_save_btn', lang).toLowerCase()}
         </button>
       {/each}
     </div>
   </div>
 
   <!-- ── TABLE ─────────────────────────────────────────────────────────────── -->
-  <!-- Scrolls horizontally on narrow viewports -->
   <div class="overflow-x-auto rounded-lg border border-border">
     <table class="w-full text-xs border-collapse min-w-[640px]">
       <thead>
         <tr class="bg-surface-alt border-b border-border">
-          <th class="px-3 py-2 text-left font-semibold text-text-muted w-10">Lvl</th>
-          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">BAB</th>
-          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">Fort</th>
-          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">Ref</th>
-          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">Will</th>
-          <th class="px-3 py-2 text-left font-semibold text-text-muted">Features granted</th>
-          <th class="px-3 py-2 text-left font-semibold text-text-muted w-28">Modifiers</th>
+          <th class="px-3 py-2 text-left font-semibold text-text-muted w-10">{ui('editor.level_prog.col_lvl', lang)}</th>
+          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">{ui('editor.level_prog.col_bab', lang)}</th>
+          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">{ui('editor.level_prog.col_fort', lang)}</th>
+          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">{ui('editor.level_prog.col_ref', lang)}</th>
+          <th class="px-2 py-2 text-center font-semibold text-text-muted w-12">{ui('editor.level_prog.col_will', lang)}</th>
+          <th class="px-3 py-2 text-left font-semibold text-text-muted">{ui('editor.level_prog.col_features', lang)}</th>
+          <th class="px-3 py-2 text-left font-semibold text-text-muted w-28">{ui('editor.level_prog.col_modifiers', lang)}</th>
         </tr>
       </thead>
       <tbody>
@@ -400,7 +295,7 @@
                 max="1"
                 value={bab}
                 oninput={(e) => setIncrement(entry.level, BAB_TARGET, parseInt((e.currentTarget as HTMLInputElement).value) || 0)}
-                aria-label="BAB increment at level {entry.level}"
+                aria-label={ui('editor.level_prog.bab_aria', lang).replace('{n}', String(entry.level))}
               />
             </td>
 
@@ -413,7 +308,7 @@
                 max="2"
                 value={fort}
                 oninput={(e) => setIncrement(entry.level, FORT_TARGET, parseInt((e.currentTarget as HTMLInputElement).value) || 0)}
-                aria-label="Fortitude increment at level {entry.level}"
+                aria-label={ui('editor.level_prog.fort_aria', lang).replace('{n}', String(entry.level))}
               />
             </td>
 
@@ -426,7 +321,7 @@
                 max="2"
                 value={ref}
                 oninput={(e) => setIncrement(entry.level, REF_TARGET, parseInt((e.currentTarget as HTMLInputElement).value) || 0)}
-                aria-label="Reflex increment at level {entry.level}"
+                aria-label={ui('editor.level_prog.ref_aria', lang).replace('{n}', String(entry.level))}
               />
             </td>
 
@@ -439,7 +334,7 @@
                 max="2"
                 value={will}
                 oninput={(e) => setIncrement(entry.level, WILL_TARGET, parseInt((e.currentTarget as HTMLInputElement).value) || 0)}
-                aria-label="Will increment at level {entry.level}"
+                aria-label={ui('editor.level_prog.will_aria', lang).replace('{n}', String(entry.level))}
               />
             </td>
 
@@ -454,7 +349,7 @@
                       type="button"
                       class="text-text-muted hover:text-danger leading-none"
                       onclick={() => removeFeatureAtLevel(entry.level, fid)}
-                      aria-label="Remove {fid} from level {entry.level}"
+                      aria-label={ui('editor.level_prog.remove_feature_aria', lang).replace('{id}', fid).replace('{n}', String(entry.level))}
                     ><IconClose size={12} aria-hidden="true" /></button>
                   </span>
                 {/each}
@@ -463,7 +358,7 @@
                   class="text-[10px] text-text-muted hover:text-accent transition-colors
                          border border-dashed border-border/60 rounded-full px-1.5 py-0.5"
                   onclick={() => (modalState = { kind: 'feature-picker', levelNumber: entry.level })}
-                  title="Add feature at level {entry.level}"
+                  title={ui('editor.level_prog.add_feature_title', lang).replace('{n}', String(entry.level))}
                 >
                   + Add
                 </button>
@@ -485,7 +380,7 @@
                     modifiers: entry.grantedModifiers,
                   })}
                 >
-                  {nonIncMods.length > 0 ? 'Edit' : '+ Add'}
+                  {nonIncMods.length > 0 ? ui('common.edit', lang) : '+ Add'}
                 </button>
               </div>
             </td>

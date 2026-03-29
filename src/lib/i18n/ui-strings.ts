@@ -208,6 +208,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'login.password':               'Password',
   'login.sign_in':                'Sign In',
   'login.signing_in':             'Signing in…',
+  'login.error_account_expired':   'This account was not activated within 7 days and has been suspended. Contact an administrator.',
+  'login.error_account_suspended': 'This account has been suspended. Contact an administrator.',
   'login.error_invalid':          'Invalid username or password.',
   'login.error_too_many':         'Too many login attempts. Please wait 15 minutes.',
   'login.error_failed':           'Login failed (HTTP {status}). Please try again.',
@@ -230,6 +232,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'nav.expand_sidebar':           'Expand sidebar',
   'nav.collapse_sidebar':         'Collapse sidebar',
   'nav.close_navigation':         'Close navigation',
+  'nav.open_navigation':          'Open navigation',
+  'nav.app_nav_aria':             'Application navigation',
+  'nav.mobile_nav_aria':          'Mobile navigation bar',
+  'nav.rules':                    'Rules',
+  'nav.back_to_campaign_hub':     'Back to Campaign Hub',
+  'nav.save_campaign_settings_aria': 'Save campaign settings',
   'nav.role_gm':                  'Game Master',
   'nav.role_player':              'Player',
 
@@ -356,6 +364,9 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'gm.saved_locally':             'Saved locally (API unavailable).',
   'gm.saving':                    'Saving…',
   'gm.save_overrides':            'Save Overrides',
+  /** {name} = character name */
+  'gm.overrides_for_aria':        'GM overrides for {name}',
+  'gm.save_overrides_for_aria':   'Save GM overrides for {name}',
   'gm.syntax_error':              'Syntax error:',
   /**
    * Shown when JSON.parse throws and a character-offset position is extractable.
@@ -1788,6 +1799,777 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // LEVELING JOURNAL MODAL — minor gap
   // ==========================================================================
   'journal.sp_min_note': '(min 1 per level)',
+
+  // ==========================================================================
+  // COMMON / SHARED ADDITIONS
+  // ==========================================================================
+  'common.apply':           'Apply',
+  'common.confirm':         'Confirm',
+  'common.add':             '+ Add',
+  'common.remove':          'Remove',
+  'common.change':          'Change',
+  'common.test':            'Test',
+
+  // ==========================================================================
+  // CONTENT EDITOR — SHARED CATEGORY LABELS
+  // Used in EntityTypeSelector, FeaturePickerModal, CoreFieldsSection, etc.
+  // ==========================================================================
+  'editor.category.race':          'Race',
+  'editor.category.class':         'Class',
+  'editor.category.class_feature': 'Class Feature',
+  'editor.category.feat':          'Feat',
+  'editor.category.deity':         'Deity',
+  'editor.category.domain':        'Domain',
+  'editor.category.magic':         'Spell / Power',
+  'editor.category.item':          'Item',
+  'editor.category.condition':     'Condition',
+  'editor.category.monster_type':  'Monster Type',
+  'editor.category.environment':   'Environment',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CORE FIELDS SECTION (CoreFieldsSection.svelte)
+  // ==========================================================================
+  'editor.core.entity_id_label':           'Entity ID',
+  'editor.core.entity_id_kebab_hint':      '(kebab-case)',
+  'editor.core.entity_id_desc':            'Must be unique across all loaded rule sources. Use the feature\'s ID as one of its tags so prerequisite chains can reference it.',
+  'editor.core.category_label':            'Category',
+  'editor.core.category_desc':             'Determines which specialised sub-form sections are shown below, and how the DataLoader routes feature queries.',
+  'editor.core.label_legend':              'Label',
+  'editor.core.label_display_hint':        '(display name)',
+  'editor.core.description_legend':        'Description',
+  'editor.core.preview_btn':               'Preview',
+  'editor.core.edit_btn':                  'Edit',
+  'editor.core.no_description_en':         '(no description)',
+  'editor.core.no_description_fr':         '(pas de description)',
+  'editor.core.desc_preview_aria':         '{lang} description preview',
+  'editor.core.rule_source_label':         'Rule Source',
+  'editor.core.rule_source_desc':          'Controls which campaigns can use this entity. Leave as user_homebrew for campaign-scoped homebrew — it is always active and never filtered out.',
+  'editor.core.tags_label':                'Tags',
+  'editor.core.add_tags_btn':              '+ Add Tags',
+  'editor.core.tags_convention_hint':      'Convention: include this entity\'s own ID as a tag so prerequisites can reference it via has_tag.',
+  'editor.core.no_tags':                   'No tags.',
+  'editor.core.remove_tag_aria':           'Remove tag {tag}',
+  'editor.core.forbidden_tags_label':      'Forbidden Tags',
+  'editor.core.forbidden_tags_hint':       'If the character has ANY of these tags active, ALL of this entity\'s grantedModifiers are suppressed — the feature remains active but contributes nothing.',
+  'editor.core.no_forbidden_tags':         'None.',
+  'editor.core.remove_forbidden_tag_aria': 'Remove forbidden tag {tag}',
+  'editor.core.merge_strategy_legend':     'Merge Strategy',
+  'editor.core.merge_replace_label':       'Replace',
+  'editor.core.merge_replace_desc':        'This entity completely replaces any previously loaded entity with the same ID. All fields from the earlier version are discarded. Default — use this for entirely new or wholly rewritten entities.',
+  'editor.core.merge_partial_label':       'Partial Merge',
+  'editor.core.merge_partial_desc':        'Fields defined in this entity are merged into the existing one: arrays are appended (prefix with - to remove), scalars are overwritten only when defined here. Use this to extend SRD content without duplicating the entire entry.',
+  'editor.core.override_warning_title':    'This ID matches an existing SRD entity — it will be overridden.',
+  'editor.core.override_warning_desc':     'The homebrew version will take precedence in the resolution chain because it loads after all file-based rule sources. Set Merge to Partial below if you want to extend the original instead of replacing it entirely.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ENTITY TYPE SELECTOR (EntityTypeSelector.svelte)
+  // ==========================================================================
+  'editor.type_selector.choose_hint':          'Choose the entity type you want to create. This determines which editor sections are shown.',
+  'editor.type_selector.race_desc':            'Species traits, ability score bonuses, and racial class skills',
+  'editor.type_selector.class_desc':           'Hit die, skill points, BAB/save progressions, and class feature grants',
+  'editor.type_selector.class_feature_desc':   'Abilities granted by a class at specific levels',
+  'editor.type_selector.feat_desc':            'Player-chosen abilities at character creation or bonus feat levels',
+  'editor.type_selector.magic_desc':           'Arcane / divine spells or psionic powers with school, components, and spell lists',
+  'editor.type_selector.item_desc':            'Equipment, weapons, armour, magic rings, charged items, wands, staves, and scrolls',
+  'editor.type_selector.deity_desc':           'Divine patron with domains, favoured weapon, and alignment-restriction modifiers',
+  'editor.type_selector.domain_desc':          'Domain granting bonus spells per day and a domain power',
+  'editor.type_selector.condition_desc':       'Status effects with stat penalties and action budget restrictions',
+  'editor.type_selector.monster_type_desc':    'Creature type traits shared across multiple monsters',
+  'editor.type_selector.environment_desc':     'Terrain or environmental conditions granting modifiers',
+
+  // ==========================================================================
+  // CONTENT EDITOR — MAGIC DATA EDITOR (MagicDataEditor.svelte)
+  // ==========================================================================
+  'editor.magic.general_section':           'General',
+  'editor.magic.magic_type_legend':         'Magic Type',
+  'editor.magic.arcane_label':              'Arcane',
+  'editor.magic.arcane_hint':               'INT/CHA based, ASF applies',
+  'editor.magic.divine_label':              'Divine',
+  'editor.magic.divine_hint':               'WIS based, no ASF',
+  'editor.magic.psionic_label':             'Psionic',
+  'editor.magic.psionic_hint':              'PP based, no verbal/somatic components',
+  'editor.magic.school_label':              'School',
+  'editor.magic.school_psionic_hint':       '(legacy display text — use Discipline below)',
+  'editor.magic.select_school':             '— Select school',
+  'editor.magic.sub_school_label':          'Sub-school / Sub-discipline',
+  'editor.magic.spell_components_legend':   'Spell Components',
+  'editor.magic.comp_v_label':              'V — Verbal',
+  'editor.magic.comp_v_hint':               'Requires incantation',
+  'editor.magic.comp_s_label':              'S — Somatic',
+  'editor.magic.comp_s_hint':               'Requires hand gestures',
+  'editor.magic.comp_m_label':              'M — Material',
+  'editor.magic.comp_m_hint':               'Requires a consumed or non-consumed component',
+  'editor.magic.comp_f_label':              'F — Focus',
+  'editor.magic.comp_f_hint':               'Non-consumed focus object (arcane)',
+  'editor.magic.comp_df_label':             'DF — Divine Focus',
+  'editor.magic.comp_df_hint':              'Holy symbol / sacred item (divine spells)',
+  'editor.magic.comp_xp_label':             'XP — XP Cost',
+  'editor.magic.comp_xp_hint':              'Consumes XP on casting',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ACTIVATION EDITOR (ActivationEditor.svelte)
+  // ==========================================================================
+  'editor.activation.toggle_label':              'Has activation cost or action type',
+  'editor.activation.toggle_hint':               'Enable for active abilities (Barbarian Rage, Turn Undead, charged items). Leave off for passive features (racial bonuses, permanent feat effects).',
+  'editor.activation.action_type_label':         'Action Type',
+  'editor.activation.trigger_event_label':       'Trigger Event',
+  'editor.activation.trigger_event_hint':        '(describes what causes this ability to fire)',
+  'editor.activation.resource_cost_legend':      'Resource Cost',
+  'editor.activation.cost_none':                 'No cost',
+  'editor.activation.cost_fixed':                'Fixed cost',
+  'editor.activation.cost_tiered':               'Tiered costs',
+  'editor.activation.resource_pool_id_label':    'Resource Pool ID',
+  'editor.activation.click_to_pick_pool':        'Click to pick pool pipeline…',
+  'editor.activation.click_to_pick_pool_title':  'Click to pick a resource pool pipeline',
+  'editor.activation.cost_per_use_label':        'Cost per use',
+  'editor.activation.action_standard_label':     'Standard Action',
+  'editor.activation.action_standard_hint':      '1 per round — most activated abilities',
+  'editor.activation.action_move_label':         'Move Action',
+  'editor.activation.action_move_hint':          'e.g. guided movement, swift draw',
+  'editor.activation.action_swift_label':        'Swift Action',
+  'editor.activation.action_swift_hint':         '1 per round; minor in-combat abilities',
+  'editor.activation.action_immediate_label':    'Immediate Action',
+  'editor.activation.action_immediate_hint':     '1 per round; usable outside own turn',
+  'editor.activation.action_free_label':         'Free Action',
+  'editor.activation.action_free_hint':          'Effectively no action cost during round',
+  'editor.activation.action_full_round_label':   'Full-Round Action',
+  'editor.activation.action_full_round_hint':    'Consumes the entire turn',
+  'editor.activation.action_minutes_label':      'Several Minutes',
+  'editor.activation.action_minutes_hint':       'Non-combat ritual or extended activation',
+  'editor.activation.action_hours_label':        'Hours',
+  'editor.activation.action_hours_hint':         'Long ritual, item creation, etc.',
+  'editor.activation.action_passive_label':      'Passive / Always-On',
+  'editor.activation.action_passive_hint':       'No activation needed; ability is always active',
+  'editor.activation.action_reaction_label':     'Reaction',
+  'editor.activation.action_reaction_hint':      'Fires automatically on a trigger event',
+
+  // ==========================================================================
+  // CONTENT EDITOR — MODIFIER ROW (ModifierRow.svelte)
+  // ==========================================================================
+  'editor.modifier.edit_condition_title':        'Edit Condition',
+  'editor.modifier.condition_sheet_time_desc':   'This condition is evaluated at sheet time. If it evaluates to false, this specific modifier is completely ignored (it does not contribute to the pipeline total).',
+  /** {n} = 1-based modifier index */
+  'editor.modifier.row_label':                   'Modifier #{n}',
+  'editor.modifier.duplicate_title':             'Duplicate this modifier',
+  'editor.modifier.duplicate_aria':              'Duplicate modifier {n}',
+  'editor.modifier.delete_title':                'Delete this modifier',
+  'editor.modifier.delete_aria':                 'Delete modifier {n}',
+  'editor.modifier.target_pipeline_label':       'Target Pipeline',
+  'editor.modifier.click_to_pick_pipeline':      'Click to pick…',
+  'editor.modifier.click_to_pick_title':         'Click to pick a pipeline',
+  'editor.modifier.change_pipeline_btn':         'Change',
+  'editor.modifier.type_label':                  'Type',
+  'editor.modifier.click_to_change_type_title':  'Click to change modifier type',
+  'editor.modifier.value_label':                 'Value',
+  'editor.modifier.situational_label':           'Situational Context',
+  'editor.modifier.situational_hint':            '(optional — routes to situational modifiers, applied at roll time)',
+  'editor.modifier.condition_label':             'Condition (sheet-time gate)',
+  'editor.modifier.condition_optional_hint':     '(optional — if false, modifier is ignored)',
+  'editor.modifier.edit_condition_btn':          'Edit…',
+  'editor.modifier.remove_condition_btn':        'Remove',
+  'editor.modifier.remove_condition_aria':       'Remove condition',
+  'editor.modifier.no_condition_label':          'No condition — always active.',
+  'editor.modifier.add_condition_btn':           '+ Add Condition',
+  'editor.modifier.dr_bypass_tags_label':        'DR Bypass Tags',
+  'editor.modifier.dr_bypass_tags_hint':         '(e.g. silver, magic, cold_iron — empty = "DR X/—")',
+  'editor.modifier.edit_dr_tags_btn':            'Edit Tags',
+  /** {value} = the modifier's numeric value */
+  'editor.modifier.no_dr_bypass_tags':           'No bypass tags — DR {value}/— (overcome by nothing).',
+  'editor.modifier.source_summary':              'Source attribution (auto-filled from entity id/label)',
+  'editor.modifier.source_id_label':             'Source ID',
+  'editor.modifier.source_name_label':           'Source Name (EN)',
+  'editor.modifier.stacks_badge':                'STACKS',
+  'editor.modifier.special_badge':               'SPECIAL',
+  'editor.modifier.best_wins_badge':             'BEST WINS',
+
+  // ==========================================================================
+  // CONTENT EDITOR — MODIFIER LIST EDITOR (ModifierListEditor.svelte)
+  // ==========================================================================
+  'editor.modifier_list.section_title':          'Modifiers',
+  'editor.modifier_list.add_modifier_btn':       '+ Add Modifier',
+  'editor.modifier_list.no_modifiers':           'No modifiers yet.',
+  'editor.modifier_list.empty_hint':             'Click "+ Add Modifier" to add the first mechanical effect of this entity.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — MODIFIER TYPE PICKER MODAL (ModifierTypePickerModal.svelte)
+  // ==========================================================================
+  'editor.modtype_picker.title':               'Pick Modifier Type',
+  'editor.modtype_picker.stacking_hint':       '— stacking behaviour in the pipeline',
+  'editor.modtype_picker.search_aria':         'Search modifier types',
+  'editor.modtype_picker.search_placeholder':  'Search by name or description…',
+  'editor.modtype_picker.no_match':            'No modifier types match "{query}".',
+  'editor.modtype_picker.badge_always_stacks': 'ALWAYS STACKS',
+  'editor.modtype_picker.badge_best_wins':     'BEST WINS',
+  'editor.modtype_picker.badge_special':       'SPECIAL',
+  // Modifier type labels:
+  'editor.modtype.base.label':             'Base',
+  'editor.modtype.base.tooltip':           'Foundational value accumulated by class levels (e.g. BAB progression, save totals). Multiple base modifiers stack freely — use for class progression tables and racial HD.',
+  'editor.modtype.untyped.label':          'Untyped',
+  'editor.modtype.untyped.tooltip':        'A bonus with no declared type — always stacks with everything. Use sparingly: stacking untyped bonuses quickly become unbalanced. Common for minor situational bonuses that have no SRD type.',
+  'editor.modtype.dodge.label':            'Dodge',
+  'editor.modtype.dodge.tooltip':          'Dodge bonuses to AC always stack with each other — SRD explicit exception. Use for the Dodge feat (+1 AC), Tumble-based dodge, and monk AC bonus.',
+  'editor.modtype.circumstance.label':     'Circumstance',
+  'editor.modtype.circumstance.tooltip':   'Circumstance bonuses (and penalties) always stack. Use for situational modifiers: flanking, higher ground, aid-another, or environmental obstacles.',
+  'editor.modtype.synergy.label':          'Synergy',
+  'editor.modtype.synergy.tooltip':        '5-rank skill-synergy bonus — always stacks with all other bonus types. Example: 5 ranks in Tumble grant a +2 synergy bonus to Balance.',
+  'editor.modtype.multiplier.label':       'Multiplier',
+  'editor.modtype.multiplier.tooltip':     'Multiplicative factor applied AFTER all additive modifiers are summed. Use for effects like "double Strength to damage" or "half speed". Multiple multipliers stack multiplicatively.',
+  'editor.modtype.enhancement.label':      'Enhancement',
+  'editor.modtype.enhancement.tooltip':    'Magic enhancement bonus to an item or natural attribute. Only the highest enhancement bonus applies. A +3 weapon and a +1 Bull\'s Strength cannot both give an enhancement bonus to STR.',
+  'editor.modtype.armor.label':            'Armor',
+  'editor.modtype.armor.tooltip':          'Armour bonus to AC granted by wearing physical armour. Only the highest armor bonus applies (you cannot benefit from two suits of armour).',
+  'editor.modtype.shield.label':           'Shield',
+  'editor.modtype.shield.tooltip':         'Shield bonus to AC from wielding a shield. Highest shield bonus wins — you cannot stack a buckler with a tower shield.',
+  'editor.modtype.natural_armor.label':    'Natural Armor',
+  'editor.modtype.natural_armor.tooltip':  'Natural armour bonus (thick hide, carapace, Barkskin spell). Only the highest natural armor bonus applies. Barkskin does not stack with a creature\'s existing natural armor.',
+  'editor.modtype.deflection.label':       'Deflection',
+  'editor.modtype.deflection.tooltip':     'Deflection bonus to AC from magical force effects. Highest wins — a Ring of Protection +3 and Shield of Faith +2 do not stack.',
+  'editor.modtype.morale.label':           'Morale',
+  'editor.modtype.morale.tooltip':         'Morale bonus from courage, bardic inspiration, or spells like Heroism. Only the highest morale bonus applies — Heroism and Good Hope do not stack.',
+  'editor.modtype.luck.label':             'Luck',
+  'editor.modtype.luck.tooltip':           'Luck bonus from divine sources (Divine Favor, Prayer). Highest luck bonus wins — a Cloak of Luck and Divine Favor do not stack on the same roll.',
+  'editor.modtype.insight.label':          'Insight',
+  'editor.modtype.insight.tooltip':        'Insight bonus to checks, representing knowledge or foresight (Guidance spell). Only the highest insight bonus applies.',
+  'editor.modtype.sacred.label':           'Sacred',
+  'editor.modtype.sacred.tooltip':         'Sacred bonus from holy magic (Bless, Consecrate, divine domains). Only the highest sacred bonus applies to any single statistic.',
+  'editor.modtype.profane.label':          'Profane',
+  'editor.modtype.profane.tooltip':        'Profane bonus or penalty from unholy/dark magic (Desecrate, Death Knell). Only the highest (or most severe) profane modifier applies per statistic.',
+  'editor.modtype.racial.label':           'Racial',
+  'editor.modtype.racial.tooltip':         'Racial trait bonus inherent to the creature\'s lineage. Only the highest racial bonus applies per statistic. Do not use for template abilities — use "untyped" or "enhancement" instead.',
+  'editor.modtype.competence.label':       'Competence',
+  'editor.modtype.competence.tooltip':     'Competence bonus to skills and checks (Guidance, masterwork tools). Only the highest competence bonus to the same check applies.',
+  'editor.modtype.size.label':             'Size',
+  'editor.modtype.size.tooltip':           'Size modifier to attack rolls and AC (small creatures get +1, large −1). Only one size modifier applies — size category is always singular.',
+  'editor.modtype.inherent.label':         'Inherent',
+  'editor.modtype.inherent.tooltip':       'Permanent inherent bonus from Tomes, Manuals, Wish, or Miracle. Highest inherent bonus wins (max +5 to any ability score per SRD). Stacks with enhancement and all other types.',
+  'editor.modtype.resistance.label':       'Resistance',
+  'editor.modtype.resistance.tooltip':     'Resistance bonus to saving throws (Cloak of Resistance, Resistance spell). Only the highest resistance bonus to the same save applies.',
+  'editor.modtype.setAbsolute.label':      'Set Absolute',
+  'editor.modtype.setAbsolute.tooltip':    'Forces the pipeline to an exact value, overriding all other modifiers. Last-in-chain wins. Use for Undead (CON = 0), Shapechange (stat set to animal form), or GM fiat ("set HP to exactly 200").',
+  'editor.modtype.damage_reduction.label':   'Damage Reduction',
+  'editor.modtype.damage_reduction.tooltip': 'D&D 3.5 DR — best-wins per bypass-tag group. Use for racial/innate/template DR; set drBypassTags to the bypass material. For class-progression DR that adds incrementally, use "base" instead.',
+  'editor.modtype.max_dex_cap.label':      'Max DEX Cap',
+  'editor.modtype.max_dex_cap.tooltip':    'Sets a maximum DEX-to-AC cap imposed by armor or conditions. Multiple caps compete with MINIMUM-WINS semantics (most restrictive wins). Meaningful only on the combatStats.max_dexterity_bonus pipeline.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — PIPELINE PICKER MODAL (PipelinePickerModal.svelte)
+  // ==========================================================================
+  'editor.pipeline_picker.title':                'Pick a Pipeline',
+  'editor.pipeline_picker.search_aria':          'Search pipelines',
+  'editor.pipeline_picker.search_placeholder':   'Search by ID or label…',
+  'editor.pipeline_picker.col_pipeline_id':      'Pipeline ID',
+  'editor.pipeline_picker.col_label':            'Label',
+  'editor.pipeline_picker.col_base_value':       'Default base value',
+  'editor.pipeline_picker.select_pipeline_aria': 'Select pipeline {id}',
+  'editor.pipeline_picker.skills_section':       'Skills',
+  'editor.pipeline_picker.skills_load_hint':     'Skills load automatically from rule sources. Enable a rule source in Campaign Settings to populate this list.',
+  'editor.pipeline_picker.col_skill_name':       'Skill Name',
+  'editor.pipeline_picker.col_base':             'Base',
+  'editor.pipeline_picker.custom_section_title': 'Custom Pipeline ID',
+  'editor.pipeline_picker.custom_section_desc':  'For homebrew pipelines not listed above (e.g. resources.shadow_points). Enter the exact ID as it appears in your rule source JSON.',
+  'editor.pipeline_picker.custom_id_aria':       'Custom pipeline ID',
+  'editor.pipeline_picker.use_this_id_btn':      'Use this ID',
+  'editor.pipeline_picker.invalid_id_error':     'Pipeline IDs cannot contain spaces or start with "@".',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ENTITY FORM (EntityForm.svelte)
+  // ==========================================================================
+  'editor.form.override_warning_title':          'Override Warning',
+  /** {id} = entity ID */
+  'editor.form.override_warning_desc':           'The ID {id} already exists in a loaded rule source. This entity will override the existing one for this campaign. Use merge: "partial" to extend it additively.',
+  'editor.form.prerequisites_label':             'Prerequisites / Activation Condition',
+  'editor.form.prerequisites_hint':              '(logic tree — feat chain, ability prereqs)',
+  'editor.form.validation_id_required':          'Entity ID is required.',
+  'editor.form.validation_category_required':    'Category is required.',
+  'editor.form.save_failed':                     'Save failed.',
+  'editor.form.saved_successfully':              'Saved successfully.',
+  'editor.form.creating_entity':                 'Creating new entity',
+  'editor.form.editing_entity':                  'Editing entity',
+  'editor.form.saving_spinner':                  'Saving…',
+  'editor.form.create_entity_btn':               'Create Entity',
+  'editor.form.save_changes_btn':                'Save Changes',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CHOICES EDITOR (ChoicesEditor.svelte)
+  // ==========================================================================
+  'editor.choices.section_title':              'Player Choices',
+  'editor.choices.section_hint':               'Prompts shown to the player when they add this entity to their character. Selections are stored in ActiveFeatureInstance.selections and referenced via @selection.<choiceId>.',
+  'editor.choices.add_choice_btn':             '+ Add Choice',
+  'editor.choices.no_choices':                 'No choices defined.',
+  'editor.choices.no_choices_hint':            'Add a choice for feats like Weapon Focus (weapon type) or Cleric domains.',
+  /** {n} = 1-based choice index */
+  'editor.choices.entry_label':                'Choice #{n}',
+  /** {n} = 1-based choice index */
+  'editor.choices.delete_title':               'Delete choice #{n}',
+  /** {n} = 1-based choice index */
+  'editor.choices.delete_aria':                'Delete choice {n}',
+  'editor.choices.choice_id_label':            'Choice ID',
+  /** {id} = choiceId value */
+  'editor.choices.choice_id_ref':              'Referenced as @selection.{id} in modifier conditions.',
+  'editor.choices.max_selections_label':       'Max Selections',
+  'editor.choices.max_selections_hint':        'Usually 1. Use 2+ for "choose N domains", "choose N feats", etc.',
+  'editor.choices.label_en_label':             'Label (English)',
+  'editor.choices.label_fr_label':             'Label (Français)',
+  'editor.choices.options_query_label':        'Options Query',
+  'editor.choices.test_query_btn':             'Test Query',
+  'editor.choices.test_query_title':           'Run this query against the current DataLoader cache',
+  'editor.choices.syntax_tag_hint':            'features with that tag',
+  'editor.choices.syntax_category_hint':       'features of that category',
+  'editor.choices.syntax_intersection_hint':   'must match all parts (AND)',
+  'editor.choices.zero_matches_label':         '0 matches',
+  'editor.choices.zero_matches_desc':          'No features match this query in the current DataLoader cache. Check that the rule sources containing the target features are enabled.',
+  /** {n} = match count, {s} = '' or 's' */
+  'editor.choices.matches_label':              '{n} feature{s} match',
+  'editor.choices.sample_label':               'Sample: ',
+  'editor.choices.prefix_label':               'Choice Granted Tag Prefix',
+  'editor.choices.prefix_optional':            '(optional)',
+  'editor.choices.prefix_engine_hint':         'When set, the engine emits <prefix><selectedId> as an active tag for each selection.',
+  'editor.choices.prefix_convention_hint':     'Needed for parameterized prerequisites (Weapon Focus (X), Spell Focus (school)). Convention: end with _ and mirror this feat\'s ID.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — LEVEL PROGRESSION EDITOR (LevelProgressionEditor.svelte)
+  // ==========================================================================
+  'editor.level_prog.section_title':           'Level Progression',
+  'editor.level_prog.section_hint':            'Defines what each class level grants. BAB and save values are increments accumulated by the engine — not totals.',
+  'editor.level_prog.fill_column_hint':        'Fill entire column with preset:',
+  'editor.level_prog.bab_prefix':              'BAB:',
+  'editor.level_prog.save_prefix':             'Fort / Ref / Will:',
+  'editor.level_prog.full_bab_btn':            'Full BAB',
+  'editor.level_prog.full_bab_title':          'BAB = +1 every level',
+  'editor.level_prog.3_4_bab_btn':             '¾ BAB',
+  'editor.level_prog.3_4_bab_title':           'BAB = floor(level × 3/4)',
+  'editor.level_prog.1_2_bab_btn':             '½ BAB',
+  'editor.level_prog.1_2_bab_title':           'BAB = floor(level / 2)',
+  'editor.level_prog.good_save_btn':           'Good Save',
+  'editor.level_prog.good_save_title':         'Good Save = 2 + floor(level / 2). Prompts for Fort, Ref, or Will.',
+  'editor.level_prog.poor_save_btn':           'Poor Save',
+  'editor.level_prog.poor_save_title':         'Poor Save = floor(level / 3). Prompts for Fort, Ref, or Will.',
+  'editor.level_prog.quick_fill_label':        'Quick fill:',
+  'editor.level_prog.good_save_prompt':        'Apply Good Save to which save? Enter: fort, ref, or will',
+  'editor.level_prog.poor_save_prompt':        'Apply Poor Save to which save? Enter: fort, ref, or will',
+  'editor.level_prog.col_lvl':                 'Lvl',
+  'editor.level_prog.col_bab':                 'BAB',
+  'editor.level_prog.col_fort':                'Fort',
+  'editor.level_prog.col_ref':                 'Ref',
+  'editor.level_prog.col_will':                'Will',
+  'editor.level_prog.col_features':            'Features granted',
+  'editor.level_prog.col_modifiers':           'Modifiers',
+  /** {n} = level number */
+  'editor.level_prog.bab_aria':                'BAB increment at level {n}',
+  'editor.level_prog.fort_aria':               'Fortitude increment at level {n}',
+  'editor.level_prog.ref_aria':                'Reflex increment at level {n}',
+  'editor.level_prog.will_aria':               'Will increment at level {n}',
+  'editor.level_prog.remove_feature_aria':     'Remove {id} from level {n}',
+  'editor.level_prog.add_feature_title':       'Add feature at level {n}',
+
+  // ==========================================================================
+  // CONTENT EDITOR — RACE / CLASS EXTRAS EDITOR (RaceClassExtrasEditor.svelte)
+  // ==========================================================================
+  'editor.race_class.race_section_title':        'Race Extras',
+  'editor.race_class.race_section_hint':         'Fields specific to category: "race" entities.',
+  'editor.race_class.class_section_title':       'Class Extras',
+  'editor.race_class.class_section_hint':        'Fields specific to category: "class" entities.',
+  'editor.race_class.recommended_attrs_legend':  'Recommended Attributes',
+  'editor.race_class.recommended_attrs_hint':    '(cosmetic UX guidance for Point Buy — no mechanical effect)',
+  'editor.race_class.recommended_attrs_hint2':   '(cosmetic UX hint — no mechanical effect)',
+  'editor.race_class.race_attrs_desc':           'Checked stats are highlighted green in the Point Buy UI during character creation. Example: Fighter → STR, CON, DEX; Wizard → INT, DEX, CON.',
+  'editor.race_class.race_class_skills_label':   'Class Skills',
+  'editor.race_class.race_class_skills_hint':    '(optional — racial bonus class skills)',
+  'editor.race_class.no_racial_class_skills':    'No racial class skills.',
+  'editor.race_class.add_class_skill_aria':      'Add class skill',
+  'editor.race_class.load_skills_hint':          'Load rule sources to populate the skill list.',
+  'editor.race_class.class_skills_hint':         'Skills on this list cost ×1 SP per rank for characters in this class. All other skills cost ×2 SP (cross-class).',
+  'editor.race_class.no_class_skills':           'No class skills defined.',
+  /** {n} = total skill count */
+  'editor.race_class.add_all_skills_btn':        '+ Add all {n} skills',
+  'editor.race_class.add_all_skills_title':      'Add all {n} skills as class skills (for Rogue-style all-class-skills)',
+  'editor.race_class.select_skill_placeholder':  '— Select a skill to add',
+  'editor.race_class.hit_die_label':             'Hit Die',
+  'editor.race_class.hit_die_hint':              'Stored as a base modifier on combatStats.max_hp. Each class level rolls this die to determine HP gained. D&D 3.5 standard: d6/d8/d10/d12 for most classes.',
+  'editor.race_class.sp_per_level_label':        'Skill Points per Level',
+  'editor.race_class.sp_before_int_hint':        '(before INT modifier)',
+  'editor.race_class.sp_per_level_hint':         'Stored as a base modifier on attributes.skill_points_per_level. Actual SP/lvl = max(1, this value + INT modifier). SRD convention: 2/4/6/8 (×4 at level 1).',
+  'editor.race_class.remove_skill_aria':         'Remove {id}',
+  'editor.race_class.remove_class_skill_aria':   'Remove {id} from class skills',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ITEM DATA EDITOR (ItemDataEditor.svelte)
+  // ==========================================================================
+  'editor.item.general_section':               'General',
+  'editor.item.slot_label':                    'Equipment Slot',
+  'editor.item.weight_label':                  'Weight (lb.)',
+  'editor.item.cost_label':                    'Cost (gp)',
+  'editor.item.hardness_label':                'Hardness',
+  'editor.item.hp_max_label':                  'Item HP Max',
+  'editor.item.unique_label':                  'Unique item',
+  'editor.item.unique_hint':                   '(adds tag unique; prevents duplicate equipping)',
+  'editor.item.artifact_tier_label':           'Artifact Tier',
+  'editor.item.artifact_tier_hint':            '(optional — leave blank for non-artifacts)',
+  'editor.item.consumable_section':            'Consumable (potion, oil, single-use scroll)',
+  'editor.item.consumable_hint':               'When the player uses this item, it is consumed (removed from inventory) and its grantedModifiers become active as an ephemeral effect the player can expire manually.',
+  'editor.item.duration_hint_label':           'Duration Hint',
+  'editor.item.duration_hint_optional':        '(optional — purely cosmetic)',
+  'editor.item.consumable_empty':              'Enable for potions, oils, and single-use scrolls that are destroyed on use. Charged items (wands, rods, rings) use Resource Pools instead — they are not consumed.',
+  'editor.item.slot_none_option':              '— (none / carry in inventory)',
+  'editor.item.slot_head':                     'Head',
+  'editor.item.slot_eyes':                     'Eyes',
+  'editor.item.slot_neck':                     'Neck',
+  'editor.item.slot_torso':                    'Torso',
+  'editor.item.slot_body':                     'Body',
+  'editor.item.slot_waist':                    'Waist',
+  'editor.item.slot_shoulders':                'Shoulders',
+  'editor.item.slot_arms':                     'Arms / Bracers',
+  'editor.item.slot_hands':                    'Hands / Gloves',
+  'editor.item.slot_ring':                     'Ring (x2 by default)',
+  'editor.item.slot_feet':                     'Feet / Boots',
+  'editor.item.slot_main_hand':                'Main Hand (weapon / shield)',
+  'editor.item.slot_off_hand':                 'Off Hand (weapon / shield)',
+  'editor.item.slot_two_hands':                'Two Hands (requires both)',
+  'editor.item.slot_none':                     'None — unslotted item (can carry many)',
+  'editor.item.artifact_not_artifact':         '— Not an artifact',
+  'editor.item.artifact_minor':                'Minor Artifact',
+  'editor.item.artifact_major':                'Major Artifact',
+
+  // ==========================================================================
+  // CONTENT EDITOR — WEAPON FIELDS EDITOR (WeaponFieldsEditor.svelte)
+  // ==========================================================================
+  'editor.weapon.section_label':               'Weapon Data',
+  'editor.weapon.wield_label':                 'Wield Category',
+  'editor.weapon.damage_dice_label':           'Damage Dice',
+  'editor.weapon.damage_types_label':          'Damage Types',
+  'editor.weapon.no_damage_types':             'No damage types.',
+  'editor.weapon.crit_range_label':            'Crit Range',
+  'editor.weapon.crit_mult_label':             'Crit Multiplier (×)',
+  'editor.weapon.reach_label':                 'Reach (ft.)',
+  'editor.weapon.range_increment_label':       'Range Increment (ft.)',
+  'editor.weapon.range_ranged_hint':           '— ranged only',
+  'editor.weapon.secondary_weapon_section':    'Secondary Weapon End (double weapons)',
+  'editor.weapon.on_crit_section':             'On-Crit Bonus Dice (Burst weapons: Flaming Burst, Thundering, etc.)',
+  'editor.weapon.on_crit_dice_label':          'Dice Formula (×2 baseline)',
+  'editor.weapon.on_crit_type_label':          'Damage Type',
+  'editor.weapon.on_crit_scales_label':        'Scales with crit multiplier (×2→+1d, ×3→+2d, ×4→+3d)',
+  'editor.weapon.empty_hint':                  'Enable the checkbox above to add weapon statistics to this item.',
+  'editor.weapon.wield_light_label':           'Light',
+  'editor.weapon.wield_light_hint':            'One-handed; off-hand without penalty',
+  'editor.weapon.wield_one_handed_label':      'One-Handed',
+  'editor.weapon.wield_one_handed_hint':       'Standard grip; 1.5× STR when 2-handed',
+  'editor.weapon.wield_two_handed_label':      'Two-Handed',
+  'editor.weapon.wield_two_handed_hint':       'Always requires both hands',
+  'editor.weapon.wield_double_label':          'Double',
+  'editor.weapon.wield_double_hint':           'Two attack ends (quarterstaff, dire flail)',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ARMOR FIELDS EDITOR (ArmorFieldsEditor.svelte)
+  // ==========================================================================
+  'editor.armor.section_label':                'Armor / Shield Data',
+  'editor.armor.armor_bonus_label':            'Armor Bonus',
+  'editor.armor.max_dex_label':                'Max DEX Bonus',
+  'editor.armor.no_cap_hint':                  'blank = no cap',
+  'editor.armor.acp_label':                    'Armor Check Penalty',
+  'editor.armor.asf_label':                    'Arcane Spell Failure (%)',
+  'editor.armor.empty_hint':                   'Enable for armour, shields, and items that apply an armor or shield bonus to AC.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CHARGED ITEMS EDITOR (ChargedItemsEditor.svelte)
+  // ==========================================================================
+  'editor.charged.section_label':              'Charged Items (Wand / Staff / Scroll / Metamagic Rod)',
+  'editor.charged.wand_label':                 'Wand (single spell, fixed CL)',
+  'editor.charged.wand_spell_label':           'Spell',
+  'editor.charged.wand_caster_level_label':    'Caster Level',
+  'editor.charged.wand_spell_level_label':     'Spell Level override',
+  'editor.charged.wand_heightened_hint':       '(heightened only)',
+  'editor.charged.wand_click_to_pick':         'Click to pick spell…',
+  'editor.charged.staff_label':                'Staff (multiple spells, wielder CL, charge-based)',
+  'editor.charged.charges_label':              'Charges',
+  'editor.charged.add_spell_btn':              '+ Add Spell',
+  'editor.charged.pick_spell_btn':             'Pick spell…',
+  'editor.charged.scroll_label':               'Scroll (spell array, fixed CL per entry, arcane/divine type)',
+  'editor.charged.scroll_spell_label':         'Spell',
+  'editor.charged.scroll_cl_label':            'CL',
+  'editor.charged.scroll_spell_lvl_label':     'Spell Lvl',
+  'editor.charged.scroll_type_label':          'Type',
+  'editor.charged.arcane_option':              'Arcane',
+  'editor.charged.divine_option':              'Divine',
+  'editor.charged.rod_label':                  'Metamagic Rod (grants a metamagic feat at no slot cost, 3/day)',
+  'editor.charged.rod_feat_label':             'Metamagic Feat',
+  'editor.charged.rod_max_spell_level':        'Max Spell Level',
+  'editor.charged.rod_lesser':                 'Lesser (3rd)',
+  'editor.charged.rod_normal':                 'Normal (6th)',
+  'editor.charged.rod_greater':                'Greater (9th)',
+  'editor.charged.feat_empower':               'Empower Spell',
+  'editor.charged.feat_empower_hint':          'All variable numeric effects ×1.5',
+  'editor.charged.feat_enlarge':               'Enlarge Spell',
+  'editor.charged.feat_enlarge_hint':          'Doubles range',
+  'editor.charged.feat_extend':                'Extend Spell',
+  'editor.charged.feat_extend_hint':           'Doubles duration',
+  'editor.charged.feat_maximize':              'Maximize Spell',
+  'editor.charged.feat_maximize_hint':         'All variable effects are maximum',
+  'editor.charged.feat_quicken':               'Quicken Spell',
+  'editor.charged.feat_quicken_hint':          'Free-action casting (once/round)',
+  'editor.charged.feat_silent':                'Silent Spell',
+  'editor.charged.feat_silent_hint':           'No verbal component required',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CONDITION NODE BUILDER (ConditionNodeBuilder.svelte)
+  // ==========================================================================
+  'editor.condition.no_conditions':            'No conditions.',
+  'editor.condition.add_condition_btn':        '+ Add Condition',
+  'editor.condition.add_group_btn':            '+ Add Group ▾',
+  'editor.condition.and_all_of':               'AND — All of these',
+  'editor.condition.or_any_of':               'OR — Any of these',
+  'editor.condition.max_depth_reached':        'Max depth reached',
+  'editor.condition.max_depth_title':          'Maximum nesting depth reached. Use the Raw JSON panel to add deeper groups.',
+  'editor.condition.all_of_and_label':         'All of these (AND)',
+  'editor.condition.any_of_or_label':          'Any of these (OR)',
+  'editor.condition.toggle_and_or_title':      'Click to toggle between AND and OR',
+  'editor.condition.not_none_of':              'NOT — None of these',
+  /** {type} = AND or OR */
+  'editor.condition.delete_group_title':       'Delete this {type} group',
+  'editor.condition.delete_group_aria':        'Delete {type} group',
+  'editor.condition.delete_not_title':         'Delete NOT group',
+  'editor.condition.delete_not_aria':          'Delete NOT group',
+  'editor.condition.move_up_title':            'Move up',
+  'editor.condition.move_up_aria':             'Move condition up',
+  'editor.condition.move_down_title':          'Move down',
+  'editor.condition.move_down_aria':           'Move condition down',
+  'editor.condition.target_path_label':        'Target path',
+  'editor.condition.operator_label':           'Operator',
+  'editor.condition.value_label':              'Value',
+  'editor.condition.click_to_pick_tag':        'Click to pick a tag…',
+  'editor.condition.click_to_pick_tag_title':  'Click to open tag picker',
+  'editor.condition.error_message_label':      'Error message',
+  'editor.condition.delete_condition_title':   'Delete this condition',
+  'editor.condition.delete_condition_aria':    'Delete condition',
+  'editor.condition.op_equals':                'equals',
+  'editor.condition.op_not_equals':            'does not equal',
+  'editor.condition.op_at_least':              'is at least',
+  'editor.condition.op_at_most':               'is at most',
+  'editor.condition.op_includes':              'includes',
+  'editor.condition.op_not_includes':          'does not include',
+  'editor.condition.op_has_tag':               'has tag',
+  'editor.condition.op_missing_tag':           'missing tag',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ACTION BUDGET EDITOR (ActionBudgetEditor.svelte)
+  // ==========================================================================
+  'editor.action_budget.section_title':        'Action Budget',
+  'editor.action_budget.clear_all_btn':        'Clear all',
+  'editor.action_budget.section_hint':         'Restricts the number of each action type per round while this feature is active. Leave blank for no restriction (unlimited). Use 0 to block an action type entirely. Primarily used on Conditions and spell effects.',
+  'editor.action_budget.srd_presets':          'SRD presets:',
+  'editor.action_budget.blocked_label':        'blocked',
+  /** {n} = the current max value */
+  'editor.action_budget.max_label':            'max {n}',
+  'editor.action_budget.current_budget':       'Current budget:',
+  'editor.action_budget.standard_label':       'Standard',
+  'editor.action_budget.standard_hint':        'Attack, cast a spell, use a special ability',
+  'editor.action_budget.move_label':           'Move',
+  'editor.action_budget.move_hint':            'Move up to speed, draw weapon, stand up from prone',
+  'editor.action_budget.swift_label':          'Swift',
+  'editor.action_budget.swift_hint':           'Once per turn; some class abilities',
+  'editor.action_budget.immediate_label':      'Immediate',
+  'editor.action_budget.immediate_hint':       'Once per round; usable outside own turn (expensive)',
+  'editor.action_budget.free_label':           'Free',
+  'editor.action_budget.free_hint':            'Drop item, speak a few words, release a held spell',
+  'editor.action_budget.full_round_label':     'Full-Round',
+  'editor.action_budget.full_round_hint':      'Full attack, charge, run, coup de grâce, etc.',
+  'editor.action_budget.preset_staggered_label':    'Staggered',
+  'editor.action_budget.preset_staggered_desc':     'One standard OR one move per round (not both); full-round blocked.',
+  'editor.action_budget.preset_nauseated_label':    'Nauseated',
+  'editor.action_budget.preset_nauseated_desc':     'Only a single move action; everything else blocked.',
+  'editor.action_budget.preset_stunned_label':      'Stunned',
+  'editor.action_budget.preset_stunned_desc':       'Cannot take any actions of any type.',
+  'editor.action_budget.preset_paralyzed_label':    'Paralyzed',
+  'editor.action_budget.preset_paralyzed_desc':     'Cannot move or act; mental-only (free) actions are implicitly allowed.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — TIERED COSTS EDITOR (TieredCostsEditor.svelte)
+  // ==========================================================================
+  'editor.tiered_costs.intro':                 'Each tier offers a different power level at a different charge cost. The player chooses a tier at activation time.',
+  /** {n} = 1-based tier index */
+  'editor.tiered_costs.tier_label':            'Tier {n}',
+  'editor.tiered_costs.delete_aria':           'Delete tier {n}',
+  'editor.tiered_costs.label_en':              'Label (EN)',
+  'editor.tiered_costs.label_fr':              'Label (FR)',
+  'editor.tiered_costs.pool_id_label':         'Pool ID',
+  'editor.tiered_costs.charge_cost_label':     'Charge cost',
+  'editor.tiered_costs.no_modifiers':          'No transient modifiers.',
+  'editor.tiered_costs.edit_modifiers_btn':    'Edit modifiers',
+  'editor.tiered_costs.add_modifiers_btn':     '+ Add modifiers',
+  'editor.tiered_costs.add_tier_btn':          '+ Add Tier',
+
+  // ==========================================================================
+  // CONTENT EDITOR — GRANTED FEATURES EDITOR (GrantedFeaturesEditor.svelte)
+  // ==========================================================================
+  'editor.granted_features.section_title':     'Granted Features',
+  'editor.granted_features.section_hint':      'Sub-features automatically activated for every character that has this entity.',
+  'editor.granted_features.add_feature_btn':   '+ Add Feature',
+  'editor.granted_features.partial_merge_hint':'Partial merge mode: Use the "Remove on merge" toggle (−) on any chip to instruct the Merge Engine to remove that feature from the base entity\'s grantedFeatures list.',
+  'editor.granted_features.no_features':       'No granted features. Click "+ Add Feature" to select sub-features.',
+  /** {id} = feature ID */
+  'editor.granted_features.preview_title':     'Preview {id}',
+  'editor.granted_features.cancel_removal':    'Click to keep this feature (remove the deletion marker)',
+  'editor.granted_features.mark_removal':      'Mark for removal on merge (prepends "-" prefix)',
+  'editor.granted_features.cancel_removal_aria': 'Cancel removal',
+  'editor.granted_features.mark_removal_aria': 'Mark for removal on merge',
+  'editor.granted_features.remove_aria':       'Remove {id} from granted features',
+
+  // ==========================================================================
+  // CONTENT EDITOR — SPELL LISTS SECTION (SpellListsSection.svelte)
+  // ==========================================================================
+  'editor.spell_lists.section_label':          'Spell Lists (Class → Level)',
+  'editor.spell_lists.section_hint':           'Defines which class spell lists include this spell and at what level. For psionic powers, list the manifester classes (Psion, Wilder, etc.) and the power level.',
+  'editor.spell_lists.no_spell_lists':         'No spell lists assigned.',
+  'editor.spell_lists.col_class':              'Class',
+  'editor.spell_lists.col_level':              'Level',
+  /** {id} = class ID */
+  'editor.spell_lists.spell_level_aria':       'Spell level for {id}',
+  'editor.spell_lists.remove_aria':            'Remove {id}',
+  'editor.spell_lists.add_class_btn':          '+ Add Class',
+
+  // ==========================================================================
+  // CONTENT EDITOR — RAW JSON PANEL (RawJsonPanel.svelte)
+  // ==========================================================================
+  'editor.raw_json.section_title':             'Raw JSON',
+  'editor.raw_json.editing_hint':              '(editing — will sync on pause)',
+  'editor.raw_json.prettify_btn':              'Prettify',
+  'editor.raw_json.minify_btn':                'Minify',
+  'editor.raw_json.copy_btn':                  'Copy to Clipboard',
+  'editor.raw_json.copied_btn':                'Copied!',
+  /** {n} = character count */
+  'editor.raw_json.char_count':                '{n} chars',
+  'editor.raw_json.parse_error_prefix':        'JSON parse error:',
+  'editor.raw_json.parse_error_suffix':        ' — form state unchanged.',
+  'editor.raw_json.json_editor_aria':          'Raw JSON editor',
+  'editor.raw_json.auto_parse_hint':           'Changes are parsed automatically 300 ms after you stop typing. Valid JSON objects replace the form state; invalid JSON shows an error without affecting the form.',
+  'editor.raw_json.must_be_object_error':      'Root value must be a JSON object (a Feature).',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CURSED ITEM EDITOR (CursedItemEditor.svelte)
+  // ==========================================================================
+  'editor.cursed.section_label':               'Cursed (cannot be voluntarily removed)',
+  'editor.cursed.removable_by_label':          'Removable By (tags)',
+  'editor.cursed.nothing_removes':             'Nothing — cannot be removed by any means.',
+  'editor.cursed.srd_methods_hint':            'SRD methods: remove_curse, limited_wish, wish, miracle',
+  'editor.cursed.prevention_note_label':       'Prevention Note',
+  'editor.cursed.prevention_note_hint':        '(optional flavour text)',
+  'editor.cursed.empty_hint':                  'Enable for items that cannot be voluntarily unequipped (Necklace of Strangulation, etc.).',
+
+  // ==========================================================================
+  // CONTENT EDITOR — INTELLIGENT ITEM EDITOR (IntelligentItemEditor.svelte)
+  // ==========================================================================
+  'editor.intelligent.section_label':          'Intelligent Item',
+  'editor.intelligent.ego_label':              'Ego',
+  'editor.intelligent.ego_manual':             'manual',
+  'editor.intelligent.ego_auto_prefix':        'auto = ',
+  'editor.intelligent.alignment_label':        'Alignment',
+  'editor.intelligent.communication_label':    'Communication',
+  'editor.intelligent.empathy_option':         'Empathy — emotional impressions only',
+  'editor.intelligent.speech_option':          'Speech — speaks Common + INT-bonus languages',
+  'editor.intelligent.telepathy_option':       'Telepathy — projects thoughts directly',
+  'editor.intelligent.senses_legend':          'Senses',
+  'editor.intelligent.vision_label':           'Vision (ft.)',
+  'editor.intelligent.darkvision_label':       'Darkvision (ft.)',
+  'editor.intelligent.blindsense_label':       'Blindsense',
+  'editor.intelligent.vision_none':            'None',
+  'editor.intelligent.lesser_powers_label':    'Lesser Powers',
+  'editor.intelligent.lesser_powers_hint':     '(+1 Ego each)',
+  'editor.intelligent.greater_powers_label':   'Greater Powers',
+  'editor.intelligent.greater_powers_hint':    '(+2 Ego each)',
+  'editor.intelligent.languages_label':        'Languages',
+  'editor.intelligent.languages_hint':         '(comma-separated)',
+  'editor.intelligent.special_purpose_label':  'Special Purpose',
+  'editor.intelligent.special_purpose_hint':   '(+4 Ego if set)',
+  'editor.intelligent.dedicated_power_label':  'Dedicated Power',
+  'editor.intelligent.empty_hint':             'Enable for sentient magic items (intelligent swords, orbs of dragonkind, etc.).',
+
+  // ==========================================================================
+  // CONTENT EDITOR — TAG PICKER MODAL (TagPickerModal.svelte)
+  // ==========================================================================
+  'editor.tag_picker.title':                   'Pick Tags',
+  'editor.tag_picker.search_aria':             'Search tags',
+  'editor.tag_picker.search_placeholder':      'Search tags…',
+  'editor.tag_picker.no_tags_loaded':          'No tags loaded — enable a rule source in Campaign Settings.',
+  /** {n} = total count, {s} = '' or 's' */
+  'editor.tag_picker.tag_count':               '{n} tag{s} in pool',
+  /** {n} = selection count */
+  'editor.tag_picker.selected_suffix':         '{n} selected',
+  'editor.tag_picker.empty_pool_msg':          'The tag pool is empty. Load rule sources to populate it.',
+  /** {n} = usage count, {s} = '' or 's' */
+  'editor.tag_picker.feature_uses_tag':        '{n} feature{s} use this tag',
+  'editor.tag_picker.custom_section_title':    'Add a custom tag',
+  'editor.tag_picker.custom_section_desc':     'Type a new tag not yet in the pool. Use snake_case (no spaces). Example: weapon_exotic.',
+  'editor.tag_picker.custom_tag_aria':         'Custom tag',
+  'editor.tag_picker.spaces_error':            'Tags cannot contain spaces — use snake_case instead.',
+  'editor.tag_picker.already_selected':        'This tag is already selected.',
+  /** {n} = selection count */
+  'editor.tag_picker.selected_preview_title':  'Selected tags ({n})',
+  'editor.tag_picker.no_selected_footer':      'No tags selected',
+  /** {n} = count, {s} = '' or 's' */
+  'editor.tag_picker.selected_footer':         '{n} tag{s} selected',
+  'editor.tag_picker.remove_tag_aria':         'Remove tag {tag}',
+  'editor.tag_picker.confirm_btn':             'Confirm',
+  /** {n} = selection count */
+  'editor.tag_picker.confirm_with_count':      'Confirm ({n})',
+
+  // ==========================================================================
+  // CONTENT EDITOR — FEATURE PICKER MODAL (FeaturePickerModal.svelte)
+  // ==========================================================================
+  'editor.feature_picker.title_single':        'Pick a Feature',
+  'editor.feature_picker.title_multiple':      'Pick Features',
+  'editor.feature_picker.search_aria':         'Search features',
+  'editor.feature_picker.search_placeholder':  'Search by ID or name…',
+  'editor.feature_picker.all_label':           'All',
+  'editor.feature_picker.no_features_search':  'Try a different search term or expand the category filter.',
+  'editor.feature_picker.no_features_empty':   'Enable a rule source in Campaign Settings to populate the catalog.',
+  'editor.feature_picker.no_features_found':   'No features found.',
+  'editor.feature_picker.no_features_match':   'No features match.',
+  /** {n} = count, {s} = '' or 's' */
+  'editor.feature_picker.feature_count_match': '{n} feature{s} match',
+  'editor.feature_picker.feature_count_available': '{n} feature{s} available',
+  'editor.feature_picker.no_selected_footer':  'No features selected',
+  'editor.feature_picker.selected_footer':     '{n} feature{s} selected',
+  'editor.feature_picker.no_description':      'No description available.',
+  'editor.feature_picker.source_label':        'Source: ',
+  /** {label} = feature label */
+  'editor.feature_picker.select_btn':          'Select "{label}"',
+  'editor.feature_picker.click_preview':       'Click a feature to preview it here.',
+  'editor.feature_picker.feature_list_aria':   'Feature list',
+  'editor.feature_picker.confirm_btn':         'Confirm',
+  /** {n} = count */
+  'editor.feature_picker.confirm_with_count':  'Confirm ({n})',
+
+  // ==========================================================================
+  // CONTENT EDITOR — LEVEL MODIFIER MODAL (LevelModifierModal.svelte)
+  // ==========================================================================
+  /** {n} = level number */
+  'editor.level_modifier.title':               'Level {n} — Modifiers',
+  'editor.level_modifier.desc':                'These are incremental modifiers applied at exactly level {n}. The engine SUMS all type: "base" modifiers from every level entry up to the character\'s current level. Use type: "base" for BAB / save increments.',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ENTITY SEARCH MODAL (EntitySearchModal.svelte)
+  // ==========================================================================
+  'editor.entity_search.title':                'Search Entities',
+  'editor.entity_search.search_aria':          'Search entities',
+  'editor.entity_search.search_placeholder':   'Search by ID, name, or description…',
+  'editor.entity_search.keyboard_hint':        '↑↓ navigate · Enter preview · Esc close',
+  /** {n} = total entity count */
+  'editor.entity_search.start_typing':         'Start typing to search across all {n} loaded entities.',
+  /** {query} = search query */
+  'editor.entity_search.no_match':             'No entities match "{query}".',
+  /** {max} = result cap */
+  'editor.entity_search.too_many':             'Showing first {max} of many results — refine your query to narrow down.',
+  /** {n} = result count, {s} = '' or 's', {query} = search query */
+  'editor.entity_search.result_count':         '{n} result{s} for "{query}"',
+  'editor.entity_search.search_results_aria':  'Search results',
+  'editor.entity_search.empty_prompt':         'Search for any race, class, feat, spell, item, condition…',
+  /** {query} = search query */
+  'editor.entity_search.no_entities_found':    'No entities found for "{query}".',
+  'editor.entity_search.no_entities_hint':     'Try fewer words, or search by ID (e.g. "race_elf", "feat_power").',
+  'editor.entity_search.clone_copying_hint':   'Cloning copies all fields into a new entity. Set a new ID (or keep the same ID to override the original).',
+  /** {label} = entity label */
+  'editor.entity_search.clone_btn':            'Clone "{label}"',
+  'editor.entity_search.click_to_preview':     'Click a result to preview it here.',
+  'editor.entity_search.no_description':       'No description available.',
 
   // English names itself here because it is the only language that has NO
   // separate locale file: it is the hardcoded baseline and is intentionally

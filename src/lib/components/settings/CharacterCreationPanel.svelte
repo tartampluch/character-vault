@@ -158,7 +158,7 @@
           max="999"
           bind:value={pointBuyBudget}
           class="input w-24 text-center text-sm font-bold text-sky-500 dark:text-sky-400"
-          aria-label="Point buy budget"
+          aria-label={ui('settings.stat_gen.budget', engine.settings.language)}
         />
         <span class="text-xs text-text-muted">{ui('settings.stat_gen.points_unit', engine.settings.language)}</span>
       </div>

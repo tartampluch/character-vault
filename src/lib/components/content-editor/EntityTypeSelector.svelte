@@ -1,57 +1,56 @@
 <!--
   @file src/lib/components/content-editor/EntityTypeSelector.svelte
   @description Card grid for picking a FeatureCategory when creating a new entity.
-
-  Renders all 11 FeatureCategory values as clickable cards.
-  Each card shows a category-appropriate SVG icon and a one-line D&D description.
-  Clicking a card calls onCategorySelected(category).
 -->
 
 <script lang="ts">
   import type { FeatureCategory } from '$lib/types/feature';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   interface Props {
     onCategorySelected: (cat: FeatureCategory) => void;
   }
 
   let { onCategorySelected }: Props = $props();
+  const lang = $derived(engine.settings.language);
 
   interface CategoryCard {
-    category: FeatureCategory;
-    label:    string;
-    desc:     string;
-    color:    string;  // Tailwind border + accent colour classes
+    category:  FeatureCategory;
+    labelKey:  string;
+    descKey:   string;
+    color:     string;
   }
 
   const CARDS: CategoryCard[] = [
-    { category: 'race',          label: 'Race',           color: 'border-green-700/50 hover:bg-green-900/20',
-      desc: 'Species traits, ability score bonuses, and racial class skills' },
-    { category: 'class',         label: 'Class',          color: 'border-blue-700/50 hover:bg-blue-900/20',
-      desc: 'Hit die, skill points, BAB/save progressions, and class feature grants' },
-    { category: 'class_feature', label: 'Class Feature',  color: 'border-blue-600/40 hover:bg-blue-900/15',
-      desc: 'Abilities granted by a class at specific levels' },
-    { category: 'feat',          label: 'Feat',           color: 'border-yellow-700/50 hover:bg-yellow-900/20',
-      desc: 'Player-chosen abilities at character creation or bonus feat levels' },
-    { category: 'magic',         label: 'Spell / Power',  color: 'border-purple-700/50 hover:bg-purple-900/20',
-      desc: 'Arcane / divine spells or psionic powers with school, components, and spell lists' },
-    { category: 'item',          label: 'Item',           color: 'border-cyan-700/40 hover:bg-cyan-900/15',
-      desc: 'Equipment, weapons, armour, magic rings, charged items, wands, staves, and scrolls' },
-    { category: 'deity',         label: 'Deity',          color: 'border-amber-700/40 hover:bg-amber-900/15',
-      desc: 'Divine patron with domains, favoured weapon, and alignment-restriction modifiers' },
-    { category: 'domain',        label: 'Domain',         color: 'border-teal-700/40 hover:bg-teal-900/15',
-      desc: 'Domain granting bonus spells per day and a domain power' },
-    { category: 'condition',     label: 'Condition',      color: 'border-red-700/40 hover:bg-red-900/15',
-      desc: 'Status effects with stat penalties and action budget restrictions' },
-    { category: 'monster_type',  label: 'Monster Type',   color: 'border-red-800/30 hover:bg-red-900/10',
-      desc: 'Creature type traits shared across multiple monsters' },
-    { category: 'environment',   label: 'Environment',    color: 'border-amber-800/30 hover:bg-amber-900/10',
-      desc: 'Terrain or environmental conditions granting modifiers' },
+    { category: 'race',          labelKey: 'editor.category.race',          color: 'border-green-700/50 hover:bg-green-900/20',
+      descKey: 'editor.type_selector.race_desc' },
+    { category: 'class',         labelKey: 'editor.category.class',         color: 'border-blue-700/50 hover:bg-blue-900/20',
+      descKey: 'editor.type_selector.class_desc' },
+    { category: 'class_feature', labelKey: 'editor.category.class_feature', color: 'border-blue-600/40 hover:bg-blue-900/15',
+      descKey: 'editor.type_selector.class_feature_desc' },
+    { category: 'feat',          labelKey: 'editor.category.feat',          color: 'border-yellow-700/50 hover:bg-yellow-900/20',
+      descKey: 'editor.type_selector.feat_desc' },
+    { category: 'magic',         labelKey: 'editor.category.magic',         color: 'border-purple-700/50 hover:bg-purple-900/20',
+      descKey: 'editor.type_selector.magic_desc' },
+    { category: 'item',          labelKey: 'editor.category.item',          color: 'border-cyan-700/40 hover:bg-cyan-900/15',
+      descKey: 'editor.type_selector.item_desc' },
+    { category: 'deity',         labelKey: 'editor.category.deity',         color: 'border-amber-700/40 hover:bg-amber-900/15',
+      descKey: 'editor.type_selector.deity_desc' },
+    { category: 'domain',        labelKey: 'editor.category.domain',        color: 'border-teal-700/40 hover:bg-teal-900/15',
+      descKey: 'editor.type_selector.domain_desc' },
+    { category: 'condition',     labelKey: 'editor.category.condition',     color: 'border-red-700/40 hover:bg-red-900/15',
+      descKey: 'editor.type_selector.condition_desc' },
+    { category: 'monster_type',  labelKey: 'editor.category.monster_type',  color: 'border-red-800/30 hover:bg-red-900/10',
+      descKey: 'editor.type_selector.monster_type_desc' },
+    { category: 'environment',   labelKey: 'editor.category.environment',   color: 'border-amber-800/30 hover:bg-amber-900/10',
+      descKey: 'editor.type_selector.environment_desc' },
   ];
 </script>
 
 <div class="flex flex-col gap-3">
   <p class="text-sm text-text-muted">
-    Choose the entity type you want to create. This determines which editor sections are shown.
+    {ui('editor.type_selector.choose_hint', lang)}
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -63,8 +62,8 @@
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         onclick={() => onCategorySelected(card.category)}
       >
-        <span class="text-sm font-bold text-text-primary">{card.label}</span>
-        <span class="text-xs text-text-muted leading-snug">{card.desc}</span>
+        <span class="text-sm font-bold text-text-primary">{ui(card.labelKey, lang)}</span>
+        <span class="text-xs text-text-muted leading-snug">{ui(card.descKey, lang)}</span>
       </button>
     {/each}
   </div>

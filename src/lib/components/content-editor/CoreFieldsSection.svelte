@@ -31,23 +31,6 @@
   Svelte 5's $state proxy propagates the change to all consumers automatically.
 
   ────────────────────────────────────────────────────────────────────────────
-  ID FIELD — OVERRIDE WARNING
-  ────────────────────────────────────────────────────────────────────────────
-  When `ctx.hasOverrideWarning` is true AND the id is non-empty, the field
-  label turns amber and an inline banner reads:
-    "⚠ This ID matches an existing SRD entity — it will be overridden in the
-     resolution chain. Set merge: "Partial" to extend it instead of replacing."
-
-  ────────────────────────────────────────────────────────────────────────────
-  DESCRIPTION PREVIEW
-  ────────────────────────────────────────────────────────────────────────────
-  Each language tab has a "Preview" toggle (per-language $state boolean).
-  In preview mode the textarea is replaced with a <div> that renders the raw
-  text with `white-space: pre-wrap`.  Full Markdown rendering is a future
-  enhancement — the component is forward-compatible because the preview div
-  shares the same container class (`prose`).
-
-  ────────────────────────────────────────────────────────────────────────────
   @see editorContext.ts                       for EditorContext type
   @see TagPickerModal.svelte                  for tag chip editing
   @see ARCHITECTURE.md §21.3                  for full specification
@@ -57,15 +40,18 @@
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
   import { dataLoader } from '$lib/engine/DataLoader';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import TagPickerModal from './TagPickerModal.svelte';
   import type { FeatureCategory } from '$lib/types/feature';
   import { IconWarning, IconClose } from '$lib/components/ui/icons';
 
   // ===========================================================================
-  // CONTEXT
+  // CONTEXT + LANGUAGE
   // ===========================================================================
 
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
 
   /**
    * Re-derive override warning locally with a reactive $derived so it
@@ -89,18 +75,18 @@
     'magic', 'item', 'condition', 'monster_type', 'environment',
   ];
 
-  const CATEGORY_LABELS: Record<FeatureCategory, string> = {
-    race:          'Race',
-    class:         'Class',
-    class_feature: 'Class Feature',
-    feat:          'Feat',
-    deity:         'Deity',
-    domain:        'Domain',
-    magic:         'Spell / Psionic Power',
-    item:          'Item / Equipment',
-    condition:     'Condition / Status',
-    monster_type:  'Monster Type',
-    environment:   'Environment',
+  const CATEGORY_LABEL_KEYS: Record<FeatureCategory, string> = {
+    race:          'editor.category.race',
+    class:         'editor.category.class',
+    class_feature: 'editor.category.class_feature',
+    feat:          'editor.category.feat',
+    deity:         'editor.category.deity',
+    domain:        'editor.category.domain',
+    magic:         'editor.category.magic',
+    item:          'editor.category.item',
+    condition:     'editor.category.condition',
+    monster_type:  'editor.category.monster_type',
+    environment:   'editor.category.environment',
   };
 
   // ===========================================================================
@@ -114,11 +100,6 @@
   // TAG PICKER STATE
   // ===========================================================================
 
-  /**
-   * 'tags' → opens TagPickerModal for feature.tags
-   * 'forbiddenTags' → opens TagPickerModal for feature.forbiddenTags
-   * null → no picker open
-   */
   let tagPickerField = $state<'tags' | 'forbiddenTags' | null>(null);
 
   function openTagPicker(field: 'tags' | 'forbiddenTags'): void {
@@ -146,25 +127,18 @@
   // HELPERS
   // ===========================================================================
 
-  /**
-   * Safe read from a LocalizedString (Record<string,string>) with fallback.
-   */
-  function locGet(obj: Record<string, string> | undefined, lang: string): string {
-    return (obj as Record<string, string> | undefined)?.[lang] ?? '';
+  function locGet(obj: Record<string, string> | undefined, langCode: string): string {
+    return (obj as Record<string, string> | undefined)?.[langCode] ?? '';
   }
 
-  /**
-   * Write one language key into a LocalizedString field on the feature.
-   * Creates a new object reference so Svelte's proxy detects the change.
-   */
   function locSet(
     field: 'label' | 'description',
-    lang: string,
+    langCode: string,
     value: string
   ): void {
     ctx.feature[field] = {
       ...(ctx.feature[field] as Record<string, string>),
-      [lang]: value,
+      [langCode]: value,
     } as Record<string, string>;
   }
 
@@ -195,13 +169,10 @@
       <IconWarning size={18} class="shrink-0" aria-hidden="true" />
       <div class="flex flex-col gap-1">
         <p class="font-semibold">
-          This ID matches an existing SRD entity — it will be overridden.
+          {ui('editor.core.override_warning_title', lang)}
         </p>
         <p class="text-xs text-amber-400/80">
-          The homebrew version will take precedence in the resolution chain
-          because it loads after all file-based rule sources.
-          Set <strong>Merge</strong> to <em>Partial</em> below if you want to
-          extend the original instead of replacing it entirely.
+          {ui('editor.core.override_warning_desc', lang)}
         </p>
       </div>
     </div>
@@ -215,8 +186,8 @@
       for={fid('id')}
       class="text-sm font-semibold {hasOverride ? 'text-amber-400' : 'text-text-primary'}"
     >
-      Entity ID
-      <span class="ml-1 text-xs font-normal text-text-muted">(kebab-case)</span>
+      {ui('editor.core.entity_id_label', lang)}
+      <span class="ml-1 text-xs font-normal text-text-muted">{ui('editor.core.entity_id_kebab_hint', lang)}</span>
     </label>
     <input
       id={fid('id')}
@@ -229,9 +200,7 @@
       spellcheck="false"
     />
     <p class="text-[11px] text-text-muted">
-      Must be unique across all loaded rule sources. Use the feature's ID as one of
-      its tags (e.g. tag <code class="font-mono">feat_power_attack</code>) so
-      prerequisite chains can reference it.
+      {ui('editor.core.entity_id_desc', lang)}
     </p>
   </div>
 
@@ -240,7 +209,7 @@
   <!-- ======================================================================= -->
   <div class="flex flex-col gap-1.5">
     <label for={fid('category')} class="text-sm font-semibold text-text-primary">
-      Category
+      {ui('editor.core.category_label', lang)}
     </label>
     <select
       id={fid('category')}
@@ -251,12 +220,11 @@
       }}
     >
       {#each ALL_CATEGORIES as cat (cat)}
-        <option value={cat}>{CATEGORY_LABELS[cat]}</option>
+        <option value={cat}>{ui(CATEGORY_LABEL_KEYS[cat], lang)}</option>
       {/each}
     </select>
     <p class="text-[11px] text-text-muted">
-      Determines which specialised sub-form sections are shown below, and how the
-      DataLoader routes feature queries.
+      {ui('editor.core.category_desc', lang)}
     </p>
   </div>
 
@@ -265,7 +233,8 @@
   <!-- ======================================================================= -->
   <fieldset class="flex flex-col gap-2">
     <legend class="text-sm font-semibold text-text-primary mb-1.5">
-      Label <span class="text-xs font-normal text-text-muted">(display name)</span>
+      {ui('editor.core.label_legend', lang)}
+      <span class="text-xs font-normal text-text-muted">{ui('editor.core.label_display_hint', lang)}</span>
     </legend>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <div class="flex flex-col gap-1">
@@ -298,7 +267,7 @@
   <!-- ======================================================================= -->
   <fieldset class="flex flex-col gap-2">
     <legend class="text-sm font-semibold text-text-primary mb-1.5">
-      Description
+      {ui('editor.core.description_legend', lang)}
     </legend>
 
     <!-- English description -->
@@ -310,18 +279,17 @@
           class="text-[10px] text-text-muted underline hover:text-text-primary"
           onclick={() => (previewEn = !previewEn)}
         >
-          {previewEn ? 'Edit' : 'Preview'}
+          {previewEn ? ui('editor.core.edit_btn', lang) : ui('editor.core.preview_btn', lang)}
         </button>
       </div>
 
       {#if previewEn}
-        <!-- Preview (plain text, white-space preserved — Markdown rendering future work) -->
         <div
           class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
                  overflow-auto bg-surface-alt"
-          aria-label="English description preview"
+          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', 'English')}
         >
-          {locGet(ctx.feature.description as Record<string,string>, 'en') || '(no description)'}
+          {locGet(ctx.feature.description as Record<string,string>, 'en') || ui('editor.core.no_description_en', lang)}
         </div>
       {:else}
         <textarea
@@ -352,9 +320,9 @@
         <div
           class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
                  overflow-auto bg-surface-alt"
-          aria-label="French description preview"
+          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', 'Français')}
         >
-          {locGet(ctx.feature.description as Record<string,string>, 'fr') || '(pas de description)'}
+          {locGet(ctx.feature.description as Record<string,string>, 'fr') || ui('editor.core.no_description_fr', lang)}
         </div>
       {:else}
         <textarea
@@ -374,7 +342,7 @@
   <!-- ======================================================================= -->
   <div class="flex flex-col gap-1.5">
     <label for={fid('ruleSource')} class="text-sm font-semibold text-text-primary">
-      Rule Source
+      {ui('editor.core.rule_source_label', lang)}
     </label>
     <input
       id={fid('ruleSource')}
@@ -387,10 +355,7 @@
       spellcheck="false"
     />
     <p class="text-[11px] text-text-muted">
-      Controls which campaigns can use this entity (via
-      <code class="font-mono">CampaignSettings.enabledRuleSources</code>).
-      Leave as <code class="font-mono">user_homebrew</code> for campaign-scoped
-      homebrew — it is always active and never filtered out.
+      {ui('editor.core.rule_source_desc', lang)}
     </p>
   </div>
 
@@ -399,23 +364,21 @@
   <!-- ======================================================================= -->
   <div class="flex flex-col gap-1.5">
     <div class="flex items-center justify-between">
-      <span class="text-sm font-semibold text-text-primary">Tags</span>
+      <span class="text-sm font-semibold text-text-primary">{ui('editor.core.tags_label', lang)}</span>
       <button
         type="button"
         class="btn-ghost text-xs py-0.5 px-2 h-auto"
         onclick={() => openTagPicker('tags')}
       >
-        + Add Tags
+        {ui('editor.core.add_tags_btn', lang)}
       </button>
     </div>
     <p class="text-[11px] text-text-muted -mt-1">
-      Convention: include this entity's own ID as a tag (e.g.
-      <code class="font-mono">feat_power_attack</code>) so prerequisites can
-      reference it via <code class="font-mono">has_tag</code>.
+      {ui('editor.core.tags_convention_hint', lang)}
     </p>
     <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
       {#if (ctx.feature.tags ?? []).length === 0}
-        <span class="text-xs text-text-muted italic">No tags.</span>
+        <span class="text-xs text-text-muted italic">{ui('editor.core.no_tags', lang)}</span>
       {:else}
         {#each ctx.feature.tags as tag (tag)}
           <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full
@@ -425,7 +388,7 @@
               type="button"
               class="text-text-muted hover:text-danger transition-colors leading-none ml-0.5"
               onclick={() => removeTag('tags', tag)}
-              aria-label="Remove tag {tag}"
+              aria-label={ui('editor.core.remove_tag_aria', lang).replace('{tag}', tag)}
             ><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {/each}
@@ -439,25 +402,23 @@
   <div class="flex flex-col gap-1.5">
     <div class="flex items-center justify-between">
       <span class="text-sm font-semibold text-text-primary">
-        Forbidden Tags
-        <span class="ml-1 text-xs font-normal text-text-muted">(optional)</span>
+        {ui('editor.core.forbidden_tags_label', lang)}
+        <span class="ml-1 text-xs font-normal text-text-muted">{ui('editor.core.merge_replace_desc', lang).includes('(optional)') ? '(optional)' : ''}</span>
       </span>
       <button
         type="button"
         class="btn-ghost text-xs py-0.5 px-2 h-auto"
         onclick={() => openTagPicker('forbiddenTags')}
       >
-        + Add
+        {ui('common.add', lang)}
       </button>
     </div>
     <p class="text-[11px] text-text-muted -mt-1">
-      If the character has ANY of these tags active, ALL of this entity's
-      <code class="font-mono">grantedModifiers</code> are suppressed —
-      the feature remains active but contributes nothing.
+      {ui('editor.core.forbidden_tags_hint', lang)}
     </p>
     <div class="flex flex-wrap gap-1.5 min-h-[2rem]">
       {#if (ctx.feature.forbiddenTags ?? []).length === 0}
-        <span class="text-xs text-text-muted italic">None.</span>
+        <span class="text-xs text-text-muted italic">{ui('editor.core.no_forbidden_tags', lang)}</span>
       {:else}
         {#each (ctx.feature.forbiddenTags ?? []) as tag (tag)}
           <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full
@@ -468,7 +429,7 @@
               type="button"
               class="text-red-400/60 hover:text-danger transition-colors leading-none ml-0.5"
               onclick={() => removeTag('forbiddenTags', tag)}
-              aria-label="Remove forbidden tag {tag}"
+              aria-label={ui('editor.core.remove_forbidden_tag_aria', lang).replace('{tag}', tag)}
             ><IconClose size={12} aria-hidden="true" /></button>
           </span>
         {/each}
@@ -480,7 +441,7 @@
   <!-- MERGE STRATEGY                                                            -->
   <!-- ======================================================================= -->
   <fieldset class="flex flex-col gap-2">
-    <legend class="text-sm font-semibold text-text-primary mb-1">Merge Strategy</legend>
+    <legend class="text-sm font-semibold text-text-primary mb-1">{ui('editor.core.merge_strategy_legend', lang)}</legend>
 
     <label
       class="flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors
@@ -497,11 +458,9 @@
         onchange={() => { ctx.feature.merge = 'replace'; }}
       />
       <div class="flex flex-col gap-0.5">
-        <span class="text-sm font-semibold text-text-primary">Replace</span>
+        <span class="text-sm font-semibold text-text-primary">{ui('editor.core.merge_replace_label', lang)}</span>
         <span class="text-xs text-text-muted">
-          This entity completely replaces any previously loaded entity with the
-          same ID. All fields from the earlier version are discarded.
-          <em>Default — use this for entirely new or wholly rewritten entities.</em>
+          {ui('editor.core.merge_replace_desc', lang)}
         </span>
       </div>
     </label>
@@ -521,13 +480,9 @@
         onchange={() => { ctx.feature.merge = 'partial'; }}
       />
       <div class="flex flex-col gap-0.5">
-        <span class="text-sm font-semibold text-text-primary">Partial Merge</span>
+        <span class="text-sm font-semibold text-text-primary">{ui('editor.core.merge_partial_label', lang)}</span>
         <span class="text-xs text-text-muted">
-          Fields defined in this entity are merged into the existing one:
-          arrays are <em>appended</em> (prefix with <code class="font-mono">-</code>
-          to remove), scalars are overwritten only when defined here.
-          <em>Use this to extend SRD content — add a new tag, a new modifier, or
-          adjust a single value — without duplicating the entire entry.</em>
+          {ui('editor.core.merge_partial_desc', lang)}
         </span>
       </div>
     </label>

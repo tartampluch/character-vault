@@ -3,21 +3,13 @@
   @description Single modifier row editor — encapsulates all field editing UI for one
   Modifier entry in ModifierListEditor.
   Extracted from ModifierListEditor.svelte as part of F4 refactoring.
-
-  Props:
-    modifier    — the Modifier to edit
-    index       — row index (for display label / aria)
-    onchange    — callback when any field changes (receives full updated modifier)
-    ondelete    — callback when delete button clicked
-    onduplicate — callback when duplicate button clicked
-
-  All modals (PipelinePickerModal, ModifierTypePickerModal, FormulaBuilderInput,
-  ConditionNodeBuilder, TagPickerModal) are local to this component.
 -->
 
 <script lang="ts">
   import { getContext } from 'svelte';
   import { EDITOR_CONTEXT_KEY, type EditorContext } from './editorContext';
+  import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
   import type { Modifier } from '$lib/types/pipeline';
   import type { LogicNode } from '$lib/types/logic';
   import type { ModifierType } from '$lib/types/primitives';
@@ -29,8 +21,8 @@
   import ConditionNodeBuilder    from './ConditionNodeBuilder.svelte';
   import TagPickerModal          from './TagPickerModal.svelte';
 
-  // Context — used for default source id/name values
   const ctx = getContext<EditorContext>(EDITOR_CONTEXT_KEY);
+  const lang = $derived(engine.settings.language);
 
   let {
     modifier,
@@ -46,10 +38,6 @@
     onduplicate: () => void;
   } = $props();
 
-  // ===========================================================================
-  // DEFAULT SOURCE FIELDS
-  // ===========================================================================
-
   function defaultSourceId(): string {
     return ctx.feature.id || 'feature_id';
   }
@@ -59,17 +47,9 @@
     return lbl?.['en'] || ctx.feature.id || 'Feature';
   }
 
-  // ===========================================================================
-  // PATCH HELPER
-  // ===========================================================================
-
   function patch(p: Partial<Modifier>): void {
     onchange({ ...modifier, ...p });
   }
-
-  // ===========================================================================
-  // PER-ROW MODAL STATE
-  // ===========================================================================
 
   type ActiveModal =
     | { kind: 'pipeline' }
@@ -80,10 +60,6 @@
   let activeModal = $state<ActiveModal | null>(null);
 
   function closeModal(): void { activeModal = null; }
-
-  // ===========================================================================
-  // CONDITION NODE MODAL — working copy
-  // ===========================================================================
 
   let conditionWorkingCopy = $state<LogicNode | undefined>(undefined);
 
@@ -99,10 +75,6 @@
     closeModal();
   }
 
-  // ===========================================================================
-  // CONDITION NODE SUMMARY HELPER
-  // ===========================================================================
-
   function conditionSummary(node: LogicNode | undefined): string {
     if (!node) return '';
     if (node.logic === 'AND') return `AND (${node.nodes.length} conditions)`;
@@ -110,10 +82,6 @@
     if (node.logic === 'NOT') return 'NOT (…)';
     return `${node.targetPath} ${node.operator} ${JSON.stringify(node.value)}`;
   }
-
-  // ===========================================================================
-  // STACKING BADGE
-  // ===========================================================================
 
   function typeBadgeClass(type: ModifierType): string {
     if (ALWAYS_STACKING_TYPES.has(type))
@@ -162,16 +130,14 @@
   <Modal
     open={true}
     onClose={closeModal}
-    title="Edit Condition"
+    title={ui('editor.modifier.edit_condition_title', lang)}
     size="xl"
     fullscreen={true}
   >
     {#snippet children()}
       <div class="flex flex-col gap-4">
         <p class="text-xs text-text-muted">
-          This condition is evaluated at <strong>sheet time</strong>. If it
-          evaluates to <em>false</em>, this specific modifier is completely
-          ignored (it does not contribute to the pipeline total).
+          {ui('editor.modifier.condition_sheet_time_desc', lang)}
         </p>
 
         <ConditionNodeBuilder
@@ -181,10 +147,10 @@
 
         <div class="flex justify-end gap-2 pt-3 border-t border-border">
           <button type="button" class="btn-ghost" onclick={closeModal}>
-            Cancel
+            {ui('common.cancel', lang)}
           </button>
           <button type="button" class="btn-primary" onclick={applyCondition}>
-            Apply Condition
+            {ui('editor.modifier.edit_condition_title', lang)}
           </button>
         </div>
       </div>
@@ -200,7 +166,7 @@
   <!-- ── ROW HEADER: index label + duplicate + delete ─────────── -->
   <div class="flex items-center justify-between">
     <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">
-      Modifier #{index + 1}
+      {ui('editor.modifier.row_label', lang).replace('{n}', String(index + 1))}
       {#if modifier.id}
         <code class="ml-1 font-mono text-[9px] opacity-50">{modifier.id}</code>
       {/if}
@@ -211,8 +177,8 @@
         type="button"
         class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted"
         onclick={onduplicate}
-        title="Duplicate this modifier"
-        aria-label="Duplicate modifier {index + 1}"
+        title={ui('editor.modifier.duplicate_title', lang)}
+        aria-label={ui('editor.modifier.duplicate_aria', lang).replace('{n}', String(index + 1))}
       >
         <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2"
@@ -226,8 +192,8 @@
         type="button"
         class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger"
         onclick={ondelete}
-        title="Delete this modifier"
-        aria-label="Delete modifier {index + 1}"
+        title={ui('editor.modifier.delete_title', lang)}
+        aria-label={ui('editor.modifier.delete_aria', lang).replace('{n}', String(index + 1))}
       >
         <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2"
@@ -247,16 +213,16 @@
     <!-- Target Pipeline -->
     <div class="flex flex-col gap-1">
       <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Target Pipeline
+        {ui('editor.modifier.target_pipeline_label', lang)}
       </span>
       <button
         type="button"
         class="input text-xs text-left flex items-center gap-2 font-mono
                {modifier.targetId ? 'text-text-primary' : 'text-text-muted italic'}"
         onclick={() => (activeModal = { kind: 'pipeline' })}
-        title="Click to pick a pipeline"
+        title={ui('editor.modifier.click_to_pick_title', lang)}
       >
-        {modifier.targetId || 'Click to pick…'}
+        {modifier.targetId || ui('editor.modifier.click_to_pick_pipeline', lang)}
         <svg class="h-3 w-3 text-text-muted ml-auto shrink-0"
              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2"
@@ -270,29 +236,29 @@
           type="button"
           class="text-[10px] text-text-muted underline text-left"
           onclick={() => (activeModal = { kind: 'pipeline' })}
-        >Change</button>
+        >{ui('editor.modifier.change_pipeline_btn', lang)}</button>
       {/if}
     </div>
 
     <!-- Modifier Type -->
     <div class="flex flex-col gap-1">
       <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Type
+        {ui('editor.modifier.type_label', lang)}
       </span>
       <button
         type="button"
         class="input text-xs text-left flex items-center gap-2"
         onclick={() => (activeModal = { kind: 'modtype' })}
-        title="Click to change modifier type"
+        title={ui('editor.modifier.click_to_change_type_title', lang)}
       >
         <code class="font-mono">{modifier.type}</code>
         <span class="border text-[9px] font-bold uppercase tracking-wider px-1.5
                      py-0.5 rounded shrink-0 {typeBadgeClass(modifier.type)}">
           {ALWAYS_STACKING_TYPES.has(modifier.type)
-            ? 'STACKS'
+            ? ui('editor.modifier.stacks_badge', lang)
             : SPECIAL_MODIFIER_TYPES.has(modifier.type)
-            ? 'SPECIAL'
-            : 'BEST WINS'}
+            ? ui('editor.modifier.special_badge', lang)
+            : ui('editor.modifier.best_wins_badge', lang)}
         </span>
         <svg class="h-3 w-3 text-text-muted ml-auto shrink-0"
              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -310,7 +276,7 @@
         for="mod-val-{modifier.id}"
         class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
       >
-        Value
+        {ui('editor.modifier.value_label', lang)}
       </label>
       <FormulaBuilderInput
         id="mod-val-{modifier.id}"
@@ -329,9 +295,9 @@
         for="mod-sit-{modifier.id}"
         class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
       >
-        Situational Context
+        {ui('editor.modifier.situational_label', lang)}
         <span class="ml-1 text-[9px] font-normal normal-case text-text-muted">
-          (optional — routes to situational modifiers, applied at roll time)
+          {ui('editor.modifier.situational_hint', lang)}
         </span>
       </label>
       <input
@@ -352,9 +318,9 @@
     <!-- conditionNode row -->
     <div class="flex flex-col gap-1 md:col-span-2">
       <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        Condition (sheet-time gate)
+        {ui('editor.modifier.condition_label', lang)}
         <span class="ml-1 text-[9px] font-normal normal-case">
-          (optional — if false, modifier is ignored)
+          {ui('editor.modifier.condition_optional_hint', lang)}
         </span>
       </span>
       <div class="flex items-center gap-2 rounded border border-border px-3 py-2
@@ -367,20 +333,20 @@
             type="button"
             class="btn-ghost text-xs py-0.5 px-2 h-auto shrink-0"
             onclick={openConditionModal}
-          >Edit…</button>
+          >{ui('editor.modifier.edit_condition_btn', lang)}</button>
           <button
             type="button"
             class="btn-ghost text-xs py-0.5 px-2 h-auto text-danger shrink-0"
             onclick={() => patch({ conditionNode: undefined })}
-            aria-label="Remove condition"
-          >Remove</button>
+            aria-label={ui('editor.modifier.remove_condition_aria', lang)}
+          >{ui('editor.modifier.remove_condition_btn', lang)}</button>
         {:else}
-          <span class="text-text-muted italic flex-1">No condition — always active.</span>
+          <span class="text-text-muted italic flex-1">{ui('editor.modifier.no_condition_label', lang)}</span>
           <button
             type="button"
             class="btn-ghost text-xs py-0.5 px-2 h-auto shrink-0"
             onclick={openConditionModal}
-          >+ Add Condition</button>
+          >{ui('editor.modifier.add_condition_btn', lang)}</button>
         {/if}
       </div>
     </div>
@@ -390,21 +356,21 @@
       <div class="flex flex-col gap-1.5 md:col-span-2">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            DR Bypass Tags
+            {ui('editor.modifier.dr_bypass_tags_label', lang)}
             <span class="ml-1 text-[9px] font-normal normal-case text-text-muted">
-              (e.g. silver, magic, cold_iron — empty = "DR X/—")
+              {ui('editor.modifier.dr_bypass_tags_hint', lang)}
             </span>
           </span>
           <button
             type="button"
             class="btn-ghost text-xs py-0.5 px-2 h-auto"
             onclick={() => (activeModal = { kind: 'tags_dr' })}
-          >Edit Tags</button>
+          >{ui('editor.modifier.edit_dr_tags_btn', lang)}</button>
         </div>
         <div class="flex flex-wrap gap-1.5 min-h-[1.75rem]">
           {#if (modifier.drBypassTags ?? []).length === 0}
             <span class="text-xs text-text-muted italic">
-              No bypass tags — DR {modifier.value}/— (overcome by nothing).
+              {ui('editor.modifier.no_dr_bypass_tags', lang).replace('{value}', String(modifier.value))}
             </span>
           {:else}
             {#each (modifier.drBypassTags ?? []) as tag (tag)}
@@ -429,7 +395,7 @@
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="9 18 15 12 9 6"/>
       </svg>
-      Source attribution (auto-filled from entity id/label)
+      {ui('editor.modifier.source_summary', lang)}
     </summary>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
@@ -437,7 +403,7 @@
         <label
           for="mod-srcid-{modifier.id}"
           class="text-[10px] text-text-muted font-semibold uppercase tracking-wider"
-        >Source ID</label>
+        >{ui('editor.modifier.source_id_label', lang)}</label>
         <input
           id="mod-srcid-{modifier.id}"
           type="text"
@@ -452,7 +418,7 @@
         <label
           for="mod-srcname-{modifier.id}"
           class="text-[10px] text-text-muted font-semibold uppercase tracking-wider"
-        >Source Name (EN)</label>
+        >{ui('editor.modifier.source_name_label', lang)}</label>
         <input
           id="mod-srcname-{modifier.id}"
           type="text"
