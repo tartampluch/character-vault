@@ -50,8 +50,8 @@
   const mockFeature = $state(untrack(() => ({
     id:               parentFeatureId,
     category:         'class' as const,
-    label:            { en: parentFeatureLabelEn, fr: '' },
-    description:      { en: '', fr: '' },
+    label:            { en: parentFeatureLabelEn },
+    description:      { en: '' },
     ruleSource:       'user_homebrew',
     tags:             [] as string[],
     forbiddenTags:    [] as string[],

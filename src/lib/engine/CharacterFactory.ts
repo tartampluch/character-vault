@@ -265,15 +265,15 @@ export function createEmptyCharacter(id: ID, name: string): Character {
   //   `config_attribute_definitions` (inside the JSON rule files) and replace
   //   these placeholders as soon as the DataLoader finishes loading.
   const DEFAULT_LABELS: Record<string, LocalizedString> = {
-    'stat_strength':         { en: 'stat_strength',         fr: 'stat_strength' },
-    'stat_dexterity':        { en: 'stat_dexterity',        fr: 'stat_dexterity' },
-    'stat_constitution':     { en: 'stat_constitution',     fr: 'stat_constitution' },
-    'stat_intelligence':     { en: 'stat_intelligence',     fr: 'stat_intelligence' },
-    'stat_wisdom':           { en: 'stat_wisdom',           fr: 'stat_wisdom' },
-    'stat_charisma':         { en: 'stat_charisma',         fr: 'stat_charisma' },
-    'stat_size':             { en: 'stat_size',             fr: 'stat_size' },
-    'stat_caster_level':     { en: 'stat_caster_level',     fr: 'stat_caster_level' },
-    'stat_manifester_level': { en: 'stat_manifester_level', fr: 'stat_manifester_level' },
+    'stat_strength':         { en: 'stat_strength'         },
+    'stat_dexterity':        { en: 'stat_dexterity'        },
+    'stat_constitution':     { en: 'stat_constitution'     },
+    'stat_intelligence':     { en: 'stat_intelligence'     },
+    'stat_wisdom':           { en: 'stat_wisdom'           },
+    'stat_charisma':         { en: 'stat_charisma'         },
+    'stat_size':             { en: 'stat_size'             },
+    'stat_caster_level':     { en: 'stat_caster_level'     },
+    'stat_manifester_level': { en: 'stat_manifester_level' },
   };
 
   return {
@@ -315,61 +315,61 @@ export function createEmptyCharacter(id: ID, name: string): Character {
       //   same pattern used for attribute labels and save labels. Players never see
       //   the pipeline-ID fallbacks in practice; they are only visible during the
       //   ~100 ms bootstrap window before rule sources are loaded.
-      'combatStats.ac_normal':          makePipeline('combatStats.ac_normal',          { en: 'combatStats.ac_normal',          fr: 'combatStats.ac_normal'          }, 10),
-      'combatStats.ac_touch':           makePipeline('combatStats.ac_touch',           { en: 'combatStats.ac_touch',           fr: 'combatStats.ac_touch'           }, 10),
-      'combatStats.ac_flat_footed':     makePipeline('combatStats.ac_flat_footed',     { en: 'combatStats.ac_flat_footed',     fr: 'combatStats.ac_flat_footed'     }, 10),
-      'combatStats.base_attack_bonus':  makePipeline('combatStats.base_attack_bonus',  { en: 'combatStats.base_attack_bonus',  fr: 'combatStats.base_attack_bonus'  }, 0),
-      'combatStats.initiative':         makePipeline('combatStats.initiative',         { en: 'combatStats.initiative',         fr: 'combatStats.initiative'         }, 0),
-      'combatStats.grapple':            makePipeline('combatStats.grapple',            { en: 'combatStats.grapple',            fr: 'combatStats.grapple'            }, 0),
+      'combatStats.ac_normal':          makePipeline('combatStats.ac_normal',          { en: 'combatStats.ac_normal'          }, 10),
+      'combatStats.ac_touch':           makePipeline('combatStats.ac_touch',           { en: 'combatStats.ac_touch'           }, 10),
+      'combatStats.ac_flat_footed':     makePipeline('combatStats.ac_flat_footed',     { en: 'combatStats.ac_flat_footed'     }, 10),
+      'combatStats.base_attack_bonus':  makePipeline('combatStats.base_attack_bonus',  { en: 'combatStats.base_attack_bonus'  }, 0),
+      'combatStats.initiative':         makePipeline('combatStats.initiative',         { en: 'combatStats.initiative'         }, 0),
+      'combatStats.grapple':            makePipeline('combatStats.grapple',            { en: 'combatStats.grapple'            }, 0),
       // Speed pipeline base values are read from `config_movement_defaults`.
       // The fallback values here are the D&D 3.5 SRD defaults used during
       // bootstrap (before the DataLoader has loaded the config table).
       // Races/creatures override these defaults via "base" or "setAbsolute" modifiers.
-      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'combatStats.speed_land',   fr: 'combatStats.speed_land'   }, getSpeedDefault('combatStats.speed_land',   30)),
-      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'combatStats.speed_burrow', fr: 'combatStats.speed_burrow' }, getSpeedDefault('combatStats.speed_burrow',  0)),
-      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'combatStats.speed_climb',  fr: 'combatStats.speed_climb'  }, getSpeedDefault('combatStats.speed_climb',   0)),
-      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'combatStats.speed_fly',    fr: 'combatStats.speed_fly'    }, getSpeedDefault('combatStats.speed_fly',     0)),
-      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'combatStats.speed_swim',   fr: 'combatStats.speed_swim'   }, getSpeedDefault('combatStats.speed_swim',    0)),
-      'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'combatStats.armor_check_penalty', fr: 'combatStats.armor_check_penalty' }, 0),
-      'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'combatStats.max_hp', fr: 'combatStats.max_hp' }, 0),
+      'combatStats.speed_land':   makePipeline('combatStats.speed_land',   { en: 'combatStats.speed_land'   }, getSpeedDefault('combatStats.speed_land',   30)),
+      'combatStats.speed_burrow': makePipeline('combatStats.speed_burrow', { en: 'combatStats.speed_burrow' }, getSpeedDefault('combatStats.speed_burrow',  0)),
+      'combatStats.speed_climb':  makePipeline('combatStats.speed_climb',  { en: 'combatStats.speed_climb'  }, getSpeedDefault('combatStats.speed_climb',   0)),
+      'combatStats.speed_fly':    makePipeline('combatStats.speed_fly',    { en: 'combatStats.speed_fly'    }, getSpeedDefault('combatStats.speed_fly',     0)),
+      'combatStats.speed_swim':   makePipeline('combatStats.speed_swim',   { en: 'combatStats.speed_swim'   }, getSpeedDefault('combatStats.speed_swim',    0)),
+      'combatStats.armor_check_penalty': makePipeline('combatStats.armor_check_penalty', { en: 'combatStats.armor_check_penalty' }, 0),
+      'combatStats.max_hp': makePipeline('combatStats.max_hp', { en: 'combatStats.max_hp' }, 0),
 
       // --- FORTIFICATION (SRD: Magic Armor special ability) ---
       // Percentage chance to negate a critical hit or sneak attack.
       // Light = 25%, Moderate = 75%, Heavy = 100%.
-      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'combatStats.fortification', fr: 'combatStats.fortification' }, 0),
+      'combatStats.fortification': makePipeline('combatStats.fortification', { en: 'combatStats.fortification' }, 0),
 
       // --- ARCANE SPELL FAILURE (SRD: Armor & Shields) ---
       // Percentage chance that an arcane spell fails when cast while wearing armor.
-      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'combatStats.arcane_spell_failure', fr: 'combatStats.arcane_spell_failure' }, 0),
+      'combatStats.arcane_spell_failure': makePipeline('combatStats.arcane_spell_failure', { en: 'combatStats.arcane_spell_failure' }, 0),
 
       // --- MAX DEX BONUS TO AC (`combatStats.max_dexterity_bonus`) ---
       // BASE VALUE = 99 means "no restriction — full DEX applies to AC".
       // @see ARCHITECTURE.md section 4.17 — Max DEX Bonus pipeline reference
-      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'combatStats.max_dexterity_bonus', fr: 'combatStats.max_dexterity_bonus' }, 99),
+      'combatStats.max_dexterity_bonus': makePipeline('combatStats.max_dexterity_bonus', { en: 'combatStats.max_dexterity_bonus' }, 99),
 
       // --- EQUIPMENT SLOT PIPELINES (Phase 3.1 — ARCHITECTURE.md §3.1) ---
       // One pipeline per equipment body slot. `baseValue` = default count for a
       // standard Medium humanoid. Labels use pipeline IDs during bootstrap.
-      'slots.head':      makePipeline('slots.head',      { en: 'slots.head',      fr: 'slots.head' },      1),
-      'slots.eyes':      makePipeline('slots.eyes',      { en: 'slots.eyes',      fr: 'slots.eyes' },      1),
-      'slots.neck':      makePipeline('slots.neck',      { en: 'slots.neck',      fr: 'slots.neck' },      1),
-      'slots.torso':     makePipeline('slots.torso',     { en: 'slots.torso',     fr: 'slots.torso' },     1),
-      'slots.body':      makePipeline('slots.body',      { en: 'slots.body',      fr: 'slots.body' },      1),
-      'slots.waist':     makePipeline('slots.waist',     { en: 'slots.waist',     fr: 'slots.waist' },     1),
-      'slots.shoulders': makePipeline('slots.shoulders', { en: 'slots.shoulders', fr: 'slots.shoulders' }, 1),
-      'slots.arms':      makePipeline('slots.arms',      { en: 'slots.arms',      fr: 'slots.arms' },      1),
-      'slots.hands':     makePipeline('slots.hands',     { en: 'slots.hands',     fr: 'slots.hands' },     1),
+      'slots.head':      makePipeline('slots.head',      { en: 'slots.head'      }, 1),
+      'slots.eyes':      makePipeline('slots.eyes',      { en: 'slots.eyes'      }, 1),
+      'slots.neck':      makePipeline('slots.neck',      { en: 'slots.neck'      }, 1),
+      'slots.torso':     makePipeline('slots.torso',     { en: 'slots.torso'     }, 1),
+      'slots.body':      makePipeline('slots.body',      { en: 'slots.body'      }, 1),
+      'slots.waist':     makePipeline('slots.waist',     { en: 'slots.waist'     }, 1),
+      'slots.shoulders': makePipeline('slots.shoulders', { en: 'slots.shoulders' }, 1),
+      'slots.arms':      makePipeline('slots.arms',      { en: 'slots.arms'      }, 1),
+      'slots.hands':     makePipeline('slots.hands',     { en: 'slots.hands'     }, 1),
       // D&D 3.5 SRD standard: a humanoid has two ring slots (one per hand).
-      'slots.ring':      makePipeline('slots.ring',      { en: 'slots.ring',      fr: 'slots.ring' },      2),
-      'slots.feet':      makePipeline('slots.feet',      { en: 'slots.feet',      fr: 'slots.feet' },      1),
-      'slots.main_hand': makePipeline('slots.main_hand', { en: 'slots.main_hand', fr: 'slots.main_hand' }, 1),
-      'slots.off_hand':  makePipeline('slots.off_hand',  { en: 'slots.off_hand',  fr: 'slots.off_hand' },  1),
+      'slots.ring':      makePipeline('slots.ring',      { en: 'slots.ring'      }, 2),
+      'slots.feet':      makePipeline('slots.feet',      { en: 'slots.feet'      }, 1),
+      'slots.main_hand': makePipeline('slots.main_hand', { en: 'slots.main_hand' }, 1),
+      'slots.off_hand':  makePipeline('slots.off_hand',  { en: 'slots.off_hand'  }, 1),
     },
     saves: {
       // Bootstrap-phase labels use pipeline IDs to comply with PROGRESS.md Guideline 6.
-      'saves.fortitude': makePipeline('saves.fortitude', { en: 'saves.fortitude', fr: 'saves.fortitude' }, 0),
-      'saves.reflex':    makePipeline('saves.reflex',    { en: 'saves.reflex',    fr: 'saves.reflex' },    0),
-      'saves.will':      makePipeline('saves.will',      { en: 'saves.will',      fr: 'saves.will' },      0),
+      'saves.fortitude': makePipeline('saves.fortitude', { en: 'saves.fortitude' }, 0),
+      'saves.reflex':    makePipeline('saves.reflex',    { en: 'saves.reflex'    }, 0),
+      'saves.will':      makePipeline('saves.will',      { en: 'saves.will'      }, 0),
     },
     skills: {},
     // minimumSkillRanks is ABSENT for new characters — all ranks can be freely adjusted
@@ -377,7 +377,7 @@ export function createEmptyCharacter(id: ID, name: string): Character {
     // to lock in the current ranks as the irreducible minimum.
     // @see Character.minimumSkillRanks and GameEngine.lockSkillRanksMin()
     resources: {
-      'resources.hp': makeResource('resources.hp', { en: 'Hit Points', fr: 'Points de vie' }, 'combatStats.max_hp'),
+      'resources.hp': makeResource('resources.hp', { en: 'Hit Points' }, 'combatStats.max_hp'),
     },
     activeFeatures: [],
     linkedEntities: [],

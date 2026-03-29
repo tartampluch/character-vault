@@ -159,8 +159,8 @@ export interface EditorContext {
  *
  * All required fields are given sensible defaults:
  *   - `id`:             empty string (GM must fill in)
- *   - `label`:          { en: '', fr: '' }
- *   - `description`:    { en: '', fr: '' }
+ *   - `label`:          { en: '' }
+ *   - `description`:    { en: '' }
  *   - `ruleSource`:     'user_homebrew'
  *   - `tags`:           []
  *   - `grantedModifiers`: []
@@ -173,8 +173,8 @@ export function defaultFeature(category: FeatureCategory): Feature {
   return {
     id:               '',
     category,
-    label:            { en: '', fr: '' },
-    description:      { en: '', fr: '' },
+    label:            { en: '' },
+    description:      { en: '' },
     ruleSource:       'user_homebrew',
     tags:             [],
     forbiddenTags:    [],

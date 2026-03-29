@@ -8,9 +8,9 @@ import type { LocalizedString } from '../../types/i18n';
 import { dataLoader } from '../DataLoader';
 
 const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
-  { pipelineId: 'saves.fortitude', label: { en: 'saves.fortitude', fr: 'saves.fortitude' }, keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' }, accentColor: 'var(--color-save-fort)' },
-  { pipelineId: 'saves.reflex',    label: { en: 'saves.reflex',    fr: 'saves.reflex'    }, keyAbilityId: 'stat_dexterity',    keyAbilityAbbr: { en: 'stat_dexterity',    fr: 'stat_dexterity'    }, accentColor: 'var(--color-save-ref)'  },
-  { pipelineId: 'saves.will',      label: { en: 'saves.will',      fr: 'saves.will'      }, keyAbilityId: 'stat_wisdom',       keyAbilityAbbr: { en: 'stat_wisdom',       fr: 'stat_wisdom'       }, accentColor: 'var(--color-save-will)' },
+  { pipelineId: 'saves.fortitude', label: { en: 'saves.fortitude' }, keyAbilityId: 'stat_constitution', keyAbilityAbbr: { en: 'stat_constitution' }, accentColor: 'var(--color-save-fort)' },
+  { pipelineId: 'saves.reflex',    label: { en: 'saves.reflex'    }, keyAbilityId: 'stat_dexterity',    keyAbilityAbbr: { en: 'stat_dexterity'    }, accentColor: 'var(--color-save-ref)'  },
+  { pipelineId: 'saves.will',      label: { en: 'saves.will'      }, keyAbilityId: 'stat_wisdom',       keyAbilityAbbr: { en: 'stat_wisdom'       }, accentColor: 'var(--color-save-will)' },
 ];
 
 /**
@@ -22,9 +22,9 @@ export function buildSavingThrowConfig(): readonly SaveConfigEntry[] {
   if (table?.data && Array.isArray(table.data) && table.data.length > 0) {
     return (table.data as Array<Record<string, unknown>>).map(row => ({
       pipelineId:     (row['pipelineId']     as string)         ?? '',
-      label:          (row['label']          as LocalizedString) ?? { en: '', fr: '' },
+      label:          (row['label']          as LocalizedString) ?? { en: '' },
       keyAbilityId:   (row['keyAbilityId']   as string)         ?? '',
-      keyAbilityAbbr: (row['keyAbilityAbbr'] as LocalizedString) ?? { en: '', fr: '' },
+      keyAbilityAbbr: (row['keyAbilityAbbr'] as LocalizedString) ?? { en: '' },
       accentColor:    (row['accentColor']    as string)         ?? 'var(--theme-text-muted)',
     })) satisfies SaveConfigEntry[];
   }

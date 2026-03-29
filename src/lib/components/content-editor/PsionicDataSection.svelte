@@ -52,7 +52,7 @@
   // ===========================================================================
 
   function makeBlankAugmentation(): AugmentationRule {
-    return { costIncrement: 2, effectDescription: { en: '', fr: '' }, grantedModifiers: [], isRepeatable: false };
+    return { costIncrement: 2, effectDescription: { en: '' }, grantedModifiers: [], isRepeatable: false };
   }
 
   function addAugmentation(): void {

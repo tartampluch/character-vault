@@ -24,7 +24,7 @@ export function buildSizePipeline(
   if (!sizeBaseAttribute) {
     return {
       id: 'stat_size',
-      label: { en: 'Size', fr: 'Taille' },
+      label: { en: 'Size' },
       baseValue: 0,
       activeModifiers: [],
       situationalModifiers: [],

@@ -87,7 +87,7 @@
   function makeBlankChoice(): FeatureChoice {
     return {
       choiceId:       '',
-      label:          { en: '', fr: '' },
+      label:          { en: '' },
       optionsQuery:   '',
       maxSelections:  1,
     };

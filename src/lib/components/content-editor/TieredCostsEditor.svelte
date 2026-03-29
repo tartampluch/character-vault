@@ -34,7 +34,7 @@
 
   function makeBlankTier(): ActivationTier {
     return {
-      label:            { en: '', fr: '' },
+      label:            { en: '' },
       targetPoolId:     '',
       cost:             1,
       grantedModifiers: [],

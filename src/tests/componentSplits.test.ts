@@ -259,7 +259,7 @@ describe('GmOverridesPanel — JSON validation logic', () => {
 
 function makeBlankTier(): ActivationTier {
   return {
-    label:            { en: '', fr: '' },
+    label:            { en: '' },
     targetPoolId:     '',
     cost:             1,
     grantedModifiers: [],
@@ -283,7 +283,7 @@ describe('TieredCostsEditor — tier management logic', () => {
   it('makeBlankTier returns object with all required ActivationTier fields', () => {
     const tier = makeBlankTier();
     expect(tier).toHaveProperty('label');
-    expect(tier.label).toEqual({ en: '', fr: '' });
+    expect(tier.label).toEqual({ en: '' });
     expect(tier).toHaveProperty('targetPoolId', '');
     expect(tier).toHaveProperty('cost', 1);
     expect(tier).toHaveProperty('grantedModifiers');
@@ -484,7 +484,7 @@ function applySourceDefaults(
   return {
     ...modifier,
     sourceId:   modifier.sourceId && modifier.sourceId.trim()   ? modifier.sourceId   : entityId,
-    sourceName: modifier.sourceName && (modifier.sourceName.en || modifier.sourceName.fr)
+    sourceName: modifier.sourceName && modifier.sourceName.en
       ? modifier.sourceName
       : entityLabel,
   };

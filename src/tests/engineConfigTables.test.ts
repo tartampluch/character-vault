@@ -96,13 +96,13 @@ describe('M2 — engine.savingThrowConfig — data-driven from config_save_defin
     expect(saves[2].keyAbilityId).toBe('stat_wisdom');
   });
 
-  it('every fallback entry has non-empty pipelineId, keyAbilityId, label, accentColor', () => {
+  it('every fallback entry has non-empty pipelineId, keyAbilityId, label.en, accentColor', () => {
+    // Fallback entries only carry the English baseline; other languages come from locale files.
     const saves = engine.savingThrowConfig;
     for (const entry of saves) {
       expect(entry.pipelineId,   `${entry.pipelineId}: pipelineId empty`).toBeTruthy();
       expect(entry.keyAbilityId, `${entry.pipelineId}: keyAbilityId empty`).toBeTruthy();
       expect(entry.label.en,     `${entry.pipelineId}: EN label empty`).toBeTruthy();
-      expect(entry.label.fr,     `${entry.pipelineId}: FR label empty`).toBeTruthy();
       expect(entry.accentColor,  `${entry.pipelineId}: accentColor empty`).toBeTruthy();
     }
   });

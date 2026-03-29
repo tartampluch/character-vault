@@ -88,27 +88,27 @@ import { computeEffectiveActionBudget, computeActionBudgetHasXOR, computeActionB
 const DEFAULT_SAVE_CONFIG: readonly SaveConfigEntry[] = [
   {
     pipelineId:     'saves.fortitude',
-    label:          { en: 'saves.fortitude', fr: 'saves.fortitude' },
+    label:          { en: 'saves.fortitude' },
     keyAbilityId:   'stat_constitution',
     // keyAbilityAbbr uses the pipeline ID as a fallback to comply with PROGRESS.md Guideline 6
     // (no D&D-specific abbreviations hardcoded in TypeScript). The human-readable abbreviations
     // ("CON", "DEX", "WIS") are loaded from config_save_definitions and replace these placeholders
     // within milliseconds of app startup. Players will never see these fallback values.
-    keyAbilityAbbr: { en: 'stat_constitution', fr: 'stat_constitution' },
+    keyAbilityAbbr: { en: 'stat_constitution' },
     accentColor:    'var(--color-save-fort)',
   },
   {
     pipelineId:     'saves.reflex',
-    label:          { en: 'saves.reflex', fr: 'saves.reflex' },
+    label:          { en: 'saves.reflex' },
     keyAbilityId:   'stat_dexterity',
-    keyAbilityAbbr: { en: 'stat_dexterity', fr: 'stat_dexterity' },
+    keyAbilityAbbr: { en: 'stat_dexterity' },
     accentColor:    'var(--color-save-ref)',
   },
   {
     pipelineId:     'saves.will',
-    label:          { en: 'saves.will', fr: 'saves.will' },
+    label:          { en: 'saves.will' },
     keyAbilityId:   'stat_wisdom',
-    keyAbilityAbbr: { en: 'stat_wisdom', fr: 'stat_wisdom' },
+    keyAbilityAbbr: { en: 'stat_wisdom' },
     accentColor:    'var(--color-save-will)',
   },
 ];
@@ -5339,40 +5339,40 @@ export class GameEngine {
    * These are `LocalizedString`-compatible objects so they are routed through
    * `engine.t()` exactly like every other label in the system.
    */
-  static readonly PIPELINE_FALLBACK_LABELS: Record<string, { en: string; fr: string }> = {
-    'saves.all':                                { en: 'All Saving Throws',               fr: 'Jets de sauvegarde (tous)'       },
-    'saves.fortitude':                          { en: 'Fortitude Save',                  fr: 'Jet de Vigueur'                  },
-    'saves.reflex':                             { en: 'Reflex Save',                     fr: 'Jet de Réflexes'                 },
-    'saves.will':                               { en: 'Will Save',                       fr: 'Jet de Volonté'                  },
-    'combatStats.attack_bonus':                 { en: 'Attack Bonus',                    fr: "Bonus d'attaque"                 },
-    'combatStats.stability_check':              { en: 'Stability Check',                 fr: 'Test de stabilité'               },
-    'combatStats.hit_die_type':                 { en: 'Hit Die',                         fr: 'Dé de vie'                       },
-    'combatStats.speed_land':                   { en: 'Land Speed',                      fr: 'Vitesse terrestre'               },
-    'combatStats.speed_fly':                    { en: 'Fly Speed',                       fr: 'Vitesse de vol'                  },
-    'combatStats.speed_swim':                   { en: 'Swim Speed',                      fr: 'Vitesse de nage'                 },
-    'combatStats.speed_climb':                  { en: 'Climb Speed',                     fr: "Vitesse d'escalade"              },
-    'combatStats.speed_burrow':                 { en: 'Burrow Speed',                    fr: 'Vitesse de fouissement'          },
-    'combatStats.ac_normal':                    { en: 'Armor Class',                     fr: "Classe d'armure"                 },
-    'combatStats.ac_touch':                     { en: 'Touch AC',                        fr: 'CA de contact'                   },
-    'combatStats.ac_flat_footed':               { en: 'Flat-Footed AC',                  fr: 'CA pris au dépourvu'             },
-    'attributes.speed_land':                    { en: 'Land Speed',                      fr: 'Vitesse terrestre'               },
-    'attributes.skill_points_per_level':        { en: 'Skill Points / Level',            fr: 'Points de compétence / niveau'  },
-    'attributes.bonus_skill_points_per_level':  { en: 'Bonus Skill Points / Level',      fr: 'Points bonus / niveau'          },
-    'attributes.bonus_skill_points_1st_level':  { en: 'Bonus Skill Points (1st Level)',  fr: 'Points bonus (niveau 1)'        },
-    'attributes.bonus_feat_slots':              { en: 'Bonus Feat Slots',                fr: 'Emplacements de don bonus'       },
-    'attributes.spell_dc_illusion':             { en: 'Illusion Spell DC',               fr: "DD des sorts d'illusion"        },
-    'attributes.stat_strength':                 { en: 'Strength',                        fr: 'Force'                          },
-    'attributes.stat_dexterity':                { en: 'Dexterity',                       fr: 'Dextérité'                       },
-    'attributes.stat_constitution':             { en: 'Constitution',                    fr: 'Constitution'                   },
-    'attributes.stat_intelligence':             { en: 'Intelligence',                    fr: 'Intelligence'                   },
-    'attributes.stat_wisdom':                   { en: 'Wisdom',                          fr: 'Sagesse'                         },
-    'attributes.stat_charisma':                 { en: 'Charisma',                        fr: 'Charisme'                        },
-    'attributes.stat_size':                     { en: 'Size',                            fr: 'Taille'                          },
-    'resources.power_points.maxValue':          { en: 'Power Points (max)',              fr: 'Points de pouvoir (max)'         },
-    'resources.vitality_points.maxValue':       { en: 'Vitality Points (max)',           fr: 'Points de vitalité (max)'        },
-    'resources.wound_points.maxValue':          { en: 'Wound Points (max)',              fr: 'Points de blessure (max)'        },
-    'resources.hp.maxValue':                    { en: 'Hit Points (max)',                fr: 'Points de vie (max)'             },
-    'resources.ki_points.maxValue':             { en: 'Ki Points (max)',                 fr: 'Points de ki (max)'              },
+  static readonly PIPELINE_FALLBACK_LABELS: Record<string, { en: string }> = {
+    'saves.all':                                { en: 'All Saving Throws'              },
+    'saves.fortitude':                          { en: 'Fortitude Save'                 },
+    'saves.reflex':                             { en: 'Reflex Save'                    },
+    'saves.will':                               { en: 'Will Save'                      },
+    'combatStats.attack_bonus':                 { en: 'Attack Bonus'                   },
+    'combatStats.stability_check':              { en: 'Stability Check'                },
+    'combatStats.hit_die_type':                 { en: 'Hit Die'                        },
+    'combatStats.speed_land':                   { en: 'Land Speed'                     },
+    'combatStats.speed_fly':                    { en: 'Fly Speed'                      },
+    'combatStats.speed_swim':                   { en: 'Swim Speed'                     },
+    'combatStats.speed_climb':                  { en: 'Climb Speed'                    },
+    'combatStats.speed_burrow':                 { en: 'Burrow Speed'                   },
+    'combatStats.ac_normal':                    { en: 'Armor Class'                    },
+    'combatStats.ac_touch':                     { en: 'Touch AC'                       },
+    'combatStats.ac_flat_footed':               { en: 'Flat-Footed AC'                 },
+    'attributes.speed_land':                    { en: 'Land Speed'                     },
+    'attributes.skill_points_per_level':        { en: 'Skill Points / Level'           },
+    'attributes.bonus_skill_points_per_level':  { en: 'Bonus Skill Points / Level'     },
+    'attributes.bonus_skill_points_1st_level':  { en: 'Bonus Skill Points (1st Level)' },
+    'attributes.bonus_feat_slots':              { en: 'Bonus Feat Slots'               },
+    'attributes.spell_dc_illusion':             { en: 'Illusion Spell DC'              },
+    'attributes.stat_strength':                 { en: 'Strength'                       },
+    'attributes.stat_dexterity':                { en: 'Dexterity'                      },
+    'attributes.stat_constitution':             { en: 'Constitution'                   },
+    'attributes.stat_intelligence':             { en: 'Intelligence'                   },
+    'attributes.stat_wisdom':                   { en: 'Wisdom'                         },
+    'attributes.stat_charisma':                 { en: 'Charisma'                       },
+    'attributes.stat_size':                     { en: 'Size'                           },
+    'resources.power_points.maxValue':          { en: 'Power Points (max)'             },
+    'resources.vitality_points.maxValue':       { en: 'Vitality Points (max)'          },
+    'resources.wound_points.maxValue':          { en: 'Wound Points (max)'             },
+    'resources.hp.maxValue':                    { en: 'Hit Points (max)'               },
+    'resources.ki_points.maxValue':             { en: 'Ki Points (max)'                },
   };
 
   /**
@@ -5414,10 +5414,19 @@ export class GameEngine {
     const skillPipeline = this.phase4_skills[skillId];
     if (skillPipeline?.label) return this.t(skillPipeline.label);
 
-    // 5. Static fallback map for targetIds with no runtime pipeline
+    // 5. Static fallback map for targetIds with no runtime pipeline.
+    // For non-English, try the locale system first (keys are registered as
+    // "pipeline_label.<targetId>" in each locale file, e.g. fr.json).
     const fallback = GameEngine.PIPELINE_FALLBACK_LABELS[targetId]
       ?? GameEngine.PIPELINE_FALLBACK_LABELS[`attributes.${targetId}`];
-    if (fallback) return this.t(fallback);
+    if (fallback) {
+      if (this.lang !== 'en') {
+        const uiKey = `pipeline_label.${targetId}`;
+        const translated = ui(uiKey, this.lang);
+        if (translated !== uiKey) return translated;
+      }
+      return fallback.en;
+    }
 
     // 6. Last resort: prettify the raw ID
     return targetId

@@ -567,7 +567,16 @@ describe('formatSituationalContext() — localized situational labels', () => {
     expect(formatSituationalContext('wielding_two_weapons', 'en')).toBe('While two-weapon fighting');
   });
 
-  it('returns the French label when lang="fr"', () => {
+  it('returns the French label when lang="fr" (translations loaded from locale)', () => {
+    // French situational labels live in fr.json (situation.* keys), not in code.
+    // Inject them via the test helper so the test is self-contained (no HTTP needed).
+    loadUiLocaleFromObject('fr', {
+      'situation.vs_giant':    'contre les Géants',
+      'situation.vs_poison':   'contre le Poison',
+      'situation.sneak_attack': "lors d'une attaque sournoise",
+      'situation.vs_evil':     'contre le Mal',
+      'situation.vs_good':     'contre le Bien',
+    });
     expect(formatSituationalContext('vs_giant',    'fr')).toBe('contre les Géants');
     expect(formatSituationalContext('vs_poison',   'fr')).toBe('contre le Poison');
     expect(formatSituationalContext('sneak_attack','fr')).toBe("lors d'une attaque sournoise");
@@ -575,8 +584,8 @@ describe('formatSituationalContext() — localized situational labels', () => {
     expect(formatSituationalContext('vs_good',     'fr')).toBe('contre le Bien');
   });
 
-  it('falls back to English when requested language is absent from the entry', () => {
-    // All entries currently have en+fr; "de" (German) is not present
+  it('falls back to English when requested language has no locale loaded', () => {
+    // "de" (German) has no locale injected — falls back to English.
     expect(formatSituationalContext('vs_fear', 'de')).toBe('vs. Fear');
   });
 
@@ -590,28 +599,23 @@ describe('formatSituationalContext() — localized situational labels', () => {
     expect(formatSituationalContext('')).toBe('');
   });
 
-  it('every entry in SITUATIONAL_LABELS has both en and fr translations', () => {
-    // COMPLETENESS CHECK: ensures no partially-translated entry was accidentally added.
-    // If a future translator adds a key with only `en`, this test catches it.
+  it('every entry in SITUATIONAL_LABELS has an en translation', () => {
+    // COMPLETENESS CHECK: ensures every entry has the English baseline.
     for (const [key, label] of Object.entries(SITUATIONAL_LABELS)) {
       expect(label.en, `${key}: missing 'en' translation`).toBeTruthy();
-      expect(label.fr, `${key}: missing 'fr' translation`).toBeTruthy();
     }
   });
 
-  it('SITUATIONAL_LABELS type is Record<string, LocalizedString> (not Record<string, string>)', () => {
-    // TYPE REGRESSION GUARD: verifies the label values are objects, not plain strings.
-    // If someone accidentally reverts the type, this test will catch it.
+  it('SITUATIONAL_LABELS entries are objects with an en string (locale-agnostic)', () => {
+    // TYPE REGRESSION GUARD: verifies the label values are objects with an 'en' field.
+    // French and other translations come from locale files (fr.json) via ui(), not from code.
     const sample = SITUATIONAL_LABELS['vs_enchantment'];
     expect(typeof sample).toBe('object');
     expect(typeof sample.en).toBe('string');
-    expect(typeof sample.fr).toBe('string');
   });
 
-  it('falls back to entry.en when the requested language key is absent (line 473 coverage)', () => {
-    // "de" (German) is not in any SITUATIONAL_LABELS entry.
-    // The fallback chain is: entry[lang] → undefined → entry['en'] → English label.
-    // This covers the `entry['en'] ?? ctx` branch on line 473.
+  it('falls back to entry.en when no locale is loaded for the requested language', () => {
+    // "de" (German) has no locale injected → ui() returns the key → falls back to entry.en.
     expect(formatSituationalContext('vs_giant', 'de')).toBe('vs. Giants');
     expect(formatSituationalContext('tracking', 'de')).toBe('While tracking');
   });

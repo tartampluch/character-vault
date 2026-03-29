@@ -87,7 +87,7 @@
   function makeBlankPool(): ResourcePoolTemplate {
     return {
       poolId:         '',
-      label:          { en: '', fr: '' },
+      label:          { en: '' },
       maxPipelineId:  '',
       defaultCurrent: 0,
       resetCondition: 'never',
