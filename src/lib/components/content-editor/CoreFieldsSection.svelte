@@ -10,17 +10,26 @@
 
     id              — kebab-case entity identifier with collision warning
     category        — FeatureCategory dropdown (11 values w/ D&D labels)
-    label           — Localised name (EN + FR text inputs)
-    description     — Localised description (EN + FR textareas + preview toggle)
+    label           — Localised name (multi-language via LocalizedStringEditor)
+    description     — Localised description (multi-language, textarea + preview)
     ruleSource      — Defaults to "user_homebrew"; governs filter/stacking
     tags            — String[] chip list, opens TagPickerModal
     forbiddenTags   — String[] chip list, opens TagPickerModal
     merge           — Replace / Partial radio with inline explanation
 
   ────────────────────────────────────────────────────────────────────────────
+  MULTILINGUAL EDITING
+  ────────────────────────────────────────────────────────────────────────────
+  Both `label` and `description` are `LocalizedString` (Record<string, string>).
+  The `LocalizedStringEditor` component dynamically renders one field per
+  language present in the value, always starting with English (mandatory).
+  GMs can add translations in any language (from loaded rule files or via the
+  NewLanguageModal for unlisted languages) and remove non-English ones.
+
+  ────────────────────────────────────────────────────────────────────────────
   EDITOR CONTEXT
   ────────────────────────────────────────────────────────────────────────────
-  This component does NOT accept props.  It reads the shared EditorContext
+  This component does NOT accept props. It reads the shared EditorContext
   created by EntityForm via Svelte's `getContext` API:
 
     ctx.feature          — the mutable $state Feature draft
@@ -33,6 +42,7 @@
   ────────────────────────────────────────────────────────────────────────────
   @see editorContext.ts                       for EditorContext type
   @see TagPickerModal.svelte                  for tag chip editing
+  @see LocalizedStringEditor.svelte          for multilingual text input
   @see ARCHITECTURE.md §21.3                  for full specification
 -->
 
@@ -43,6 +53,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import TagPickerModal from './TagPickerModal.svelte';
+  import LocalizedStringEditor from './LocalizedStringEditor.svelte';
   import type { FeatureCategory } from '$lib/types/feature';
   import { IconWarning, IconClose } from '$lib/components/ui/icons';
 
@@ -90,13 +101,6 @@
   };
 
   // ===========================================================================
-  // DESCRIPTION PREVIEW TOGGLES (per-language)
-  // ===========================================================================
-
-  let previewEn = $state(false);
-  let previewFr = $state(false);
-
-  // ===========================================================================
   // TAG PICKER STATE
   // ===========================================================================
 
@@ -124,23 +128,20 @@
   }
 
   // ===========================================================================
-  // HELPERS
+  // LABEL / DESCRIPTION CHANGE HANDLERS
   // ===========================================================================
 
-  function locGet(obj: Record<string, string> | undefined, langCode: string): string {
-    return (obj as Record<string, string> | undefined)?.[langCode] ?? '';
+  function handleLabelChange(newValue: Record<string, string>): void {
+    ctx.feature.label = newValue as Record<string, string>;
   }
 
-  function locSet(
-    field: 'label' | 'description',
-    langCode: string,
-    value: string
-  ): void {
-    ctx.feature[field] = {
-      ...(ctx.feature[field] as Record<string, string>),
-      [langCode]: value,
-    } as Record<string, string>;
+  function handleDescriptionChange(newValue: Record<string, string>): void {
+    ctx.feature.description = newValue as Record<string, string>;
   }
+
+  // ===========================================================================
+  // HELPERS
+  // ===========================================================================
 
   // Unique suffix for this instance (label `for`/input `id` pairs)
   const uid = Math.random().toString(36).slice(2, 7);
@@ -229,112 +230,45 @@
   </div>
 
   <!-- ======================================================================= -->
-  <!-- LABEL (EN + FR)                                                           -->
+  <!-- LABEL — multi-language                                                    -->
   <!-- ======================================================================= -->
   <fieldset class="flex flex-col gap-2">
     <legend class="text-sm font-semibold text-text-primary mb-1.5">
       {ui('editor.core.label_legend', lang)}
       <span class="text-xs font-normal text-text-muted">{ui('editor.core.label_display_hint', lang)}</span>
     </legend>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <div class="flex flex-col gap-1">
-        <label for={fid('label-en')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_en_label', lang)}</label>
-        <input
-          id={fid('label-en')}
-          type="text"
-          class="input text-sm"
-          value={locGet(ctx.feature.label as Record<string,string>, 'en')}
-          placeholder={ui('editor.core.label_en_placeholder', lang)}
-          oninput={(e) => locSet('label', 'en', (e.currentTarget as HTMLInputElement).value)}
-        />
-      </div>
-      <div class="flex flex-col gap-1">
-        <label for={fid('label-fr')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_fr_label', lang)}</label>
-        <input
-          id={fid('label-fr')}
-          type="text"
-          class="input text-sm"
-          value={locGet(ctx.feature.label as Record<string,string>, 'fr')}
-          placeholder={ui('editor.core.label_fr_placeholder', lang)}
-          oninput={(e) => locSet('label', 'fr', (e.currentTarget as HTMLInputElement).value)}
-        />
-      </div>
-    </div>
+
+    <LocalizedStringEditor
+      value={ctx.feature.label as Record<string, string>}
+      onchange={handleLabelChange}
+      mode="input"
+      uid="cfs-{uid}"
+      fieldName="label"
+      {lang}
+      placeholder={ui('editor.core.label_en_placeholder', lang)}
+      extraPlaceholder={ui('editor.lang.translation_placeholder', lang)}
+    />
   </fieldset>
 
   <!-- ======================================================================= -->
-  <!-- DESCRIPTION (EN + FR + Markdown preview toggle)                          -->
+  <!-- DESCRIPTION — multi-language with preview                                -->
   <!-- ======================================================================= -->
   <fieldset class="flex flex-col gap-2">
     <legend class="text-sm font-semibold text-text-primary mb-1.5">
       {ui('editor.core.description_legend', lang)}
     </legend>
 
-    <!-- English description -->
-    <div class="flex flex-col gap-1">
-      <div class="flex items-center justify-between">
-        <label for={fid('desc-en')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_en_label', lang)}</label>
-        <button
-          type="button"
-          class="text-[10px] text-text-muted underline hover:text-text-primary"
-          onclick={() => (previewEn = !previewEn)}
-        >
-          {previewEn ? ui('editor.core.edit_btn', lang) : ui('editor.core.preview_btn', lang)}
-        </button>
-      </div>
-
-      {#if previewEn}
-        <div
-          class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
-                 overflow-auto bg-surface-alt"
-          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', ui('editor.core.lang_en_label', lang))}
-        >
-          {locGet(ctx.feature.description as Record<string,string>, 'en') || ui('editor.core.no_description_en', lang)}
-        </div>
-      {:else}
-        <textarea
-          id={fid('desc-en')}
-          class="input min-h-[6rem] text-sm resize-y font-sans"
-          value={locGet(ctx.feature.description as Record<string,string>, 'en')}
-          placeholder={ui('editor.core.desc_en_placeholder', lang)}
-          oninput={(e) => locSet('description', 'en', (e.currentTarget as HTMLTextAreaElement).value)}
-          spellcheck="true"
-        ></textarea>
-      {/if}
-    </div>
-
-    <!-- French description -->
-    <div class="flex flex-col gap-1">
-      <div class="flex items-center justify-between">
-        <label for={fid('desc-fr')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_fr_label', lang)}</label>
-        <button
-          type="button"
-          class="text-[10px] text-text-muted underline hover:text-text-primary"
-          onclick={() => (previewFr = !previewFr)}
-        >
-          {previewFr ? ui('editor.core.edit_btn', lang) : ui('editor.core.preview_btn', lang)}
-        </button>
-      </div>
-
-      {#if previewFr}
-        <div
-          class="input min-h-[6rem] text-sm text-text-secondary whitespace-pre-wrap
-                 overflow-auto bg-surface-alt"
-          aria-label={ui('editor.core.desc_preview_aria', lang).replace('{lang}', ui('editor.core.lang_fr_label', lang))}
-        >
-          {locGet(ctx.feature.description as Record<string,string>, 'fr') || ui('editor.core.no_description_fr', lang)}
-        </div>
-      {:else}
-        <textarea
-          id={fid('desc-fr')}
-          class="input min-h-[6rem] text-sm resize-y font-sans"
-          value={locGet(ctx.feature.description as Record<string,string>, 'fr')}
-          placeholder={ui('editor.core.desc_fr_placeholder', lang)}
-          oninput={(e) => locSet('description', 'fr', (e.currentTarget as HTMLTextAreaElement).value)}
-          spellcheck="true"
-        ></textarea>
-      {/if}
-    </div>
+    <LocalizedStringEditor
+      value={ctx.feature.description as Record<string, string>}
+      onchange={handleDescriptionChange}
+      mode="textarea"
+      uid="cfs-{uid}"
+      fieldName="description"
+      {lang}
+      placeholder={ui('editor.core.desc_en_placeholder', lang)}
+      extraPlaceholder={ui('editor.lang.desc_translation_placeholder', lang)}
+      showPreview={true}
+    />
   </fieldset>
 
   <!-- ======================================================================= -->

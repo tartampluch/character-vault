@@ -2363,10 +2363,19 @@ All other languages — including the bundled `fr.json` — are treated as **ser
 _Target file: `src/lib/utils/formatters.ts`_
 
 ```typescript
-// getUnitSystem() bridges language code → unit system.
-// Unknown codes (community languages) default to "imperial" (SRD reference system).
+// getUnitSystem() bridges BCP-47 language code → unit system.
+// Fallback chain: exact code → base language (for regional variants) → "imperial".
+// Example: "fr-be" → not in LANG_UNIT_SYSTEM → try "fr" → metric
 export function getUnitSystem(lang: string): UnitSystem {
-    return LANG_UNIT_SYSTEM.get(lang) ?? 'imperial';
+    const exact = LANG_UNIT_SYSTEM.get(lang);
+    if (exact !== undefined) return exact;
+    // Regional variant fallback (e.g. "fr-be" → check "fr")
+    const hyphen = lang.indexOf('-');
+    if (hyphen > 0) {
+        const base = LANG_UNIT_SYSTEM.get(lang.slice(0, hyphen));
+        if (base !== undefined) return base;
+    }
+    return 'imperial'; // SRD reference system default
 }
 
 // formatDistance / formatWeight delegate to getUnitSystem():
@@ -2375,9 +2384,10 @@ export function formatDistance(feet: number, lang: string): string {
     const rounded = Math.round(feet * config.distanceMultiplier * 10) / 10;
     return `${rounded} ${config.distanceUnit}`;
 }
-// formatDistance(30, "en") → "30 ft."  (imperial)
-// formatDistance(30, "fr") → "9 m"     (metric)
-// formatDistance(30, "es") → "30 ft."  (community lang → imperial fallback)
+// formatDistance(30, "en")    → "30 ft."  (imperial)
+// formatDistance(30, "fr")    → "9 m"     (metric)
+// formatDistance(30, "fr-be") → "9 m"     (metric, inherited from "fr")
+// formatDistance(30, "es")    → "30 ft."  (community lang → imperial fallback)
 ```
 
 ### 11.4. JSON Rule File Format and `supportedLanguages`
@@ -2395,9 +2405,18 @@ Rule files use a metadata wrapper format declaring which languages they contain:
 
 `DataLoader._availableLanguages` is seeded from `SUPPORTED_UI_LANGUAGES` at construction time, then merges in codes declared by loaded JSON files. The language dropdown always shows at least the built-in UI languages.
 
+**Language code format — BCP-47 (all-lowercase hyphenated):**
+
+Language codes use the IETF BCP-47 standard in all-lowercase hyphenated form:
+- Base language: `"en"`, `"fr"`, `"de"`, `"es"`
+- Regional variant: `"en-gb"`, `"fr-be"`, `"fr-fr"`, `"pt-br"`
+
+Lowercase is used throughout (not `"en_GB"` or `"enGB"`) because it is consistent, unambiguous on case-sensitive file systems, and matches the de-facto web convention. `Intl.PluralRules("fr-be")` works identically to `Intl.PluralRules("fr-BE")`.
+
 **Fallback behavior:**
 - Files without `supportedLanguages` (legacy bare-array format) are accepted; `"en"` is assumed.
-- The `t()` function: requested lang → `"en"` → first key → `"??"`.
+- The `t()` function (BCP-47 aware): requested lang → base lang (if regional variant) → `"en"` → first key → `"??"`.
+- Example chain: `"fr-be"` → `"fr"` → `"en"`. A Belgian-French user gets French translations for any key not specifically provided in the `"fr-be"` variant.
 - A community file declaring `"es"` surfaces Spanish in the dropdown; UI chrome strings for unknown codes fall back to English.
 
 ### 11.5. Integration in the Svelte Engine (GameEngine)

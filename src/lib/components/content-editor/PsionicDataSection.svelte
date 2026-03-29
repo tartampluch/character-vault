@@ -12,6 +12,7 @@
   import type { MagicFeature, AugmentationRule, PsionicDiscipline, PsionicDisplay } from '$lib/types/feature';
   import type { Modifier } from '$lib/types/pipeline';
   import LevelModifierModal from './LevelModifierModal.svelte';
+  import LocalizedStringEditor from './LocalizedStringEditor.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui, uiN } from '$lib/i18n/ui-strings';
 
@@ -71,14 +72,6 @@
     arr[i] = { ...arr[i], ...patch } as AugmentationRule;
     (ctx.feature as MagicFeature).augmentations = arr;
   }
-  function setAugDesc(i: number, lang: string, value: string): void {
-    const aug = (magic.augmentations ?? [])[i];
-    if (!aug) return;
-    patchAugmentation(i, {
-      effectDescription: { ...(aug.effectDescription as Record<string,string> ?? {}), [lang]: value }
-    });
-  }
-
   type AugModalState = { index: number; modifiers: Modifier[] } | null;
   let augModalState = $state<AugModalState>(null);
 
@@ -248,32 +241,22 @@
               </div>
             </div>
 
-            <!-- Effect description EN/FR -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <div class="flex flex-col gap-1">
-                <label for={fid(`aug-en-${i}`)}
-                       class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', ui('editor.core.lang_en_label', lang))}
-                </label>
-                <textarea id={fid(`aug-en-${i}`)}
-                          class="input text-xs min-h-[4rem] resize-y font-sans"
-                          value={(aug.effectDescription as Record<string,string>)?.['en'] ?? ''}
-                           placeholder={ui('content_editor.psi.effect_desc_en_placeholder', lang)}
-                          oninput={(e) => setAugDesc(i, 'en', (e.currentTarget as HTMLTextAreaElement).value)}
-                ></textarea>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label for={fid(`aug-fr-${i}`)}
-                       class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                  {ui('content_editor.psi.effect_desc_label', lang).replace('{lang}', ui('editor.core.lang_fr_label', lang))}
-                </label>
-                <textarea id={fid(`aug-fr-${i}`)}
-                          class="input text-xs min-h-[4rem] resize-y font-sans"
-                          value={(aug.effectDescription as Record<string,string>)?.['fr'] ?? ''}
-                           placeholder={ui('content_editor.psi.effect_desc_fr_placeholder', lang)}
-                          oninput={(e) => setAugDesc(i, 'fr', (e.currentTarget as HTMLTextAreaElement).value)}
-                ></textarea>
-              </div>
+            <!-- Effect description — multi-language editor -->
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                {ui('content_editor.psi.effect_desc_legend', lang)}
+              </span>
+              <LocalizedStringEditor
+                value={(aug.effectDescription as Record<string,string>) ?? { en: '' }}
+                onchange={(v) => patchAugmentation(i, { effectDescription: v })}
+                mode="textarea"
+                uid={fid(`aug-${i}`)}
+                fieldName="eff-desc"
+                {lang}
+                placeholder={ui('content_editor.psi.effect_desc_en_placeholder', lang)}
+                extraPlaceholder={ui('editor.lang.desc_translation_placeholder', lang)}
+                inputClass="text-xs min-h-[4rem]"
+              />
             </div>
           </div>
         {/each}

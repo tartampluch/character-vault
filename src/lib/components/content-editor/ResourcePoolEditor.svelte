@@ -51,6 +51,7 @@
   import type { ResourcePool } from '$lib/types/pipeline';
   import PipelinePickerModal from './PipelinePickerModal.svelte';
   import FormulaBuilderInput from './FormulaBuilderInput.svelte';
+  import LocalizedStringEditor from './LocalizedStringEditor.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
 
@@ -117,12 +118,6 @@
     const arr = [...(ctx.feature.resourcePoolTemplates ?? [])];
     arr[i] = { ...arr[i], ...patch };
     ctx.feature.resourcePoolTemplates = arr;
-  }
-
-  function setPoolLabel(i: number, lang: string, value: string): void {
-    const pool = (ctx.feature.resourcePoolTemplates ?? [])[i];
-    if (!pool) return;
-    patchPool(i, { label: { ...(pool.label as Record<string,string>), [lang]: value } });
   }
 
   // ===========================================================================
@@ -262,39 +257,20 @@
             </p>
           </div>
 
-          <!-- Label EN -->
-          <div class="flex flex-col gap-1">
-            <label
-              for={fid(`lbl-en-${i}`)}
-              class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
-            >
-              {ui('content_editor.pool.label_en', lang)}
-            </label>
-            <input
-              id={fid(`lbl-en-${i}`)}
-              type="text"
-              class="input text-sm"
-              value={(pool.label as Record<string,string>)?.['en'] ?? ''}
+          <!-- Pool label — multi-language editor -->
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              {ui('content_editor.pool.label_legend', lang)}
+            </span>
+            <LocalizedStringEditor
+              value={(pool.label as Record<string,string>) ?? { en: '' }}
+              onchange={(v) => patchPool(i, { label: v })}
+              mode="input"
+              uid={fid(`lbl-${i}`)}
+              fieldName="pool-label"
+              {lang}
               placeholder={ui('content_editor.pool.label_en_placeholder', lang)}
-              oninput={(e) => setPoolLabel(i, 'en', (e.currentTarget as HTMLInputElement).value)}
-            />
-          </div>
-
-          <!-- Label FR -->
-          <div class="flex flex-col gap-1">
-            <label
-              for={fid(`lbl-fr-${i}`)}
-              class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
-            >
-              {ui('content_editor.pool.label_fr', lang)}
-            </label>
-            <input
-              id={fid(`lbl-fr-${i}`)}
-              type="text"
-              class="input text-sm"
-              value={(pool.label as Record<string,string>)?.['fr'] ?? ''}
-              placeholder={ui('content_editor.pool.label_fr_placeholder', lang)}
-              oninput={(e) => setPoolLabel(i, 'fr', (e.currentTarget as HTMLInputElement).value)}
+              extraPlaceholder={ui('editor.lang.translation_placeholder', lang)}
             />
           </div>
 

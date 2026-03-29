@@ -415,6 +415,94 @@ describe('formatWeight() with community language codes', () => {
 });
 
 // =============================================================================
+// 22. t() — BCP-47 regional variant fallback (new in multilingual sprint)
+// =============================================================================
+
+describe('t() — BCP-47 regional variant fallback in formatters', () => {
+  it('fr-be falls back to fr when fr-be key is absent', () => {
+    const label: LocalizedString = { en: 'Fireball', fr: 'Boule de feu' };
+    expect(t(label, 'fr-be')).toBe('Boule de feu');
+  });
+
+  it('fr-ch falls back to fr when fr-ch key is absent', () => {
+    const label: LocalizedString = { en: 'Rogue', fr: 'Roublard' };
+    expect(t(label, 'fr-ch')).toBe('Roublard');
+  });
+
+  it('en-gb falls back to en', () => {
+    const label: LocalizedString = { en: 'Armour' };
+    expect(t(label, 'en-gb')).toBe('Armour');
+  });
+
+  it('regional code with its own entry is not overridden by base', () => {
+    const label: LocalizedString = { en: 'Color', fr: 'Couleur', 'fr-be': 'Kleur' };
+    expect(t(label, 'fr-be')).toBe('Kleur');
+    expect(t(label, 'fr')).toBe('Couleur');
+    expect(t(label, 'en')).toBe('Color');
+  });
+
+  it('regional code falls back to English when neither regional nor base is present', () => {
+    const label: LocalizedString = { en: 'Barbarian' };
+    expect(t(label, 'fr-be')).toBe('Barbarian');
+    expect(t(label, 'de-at')).toBe('Barbarian');
+  });
+
+  it('regional code falls back to first key then ?? when English is also absent', () => {
+    const label = { de: 'Zauberer' } as LocalizedString;
+    // fr-be → fr (absent) → en (absent) → first key
+    expect(t(label, 'fr-be')).toBe('Zauberer');
+    // Empty object → ??
+    expect(t({} as LocalizedString, 'fr-be')).toBe('??');
+  });
+});
+
+// =============================================================================
+// 23. getUnitSystem() — BCP-47 regional variant fallback (new in multilingual sprint)
+// =============================================================================
+
+describe('getUnitSystem() — BCP-47 regional variant inherits base unit system', () => {
+  // 'fr' was registered as metric in the file-level beforeAll.
+  // These tests verify that regional variants inherit from the registered base.
+
+  it('fr-be → metric (inherits from registered fr)', () => {
+    expect(getUnitSystem('fr-be')).toBe('metric');
+  });
+
+  it('fr-ch → metric (inherits from registered fr)', () => {
+    expect(getUnitSystem('fr-ch')).toBe('metric');
+  });
+
+  it('fr-ca → metric (inherits from registered fr)', () => {
+    expect(getUnitSystem('fr-ca')).toBe('metric');
+  });
+
+  it('en-gb → imperial (inherits from built-in en)', () => {
+    expect(getUnitSystem('en-gb')).toBe('imperial');
+  });
+
+  it('en-au → imperial (inherits from built-in en)', () => {
+    expect(getUnitSystem('en-au')).toBe('imperial');
+  });
+
+  it('formatDistance respects fr-be as metric (inherits from fr)', () => {
+    expect(formatDistance(30, 'fr-be')).toBe('9 m');
+  });
+
+  it('formatDistance respects en-gb as imperial', () => {
+    expect(formatDistance(30, 'en-gb')).toBe('30 ft.');
+  });
+
+  it('formatWeight respects fr-ch as metric (inherits from fr)', () => {
+    expect(formatWeight(10, 'fr-ch')).toBe('5 kg');
+  });
+
+  it('regional variant with completely unregistered base → imperial fallback', () => {
+    // 'xx' is not registered; 'xx-yy' has no registered base → imperial
+    expect(getUnitSystem('xx-yy')).toBe('imperial');
+  });
+});
+
+// =============================================================================
 // 12. ui() — UI chrome string lookup with fallback
 // =============================================================================
 

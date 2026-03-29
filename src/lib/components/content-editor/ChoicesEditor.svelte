@@ -10,6 +10,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import LocalizedStringEditor from './LocalizedStringEditor.svelte';
   import type { FeatureChoice } from '$lib/types/feature';
   import type { ID } from '$lib/types/primitives';
   import { IconWarning, IconSuccess } from '$lib/components/ui/icons';
@@ -38,14 +39,6 @@
     const arr = [...(ctx.feature.choices ?? [])];
     arr[index] = { ...arr[index], ...patch };
     ctx.feature.choices = arr;
-  }
-
-  function setChoiceLabel(index: number, langCode: string, value: string): void {
-    const choice = (ctx.feature.choices ?? [])[index];
-    if (!choice) return;
-    patchChoice(index, {
-      label: { ...(choice.label as Record<string, string>), [langCode]: value },
-    });
   }
 
   let queryResults = $state<Map<number, { count: number; sample: string[] }>>(new Map());
@@ -213,39 +206,20 @@
             </p>
           </div>
 
-          <!-- Label EN -->
-          <div class="flex flex-col gap-1">
-            <label
-              for="choice-lbl-en-{i}"
-              class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
-            >
-              {ui('editor.choices.label_en_label', lang)}
-            </label>
-            <input
-              id="choice-lbl-en-{i}"
-              type="text"
-              class="input text-sm"
-              value={(choice.label as Record<string,string>)?.['en'] ?? ''}
+          <!-- Choice label — multi-language editor (spans both columns) -->
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              {ui('editor.choices.label_legend', lang)}
+            </span>
+            <LocalizedStringEditor
+              value={(choice.label as Record<string, string>) ?? { en: '' }}
+              onchange={(v) => patchChoice(i, { label: v })}
+              mode="input"
+              uid="choice-lbl-{i}"
+              fieldName="choice-label"
+              {lang}
               placeholder={ui('editor.choices.label_en_placeholder', lang)}
-              oninput={(e) => setChoiceLabel(i, 'en', (e.currentTarget as HTMLInputElement).value)}
-            />
-          </div>
-
-          <!-- Label FR -->
-          <div class="flex flex-col gap-1">
-            <label
-              for="choice-lbl-fr-{i}"
-              class="text-[10px] font-semibold uppercase tracking-wider text-text-muted"
-            >
-              {ui('editor.choices.label_fr_label', lang)}
-            </label>
-            <input
-              id="choice-lbl-fr-{i}"
-              type="text"
-              class="input text-sm"
-              value={(choice.label as Record<string,string>)?.['fr'] ?? ''}
-              placeholder={ui('editor.choices.label_fr_placeholder', lang)}
-              oninput={(e) => setChoiceLabel(i, 'fr', (e.currentTarget as HTMLInputElement).value)}
+              extraPlaceholder={ui('editor.lang.translation_placeholder', lang)}
             />
           </div>
 

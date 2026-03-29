@@ -2362,11 +2362,28 @@ Declare which languages your file provides using the `supportedLanguages` array 
 
 The engine collects all declared languages across all loaded files and presents them in the **language selector dropdown** in the sidebar. Any language code declared here will appear as an option — even if the UI chrome strings (buttons, labels, navigation) do not have a built-in translation for that code (they will fall back to English gracefully).
 
-**Fallback chain for `t()` (string resolution):**
-1. Requested language (`textObj[lang]`)
-2. English (`textObj["en"]`)
-3. First available key in the object
-4. `"??"` (sentinel — visually flags a missing translation)
+**Language code format — BCP-47 (all-lowercase hyphenated):**
+
+Codes follow the IETF BCP-47 standard in all-lowercase form:
+- Base language: `"en"`, `"fr"`, `"de"`, `"es"`
+- Regional variant: `"en-gb"`, `"fr-be"`, `"fr-fr"`, `"pt-br"`, `"en-au"`
+
+Why lowercase hyphenated? Consistent, unambiguous on case-sensitive file systems, and matches the de-facto web convention. **Not** `"en_GB"` (ICU/Java) or `"enGB"` (camelCase).
+
+`"en"` is **US English by default** — it is the universal engine fallback and is always bundled. To provide British English overrides, create `en-gb.json`; to provide Belgian French overrides, create `fr-be.json`. Anything not in the regional file falls back to the base language, then to English.
+
+**Fallback chain for `t()` (BCP-47 aware string resolution):**
+1. Exact language code (`textObj["fr-be"]` — most specific)
+2. Base language code (`textObj["fr"]` — if step 1 not found and code has a region tag)
+3. English (`textObj["en"]` — universal fallback)
+4. First available key in the object
+5. `"??"` (sentinel — visually flags a completely missing translation)
+
+Example: campaign set to `"fr-be"` (Belgian French):
+- Key with `"fr-be"`: uses the Belgian override
+- Key with only `"fr"`: falls back to generic French
+- Key with only `"en"`: falls back to English
+- Key absent entirely: `"??"` sentinel
 
 ### Providing Translations
 
@@ -2374,13 +2391,17 @@ Provide `label` and `description` in every language listed in `supportedLanguage
 
 ```json
 "label": {
-  "en": "Power Attack",
-  "fr": "Attaque en puissance",
-  "es": "Ataque poderoso"
+  "en":    "Power Attack",
+  "fr":    "Attaque en puissance",
+  "fr-be": "Attaque puissante",
+  "es":    "Ataque poderoso",
+  "pt-br": "Ataque Poderoso"
 }
 ```
 
 English is **always required** — it is the universal fallback. Other languages are optional but should be provided if they are declared in `supportedLanguages`.
+
+**Regional variants inherit from the base language.** If a player selects `"fr-be"` but a specific feature only provides `"fr"`, the French translation is shown automatically. You do **not** need to duplicate `"fr"` content into `"fr-be"` — only provide `"fr-be"` keys for strings that genuinely differ from generic French.
 
 **Built-in UI chrome languages:**
 
@@ -2435,11 +2456,45 @@ To add a new language: create `static/locales/{code}.json` with a valid `$meta` 
 
 | Rule | Detail |
 |---|---|
-| `$meta` block | Required. Declares `language` (self-name, e.g. "Français"), `code` (BCP-47, e.g. `"fr"`), `countryCode` (ISO 3166-1 alpha-2, e.g. `"fr"` — **mandatory**, used for the country flag in the language picker), `unitSystem` (`"imperial"` or `"metric"`). The engine strips `$meta` before caching. **Locale files missing `countryCode` are skipped by the server and will not appear in the language dropdown.** |
+| `$meta` block | Required. Declares `language` (self-name — see **Native name convention** below), `code` (BCP-47 all-lowercase, e.g. `"fr"`, `"fr-be"`), `countryCode` (ISO 3166-1 alpha-2 — **mandatory**, used for the country flag), `unitSystem` (`"imperial"` or `"metric"`). The engine strips `$meta` before caching. **Locale files missing `countryCode` are skipped by the server and will not appear in the dropdown.** |
 | Simple strings | Plain key-value pairs. `{placeholder}` syntax for variable substitution (caller does `.replace('{x}', value)`). |
 | Plural strings | Object with CLDR plural category keys (`one`, `other`, and optionally `few`, `many`, `zero`). Use `uiN(key, count, lang)` at the call site. |
 | `{n}` in plurals | Replaced with the count value by `uiN()`. |
 | Fallback | Any key absent from the locale file falls back to the English baseline in `UI_STRINGS`. UI never breaks from a missing translation. |
+
+#### Native name convention (`$meta.language`)
+
+The `language` field is the self-name of the language — written **in the language itself**, never in English or as an abbreviation.
+
+**Base languages** — the language name only:
+```json
+{ "$meta": { "code": "de", "language": "Deutsch", "countryCode": "de", "unitSystem": "metric" } }
+{ "$meta": { "code": "es", "language": "Español", "countryCode": "es", "unitSystem": "metric" } }
+```
+
+**Regional variants** — `"<language name> (<full country name in that language>)"`.  
+The country name is written **in full**, **in the same language as the entry**, never as an ISO 3166 abbreviation:
+
+```json
+{ "$meta": { "code": "fr-be", "language": "Français (Belgique)",      "countryCode": "be", "unitSystem": "metric"   } }
+{ "$meta": { "code": "fr-ch", "language": "Français (Suisse)",         "countryCode": "ch", "unitSystem": "metric"   } }
+{ "$meta": { "code": "fr-ca", "language": "Français (Canada)",         "countryCode": "ca", "unitSystem": "metric"   } }
+{ "$meta": { "code": "en-gb", "language": "English (United Kingdom)",  "countryCode": "gb", "unitSystem": "imperial" } }
+{ "$meta": { "code": "en-au", "language": "English (Australia)",       "countryCode": "au", "unitSystem": "imperial" } }
+{ "$meta": { "code": "de-at", "language": "Deutsch (Österreich)",      "countryCode": "at", "unitSystem": "metric"   } }
+{ "$meta": { "code": "de-ch", "language": "Deutsch (Schweiz)",         "countryCode": "ch", "unitSystem": "metric"   } }
+{ "$meta": { "code": "pt-br", "language": "Português (Brasil)",        "countryCode": "br", "unitSystem": "metric"   } }
+{ "$meta": { "code": "nl-be", "language": "Nederlands (België)",       "countryCode": "be", "unitSystem": "metric"   } }
+{ "$meta": { "code": "it-ch", "language": "Italiano (Svizzera)",       "countryCode": "ch", "unitSystem": "metric"   } }
+```
+
+❌ **Never** use ISO abbreviations in the name:
+- `"Français (BE)"` — wrong; "BE" is not a French word
+- `"English (GB)"` — wrong; use "United Kingdom"
+- `"Deutsch (AT)"` — wrong; use "Österreich"
+
+The `countryCode` field is **always** the ISO 3166-1 alpha-2 code in lowercase.  
+For regional variants, use the **region part** of the BCP-47 tag: `"fr-be"` → `"be"`, `"en-gb"` → `"gb"`.
 
 #### Loading mechanism
 
@@ -2455,13 +2510,29 @@ The `uiN(key, count, lang)` function resolves plurals using `Intl.PluralRules` f
 #### Adding a community locale
 
 1. Create `static/locales/{code}.json` with the `$meta` block and translations.
+   - Use **all-lowercase BCP-47** format: `"fr"`, `"de"`, `"en-gb"`, `"fr-be"`.
    - `$meta.countryCode` is **mandatory** (ISO 3166-1 alpha-2). Files without it are skipped by the server.
-   - `$meta.countryCode` drives the flag icon in `ThemeLanguagePicker` (via `flag-icons` CSS).
-   - Example: German → `"code": "de", "countryCode": "de"`.
-   - For languages where the BCP-47 code differs from the country code, use the country: e.g., English → `"code": "en", "countryCode": "gb"` (but English has no locale file — it is always bundled).
-2. Deploy the file to the server — no code change required.
-3. On the next page load, `GET /api/locales` returns it and the language (with its flag) appears in the dropdown.
-4. Any UI key without a translation silently falls back to English.
+   - `$meta.countryCode` drives the flag icon in `ThemeLanguagePicker`. For regional variants, use the **region part** of the tag: `"en-gb"` → `"countryCode": "gb"`, `"fr-be"` → `"countryCode": "be"`.
+   - Examples:
+     - German: `"code": "de", "countryCode": "de"`
+     - British English: `"code": "en-gb", "countryCode": "gb"`
+     - Belgian French: `"code": "fr-be", "countryCode": "be"`
+2. **Regional variants only need to include keys that differ from the base language.** For `fr-be.json`, only add keys that differ from `fr.json`. The fallback chain (`fr-be → fr → en`) handles the rest automatically.
+3. Deploy the file to the server — no code change required.
+4. On the next page load, `GET /api/locales` returns it and the language (with its flag) appears in the dropdown.
+5. Any UI key without a translation silently falls back to the base language, then to English.
+
+#### Fallback chain for UI chrome (`ui()` function)
+
+```
+ui("combat.hp.title", "fr-be")
+  → tries fr-be.json for "combat.hp.title"   [override for Belgian French]
+  → not found → tries fr.json for that key   [generic French]
+  → not found → uses UI_STRINGS["combat.hp.title"]  [English baseline]
+  → not found → returns key as fallback sentinel (logs console.warn)
+```
+
+This means `fr-be.json` only needs entries that **differ** from `fr.json`. A minimal `fr-be.json` with just the `$meta` block is valid — all strings will fall back to French gracefully.
 
 #### Testing locale behavior
 

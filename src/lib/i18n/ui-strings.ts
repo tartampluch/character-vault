@@ -137,11 +137,26 @@ const _fromCache = new Set<string>();
  *
  * English ('en') is always available — returns `true` immediately.
  *
- * @param code - BCP-47 language code (e.g. 'fr').
- * @returns `true` if the locale is now available in `_loadedLocales`.
+ * BCP-47 REGIONAL VARIANTS (e.g. 'fr-be'):
+ *   For regional variants, this function also attempts to restore the base
+ *   language ('fr') from cache so the fallback chain fr-be → fr → en works
+ *   on the synchronous warm-start path. The return value reflects only the
+ *   requested code's availability, not the base language.
+ *
+ * @param code - BCP-47 language code (e.g. 'fr', 'fr-be', 'en-gb').
+ * @returns `true` if the locale for `code` is now available in `_loadedLocales`.
  */
 export function loadUiLocaleFromCache(code: string): boolean {
   if (code === 'en') return true;
+
+  // For regional variants (e.g. 'fr-be'), also restore the base language ('fr')
+  // from cache so the fallback chain works on the synchronous warm-start path.
+  const hyphenIdx = code.indexOf('-');
+  if (hyphenIdx > 0) {
+    const baseLang = code.slice(0, hyphenIdx);
+    if (baseLang !== 'en') loadUiLocaleFromCache(baseLang); // recursive, sync
+  }
+
   // Already freshly fetched this session — nothing to do.
   if (_loadedLocales.has(code) && !_fromCache.has(code)) return true;
   if (typeof localStorage === 'undefined') return false;
@@ -162,8 +177,37 @@ export function loadUiLocaleFromCache(code: string): boolean {
   }
 }
 
+/**
+ * Loads a UI locale file from the server and caches it.
+ *
+ * BCP-47 REGIONAL VARIANTS (e.g. 'fr-be'):
+ *   When loading a regional variant, this function also triggers a parallel
+ *   load of the base language ('fr') so the fallback chain fr-be → fr → en
+ *   works correctly. The base-language load is non-blocking (fire-and-forget)
+ *   to avoid sequential fetches.
+ *
+ * @param code - BCP-47 language code (e.g. 'fr', 'fr-be', 'en-gb').
+ */
 export async function loadUiLocale(code: string): Promise<void> {
   if (code === 'en') return;
+
+  // For REAL BCP-47 regional variants (e.g. 'fr-be', 'en-gb'), also load the
+  // base language ('fr') in parallel so the fallback chain is populated before
+  // any ui() calls. This is fire-and-forget to avoid sequential fetches.
+  //
+  // GUARD: Only trigger for strict BCP-47 format — both the language tag and
+  // the region tag must be 2–3 alphabetic characters. This prevents spurious
+  // fetches for synthetic codes like 'lc-1' (used in unit tests) which contain
+  // a digit region tag and are not valid BCP-47 regional variants.
+  const bcp47RegionalPattern = /^([a-z]{2,3})-([a-z]{2,3})$/;
+  const bcp47Match = bcp47RegionalPattern.exec(code);
+  if (bcp47Match) {
+    const baseLang = bcp47Match[1];
+    if (baseLang !== 'en') {
+      void loadUiLocale(baseLang);
+    }
+  }
+
   // Skip only if the locale was freshly fetched this session (not just from
   // cache). Cache entries are always background-refreshed so the next page
   // load benefits from up-to-date translations.
@@ -3120,6 +3164,198 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // DO NOT add 'lang.de', 'lang.fr', 'lang.es' etc. here.  Those belong
   // exclusively in their respective locale files.
   'lang.en':                      'English',
+
+  // ==========================================================================
+  // CONTENT EDITOR — LOCALIZED STRING EDITOR (LocalizedStringEditor.svelte)
+  // Strings used in the multi-language translation editor embedded inside
+  // CoreFieldsSection, ResourcePoolEditor, PsionicDataSection, ChoicesEditor.
+  // ==========================================================================
+
+  /**
+   * Short "(required)" badge shown next to the English language label.
+   * English is the mandatory fallback language — it can never be removed.
+   */
+  'editor.lang.required_hint':          'required',
+
+  /**
+   * Remove button label and aria-label for a non-English translation.
+   * {lang} = native language name (e.g. "Deutsch").
+   */
+  'editor.lang.remove_translation':     'Remove {lang} translation',
+
+  /**
+   * Placeholder option shown in the "add translation" <select> when no
+   * language has been chosen yet.
+   */
+  'editor.lang.add_translation':        '+ Add Translation',
+
+  /**
+   * Last option in the "add translation" <select> — opens NewLanguageModal
+   * so the GM can enter a language not in the premade list.
+   */
+  'editor.lang.new_language_option':    '+ New language...',
+
+  /**
+   * Shown in textarea preview mode when the translation value is empty.
+   * Generic — replaces the language-specific 'editor.core.no_description_en'
+   * and 'editor.core.no_description_fr' keys.
+   */
+  'editor.lang.no_description':         '(no translation)',
+
+  /**
+   * Warning shown below the editor when the English (fallback) field is empty.
+   * English must always have a value — the engine falls back to it when a
+   * translation is missing.
+   */
+  'editor.lang.english_required_hint':  'English is the fallback language — please add an English translation.',
+
+  /**
+   * Generic placeholder for non-English single-line label inputs.
+   * Shown when no language-specific placeholder has been provided.
+   */
+  'editor.lang.translation_placeholder': 'Translation in this language',
+
+  /**
+   * Generic placeholder for non-English multi-line description textareas.
+   */
+  'editor.lang.desc_translation_placeholder': 'Description in this language',
+
+  // ==========================================================================
+  // CONTENT EDITOR — NEW LANGUAGE MODAL (NewLanguageModal.svelte)
+  // Strings for the modal that lets GMs add brand-new languages not yet in
+  // any loaded rule file or server locale.
+  // ==========================================================================
+
+  /** Modal title. */
+  'editor.lang.new_language_title':     'Add New Language',
+
+  /**
+   * Section header for the premade language list.
+   * Prompts the GM to select from common languages.
+   */
+  'editor.lang.premade_section':        'Common Languages',
+
+  /**
+   * Title attribute on premade language buttons.
+   * {name} = native language name (e.g. "Deutsch").
+   * Double-clicking a premade button confirms immediately.
+   */
+  'editor.lang.confirm_premade_title':  'Double-click to add {name}',
+
+  /**
+   * Label on the "Add <name>" quick-confirm button shown when a premade
+   * language is selected (single-clicked).
+   * {name} = native language name.
+   */
+  'editor.lang.add_premade_btn':        'Add {name}',
+
+  /**
+   * Empty-state message in the premade list when all common languages are
+   * already present in the LocalizedString being edited.
+   */
+  'editor.lang.all_premade_added':      'All common languages are already added.',
+
+  /**
+   * Label on the horizontal divider between the premade list and the custom
+   * entry form.
+   */
+  'editor.lang.custom_section':         'Custom Language',
+
+  /**
+   * Helper text above the custom entry form.
+   * Tells the GM what to fill in for a language not in the premade list.
+   */
+  'editor.lang.custom_section_hint':    'For a language not in the list above, enter its code, native name, and flag country code manually.',
+
+  /** Field label for the language code input. */
+  'editor.lang.code_label':             'Language Code',
+
+  /**
+   * Helper text below the language code input.
+   * Explains the BCP-47 format: base code or base-region code.
+   * Examples: de, es, fr, pt-br, en-gb, fr-be
+   */
+  'editor.lang.code_hint':              'BCP-47 code — base (e.g. de, es) or region variant (e.g. en-gb, fr-be, pt-br)',
+
+  /** Placeholder for the language code input. */
+  'editor.lang.code_placeholder':       'e.g. de or en-gb',
+
+  /**
+   * Validation error shown when the language code is not a valid BCP-47 format.
+   * Valid: 2–3 letters, or 2–3 letters + hyphen + 2–3 letters (region).
+   */
+  'editor.lang.code_invalid_error':     'Must be BCP-47: 2-3 letters, or with region (e.g. de, en-gb, fr-be)',
+
+  /**
+   * Validation error shown when the language code is already present in the
+   * LocalizedString being edited.
+   * {code} = the duplicate language code.
+   */
+  'editor.lang.code_duplicate_error':   'Language "{code}" is already added',
+
+  /**
+   * Field label for the ISO 3166-1 alpha-2 country code input (flag icon).
+   */
+  'editor.lang.flag_code_label':        'Flag Country Code',
+
+  /**
+   * Helper text below the country code input.
+   * For regional variants like 'en-gb', the region part IS the country code.
+   */
+  'editor.lang.flag_code_hint':         '2-letter ISO 3166-1 country code for the flag. Auto-set from region tag (e.g. en-gb → gb).',
+
+  /** Placeholder for the country code input. */
+  'editor.lang.flag_placeholder':       'e.g. gb',
+
+  /**
+   * Field label for the native language name input.
+   * The name should be written in the language itself (e.g. "Deutsch").
+   */
+  'editor.lang.native_name_label':      'Language Name (native)',
+
+  /**
+   * Helper text below the native name input.
+   * Tells the GM to write the name in the language itself.
+   */
+  'editor.lang.native_name_hint':       'Write the name as it appears in the language itself (e.g. Deutsch, Espanol)',
+
+  /** Placeholder for the native name input. */
+  'editor.lang.name_placeholder':       'e.g. Deutsch',
+
+  /**
+   * Label on the custom-form confirm button.
+   * Becomes active once the required fields (code + name) are filled and valid.
+   */
+  'editor.lang.confirm_custom':         'Add Language',
+
+  // ==========================================================================
+  // CONTENT EDITOR — RESOURCE POOL EDITOR (ResourcePoolEditor.svelte)
+  // Label for the LocalizedStringEditor section inside a pool entry.
+  // ==========================================================================
+  /** Section label above the multilingual pool label editor. */
+  'content_editor.pool.label_legend':   'Label',
+
+  // ==========================================================================
+  // CONTENT EDITOR — CHOICES EDITOR (ChoicesEditor.svelte)
+  // Label for the LocalizedStringEditor section inside a choice entry.
+  // ==========================================================================
+  /** Section label above the multilingual choice label editor. */
+  'editor.choices.label_legend':        'Label',
+
+  // ==========================================================================
+  // CONTENT EDITOR — PSIONIC DATA SECTION (PsionicDataSection.svelte)
+  // Legend for the LocalizedStringEditor inside the augmentation effect
+  // description block.
+  // ==========================================================================
+  /** Section label above the multilingual augmentation effect description editor. */
+  'content_editor.psi.effect_desc_legend': 'Effect Description',
+
+  // ==========================================================================
+  // CONTENT EDITOR — TIERED COSTS EDITOR (TieredCostsEditor.svelte)
+  // Label for the multilingual tier label editor (replaces label_en / label_fr).
+  // The old keys (label_en, label_fr) are kept for backward-compatibility but
+  // TieredCostsEditor will be updated separately.
+  // ==========================================================================
 };
 
 // =============================================================================
@@ -3129,22 +3365,50 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
 /**
  * Resolves a UI chrome string by key for the given language.
  *
- * Resolution order:
- *   1. Loaded locale for the requested language (from /locales/{lang}.json)
- *   2. English baseline (UI_STRINGS)
- *   3. The key itself, with a console warning (for debug visibility)
+ * RESOLUTION ORDER (BCP-47 regional variant aware):
+ *   1. Exact locale for `lang`        (e.g. loaded 'fr-be.json')
+ *   2. Base language locale            (e.g. loaded 'fr.json' for 'fr-be')
+ *   3. English baseline (UI_STRINGS)   (always available, bundled at build)
+ *   4. The raw key itself              (fallback sentinel — logs a console.warn)
  *
- * For plural keys, returns the "other" form as the default.
- * Use uiN() when you have a count and need the correct plural form.
+ * The base-language step (2) implements the `fr-be → fr → en` fallback chain:
+ * a user with 'fr-be' selected gets Belgian-French overrides where available,
+ * generic French translations for the rest, and English for anything untranslated.
+ *
+ * For plural keys, returns the "other" form as the non-count-aware default.
+ * Use uiN() when you have a count and need the correct CLDR plural form.
  *
  * @example
- * ui('combat.hp.title', 'fr')  // → "Points de vie"
- * ui('combat.hp.title', 'en')  // → "Hit Points"
- * ui('combat.hp.title', 'de')  // → "Hit Points" (falls back to EN if de.json not loaded)
+ * ui('combat.hp.title', 'fr')     // → "Points de vie"
+ * ui('combat.hp.title', 'fr-be')  // → "Points de vie" (from fr.json if fr-be.json lacks it)
+ * ui('combat.hp.title', 'en')     // → "Hit Points"
+ * ui('combat.hp.title', 'de')     // → "Hit Points" (falls back to EN if de.json not loaded)
  */
 export function ui(key: string, lang: string = 'en'): string {
-  const localeEntry = lang !== 'en' ? _loadedLocales.get(lang)?.[key] : undefined;
-  const entry = localeEntry ?? UI_STRINGS[key];
+  if (lang !== 'en') {
+    // Step 1: try the exact locale (e.g. 'fr-be').
+    const exactEntry = _loadedLocales.get(lang)?.[key];
+    if (exactEntry !== undefined) {
+      if (typeof exactEntry === 'string') return exactEntry;
+      return exactEntry['other'] ?? exactEntry['one'] ?? key;
+    }
+
+    // Step 2: for regional variants (e.g. 'fr-be'), try the base language ('fr').
+    const hyphenIdx = lang.indexOf('-');
+    if (hyphenIdx > 0) {
+      const baseLang = lang.slice(0, hyphenIdx);
+      if (baseLang !== 'en') {
+        const baseEntry = _loadedLocales.get(baseLang)?.[key];
+        if (baseEntry !== undefined) {
+          if (typeof baseEntry === 'string') return baseEntry;
+          return baseEntry['other'] ?? baseEntry['one'] ?? key;
+        }
+      }
+    }
+  }
+
+  // Step 3: English baseline (always available — bundled in UI_STRINGS).
+  const entry = UI_STRINGS[key];
   if (entry === undefined) {
     console.warn(`[i18n] Missing UI string key: "${key}"`);
     return key;
@@ -3164,20 +3428,43 @@ export function ui(key: string, lang: string = 'en'): string {
  *
  * Falls back to ui(key, lang) behaviour if the value is a plain string.
  *
+ * BCP-47 REGIONAL VARIANTS:
+ *   Applies the same exact → base → English fallback chain as `ui()`.
+ *   `Intl.PluralRules` accepts regional BCP-47 codes natively (e.g.
+ *   `new Intl.PluralRules('fr-be')` selects the correct French plural forms).
+ *
  * @example
- * uiN('settings.rule_sources.files', 1,  'fr') // → "1 fichier"
- * uiN('settings.rule_sources.files', 28, 'fr') // → "28 fichiers"
- * uiN('settings.rule_sources.files', 28, 'en') // → "28 files"
+ * uiN('settings.rule_sources.files', 1,  'fr')    // → "1 fichier"
+ * uiN('settings.rule_sources.files', 28, 'fr')    // → "28 fichiers"
+ * uiN('settings.rule_sources.files', 28, 'fr-be') // → "28 fichiers" (from fr.json fallback)
+ * uiN('settings.rule_sources.files', 28, 'en')    // → "28 files"
  */
 export function uiN(key: string, count: number, lang: string = 'en'): string {
-  const localeEntry = lang !== 'en' ? _loadedLocales.get(lang)?.[key] : undefined;
-  const entry = localeEntry ?? UI_STRINGS[key];
+  // Resolve the entry using the same BCP-47 fallback chain as ui().
+  let entry: UiStringValue | undefined;
+
+  if (lang !== 'en') {
+    entry = _loadedLocales.get(lang)?.[key];
+
+    if (entry === undefined) {
+      // Regional variant: try base language.
+      const hyphenIdx = lang.indexOf('-');
+      if (hyphenIdx > 0) {
+        const baseLang = lang.slice(0, hyphenIdx);
+        if (baseLang !== 'en') entry = _loadedLocales.get(baseLang)?.[key];
+      }
+    }
+  }
+
+  entry ??= UI_STRINGS[key];
+
   if (entry === undefined) {
     console.warn(`[i18n] Missing UI string key: "${key}"`);
     return key;
   }
   if (typeof entry === 'string') return entry;
 
+  // Use the full BCP-47 code for plural rule selection — Intl handles it.
   let pr = _pluralCache.get(lang);
   if (!pr) { pr = new Intl.PluralRules(lang); _pluralCache.set(lang, pr); }
 

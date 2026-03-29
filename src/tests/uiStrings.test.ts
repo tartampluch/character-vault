@@ -677,3 +677,155 @@ describe('loadUiLocaleFromObject() — "en" is a no-op (English is always built-
     expect(enAfter).toBe(enBefore);
   });
 });
+
+// =============================================================================
+// 10. ui() — BCP-47 regional variant fallback chain
+// =============================================================================
+// Exercises the NEW behavior introduced in the multilingual content-editor sprint:
+//   ui('key', 'fr-be')  →  tries fr-be locale → tries fr locale → English baseline
+//
+// SYNTHETIC LOCALE CODES:
+//   This test uses 'af' (Afrikaans) as the base locale and 'af-na' (Afrikaans
+//   Namibia) as the regional variant. Both are real BCP-47 codes that are
+//   extremely unlikely to conflict with other test suites.
+//
+//   WHY REAL BCP-47 CODES?
+//   Synthetic codes like 'test-base-re' are problematic for two reasons:
+//   1. Intl.PluralRules() throws RangeError for non-standard tags.
+//   2. 'test-base-re'.indexOf('-') = 4, so baseLang = 'test' — NOT 'test-base'.
+//   Using 'af-na' avoids both: 'af-na' is valid BCP-47, and baseLang = 'af'.
+
+describe('ui() — BCP-47 regional variant fallback: regional → base → English', () => {
+  const AF_LOCALE    = { 'rv.ui.shared': 'AF BASE', 'rv.ui.base.only': 'AF BASE ONLY' };
+  const AF_NA_LOCALE = { 'rv.ui.shared': 'AF-NA OVERRIDE' };
+
+  beforeAll(() => {
+    loadUiLocaleFromObject('af',    AF_LOCALE);
+    loadUiLocaleFromObject('af-na', AF_NA_LOCALE);
+  });
+
+  it('returns the regional-variant override when the key exists in the regional locale', () => {
+    expect(ui('rv.ui.shared', 'af-na')).toBe('AF-NA OVERRIDE');
+  });
+
+  it('falls back to the base locale when the key is absent from the regional locale', () => {
+    // 'rv.ui.base.only' is in 'af' but NOT in 'af-na'; should fall back to 'af'.
+    expect(ui('rv.ui.base.only', 'af-na')).toBe('AF BASE ONLY');
+  });
+
+  it('falls back to English when the key is absent from both regional and base locales', () => {
+    expect(ui('login.title', 'af-na')).toBe(UI_STRINGS['login.title'] as string);
+  });
+
+  it('returns the base locale value directly when requested by its own code', () => {
+    expect(ui('rv.ui.shared', 'af')).toBe('AF BASE');
+  });
+
+  it('base locale request falls back to English for keys absent from the base locale', () => {
+    expect(ui('login.title', 'af')).toBe(UI_STRINGS['login.title'] as string);
+  });
+
+  it('completely unloaded regional variant falls back to English (no base registered)', () => {
+    // 'io-xx': 'io' (Ido) has no locale registered — falls back to English.
+    expect(ui('login.title', 'io-xx')).toBe(UI_STRINGS['login.title'] as string);
+  });
+});
+
+// =============================================================================
+// 11. uiN() — BCP-47 regional variant fallback chain
+// =============================================================================
+// Also uses 'af' / 'af-na' (Afrikaans / Afrikaans Namibia) for the same reasons
+// as §10. Intl.PluralRules('af-na') is valid and af has one/other categories.
+
+describe('uiN() — BCP-47 regional variant fallback for count-aware plural resolution', () => {
+  beforeAll(() => {
+    loadUiLocaleFromObject('af', {
+      'rv.plural.base': { one: 'AF {n} lêer', other: 'AF {n} lêers' },
+    });
+    loadUiLocaleFromObject('af-na', {
+      'rv.plural.na': { one: 'AF-NA {n} Datei', other: 'AF-NA {n} Dateien' },
+    });
+  });
+
+  it('regional variant uses the override when the plural key exists in the regional locale', () => {
+    expect(uiN('rv.plural.na', 1, 'af-na')).toBe('AF-NA 1 Datei');
+    expect(uiN('rv.plural.na', 5, 'af-na')).toBe('AF-NA 5 Dateien');
+  });
+
+  it('regional variant falls back to base locale plural when key absent from regional', () => {
+    // 'rv.plural.base' is in 'af' but NOT in 'af-na'
+    expect(uiN('rv.plural.base', 1,  'af-na')).toBe('AF 1 lêer');
+    expect(uiN('rv.plural.base', 99, 'af-na')).toBe('AF 99 lêers');
+  });
+
+  it('regional variant falls back to English plural when absent from both locales', () => {
+    expect(uiN('settings.rule_sources.files', 1, 'af-na')).toBe('file');
+    expect(uiN('settings.rule_sources.files', 5, 'af-na')).toBe('files');
+  });
+});
+
+// =============================================================================
+// 12. loadUiLocale() — BCP-47 regional variant triggers base-language pre-load
+// =============================================================================
+
+describe('loadUiLocale() — regional BCP-47 code also pre-loads base language', () => {
+  it('loading a BCP-47 regional code (fr-xx) triggers a fetch for the base code (fr)', async () => {
+    // When loadUiLocale('fr-xx') is called, it should fire a parallel (fire-and-forget)
+    // fetch for '/locales/fr.json' in addition to '/locales/fr-xx.json'.
+    // We capture all fetched URLs and verify both appear.
+    const fetchedUrls: string[] = [];
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      fetchedUrls.push(url);
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ '$meta': {} }) });
+    }));
+
+    await loadUiLocale('fr-xx');
+
+    // The regional file must be fetched:
+    expect(fetchedUrls).toContain('/locales/fr-xx.json');
+    // The base language file must also be triggered (fire-and-forget):
+    expect(fetchedUrls).toContain('/locales/fr.json');
+  });
+
+  it('loading a code without a hyphen does NOT trigger an extra base-language fetch', async () => {
+    // 'de-standalone' → only fetch '/locales/standalone.json' — wait, 'standalone'
+    // is the code. Use a 2-letter-only code ('pl-new-fetch') — hmm, that has a hyphen.
+    // Use a clean base code 'oc' (Occitan) which has no hyphen.
+    const fetchCount: Record<string, number> = {};
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      fetchCount[url] = (fetchCount[url] ?? 0) + 1;
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ '$meta': {} }) });
+    }));
+
+    await loadUiLocale('oc');
+    expect(Object.keys(fetchCount)).toHaveLength(1);
+    expect(fetchCount['/locales/oc.json']).toBe(1);
+  });
+
+  it('loading en-* regional variant does NOT trigger a fetch for "en" (English is built-in)', async () => {
+    const fetchedUrls: string[] = [];
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      fetchedUrls.push(url);
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ '$meta': {} }) });
+    }));
+
+    await loadUiLocale('en-au');
+
+    // Only the regional file should be fetched — 'en' is built-in and never loaded from server.
+    expect(fetchedUrls).toContain('/locales/en-au.json');
+    expect(fetchedUrls).not.toContain('/locales/en.json');
+  });
+
+  it('synthetic test code "lc-1" does NOT trigger an extra fetch (digit in region tag)', async () => {
+    // Regression guard for the specific case that broke the existing test:
+    // 'lc-1' has a digit region tag → strict BCP-47 guard should block the extra fetch.
+    const fetchedUrls: string[] = [];
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      fetchedUrls.push(url);
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ '$meta': {} }) });
+    }));
+
+    await loadUiLocale('lc-99'); // digit region — not valid BCP-47 regional variant
+    expect(fetchedUrls).toEqual(['/locales/lc-99.json']); // exactly one fetch
+  });
+});
