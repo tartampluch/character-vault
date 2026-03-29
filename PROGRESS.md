@@ -14,7 +14,14 @@
 6. **ZERO HARDCODING:** The engine and UI must be 100% agnostic. Never hardcode specific D&D terms (like "Fighter", "Elf", "Strength", or "Longsword") in your TypeScript logic or Svelte templates.
 7. **Checkpoint Validation Standard:** A checkpoint is only fully passed when **all issues at all severity levels** (CRITICAL, MAJOR, and MINOR) are resolved. No issue should remain open when a checkpoint is marked `[x]`.
 8. **Ask Questions Freely:** If anything is unclear — about the architecture, a requirement, or the intended behavior — ask the user for clarification or confirmation at any time, including during or after executing a prompt or checkpoint.
-9. **QUOTA MANAGEMENT & ATOMIC WORKFLOW:** To prevent mid-task interruptions due to context limits, you must operate in strict, isolated steps.
+9. **LANGUAGE-AGNOSTIC UI (CRITICAL):** The codebase is fully language-agnostic — all user-visible strings are centralized and translatable. Every new UI string MUST follow this contract without exception:
+    - **Add the English key** to `src/lib/i18n/ui-strings.ts` under the correct namespace (e.g., `'myfeature.label': 'My Label'`).
+    - **Add the French translation** to `static/locales/fr.json` with the same key (e.g., `"myfeature.label": "Mon libellé"`).
+    - **Use `ui(key, lang)` in Svelte templates** — never write literal text between HTML tags or in `aria-label`, `title`, or `placeholder` attributes (unless the content is language-neutral, e.g., `placeholder="0"` or `placeholder="∞"`).
+    - **Zero `fr:` fallbacks in code** — the `fr.json` locale file is the single source of truth for French. Inline French strings or `fr:` pattern matches in TypeScript / Svelte files are forbidden.
+    - **Zero inline French text** — accented French characters (é, è, ê, à, û, ç…) must not appear in any `.svelte` or `.ts` production file.
+    - Violation of this rule breaks internationalization for all future languages and makes the codebase language-dependent. This rule is enforced by code review and can be audited at any time with `grep -rn "[éèêëàâùûüôîïç]" src/lib`.
+10. **QUOTA MANAGEMENT & ATOMIC WORKFLOW:** To prevent mid-task interruptions due to context limits, you must operate in strict, isolated steps.
     1. **One Task at a Time:** I will prompt you with a specific sub-task (e.g., "Do Phase 1.1"). You must ONLY execute that single sub-task. Do NOT chain multiple sub-tasks together unless explicitly commanded.
     2. **The Stable State Guarantee:** Before finishing your turn, you must ensure the codebase is completely stable. There must be no unresolved imports, no dangling functions, and no TypeScript errors. If a task requires modifying 3 files, do them all in the same turn so the project compiles perfectly at the end.
     3. **The Pause & Acknowledge Protocol:** When you finish the requested sub-task, stop completely. Do not anticipate the next step. End your response by stating: _"Task [X.X] is complete and stable. Ready for the next task."_

@@ -2382,15 +2382,17 @@ Provide `label` and `description` in every language listed in `supportedLanguage
 
 English is **always required** — it is the universal fallback. Other languages are optional but should be provided if they are declared in `supportedLanguages`.
 
-**Built-in UI chrome languages** (defined in `src/lib/i18n/ui-strings.ts` → `SUPPORTED_UI_LANGUAGES`):
+**Built-in UI chrome languages:**
 
-| Code | Language | UI chrome fully translated | Unit system |
-|---|---|:---:|---|
-| `"en"` | English | ✅ | `imperial` (ft., lb.) |
-| `"fr"` | French | ✅ | `metric` (m, kg) |
-| Other codes | Community | ❌ (falls back to English) | `imperial` (default) |
+`SUPPORTED_UI_LANGUAGES` contains **only English** — it is the one language that has no server-side locale file and is always available. All other languages, including French, are runtime-discovered locale files:
 
-To add a new built-in language, edit only `ui-strings.ts`: add an entry to `SUPPORTED_UI_LANGUAGES` and translate all `UI_STRINGS` keys.
+| Code | Language | UI chrome fully translated | Unit system | How it ships |
+|---|---|:---:|---|---|
+| `"en"` | English | ✅ (bundled in `ui-strings.ts`) | `imperial` (ft., lb.) | Compile-time baseline |
+| `"fr"` | French | ✅ (`fr.json` — 1 900+ keys) | `metric` (m, kg) | `static/locales/fr.json` |
+| Other codes | Community | ❌ (falls back to English) | `imperial` (default) | Drop `{code}.json` in `static/locales/` |
+
+To add a new language: create `static/locales/{code}.json` with a valid `$meta` block and translated strings. No code change is required. The language appears in the dropdown on next server load.
 
 ### UI Chrome Locale Files
 

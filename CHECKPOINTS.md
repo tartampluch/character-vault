@@ -1335,7 +1335,13 @@ Walk through every section of `ARCHITECTURE.md` (§1–21) and verify the implem
 ## Part B: Cross-Cutting Concerns
 
 16. **Zero Hardcoding:** Scan ENTIRE codebase for hardcoded D&D terms in logic or templates (not comments or test fixtures).
-17. **i18n Completeness:** Is every user-facing string either a `LocalizedString` via `t()` or derived from Feature JSON?
+17. **i18n Completeness — Language-Agnostic UI (CRITICAL):** Verify the full i18n contract is upheld:
+    - Every user-visible string in `.svelte` and `.ts` production files uses `ui(key, lang)` or `uiN(key, count, lang)` — no literal text in HTML templates.
+    - Every key in `UI_STRINGS` (`src/lib/i18n/ui-strings.ts`) has a matching translation in `static/locales/fr.json`.
+    - Zero accented French characters (é, è, ê, à, û, ç, î, ï, ô, ù, ü) in any `.svelte` or `.ts` production file. Run: `grep -rn "[éèêëàâùûüôîïç]" src/lib --include="*.svelte" --include="*.ts"`
+    - Zero `fr:` fallback patterns in production code (only test fixtures may use bilingual `{ en: ..., fr: ... }` objects).
+    - All game content strings (feature `label`, `description`, `sourceName`, etc.) use `LocalizedString` objects via `engine.t()`.
+    - Language-neutral symbols (`placeholder="0"`, `placeholder="∞"`) are exempt from the `ui()` requirement.
 18. **Error Handling:** Does the engine handle gracefully: missing Feature JSON, unresolved formula paths, circular dependencies, invalid GM override JSON, network failures (offline mode)?
 19. **TypeScript Strictness:** Any `any` types that should be narrower? Any unsafe `as` casts?
 20. **PHP Security:** SQL injection vectors? Missing auth checks? GM data exposed to players?

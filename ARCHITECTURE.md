@@ -2424,6 +2424,23 @@ Language preference is persisted at user level (not campaign level) via `storage
 
 ### 11.6. UI Chrome Strings and Locale Files
 
+> ⚠️ **CRITICAL CODING RULE — Language-Agnostic UI**
+>
+> The codebase is **fully language-agnostic**: every user-visible string is centralized and translatable. **This rule must be respected for every new UI string without exception:**
+>
+> 1. Add the **English key** to `src/lib/i18n/ui-strings.ts` under the correct dot-namespaced key (e.g., `'myfeature.label': 'My Label'`).
+> 2. Add the **French translation** to `static/locales/fr.json` (e.g., `"myfeature.label": "Mon libellé"`).
+> 3. In Svelte templates, **always use `ui(key, lang)` or `uiN(key, count, lang)`** — never write literal text between HTML tags or in `aria-label`, `title`, or `placeholder` attributes. Exception: language-neutral symbols and digits (e.g., `placeholder="0"`, `placeholder="∞"`) do not need translation.
+> 4. **Zero `fr:` fallbacks in code** — `fr.json` is the single source of truth for French. Inline French strings or inline `fr:` pattern matches anywhere in `.svelte` or `.ts` production files are forbidden.
+> 5. **Zero inline French text** — accented French characters (é, è, ê, à, û, ç, î, ï, ô, ù, ü…) must not appear in any `.svelte` or `.ts` production file.
+>
+> **Audit command** (should return zero results for production files):
+> ```sh
+> grep -rn "[éèêëàâùûüôîïç]" src/lib --include="*.svelte" --include="*.ts"
+> ```
+>
+> Violation of this rule breaks internationalization for all future languages (Spanish, German, Italian, etc.) and makes the codebase language-dependent. See `PROGRESS.md` Guideline 9 for the complete rule.
+
 **Two-tier translation architecture:**
 
 | Tier | What | File location | Format |
@@ -2434,6 +2451,8 @@ Language preference is persisted at user level (not campaign level) via `storage
 **English baseline** is bundled at build time in `src/lib/i18n/ui-strings.ts` as `UI_STRINGS`. Every UI string must have an English entry here.
 
 **Other languages** are loaded lazily from `static/locales/{code}.json`. French ships with the app (`fr.json`). Community translators add new files; no code change is needed.
+
+**Current i18n status (verified by audit):** All 1 900+ keys in `UI_STRINGS` have matching translations in `fr.json`. Zero hardcoded display strings exist in any Svelte component or TypeScript file. Zero `fr:` fallbacks or inline French text appear in production code.
 
 #### Locale file format (`static/locales/{code}.json`)
 
@@ -3492,27 +3511,27 @@ Many fields in the editor accept either a **plain number** or a **formula string
 A compound component wrapping a standard text input with a collapsible **Source Browser** panel alongside it:
 
 ```
-┌──────────────────────────────────────────────────────┐
-│  Value  [ @attributes.stat_strength.derivedModifier + 2 ]  │
-│         ──────────────────────────────────────────── │
-│  [▼ Formula Assistant]                                │
-│  ┌──────────────────────┐                             │
-│  │ Ability Scores       │                             │
-│  │  @attributes.stat_strength.totalValue                  │
-│  │  @attributes.stat_strength.derivedModifier  ← click    │
-│  │  @attributes.stat_dexterity.totalValue       inserts at │
-│  │  ...                                   cursor     │
-│  │ Combat Stats         │                             │
-│  │  @combatStats.base_attack_bonus.totalValue                      │
-│  │  @combatStats.ac_normal.totalValue                │
-│  │  ...                                              │
-│  │ Class Levels         │                             │
-│  │  @classLevels.<classId>    (typed after click)    │
-│  │ Constants & Special  │                             │
-│  │  @characterLevel                                   │
-│  │  @eclForXp                                         │
-│  └──────────────────────┘                             │
-└──────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│  Value  [ @attributes.stat_strength.derivedModifier + 2 ]  ✓  │
+│         ─────────────────────────────────────────────────     │
+│  [▼ Formula Assistant]                                        │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │ Ability Scores                                          │  │
+│  │   @attributes.stat_strength.totalValue                  │  │
+│  │   @attributes.stat_strength.derivedModifier  ← click    │  │
+│  │   @attributes.stat_dexterity.totalValue                 │  │
+│  │   ...                                                   │  │
+│  │ Combat Stats                                            │  │
+│  │   @combatStats.base_attack_bonus.totalValue             │  │
+│  │   @combatStats.ac_normal.totalValue                     │  │
+│  │   ...                                                   │  │
+│  │ Class Levels                                            │  │
+│  │   @classLevels.<classId>    (type class ID after click) │  │
+│  │ Constants & Special                                     │  │
+│  │   @characterLevel                                       │  │
+│  │   @eclForXp                                             │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 #### Behavior

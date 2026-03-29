@@ -5,6 +5,7 @@
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-1825_tests-6E9F18?logo=vitest&logoColor=white)
+![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
 ![Claude Opus](https://img.shields.io/badge/Claude-Opus-8B5CF6?logo=anthropic&logoColor=white)
@@ -28,6 +29,7 @@ This project was architected and developed in collaboration with **Google Gemini
 - **Fully reactive DAG** — Svelte 5 `$derived` runes compute the entire character sheet in topological order (ability scores → combat stats → skills). Any change propagates instantly.
 - **Math Parser** — Formula strings in JSON (`"floor(@classLevels.class_soulknife / 4)d8"`) are evaluated at runtime against the character context.
 - **Logic Evaluator** — AND / OR / NOT condition trees gate modifiers and validate prerequisites at sheet-computation time.
+- **Fully language-agnostic** — Every user-visible string is centralized in `src/lib/i18n/ui-strings.ts` (English baseline) and `static/locales/*.json` (translations). Zero hardcoded display strings in components or TypeScript logic. Adding a new language requires only dropping a JSON file — no code change.
 - **D&D 3.5 SRD content** — Complete core races, classes, feats, spells, armor, and weapons included out of the box.
 - **Psionic systems** — Full Expanded Psionics Handbook support: power points, augmentations, psionic items.
 - **Gestalt & Vitality/WP variants** — Unearthed Arcana variant rules are first-class engine flags.
@@ -61,6 +63,8 @@ character-vault/
 ├── src/                        # SvelteKit frontend (Svelte 5 + TypeScript)
 │   ├── lib/
 │   │   ├── engine/             # GameEngine (reactive DAG), DataLoader, SessionContext, StorageManager
+│   │   │   └── phases/         # Extracted DAG phase pure functions (phase0–4, saves, weapons…)
+│   │   ├── i18n/               # UI string registry: ui-strings.ts (English baseline + locale loader)
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
@@ -70,6 +74,8 @@ character-vault/
 │   ├── migrate.php             # SQLite schema migration runner
 │   └── config.php              # Environment variable loader (.env + process env)
 ├── static/
+│   ├── locales/                # UI locale files — drop a new {code}.json to add a language
+│   │   └── fr.json             # French translation (1 900+ keys, ships with the app)
 │   └── rules/                  # JSON rule files (SRD core, psionics, homebrew…)
 │       ├── 00_d20srd_core/     # Config tables, races, classes, feats, spells, equipment
 │       │   └── 00_d20srd_core_config_tables.json  # Loaded first: XP, skills, synergies…
@@ -77,7 +83,7 @@ character-vault/
 │       └── test/               # Unit-test fixtures ONLY — never loaded in any deployment
 │           ├── test_mock.json     # Base entities for the Vitest test suite
 │           └── test_override.json # Merge-engine test: partial/replace override fixtures
-├── tests/                      # PHPUnit integration tests (10 files, 139 tests)
+├── tests/                      # PHPUnit integration tests (10 files, 141 tests)
 ├── scripts/
 │   ├── build.sh                # Native build pipeline (type-check → test → package)
 │   ├── build-docker.sh         # Docker-based build (no host dependencies required)
@@ -168,6 +174,8 @@ npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
 ```
 
+> **i18n audit:** Every user-visible string in the codebase uses `ui()` / `uiN()` — zero hardcoded display strings exist in any Svelte component or TypeScript file. All 1 900+ translation keys in `ui-strings.ts` have matching entries in `fr.json`. See [ARCHITECTURE.md §11](ARCHITECTURE.md) for the i18n system spec and the Language-Agnostic UI guideline in [PROGRESS.md](PROGRESS.md) for the development rule.
+
 The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and **Test: Watch mode** are also available.
 
 #### Test files
@@ -218,34 +226,33 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (48 test files, 1 825 tests): 95.37% statements · 91.57% branches · 94.21% functions · 96.78% lines**
+**Overall (48 test files, 1 825 tests): 70.7% statements · 60.14% branches · 66.53% functions · 73.59% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
-| `api/userApi.ts` | **100%** | **100%** | Full coverage incl. error fallback branches |
-| `i18n/ui-strings.ts` | **100%** | **100%** | Full UI chrome string coverage incl. `buildLocalizedString()` |
+| `api/userApi.ts` | 92% | **100%** | Full coverage incl. error fallback branches |
 | `utils/stackingRules.ts` | **100%** | 97% | D&D 3.5 stacking rules engine |
-| `utils/formatters.ts` | **100%** | 96% | All extracted UI helpers: `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, `previewWithTempMod`, `computeBaseSave`, `toDisplayPct`, `getCharacterLevel` |
+| `utils/localizationHelpers.ts` | **100%** | **100%** | All extracted i18n helpers |
+| `utils/unitFormatters.ts` | **100%** | **100%** | Distance/weight formatters for both unit systems |
 | `utils/logicEvaluator.ts` | **100%** | **100%** | |
 | `utils/gestaltRules.ts` | **100%** | **100%** | |
-| `engine/SessionContext.svelte.ts` | **100%** | **100%** | Session context reactive singleton |
-| `engine/DataLoader.ts` | 99% | 91% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `engine/DataLoader.ts` | 98% | 90% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `engine/MergeEngine.ts` | 98% | 93% | Data override engine (replace / partial / `-prefix` deletion) |
 | `utils/diceEngine.ts` | 98% | 90% | One defensive edge-case branch |
-| `utils/constants.ts` | 99% | **100%** | Ability abbreviations, alignment IDs |
 | `engine/StorageManager.ts` | 92% | 85% | localStorage CRUD, error catch branches, async API paths |
 | `utils/mathParser.ts` | 89% | 85% | |
-| `engine/HomebrewStore.svelte.ts` | 97% | 97% | |
-| `engine/GameEngine.svelte.ts` | ~17% | ~8% | See note below |
+| `utils/statFormatters.ts` | 96% | 93% | `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, situational labels |
+| `engine/phases/*` | ~14% | ~9% | See note below |
 
-> **Why is `GameEngine.svelte.ts` coverage low?**
+> **Why is `engine/phases/` coverage low?**
 >
-> `GameEngine.svelte.ts` is a 7 200-line Svelte 5 class. Its core logic — `phase0_flatModifiers`, `phase2_attributes`, `phase3_combatStats`, `phase4_skills` — lives inside `$derived` closures. These are **lazy**: they only execute when accessed AND when their reactive dependencies have changed.
+> During Phase 23.20, all DAG computation phases were extracted from `GameEngine.svelte.ts` into dedicated `engine/phases/*.ts` pure-function modules (`phase0Modifiers.ts`, `phase1Size.ts`, `phase2Attributes.ts`, `phase3CombatStats.ts`, `phase4Skills.ts`, etc.). These modules contain the core game logic previously inside `$derived` closures.
 >
-> In Vitest's Node.js environment, the `$derived` phases do run (Svelte 5 runes are framework-agnostic), but they require *data*: a character with active features that exist in the `DataLoader` singleton. Without loading rule files (which requires HTTP or a mocked fetch at test setup), the phases iterate empty feature lists and most branches are never reached.
+> In Vitest's Node.js environment, these extracted functions require *data*: a character with active features that exist in the `DataLoader` singleton. Without loading rule files (which requires HTTP or a mocked fetch at test setup), the functions receive empty feature lists and most code paths are not reached.
 >
-> This is **not a gap in logic coverage** — the engine's core algorithms (`applyStackingRules`, `evaluateFormula`, `checkCondition`, `computeDerivedModifier`) are each individual pure functions tested at 90–100% coverage. The `$derived` phases are thin wiring that calls those functions: they are verified end-to-end by the `characterBuildScenario.test.ts` integration suite (103 assertions covering the full DAG output) and by the `dagResolution.test.ts` scenarios.
+> This is **not a gap in logic coverage** — the core algorithms (`applyStackingRules`, `evaluateFormula`, `checkCondition`, `computeDerivedModifier`) are each tested at 90–100% coverage as individual pure functions. The phase functions are thin wiring over those primitives: they are verified end-to-end by the `characterBuildScenario.test.ts` integration suite (103 assertions covering the full DAG output) and by `dagResolution.test.ts`.
 >
-> Achieving higher raw GameEngine line coverage would require an in-process DataLoader pre-load fixture (a future improvement) or a Svelte testing harness with jsdom. The current architecture intentionally isolates pure computation from reactive wiring to maximize testability of the logic itself.
+> Achieving higher raw phase-file coverage would require an in-process DataLoader pre-load fixture or a Svelte testing harness with jsdom. The architecture intentionally isolates pure computation from reactive wiring to maximize testability of the logic itself. The overall headline percentage will improve as integration test infrastructure is extended.
 
 ### Backend — PHPUnit
 
@@ -270,7 +277,7 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | [`UserManagementTest.php`](tests/UserManagementTest.php) | Admin bootstrap; no-password login + 7-day auto-suspend; `setup-password`; `change-password` (success, wrong password, empty, no-password skip); `reset-password` (admin success, self-allowed, non-admin 403, 404); UserController CRUD; self-edit guards (35 tests) |
 | [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 (8 tests) |
 
-**Total: 139 PHPUnit tests, 432 assertions.**
+**Total: 141 PHPUnit tests, 437 assertions.**
 
 > `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock).
 

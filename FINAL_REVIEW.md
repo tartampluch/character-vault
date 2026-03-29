@@ -1,7 +1,7 @@
 # Final Review #7 — Complete System Validation
 
 **Reviewer:** Principal Software Architect  
-**Date:** 2026-03-21 (updated 2026-03-26)  
+**Date:** 2026-03-21 (updated 2026-03-29)  
 **Scope:** Full codebase — Svelte 5 + TypeScript + Tailwind CSS + PHP/SQLite  
 **Status:** RELEASE CANDIDATE — POST-ASSESSMENT PATCH APPLIED
 
@@ -10,7 +10,8 @@
 ## Patch Notes (2026-03-26)
 
 A code assessment performed after the original review found 1 CRITICAL and 4 MEDIUM issues,
-all of which have been fixed. The final test count is now 1,567 Vitest tests (up from 202).
+all of which have been fixed. The final test count grew from 202 to 1,825 Vitest tests (Phase 22–23 additions)
+and from 40 to 141 PHPUnit tests. Total: **1,966 tests**.
 
 ### CRITICAL — Fixed
 
@@ -81,6 +82,24 @@ the standard import pattern.
 - **`ANNEXES.md`**: Added Annex B.13 (`config_save_definitions`), B.14 (`config_weapon_defaults`), B.15 (`config_movement_defaults`).
 - **`CONTENT_AUTHORING_GUIDE.md`**: Clarified `ruleSource` vs `enabledRuleSources` distinction. Added complete config table reference table.
 - **`README.md`**: Updated test count badge and coverage summary (45 files, 1 594 tests).
+
+### Language-Agnostic UI Audit (2026-03-29)
+
+A full i18n audit confirmed the codebase is completely language-agnostic:
+
+- **All 1 900+ `UI_STRINGS` keys** have matching translations in `fr.json` — zero missing translations.
+- **Zero hardcoded display strings** in any `.svelte` component or `.ts` production file.
+- **Zero inline French text** (accented characters) in production files.
+- **Zero `fr:` fallbacks** in code — `fr.json` is the single source of truth for French.
+- Language-neutral symbols (`placeholder="0"`, `placeholder="∞"`) correctly exempted.
+- `SITUATIONAL_LABELS` in `statFormatters.ts`: all ~100 context keys have matching `situation.*` entries in `fr.json`; the `entry.en` field is a last-resort safety net only.
+
+**Documentation updated:**
+- **`ARCHITECTURE.md` §11.6**: Added `⚠️ CRITICAL CODING RULE` block with the full language-agnostic contract, audit command, and link to `PROGRESS.md`.
+- **`PROGRESS.md` Guideline 9**: New `LANGUAGE-AGNOSTIC UI (CRITICAL)` guideline with all five sub-rules.
+- **`PROMPT.md` Guideline 8**: Same guideline added for AI context loading.
+- **`CHECKPOINTS.md` Final Review §17**: Expanded i18n check to cover all five sub-rules.
+- **`README.md`**: Updated Vitest badge, project structure (`static/locales/`, `src/lib/i18n/`), i18n feature bullet, test counts (1 825 Vitest, 141 PHPUnit), coverage explanation updated for engine/phases extraction.
 
 ### Post-Fix Coverage Improvements (2026-03-26)
 
@@ -195,11 +214,16 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 ### 14. Zero Hardcoding
 **VALIDATED.** No hardcoded D&D terms in engine logic or template decision-making. Pipeline IDs (`stat_strength`, `combatStats.base_attack_bonus`) and config table IDs referenced in UI components are data references, not hardcoded rules.
 
-### 15. i18n Completeness
-**VALIDATED.** Full coverage:
+### 15. i18n Completeness — Language-Agnostic UI
+**VALIDATED.** The codebase is fully language-agnostic. Full audit confirmed:
 - All game data (features, spells, skills) localized via `engine.t()`
-- All UI chrome strings localized via centralized `src/lib/i18n/ui-strings.ts` registry (~250 strings with English and French translations)
-- `ui(key, engine.settings.language)` pattern throughout components
+- All 1 900+ UI chrome strings centralized in `src/lib/i18n/ui-strings.ts` (English baseline) — `ui(key, engine.settings.language)` pattern throughout all components
+- All 1 900+ keys in `UI_STRINGS` have matching translations in `static/locales/fr.json` — zero missing translations
+- Zero hardcoded display strings in any `.svelte` component or `.ts` production file
+- Zero `fr:` translation fallbacks in code — `fr.json` is the single source of truth for French
+- Zero inline French text (accented characters) in any production file (test fixtures excepted)
+- Language-neutral placeholders (`placeholder="0"`, `placeholder="∞"`) correctly exempted — no translation needed
+- Adding a new language requires only dropping a `static/locales/{code}.json` file — zero code changes
 
 ### 16. Error Handling
 **VALIDATED.** Graceful degradation for: missing Feature JSON (returns undefined, UI shows fallback), unresolved formula paths (returns 0, logs warning), circular dependencies (depth counter cuts at 3), invalid JSON in GM overrides (syntax error highlighted), network failures (localStorage fallback).
@@ -223,7 +247,9 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 
 ## Part D: Test Coverage
 
-**202 Vitest tests passing** across 7 files + **40 PHPUnit tests** across 5 files = **242 total tests**.
+**1 825 Vitest tests passing** across 48 files + **141 PHPUnit tests** across 10 files = **1 966 total tests**.
+
+> _Note: The original review counted 202 Vitest tests (7 files) and 40 PHPUnit tests (5 files) = 242 total. Phases 22–23 expanded the suites substantially. The table below reflects the core files from the original review; see `README.md` for the complete current test file listing._
 
 | Test File | Tests | Coverage |
 |-----------|-------|----------|
@@ -273,13 +299,16 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 | Check | Result |
 |---|---|
 | `svelte-check --threshold warning` | **0 errors, 0 warnings** |
-| `npm test` (Vitest) | **202 tests passed** across 7 files |
+| `npm test` (Vitest) | **1 825 tests passed** across 48 files |
+| `./vendor/bin/phpunit` | **141 tests, 437 assertions** across 10 files |
 | TypeScript `any` scan | **0** `any` types in production code |
 | Emoji scan (`*.svelte`) | **0** emoji characters in rendered UI |
 | Route validation (Architecture section 20) | All 6 required routes present |
 | PHP SQL injection scan | **0** string-concatenated queries |
-| Total tests (Vitest + PHPUnit) | **242 tests** |
-| i18n coverage | **Full** — all UI chrome + all game data localized |
+| Total tests (Vitest + PHPUnit) | **1 966 tests** |
+| i18n coverage | **Fully language-agnostic** — all 1 900+ UI chrome keys translated; zero hardcoded strings; zero inline French text; zero `fr:` fallbacks |
+| Inline French text audit | **0** accented characters in `.svelte`/`.ts` production files |
+| Hardcoded UI string audit | **0** literal text in HTML templates; all strings use `ui()` / `uiN()` |
 
 ---
 
@@ -302,12 +331,12 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 | Data Override Engine (Section 18) | Fully conformant |
 | Polling & Routes (Sections 19-20) | Fully conformant |
 | Zero Hardcoding | No violations |
-| i18n Completeness | Full coverage (game data + UI chrome) |
+| i18n Completeness | **Fully language-agnostic** — 1 900+ keys, zero hardcoded strings, zero inline French |
 | Error Handling | Graceful degradation |
 | TypeScript Strictness | Zero errors, zero warnings, zero `any` |
 | PHP Security | No vulnerabilities |
 | Config Tables (Annex B) | All 13 present and loadable |
-| Test Coverage | 242 tests passing |
+| Test Coverage | **1 966 tests** passing (1 825 Vitest + 141 PHPUnit) |
 | Tailwind CSS Migration | Complete |
 | Theme System | 3-state with FOWT prevention |
 | Lucide Icons | All emoji replaced |
