@@ -5,7 +5,7 @@
  * Extracted from constants.ts. Import from constants.ts (barrel) for backward compatibility.
  */
 
-import { UI_STRINGS } from '../i18n/ui-strings';
+import { UI_STRINGS, buildLocalizedString } from '../i18n/ui-strings';
 
 /** UI string key for the "Synergy" modifier source label. */
 export const SYNERGY_SOURCE_LABEL_KEY = 'modifier.synergy' as const;
@@ -16,7 +16,7 @@ export const SYNERGY_SOURCE_LABEL_KEY = 'modifier.synergy' as const;
  */
 export const SYNERGY_SOURCE_LABEL = {
   get en() { return UI_STRINGS[SYNERGY_SOURCE_LABEL_KEY] as string; },
-  get fr() { return 'Synergie'; },
+  get fr() { return buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY).fr ?? UI_STRINGS[SYNERGY_SOURCE_LABEL_KEY] as string; },
 } as const;
 
 /** Feature ID for the encumbered condition (defined in rule files). */

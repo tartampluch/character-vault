@@ -370,7 +370,7 @@
               <FormulaBuilderInput
                 id={fid(`rech-${i}`)}
                 value={pool.rechargeAmount ?? 1}
-                placeholder="e.g. 1, 2, @classLevels.class_druid"
+                placeholder={ui('content_editor.pool.recharge_formula_placeholder', lang)}
                 onValueChanged={(v) => {
                   const asNum = Number(v);
                   patchPool(i, {

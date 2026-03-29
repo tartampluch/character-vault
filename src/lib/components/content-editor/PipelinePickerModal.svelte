@@ -327,7 +327,7 @@
             id="custom-pipeline-id"
             type="text"
             class="input flex-1 font-mono text-sm"
-            placeholder="e.g. resources.shadow_points"
+            placeholder={ui('editor.pipeline_picker.custom_id_placeholder', lang)}
             bind:value={customPipelineId}
             autocomplete="off"
             spellcheck="false"

@@ -149,7 +149,7 @@
             </label>
             <input id={fid('wand-sl')} type="number" class="input text-xs" min="1" max="9"
                    value={ws.spellLevel ?? ''}
-                   placeholder="blank = base level"
+                   placeholder={ui('editor.charged.wand_spell_level_placeholder', lang)}
                    oninput={(e) => {
                      const v = (e.currentTarget as HTMLInputElement).value.trim();
                      ws.spellLevel = v ? parseInt(v) : undefined;

@@ -281,7 +281,7 @@
       <FormulaBuilderInput
         id="mod-val-{modifier.id}"
         value={modifier.value}
-        placeholder="e.g. 2, -1, @attributes.stat_strength.derivedModifier"
+        placeholder={ui('editor.modifier.value_placeholder', lang)}
         onValueChanged={(v) => {
           const asNum = Number(v);
           patch({ value: (!isNaN(asNum) && v.trim() !== '') ? asNum : v });
@@ -305,7 +305,7 @@
         type="text"
         class="input text-xs font-mono"
         value={modifier.situationalContext ?? ''}
-        placeholder="e.g. orc, flanking, vs_enchantment  (match against roll target tags)"
+        placeholder={ui('editor.modifier.situational_placeholder', lang)}
         oninput={(e) => {
           const v = (e.currentTarget as HTMLInputElement).value.trim();
           patch({ situationalContext: v || undefined });

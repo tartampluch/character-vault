@@ -191,7 +191,7 @@
         </label>
         <input id={fid('ii-lang')} type="text" class="input text-sm"
                value={(id.languages ?? []).join(', ')}
-               placeholder="e.g. Common, Elvish, Draconic"
+               placeholder={ui('editor.intelligent.languages_placeholder', lang)}
                oninput={(e) => {
                  id.languages = (e.currentTarget as HTMLInputElement).value
                    .split(',').map(s => s.trim()).filter(Boolean);
@@ -206,7 +206,7 @@
           </label>
           <input id={fid('ii-sp')} type="text" class="input text-sm"
                  value={id.specialPurpose ?? ''}
-                 placeholder="e.g. Defeat arcane spellcasters"
+                 placeholder={ui('editor.intelligent.special_purpose_placeholder', lang)}
                  oninput={(e) => {
                    id.specialPurpose = (e.currentTarget as HTMLInputElement).value || null;
                    if(!egoManualOverride) id.egoScore = autoEgo;
@@ -216,7 +216,7 @@
           <label for={fid('ii-dp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.intelligent.dedicated_power_label', lang)}</label>
           <input id={fid('ii-dp')} type="text" class="input text-sm"
                  value={id.dedicatedPower ?? ''}
-                 placeholder="e.g. Cast lightning bolt 10d6"
+                 placeholder={ui('editor.intelligent.dedicated_power_placeholder', lang)}
                  oninput={(e) => {
                    id.dedicatedPower = (e.currentTarget as HTMLInputElement).value || null;
                    if(!egoManualOverride) id.egoScore = autoEgo;

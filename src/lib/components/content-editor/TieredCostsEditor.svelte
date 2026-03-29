@@ -150,7 +150,7 @@
             type="text"
             class="input font-mono text-xs"
             value={tier.targetPoolId}
-            placeholder="e.g. charges"
+            placeholder={ui('editor.tiered_costs.pool_id_placeholder', lang)}
             oninput={(e) => patchTier(i, { targetPoolId: (e.currentTarget as HTMLInputElement).value })}
             autocomplete="off"
             spellcheck="false"
@@ -166,7 +166,7 @@
           <FormulaBuilderInput
             id={fid(`tier-cost-${i}`)}
             value={tier.cost}
-            placeholder="e.g. 1, 2, 3"
+            placeholder={ui('editor.tiered_costs.cost_placeholder', lang)}
             onValueChanged={(v) => {
               const asNum = Number(v);
               patchTier(i, { cost: (!isNaN(asNum) && v.trim() !== '') ? asNum : v });

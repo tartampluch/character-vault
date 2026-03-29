@@ -549,6 +549,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.hp.temp_amount_aria':   'Temporary HP amount',
   'combat.hp.add_temp_aria':      'Add temporary HP',
   'combat.hp.current_aria':       'Current HP',
+  'combat.hp.bar_aria':           'HP: {current} / {max}',
   'combat.hp.unknown':            'Unknown',
   'combat.hp.dead':               'Dead',
   'combat.hp.dying':              'Dying',
@@ -568,6 +569,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'combat.xp.add_aria':           'XP to add',
   'combat.xp.award_aria':         'Award XP',
   'combat.xp.level_up_aria':      'Level Up',
+  'combat.xp.bar_aria':           'XP: {pct}% to next level (ECL {ecl})',
   'combat.xp.config_hint':        'Load config_xp_thresholds for accurate XP thresholds.',
 
   // ==========================================================================
@@ -1357,6 +1359,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'content_editor.psi.not_set':             '— Not set',
   'content_editor.psi.base_pp_cost_label':  'Base PP Cost',
   'content_editor.psi.base_pp_cost_desc':   'Power points spent per manifestation (1–17).',
+  /** Placeholder for the base PP cost input. */
+  'content_editor.psi.base_pp_cost_placeholder': 'e.g. 1',
   'content_editor.psi.displays_legend':     'Displays (sensory effects on manifestation)',
   'content_editor.psi.augmentations_title': 'Augmentations',
   'content_editor.psi.add_augmentation':    '+ Add Augmentation',
@@ -1398,6 +1402,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'content_editor.pool.max_pipeline_title':        'Click to pick the pipeline that defines the maximum charges',
   'content_editor.pool.reset_condition_label':     'Reset Condition',
   'content_editor.pool.recharge_amount_label':     'Recharge Amount',
+  /** Placeholder for the recharge amount formula input. */
+  'content_editor.pool.recharge_formula_placeholder': 'e.g. 1, 2, @classLevels.class_druid',
   /** Shown next to the recharge amount field when resetCondition === 'per_turn'. */
   'content_editor.pool.recharge_restored_turn':    '(restored each turn)',
   /** Shown next to the recharge amount field when resetCondition === 'per_round'. */
@@ -1742,6 +1748,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'content_editor.lib.scope_global':         'Global',
   'content_editor.lib.scope_global_hint':    'Stored as a JSON file on the server (shared across campaigns)',
   'content_editor.lib.filename_label':       'Filename',
+  /** Placeholder for the homebrew JSON filename input. */
+  'content_editor.lib.filename_placeholder': '50_homebrew.json',
   'content_editor.lib.saving':               'Saving…',
   'content_editor.lib.unsaved':              'Unsaved changes',
   'content_editor.lib.saved':                'Saved',
@@ -1881,9 +1889,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CONTENT EDITOR — CORE FIELDS SECTION (CoreFieldsSection.svelte)
   // ==========================================================================
-  'editor.core.entity_id_label':           'Entity ID',
-  'editor.core.entity_id_kebab_hint':      '(kebab-case)',
-  'editor.core.entity_id_desc':            'Must be unique across all loaded rule sources. Use the feature\'s ID as one of its tags so prerequisite chains can reference it.',
+   'editor.core.entity_id_label':           'Entity ID',
+   'editor.core.entity_id_kebab_hint':      '(kebab-case)',
+   'editor.core.entity_id_desc':            'Must be unique across all loaded rule sources. Use the feature\'s ID as one of its tags so prerequisite chains can reference it.',
+   /** Placeholder for the entity ID input field. */
+   'editor.core.entity_id_placeholder':     'e.g. feat_power_attack, race_half_orc_variant',
   'editor.core.category_label':            'Category',
   'editor.core.category_desc':             'Determines which specialised sub-form sections are shown below, and how the DataLoader routes feature queries.',
   'editor.core.label_legend':              'Label',
@@ -1894,8 +1904,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.core.no_description_en':         '(no description)',
   'editor.core.no_description_fr':         '(pas de description)',
   'editor.core.desc_preview_aria':         '{lang} description preview',
-  'editor.core.rule_source_label':         'Rule Source',
-  'editor.core.rule_source_desc':          'Controls which campaigns can use this entity. Leave as user_homebrew for campaign-scoped homebrew — it is always active and never filtered out.',
+   'editor.core.rule_source_label':         'Rule Source',
+   'editor.core.rule_source_desc':          'Controls which campaigns can use this entity. Leave as user_homebrew for campaign-scoped homebrew — it is always active and never filtered out.',
+   /** Placeholder for the rule source input field. */
+   'editor.core.rule_source_placeholder':   'user_homebrew',
   'editor.core.tags_label':                'Tags',
   'editor.core.add_tags_btn':              '+ Add Tags',
   'editor.core.tags_convention_hint':      'Convention: include this entity\'s own ID as a tag so prerequisites can reference it via has_tag.',
@@ -1940,10 +1952,14 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.magic.divine_hint':               'WIS based, no ASF',
   'editor.magic.psionic_label':             'Psionic',
   'editor.magic.psionic_hint':              'PP based, no verbal/somatic components',
-  'editor.magic.school_label':              'School',
-  'editor.magic.school_psionic_hint':       '(legacy display text — use Discipline below)',
-  'editor.magic.select_school':             '— Select school',
-  'editor.magic.sub_school_label':          'Sub-school / Sub-discipline',
+   'editor.magic.school_label':              'School',
+   'editor.magic.school_psionic_hint':       '(legacy display text — use Discipline below)',
+   /** Placeholder for the psionic school input when type is psionic. */
+   'editor.magic.school_psionic_placeholder':'e.g. clairsentience',
+   'editor.magic.select_school':             '— Select school',
+   'editor.magic.sub_school_label':          'Sub-school / Sub-discipline',
+   /** Placeholder for the sub-school input field. */
+   'editor.magic.sub_school_placeholder':    'e.g. summoning, calling, charm',
   'editor.magic.spell_components_legend':   'Spell Components',
   'editor.magic.comp_v_label':              'V — Verbal',
   'editor.magic.comp_v_hint':               'Requires incantation',
@@ -1973,8 +1989,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.activation.resource_pool_id_label':    'Resource Pool ID',
   'editor.activation.click_to_pick_pool':        'Click to pick pool pipeline…',
   'editor.activation.click_to_pick_pool_title':  'Click to pick a resource pool pipeline',
-  'editor.activation.cost_per_use_label':        'Cost per use',
-  'editor.activation.action_standard_label':     'Standard Action',
+   'editor.activation.cost_per_use_label':        'Cost per use',
+   /** Placeholder for the cost per use formula input. */
+   'editor.activation.cost_per_use_placeholder':  'e.g. 1, 2, @attributes.stat_charisma.derivedModifier',
+   'editor.activation.action_standard_label':     'Standard Action',
   'editor.activation.action_standard_hint':      '1 per round — most activated abilities',
   'editor.activation.action_move_label':         'Move Action',
   'editor.activation.action_move_hint':          'e.g. guided movement, swift draw',
@@ -2012,9 +2030,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.modifier.change_pipeline_btn':         'Change',
   'editor.modifier.type_label':                  'Type',
   'editor.modifier.click_to_change_type_title':  'Click to change modifier type',
-  'editor.modifier.value_label':                 'Value',
-  'editor.modifier.situational_label':           'Situational Context',
-  'editor.modifier.situational_hint':            '(optional — routes to situational modifiers, applied at roll time)',
+   'editor.modifier.value_label':                 'Value',
+   /** Placeholder for the modifier value / formula input. */
+   'editor.modifier.value_placeholder':           'e.g. 2, -1, @attributes.stat_strength.derivedModifier',
+   'editor.modifier.situational_label':           'Situational Context',
+   'editor.modifier.situational_hint':            '(optional — routes to situational modifiers, applied at roll time)',
+   /** Placeholder for the situational context tag list input. */
+   'editor.modifier.situational_placeholder':     'e.g. orc, flanking, vs_enchantment',
   'editor.modifier.condition_label':             'Condition (sheet-time gate)',
   'editor.modifier.condition_optional_hint':     '(optional — if false, modifier is ignored)',
   'editor.modifier.edit_condition_btn':          'Edit…',
@@ -2122,6 +2144,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.pipeline_picker.custom_id_aria':       'Custom pipeline ID',
   'editor.pipeline_picker.use_this_id_btn':      'Use this ID',
   'editor.pipeline_picker.invalid_id_error':     'Pipeline IDs cannot contain spaces or start with "@".',
+  /** Placeholder for the custom pipeline ID input field. */
+  'editor.pipeline_picker.custom_id_placeholder': 'e.g. resources.shadow_points',
 
   // ==========================================================================
   // CONTENT EDITOR — ENTITY FORM (EntityForm.svelte)
@@ -2178,7 +2202,13 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.choices.prefix_engine_hint':         'When set, the engine emits <prefix><selectedId> as an active tag for each selection.',
   'editor.choices.prefix_convention_hint':     'Needed for parameterized prerequisites (Weapon Focus (X), Spell Focus (school)). Convention: end with _ and mirror this feat\'s ID.',
   /** Appended to the sample list when more results exist. {n} = overflow count. */
-  'editor.choices.sample_more':                '+{n} more…',
+   'editor.choices.sample_more':                '+{n} more…',
+   /** Placeholder for the choice ID input field. */
+   'editor.choices.choice_id_placeholder':       'e.g. weapon_choice, domain_1',
+   /** Placeholder for the options query filter input. */
+   'editor.choices.query_filter_placeholder':    'e.g. tag:weapon  or  category:domain  or  tag:weapon+tag:martial',
+   /** Placeholder for the choice granted tag prefix input. */
+   'editor.choices.prefix_placeholder':          'e.g. feat_weapon_focus_',
 
   // ==========================================================================
   // CONTENT EDITOR — LEVEL PROGRESSION EDITOR (LevelProgressionEditor.svelte)
@@ -2261,8 +2291,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.item.artifact_tier_hint':            '(optional — leave blank for non-artifacts)',
   'editor.item.consumable_section':            'Consumable (potion, oil, single-use scroll)',
   'editor.item.consumable_hint':               'When the player uses this item, it is consumed (removed from inventory) and its grantedModifiers become active as an ephemeral effect the player can expire manually.',
-  'editor.item.duration_hint_label':           'Duration Hint',
-  'editor.item.duration_hint_optional':        '(optional — purely cosmetic)',
+   'editor.item.duration_hint_label':           'Duration Hint',
+   'editor.item.duration_hint_optional':        '(optional — purely cosmetic)',
+   /** Placeholder for the consumable item duration hint input. */
+   'editor.item.duration_placeholder':          'e.g. 3 min, 10 rounds, 1 hour',
   'editor.item.consumable_empty':              'Enable for potions, oils, and single-use scrolls that are destroyed on use. Charged items (wands, rods, rings) use Resource Pools instead — they are not consumed.',
   'editor.item.slot_none_option':              '— (none / carry in inventory)',
   'editor.item.slot_head':                     'Head',
@@ -2353,6 +2385,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.charged.wand_caster_level_label':    'Caster Level',
   'editor.charged.wand_spell_level_label':     'Spell Level override',
   'editor.charged.wand_heightened_hint':       '(heightened only)',
+  'editor.charged.wand_spell_level_placeholder': 'blank = base level',
   'editor.charged.wand_click_to_pick':         'Click to pick spell…',
   'editor.charged.staff_label':                'Staff (multiple spells, wielder CL, charge-based)',
   'editor.charged.charges_label':              'Charges',
@@ -2471,10 +2504,14 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.tiered_costs.edit_modifiers_btn':    'Edit modifiers',
   'editor.tiered_costs.add_modifiers_btn':     '+ Add modifiers',
   'editor.tiered_costs.add_tier_btn':          '+ Add Tier',
-  /** Placeholder for EN tier label input. */
-  'editor.tiered_costs.label_en_placeholder':  'e.g. 2 Charges: 2d6 damage',
-  /** Placeholder for FR tier label input. */
-  'editor.tiered_costs.label_fr_placeholder':  'ex. 2 Charges : 2d6 dégâts',
+   /** Placeholder for EN tier label input. */
+   'editor.tiered_costs.label_en_placeholder':  'e.g. 2 Charges: 2d6 damage',
+   /** Placeholder for FR tier label input. */
+   'editor.tiered_costs.label_fr_placeholder':  'ex. 2 Charges : 2d6 dégâts',
+   /** Placeholder for the tier pool ID input. */
+   'editor.tiered_costs.pool_id_placeholder':   'e.g. charges',
+   /** Placeholder for the tier charge cost formula input. */
+   'editor.tiered_costs.cost_placeholder':      'e.g. 1, 2, 3',
 
   // ==========================================================================
   // CONTENT EDITOR — GRANTED FEATURES EDITOR (GrantedFeaturesEditor.svelte)
@@ -2554,12 +2591,16 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.intelligent.lesser_powers_hint':     '(+1 Ego each)',
   'editor.intelligent.greater_powers_label':   'Greater Powers',
   'editor.intelligent.greater_powers_hint':    '(+2 Ego each)',
-  'editor.intelligent.languages_label':        'Languages',
-  'editor.intelligent.languages_hint':         '(comma-separated)',
-  'editor.intelligent.special_purpose_label':  'Special Purpose',
-  'editor.intelligent.special_purpose_hint':   '(+4 Ego if set)',
-  'editor.intelligent.dedicated_power_label':  'Dedicated Power',
-  'editor.intelligent.empty_hint':             'Enable for sentient magic items (intelligent swords, orbs of dragonkind, etc.).',
+   'editor.intelligent.languages_label':        'Languages',
+   'editor.intelligent.languages_hint':         '(comma-separated)',
+   /** Placeholder for the intelligent item languages input. */
+   'editor.intelligent.languages_placeholder':  'e.g. Common, Elvish, Draconic',
+   'editor.intelligent.special_purpose_label':       'Special Purpose',
+  'editor.intelligent.special_purpose_hint':        '(+4 Ego if set)',
+  'editor.intelligent.special_purpose_placeholder': 'e.g. Defeat arcane spellcasters',
+  'editor.intelligent.dedicated_power_label':       'Dedicated Power',
+  'editor.intelligent.dedicated_power_placeholder': 'e.g. Cast lightning bolt 10d6',
+  'editor.intelligent.empty_hint':                  'Enable for sentient magic items (intelligent swords, orbs of dragonkind, etc.).',
 
   // ==========================================================================
   // CONTENT EDITOR — TAG PICKER MODAL (TagPickerModal.svelte)
@@ -2579,6 +2620,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.tag_picker.feature_uses_tag':        '{n} feature{s} use this tag',
   'editor.tag_picker.custom_section_title':    'Add a custom tag',
   'editor.tag_picker.custom_section_desc':     'Type a new tag not yet in the pool. Use snake_case (no spaces). Example: weapon_exotic.',
+  /** Placeholder for the custom tag input field. */
+  'editor.tag_picker.new_tag_placeholder':     'e.g. weapon_exotic',
   'editor.tag_picker.custom_tag_aria':         'Custom tag',
   'editor.tag_picker.spaces_error':            'Tags cannot contain spaces — use snake_case instead.',
   'editor.tag_picker.already_selected':        'This tag is already selected.',
@@ -2725,6 +2768,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   /** aria-label for the "remove language" button. {name} = language name. */
   'lore.remove_language_aria':          'Remove {name}',
+  /** aria-label for the bonus-language slot counter. {n} = remaining slot count. */
+  'lore.language_slots_remaining_aria': '{n} language slots remaining',
+  /** aria-label for an automatic (locked) language badge. {name} = language name. */
+  'lore.lang_badge_automatic_aria':     '{name} (automatic)',
+  /** aria-label for a removable (manually-learned) language badge. {name} = language name. */
+  'lore.lang_badge_removable_aria':     '{name} (removable)',
 
   // ==========================================================================
   // INVENTORY — ENCUMBRANCE

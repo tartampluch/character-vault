@@ -49,7 +49,7 @@ import type { CharacterContext } from '../utils/mathParser';
 import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRules';
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
 import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS, getAbilityAbbr, ATTRIBUTE_PIPELINE_NAMESPACE, CONDITION_ENCUMBERED_FEATURE_ID, CONDITION_ENCUMBERED_INSTANCE_ID, WEAPON_CATEGORY_TAG, RANGED_CATEGORY_TAG } from '../utils/constants';
-import { buildLocalizedString, ui } from '../i18n/ui-strings';
+import { buildLocalizedString, ui, UI_STRINGS } from '../i18n/ui-strings';
 import { storageManager, debounce } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
 import { MAX_RESOLUTION_DEPTH } from '../types/engine';
@@ -164,7 +164,7 @@ export class GameEngine {
   });
 
   /** The currently active character. Replacing this triggers full DAG re-evaluation. */
-  character = $state<Character>(createEmptyCharacter('default', 'New Character'));
+  character = $state<Character>(createEmptyCharacter('default', UI_STRINGS['vault.default_char_name'] as string));
 
   /** The URL-based character ID (may differ from character.id during load). */
   activeCharacterId = $state<ID | null>(null);

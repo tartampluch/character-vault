@@ -255,7 +255,7 @@
             id="custom-tag"
             type="text"
             class="input flex-1 font-mono text-sm"
-            placeholder="e.g. weapon_exotic"
+            placeholder={ui('editor.tag_picker.new_tag_placeholder', lang)}
             bind:value={customTag}
             autocomplete="off"
             spellcheck="false"

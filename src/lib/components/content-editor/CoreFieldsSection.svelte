@@ -194,7 +194,7 @@
       type="text"
       class="input font-mono {hasOverride ? 'border-amber-600/60 focus:ring-amber-500/40' : ''}"
       value={ctx.feature.id}
-      placeholder="e.g. feat_power_attack, race_half_orc_variant"
+      placeholder={ui('editor.core.entity_id_placeholder', lang)}
       oninput={(e) => { ctx.feature.id = (e.currentTarget as HTMLInputElement).value; }}
       autocomplete="off"
       spellcheck="false"
@@ -349,7 +349,7 @@
       type="text"
       class="input font-mono text-sm"
       value={ctx.feature.ruleSource}
-      placeholder="user_homebrew"
+      placeholder={ui('editor.core.rule_source_placeholder', lang)}
       oninput={(e) => { ctx.feature.ruleSource = (e.currentTarget as HTMLInputElement).value || 'user_homebrew'; }}
       autocomplete="off"
       spellcheck="false"
@@ -403,7 +403,7 @@
     <div class="flex items-center justify-between">
       <span class="text-sm font-semibold text-text-primary">
         {ui('editor.core.forbidden_tags_label', lang)}
-        <span class="ml-1 text-xs font-normal text-text-muted">{ui('editor.core.merge_replace_desc', lang).includes('(optional)') ? '(optional)' : ''}</span>
+        <span class="ml-1 text-xs font-normal text-text-muted">{ui('editor.choices.prefix_optional', lang)}</span>
       </span>
       <button
         type="button"

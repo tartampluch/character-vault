@@ -140,7 +140,7 @@
       <!-- Slot counter — always below the divider to avoid vertical misalignment -->
       <span
         class="text-xs {remainingSlots === 0 && bonusLanguageSlots > 0 ? 'text-green-500 dark:text-green-400' : 'text-text-muted'}"
-        aria-label="{remainingSlots} language slots remaining"
+        aria-label={ui('lore.language_slots_remaining_aria', lang).replace('{n}', String(remainingSlots))}
       >
         {#if bonusLanguageSlots > 0}
           {ui('lore.bonus_slots', lang).replace('{used}', String(manualCount)).replace('{total}', String(bonusLanguageSlots))}
@@ -155,7 +155,7 @@
           <span class="text-xs text-text-muted uppercase tracking-wider">{ui('lore.automatic', lang)}</span>
           <div class="flex flex-wrap gap-1">
             {#each languages.automatic as lang_entry}
-              <span class="badge-green flex items-center gap-1" aria-label="{lang_entry.name} (automatic)">
+              <span class="badge-green flex items-center gap-1" aria-label={ui('lore.lang_badge_automatic_aria', lang).replace('{name}', lang_entry.name)}>
                 {lang_entry.name}
                 <IconLocked size={10} aria-hidden="true" class="opacity-60" />
               </span>
@@ -170,7 +170,7 @@
           <span class="text-xs text-text-muted uppercase tracking-wider">{ui('lore.learned', lang)}</span>
           <div class="flex flex-wrap gap-1">
             {#each languages.manual as lang_entry}
-              <span class="badge-accent flex items-center gap-1" aria-label="{lang_entry.name} (removable)">
+              <span class="badge-accent flex items-center gap-1" aria-label={ui('lore.lang_badge_removable_aria', lang).replace('{name}', lang_entry.name)}>
                 {lang_entry.name}
                 <button
                   class="text-accent-700 dark:text-accent-300 hover:text-red-500 transition-colors duration-100"

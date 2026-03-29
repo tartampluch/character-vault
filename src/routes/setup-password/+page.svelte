@@ -105,7 +105,7 @@
 </script>
 
 <svelte:head>
-  <title>{ui('setup_password.subtitle', lang)} — Character Vault</title>
+  <title>{ui('setup_password.subtitle', lang)} — {ui('app.title', lang)}</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center px-4 bg-background">

@@ -256,7 +256,7 @@
               <FormulaBuilderInput
                 id={fid('rc-cost')}
                 value={act.resourceCost?.cost ?? 1}
-                placeholder="e.g. 1, 2, @attributes.stat_charisma.derivedModifier"
+                placeholder={ui('editor.activation.cost_per_use_placeholder', lang)}
                 onValueChanged={(v) => {
                   const asNum = Number(v);
                   const cost = (!isNaN(asNum) && v.trim() !== '') ? asNum : v;

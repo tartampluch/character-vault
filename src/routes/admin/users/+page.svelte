@@ -195,7 +195,7 @@
 </script>
 
 <svelte:head>
-  <title>{ui('admin.users.title', lang)} — Character Vault</title>
+  <title>{ui('admin.users.title', lang)} — {ui('app.title', lang)}</title>
 </svelte:head>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">

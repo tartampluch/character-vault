@@ -391,7 +391,7 @@
   );
 
   /** Current page title: the last breadcrumb segment. */
-  const pageTitle = $derived(breadcrumbs[breadcrumbs.length - 1] ?? 'Character Vault');
+  const pageTitle = $derived(breadcrumbs[breadcrumbs.length - 1] ?? ui('app.title', engine.settings.language));
 
   /** Ancestor breadcrumbs: all segments except the last. */
   const ancestorCrumbs = $derived(breadcrumbs.slice(0, -1));

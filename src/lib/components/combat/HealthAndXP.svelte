@@ -204,7 +204,7 @@
       aria-valuenow={currentHp}
       aria-valuemin={-100}
       aria-valuemax={maxHp}
-      aria-label="HP: {currentHp} / {maxHp}"
+      aria-label={ui('combat.hp.bar_aria', engine.settings.language).replace('{current}', String(currentHp)).replace('{max}', String(maxHp))}
     >
       <!-- Temp HP overlay (right-aligned, semi-transparent green) -->
       {#if tempHp > 0}
@@ -422,7 +422,7 @@
       aria-valuenow={xpIntoLevel}
       aria-valuemin={0}
       aria-valuemax={xpNeeded}
-      aria-label="XP: {xpPercent.toFixed(0)}% to next level (ECL {eclForXp})"
+      aria-label={ui('combat.xp.bar_aria', engine.settings.language).replace('{pct}', xpPercent.toFixed(0)).replace('{ecl}', String(eclForXp))}
     >
       <div class="progress-bar__fill"></div>
     </div>

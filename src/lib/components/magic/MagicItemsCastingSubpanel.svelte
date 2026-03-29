@@ -50,7 +50,9 @@
    * Returns a localised reason string for why a scroll cannot be cast.
    */
   function scrollWrongTypeReason(spellType: 'arcane' | 'divine'): string {
-    return ui('magic.scroll.wrong_type', engine.settings.language).replace('{type}', spellType);
+    const lang = engine.settings.language;
+    const localizedType = ui(`magic.type.${spellType}`, lang);
+    return ui('magic.scroll.wrong_type', lang).replace('{type}', localizedType);
   }
 
   let modalSpellId = $state<ID | null>(null);

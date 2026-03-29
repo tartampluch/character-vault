@@ -179,7 +179,7 @@
               type="text"
               class="input font-mono text-xs"
               value={choice.choiceId}
-              placeholder="e.g. weapon_choice, domain_1"
+              placeholder={ui('editor.choices.choice_id_placeholder', lang)}
               oninput={(e) => patchChoice(i, { choiceId: (e.currentTarget as HTMLInputElement).value as ID })}
               autocomplete="off"
               spellcheck="false"
@@ -264,7 +264,7 @@
                 type="text"
                 class="input font-mono text-xs flex-1"
                 value={choice.optionsQuery}
-                placeholder="e.g. tag:weapon  or  category:domain  or  tag:weapon+tag:martial"
+                placeholder={ui('editor.choices.query_filter_placeholder', lang)}
                 oninput={(e) => onQueryInput(i, (e.currentTarget as HTMLInputElement).value)}
                 autocomplete="off"
                 spellcheck="false"
@@ -332,7 +332,7 @@
               type="text"
               class="input font-mono text-xs"
               value={choice.choiceGrantedTagPrefix ?? ''}
-              placeholder="e.g. feat_weapon_focus_"
+              placeholder={ui('editor.choices.prefix_placeholder', lang)}
               oninput={(e) => {
                 const v = (e.currentTarget as HTMLInputElement).value;
                 patchChoice(i, { choiceGrantedTagPrefix: v || undefined });

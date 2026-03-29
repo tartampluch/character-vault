@@ -336,7 +336,7 @@
           type="text"
           class="input font-mono text-sm"
           bind:value={homebrewStore.filename}
-          placeholder="50_homebrew.json"
+          placeholder={ui('content_editor.lib.filename_placeholder', lang)}
           autocomplete="off"
           spellcheck="false"
         />

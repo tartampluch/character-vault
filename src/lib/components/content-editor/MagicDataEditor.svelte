@@ -112,7 +112,7 @@
           </label>
           <input id={fid('school-p')} type="text" class="input text-sm"
                  value={magic.school ?? ''}
-                 placeholder="e.g. clairsentience (display only)"
+                 placeholder={ui('editor.magic.school_psionic_placeholder', lang)}
                  oninput={(e) => { (ctx.feature as MagicFeature).school = (e.currentTarget as HTMLInputElement).value; }}
                  autocomplete="off"/>
         {/if}
@@ -124,7 +124,7 @@
         </label>
         <input id={fid('sub')} type="text" class="input text-sm"
                value={magic.subSchool ?? ''}
-               placeholder="e.g. summoning, calling, charm"
+               placeholder={ui('editor.magic.sub_school_placeholder', lang)}
                oninput={(e) => {
                  const v = (e.currentTarget as HTMLInputElement).value.trim();
                  (ctx.feature as MagicFeature).subSchool = v || undefined;

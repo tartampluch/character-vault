@@ -144,7 +144,7 @@
         </label>
         <input id={fid('ppbase')} type="number" class="input text-xs w-24" min="1" max="17"
                value={(magic as unknown as { basePpCost?: number }).basePpCost ?? ''}
-               placeholder="e.g. 1"
+               placeholder={ui('content_editor.psi.base_pp_cost_placeholder', lang)}
                oninput={(e) => {
                  const v = (e.currentTarget as HTMLInputElement).value.trim();
                  (ctx.feature as unknown as { basePpCost?: number }).basePpCost = v ? parseInt(v) : undefined;

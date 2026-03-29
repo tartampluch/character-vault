@@ -112,11 +112,11 @@
     <!-- Hardness -->
     <div class="flex flex-col gap-1">
       <label for={fid('hard')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        {ui('editor.item.hardness_label', lang)} <span class="text-[9px] font-normal">(optional)</span>
+        {ui('editor.item.hardness_label', lang)} <span class="text-[9px] font-normal">{ui('editor.choices.prefix_optional', lang)}</span>
       </label>
       <input id={fid('hard')} type="number" class="input text-xs" min="0"
              value={item.hardness ?? ''}
-             placeholder="e.g. 5"
+             placeholder="5"
              oninput={(e) => {
                const v = (e.currentTarget as HTMLInputElement).value.trim();
                (ctx.feature as ItemFeature).hardness = v ? parseInt(v) : undefined;
@@ -127,11 +127,11 @@
     <!-- HP Max -->
     <div class="flex flex-col gap-1">
       <label for={fid('hp')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        {ui('editor.item.hp_max_label', lang)} <span class="text-[9px] font-normal">(optional)</span>
+        {ui('editor.item.hp_max_label', lang)} <span class="text-[9px] font-normal">{ui('editor.choices.prefix_optional', lang)}</span>
       </label>
       <input id={fid('hp')} type="number" class="input text-xs" min="0"
              value={item.hpMax ?? ''}
-             placeholder="e.g. 20"
+             placeholder="20"
              oninput={(e) => {
                const v = (e.currentTarget as HTMLInputElement).value.trim();
                (ctx.feature as ItemFeature).hpMax = v ? parseInt(v) : undefined;
@@ -223,7 +223,7 @@
         </label>
         <input id={fid('dur')} type="text" class="input text-sm"
                value={item.consumable.durationHint ?? ''}
-               placeholder="e.g. 3 min, 10 rounds, 1 hour"
+               placeholder={ui('editor.item.duration_placeholder', lang)}
                oninput={(e) => {
                  const v = (e.currentTarget as HTMLInputElement).value.trim();
                  if (item.consumable) {
