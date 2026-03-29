@@ -140,7 +140,7 @@
   <button
     class="btn-ghost p-1 text-accent hover:bg-accent/10 shrink-0"
     onclick={onInfo}
-    aria-label="Details"
+    aria-label={ui('magic.casting.details_short', engine.settings.language)}
     type="button"
   ><IconInfo size={13} aria-hidden="true" /></button>
 

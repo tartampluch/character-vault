@@ -46,7 +46,7 @@
     <a
       href="/character/{charId}?tab=abilities"
       class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
-      aria-label="Open full Skills editor"
+      aria-label={ui('core.open_skills_aria', lang)}
     >
       {ui('core.edit_link', lang)}
     </a>
@@ -73,7 +73,7 @@
       class="flex flex-col overflow-y-auto max-h-72"
       style="scrollbar-width: thin; scrollbar-color: var(--theme-border) transparent;"
       role="list"
-      aria-label="Skills list"
+      aria-label={ui('core.skills', lang)}
     >
       {#each sortedSkills as skill}
         <li
@@ -108,7 +108,7 @@
           {#if skill.ranks > 0}
             <span
               class="shrink-0 badge-accent font-mono text-[10px]"
-              title="{skill.ranks} ranks invested"
+              title={ui('skills.ranks_invested', lang).replace('{n}', String(skill.ranks))}
             >
               {skill.ranks}r
             </span>

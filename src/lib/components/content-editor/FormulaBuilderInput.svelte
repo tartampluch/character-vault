@@ -561,14 +561,14 @@
             role="tooltip"
           >
             <p class="font-semibold text-text-primary mb-2">{ui('formula.dice_examples_title', engine.settings.language)}</p>
-            <ul class="space-y-1 text-text-secondary font-mono">
-              <li><code>5</code> — plain number</li>
-              <li><code>1d6</code> — roll 1 six-sided die</li>
-              <li><code>2d8+3</code> — roll 2d8, add 3</li>
-              <li><code>1d4+@attributes.stat_strength.derivedModifier</code></li>
-              <li><code>@classLevels.class_fighter</code></li>
-              <li><code>@characterLevel * 2</code></li>
-            </ul>
+             <ul class="space-y-1 text-text-secondary font-mono">
+               <li><code>5</code> {ui('formula.dice_ex_num', engine.settings.language)}</li>
+               <li><code>1d6</code> {ui('formula.dice_ex_1d6', engine.settings.language)}</li>
+               <li><code>2d8+3</code> {ui('formula.dice_ex_2d8', engine.settings.language)}</li>
+               <li><code>1d4+@attributes.stat_strength.derivedModifier</code></li>
+               <li><code>@classLevels.class_fighter</code></li>
+               <li><code>@characterLevel * 2</code></li>
+             </ul>
             <button
               type="button"
               class="mt-2 text-[10px] text-text-muted underline"
@@ -634,13 +634,13 @@
                 class="flex items-center gap-2 w-full text-left rounded px-2 py-1
                        hover:bg-accent/10 transition-colors group/pathrow"
                 onclick={() => insertPath(entry.path)}
-                title="Insert: {entry.path}"
-              >
-                <code
-                  class="font-mono text-[10px] text-accent shrink-0
-                         group-hover/pathrow:underline underline-offset-2"
-                >
-                  {entry.path}
+                 title={ui('formula.insert_title', engine.settings.language).replace('{path}', entry.path)}
+               >
+               <code
+                   class="font-mono text-[10px] text-accent shrink-0
+                          group-hover/pathrow:underline underline-offset-2"
+                 >
+                   {entry.path}
                 </code>
                 <span class="text-[10px] text-text-muted truncate">
                   {entry.label}
@@ -651,19 +651,19 @@
             <!-- Dynamic skills (only shown in Skills group) -->
             {#if group.key === 'skills' && dynamicSkillEntries.length > 0}
               <div class="mt-1 pt-1 border-t border-border/50">
-                <p class="text-[9px] text-text-muted mb-0.5 px-2">Loaded skills:</p>
+                <p class="text-[9px] text-text-muted mb-0.5 px-2">{ui('formula.loaded_skills_label', engine.settings.language)}</p>
                 {#each dynamicSkillEntries as entry (entry.path)}
                   <button
                     type="button"
                     class="flex items-center gap-2 w-full text-left rounded px-2 py-1
                            hover:bg-accent/10 transition-colors group/pathrow"
                     onclick={() => insertPath(entry.path)}
-                    title="Insert: {entry.path}"
-                  >
-                    <code class="font-mono text-[10px] text-accent shrink-0
-                                 group-hover/pathrow:underline underline-offset-2">
-                      {entry.path}
-                    </code>
+                     title={ui('formula.insert_title', engine.settings.language).replace('{path}', entry.path)}
+                   >
+                     <code class="font-mono text-[10px] text-accent shrink-0
+                                  group-hover/pathrow:underline underline-offset-2">
+                       {entry.path}
+                     </code>
                     <span class="text-[10px] text-text-muted truncate">{entry.label}</span>
                   </button>
                 {/each}

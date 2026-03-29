@@ -310,7 +310,7 @@
                   </span>
                   {#if qResult.sample.length > 0}
                     <span class="text-text-muted">
-                      {ui('editor.choices.sample_label', lang)}{qResult.sample.join(', ')}{qResult.count > qResult.sample.length ? `, +${qResult.count - qResult.sample.length} more…` : ''}
+                      {ui('editor.choices.sample_label', lang)}{qResult.sample.join(', ')}{qResult.count > qResult.sample.length ? `, ${ui('editor.choices.sample_more', lang).replace('{n}', String(qResult.count - qResult.sample.length))}` : ''}
                     </span>
                   {/if}
                 {/if}

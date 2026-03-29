@@ -290,7 +290,7 @@
   <!-- PAGE TITLE -->
   <div class="flex items-center gap-3">
     <a href="/campaigns/{campaignId}" class="text-text-muted hover:text-text-primary transition-colors"
-       aria-label="Back to campaign">
+       aria-label={ui('settings.back_to_campaign_aria', lang)}>
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -387,7 +387,7 @@
     <button type="button" class="btn-ghost text-sm"
             onclick={exportAll}
             disabled={homebrewStore.entities.length === 0}
-            title="Download all entities as a JSON file">
+            title={ui('content_editor.lib.download_all_title', lang)}>
       {ui('content_editor.lib.export_all', lang).replace('{n}', String(homebrewStore.entities.length))}
     </button>
 
@@ -507,7 +507,7 @@
                     <a
                       href="/campaigns/{campaignId}/content-editor/{encodeURIComponent(entity.id)}"
                       class="btn-ghost text-xs py-0.5 px-2 h-auto"
-                      title="Edit {entity.id}"
+                      title={ui('content_editor.lib.edit_entity_title', lang).replace('{id}', entity.id)}
                     >
                       {ui('common.edit', lang)}
                     </a>
@@ -515,7 +515,7 @@
                       type="button"
                       class="btn-ghost text-xs py-0.5 px-2 h-auto"
                       onclick={() => cloneEntity(entity.id)}
-                      title="Clone {entity.id}"
+                      title={ui('content_editor.lib.clone_entity_title', lang).replace('{id}', entity.id)}
                     >
                       {ui('common.clone', lang)}
                     </button>
@@ -523,7 +523,7 @@
                       type="button"
                       class="btn-ghost text-xs py-0.5 px-2 h-auto text-danger hover:bg-danger/10"
                       onclick={() => (deleteConfirmId = entity.id)}
-                      title="Delete {entity.id}"
+                      title={ui('content_editor.lib.delete_entity_title2', lang).replace('{id}', entity.id)}
                     >
                       {ui('common.delete', lang)}
                     </button>

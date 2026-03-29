@@ -152,7 +152,7 @@
               class="btn-secondary min-w-[2rem] min-h-[2rem] p-0 text-lg leading-none"
               onclick={() => decreaseScore(abilityId)}
               disabled={score <= MIN_SCORE}
-              aria-label="Decrease {abbr}"
+              aria-label={ui('abilities.decrease_aria', lang).replace('{name}', abbr)}
               type="button"
             >−</button>
 
@@ -172,7 +172,7 @@
               class="btn-secondary min-w-[2rem] min-h-[2rem] p-0 text-lg leading-none"
               onclick={() => increaseScore(abilityId)}
               disabled={score >= MAX_SCORE || pointsRemaining < marginal}
-              aria-label="Increase {abbr}"
+              aria-label={ui('abilities.increase_aria', lang).replace('{name}', abbr)}
               type="button"
             >+</button>
 
@@ -183,7 +183,7 @@
 
             <!-- Recommended indicator -->
             {#if isRec}
-              <span class="text-green-500 shrink-0" aria-label="Recommended" title="Recommended for your class">
+              <span class="text-green-500 shrink-0" aria-label={ui('abilities.recommended_badge_aria', lang)} title={ui('abilities.recommended_tooltip', lang)}>
                 <IconTabFeats size={12} />
               </span>
             {/if}

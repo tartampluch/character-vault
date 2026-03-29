@@ -187,7 +187,7 @@
                 </select>
               </div>
               <button type="button" class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger shrink-0"
-                      onclick={() => removeStaffSpell(i)} aria-label="Remove staff spell {i+1}">
+                      onclick={() => removeStaffSpell(i)} aria-label={ui('editor.charged.remove_staff_spell_aria', lang).replace('{n}', String(i+1))}>
                 <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -245,7 +245,7 @@
                   </select>
                 </div>
                 <button type="button" class="btn-ghost btn-icon h-7 w-7 p-0 text-text-muted hover:text-danger mb-0.5 shrink-0"
-                        onclick={() => removeScrollSpell(i)} aria-label="Remove scroll spell {i+1}">
+                        onclick={() => removeScrollSpell(i)} aria-label={ui('editor.charged.remove_scroll_spell_aria', lang).replace('{n}', String(i+1))}>
                   <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>

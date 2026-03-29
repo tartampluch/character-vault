@@ -204,7 +204,7 @@
 ============================================================================ -->
 <aside
   class={asideClass}
-  aria-label="Application navigation"
+  aria-label={ui('nav.app_nav_aria', engine.settings.language)}
   inert={shouldBeInert ? true : undefined}
 >
 
@@ -240,7 +240,7 @@
       <a
         href="/"
         class="flex items-center gap-2 min-w-0 text-text-primary hover:text-accent transition-colors duration-150"
-        title="Character Vault"
+        title={ui('app.title', engine.settings.language)}
       >
         <svg
           width="28" height="28" viewBox="0 0 28 28" fill="none"
@@ -390,7 +390,7 @@
   <!-- =========================================================================
        NAVIGATION LINKS — middle section, vertically scrollable
   ========================================================================== -->
-  <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5" aria-label="Main navigation">
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5" aria-label={ui('nav.main_navigation_aria', engine.settings.language)}>
 
     <!-- 1. CAMPAIGNS — always visible -->
     <a href="/campaigns" class={navLinkClass('/campaigns')} title={ui('nav.campaigns', engine.settings.language)}>

@@ -85,7 +85,7 @@
             bind:value={customTargetTags}
             placeholder={ui('dice.tags_placeholder', engine.settings.language)}
             class="input text-sm"
-            aria-label="Target creature tags for situational bonuses"
+            aria-label={ui('dice.target_tags', engine.settings.language)}
           />
           <div class="flex flex-wrap gap-1">
             {#each pipeline.situationalModifiers as mod}
@@ -97,8 +97,8 @@
                     customTargetTags = customTargetTags ? `${customTargetTags}, ${tag}` : tag;
                   }
                 }}
-                title="Add '{mod.situationalContext}' to target tags"
-                aria-label="Add {mod.situationalContext} tag"
+                title={ui('dice.add_tag_title', engine.settings.language).replace('{tag}', mod.situationalContext ?? '')}
+                aria-label={ui('dice.add_tag_aria', engine.settings.language).replace('{tag}', mod.situationalContext ?? '')}
                 type="button"
               >
                 + {mod.situationalContext} ({formatModifier(typeof mod.value === 'number' ? mod.value : 0)})
@@ -113,7 +113,7 @@
         class="btn-primary w-full py-3 text-base gap-2"
         onclick={roll}
         disabled={isRolling}
-        aria-label="Roll {formula}"
+        aria-label={ui('dice.roll_aria', engine.settings.language).replace('{formula}', formula)}
         type="button"
       >
         <IconDiceRoll size={20} aria-hidden="true" />
@@ -122,7 +122,7 @@
 
       <!-- Rolling animation -->
       {#if isRolling}
-        <div class="flex justify-center py-3 text-yellow-500 dark:text-yellow-400 rolling-icon" aria-live="polite" aria-label="Rolling dice...">
+        <div class="flex justify-center py-3 text-yellow-500 dark:text-yellow-400 rolling-icon" aria-live="polite" aria-label={ui('dice.rolling_aria', engine.settings.language)}>
           <IconDiceRoll size={36} aria-hidden="true" />
         </div>
 

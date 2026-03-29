@@ -154,7 +154,7 @@
       class="select"
       value={mainHandId}
       onchange={(e) => (mainHandId = (e.target as HTMLSelectElement).value)}
-      aria-label="Main hand weapon"
+      aria-label={ui('combat.attacks.main_hand_aria', engine.settings.language)}
     >
       {#each equippedWeapons as w}
         <option value={w.id}>{w.name}</option>

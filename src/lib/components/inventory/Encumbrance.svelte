@@ -190,7 +190,7 @@
         aria-valuenow={totalWeightLbs}
         aria-valuemin={0}
         aria-valuemax={carryingCapacity.heavy || 100}
-        aria-label="Encumbrance: {loadTier.label}"
+        aria-label={ui('inventory.encumbrance_aria', engine.settings.language).replace('{tier}', loadTier.label)}
       >
         <div class="progress-bar__fill"></div>
       </div>

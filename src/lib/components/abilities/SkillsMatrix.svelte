@@ -167,7 +167,7 @@
     aria-valuenow={skillPointsSpent}
     aria-valuemin={0}
     aria-valuemax={skillPointsAvailable}
-    aria-label="Skill points: {skillPointsSpent} of {skillPointsAvailable}"
+    aria-label={ui('skills.sp_progress_aria', engine.settings.language).replace('{spent}', String(skillPointsSpent)).replace('{available}', String(skillPointsAvailable))}
   >
     <div class="progress-bar__fill"></div>
   </div>
@@ -183,11 +183,11 @@
       HorizontalScroll wraps the table for mobile overflow.
       On mobile, the skill name column is sticky via data-table-sticky-col.
     -->
-    <HorizontalScroll ariaLabel="Skills matrix table">
-      <table class="data-table w-full min-w-[480px]" aria-label="Skills matrix">
+    <HorizontalScroll ariaLabel={ui('skills.matrix_scroll_aria', engine.settings.language)}>
+      <table class="data-table w-full min-w-[480px]" aria-label={ui('skills.matrix_table_aria', engine.settings.language)}>
         <thead>
           <tr class="data-table-header-row">
-            <th class="w-6 text-center" aria-label="Class skill"><IconChecked size={12} /></th>
+            <th class="w-6 text-center" aria-label={ui('skills.class_skill_col_aria', engine.settings.language)}><IconChecked size={12} /></th>
             <th class="text-left min-w-[120px]">{ui('skills.col_skill', engine.settings.language)}</th>
             <th class="text-center">{ui('skills.col_total', engine.settings.language)}</th>
             <th class="text-center">{ui('skills.col_ability', engine.settings.language)}</th>
@@ -229,7 +229,7 @@
                   {engine.t(skill.label)}
                 </span>
                 {#if !skill.canBeUsedUntrained && skill.ranks === 0}
-                  <span class="badge-yellow ml-1 text-[10px]" aria-label="Requires training">{ui('skills.training_required', engine.settings.language)}</span>
+                  <span class="badge-yellow ml-1 text-[10px]" aria-label={ui('skills.training_required_aria', engine.settings.language)}>{ui('skills.training_required', engine.settings.language)}</span>
                 {/if}
                 {#if minRanks > 0 && !isAtMin}
                   <!-- Minimum floor is set but rank is above it — show "Min N" indicator
@@ -237,7 +237,7 @@
                   <span
                     class="badge-blue ml-1 text-[10px]"
                     title="{ui('skills.rank_min_tooltip', engine.settings.language).replace('{n}', String(minRanks))}"
-                    aria-label="Minimum ranks: {minRanks}"
+                    aria-label={ui('skills.min_ranks_aria', engine.settings.language).replace('{n}', String(minRanks))}
                   >{ui('skills.rank_min_label', engine.settings.language).replace('{n}', String(minRanks))}</span>
                 {/if}
                 {#if isAtMin}
@@ -280,7 +280,7 @@
                          [@media(pointer:coarse)]:min-h-[44px]
                          {isAtMax ? 'border-yellow-400 text-yellow-500 dark:text-yellow-400' : ''}
                          {isAtMin ? 'border-amber-700 cursor-not-allowed' : ''}"
-                  aria-label="{engine.t(skill.label)} ranks (min {minRanks}, max {maxRanks})"
+                   aria-label="{engine.t(skill.label)} {ui('skills.col_ranks', engine.settings.language)}"
                   title={isAtMin ? ui('skills.rank_locked_tooltip', engine.settings.language) : undefined}
                   onchange={(e) => handleRanksChange(skill.id, e)}
                 />
@@ -303,7 +303,7 @@
                 <button
                   class="btn-ghost p-1 text-accent hover:bg-accent/10 mx-auto"
                   onclick={() => (breakdownSkillId = skill.id)}
-                  aria-label="Show {engine.t(skill.label)} breakdown"
+                  aria-label={ui('abilities.show_breakdown_aria', engine.settings.language).replace('{name}', engine.t(skill.label))}
                   title={ui('abilities.show_breakdown', engine.settings.language)}
                   type="button"
                 ><IconInfo size={14} aria-hidden="true" /></button>

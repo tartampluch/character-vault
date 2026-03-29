@@ -124,7 +124,7 @@
           {ui('editor.weapon.damage_dice_label', lang)}
         </label>
         <input id={fid('ddice')} type="text" class="input font-mono text-xs"
-               value={wd.damageDice} placeholder="e.g. 1d8"
+               value={wd.damageDice} placeholder={ui('editor.weapon.damage_dice_placeholder', lang)}
                oninput={(e) => { wd.damageDice = (e.currentTarget as HTMLInputElement).value; }}
                autocomplete="off" spellcheck="false"/>
       </div>
@@ -152,7 +152,7 @@
           {ui('editor.weapon.crit_range_label', lang)}
         </label>
         <input id={fid('cr')} type="text" class="input font-mono text-xs"
-               value={wd.critRange} placeholder="e.g. 20 or 19-20"
+               value={wd.critRange} placeholder={ui('editor.weapon.crit_range_placeholder', lang)}
                oninput={(e) => { wd.critRange = (e.currentTarget as HTMLInputElement).value; }}
                autocomplete="off"/>
       </div>
@@ -184,7 +184,7 @@
         </label>
         <input id={fid('ri')} type="number" class="input text-xs" min="0" step="10"
                value={wd.rangeIncrementFt ?? ''}
-               placeholder="blank = melee"
+               placeholder={ui('editor.weapon.range_melee_hint', lang)}
                oninput={(e) => {
                  const v = (e.currentTarget as HTMLInputElement).value.trim();
                  wd.rangeIncrementFt = v ? parseInt(v) : undefined;
@@ -210,7 +210,7 @@
               <div class="flex flex-col gap-1">
                 <label for={fid('sdice')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.damage_dice_label', lang)}</label>
                 <input id={fid('sdice')} type="text" class="input font-mono text-xs"
-                       value={sec.damageDice} placeholder="e.g. 1d6"
+                       value={sec.damageDice} placeholder={ui('editor.weapon.damage_dice_placeholder', lang)}
                        oninput={(e) => { sec.damageDice = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">
@@ -259,13 +259,13 @@
               <div class="flex flex-col gap-1">
                 <label for={fid('ocdf')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.on_crit_dice_label', lang)}</label>
                 <input id={fid('ocdf')} type="text" class="input font-mono text-xs"
-                       value={ocd.baseDiceFormula} placeholder="e.g. 1d10"
+                       value={ocd.baseDiceFormula} placeholder={ui('editor.weapon.damage_dice_placeholder', lang)}
                        oninput={(e) => { ocd.baseDiceFormula = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1">
                 <label for={fid('ocdt')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{ui('editor.weapon.on_crit_type_label', lang)}</label>
                 <input id={fid('ocdt')} type="text" class="input font-mono text-xs"
-                       value={ocd.damageType} placeholder="e.g. fire, cold, sonic"
+                       value={ocd.damageType} placeholder={ui('editor.weapon.on_crit_type_placeholder', lang)}
                        oninput={(e) => { ocd.damageType = (e.currentTarget as HTMLInputElement).value; }}/>
               </div>
               <div class="flex flex-col gap-1 justify-end">

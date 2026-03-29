@@ -10,6 +10,7 @@
   },
 
   "login.title":                  "Connectez-vous pour continuer",
+  "login.username_placeholder":   "ex. mj",
   "login.username":               "Identifiant",
   "login.password":               "Mot de passe",
   "login.sign_in":                "Se connecter",
@@ -1895,5 +1896,158 @@
   "nav.save_campaign_settings_aria": "Enregistrer les paramètres de campagne",
 
   "gm.overrides_for_aria":        "Remplacements MJ pour {name}",
-  "gm.save_overrides_for_aria":   "Enregistrer les remplacements MJ pour {name}"
+  "gm.save_overrides_for_aria":   "Enregistrer les remplacements MJ pour {name}",
+
+  "character.back_vault_aria":          "Retour au Coffre des personnages",
+  "character.back_campaigns_aria":      "Retour aux campagnes",
+  "character.save_aria":                "Enregistrer le personnage",
+  "character.sheet_sections_aria":      "Sections de la fiche de personnage",
+  "character.character_id_aria":        "ID du personnage",
+
+  "campaigns.create_new_aria":          "Créer une nouvelle campagne",
+  "campaigns.open_campaign_aria":       "Ouvrir la campagne : {title}",
+
+  "campaign.chapters_section_aria":     "Chapitres de la campagne",
+  "campaign.chapters_list_aria":        "Liste des chapitres",
+  "campaign.chapter_item_aria":         "Chapitre {n} : {title}",
+  "campaign.chapter_tasks_aria":        "Tâches pour {title}",
+  "campaign.chapter_toggle_aria":       "Basculer la complétion de {title}",
+  "campaign.sources_section_aria":      "Sources de règles actives",
+
+  "vault.character_list_aria":          "Liste des personnages ({n} aventuriers)",
+
+  "settings.back_to_campaign_aria":     "Retour à la campagne",
+  "settings.drag_reorder_aria":         "Glisser pour réordonner : {name}",
+
+  "nav.main_navigation_aria":           "Navigation principale",
+  "nav.loading_aria":                   "Chargement…",
+  "nav.breadcrumb_aria":                "Fil d'Ariane",
+
+  "skills.class_skill_col_aria":        "Compétence de classe",
+  "skills.training_required_aria":      "Formation requise",
+  "skills.min_ranks_aria":              "Rangs minimum : {n}",
+
+  "combat.attacks.main_hand_aria":      "Arme de main principale",
+  "combat.core.show_breakdown_aria":    "Voir le détail de {name}",
+  "combat.dr.remove_aria":              "Retirer {label}",
+
+  "lore.remove_language_aria":          "Retirer {name}",
+
+  "inventory.encumbrance_aria":         "Encombrement : {tier}",
+
+  "horizontal_scroll.position_aria":   "Indicateurs de position de défilement",
+  "horizontal_scroll.section_aria":    "Aller à la section {n} sur {total}",
+  "horizontal_scroll.default_label":   "Contenu défilable",
+
+  "common.item_details_aria":      "Détails de {name}",
+  "common.remove_item_aria":       "Retirer {name}",
+
+  "inventory.equip_title":         "Équiper cet objet",
+  "inventory.equip_item_aria":     "Équiper {name}",
+  "inventory.move_to_backpack_aria": "Déplacer {name} dans le sac à dos",
+  "inventory.move_to_backpack_title": "Déplacer dans le sac à dos",
+
+  "magic.abilities.show_details_aria": "Voir les détails",
+  "magic.abilities.use_aria":      "Utiliser {name}",
+  "magic.casting.spell_details_aria": "Voir les détails de {name}",
+  "magic.casting.details_short":   "Détails",
+  "magic.casting.staff_details_aria": "Détails du sort de bâton",
+  "inventory.psionic.pp_recharge_aria": "PM à recharger",
+
+  "abilities.decrease_aria":        "Diminuer {name}",
+  "abilities.increase_aria":        "Augmenter {name}",
+  "abilities.recommended_badge_aria": "Recommandé",
+  "abilities.recommended_tooltip":  "Recommandé pour votre classe",
+  "abilities.roll_value_aria":      "Valeur {val}",
+  "abilities.roll_value_assigned":  "(assigné)",
+  "abilities.assign_value_aria":    "Assigner une valeur lancée à {name}",
+
+  "core.select_race_aria":         "Sélectionner la race du personnage",
+  "core.select_class_aria":        "Sélectionner la classe du personnage",
+  "core.select_deity_aria":        "Sélectionner une divinité",
+  "core.select_alignment_aria":    "Sélectionner un alignement",
+  "core.show_feature_details_aria":"Voir les détails de {name}",
+
+  "abilities.base_score_aria":    "{name} score de base",
+  "abilities.temp_mod_aria":      "{name} modificateur temporaire",
+  "abilities.show_breakdown_aria": "Voir le détail de {name}",
+  "abilities.roll_check_aria":    "Lancer un test de {name}",
+
+  "saves.ability_modifier_title": "modificateur de {ability}",
+  "saves.temp_mod_aria":          "{name} modificateur temporaire",
+  "saves.show_breakdown_aria":    "Voir le détail de {name}",
+  "saves.roll_save_aria":         "Lancer le jet de {name}",
+
+  "skills.sp_progress_aria":      "Points de compétence : {spent} sur {available}",
+  "skills.matrix_scroll_aria":    "Tableau des compétences",
+  "skills.matrix_table_aria":     "Matrice de compétences",
+
+  "core.open_ability_scores_aria": "Ouvrir l'éditeur complet des caractéristiques",
+  "core.open_skills_aria":         "Ouvrir l'éditeur complet des compétences",
+  "core.open_saves_aria":          "Ouvrir l'éditeur complet des jets de sauvegarde",
+  "core.modifier_aria":            "Modificateur : {value}",
+  "skills.ranks_invested":         "{n} rangs investis",
+  "saves.governed_by":             "Gouverné par {ability} ({mod})",
+
+  "journal.class_level_badge":    "Nv {n}",
+  "journal.fort_ref_will_title":  "Vig | Réfl | Vol",
+  "journal.skill_not_loaded":     "Compétence non chargée",
+  "journal.n_more":               "+{n} de plus",
+  "journal.ranks_locked_note":    "Certains rangs de compétence sont verrouillés (planchers de niveaux validés).",
+  "journal.ranks_free_note":      "Tous les rangs sont librement modifiables (aucun niveau validé).",
+
+  "heal.encounter_reset_tooltip": "Réinitialiser les capacités de rencontre",
+  "heal.long_rest_tooltip":       "Restaurer toutes les ressources de repos long",
+
+  "combat.ac.temp_mod_aria":      "Modificateur de CA temporaire (appliqué à tous les types de CA)",
+  "combat.ac.temp_mod_tooltip":   "Modificateur temporaire rapide (sort de buff, condition, etc.)",
+  "common.show_breakdown":        "Voir le détail",
+
+  "effects.panel.count_aria":     "{n} effets actifs",
+  "effects.panel.info_title":     "Voir les détails de l'effet",
+  "effects.panel.info_aria":      "Voir les détails de {name}",
+
+  "dice.add_tag_title":           "Ajouter « {tag} » aux tags de cible",
+  "dice.add_tag_aria":            "Ajouter le tag {tag}",
+  "dice.roll_aria":               "Lancer {formula}",
+  "dice.rolling_aria":            "Lancer en cours...",
+
+  "modal.close_dialog_aria":      "Fermer la boîte de dialogue",
+
+  "editor.charged.remove_staff_spell_aria":  "Supprimer le sort de bâton {n}",
+  "editor.charged.remove_scroll_spell_aria": "Supprimer le sort de parchemin {n}",
+
+  "content_editor.pool.max_pipeline_help": "Le pipeline dont la <code>totalValue</code> définit le maximum. Pour les objets à charges fixes, créez un pipeline de statistique dédié (ex. <code>combatStats.charges_belier_max</code>) et donnez-lui un modificateur <code>setAbsolute</code> de valeur 50.",
+
+  "editor.choices.sample_more":                "+{n} de plus…",
+  "formula.dice_ex_num":        "— nombre fixe",
+  "formula.dice_ex_1d6":        "— lancer 1 dé à 6 faces",
+  "formula.dice_ex_2d8":        "— lancer 2d8, ajouter 3",
+  "formula.loaded_skills_label": "Compétences chargées :",
+
+  "editor.tag_picker.some_selected_title":     "Certains tags de ce groupe sont sélectionnés",
+  "editor.armor.acp_sign_hint":                "Saisissez un nombre négatif (ex. -6) ou un nombre positif (stocké tel quel)",
+  "editor.weapon.damage_dice_placeholder":     "ex. 1d8",
+  "editor.weapon.crit_range_placeholder":      "ex. 20 ou 19-20",
+  "editor.weapon.range_melee_hint":            "vide = mêlée",
+  "editor.weapon.on_crit_type_placeholder":    "ex. feu, froid, sonique",
+  "editor.core.label_en_placeholder":          "e.g. Power Attack",
+  "editor.core.label_fr_placeholder":          "ex. Attaque en puissance",
+  "editor.cursed.prevention_note_placeholder": "ex. Reste agrafé même après la mort.",
+  "editor.activation.trigger_event_placeholder": "ex. Lorsque ciblé par une attaque",
+  "editor.condition.value_placeholder":        "valeur",
+  "editor.condition.error_msg_placeholder":    "ex. Nécessite stat_force 13+",
+  "editor.tiered_costs.label_en_placeholder":  "e.g. 2 Charges: 2d6 damage",
+  "editor.tiered_costs.label_fr_placeholder":  "ex. 2 Charges : 2d6 dégâts",
+  "formula.insert_title":                      "Insérer : {path}",
+
+  "editor.core.lang_en_label":  "Anglais",
+  "editor.core.lang_fr_label":  "Français",
+  "editor.core.desc_en_placeholder": "Saisissez la description en anglais. Utilisez des variables @-path (ex. @characterLevel) pour les valeurs dynamiques résolues à l'affichage.",
+  "editor.core.desc_fr_placeholder": "Saisissez la description en français. (Même syntaxe qu'en anglais.)",
+
+  "content_editor.lib.download_all_title":   "Télécharger toutes les entités en fichier JSON",
+  "content_editor.lib.edit_entity_title":    "Modifier {id}",
+  "content_editor.lib.clone_entity_title":   "Dupliquer {id}",
+  "content_editor.lib.delete_entity_title2": "Supprimer {id}"
 }

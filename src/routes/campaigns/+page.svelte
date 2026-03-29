@@ -76,7 +76,7 @@
 
   <!-- ── CREATE FORM (GM only, inline) ────────────────────────────────────── -->
   {#if showCreateForm && sessionContext.isGameMaster}
-    <div class="card p-5 flex flex-col gap-4" role="form" aria-label="Create new campaign">
+    <div class="card p-5 flex flex-col gap-4" role="form" aria-label={ui('campaigns.create_new_aria', engine.settings.language)}>
       <h2 class="text-base font-semibold text-accent">{ui('campaigns.new_title', engine.settings.language)}</h2>
       <div class="flex flex-col gap-1.5">
         <label for="campaign-title" class="text-sm text-text-secondary">{ui('campaigns.field_title', engine.settings.language)}</label>
@@ -125,7 +125,7 @@
                  hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           onclick={() => openCampaign(campaign.id)}
-          aria-label="Open campaign: {campaign.title}"
+          aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', campaign.title)}
           type="button"
         >
           <!-- Poster / placeholder -->

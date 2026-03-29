@@ -76,12 +76,12 @@
 
   // ---------------------------------------------------------------------------
   // FALLBACK FLAG MAP (BCP-47 → ISO 3166-1 alpha-2)
-  // Used for built-in English ('en' → 'gb') and as a safety net before
+  // Used for built-in English ('en' → 'us') and as a safety net before
   // locale metadata loads. Engine.getLanguageCountryCode() is the primary source.
   // ---------------------------------------------------------------------------
 
   const FALLBACK_FLAGS: Record<string, string> = {
-    en: 'gb', fr: 'fr', de: 'de', es: 'es', it: 'it', pt: 'pt',
+    en: 'us', fr: 'fr', de: 'de', es: 'es', it: 'it', pt: 'pt',
     nl: 'nl', pl: 'pl', cs: 'cz', ru: 'ru', ja: 'jp', ko: 'kr', zh: 'cn',
   };
 

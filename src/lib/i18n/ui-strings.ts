@@ -204,6 +204,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // LOGIN PAGE
   // ==========================================================================
   'login.title':                  'Sign in to continue',
+  /** Placeholder for the username field on the login page. */
+  'login.username_placeholder':   'e.g. gm',
   'login.username':               'Username',
   'login.password':               'Password',
   'login.sign_in':                'Sign In',
@@ -1386,6 +1388,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'content_editor.pool.recharge_restored_turn':    '(restored each turn)',
   /** Shown next to the recharge amount field when resetCondition === 'per_round'. */
   'content_editor.pool.recharge_restored_round':   '(restored each round)',
+  /**
+   * Help text displayed below the "Max Pipeline ID" field in ResourcePoolEditor.
+   * Contains HTML with <code> tags; rendered as {@html ...} in the template.
+   */
+  'content_editor.pool.max_pipeline_help': 'The pipeline whose <code>totalValue</code> sets the cap. For fixed-charge items, create a dedicated stat pipeline (e.g. <code>combatStats.ram_charges_max</code>) and give it a <code>setAbsolute</code> modifier of value 50.',
 
   // ==========================================================================
   // RESET CONDITIONS (ResourcePoolEditor dropdown values)
@@ -1751,6 +1758,27 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'content_editor.lib.import_submit':        'Import',
 
   // ==========================================================================
+  // CONTENT EDITOR — CORE FIELDS SECTION — labels and placeholders
+  // ==========================================================================
+  /** Language indicator label for the English content field. */
+  'editor.core.lang_en_label':  'English',
+  /** Language indicator label for the French content field. */
+  'editor.core.lang_fr_label':  'Français',
+  /** Placeholder for the EN description textarea. */
+  'editor.core.desc_en_placeholder': 'Enter the English description. Use @-path variables (e.g. @characterLevel) for dynamic values resolved at display time.',
+  /** Placeholder for the FR description textarea. */
+  'editor.core.desc_fr_placeholder': 'Enter the French description. (Same syntax as English.)',
+
+  /** title for the "Export All" download button. */
+  'content_editor.lib.download_all_title':   'Download all entities as a JSON file',
+  /** title for the "Edit entity" row action button. {id} = entity ID. */
+  'content_editor.lib.edit_entity_title':    'Edit {id}',
+  /** title for the "Clone entity" row action button. {id} = entity ID. */
+  'content_editor.lib.clone_entity_title':   'Clone {id}',
+  /** title for the "Delete entity" row action button. {id} = entity ID. */
+  'content_editor.lib.delete_entity_title2': 'Delete {id}',
+
+  // ==========================================================================
   // CONTENT EDITOR — NEW ENTITY WIZARD (content-editor/new/+page.svelte)
   // ==========================================================================
   'content_editor.new.title':           'New Entity',
@@ -1786,6 +1814,14 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // FORMULA BUILDER INPUT — validation & UI chrome (FormulaBuilderInput.svelte)
   // ==========================================================================
+  /** Title on the formula assistant entry buttons. {path} = the @-path to insert. */
+  'formula.insert_title':       'Insert: {path}',
+  /** Dice notation example descriptions (shown in the help popup). */
+  'formula.dice_ex_num':        '— plain number',
+  'formula.dice_ex_1d6':        '— roll 1 six-sided die',
+  'formula.dice_ex_2d8':        '— roll 2d8, add 3',
+  /** Loaded skills label in FormulaBuilderInput. */
+  'formula.loaded_skills_label': 'Loaded skills:',
   'formula.validation.valid':   'Valid formula or @-path',
   'formula.validation.partial': 'Partial @-path — add a suffix (e.g. class ID or skill ID)',
   'formula.validation.invalid': 'Unrecognised @-path — check the Formula Assistant for valid paths',
@@ -2125,6 +2161,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.choices.prefix_optional':            '(optional)',
   'editor.choices.prefix_engine_hint':         'When set, the engine emits <prefix><selectedId> as an active tag for each selection.',
   'editor.choices.prefix_convention_hint':     'Needed for parameterized prerequisites (Weapon Focus (X), Spell Focus (school)). Convention: end with _ and mirror this feat\'s ID.',
+  /** Appended to the sample list when more results exist. {n} = overflow count. */
+  'editor.choices.sample_more':                '+{n} more…',
 
   // ==========================================================================
   // CONTENT EDITOR — LEVEL PROGRESSION EDITOR (LevelProgressionEditor.svelte)
@@ -2261,7 +2299,23 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CONTENT EDITOR — ARMOR FIELDS EDITOR (ArmorFieldsEditor.svelte)
   // ==========================================================================
+  /** Tooltip for the ACP input in ArmorFieldsEditor explaining sign convention. */
+  'editor.armor.acp_sign_hint':                'Enter as a negative number (e.g. -6) or a positive number (stored as-is)',
   'editor.armor.section_label':                'Armor / Shield Data',
+
+  // ==========================================================================
+  // CONTENT EDITOR — ADDITIONAL PLACEHOLDERS
+  // ==========================================================================
+  'editor.weapon.damage_dice_placeholder':     'e.g. 1d8',
+  'editor.weapon.crit_range_placeholder':      'e.g. 20 or 19-20',
+  'editor.weapon.range_melee_hint':            'blank = melee',
+  'editor.weapon.on_crit_type_placeholder':    'e.g. fire, cold, sonic',
+  'editor.core.label_en_placeholder':          'e.g. Power Attack',
+  'editor.core.label_fr_placeholder':          'ex. Attaque en puissance',
+  'editor.cursed.prevention_note_placeholder': 'e.g. Remains clasped even after death.',
+  'editor.activation.trigger_event_placeholder': 'e.g. When targeted by an attack',
+  'editor.condition.value_placeholder':        'value',
+  'editor.condition.error_msg_placeholder':    'e.g. Requires stat_strength 13+',
   'editor.armor.armor_bonus_label':            'Armor Bonus',
   'editor.armor.max_dex_label':                'Max DEX Bonus',
   'editor.armor.no_cap_hint':                  'blank = no cap',
@@ -2269,6 +2323,11 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.armor.asf_label':                    'Arcane Spell Failure (%)',
   'editor.armor.empty_hint':                   'Enable for armour, shields, and items that apply an armor or shield bonus to AC.',
 
+  // ==========================================================================
+  // CONTENT EDITOR — CHARGED ITEMS EDITOR (ChargedItemsEditor.svelte)
+  // Accessible labels for remove-spell buttons. {n} = 1-based entry index.
+  'editor.charged.remove_staff_spell_aria':  'Remove staff spell {n}',
+  'editor.charged.remove_scroll_spell_aria': 'Remove scroll spell {n}',
   // ==========================================================================
   // CONTENT EDITOR — CHARGED ITEMS EDITOR (ChargedItemsEditor.svelte)
   // ==========================================================================
@@ -2396,6 +2455,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.tiered_costs.edit_modifiers_btn':    'Edit modifiers',
   'editor.tiered_costs.add_modifiers_btn':     '+ Add modifiers',
   'editor.tiered_costs.add_tier_btn':          '+ Add Tier',
+  /** Placeholder for EN tier label input. */
+  'editor.tiered_costs.label_en_placeholder':  'e.g. 2 Charges: 2d6 damage',
+  /** Placeholder for FR tier label input. */
+  'editor.tiered_costs.label_fr_placeholder':  'ex. 2 Charges : 2d6 dégâts',
 
   // ==========================================================================
   // CONTENT EDITOR — GRANTED FEATURES EDITOR (GrantedFeaturesEditor.svelte)
@@ -2485,6 +2548,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CONTENT EDITOR — TAG PICKER MODAL (TagPickerModal.svelte)
   // ==========================================================================
+  /** Title on a tag group chip when some but not all tags from the group are selected. */
+  'editor.tag_picker.some_selected_title':     'Some tags from this group are selected',
   'editor.tag_picker.title':                   'Pick Tags',
   'editor.tag_picker.search_aria':             'Search tags',
   'editor.tag_picker.search_placeholder':      'Search tags…',
@@ -2570,6 +2635,276 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'editor.entity_search.clone_btn':            'Clone "{label}"',
   'editor.entity_search.click_to_preview':     'Click a result to preview it here.',
   'editor.entity_search.no_description':       'No description available.',
+
+  // ==========================================================================
+  // CHARACTER SHEET PAGE — accessible labels
+  // ==========================================================================
+  'character.back_vault_aria':          'Back to Character Vault',
+  'character.back_campaigns_aria':      'Back to campaigns',
+  'character.save_aria':                'Save character',
+  'character.sheet_sections_aria':      'Character sheet sections',
+  'character.character_id_aria':        'Character ID',
+
+  // ==========================================================================
+  // CAMPAIGNS PAGE — accessible labels
+  // ==========================================================================
+  'campaigns.create_new_aria':          'Create new campaign',
+  /** aria-label for the campaign card link. {title} = campaign title. */
+  'campaigns.open_campaign_aria':       'Open campaign: {title}',
+
+  // ==========================================================================
+  // CAMPAIGN DETAIL PAGE — accessible labels
+  // ==========================================================================
+  'campaign.chapters_section_aria':     'Campaign chapters',
+  'campaign.chapters_list_aria':        'List of chapters',
+  /** aria-label for a chapter card. {n} = 1-based chapter index, {title} = chapter title. */
+  'campaign.chapter_item_aria':         'Chapter {n}: {title}',
+  /** aria-label for the chapter tasks list. {title} = chapter title. */
+  'campaign.chapter_tasks_aria':        'Tasks for {title}',
+  /** aria-label for the "mark done/incomplete" toggle. {title} = chapter title. */
+  'campaign.chapter_toggle_aria':       'Toggle completion for {title}',
+  'campaign.sources_section_aria':      'Active rule sources',
+
+  // ==========================================================================
+  // VAULT PAGE — accessible labels
+  // ==========================================================================
+  /** aria-label for the character list. {n} = character count. */
+  'vault.character_list_aria':          'Character list ({n} adventurers)',
+
+  // ==========================================================================
+  // SETTINGS PAGE — accessible labels & tooltips
+  // ==========================================================================
+  'settings.back_to_campaign_aria':     'Back to campaign',
+  /** aria-label for the drag-handle on rule source rows. {name} = file path. */
+  'settings.drag_reorder_aria':         'Drag to reorder: {name}',
+
+  // ==========================================================================
+  // SIDEBAR & NAVIGATION — accessible labels
+  // ==========================================================================
+  'nav.main_navigation_aria':           'Main navigation',
+  /** aria-label for the loading spinner container. */
+  'nav.loading_aria':                   'Loading…',
+  /** aria-label for the breadcrumb <nav> element. */
+  'nav.breadcrumb_aria':                'Breadcrumb',
+
+  // ==========================================================================
+  // SKILLS MATRIX — column / row accessible labels
+  // ==========================================================================
+  'skills.class_skill_col_aria':        'Class skill',
+  'skills.training_required_aria':      'Requires training',
+  /** aria-label for a rank-minimum badge. {n} = minimum rank count. */
+  'skills.min_ranks_aria':              'Minimum ranks: {n}',
+
+  // ==========================================================================
+  // COMBAT — accessible labels
+  // ==========================================================================
+  'combat.attacks.main_hand_aria':      'Main hand weapon',
+  /** aria-label for the breakdown button in CoreCombat. {name} = stat description. */
+  'combat.core.show_breakdown_aria':    'Show {name} breakdown',
+  /** aria-label for DR remove button. {label} = DR label (e.g. "DR 5/—"). */
+  'combat.dr.remove_aria':              'Remove {label}',
+
+  // ==========================================================================
+  // LORE & LANGUAGES — accessible labels
+  // ==========================================================================
+  /** aria-label for the "remove language" button. {name} = language name. */
+  'lore.remove_language_aria':          'Remove {name}',
+
+  // ==========================================================================
+  // INVENTORY — ENCUMBRANCE
+  // ==========================================================================
+  /** aria-label for the encumbrance progress bar. {tier} = load tier label. */
+  'inventory.encumbrance_aria':         'Encumbrance: {tier}',
+
+  // ==========================================================================
+  // HORIZONTAL SCROLL COMPONENT — accessible labels
+  // ==========================================================================
+  'horizontal_scroll.position_aria':   'Scroll position indicators',
+  /** aria-label for a dot-navigation button. {n} = 1-based index, {total} = total count. */
+  'horizontal_scroll.section_aria':    'Scroll to section {n} of {total}',
+  /** Default ariaLabel prop value for HorizontalScroll wrapper. */
+  'horizontal_scroll.default_label':   'Scrollable content',
+
+  // ==========================================================================
+  // COMMON — generic accessible labels reused across multiple components
+  // ==========================================================================
+  /** aria-label for item-details (i) info buttons. {name} = item/feature name. */
+  'common.item_details_aria':      'Details for {name}',
+  /** aria-label for "Remove X" icon buttons. {name} = item/feature name. */
+  'common.remove_item_aria':       'Remove {name}',
+
+  // ==========================================================================
+  // INVENTORY TAB — accessible labels & tooltips
+  // ==========================================================================
+  /** title on the equip button when equipping is possible. */
+  'inventory.equip_title':         'Equip this item',
+  /** aria-label for the equip button. {name} = item name. */
+  'inventory.equip_item_aria':     'Equip {name}',
+  /** aria-label for "move to backpack" button. {name} = item name. */
+  'inventory.move_to_backpack_aria': 'Move {name} to backpack',
+  /** title for the "move to backpack" button. */
+  'inventory.move_to_backpack_title': 'Move to backpack',
+
+  // ==========================================================================
+  // MAGIC TAB — accessible labels & short labels
+  // ==========================================================================
+  /** aria-label for "Show details" (i) button in SpecialAbilities panel. */
+  'magic.abilities.show_details_aria': 'Show details',
+  /** aria-label for "Use ability" button. {name} = ability name. */
+  'magic.abilities.use_aria':      'Use {name}',
+  /** aria-label for spell details (i) button in Grimoire. {name} = spell name. */
+  'magic.casting.spell_details_aria': 'Show {name} details',
+  /** Short label for the details button in SpellRowItem. */
+  'magic.casting.details_short':   'Details',
+  /** aria-label for staff spell info button in MagicItemsCastingSubpanel. */
+  'magic.casting.staff_details_aria': 'Staff spell details',
+  /** aria-label for the PP amount input in PsionicItemCard. */
+  'inventory.psionic.pp_recharge_aria': 'PP to recharge',
+
+  // ==========================================================================
+  // POINT BUY MODAL — accessible labels
+  // ==========================================================================
+  /** aria-label for decrease buttons. {name} = ability abbreviation. */
+  'abilities.decrease_aria':        'Decrease {name}',
+  /** aria-label for increase buttons. {name} = ability abbreviation. */
+  'abilities.increase_aria':        'Increase {name}',
+  /** aria-label for the "Recommended" star badge. */
+  'abilities.recommended_badge_aria': 'Recommended',
+  /** title on the "Recommended" star badge for the current class. */
+  'abilities.recommended_tooltip':  'Recommended for your class',
+
+  // ==========================================================================
+  // ROLL STATS MODAL — accessible labels
+  // ==========================================================================
+  /** aria-label for a rolled value chip. {val} = the value, used/unused suffix added in code. */
+  'abilities.roll_value_aria':      'Value {val}',
+  /** Suffix when a rolled value is already assigned. */
+  'abilities.roll_value_assigned':  '(assigned)',
+  /** aria-label for "assign this value to ability" button. {name} = ability abbreviation. */
+  'abilities.assign_value_aria':    'Assign a rolled value to {name}',
+
+  // ==========================================================================
+  // CORE TAB — BASIC INFO ACCESSIBLE LABELS
+  // ==========================================================================
+  'core.select_race_aria':         'Select character race',
+  'core.select_class_aria':        'Select character class',
+  'core.select_deity_aria':        'Select deity',
+  'core.select_alignment_aria':    'Select alignment',
+  /** aria-label for the (i) info button next to a selected entity. {name} = entity name. */
+  'core.show_feature_details_aria':'Show {name} details',
+
+  // ==========================================================================
+  // ABILITIES TAB — accessible labels with injected variable parts
+  // ==========================================================================
+  /** aria-label for the base-score input. {name} = localized ability name. */
+  'abilities.base_score_aria':    '{name} base score',
+  /** aria-label for the temp-modifier input. {name} = localized ability name. */
+  'abilities.temp_mod_aria':      '{name} temporary modifier',
+  /** aria-label for the breakdown button. {name} = localized ability name. */
+  'abilities.show_breakdown_aria': 'Show {name} breakdown',
+  /** title/aria-label for the roll-check button. {name} = localized ability name, {check} = localized "Check". */
+  'abilities.roll_check_aria':    'Roll a {name} {check}',
+
+  // ==========================================================================
+  // SAVING THROWS TAB — accessible labels with injected variable parts
+  // ==========================================================================
+  /** title for the key-ability modifier chip. {ability} = localized ability abbreviation. */
+  'saves.ability_modifier_title': '{ability} modifier',
+  /** aria-label for the temp-modifier input. {name} = localized save name. */
+  'saves.temp_mod_aria':          '{name} temporary modifier',
+  /** aria-label for the breakdown button. {name} = localized save name. */
+  'saves.show_breakdown_aria':    'Show {name} breakdown',
+  /** aria-label for the roll-save button. {name} = localized save name. */
+  'saves.roll_save_aria':         'Roll {name} save',
+
+  // ==========================================================================
+  // SKILLS MATRIX — accessible labels
+  // ==========================================================================
+  /** aria-label for the SP progress bar. {spent} = points used, {available} = total budget. */
+  'skills.sp_progress_aria':      'Skill points: {spent} of {available}',
+  /** aria-label for the HorizontalScroll wrapper around the skills table. */
+  'skills.matrix_scroll_aria':    'Skills matrix table',
+  /** aria-label for the <table> element. */
+  'skills.matrix_table_aria':     'Skills matrix',
+
+  // ==========================================================================
+  // CORE TAB — SUMMARY PANEL ACCESSIBLE LABELS
+  // ==========================================================================
+  /** aria-label for the "Edit →" link in AbilityScoresSummary. */
+  'core.open_ability_scores_aria': 'Open full Ability Scores editor',
+  /** aria-label for the "Edit →" link in SkillsSummary. */
+  'core.open_skills_aria':         'Open full Skills editor',
+  /** aria-label for the "Edit →" link in SavingThrowsSummary. */
+  'core.open_saves_aria':          'Open full Saving Throws editor',
+  /** aria-label for the modifier value chip. {value} = formatted modifier (e.g. "+2"). */
+  'core.modifier_aria':            'Modifier: {value}',
+  /** Tooltip for the ranks badge in SkillsSummary. {n} = rank count. */
+  'skills.ranks_invested':         '{n} ranks invested',
+  /** Tooltip for the key ability chip in SavingThrowsSummary.
+   *  {ability} = localized ability abbreviation, {mod} = formatted modifier. */
+  'saves.governed_by':             'Governed by {ability} ({mod})',
+
+  // ==========================================================================
+  // LEVELING JOURNAL MODAL — additional inline strings
+  // ==========================================================================
+  /** Short level badge shown on per-class cards. {n} = class level. */
+  'journal.class_level_badge':    'Lv {n}',
+  /** Tooltip for the Fort/Ref/Will combined display. */
+  'journal.fort_ref_will_title':  'Fort | Ref | Will',
+  /** Tooltip shown when a class skill badge's pipeline is not loaded. */
+  'journal.skill_not_loaded':     'Skill not loaded',
+  /** "N more" suffix when a class has more than 12 granted features. {n} = overflow count. */
+  'journal.n_more':               '+{n} more',
+  /** Shown when at least one skill rank is locked (committed). */
+  'journal.ranks_locked_note':    'Some skill ranks are locked (committed level-up floors).',
+  /** Shown when no skill ranks are locked (free allocation). */
+  'journal.ranks_free_note':      'All ranks are freely editable (no levels committed).',
+
+  // ==========================================================================
+  // HEALTH & XP — button tooltips
+  // ==========================================================================
+  /** Tooltip on the New Encounter button. */
+  'heal.encounter_reset_tooltip': 'Reset encounter-slot abilities',
+  /** Tooltip on the Long Rest button. */
+  'heal.long_rest_tooltip':       'Restore all long-rest resources',
+
+  // ==========================================================================
+  // ARMOR CLASS — accessible labels & tooltips
+  // ==========================================================================
+  /** aria-label for the temporary AC modifier input. */
+  'combat.ac.temp_mod_aria':      'Temporary AC modifier (applied to all AC types)',
+  /** title tooltip for the temporary AC modifier input. */
+  'combat.ac.temp_mod_tooltip':   'Quick temporary modifier (buff spell, condition, etc.)',
+  /** Generic "Show breakdown" tooltip used on multiple buttons. */
+  'common.show_breakdown':        'Show breakdown',
+
+  // ==========================================================================
+  // EPHEMERAL EFFECTS PANEL — accessible labels
+  // ==========================================================================
+  /** aria-label for the effects count badge. {n} = count. */
+  'effects.panel.count_aria':     '{n} active effects',
+  /** title for the effect-details info button. */
+  'effects.panel.info_title':     'Show effect details',
+  /** aria-label for the effect-details info button. {name} = effect/feature name. */
+  'effects.panel.info_aria':      'Show details for {name}',
+
+  // ==========================================================================
+  // DICE ROLL MODAL — accessible labels
+  // ==========================================================================
+  /** title tooltip for "add tag" chip buttons. {tag} = situational context string. */
+  'dice.add_tag_title':           "Add '{tag}' to target tags",
+  /** aria-label for "add tag" chip buttons. {tag} = situational context string. */
+  'dice.add_tag_aria':            'Add {tag} tag',
+  /** aria-label for the Roll button. {formula} = dice formula string. */
+  'dice.roll_aria':               'Roll {formula}',
+  /** aria-label for the rolling animation container. */
+  'dice.rolling_aria':            'Rolling dice...',
+
+  // ==========================================================================
+  // MODAL — close button
+  // ==========================================================================
+  /** aria-label for the ✕ close button inside the modal header. */
+  'modal.close_dialog_aria':      'Close dialog',
 
   // English names itself here because it is the only language that has NO
   // separate locale file: it is the hardcoded baseline and is intentionally

@@ -226,7 +226,7 @@
           class="select flex-1"
           value={activeRace?.id ?? ''}
           onchange={handleRaceChange}
-          aria-label="Select character race"
+          aria-label={ui('core.select_race_aria', engine.settings.language)}
         >
           <option value="">{ui('core.none', engine.settings.language)}</option>
           {#each races as race}
@@ -238,7 +238,7 @@
             class="btn-ghost p-1 rounded-full shrink-0"
             onclick={() => (modalFeatureId = activeRace?.id ?? null)}
             title={ui('core.show_details', engine.settings.language)}
-            aria-label="Show {engine.t(activeRace.label)} details"
+            aria-label={ui('core.show_feature_details_aria', engine.settings.language).replace('{name}', engine.t(activeRace.label))}
             type="button"
           ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
@@ -272,7 +272,7 @@
           class="select flex-1"
           value={activeClass?.id ?? ''}
           onchange={handleClassChange}
-          aria-label="Select character class"
+          aria-label={ui('core.select_class_aria', engine.settings.language)}
         >
           <option value="">{ui('core.none', engine.settings.language)}</option>
           {#each classes as cls}
@@ -284,7 +284,7 @@
             class="btn-ghost p-1 rounded-full shrink-0"
             onclick={() => (modalFeatureId = activeClass?.id ?? null)}
             title={ui('core.show_details', engine.settings.language)}
-            aria-label="Show {engine.t(activeClass.label)} details"
+            aria-label={ui('core.show_feature_details_aria', engine.settings.language).replace('{name}', engine.t(activeClass.label))}
             type="button"
           ><IconInfo size={14} aria-hidden="true" /></button>
         {/if}
@@ -336,7 +336,7 @@
             class="btn-ghost p-1 rounded-full"
             onclick={() => (modalFeatureId = activeDeity?.id ?? null)}
             title={ui('core.show_details', engine.settings.language)}
-            aria-label="Show {engine.t(activeDeity.label)} details"
+            aria-label={ui('core.show_feature_details_aria', engine.settings.language).replace('{name}', engine.t(activeDeity.label))}
             type="button"
           >
             <IconInfo size={14} aria-hidden="true" />
@@ -348,7 +348,7 @@
         class="select"
         value={activeDeity?.id ?? ''}
         onchange={handleDeityChange}
-        aria-label="Select deity"
+        aria-label={ui('core.select_deity_aria', engine.settings.language)}
       >
         <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each deities as deity}
@@ -372,7 +372,7 @@
         class="select"
         value={activeAlignment}
         onchange={handleAlignmentChange}
-        aria-label="Select alignment"
+        aria-label={ui('core.select_alignment_aria', engine.settings.language)}
       >
         <option value="">{ui('core.none', engine.settings.language)}</option>
         {#each ALIGNMENTS as alignment}

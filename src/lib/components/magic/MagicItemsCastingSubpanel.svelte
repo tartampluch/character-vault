@@ -102,7 +102,7 @@
               <button
                 class="btn-ghost p-0.5 text-accent hover:bg-accent/10 shrink-0"
                 onclick={() => { if (spellFeat) modalSpellId = spellFeat.id; }}
-                aria-label="Staff spell details"
+                aria-label={ui('magic.casting.staff_details_aria', engine.settings.language)}
                 type="button"
               ><IconInfo size={11} aria-hidden="true" /></button>
             </div>

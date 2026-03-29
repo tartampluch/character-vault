@@ -238,24 +238,24 @@
     </legend>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <div class="flex flex-col gap-1">
-        <label for={fid('label-en')} class="text-xs text-text-muted font-medium">English</label>
+        <label for={fid('label-en')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_en_label', lang)}</label>
         <input
           id={fid('label-en')}
           type="text"
           class="input text-sm"
           value={locGet(ctx.feature.label as Record<string,string>, 'en')}
-          placeholder="e.g. Power Attack"
+          placeholder={ui('editor.core.label_en_placeholder', lang)}
           oninput={(e) => locSet('label', 'en', (e.currentTarget as HTMLInputElement).value)}
         />
       </div>
       <div class="flex flex-col gap-1">
-        <label for={fid('label-fr')} class="text-xs text-text-muted font-medium">Français</label>
+        <label for={fid('label-fr')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_fr_label', lang)}</label>
         <input
           id={fid('label-fr')}
           type="text"
           class="input text-sm"
           value={locGet(ctx.feature.label as Record<string,string>, 'fr')}
-          placeholder="ex. Attaque en puissance"
+          placeholder={ui('editor.core.label_fr_placeholder', lang)}
           oninput={(e) => locSet('label', 'fr', (e.currentTarget as HTMLInputElement).value)}
         />
       </div>
@@ -273,7 +273,7 @@
     <!-- English description -->
     <div class="flex flex-col gap-1">
       <div class="flex items-center justify-between">
-        <label for={fid('desc-en')} class="text-xs text-text-muted font-medium">English</label>
+        <label for={fid('desc-en')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_en_label', lang)}</label>
         <button
           type="button"
           class="text-[10px] text-text-muted underline hover:text-text-primary"
@@ -296,7 +296,7 @@
           id={fid('desc-en')}
           class="input min-h-[6rem] text-sm resize-y font-sans"
           value={locGet(ctx.feature.description as Record<string,string>, 'en')}
-          placeholder="Enter the English description. Use @-path variables (e.g. @characterLevel) for dynamic values resolved at display time."
+          placeholder={ui('editor.core.desc_en_placeholder', lang)}
           oninput={(e) => locSet('description', 'en', (e.currentTarget as HTMLTextAreaElement).value)}
           spellcheck="true"
         ></textarea>
@@ -306,13 +306,13 @@
     <!-- French description -->
     <div class="flex flex-col gap-1">
       <div class="flex items-center justify-between">
-        <label for={fid('desc-fr')} class="text-xs text-text-muted font-medium">Français</label>
+        <label for={fid('desc-fr')} class="text-xs text-text-muted font-medium">{ui('editor.core.lang_fr_label', lang)}</label>
         <button
           type="button"
           class="text-[10px] text-text-muted underline hover:text-text-primary"
           onclick={() => (previewFr = !previewFr)}
         >
-          {previewFr ? 'Modifier' : 'Aperçu'}
+          {previewFr ? ui('editor.core.edit_btn', lang) : ui('editor.core.preview_btn', lang)}
         </button>
       </div>
 
@@ -329,7 +329,7 @@
           id={fid('desc-fr')}
           class="input min-h-[6rem] text-sm resize-y font-sans"
           value={locGet(ctx.feature.description as Record<string,string>, 'fr')}
-          placeholder="Entrez la description en français."
+          placeholder={ui('editor.core.desc_fr_placeholder', lang)}
           oninput={(e) => locSet('description', 'fr', (e.currentTarget as HTMLTextAreaElement).value)}
           spellcheck="true"
         ></textarea>

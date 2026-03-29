@@ -96,7 +96,7 @@ export function buildSkillPointsBudget(
     const totalPoints = pointsPerLevel * classLevel + firstLevelBonus;
 
     const classFeature = dataLoader.getFeature(sourceId);
-    const classLabel: LocalizedString = classFeature?.label ?? { en: sourceId, fr: sourceId };
+    const classLabel: LocalizedString = classFeature?.label ?? { en: sourceId };
 
     classEntries.push({
       classId: sourceId,
@@ -163,7 +163,7 @@ export function buildLevelingJournal(
     if (classLevel < 1) continue;
 
     const classFeature = dataLoader.getFeature(classId);
-    const classLabel: LocalizedString = classFeature?.label ?? { en: classId, fr: classId };
+    const classLabel: LocalizedString = classFeature?.label ?? { en: classId };
 
     const sumMods = (targetId: string) =>
       flatModifiers
@@ -278,7 +278,7 @@ export function buildSkillPipelines(
       const sourceRanks = characterSkills[sourceSkill]?.ranks ?? 0;
       if (sourceRanks >= requiredRanks) {
         const sourceSkillFeature = dataLoader.getFeature(sourceSkill);
-        const sourceLabel: LocalizedString = sourceSkillFeature?.label ?? { en: sourceSkill, fr: sourceSkill };
+        const sourceLabel: LocalizedString = sourceSkillFeature?.label ?? { en: sourceSkill };
 
         const synergyLabel = buildLocalizedString(SYNERGY_SOURCE_LABEL_KEY);
         const synergyMod: Modifier = {

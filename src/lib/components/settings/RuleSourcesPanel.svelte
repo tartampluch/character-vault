@@ -194,7 +194,7 @@
           ondragover={(e) => handleDragOver(e, i)}
           ondragend={handleDragEnd}
           role="listitem"
-          aria-label="Drag to reorder: {path}"
+          aria-label={ui('settings.drag_reorder_aria', engine.settings.language).replace('{name}', path)}
         >
           <IconDragHandle size={12} class="text-text-muted/50 shrink-0 cursor-grab" aria-hidden="true" />
           <span class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border {gc.on}">

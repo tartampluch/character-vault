@@ -220,9 +220,9 @@
                    <button
                      class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
                      onclick={() => (modalItemId = item.feature.id)}
-                     aria-label="Details for {engine.t(item.feature.label)}"
+                    aria-label={ui('common.item_details_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
                      type="button"
-                   ><IconInfo size={14} aria-hidden="true" /></button>
+                    ><IconInfo size={14} aria-hidden="true" /></button>
                    {#if isCursed(item.feature)}
                       <!-- Cursed items cannot be unequipped via normal means.
                            IconClose replaces raw Unicode ✗ (zero-hardcoding rule:
@@ -314,15 +314,15 @@
 
                 <!-- Action buttons -->
                 <div class="flex gap-1 shrink-0">
-                  <button
-                    class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
-                    onclick={() => (modalItemId = item.feature.id)}
-                    aria-label="Details for {engine.t(item.feature.label)}"
-                    type="button"
-                  ><IconInfo size={14} aria-hidden="true" /></button>
+                   <button
+                     class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
+                     onclick={() => (modalItemId = item.feature.id)}
+                     aria-label={ui('common.item_details_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
+                     type="button"
+                   ><IconInfo size={14} aria-hidden="true" /></button>
 
-                  <!--
-                    CONSUMABLE ITEMS (potions, oils):
+                   <!--
+                     CONSUMABLE ITEMS (potions, oils):
                     Show a "Drink" / "Apply" / "Use" button instead of (or in addition to)
                     the Equip button. Clicking this calls engine.consumeItem() which:
                       1. Removes the item from inventory permanently.
@@ -356,8 +356,8 @@
                              disabled:opacity-30 disabled:cursor-not-allowed"
                       onclick={() => equipItem(item.instanceId, item.feature)}
                       disabled={!check.ok}
-                      title={check.ok ? 'Equip this item' : equipReasonText(check)}
-                      aria-label="Equip {engine.t(item.feature.label)}"
+                      title={check.ok ? ui('inventory.equip_title', engine.settings.language) : equipReasonText(check)}
+                      aria-label={ui('inventory.equip_item_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
                       type="button"
                     ><IconEquip size={14} aria-hidden="true" /></button>
                   {/if}
@@ -365,12 +365,12 @@
                    <button
                      class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
                      onclick={() => engine.removeFeature(item.instanceId)}
-                     aria-label="Remove {engine.t(item.feature.label)}"
-                     type="button"
-                   ><IconDelete size={14} aria-hidden="true" /></button>
-                 </div>
-               </div>
-               <!-- Psionic item data card (Extension E) -->
+                      aria-label={ui('common.remove_item_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
+                      type="button"
+                    ><IconDelete size={14} aria-hidden="true" /></button>
+                  </div>
+                </div>
+                <!-- Psionic item data card (Extension E) -->
                {#if item.feature.psionicItemData}
                  <PsionicItemCard item={item.feature} instanceId={item.instanceId} />
                {/if}
@@ -436,23 +436,23 @@
 
                 <!-- Action buttons -->
                 <div class="flex gap-1 shrink-0">
-                  <button
-                    class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
-                    onclick={() => (modalItemId = item.feature.id)}
-                    aria-label="Details for {engine.t(item.feature.label)}"
-                    type="button"
-                  ><IconInfo size={14} aria-hidden="true" /></button>
                    <button
-                     class="btn-ghost p-1.5 text-text-muted hover:bg-surface-alt text-xs"
-                     onclick={() => engine.moveItemFromStash(item.instanceId)}
-                     aria-label="Move {engine.t(item.feature.label)} to backpack"
-                     title="Move to backpack"
+                     class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
+                     onclick={() => (modalItemId = item.feature.id)}
+                     aria-label={ui('common.item_details_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
                      type="button"
-                   ><IconUnequip size={14} aria-hidden="true" /></button>
-                  <button
-                    class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
-                    onclick={() => engine.removeFeature(item.instanceId)}
-                    aria-label="Remove {engine.t(item.feature.label)}"
+                   ><IconInfo size={14} aria-hidden="true" /></button>
+                    <button
+                      class="btn-ghost p-1.5 text-text-muted hover:bg-surface-alt text-xs"
+                      onclick={() => engine.moveItemFromStash(item.instanceId)}
+                      aria-label={ui('inventory.move_to_backpack_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
+                      title={ui('inventory.move_to_backpack_title', engine.settings.language)}
+                      type="button"
+                    ><IconUnequip size={14} aria-hidden="true" /></button>
+                   <button
+                     class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
+                     onclick={() => engine.removeFeature(item.instanceId)}
+                     aria-label={ui('common.remove_item_aria', engine.settings.language).replace('{name}', engine.t(item.feature.label))}
                     type="button"
                   ><IconDelete size={14} aria-hidden="true" /></button>
                 </div>

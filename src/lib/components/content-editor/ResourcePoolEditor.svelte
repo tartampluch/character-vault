@@ -324,10 +324,7 @@
               </svg>
             </button>
             <p class="text-[10px] text-text-muted">
-              The pipeline whose <code class="font-mono">totalValue</code> sets the cap.
-              For fixed-charge items, create a dedicated stat pipeline (e.g.
-              <code class="font-mono">combatStats.ram_charges_max</code>) and give it a
-              <code class="font-mono">setAbsolute</code> modifier of value 50.
+              {@html ui('content_editor.pool.max_pipeline_help', lang)}
             </p>
           </div>
 

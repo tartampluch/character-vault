@@ -70,7 +70,7 @@
         </label>
         <input id={fid('acp')} type="number" class="input text-xs" max="0"
                value={ad.armorCheckPenalty}
-               title="Enter as a negative number (e.g. -6) or a positive number (stored as-is)"
+               title={ui('editor.armor.acp_sign_hint', lang)}
                oninput={(e) => { ad.armorCheckPenalty = parseInt((e.currentTarget as HTMLInputElement).value) || 0; }}/>
       </div>
       <div class="flex flex-col gap-1">

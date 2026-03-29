@@ -72,6 +72,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ---------------------------------------------------------------------------
   // PROPS
@@ -89,6 +90,11 @@
     showDots?: boolean;
     /** Accessible label for the scrollable region (for screen readers). */
     ariaLabel?: string;
+    /**
+     * BCP-47 language code for translating the dot-navigation accessible labels.
+     * Defaults to 'en'. Pass `engine.settings.language` from the parent.
+     */
+    lang?: string;
     /** Scrollable content. */
     children: import('svelte').Snippet;
   }
@@ -96,9 +102,12 @@
   let {
     snapStep = null,
     showDots = false,
-    ariaLabel = 'Scrollable content',
+    ariaLabel,
+    lang = 'en',
     children,
   }: Props = $props();
+
+  const resolvedAriaLabel = $derived(ariaLabel ?? ui('horizontal_scroll.default_label', lang));
 
   // ---------------------------------------------------------------------------
   // SCROLL STATE
@@ -275,7 +284,7 @@
     data-snap-align={snapStep ?? undefined}
     onscroll={updateScrollState}
     role="region"
-    aria-label={ariaLabel}
+    aria-label={resolvedAriaLabel}
     tabindex={0}
   >
     {@render children()}
@@ -293,7 +302,7 @@
   <div
     class="flex items-center justify-center gap-1.5 mt-2"
     role="tablist"
-    aria-label="Scroll position indicators"
+    aria-label={ui('horizontal_scroll.position_aria', lang)}
   >
     {#each { length: dotCount } as _, i}
       <button
@@ -307,8 +316,8 @@
         type="button"
         role="tab"
         aria-selected={i === activeDotIndex}
-        aria-label="Scroll to section {i + 1} of {dotCount}"
-        title="Section {i + 1}"
+        aria-label={ui('horizontal_scroll.section_aria', lang).replace('{n}', String(i + 1)).replace('{total}', String(dotCount))}
+        title={ui('horizontal_scroll.section_aria', lang).replace('{n}', String(i + 1)).replace('{total}', String(dotCount))}
       ></button>
     {/each}
   </div>

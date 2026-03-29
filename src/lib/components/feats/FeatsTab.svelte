@@ -99,7 +99,7 @@
               <button
                 class="btn-ghost p-1.5 text-accent hover:bg-accent/10 shrink-0"
                 onclick={() => (modalFeatId = feat.id)}
-                aria-label="Show {engine.t(feat.label)} details"
+                aria-label={ui('core.show_feature_details_aria', engine.settings.language).replace('{name}', engine.t(feat.label))}
                 type="button"
               ><IconInfo size={14} aria-hidden="true" /></button>
             </div>
@@ -149,13 +149,13 @@
                 <button
                   class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
                   onclick={() => (modalFeatId = feat.id)}
-                  aria-label="Show {engine.t(feat.label)} details"
+                  aria-label={ui('core.show_feature_details_aria', engine.settings.language).replace('{name}', engine.t(feat.label))}
                   type="button"
                 ><IconInfo size={14} aria-hidden="true" /></button>
                 <button
                   class="btn-ghost p-1.5 text-red-400 hover:bg-red-500/10"
                   onclick={() => engine.removeFeature(afi.instanceId)}
-                  aria-label="Remove {engine.t(feat.label)}"
+                  aria-label={ui('common.remove_item_aria', engine.settings.language).replace('{name}', engine.t(feat.label))}
                   title={ui('feats.remove_tooltip', engine.settings.language)}
                   type="button"
                 ><IconDelete size={14} aria-hidden="true" /></button>

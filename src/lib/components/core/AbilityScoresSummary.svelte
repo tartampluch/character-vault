@@ -34,14 +34,14 @@
     <a
       href="/character/{charId}?tab=abilities"
       class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
-      aria-label="Open full Ability Scores editor"
+      aria-label={ui('core.open_ability_scores_aria', lang)}
     >
       {ui('core.edit_link', lang)}
     </a>
   </div>
 
   <!-- 3-column grid on mobile, 6-column on sm+ -->
-  <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" role="list" aria-label="Ability scores">
+  <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" role="list" aria-label={ui('core.ability_scores', lang)}>
     {#each MAIN_ABILITY_IDS as abilityId}
       {@const pipeline = engine.phase2_attributes[abilityId]}
       {#if pipeline}
@@ -64,7 +64,7 @@
           <!-- Derived modifier — green/neutral/red -->
           <span
             class="stat-modifier {pipeline.derivedModifier > 0 ? 'text-green-500 dark:text-green-400' : pipeline.derivedModifier < 0 ? 'text-red-500 dark:text-red-400' : ''}"
-            aria-label="Modifier: {formatModifier(pipeline.derivedModifier)}"
+            aria-label={ui('core.modifier_aria', lang).replace('{value}', formatModifier(pipeline.derivedModifier))}
           >
             {formatModifier(pipeline.derivedModifier)}
           </span>

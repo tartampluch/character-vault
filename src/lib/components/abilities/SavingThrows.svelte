@@ -84,7 +84,7 @@
                   {abilityMod > 0 ? 'text-green-500 dark:text-green-400'
                   : abilityMod < 0 ? 'text-red-500 dark:text-red-400'
                   : 'text-text-muted'}"
-                title="{engine.t(engine.phase2_attributes[save.keyAbilityId]?.label ?? {})} modifier"
+                title={ui('saves.ability_modifier_title', engine.settings.language).replace('{ability}', engine.t(engine.phase2_attributes[save.keyAbilityId]?.label ?? {}))}
               >
                 {formatModifier(abilityMod)}
               </span>
@@ -122,7 +122,7 @@
               value={tempMods[save.pipelineId] ?? '0'}
               class="input flex-1 text-center text-xs px-1 py-1 text-yellow-500 dark:text-yellow-400 min-w-0"
               oninput={(e) => { tempMods[save.pipelineId] = (e.target as HTMLInputElement).value; }}
-              aria-label="{engine.t(pipeline.label)} temporary modifier"
+              aria-label={ui('saves.temp_mod_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
             />
           </div>
 
@@ -131,14 +131,14 @@
             <button
               class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
               onclick={() => (breakdownSaveId = save.pipelineId)}
-              aria-label="Show {engine.t(pipeline.label)} breakdown"
+              aria-label={ui('saves.show_breakdown_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
               title={ui('saves.show_breakdown', engine.settings.language)}
               type="button"
             ><IconInfo size={16} aria-hidden="true" /></button>
             <button
               class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
               onclick={() => (diceRollSaveId = save.pipelineId)}
-              aria-label="Roll {engine.t(pipeline.label)} save"
+              aria-label={ui('saves.roll_save_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
               title={ui('saves.roll', engine.settings.language)}
               type="button"
             ><IconDiceRoll size={16} aria-hidden="true" /></button>

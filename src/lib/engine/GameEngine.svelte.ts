@@ -3633,7 +3633,7 @@ export class GameEngine {
       if (attributes[id]) continue; // already handled above
       attributes[id] = {
         id:                    stored.id    ?? id,
-        label:                 stored.label ?? { en: id, fr: id },
+        label:                 stored.label ?? { en: id },
         baseValue:             stored.baseValue             ?? 0,
         totalValue:            stored.baseValue             ?? 0,
         derivedModifier:       0,

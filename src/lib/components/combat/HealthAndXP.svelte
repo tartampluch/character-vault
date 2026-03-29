@@ -353,13 +353,13 @@
     <button
       class="flex items-center justify-center gap-1 flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-accent hover:text-accent transition-colors duration-150"
       onclick={onNewEncounter}
-      title="Reset encounter-slot abilities"
+      title={ui('heal.encounter_reset_tooltip', engine.settings.language)}
       type="button"
     ><IconEncounterReset size={12} aria-hidden="true" /> {ui('heal.encounter_reset', engine.settings.language)}</button>
     <button
       class="flex items-center justify-center gap-1 flex-1 rounded-md px-2 py-1.5 text-xs font-medium border border-border text-text-secondary hover:border-sky-500 hover:text-sky-400 transition-colors duration-150"
       onclick={onLongRest}
-      title="Restore all long-rest resources"
+      title={ui('heal.long_rest_tooltip', engine.settings.language)}
       type="button"
     ><IconLongRest size={12} aria-hidden="true" /> {ui('heal.long_rest', engine.settings.language)}</button>
   </section>

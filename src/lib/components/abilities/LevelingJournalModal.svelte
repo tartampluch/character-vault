@@ -225,13 +225,13 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="font-semibold text-text-primary">{engine.t(entry.classLabel)}</span>
-                <span class="badge-blue text-xs">Lv {entry.classLevel}</span>
+                <span class="badge-blue text-xs">{ui('journal.class_level_badge', lang).replace('{n}', String(entry.classLevel))}</span>
               </div>
               <div class="flex items-center gap-3 text-xs font-mono">
                 <span class="text-green-400" title={ui('journal.bab', lang)}>
                   {ui('journal.bab', lang)} {signedNum(entry.totalBab)}
                 </span>
-                <span class="text-blue-400" title="Fort | Ref | Will">
+                <span class="text-blue-400" title={ui('journal.fort_ref_will_title', lang)}>
                   {signedNum(entry.totalFort)}/{signedNum(entry.totalRef)}/{signedNum(entry.totalWill)}
                 </span>
                 <span class="text-yellow-400" title={ui('journal.skill_points', lang)}>
@@ -267,7 +267,7 @@
                              {isActive
                                ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400'
                                : 'border-border bg-surface-alt text-text-muted opacity-50'}"
-                      title={isActive ? ui('skills.class_skill', lang) : 'Skill not loaded'}
+                      title={isActive ? ui('skills.class_skill', lang) : ui('journal.skill_not_loaded', lang)}
                     >
                       {#if isActive}
                         <IconSuccess size={10} aria-hidden="true" />
@@ -293,7 +293,7 @@
                     </span>
                   {/each}
                   {#if entry.grantedFeatureIds.length > 12}
-                    <span class="text-[10px] text-text-muted">+{entry.grantedFeatureIds.length - 12} more</span>
+                    <span class="text-[10px] text-text-muted">{ui('journal.n_more', lang).replace('{n}', String(entry.grantedFeatureIds.length - 12))}</span>
                   {/if}
                 </div>
               </div>
@@ -316,10 +316,10 @@
             {#if hasLockedRanks}
               <span class="inline-flex items-center gap-1 text-amber-400">
                 <IconLocked size={12} aria-hidden="true" />
-                Some skill ranks are locked (committed level-up floors).
+                {ui('journal.ranks_locked_note', lang)}
               </span>
             {:else}
-              <span>All ranks are freely editable (no levels committed).</span>
+              <span>{ui('journal.ranks_free_note', lang)}</span>
             {/if}
           </p>
         </div>

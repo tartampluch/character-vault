@@ -88,6 +88,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { IconClose } from '$lib/components/ui/icons';
+  import { ui } from '$lib/i18n/ui-strings';
 
   // ---------------------------------------------------------------------------
   // PROPS
@@ -117,6 +118,11 @@
      * Use for multi-step wizards where accidental dismissal loses work.
      */
     preventClose?: boolean;
+    /**
+     * BCP-47 language code used for the close-button accessible labels.
+     * Defaults to 'en'. Pass `engine.settings.language` from parent components.
+     */
+    lang?: string;
     /** Modal body — rendered inside the scrollable content area. */
     children: import('svelte').Snippet;
   }
@@ -128,6 +134,7 @@
     title,
     fullscreen = false,
     preventClose = false,
+    lang = 'en',
     children,
   }: Props = $props();
 
@@ -398,8 +405,8 @@
             <button
               class="btn-ghost btn-icon -mr-1"
               onclick={onClose}
-              title="Close"
-              aria-label="Close dialog"
+              title={ui('common.close', lang)}
+              aria-label={ui('modal.close_dialog_aria', lang)}
               type="button"
             >
               <IconClose size={20} aria-hidden="true" />

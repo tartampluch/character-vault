@@ -72,7 +72,7 @@
             <button
               class="btn-ghost p-1 text-accent hover:bg-accent/10"
               onclick={() => (breakdownId = stat.id)}
-              aria-label="Show {stat.description} breakdown"
+              aria-label={ui('combat.core.show_breakdown_aria', engine.settings.language).replace('{name}', stat.description)}
               title={ui('combat.core.breakdown', engine.settings.language)}
               type="button"
             ><IconInfo size={14} aria-hidden="true" /></button>

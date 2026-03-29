@@ -118,7 +118,7 @@
             type="text"
             class="input text-xs"
             value={(tier.label as Record<string, string>)?.['en'] ?? ''}
-            placeholder="e.g. 2 Charges: 2d6 damage"
+             placeholder={ui('editor.tiered_costs.label_en_placeholder', lang)}
             oninput={(e) => setTierLabel(i, 'en', (e.currentTarget as HTMLInputElement).value)}
           />
         </div>
@@ -134,7 +134,7 @@
             type="text"
             class="input text-xs"
             value={(tier.label as Record<string, string>)?.['fr'] ?? ''}
-            placeholder="ex. 2 Charges : 2d6 dégâts"
+             placeholder={ui('editor.tiered_costs.label_fr_placeholder', lang)}
             oninput={(e) => setTierLabel(i, 'fr', (e.currentTarget as HTMLInputElement).value)}
           />
         </div>

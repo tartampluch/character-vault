@@ -120,7 +120,7 @@
       <div class="flex flex-col gap-1">
         <label for={fid('sub')} class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
           {ui('editor.magic.sub_school_label', lang)}
-          <span class="font-normal text-[9px]">(optional)</span>
+          <span class="font-normal text-[9px]">{ui('editor.choices.prefix_optional', lang)}</span>
         </label>
         <input id={fid('sub')} type="text" class="input text-sm"
                value={magic.subSchool ?? ''}

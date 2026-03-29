@@ -128,7 +128,7 @@
       <div class="flex items-center gap-1.5">
         <span class="text-[10px] text-text-muted">{ui('psionic_item.recharge_label', lang)}</span>
         <input type="number" min="1" max={psi.maxPP} bind:value={ppToRecharge}
-               class="input w-12 text-center text-xs px-1 py-0.5" aria-label="PP to recharge" />
+               class="input w-12 text-center text-xs px-1 py-0.5" aria-label={ui('inventory.psionic.pp_recharge_aria', lang)} />
         <button
           class="px-2 py-0.5 text-xs rounded border border-purple-600/40 text-purple-400 hover:bg-purple-950/30 transition-colors duration-150"
           onclick={() => rechargePP(ppToRecharge)}

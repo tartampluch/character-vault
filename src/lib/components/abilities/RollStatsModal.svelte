@@ -128,7 +128,7 @@
                     if (unassigned) assignValue(unassigned, index);
                   }
                 }}
-                aria-label="Value {val}{isUsed ? ' (assigned)' : ''}"
+                aria-label={ui('abilities.roll_value_aria', lang).replace('{val}', String(val)) + (isUsed ? ' ' + ui('abilities.roll_value_assigned', lang) : '')}
                 type="button"
                 disabled={isUsed}
               >
@@ -169,7 +169,7 @@
                   if (idx >= 0) assignValue(abilityId, idx);
                   else clearAssignment(abilityId);
                 }}
-                aria-label="Assign a rolled value to {abbr}"
+                aria-label={ui('abilities.assign_value_aria', lang).replace('{name}', abbr)}
               >
                 <option value="-1">{ui('abilities.roll.not_assigned', lang)}</option>
                 {#each rolledValues as val, index}
@@ -190,7 +190,7 @@
               {/if}
 
               {#if isRec}
-                <span class="text-green-500 shrink-0" aria-label="Recommended">
+                <span class="text-green-500 shrink-0" aria-label={ui('abilities.recommended_badge_aria', lang)}>
                   <IconTabFeats size={12} />
                 </span>
               {/if}

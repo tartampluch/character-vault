@@ -72,8 +72,8 @@
         type="number"
         bind:value={tempMod}
         class="input w-16 text-center px-1 text-sm text-yellow-500 dark:text-yellow-400"
-        aria-label="Temporary AC modifier (applied to all AC types)"
-        title="Quick temporary modifier (buff spell, condition, etc.)"
+        aria-label={ui('combat.ac.temp_mod_aria', engine.settings.language)}
+        title={ui('combat.ac.temp_mod_tooltip', engine.settings.language)}
       />
     </div>
   </div>
@@ -130,7 +130,7 @@
             class="btn-ghost p-1 text-accent hover:bg-accent/10 rounded-full"
             onclick={() => (breakdownAcId = acConfig.id)}
             aria-label={ui('combat.ac.show_breakdown_aria', engine.settings.language).replace('{description}', acConfig.description)}
-            title="Show breakdown"
+            title={ui('common.show_breakdown', engine.settings.language)}
             type="button"
           ><IconInfo size={14} aria-hidden="true" /></button>
 

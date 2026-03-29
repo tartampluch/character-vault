@@ -117,13 +117,13 @@
             <button
               class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
               onclick={() => (modalId = feature.id)}
-              aria-label="Show details"
+              aria-label={ui('magic.abilities.show_details_aria', engine.settings.language)}
               type="button"
             ><IconInfo size={14} aria-hidden="true" /></button>
             <button
               class="flex-1 btn-primary text-xs py-1.5"
               onclick={() => handleUseAbility(instanceId, feature.id)}
-              aria-label="Use {engine.t(feature.label)}"
+              aria-label={ui('magic.abilities.use_aria', engine.settings.language).replace('{name}', engine.t(feature.label))}
               type="button"
             >{ui('magic.abilities.use', engine.settings.language)}</button>
           </div>

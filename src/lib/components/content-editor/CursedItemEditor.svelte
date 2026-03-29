@@ -88,7 +88,7 @@
         </label>
         <input id={fid('note')} type="text" class="input text-sm"
                value={rp.preventionNote ?? ''}
-               placeholder="e.g. Remains clasped even after death."
+               placeholder={ui('editor.cursed.prevention_note_placeholder', lang)}
                oninput={(e) => {
                  rp.preventionNote = (e.currentTarget as HTMLInputElement).value || undefined;
                }}/>

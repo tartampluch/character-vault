@@ -174,7 +174,7 @@
   {:else}
     <section
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-      aria-label="Character list ({engine.visibleCharacters.length} adventurers)"
+      aria-label={ui('vault.character_list_aria', engine.settings.language).replace('{n}', String(engine.visibleCharacters.length))}
     >
       {#each engine.visibleCharacters as character (character.id)}
         <CharacterCard

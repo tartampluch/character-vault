@@ -147,7 +147,7 @@
             <button
               class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
               onclick={() => (modalSpellId = spell.id)}
-              aria-label="Show {engine.t(spell.label)} details"
+              aria-label={ui('magic.casting.spell_details_aria', engine.settings.language).replace('{name}', engine.t(spell.label))}
               type="button"
             ><IconInfo size={14} aria-hidden="true" /></button>
             <button

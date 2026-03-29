@@ -157,7 +157,7 @@
           class="inline-flex items-center justify-center
                  min-w-[1.25rem] h-5 px-1.5 rounded-full
                  bg-accent/20 text-accent text-xs font-bold"
-          aria-label="{ephemeralEffects.length} active effects"
+          aria-label={ui('effects.panel.count_aria', engine.settings.language).replace('{n}', String(ephemeralEffects.length))}
         >
           {ephemeralEffects.length}
         </span>
@@ -173,7 +173,7 @@
 
   {:else}
     <!-- ─── EFFECT CARDS LIST ──────────────────────────────────────────── -->
-    <ul class="divide-y divide-border" role="list" aria-label="Active effects">
+    <ul class="divide-y divide-border" role="list" aria-label={ui('effects.panel.title', engine.settings.language)}>
       {#each ephemeralEffects as effect (effect.instanceId)}
         {@const isPendingExpire = pendingExpire[effect.instanceId] ?? false}
         <li
@@ -266,8 +266,8 @@
                 class="btn-ghost p-1.5 text-text-muted hover:text-accent
                        rounded-md transition-colors"
                 onclick={() => (modalFeatureId = effect.featureId)}
-                title="Show effect details"
-                aria-label="Show details for {effect.feature ? engine.t(effect.feature.label) : effect.featureId}"
+                title={ui('effects.panel.info_title', engine.settings.language)}
+                aria-label={ui('effects.panel.info_aria', engine.settings.language).replace('{name}', effect.feature ? engine.t(effect.feature.label) : effect.featureId)}
                 type="button"
               >
                 <IconInfo size={14} aria-hidden="true" />

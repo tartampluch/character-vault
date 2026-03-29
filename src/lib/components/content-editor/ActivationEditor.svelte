@@ -183,7 +183,7 @@
             type="text"
             class="input text-sm"
             value={act.triggerEvent ?? ''}
-            placeholder="e.g. When targeted by an attack"
+             placeholder={ui('editor.activation.trigger_event_placeholder', lang)}
             list={fid('trigger-list')}
             oninput={(e) => {
               ctx.feature.activation = {

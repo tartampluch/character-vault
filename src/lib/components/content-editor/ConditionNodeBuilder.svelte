@@ -488,7 +488,7 @@
           type="text"
           class="input text-xs w-full"
           value={node.value !== undefined && node.value !== null ? String(node.value) : ''}
-          placeholder="value"
+           placeholder={ui('editor.condition.value_placeholder', lang)}
           oninput={(e) => patchCondition({ value: (e.currentTarget as HTMLInputElement).value })}
           autocomplete="off"
           spellcheck="false"
@@ -507,7 +507,7 @@
         type="text"
         class="input text-xs w-full"
         value={node.errorMessage ?? ''}
-        placeholder="e.g. Requires stat_strength 13+"
+         placeholder={ui('editor.condition.error_msg_placeholder', lang)}
         oninput={(e) => patchCondition({ errorMessage: (e.currentTarget as HTMLInputElement).value || undefined })}
         autocomplete="off"
       />

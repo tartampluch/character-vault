@@ -138,7 +138,7 @@
           <button
             class="btn-ghost p-1 text-red-400 hover:text-red-500"
             onclick={() => engine.removeFeature(dr.instanceId)}
-            aria-label="Remove {dr.label}"
+            aria-label={ui('combat.dr.remove_aria', engine.settings.language).replace('{label}', dr.label)}
             type="button"
           ><IconDelete size={14} aria-hidden="true" /></button>
         </li>

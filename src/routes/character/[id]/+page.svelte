@@ -265,7 +265,7 @@
         <a
           href="/campaigns/{engine.character.campaignId}/vault"
           class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors duration-150"
-          aria-label="Back to Character Vault"
+          aria-label={ui('character.back_vault_aria', engine.settings.language)}
         >
           <IconBack size={12} aria-hidden="true" />
           {ui('character.back_vault', engine.settings.language)}
@@ -274,7 +274,7 @@
         <a
           href="/campaigns"
           class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors duration-150"
-          aria-label="Back to campaigns"
+          aria-label={ui('character.back_campaigns_aria', engine.settings.language)}
         >
           <IconBack size={12} aria-hidden="true" />
           {ui('character.back_campaigns', engine.settings.language)}
@@ -306,7 +306,7 @@
         class="btn-primary text-xs px-3 py-1.5 gap-1 disabled:opacity-50"
         onclick={handleManualSave}
         disabled={saveStatus === 'saving'}
-        aria-label="Save character"
+        aria-label={ui('character.save_aria', engine.settings.language)}
         type="button"
       >
         {#if saveStatus === 'saving'}{ui('common.saving', engine.settings.language)}
@@ -318,8 +318,8 @@
       <!-- Character ID chip (dev utility) -->
       <code
         class="self-start text-xs text-text-muted bg-surface-alt border border-border rounded px-2 py-0.5 font-mono"
-        aria-label="Character ID"
-        title="Character ID: {engine.character.id}"
+        aria-label={ui('character.character_id_aria', engine.settings.language)}
+        title="{ui('character.character_id_aria', engine.settings.language)}: {engine.character.id}"
       >{engine.character.id.slice(0, 10)}…</code>
     </div>
 
@@ -338,7 +338,7 @@
   -->
   <div
     class="shrink-0 flex overflow-x-auto bg-surface border-b border-border snap-x snap-mandatory scrollbar-none"
-    aria-label="Character sheet sections"
+    aria-label={ui('character.sheet_sections_aria', engine.settings.language)}
     role="tablist"
   >
     {#each TABS as tab}

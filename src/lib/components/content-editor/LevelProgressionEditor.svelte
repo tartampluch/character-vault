@@ -360,7 +360,7 @@
                   onclick={() => (modalState = { kind: 'feature-picker', levelNumber: entry.level })}
                   title={ui('editor.level_prog.add_feature_title', lang).replace('{n}', String(entry.level))}
                 >
-                  + Add
+                  {ui('common.add', lang)}
                 </button>
               </div>
             </td>
@@ -380,7 +380,7 @@
                     modifiers: entry.grantedModifiers,
                   })}
                 >
-                  {nonIncMods.length > 0 ? ui('common.edit', lang) : '+ Add'}
+                  {nonIncMods.length > 0 ? ui('common.edit', lang) : ui('common.add', lang)}
                 </button>
               </div>
             </td>

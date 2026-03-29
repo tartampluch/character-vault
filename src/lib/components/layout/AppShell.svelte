@@ -424,7 +424,7 @@
     animate-spin applies a CSS rotation animation; text-accent sets the stroke
     color via currentColor inheritance.
   -->
-  <div class="flex h-screen items-center justify-center bg-surface" aria-label="Loading…" aria-live="polite">
+  <div class="flex h-screen items-center justify-center bg-surface" aria-label={ui('nav.loading_aria', engine.settings.language)} aria-live="polite">
     <IconLoading size={36} class="animate-spin text-accent" aria-hidden="true" />
   </div>
 {:else}
@@ -522,7 +522,7 @@
             Truncated with `overflow-hidden` to prevent horizontal overflow.
             Each segment ends with a › character separator.
           -->
-          <nav class="flex items-center gap-1 text-xs text-text-muted truncate" aria-label="Breadcrumb">
+          <nav class="flex items-center gap-1 text-xs text-text-muted truncate" aria-label={ui('nav.breadcrumb_aria', engine.settings.language)}>
             {#each ancestorCrumbs as crumb}
               <span class="truncate">{crumb}</span>
               <!--

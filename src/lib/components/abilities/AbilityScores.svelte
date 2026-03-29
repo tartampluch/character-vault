@@ -81,7 +81,7 @@
   </div>
 
   <!-- 3-col grid on lg, 2-col on sm, 1-col on mobile -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" role="table" aria-label="Ability scores editor">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" role="table" aria-label={ui('abilities.title', engine.settings.language)}>
 
     {#each MAIN_ABILITY_IDS as abilityId}
       {@const pipeline = engine.phase2_attributes[abilityId]}
@@ -108,7 +108,7 @@
             <span class="text-xs font-bold tracking-wider text-text-muted min-w-[2rem]">{abbr}</span>
             <span class="text-sm text-text-primary flex-1 truncate">{engine.t(pipeline.label)}</span>
             {#if isRecommended}
-              <span class="text-green-500" title={ui('abilities.recommended_for', engine.settings.language)} aria-label="Recommended">
+              <span class="text-green-500" title={ui('abilities.recommended_for', engine.settings.language)} aria-label={ui('abilities.recommended_badge_aria', engine.settings.language)}>
                 <IconTabFeats size={12} />
               </span>
             {/if}
@@ -125,7 +125,7 @@
                 max={ABILITY_SCORE_MAX}
                 value={pipeline.baseValue}
                 class="input text-center text-sm font-bold px-1 py-1 text-sky-500 dark:text-sky-400"
-                aria-label="{engine.t(pipeline.label)} base score"
+                aria-label={ui('abilities.base_score_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
                 onchange={(e) => handleBaseScoreChange(abilityId, e)}
               />
             </div>
@@ -163,7 +163,7 @@
               value={tempMods[abilityId] ?? '0'}
               class="input flex-1 text-center text-xs px-1 py-1 text-yellow-500 dark:text-yellow-400 min-w-0"
               style="border-color: color-mix(in oklch, var(--color-border) 70%, transparent);"
-              aria-label="{engine.t(pipeline.label)} temporary modifier"
+              aria-label={ui('abilities.temp_mod_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
                title={ui('abilities.temp_tooltip', engine.settings.language)}
               oninput={(e) => { tempMods[abilityId] = (e.target as HTMLInputElement).value; }}
             />
@@ -172,14 +172,14 @@
                 class="btn-ghost p-1.5 text-accent hover:bg-accent/10"
                 onclick={() => (breakdownPipelineId = abilityId)}
                 title={ui('abilities.show_breakdown', engine.settings.language)}
-                aria-label="Show {engine.t(pipeline.label)} breakdown"
+                aria-label={ui('abilities.show_breakdown_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label))}
                 type="button"
               ><IconInfo size={16} aria-hidden="true" /></button>
               <button
                 class="btn-ghost p-1.5 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10"
                 onclick={() => (diceRollPipelineId = abilityId)}
-                title="Roll a {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
-                aria-label="Roll {engine.t(pipeline.label)} {ui('abilities.check', engine.settings.language)}"
+                title={ui('abilities.roll_check_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label)).replace('{check}', ui('abilities.check', engine.settings.language))}
+                aria-label={ui('abilities.roll_check_aria', engine.settings.language).replace('{name}', engine.t(pipeline.label)).replace('{check}', ui('abilities.check', engine.settings.language))}
                 type="button"
               ><IconDiceRoll size={16} aria-hidden="true" /></button>
             </div>

@@ -38,14 +38,14 @@
     <a
       href="/character/{charId}?tab=abilities"
       class="text-xs text-accent hover:text-accent-700 dark:hover:text-accent-300 transition-colors duration-150"
-      aria-label="Open full Saving Throws editor"
+      aria-label={ui('core.open_saves_aria', lang)}
     >
       {ui('core.edit_link', lang)}
     </a>
   </div>
 
   <!-- Saves list -->
-  <div class="flex flex-col gap-1.5" role="list" aria-label="Saving throws">
+  <div class="flex flex-col gap-1.5" role="list" aria-label={ui('core.saving_throws', lang)}>
     {#each SAVES as save}
       {@const pipeline = engine.phase3_combatStats[save.pipelineId]}
       {@const keyAbilityMod = engine.phase2_attributes[save.keyAbilityId]?.derivedModifier ?? 0}
@@ -63,7 +63,7 @@
           <!-- Key ability abbreviation (CON, DEX, WIS) coloured per save -->
           <span
             class="text-xs font-bold tracking-wider opacity-75 cursor-help"
-            title="Governed by {engine.t(save.keyAbilityAbbr)} ({formatModifier(keyAbilityMod)})"
+            title={ui('saves.governed_by', lang).replace('{ability}', engine.t(save.keyAbilityAbbr)).replace('{mod}', formatModifier(keyAbilityMod))}
             aria-hidden="true"
             style="color: {save.accentColor};"
           >

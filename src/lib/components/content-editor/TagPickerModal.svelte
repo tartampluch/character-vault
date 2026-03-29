@@ -187,7 +187,7 @@
                     </span>
                     {#if group.entries.some(e => selectedTags.has(e.tag))}
                       <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent"
-                            title="Some tags from this group are selected"
+                            title={ui('editor.tag_picker.some_selected_title', lang)}
                             aria-hidden="true">
                       </span>
                     {/if}

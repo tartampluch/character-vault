@@ -172,7 +172,7 @@
       {/if}
 
       <!-- ── CHAPTERS ────────────────────────────────────────────────────── -->
-      <section aria-label="Campaign chapters">
+      <section aria-label={ui('campaign.chapters_section_aria', engine.settings.language)}>
         <div class="flex items-center gap-4 flex-wrap mb-4">
           <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
             <IconSpells size={20} aria-hidden="true" /> {ui('campaign.chapters_title', engine.settings.language)}
@@ -213,7 +213,7 @@
             {/if}
           </div>
         {:else}
-          <ol class="flex flex-col gap-2" aria-label="List of chapters">
+          <ol class="flex flex-col gap-2" aria-label={ui('campaign.chapters_list_aria', engine.settings.language)}>
             {#each campaign.chapters as chapter, index (chapter.id)}
               <!-- Players only see completed chapters — hide incomplete ones to avoid spoilers -->
               {#if sessionContext.isGameMaster || chapter.isCompleted}
@@ -222,7 +222,7 @@
                        {chapter.isCompleted
                          ? 'border-green-700/40 bg-green-950/10 dark:bg-green-950/20'
                          : 'border-border bg-surface-alt hover:border-accent/40'}"
-                aria-label="Chapter {index + 1}: {t(chapter.title)}"
+                aria-label={ui('campaign.chapter_item_aria', engine.settings.language).replace('{n}', String(index + 1)).replace('{title}', t(chapter.title))}
               >
                 <!-- Number / check badge -->
                 <span
@@ -250,7 +250,7 @@
 
                   <!-- ── Task list ────────────────────────────────────────── -->
                   {#if chapter.tasks && chapter.tasks.length > 0}
-                    <ul class="mt-2 flex flex-col gap-1" aria-label="Tasks for {t(chapter.title)}">
+                    <ul class="mt-2 flex flex-col gap-1" aria-label={ui('campaign.chapter_tasks_aria', engine.settings.language).replace('{title}', t(chapter.title))}>
                       {#each chapter.tasks as task (task.id)}
                         <!-- Players only see completed tasks -->
                         {#if sessionContext.isGameMaster || task.isCompleted}
@@ -298,7 +298,7 @@
                       type="checkbox"
                       checked={chapter.isCompleted}
                       onchange={() => toggleChapter(chapter.id)}
-                      aria-label="Toggle completion for {t(chapter.title)}"
+                      aria-label={ui('campaign.chapter_toggle_aria', engine.settings.language).replace('{title}', t(chapter.title))}
                       class="sr-only"
                     />
                     <span
@@ -325,7 +325,7 @@
 
       <!-- ── RULE SOURCES (GM only) ────────────────────────────────────────── -->
       {#if sessionContext.isGameMaster && campaign.enabledRuleSources.length > 0}
-        <section class="border-t border-border pt-5" aria-label="Active rule sources">
+        <section class="border-t border-border pt-5" aria-label={ui('campaign.sources_section_aria', engine.settings.language)}>
           <h2 class="flex items-center gap-2 text-sm font-semibold text-accent mb-3">
             <IconSpells size={16} aria-hidden="true" /> {ui('campaign.active_sources', engine.settings.language)}
           </h2>

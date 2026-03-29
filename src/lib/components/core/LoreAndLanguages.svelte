@@ -175,8 +175,8 @@
                 <button
                   class="text-accent-700 dark:text-accent-300 hover:text-red-500 transition-colors duration-100"
                   onclick={() => removeLanguage(lang_entry.instanceId)}
-                  aria-label="Remove {lang_entry.name}"
-                  title="Remove {lang_entry.name}"
+                  aria-label={ui('lore.remove_language_aria', lang).replace('{name}', lang_entry.name)}
+                  title={ui('lore.remove_language_aria', lang).replace('{name}', lang_entry.name)}
                   type="button"
                 >
                   <IconClose size={10} aria-hidden="true" />
