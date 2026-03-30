@@ -61,6 +61,7 @@
   import VariantRulesPanel     from '$lib/components/settings/VariantRulesPanel.svelte';
   import GmOverridesPanel      from '$lib/components/settings/GmOverridesPanel.svelte';
   import CampaignContentPanel  from '$lib/components/settings/CampaignContentPanel.svelte';
+  import { homebrewStore }      from '$lib/engine/HomebrewStore.svelte';
 
   // ── EditableChapter / EditableTask types ──────────────────────────────────
   // These mirror the internal interfaces of ChaptersPanel. They cannot be
@@ -163,6 +164,7 @@
    //   5. On remove: send null in PUT; evict all cache entries for this campaign.
 
    let editableBannerImageData: string | null = $state(null);
+   let savedBannerImageData:   string | null = $state(null);
    let bannerInitialised       = false;
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
    let bannerLoading           = $state(false);
@@ -172,30 +174,32 @@
      if (!c || bannerInitialised) return;
      bannerInitialised = true;
 
-     // 1. Fast path — check sessionStorage cache first.
-     const cached = getCachedBanner(campaignId, c.updatedAt);
-     if (cached) {
-       editableBannerImageData = cached;
-       return;
-     }
+      // 1. Fast path — check sessionStorage cache first.
+      const cached = getCachedBanner(campaignId, c.updatedAt);
+      if (cached) {
+        editableBannerImageData = cached;
+        savedBannerImageData    = cached;
+        return;
+      }
 
-     // 2. Slow path — fetch the full campaign (show endpoint returns bannerImageData).
-     bannerLoading = true;
-     fetch(`/api/campaigns/${campaignId}`, {
-       headers:     apiHeaders(),
-       credentials: 'include',
-     })
-       .then(async r => {
-         if (!r.ok) return;
-         const data = await r.json() as { bannerImageData?: string; updatedAt?: number };
-         if (isImageDataUri(data.bannerImageData)) {
-           editableBannerImageData = data.bannerImageData!;
-           // Cache using the campaign's current updatedAt so the cache is
-           // automatically stale after the next save (new updatedAt = new key).
-           const ts = data.updatedAt ?? c.updatedAt;
-           setCachedBanner(campaignId, ts, data.bannerImageData!);
-         }
-       })
+      // 2. Slow path — fetch the full campaign (show endpoint returns bannerImageData).
+      bannerLoading = true;
+      fetch(`/api/campaigns/${campaignId}`, {
+        headers:     apiHeaders(),
+        credentials: 'include',
+      })
+        .then(async r => {
+          if (!r.ok) return;
+          const data = await r.json() as { bannerImageData?: string; updatedAt?: number };
+          if (isImageDataUri(data.bannerImageData)) {
+            editableBannerImageData = data.bannerImageData!;
+            savedBannerImageData    = data.bannerImageData!;
+            // Cache using the campaign's current updatedAt so the cache is
+            // automatically stale after the next save (new updatedAt = new key).
+            const ts = data.updatedAt ?? c.updatedAt;
+            setCachedBanner(campaignId, ts, data.bannerImageData!);
+          }
+        })
        .catch(err => console.warn('[Settings] Failed to load banner:', err))
        .finally(() => { bannerLoading = false; });
    });
@@ -228,6 +232,8 @@
 
   let editableTitle       = $state<Record<string, string>>({ en: '' });
   let editableDescription = $state<Record<string, string>>({ en: '' });
+  let savedTitle          = $state<Record<string, string>>({ en: '' });
+  let savedDescription    = $state<Record<string, string>>({ en: '' });
   let infoInitialised     = false;
 
   $effect(() => {
@@ -235,7 +241,9 @@
     if (!c || infoInitialised) return;
     editableTitle       = toLocalizedRecord(c.title as Record<string, string> | string);
     editableDescription = toLocalizedRecord(c.description as Record<string, string> | string);
-    infoInitialised = true;
+    infoInitialised     = true;
+    savedTitle          = { ...editableTitle };
+    savedDescription    = { ...editableDescription };
   });
 
   // ===========================================================================
@@ -243,12 +251,14 @@
   // ===========================================================================
 
   let enabledSources     = $state<string[]>([]);
+  let savedSources       = $state<string[]>([]);
   let sourcesInitialised = false;
 
   $effect(() => {
     const sources = campaign?.enabledRuleSources;
     if (sources && !sourcesInitialised) {
       enabledSources     = [...sources];
+      savedSources       = [...sources];
       sourcesInitialised = true;
     }
   });
@@ -258,6 +268,7 @@
   // ===========================================================================
 
   let gmOverridesText      = $state('[]');
+  let savedGmOverridesText = $state('[]');
   let isValidJson          = $state(true);
   let overridesInitialised = false;
 
@@ -265,6 +276,7 @@
     const overrides = campaign?.gmGlobalOverrides;
     if (overrides && !overridesInitialised) {
       gmOverridesText      = overrides;
+      savedGmOverridesText = overrides;
       overridesInitialised = true;
     }
   });
@@ -274,6 +286,7 @@
   // ===========================================================================
 
   let editableChapters = $state<EditableChapter[]>([]);
+  let savedChapters    = $state<EditableChapter[]>([]);
   let syncedUpdatedAt  = $state<number>(-1);
   let chaptersAreDirty = $state(false);
 
@@ -299,6 +312,7 @@
       }));
       syncedUpdatedAt  = c.updatedAt;
       chaptersAreDirty = false;
+      savedChapters    = JSON.parse(JSON.stringify(editableChapters));
     }
   });
 
@@ -314,6 +328,16 @@
   let allowedStdArray   = $state(true);
   let variantGestalt    = $state(false);
   let variantVWP        = $state(false);
+
+  // Saved snapshots for dirty detection (mirrors the live values above)
+  let savedExplodingTwenties = $state(false);
+  let savedRerollOnes        = $state(false);
+  let savedPointBuyBudget    = $state(25);
+  let savedAllowedRoll       = $state(true);
+  let savedAllowedPointBuy   = $state(true);
+  let savedAllowedStdArray   = $state(true);
+  let savedVariantGestalt    = $state(false);
+  let savedVariantVWP        = $state(false);
 
   /**
    * Derives the allowed stat generation methods array from the individual
@@ -343,9 +367,62 @@
       allowedStdArray   = methods.includes('standard_array');
       variantGestalt    = cs.variantRules?.gestalt                    ?? false;
       variantVWP        = cs.variantRules?.vitalityWoundPoints        ?? false;
-      diceSettingsInitialised = true;
+      diceSettingsInitialised  = true;
+      savedExplodingTwenties   = explodingTwenties;
+      savedRerollOnes          = rerollOnes;
+      savedPointBuyBudget      = pointBuyBudget;
+      savedAllowedRoll         = allowedRoll;
+      savedAllowedPointBuy     = allowedPointBuy;
+      savedAllowedStdArray     = allowedStdArray;
+      savedVariantGestalt      = variantGestalt;
+      savedVariantVWP          = variantVWP;
     }
   });
+
+  // ===========================================================================
+  // TAB DIRTY STATE
+  // Per-tab unsaved-changes indicators shown as an amber bullet in the tab bar.
+  // Each derived compares the current editable value against its saved snapshot
+  // (set on first load and reset to the new value after every successful save).
+  // ===========================================================================
+
+  /** Dirty state for the Members tab — written back by MembershipPanel. */
+  let membersAreDirty = $state(false);
+
+  const infoIsDirty = $derived.by(() =>
+    JSON.stringify(editableTitle)       !== JSON.stringify(savedTitle)       ||
+    JSON.stringify(editableDescription) !== JSON.stringify(savedDescription) ||
+    editableBannerImageData             !== savedBannerImageData
+  );
+
+  const ruleSourcesAreDirty = $derived.by(() => {
+    if (enabledSources.length !== savedSources.length) return true;
+    return enabledSources.some((s, i) => s !== savedSources[i]);
+  });
+
+  const rulesGenAreDirty = $derived.by(() =>
+    explodingTwenties !== savedExplodingTwenties ||
+    rerollOnes        !== savedRerollOnes        ||
+    pointBuyBudget    !== savedPointBuyBudget    ||
+    allowedRoll       !== savedAllowedRoll       ||
+    allowedPointBuy   !== savedAllowedPointBuy   ||
+    allowedStdArray   !== savedAllowedStdArray   ||
+    variantGestalt    !== savedVariantGestalt    ||
+    variantVWP        !== savedVariantVWP
+  );
+
+  const gmOverridesAreDirty = $derived(gmOverridesText !== savedGmOverridesText);
+
+  /** Maps each tab key → whether it has unsaved changes (drives the tab-bar bullet). */
+  const tabDirtyMap = $derived.by((): Record<SettingsTabKey, boolean> => ({
+    info:             infoIsDirty,
+    chapters:         JSON.stringify(editableChapters) !== JSON.stringify(savedChapters),
+    members:          membersAreDirty,
+    rule_sources:     ruleSourcesAreDirty,
+    rules_gen:        rulesGenAreDirty,
+    campaign_content: homebrewStore.isDirty,
+    gm_overrides:     gmOverridesAreDirty,
+  }));
 
   // ===========================================================================
   // SAVE
@@ -470,6 +547,26 @@
       await commitMembership();
 
       chaptersAreDirty = false;
+      savedChapters    = JSON.parse(JSON.stringify(editableChapters));
+      // MembershipPanel may be unmounted (different tab active) so its $effect
+      // won't sync back after commit — reset the flag here directly.
+      membersAreDirty  = false;
+
+      // Reset all dirty snapshots so the tab-bar bullets clear after a save.
+      savedTitle            = { ...editableTitle };
+      savedDescription      = { ...editableDescription };
+      savedBannerImageData  = editableBannerImageData;
+      savedSources          = [...enabledSources];
+      savedGmOverridesText  = gmOverridesText;
+      savedExplodingTwenties = explodingTwenties;
+      savedRerollOnes        = rerollOnes;
+      savedPointBuyBudget    = pointBuyBudget;
+      savedAllowedRoll       = allowedRoll;
+      savedAllowedPointBuy   = allowedPointBuy;
+      savedAllowedStdArray   = allowedStdArray;
+      savedVariantGestalt    = variantGestalt;
+      savedVariantVWP        = variantVWP;
+
       saveHasError = false;
       toastVariant = 'success';
       toastMessage = ui('settings.saved', lang);
@@ -566,6 +663,9 @@
           compact. The icon alone is sufficient affordance on small screens.
         -->
         <span class="hidden md:inline">{ui(tab.labelKey, lang)}</span>
+        {#if tabDirtyMap[tab.key]}
+          <span class="text-xs font-normal text-amber-400/80" aria-hidden="true">●</span>
+        {/if}
       </button>
     {/each}
   </div>
@@ -598,7 +698,7 @@
 
     <!-- ── TAB: Campaign Members ──────────────────────────────────────────── -->
     {:else if activeTab === 'members'}
-      <MembershipPanel {campaignId} bind:commit={commitMembership} />
+      <MembershipPanel {campaignId} bind:commit={commitMembership} bind:hasPendingChanges={membersAreDirty} />
 
     <!-- ── TAB: Rule Sources ──────────────────────────────────────────────── -->
     {:else if activeTab === 'rule_sources'}

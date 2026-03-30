@@ -287,18 +287,12 @@
     </div>
   </div>
 
-  <!-- Save state indicator -->
-  {#if homebrewStore.isSaving || homebrewStore.isDirty}
+  <!-- Save state indicator (saving spinner only — unsaved-changes dot is shown in the tab bar) -->
+  {#if homebrewStore.isSaving}
     <div class="flex items-center gap-2 text-xs">
-      {#if homebrewStore.isSaving}
-        <span class="inline-block h-3 w-3 rounded-full border-2 border-accent border-t-transparent
-                     animate-spin shrink-0" aria-label={ui('content_editor.lib.saving', lang)}></span>
-        <span class="text-text-muted">{ui('content_editor.lib.saving', lang)}</span>
-      {:else if homebrewStore.isDirty}
-        <span class="inline-block h-2 w-2 rounded-full bg-amber-400 shrink-0"
-              aria-label={ui('content_editor.lib.unsaved', lang)}></span>
-        <span class="text-amber-400">{ui('content_editor.lib.unsaved', lang)}</span>
-      {/if}
+      <span class="inline-block h-3 w-3 rounded-full border-2 border-accent border-t-transparent
+                   animate-spin shrink-0" aria-label={ui('content_editor.lib.saving', lang)}></span>
+      <span class="text-text-muted">{ui('content_editor.lib.saving', lang)}</span>
     </div>
   {/if}
 

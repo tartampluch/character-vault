@@ -128,8 +128,8 @@
         {ui('settings.stat_gen.budget_desc', engine.settings.language)}
       </p>
 
-      <!-- Preset buttons -->
-      <div class="flex flex-wrap gap-2">
+      <!-- Preset buttons + custom budget input -->
+      <div class="flex flex-wrap items-center gap-2">
         {#each ([
           [15, 'settings.stat_gen.preset_low'],
           [25, 'settings.stat_gen.preset_std'],
@@ -147,17 +147,13 @@
             {ui(key, engine.settings.language)}
           </button>
         {/each}
-      </div>
-
-      <!-- Custom budget input -->
-      <div class="flex items-center gap-2">
         <input
           id="point-buy-budget"
           type="number"
           min="1"
           max="999"
           bind:value={pointBuyBudget}
-          class="input w-24 text-center text-sm font-bold text-sky-500 dark:text-sky-400"
+          class="input w-16 text-center text-xs"
           aria-label={ui('settings.stat_gen.budget', engine.settings.language)}
         />
         <span class="text-xs text-text-muted">{ui('settings.stat_gen.points_unit', engine.settings.language)}</span>

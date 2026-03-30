@@ -38,9 +38,11 @@
   let {
     campaignId,
     commit = $bindable<() => Promise<void>>(),
+    hasPendingChanges = $bindable(false),
   }: {
     campaignId: string;
     commit?: () => Promise<void>;
+    hasPendingChanges?: boolean;
   } = $props();
 
   // ---------------------------------------------------------------------------
@@ -73,12 +75,15 @@
   const localMemberIds = $derived(new Set(localMembers.map(m => m.id)));
 
   /** True when localMembers differs from loadedMembers (unsaved changes). */
-  const hasPendingChanges = $derived.by(() => {
+  const _hasPendingChanges = $derived.by(() => {
     const loadedIds = new Set(loadedMembers.map(m => m.id));
     for (const m of localMembers)  if (!loadedIds.has(m.id))       return true;
     for (const m of loadedMembers) if (!localMemberIds.has(m.id))  return true;
     return false;
   });
+
+  /** Sync internal derived dirty state to the parent via the $bindable prop. */
+  $effect(() => { hasPendingChanges = _hasPendingChanges; });
 
   /**
    * Picker groups — categorised using the LOCAL desired state (not DB state)
@@ -259,9 +264,6 @@
     <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
       <IconVault size={18} aria-hidden="true" />
       {ui('settings.members.title', engine.settings.language)}
-      {#if hasPendingChanges}
-        <span class="text-xs font-normal text-amber-400/80" title="Unsaved changes">●</span>
-      {/if}
     </h2>
     <button
       type="button"
