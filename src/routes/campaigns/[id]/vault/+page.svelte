@@ -19,10 +19,35 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { createDefaultCampaignSettings } from '$lib/types/settings';
   import CharacterCard from '$lib/components/vault/CharacterCard.svelte';
-  import { IconVault, IconAddCharacter, IconNPC, IconGMDashboard, IconCampaign, IconBack } from '$lib/components/ui/icons';
+  import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
+  import { IconVault, IconAddCharacter, IconNPC, IconCampaign } from '$lib/components/ui/icons';
+  import PageHeader from '$lib/components/layout/PageHeader.svelte';
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
+
+  /**
+   * Resolves the campaign title to a plain string for the PageHeader subtitle.
+   *
+   * The `Campaign.title` field is `LocalizedString | string`:
+   *   - LocalizedString object → resolve via engine.t() (picks current language).
+   *   - JSON-encoded string '{"en":"…"}' → JSON.parse then engine.t().
+   *   - Plain string → return as-is.
+   * This matches the `resolveLocalized` pattern used in the campaign hub page.
+   */
+  const campaignSubtitle = $derived.by((): string | undefined => {
+    if (!campaign) return undefined;
+    const t = campaign.title;
+    if (!t) return undefined;
+    if (typeof t !== 'string') return engine.t(t as Record<string, string>);
+    try {
+      const parsed = JSON.parse(t);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return engine.t(parsed as Record<string, string>);
+      }
+    } catch { /* plain string */ }
+    return t;
+  });
 
   $effect(() => {
     sessionContext.setActiveCampaign(campaignId);
@@ -118,33 +143,25 @@
   }
 </script>
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
-
-  <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
-  <header class="flex items-start justify-between gap-3 flex-wrap">
-    <div class="flex flex-col gap-0.5">
-      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', engine.settings.language)}
-      </a>
-      <h1 class="flex items-center gap-2 text-2xl font-bold text-text-primary">
-        <IconVault size={24} aria-hidden="true" /> {ui('vault.title', engine.settings.language)}
-      </h1>
-      {#if campaign}
-        <p class="text-sm text-text-muted">{campaign.title}</p>
-      {/if}
-    </div>
-
-    <div class="flex items-center gap-2 flex-wrap">
-      <button class="btn-primary gap-1" onclick={createNewCharacter} type="button">
-        <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
+<PageHeader
+  title={ui('vault.title', engine.settings.language)}
+  subtitle={campaignSubtitle}
+  icon={IconVault}
+  breadcrumb={{ href: `/campaigns/${campaignId}`, label: ui('common.campaign', engine.settings.language) }}
+>
+  {#snippet actions()}
+    <button class="btn-primary gap-1" onclick={createNewCharacter} type="button">
+      <IconAddCharacter size={16} aria-hidden="true" /> {ui('vault.create_character', engine.settings.language)}
+    </button>
+    {#if sessionContext.isGameMaster}
+      <button class="btn-secondary gap-1 text-red-400 border-red-800/60 hover:border-red-600" onclick={addNPCMonster} type="button">
+        <IconNPC size={16} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
       </button>
-      {#if sessionContext.isGameMaster}
-        <button class="btn-secondary gap-1 text-red-400 border-red-800/60 hover:border-red-600" onclick={addNPCMonster} type="button">
-          <IconNPC size={16} aria-hidden="true" /> {ui('vault.add_npc', engine.settings.language)}
-        </button>
-      {/if}
-    </div>
-  </header>
+    {/if}
+  {/snippet}
+</PageHeader>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
 
 
   <!-- ── CHARACTER GRID or EMPTY STATE ─────────────────────────────────────── -->
@@ -179,6 +196,8 @@
       {#each engine.visibleCharacters as character (character.id)}
         <CharacterCard
           {character}
+          isPinned={sidebarPinsStore.isPinnedCharacter(character.id)}
+          onpin={() => sidebarPinsStore.toggleCharacter(character.id)}
           onclick={() => openCharacter(character.id)}
           ondelete={canDelete(character) ? () => handleDelete(character) : undefined}
         />

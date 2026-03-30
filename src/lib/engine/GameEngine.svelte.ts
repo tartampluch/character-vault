@@ -369,8 +369,8 @@ export class GameEngine {
   });
 
   /**
-   * Loads all characters for the active campaign into the vault.
-   * Called when entering the Character Vault page.
+   * Loads characters for the given campaign into the vault.
+   * Called when entering a campaign-scoped vault (`/campaigns/[id]/vault`).
    *
    * LOADING STRATEGY:
    *   When a `campaignId` is provided, this method fetches characters from the
@@ -382,33 +382,47 @@ export class GameEngine {
    *   The API response is also written to localStorage as a cache by
    *   `storageManager.loadAllCharactersFromApi()`, so offline fallback works.
    *
-   *   When no `campaignId` is provided (edge case: visiting /vault without a
-   *   campaign context), falls back to reading all characters from localStorage.
+   *   When no `campaignId` is provided (edge case), falls back to localStorage.
    *
    * WHY FIRE-AND-FORGET (not async/await)?
    *   The vault page's `$effect` cannot `await` — it runs synchronously.
-   *   The Promise returned by `loadAllCharactersFromApi` resolves in the
-   *   background; assigning to `this.allVaultCharacters` inside `.then()` is a
-   *   Svelte 5 `$state` assignment that triggers a reactive re-render
-   *   automatically, so the vault grid updates as soon as the data arrives.
+   *   The Promise resolves in the background; the `$state` assignment triggers
+   *   a reactive re-render automatically when data arrives.
    *
-   * @param campaignId - The campaign to load characters for (preferred).
+   * @param campaignId - The campaign to load characters for.
    */
   loadVaultCharacters(campaignId?: string): void {
     if (campaignId) {
-      // API path: server-side visibility filtering by role + campaign membership.
       storageManager.loadAllCharactersFromApi(campaignId)
-        .then(chars => {
-          this.allVaultCharacters = chars;
-        })
+        .then(chars => { this.allVaultCharacters = chars; })
         .catch(err => {
           console.warn('[GameEngine] loadVaultCharacters: API unavailable, falling back to localStorage.', err);
           this.allVaultCharacters = storageManager.loadAllCharacters();
         });
     } else {
-      // localStorage fallback: no campaign context (e.g. first load before API responds).
       this.allVaultCharacters = storageManager.loadAllCharacters();
     }
+  }
+
+  /**
+   * Loads all characters across all campaigns into the vault.
+   * Called when entering the global vault (`/vault`).
+   *
+   * LOADING STRATEGY:
+   *   Calls `GET /api/characters` (no campaignId).
+   *   - GMs receive ALL characters across all campaigns (with raw gmOverrides).
+   *   - Players receive all their own characters across all campaigns.
+   *   Falls back to localStorage on API failure.
+   *
+   * WHY FIRE-AND-FORGET: same reason as loadVaultCharacters().
+   */
+  loadAllVaultCharacters(): void {
+    storageManager.loadAllCharactersFromApi()
+      .then(chars => { this.allVaultCharacters = chars; })
+      .catch(err => {
+        console.warn('[GameEngine] loadAllVaultCharacters: API unavailable, falling back to localStorage.', err);
+        this.allVaultCharacters = storageManager.loadAllCharacters();
+      });
   }
 
   /**

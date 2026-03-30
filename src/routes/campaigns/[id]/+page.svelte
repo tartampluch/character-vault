@@ -18,7 +18,9 @@
   import { campaignTaskStats } from '$lib/types/campaign';
   import type { LocalizedString } from '$lib/types/i18n';
   import { ui } from '$lib/i18n/ui-strings';
-  import { IconCampaign, IconVault, IconGMDashboard, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
+  import { IconCampaign, IconVault, IconSettings, IconSpells, IconChecked, IconSuccess, IconBack } from '$lib/components/ui/icons';
+  import PageHeader from '$lib/components/layout/PageHeader.svelte';
+  import { getCampaignRoster, type RosterEntry } from '$lib/api/userApi';
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
@@ -34,6 +36,22 @@
 
   $effect(() => {
     if (campaignId) sessionContext.setActiveCampaign(campaignId);
+  });
+
+  // ---------------------------------------------------------------------------
+  // PARTY ROSTER — lightweight public data (player name + character name + level)
+  // Fetched from GET /api/campaigns/{id}/roster which is accessible to all members.
+  // Uses $effect so the data refreshes automatically on campaign navigation.
+  // ---------------------------------------------------------------------------
+
+  let roster = $state<RosterEntry[]>([]);
+
+  $effect(() => {
+    const id = campaignId;
+    if (!id) return;
+    getCampaignRoster(id)
+      .then((r: RosterEntry[]) => { roster = r; })
+      .catch((err: unknown) => console.warn('[CampaignDetail] Failed to load roster:', err));
   });
 
   /** Sends the current chapter list (including tasks) to the API. */
@@ -85,6 +103,59 @@
    *   2. JSON-encoded string `{"en":"…","fr":"…"}` → JSON.parse then engine.t().
    *   3. Plain string → returned as-is.
    */
+  // ── Rule source pill colours ─────────────────────────────────────────────────
+  // Uses the shared ruleSourcePalette utility (same as RuleSourcesPanel.svelte)
+  // so that the same `ruleSource` identifier always maps to the same colour
+  // on both the campaign detail page and the campaign settings page.
+  import { ruleSourcePalette } from '$lib/utils/ruleSourceColors';
+
+  interface RuleSourceFile { path: string; ruleSource: string; }
+  let availableRuleSourceFiles = $state<RuleSourceFile[]>([]);
+
+  $effect(() => {
+    if (!sessionContext.isGameMaster) return;
+    fetch('/api/rules/list', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then((files: RuleSourceFile[]) => { availableRuleSourceFiles = files; })
+      .catch(() => { availableRuleSourceFiles = []; });
+  });
+
+  /** Maps each file path to its ruleSource group ID for colour lookup. */
+  const pathToRuleSource = $derived(
+    new Map(availableRuleSourceFiles.map(f => [f.path, f.ruleSource]))
+  );
+
+  /**
+   * One entry per distinct ruleSource group that has at least one enabled file.
+   * `isPartial` is true when only some (not all) files in the group are enabled.
+   */
+  interface RuleSourceGroup { id: string; isPartial: boolean; }
+  const activeRuleSourceGroups = $derived((): RuleSourceGroup[] => {
+    // Total file count per group across the full available list
+    const totalPerGroup = new Map<string, number>();
+    for (const f of availableRuleSourceFiles) {
+      totalPerGroup.set(f.ruleSource, (totalPerGroup.get(f.ruleSource) ?? 0) + 1);
+    }
+    // Enabled file count per group
+    const enabledPerGroup = new Map<string, number>();
+    for (const path of (campaign?.enabledRuleSources ?? [])) {
+      const rs = pathToRuleSource.get(path);
+      if (rs) enabledPerGroup.set(rs, (enabledPerGroup.get(rs) ?? 0) + 1);
+    }
+    // Build ordered, de-duplicated group list
+    const seen = new Set<string>();
+    const groups: RuleSourceGroup[] = [];
+    for (const path of (campaign?.enabledRuleSources ?? [])) {
+      const rs = pathToRuleSource.get(path) ?? path;
+      if (seen.has(rs)) continue;
+      seen.add(rs);
+      const enabled = enabledPerGroup.get(rs) ?? 0;
+      const total   = totalPerGroup.get(rs) ?? 0;
+      groups.push({ id: rs, isPartial: total > 0 && enabled < total });
+    }
+    return groups;
+  });
+
   function resolveLocalized(field: LocalizedString | string | undefined): string {
     if (!field) return '';
     if (typeof field !== 'string') return engine.t(field);
@@ -112,67 +183,62 @@
 {:else}
   <div class="flex flex-col">
 
-    <!-- ── BANNER ─────────────────────────────────────────────────────────── -->
-    <div class="relative w-full h-52 overflow-hidden shrink-0">
-      {#if campaign.bannerUrl}
-        <img
-          src={campaign.bannerUrl}
-          alt={ui('campaign.banner_alt', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
-          class="w-full h-full object-cover"
-        />
-      {:else}
-        <!--
-          Placeholder gradient: Tailwind light/dark classes replace the
-          previous inline style with hardcoded dark oklch values.
-          Light: pale accent tint; Dark: deep atmospheric navy.
-        -->
-        <div
-          class="w-full h-full flex items-center justify-center
-                 bg-gradient-to-br from-accent-100 to-accent-50
-                 dark:from-accent-950 dark:to-accent-900"
-          aria-hidden="true"
-        >
-          <IconCampaign size={72} class="opacity-20 text-accent" />
-        </div>
-      {/if}
-
-      <!-- Gradient overlay with back link + title.
-           Uses Tailwind's from-black/80 to transparent via gradient utilities
-           instead of inline rgba() to stay within the design system. -->
-      <div class="absolute inset-0 flex flex-col justify-end gap-1 px-5 py-4
-                  bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-        <a
-          href="/campaigns"
-          class="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white transition-colors w-fit"
-          aria-label={ui('nav.back_to_campaign_hub', engine.settings.language)}
-        >
-          <IconBack size={12} aria-hidden="true" /> {ui('nav.campaigns', engine.settings.language)}
-        </a>
-        <h1 class="text-2xl font-bold text-white text-shadow-sm">{resolveLocalized(campaign.title)}</h1>
-      </div>
-    </div>
-
-    <!-- ── BODY ───────────────────────────────────────────────────────────── -->
-    <div class="max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
-
-      <!-- Action bar -->
-      <div class="flex gap-2 flex-wrap">
+    <!-- ── BANNER HEADER — uses PageHeader in banner mode ─────────────────── -->
+    <!--
+      Action buttons (Vault, Settings) are passed as the `actions` snippet so
+      PageHeader renders them in the toolbar strip below the banner image.
+      This keeps them part of the header rather than floating in the page body.
+    -->
+    <PageHeader
+      title={resolveLocalized(campaign.title)}
+      banner={{ src: campaign.bannerUrl ?? null, alt: ui('campaign.banner_alt', engine.settings.language).replace('{title}', resolveLocalized(campaign.title)) }}
+      breadcrumb={{ href: '/campaigns', label: ui('nav.campaigns', engine.settings.language), ariaLabel: ui('nav.back_to_campaign_hub', engine.settings.language) }}
+    >
+      {#snippet actions()}
         <button class="btn-primary gap-1" onclick={() => goto(`/campaigns/${campaignId}/vault`)} type="button">
           <IconVault size={16} aria-hidden="true" /> {ui('campaign.character_vault', engine.settings.language)}
         </button>
         {#if sessionContext.isGameMaster}
-          <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/gm-dashboard`)} type="button">
-            <IconGMDashboard size={16} aria-hidden="true" /> {ui('nav.gm_dashboard', engine.settings.language)}
-          </button>
           <button class="btn-secondary gap-1" onclick={() => goto(`/campaigns/${campaignId}/settings`)} type="button">
             <IconSettings size={16} aria-hidden="true" /> {ui('nav.settings', engine.settings.language)}
           </button>
         {/if}
-      </div>
+      {/snippet}
+    </PageHeader>
+
+    <!-- ── BODY ───────────────────────────────────────────────────────────── -->
+    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
 
       <!-- Description (may be a plain string or JSON-encoded LocalizedString) -->
       {#if campaign.description}
         <p class="text-text-secondary text-sm leading-relaxed">{resolveLocalized(campaign.description)}</p>
+      {/if}
+
+      <!-- ── PARTY ROSTER ───────────────────────────────────────────────────── -->
+      <!--
+        Shows "Players: John (Ravian Lv. 5), Olivia (Yggdogbert Lv. 4)".
+        Accessible to all campaign members — the /roster endpoint only returns
+        player names + character names + total level (no stats).
+        Hidden while loading (roster is empty array until the fetch resolves).
+      -->
+      {#if roster.length > 0}
+        <p class="text-sm text-text-secondary leading-relaxed">
+          <span class="font-medium text-text-primary">{ui('campaign.players_label', engine.settings.language)}:</span>
+          {#each roster as entry, i}
+            {#if i > 0}<span aria-hidden="true">, </span>{/if}
+            <!--
+              Each entry: "PlayerName (CharName Lv. X)"
+              If a player has multiple characters they appear in the same parentheses:
+              "PlayerName (Char1 Lv. 5, Char2 Lv. 3)"
+            -->
+            <span>
+              {entry.playerName}
+              <span class="text-text-muted">
+                ({#each entry.characters as char, j}{#if j > 0}, {/if}{char.name} {ui('campaign.level_abbrev', engine.settings.language)} {char.level}{/each})
+              </span>
+            </span>
+          {/each}
+        </p>
       {/if}
 
       <!-- ── CHAPTERS ────────────────────────────────────────────────────── -->
@@ -224,15 +290,15 @@
               <li
                 class="flex items-start gap-3 rounded-xl border px-4 py-3 transition-colors duration-150
                        {chapter.isCompleted
-                         ? 'border-green-700/40 bg-green-950/10 dark:bg-green-950/20'
+                         ? 'border-emerald-200 bg-emerald-50/70 dark:border-emerald-700/40 dark:bg-emerald-950/20'
                          : 'border-border bg-surface-alt hover:border-accent/40'}"
                 aria-label={ui('campaign.chapter_item_aria', engine.settings.language).replace('{n}', String(index + 1)).replace('{title}', t(chapter.title))}
               >
-                <!-- Number / check badge -->
+                 <!-- Number / check badge -->
                 <span
                   class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mt-0.5
                          {chapter.isCompleted
-                           ? 'bg-green-800/40 text-green-400'
+                           ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300/70 dark:bg-emerald-900/40 dark:text-emerald-300 dark:ring-emerald-700/50'
                            : 'bg-surface-alt border border-border text-text-muted'}"
                   aria-hidden="true"
                 >
@@ -245,7 +311,7 @@
 
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
-                  <h3 class="text-sm font-medium {chapter.isCompleted ? 'text-text-muted line-through decoration-green-600/40' : 'text-text-primary'}">
+                  <h3 class="text-sm font-medium {chapter.isCompleted ? 'text-text-muted' : 'text-text-primary'}">
                     {t(chapter.title)}
                   </h3>
                   {#if chapter.description}
@@ -270,18 +336,18 @@
                                   ? ui('campaign.task_done', engine.settings.language)
                                   : ui('campaign.task_mark_done', engine.settings.language)}: {t(task.title)}"
                               />
-                              <span class="truncate transition-colors
+                               <span class="truncate transition-colors
                                            {task.isCompleted
-                                             ? 'text-text-muted line-through decoration-green-600/40'
+                                             ? 'text-text-muted'
                                              : 'text-text-secondary group-hover:text-text-primary'}">
                                 {t(task.title)}
                               </span>
                             </label>
                           {:else}
                             <span class="shrink-0 w-3 h-3 flex items-center justify-center">
-                              <IconChecked size={10} class="text-green-400" aria-hidden="true" />
+                              <IconChecked size={10} class="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                             </span>
-                            <span class="truncate text-text-muted line-through decoration-green-600/40">
+                            <span class="truncate text-text-muted">
                               {t(task.title)}
                             </span>
                           {/if}
@@ -305,10 +371,10 @@
                       aria-label={ui('campaign.chapter_toggle_aria', engine.settings.language).replace('{title}', t(chapter.title))}
                       class="sr-only"
                     />
-                    <span
+                      <span
                       class="text-xs border rounded px-3 py-2 cursor-pointer flex items-center gap-1 transition-colors duration-150
                              {chapter.isCompleted
-                               ? 'border-green-600/50 text-green-400 hover:bg-green-900/20'
+                               ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:border-emerald-600/50 dark:text-emerald-300 dark:hover:bg-emerald-900/40'
                                : 'border-border text-accent hover:bg-accent/10'}"
                       aria-hidden="true"
                     >
@@ -316,7 +382,7 @@
                     </span>
                   </label>
                 {:else if chapter.isCompleted}
-                  <span class="shrink-0 flex items-center gap-1 text-xs text-green-400" aria-hidden="true">
+                  <span class="shrink-0 flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400" aria-hidden="true">
                     <IconSuccess size={12} aria-hidden="true" /> {ui('campaign.done', engine.settings.language)}
                   </span>
                 {/if}
@@ -328,19 +394,25 @@
       </section>
 
       <!-- ── RULE SOURCES (GM only) ────────────────────────────────────────── -->
+      <!--
+        One pill per distinct ruleSource group, coloured via the shared
+        ruleSourcePalette utility (same as RuleSourcesPanel.svelte) so that
+        the same source group always appears in the same colour on both pages.
+      -->
       {#if sessionContext.isGameMaster && campaign.enabledRuleSources.length > 0}
         <section class="border-t border-border pt-5" aria-label={ui('campaign.sources_section_aria', engine.settings.language)}>
           <h2 class="flex items-center gap-2 text-sm font-semibold text-accent mb-3">
             <IconSpells size={16} aria-hidden="true" /> {ui('campaign.active_sources', engine.settings.language)}
           </h2>
-          <div class="flex flex-wrap gap-2 mb-2">
-            {#each campaign.enabledRuleSources as sourceId}
-              <span class="badge-accent font-mono text-[10px]">{sourceId}</span>
+          <div class="flex flex-wrap gap-2">
+            {#each activeRuleSourceGroups() as group}
+              {@const gc = ruleSourcePalette(group.id)}
+              <span class="border rounded overflow-hidden inline-flex items-center font-mono text-[10px] {gc.splitBorder}">
+                <span class="px-2 py-0.5 {gc.splitLabel}">{group.id}</span>
+                <span class="px-2 py-0.5 {gc.splitBadge}">{group.isPartial ? ui('campaign.source_partial', engine.settings.language) : ui('campaign.source_full', engine.settings.language)}</span>
+              </span>
             {/each}
           </div>
-          <p class="text-xs text-text-muted">
-            {ui('campaign.manage_sources_hint', engine.settings.language)}
-          </p>
         </section>
       {/if}
 

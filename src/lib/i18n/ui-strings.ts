@@ -288,6 +288,19 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'nav.save_campaign_settings_aria': 'Save campaign settings',
   'nav.role_gm':                  'Game Master',
   'nav.role_player':              'Player',
+  'nav.pinned_campaigns':         'Pinned Campaigns',
+  'nav.pinned_characters':        'Pinned Characters',
+  'nav.pin_campaign':             'Pin campaign',
+  'nav.unpin_campaign':           'Unpin campaign',
+  'nav.pin_character':            'Pin character',
+  'nav.unpin_character':          'Unpin character',
+  'nav.no_pinned_campaigns':      'No pinned campaigns.',
+  'nav.no_pinned_characters':     'No pinned characters.',
+  'vault.global_title':           'Vault',
+  'vault.global_subtitle':        'Your characters across all campaigns',
+  'vault.global_subtitle_gm':     'All characters across all campaigns',
+  'vault.global_empty':           'No characters found. Create one from a campaign vault.',
+  'vault.global_empty_gm':        'No characters found across any campaign.',
 
   // ==========================================================================
   // USER MENU
@@ -355,7 +368,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'campaign.not_found':           'Campaign not found',
   'campaign.not_found_desc':      "The campaign with this ID doesn't exist.",
   'campaign.back_to_hub':         'Back to Campaign Hub',
-  'campaign.character_vault':     'Character Vault',
+  'campaign.character_vault':     'Vault',
   'campaign.chapters_title':      'Chapters',
   'campaign.chapters_empty_gm':   'No chapters yet. Add chapters in Campaign Settings.',
   'campaign.chapters_empty_player': 'No chapters have been added to this campaign yet.',
@@ -367,6 +380,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'campaign.task_done':           'Done',
   'campaign.task_mark_done':      'Mark done',
   'campaign.active_sources':      'Active Rule Sources',
+  'campaign.source_full':         'Full',
+  'campaign.source_partial':      'Partial',
   'campaign.manage_sources_hint': 'Manage rule sources in GM Settings.',
   'campaign.tasks_total':         '{completed}/{total} tasks',
   /** Alt text for the campaign banner image. {title} = campaign title. */
@@ -2827,6 +2842,8 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CAMPAIGN DETAIL PAGE — accessible labels
   // ==========================================================================
+  'campaign.players_label':          'Players',
+  'campaign.level_abbrev':           'Lv.',
   'campaign.chapters_section_aria':     'Campaign chapters',
   'campaign.chapters_list_aria':        'List of chapters',
   /** aria-label for a chapter card. {n} = 1-based chapter index, {title} = chapter title. */

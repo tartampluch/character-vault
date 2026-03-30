@@ -20,7 +20,7 @@
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { getCharacterLevel } from '$lib/utils/formatters';
   import { ui } from '$lib/i18n/ui-strings';
-  import { IconNPC, IconCharacter, IconDelete } from '$lib/components/ui/icons';
+  import { IconNPC, IconCharacter, IconDelete, IconPin, IconPinOff } from '$lib/components/ui/icons';
 
   const lang = $derived(engine.settings.language);
 
@@ -29,9 +29,13 @@
     onclick?: () => void;
     /** Called when the user confirms deletion. Undefined = no delete button shown. */
     ondelete?: () => void;
+    /** Whether this character is currently pinned to the sidebar. */
+    isPinned?: boolean;
+    /** Called when the user clicks the pin button. Undefined = no pin button shown. */
+    onpin?: () => void;
   }
 
-  let { character, onclick, ondelete }: Props = $props();
+  let { character, onclick, ondelete, isPinned = false, onpin }: Props = $props();
 
   // getCharacterLevel() from formatters.ts keeps the D&D character-level formula
   // (Object.values(classLevels).reduce) out of the .svelte file (ARCHITECTURE.md §3).
@@ -149,7 +153,7 @@
     </div>
   </button>
 
-  <!-- Delete button — sibling of the main button, positioned top-right -->
+  <!-- Delete button — sibling of the main button, positioned top-left -->
   {#if ondelete}
     <button
       class="absolute top-2 left-2 z-10 p-1.5 rounded-md
@@ -165,6 +169,31 @@
       type="button"
     >
       <IconDelete size={14} aria-hidden="true" />
+    </button>
+  {/if}
+
+  <!-- Pin button — top-right overlay, always visible when pinned, on hover otherwise -->
+  {#if onpin}
+    <button
+      class="absolute top-2 right-2 z-10 p-1.5 rounded-md
+             bg-surface/80 backdrop-blur-sm
+             {isPinned ? 'text-accent opacity-100' : 'text-text-muted opacity-0 group-hover:opacity-100'}
+             hover:text-accent hover:bg-accent/10
+             transition-all duration-150
+             focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1
+             focus-visible:ring-accent"
+      onclick={(e) => { e.stopPropagation(); onpin!(); }}
+      aria-label={isPinned
+        ? ui('nav.unpin_character', lang) + ': ' + character.name
+        : ui('nav.pin_character', lang) + ': ' + character.name}
+      title={isPinned ? ui('nav.unpin_character', lang) : ui('nav.pin_character', lang)}
+      type="button"
+    >
+      {#if isPinned}
+        <IconPinOff size={14} aria-hidden="true" />
+      {:else}
+        <IconPin size={14} aria-hidden="true" />
+      {/if}
     </button>
   {/if}
 </div>

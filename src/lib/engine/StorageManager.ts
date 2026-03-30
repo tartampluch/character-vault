@@ -437,15 +437,26 @@ export class StorageManager {
   }
 
   /**
-   * Loads all characters for a campaign from the PHP API.
+   * Loads characters from the PHP API.
+   *
+   * When `campaignId` is provided (campaign-scoped vault): returns characters for
+   * that campaign, applying server-side visibility rules (GMs see all, players see
+   * their own).
+   *
+   * When `campaignId` is omitted (global vault `/vault`): returns all characters the
+   * caller is allowed to see — all characters for GMs, own characters for players.
+   *
    * Caches each character in localStorage for offline access.
    *
-   * @param campaignId - The campaign to load characters for.
+   * @param campaignId - Optional. If provided, filters results to this campaign.
    * @returns Array of characters from the API, or from localStorage if API is down.
    */
-  async loadAllCharactersFromApi(campaignId: ID): Promise<Character[]> {
+  async loadAllCharactersFromApi(campaignId?: ID): Promise<Character[]> {
     try {
-      const response = await fetch(`/api/characters?campaignId=${encodeURIComponent(campaignId)}`, {
+      const url = campaignId
+        ? `/api/characters?campaignId=${encodeURIComponent(campaignId)}`
+        : '/api/characters';
+      const response = await fetch(url, {
         headers: apiHeaders(),
         credentials: 'include',
       });

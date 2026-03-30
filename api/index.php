@@ -23,9 +23,11 @@
  *     GET    /api/campaigns/{id}/users                    → CampaignController::getUsers($id)
  *     POST   /api/campaigns/{id}/users                    → CampaignController::addUser($id)
  *     DELETE /api/campaigns/{id}/users/{userId}           → CampaignController::removeUser($id, $userId)
+ *     GET    /api/campaigns/{id}/roster                   → CampaignController::getRoster($id)
  *
  *   Characters:
- *     GET    /api/characters?campaignId=X → CharacterController::index()
+ *     GET    /api/characters              → CharacterController::index()  (global: all/own)
+ *     GET    /api/characters?campaignId=X → CharacterController::index()  (campaign-scoped)
  *     POST   /api/characters              → CharacterController::create()
  *     PUT    /api/characters/{id}         → CharacterController::update($id)
  *     PUT    /api/characters/{id}/gm-overrides → CharacterController::updateGmOverrides($id)
@@ -201,6 +203,11 @@ try {
     } elseif (preg_match('#^/campaigns/([^/]+)/users/([^/]+)$#', $path, $m) && $method === 'DELETE') {
         verifyCsrfToken();
         CampaignController::removeUser($m[1], $m[2]);
+
+    } elseif (preg_match('#^/campaigns/([^/]+)/roster$#', $path, $m) && $method === 'GET') {
+        // Party roster — accessible to any campaign member (and GMs).
+        // Returns player names + non-NPC character names/levels only; no stats.
+        CampaignController::getRoster($m[1]);
 
     } elseif ($path === '/characters' && $method === 'GET') {
         CharacterController::index();

@@ -210,6 +210,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4"
     role="dialog"
+    tabindex="-1"
     aria-modal="true"
     aria-label={ui('settings.members.add', engine.settings.language)}
     onkeydown={handleKeydown}

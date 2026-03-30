@@ -17,7 +17,9 @@
   import { goto } from '$app/navigation';
   import { campaignTaskStats } from '$lib/types/campaign';
   import type { LocalizedString } from '$lib/types/i18n';
-  import { IconCampaign, IconAdd, IconClose } from '$lib/components/ui/icons';
+  import { IconCampaign, IconAdd, IconClose, IconPin, IconPinOff } from '$lib/components/ui/icons';
+  import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
+  import PageHeader from '$lib/components/layout/PageHeader.svelte';
 
   // Load campaigns from the PHP API when the hub mounts.
   // The store starts with mock data so the UI is never empty during the load.
@@ -66,18 +68,12 @@
   }
 </script>
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
-
-  <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
-  <header class="flex items-start justify-between gap-4 flex-wrap">
-    <div>
-      <h1 class="flex items-center gap-2 text-3xl font-bold text-text-primary">
-        <IconCampaign size={28} aria-hidden="true" />
-        {ui('campaigns.title', engine.settings.language)}
-      </h1>
-      <p class="mt-1 text-text-muted text-sm">{ui('campaigns.subtitle', engine.settings.language)}</p>
-    </div>
-
+<PageHeader
+  title={ui('campaigns.title', engine.settings.language)}
+  subtitle={ui('campaigns.subtitle', engine.settings.language)}
+  icon={IconCampaign}
+>
+  {#snippet actions()}
     {#if sessionContext.isGameMaster}
       <button
         class="btn-primary gap-1 shrink-0"
@@ -92,7 +88,10 @@
         {/if}
       </button>
     {/if}
-  </header>
+  {/snippet}
+</PageHeader>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
 
   <!-- ── CREATE FORM (GM only, inline) ────────────────────────────────────── -->
   {#if showCreateForm && sessionContext.isGameMaster}
@@ -139,77 +138,101 @@
   {:else}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {#each campaignStore.campaigns as campaign (campaign.id)}
-        <button
-          class="group flex flex-col text-left rounded-xl border border-border bg-surface
-                 overflow-hidden transition-all duration-200
-                 hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
-                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
-          onclick={() => openCampaign(campaign.id)}
-          aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
-          type="button"
-        >
-          <!-- Poster / placeholder -->
-          <div class="relative w-full h-40 shrink-0 overflow-hidden">
-            {#if campaign.posterUrl}
-              <img
-                src={campaign.posterUrl}
-                alt={resolveLocalized(campaign.title)}
-                class="w-full h-full object-cover"
-              />
-            {:else}
-              <!--
-                Placeholder gradient: Tailwind light/dark classes replace the
-                previous inline style with hardcoded dark oklch values.
-                Light: pale accent tint; Dark: deep atmospheric navy.
-              -->
-              <div
-                class="w-full h-full flex items-center justify-center
-                       bg-gradient-to-br from-accent-100 to-accent-50
-                       dark:from-accent-950 dark:to-accent-900"
-                aria-hidden="true"
-              >
-                <IconCampaign size={48} class="opacity-30 text-accent" />
-              </div>
-            {/if}
-
-            <!-- Hover CTA overlay -->
-            <div class="absolute inset-0 flex items-end justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150" aria-hidden="true">
-              <span class="text-xs font-medium text-accent bg-surface/80 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                {ui('campaigns.open', engine.settings.language)}
-              </span>
-            </div>
-          </div>
-
-          <!-- Card body -->
-          <div class="flex flex-col gap-2 p-4 flex-1">
-            <h2 class="text-base font-semibold text-text-primary leading-tight">{resolveLocalized(campaign.title)}</h2>
-
-            {#if campaign.description}
-              <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{resolveLocalized(campaign.description)}</p>
-            {/if}
-
-            <!-- Chapter / task progress -->
-            {#if campaign.chapters.length > 0}
-              {@const stats = campaignTaskStats(campaign.chapters)}
-              <div class="flex items-center gap-2 mt-auto pt-1">
-                <span class="text-[10px] text-text-muted shrink-0">{stats.completed}/{stats.total}</span>
+        <!--
+          Wrapper div so pin button can be a sibling of the main click-target
+          button without creating an invalid nested-button structure.
+        -->
+        <div class="relative group">
+          <button
+            class="group/card flex flex-col text-left rounded-xl border border-border bg-surface
+                   overflow-hidden transition-all duration-200 w-full
+                   hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
+                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            onclick={() => openCampaign(campaign.id)}
+            aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
+            type="button"
+          >
+            <!-- Poster / placeholder -->
+            <div class="relative w-full h-40 shrink-0 overflow-hidden">
+              {#if campaign.posterUrl}
+                <img
+                  src={campaign.posterUrl}
+                  alt={resolveLocalized(campaign.title)}
+                  class="w-full h-full object-cover"
+                />
+              {:else}
                 <div
-                  class="flex-1 h-1 bg-border rounded-full overflow-hidden"
-                  role="progressbar"
-                  aria-valuenow={stats.completed}
-                  aria-valuemin={0}
-                  aria-valuemax={stats.total}
+                  class="w-full h-full flex items-center justify-center
+                         bg-gradient-to-br from-accent-100 to-accent-50
+                         dark:from-accent-950 dark:to-accent-900"
+                  aria-hidden="true"
                 >
-                  <div
-                    class="h-full bg-accent rounded-full transition-all duration-300"
-                    style="width: {stats.pct}%"
-                  ></div>
+                  <IconCampaign size={48} class="opacity-30 text-accent" />
                 </div>
-                <span class="text-[10px] text-accent shrink-0">{stats.pct}%</span>
+              {/if}
+
+              <!-- Hover CTA overlay -->
+              <div class="absolute inset-0 flex items-end justify-end p-3 opacity-0 group-hover/card:opacity-100 transition-opacity duration-150" aria-hidden="true">
+                <span class="text-xs font-medium text-accent bg-surface/80 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                  {ui('campaigns.open', engine.settings.language)}
+                </span>
               </div>
+            </div>
+
+            <!-- Card body -->
+            <div class="flex flex-col gap-2 p-4 flex-1">
+              <h2 class="text-base font-semibold text-text-primary leading-tight">{resolveLocalized(campaign.title)}</h2>
+
+              {#if campaign.description}
+                <p class="text-xs text-text-muted line-clamp-3 leading-relaxed">{resolveLocalized(campaign.description)}</p>
+              {/if}
+
+              <!-- Chapter / task progress -->
+              {#if campaign.chapters.length > 0}
+                {@const stats = campaignTaskStats(campaign.chapters)}
+                <div class="flex items-center gap-2 mt-auto pt-1">
+                  <span class="text-[10px] text-text-muted shrink-0">{stats.completed}/{stats.total}</span>
+                  <div
+                    class="flex-1 h-1 bg-border rounded-full overflow-hidden"
+                    role="progressbar"
+                    aria-valuenow={stats.completed}
+                    aria-valuemin={0}
+                    aria-valuemax={stats.total}
+                  >
+                    <div
+                      class="h-full bg-accent rounded-full transition-all duration-300"
+                      style="width: {stats.pct}%"
+                    ></div>
+                  </div>
+                  <span class="text-[10px] text-accent shrink-0">{stats.pct}%</span>
+                </div>
+              {/if}
+            </div>
+          </button>
+
+          <!-- Pin button — top-left overlay, always visible when pinned, hover otherwise -->
+          <button
+            type="button"
+            class="absolute top-2 left-2 z-10 p-1.5 rounded-md
+                   bg-surface/80 backdrop-blur-sm
+                   {sidebarPinsStore.isPinnedCampaign(campaign.id) ? 'text-accent opacity-100' : 'text-text-muted opacity-0 group-hover:opacity-100'}
+                   hover:text-accent hover:bg-accent/10
+                   transition-all duration-150
+                   focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1
+                   focus-visible:ring-accent"
+            onclick={() => sidebarPinsStore.toggleCampaign(campaign.id)}
+            aria-label={sidebarPinsStore.isPinnedCampaign(campaign.id)
+              ? ui('nav.unpin_campaign', engine.settings.language) + ': ' + resolveLocalized(campaign.title)
+              : ui('nav.pin_campaign', engine.settings.language) + ': ' + resolveLocalized(campaign.title)}
+            title={sidebarPinsStore.isPinnedCampaign(campaign.id) ? ui('nav.unpin_campaign', engine.settings.language) : ui('nav.pin_campaign', engine.settings.language)}
+          >
+            {#if sidebarPinsStore.isPinnedCampaign(campaign.id)}
+              <IconPinOff size={14} aria-hidden="true" />
+            {:else}
+              <IconPin size={14} aria-hidden="true" />
             {/if}
-          </div>
-        </button>
+          </button>
+        </div>
       {/each}
     </div>
   {/if}

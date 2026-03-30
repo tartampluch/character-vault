@@ -67,10 +67,12 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
+  import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { storageManager } from '$lib/engine/StorageManager';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import GmCharacterOverridesPanel from '$lib/components/gm/GmCharacterOverridesPanel.svelte';
 
   // ── Core tab components (Phase 8) ──────────────────────────────────────────
   import BasicInfo             from '$lib/components/core/BasicInfo.svelte';
@@ -522,6 +524,18 @@
         >
           {ui('character.go_to_core_tab', engine.settings.language)}
         </button>
+      </div>
+    {/if}
+
+    <!--
+      GM PER-CHARACTER OVERRIDES PANEL
+      Visible only to GMs and Admins. Placed at the bottom of the scrollable
+      tab content area so it is accessible regardless of which tab is active,
+      without taking up prime real estate at the top of the sheet.
+    -->
+    {#if sessionContext.isGameMaster}
+      <div class="mt-6 border-t border-border pt-4">
+        <GmCharacterOverridesPanel />
       </div>
     {/if}
 

@@ -54,7 +54,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import type { Feature, FeatureCategory } from '$lib/types/feature';
   import Modal from '$lib/components/ui/Modal.svelte';
-  import { IconBack } from '$lib/components/ui/icons';
+  import PageHeader from '$lib/components/layout/PageHeader.svelte';
 
   // ===========================================================================
   // ROUTE PARAMS + AUTH GUARD
@@ -284,17 +284,12 @@
 <!-- ======================================================================== -->
 <!-- PAGE                                                                      -->
 <!-- ======================================================================== -->
-<div class="flex flex-col gap-6 p-4 md:p-6 max-w-6xl mx-auto">
+<PageHeader
+  title={ui('nav.content_editor', lang)}
+  breadcrumb={{ href: `/campaigns/${campaignId}`, label: ui('common.campaign', lang) }}
+/>
 
-  <!-- PAGE TITLE -->
-  <header class="flex items-start justify-between gap-3 flex-wrap">
-    <div class="flex flex-col gap-0.5">
-      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> {ui('common.campaign', lang)}
-      </a>
-      <h1 class="text-2xl font-bold text-text-primary">{ui('nav.content_editor', lang)}</h1>
-    </div>
-  </header>
+<div class="flex flex-col gap-6 px-4 md:px-6 py-6 max-w-6xl mx-auto">
 
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   <!-- HOMEBREW SCOPE PANEL                                                     -->

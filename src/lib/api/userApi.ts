@@ -342,6 +342,64 @@ export async function logout(): Promise<void> {
 }
 
 // =============================================================================
+// CAMPAIGN ROSTER (read-only, any campaign member)
+// =============================================================================
+
+/**
+ * A single character entry in the party roster.
+ *
+ * Contains only the minimal information safe to share with all campaign members
+ * (name and total level). Full character stats remain restricted to the owner
+ * and the GM via the standard character visibility rules.
+ */
+export interface RosterCharacter {
+  /** The character's display name. */
+  name: string;
+  /**
+   * Total character level — sum of all classLevels values.
+   * Zero when the character has no class levels assigned yet.
+   */
+  level: number;
+}
+
+/**
+ * A single player's entry in the party roster.
+ *
+ * Groups all of that player's non-NPC characters for the campaign.
+ * Players with no non-NPC characters are excluded from the roster array.
+ */
+export interface RosterEntry {
+  /** The player's user ID. */
+  userId: string;
+  /** The player's in-game display name (users.display_name). */
+  playerName: string;
+  /**
+   * All non-NPC characters this player owns in the campaign.
+   * Ordered alphabetically by character name.
+   * Empty array is theoretically impossible (players with no characters
+   * are excluded by the server query), but typed defensively.
+   */
+  characters: RosterCharacter[];
+}
+
+/**
+ * Fetches the party roster for a campaign.
+ *
+ * Accessible to any authenticated campaign member (and GMs).
+ * Returns only character names and levels — no stats or private data.
+ *
+ * GET /api/campaigns/{campaignId}/roster
+ *
+ * @param campaignId - The campaign UUID.
+ * @returns Roster entries ordered by player name.
+ * @throws ApiError 403 if the caller is not a campaign member.
+ * @throws ApiError 401 if not authenticated.
+ */
+export async function getCampaignRoster(campaignId: string): Promise<RosterEntry[]> {
+  return apiFetch(`/api/campaigns/${encodeURIComponent(campaignId)}/roster`);
+}
+
+// =============================================================================
 // PASSWORD SETUP ENDPOINT (authenticated user, first login only)
 // =============================================================================
 

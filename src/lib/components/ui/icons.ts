@@ -165,6 +165,11 @@ export { Mountain     as IconSpeedClimb   } from 'lucide-svelte'; // Climb speed
 export { Wind         as IconSpeedFly     } from 'lucide-svelte'; // Fly speed
 export { Waves        as IconSpeedSwim    } from 'lucide-svelte'; // Swim speed
 
+// ─── PINNING ICONS ───────────────────────────────────────────────────────────
+// Used in sidebar and card hover overlays for pinning items
+export { Pin    as IconPin    } from 'lucide-svelte'; // Pin item to sidebar
+export { PinOff as IconPinOff } from 'lucide-svelte'; // Unpin item from sidebar
+
 // ─── LOADING / ASYNC STATE ────────────────────────────────────────────────────
 // Used in AppShell.svelte locale-loading spinner (Phase 19.4)
 export { LoaderCircle as IconLoading      } from 'lucide-svelte'; // Indeterminate loading spinner (use with animate-spin)

@@ -48,31 +48,9 @@
     return Array.from(seen).sort();
   });
 
-  // ── Group-color palette — deterministic, light & dark aware ─────────────────
-  type GroupColorState = { on: string; partial: string; off: string };
-  const GROUP_PALETTE: readonly GroupColorState[] = [
-    { on: 'border-sky-600/60 bg-sky-600/10 text-sky-700 dark:text-sky-400',         partial: 'border-sky-600/35 bg-sky-600/10 text-sky-600 dark:text-sky-500',         off: 'border-sky-600/15 bg-transparent text-sky-700/40 dark:text-sky-400/30'         },
-    { on: 'border-violet-600/60 bg-violet-600/10 text-violet-700 dark:text-violet-400', partial: 'border-violet-600/35 bg-violet-600/10 text-violet-600 dark:text-violet-500', off: 'border-violet-600/15 bg-transparent text-violet-700/40 dark:text-violet-400/30' },
-    { on: 'border-amber-600/60 bg-amber-600/10 text-amber-700 dark:text-amber-400',   partial: 'border-amber-600/35 bg-amber-600/10 text-amber-600 dark:text-amber-500',   off: 'border-amber-600/15 bg-transparent text-amber-700/40 dark:text-amber-400/30'   },
-    { on: 'border-emerald-600/60 bg-emerald-600/10 text-emerald-700 dark:text-emerald-400', partial: 'border-emerald-600/35 bg-emerald-600/10 text-emerald-600 dark:text-emerald-500', off: 'border-emerald-600/15 bg-transparent text-emerald-700/40 dark:text-emerald-400/30' },
-    { on: 'border-rose-600/60 bg-rose-600/10 text-rose-700 dark:text-rose-400',       partial: 'border-rose-600/35 bg-rose-600/10 text-rose-600 dark:text-rose-500',       off: 'border-rose-600/15 bg-transparent text-rose-700/40 dark:text-rose-400/30'       },
-    { on: 'border-cyan-600/60 bg-cyan-600/10 text-cyan-700 dark:text-cyan-400',       partial: 'border-cyan-600/35 bg-cyan-600/10 text-cyan-600 dark:text-cyan-500',       off: 'border-cyan-600/15 bg-transparent text-cyan-700/40 dark:text-cyan-400/30'       },
-    { on: 'border-orange-600/60 bg-orange-600/10 text-orange-700 dark:text-orange-400', partial: 'border-orange-600/35 bg-orange-600/10 text-orange-600 dark:text-orange-500', off: 'border-orange-600/15 bg-transparent text-orange-700/40 dark:text-orange-400/30' },
-    { on: 'border-teal-600/60 bg-teal-600/10 text-teal-700 dark:text-teal-400',       partial: 'border-teal-600/35 bg-teal-600/10 text-teal-600 dark:text-teal-500',       off: 'border-teal-600/15 bg-transparent text-teal-700/40 dark:text-teal-400/30'       },
-    { on: 'border-indigo-600/60 bg-indigo-600/10 text-indigo-700 dark:text-indigo-400', partial: 'border-indigo-600/35 bg-indigo-600/10 text-indigo-600 dark:text-indigo-500', off: 'border-indigo-600/15 bg-transparent text-indigo-700/40 dark:text-indigo-400/30' },
-    { on: 'border-pink-600/60 bg-pink-600/10 text-pink-700 dark:text-pink-400',       partial: 'border-pink-600/35 bg-pink-600/10 text-pink-600 dark:text-pink-500',       off: 'border-pink-600/15 bg-transparent text-pink-700/40 dark:text-pink-400/30'       },
-    { on: 'border-lime-600/60 bg-lime-600/10 text-lime-700 dark:text-lime-400',       partial: 'border-lime-600/35 bg-lime-600/10 text-lime-600 dark:text-lime-500',       off: 'border-lime-600/15 bg-transparent text-lime-700/40 dark:text-lime-400/30'       },
-    { on: 'border-fuchsia-600/60 bg-fuchsia-600/10 text-fuchsia-700 dark:text-fuchsia-400', partial: 'border-fuchsia-600/35 bg-fuchsia-600/10 text-fuchsia-600 dark:text-fuchsia-500', off: 'border-fuchsia-600/15 bg-transparent text-fuchsia-700/40 dark:text-fuchsia-400/30' },
-  ];
-
-  /** Deterministic hash: same group name → same palette entry every time. */
-  function groupPalette(groupId: string): GroupColorState {
-    let h = 0;
-    for (let i = 0; i < groupId.length; i++) {
-      h = Math.imul(31, h) + groupId.charCodeAt(i) | 0;
-    }
-    return GROUP_PALETTE[Math.abs(h) % GROUP_PALETTE.length];
-  }
+  // ── Group-color palette — shared utility, deterministic, light & dark aware ──
+  import { ruleSourcePalette } from '$lib/utils/ruleSourceColors';
+  const groupPalette = ruleSourcePalette;
 
   /** Enable every available file (adds all to the load order). */
   function enableAllSources() { enabledSources = availableFiles.map(f => f.path); }

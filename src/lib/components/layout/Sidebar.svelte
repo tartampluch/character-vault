@@ -8,6 +8,14 @@
     3. Nav      — navigation links (vertically scrollable)
     4. Footer   — theme icon + language selector (same compact row)
 
+  NAV ITEMS:
+    Campaigns — always visible; navigates to /campaigns.
+                In expanded mode: shows a collapsible "Pinned Campaigns" section below.
+    Vault     — always visible; navigates to /vault (global vault across all campaigns).
+                In expanded mode: shows a collapsible "Pinned Characters" section below.
+    Character — contextual: only when a character is loaded.
+    GM Tools  — section separator + Content Editor + Campaign Settings (GM only, in campaign).
+
   RESPONSIVE BEHAVIOR:
     Desktop (≥1024px): fixed-height left column, expanded (icon+label) or collapsed (icon-only).
     Tablet (768–1023px): always icon-only.
@@ -28,9 +36,11 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
+  import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
   import { ui } from '$lib/i18n/ui-strings';
   import ThemeLanguagePicker from '$lib/components/ui/ThemeLanguagePicker.svelte';
   import { logout } from '$lib/api/userApi';
@@ -38,7 +48,6 @@
     IconCampaign,
     IconVault,
     IconCharacter,
-    IconGMDashboard,
     IconEdit,
     IconSettings,
     IconCollapse,
@@ -49,6 +58,8 @@
     IconLogout,
     IconChevronDown,
     IconChevronUp,
+    IconPin,
+    IconPinOff,
   } from '$lib/components/ui/icons';
   import ChangePasswordModal from '$lib/components/admin/ChangePasswordModal.svelte';
   import RenameModal         from '$lib/components/admin/RenameModal.svelte';
@@ -97,16 +108,32 @@
   const effectivelyCollapsed = $derived(collapsed || isTablet);
 
   // ---------------------------------------------------------------------------
+  // PINS — initialize for current user on mount
+  // ---------------------------------------------------------------------------
+
+  onMount(() => {
+    if (sessionContext.currentUserId) {
+      sidebarPinsStore.initForUser(sessionContext.currentUserId);
+    }
+  });
+
+  // Re-init when user ID changes (e.g. after login completes).
+  $effect(() => {
+    const uid = sessionContext.currentUserId;
+    if (uid) sidebarPinsStore.initForUser(uid);
+  });
+
+  // ---------------------------------------------------------------------------
   // DERIVED STATE
   // ---------------------------------------------------------------------------
 
-  const pathname      = $derived($page.url.pathname);
-  const campaignId    = $derived(sessionContext.activeCampaignId);
+  const pathname       = $derived($page.url.pathname);
+  const campaignId     = $derived(sessionContext.activeCampaignId);
   const activeCampaign = $derived(
     campaignId ? campaignStore.getCampaign(campaignId) : undefined
   );
-  const characterId   = $derived(engine.activeCharacterId);
-  const isGM          = $derived(sessionContext.isGameMaster);
+  const characterId    = $derived(engine.activeCharacterId);
+  const isGM           = $derived(sessionContext.isGameMaster);
 
   /** First letter of the display name (uppercase) used as avatar initials. */
   const userInitial = $derived(
@@ -123,47 +150,70 @@
   let showChangePasswordModal = $state(false);
   let showRenameModal         = $state(false);
 
-  /** Toggle the user menu open/closed. */
-  function toggleUserMenu(): void {
-    showUserMenu = !showUserMenu;
-  }
+  function toggleUserMenu(): void { showUserMenu = !showUserMenu; }
+  function closeUserMenu(): void  { showUserMenu = false; }
 
-  /** Close the user menu. */
-  function closeUserMenu(): void {
-    showUserMenu = false;
-  }
-
-  /** Open the Change Password modal (and close the dropdown). */
   function openChangePassword(): void {
     showUserMenu = false;
     showChangePasswordModal = true;
   }
 
-  /** Open the Rename (display name) modal (and close the dropdown). */
   function openRename(): void {
     showUserMenu = false;
     showRenameModal = true;
   }
 
-  /** Log out: call API then navigate to /login. */
   async function handleLogout(): Promise<void> {
     showUserMenu = false;
     await logout();
     await goto('/login');
   }
 
-  // Close the user menu when clicking anywhere outside it.
   $effect(() => {
     if (!showUserMenu) return;
     function handleOutsideClick(e: MouseEvent) {
       const target = e.target as Element | null;
-      if (!target?.closest('[data-user-menu]')) {
-        showUserMenu = false;
-      }
+      if (!target?.closest('[data-user-menu]')) showUserMenu = false;
     }
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
   });
+
+  // ---------------------------------------------------------------------------
+  // COLLAPSIBLE PIN SECTIONS
+  // ---------------------------------------------------------------------------
+
+  let campaignSectionOpen  = $state(true);
+  let characterSectionOpen = $state(true);
+
+  // ---------------------------------------------------------------------------
+  // PINNED CAMPAIGN LABELS
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns the display title for a pinned campaign by ID.
+   * Falls back to the raw ID if the campaign is not loaded yet.
+   */
+  function pinnedCampaignLabel(id: string): string {
+    const c = campaignStore.getCampaign(id);
+    if (!c) return id;
+    const t = c.title;
+    if (!t) return id;
+    if (typeof t === 'string') {
+      try { return engine.t(JSON.parse(t) as Record<string, string>); }
+      catch { return t; }
+    }
+    return engine.t(t as Record<string, string>);
+  }
+
+  /**
+   * Returns the display name for a pinned character by ID.
+   * Falls back to the raw ID.
+   */
+  function pinnedCharacterLabel(id: string): string {
+    const c = engine.allVaultCharacters.find(v => v.id === id);
+    return c?.name ?? id;
+  }
 
   // ---------------------------------------------------------------------------
   // SIDEBAR ROOT CLASSES
@@ -218,33 +268,11 @@
 
   <!-- =========================================================================
        HEADER — Logo + Title + Collapse button
-
-       When desktop-collapsed (collapsed=true, at lg+) AND NOT mobile:
-         Only the expand-chevron is rendered, centered. The logo is hidden to
-         prevent it from overlapping the 64 px-wide column.
-       When expanded, tablet, or mobile (mobileOpen=true):
-         Logo + title (title hidden at tablet via effectivelyCollapsed) + buttons.
-
-       IMPORTANT: The mobile close button is rendered UNCONDITIONALLY (outside
-       {#if !collapsed}) to ensure it is always available when the mobile drawer
-       is open — even if the user previously collapsed the sidebar on desktop
-       (which writes sidebar_collapsed=true to the cookie). Without this, a user
-       visiting on mobile after having collapsed the sidebar on desktop would see
-       the open drawer with no X close button.
-       The button already has `class="md:hidden"` which prevents it from showing
-       on desktop.
   ========================================================================== -->
   <div class="flex items-center border-b border-border shrink-0
               {collapsed && !mobileOpen ? 'justify-center px-1 py-3' : 'justify-between px-3 py-3'}">
 
-    <!--
-      Logo is shown when:
-        - Sidebar is not desktop-collapsed (normal expanded state), OR
-        - The mobile drawer is open (mobileOpen=true), regardless of collapsed state.
-      This ensures the logo/title is always visible in the open mobile drawer.
-    -->
     {#if !collapsed || mobileOpen}
-      <!-- Logo / title link — hidden in desktop-collapsed state -->
       <a
         href="/"
         class="flex items-center gap-2 min-w-0 text-text-primary hover:text-accent transition-colors duration-150"
@@ -283,15 +311,7 @@
       {/if}
     </button>
 
-    <!--
-      Mobile close drawer button (mobile only, via md:hidden).
-      ALWAYS rendered — NOT inside {#if !collapsed}.
-      Rationale: the `collapsed` prop reflects the desktop sidebar state stored
-      in a cookie. A user who collapsed the sidebar on desktop and then opens
-      the app on mobile would see the collapsed state (cookie value). Without
-      this unconditional render, the X button would be absent from the mobile
-      drawer, leaving backdrop-tap as the only way to close.
-    -->
+    <!-- Mobile close drawer button -->
     <button
       class="md:hidden btn-ghost p-1.5 ml-1 shrink-0"
       onclick={onClose}
@@ -307,11 +327,6 @@
        USER SECTION — avatar + name, clickable dropdown menu
   ========================================================================== -->
   <div class="relative px-2 py-2 border-b border-border shrink-0" data-user-menu>
-    <!--
-      Clickable user row — opens the dropdown on click.
-      In icon-only mode: just the avatar circle (tooltip shows name + role).
-      In expanded mode: avatar + display name + role text + chevron.
-    -->
     <button
       type="button"
       class="flex items-center gap-2 w-full rounded-md px-2 py-2
@@ -345,7 +360,6 @@
             {isGM ? ui('nav.role_gm', engine.settings.language) : ui('nav.role_player', engine.settings.language)}
           </p>
         </div>
-        <!-- Chevron indicator -->
         {#if showUserMenu}
           <IconChevronUp size={12} class="shrink-0 text-text-muted" aria-hidden="true" />
         {:else}
@@ -354,7 +368,7 @@
       {/if}
     </button>
 
-    <!-- Dropdown menu — min-w-[12rem] so it is readable even in collapsed (64px) mode -->
+    <!-- Dropdown menu -->
     {#if showUserMenu}
       <div
         role="menu"
@@ -365,7 +379,6 @@
           overflow-hidden py-1
         "
       >
-        <!-- Rename (display name) -->
         <button
           type="button"
           role="menuitem"
@@ -377,7 +390,6 @@
           {ui('user.rename', engine.settings.language)}
         </button>
 
-        <!-- Change Password -->
         <button
           type="button"
           role="menuitem"
@@ -389,10 +401,8 @@
           {ui('user.change_password', engine.settings.language)}
         </button>
 
-        <!-- Divider -->
         <div class="border-t border-border my-1" aria-hidden="true"></div>
 
-        <!-- Log out -->
         <button
           type="button"
           role="menuitem"
@@ -410,38 +420,140 @@
   <!-- =========================================================================
        NAVIGATION LINKS — middle section, vertically scrollable
   ========================================================================== -->
-  <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5" aria-label={ui('nav.main_navigation_aria', engine.settings.language)}>
+  <nav
+    class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5"
+    aria-label={ui('nav.main_navigation_aria', engine.settings.language)}
+  >
 
-    <!-- 1. CAMPAIGNS — always visible -->
-    <a href="/campaigns" class={navLinkClass('/campaigns')} title={ui('nav.campaigns', engine.settings.language)}>
-      <IconCampaign size={20} class="shrink-0" aria-hidden="true" />
-      {#if !effectivelyCollapsed}
-        <span class="truncate">{ui('nav.campaigns', engine.settings.language)}</span>
-      {/if}
-    </a>
-
-    <!-- 2. CHARACTER VAULT — contextual: only when inside a campaign -->
-    {#if campaignId}
+    <!-- ── 1. CAMPAIGNS — always visible ─────────────────────────────────── -->
+    <div class="flex items-center">
       <a
-        href="/campaigns/{campaignId}/vault"
-        class={navLinkClass('/campaigns/' + campaignId + '/vault')}
-        title={activeCampaign ? `${ui('nav.vault', engine.settings.language)} — ${activeCampaign.title}` : ui('app.title', engine.settings.language)}
+        href="/campaigns"
+        class="{navLinkClass('/campaigns')} flex-1"
+        title={ui('nav.campaigns', engine.settings.language)}
+      >
+        <IconCampaign size={20} class="shrink-0" aria-hidden="true" />
+        {#if !effectivelyCollapsed}
+          <span class="truncate flex-1">{ui('nav.campaigns', engine.settings.language)}</span>
+        {/if}
+      </a>
+
+      <!-- Collapse/expand pinned campaigns section (expanded sidebar only) -->
+      {#if !effectivelyCollapsed && sidebarPinsStore.pinnedCampaignIds.length > 0}
+        <button
+          type="button"
+          class="p-1 rounded text-text-muted hover:text-text-primary transition-colors shrink-0"
+          onclick={() => { campaignSectionOpen = !campaignSectionOpen; }}
+          aria-label={campaignSectionOpen ? 'Collapse pinned campaigns' : 'Expand pinned campaigns'}
+          title={campaignSectionOpen ? 'Collapse pinned campaigns' : 'Expand pinned campaigns'}
+        >
+          {#if campaignSectionOpen}
+            <IconChevronUp size={12} aria-hidden="true" />
+          {:else}
+            <IconChevronDown size={12} aria-hidden="true" />
+          {/if}
+        </button>
+      {/if}
+    </div>
+
+    <!-- Pinned campaigns collapsible section (expanded sidebar only) -->
+    {#if !effectivelyCollapsed && sidebarPinsStore.pinnedCampaignIds.length > 0 && campaignSectionOpen}
+      <div class="ml-2 pl-3 border-l border-border space-y-0.5">
+        <p class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          {ui('nav.pinned_campaigns', engine.settings.language)}
+        </p>
+        {#each sidebarPinsStore.pinnedCampaignIds as pinId}
+          <div class="flex items-center gap-1 group/pin">
+            <a
+              href="/campaigns/{pinId}"
+              class="flex-1 flex items-center gap-2 px-2 py-1.5 rounded text-xs text-text-secondary
+                     hover:bg-surface-alt hover:text-text-primary transition-colors truncate
+                     {isActive('/campaigns/' + pinId) ? 'text-accent' : ''}"
+              title={pinnedCampaignLabel(pinId)}
+            >
+              <IconCampaign size={13} class="shrink-0 opacity-60" aria-hidden="true" />
+              <span class="truncate">{pinnedCampaignLabel(pinId)}</span>
+            </a>
+            <button
+              type="button"
+              class="p-1 rounded opacity-0 group-hover/pin:opacity-100 text-text-muted
+                     hover:text-red-400 transition-all shrink-0"
+              onclick={() => sidebarPinsStore.unpinCampaign(pinId)}
+              aria-label="{ui('nav.unpin_campaign', engine.settings.language)}: {pinnedCampaignLabel(pinId)}"
+              title={ui('nav.unpin_campaign', engine.settings.language)}
+            >
+              <IconPinOff size={11} aria-hidden="true" />
+            </button>
+          </div>
+        {/each}
+      </div>
+    {/if}
+
+    <!-- ── 2. VAULT — always visible ─────────────────────────────────────── -->
+    <div class="flex items-center">
+      <a
+        href="/vault"
+        class="{navLinkClass('/vault')} flex-1"
+        title={ui('vault.global_title', engine.settings.language)}
       >
         <IconVault size={20} class="shrink-0" aria-hidden="true" />
         {#if !effectivelyCollapsed}
-          <span class="truncate">
-            {ui('nav.vault', engine.settings.language)}
-            {#if activeCampaign}
-              <span class="block text-xs text-text-muted font-normal truncate">
-                {activeCampaign.title}
-              </span>
-            {/if}
-          </span>
+          <span class="truncate flex-1">{ui('vault.global_title', engine.settings.language)}</span>
         {/if}
       </a>
+
+      <!-- Collapse/expand pinned characters section (expanded sidebar only) -->
+      {#if !effectivelyCollapsed && sidebarPinsStore.pinnedCharacterIds.length > 0}
+        <button
+          type="button"
+          class="p-1 rounded text-text-muted hover:text-text-primary transition-colors shrink-0"
+          onclick={() => { characterSectionOpen = !characterSectionOpen; }}
+          aria-label={characterSectionOpen ? 'Collapse pinned characters' : 'Expand pinned characters'}
+          title={characterSectionOpen ? 'Collapse pinned characters' : 'Expand pinned characters'}
+        >
+          {#if characterSectionOpen}
+            <IconChevronUp size={12} aria-hidden="true" />
+          {:else}
+            <IconChevronDown size={12} aria-hidden="true" />
+          {/if}
+        </button>
+      {/if}
+    </div>
+
+    <!-- Pinned characters collapsible section (expanded sidebar only) -->
+    {#if !effectivelyCollapsed && sidebarPinsStore.pinnedCharacterIds.length > 0 && characterSectionOpen}
+      <div class="ml-2 pl-3 border-l border-border space-y-0.5">
+        <p class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          {ui('nav.pinned_characters', engine.settings.language)}
+        </p>
+        {#each sidebarPinsStore.pinnedCharacterIds as pinId}
+          <div class="flex items-center gap-1 group/pin">
+            <a
+              href="/character/{pinId}?tab=core"
+              class="flex-1 flex items-center gap-2 px-2 py-1.5 rounded text-xs text-text-secondary
+                     hover:bg-surface-alt hover:text-text-primary transition-colors truncate
+                     {isActive('/character/' + pinId) ? 'text-accent' : ''}"
+              title={pinnedCharacterLabel(pinId)}
+            >
+              <IconCharacter size={13} class="shrink-0 opacity-60" aria-hidden="true" />
+              <span class="truncate">{pinnedCharacterLabel(pinId)}</span>
+            </a>
+            <button
+              type="button"
+              class="p-1 rounded opacity-0 group-hover/pin:opacity-100 text-text-muted
+                     hover:text-red-400 transition-all shrink-0"
+              onclick={() => sidebarPinsStore.unpinCharacter(pinId)}
+              aria-label="{ui('nav.unpin_character', engine.settings.language)}: {pinnedCharacterLabel(pinId)}"
+              title={ui('nav.unpin_character', engine.settings.language)}
+            >
+              <IconPinOff size={11} aria-hidden="true" />
+            </button>
+          </div>
+        {/each}
+      </div>
     {/if}
 
-    <!-- 3. CHARACTER SHEET — only when a character is loaded -->
+    <!-- ── 3. CHARACTER SHEET — only when a character is loaded ──────────── -->
     {#if characterId}
       <a
         href="/character/{characterId}"
@@ -460,7 +572,7 @@
       </a>
     {/if}
 
-    <!-- GM-ONLY TOOLS — visible only to Game Masters inside a campaign -->
+    <!-- ── GM TOOLS — visible only to Game Masters inside a campaign ──────── -->
     {#if isGM && campaignId}
       <div class="pt-2 pb-1">
         {#if !effectivelyCollapsed}
@@ -472,19 +584,7 @@
         {/if}
       </div>
 
-      <!-- 4. GM DASHBOARD -->
-      <a
-        href="/campaigns/{campaignId}/gm-dashboard"
-        class={navLinkClass('/campaigns/' + campaignId + '/gm-dashboard')}
-        title={ui('nav.gm_dashboard', engine.settings.language)}
-      >
-        <IconGMDashboard size={20} class="shrink-0" aria-hidden="true" />
-        {#if !effectivelyCollapsed}
-          <span class="truncate">{ui('nav.gm_dashboard', engine.settings.language)}</span>
-        {/if}
-      </a>
-
-      <!-- 5. CONTENT EDITOR -->
+      <!-- Content Editor -->
       <a
         href="/campaigns/{campaignId}/content-editor"
         class={navLinkClass('/campaigns/' + campaignId + '/content-editor')}
@@ -496,7 +596,7 @@
         {/if}
       </a>
 
-      <!-- 6. CAMPAIGN SETTINGS -->
+      <!-- Campaign Settings -->
       <a
         href="/campaigns/{campaignId}/settings"
         class={navLinkClass('/campaigns/' + campaignId + '/settings')}
@@ -509,7 +609,7 @@
       </a>
     {/if}
 
-    <!-- ADMIN TOOLS — admin role only, independent of campaign context -->
+    <!-- ── ADMIN TOOLS — admin role only ─────────────────────────────────── -->
     {#if sessionContext.isAdmin}
       <div class="pt-2 pb-1">
         {#if !effectivelyCollapsed}

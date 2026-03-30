@@ -4,7 +4,8 @@
  * @description REST controller for Character resources.
  *
  * ENDPOINTS:
- *   GET    /api/characters?campaignId=X   → index()
+ *   GET    /api/characters                → index()  (global vault — all chars for GM, own chars for player)
+ *   GET    /api/characters?campaignId=X   → index()  (campaign-scoped — same visibility rules)
  *   POST   /api/characters                → create()
  *   PUT    /api/characters/{id}           → update($id)
  *   PUT    /api/characters/{id}/gm-overrides → updateGmOverrides($id)
@@ -81,17 +82,19 @@ class CharacterController
         $db = Database::getInstance();
 
         $campaignId = $_GET['campaignId'] ?? null;
-        if (!$campaignId) {
-            http_response_code(400);
-            echo json_encode(['error' => 'BadRequest', 'message' => 'campaignId query parameter is required.']);
-            return;
-        }
 
         if ($user['is_game_master']) {
             // GMs see all characters, with raw gmOverrides as a SEPARATE field.
-            // This allows the GM dashboard (Phase 15.3) to display and edit overrides independently.
-            $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ?');
-            $stmt->execute([$campaignId]);
+            // When campaignId is provided: filter to that campaign only.
+            // When campaignId is absent (global vault /vault): return ALL characters
+            //   across all campaigns so the GM can see every character at once.
+            if ($campaignId) {
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ?');
+                $stmt->execute([$campaignId]);
+            } else {
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters');
+                $stmt->execute();
+            }
             $characters = $stmt->fetchAll();
 
             $result = array_map(function ($c) {
@@ -108,9 +111,17 @@ class CharacterController
                 return $char;
             }, $characters);
         } else {
-            // Players: only their own characters
-            $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ? AND owner_id = ?');
-            $stmt->execute([$campaignId, $user['id']]);
+            // Players: only their own characters.
+            // When campaignId is provided: filter to that campaign only.
+            // When campaignId is absent (global vault /vault): return ALL of their
+            //   own characters across all campaigns.
+            if ($campaignId) {
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ? AND owner_id = ?');
+                $stmt->execute([$campaignId, $user['id']]);
+            } else {
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE owner_id = ?');
+                $stmt->execute([$user['id']]);
+            }
             $characters = $stmt->fetchAll();
 
             $result = array_map(function ($c) {
@@ -168,7 +179,7 @@ class CharacterController
             }, $characters);
         }
 
-        Logger::info('Char', 'List', ['campaign' => $campaignId, 'count' => count($result)]);
+        Logger::info('Char', 'List', ['campaign' => $campaignId ?? 'all', 'count' => count($result)]);
         http_response_code(200);
         echo json_encode($result);
     }

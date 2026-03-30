@@ -710,4 +710,118 @@ class CampaignController
         http_response_code(200);
         echo json_encode(['campaign_id' => $campaignId, 'user_id' => $userId, 'removed' => true]);
     }
+
+    // ============================================================
+    // GET /api/campaigns/{id}/roster
+    // ============================================================
+
+    /**
+     * Returns the party roster for a campaign.
+     *
+     * RESPONSE FORMAT:
+     *   Array of player entries, each with their non-NPC characters:
+     *   [
+     *     {
+     *       "userId":     "user_abc",
+     *       "playerName": "John",
+     *       "characters": [
+     *         { "name": "Ravian",    "level": 5 },
+     *         { "name": "Side-kick", "level": 2 }
+     *       ]
+     *     },
+     *     ...
+     *   ]
+     *
+     * ACCESS CONTROL:
+     *   - Any authenticated member of the campaign can call this endpoint.
+     *   - GMs can call it for any campaign regardless of membership.
+     *   - Non-members without GM role receive 403 Forbidden.
+     *
+     * DATA POLICY:
+     *   Only non-NPC characters are included (is_npc = 0).
+     *   Player name comes from users.display_name (the in-game player name).
+     *   Character level = sum of all classLevels values from character_json.
+     *   Players with zero non-NPC characters are excluded from the response.
+     *   Results are ordered by player name, then character name.
+     *
+     * WHY A DEDICATED ENDPOINT?
+     *   The standard GET /api/characters?campaignId=X endpoint enforces role-based
+     *   visibility (players only see their own characters). A shared party roster
+     *   requires all members to see everyone's characters — but only their name and
+     *   total level, not their stats. This read-only, minimal endpoint makes that
+     *   possible without exposing sensitive character data to players.
+     *
+     * @param string $campaignId - Campaign UUID.
+     */
+    public static function getRoster(string $campaignId): void
+    {
+        $user = requireAuth();
+        $db   = Database::getInstance();
+
+        // Verify the requester is a campaign member or a GM/admin.
+        if (!$user['is_game_master']) {
+            $stmt = $db->prepare(
+                'SELECT COUNT(*) FROM campaign_users WHERE campaign_id = ? AND user_id = ?'
+            );
+            $stmt->execute([$campaignId, $user['id']]);
+            if ((int)$stmt->fetchColumn() === 0) {
+                http_response_code(403);
+                echo json_encode([
+                    'error'   => 'Forbidden',
+                    'message' => 'You are not a member of this campaign.',
+                ]);
+                return;
+            }
+        }
+
+        // Fetch all non-NPC characters for this campaign joined with the owner's display name.
+        // We ORDER so that the PHP grouping loop produces a deterministic, alphabetical output
+        // without any additional sorting pass.
+        $stmt = $db->prepare('
+            SELECT
+                c.owner_id,
+                c.name            AS char_name,
+                c.character_json,
+                u.display_name    AS player_name
+            FROM  characters c
+            JOIN  users      u ON c.owner_id = u.id
+            WHERE c.campaign_id = ? AND c.is_npc = 0
+            ORDER BY u.display_name, c.name
+        ');
+        $stmt->execute([$campaignId]);
+        $rows = $stmt->fetchAll();
+
+        // Group characters by player, preserving ORDER BY ordering from the query.
+        // Using an associative array keyed by userId guarantees one entry per player.
+        $byPlayer = [];
+        foreach ($rows as $row) {
+            $userId   = $row['owner_id'];
+            $charData = json_decode($row['character_json'], true) ?? [];
+
+            // Total character level = sum of all classLevels values.
+            // classLevels is stored as Record<classId, number> in the JSON.
+            $classLevels = $charData['classLevels'] ?? [];
+            $level = (int) array_sum(array_values($classLevels));
+
+            if (!isset($byPlayer[$userId])) {
+                $byPlayer[$userId] = [
+                    'userId'     => $userId,
+                    'playerName' => $row['player_name'] ?? '',
+                    'characters' => [],
+                ];
+            }
+
+            $byPlayer[$userId]['characters'][] = [
+                'name'  => $row['char_name'],
+                'level' => $level,
+            ];
+        }
+
+        Logger::info('Campaign', 'Roster', [
+            'campaign' => $campaignId,
+            'players'  => count($byPlayer),
+        ]);
+
+        echo json_encode(array_values($byPlayer));
+    }
 }

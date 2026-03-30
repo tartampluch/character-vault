@@ -38,6 +38,8 @@
   } from '$lib/components/ui/icons';
   import UserFormModal      from '$lib/components/admin/UserFormModal.svelte';
   import ConfirmDeleteModal  from '$lib/components/admin/ConfirmDeleteModal.svelte';
+  import PageHeader         from '$lib/components/layout/PageHeader.svelte';
+  import { IconAdmin } from '$lib/components/ui/icons';
 
   const lang = $derived(engine.settings.language);
 
@@ -198,17 +200,12 @@
   <title>{ui('admin.users.title', lang)} — {ui('app.title', lang)}</title>
 </svelte:head>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
-
-  <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
-  <header class="flex items-start justify-between gap-4 flex-wrap">
-    <div>
-      <h1 class="text-2xl font-bold text-text-primary">{ui('admin.users.title', lang)}</h1>
-      <p class="mt-1 text-sm text-text-muted">
-        {ui('admin.users.subtitle', lang)}
-      </p>
-    </div>
-
+<PageHeader
+  title={ui('admin.users.title', lang)}
+  subtitle={ui('admin.users.subtitle', lang)}
+  icon={IconAdmin}
+>
+  {#snippet actions()}
     <button
       class="btn-primary gap-1.5 shrink-0"
       onclick={openAddModal}
@@ -216,7 +213,10 @@
       <IconAdd size={16} aria-hidden="true" />
       {ui('admin.users.add', lang)}
     </button>
-  </header>
+  {/snippet}
+</PageHeader>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
 
   <!-- ── ERROR BANNER ───────────────────────────────────────────────────────── -->
   {#if loadError}

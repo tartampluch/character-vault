@@ -23,7 +23,8 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { storageManager, apiHeaders } from '$lib/engine/StorageManager';
   import { dataLoader } from '$lib/engine/DataLoader';
-  import { IconSettings, IconBack, IconSuccess } from '$lib/components/ui/icons';
+  import { IconSettings, IconSuccess } from '$lib/components/ui/icons';
+  import PageHeader from '$lib/components/layout/PageHeader.svelte';
   import { ui } from '$lib/i18n/ui-strings';
 
   import CampaignInfoPanel     from '$lib/components/settings/CampaignInfoPanel.svelte';
@@ -246,30 +247,25 @@
   }
 </script>
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
+<PageHeader
+  title={ui('settings.title', engine.settings.language)}
+  icon={IconSettings}
+  breadcrumb={{ href: `/campaigns/${campaignId}`, label: ui('settings.back_campaign', engine.settings.language) }}
+>
+  {#snippet actions()}
+    <button
+      class="btn-primary"
+      onclick={saveSettings}
+      disabled={isSaving || !isValidJson}
+      aria-label={ui('nav.save_campaign_settings_aria', engine.settings.language)}
+      type="button"
+    >
+      {isSaving ? ui('settings.saving', engine.settings.language) : ui('settings.save', engine.settings.language)}
+    </button>
+  {/snippet}
+</PageHeader>
 
-  <!-- ── HEADER ───────────────────────────────────────────────────────────── -->
-  <header class="flex items-start justify-between gap-3 flex-wrap border-b border-border pb-4">
-    <div class="flex flex-col gap-0.5">
-      <a href="/campaigns/{campaignId}" class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> {ui('settings.back_campaign', engine.settings.language)}
-      </a>
-      <h1 class="flex items-center gap-2 text-2xl font-bold text-text-primary">
-        <IconSettings size={22} aria-hidden="true" /> {ui('settings.title', engine.settings.language)}
-      </h1>
-    </div>
-    <div class="flex items-center gap-2 shrink-0">
-      <button
-        class="btn-primary"
-        onclick={saveSettings}
-        disabled={isSaving || !isValidJson}
-        aria-label={ui('nav.save_campaign_settings_aria', engine.settings.language)}
-        type="button"
-      >
-        {isSaving ? ui('settings.saving', engine.settings.language) : ui('settings.save', engine.settings.language)}
-      </button>
-    </div>
-  </header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-5">
 
   {#if saveSuccess}
     <div class="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-green-600/40 bg-green-950/20 text-green-400 text-sm" role="status">

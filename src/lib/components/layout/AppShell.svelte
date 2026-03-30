@@ -358,7 +358,20 @@
     if (SEGMENT_LABELS[segment]) return SEGMENT_LABELS[segment];
     // 2. Campaign ID — try to look up in campaignStore
     const campaign = campaignStore.getCampaign(segment);
-    if (campaign) return campaign.title;
+    if (campaign) {
+      // campaign.title is LocalizedString | string — resolve to a plain string.
+      // Mirrors the resolveLocalized() pattern used throughout the app.
+      const t = campaign.title;
+      if (!t) return segment;
+      if (typeof t !== 'string') return engine.t(t);
+      try {
+        const parsed = JSON.parse(t) as Record<string, string>;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return engine.t(parsed);
+        }
+      } catch { /* plain string — return as-is */ }
+      return t;
+    }
     // 3. Character ID — check engine's active character
     if (engine.activeCharacterId === segment && engine.character.name) {
       return engine.character.name;
