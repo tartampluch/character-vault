@@ -47,6 +47,7 @@
     IconVault,         // Members tab
     IconRuleSources,   // Rule Sources tab
     IconDiceRoll,      // Rules & Generation tab
+    IconEdit,          // Campaign Content tab
     IconGMDashboard,   // GM Overrides tab
   } from '$lib/components/ui/icons';
 
@@ -59,6 +60,7 @@
   import CharacterCreationPanel from '$lib/components/settings/CharacterCreationPanel.svelte';
   import VariantRulesPanel     from '$lib/components/settings/VariantRulesPanel.svelte';
   import GmOverridesPanel      from '$lib/components/settings/GmOverridesPanel.svelte';
+  import CampaignContentPanel  from '$lib/components/settings/CampaignContentPanel.svelte';
 
   // ── EditableChapter / EditableTask types ──────────────────────────────────
   // These mirror the internal interfaces of ChaptersPanel. They cannot be
@@ -88,9 +90,10 @@
     { key: 'info',         labelKey: 'settings.tabs.info',         icon: IconCampaign    },
     { key: 'chapters',     labelKey: 'settings.tabs.chapters',     icon: IconJournal     },
     { key: 'members',      labelKey: 'settings.tabs.members',      icon: IconVault       },
-    { key: 'rule_sources', labelKey: 'settings.tabs.rule_sources', icon: IconRuleSources },
-    { key: 'rules_gen',    labelKey: 'settings.tabs.rules_gen',    icon: IconDiceRoll    },
-    { key: 'gm_overrides', labelKey: 'settings.tabs.gm_overrides', icon: IconGMDashboard },
+    { key: 'rule_sources',     labelKey: 'settings.tabs.rule_sources',     icon: IconRuleSources },
+    { key: 'rules_gen',        labelKey: 'settings.tabs.rules_gen',        icon: IconDiceRoll    },
+    { key: 'campaign_content', labelKey: 'settings.tabs.campaign_content', icon: IconEdit        },
+    { key: 'gm_overrides',     labelKey: 'settings.tabs.gm_overrides',     icon: IconGMDashboard },
   ] as const;
 
   type SettingsTabKey = (typeof SETTINGS_TABS)[number]['key'];
@@ -610,6 +613,10 @@
         />
         <VariantRulesPanel bind:variantGestalt bind:variantVWP />
       </div>
+
+    <!-- ── TAB: Campaign Content ─────────────────────────────────────────── -->
+    {:else if activeTab === 'campaign_content'}
+      <CampaignContentPanel {campaignId} />
 
     <!-- ── TAB: GM Overrides ──────────────────────────────────────────────── -->
     {:else if activeTab === 'gm_overrides'}

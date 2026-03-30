@@ -14,7 +14,7 @@
     Vault     — always visible; navigates to /vault (global vault across all campaigns).
                 In expanded mode: shows a collapsible "Pinned Characters" section below.
     Character — contextual: only when a character is loaded.
-    GM Tools  — section separator + Content Editor + Campaign Settings (GM only, in campaign).
+    GM Tools  — section separator + Content Editor (global, always visible for GMs and admins).
 
   RESPONSIVE BEHAVIOR:
     Desktop (≥1024px): fixed-height left column, expanded (icon+label) or collapsed (icon-only).
@@ -49,7 +49,6 @@
     IconVault,
     IconCharacter,
     IconEdit,
-    IconSettings,
     IconCollapse,
     IconExpand,
     IconClose,
@@ -572,8 +571,8 @@
       </a>
     {/if}
 
-    <!-- ── GM TOOLS — visible only to Game Masters inside a campaign ──────── -->
-    {#if isGM && campaignId}
+    <!-- ── GM TOOLS — visible to all Game Masters and admins ──────────────── -->
+    {#if isGM || sessionContext.isAdmin}
       <div class="pt-2 pb-1">
         {#if !effectivelyCollapsed}
           <p class="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -584,27 +583,15 @@
         {/if}
       </div>
 
-      <!-- Content Editor -->
+      <!-- Content Editor (global) -->
       <a
-        href="/campaigns/{campaignId}/content-editor"
-        class={navLinkClass('/campaigns/' + campaignId + '/content-editor')}
+        href="/content-editor"
+        class={navLinkClass('/content-editor')}
         title={ui('nav.content_editor', engine.settings.language)}
       >
         <IconEdit size={20} class="shrink-0" aria-hidden="true" />
         {#if !effectivelyCollapsed}
           <span class="truncate">{ui('nav.content_editor', engine.settings.language)}</span>
-        {/if}
-      </a>
-
-      <!-- Campaign Settings -->
-      <a
-        href="/campaigns/{campaignId}/settings"
-        class={navLinkClass('/campaigns/' + campaignId + '/settings')}
-        title={ui('nav.campaign_settings', engine.settings.language)}
-      >
-        <IconSettings size={20} class="shrink-0" aria-hidden="true" />
-        {#if !effectivelyCollapsed}
-          <span class="truncate">{ui('nav.settings', engine.settings.language)}</span>
         {/if}
       </a>
     {/if}

@@ -1,22 +1,26 @@
 <!--
-  @file src/routes/campaigns/[id]/content-editor/+page.svelte
-  @description Content Library Page — GM-only homebrew entity manager.
+  @file src/routes/content-editor/+page.svelte
+  @description Global Content Library — GM/admin homebrew entity manager (global scope only).
 
   ────────────────────────────────────────────────────────────────────────────
   NAVIGATION GUARD
   ────────────────────────────────────────────────────────────────────────────
-  If the current user is not a GM, this page redirects to the campaign root
-  immediately. The check runs in a $effect so it re-evaluates reactively if
-  the session changes mid-visit.
+  If the current user is neither a GM nor an admin, this page redirects to /campaigns.
+
+  ────────────────────────────────────────────────────────────────────────────
+  SCOPE
+  ────────────────────────────────────────────────────────────────────────────
+  This editor is locked to 'global' scope — it manages rule files stored on
+  the server (PUT /api/global-rules/{filename}).  Campaign-specific homebrew
+  is managed via the Campaign Settings → "Campaign Content" tab.
 
   ────────────────────────────────────────────────────────────────────────────
   LAYOUT
   ────────────────────────────────────────────────────────────────────────────
-  Header — HomebrewScopePanel:
-    • Scope toggle: Campaign / Global
-    • filename input (visible when scope === 'global')
-      with load-order tooltip
-    • isDirty / isSaving indicator
+  Header — PageHeader with title
+
+  Filename input — with load-order tooltip
+  isDirty / isSaving indicator
 
   Toolbar — New Entity | Import JSON | Export All
 
@@ -26,27 +30,12 @@
     • Sort: click column header toggles asc/desc
     • Actions per row: Edit → /content-editor/[id]
                        Clone → opens NewEntityPage pre-populated
-                       Delete → confirmation and HomebrewStore.remove()
+                       Delete → confirmation
 
-  ────────────────────────────────────────────────────────────────────────────
-  IMPORT JSON
-  ────────────────────────────────────────────────────────────────────────────
-  Opens a modal with a textarea where the GM can paste a full JSON array of
-  Feature objects. On confirm, calls HomebrewStore.importJSON(text).
-  Shows a parse error banner for invalid JSON.
-
-  ────────────────────────────────────────────────────────────────────────────
-  EXPORT ALL
-  ────────────────────────────────────────────────────────────────────────────
-  Downloads the current entity array as a .json file named after the scope/filename.
-
-  ────────────────────────────────────────────────────────────────────────────
   @see src/lib/engine/HomebrewStore.svelte.ts  for reactive state
-  @see ARCHITECTURE.md §21.5.1                 for full specification
 -->
 
 <script lang="ts">
-  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { homebrewStore } from '$lib/engine/HomebrewStore.svelte';
@@ -57,30 +46,28 @@
   import PageHeader from '$lib/components/layout/PageHeader.svelte';
 
   // ===========================================================================
-  // ROUTE PARAMS + AUTH GUARD
+  // AUTH GUARD + SCOPE SETUP
   // ===========================================================================
 
-  const campaignId = $derived($page.params.id ?? '');
-  const lang       = $derived(engine.settings.language);
+  const lang = $derived(engine.settings.language);
 
-  /** Non-GM users are redirected to the campaign root. */
+  /** Non-GM/non-admin users are redirected to the campaigns list. */
   $effect(() => {
-    if (!sessionContext.isGameMaster) {
-      goto(`/campaigns/${campaignId}`);
+    if (!sessionContext.isGameMaster && !sessionContext.isAdmin) {
+      goto('/campaigns');
     }
   });
 
-  /** Set the campaign in homebrewStore when this page mounts. */
+  /** Force global scope when this page is active. */
   $effect(() => {
-    if (campaignId) {
-      sessionContext.setActiveCampaign(campaignId);
-    }
+    homebrewStore.scope = 'global';
   });
 
-  /** Force campaign scope — this page only manages campaign-scoped content. */
-  $effect(() => {
-    homebrewStore.scope = 'campaign';
-  });
+  // ===========================================================================
+  // CONSTANTS
+  // ===========================================================================
+
+  const LOAD_ORDER_TOOLTIP = $derived(ui('content_editor.lib.load_order_tooltip', lang));
 
   // ===========================================================================
   // CATEGORY BADGE HELPER
@@ -177,7 +164,7 @@
   // ===========================================================================
 
   function cloneEntity(entityId: string): void {
-    goto(`/campaigns/${campaignId}/content-editor/new?cloneFrom=${encodeURIComponent(entityId)}`);
+    goto(`/content-editor/new?cloneFrom=${encodeURIComponent(entityId)}`);
   }
 
   // ===========================================================================
@@ -204,7 +191,7 @@
   // ===========================================================================
 
   function exportAll(): void {
-    const filename = `homebrew_${campaignId}.json`;
+    const filename = homebrewStore.filename;
     const blob = new Blob([homebrewStore.toJSON()], { type: 'application/json' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -281,15 +268,36 @@
 <!-- ======================================================================== -->
 <!-- PAGE                                                                      -->
 <!-- ======================================================================== -->
-<PageHeader
-  title={ui('nav.content_editor', lang)}
-  breadcrumb={{ href: `/campaigns/${campaignId}/settings?tab=campaign_content`, label: ui('settings.tabs.campaign_content', lang) }}
-/>
+<PageHeader title={ui('nav.content_editor', lang)} />
 
 <div class="flex flex-col gap-6 px-4 md:px-6 py-6 max-w-6xl mx-auto">
 
-  <!-- Save state indicator -->
-  {#if homebrewStore.isSaving || homebrewStore.isDirty}
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- GLOBAL FILENAME PANEL                                                    -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <div class="rounded-lg border border-border bg-surface-alt p-4 flex flex-col gap-4">
+    <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">{ui('content_editor.lib.scope_global', lang)}</p>
+
+    <!-- Filename input -->
+    <div class="flex flex-col gap-1">
+      <label for="filename" class="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+        {ui('content_editor.lib.filename_label', lang)}
+      </label>
+      <input
+        id="filename"
+        type="text"
+        class="input font-mono text-sm"
+        bind:value={homebrewStore.filename}
+        placeholder={ui('content_editor.lib.filename_placeholder', lang)}
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <p class="text-[10px] text-text-muted" title={LOAD_ORDER_TOOLTIP}>
+        {LOAD_ORDER_TOOLTIP}
+      </p>
+    </div>
+
+    <!-- Save state indicator -->
     <div class="flex items-center gap-2 text-xs">
       {#if homebrewStore.isSaving}
         <span class="inline-block h-3 w-3 rounded-full border-2 border-accent border-t-transparent
@@ -299,16 +307,22 @@
         <span class="inline-block h-2 w-2 rounded-full bg-amber-400 shrink-0"
               aria-label={ui('content_editor.lib.unsaved', lang)}></span>
         <span class="text-amber-400">{ui('content_editor.lib.unsaved', lang)}</span>
+      {:else if homebrewStore.entities.length > 0}
+        <span class="inline-block h-2 w-2 rounded-full bg-green-500 shrink-0"
+              aria-label={ui('content_editor.lib.saved', lang)}></span>
+        <span class="text-green-400">{ui('content_editor.lib.saved', lang)}</span>
+      {:else}
+        <span class="text-text-muted">{ui('content_editor.lib.ready', lang)}</span>
       {/if}
     </div>
-  {/if}
+  </div>
 
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   <!-- TOOLBAR                                                                  -->
   <!-- ──────────────────────────────────────────────────────────────────────── -->
   <div class="flex flex-wrap items-center gap-2">
     <a
-      href="/campaigns/{campaignId}/content-editor/new"
+      href="/content-editor/new"
       class="btn-primary text-sm"
     >
       {ui('content_editor.lib.new_entity', lang)}
@@ -440,7 +454,7 @@
                 <td class="px-3 py-2.5">
                   <div class="flex items-center justify-end gap-1.5">
                     <a
-                      href="/campaigns/{campaignId}/content-editor/{encodeURIComponent(entity.id)}"
+                      href="/content-editor/{encodeURIComponent(entity.id)}"
                       class="btn-ghost text-xs py-2 px-3"
                       title={ui('content_editor.lib.edit_entity_title', lang).replace('{id}', entity.id)}
                     >

@@ -1,23 +1,21 @@
 <!--
-  @file src/routes/campaigns/[id]/content-editor/[entityId]/+page.svelte
-  @description Edit Entity Page — loads a homebrew entity and renders EntityForm in edit mode.
+  @file src/routes/content-editor/[entityId]/+page.svelte
+  @description Edit Entity Page (global scope) — loads a homebrew entity and renders EntityForm in edit mode.
 
   ────────────────────────────────────────────────────────────────────────────
   DATA FLOW
   ────────────────────────────────────────────────────────────────────────────
-  1. URL param `[entityId]` is URI-decoded (IDs can contain slashes in edge
-     cases but more commonly just snake_case).
+  1. URL param `[entityId]` is URI-decoded.
   2. HomebrewStore.getById(entityId) — loaded entity.
-  3. If not found in the store, redirect back to the library with an error query
-     param rather than crashing.
+  3. If not found in the store, redirect back to the global content editor.
   4. EntityForm renders in mode: 'edit'.
   5. Save → HomebrewStore.update() (handled inside EntityForm via ctx.store).
-  6. Delete → confirmation modal → HomebrewStore.remove() → redirect to library.
+  6. Delete → confirmation modal → HomebrewStore.remove() → redirect to global editor.
 
   ────────────────────────────────────────────────────────────────────────────
-  GM GUARD
+  AUTH GUARD
   ────────────────────────────────────────────────────────────────────────────
-  Non-GM users are redirected to the campaign root.
+  Non-GM/non-admin users are redirected to /campaigns.
 
   ────────────────────────────────────────────────────────────────────────────
   @see src/lib/components/content-editor/EntityForm.svelte  for the form orchestrator
@@ -42,34 +40,31 @@
   // ROUTE PARAMS + AUTH GUARD
   // ===========================================================================
 
-  const campaignId = $derived($page.params.id ?? '');
-  const entityId   = $derived(decodeURIComponent(($page.params as Record<string, string>)['entityId'] ?? ''));
+  const entityId = $derived(decodeURIComponent(($page.params as Record<string, string>)['entityId'] ?? ''));
 
   $effect(() => {
-    if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`);
+    if (!sessionContext.isGameMaster && !sessionContext.isAdmin) {
+      goto('/campaigns');
+    }
   });
 
+  /** Ensure global scope is set for this context. */
   $effect(() => {
-    if (campaignId) sessionContext.setActiveCampaign(campaignId);
+    homebrewStore.scope = 'global';
   });
 
   // ===========================================================================
   // ENTITY LOOKUP
   // ===========================================================================
 
-  /**
-   * The entity being edited (from HomebrewStore).
-   * Reacts to entityId changes and to store mutations.
-   */
   const entity = $derived(homebrewStore.getById(entityId));
 
   /**
-   * If the entity doesn't exist in the store, redirect to the library.
-   * Uses a `?notFound=1` query param so the library can show a brief warning.
+   * If the entity doesn't exist in the store, redirect to the global editor.
    */
   $effect(() => {
     if (entityId && homebrewStore.entities.length > 0 && !entity) {
-      goto(`/campaigns/${campaignId}/content-editor?notFound=${encodeURIComponent(entityId)}`);
+      goto(`/content-editor?notFound=${encodeURIComponent(entityId)}`);
     }
   });
 
@@ -81,7 +76,7 @@
 
   function confirmDelete(): void {
     homebrewStore.remove(entityId);
-    goto(`/campaigns/${campaignId}/settings?tab=campaign_content`);
+    goto('/content-editor');
   }
 
   // ===========================================================================
@@ -89,9 +84,7 @@
   // ===========================================================================
 
   function handleSaved(_saved: Feature): void {
-    // EntityForm already called homebrewStore.update(). Optionally redirect.
-    // For edit mode we stay on the page (the GM may continue tweaking).
-    // A brief "Saved" indicator is shown by EntityForm's own save bar.
+    // EntityForm already called homebrewStore.update(). Stay on page for tweaking.
   }
 </script>
 
@@ -128,9 +121,9 @@
   <!-- Header row: back link + title + delete button -->
   <header class="flex items-start justify-between gap-3 flex-wrap">
     <div class="flex flex-col gap-0.5 flex-1 min-w-0">
-      <a href="/campaigns/{campaignId}/settings?tab=campaign_content"
+      <a href="/content-editor"
          class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> {ui('settings.tabs.campaign_content', lang)}
+        <IconBack size={12} aria-hidden="true" /> {ui('nav.content_editor', lang)}
       </a>
       <div class="min-w-0">
         <h1 class="text-2xl font-bold text-text-primary truncate">
@@ -169,7 +162,7 @@
       </p>
       <p class="text-xs text-text-muted mt-2">
         {ui('content_editor.edit.loading_hint', lang)}
-        <a href="/campaigns/{campaignId}/settings?tab=campaign_content"
+        <a href="/content-editor"
            class="underline hover:text-text-primary">{ui('content_editor.edit.return_link', lang)}</a>
       </p>
     </div>

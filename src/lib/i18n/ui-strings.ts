@@ -1200,9 +1200,10 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
    'settings.tabs.info':         'Campaign Info',
    'settings.tabs.chapters':     'Chapters',
    'settings.tabs.members':      'Members',
-   'settings.tabs.rule_sources': 'Rule Sources',
-   'settings.tabs.rules_gen':    'Rules & Generation',
-   'settings.tabs.gm_overrides': 'GM Overrides',
+    'settings.tabs.rule_sources':      'Rule Sources',
+    'settings.tabs.rules_gen':         'Rules & Generation',
+    'settings.tabs.campaign_content':  'Campaign Content',
+    'settings.tabs.gm_overrides':      'GM Overrides',
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — CAMPAIGN INFO (title & description)

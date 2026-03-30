@@ -1,6 +1,6 @@
 <!--
-  @file src/routes/campaigns/[id]/content-editor/new/+page.svelte
-  @description New Entity Page — 3-step wizard for authoring a homebrew entity.
+  @file src/routes/content-editor/new/+page.svelte
+  @description New Entity Page (global scope) — 3-step wizard for authoring a homebrew entity.
 
   ────────────────────────────────────────────────────────────────────────────
   STEP 1 — Entity Type Selector (EntityTypeSelector.svelte)
@@ -16,7 +16,7 @@
 
   STEP 3 — EntityForm
     Full orchestrator form for the chosen category.
-    On save: HomebrewStore.add() then redirect to the library.
+    On save: HomebrewStore.add() then redirect to the global content editor.
   ────────────────────────────────────────────────────────────────────────────
 -->
 
@@ -37,15 +37,17 @@
   // ROUTE + AUTH GUARD
   // ===========================================================================
 
-  const campaignId = $derived($page.params.id ?? '');
-  const lang       = $derived(engine.settings.language);
+  const lang = $derived(engine.settings.language);
 
   $effect(() => {
-    if (!sessionContext.isGameMaster) goto(`/campaigns/${campaignId}`);
+    if (!sessionContext.isGameMaster && !sessionContext.isAdmin) {
+      goto('/campaigns');
+    }
   });
 
+  /** Ensure global scope is set for this context. */
   $effect(() => {
-    if (campaignId) sessionContext.setActiveCampaign(campaignId);
+    homebrewStore.scope = 'global';
   });
 
   // ===========================================================================
@@ -72,7 +74,6 @@
         homebrewStore.getById(cloneFrom) ??
         // Fall back to DataLoader (cloning an SRD entity)
         (() => {
-          // Import dynamically to avoid circular issues in this scope
           const { dataLoader } = homebrewStore as unknown as { dataLoader?: { getFeature: (id: string) => Feature | undefined } };
           return dataLoader?.getFeature(cloneFrom);
         })();
@@ -106,7 +107,7 @@
   }
 
   function handleSaved(_saved: Feature): void {
-    goto(`/campaigns/${campaignId}/settings?tab=campaign_content`);
+    goto('/content-editor');
   }
 </script>
 
@@ -126,9 +127,9 @@
   <!-- Back link + title -->
   <header class="flex items-start justify-between gap-3 flex-wrap">
     <div class="flex flex-col gap-0.5">
-      <a href="/campaigns/{campaignId}/settings?tab=campaign_content"
+      <a href="/content-editor"
          class="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-        <IconBack size={12} aria-hidden="true" /> {ui('settings.tabs.campaign_content', lang)}
+        <IconBack size={12} aria-hidden="true" /> {ui('nav.content_editor', lang)}
       </a>
       <h1 class="text-2xl font-bold text-text-primary">{ui('content_editor.new.title', lang)}</h1>
       {#if step !== 'type' && selectedCategory}

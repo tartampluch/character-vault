@@ -726,9 +726,10 @@
    "settings.tabs.info":         "Infos de campagne",
    "settings.tabs.chapters":     "Chapitres",
    "settings.tabs.members":      "Membres",
-   "settings.tabs.rule_sources": "Sources de règles",
-   "settings.tabs.rules_gen":    "Règles & Génération",
-   "settings.tabs.gm_overrides": "Surcharges MJ",
+    "settings.tabs.rule_sources":     "Sources de règles",
+    "settings.tabs.rules_gen":        "Règles & Génération",
+    "settings.tabs.campaign_content": "Contenu de campagne",
+    "settings.tabs.gm_overrides":     "Surcharges MJ",
 
   "settings.info.title":                        "Infos de campagne",
   "settings.info.desc":                         "Modifiez le titre et la description de la campagne. Ajoutez des traductions pour que les joueurs puissent lire dans leur propre langue.",

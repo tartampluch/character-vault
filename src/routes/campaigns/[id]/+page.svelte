@@ -252,7 +252,7 @@
     </PageHeader>
 
     <!-- ── BODY ───────────────────────────────────────────────────────────── -->
-    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+    <div class="w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
 
       <!-- Description (may be a plain string or JSON-encoded LocalizedString) -->
       {#if campaign.description}
