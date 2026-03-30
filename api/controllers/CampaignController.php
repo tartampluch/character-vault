@@ -14,6 +14,10 @@
  *   GET    /api/campaigns/{id}/users                   → getUsers($id)
  *   POST   /api/campaigns/{id}/users                   → addUser($id)
  *   DELETE /api/campaigns/{id}/users/{userId}          → removeUser($id, $userId)
+ *   GET    /api/campaigns/{id}/characters              → getCharacters($id)
+ *   GET    /api/campaigns/{id}/characters?all=1        → getCharacters($id)  (all chars for picker)
+ *   POST   /api/campaigns/{id}/characters              → addCharacters($id)
+ *   DELETE /api/campaigns/{id}/characters/{charId}     → removeCharacter($id, $charId)
  *
  * VISIBILITY RULES:
  *   - All authenticated users can list campaigns they own or belong to.
@@ -756,6 +760,205 @@ class CampaignController
         Logger::info('Campaign', 'User removed', ['campaign' => $campaignId, 'user' => $userId]);
         http_response_code(200);
         echo json_encode(['campaign_id' => $campaignId, 'user_id' => $userId, 'removed' => true]);
+    }
+
+    // ============================================================
+    // GET /api/campaigns/{id}/characters
+    // ============================================================
+
+    /**
+     * Returns lightweight character summaries for this campaign.
+     *
+     * When ?all=1 is passed, returns ALL characters visible to the GM — used by
+     * the "Add Characters" picker in Campaign Settings so the GM can select from
+     * characters that belong to other campaigns or are not yet enrolled anywhere.
+     *
+     * Without ?all=1, returns only characters whose campaign_id matches this campaign.
+     *
+     * ACCESS: GM or Admin.
+     *
+     * RESPONSE (200):
+     *   [{ id, name, playerName, campaignId, ownerId, isNPC }]
+     */
+    public static function getCharacters(string $id): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        $all = isset($_GET['all']) && $_GET['all'] === '1';
+
+        if ($all) {
+            $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json FROM characters ORDER BY name ASC');
+            $stmt->execute();
+        } else {
+            $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json FROM characters WHERE campaign_id = ? ORDER BY name ASC');
+            $stmt->execute([$id]);
+        }
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = array_map(function ($c) {
+            // Extract playerName from character_json without loading the full object into PHP arrays.
+            $charData   = json_decode($c['character_json'] ?? '{}', true) ?? [];
+            $playerName = $charData['playerName'] ?? null;
+
+            return [
+                'id'         => $c['id'],
+                'name'       => $c['name'],
+                'playerName' => is_string($playerName) && $playerName !== '' ? $playerName : null,
+                'campaignId' => $c['campaign_id'] ?? null,
+                'ownerId'    => $c['owner_id'],
+                'isNPC'      => (bool)$c['is_npc'],
+            ];
+        }, $rows);
+
+        Logger::info('Campaign', 'CharList', ['campaign' => $id, 'all' => $all, 'count' => count($result)]);
+        http_response_code(200);
+        echo json_encode($result);
+    }
+
+    // ============================================================
+    // POST /api/campaigns/{id}/characters
+    // ============================================================
+
+    /**
+     * Enrolls one or more characters in this campaign.
+     *
+     * Sets the campaign_id column AND updates the campaignId field inside
+     * character_json so that the two sources of truth stay in sync.
+     *
+     * ACCESS: GM or Admin.
+     *
+     * REQUEST BODY (JSON):
+     *   { "char_ids": ["char_xxx", "char_yyy"] }
+     *
+     * RESPONSE 200: { enrolled: string[], count: number }
+     * RESPONSE 400: char_ids missing or not a non-empty array
+     * RESPONSE 404: campaign not found
+     */
+    public static function addCharacters(string $id): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$id}' not found."]);
+            return;
+        }
+
+        $body    = json_decode(file_get_contents('php://input'), true) ?? [];
+        $charIds = $body['char_ids'] ?? [];
+
+        if (!is_array($charIds) || empty($charIds)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'BadRequest', 'message' => 'char_ids must be a non-empty array.']);
+            return;
+        }
+
+        // Sanitise: ensure all entries are non-empty strings.
+        $charIds = array_values(array_filter(array_map('strval', $charIds)));
+
+        $now      = time();
+        $enrolled = [];
+
+        $db->beginTransaction();
+        try {
+            foreach ($charIds as $charId) {
+                // Load current character_json so we can update the campaignId field inside it.
+                $fetchStmt = $db->prepare('SELECT character_json FROM characters WHERE id = ?');
+                $fetchStmt->execute([$charId]);
+                $row = $fetchStmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$row) {
+                    continue; // Skip unknown character IDs silently.
+                }
+
+                $charData             = json_decode($row['character_json'] ?? '{}', true) ?? [];
+                $charData['campaignId'] = $id;
+
+                $db->prepare('UPDATE characters SET campaign_id = ?, character_json = ?, updated_at = ? WHERE id = ?')
+                   ->execute([$id, json_encode($charData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $now, $charId]);
+
+                $enrolled[] = $charId;
+            }
+            $db->commit();
+        } catch (\Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
+
+        Logger::info('Campaign', 'Chars enrolled', ['campaign' => $id, 'count' => count($enrolled)]);
+        http_response_code(200);
+        echo json_encode(['enrolled' => $enrolled, 'count' => count($enrolled)]);
+    }
+
+    // ============================================================
+    // DELETE /api/campaigns/{id}/characters/{charId}
+    // ============================================================
+
+    /**
+     * Removes a character from a campaign (sets campaign_id = NULL).
+     *
+     * The character itself is NOT deleted — only its campaign association is cleared.
+     * The campaignId field inside character_json is also removed for consistency.
+     *
+     * ACCESS: GM or Admin.
+     *
+     * RESPONSE 200: { id: charId, removed: true }
+     * RESPONSE 404: campaign not found or character not enrolled in this campaign
+     */
+    public static function removeCharacter(string $campaignId, string $charId): void
+    {
+        requireGameMaster();
+        $db = Database::getInstance();
+
+        // Verify campaign exists.
+        $stmt = $db->prepare('SELECT id FROM campaigns WHERE id = ?');
+        $stmt->execute([$campaignId]);
+        if (!$stmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Campaign '{$campaignId}' not found."]);
+            return;
+        }
+
+        // Verify the character exists and is enrolled in this campaign.
+        $stmt = $db->prepare('SELECT id, character_json FROM characters WHERE id = ? AND campaign_id = ?');
+        $stmt->execute([$charId, $campaignId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            http_response_code(404);
+            echo json_encode([
+                'error'   => 'NotFound',
+                'message' => "Character '{$charId}' is not enrolled in campaign '{$campaignId}'.",
+            ]);
+            return;
+        }
+
+        // Remove campaignId from character_json and clear the campaign_id column.
+        $charData = json_decode($row['character_json'] ?? '{}', true) ?? [];
+        unset($charData['campaignId']);
+        $now = time();
+
+        $db->prepare('UPDATE characters SET campaign_id = NULL, character_json = ?, updated_at = ? WHERE id = ?')
+           ->execute([json_encode($charData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $now, $charId]);
+
+        Logger::info('Campaign', 'Char removed', ['campaign' => $campaignId, 'char' => $charId]);
+        http_response_code(200);
+        echo json_encode(['id' => $charId, 'removed' => true]);
     }
 
     // ============================================================

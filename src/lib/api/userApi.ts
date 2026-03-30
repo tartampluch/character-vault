@@ -278,6 +278,104 @@ export async function removeCampaignUser(
 }
 
 // =============================================================================
+// CAMPAIGN CHARACTER ENROLLMENT
+// =============================================================================
+
+/**
+ * Lightweight character summary returned by the character enrollment endpoints.
+ * Avoids sending the full character sheet — contains only the fields needed
+ * for the Campaign Settings members panel and the Add-Characters picker modal.
+ */
+export interface CharacterSummary {
+  /** Character UUID. */
+  id: string;
+  /** Character display name. */
+  name: string;
+  /** In-game player name stored inside the character JSON. May be null. */
+  playerName: string | null;
+  /** The campaign this character is currently enrolled in, or null. */
+  campaignId: string | null;
+  /** User ID of the player who owns this character. */
+  ownerId: string;
+  /** Whether this character is an NPC. */
+  isNPC: boolean;
+}
+
+/**
+ * Returns lightweight summaries for all characters enrolled in a campaign.
+ *
+ * GET /api/campaigns/{campaignId}/characters
+ *
+ * @throws ApiError 403 if not a GM or admin.
+ * @throws ApiError 404 if campaign not found.
+ */
+export async function getCampaignCharacters(
+  campaignId: string,
+): Promise<CharacterSummary[]> {
+  return apiFetch<CharacterSummary[]>(
+    `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
+  );
+}
+
+/**
+ * Returns lightweight summaries for ALL characters visible to the GM.
+ * Used by the Add-Characters picker to let the GM enroll characters from
+ * other campaigns or from the global vault.
+ *
+ * GET /api/campaigns/{campaignId}/characters?all=1
+ *
+ * @throws ApiError 403 if not a GM or admin.
+ * @throws ApiError 404 if campaign not found.
+ */
+export async function getAllCharactersForPicker(
+  campaignId: string,
+): Promise<CharacterSummary[]> {
+  return apiFetch<CharacterSummary[]>(
+    `/api/campaigns/${encodeURIComponent(campaignId)}/characters?all=1`,
+  );
+}
+
+/**
+ * Enrolls one or more characters in a campaign.
+ *
+ * POST /api/campaigns/{campaignId}/characters
+ *
+ * @param campaignId - Target campaign.
+ * @param charIds    - Array of character IDs to enroll.
+ * @throws ApiError 400 if charIds is empty.
+ * @throws ApiError 403 if not a GM or admin.
+ * @throws ApiError 404 if campaign not found.
+ */
+export async function addCampaignCharacters(
+  campaignId: string,
+  charIds: string[],
+): Promise<{ enrolled: string[]; count: number }> {
+  return apiFetch(`/api/campaigns/${encodeURIComponent(campaignId)}/characters`, {
+    method: 'POST',
+    body: JSON.stringify({ char_ids: charIds }),
+  });
+}
+
+/**
+ * Removes a character from a campaign (clears its campaign association).
+ * Does NOT delete the character.
+ *
+ * DELETE /api/campaigns/{campaignId}/characters/{charId}
+ *
+ * @throws ApiError 403 if not a GM or admin.
+ * @throws ApiError 404 if campaign not found or character not enrolled.
+ */
+export async function removeCampaignCharacter(
+  campaignId: string,
+  charId: string,
+): Promise<{ id: string; removed: true }> {
+  return apiFetch(
+    `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(charId)}`,
+    { method: 'DELETE' },
+  );
+}
+
+// =============================================================================
 // PASSWORD MANAGEMENT (admin reset + self-service change)
 // =============================================================================
 

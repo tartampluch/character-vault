@@ -1365,24 +1365,26 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   // CAMPAIGN SETTINGS — CAMPAIGN MEMBERS SECTION
   // ==========================================================================
-  'settings.members.title':         'Campaign Members',
-  'settings.members.loading':       'Loading members…',
-  'settings.members.empty':         'No members yet. Add players using the button below.',
-  'settings.members.suspended':     '(Suspended)',
-  'settings.members.add':           'Add Member',
-  'settings.members.search_placeholder': 'Search by username or name…',
-  'settings.members.loading_users': 'Loading users…',
-  'settings.members.no_match':      'No matching users.',
-  'settings.members.all_members':   'All users are already members.',
-  'settings.members.close_picker':  'Close',
+  'settings.members.title':              'Campaign Members',
+  'settings.members.loading':            'Loading characters…',
+  'settings.members.empty':              'No characters enrolled yet.',
+  'settings.members.suspended':          '(Suspended)',
+  'settings.members.add':                'Add Characters',
+  'settings.members.add_selected':       'Add Selected',
+  'settings.members.search_placeholder': 'Search by character or player name…',
+  'settings.members.loading_chars':      'Loading characters…',
+  'settings.members.no_match':           'No matching characters.',
+  'settings.members.all_enrolled':       'All characters are already enrolled.',
+  'settings.members.already_enrolled':   'Already enrolled',
+  'settings.members.close_picker':       'Close',
+  'settings.members.remove':             'Remove {name} from campaign',
+  'settings.members.error_load':         'Failed to load members.',
+  'settings.members.error_add':          'Failed to add characters.',
+  'settings.members.error_remove':       'Failed to remove character.',
+  'settings.members.error_load_chars':   'Failed to load characters.',
+  'settings.members.admin_only':         'Only GMs and administrators can manage campaign characters.',
   /** Role display labels used in the member list badge. */
-  'settings.members.role_admin':    'Admin',
-  'settings.members.remove':        'Remove {username} from campaign',
-  'settings.members.error_load':    'Failed to load members.',
-  'settings.members.error_add':     'Failed to add member.',
-  'settings.members.error_remove':  'Failed to remove member.',
-  'settings.members.error_load_users': 'Failed to load users.',
-  'settings.members.admin_only':    'Only administrators can browse the full user list.',
+  'settings.members.role_admin':         'Admin',
 
   // ==========================================================================
   // ABILITY SCORE ABBREVIATIONS

@@ -361,6 +361,14 @@
    *  successful save. Drives the warning icon on the Save button. */
   let saveHasError  = $state(false);
 
+  /**
+   * Commit function exposed by MembershipPanel via $bindable.
+   * Called during saveSettings() to persist any pending character
+   * enrollment / unenrollment operations.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let commitMembership = $state<() => Promise<void>>(() => Promise.resolve());
+
   async function saveSettings(): Promise<void> {
     if (!isValidJson) return;
     isSaving = true; toastMessage = '';
@@ -457,6 +465,9 @@
           variantRules:   { gestalt: variantGestalt, vitalityWoundPoints: variantVWP },
         },
       });
+
+      // Commit deferred membership changes (character enrollment / unenrollment).
+      await commitMembership();
 
       chaptersAreDirty = false;
       saveHasError = false;
@@ -587,7 +598,7 @@
 
     <!-- ── TAB: Campaign Members ──────────────────────────────────────────── -->
     {:else if activeTab === 'members'}
-      <MembershipPanel {campaignId} />
+      <MembershipPanel {campaignId} bind:commit={commitMembership} />
 
     <!-- ── TAB: Rule Sources ──────────────────────────────────────────────── -->
     {:else if activeTab === 'rule_sources'}
