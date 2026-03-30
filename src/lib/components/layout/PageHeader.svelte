@@ -14,8 +14,7 @@
   │  BANNER MODE (`banner` prop provided)                                    │
   │    ┌─────────────────────────────────────────────────────────────────┐   │
   │    │  Layer 1 — plain image OR plain accent-gradient placeholder.    │   │
-  │    │  Layer 2 — gradient overlay (from-black/80 → transparent).      │   │
-  │    │  Both scroll with the page until the title strip sticks.        │   │
+  │    │  Scrolls with the page until the title strip sticks.            │   │
   │    └─────────────────────────────────────────────────────────────────┘   │
   │    ┌─────────────────────────────────────────────────────────────────┐   │
   │    │  Title strip — identical markup to standard mode.               │   │
@@ -80,7 +79,7 @@
 ============================================================================ -->
 {#if isBannerMode}
 
-  <!-- ── Banner area: Layer 1 (plain) + Layer 2 (gradient) ────────────── -->
+  <!-- ── Banner area ─────────────────────────────────────────────────── -->
   <div class="relative w-full h-52 overflow-hidden shrink-0">
 
     {#if hasBannerImage}
@@ -102,11 +101,7 @@
       </div>
     {/if}
 
-    <!-- Layer 2: gradient overlay — always applied regardless of image -->
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
-      aria-hidden="true"
-    ></div>
+
   </div>
 
 {/if}

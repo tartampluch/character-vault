@@ -4,8 +4,14 @@
   Phase 19.12: Migrated to Tailwind CSS — all scoped <style> removed.
 
   LAYOUT:
-    Full-width banner image (220px) with gradient overlay and title/back-link.
+    Full-width banner image (h-52) with title/back-link.
     Below: action bar, description, chapter list, rule sources (GM only).
+
+  BANNER LOADING:
+    GET /api/campaigns (list) omits banner_image_data to keep the list fast.
+    The banner is loaded separately via GET /api/campaigns/{id} (show endpoint)
+    and cached in sessionStorage keyed by campaignId + updatedAt so that
+    subsequent visits within the same session avoid a redundant round-trip.
 -->
 
 <script lang="ts">
@@ -15,6 +21,8 @@
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { apiHeaders } from '$lib/engine/StorageManager';
+  import { getCachedBanner, setCachedBanner } from '$lib/utils/bannerCache';
+  import { isImageDataUri } from '$lib/utils/bannerImageUtils';
   import { campaignTaskStats } from '$lib/types/campaign';
   import type { LocalizedString } from '$lib/types/i18n';
   import { ui } from '$lib/i18n/ui-strings';
@@ -24,6 +32,43 @@
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
+
+  // ---------------------------------------------------------------------------
+  // BANNER — loaded separately from the campaign store.
+  // The index endpoint omits banner_image_data; we check the session cache first
+  // and fall back to GET /api/campaigns/{id} on a miss.
+  // ---------------------------------------------------------------------------
+
+  let bannerImageData: string | null = $state(null);
+  let bannerInitialised = false;
+
+  $effect(() => {
+    const c = campaign;
+    if (!c || bannerInitialised) return;
+    bannerInitialised = true;
+
+    // Fast path — sessionStorage hit (same key written by settings page on save).
+    const cached = getCachedBanner(campaignId, c.updatedAt);
+    if (cached) {
+      bannerImageData = cached;
+      return;
+    }
+
+    // Slow path — fetch show endpoint (includes banner_image_data).
+    fetch(`/api/campaigns/${campaignId}`, {
+      headers:     apiHeaders(),
+      credentials: 'include',
+    })
+      .then(async r => {
+        if (!r.ok) return;
+        const data = await r.json() as { bannerImageData?: string; updatedAt?: number };
+        if (isImageDataUri(data.bannerImageData)) {
+          bannerImageData = data.bannerImageData!;
+          setCachedBanner(campaignId, data.updatedAt ?? c.updatedAt, data.bannerImageData!);
+        }
+      })
+      .catch(err => console.warn('[CampaignDetail] Failed to load banner:', err));
+  });
 
   const chapterStats = $derived.by(() => {
     if (!campaign) return { total: 0, completed: 0, percent: 0 };
@@ -191,7 +236,7 @@
     -->
     <PageHeader
       title={resolveLocalized(campaign.title)}
-      banner={{ src: campaign.bannerUrl ?? null, alt: ui('campaign.banner_alt', engine.settings.language).replace('{title}', resolveLocalized(campaign.title)) }}
+      banner={{ src: bannerImageData, alt: ui('campaign.banner_alt', engine.settings.language).replace('{title}', resolveLocalized(campaign.title)) }}
       breadcrumb={{ href: '/campaigns', label: ui('nav.campaigns', engine.settings.language), ariaLabel: ui('nav.back_to_campaign_hub', engine.settings.language) }}
     >
       {#snippet actions()}

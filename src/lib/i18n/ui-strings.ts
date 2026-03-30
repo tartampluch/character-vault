@@ -1182,15 +1182,27 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'action.xor_note':              'Standard OR Move — not both.',
 
   // ==========================================================================
-  // CAMPAIGN SETTINGS — GENERAL
-  // ==========================================================================
-  'settings.save':                'Save Settings',
-  'settings.saving':              'Saving…',
-  'settings.saved':               'Settings saved successfully!',
-  'settings.saved_local':         'Saved locally (API unavailable).',
-  'settings.back_campaign':       'Campaign',
-  'settings.gm_view':             'GM View',
-  'settings.title':               'Campaign Settings',
+   // CAMPAIGN SETTINGS — GENERAL
+   // ==========================================================================
+   'settings.save':                'Save Settings',
+   'settings.saving':              'Saving…',
+   'settings.saved':               'Settings saved successfully!',
+   'settings.saved_local':         'Saved locally (API unavailable).',
+   'settings.back_campaign':       'Campaign',
+   'settings.gm_view':             'GM View',
+   'settings.title':               'Campaign Settings',
+
+   // ==========================================================================
+   // CAMPAIGN SETTINGS — TAB LABELS
+   // Each tab groups related settings panels to avoid an endless scrolling page.
+   // Tab keys map directly to the `?tab=` URL query parameter.
+   // ==========================================================================
+   'settings.tabs.info':         'Campaign Info',
+   'settings.tabs.chapters':     'Chapters',
+   'settings.tabs.members':      'Members',
+   'settings.tabs.rule_sources': 'Rule Sources',
+   'settings.tabs.rules_gen':    'Rules & Generation',
+   'settings.tabs.gm_overrides': 'GM Overrides',
 
   // ==========================================================================
   // CAMPAIGN SETTINGS — CAMPAIGN INFO (title & description)
@@ -1201,10 +1213,22 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'settings.info.field_title_placeholder':      'e.g. Curse of Strahd',
   'settings.info.field_description':            'Description',
   'settings.info.field_description_placeholder': 'A short introduction to the campaign, shown on the Campaign Hub card.',
-  'settings.info.field_description_extra_placeholder': 'Campaign description in this language',
+   'settings.info.field_description_extra_placeholder': 'Campaign description in this language',
 
-  // ==========================================================================
-  // CAMPAIGN SETTINGS — RULE SOURCES
+   // Banner image — stored as a base64 data URI in the DB (no separate file server).
+   'settings.info.banner.title':       'Campaign Banner',
+   'settings.info.banner.desc':        'Full-width image shown at the top of the campaign page. Accepted: JPEG, PNG, WebP, GIF. Max 5 MB.',
+   'settings.info.banner.browse':      'Browse Image\u2026',
+   'settings.info.banner.remove':      'Remove Banner',
+   'settings.info.banner.current_alt': 'Current campaign banner',
+   'settings.info.banner.pending':     'New image selected \u2014 will be saved with Settings.',
+   'settings.info.banner.error_size':  'File too large ({size} MB). Maximum is 5 MB.',
+   'settings.info.banner.error_type':  'Unsupported format. Use JPEG, PNG, WebP or GIF.',
+   'settings.info.banner.no_banner':   'No banner set',
+   'settings.info.banner.loading':     'Loading current banner\u2026',
+
+   // ==========================================================================
+   // CAMPAIGN SETTINGS — RULE SOURCES
   // ==========================================================================
   'settings.rule_sources.title':  'Rule Sources',
   'settings.rule_sources.desc':   'Enable or disable rule source files. Drag to reorder — sources loaded later have higher priority (last wins on duplicate IDs).',

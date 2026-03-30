@@ -165,11 +165,21 @@ export interface Campaign {
   posterUrl?: string;
 
   /**
-   * URL to the campaign's full-width banner image.
+   * Base64-encoded data URI of the campaign's full-width banner image.
+   * Stored directly in the database (no separate file server required).
    * Displayed at the top of the Campaign Details page (Phase 6.4).
-   * Falls back to the `posterUrl` or a default banner if absent.
+   *
+   * Format: `data:image/<subtype>;base64,<payload>`
+   * Max decoded size: 5 MiB (enforced client-side by bannerImageUtils.ts
+   *   and server-side by CampaignController.php).
+   *
+   * WHY DATA URI instead of a URL?
+   *   Keeps the application fully self-contained on shared hosting:
+   *   no uploads/ directory, no CDN, no separate file-serving endpoint.
+   *
+   * Falls back to an accent-gradient placeholder when absent.
    */
-  bannerUrl?: string;
+  bannerImageData?: string;
 
   /**
    * The user ID of the GM who created and manages this campaign.

@@ -51,12 +51,16 @@ class CampaignController
         $user = requireAuth();
         $db = Database::getInstance();
 
-        // GMs see all campaigns; players see campaigns they own
+        // banner_image_data is intentionally EXCLUDED from the list query.
+        // A base64-encoded 5 MB image becomes ~6.7 MB of text; including it in
+        // every campaign-list response would make the Campaign Hub page very slow.
+        // The full banner is returned only by show() and cached client-side via
+        // bannerCache.ts (sessionStorage keyed by campaignId + updatedAt).
         if ($user['is_game_master']) {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns ORDER BY updated_at DESC');
             $stmt->execute();
         } else {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
+            $stmt = $db->prepare('SELECT id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
             $stmt->execute([$user['id']]);
         }
 
@@ -105,13 +109,14 @@ class CampaignController
         $description = is_array($rawDescription)
             ? json_encode($rawDescription, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : ($rawDescription !== '' ? json_encode(['en' => (string)$rawDescription], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '');
-        $posterUrl   = $body['posterUrl']   ?? null;
-        $bannerUrl   = $body['bannerUrl']   ?? null;
+        // poster_url is a URL string; no banner is set at creation time.
+        // banner_image_data (base64) is set separately via PUT after creation.
+        $posterUrl = $body['posterUrl'] ?? null;
 
         $db = Database::getInstance();
         $stmt = $db->prepare('
-            INSERT INTO campaigns (id, title, description, poster_url, banner_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO campaigns (id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ');
         // Default: enable all SRD Core files (file-path based, not source-ID based)
         $defaultSources = json_encode([
@@ -135,7 +140,7 @@ class CampaignController
             '00_d20srd_core/17_d20srd_core_racial_features.json',
             '00_d20srd_core/18_d20srd_core_proficiency_features.json',
         ]);
-        $stmt->execute([$id, $title, $description, $posterUrl, $bannerUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
+        $stmt->execute([$id, $title, $description, $posterUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
 
         Logger::info('Campaign', 'Created', ['id' => $id, 'title' => $title]);
         http_response_code(201);
@@ -174,7 +179,9 @@ class CampaignController
             'title'               => $campaign['title'],
             'description'         => $campaign['description'],
             'posterUrl'           => $campaign['poster_url'],
-            'bannerUrl'           => $campaign['banner_url'],
+            // banner_image_data is a base64 data URI — potentially several MB.
+            // Returned only by show(), not by index(), to keep the list response fast.
+            'bannerImageData'     => $campaign['banner_image_data'] ?? null,
             'ownerId'             => $campaign['owner_id'],
             'chapters'            => json_decode($campaign['chapters_json'] ?? '[]', true),
             'enabledRuleSources'  => json_decode($campaign['enabled_rule_sources_json'] ?? '[]', true),
@@ -248,6 +255,45 @@ class CampaignController
                 ? json_encode($body['description'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                 : $body['description'];
         }
+
+        // bannerImageData — base64 data URI or null (to remove).
+        // Validation rules:
+        //   • null / empty string → clear the stored banner.
+        //   • non-null            → must be a data URI starting with "data:image/".
+        //   • size limit          → raw TEXT column value must not exceed 7 MB
+        //     (a 5 MB source image base64-encodes to ~6.7 MB; 7 MB gives a small
+        //     buffer for the data URI header while still preventing abuse).
+        if (array_key_exists('bannerImageData', $body)) {
+            $rawBanner = $body['bannerImageData'];
+            if ($rawBanner === null || $rawBanner === '') {
+                // Explicit removal — store NULL.
+                $fields[] = 'banner_image_data = ?';
+                $params[] = null;
+            } elseif (is_string($rawBanner)) {
+                // Validate: must look like a base64 image data URI.
+                if (!preg_match('/^data:image\/(jpeg|png|webp|gif);base64,/', $rawBanner)) {
+                    http_response_code(422);
+                    echo json_encode([
+                        'error'   => 'UnprocessableEntity',
+                        'message' => 'bannerImageData must be a base64 data URI for an image (JPEG, PNG, WebP, GIF).',
+                    ]);
+                    return;
+                }
+                // Validate: encoded size must not exceed 7 MB.
+                $maxBannerBytes = 7 * 1024 * 1024;
+                if (strlen($rawBanner) > $maxBannerBytes) {
+                    http_response_code(413);
+                    echo json_encode([
+                        'error'   => 'RequestTooLarge',
+                        'message' => 'Banner image data must not exceed 7 MB when base64-encoded.',
+                    ]);
+                    return;
+                }
+                $fields[] = 'banner_image_data = ?';
+                $params[] = $rawBanner;
+            }
+        }
+
         if (isset($body['chapters'])) {
             $fields[] = 'chapters_json = ?';
             $params[] = json_encode($body['chapters']);
@@ -303,12 +349,13 @@ class CampaignController
 
         // Build a human-readable list of what actually changed for the log.
         $changedFields = array_filter([
-            isset($body['title'])               ? 'title'               : null,
-            isset($body['description'])         ? 'description'         : null,
-            isset($body['chapters'])            ? 'chapters'            : null,
-            isset($body['enabledRuleSources'])  ? 'enabledRuleSources'  : null,
-            isset($body['gmGlobalOverrides'])   ? 'gmGlobalOverrides'   : null,
-            $hasSettingsUpdate                  ? 'campaignSettings'    : null,
+            isset($body['title'])                    ? 'title'            : null,
+            isset($body['description'])              ? 'description'      : null,
+            array_key_exists('bannerImageData', $body) ? 'bannerImageData': null,
+            isset($body['chapters'])                 ? 'chapters'         : null,
+            isset($body['enabledRuleSources'])       ? 'enabledRuleSources' : null,
+            isset($body['gmGlobalOverrides'])        ? 'gmGlobalOverrides' : null,
+            $hasSettingsUpdate                       ? 'campaignSettings'  : null,
         ]);
         Logger::info('Campaign', 'Updated', ['id' => $id, 'fields' => implode(' ', $changedFields)]);
         http_response_code(200);

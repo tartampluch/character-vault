@@ -161,7 +161,7 @@ class CampaignStore {
       title: { en: title },
       description: { en: '' },
       posterUrl: undefined,
-      bannerUrl: undefined,
+      bannerImageData: undefined,
       ownerId,
       chapters: [],
       // Empty array = permissive mode: DataLoader loads ALL rule files.

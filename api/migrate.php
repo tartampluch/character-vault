@@ -14,7 +14,7 @@
  * TABLES:
  *   - users          (id, username, password_hash, display_name, is_game_master,
  *                     role, is_suspended, last_login_at, created_at)
- *   - campaigns      (id, title, description, poster_url, banner_url, owner_id,
+ *   - campaigns      (id, title, description, poster_url, banner_image_data, owner_id,
  *                     chapters_json, enabled_rule_sources_json, gm_global_overrides_text,
  *                     homebrew_rules_json, campaign_settings_json, updated_at)
  *   - characters     (id, campaign_id, owner_id, name, is_npc, character_json,
@@ -145,7 +145,7 @@ function migrate(?PDO $pdo = null): void
             title                        TEXT NOT NULL,
             description                  TEXT NOT NULL DEFAULT \'\',
             poster_url                   TEXT,
-            banner_url                   TEXT,
+            banner_image_data            TEXT,
             owner_id                     TEXT NOT NULL,
             chapters_json                TEXT NOT NULL DEFAULT \'[]\',
             enabled_rule_sources_json    TEXT NOT NULL DEFAULT \'[]\',

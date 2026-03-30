@@ -123,6 +123,7 @@ export { Layers       as IconRuleSources  } from 'lucide-svelte'; // Rule source
 export { Code         as IconJsonEditor   } from 'lucide-svelte'; // GM JSON override editor
 export { Weight       as IconEncumbrance  } from 'lucide-svelte'; // Encumbrance / carry weight
 export { Gem          as IconMagicItem    } from 'lucide-svelte';
+export { FileImage    as IconImage        } from 'lucide-svelte'; // Campaign banner / image upload
 
 // ─── EPHEMERAL EFFECTS ICONS ─────────────────────────────────────────────────
 // Used in EphemeralEffectsPanel and consumable item flows (Phase E-3)
