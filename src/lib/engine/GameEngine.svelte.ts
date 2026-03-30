@@ -275,6 +275,64 @@ export class GameEngine {
   allVaultCharacters = $state<Character[]>([]);
 
   // ---------------------------------------------------------------------------
+  // TEMPLATE STATE — NPC/Monster blueprints (GM-only, campaign-agnostic)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * All NPC and Monster templates loaded from the `/api/templates` endpoint.
+   *
+   * Templates are the GM's reusable blueprints for NPCs and Monsters.  They are
+   * NOT tied to any campaign; the GM "spawns" them into specific campaigns to
+   * create Character instances in the `characters` table.
+   *
+   * Populated by `loadTemplates()`.  Only GMs/Admins have access.
+   * Players never see templates — only the spawned character instances.
+   */
+  allTemplates = $state<Character[]>([]);
+
+  /**
+   * Loads all templates from `GET /api/templates` into `allTemplates`.
+   * Optional `type` filter limits results to 'npc' or 'monster' templates.
+   *
+   * Fire-and-forget: the reactive `$state` update triggers UI re-renders.
+   * Safe to call multiple times (idempotent from the UI's perspective).
+   *
+   * @param type - Optional 'npc' | 'monster' filter.
+   */
+  loadTemplates(type?: 'npc' | 'monster'): void {
+    storageManager.loadTemplatesFromApi(type)
+      .then(tmpls => { this.allTemplates = tmpls; })
+      .catch(err => {
+        console.warn('[GameEngine] loadTemplates: API unavailable.', err);
+        this.allTemplates = [];
+      });
+  }
+
+  /**
+   * Adds a new template to the in-memory list and persists it via the API.
+   * Called when the GM creates a new NPC or Monster template from the global vault.
+   *
+   * @param tmpl - The new template Character object (must have isTemplate: true).
+   */
+  addTemplateToList(tmpl: Character): void {
+    // createCharacterOnApi routes to createTemplateOnApi when isTemplate === true.
+    storageManager.createCharacterOnApi(tmpl);
+    this.allTemplates.push(tmpl);
+  }
+
+  /**
+   * Removes a template from the in-memory list and deletes it from the API.
+   * Spawned instances (characters) are NOT affected — they are independent.
+   *
+   * @param templateId - The ID of the template to delete.
+   */
+  removeTemplate(templateId: string): void {
+    const index = this.allTemplates.findIndex(t => t.id === templateId);
+    if (index !== -1) this.allTemplates.splice(index, 1);
+    storageManager.deleteTemplateFromApi(templateId);
+  }
+
+  // ---------------------------------------------------------------------------
   // SCENE STATE — Global environmental features injected into all characters
   // ---------------------------------------------------------------------------
 

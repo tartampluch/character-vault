@@ -89,10 +89,10 @@ class CharacterController
             // When campaignId is absent (global vault /vault): return ALL characters
             //   across all campaigns so the GM can see every character at once.
             if ($campaignId) {
-                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ?');
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ?');
                 $stmt->execute([$campaignId]);
             } else {
-                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters');
+                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters');
                 $stmt->execute();
             }
             $characters = $stmt->fetchAll();
@@ -104,6 +104,7 @@ class CharacterController
                 $char['ownerId']     = $c['owner_id'];
                 $char['name']        = $c['name'];
                 $char['isNPC']       = (bool)$c['is_npc'];
+                $char['npcType']     = $c['npc_type'];   // 'npc' | 'monster' | null
                 $char['updatedAt']   = (int)$c['updated_at'];
                 // GMs receive raw gmOverrides as a separate field (for GM dashboard editing).
                 // The frontend GameEngine processes them as the final override layer in Phase 0.
@@ -111,72 +112,97 @@ class CharacterController
                 return $char;
             }, $characters);
         } else {
-            // Players: only their own characters.
-            // When campaignId is provided: filter to that campaign only.
-            // When campaignId is absent (global vault /vault): return ALL of their
-            //   own characters across all campaigns.
-            if ($campaignId) {
-                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ? AND owner_id = ?');
-                $stmt->execute([$campaignId, $user['id']]);
-            } else {
-                $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at FROM characters WHERE owner_id = ?');
-                $stmt->execute([$user['id']]);
-            }
-            $characters = $stmt->fetchAll();
+            // Players: their own characters PLUS NPC/Monster instances spawned into
+            // the same campaign (limited display data — name, type badge, portrait).
+            //
+            // WHY SHOW NPCs/MONSTERS TO PLAYERS?
+            //   Per user requirements (Phase 7+ vault spec): players can see the name
+            //   and portrait of NPCs and Monsters in the campaign vault, but NOT their
+            //   level, stats, or character sheet. The frontend CharacterCard renders
+            //   these in view-only mode (no click, no level badge).
+            //
+            // SECURITY: NPC/Monster character_json is NOT included in the response.
+            //   Only display-safe fields (id, name, npcType, posterUrl, playerName) are
+            //   returned.  This prevents players from reading NPC stats via DevTools.
 
-            $result = array_map(function ($c) {
+            if ($campaignId) {
+                // 1. Own characters in the campaign (full data + GM overrides merged)
+                $ownStmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters WHERE campaign_id = ? AND owner_id = ?');
+                $ownStmt->execute([$campaignId, $user['id']]);
+                $ownChars = $ownStmt->fetchAll();
+
+                // 2. NPC/Monster instances in the campaign (NOT owned by this player)
+                //    Return only display-safe fields — no stats, no features.
+                $npcStmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, updated_at FROM characters WHERE campaign_id = ? AND is_npc = 1 AND owner_id != ?');
+                $npcStmt->execute([$campaignId, $user['id']]);
+                $npcChars = $npcStmt->fetchAll();
+            } else {
+                // Global vault: own characters across all campaigns, no NPC injection.
+                $ownStmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters WHERE owner_id = ?');
+                $ownStmt->execute([$user['id']]);
+                $ownChars = $ownStmt->fetchAll();
+                $npcChars = [];
+            }
+
+            // Build full-data objects for own characters.
+            $ownResult = array_map(function ($c) {
                 $char = json_decode($c['character_json'], true) ?? [];
                 $char['id']         = $c['id'];
                 $char['campaignId'] = $c['campaign_id'];
                 $char['ownerId']    = $c['owner_id'];
                 $char['name']       = $c['name'];
                 $char['isNPC']      = (bool)$c['is_npc'];
+                $char['npcType']    = $c['npc_type'];
                 $char['updatedAt']  = (int)$c['updated_at'];
 
-                // SECURITY: For players, GM overrides are injected INTO activeFeatures
-                // rather than exposed as a separate `gmOverrides` field.
-                //
-                // WHY: Sending `gmOverrides` as a separate field allows any player with
-                // DevTools to see the raw feature IDs and instanceIds chosen by the GM,
-                // breaking the secrecy guarantee (ARCHITECTURE.md section 18.5).
-                //
-                // HOW: Parse the `gm_overrides_json`, strip identifying GM prefixes from
-                // instanceIds, then splice the entries into the existing `activeFeatures` array.
-                // The frontend GameEngine processes `activeFeatures` in Phase 0 identically
-                // regardless of origin — the overrides are applied transparently.
-                //
-                // The `gmOverrides` field is intentionally OMITTED from the player payload.
-                $gmOverrides = json_decode($c['gm_overrides_json'], true) ?? [];
-
+                // SECURITY: Inject GM overrides into activeFeatures (not exposed raw).
+                $gmOverrides = json_decode($c['gm_overrides_json'] ?? '[]', true) ?? [];
                 if (!empty($gmOverrides) && is_array($gmOverrides)) {
-                    // Ensure activeFeatures exists and is an array
                     if (!isset($char['activeFeatures']) || !is_array($char['activeFeatures'])) {
                         $char['activeFeatures'] = [];
                     }
-
-                    // Inject each GM override as a regular active feature instance.
-                    // The instanceId is re-prefixed to avoid collisions and hide GM origin.
                     foreach ($gmOverrides as $override) {
-                        if (!is_array($override) || empty($override['featureId'])) {
-                            continue; // Skip malformed entries silently
-                        }
-
-                        // Remap instanceId: replace "gm_" prefix with "afi_injected_"
-                        // to make it indistinguishable from player features for the client.
+                        if (!is_array($override) || empty($override['featureId'])) continue;
                         $sanitizedOverride = $override;
                         if (isset($sanitizedOverride['instanceId'])) {
                             $sanitizedOverride['instanceId'] = 'afi_injected_' . md5($override['instanceId']);
                         }
-
                         $char['activeFeatures'][] = $sanitizedOverride;
                     }
                 }
-
-                // Explicitly ensure NO gmOverrides field in the player response.
                 unset($char['gmOverrides']);
-
                 return $char;
-            }, $characters);
+            }, $ownChars);
+
+            // Build display-only objects for NPC/Monster instances.
+            // Only display-safe fields are included — no stats, no features.
+            $npcResult = array_map(function ($c) {
+                // Parse only what we need for display (posterUrl, playerName).
+                $rawData   = json_decode($c['character_json'], true) ?? [];
+                return [
+                    'id'           => $c['id'],
+                    'campaignId'   => $c['campaign_id'],
+                    'ownerId'      => $c['owner_id'],
+                    'name'         => $c['name'],
+                    'isNPC'        => true,
+                    'npcType'      => $c['npc_type'],
+                    'posterUrl'    => $rawData['posterUrl']  ?? null,
+                    // playerName: GM name (NPC) or species name (Monster) — safe for display.
+                    'playerName'   => $rawData['playerName'] ?? null,
+                    'classLevels'  => [],       // Hidden — players cannot see NPC levels.
+                    'activeFeatures' => [],     // Hidden — no stats exposed.
+                    'attributes'   => [],
+                    'skills'       => [],
+                    'resources'    => [],
+                    'combatStats'  => [],
+                    'saves'        => [],
+                    'updatedAt'    => (int)$c['updated_at'],
+                    // Flag so the frontend CharacterCard knows to render in view-only mode.
+                    '_playerRestricted' => true,
+                ];
+            }, $npcChars);
+
+            $result = array_merge($ownResult, $npcResult);
         }
 
         Logger::info('Char', 'List', ['campaign' => $campaignId ?? 'all', 'count' => count($result)]);
@@ -202,8 +228,12 @@ class CharacterController
         $campaignId    = $body['campaignId'] ?? null;
         $name          = $body['name'] ?? 'New Character';
         $isNPC         = (bool)($body['isNPC'] ?? false);
+        // npcType: 'npc' | 'monster' | null — set when creating via spawn or direct NPC creation.
+        $npcType       = in_array($body['npcType'] ?? null, ['npc', 'monster'], true)
+                         ? $body['npcType']
+                         : null;
 
-        // NPC characters can only be created by GMs
+        // NPC/Monster characters can only be created by GMs
         if ($isNPC && !$user['is_game_master']) {
             http_response_code(403);
             echo json_encode(['error' => 'Forbidden', 'message' => 'Only GMs can create NPC characters.']);
@@ -241,8 +271,8 @@ class CharacterController
         $characterData['isNPC']     = $isNPC;
         unset($characterData['gmOverrides']); // never include gmOverrides in character_json
 
-        $stmt = $db->prepare('INSERT INTO characters (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$id, $campaignId, $user['id'], $name, $isNPC ? 1 : 0, json_encode($characterData), '[]', $now]);
+        $stmt = $db->prepare('INSERT INTO characters (id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$id, $campaignId, $user['id'], $name, $isNPC ? 1 : 0, $npcType, json_encode($characterData), '[]', $now]);
 
         Logger::info('Char', 'Created', ['id' => $id, 'name' => $name, 'npc' => $isNPC]);
         http_response_code(201);

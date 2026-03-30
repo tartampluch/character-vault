@@ -1204,9 +1204,9 @@ $sylaraData = [
 // ── Insert characters into the DB ──────────────────────────────────────────
 $stmtChar = $db->prepare('
     INSERT INTO characters
-        (id, campaign_id, owner_id, name, is_npc, character_json, gm_overrides_json, updated_at)
+        (id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at)
     VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ');
 
 $characters = [
@@ -1221,13 +1221,131 @@ foreach ($characters as $entry) {
         $d['campaignId'],
         $d['ownerId'],
         $d['name'],
-        0, // is_npc = false
+        0,    // is_npc = false
+        null, // npc_type = null for player characters
         json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
         '[]', // gm_overrides_json — GM can add overrides via the dashboard later
         $now,
     ]);
     echo "  ✅ Created [{$entry['label']}] {$d['name']} (owner: {$d['ownerId']})\n";
 }
+
+// ============================================================
+// STEP 6 — TEMPLATES (NPC + Monster blueprints for the GM)
+// ============================================================
+// Seed two demo NPC templates and one Monster template so the GM can
+// immediately test the "Spawn NPC" / "Spawn Monster" vault buttons.
+//
+// WHY DIRECT INSERT (not TemplateController)?
+//   TemplateController::create() expects the request body via php://input,
+//   which would require the SeedInputStream stream wrapper.  Direct DB insert
+//   is cleaner for seed data since we control the full JSON blob.
+
+echo "Seeding templates...\n";
+
+$stmtTemplate = $db->prepare('
+    INSERT INTO templates
+        (id, type, owner_id, name, template_json, updated_at)
+    VALUES
+        (?, ?, ?, ?, ?, ?)
+');
+
+// ── Template 1: Tavern Keeper (NPC) ─────────────────────────────────────────
+// A friendly civilian NPC with no combat stats — useful for roleplay encounters.
+$tavernKeeperId = 'tmpl_tavern_keeper_001';
+$tavernKeeperData = [
+    'id'           => $tavernKeeperId,
+    'name'         => 'Tavern Keeper',
+    'isNPC'        => true,
+    'npcType'      => 'npc',
+    'isTemplate'   => true,
+    'ownerId'      => 'user_gm_001',
+    'classLevels'  => [],
+    'activeFeatures' => [],
+    'attributes'   => [],
+    'skills'       => [],
+    'resources'    => [],
+    'combatStats'  => [],
+    'saves'        => [],
+    'linkedEntities' => [],
+    'levelAdjustment' => 0,
+    'xp'           => 0,
+    'notes'        => 'Friendly innkeeper. Knows local gossip. Has a soft spot for adventurers.',
+];
+$stmtTemplate->execute([
+    $tavernKeeperId,
+    'npc',
+    'user_gm_001',
+    'Tavern Keeper',
+    json_encode($tavernKeeperData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    $now,
+]);
+echo "  ✅ Created [NPC Template] Tavern Keeper\n";
+
+// ── Template 2: Guild Informant (NPC) ────────────────────────────────────────
+// An NPC contact who can sell information to the party.
+$informantId = 'tmpl_guild_informant_001';
+$informantData = [
+    'id'           => $informantId,
+    'name'         => 'Guild Informant',
+    'isNPC'        => true,
+    'npcType'      => 'npc',
+    'isTemplate'   => true,
+    'ownerId'      => 'user_gm_001',
+    'classLevels'  => [],
+    'activeFeatures' => [],
+    'attributes'   => [],
+    'skills'       => [],
+    'resources'    => [],
+    'combatStats'  => [],
+    'saves'        => [],
+    'linkedEntities' => [],
+    'levelAdjustment' => 0,
+    'xp'           => 0,
+    'notes'        => 'Shady contact inside the Thornhaven Thieves Guild. Will sell secrets for the right price.',
+];
+$stmtTemplate->execute([
+    $informantId,
+    'npc',
+    'user_gm_001',
+    'Guild Informant',
+    json_encode($informantData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    $now,
+]);
+echo "  ✅ Created [NPC Template] Guild Informant\n";
+
+// ── Template 3: Wolf (Monster) ───────────────────────────────────────────────
+// A standard D&D 3.5 SRD wolf: HD 2d8+4, AC 14, Bite +3 (1d6+1), Trip.
+// The GM can spawn multiple instances with custom names (e.g., "Wolfie", "Alpha").
+$wolfId = 'tmpl_wolf_001';
+$wolfData = [
+    'id'           => $wolfId,
+    'name'         => 'Wolf',
+    'isNPC'        => true,
+    'npcType'      => 'monster',
+    'isTemplate'   => true,
+    'ownerId'      => 'user_gm_001',
+    'classLevels'  => [],
+    'activeFeatures' => [],
+    'attributes'   => [],
+    'skills'       => [],
+    'resources'    => [],
+    'combatStats'  => [],
+    'saves'        => [],
+    'linkedEntities' => [],
+    'levelAdjustment' => 0,
+    'xp'           => 0,
+    'notes'        => 'SRD Wolf. HD 2d8+4 (13 hp). AC 14. Bite +3 (1d6+1). Trip attack. Speed 50 ft.',
+];
+$stmtTemplate->execute([
+    $wolfId,
+    'monster',
+    'user_gm_001',
+    'Wolf',
+    json_encode($wolfData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    $now,
+]);
+echo "  ✅ Created [Monster Template] Wolf\n\n";
 
 // ============================================================
 // SEED COMPLETE
@@ -1244,4 +1362,7 @@ echo "────────────────────────�
 echo "  Campaign  →  The Shattered Throne (5 chapters, 31 tasks)\n";
 echo "  Char 1    →  Kael Shadowstep    — Human Soulknife 7  (player: Matthieu) — Chaotic Neutral\n";
 echo "  Char 2    →  Sylara Moonwhisper — Elf Druid 7      (player: Sophie)   — Neutral Good\n";
+echo "  Template  →  [NPC]     Tavern Keeper\n";
+echo "  Template  →  [NPC]     Guild Informant\n";
+echo "  Template  →  [Monster] Wolf\n";
 echo "─────────────────────────────────────────────────────\n\n";

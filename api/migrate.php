@@ -245,6 +245,60 @@ function migrate(?PDO $pdo = null): void
     ');
 
     // ============================================================
+    // TEMPLATES TABLE
+    // ============================================================
+    //
+    // PURPOSE:
+    //   Stores reusable NPC and Monster templates that GMs can "spawn" into
+    //   campaigns as character instances.  Templates are NOT tied to any campaign;
+    //   they are server-wide resources owned by the GM who created them.
+    //
+    // DESIGN:
+    //   - `type`: 'npc' | 'monster' — distinguishes NPC from Monster templates.
+    //   - `template_json`: full Character-compatible ECS JSON blob (same schema as
+    //     characters.character_json) — the engine processes templates identically
+    //     to regular characters when the template is opened for editing.
+    //   - No `campaign_id` column — templates are explicitly campaign-agnostic.
+    //     Spawning copies template data into the `characters` table with a campaignId.
+    //
+    // VISIBILITY:
+    //   Readable by GMs only. Players never interact with templates directly.
+    //   When a GM spawns a template, the resulting character is visible to players
+    //   (name only, no level, no sheet access).
+    //
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS templates (
+            id              TEXT PRIMARY KEY,
+            type            TEXT NOT NULL,
+            owner_id        TEXT NOT NULL,
+            name            TEXT NOT NULL,
+            template_json   TEXT NOT NULL DEFAULT \'{}\',
+            updated_at      INTEGER NOT NULL DEFAULT (strftime(\'%s\', \'now\')),
+            FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    ');
+
+    // ============================================================
+    // ADDITIVE MIGRATIONS — characters table
+    // ============================================================
+    //
+    // npc_type column: distinguishes NPC instances from Monster instances.
+    //   Both have is_npc = 1, but npc_type clarifies the subtype:
+    //     'npc'     — spawned from an NPC template; name = NPC name, playerName = GM name
+    //     'monster' — spawned from a Monster template; name = instance name, playerName = species
+    //   NULL       — regular player characters (is_npc = 0)
+    //
+    $charCols = array_column(
+        $pdo->query('PRAGMA table_info(characters)')->fetchAll(PDO::FETCH_ASSOC),
+        'name'
+    );
+
+    if (!in_array('npc_type', $charCols, true)) {
+        $pdo->exec('ALTER TABLE characters ADD COLUMN npc_type TEXT');
+        Logger::info('Migrate', 'Added column characters.npc_type');
+    }
+
+    // ============================================================
     // CAMPAIGN_USERS JOIN TABLE (Phase 22.1)
     // ============================================================
     //

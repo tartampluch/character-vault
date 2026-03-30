@@ -56,6 +56,15 @@
  *     PUT    /api/global-rules/{filename}       → GlobalRulesController::put($filename)
  *     DELETE /api/global-rules/{filename}       → GlobalRulesController::delete($filename)
  *
+ *   Templates (GM/Admin only):
+ *     GET    /api/templates              → TemplateController::index()          (all templates)
+ *     GET    /api/templates?type=npc     → TemplateController::index()          (filtered by type)
+ *     GET    /api/templates/{id}         → TemplateController::show($id)
+ *     POST   /api/templates              → TemplateController::create()
+ *     PUT    /api/templates/{id}         → TemplateController::update($id)
+ *     DELETE /api/templates/{id}         → TemplateController::delete($id)
+ *     POST   /api/templates/{id}/spawn   → TemplateController::spawn($id)
+ *
  *   Server Settings (server-wide, not per-campaign):
  *     GET  /api/server-settings/gm-overrides    → ServerSettingsController::getGmOverrides()
  *     PUT  /api/server-settings/gm-overrides    → ServerSettingsController::setGmOverrides()
@@ -90,6 +99,7 @@ require_once __DIR__ . '/controllers/GlobalRulesController.php';
 require_once __DIR__ . '/controllers/ServerSettingsController.php';
 require_once __DIR__ . '/controllers/UiLocalesController.php';
 require_once __DIR__ . '/controllers/UserController.php';
+require_once __DIR__ . '/controllers/TemplateController.php';
 
 // ============================================================
 // GLOBAL MIDDLEWARE
@@ -273,6 +283,31 @@ try {
         // Removes a named rule file from storage/rules/.
         verifyCsrfToken();
         GlobalRulesController::delete($m[1]);
+
+    // ── Templates (GM/Admin only) ─────────────────────────────────────────────
+    // The /spawn sub-path must be matched BEFORE the bare /templates/{id} pattern
+    // to prevent the {id} segment from swallowing the "/spawn" literal.
+    } elseif (preg_match('#^/templates/([^/]+)/spawn$#', $path, $m) && $method === 'POST') {
+        verifyCsrfToken();
+        TemplateController::spawn($m[1]);
+
+    } elseif ($path === '/templates' && $method === 'GET') {
+        TemplateController::index();
+
+    } elseif ($path === '/templates' && $method === 'POST') {
+        verifyCsrfToken();
+        TemplateController::create();
+
+    } elseif (preg_match('#^/templates/([^/]+)$#', $path, $m) && $method === 'GET') {
+        TemplateController::show($m[1]);
+
+    } elseif (preg_match('#^/templates/([^/]+)$#', $path, $m) && $method === 'PUT') {
+        verifyCsrfToken();
+        TemplateController::update($m[1]);
+
+    } elseif (preg_match('#^/templates/([^/]+)$#', $path, $m) && $method === 'DELETE') {
+        verifyCsrfToken();
+        TemplateController::delete($m[1]);
 
     // ── Server Settings (server-wide, not per-campaign) ──────────────────────
     // These routes must be matched BEFORE the User Management block to prevent

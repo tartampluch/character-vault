@@ -392,11 +392,62 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'vault.title':                  'Your Adventurers',
   'vault.create_character':       'Create New Character',
+  /** Button in the global vault (/vault) to create a character not tied to any campaign. */
+  'vault.add_character':          '+ Add Character',
   'vault.add_npc':                'Add NPC / Monster',
   /** Default name assigned to a freshly-created PC before the player renames it. */
   'vault.default_char_name':      'New Character',
   /** Default name assigned to a freshly-created NPC / monster before the GM renames it. */
   'vault.default_npc_name':       'New NPC',
+  /** Default name assigned to a freshly-created Monster template. */
+  'vault.default_monster_name':   'New Monster',
+
+  // ── Templates section (GM/Admin only, global vault) ───────────────────────
+  /** Section title for the NPC/Monster template library in the global vault. */
+  'vault.templates_section_title':    'Templates',
+  /** Sub-section heading for NPC templates. */
+  'vault.npc_templates_section':      'NPC Templates',
+  /** Sub-section heading for Monster templates. */
+  'vault.monster_templates_section':  'Monster Templates',
+  /** Button: create a new blank NPC template. */
+  'vault.add_npc_template':           '+ Add NPC Template',
+  /** Button: create a new blank Monster template. */
+  'vault.add_monster_template':       '+ Add Monster Template',
+  /** Shown when the GM has no templates yet. */
+  'vault.templates_empty':            'No templates yet. Create NPC or Monster templates to use for spawning.',
+  /** Shown when there are no NPC templates. */
+  'vault.no_npc_templates':           'No NPC templates yet.',
+  /** Shown when there are no Monster templates. */
+  'vault.no_monster_templates':       'No Monster templates yet.',
+  /** Confirmation prompt when deleting a template. {name} = template name. */
+  'vault.delete_template_confirm':    'Delete template "{name}"? This cannot be undone. Spawned instances are not affected.',
+
+  // ── Spawn buttons (GM only, campaign vault) ───────────────────────────────
+  /** Button in the campaign vault to spawn an NPC instance from a template. */
+  'vault.spawn_npc':                  '+ Spawn NPC',
+  /** Button in the campaign vault to spawn a Monster instance from a template. */
+  'vault.spawn_monster':              '+ Spawn Monster',
+
+  // ── Spawn modal strings ───────────────────────────────────────────────────
+  'vault.spawn_modal_title_npc':      'Spawn NPC',
+  'vault.spawn_modal_title_monster':  'Spawn Monster',
+  /** Label for the instance name input (Monster only). */
+  'vault.spawn_modal_name_label':     'Instance Name',
+  /** Placeholder hint for the Monster instance name input. */
+  'vault.spawn_modal_name_hint':      'Defaults to template name',
+  /** Species label shown below the instance name when spawning a Monster. */
+  'vault.spawn_modal_species_label':  'Species',
+  /** Button to confirm and create the spawned instance. */
+  'vault.spawn_button':               'Spawn',
+  /** Shown in the spawn modal when no templates of the requested type exist. */
+  'vault.spawn_no_templates':         'No templates available. Create one from the global Vault.',
+
+  // ── CharacterCard badge labels ────────────────────────────────────────────
+  /** Badge label on CharacterCard for Monster instances (overrides generic NPC badge). */
+  'common.monster':                   'Monster',
+  /** Badge label shown on template cards in the global vault. */
+  'vault.template_badge':             'Template',
+
   'vault.gm_view':                'GM View',
   'vault.player_view':            'Player View',
   'vault.characters':             'character(s)',

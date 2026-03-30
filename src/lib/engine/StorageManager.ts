@@ -387,6 +387,12 @@ export class StorageManager {
    * @param char - The new character to persist server-side.
    */
   async createCharacterOnApi(char: Character): Promise<void> {
+    // Templates are stored in the `templates` table, not `characters`.
+    // Route them to the dedicated templates endpoint.
+    if (char.isTemplate) {
+      return this.createTemplateOnApi(char);
+    }
+
     // Always persist locally first so the UI is responsive offline.
     this.saveCharacter(char);
 
@@ -407,6 +413,33 @@ export class StorageManager {
   }
 
   /**
+   * Creates a new template via POST /api/templates.
+   * Used when the GM creates a new NPC or Monster template from the vault.
+   *
+   * ROUTING: Called by createCharacterOnApi() when char.isTemplate === true.
+   *
+   * @param tmpl - The template Character object (must have isTemplate: true and npcType set).
+   */
+  async createTemplateOnApi(tmpl: Character): Promise<void> {
+    // Persist locally as a regular character entry so the editor works offline.
+    this.saveCharacter(tmpl);
+
+    try {
+      const response = await fetch('/api/templates', {
+        method: 'POST',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(tmpl),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] createTemplateOnApi: API unavailable. Using localStorage only. (${err})`);
+    }
+  }
+
+  /**
    * Saves a character to the PHP API via PUT /api/characters/{id}.
    * Falls back to localStorage if the API is unreachable.
    *
@@ -414,6 +447,11 @@ export class StorageManager {
    * (The GameEngine's #debouncedSaveCharacter uses 500ms; for API calls, override to 2000ms.)
    */
   async saveCharacterToApi(char: Character): Promise<void> {
+    // Templates are stored in the `templates` table — route to templates endpoint.
+    if (char.isTemplate) {
+      return this.saveTemplateToApi(char);
+    }
+
     // Always save to localStorage as a local cache (offline fallback)
     this.saveCharacter(char);
 
@@ -433,6 +471,108 @@ export class StorageManager {
     } catch (err) {
       this.isApiReachable = false;
       console.warn(`[StorageManager] saveCharacterToApi: API unavailable. Using localStorage only. (${err})`);
+    }
+  }
+
+  /**
+   * Saves a template via PUT /api/templates/{id}.
+   * Called automatically by saveCharacterToApi() when char.isTemplate === true,
+   * so the character sheet auto-save pipeline works transparently for templates.
+   *
+   * @param tmpl - The template Character object.
+   */
+  async saveTemplateToApi(tmpl: Character): Promise<void> {
+    this.saveCharacter(tmpl);
+
+    try {
+      const response = await fetch(`/api/templates/${tmpl.id}`, {
+        method: 'PUT',
+        headers: apiHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(tmpl),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] saveTemplateToApi: API unavailable. Using localStorage only. (${err})`);
+    }
+  }
+
+  /**
+   * Loads a single template by ID via GET /api/templates/{id}.
+   * Falls back to localStorage if the API is unreachable.
+   *
+   * @param id  Template ID (should begin with 'tmpl_').
+   * @returns   The template as a Character object, or null if not found.
+   */
+  async loadTemplateFromApi(id: string): Promise<Character | null> {
+    try {
+      const response = await fetch(`/api/templates/${id}`, {
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const tmpl = (await response.json()) as Character;
+      this.isApiReachable = true;
+      this.saveCharacter(tmpl); // Cache locally
+      return tmpl;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] loadTemplateFromApi: API unavailable. Trying localStorage. (${err})`);
+      return this.loadCharacter(id);
+    }
+  }
+
+  /**
+   * Loads all templates from GET /api/templates (GM only).
+   * Returns NPC and Monster templates as Character objects (with isTemplate: true).
+   *
+   * @param type - Optional filter: 'npc' | 'monster'. Omit for all templates.
+   * @returns Array of template Character objects, or empty array on failure.
+   */
+  async loadTemplatesFromApi(type?: 'npc' | 'monster'): Promise<Character[]> {
+    try {
+      const url = type ? `/api/templates?type=${type}` : '/api/templates';
+      const response = await fetch(url, {
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const tmpls = (await response.json()) as Character[];
+      this.isApiReachable = true;
+      // Cache each template locally for offline access.
+      for (const tmpl of tmpls) {
+        this.saveCharacter(tmpl);
+      }
+      return tmpls;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] loadTemplatesFromApi: API unavailable. (${err})`);
+      return [];
+    }
+  }
+
+  /**
+   * Deletes a template via DELETE /api/templates/{id} (GM only).
+   *
+   * @param id - Template ID (should begin with 'tmpl_').
+   */
+  async deleteTemplateFromApi(id: string): Promise<void> {
+    this.deleteCharacter(id); // Remove from localStorage cache.
+    try {
+      await fetch(`/api/templates/${id}`, {
+        method: 'DELETE',
+        headers: apiHeaders(),
+        credentials: 'include',
+      });
+      this.isApiReachable = true;
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] deleteTemplateFromApi: API unavailable. (${err})`);
     }
   }
 

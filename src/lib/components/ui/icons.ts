@@ -117,6 +117,9 @@ export { Wand         as IconMagicWand    } from 'lucide-svelte'; // Wizard / ar
 export { Cross        as IconDivine       } from 'lucide-svelte'; // Cleric / divine magic
 export { Brain        as IconPsionic      } from 'lucide-svelte'; // Psionics / psionic powers
 export { BadgeCheck   as IconNPC          } from 'lucide-svelte'; // NPC character indicator
+export { Ghost        as IconMonster      } from 'lucide-svelte'; // Monster / creature indicator
+export { ClipboardList as IconTemplate   } from 'lucide-svelte'; // NPC/Monster template blueprint
+export { CopyPlus     as IconSpawn        } from 'lucide-svelte'; // Spawn template instance into campaign
 export { UserPlus     as IconAddCharacter } from 'lucide-svelte'; // Create new character
 export { UserCog      as IconEditCharacter } from 'lucide-svelte'; // Edit character
 export { Layers       as IconRuleSources  } from 'lucide-svelte'; // Rule source stacking

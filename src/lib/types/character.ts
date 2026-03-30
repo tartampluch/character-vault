@@ -377,9 +377,68 @@ export interface Character {
 
   /**
    * Whether this character is an NPC (non-player character) managed by the GM.
-   * NPCs and monsters appear only to the GM in the Vault (unless the GM shares them).
+   *
+   * Set to `true` for both NPC and Monster instances spawned from templates,
+   * as well as any character the GM creates directly via "Add NPC / Monster".
+   *
+   * Players can see the NAME and portrait of NPC/Monster instances in their
+   * campaign vault (read-only), but cannot access their character sheet or
+   * see their level.  The CharacterCard uses `viewOnly` mode for these.
    */
   isNPC: boolean;
+
+  /**
+   * Subtype distinguishing NPC instances from Monster instances.
+   *
+   * Values:
+   *   'npc'     — Spawned from an NPC template.
+   *               character.name     = NPC name (from template)
+   *               character.playerName = GM who spawned it (their display_name)
+   *
+   *   'monster' — Spawned from a Monster template.
+   *               character.name     = instance name (e.g. "Wolfie", editable by GM)
+   *               character.playerName = original species name (e.g. "Wolf")
+   *
+   *   undefined — Regular player character (isNPC = false).
+   *
+   * USAGE:
+   *   - CharacterCard badge: 'NPC' or 'Monster' overlay on the poster.
+   *   - Vault filtering: separate NPC vs. Monster template sections.
+   *   - CharacterController: determines name/playerName assignment on spawn.
+   */
+  npcType?: 'npc' | 'monster';
+
+  /**
+   * Whether this Character record represents a TEMPLATE (not a playable instance).
+   *
+   * Templates are stored in the `templates` table and are edited through the
+   * same character sheet UI.  The StorageManager detects this flag and routes
+   * save/load calls to the `/api/templates` endpoints instead of `/api/characters`.
+   *
+   * This flag is set by the TemplateController when the template JSON is serialised
+   * and is preserved on round-trips through the character editor.
+   *
+   * `undefined` / `false` — regular character or spawned NPC/Monster instance.
+   * `true`                — this record IS the template blueprint itself.
+   */
+  isTemplate?: boolean;
+
+  /**
+   * Accessibility flag injected by CharacterController for player responses.
+   *
+   * When a player fetches campaign characters, the backend includes NPC/Monster
+   * instances but with limited data (no classLevels, no features).  This flag
+   * signals the vault page to render CharacterCard in view-only mode:
+   *   - No click-through to the character sheet.
+   *   - No level badge displayed.
+   *
+   * This field is NEVER stored in the database — it is ephemeral, injected only
+   * in the GET /api/characters response for player-visibility rows.
+   *
+   * `undefined` — full-access character (player owns it or is GM).
+   * `true`      — restricted view (player can see name/portrait only).
+   */
+  _playerRestricted?: boolean;
 
   /**
    * URL to the character portrait image.
