@@ -28,23 +28,17 @@
  * ─── PART 1: Stacking Rules — applyStackingRules behavior ────────────────────
  *   Tests the stacking rules treatment of max_dex_cap modifiers (they should NOT
  *   be grouped as non-stacking standard types; Phase 3 intercepts them separately).
- *   (5 tests)
  *
  * ─── PART 2: Phase 3 Pipeline Computation ─────────────────────────────────────
  *   Tests the combatStats.max_dexterity_bonus pipeline via stackingRules called directly
  *   (simulating Phase 3 special handling logic).
- *   (7 tests)
  *
  * ─── PART 3: Content Authoring Contracts ──────────────────────────────────────
  *   Tests the expected JSON structure for armor items, mithral material, and
  *   conditions, using TypeScript type assertions.
- *   (5 tests)
  *
  * ─── PART 4: Edge Cases ───────────────────────────────────────────────────────
  *   Boundary values, single cap, concurrent caps, zero cap.
- *   (5 tests)
- *
- * TOTAL: 22 tests
  *
  * @see src/lib/types/primitives.ts       — ModifierType "max_dex_cap" definition
  * @see src/lib/engine/GameEngine.svelte.ts — Phase 3 special handling

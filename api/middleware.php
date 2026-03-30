@@ -115,7 +115,7 @@ function getCsrfToken(): string
 function verifyCsrfToken(): void
 {
     // Only verify on state-changing methods
-    $method = $_SERVER['REQUEST_METHOD'];
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     if (!in_array($method, ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
         return;
     }

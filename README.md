@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-1825_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-2134_tests-6E9F18?logo=vitest&logoColor=white)
 ![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
@@ -68,7 +68,7 @@ character-vault/
 │   │   ├── types/              # TypeScript interfaces — Feature, Character, Pipeline, Logic…
 │   │   └── utils/              # Math parser, dice engine, stacking rules, logic evaluator, formatters
 │   ├── routes/                 # SvelteKit file-based routing (pages, layouts, API hooks)
-│   └── tests/                  # Vitest unit & integration tests (48 files, 1 825 tests)
+│   └── tests/                  # Vitest unit & integration tests
 ├── api/                        # PHP backend — zero production dependencies
 │   ├── index.php               # Front-controller / router
 │   ├── migrate.php             # SQLite schema migration runner
@@ -83,7 +83,7 @@ character-vault/
 │       └── test/               # Unit-test fixtures ONLY — never loaded in any deployment
 │           ├── test_mock.json     # Base entities for the Vitest test suite
 │           └── test_override.json # Merge-engine test: partial/replace override fixtures
-├── tests/                      # PHPUnit integration tests (10 files, 141 tests)
+├── tests/                      # PHPUnit integration tests
 ├── scripts/
 │   ├── build.sh                # Native build pipeline (type-check → test → package)
 │   ├── build-docker.sh         # Docker-based build (no host dependencies required)
@@ -168,7 +168,7 @@ Or use the VS Code task **Run: DB migrations**.
 ### Frontend — Vitest
 
 ```sh
-npm test                          # Run all 1 825 tests across 48 files
+npm test                          # Run all tests across all test files
 npm run test:coverage             # Run with v8 coverage report → coverage/index.html
 npm test -- --watch               # Watch mode — re-runs on file save
 npm test -- diceEngine            # Single file (match by name)
@@ -182,7 +182,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 | File | What it covers |
 |------|----------------|
-| [`characterBuildScenario.test.ts`](src/tests/characterBuildScenario.test.ts) | Full Fighter 3/Monk 3/Psion 1/Wizard 1 build — BAB, saves, HP, SP budget, feats, AC, XP penalty (103 assertions) |
+| [`characterBuildScenario.test.ts`](src/tests/characterBuildScenario.test.ts) | Full Fighter 3/Monk 3/Psion 1/Wizard 1 build — BAB, saves, HP, SP budget, feats, AC, XP penalty |
 | [`multiclass.test.ts`](src/tests/multiclass.test.ts) | Multiclass BAB/saves progression, level-gated features, skill rank locking |
 | [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) | DAG cascade, forbidden tags, formula-as-value, conditionNode, synergy auto-generation, circular dep guard |
 | [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) | D&D 3.5 stacking rules, DR best-wins grouping, multiplier, setAbsolute |
@@ -221,38 +221,44 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`userManagement.test.ts`](src/tests/userManagement.test.ts) | All `userApi` functions (list, create, update, role, suspend, reinstate, delete, campaign members, setup-password, `changePassword`, `resetUserPassword`); URL/method/body verification; 4xx `ApiError` throwing; fallback error fields |
 | [`setupPasswordFlow.test.ts`](src/tests/setupPasswordFlow.test.ts) | `SessionContext.needsPasswordSetup` state transitions; `requirePasswordSetup` / `clearPasswordSetup`; `loadFromServer()` flag propagation; password-setup form validation (empty, short, mismatch, valid); redirect guard logic |
 | [`componentSplits.test.ts`](src/tests/componentSplits.test.ts) | Component split contract: `GmOverridesPanel` JSON validation, `TieredCostsEditor` tier management, `MagicItemsCastingSubpanel` item filtering, `ModifierRow` source-field defaulting, structural line-count and file-existence checks for all 16 new sub-components |
+| [`enginePhases.test.ts`](src/tests/enginePhases.test.ts) | Direct unit tests for all extracted DAG phase functions: `buildSizePipeline`, `buildAttributePipelines`, `buildPhase2Context`, `buildCombatStatPipelines`, `buildPhase3Context`, `buildEquipmentSlots`, `buildEquippedSlotCounts`, `computeFeatSlots`, `computeGrantedFeatIds`, `computeManualFeatCount`, `computeEffectiveActionBudget`, `computeActionBudgetHasXOR`, `computeActionBudgetBlockers`, `computeActiveTags`, `computePhase0Result`, `computeMulticlassXpPenaltyRisk`, `buildClassSkillSet`, `buildSkillPointsBudget`, `buildLevelingJournal`, `buildSkillPipelines` |
+| [`utilsCoverage.test.ts`](src/tests/utilsCoverage.test.ts) | `languageCookie` (read/write, SSR fallback, localStorage legacy), `classProgressionPresets` (BAB/save increment arrays), `constants` barrel, `formatters` barrel, `CharacterFactory.normaliseModifierTargetId` (all prefix branches), `makeSkillPipeline`, `createEmptyCharacter` (all pipeline initialisation paths) |
 
 #### Coverage
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (48 test files, 1 825 tests): 70.7% statements · 60.14% branches · 66.53% functions · 73.59% lines**
+**Overall (53 test files, 2134 tests): 94.61% statements · 86.13% branches · 96.33% functions · 96.44% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
-| `api/userApi.ts` | 92% | **100%** | Full coverage incl. error fallback branches |
+| `engine/CharacterFactory.ts` | **100%** | **100%** | Pipeline normalization, skill pipeline factory, empty character creation |
+| `engine/phases/phase1Size.ts` | **100%** | **100%** | Size modifier resolution |
+| `engine/phases/phase2Attributes.ts` | **100%** | **100%** | Attribute pipeline resolution and context upgrade |
+| `engine/phases/phaseEquipmentSlots.ts` | **100%** | **100%** | Slot count extraction and equipped item counting |
+| `engine/phases/phaseSavingThrows.ts` | **100%** | 67% | Saving throw pipeline helpers |
 | `utils/stackingRules.ts` | **100%** | 97% | D&D 3.5 stacking rules engine |
 | `utils/localizationHelpers.ts` | **100%** | **100%** | All extracted i18n helpers |
 | `utils/unitFormatters.ts` | **100%** | **100%** | Distance/weight formatters for both unit systems |
 | `utils/logicEvaluator.ts` | **100%** | **100%** | |
 | `utils/gestaltRules.ts` | **100%** | **100%** | |
-| `engine/DataLoader.ts` | 98% | 90% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `utils/languageCookie.ts` | **100%** | **100%** | Cookie read/write, SSR guard, localStorage fallback |
+| `utils/classProgressionPresets.ts` | **100%** | **100%** | BAB / save progression increment arrays |
+| `api/userApi.ts` | 93% | **100%** | Full coverage incl. error fallback branches |
+| `engine/DataLoader.ts` | 99% | 90% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
 | `engine/MergeEngine.ts` | 98% | 93% | Data override engine (replace / partial / `-prefix` deletion) |
 | `utils/diceEngine.ts` | 98% | 90% | One defensive edge-case branch |
+| `engine/phases/phase0Modifiers.ts` | 90% | 76% | Feature flattening, forbidden tags, formula values, recursive grants |
+| `engine/phases/phaseFeatSlots.ts` | 97% | 88% | Feat slot computation, granted feat detection, manual feat count |
+| `engine/phases/phaseActionBudget.ts` | 98% | 79% | Action economy budget, XOR rule, blocker labels |
+| `engine/phases/phase4Skills.ts` | 95% | 78% | Skill pipeline resolution, skill points budget, leveling journal, synergy |
+| `engine/phases/phase3CombatStats.ts` | 90% | 89% | Combat stats including gestalt max-per-level and Max HP computation |
 | `engine/StorageManager.ts` | 92% | 85% | localStorage CRUD, error catch branches, async API paths |
 | `utils/mathParser.ts` | 89% | 85% | |
 | `utils/statFormatters.ts` | 96% | 93% | `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, situational labels |
-| `engine/phases/*` | ~14% | ~9% | See note below |
+| `i18n/ui-strings.ts` | 78% | 70% | English baseline + locale helpers; `loadUiLocaleFromCache` requires browser localStorage |
 
-> **Why is `engine/phases/` coverage low?**
->
-> During Phase 23.20, all DAG computation phases were extracted from `GameEngine.svelte.ts` into dedicated `engine/phases/*.ts` pure-function modules (`phase0Modifiers.ts`, `phase1Size.ts`, `phase2Attributes.ts`, `phase3CombatStats.ts`, `phase4Skills.ts`, etc.). These modules contain the core game logic previously inside `$derived` closures.
->
-> In Vitest's Node.js environment, these extracted functions require *data*: a character with active features that exist in the `DataLoader` singleton. Without loading rule files (which requires HTTP or a mocked fetch at test setup), the functions receive empty feature lists and most code paths are not reached.
->
-> This is **not a gap in logic coverage** — the core algorithms (`applyStackingRules`, `evaluateFormula`, `checkCondition`, `computeDerivedModifier`) are each tested at 90–100% coverage as individual pure functions. The phase functions are thin wiring over those primitives: they are verified end-to-end by the `characterBuildScenario.test.ts` integration suite (103 assertions covering the full DAG output) and by `dagResolution.test.ts`.
->
-> Achieving higher raw phase-file coverage would require an in-process DataLoader pre-load fixture or a Svelte testing harness with jsdom. The architecture intentionally isolates pure computation from reactive wiring to maximize testability of the logic itself. The overall headline percentage will improve as integration test infrastructure is extended.
+> **Note on barrel re-export files:** `utils/constants.ts` and `utils/formatters.ts` are pure `export *` barrel files containing no executable statements — V8 coverage correctly reports 0 executable lines for them. All exported symbols from their sub-modules are fully covered by the test suite. These two files are the only ones below 80% statements in the covered scope.
 
 ### Backend — PHPUnit
 
@@ -266,18 +272,19 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 
 | File | What it covers |
 |------|----------------|
-| [`AuthTest.php`](tests/AuthTest.php) | Login/logout, session persistence, wrong credentials (11 tests) |
-| [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) | Character CRUD, JSON round-trip, ownership checks (6 tests) |
-| [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access: GM sees all, player sees own only (11 tests) |
-| [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility — merged vs raw view (6 tests) |
-| [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync polling mechanism (6 tests) |
-| [`GlobalRulesTest.php`](tests/GlobalRulesTest.php) | Global rule file CRUD, list, delete — GM-only enforcement (22 tests) |
-| [`HomebrewRulesTest.php`](tests/HomebrewRulesTest.php) | Per-campaign homebrew rule storage, round-trip, access control (15 tests) |
-| [`UiLocalesTest.php`](tests/UiLocalesTest.php) | UI locale file listing and content endpoints (19 tests) |
-| [`UserManagementTest.php`](tests/UserManagementTest.php) | Admin bootstrap; no-password login + 7-day auto-suspend; `setup-password`; `change-password` (success, wrong password, empty, no-password skip); `reset-password` (admin success, self-allowed, non-admin 403, 404); UserController CRUD; self-edit guards (35 tests) |
-| [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 (8 tests) |
+| [`AuthTest.php`](tests/AuthTest.php) | Login/logout, session persistence, wrong credentials |
+| [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) | Character CRUD, JSON round-trip, ownership checks |
+| [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access: GM sees all, player sees own only |
+| [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility — merged vs raw view |
+| [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync polling mechanism |
+| [`GlobalRulesTest.php`](tests/GlobalRulesTest.php) | Global rule file CRUD, list, delete — GM-only enforcement |
+| [`HomebrewRulesTest.php`](tests/HomebrewRulesTest.php) | Per-campaign homebrew rule storage, round-trip, access control |
+| [`UiLocalesTest.php`](tests/UiLocalesTest.php) | UI locale file listing and content endpoints |
+| [`UserManagementTest.php`](tests/UserManagementTest.php) | Admin bootstrap; no-password login + 7-day auto-suspend; `setup-password`; `change-password` (success, wrong password, empty, no-password skip); `reset-password` (admin success, self-allowed, non-admin 403, 404); UserController CRUD; self-edit guards |
+| [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 |
+| [`DisplayNameTest.php`](tests/DisplayNameTest.php) | Self-service display-name rename (`PUT /api/auth/display-name`); admin username update via `PUT /api/users/{id}`; conflict detection, validation, session refresh |
 
-**Total: 141 PHPUnit tests, 437 assertions.**
+**Total: 157 PHPUnit tests, 478 assertions.**
 
 > `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock).
 

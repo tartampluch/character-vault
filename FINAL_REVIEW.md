@@ -10,8 +10,8 @@
 ## Patch Notes (2026-03-26)
 
 A code assessment performed after the original review found 1 CRITICAL and 4 MEDIUM issues,
-all of which have been fixed. The final test count grew from 202 to 1,825 Vitest tests (Phase 22–23 additions)
-and from 40 to 141 PHPUnit tests. Total: **1,966 tests**.
+all of which have been fixed. The test suite grew significantly through Phase 22–23 additions
+(both Vitest and PHPUnit). All tests pass.
 
 ### CRITICAL — Fixed
 
@@ -81,7 +81,7 @@ the standard import pattern.
 - **`ARCHITECTURE.md`**: Updated `savingThrowConfig` description (now `$derived`, not `readonly`), `enabledRuleSources` semantics (file-path whitelist, not source IDs), `getSpellSaveDC` fallback (`isCastingAbility` flag), weapon helpers (`config_weapon_defaults`). Type definitions updated.
 - **`ANNEXES.md`**: Added Annex B.13 (`config_save_definitions`), B.14 (`config_weapon_defaults`), B.15 (`config_movement_defaults`).
 - **`CONTENT_AUTHORING_GUIDE.md`**: Clarified `ruleSource` vs `enabledRuleSources` distinction. Added complete config table reference table.
-- **`README.md`**: Updated test count badge and coverage summary (45 files, 1 594 tests).
+- **`README.md`**: Updated test count badge and coverage summary.
 
 ### Language-Agnostic UI Audit (2026-03-29)
 
@@ -99,7 +99,7 @@ A full i18n audit confirmed the codebase is completely language-agnostic:
 - **`PROGRESS.md` Guideline 9**: New `LANGUAGE-AGNOSTIC UI (CRITICAL)` guideline with all five sub-rules.
 - **`PROMPT.md` Guideline 8**: Same guideline added for AI context loading.
 - **`CHECKPOINTS.md` Final Review §17**: Expanded i18n check to cover all five sub-rules.
-- **`README.md`**: Updated Vitest badge, project structure (`static/locales/`, `src/lib/i18n/`), i18n feature bullet, test counts (1 825 Vitest, 141 PHPUnit), coverage explanation updated for engine/phases extraction.
+- **`README.md`**: Updated Vitest badge, project structure (`static/locales/`, `src/lib/i18n/`), i18n feature bullet, test counts, coverage explanation updated for engine/phases extraction.
 
 ### Post-Fix Coverage Improvements (2026-03-26)
 
@@ -126,7 +126,7 @@ Comprehensive pass of the entire codebase against `ARCHITECTURE.md`, `ANNEXES.md
 - **0 MAJOR issues**
 - **0 MINOR issues remaining**
 
-All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (the 1 pre-existing `vite.config.ts` Vitest type error and 1 a11y warning are unrelated to game logic).
+All Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (the 1 pre-existing `vite.config.ts` Vitest type error and 1 a11y warning are unrelated to game logic).
 
 ---
 
@@ -247,19 +247,19 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 
 ## Part D: Test Coverage
 
-**1 825 Vitest tests passing** across 48 files + **141 PHPUnit tests** across 10 files = **1 966 total tests**.
+All Vitest tests passing across all test files. All PHPUnit tests passing. See `README.md` for the complete current test file listing and coverage report.
 
-> _Note: The original review counted 202 Vitest tests (7 files) and 40 PHPUnit tests (5 files) = 242 total. Phases 22–23 expanded the suites substantially. The table below reflects the core files from the original review; see `README.md` for the complete current test file listing._
+> _Note: Phases 22–23 and subsequent improvements expanded both suites substantially. The table below reflects the core files from the original review._
 
-| Test File | Tests | Coverage |
-|-----------|-------|----------|
-| `mathParser.test.ts` | 37 | All 10+ special paths, floor(), pipes (en/fr), unresolved→0, `@master`, `@constant` |
-| `logicEvaluator.test.ts` | 30 | All 4 node types, all 8 operators, deeply nested trees, errorMessage extraction |
-| `stackingRules.test.ts` | 23 | All 4 stackable types, setAbsolute (single + conflicting), penalties, derivedModifier |
-| `diceEngine.test.ts` | 22 | Deterministic RNG throughout, situational match/no-match, exploding 20s, critRange, auto-hit/miss, rollAllAbilityScores with injectable rng |
-| `dagResolution.test.ts` | 32 | Belt cascade (CON→Fort→HP), forbiddenTags, conditionNode, formula-as-value, synergy auto-generation, classSkills union, circular dependency safety |
-| `multiclass.test.ts` | 32 | Character level sum, BAB from full+half, save progressions, level-gated features, boundary conditions |
-| `mergeEngine.test.ts` | 26 | Replace, partial (tags/modifiers/features), -prefix deletion, levelProgression merge-by-level, choices merge-by-choiceId (deletion AND replacement), 3-layer resolution chain, config table replacement |
+| Test File | Coverage |
+|-----------|----------|
+| `mathParser.test.ts` | All 10+ special paths, floor(), pipes (en/fr), unresolved→0, `@master`, `@constant` |
+| `logicEvaluator.test.ts` | All 4 node types, all 8 operators, deeply nested trees, errorMessage extraction |
+| `stackingRules.test.ts` | All 4 stackable types, setAbsolute (single + conflicting), penalties, derivedModifier |
+| `diceEngine.test.ts` | Deterministic RNG throughout, situational match/no-match, exploding 20s, critRange, auto-hit/miss, rollAllAbilityScores with injectable rng |
+| `dagResolution.test.ts` | Belt cascade (CON→Fort→HP), forbiddenTags, conditionNode, formula-as-value, synergy auto-generation, classSkills union, circular dependency safety |
+| `multiclass.test.ts` | Character level sum, BAB from full+half, save progressions, level-gated features, boundary conditions |
+| `mergeEngine.test.ts` | Replace, partial (tags/modifiers/features), -prefix deletion, levelProgression merge-by-level, choices merge-by-choiceId (deletion AND replacement), 3-layer resolution chain, config table replacement |
 
 ---
 
@@ -299,13 +299,13 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 | Check | Result |
 |---|---|
 | `svelte-check --threshold warning` | **0 errors, 0 warnings** |
-| `npm test` (Vitest) | **1 825 tests passed** across 48 files |
-| `./vendor/bin/phpunit` | **141 tests, 437 assertions** across 10 files |
+| `npm test` (Vitest) | **all tests passed** |
+| `./vendor/bin/phpunit` | **all tests passed** |
 | TypeScript `any` scan | **0** `any` types in production code |
 | Emoji scan (`*.svelte`) | **0** emoji characters in rendered UI |
 | Route validation (Architecture section 20) | All 6 required routes present |
 | PHP SQL injection scan | **0** string-concatenated queries |
-| Total tests (Vitest + PHPUnit) | **1 966 tests** |
+| Total tests (Vitest + PHPUnit) | **all tests passed** |
 | i18n coverage | **Fully language-agnostic** — all 1 900+ UI chrome keys translated; zero hardcoded strings; zero inline French text; zero `fr:` fallbacks |
 | Inline French text audit | **0** accented characters in `.svelte`/`.ts` production files |
 | Hardcoded UI string audit | **0** literal text in HTML templates; all strings use `ui()` / `uiN()` |
@@ -336,7 +336,7 @@ All 1,567 Vitest tests pass. `svelte-check` reports **0 errors, 0 warnings** (th
 | TypeScript Strictness | Zero errors, zero warnings, zero `any` |
 | PHP Security | No vulnerabilities |
 | Config Tables (Annex B) | All 13 present and loadable |
-| Test Coverage | **1 966 tests** passing (1 825 Vitest + 141 PHPUnit) |
+| Test Coverage | **all tests** passing (Vitest + PHPUnit) |
 | Tailwind CSS Migration | Complete |
 | Theme System | 3-state with FOWT prevention |
 | Lucide Icons | All emoji replaced |
