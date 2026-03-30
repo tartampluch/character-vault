@@ -18,8 +18,8 @@
  *      — Unlisted regional variant → composed from base name + "(REGION)"
  *      — Completely unknown code → uppercase fallback
  *
- *   3. getContentLangCountryCode()
- *      — 'en' → 'gb'
+  *   3. getContentLangCountryCode()
+ *      — 'en' → 'us'
  *      — Regional variant: region part is the country code (e.g. 'fr-be' → 'be')
  *      — Base language from premade list → countryCode field
  *      — Unknown base code → code itself as fallback
@@ -317,8 +317,8 @@ describe('getContentLangDisplayName() — native name resolution', () => {
 
 describe('getContentLangCountryCode() — flag country code resolution', () => {
 
-  it('"en" → "gb" (UK flag is the conventional English flag)', () => {
-    expect(getContentLangCountryCode('en')).toBe('gb');
+  it('"en" → "us" (US flag — bare "en" defaults to American English)', () => {
+    expect(getContentLangCountryCode('en')).toBe('us');
   });
 
   it('regional variant: extracts region part as the country code', () => {

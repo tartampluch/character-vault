@@ -40,6 +40,12 @@
 
   "user.logout":                  "Déconnexion",
   "user.change_password":         "Changer le mot de passe",
+  "user.rename":                  "Renommer",
+  "user.rename_title":            "Changer le nom affiché",
+  "user.rename_label":            "Nom affiché",
+  "user.rename_placeholder":      "ex. Alice",
+  "user.rename_desc":             "Votre nom en jeu, visible par les autres joueurs et le MJ.",
+  "user.rename_error_empty":      "Le nom affiché ne peut pas être vide.",
   "user.menu_label":              "Options utilisateur",
   "lang.unavailable":             "indisponible pour le moment",
 
@@ -1133,6 +1139,7 @@
   "admin.user_form.username_label":     "Identifiant",
   "admin.user_form.username_placeholder": "ex. alice",
   "admin.user_form.username_desc":      "Utilisé pour la connexion. Doit être unique.",
+  "admin.user_form.username_desc_edit": "Identifiant de connexion. La modification prend effet à la prochaine connexion.",
   "admin.user_form.player_name_label":  "Nom du joueur",
   "admin.user_form.player_name_placeholder": "ex. Alice",
   "admin.user_form.player_name_desc":   "Nom d'affichage en jeu visible par le MJ.",

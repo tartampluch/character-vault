@@ -8,8 +8,9 @@
  *     POST   /api/auth/login            → handleLogin()          (auth.php)
  *     POST   /api/auth/logout           → handleLogout()         (auth.php)
  *     GET    /api/auth/me               → handleMe()             (auth.php)
- *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
+  *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
  *     PUT    /api/auth/change-password  → handleChangePassword() (auth.php)
+ *     PUT    /api/auth/display-name     → handleUpdateDisplayName() (auth.php)
  *
  *   Campaigns:
  *     GET    /api/campaigns                               → CampaignController::index()
@@ -155,6 +156,10 @@ try {
         // Requires current_password (unless account has no password yet).
         verifyCsrfToken();
         handleChangePassword();
+
+    } elseif ($path === '/auth/display-name' && $method === 'PUT') {
+        // Self-service display name update for any authenticated user.
+        handleUpdateDisplayName();
 
     } elseif ($path === '/campaigns' && $method === 'GET') {
         CampaignController::index();

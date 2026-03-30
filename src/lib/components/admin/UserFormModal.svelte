@@ -24,6 +24,7 @@
   import Modal from '$lib/components/ui/Modal.svelte';
   import {
     createUser,
+    updateUsername,
     updatePlayerName,
     updateRole,
     suspendUser,
@@ -74,8 +75,8 @@
   $effect(() => {
     if (open) {
       if (user) {
-        // Edit mode: seed fields from the existing user.
-        username    = user.username; // display-only in edit mode
+        // Edit mode: seed all fields from the existing user.
+        username    = user.username;
         playerName  = user.player_name;
         role        = user.role;
         isSuspended = user.is_suspended;
@@ -95,8 +96,8 @@
 
   const canSubmit = $derived(
     !isLoading &&
-    playerName.trim().length > 0 &&
-    (!isEditMode ? username.trim().length > 0 : true)
+    username.trim().length > 0 &&
+    playerName.trim().length > 0
   );
 
   // ── Submit handler ────────────────────────────────────────────────────────
@@ -113,11 +114,15 @@
         await createUser(username.trim(), playerName.trim());
       } else {
         // ── EDIT — apply only what changed ──────────────────────────────────
-        const uid = user!.id;
+        const uid              = user!.id;
+        const newUsername      = username.trim();
+        const newPlayerName    = playerName.trim();
+        const usernameChanged  = newUsername  !== user!.username;
+        const playerNameChanged = newPlayerName !== user!.player_name;
 
-        // 1. Player name
-        if (playerName.trim() !== user!.player_name) {
-          await updatePlayerName(uid, playerName.trim());
+        // 1. Username and/or player name (single API call covers both)
+        if (usernameChanged || playerNameChanged) {
+          await updateUsername(uid, newUsername, newPlayerName);
         }
 
         // 2. Role
@@ -165,25 +170,27 @@
       </div>
     {/if}
 
-    <!-- ── CREATE MODE FIELDS ─────────────────────────────────────────────── -->
-    {#if !isEditMode}
-      <div class="flex flex-col gap-1.5">
-        <label for="uf-username" class="text-xs font-medium text-text-secondary">
-          {ui('admin.user_form.username_label', lang)} <span class="text-red-400" aria-hidden="true">*</span>
-        </label>
-        <input
-          id="uf-username"
-          type="text"
-          bind:value={username}
-          autocomplete="off"
-          required
-          disabled={isLoading}
-          placeholder={ui('admin.user_form.username_placeholder', lang)}
-          class="input"
-        />
-        <p class="text-xs text-text-muted">{ui('admin.user_form.username_desc', lang)}</p>
-      </div>
-    {/if}
+    <!-- ── USERNAME (both modes — display-only hint differs) ────────────── -->
+    <div class="flex flex-col gap-1.5">
+      <label for="uf-username" class="text-xs font-medium text-text-secondary">
+        {ui('admin.user_form.username_label', lang)} <span class="text-red-400" aria-hidden="true">*</span>
+      </label>
+      <input
+        id="uf-username"
+        type="text"
+        bind:value={username}
+        autocomplete="off"
+        required
+        disabled={isLoading}
+        placeholder={ui('admin.user_form.username_placeholder', lang)}
+        class="input"
+      />
+      <p class="text-xs text-text-muted">
+        {isEditMode
+          ? ui('admin.user_form.username_desc_edit', lang)
+          : ui('admin.user_form.username_desc', lang)}
+      </p>
+    </div>
 
     <!-- ── PLAYER NAME (both modes) ──────────────────────────────────────── -->
     <div class="flex flex-col gap-1.5">

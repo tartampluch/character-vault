@@ -217,15 +217,16 @@ class UserController
      * REQUEST BODY (JSON):
      *   { "player_name": "string" }
      *
-     * RESPONSE 200:  { id, player_name }
-     * RESPONSE 400:  self-edit attempt, or empty player_name
+     * RESPONSE 200:  { id, player_name, username }
+     * RESPONSE 400:  self-edit attempt, empty player_name, or empty username
      * RESPONSE 404:  user not found
+     * RESPONSE 409:  username already taken
      */
     public static function update(string $id): void
     {
         $admin = requireAdmin();
 
-        // Self-edit restriction.
+        // Self-edit restriction: admins must use PUT /api/auth/display-name for themselves.
         if ($admin['id'] === $id) {
             http_response_code(400);
             echo json_encode([
@@ -241,6 +242,7 @@ class UserController
 
         $body       = json_decode(file_get_contents('php://input'), true) ?? [];
         $playerName = trim($body['player_name'] ?? '');
+        $newUsername = isset($body['username']) ? trim($body['username']) : null;
 
         if ($playerName === '') {
             http_response_code(400);
@@ -248,12 +250,40 @@ class UserController
             return;
         }
 
+        // Optional username change — validate uniqueness only when provided and changed.
+        if ($newUsername !== null) {
+            if ($newUsername === '') {
+                http_response_code(400);
+                echo json_encode(['error' => 'BadRequest', 'message' => 'username must not be empty.']);
+                return;
+            }
+            if ($newUsername !== $user['username']) {
+                $conflict = $db->prepare('SELECT id FROM users WHERE username = ? AND id != ?');
+                $conflict->execute([$newUsername, $id]);
+                if ($conflict->fetch()) {
+                    http_response_code(409);
+                    echo json_encode([
+                        'error'   => 'Conflict',
+                        'message' => "Username '{$newUsername}' is already taken.",
+                    ]);
+                    return;
+                }
+                $db->prepare('UPDATE users SET username = ? WHERE id = ?')
+                   ->execute([$newUsername, $id]);
+                Logger::info('User', 'Updated username', ['id' => $id, 'username' => $newUsername]);
+            }
+        }
+
         $db->prepare('UPDATE users SET display_name = ? WHERE id = ?')
            ->execute([$playerName, $id]);
 
         Logger::info('User', 'Updated player_name', ['id' => $id, 'player_name' => $playerName]);
         http_response_code(200);
-        echo json_encode(['id' => $id, 'player_name' => $playerName]);
+        echo json_encode([
+            'id'          => $id,
+            'player_name' => $playerName,
+            'username'    => $newUsername ?? $user['username'],
+        ]);
     }
 
     // ============================================================

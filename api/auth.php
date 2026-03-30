@@ -635,6 +635,54 @@ function handleChangePassword(): void
 }
 
 // ============================================================
+// UPDATE DISPLAY NAME ENDPOINT
+// ============================================================
+
+/**
+ * PUT /api/auth/display-name
+ *
+ * Allows any authenticated user to change their own display name
+ * (the in-game name shown to GMs and other players).
+ *
+ * This is intentionally separate from PUT /api/users/{id}, which is
+ * admin-only and cannot target the admin's own account.
+ *
+ * REQUEST BODY (JSON):
+ *   { "display_name": "string" }  — new name; must be non-empty.
+ *
+ * RESPONSE 200 OK:
+ *   { "id": "...", "display_name": "..." }
+ *
+ * RESPONSE 400 BadRequest  — display_name absent or empty.
+ * RESPONSE 401 Unauthorized — not authenticated.
+ */
+function handleUpdateDisplayName(): void
+{
+    verifyCsrfToken();
+    $user = requireAuth();
+
+    $body        = json_decode(file_get_contents('php://input'), true) ?? [];
+    $displayName = trim($body['display_name'] ?? '');
+
+    if ($displayName === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'BadRequest', 'message' => 'display_name must not be empty.']);
+        return;
+    }
+
+    $db = Database::getInstance();
+    $db->prepare('UPDATE users SET display_name = ? WHERE id = ?')
+       ->execute([$displayName, $user['id']]);
+
+    // Keep the session in sync so subsequent GET /api/auth/me calls reflect the new name.
+    $_SESSION['display_name'] = $displayName;
+
+    Logger::info('Auth', 'UpdateDisplayName', ['id' => $user['id'], 'display_name' => $displayName]);
+    http_response_code(200);
+    echo json_encode(['id' => $user['id'], 'display_name' => $displayName]);
+}
+
+// ============================================================
 // UTILITY: PASSWORD HASHING
 // ============================================================
 

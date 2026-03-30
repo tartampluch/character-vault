@@ -294,6 +294,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'user.logout':                  'Log out',
   'user.change_password':         'Change Password',
+  'user.rename':                  'Rename',
+  'user.rename_title':            'Change Display Name',
+  'user.rename_label':            'Display Name',
+  'user.rename_placeholder':      'e.g. Alice',
+  'user.rename_desc':             'Your in-game name shown to other players and the GM.',
+  'user.rename_error_empty':      'Display name must not be empty.',
   'user.menu_label':              'User options',
 
   // ==========================================================================
@@ -1766,6 +1772,7 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'admin.user_form.username_label':     'Username',
   'admin.user_form.username_placeholder': 'e.g. alice',
   'admin.user_form.username_desc':      'Used to log in. Must be unique.',
+  'admin.user_form.username_desc_edit': 'Login credential. Changing it takes effect on next login.',
   'admin.user_form.player_name_label':  'Player Name',
   'admin.user_form.player_name_placeholder': 'e.g. Alice',
   'admin.user_form.player_name_desc':   'In-game display name shown to the GM.',

@@ -51,6 +51,7 @@
     IconChevronUp,
   } from '$lib/components/ui/icons';
   import ChangePasswordModal from '$lib/components/admin/ChangePasswordModal.svelte';
+  import RenameModal         from '$lib/components/admin/RenameModal.svelte';
 
   // ---------------------------------------------------------------------------
   // PROPS
@@ -118,8 +119,9 @@
   // USER DROPDOWN
   // ---------------------------------------------------------------------------
 
-  let showUserMenu          = $state(false);
+  let showUserMenu            = $state(false);
   let showChangePasswordModal = $state(false);
+  let showRenameModal         = $state(false);
 
   /** Toggle the user menu open/closed. */
   function toggleUserMenu(): void {
@@ -135,6 +137,12 @@
   function openChangePassword(): void {
     showUserMenu = false;
     showChangePasswordModal = true;
+  }
+
+  /** Open the Rename (display name) modal (and close the dropdown). */
+  function openRename(): void {
+    showUserMenu = false;
+    showRenameModal = true;
   }
 
   /** Log out: call API then navigate to /login. */
@@ -357,6 +365,18 @@
           overflow-hidden py-1
         "
       >
+        <!-- Rename (display name) -->
+        <button
+          type="button"
+          role="menuitem"
+          class="flex items-center gap-2 w-full px-3 py-2 text-xs text-text-secondary
+                 hover:bg-surface-alt hover:text-text-primary transition-colors"
+          onclick={openRename}
+        >
+          <IconEdit size={14} class="shrink-0" aria-hidden="true" />
+          {ui('user.rename', engine.settings.language)}
+        </button>
+
         <!-- Change Password -->
         <button
           type="button"
@@ -528,4 +548,10 @@
 <ChangePasswordModal
   open={showChangePasswordModal}
   onClose={() => (showChangePasswordModal = false)}
+/>
+
+<!-- Rename (display name) modal — outside <aside> for the same reason -->
+<RenameModal
+  open={showRenameModal}
+  onClose={() => (showRenameModal = false)}
 />

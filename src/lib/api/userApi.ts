@@ -142,10 +142,41 @@ export async function createUser(username: string, playerName: string): Promise<
  * @throws ApiError 400 if targeting own account.
  * @throws ApiError 404 if user not found.
  */
-export async function updatePlayerName(userId: string, playerName: string): Promise<{ id: string; player_name: string }> {
+export async function updatePlayerName(userId: string, playerName: string): Promise<{ id: string; player_name: string; username: string }> {
   return apiFetch(`/api/users/${userId}`, {
     method: 'PUT',
     body: JSON.stringify({ player_name: playerName }),
+  });
+}
+
+/**
+ * Updates a user's login username (admin only).
+ *
+ * PUT /api/users/{id}  — same endpoint as updatePlayerName; sends both fields.
+ *
+ * @throws ApiError 400 if targeting own account or empty value.
+ * @throws ApiError 409 if username is already taken.
+ * @throws ApiError 404 if user not found.
+ */
+export async function updateUsername(userId: string, username: string, playerName: string): Promise<{ id: string; player_name: string; username: string }> {
+  return apiFetch(`/api/users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ username, player_name: playerName }),
+  });
+}
+
+/**
+ * Self-service: update the current user's own display name.
+ *
+ * PUT /api/auth/display-name
+ *
+ * @throws ApiError 400 if display_name is empty.
+ * @throws ApiError 401 if not authenticated.
+ */
+export async function updateOwnDisplayName(displayName: string): Promise<{ id: string; display_name: string }> {
+  return apiFetch('/api/auth/display-name', {
+    method: 'PUT',
+    body: JSON.stringify({ display_name: displayName }),
   });
 }
 
