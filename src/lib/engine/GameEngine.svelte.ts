@@ -221,13 +221,23 @@ export class GameEngine {
   }
 
   /**
-   * The set of language codes available across all currently loaded rule files.
+   * The set of language codes available across all currently loaded rule files
+   * and campaign homebrew entities.
    *
    * Derived reactively from `dataLoader.getAvailableLanguages()`. Re-evaluated
    * whenever `bumpDataLoaderVersion()` is called (i.e., after every load cycle).
    *
-   * Always contains at least `["en"]`. Additional codes (e.g., `"fr"`, `"es"`) appear
-   * when at least one loaded file declares them in its `supportedLanguages` array.
+   * Always contains at least `["en"]`. Additional codes appear from three sources:
+   *   1. `supportedLanguages[]` in rule files (fast-path declaration).
+   *   2. Per-entity scanning via `scanEntityForLanguages()` — any language key
+   *      found in any `LocalizedString` field of any processed entity is included.
+   *      This covers rule files, campaign homebrew, and GM overrides.
+   *   3. `loadExternalLocales()` → GET /api/locales (UI chrome locale files).
+   *
+   * The vault page passes `homebrewStore.toJSON()` as the 3rd argument to
+   * `loadRuleSources()` so that campaign-editor languages (e.g. a Japanese
+   * translation added to a homebrew weapon's `label`) are discovered and
+   * cause Japanese to appear in the sidebar dropdown.
    *
    * UI usage:
    *   The language dropdown in the sidebar reads this array to populate its options.
@@ -3542,16 +3552,22 @@ export class GameEngine {
    *      English, which is excluded from the API response and bundled as the
    *      baseline (`UI_STRINGS['lang.en'] = 'English'`). Other locales may
    *      also declare this key as a redundant fallback.
-   *   3. `code.toUpperCase()` — absolute last resort (API unavailable + locale
-   *      not loaded + no self-naming key).
+   *   3. `Intl.DisplayNames` — browser-native self-naming. Returns the
+   *      language's own name in its own script without any locale file:
+   *        'ja' → '日本語', 'ko' → '한국어', 'zh-hans' → '中文(简体)'
+   *      Works for any valid BCP-47 code. Used for languages that are used
+   *      in content (e.g. a campaign title or homebrew entity translated by
+   *      the GM) but have no corresponding server locale file.
+   *   4. `code.toUpperCase()` — absolute last resort (Intl API unavailable
+   *      or code not recognised).
    *
    * WHY SELF-NAMED (not translated into the active language):
    *   A speaker looking for their language in the dropdown must be able to
    *   recognise it without understanding the currently active language.
    *   "Français" is recognisable to a French speaker; "French" or "Chinois" is not.
    *
-   * @param code - BCP-47 language code (e.g. 'en', 'fr', 'de', 'sw').
-   * @returns Self-name of the language (e.g. 'English', 'Français', 'Deutsch').
+   * @param code - BCP-47 language code (e.g. 'en', 'fr', 'de', 'ja').
+   * @returns Self-name of the language (e.g. 'English', 'Français', '日本語').
    */
   getLanguageDisplayName(code: string): string {
     // 1. Native name from the server's /api/locales response ($meta.language in the
@@ -3568,7 +3584,17 @@ export class GameEngine {
     const fromUi = ui(uiKey, code);
     if (fromUi !== uiKey) return fromUi;
 
-    // 3. Last resort: uppercase code. Better than an empty string or raw key.
+    // 3. Intl.DisplayNames — browser-native self-naming, no locale file needed.
+    //    Uses the language itself as the display locale so the name is always in
+    //    the language's own script (self-naming), matching the dropdown convention.
+    try {
+      const intlName = new Intl.DisplayNames([code], { type: 'language' }).of(code);
+      if (intlName && intlName !== code) return intlName;
+    } catch {
+      // Intl.DisplayNames unavailable or code not supported — fall through.
+    }
+
+    // 4. Last resort: uppercase code. Better than an empty string or raw key.
     return code.toUpperCase();
   }
 

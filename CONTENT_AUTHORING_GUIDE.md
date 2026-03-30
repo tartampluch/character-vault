@@ -106,7 +106,7 @@ static/rules/
 
 **Naming convention:** `NN_rule_source_name/NN_rule_source_name_content_type.json`
 
-Each rule file uses the **metadata wrapper format**: a JSON object with a `supportedLanguages` array and an `entities` array. A single file can mix races, feats, and items freely.
+Each rule file uses the **metadata wrapper format**: a JSON object with an optional `supportedLanguages` array and a required `entities` array. A single file can mix races, feats, and items freely.
 
 ```json
 {
@@ -121,15 +121,18 @@ Each rule file uses the **metadata wrapper format**: a JSON object with a `suppo
 
 #### `supportedLanguages` field
 
-The `supportedLanguages` array declares which language codes are present in the `LocalizedString` fields of this file's entities. The engine collects all declared languages across loaded files and exposes them in the language selector dropdown.
+The `supportedLanguages` array is an **optional documentation hint** that tells the engine which languages a file contains upfront. The engine also automatically discovers languages by scanning every entity's `LocalizedString` fields at load time, so `supportedLanguages` is **not required** for a language to appear in the dropdown.
 
 | Rule | Detail |
 |---|---|
-| If absent (legacy bare array) | English (`"en"`) is assumed. |
+| If absent | Languages are discovered automatically by entity scanning. |
 | Unknown language codes | Cause graceful fallback to English in the UI for any missing string. |
-| Adding a new language | Add the code to `supportedLanguages` AND provide translations for each `label`/`description` field. |
+| Adding a new language | Simply add the language key to any `label` / `description` field — the engine detects it. Adding the code to `supportedLanguages` is optional but recommended as documentation. |
 
-**Example — Spanish community file:**
+**How automatic language discovery works:**
+The engine calls `scanEntityForLanguages()` on every entity loaded from any source (rule files, campaign homebrew, GM overrides). It recursively inspects each field for objects whose keys are all BCP-47 language codes (e.g. `"en"`, `"ja"`, `"fr-be"`) and whose values are all strings. Such objects are `LocalizedString` maps, and every key found is registered as an available language. This means adding `"ja": "katana"` to a homebrew weapon's `label` field in the Campaign Editor is sufficient to make Japanese appear in the language dropdown — no `supportedLanguages` declaration needed.
+
+**Example — Spanish community file (with optional declaration):**
 ```json
 {
   "supportedLanguages": ["en", "es"],
@@ -144,9 +147,9 @@ The `supportedLanguages` array declares which language codes are present in the 
   ]
 }
 ```
-When this file is loaded, `"es"` appears in the language dropdown. All UI chrome strings (section headers, button labels, etc.) without an `"es"` key fall back silently to English.
+When this file is loaded, `"es"` appears in the language dropdown (discovered via entity scanning; the `supportedLanguages` declaration is bonus documentation). All UI chrome strings without an `"es"` key fall back silently to English.
 
-> **Simplified format:** Files that are bare JSON arrays (without the wrapper object) are also accepted. The engine handles both formats seamlessly.
+> **Simplified format:** Files that are bare JSON arrays (without the wrapper object) are also accepted. The engine handles both formats seamlessly. Languages in bare-array files are discovered through entity scanning.
 
 ---
 
@@ -2351,7 +2354,9 @@ Prefix any array element with `-` to remove it:
 
 ### Language Declarations
 
-Declare which languages your file provides using the `supportedLanguages` array in the file wrapper:
+Languages are **automatically discovered** by the engine. You do not need to declare anything to make a language appear in the sidebar dropdown — simply add the language key to any `label` or `description` field and the engine will detect it.
+
+The optional `supportedLanguages` array in the file wrapper is a documentation hint:
 
 ```json
 {
@@ -2360,7 +2365,13 @@ Declare which languages your file provides using the `supportedLanguages` array 
 }
 ```
 
-The engine collects all declared languages across all loaded files and presents them in the **language selector dropdown** in the sidebar. Any language code declared here will appear as an option — even if the UI chrome strings (buttons, labels, navigation) do not have a built-in translation for that code (they will fall back to English gracefully).
+**How discovery works:** The engine (`DataLoader`) runs `scanEntityForLanguages()` on every entity it processes, regardless of source (rule files, campaign homebrew, GM global overrides). The function recursively inspects every field for `LocalizedString` objects — plain objects whose every key is a BCP-47 code and every value is a string — and registers each key as an available language. This covers:
+- Static rule files in `static/rules/`
+- Global homebrew files in `storage/rules/`
+- Campaign homebrew entities saved via the **Campaign Editor** (`campaigns.homebrew_rules_json`)
+- GM global overrides
+
+The `supportedLanguages` array, when present, provides a fast-path registration before entity scanning begins. Both paths feed `getAvailableLanguages()`, which drives the language selector dropdown. Any language code discovered via either path will appear as an option — even if the UI chrome strings do not have a built-in translation for that code (they fall back to English gracefully).
 
 **Language code format — BCP-47 (all-lowercase hyphenated):**
 
@@ -2387,7 +2398,7 @@ Example: campaign set to `"fr-be"` (Belgian French):
 
 ### Providing Translations
 
-Provide `label` and `description` in every language listed in `supportedLanguages`:
+Provide `label` and `description` in every language you want to support:
 
 ```json
 "label": {
@@ -2399,7 +2410,7 @@ Provide `label` and `description` in every language listed in `supportedLanguage
 }
 ```
 
-English is **always required** — it is the universal fallback. Other languages are optional but should be provided if they are declared in `supportedLanguages`.
+English is **always required** — it is the universal fallback. Other languages are optional; provide as many as you like. Each one you add is automatically discovered by the engine and appears in the language dropdown.
 
 **Regional variants inherit from the base language.** If a player selects `"fr-be"` but a specific feature only provides `"fr"`, the French translation is shown automatically. You do **not** need to duplicate `"fr"` content into `"fr-be"` — only provide `"fr-be"` keys for strings that genuinely differ from generic French.
 

@@ -41,7 +41,7 @@
 
   // ── Icons — one per tab plus the page-level icon ──────────────────────────
   import {
-    IconSettings, IconSuccess,
+    IconSettings, IconWarning,
     IconCampaign,      // Campaign Info tab
     IconJournal,       // Chapters tab
     IconVault,         // Members tab
@@ -51,6 +51,7 @@
   } from '$lib/components/ui/icons';
 
   import PageHeader            from '$lib/components/layout/PageHeader.svelte';
+  import Toast                 from '$lib/components/ui/Toast.svelte';
   import CampaignInfoPanel     from '$lib/components/settings/CampaignInfoPanel.svelte';
   import ChaptersPanel         from '$lib/components/settings/ChaptersPanel.svelte';
   import MembershipPanel       from '$lib/components/settings/MembershipPanel.svelte';
@@ -350,12 +351,16 @@
   // the GM configures settings across multiple tabs and saves once at the end.
   // ===========================================================================
 
-  let isSaving    = $state(false);
-  let saveSuccess = $state('');
+  let isSaving      = $state(false);
+  let toastMessage  = $state('');
+  let toastVariant  = $state<'success' | 'warning'>('success');
+  /** True when the last save attempt failed to reach the API. Cleared on next
+   *  successful save. Drives the warning icon on the Save button. */
+  let saveHasError  = $state(false);
 
   async function saveSettings(): Promise<void> {
     if (!isValidJson) return;
-    isSaving = true; saveSuccess = '';
+    isSaving = true; toastMessage = '';
 
     // 1. Apply dice / stat / variant settings to the in-memory game engine so
     //    characters open in other tabs reflect the new rules immediately.
@@ -451,12 +456,16 @@
       });
 
       chaptersAreDirty = false;
-      saveSuccess = ui('settings.saved', lang);
-      setTimeout(() => (saveSuccess = ''), 3000);
+      saveHasError = false;
+      toastVariant = 'success';
+      toastMessage = ui('settings.saved', lang);
+      setTimeout(() => (toastMessage = ''), 3000);
     } catch (err) {
       console.warn('[Settings] API unavailable:', err);
-      saveSuccess = ui('settings.saved_local', lang);
-      setTimeout(() => (saveSuccess = ''), 5000);
+      saveHasError = true;
+      toastVariant = 'warning';
+      toastMessage = ui('settings.saved_local', lang);
+      setTimeout(() => (toastMessage = ''), 5000);
     } finally {
       isSaving = false;
     }
@@ -486,12 +495,15 @@
   >
     {#snippet actions()}
       <button
-        class="btn-primary"
+        class="btn-primary inline-flex items-center gap-1.5"
         onclick={saveSettings}
         disabled={isSaving || !isValidJson}
         aria-label={ui('nav.save_campaign_settings_aria', lang)}
         type="button"
       >
+        {#if saveHasError && !isSaving}
+          <IconWarning size={14} aria-hidden="true" class="text-amber-300" />
+        {/if}
         {isSaving ? ui('settings.saving', lang) : ui('settings.save', lang)}
       </button>
     {/snippet}
@@ -558,17 +570,6 @@
     aria-labelledby="settings-tab-btn-{activeTab}"
   >
 
-    <!-- Save success / local-save banner — shown across all tabs -->
-    {#if saveSuccess}
-      <div
-        class="mb-4 flex items-center gap-2 px-3 py-2.5 rounded-lg border border-green-600/40
-               bg-green-950/20 text-green-400 text-sm"
-        role="status"
-      >
-        <IconSuccess size={14} aria-hidden="true" /> {saveSuccess}
-      </div>
-    {/if}
-
     <!-- ── TAB: Campaign Info ──────────────────────────────────────────────── -->
     {#if activeTab === 'info'}
       <CampaignInfoPanel
@@ -619,3 +620,6 @@
   </div>
 
 </div>
+
+<!-- Toast notification — fixed at the bottom of the viewport -->
+<Toast message={toastMessage} variant={toastVariant} />

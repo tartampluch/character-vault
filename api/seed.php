@@ -399,11 +399,13 @@ $db->prepare('
     json_encode([
         'en' => 'The Shattered Throne',
         'fr' => 'Le Trône Brisé',
+        'ja' => '砕けた玉座',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
     // Description stored as a JSON-encoded LocalizedString (same convention).
     json_encode([
         'en' => 'When the Crown of Binding is stolen from the Vault of Ages, a group of unlikely heroes must pursue its thief through labyrinthine city streets, haunted ruins, flooded ancient cities, and a storm-wracked lich fortress—before an unkillable evil reclaims its seat of power. A complete 1-shot adventure for four 7th-level characters.',
         'fr' => 'Lorsque la Couronne du Lien est dérobée de la Chambre des Âges, un groupe de héros improbables doit pourchasser le voleur à travers les rues labyrinthiques d\'une ville, des ruines hantées, des cités antiques inondées et une forteresse de liche balayée par les tempêtes — avant qu\'un mal indestructible ne reprenne son trône. Une aventure complète en une session pour quatre personnages de niveau 7.',
+        'ja' => '縛りの王冠が時代の金庫から盗まれたとき、ありそうにない英雄たちの一団は、迷宮のような市街地、呪われた廃墟、水没した古代都市、嵐に打たれたリッチの要塞を通り抜けながら盗人を追跡しなければならない――不死の悪が再び権力の座を奪い返す前に。4人の第7レベルキャラクターのための完結型1回限りの冒険。',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
     'user_gm_001',
     '[]',
@@ -429,46 +431,47 @@ $chapters = [
     // clashes with the local thieves' guild, and recovers the first clue.
     [
         'id'          => 'chapter_01_blood_cobblestones',
-        'title'       => ['en' => 'Chapter 1: Blood on the Cobblestones', 'fr' => 'Chapitre 1 : Sang sur les pavés'],
+        'title'       => ['en' => 'Chapter 1: Blood on the Cobblestones', 'fr' => 'Chapitre 1 : Sang sur les pavés', 'ja' => '第1章：石畳の血'],
         'description' => [
             'en' => 'The party is summoned to the Arcane Council Hall, where Magister Aldeth Crane reveals that the Crown of Binding has been stolen from the Vault of Ages. Evidence at the crime scene points to the Thornhaven Thieves\' Guild. The party must infiltrate the guild, defeat its ruthless captain, and recover the encoded cipher that leads to the next leg of the trail.',
             'fr' => 'Le groupe est convoqué au Conseil des Arcanes, où le Magister Aldeth Crane révèle que la Couronne du Lien a été volée de la Chambre des Âges. Les preuves sur les lieux du crime pointent vers la Guilde des Voleurs de Thornhaven.',
+            'ja' => '一行は秘術評議会の館に召集される。マジスター・アルデス・クレインは、縛りの王冠が時代の金庫から盗まれたことを明かす。犯行現場の証拠はソーンヘイヴン盗賊ギルドを指し示していた。一行はギルドに潜入し、冷酷な頭目を倒し、次の手がかりへと続く暗号文書を回収しなければならない。',
         ],
         'isCompleted' => false,
         'tasks'       => [
             [
                 'id'          => 'task_01_01',
-                'title'       => ['en' => 'Report to Magister Aldeth Crane at the Arcane Council Hall', 'fr' => 'Se présenter au Magister Aldeth Crane à la Salle du Conseil des Arcanes'],
+                'title'       => ['en' => 'Report to Magister Aldeth Crane at the Arcane Council Hall', 'fr' => 'Se présenter au Magister Aldeth Crane à la Salle du Conseil des Arcanes', 'ja' => '秘術評議会の館でマジスター・アルデス・クレインに報告する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_02',
-                'title'       => ['en' => 'Examine the crime scene inside the Vault of Ages', 'fr' => 'Examiner la scène de crime dans la Chambre des Âges'],
+                'title'       => ['en' => 'Examine the crime scene inside the Vault of Ages', 'fr' => 'Examiner la scène de crime dans la Chambre des Âges', 'ja' => '時代の金庫内の犯行現場を調べる'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_03',
-                'title'       => ['en' => 'Question the sole surviving vault guard, Harkin One-Eye', 'fr' => 'Interroger l\'unique garde survivant de la chambre forte, Harkin l\'Œil-de-Verre'],
+                'title'       => ['en' => 'Question the sole surviving vault guard, Harkin One-Eye', 'fr' => 'Interroger l\'unique garde survivant de la chambre forte, Harkin l\'Œil-de-Verre', 'ja' => '金庫の唯一の生き残り番人、片目のハーキンを尋問する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_04',
-                'title'       => ['en' => 'Track down fence Mordecai the Grey in the Underbazaar and learn the guild connection', 'fr' => 'Retrouver le receleur Mordecai le Gris à l\'Underbazaar et découvrir le lien avec la guilde'],
+                'title'       => ['en' => 'Track down fence Mordecai the Grey in the Underbazaar and learn the guild connection', 'fr' => 'Retrouver le receleur Mordecai le Gris à l\'Underbazaar et découvrir le lien avec la guilde', 'ja' => '地下市場で情報屋グレイのモルデカイを追い詰め、ギルドとのつながりを探る'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_05',
-                'title'       => ['en' => 'Infiltrate the Thornhaven Thieves\' Guild through the tannery safe house', 'fr' => 'Infiltrer la Guilde des Voleurs de Thornhaven via la planque de la tannerie'],
+                'title'       => ['en' => 'Infiltrate the Thornhaven Thieves\' Guild through the tannery safe house', 'fr' => 'Infiltrer la Guilde des Voleurs de Thornhaven via la planque de la tannerie', 'ja' => 'なめし革工場のアジト経由でソーンヘイヴン盗賊ギルドに潜入する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_06',
-                'title'       => ['en' => 'Defeat Guild Captain Rendak the Swift and her elite shadowblades', 'fr' => 'Vaincre la Capitaine de Guilde Rendak la Rapide et ses ombres d\'élite'],
+                'title'       => ['en' => 'Defeat Guild Captain Rendak the Swift and her elite shadowblades', 'fr' => 'Vaincre la Capitaine de Guilde Rendak la Rapide et ses ombres d\'élite', 'ja' => 'ギルドの頭目レンダック・ザ・スウィフトと彼女の精鋭シャドウブレイドを倒す'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_01_07',
-                'title'       => ['en' => 'Recover the stolen cipher from Rendak\'s warded strongbox', 'fr' => 'Récupérer le chiffre volé dans le coffre protégé de Rendak'],
+                'title'       => ['en' => 'Recover the stolen cipher from Rendak\'s warded strongbox', 'fr' => 'Récupérer le chiffre volé dans le coffre protégé de Rendak', 'ja' => 'レンダックの守護された金庫から盗まれた暗号文書を回収する'],
                 'isCompleted' => false,
             ],
         ],
@@ -481,41 +484,42 @@ $chapters = [
     // resonance artifact needed to access the Sunken City.
     [
         'id'          => 'chapter_02_deepwood',
-        'title'       => ['en' => 'Chapter 2: Whispers in the Deepwood', 'fr' => 'Chapitre 2 : Murmures dans la Forêt Profonde'],
+        'title'       => ['en' => 'Chapter 2: Whispers in the Deepwood', 'fr' => 'Chapitre 2 : Murmures dans la Forêt Profonde', 'ja' => '第2章：深い森のささやき'],
         'description' => [
             'en' => 'Decoding the cipher reveals a path through the Haunted Deepwood, a forest warped by ancient fey magic. At its heart lie the ruins of Elara\'s Watch, an elven outpost that fell a thousand years ago. The party must navigate fey traps, bypass undead sentinels, and claim the Shard of Resonance—a key needed to enter the Sunken City hidden beneath the wood.',
             'fr' => 'Le déchiffrement du code révèle un chemin à travers la Forêt Profonde Hantée, une forêt tordue par une ancienne magie fée. En son cœur se trouvent les ruines d\'Elara\'s Watch, un avant-poste elfique tombé il y a mille ans.',
+            'ja' => '暗号を解読すると、古代の妖精魔法に歪められた幽霊の深い森への道が明かされる。その中心には千年前に滅びたエルフの前哨地、エラーラの見張り台の廃墟がある。一行は妖精の罠をくぐり抜け、アンデッドの番兵を迂回し、森の下に隠された沈んだ都市への入口となる共鳴の欠片を手に入れなければならない。',
         ],
         'isCompleted' => false,
         'tasks'       => [
             [
                 'id'          => 'task_02_01',
-                'title'       => ['en' => 'Decode the guild cipher to map the safe path through the Deepwood', 'fr' => 'Décoder le chiffre de la guilde pour tracer le chemin sûr à travers la Forêt Profonde'],
+                'title'       => ['en' => 'Decode the guild cipher to map the safe path through the Deepwood', 'fr' => 'Décoder le chiffre de la guilde pour tracer le chemin sûr à travers la Forêt Profonde', 'ja' => 'ギルドの暗号を解読し、深い森の安全な経路を地図に記す'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_02_02',
-                'title'       => ['en' => 'Survive the three-night journey through the Haunted Deepwood without triggering the fey wards', 'fr' => 'Survivre au voyage de trois nuits à travers la Forêt Profonde Hantée sans déclencher les protections féeriques'],
+                'title'       => ['en' => 'Survive the three-night journey through the Haunted Deepwood without triggering the fey wards', 'fr' => 'Survivre au voyage de trois nuits à travers la Forêt Profonde Hantée sans déclencher les protections féeriques', 'ja' => '妖精の結界を発動させずに幽霊の深い森での三夜の旅を生き延びる'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_02_03',
-                'title'       => ['en' => 'Locate the fallen elven watchtower, Elara\'s Watch, hidden beneath centuries of overgrowth', 'fr' => 'Localiser la tour de guet elfique en ruine, Elara\'s Watch, cachée sous des siècles de végétation'],
+                'title'       => ['en' => 'Locate the fallen elven watchtower, Elara\'s Watch, hidden beneath centuries of overgrowth', 'fr' => 'Localiser la tour de guet elfique en ruine, Elara\'s Watch, cachée sous des siècles de végétation', 'ja' => '数百年の植物に覆われた廃墟のエルフ見張り塔、エラーラの見張り台を見つける'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_02_04',
-                'title'       => ['en' => 'Solve the harmonic resonance puzzle to unlock the inner sanctum', 'fr' => 'Résoudre le puzzle de résonance harmonique pour débloquer le sanctuaire intérieur'],
+                'title'       => ['en' => 'Solve the harmonic resonance puzzle to unlock the inner sanctum', 'fr' => 'Résoudre le puzzle de résonance harmonique pour débloquer le sanctuaire intérieur', 'ja' => '内部の聖域を開く調和共鳴のパズルを解く'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_02_05',
-                'title'       => ['en' => 'Defeat the Bone Sentinel, guardian of the sanctum', 'fr' => 'Vaincre la Sentinelle d\'Os, gardienne du sanctuaire'],
+                'title'       => ['en' => 'Defeat the Bone Sentinel, guardian of the sanctum', 'fr' => 'Vaincre la Sentinelle d\'Os, gardienne du sanctuaire', 'ja' => '聖域の番人、骨の番兵を倒す'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_02_06',
-                'title'       => ['en' => 'Retrieve the Shard of Resonance from the sanctum altar', 'fr' => 'Récupérer l\'Éclat de Résonance sur l\'autel du sanctuaire'],
+                'title'       => ['en' => 'Retrieve the Shard of Resonance from the sanctum altar', 'fr' => 'Récupérer l\'Éclat de Résonance sur l\'autel du sanctuaire', 'ja' => '聖域の祭壇から共鳴の欠片を回収する'],
                 'isCompleted' => false,
             ],
         ],
@@ -528,41 +532,42 @@ $chapters = [
     // mind flayer who knows where the Crown was taken.
     [
         'id'          => 'chapter_03_sunken_city',
-        'title'       => ['en' => 'Chapter 3: The Sunken City', 'fr' => 'Chapitre 3 : La Cité Engloutie'],
+        'title'       => ['en' => 'Chapter 3: The Sunken City', 'fr' => 'Chapitre 3 : La Cité Engloutie', 'ja' => '第3章：沈んだ都市'],
         'description' => [
             'en' => 'The Shard of Resonance vibrates in proximity to a hidden entrance leading down into the drowned streets of Ahnkora—a metropolis flooded two centuries ago when its mages tore open a planar rift. An aboleth claims the dark water as its domain, and somewhere in the collapsed library district, the enigmatic mind flayer Vox has mapped the Lich-King\'s fortress. The party must navigate without becoming a meal.',
             'fr' => 'L\'Éclat de Résonance vibre à proximité d\'une entrée cachée menant dans les rues noyées d\'Ahnkora, une métropole inondée il y a deux siècles lorsque ses mages ont ouvert une déchirure planaire. Un aboleth revendique les eaux sombres comme son domaine.',
+            'ja' => '共鳴の欠片は、二世紀前に魔術師たちが次元の裂け目を開いたとき水没した大都市アンコーラへと続く隠された入口の近くで振動する。アボレスが暗い水域を縄張りとし、崩壊した図書館地区のどこかで謎めいたマインド・フレイヤーのヴォクスがリッチ王の要塞を地図に記している。一行は食料にされずに切り抜けなければならない。',
         ],
         'isCompleted' => false,
         'tasks'       => [
             [
                 'id'          => 'task_03_01',
-                'title'       => ['en' => 'Use the Shard of Resonance to reveal the hidden subterranean entrance to Ahnkora', 'fr' => 'Utiliser l\'Éclat de Résonance pour révéler l\'entrée souterraine cachée menant à Ahnkora'],
+                'title'       => ['en' => 'Use the Shard of Resonance to reveal the hidden subterranean entrance to Ahnkora', 'fr' => 'Utiliser l\'Éclat de Résonance pour révéler l\'entrée souterraine cachée menant à Ahnkora', 'ja' => '共鳴の欠片を使ってアンコーラへの隠された地下入口を明らかにする'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_03_02',
-                'title'       => ['en' => 'Navigate the flooded outer districts while avoiding aboleth patrol tentacles', 'fr' => 'Naviguer dans les districts extérieurs inondés en évitant les tentacules de patrouille de l\'aboleth'],
+                'title'       => ['en' => 'Navigate the flooded outer districts while avoiding aboleth patrol tentacles', 'fr' => 'Naviguer dans les districts extérieurs inondés en évitant les tentacules de patrouille de l\'aboleth', 'ja' => 'アボレスの触手の巡回を避けながら水没した外郭地区を進む'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_03_03',
-                'title'       => ['en' => 'Survive the sahuagin ambush in the drowned market district', 'fr' => 'Survivre à l\'embuscade sahuagin dans le quartier commerçant noyé'],
+                'title'       => ['en' => 'Survive the sahuagin ambush in the drowned market district', 'fr' => 'Survivre à l\'embuscade sahuagin dans le quartier commerçant noyé', 'ja' => '水没した市場地区でのサフアギンの待ち伏せを生き延びる'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_03_04',
-                'title'       => ['en' => 'Locate the mind flayer Vox in the collapsed archive and open negotiations', 'fr' => 'Localiser l\'illithide Vox dans les archives effondrées et entamer des négociations'],
+                'title'       => ['en' => 'Locate the mind flayer Vox in the collapsed archive and open negotiations', 'fr' => 'Localiser l\'illithide Vox dans les archives effondrées et entamer des négociations', 'ja' => '崩壊した文書庫でマインド・フレイヤーのヴォクスを見つけ、交渉を開始する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_03_05',
-                'title'       => ['en' => 'Obtain the Map of the Storm Fortress from Vox in exchange for a psionic service', 'fr' => 'Obtenir la Carte de la Forteresse Tempête auprès de Vox en échange d\'un service psionic'],
+                'title'       => ['en' => 'Obtain the Map of the Storm Fortress from Vox in exchange for a psionic service', 'fr' => 'Obtenir la Carte de la Forteresse Tempête auprès de Vox en échange d\'un service psionic', 'ja' => '超念術的な奉仕と引き換えにヴォクスから嵐の要塞の地図を入手する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_03_06',
-                'title'       => ['en' => 'Escape Ahnkora through the sea caves before the aboleth collapses the remaining support columns', 'fr' => 'Fuir Ahnkora par les grottes marines avant que l\'aboleth ne détruise les colonnes de soutien restantes'],
+                'title'       => ['en' => 'Escape Ahnkora through the sea caves before the aboleth collapses the remaining support columns', 'fr' => 'Fuir Ahnkora par les grottes marines avant que l\'aboleth ne détruise les colonnes de soutien restantes', 'ja' => 'アボレスが残りの支柱を崩壊させる前に海の洞窟を通ってアンコーラから脱出する'],
                 'isCompleted' => false,
             ],
         ],
@@ -575,41 +580,42 @@ $chapters = [
     // captured Magister, and fighting through to the throne room antechamber.
     [
         'id'          => 'chapter_04_storm_fortress',
-        'title'       => ['en' => 'Chapter 4: The Storm Fortress', 'fr' => 'Chapitre 4 : La Forteresse Tempête'],
+        'title'       => ['en' => 'Chapter 4: The Storm Fortress', 'fr' => 'Chapitre 4 : La Forteresse Tempête', 'ja' => '第4章：嵐の要塞'],
         'description' => [
             'en' => 'Vox\'s map leads to a storm-wracked promontory where the Lich-King Morveth the Pale has carved his fortress into the living rock above a churning sea. The party must scale the howling cliffs, bypass animated golem sentinels, locate and free the captured Magister Aldeth Crane, and fight floor-by-floor through the inner keep to reach the throne room—without alerting Morveth until the very last moment.',
             'fr' => 'La carte de Vox mène à un promontoire balayé par les tempêtes où le Liche-Roi Morveth le Pâle a taillé sa forteresse dans la roche vive au-dessus d\'une mer agitée.',
+            'ja' => 'ヴォクスの地図は、荒れ狂う海の上の岩盤に要塞を刻んだリッチ王モルヴェス・ザ・ペイルが待つ嵐吹きすさぶ岬へと導く。一行は叫ぶ崖を登り、動くゴーレム番兵を迂回し、捕らえられたマジスター・アルデス・クレインを見つけて解放し、玉座の間に辿り着くまで内部の砦を階ごとに戦い抜かなければならない――最後の瞬間までモルヴェスに気づかれずに。',
         ],
         'isCompleted' => false,
         'tasks'       => [
             [
                 'id'          => 'task_04_01',
-                'title'       => ['en' => 'Scale the Cliffs of the Howling Wind using the routes marked on Vox\'s map', 'fr' => 'Escalader les Falaises du Vent Hurlant en utilisant les routes marquées sur la carte de Vox'],
+                'title'       => ['en' => 'Scale the Cliffs of the Howling Wind using the routes marked on Vox\'s map', 'fr' => 'Escalader les Falaises du Vent Hurlant en utilisant les routes marquées sur la carte de Vox', 'ja' => 'ヴォクスの地図に記された経路を使って叫ぶ風の崖を登る'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_04_02',
-                'title'       => ['en' => 'Disable or bypass the outer gatehouse and its pair of iron golem sentinels', 'fr' => 'Désactiver ou contourner la guérite extérieure et ses deux sentinelles de golem de fer'],
+                'title'       => ['en' => 'Disable or bypass the outer gatehouse and its pair of iron golem sentinels', 'fr' => 'Désactiver ou contourner la guérite extérieure et ses deux sentinelles de golem de fer', 'ja' => '外部の門番所と一対の鉄のゴーレム番兵を無力化するか迂回する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_04_03',
-                'title'       => ['en' => 'Find the imprisonment cells in the tower undercroft and free Magister Aldeth Crane', 'fr' => 'Trouver les cellules d\'emprisonnement dans le sous-sol de la tour et libérer le Magister Aldeth Crane'],
+                'title'       => ['en' => 'Find the imprisonment cells in the tower undercroft and free Magister Aldeth Crane', 'fr' => 'Trouver les cellules d\'emprisonnement dans le sous-sol de la tour et libérer le Magister Aldeth Crane', 'ja' => '塔の地下室にある囚獄を見つけ、マジスター・アルデス・クレインを解放する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_04_04',
-                'title'       => ['en' => 'Fight through three floors of Morveth\'s elite undead honor guard to reach the great hall', 'fr' => 'Combattre à travers trois étages de la garde d\'honneur morte-vivante d\'élite de Morveth pour atteindre la grande salle'],
+                'title'       => ['en' => 'Fight through three floors of Morveth\'s elite undead honor guard to reach the great hall', 'fr' => 'Combattre à travers trois étages de la garde d\'honneur morte-vivante d\'élite de Morveth pour atteindre la grande salle', 'ja' => '大広間に到達するためにモルヴェスの精鋭アンデッド親衛隊3フロアを戦い抜く'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_04_05',
-                'title'       => ['en' => 'Defeat the Deathknight Commander Serath and claim the Sigil Key to the throne room', 'fr' => 'Vaincre le Commandant Chevalier de la Mort Serath et s\'emparer de la Clé Sigillaire de la salle du trône'],
+                'title'       => ['en' => 'Defeat the Deathknight Commander Serath and claim the Sigil Key to the throne room', 'fr' => 'Vaincre le Commandant Chevalier de la Mort Serath et s\'emparer de la Clé Sigillaire de la salle du trône', 'ja' => 'デスナイトの指揮官セラスを倒し、玉座の間への符紋の鍵を奪う'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_04_06',
-                'title'       => ['en' => 'Study the Magister\'s recovered research notes to learn the Crown\'s true weakness', 'fr' => 'Étudier les notes de recherche récupérées du Magister pour connaître la véritable faiblesse de la Couronne'],
+                'title'       => ['en' => 'Study the Magister\'s recovered research notes to learn the Crown\'s true weakness', 'fr' => 'Étudier les notes de recherche récupérées du Magister pour connaître la véritable faiblesse de la Couronne', 'ja' => 'マジスターが回収した研究ノートを調べ、王冠の真の弱点を学ぶ'],
                 'isCompleted' => false,
             ],
         ],
@@ -622,41 +628,42 @@ $chapters = [
     // and escape the collapsing fortress before dawn.
     [
         'id'          => 'chapter_05_shattered_throne',
-        'title'       => ['en' => 'Chapter 5: The Shattered Throne', 'fr' => 'Chapitre 5 : Le Trône Brisé'],
+        'title'       => ['en' => 'Chapter 5: The Shattered Throne', 'fr' => 'Chapitre 5 : Le Trône Brisé', 'ja' => '第5章：砕けた玉座'],
         'description' => [
             'en' => 'The Sigil Key opens the wardstone-sealed throne room where the Lich-King Morveth the Pale waits, the Crown of Binding already placed upon his skull. Every moment he wears it extends his dominion over the undead armies massing in the valley below. The party must shatter his phylactery trap, defeat an ancient lich at the height of his power, and destroy the Crown in the Forge of Unmaking deep within the fortress—all before the structure crumbles into the sea.',
             'fr' => 'La Clé Sigillaire ouvre la salle du trône scellée par une pierre de garde où le Liche-Roi Morveth le Pâle attend, la Couronne du Lien déjà posée sur son crâne.',
+            'ja' => '符紋の鍵は守護石で封印された玉座の間を開く。リッチ王モルヴェス・ザ・ペイルが待ち構え、縛りの王冠はすでに彼の頭蓋骨に載せられている。彼がそれを装着するたびに谷の下に集結するアンデッドの軍勢への支配が広がる。一行は霊棺の罠を打ち砕き、最盛期の古代リッチを倒し、要塞深くの消却の炉で王冠を破壊しなければならない――構造物が海に崩れ落ちる前に。',
         ],
         'isCompleted' => false,
         'tasks'       => [
             [
                 'id'          => 'task_05_01',
-                'title'       => ['en' => 'Use the Sigil Key to breach the wardstone barrier sealing the throne room entrance', 'fr' => 'Utiliser la Clé Sigillaire pour percer la barrière de la pierre de garde scellant l\'entrée de la salle du trône'],
+                'title'       => ['en' => 'Use the Sigil Key to breach the wardstone barrier sealing the throne room entrance', 'fr' => 'Utiliser la Clé Sigillaire pour percer la barrière de la pierre de garde scellant l\'entrée de la salle du trône', 'ja' => '符紋の鍵を使って玉座の間の入口を封印する守護石の障壁を破る'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_05_02',
-                'title'       => ['en' => 'Survive and dismantle the Lich-King\'s phylactery guardian trap in the antechamber', 'fr' => 'Survivre et démanteler le piège de gardien de phylactère du Liche-Roi dans l\'antichambre'],
+                'title'       => ['en' => 'Survive and dismantle the Lich-King\'s phylactery guardian trap in the antechamber', 'fr' => 'Survivre et démanteler le piège de gardien de phylactère du Liche-Roi dans l\'antichambre', 'ja' => '前室でリッチ王の霊棺番人の罠を生き延び解体する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_05_03',
-                'title'       => ['en' => 'Defeat the Lich-King Morveth the Pale before he can complete the Crown\'s binding ritual', 'fr' => 'Vaincre le Liche-Roi Morveth le Pâle avant qu\'il ne puisse compléter le rituel de liaison de la Couronne'],
+                'title'       => ['en' => 'Defeat the Lich-King Morveth the Pale before he can complete the Crown\'s binding ritual', 'fr' => 'Vaincre le Liche-Roi Morveth le Pâle avant qu\'il ne puisse compléter le rituel de liaison de la Couronne', 'ja' => '縛りの儀式が完成する前にリッチ王モルヴェス・ザ・ペイルを倒す'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_05_04',
-                'title'       => ['en' => 'Descend to the Forge of Unmaking in the fortress depths and destroy the Crown of Binding', 'fr' => 'Descendre à la Forge du Démantèlement dans les profondeurs de la forteresse et détruire la Couronne du Lien'],
+                'title'       => ['en' => 'Descend to the Forge of Unmaking in the fortress depths and destroy the Crown of Binding', 'fr' => 'Descendre à la Forge du Démantèlement dans les profondeurs de la forteresse et détruire la Couronne du Lien', 'ja' => '要塞の深部にある消却の炉まで降りて縛りの王冠を破壊する'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_05_05',
-                'title'       => ['en' => 'Locate the fortress\' emergency exit—a sea-cave tunnel mapped by the Magister—before structural collapse', 'fr' => 'Localiser la sortie de secours de la forteresse—un tunnel de grotte marine cartographié par le Magister—avant l\'effondrement structurel'],
+                'title'       => ['en' => 'Locate the fortress\' emergency exit—a sea-cave tunnel mapped by the Magister—before structural collapse', 'fr' => 'Localiser la sortie de secours de la forteresse—un tunnel de grotte marine cartographié par le Magister—avant l\'effondrement structurel', 'ja' => '構造崩壊の前に要塞の緊急出口――マジスターが記した海の洞窟トンネル――を見つける'],
                 'isCompleted' => false,
             ],
             [
                 'id'          => 'task_05_06',
-                'title'       => ['en' => 'Escape the collapsing Storm Fortress and reach the rendezvous ship before dawn', 'fr' => 'Fuir la Forteresse Tempête qui s\'effondre et atteindre le navire de rendez-vous avant l\'aube'],
+                'title'       => ['en' => 'Escape the collapsing Storm Fortress and reach the rendezvous ship before dawn', 'fr' => 'Fuir la Forteresse Tempête qui s\'effondre et atteindre le navire de rendez-vous avant l\'aube', 'ja' => '崩壊する嵐の要塞から脱出し、夜明け前に待ち合わせの船に乗る'],
                 'isCompleted' => false,
             ],
         ],

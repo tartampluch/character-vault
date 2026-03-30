@@ -2392,7 +2392,7 @@ export function formatDistance(feet: number, lang: string): string {
 
 ### 11.4. JSON Rule File Format and `supportedLanguages`
 
-Rule files use a metadata wrapper format declaring which languages they contain:
+Rule files use a metadata wrapper format with an optional `supportedLanguages` declaration:
 
 ```json
 {
@@ -2403,21 +2403,29 @@ Rule files use a metadata wrapper format declaring which languages they contain:
 }
 ```
 
-`DataLoader._availableLanguages` is seeded from `SUPPORTED_UI_LANGUAGES` at construction time, then merges in codes declared by loaded JSON files. The language dropdown always shows at least the built-in UI languages.
+**Dynamic language discovery (entity scanning):**
+
+`DataLoader` builds `_availableLanguages` dynamically from **two complementary sources**:
+
+1. **`supportedLanguages[]` fast-path** — if a rule file declares this array, those codes are registered immediately when the file is loaded, before any entity is processed. This is purely a documentation convenience and a performance hint; it is not required.
+
+2. **Per-entity scanning via `scanEntityForLanguages()`** — every entity processed through `#processEntity()` is recursively scanned for `LocalizedString` fields (plain objects whose every key matches the BCP-47 pattern and every value is a string). Any language code found in any field at any depth is registered in `_availableLanguages`. This covers **all entity sources**: static rule files, global homebrew files, campaign homebrew JSON (stored in `campaigns.homebrew_rules_json`), and GM global overrides — even when none of them declare `supportedLanguages`.
+
+This design ensures that a GM adding a Japanese translation to a homebrew entity in the **Campaign Editor** automatically causes Japanese to appear in the sidebar language dropdown, without any manual declaration step.
 
 **Language code format — BCP-47 (all-lowercase hyphenated):**
 
 Language codes use the IETF BCP-47 standard in all-lowercase hyphenated form:
-- Base language: `"en"`, `"fr"`, `"de"`, `"es"`
-- Regional variant: `"en-gb"`, `"fr-be"`, `"fr-fr"`, `"pt-br"`
+- Base language: `"en"`, `"fr"`, `"de"`, `"es"`, `"ja"`
+- Regional variant: `"en-gb"`, `"fr-be"`, `"fr-fr"`, `"pt-br"`, `"zh-hans"`
 
 Lowercase is used throughout (not `"en_GB"` or `"enGB"`) because it is consistent, unambiguous on case-sensitive file systems, and matches the de-facto web convention. `Intl.PluralRules("fr-be")` works identically to `Intl.PluralRules("fr-BE")`.
 
 **Fallback behavior:**
-- Files without `supportedLanguages` (legacy bare-array format) are accepted; `"en"` is assumed.
+- Files without `supportedLanguages` are fully supported; languages are discovered through entity scanning.
 - The `t()` function (BCP-47 aware): requested lang → base lang (if regional variant) → `"en"` → first key → `"??"`.
 - Example chain: `"fr-be"` → `"fr"` → `"en"`. A Belgian-French user gets French translations for any key not specifically provided in the `"fr-be"` variant.
-- A community file declaring `"es"` surfaces Spanish in the dropdown; UI chrome strings for unknown codes fall back to English.
+- A community file providing `"es"` translations surfaces Spanish in the dropdown automatically; no `supportedLanguages` declaration needed.
 
 ### 11.5. Integration in the Svelte Engine (GameEngine)
 

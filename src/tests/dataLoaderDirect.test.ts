@@ -31,9 +31,10 @@
  */
 
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { DataLoader } from '$lib/engine/DataLoader';
+import { DataLoader, scanEntityForLanguages } from '$lib/engine/DataLoader';
 import type { ConfigTable } from '$lib/engine/DataLoader';
 import type { Feature } from '$lib/types/feature';
+import type { Campaign } from '$lib/types/campaign';
 
 // =============================================================================
 // HELPERS — minimal valid Feature objects for testing
@@ -1300,5 +1301,519 @@ describe('DataLoader — loadExternalLocales() and getLocaleDisplayName()', () =
     // External locale code must survive the clear
     expect(loader.getAvailableLanguages()).toContain('de');
     expect(loader.getLocaleDisplayName('de')).toBe('Deutsch');
+  });
+});
+
+// =============================================================================
+// 12. scanEntityForLanguages() — dynamic language discovery utility
+// =============================================================================
+// This is the fix for the bug: adding a Japanese translation (or any language)
+// to a LocalizedString field in the Campaign Editor must cause that language to
+// appear in the sidebar language dropdown. The fix works by scanning every entity
+// for LocalizedString patterns (plain objects whose keys are all BCP-47 codes and
+// whose values are all strings) and registering those keys in _availableLanguages.
+// =============================================================================
+
+describe('scanEntityForLanguages() — utility function', () => {
+  it('collects language keys from a top-level LocalizedString field', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages({ en: 'Sword', ja: 'katana', fr: 'Épée' }, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('ja');
+    expect(acc).toContain('fr');
+  });
+
+  it('collects language keys from nested LocalizedString fields', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages({
+      id: 'weapon_katana',
+      label: { en: 'Katana', ja: 'katana' },
+      description: { en: 'A Japanese sword', ja: 'nihon-to' },
+      tags: ['weapon'],
+    }, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('ja');
+  });
+
+  it('collects language keys from deeply nested LocalizedString fields', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages({
+      levelProgression: [
+        { level: 1, description: { en: 'Gains power', de: 'Erhaelt Kraft' } },
+      ],
+    }, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('de');
+  });
+
+  it('collects language keys from LocalizedStrings inside arrays', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages({
+      choices: [
+        { choiceId: 'choice_1', label: { en: 'Choice One', es: 'Primera opcion' } },
+        { choiceId: 'choice_2', label: { en: 'Choice Two', es: 'Segunda opcion' } },
+      ],
+    }, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('es');
+  });
+
+  it('does NOT treat non-LocalizedString objects as LocalizedStrings', () => {
+    const acc = new Set<string>();
+    // These objects are NOT LocalizedStrings: non-string values or non-BCP-47 keys
+    scanEntityForLanguages({
+      modifier: { bonus: 2, type: 'enhancement' },   // non-string values
+      activation: { cost: 'action', count: 1 },       // non-string values
+      tags: ['general', 'fighter_bonus_feat'],         // array of strings, not obj
+    }, acc);
+    // No BCP-47-looking keys with string values → nothing added
+    expect(acc.size).toBe(0);
+  });
+
+  it('does NOT add codes for objects where some values are non-strings', () => {
+    const acc = new Set<string>();
+    // { en: 'text' } is a LocalizedString, but { en: 42 } is not
+    scanEntityForLanguages({ en: 42, fr: 'texte' }, acc);
+    expect(acc.size).toBe(0);
+  });
+
+  it('handles null and undefined values without throwing', () => {
+    const acc = new Set<string>();
+    expect(() => scanEntityForLanguages(null, acc)).not.toThrow();
+    expect(() => scanEntityForLanguages(undefined, acc)).not.toThrow();
+    expect(() => scanEntityForLanguages('a string', acc)).not.toThrow();
+    expect(() => scanEntityForLanguages(42, acc)).not.toThrow();
+    expect(acc.size).toBe(0);
+  });
+
+  it('handles empty objects and empty arrays without throwing', () => {
+    const acc = new Set<string>();
+    expect(() => scanEntityForLanguages({}, acc)).not.toThrow();
+    expect(() => scanEntityForLanguages([], acc)).not.toThrow();
+    expect(acc.size).toBe(0);
+  });
+
+  it('recognises BCP-47 regional variant codes as language keys', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages({ label: { en: 'Sword', 'zh-hans': 'Jian', 'pt-br': 'Espada' } }, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('zh-hans');
+    expect(acc).toContain('pt-br');
+  });
+
+  // ── JSON-encoded LocalizedString fields (the campaign.title/description case) ──
+  //
+  // The PHP API stores Campaign.title and Campaign.description as raw JSON strings
+  // like '{"en":"The Shattered Throne","ja":"Test","fr":"Le Trône Brisé"}'.
+  // Without JSON-string parsing, scanning a Campaign object would only see string
+  // values for those fields and never discover the language codes inside them.
+
+  it('detects languages in a JSON-encoded LocalizedString string (campaign title pattern)', () => {
+    const acc = new Set<string>();
+    // This is exactly how the API returns campaign.title:
+    const jsonEncodedTitle = '{"en":"The Shattered Throne","ja":"Test","fr":"Le Trône Brisé"}';
+    scanEntityForLanguages(jsonEncodedTitle, acc);
+    expect(acc).toContain('en');
+    expect(acc).toContain('ja');
+    expect(acc).toContain('fr');
+  });
+
+  it('detects languages when campaign title is a JSON-encoded string nested in an object', () => {
+    const acc = new Set<string>();
+    // Full campaign-like object where title is a JSON string (as returned by the API)
+    scanEntityForLanguages({
+      id: 'camp_test',
+      title: '{"en":"The Shattered Throne","ja":"Test","fr":"Le Trône Brisé"}',
+      description: '{"en":"A campaign.","fr":"Une campagne."}',
+      chapters: [],
+    }, acc);
+    expect(acc).toContain('ja');
+    expect(acc).toContain('fr');
+    expect(acc).toContain('en');
+  });
+
+  it('ignores plain strings that are not JSON-encoded LocalizedStrings', () => {
+    const acc = new Set<string>();
+    scanEntityForLanguages('plain string value', acc);
+    scanEntityForLanguages('camp_shattered_throne_001', acc);
+    expect(acc.size).toBe(0);
+  });
+
+  it('ignores JSON strings that parse to non-LocalizedString objects', () => {
+    const acc = new Set<string>();
+    // This parses to { type: "enhancement", bonus: 2 } — not a LocalizedString
+    // because "type" and "bonus" are not BCP-47 codes
+    scanEntityForLanguages('{"type":"enhancement","bonus":2}', acc);
+    expect(acc.size).toBe(0);
+  });
+});
+
+// =============================================================================
+// 13. Dynamic language discovery — campaign homebrew and GM overrides
+// =============================================================================
+// THE BUG FIX: languages added via the Campaign Editor (stored in
+// campaigns.homebrew_rules_json) must appear in getAvailableLanguages() even
+// when no `supportedLanguages` array is present in the source data.
+// =============================================================================
+
+describe('DataLoader — dynamic language discovery from entities', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  const emptyFetch = () => vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
+  }));
+
+  it('registers Japanese from campaign homebrew LocalizedString field', async () => {
+    const loader = new DataLoader();
+    emptyFetch();
+
+    // The bug scenario: GM added a Japanese translation via the Campaign Editor.
+    // The homebrew JSON has NO `supportedLanguages` array — only raw entities.
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        id: 'weapon_katana',
+        category: 'weapon',
+        ruleSource: 'user_homebrew',
+        label: { en: 'Katana', ja: 'katana' },
+        description: { en: 'A Japanese sword', ja: 'nihon-to' },
+        tags: [],
+        grantedModifiers: [],
+        grantedFeatures: [],
+      },
+    ]));
+
+    expect(loader.getAvailableLanguages()).toContain('ja');
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('registers German from a GM global override entity', async () => {
+    const loader = new DataLoader();
+    emptyFetch();
+
+    // GM override without a supportedLanguages wrapper
+    await loader.loadRuleSources([], JSON.stringify([
+      {
+        id: 'feat_krieger',
+        category: 'feat',
+        ruleSource: 'gm_override',
+        label: { en: 'Warrior', de: 'Krieger' },
+        tags: [],
+        grantedModifiers: [],
+        grantedFeatures: [],
+      },
+    ]));
+
+    expect(loader.getAvailableLanguages()).toContain('de');
+  });
+
+  it('registers languages from deeply nested LocalizedString fields in homebrew', async () => {
+    const loader = new DataLoader();
+    emptyFetch();
+
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        id: 'class_samurai',
+        category: 'class',
+        ruleSource: 'user_homebrew',
+        label: { en: 'Samurai', ja: 'Samurai-kyu' },
+        levelProgression: [
+          { level: 1, description: { en: 'Gains Bushido', ja: 'Bushido wo eru' } },
+        ],
+        tags: [],
+        grantedModifiers: [],
+        grantedFeatures: [],
+      },
+    ]));
+
+    expect(loader.getAvailableLanguages()).toContain('ja');
+  });
+
+  it('registers Spanish from a rule file entity without supportedLanguages', async () => {
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (url === '/rules') {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: () => Promise.resolve(['/rules/weapons_es.json']),
+        });
+      }
+      if (url === '/api/global-rules') {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url === '/rules/weapons_es.json') {
+        // Rule file WITHOUT a supportedLanguages array — only entities
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            // No supportedLanguages field
+            entities: [
+              {
+                id: 'weapon_espada',
+                category: 'weapon',
+                ruleSource: 'homebrew_es',
+                label: { en: 'Sword', es: 'Espada' },
+                description: { en: 'A sword', es: 'Una espada' },
+                tags: [],
+                grantedModifiers: [],
+                grantedFeatures: [],
+              },
+            ],
+          }),
+        });
+      }
+      return Promise.reject(new Error('unexpected'));
+    }));
+
+    await loader.loadRuleSources([]);
+    expect(loader.getAvailableLanguages()).toContain('es');
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('registers multiple languages from multiple homebrew entities', async () => {
+    const loader = new DataLoader();
+    emptyFetch();
+
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        id: 'item_katana', category: 'weapon', ruleSource: 'user_homebrew',
+        label: { en: 'Katana', ja: 'katana' },
+        tags: [], grantedModifiers: [], grantedFeatures: [],
+      },
+      {
+        id: 'feat_bushido', category: 'feat', ruleSource: 'user_homebrew',
+        label: { en: 'Bushido', ja: 'bushi no michi', ko: 'mudo' },
+        tags: [], grantedModifiers: [], grantedFeatures: [],
+      },
+    ]));
+
+    expect(loader.getAvailableLanguages()).toContain('en');
+    expect(loader.getAvailableLanguages()).toContain('ja');
+    expect(loader.getAvailableLanguages()).toContain('ko');
+  });
+
+  it('does not add non-language keys from modifier or config objects', async () => {
+    const loader = new DataLoader();
+    emptyFetch();
+
+    // Entities with complex nested objects that are NOT LocalizedStrings
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        id: 'feat_power_attack', category: 'feat', ruleSource: 'user_homebrew',
+        label: { en: 'Power Attack' },
+        grantedModifiers: [{ type: 'bonus', target: 'attack', value: -1 }],
+        tags: ['general'],
+        grantedFeatures: [],
+      },
+    ]));
+
+    // Only 'en' from the label — modifier object keys ('type', 'target', 'value')
+    // are not BCP-47 codes and must not be added
+    expect(loader.getAvailableLanguages()).toContain('en');
+    expect(loader.getAvailableLanguages()).not.toContain('type');
+    expect(loader.getAvailableLanguages()).not.toContain('target');
+    expect(loader.getAvailableLanguages()).not.toContain('bonus');
+  });
+
+  it('getAvailableLanguages() reflects newly discovered languages after reload', async () => {
+    // Scenario: first campaign has no Japanese; second campaign adds Japanese.
+    // clearCache() + loadRuleSources() must update the language list.
+    const loader = new DataLoader();
+    emptyFetch();
+
+    // First load: no Japanese
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      { id: 'feat_a', category: 'feat', ruleSource: 'user_homebrew',
+        label: { en: 'Feat A' }, tags: [], grantedModifiers: [], grantedFeatures: [] },
+    ]));
+    expect(loader.getAvailableLanguages()).not.toContain('ja');
+
+    // Second load: Japanese added to homebrew
+    emptyFetch();
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      { id: 'weapon_katana', category: 'weapon', ruleSource: 'user_homebrew',
+        label: { en: 'Katana', ja: 'katana' }, tags: [], grantedModifiers: [], grantedFeatures: [] },
+    ]));
+    expect(loader.getAvailableLanguages()).toContain('ja');
+  });
+
+  it('two-phase load: empty homebrew then populated homebrew (mirrors vault $effect order)', async () => {
+    // This test mirrors the fix in vault/+page.svelte where:
+    //   Pass 1 — homebrewStore.entities is [] (load() not yet resolved)
+    //            → loadRuleSources(sources, overrides, undefined) — no homebrew
+    //   Pass 2 — homebrewStore.load() resolves → entities updated → $effect re-fires
+    //            → loadRuleSources(sources, overrides, homebrewJson) — homebrew scanned
+    // After pass 2, 'ja' must appear in getAvailableLanguages().
+    const loader = new DataLoader();
+
+    // Pass 1: vault page fires with empty homebrew (homebrewStore not yet loaded).
+    emptyFetch();
+    await loader.loadRuleSources([], undefined, undefined);
+    expect(loader.getAvailableLanguages()).not.toContain('ja');
+
+    // Pass 2: homebrewStore.load() resolved → $effect re-runs with homebrew JSON.
+    emptyFetch();
+    await loader.loadRuleSources([], undefined, JSON.stringify([
+      {
+        id: 'weapon_katana',
+        category: 'weapon',
+        ruleSource: 'user_homebrew',
+        label: { en: 'Katana', ja: 'katana' },
+        description: { en: 'A curved Japanese sword.', ja: 'nihon-to' },
+        tags: [],
+        grantedModifiers: [],
+        grantedFeatures: [],
+      },
+    ]));
+
+    // After pass 2, Japanese must be in the available languages list.
+    expect(loader.getAvailableLanguages()).toContain('ja');
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+});
+
+// =============================================================================
+// 14. registerLanguagesFromValue() — campaign-metadata language registration
+// =============================================================================
+// THE BUG FIX (screenshot): Campaign.title / .description / .chapters are
+// LocalizedString fields stored directly on the campaign record — they are NOT
+// part of any rule file or homebrew entity. loadRuleSources() never processes
+// them, so a Japanese campaign title was invisible to the language dropdown.
+// registerLanguagesFromValue() fills this gap.
+// =============================================================================
+
+describe('DataLoader — registerLanguagesFromValue()', () => {
+  it('registers Japanese from a campaign title — API JSON-string format (the screenshot bug)', () => {
+    // The API stores campaign.title as a raw JSON string, not a parsed object.
+    // This was the actual root cause: scanEntityForLanguages saw a string value
+    // for `title` and skipped it, never finding the 'ja' key inside.
+    const loader = new DataLoader();
+    const campaign = {
+      id: 'camp_shattered_throne_001',
+      title: '{"en":"The Shattered Throne","ja":"Test","fr":"Le Trône Brisé"}',
+      description: '{"en":"A campaign.","fr":"Une campagne."}',
+      chapters: [],
+      enabledRuleSources: [],
+      gmGlobalOverrides: '[]',
+      ownerId: 'user_1',
+      updatedAt: 0,
+    } as unknown as Campaign;
+
+    loader.registerLanguagesFromValue(campaign);
+
+    expect(loader.getAvailableLanguages()).toContain('ja');
+    expect(loader.getAvailableLanguages()).toContain('fr');
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('also works when title is already a parsed LocalizedString object', () => {
+    // Belt-and-suspenders: if the API ever returns a parsed object, it still works.
+    const loader = new DataLoader();
+    const campaign = {
+      id: 'camp_test',
+      title: { en: 'The Shattered Throne', ja: 'Kudaketa Ouza' },
+      description: { en: 'A campaign.', fr: 'Une campagne.' },
+      chapters: [],
+      enabledRuleSources: [],
+      gmGlobalOverrides: '[]',
+      ownerId: 'user_1',
+      updatedAt: 0,
+    } as unknown as Campaign;
+
+    loader.registerLanguagesFromValue(campaign);
+
+    expect(loader.getAvailableLanguages()).toContain('ja');
+    expect(loader.getAvailableLanguages()).toContain('fr');
+    expect(loader.getAvailableLanguages()).toContain('en');
+  });
+
+  it('registers languages from chapter titles and descriptions', () => {
+    const loader = new DataLoader();
+    const campaign = {
+      id: 'camp_test',
+      title: { en: 'Test' },
+      description: { en: 'Test.' },
+      chapters: [
+        {
+          id: 'ch_1',
+          title: { en: 'Chapter 1', de: 'Kapitel 1' },
+          description: { en: 'First chapter.', de: 'Erstes Kapitel.' },
+          isCompleted: false,
+          tasks: [
+            { id: 'task_1', title: { en: 'Task', ko: 'Gwaje' }, isCompleted: false },
+          ],
+        },
+      ],
+      enabledRuleSources: [],
+      gmGlobalOverrides: '[]',
+      ownerId: 'user_1',
+      updatedAt: 0,
+    } as unknown as Campaign;
+
+    loader.registerLanguagesFromValue(campaign);
+
+    expect(loader.getAvailableLanguages()).toContain('de');
+    expect(loader.getAvailableLanguages()).toContain('ko');
+  });
+
+  it('increments localesVersion only when new languages are found', () => {
+    const loader = new DataLoader();
+    const v0 = loader.localesVersion;
+
+    // First call: 'ja' is new → localesVersion increments
+    loader.registerLanguagesFromValue({ title: { en: 'T', ja: 'Test' } });
+    expect(loader.localesVersion).toBe(v0 + 1);
+
+    // Second call: same value, 'ja' already registered → no increment
+    const v1 = loader.localesVersion;
+    loader.registerLanguagesFromValue({ title: { en: 'T', ja: 'Test' } });
+    expect(loader.localesVersion).toBe(v1); // unchanged
+  });
+
+  it('languages registered via registerLanguagesFromValue are wiped by clearCache()', () => {
+    // This confirms the documented behaviour: callers must re-invoke after
+    // loadRuleSources() (which calls clearCache() internally).
+    const loader = new DataLoader();
+
+    loader.registerLanguagesFromValue({ title: { en: 'T', ja: 'Test' } });
+    expect(loader.getAvailableLanguages()).toContain('ja');
+
+    loader.clearCache();
+    // 'ja' is NOT in _externalLocales, so it is not re-added by clearCache()
+    expect(loader.getAvailableLanguages()).not.toContain('ja');
+  });
+
+  it('re-registering after clearCache() restores the language', async () => {
+    // Mirrors the vault page .then() callback that calls
+    // registerLanguagesFromValue(campaign) after every loadRuleSources().
+    const loader = new DataLoader();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true, headers: { get: () => 'application/json' }, json: () => Promise.resolve([]),
+    }));
+
+    // First load — no rule files, no homebrew, but campaign has Japanese title
+    await loader.loadRuleSources([], undefined, undefined);
+    loader.registerLanguagesFromValue({ title: { en: 'Throne', ja: 'Ouza' } });
+    expect(loader.getAvailableLanguages()).toContain('ja');
+
+    // Second load (e.g. campaign switch) — clearCache() wipes 'ja', but
+    // re-registering after the load restores it
+    await loader.loadRuleSources([], undefined, undefined);
+    expect(loader.getAvailableLanguages()).not.toContain('ja'); // wiped by clearCache
+    loader.registerLanguagesFromValue({ title: { en: 'Throne', ja: 'Ouza' } });
+    expect(loader.getAvailableLanguages()).toContain('ja');     // restored
+
+    vi.unstubAllGlobals();
+  });
+
+  it('is a no-op for null, undefined, primitives', () => {
+    const loader = new DataLoader();
+    const v0 = loader.localesVersion;
+    loader.registerLanguagesFromValue(null);
+    loader.registerLanguagesFromValue(undefined);
+    loader.registerLanguagesFromValue(42);
+    loader.registerLanguagesFromValue('string');
+    expect(loader.localesVersion).toBe(v0); // no change
+    expect(loader.getAvailableLanguages()).toEqual(['en']);
   });
 });
