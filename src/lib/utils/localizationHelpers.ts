@@ -87,7 +87,9 @@ export function isRegionalVariant(lang: string): boolean {
  * @param lang     - BCP-47 language code from `CampaignSettings.language`.
  * @returns The best available translation with graceful fallback.
  */
-export function t(textObj: LocalizedString | string, lang: string): string {
+export function t(textObj: LocalizedString | string | undefined | null, lang: string): string {
+  // Guard: handle missing/uninitialized labels (e.g. skills loaded from API before seeding).
+  if (textObj == null) return '??';
   if (typeof textObj === 'string') return textObj;
 
   // 1. Exact code match (e.g. "fr-be" or "fr").

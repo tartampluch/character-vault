@@ -131,7 +131,6 @@
   const activeCampaign = $derived(
     campaignId ? campaignStore.getCampaign(campaignId) : undefined
   );
-  const characterId    = $derived(engine.activeCharacterId);
   const isGM           = $derived(sessionContext.isGameMaster);
 
   /** First letter of the display name (uppercase) used as avatar initials. */
@@ -550,25 +549,6 @@
           </div>
         {/each}
       </div>
-    {/if}
-
-    <!-- ── 3. CHARACTER SHEET — only when a character is loaded ──────────── -->
-    {#if characterId}
-      <a
-        href="/character/{characterId}"
-        class={navLinkClass('/character/' + characterId)}
-        title={engine.character.name ?? ui('nav.character_sheet', engine.settings.language)}
-      >
-        <IconCharacter size={20} class="shrink-0" aria-hidden="true" />
-        {#if !effectivelyCollapsed}
-          <span class="truncate">
-            {ui('nav.character', engine.settings.language)}
-            <span class="block text-xs text-text-muted font-normal truncate">
-              {engine.character.name}
-            </span>
-          </span>
-        {/if}
-      </a>
     {/if}
 
     <!-- ── GM TOOLS — visible to all Game Masters and admins ──────────────── -->

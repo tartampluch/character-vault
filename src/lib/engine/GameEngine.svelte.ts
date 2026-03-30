@@ -3581,7 +3581,7 @@ export class GameEngine {
    * Translates a LocalizedString to the active language.
    * Falls back: requested lang → English → first available → "??".
    */
-  t(textObj: LocalizedString | string): string {
+  t(textObj: LocalizedString | string | undefined | null): string {
     return translateString(textObj, this.settings.language);
   }
 

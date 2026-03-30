@@ -303,6 +303,11 @@ export function buildSkillPipelines(
   }
 
   for (const [skillId, baseSkill] of Object.entries(characterSkills)) {
+    // Skip skills that were stored from the API as bare `{ranks: N}` objects and
+    // have not yet been seeded by the skill-seeding effect (label is undefined).
+    // They will be included once the effect runs and character.skills is updated.
+    if (!baseSkill.label) continue;
+
     const isClassSkill = classSkillSet.has(skillId);
     const keyAbilityMod = attributes[baseSkill.keyAbility]?.derivedModifier ?? 0;
 
