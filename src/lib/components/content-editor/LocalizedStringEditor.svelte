@@ -233,38 +233,33 @@
 
       <!-- Language label row (flag + name + remove button) -->
       <div class="flex items-center gap-1.5">
-        <span
-          class="text-[10px] font-semibold uppercase tracking-wider text-text-muted
-                 flex items-center gap-1 min-w-0 flex-1"
-          title={displayName}
-        >
-          <span class="text-sm leading-none shrink-0" aria-hidden="true">
-            {flagEmoji(countryCode)}
-          </span>
-          <span class="truncate">{displayName}</span>
-          {#if isMandatory}
-            <span class="ml-1 text-[9px] font-normal normal-case text-text-muted/60 shrink-0">
-              ({ui('editor.lang.required_hint', lang)})
-            </span>
-          {/if}
+        <span class="text-sm leading-none shrink-0" aria-hidden="true">
+          {flagEmoji(countryCode)}
         </span>
-
-        <div class="flex items-center gap-2 shrink-0">
-          <!-- Remove button (non-mandatory languages only) -->
-          {#if !isMandatory}
-            <button
-              type="button"
-              class="text-[10px] text-text-muted/60 hover:text-danger transition-colors
-                     flex items-center gap-0.5"
-              onclick={() => removeLanguage(code)}
-              title={ui('editor.lang.remove_translation', lang).replace('{lang}', displayName)}
-              aria-label={ui('editor.lang.remove_translation', lang).replace('{lang}', displayName)}
-            >
-              <span aria-hidden="true">&times;</span>
-              {ui('common.remove', lang)}
-            </button>
-          {/if}
-        </div>
+        <span
+          class="text-[10px] font-semibold uppercase tracking-wider text-text-muted shrink-0"
+          title={displayName}
+        >{displayName}</span>
+        {#if isMandatory}
+          <span class="text-[9px] font-normal normal-case text-text-muted/60 shrink-0">
+            ({ui('editor.lang.required_hint', lang)})
+          </span>
+        {:else}
+          <!-- Remove button right after language name -->
+          <button
+            type="button"
+            class="text-[10px] text-text-muted/60 hover:text-red-500 hover:bg-red-500/10
+                   dark:hover:text-red-400 dark:hover:bg-red-500/15
+                   transition-colors rounded px-1 py-0.5
+                   flex items-center gap-0.5 shrink-0"
+            onclick={() => removeLanguage(code)}
+            title={ui('editor.lang.remove_translation', lang).replace('{lang}', displayName)}
+            aria-label={ui('editor.lang.remove_translation', lang).replace('{lang}', displayName)}
+          >
+            <span aria-hidden="true">&times;</span>
+            {ui('common.remove', lang)}
+          </button>
+        {/if}
       </div>
 
       <!-- ----------------------------------------------------------------- -->
@@ -304,7 +299,7 @@
       The select resets to '' after each selection via addSelectValue = ''.
     -->
     <select
-      class="input text-xs py-1 flex-1 min-w-0 text-text-muted"
+      class="input text-xs py-1 w-auto text-text-muted"
       value={addSelectValue}
       onchange={handleAddSelectChange}
       aria-label={ui('editor.lang.add_translation', lang)}
@@ -317,7 +312,7 @@
       <!-- Available languages not yet in the field -->
       {#each addableCodes as code (code)}
         <option value={code}>
-          {flagEmoji(getContentLangCountryCode(code))} {getContentLangDisplayName(code)} ({code})
+          {flagEmoji(getContentLangCountryCode(code))} {getContentLangDisplayName(code)}
         </option>
       {/each}
 

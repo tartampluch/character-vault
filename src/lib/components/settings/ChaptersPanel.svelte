@@ -16,7 +16,7 @@
 <script lang="ts">
   import { engine } from '$lib/engine/GameEngine.svelte';
   import { ui } from '$lib/i18n/ui-strings';
-  import { IconJournal, IconDragHandle, IconClose } from '$lib/components/ui/icons';
+  import { IconJournal, IconDragHandle } from '$lib/components/ui/icons';
   import LocalizedStringEditor from '$lib/components/content-editor/LocalizedStringEditor.svelte';
 
   interface EditableTask {
@@ -189,7 +189,7 @@
               </span>
               {#each chapter.tasks as task, ti (task.id)}
                 <div
-                  class="flex items-start gap-2 transition-opacity duration-100
+                  class="flex flex-col gap-1 transition-opacity duration-100
                          {taskDragSrc?.chapterId === chapter.id && taskDragSrc?.index === ti ? 'opacity-30' : ''}"
                   draggable="true"
                   role="listitem"
@@ -197,8 +197,21 @@
                   ondragover={(e) => handleTaskDragOver(e, chapter.id, ti)}
                   ondragend={handleTaskDragEnd}
                 >
-                  <IconDragHandle size={12} class="text-text-muted/40 shrink-0 cursor-grab" aria-hidden="true" />
-                  <div class="flex-1 min-w-0">
+                  <!-- Task header row: drag handle + label + remove -->
+                  <div class="flex items-center gap-2">
+                    <IconDragHandle size={12} class="text-text-muted/40 shrink-0 cursor-grab" aria-hidden="true" />
+                    <span class="flex-1 text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                      {ui('settings.chapters.task_n', lang).replace('{n}', String(ti + 1))}
+                    </span>
+                    <button
+                      type="button"
+                      class="shrink-0 text-xs px-2 py-1 btn-danger-outline"
+                      onclick={() => removeTask(chapter.id, task.id)}
+                      aria-label="{ui('settings.chapters.remove_task', lang)} {ti + 1}"
+                    >{ui('settings.chapters.remove_task', lang)}</button>
+                  </div>
+                  <!-- Task title editor -->
+                  <div class="ml-5">
                     <LocalizedStringEditor
                       value={task.title}
                       onchange={(v) => { chaptersAreDirty = true; task.title = v; }}
@@ -211,12 +224,6 @@
                       inputClass="text-xs select-text"
                     />
                   </div>
-                  <button
-                    type="button"
-                    class="shrink-0 p-1 btn-danger-outline"
-                    onclick={() => removeTask(chapter.id, task.id)}
-                    aria-label="{ui('settings.chapters.remove_task', lang)} {ti + 1}"
-                  ><IconClose size={12} aria-hidden="true" /></button>
                 </div>
               {/each}
             {/if}

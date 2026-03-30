@@ -205,14 +205,14 @@
         </p>
         {#each disabledFiles as file}
           {@const gc = groupPalette(file.ruleSource)}
-          <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-border bg-surface opacity-50 hover:opacity-80 transition-all duration-150">
-            <span class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border {gc.off}">
+          <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-border bg-surface/50 transition-all duration-150">
+            <span class="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded border {gc.on}">
               {file.ruleSource}
             </span>
-            <span class="flex-1 text-[10px] font-mono truncate text-text-muted">{file.path}</span>
-            <span class="shrink-0 text-[10px] text-text-muted/70">{file.entityCount} {uiN('settings.rule_sources.entities', file.entityCount ?? 0, engine.settings.language)}</span>
+            <span class="flex-1 text-[10px] font-mono truncate text-text-secondary">{file.path}</span>
+            <span class="shrink-0 text-[10px] text-text-muted">{file.entityCount} {uiN('settings.rule_sources.entities', file.entityCount ?? 0, engine.settings.language)}</span>
             <button
-              class="shrink-0 text-[10px] px-2 py-0.5 rounded border border-green-700/40 bg-green-950/20 text-green-400 hover:bg-green-900/30 transition-colors"
+              class="shrink-0 text-[10px] px-2 py-0.5 btn-success-outline"
               onclick={() => toggleFile(file.path)}
               aria-label="{ui('settings.rule_sources.enable', engine.settings.language)} {file.path}"
               type="button"

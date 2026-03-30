@@ -211,9 +211,7 @@
               {flagEmoji(entry.countryCode)}
             </span>
             <span class="truncate">{entry.nativeName}</span>
-            <code class="ml-auto shrink-0 text-[9px] text-text-muted font-mono opacity-60">
-              {entry.code}
-            </code>
+
           </button>
         {/each}
 
