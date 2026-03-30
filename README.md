@@ -4,7 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-2134_tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-2193_tests-6E9F18?logo=vitest&logoColor=white)
 ![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
@@ -187,7 +187,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`dagResolution.test.ts`](src/tests/dagResolution.test.ts) | DAG cascade, forbidden tags, formula-as-value, conditionNode, synergy auto-generation, circular dep guard |
 | [`stackingRules.test.ts`](src/tests/stackingRules.test.ts) | D&D 3.5 stacking rules, DR best-wins grouping, multiplier, setAbsolute |
 | [`mathParser.test.ts`](src/tests/mathParser.test.ts) | Formula evaluation, `@`-path resolution, dice notation, pipe operators (`\|distance`, `\|weight`) |
-| [`logicEvaluator.test.ts`](src/tests/logicEvaluator.test.ts) | AND / OR / NOT / CONDITION logic trees, all six operators |
+| [`logicEvaluator.test.ts`](src/tests/logicEvaluator.test.ts) | AND / OR / NOT / CONDITION logic trees, all 8 operators |
 | [`diceEngine.test.ts`](src/tests/diceEngine.test.ts) | Dice rolling, situational bonuses, exploding 20s, crit range, V/WP pool routing |
 | [`mergeEngine.test.ts`](src/tests/mergeEngine.test.ts) | Data override engine (replace / partial merge / `-` prefix array deletion) |
 | [`dataLoaderDirect.test.ts`](src/tests/dataLoaderDirect.test.ts) | DataLoader cache API, queryFeatures, entity validation, GM overrides, filter by source |
@@ -223,12 +223,25 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`componentSplits.test.ts`](src/tests/componentSplits.test.ts) | Component split contract: `GmOverridesPanel` JSON validation, `TieredCostsEditor` tier management, `MagicItemsCastingSubpanel` item filtering, `ModifierRow` source-field defaulting, structural line-count and file-existence checks for all 16 new sub-components |
 | [`enginePhases.test.ts`](src/tests/enginePhases.test.ts) | Direct unit tests for all extracted DAG phase functions: `buildSizePipeline`, `buildAttributePipelines`, `buildPhase2Context`, `buildCombatStatPipelines`, `buildPhase3Context`, `buildEquipmentSlots`, `buildEquippedSlotCounts`, `computeFeatSlots`, `computeGrantedFeatIds`, `computeManualFeatCount`, `computeEffectiveActionBudget`, `computeActionBudgetHasXOR`, `computeActionBudgetBlockers`, `computeActiveTags`, `computePhase0Result`, `computeMulticlassXpPenaltyRisk`, `buildClassSkillSet`, `buildSkillPointsBudget`, `buildLevelingJournal`, `buildSkillPipelines` |
 | [`utilsCoverage.test.ts`](src/tests/utilsCoverage.test.ts) | `languageCookie` (read/write, SSR fallback, localStorage legacy), `classProgressionPresets` (BAB/save increment arrays), `constants` barrel, `formatters` barrel, `CharacterFactory.normaliseModifierTargetId` (all prefix branches), `makeSkillPipeline`, `createEmptyCharacter` (all pipeline initialisation paths) |
+| [`augmentationRule.test.ts`](src/tests/augmentationRule.test.ts) | Psionic `AugmentationRule.effectDescription` field — backward compat, mechanical augmentations with description, qualitative augmentations (empty `grantedModifiers`) |
+| [`bannerImageUtils.test.ts`](src/tests/bannerImageUtils.test.ts) | `validateBannerFile()` (MIME + size), `fileToBase64DataUri()`, `isImageDataUri()`, `bannerCache` (get/set/evict) |
+| [`characterFields.test.ts`](src/tests/characterFields.test.ts) | `Character.name`/`playerName` fields, StorageManager round-trip, `canDelete()` vault permission logic |
+| [`choiceExclusions.test.ts`](src/tests/choiceExclusions.test.ts) | `FeatureChoice.excludedBy` mutual-exclusion mechanism (domain pair exclusion), `getExcludedOptionIds()` helper, language switching |
+| [`conditionNodeBuilder.test.ts`](src/tests/conditionNodeBuilder.test.ts) | ConditionNodeBuilder serialization (single, AND, NOT, deeply nested); mutation helpers `patchCondition`, `handleAndOrChildChanged`, `addConditionToAndOr`, `swapChildren`, `switchAndOr` |
+| [`contentLanguages.test.ts`](src/tests/contentLanguages.test.ts) | `KNOWN_CONTENT_LANGUAGES` integrity (no duplicates, valid BCP-47, sorted), `getContentLangDisplayName()` with regional-variant fallback |
+| [`engineConfigTables.test.ts`](src/tests/engineConfigTables.test.ts) | Data-driven config table reads: `savingThrowConfig` from JSON, `getWeaponDefaults()` ability assignments, `getSpellSaveDC()` casting-ability detection |
+| [`formulaBuilderInput.test.ts`](src/tests/formulaBuilderInput.test.ts) | `validateFormula()` — all result states (`valid`/`invalid`/`partial`/`empty`); `buildInsertSnippet()` — all token classes and pipeline namespaces |
+| [`homebrewStore.test.ts`](src/tests/homebrewStore.test.ts) | `HomebrewStore` CRUD (`add`/`update`/`remove`/`getById`), `toJSON()`, `isDirty`/`isSaving` state, auto-save debounce, campaign vs global scope routing |
+| [`localizationHelpers.test.ts`](src/tests/localizationHelpers.test.ts) | `getBaseLang()`, `isRegionalVariant()`, `t()` with 5-step BCP-47 fallback chain, `getUnitSystem()` with regional fallback |
+| [`rawJsonPanel.test.ts`](src/tests/rawJsonPanel.test.ts) | `parseRawJson()` (valid/invalid/non-object roots), `featureToJson()` (prettify/minify modes), two-way sync round-trip |
+| [`uiStrings.test.ts`](src/tests/uiStrings.test.ts) | `SUPPORTED_UI_LANGUAGES`, `LANG_UNIT_SYSTEM`, `registerLangUnitSystem()`, `loadUiLocale()` (fetch mock, cache, error paths), `ui()`/`uiN()` (baseline, override, fallback, plural, missing-key) |
+| [`userApi.test.ts`](src/tests/userApi.test.ts) | `updateOwnDisplayName()`, `updateUsername()` (display-name / username rename API functions); `updatePlayerName()` regression guard |
 
 #### Coverage
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (53 test files, 2134 tests): 94.61% statements · 86.13% branches · 96.33% functions · 96.44% lines**
+**Overall (54 test files, 2193 tests): 94.13% statements · 86.47% branches · 94.53% functions · 95.93% lines**
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
@@ -244,8 +257,11 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | `utils/gestaltRules.ts` | **100%** | **100%** | |
 | `utils/languageCookie.ts` | **100%** | **100%** | Cookie read/write, SSR guard, localStorage fallback |
 | `utils/classProgressionPresets.ts` | **100%** | **100%** | BAB / save progression increment arrays |
-| `api/userApi.ts` | 93% | **100%** | Full coverage incl. error fallback branches |
-| `engine/DataLoader.ts` | 99% | 90% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `utils/abilityConstants.ts` | **100%** | **100%** | Ability score constants and abbreviation helpers |
+| `utils/itemConstants.ts` | **100%** | **100%** | Item slot constants and item-type helpers |
+| `utils/bannerImageUtils.ts` | **100%** | 88% | Banner image validation, base64 conversion, data URI detection |
+| `api/userApi.ts` | 79% | **100%** | Core paths covered; new display-name/username functions add uncovered error branches |
+| `engine/DataLoader.ts` | 99% | 92% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
 | `engine/MergeEngine.ts` | 98% | 93% | Data override engine (replace / partial / `-prefix` deletion) |
 | `utils/diceEngine.ts` | 98% | 90% | One defensive edge-case branch |
 | `engine/phases/phase0Modifiers.ts` | 90% | 76% | Feature flattening, forbidden tags, formula values, recursive grants |
@@ -255,10 +271,12 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | `engine/phases/phase3CombatStats.ts` | 90% | 89% | Combat stats including gestalt max-per-level and Max HP computation |
 | `engine/StorageManager.ts` | 92% | 85% | localStorage CRUD, error catch branches, async API paths |
 | `utils/mathParser.ts` | 89% | 85% | |
+| `utils/contentLanguages.ts` | 95% | 92% | BCP-47 content-language registry and display name helpers |
+| `utils/bannerCache.ts` | 95% | **100%** | sessionStorage banner cache (get/set/evict) |
 | `utils/statFormatters.ts` | 96% | 93% | `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, situational labels |
 | `i18n/ui-strings.ts` | 78% | 70% | English baseline + locale helpers; `loadUiLocaleFromCache` requires browser localStorage |
 
-> **Note on barrel re-export files:** `utils/constants.ts` and `utils/formatters.ts` are pure `export *` barrel files containing no executable statements — V8 coverage correctly reports 0 executable lines for them. All exported symbols from their sub-modules are fully covered by the test suite. These two files are the only ones below 80% statements in the covered scope.
+> **Note on barrel re-export files and zero-coverage utilities:** `utils/constants.ts` and `utils/formatters.ts` are pure `export *` barrel files containing no executable statements — V8 coverage correctly reports 0 executable lines for them. All exported symbols from their sub-modules are fully covered by the test suite. `utils/ruleSourceColors.ts` and `utils/ruleConstants.ts` are UI-colour/constant-only modules used exclusively in Svelte components (excluded from coverage scope); they appear in the covered scope due to `all: true` but have no test-exercised paths.
 
 ### Backend — PHPUnit
 
