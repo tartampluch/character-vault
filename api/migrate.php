@@ -12,27 +12,55 @@
  *   PHPUnit: Database::runMigrations($pdo)
  *
  * TABLES:
- *   - users          (id, username, password_hash, display_name, is_game_master,
- *                     role, is_suspended, last_login_at, created_at)
- *   - campaigns      (id, title, description, poster_url, banner_image_data, owner_id,
- *                     chapters_json, enabled_rule_sources_json, gm_global_overrides_text,
- *                     homebrew_rules_json, campaign_settings_json, updated_at)
- *   - characters     (id, campaign_id, owner_id, name, is_npc, character_json,
- *                     gm_overrides_json, updated_at)
- *   - campaign_users (campaign_id, user_id, joined_at)
+ *   - users           (id, username, password_hash, display_name, is_game_master,
+ *                      role, is_suspended, last_login_at, created_at)
+ *   - campaigns       (id, title_json, description_json, banner_image_data, owner_id,
+ *                      chapters_json, enabled_rule_sources_json,
+ *                      homebrew_rules_json, campaign_settings_json, updated_at)
+ *   - characters      (id, campaign_id, owner_id, name, is_npc, character_json,
+ *                      gm_overrides_json, updated_at)
+ *   - campaign_users  (campaign_id, user_id, joined_at)
+ *   - server_settings (key, value)
  *
- * WHY SEPARATE characters.character_json AND characters.gm_overrides_json?
- *   The core character state (activeFeatures, classLevels, attributes, skills, resources)
- *   is the player's data. The GM overrides are the GM's secret additions.
- *   Separating them enforces the visibility rule at the database level:
- *     - Players receive character_json (possibly with gmOverrides already merged in).
- *     - GMs receive both fields separately so they can edit overrides independently.
- *   See ARCHITECTURE.md Phase 14.4 for the full schema specification.
+ * DESIGN NOTES:
  *
- * NOTE (Phase 14.4):
- *   This file is a stub. The full schema will be implemented in Phase 14.4.
+ *   title_json / description_json:
+ *     Both columns store LocalizedString JSON objects (`{"en":"…","fr":"…"}`).
+ *     Named with the `_json` suffix to make the encoding explicit and to
+ *     prevent callers from treating them as plain strings.
+ *
+ *   banner_image_data:
+ *     A base64-encoded data URI (`data:image/<subtype>;base64,…`) stored directly
+ *     in the database — no separate file server required.
+ *     Excluded from the GET /api/campaigns list response because 5 MiB × N campaigns
+ *     would be prohibitively large.  Only the GET /api/campaigns/{id} show endpoint
+ *     returns it.  The frontend caches it in sessionStorage (bannerCache.ts).
+ *
+ *   poster_url REMOVED:
+ *     The legacy `poster_url` column (an HTTP URL to a thumbnail image) has been
+ *     removed.  The banner (bannerImageData) is the sole campaign image.
+ *     Campaign list cards lazy-load the banner from the show endpoint instead.
+ *
+ *   gm_global_overrides_text REMOVED from campaigns:
+ *     GM global overrides apply to ALL campaigns server-wide — storing them on
+ *     individual campaign rows was a design error.  They now live in the
+ *     `server_settings` table under the key `'gm_global_overrides'`.
+ *     See ServerSettingsController.php for GET/PUT endpoints.
+ *
+ *   server_settings:
+ *     A general-purpose key-value store for server-wide configuration.
+ *     Current keys:
+ *       'gm_global_overrides' — JSON array of Feature/config-table objects that
+ *         the GM applies as "Layer 2" of the DataLoader resolution chain
+ *         (above all rule files, below per-character gmOverrides).
+ *
+ *   WHY SEPARATE characters.character_json AND characters.gm_overrides_json?
+ *     `character_json` is the player's data; `gm_overrides_json` is the GM's
+ *     secret per-character layer.  Keeping them separate makes visibility rules
+ *     trivial to enforce at the query level.
  *
  * @see api/Database.php for the PDO connection.
+ * @see api/controllers/ServerSettingsController.php for global GM overrides API.
  * @see ARCHITECTURE.md Phase 14.4 for the full schema specification.
  */
 
@@ -103,11 +131,7 @@ function migrate(?PDO $pdo = null): void
     }
 
     // Phase 22.1 — is_suspended column
-    //   Accounts marked suspended cannot log in. Suspension is triggered by:
-    //     a) An admin explicitly suspending the account via the user management UI.
-    //     b) A new account (password_hash = '') that first attempts login more than
-    //        7 days after creation — auto-suspended at login time (no cron required).
-    //   Admins can reinstate any suspended account.
+    //   Accounts marked suspended cannot log in.
     if (!in_array('is_suspended', $userCols, true)) {
         $pdo->exec('ALTER TABLE users ADD COLUMN is_suspended INTEGER NOT NULL DEFAULT 0');
         Logger::info('Migrate', 'Added column users.is_suspended');
@@ -116,7 +140,6 @@ function migrate(?PDO $pdo = null): void
     // Phase 22.1 — last_login_at column
     //   Unix timestamp of the user's most recent successful login.
     //   NULL means the user has never logged in (password not yet set).
-    //   Used in the admin user-list view to show inactivity.
     if (!in_array('last_login_at', $userCols, true)) {
         $pdo->exec('ALTER TABLE users ADD COLUMN last_login_at INTEGER');
         Logger::info('Migrate', 'Added column users.last_login_at');
@@ -126,31 +149,36 @@ function migrate(?PDO $pdo = null): void
     // CAMPAIGNS TABLE
     // ============================================================
     //
+    // COLUMN NAMING CONVENTION:
+    //   title_json       — LocalizedString JSON object (`{"en":"…","fr":"…"}`).
+    //                      Named `_json` to make the encoding unambiguous.
+    //   description_json — Same as title_json.
+    //   banner_image_data — Base64 data URI. Excluded from list responses.
+    //
+    // REMOVED COLUMNS (compared to original Phase 14.4 spec):
+    //   poster_url           — Replaced by banner_image_data. Campaign cards lazy-load
+    //                          the banner from the show endpoint instead.
+    //   gm_global_overrides_text — Moved to server_settings table (key = 'gm_global_overrides').
+    //                              GM overrides are server-wide, not per-campaign.
+    //
     // homebrew_rules_json (Phase 21.1.1):
     //   Stores the campaign-scoped homebrew entity array as a JSON TEXT column.
     //   Default is an empty JSON array '[]'.
-    //
-    //   SCOPE: campaign (vs. global server-side files stored in storage/rules/).
+    //   SCOPE: per-campaign (vs. global overrides in server_settings).
     //   VISIBILITY: Readable by all authenticated users in the campaign (GM + players).
     //   WRITEABLE: GM only — PUT /api/campaigns/{id}/homebrew-rules.
-    //
-    //   FORMAT: A JSON-encoded array of Feature-like objects — same format as
-    //   static/rules/*.json files — which DataLoader injects into the resolution
-    //   chain as the virtual source named "user_homebrew" (after all file sources,
-    //   before gmGlobalOverrides). See ARCHITECTURE.md §21.1 for the full chain.
     //
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS campaigns (
             id                           TEXT PRIMARY KEY,
-            title                        TEXT NOT NULL,
-            description                  TEXT NOT NULL DEFAULT \'\',
-            poster_url                   TEXT,
+            title_json                   TEXT NOT NULL DEFAULT \'{"en":""}\',
+            description_json             TEXT NOT NULL DEFAULT \'\',
             banner_image_data            TEXT,
             owner_id                     TEXT NOT NULL,
             chapters_json                TEXT NOT NULL DEFAULT \'[]\',
             enabled_rule_sources_json    TEXT NOT NULL DEFAULT \'[]\',
-            gm_global_overrides_text     TEXT NOT NULL DEFAULT \'[]\',
             homebrew_rules_json          TEXT NOT NULL DEFAULT \'[]\',
+            campaign_settings_json       TEXT NOT NULL DEFAULT \'{}\',
             updated_at                   INTEGER NOT NULL DEFAULT (strftime(\'%s\', \'now\')),
             FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
         )
@@ -162,12 +190,8 @@ function migrate(?PDO $pdo = null): void
     //
     // WHY PRAGMA table_info() INSTEAD OF try/catch?
     //   ALTER TABLE ADD COLUMN fails if the column already exists. The error
-    //   message differs by database driver:
-    //     SQLite: "table X already has a column named Y"
-    //     MySQL:  "Duplicate column name 'Y'"
-    //   Rather than matching driver-specific strings, we read the schema once
-    //   via PRAGMA table_info() and only execute ALTER TABLE when the column
-    //   is genuinely absent. This is truly idempotent and driver-agnostic.
+    //   message differs by database driver. Checking PRAGMA table_info() first
+    //   is truly idempotent and driver-agnostic.
     //
     $campaignCols = array_column(
         $pdo->query('PRAGMA table_info(campaigns)')->fetchAll(PDO::FETCH_ASSOC),
@@ -182,11 +206,17 @@ function migrate(?PDO $pdo = null): void
     }
 
     // campaign_settings_json — per-campaign rule settings (diceRules, statGeneration, variantRules).
-    // Previously kept only in localStorage; this column persists them server-side
-    // and syncs them across devices. Default '{}' means "use engine defaults".
+    // Previously kept only in localStorage; this column persists them server-side.
     if (!in_array('campaign_settings_json', $campaignCols, true)) {
         $pdo->exec("ALTER TABLE campaigns ADD COLUMN campaign_settings_json TEXT NOT NULL DEFAULT '{}'");
         Logger::info('Migrate', 'Added column campaigns.campaign_settings_json');
+    }
+
+    // banner_image_data — base64 data URI for the campaign banner image.
+    // Added as a migration for existing databases that only had poster_url.
+    if (!in_array('banner_image_data', $campaignCols, true)) {
+        $pdo->exec('ALTER TABLE campaigns ADD COLUMN banner_image_data TEXT');
+        Logger::info('Migrate', 'Added column campaigns.banner_image_data');
     }
 
     // ============================================================
@@ -194,19 +224,10 @@ function migrate(?PDO $pdo = null): void
     // ============================================================
     //
     // DESIGN DECISION — character_json vs gm_overrides_json:
-    //   `character_json` stores the entire ECS state (the "player-facing" data):
-    //     activeFeatures, classLevels, attributes base values, skills ranks,
-    //     resources (current HP, PP), linkedEntities.
-    //     This is the data the player can see and edit.
-    //
-    //   `gm_overrides_json` stores the GM's per-character overrides:
-    //     An array of ActiveFeatureInstance objects injected secretly.
-    //     Players never see this field — the API merges it into the response
-    //     (invisibly for players, separately for GMs).
-    //
-    //   WHY NOT MERGE THEM?
-    //     Keeping them separate makes the visibility rule trivial to enforce
-    //     at the query level, without complex JSON manipulation on every request.
+    //   `character_json` stores the entire ECS state (the "player-facing" data).
+    //   `gm_overrides_json` stores the GM's per-character overrides (secret layer).
+    //   Keeping them separate makes the visibility rule trivial to enforce
+    //   at the query level, without complex JSON manipulation on every request.
     //
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS characters (
@@ -229,14 +250,8 @@ function migrate(?PDO $pdo = null): void
     //
     // PURPOSE:
     //   Tracks which users are members of which campaigns.
-    //   Admins and GMs use this to explicitly invite/remove players.
-    //   This is distinct from character ownership — a user can be a campaign
-    //   member even if suspended (their characters may still be active).
-    //
-    // WHY A SEPARATE TABLE (not a JSON column on campaigns)?
-    //   A proper join table enables efficient per-user and per-campaign queries,
-    //   enforces referential integrity with foreign keys, and makes the
-    //   character-count-per-campaign query (used in the admin user list) trivial.
+    //   Distinct from character ownership — a user can be a campaign member
+    //   even if suspended (their characters may still be active).
     //
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS campaign_users (
@@ -246,6 +261,35 @@ function migrate(?PDO $pdo = null): void
             PRIMARY KEY (campaign_id, user_id),
             FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
             FOREIGN KEY (user_id)     REFERENCES users(id)     ON DELETE CASCADE
+        )
+    ');
+
+    // ============================================================
+    // SERVER_SETTINGS TABLE
+    // ============================================================
+    //
+    // PURPOSE:
+    //   A general-purpose key-value store for server-wide configuration that
+    //   does not belong to any specific campaign.
+    //
+    // CURRENT KEYS:
+    //   'gm_global_overrides'
+    //     A JSON array of Feature/config-table objects that the GM applies as
+    //     "Layer 2" of the DataLoader resolution chain — above all rule source
+    //     files, below per-character gmOverrides. Writable by GMs only via
+    //     PUT /api/server-settings/gm-overrides.  Readable by all authenticated
+    //     users so every client's DataLoader can include the overrides.
+    //
+    // WHY NOT IN campaigns TABLE?
+    //   GM global overrides apply to ALL campaigns equally — there is a single
+    //   server-wide set. Storing them per-campaign was a design error:
+    //   each campaign would have needed its own copy, and changing the "global"
+    //   overrides would have required updating every campaign row individually.
+    //
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS server_settings (
+            key    TEXT PRIMARY KEY,
+            value  TEXT NOT NULL DEFAULT \'\'
         )
     ');
 
@@ -271,14 +315,6 @@ function migrate(?PDO $pdo = null): void
     //   password     : (none — password_hash = '')
     //   role         : admin
     //
-    // FIRST-LOGIN FLOW:
-    //   The admin must log in without a password and will be immediately
-    //   redirected to the password-setup page (handled by auth.php / frontend).
-    //   The 7-day no-password expiry is NOT applied to the admin bootstrap account
-    //   because it has role='admin' — see handleLogin() for the exemption note.
-    //   Actually, the admin IS subject to the same 7-day window; the rationale
-    //   is that the installer should set the password on the first day.
-    //
     // IDEMPOTENT:
     //   The COUNT check ensures this block only fires once; subsequent migrate
     //   runs skip it because the table already has rows.
@@ -293,6 +329,15 @@ function migrate(?PDO $pdo = null): void
         ");
         Logger::info('Migrate', 'Admin bootstrap: created default admin user (no password set — set on first login)');
     }
+
+    // ============================================================
+    // SERVER_SETTINGS BOOTSTRAP
+    // ============================================================
+    //
+    // Seed the 'gm_global_overrides' key with an empty array if it doesn't exist.
+    // INSERT OR IGNORE ensures this is idempotent: existing values are preserved.
+    //
+    $pdo->exec("INSERT OR IGNORE INTO server_settings (key, value) VALUES ('gm_global_overrides', '[]')");
 }
 
 // ============================================================

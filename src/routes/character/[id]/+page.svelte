@@ -72,6 +72,7 @@
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { ui } from '$lib/i18n/ui-strings';
+  import { getGmGlobalOverrides } from '$lib/api/serverSettingsApi';
   import GmCharacterOverridesPanel from '$lib/components/gm/GmCharacterOverridesPanel.svelte';
 
   // ── Core tab components (Phase 8) ──────────────────────────────────────────
@@ -189,9 +190,12 @@
       const char = engine.character;
       const camp = char.campaignId ? campaignStore.getCampaign(char.campaignId) : undefined;
       const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
-      const gmOverrides    = camp?.gmGlobalOverrides;
-      dataLoader
-        .loadRuleSources(enabledSources, gmOverrides)
+      // GM global overrides are now server-wide (not per-campaign).
+      // Fetch from GET /api/server-settings/gm-overrides instead of campaign.gmGlobalOverrides.
+      getGmGlobalOverrides()
+        .then(gmOverrides =>
+          dataLoader.loadRuleSources(enabledSources, gmOverrides)
+        )
         .catch(err => console.warn('[CharacterSheet] Failed to load rule sources:', err));
     }
   });

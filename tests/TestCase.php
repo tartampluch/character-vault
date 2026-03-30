@@ -166,6 +166,14 @@ abstract class TestCase extends PHPUnitTestCase
 
     /**
      * Creates a test campaign in the in-memory database.
+     *
+     * SCHEMA NOTE:
+     *   - title_json stores a JSON-encoded LocalizedString OR a plain string.
+     *     For tests, we accept a plain string title and store it as-is in title_json
+     *     (the CampaignController always stores JSON-encoded values, but for DB fixtures
+     *      a plain string is acceptable since tests read directly from the DB).
+     *   - description_json stores a LocalizedString JSON; we default to empty string.
+     *   - poster_url and gm_global_overrides_text have been removed from the schema.
      */
     protected function createCampaign(
         string $id = 'camp_test_001',
@@ -173,10 +181,14 @@ abstract class TestCase extends PHPUnitTestCase
         string $title = 'Test Campaign'
     ): array {
         $pdo = Database::getInstance();
+        // Store title_json as a JSON-encoded LocalizedString (matching what the API does).
+        $titleJson = json_encode(['en' => $title]);
         $stmt = $pdo->prepare(
-            'INSERT INTO campaigns (id, title, description, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO campaigns
+                (id, title_json, description_json, owner_id, chapters_json, enabled_rule_sources_json, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?)'
         );
-        $stmt->execute([$id, $title, '', $ownerId, '[]', '[]', '[]', time()]);
+        $stmt->execute([$id, $titleJson, '', $ownerId, '[]', '[]', time()]);
         return ['id' => $id, 'title' => $title, 'owner_id' => $ownerId];
     }
 

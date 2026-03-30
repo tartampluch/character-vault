@@ -160,7 +160,7 @@ class CampaignStore {
       // can edit it immediately if the GM opens settings after creation.
       title: { en: title },
       description: { en: '' },
-      posterUrl: undefined,
+      // bannerImageData starts undefined — set later via the GM settings panel.
       bannerImageData: undefined,
       ownerId,
       chapters: [],
@@ -169,7 +169,9 @@ class CampaignStore {
       // to configure rule sources first. The Rule Source Manager (Phase 15.1)
       // can restrict this to specific file paths after creation.
       enabledRuleSources: [],
-      gmGlobalOverrides: '[]',
+      // NOTE: gmGlobalOverrides has been removed from Campaign — it is now stored
+      // server-wide in the server_settings table and fetched via
+      // GET /api/server-settings/gm-overrides.
       updatedAt: Date.now(),
     };
 

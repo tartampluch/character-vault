@@ -37,6 +37,7 @@ require_once __DIR__ . '/../api/controllers/CampaignController.php';
 require_once __DIR__ . '/../api/controllers/CharacterController.php';
 require_once __DIR__ . '/../api/controllers/RulesController.php';
 require_once __DIR__ . '/../api/controllers/GlobalRulesController.php';
+require_once __DIR__ . '/../api/controllers/ServerSettingsController.php';
 require_once __DIR__ . '/../api/controllers/UiLocalesController.php';
 require_once __DIR__ . '/../api/controllers/UserController.php';
 

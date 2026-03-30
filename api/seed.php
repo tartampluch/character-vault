@@ -387,21 +387,26 @@ $allRuleSources = [
 //   CampaignController::create() generates its own random ID — we need a known,
 //   stable ID so we can reference it in characters' campaignId and the update call.
 //   The controller is still used for the chapter/settings update below.
+// Insert using the updated schema:
+//   title_json       — JSON-encoded LocalizedString (replaces plain `title` column).
+//   description_json — JSON-encoded LocalizedString (replaces plain `description` column).
+//   NO poster_url    — Removed; banner_image_data is the sole campaign image.
+//   NO gm_global_overrides_text — Moved to server_settings table.
 $db->prepare('
     INSERT INTO campaigns
-        (id, title, description, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
+        (id, title_json, description_json, owner_id, chapters_json, enabled_rule_sources_json, updated_at)
     VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?)
 ')->execute([
     $campaignId,
-    // Title stored as a JSON-encoded LocalizedString so the frontend resolves
-    // the active language via engine.t() and the settings page can add translations.
+    // title_json: JSON-encoded LocalizedString so the frontend resolves the active
+    // language via engine.t() and the settings page can add translations.
     json_encode([
         'en' => 'The Shattered Throne',
         'fr' => 'Le Trône Brisé',
         'ja' => '砕けた玉座',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-    // Description stored as a JSON-encoded LocalizedString (same convention).
+    // description_json: same LocalizedString encoding as title_json.
     json_encode([
         'en' => 'When the Crown of Binding is stolen from the Vault of Ages, a group of unlikely heroes must pursue its thief through labyrinthine city streets, haunted ruins, flooded ancient cities, and a storm-wracked lich fortress—before an unkillable evil reclaims its seat of power. A complete 1-shot adventure for four 7th-level characters.',
         'fr' => 'Lorsque la Couronne du Lien est dérobée de la Chambre des Âges, un groupe de héros improbables doit pourchasser le voleur à travers les rues labyrinthiques d\'une ville, des ruines hantées, des cités antiques inondées et une forteresse de liche balayée par les tempêtes — avant qu\'un mal indestructible ne reprenne son trône. Une aventure complète en une session pour quatre personnages de niveau 7.',
@@ -410,7 +415,6 @@ $db->prepare('
     'user_gm_001',
     '[]',
     json_encode($allRuleSources),
-    '[]',
     time(),
 ]);
 echo "  ✅ Created campaign: The Shattered Throne ({$campaignId})\n";

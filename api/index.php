@@ -8,7 +8,7 @@
  *     POST   /api/auth/login            → handleLogin()          (auth.php)
  *     POST   /api/auth/logout           → handleLogout()         (auth.php)
  *     GET    /api/auth/me               → handleMe()             (auth.php)
-  *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
+ *     PUT    /api/auth/setup-password   → handleSetupPassword()  (auth.php)
  *     PUT    /api/auth/change-password  → handleChangePassword() (auth.php)
  *     PUT    /api/auth/display-name     → handleUpdateDisplayName() (auth.php)
  *
@@ -56,6 +56,10 @@
  *     PUT    /api/global-rules/{filename}       → GlobalRulesController::put($filename)
  *     DELETE /api/global-rules/{filename}       → GlobalRulesController::delete($filename)
  *
+ *   Server Settings (server-wide, not per-campaign):
+ *     GET  /api/server-settings/gm-overrides    → ServerSettingsController::getGmOverrides()
+ *     PUT  /api/server-settings/gm-overrides    → ServerSettingsController::setGmOverrides()
+ *
  * MIDDLEWARE CALL ORDER:
  *   1. applyCorsHeaders()     — CORS (must be first to handle OPTIONS preflight)
  *   2. checkRateLimit()       — Global rate limiting
@@ -83,6 +87,7 @@ require_once __DIR__ . '/controllers/CampaignController.php';
 require_once __DIR__ . '/controllers/CharacterController.php';
 require_once __DIR__ . '/controllers/RulesController.php';
 require_once __DIR__ . '/controllers/GlobalRulesController.php';
+require_once __DIR__ . '/controllers/ServerSettingsController.php';
 require_once __DIR__ . '/controllers/UiLocalesController.php';
 require_once __DIR__ . '/controllers/UserController.php';
 
@@ -268,6 +273,18 @@ try {
         // Removes a named rule file from storage/rules/.
         verifyCsrfToken();
         GlobalRulesController::delete($m[1]);
+
+    // ── Server Settings (server-wide, not per-campaign) ──────────────────────
+    // These routes must be matched BEFORE the User Management block to prevent
+    // the /users pattern from being confused with /server-settings.
+    } elseif ($path === '/server-settings/gm-overrides' && $method === 'GET') {
+        // Readable by ALL authenticated users — the DataLoader calls this at app init.
+        ServerSettingsController::getGmOverrides();
+
+    } elseif ($path === '/server-settings/gm-overrides' && $method === 'PUT') {
+        // Writable by GMs/Admins only — affects ALL campaigns on the server.
+        verifyCsrfToken();
+        ServerSettingsController::setGmOverrides();
 
     // ── User Management (Phase 22.3 — admin-only) ────────────────────────────
     } elseif ($path === '/users' && $method === 'GET') {

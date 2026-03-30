@@ -23,6 +23,7 @@
   import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
   import { IconVault, IconAddCharacter, IconNPC, IconCampaign } from '$lib/components/ui/icons';
   import PageHeader from '$lib/components/layout/PageHeader.svelte';
+  import { getGmGlobalOverrides } from '$lib/api/serverSettingsApi';
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
@@ -70,8 +71,24 @@
     homebrewStore.load();
   });
 
-  // Reload rule sources whenever the campaign's enabledRuleSources, gmGlobalOverrides,
-  // OR campaign homebrew entities change.
+  // ---------------------------------------------------------------------------
+  // GM GLOBAL OVERRIDES — fetched from server settings (not per-campaign).
+  // GM global overrides are now server-wide and live in the `server_settings`
+  // table.  We fetch them once on mount and store in a $state variable so the
+  // loadRuleSources $effect below can include them in the key check.
+  // ---------------------------------------------------------------------------
+  let serverGmOverrides = $state<string | undefined>(undefined);
+
+  $effect(() => {
+    // Only fetch once; the fetch resolves asynchronously and then updates the
+    // $state, which triggers the loadRuleSources $effect on the next microtask.
+    if (serverGmOverrides !== undefined) return;
+    serverGmOverrides = ''; // Sentinel: fetch in progress.
+    getGmGlobalOverrides().then(v => { serverGmOverrides = v; });
+  });
+
+  // Reload rule sources whenever the campaign's enabledRuleSources, GM global
+  // overrides, OR campaign homebrew entities change.
   // This $effect is intentionally separate so it re-runs when loadFromApi()
   // updates the campaign store (which changes campaign.enabledRuleSources) AND when
   // homebrewStore.entities updates after homebrewStore.load() resolves.
@@ -80,7 +97,8 @@
   let lastSourcesKey = '';
   $effect(() => {
     const sources   = campaign?.enabledRuleSources ?? [];
-    const overrides = campaign?.gmGlobalOverrides;
+    // Use the server-fetched GM overrides (no longer on the campaign object).
+    const overrides = serverGmOverrides;
     // Reading homebrewStore.entities here creates a reactive dependency on the
     // homebrew entity list. When homebrewStore.load() resolves, _entities is
     // replaced with the server data, Svelte re-runs this effect, and

@@ -38,6 +38,7 @@
   import { ui } from '$lib/i18n/ui-strings';
   import { getCachedBanner, setCachedBanner, evictStaleBannerEntries } from '$lib/utils/bannerCache';
   import { isImageDataUri } from '$lib/utils/bannerImageUtils';
+  import { getGmGlobalOverrides, setGmGlobalOverrides } from '$lib/api/serverSettingsApi';
 
   // ── Icons — one per tab plus the page-level icon ──────────────────────────
   import {
@@ -266,6 +267,13 @@
   // ===========================================================================
   // GM OVERRIDES STATE
   // ===========================================================================
+  //
+  // GM global overrides are now server-wide (not per-campaign) and live in the
+  // `server_settings` table.  We fetch them once from
+  //   GET /api/server-settings/gm-overrides
+  // and save them separately (not bundled with the campaign PUT) via
+  //   PUT /api/server-settings/gm-overrides
+  //
 
   let gmOverridesText      = $state('[]');
   let savedGmOverridesText = $state('[]');
@@ -273,12 +281,18 @@
   let overridesInitialised = false;
 
   $effect(() => {
-    const overrides = campaign?.gmGlobalOverrides;
-    if (overrides && !overridesInitialised) {
+    // Only fetch once per page load (avoid re-fetching on every reactive update).
+    if (overridesInitialised) return;
+    // Guard: don't fetch until the user is confirmed to be a GM (the panel is GM-only).
+    if (!sessionContext.isGameMaster) return;
+    overridesInitialised = true;
+
+    // Fetch global GM overrides from the server settings endpoint.
+    // This replaces the old `campaign?.gmGlobalOverrides` read.
+    getGmGlobalOverrides().then(overrides => {
       gmOverridesText      = overrides;
       savedGmOverridesText = overrides;
-      overridesInitialised = true;
-    }
+    });
   });
 
   // ===========================================================================
@@ -483,6 +497,10 @@
         })),
       }));
 
+      // Save campaign-specific settings (title, description, banner, chapters, etc.)
+      // via PUT /api/campaigns/{id}.
+      // NOTE: gmGlobalOverrides is no longer included here — it is now server-wide
+      // and saved separately below via PUT /api/server-settings/gm-overrides.
       const response = await fetch(`/api/campaigns/${campaignId}`, {
         method:      'PUT',
         headers:     apiHeaders(),
@@ -494,7 +512,6 @@
           // leave the existing banner unchanged — we always send the current value.
           bannerImageData:    editableBannerImageData ?? null,
           enabledRuleSources: enabledSources,
-          gmGlobalOverrides:  gmOverridesText,
           chapters:           chaptersPayload,
           diceRules:          { explodingTwenties },
           statGeneration:     {
@@ -507,6 +524,15 @@
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      // Save global GM overrides separately via PUT /api/server-settings/gm-overrides.
+      // These are server-wide (affect all campaigns) so they live outside the campaign row.
+      if (gmOverridesText !== savedGmOverridesText) {
+        const overridesOk = await setGmGlobalOverrides(gmOverridesText);
+        if (!overridesOk) {
+          console.warn('[Settings] Failed to save GM global overrides');
+        }
+      }
 
       // Extract the new `updatedAt` timestamp returned by the server.
       // The server always returns { id, updatedAt } on a successful PUT.
@@ -524,12 +550,13 @@
 
       // 5. Update the in-memory campaign store so the rest of the UI reflects
       //    the saved values without requiring a page reload.
+      //    NOTE: gmGlobalOverrides is intentionally omitted — it is no longer
+      //    part of the Campaign type (it lives in server_settings).
       campaignStore.updateCampaign(campaignId, {
         title:              { ...editableTitle },
         description:        { ...editableDescription },
         bannerImageData:    editableBannerImageData ?? undefined,
         enabledRuleSources: [...enabledSources],
-        gmGlobalOverrides:  gmOverridesText,
         chapters:           chaptersPayload,
         campaignSettings: {
           diceRules:      { explodingTwenties },

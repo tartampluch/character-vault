@@ -132,6 +132,15 @@ export interface Chapter {
  *   `updatedAt` (Unix timestamp) is used by the polling mechanism (Phase 14.6).
  *   The client checks this timestamp every 5-10 seconds to detect server-side changes.
  *   @see ARCHITECTURE.md section 19 for the full sync protocol.
+ *
+ * NOTE — REMOVED FIELDS:
+ *   `posterUrl`        — Removed. The banner (bannerImageData) is the sole campaign image.
+ *                        Campaign list cards lazy-load the banner from the show endpoint.
+ *   `gmGlobalOverrides` — Removed. GM global overrides are now stored server-wide in
+ *                         the `server_settings` table, not per campaign.
+ *                         Frontend code should call GET /api/server-settings/gm-overrides
+ *                         instead of reading this field from the campaign object.
+ *                         @see ServerSettingsController.php
  */
 export interface Campaign {
   /**
@@ -142,32 +151,32 @@ export interface Campaign {
 
   /**
    * The campaign's display name.
-   * May be a plain string (legacy / just-created campaigns) or a
-   * `LocalizedString` (`{ en: "…", fr: "…" }`) edited via the Campaign
-   * Info panel in settings.  Always resolved through `engine.t()` for display.
+   * Stored in the database as a JSON-encoded LocalizedString (`{"en":"…","fr":"…"}`).
+   * May arrive as a plain string (legacy / just-created) or already-parsed object.
+   * Always resolved through `engine.t()` for display.
    */
   title: LocalizedString | string;
 
   /**
    * A short description of the campaign, shown on the Campaign Hub card.
-   * Can be a plain string or a `LocalizedString` (`{ en: "...", fr: "..." }`).
-   * The API stores this as a JSON-encoded string; components must resolve it
-   * via `engine.t()` after parsing.
+   * Stored as a JSON-encoded LocalizedString; components must resolve it via
+   * `engine.t()` after parsing.  May be an empty string for new campaigns.
    */
   description: LocalizedString | string;
 
   /**
-   * URL to the campaign's poster/thumbnail image.
-   * Displayed as the main image on the Campaign Hub card (Phase 6.3).
-   * Falls back to a default placeholder if absent.
-   * Cached by browser via HTTP headers — not re-fetched on every poll.
-   */
-  posterUrl?: string;
-
-  /**
-   * Base64-encoded data URI of the campaign's full-width banner image.
+   * Base64-encoded data URI of the campaign's banner image.
    * Stored directly in the database (no separate file server required).
-   * Displayed at the top of the Campaign Details page (Phase 6.4).
+   *
+   * USED IN TWO PLACES:
+   *   1. Campaign Detail page (full-width h-52 header).
+   *   2. Campaign list card thumbnail (lazy-loaded via the show endpoint,
+   *      cached in sessionStorage by bannerCache.ts).
+   *
+   * EXCLUDED FROM LIST RESPONSE:
+   *   The GET /api/campaigns list endpoint omits this field — 5 MiB × N
+   *   campaigns would be prohibitively large.  It is returned only by
+   *   GET /api/campaigns/{id} and cached client-side.
    *
    * Format: `data:image/<subtype>;base64,<payload>`
    * Max decoded size: 5 MiB (enforced client-side by bannerImageUtils.ts
@@ -212,26 +221,6 @@ export interface Campaign {
   enabledRuleSources: string[];
 
   /**
-   * The GM's global override layer — a JSON-encoded array of Feature/config objects.
-   *
-   * Stored as a RAW STRING in the database (no server-side parsing).
-   * Parsed by the DataLoader (Phase 4.2) as Layer 2 of the resolution chain:
-   *   Rule source files → GM Global Overrides (this field) → Character GM Overrides
-   *
-   * Content format: A JSON array containing:
-   *   - Feature-like objects: `{ id, category, ruleSource, grantedModifiers, ... }`
-   *   - Config table objects: `{ tableId, ruleSource, data: [...] }`
-   *
-   * The GM edits this via the GM Settings page (Phase 15.2), which includes
-   * a JSON validator that prevents saving syntactically invalid JSON.
-   *
-   * Default: `"[]"` (empty array, no global overrides).
-   *
-   * @see ARCHITECTURE.md section 18.6 for the full GM text area format specification.
-   */
-  gmGlobalOverrides: string;
-
-  /**
    * Per-campaign rule settings: dice rules, stat generation method, variant rules.
    *
    * Stored in `campaign_settings_json` on the server; merged into `engine.settings`
@@ -245,10 +234,13 @@ export interface Campaign {
    * Unix timestamp (seconds since epoch) of the last modification to this campaign.
    *
    * Updated by the server whenever:
-   *   - Campaign title, description, or images change.
+   *   - Campaign title, description, or banner changes.
    *   - A chapter is added, removed, or updated.
-   *   - `enabledRuleSources` changes.
-   *   - `gmGlobalOverrides` changes.
+   *   - `enabledRuleSources` or `campaignSettings` changes.
+   *   - Campaign homebrew rules change.
+   *
+   * NOTE: Changes to the server-wide GM global overrides (server_settings table)
+   * do NOT update any campaign's `updatedAt` — they live outside the campaign.
    *
    * Used by the client-side polling mechanism (Phase 14.6) to detect whether
    * the campaign needs to be re-fetched from the server.

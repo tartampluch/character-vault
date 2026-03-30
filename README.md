@@ -4,6 +4,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-184_tests%2C_575_assertions-6E9F18?logo=php&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-2193_tests-6E9F18?logo=vitest&logoColor=white)
 ![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
@@ -155,9 +156,29 @@ Vite automatically proxies `/api/*` requests to the PHP server (see [`vite.confi
 ### Database setup
 
 ```sh
-# Creates: users, campaigns, characters tables
+# Creates all tables: users, campaigns, characters, campaign_users, server_settings
 php api/migrate.php
+
+# Full wipe + reseed with demo data (admin, gm, player1, player2, one campaign, two characters)
+php api/seed.php
 ```
+
+**Schema (campaigns table):**
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | TEXT PK | UUID |
+| `title_json` | TEXT | JSON-encoded `LocalizedString` (`{"en":"…","fr":"…"}`) |
+| `description_json` | TEXT | Same encoding as `title_json` |
+| `banner_image_data` | TEXT | Base64 data URI; excluded from list API; lazy-loaded per card |
+| `owner_id` | TEXT FK | References `users.id` |
+| `chapters_json` | TEXT | JSON array of Chapter objects |
+| `enabled_rule_sources_json` | TEXT | Ordered file-path whitelist |
+| `homebrew_rules_json` | TEXT | Per-campaign Feature array |
+| `campaign_settings_json` | TEXT | diceRules / statGeneration / variantRules |
+| `updated_at` | INTEGER | Unix timestamp |
+
+> `poster_url` and `gm_global_overrides_text` have been **removed**. The banner image is now the sole campaign visual (lazy-loaded via the show endpoint). GM global overrides moved to the `server_settings` table (`key = 'gm_global_overrides'`), accessible via `GET/PUT /api/server-settings/gm-overrides` — they are server-wide, not per-campaign.
 
 Or use the VS Code task **Run: DB migrations**.
 
@@ -291,18 +312,20 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | File | What it covers |
 |------|----------------|
 | [`AuthTest.php`](tests/AuthTest.php) | Login/logout, session persistence, wrong credentials |
+| [`CampaignControllerTest.php`](tests/CampaignControllerTest.php) | Schema changes: `title_json`/`description_json`, no `poster_url`, no `gmGlobalOverrides`, `bannerImageData` in show(), camelCase mapping in list(), `server_settings` table bootstrap |
 | [`CharacterControllerTest.php`](tests/CharacterControllerTest.php) | Character CRUD, JSON round-trip, ownership checks |
 | [`VisibilityTest.php`](tests/VisibilityTest.php) | Role-based access: GM sees all, player sees own only |
 | [`GmOverrideTest.php`](tests/GmOverrideTest.php) | GM override visibility — merged vs raw view |
 | [`SyncTest.php`](tests/SyncTest.php) | Timestamp-based sync polling mechanism |
 | [`GlobalRulesTest.php`](tests/GlobalRulesTest.php) | Global rule file CRUD, list, delete — GM-only enforcement |
 | [`HomebrewRulesTest.php`](tests/HomebrewRulesTest.php) | Per-campaign homebrew rule storage, round-trip, access control |
+| [`ServerSettingsTest.php`](tests/ServerSettingsTest.php) | GM global overrides (server-wide): GET/PUT round-trip, auth, 401/403/413/422, empty-array clear, admin access, replace semantics |
 | [`UiLocalesTest.php`](tests/UiLocalesTest.php) | UI locale file listing and content endpoints |
 | [`UserManagementTest.php`](tests/UserManagementTest.php) | Admin bootstrap; no-password login + 7-day auto-suspend; `setup-password`; `change-password` (success, wrong password, empty, no-password skip); `reset-password` (admin success, self-allowed, non-admin 403, 404); UserController CRUD; self-edit guards |
 | [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 |
 | [`DisplayNameTest.php`](tests/DisplayNameTest.php) | Self-service display-name rename (`PUT /api/auth/display-name`); admin username update via `PUT /api/users/{id}`; conflict detection, validation, session refresh |
 
-**Total: 157 PHPUnit tests, 478 assertions.**
+**Total: 184 PHPUnit tests, 575 assertions.**
 
 > `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock).
 

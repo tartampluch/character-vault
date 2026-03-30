@@ -4,8 +4,14 @@
   Phase 19.12: Migrated to Tailwind CSS — all scoped <style> removed.
 
   LAYOUT: max-w-5xl centered, responsive grid of campaign cards.
-  Campaign cards: poster image (160px tall) + card body + hover CTA.
+  Campaign cards: banner image (160px tall, lazy-loaded) + card body + hover CTA.
   "Create Campaign" button: visible only to GMs.
+
+  BANNER LOADING:
+    The GET /api/campaigns list endpoint omits banner_image_data for performance.
+    Each card lazy-loads its banner from GET /api/campaigns/{id} (show endpoint)
+    and caches it in sessionStorage via bannerCache.ts (keyed by campaignId + updatedAt).
+    While loading, an accent-gradient placeholder is shown.
 -->
 
 <script lang="ts">
@@ -13,9 +19,13 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { apiHeaders } from '$lib/engine/StorageManager';
+  import { getCachedBanner, setCachedBanner } from '$lib/utils/bannerCache';
+  import { isImageDataUri } from '$lib/utils/bannerImageUtils';
   import { ui } from '$lib/i18n/ui-strings';
   import { goto } from '$app/navigation';
   import { campaignTaskStats } from '$lib/types/campaign';
+  import type { Campaign } from '$lib/types/campaign';
   import type { LocalizedString } from '$lib/types/i18n';
   import { IconCampaign, IconAdd, IconClose, IconPin, IconPinOff } from '$lib/components/ui/icons';
   import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
@@ -25,6 +35,77 @@
   // The store starts with mock data so the UI is never empty during the load.
   onMount(() => {
     campaignStore.loadFromApi();
+  });
+
+  // ---------------------------------------------------------------------------
+  // PER-CARD BANNER CACHE
+  // The list API omits banner_image_data for performance.  Each card lazily
+  // fetches its banner from the show endpoint once and caches it in
+  // sessionStorage keyed by (campaignId, updatedAt).
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Map of campaignId → base64 data URI (or null = no banner / not yet loaded).
+   * Populated progressively as each card's `$effect` fires.
+   */
+  const bannerCache = $state<Record<string, string | null>>({});
+
+  /**
+   * Returns the banner src to use for a campaign card:
+   *   - The cached data URI if already loaded.
+   *   - null while loading (placeholder shown).
+   */
+  function getBanner(campaignId: string): string | null {
+    return bannerCache[campaignId] ?? null;
+  }
+
+  /**
+   * Loads the banner for a single campaign card.
+   * Checks sessionStorage first (fast path), falls back to the show endpoint.
+   * Sets bannerCache[campaignId] when done (null = no banner image present).
+   */
+  function loadBannerForCard(campaign: Campaign): void {
+    const id = campaign.id;
+
+    // Already resolved (loading in progress is signalled by absence of the key).
+    if (id in bannerCache) return;
+
+    // Optimistic placeholder — prevents duplicate fetches from re-entering.
+    bannerCache[id] = null;
+
+    // Fast path: sessionStorage hit from a prior visit (same session).
+    const cached = getCachedBanner(id, campaign.updatedAt);
+    if (cached) {
+      bannerCache[id] = cached;
+      return;
+    }
+
+    // Slow path: fetch the show endpoint (includes banner_image_data).
+    fetch(`/api/campaigns/${id}`, {
+      headers:     apiHeaders(),
+      credentials: 'include',
+    })
+      .then(async r => {
+        if (!r.ok) return;
+        const data = await r.json() as { bannerImageData?: string; updatedAt?: number };
+        if (isImageDataUri(data.bannerImageData)) {
+          const uri = data.bannerImageData!;
+          bannerCache[id] = uri;
+          setCachedBanner(id, data.updatedAt ?? campaign.updatedAt, uri);
+        }
+      })
+      .catch(err => console.warn(`[CampaignHub] Failed to load banner for ${id}:`, err));
+  }
+
+  // Trigger lazy banner loading whenever the campaigns list changes.
+  // Using $effect here (not a template expression) is the correct Svelte 5 pattern:
+  // $state mutations are forbidden inside derived / template contexts, so the
+  // {@const} trick that called loadBannerForCard() from inside {#each} caused
+  // state_unsafe_mutation errors. This $effect runs in a safe side-effect context.
+  $effect(() => {
+    for (const campaign of campaignStore.campaigns) {
+      loadBannerForCard(campaign);
+    }
   });
 
   let showCreateForm   = $state(false);
@@ -91,7 +172,7 @@
   {/snippet}
 </PageHeader>
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+<div class="w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
 
   <!-- ── CREATE FORM (GM only, inline) ────────────────────────────────────── -->
   {#if showCreateForm && sessionContext.isGameMaster}
@@ -139,24 +220,28 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {#each campaignStore.campaigns as campaign (campaign.id)}
         <!--
-          Wrapper div so pin button can be a sibling of the main click-target
-          button without creating an invalid nested-button structure.
+          Banner loading is triggered by the $effect above (in the script block)
+          which iterates all campaigns whenever the store changes. This keeps
+          state mutations out of the template rendering context.
+          Wrapper div: pin button must be a sibling of the card button to avoid
+          invalid nested-button HTML.
         -->
-        <div class="relative group">
+        <div class="relative group h-full">
           <button
             class="group/card flex flex-col text-left rounded-xl border border-border bg-surface
-                   overflow-hidden transition-all duration-200 w-full
+                   overflow-hidden transition-all duration-200 w-full h-full
                    hover:border-accent hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/10
                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
             onclick={() => openCampaign(campaign.id)}
             aria-label={ui('campaigns.open_campaign_aria', engine.settings.language).replace('{title}', resolveLocalized(campaign.title))}
             type="button"
           >
-            <!-- Poster / placeholder -->
-            <div class="relative w-full h-40 shrink-0 overflow-hidden">
-              {#if campaign.posterUrl}
+            <!-- Banner — fixed h-48 so every card has an identical banner height.
+                 object-cover fills the area and crops to maintain aspect ratio. -->
+            <div class="relative w-full h-48 shrink-0 overflow-hidden">
+              {#if getBanner(campaign.id)}
                 <img
-                  src={campaign.posterUrl}
+                  src={getBanner(campaign.id)!}
                   alt={resolveLocalized(campaign.title)}
                   class="w-full h-full object-cover"
                 />

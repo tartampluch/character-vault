@@ -13,7 +13,7 @@ This engine handles the full complexity of D&D 3.5 (SRD, Psionics, Homebrew). Th
 graph TD
     subgraph "Content Layer (JSON)"
         RS[Rule Source Files<br/>static/rules/**/*.json]
-        GM_G[GM Global Overrides<br/>Campaign.gmGlobalOverrides]
+        GM_G[GM Global Overrides<br/>server_settings.gm_global_overrides<br/>GET/PUT /api/server-settings/gm-overrides]
         GM_C[GM Per-Character Overrides<br/>Character.gmOverrides]
     end
 
@@ -1582,12 +1582,21 @@ _Suggested target file: `src/lib/types/campaign.ts`_
 
 ```typescript
 export interface Campaign {
-    id: ID; title: string; description: string;
-    posterUrl?: string; bannerUrl?: string; ownerId: ID;
+    id: ID;
+    title: LocalizedString | string;       // stored as title_json in DB (JSON-encoded LocalizedString)
+    description: LocalizedString | string; // stored as description_json in DB
+    bannerImageData?: string;              // base64 data URI; excluded from list API, lazy-loaded by cards
+    // NOTE: posterUrl removed — bannerImageData is the sole campaign visual.
+    // NOTE: gmGlobalOverrides removed from Campaign — see ServerSettings below.
+    ownerId: ID;
     chapters: { id: ID; title: LocalizedString; description: LocalizedString; isCompleted: boolean; }[];
     enabledRuleSources: string[];  // FILE PATHS whitelist ([] = load all; see §18.1)
-    gmGlobalOverrides: string; // Raw JSON — Features + config tables
-    updatedAt: number;         // Unix timestamp
+    updatedAt: number;             // Unix timestamp
+}
+
+// Server-wide settings (not per-campaign) — fetched from GET /api/server-settings/gm-overrides.
+export interface ServerSettings {
+    gmGlobalOverrides: string; // Raw JSON array — Features + config tables (Layer 2 in DataLoader chain)
 }
 
 export interface SceneState {
@@ -3170,10 +3179,11 @@ To remove an element from an array during partial merge, prefix the element with
 │   → homebrew_winter loaded last (highest priority)   │
 │   Each entity respects its "merge" field.            │
 ├──────────────────────────────────────────────────────┤
-│ Layer 2: GM Global Override (Campaign)               │
-│   Stored in Campaign.gmGlobalOverrides.              │
-│   Raw JSON text containing an array of entities.     │
-│   Applied AFTER all files. Uses same merge rules.    │
+│ Layer 2: GM Global Override (Server-wide)            │
+│   Stored in server_settings.gm_global_overrides.     │
+│   NOT per-campaign — applies to ALL campaigns.       │
+│   Fetched via GET /api/server-settings/gm-overrides. │
+│   Raw JSON array. Applied AFTER all files.           │
 │   Can contain Features AND config table overrides.   │
 ├──────────────────────────────────────────────────────┤
 │ Layer 3: GM Per-Character Override                   │
@@ -3193,8 +3203,8 @@ flowchart LR
         F1 -->|merge| F2 -->|merge| F3
     end
 
-    subgraph "Layer 2 — GM Global Override"
-        GG[Campaign.gmGlobalOverrides<br/>JSON array — Features + config tables]
+    subgraph "Layer 2 — GM Global Override (Server-wide)"
+        GG[server_settings.gm_global_overrides<br/>JSON array — Features + config tables<br/>GET/PUT /api/server-settings/gm-overrides]
     end
 
     subgraph "Layer 3 — GM Per-Character Override"
@@ -3488,7 +3498,7 @@ Authored entities are persisted in one of two scopes, chosen by the GM:
 
 - **Storage:** `campaigns.homebrew_rules_json` in the database.
 - **Visibility:** Available only to that campaign.
-- **Priority in chain:** Injected after all files in `CampaignSettings.enabledRuleSources`, before `gmGlobalOverrides`.
+- **Priority in chain:** Injected after all files in `CampaignSettings.enabledRuleSources`, before the server-wide GM global overrides (`server_settings.gm_global_overrides`).
 - **API:** `GET /api/campaigns/{id}/homebrew-rules` (GM + players read) · `PUT /api/campaigns/{id}/homebrew-rules` (GM only).
 
 #### Global Scope
@@ -3505,8 +3515,8 @@ Authored entities are persisted in one of two scopes, chosen by the GM:
 static/rules/00_*/    ← SRD Core (lowest)
 static/rules/01_*/    ← SRD Psionics
 storage/rules/50_*/   ← Global homebrew (interleaved alphabetically)
-[campaign homebrew_rules_json]  ← Campaign homebrew (above all file sources)
-[gmGlobalOverrides]             ← GM session override (above all)
+[campaign homebrew_rules_json]      ← Campaign homebrew (above all file sources)
+[server_settings.gm_global_overrides] ← GM global override, server-wide (above all)
 [gmOverrides per-character]     ← Per-character GM override (highest)
 ```
 

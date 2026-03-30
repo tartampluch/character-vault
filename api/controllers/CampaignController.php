@@ -19,9 +19,18 @@
  *   POST   /api/campaigns/{id}/characters              → addCharacters($id)
  *   DELETE /api/campaigns/{id}/characters/{charId}     → removeCharacter($id, $charId)
  *
+ * SCHEMA NOTES:
+ *   campaigns.title_json       — LocalizedString JSON object (`{"en":"…","fr":"…"}`).
+ *   campaigns.description_json — Same encoding as title_json.
+ *   campaigns.banner_image_data — Base64 data URI. Excluded from index() response
+ *                                 for performance; only returned by show().
+ *   poster_url REMOVED         — The banner image is the sole campaign visual.
+ *   gm_global_overrides_text REMOVED — Moved to server_settings table.
+ *                                      See ServerSettingsController.php.
+ *
  * VISIBILITY RULES:
  *   - All authenticated users can list campaigns they own or belong to.
- *   - GMs get `gmGlobalOverrides` in the show() response; players do not.
+ *   - banner_image_data is excluded from index() — fetched lazily via show().
  *   - Only the campaign owner (or a GM) can update a campaign.
  *   - Homebrew rules (GET) are readable by all authenticated users in the campaign.
  *   - Homebrew rules (PUT) are writable by GMs only.
@@ -29,8 +38,8 @@
  *
  * @see api/auth.php for requireAuth(), requireGameMaster()
  * @see api/Database.php for Database::getInstance()
+ * @see api/controllers/ServerSettingsController.php for global GM overrides
  * @see ARCHITECTURE.md Phase 14.5 for the full specification.
- * @see ARCHITECTURE.md §21.1 for the homebrew rule source design.
  */
 
 declare(strict_types=1);
@@ -48,37 +57,72 @@ class CampaignController
 
     /**
      * Returns all campaigns visible to the current user.
-     * For now: all campaigns in the DB (visibility filtering can be added later).
+     *
+     * PERFORMANCE NOTE:
+     *   banner_image_data is intentionally EXCLUDED from this query.
+     *   A base64-encoded 5 MiB image becomes ~6.7 MiB of text; including it in
+     *   every campaign-list response would make the Campaign Hub page very slow.
+     *   The full banner is returned only by show() and cached client-side via
+     *   bannerCache.ts (sessionStorage keyed by campaignId + updatedAt).
      */
     public static function index(): void
     {
         $user = requireAuth();
         $db = Database::getInstance();
 
-        // banner_image_data is intentionally EXCLUDED from the list query.
-        // A base64-encoded 5 MB image becomes ~6.7 MB of text; including it in
-        // every campaign-list response would make the Campaign Hub page very slow.
-        // The full banner is returned only by show() and cached client-side via
-        // bannerCache.ts (sessionStorage keyed by campaignId + updatedAt).
+        // Columns selected: all campaign metadata EXCEPT banner_image_data.
+        // title_json / description_json contain JSON-encoded LocalizedString objects.
         if ($user['is_game_master']) {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns ORDER BY updated_at DESC');
+            $stmt = $db->prepare(
+                'SELECT id, title_json, description_json, owner_id,
+                        chapters_json, enabled_rule_sources_json,
+                        campaign_settings_json, updated_at
+                 FROM campaigns
+                 ORDER BY updated_at DESC'
+            );
             $stmt->execute();
         } else {
-            $stmt = $db->prepare('SELECT id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, campaign_settings_json, updated_at FROM campaigns WHERE owner_id = ? ORDER BY updated_at DESC');
+            $stmt = $db->prepare(
+                'SELECT id, title_json, description_json, owner_id,
+                        chapters_json, enabled_rule_sources_json,
+                        campaign_settings_json, updated_at
+                 FROM campaigns
+                 WHERE owner_id = ?
+                 ORDER BY updated_at DESC'
+            );
             $stmt->execute([$user['id']]);
         }
 
         $campaigns = $stmt->fetchAll();
 
-        // Decode JSON fields
+        // Remap snake_case DB columns to camelCase and decode JSON blobs.
+        // IMPORTANT: keep this mapping in sync with show() so both endpoints
+        // return identically-shaped Campaign objects to the frontend.
         foreach ($campaigns as &$c) {
-            $c['chapters']           = json_decode($c['chapters_json'] ?? '[]', true);
-            $c['enabledRuleSources'] = json_decode($c['enabled_rule_sources_json'] ?? '[]', true);
+            // title and description are LocalizedString JSON — expose under their
+            // canonical camelCase names (without the _json suffix) so the frontend
+            // TypeScript Campaign type can use them directly via engine.t().
+            $c['title']               = $c['title_json'];
+            $c['description']         = $c['description_json'];
+            $c['ownerId']             = $c['owner_id'];
+            $c['updatedAt']           = (int)$c['updated_at'];
+            $c['chapters']            = json_decode($c['chapters_json'] ?? '[]', true);
+            $c['enabledRuleSources']  = json_decode($c['enabled_rule_sources_json'] ?? '[]', true);
             // Decode campaignSettings; return null when empty so the frontend can
             // distinguish "never configured" from an actual settings object.
             $cs = json_decode($c['campaign_settings_json'] ?? 'null', true);
-            $c['campaignSettings'] = (is_array($cs) && !array_is_list($cs)) ? $cs : null;
-            unset($c['chapters_json'], $c['enabled_rule_sources_json'], $c['campaign_settings_json']);
+            $c['campaignSettings']    = (is_array($cs) && !array_is_list($cs)) ? $cs : null;
+
+            // Remove all raw DB column names from the response.
+            unset(
+                $c['title_json'],
+                $c['description_json'],
+                $c['owner_id'],
+                $c['updated_at'],
+                $c['chapters_json'],
+                $c['enabled_rule_sources_json'],
+                $c['campaign_settings_json']
+            );
         }
 
         Logger::info('Campaign', 'List', ['count' => count($campaigns)]);
@@ -107,22 +151,24 @@ class CampaignController
         // translations via engine.t() after parsing.
         $rawTitle       = $body['title']       ?? 'New Campaign';
         $rawDescription = $body['description'] ?? '';
-        $title       = is_array($rawTitle)
+        $titleJson       = is_array($rawTitle)
             ? json_encode($rawTitle, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : json_encode(['en' => (string)$rawTitle], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $description = is_array($rawDescription)
+        $descriptionJson = is_array($rawDescription)
             ? json_encode($rawDescription, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : ($rawDescription !== '' ? json_encode(['en' => (string)$rawDescription], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '');
-        // poster_url is a URL string; no banner is set at creation time.
-        // banner_image_data (base64) is set separately via PUT after creation.
-        $posterUrl = $body['posterUrl'] ?? null;
+
+        // banner_image_data is set separately via PUT after creation (never on create).
+        // poster_url has been removed — the banner is the sole campaign image.
 
         $db = Database::getInstance();
         $stmt = $db->prepare('
-            INSERT INTO campaigns (id, title, description, poster_url, owner_id, chapters_json, enabled_rule_sources_json, gm_global_overrides_text, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO campaigns
+                (id, title_json, description_json, owner_id, chapters_json,
+                 enabled_rule_sources_json, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ');
-        // Default: enable all SRD Core files (file-path based, not source-ID based)
+        // Default: enable all SRD Core files (file-path based, not source-ID based).
         $defaultSources = json_encode([
             '00_d20srd_core/00_d20srd_core_config_tables.json',
             '00_d20srd_core/01_d20srd_core_races.json',
@@ -144,11 +190,11 @@ class CampaignController
             '00_d20srd_core/17_d20srd_core_racial_features.json',
             '00_d20srd_core/18_d20srd_core_proficiency_features.json',
         ]);
-        $stmt->execute([$id, $title, $description, $posterUrl, $user['id'], '[]', $defaultSources, '[]', $now]);
+        $stmt->execute([$id, $titleJson, $descriptionJson, $user['id'], '[]', $defaultSources, $now]);
 
-        Logger::info('Campaign', 'Created', ['id' => $id, 'title' => $title]);
+        Logger::info('Campaign', 'Created', ['id' => $id, 'title' => $rawTitle]);
         http_response_code(201);
-        echo json_encode(['id' => $id, 'title' => $title, 'ownerId' => $user['id']]);
+        echo json_encode(['id' => $id, 'title' => $rawTitle, 'ownerId' => $user['id']]);
     }
 
     // ============================================================
@@ -156,11 +202,16 @@ class CampaignController
     // ============================================================
 
     /**
-     * Returns a single campaign's details.
+     * Returns a single campaign's full details, including banner_image_data.
+     *
+     * banner_image_data is returned only by this endpoint (not by index()).
+     * The frontend caches it in sessionStorage (bannerCache.ts) keyed by
+     * campaignId + updatedAt to avoid repeated 5+ MiB fetches.
      *
      * VISIBILITY:
-     *   - Players receive the campaign without `gmGlobalOverrides`.
-     *   - GMs receive `gmGlobalOverrides` (the raw JSON text for their editor).
+     *   - All authenticated users receive the campaign data (title, chapters, etc.).
+     *   - banner_image_data is included for all users so players can see the banner.
+     *   - gmGlobalOverrides is NO LONGER returned here — see GET /api/server-settings/gm-overrides.
      */
     public static function show(string $id): void
     {
@@ -177,32 +228,29 @@ class CampaignController
             return;
         }
 
-        // Decode JSON fields
+        // Decode JSON fields and map snake_case columns to camelCase.
         $result = [
             'id'                  => $campaign['id'],
-            'title'               => $campaign['title'],
-            'description'         => $campaign['description'],
-            'posterUrl'           => $campaign['poster_url'],
+            // title and description are LocalizedString JSON — expose without _json suffix.
+            'title'               => $campaign['title_json'],
+            'description'         => $campaign['description_json'],
             // banner_image_data is a base64 data URI — potentially several MB.
-            // Returned only by show(), not by index(), to keep the list response fast.
+            // Returned by show() but excluded from index() to keep the list fast.
             'bannerImageData'     => $campaign['banner_image_data'] ?? null,
             'ownerId'             => $campaign['owner_id'],
             'chapters'            => json_decode($campaign['chapters_json'] ?? '[]', true),
             'enabledRuleSources'  => json_decode($campaign['enabled_rule_sources_json'] ?? '[]', true),
             'updatedAt'           => (int)$campaign['updated_at'],
             // Per-campaign rule settings (diceRules, statGeneration, variantRules).
-            // All players receive this field so their engines apply the same rules.
-            // Return null when empty so the frontend treats it as "no settings saved".
             'campaignSettings'    => (function() use ($campaign) {
                 $cs = json_decode($campaign['campaign_settings_json'] ?? 'null', true);
                 return (is_array($cs) && !array_is_list($cs)) ? $cs : null;
             })(),
         ];
 
-        // GMs also receive the raw global overrides text (for their editor UI)
-        if ($user['is_game_master']) {
-            $result['gmGlobalOverrides'] = $campaign['gm_global_overrides_text'] ?? '[]';
-        }
+        // NOTE: gmGlobalOverrides has been moved to the server_settings table.
+        // Frontend code that previously read campaign.gmGlobalOverrides should
+        // now call GET /api/server-settings/gm-overrides instead.
 
         Logger::info('Campaign', 'Show', ['id' => $id]);
         http_response_code(200);
@@ -214,8 +262,11 @@ class CampaignController
     // ============================================================
 
     /**
-     * Updates campaign settings: title, description, chapters, rule sources, GM overrides.
+     * Updates campaign settings: title, description, banner, chapters, rule sources.
      * Only the campaign owner or a GM can update.
+     *
+     * CHANGED: gmGlobalOverrides is no longer accepted here.
+     *          Use PUT /api/server-settings/gm-overrides instead.
      */
     public static function update(string $id): void
     {
@@ -246,15 +297,14 @@ class CampaignController
         $params = [];
 
         if (isset($body['title'])) {
-            $fields[] = 'title = ?';
+            $fields[] = 'title_json = ?';
             // Accept either a plain string or a LocalizedString object (array).
-            // Objects are JSON-encoded so they can be stored and parsed back later.
             $params[] = is_array($body['title'])
                 ? json_encode($body['title'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                 : $body['title'];
         }
         if (isset($body['description'])) {
-            $fields[] = 'description = ?';
+            $fields[] = 'description_json = ?';
             $params[] = is_array($body['description'])
                 ? json_encode($body['description'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                 : $body['description'];
@@ -306,15 +356,10 @@ class CampaignController
             $fields[] = 'enabled_rule_sources_json = ?';
             $params[] = json_encode($body['enabledRuleSources']);
         }
-        if (isset($body['gmGlobalOverrides']) && $user['is_game_master']) {
-            $fields[] = 'gm_global_overrides_text = ?';
-            $params[] = $body['gmGlobalOverrides'];
-        }
 
         // Merge incoming rule-settings fields (diceRules, statGeneration, variantRules)
         // into the stored campaign_settings_json blob.
         // We READ the existing blob, merge only the provided keys, then WRITE it back.
-        // This is safe and forward-compatible: unknown keys are preserved.
         $settingsKeys = ['diceRules', 'statGeneration', 'variantRules'];
         $hasSettingsUpdate = false;
         foreach ($settingsKeys as $key) {
@@ -353,13 +398,12 @@ class CampaignController
 
         // Build a human-readable list of what actually changed for the log.
         $changedFields = array_filter([
-            isset($body['title'])                    ? 'title'            : null,
-            isset($body['description'])              ? 'description'      : null,
-            array_key_exists('bannerImageData', $body) ? 'bannerImageData': null,
-            isset($body['chapters'])                 ? 'chapters'         : null,
-            isset($body['enabledRuleSources'])       ? 'enabledRuleSources' : null,
-            isset($body['gmGlobalOverrides'])        ? 'gmGlobalOverrides' : null,
-            $hasSettingsUpdate                       ? 'campaignSettings'  : null,
+            isset($body['title'])                      ? 'title'              : null,
+            isset($body['description'])                ? 'description'        : null,
+            array_key_exists('bannerImageData', $body) ? 'bannerImageData'    : null,
+            isset($body['chapters'])                   ? 'chapters'           : null,
+            isset($body['enabledRuleSources'])         ? 'enabledRuleSources' : null,
+            $hasSettingsUpdate                         ? 'campaignSettings'   : null,
         ]);
         Logger::info('Campaign', 'Updated', ['id' => $id, 'fields' => implode(' ', $changedFields)]);
         http_response_code(200);
@@ -437,13 +481,10 @@ class CampaignController
      *   all players can see newly-authored races, feats, spells, etc.
      *
      * RESPONSE (200):
-     *   A JSON array of Feature-like objects — the raw parsed value of
-     *   `campaigns.homebrew_rules_json`. An empty array `[]` is returned when
-     *   no homebrew content has been authored yet.
+     *   A JSON array of Feature-like objects.
      */
     public static function getHomebrewRules(string $id): void
     {
-        // Any authenticated user can read homebrew rules for their campaign.
         requireAuth();
         $db = Database::getInstance();
 
@@ -457,8 +498,6 @@ class CampaignController
             return;
         }
 
-        // Return the stored JSON array directly, parsing it so the response is
-        // a proper JSON array rather than a double-encoded string.
         $rules = json_decode($campaign['homebrew_rules_json'] ?? '[]', true) ?? [];
 
         Logger::info('Campaign', 'Homebrew GET', ['id' => $id, 'count' => count($rules)]);
@@ -473,39 +512,22 @@ class CampaignController
     /**
      * Replaces the entire campaign-scoped homebrew rule array.
      *
-     * AUTHORISATION:
-     *   GM only. Returns 403 for non-GM authenticated users.
+     * AUTHORISATION: GM only.
      *
      * VALIDATION:
      *   - Body must be valid JSON.                          → 422 on failure
      *   - Root value must be a JSON array.                  → 422 on failure
      *   - Raw request body must not exceed 2 MB.            → 413 on failure
      *
-     * WHY REPLACE-ALL SEMANTICS?
-     *   The homebrew store is the canonical source: the frontend sends the
-     *   entire (potentially reordered or pruned) entity list on each save.
-     *   Partial-patch semantics would require entity-level diffing on the server,
-     *   adding complexity without benefit since the payload is always the
-     *   authoritative, already-edited state from HomebrewStore.
-     *
-     * SIDE EFFECT:
-     *   Updates `campaigns.updated_at` so that the sync-status polling endpoint
-     *   picks up the change and connected clients re-fetch campaign data.
-     *
      * RESPONSE (200):
      *   { "id": "<campaignId>", "updatedAt": <unix_timestamp> }
      */
     public static function setHomebrewRules(string $id): void
     {
-        // Only GMs may write homebrew rules.
         requireGameMaster();
         $db = Database::getInstance();
 
         // ---- 413 Request Entity Too Large ----------------------------------------
-        // Limit raw body size to 2 MB (2 097 152 bytes) before attempting to read it.
-        // file_get_contents('php://input') buffers the entire body in memory, so we
-        // check Content-Length first as a fast gate. Note: Content-Length may be
-        // absent (e.g., chunked transfer); we also enforce the limit after reading.
         $maxBytes = 2 * 1024 * 1024; // 2 MB
         $contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int)$_SERVER['CONTENT_LENGTH'] : 0;
 
@@ -529,9 +551,6 @@ class CampaignController
             return;
         }
 
-        // ---- 422 Unprocessable Entity — JSON validity ----------------------------
-        // json_decode returns null for invalid JSON AND for a literal JSON null.
-        // We handle both cases explicitly below.
         $decoded = json_decode($rawBody, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -543,8 +562,6 @@ class CampaignController
             return;
         }
 
-        // ---- 422 Unprocessable Entity — must be a JSON array ---------------------
-        // DataLoader expects an array of Feature objects. Reject objects, primitives, etc.
         if (!is_array($decoded) || array_is_list($decoded) === false) {
             http_response_code(422);
             echo json_encode([
@@ -563,9 +580,6 @@ class CampaignController
             return;
         }
 
-        // ---- Persist & update timestamp ------------------------------------------
-        // Re-encode to guarantee consistent JSON formatting (no extra whitespace or
-        // potentially malicious unicode escapes from the raw body are stored verbatim).
         $normalizedJson = json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $now = time();
 
@@ -585,11 +599,6 @@ class CampaignController
      * Lists all members of a campaign with their user details and join date.
      *
      * ACCESS: GM or Admin (requireGameMaster covers both roles).
-     *
-     * WHY INCLUDE SUSPENDED USERS?
-     *   Suspended users may still have active characters in the campaign. The GM
-     *   needs to see them in the member list (marked as suspended) so they can
-     *   manage those characters or reinstate the player.
      *
      * RESPONSE (200):
      *   Array of member objects:
@@ -645,10 +654,6 @@ class CampaignController
      * Adds a user to a campaign.
      *
      * ACCESS: GM or Admin.
-     *
-     * Suspended users CAN be added — they may have existing characters in the
-     * campaign that the GM wants to keep active even while the player is blocked
-     * from logging in.
      *
      * REQUEST BODY (JSON):
      *   { "user_id": "string" }
@@ -721,10 +726,6 @@ class CampaignController
      *
      * ACCESS: GM or Admin.
      *
-     * This does NOT delete the user's characters — it only removes the
-     * campaign_users membership row. The user's characters remain in the
-     * campaign, owned by that user. The GM can still manage those characters.
-     *
      * RESPONSE 200: { campaign_id, user_id, removed: true }
      * RESPONSE 404: campaign or membership not found
      */
@@ -769,11 +770,7 @@ class CampaignController
     /**
      * Returns lightweight character summaries for this campaign.
      *
-     * When ?all=1 is passed, returns ALL characters visible to the GM — used by
-     * the "Add Characters" picker in Campaign Settings so the GM can select from
-     * characters that belong to other campaigns or are not yet enrolled anywhere.
-     *
-     * Without ?all=1, returns only characters whose campaign_id matches this campaign.
+     * When ?all=1 is passed, returns ALL characters visible to the GM.
      *
      * ACCESS: GM or Admin.
      *
@@ -807,7 +804,6 @@ class CampaignController
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $result = array_map(function ($c) {
-            // Extract playerName from character_json without loading the full object into PHP arrays.
             $charData   = json_decode($c['character_json'] ?? '{}', true) ?? [];
             $playerName = $charData['playerName'] ?? null;
 
@@ -833,17 +829,12 @@ class CampaignController
     /**
      * Enrolls one or more characters in this campaign.
      *
-     * Sets the campaign_id column AND updates the campaignId field inside
-     * character_json so that the two sources of truth stay in sync.
-     *
      * ACCESS: GM or Admin.
      *
      * REQUEST BODY (JSON):
      *   { "char_ids": ["char_xxx", "char_yyy"] }
      *
      * RESPONSE 200: { enrolled: string[], count: number }
-     * RESPONSE 400: char_ids missing or not a non-empty array
-     * RESPONSE 404: campaign not found
      */
     public static function addCharacters(string $id): void
     {
@@ -868,7 +859,6 @@ class CampaignController
             return;
         }
 
-        // Sanitise: ensure all entries are non-empty strings.
         $charIds = array_values(array_filter(array_map('strval', $charIds)));
 
         $now      = time();
@@ -877,7 +867,6 @@ class CampaignController
         $db->beginTransaction();
         try {
             foreach ($charIds as $charId) {
-                // Load current character_json so we can update the campaignId field inside it.
                 $fetchStmt = $db->prepare('SELECT character_json FROM characters WHERE id = ?');
                 $fetchStmt->execute([$charId]);
                 $row = $fetchStmt->fetch(PDO::FETCH_ASSOC);
@@ -913,7 +902,6 @@ class CampaignController
      * Removes a character from a campaign (sets campaign_id = NULL).
      *
      * The character itself is NOT deleted — only its campaign association is cleared.
-     * The campaignId field inside character_json is also removed for consistency.
      *
      * ACCESS: GM or Admin.
      *
@@ -948,7 +936,6 @@ class CampaignController
             return;
         }
 
-        // Remove campaignId from character_json and clear the campaign_id column.
         $charData = json_decode($row['character_json'] ?? '{}', true) ?? [];
         unset($charData['campaignId']);
         $now = time();
@@ -970,36 +957,11 @@ class CampaignController
      *
      * RESPONSE FORMAT:
      *   Array of player entries, each with their non-NPC characters:
-     *   [
-     *     {
-     *       "userId":     "user_abc",
-     *       "playerName": "John",
-     *       "characters": [
-     *         { "name": "Ravian",    "level": 5 },
-     *         { "name": "Side-kick", "level": 2 }
-     *       ]
-     *     },
-     *     ...
-     *   ]
+     *   [{ userId, playerName, characters: [{ name, level }] }]
      *
      * ACCESS CONTROL:
      *   - Any authenticated member of the campaign can call this endpoint.
      *   - GMs can call it for any campaign regardless of membership.
-     *   - Non-members without GM role receive 403 Forbidden.
-     *
-     * DATA POLICY:
-     *   Only non-NPC characters are included (is_npc = 0).
-     *   Player name comes from users.display_name (the in-game player name).
-     *   Character level = sum of all classLevels values from character_json.
-     *   Players with zero non-NPC characters are excluded from the response.
-     *   Results are ordered by player name, then character name.
-     *
-     * WHY A DEDICATED ENDPOINT?
-     *   The standard GET /api/characters?campaignId=X endpoint enforces role-based
-     *   visibility (players only see their own characters). A shared party roster
-     *   requires all members to see everyone's characters — but only their name and
-     *   total level, not their stats. This read-only, minimal endpoint makes that
-     *   possible without exposing sensitive character data to players.
      *
      * @param string $campaignId - Campaign UUID.
      */
@@ -1024,9 +986,6 @@ class CampaignController
             }
         }
 
-        // Fetch all non-NPC characters for this campaign joined with the owner's display name.
-        // We ORDER so that the PHP grouping loop produces a deterministic, alphabetical output
-        // without any additional sorting pass.
         $stmt = $db->prepare('
             SELECT
                 c.owner_id,
@@ -1041,15 +1000,11 @@ class CampaignController
         $stmt->execute([$campaignId]);
         $rows = $stmt->fetchAll();
 
-        // Group characters by player, preserving ORDER BY ordering from the query.
-        // Using an associative array keyed by userId guarantees one entry per player.
         $byPlayer = [];
         foreach ($rows as $row) {
             $userId   = $row['owner_id'];
             $charData = json_decode($row['character_json'], true) ?? [];
 
-            // Total character level = sum of all classLevels values.
-            // classLevels is stored as Record<classId, number> in the JSON.
             $classLevels = $charData['classLevels'] ?? [];
             $level = (int) array_sum(array_values($classLevels));
 

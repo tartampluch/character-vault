@@ -84,11 +84,13 @@ class UserController
         // For each (user, campaign) pair, COUNT the characters owned by that
         // user in that campaign. LEFT JOIN on characters so campaigns with zero
         // characters still appear in the result.
+        // title_json replaces the old `title` column (LocalizedString JSON).
+        // The frontend resolves it via engine.t(); we return it as-is.
         $memberships = $db->query('
             SELECT
                 cu.user_id,
                 c.id           AS campaign_id,
-                c.title,
+                c.title_json   AS title,
                 COUNT(ch.id)   AS character_count
             FROM campaign_users cu
             JOIN campaigns c  ON c.id  = cu.campaign_id
@@ -96,7 +98,7 @@ class UserController
                 ON ch.campaign_id = cu.campaign_id
                AND ch.owner_id    = cu.user_id
             GROUP BY cu.user_id, cu.campaign_id
-            ORDER BY c.title ASC
+            ORDER BY c.title_json ASC
         ')->fetchAll(PDO::FETCH_ASSOC);
 
         // ── Step 3: Pivot memberships by user_id ────────────────────────────
@@ -104,7 +106,7 @@ class UserController
         foreach ($memberships as $m) {
             $campaignsByUser[$m['user_id']][] = [
                 'id'              => $m['campaign_id'],
-                'title'           => $m['title'],
+                'title'           => $m['title'], // title_json value (LocalizedString JSON)
                 'character_count' => (int)$m['character_count'],
             ];
         }
