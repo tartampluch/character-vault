@@ -3739,6 +3739,18 @@ export class GameEngine {
       linkedEntities: char.linkedEntities ?? [],
     };
     this.activeCharacterId = char.id;
+
+    // Alignment features are synthetic (not in any rule JSON file).  They are
+    // normally registered by setAlignment(), but when restoring a character from
+    // persisted data the AFI already exists in activeFeatures without having gone
+    // through setAlignment().  Ensure the DataLoader cache entry is present so
+    // computeActiveTags() can resolve the feature and emit the alignment tag,
+    // making BasicInfo.svelte's <select> reflect the stored value correctly.
+    for (const afi of this.character.activeFeatures) {
+      if (afi.isActive && afi.featureId.startsWith('alignment_')) {
+        this.#ensureAlignmentFeatureCached(afi.featureId);
+      }
+    }
   }
 
   /** Creates and activates a new blank character. */
@@ -5261,6 +5273,45 @@ export class GameEngine {
    * @param alignmentId - One of the canonical alignment IDs (e.g.,
    *   `'alignment_lawful_good'`). Pass an empty string to clear the alignment.
    */
+  /**
+   * Ensures that the synthetic Feature record for a given alignment ID is
+   * present in the DataLoader cache.  Alignment features are not shipped in
+   * any rule JSON file — they are synthesised on demand.  This helper is
+   * called both by `setAlignment()` (interactive change) and by
+   * `loadCharacter()` (restore from persisted data) so that
+   * `computeActiveTags()` can always resolve the feature and emit the tag.
+   *
+   * @param alignmentId - e.g. `'alignment_chaotic_neutral'`
+   * @returns `true` if the feature is now cached, `false` if the ID is unknown.
+   */
+  #ensureAlignmentFeatureCached(alignmentId: string): boolean {
+    if (dataLoader.getFeature(alignmentId)) return true; // cache hit
+
+    const config = ALIGNMENTS.find(a => a.id === alignmentId);
+    if (!config) {
+      console.warn(`[GameEngine] #ensureAlignmentFeatureCached: unknown alignment ID "${alignmentId}". Skipping.`);
+      return false;
+    }
+    // Build the localized label from the ui-strings.ts key.
+    // `buildLocalizedString(config.ui_key)` reads all currently loaded locale
+    // files so every supported language resolves correctly. Translations live
+    // in `static/locales/fr.json` etc.; no inline language strings in engine code.
+    const alignLabel = buildLocalizedString(config.ui_key);
+    // Register the synthetic feature. It has no modifiers — the alignment tag
+    // is the only thing that matters for prerequisite and logic-node checks.
+    dataLoader.cacheFeature({
+      id:              alignmentId,
+      category:        'condition',
+      label:           alignLabel,
+      description:     alignLabel,
+      tags:            [alignmentId],
+      grantedModifiers: [],
+      grantedFeatures: [],
+      ruleSource:      'core_system',
+    });
+    return true;
+  }
+
   setAlignment(alignmentId: string): void {
     // 1. Remove all existing alignment feature instances.
     const toRemove = this.character.activeFeatures
@@ -5274,30 +5325,7 @@ export class GameEngine {
 
     // 2. Ensure the alignment feature is in the DataLoader cache.
     //    If a rule file already defined it, the cache hit short-circuits.
-    if (!dataLoader.getFeature(alignmentId)) {
-      const config = ALIGNMENTS.find(a => a.id === alignmentId);
-      if (!config) {
-        console.warn(`[GameEngine] setAlignment: unknown alignment ID "${alignmentId}". Skipping.`);
-        return;
-      }
-      // Build the localized label from the ui-strings.ts key.
-      // `buildLocalizedString(config.ui_key)` reads all currently loaded locale
-      // files so every supported language resolves correctly. Translations live
-      // in `static/locales/fr.json` etc.; no inline language strings in engine code.
-      const alignLabel = buildLocalizedString(config.ui_key);
-      // Register the synthetic feature. It has no modifiers — the alignment tag
-      // is the only thing that matters for prerequisite and logic-node checks.
-      dataLoader.cacheFeature({
-        id:              alignmentId,
-        category:        'condition',
-        label:           alignLabel,
-        description:     alignLabel,
-        tags:            [alignmentId],
-        grantedModifiers: [],
-        grantedFeatures: [],
-        ruleSource:      'core_system',
-      });
-    }
+    if (!this.#ensureAlignmentFeatureCached(alignmentId)) return;
 
     // 3. Add the alignment as an active feature instance.
     this.addFeature({
