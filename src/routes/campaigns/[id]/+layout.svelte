@@ -26,8 +26,10 @@
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { engine } from '$lib/engine/GameEngine.svelte';
+  import { ui } from '$lib/i18n/ui-strings';
 
   const { children } = $props();
+  const lang = $derived(engine.settings.language);
 
   const campaignId = $derived($page.params.id ?? '');
   const campaign   = $derived(campaignStore.getCampaign(campaignId));
@@ -84,4 +86,18 @@
   });
 </script>
 
-{@render children()}
+{#if campaignStore.isLoading}
+  <!-- Campaign list is being fetched — show a brief loading indicator. -->
+  <div class="flex items-center justify-center py-20 text-text-muted" aria-live="polite">
+    <p class="text-sm">{ui('campaign.loading', lang)}</p>
+  </div>
+{:else if !campaign && !campaignStore.isLoading}
+  <!-- Campaign list loaded but this ID is not in it. -->
+  <div class="flex flex-col items-center gap-2 py-20 text-center">
+    <p class="font-semibold text-text-primary">{ui('campaign.not_found', lang)}</p>
+    <p class="text-sm text-text-muted">{ui('campaign.not_found_desc', lang)}</p>
+    <a href="/campaigns" class="btn-secondary mt-2">{ui('campaign.back_to_hub', lang)}</a>
+  </div>
+{:else}
+  {@render children()}
+{/if}

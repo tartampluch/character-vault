@@ -99,14 +99,26 @@
       .catch((err: unknown) => console.warn('[CampaignDetail] Failed to load roster:', err));
   });
 
+  // ---------------------------------------------------------------------------
+  // CHAPTER / TASK PROGRESS PERSISTENCE
+  // Checkbox toggles are applied in-memory immediately (responsive UI).
+  // The API PUT is debounced so that rapid consecutive toggles coalesce into
+  // a single request instead of firing overlapping concurrent PUTs.
+  // ---------------------------------------------------------------------------
+
+  /** Visible error message when a chapter progress save fails. */
+  let chapterSaveError = $state('');
+  /** Pending debounce timer handle. */
+  let _chapterPersistTimer: ReturnType<typeof setTimeout> | null = null;
+
   /** Sends the current chapter list (including tasks) to the API. */
   async function persistChapters() {
     const updated = campaignStore.getCampaign(campaignId);
     if (!updated) return;
     try {
-      await fetch(`/api/campaigns/${campaignId}`, {
-        method: 'PUT',
-        headers: apiHeaders(),
+      const response = await fetch(`/api/campaigns/${campaignId}`, {
+        method:      'PUT',
+        headers:     apiHeaders(),
         credentials: 'include',
         body: JSON.stringify({
           chapters: updated.chapters.map(ch => ({
@@ -122,19 +134,31 @@
           })),
         }),
       });
-    } catch (err) {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      chapterSaveError = '';
+    } catch (err: unknown) {
       console.warn('[CampaignDetail] Failed to persist chapters:', err);
+      chapterSaveError = ui('campaign.chapter_save_error', engine.settings.language);
     }
   }
 
-  async function toggleChapter(chapterId: string) {
-    campaignStore.toggleChapterCompleted(campaignId, chapterId);
-    await persistChapters();
+  /** Schedules a debounced call to persistChapters (300 ms). */
+  function scheduleChapterPersist() {
+    if (_chapterPersistTimer !== null) clearTimeout(_chapterPersistTimer);
+    _chapterPersistTimer = setTimeout(() => {
+      _chapterPersistTimer = null;
+      persistChapters();
+    }, 300);
   }
 
-  async function toggleTask(chapterId: string, taskId: string) {
+  function toggleChapter(chapterId: string) {
+    campaignStore.toggleChapterCompleted(campaignId, chapterId);
+    scheduleChapterPersist();
+  }
+
+  function toggleTask(chapterId: string, taskId: string) {
     campaignStore.toggleTaskCompleted(campaignId, chapterId, taskId);
-    await persistChapters();
+    scheduleChapterPersist();
   }
 
   function t(textObj: Record<string, string> | string): string {
@@ -292,6 +316,9 @@
           <h2 class="flex items-center gap-2 text-base font-semibold text-accent">
             <IconSpells size={20} aria-hidden="true" /> {ui('campaign.chapters_title', engine.settings.language)}
           </h2>
+          {#if chapterSaveError}
+            <span class="text-xs text-warning" role="alert">{chapterSaveError}</span>
+          {/if}
           {#if chapterStats.total > 0}
             <div class="flex items-center gap-2 flex-1 min-w-[160px]">
               <span class="text-xs text-text-muted whitespace-nowrap">

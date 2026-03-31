@@ -96,6 +96,29 @@
 		},
 
 		// ─────────────────────────────────────────────────────────────────────
+		// Run all PHPUnit backend tests
+		// ─────────────────────────────────────────────────────────────────────
+		{
+			"label": "Test: PHPUnit (backend)",
+			"type": "shell",
+			"command": "scripts/php-dev.sh",
+			"args": [
+				"${workspaceFolder}/vendor/bin/phpunit",
+				"--configuration", "${workspaceFolder}/phpunit.xml"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"label": "PHPUnit"
+			},
+			"problemMatcher": []
+		},
+
+		// ─────────────────────────────────────────────────────────────────────
 		// Run all Vitest unit tests (no coverage)
 		// ─────────────────────────────────────────────────────────────────────
 		{
@@ -153,7 +176,7 @@
 		{
 			"label": "Test: Watch mode",
 			"type": "shell",
-			"command": "npm test -- --watch",
+			"command": "npm run test:watch",
 			"isBackground": true,
 			"group": "test",
 			"problemMatcher": {

@@ -4,8 +4,8 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
-![PHPUnit](https://img.shields.io/badge/PHPUnit-184_tests%2C_575_assertions-6E9F18?logo=php&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-2193_tests-6E9F18?logo=vitest&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-210_tests%2C_714_assertions-6E9F18?logo=php&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-2209_tests-6E9F18?logo=vitest&logoColor=white)
 ![i18n](https://img.shields.io/badge/i18n-Language--agnostic-0EA5E9?logo=googletranslate&logoColor=white)
 ![Gemini Pro](https://img.shields.io/badge/Gemini-Pro-4285F4?logo=googlegemini&logoColor=white)
 ![Claude Sonnet](https://img.shields.io/badge/Claude-Sonnet-D97757?logo=anthropic&logoColor=white)
@@ -35,7 +35,7 @@ This project was architected and developed in collaboration with **Google Gemini
 - **Psionic systems** — Full Expanded Psionics Handbook support: power points, augmentations, psionic items.
 - **Gestalt & Vitality/WP variants** — Unearthed Arcana variant rules are first-class engine flags.
 - **Multi-layer data override** — JSON rule files → GM global overrides → GM per-character overrides, all with partial-merge support.
-- **Offline-first** — localStorage primary cache with a PHP/SQLite API as the secondary backend.
+- **Server-first** — characters are always loaded from the PHP/SQLite API on page load; localStorage stores only UI preferences (language, settings).
 - **Full-stack debugging** — One-press F5 launch in VS Code starts Vite + PHP + Xdebug + Chrome simultaneously.
 
 ---
@@ -234,7 +234,7 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`triggerActivation.test.ts`](src/tests/triggerActivation.test.ts) | `"reaction"` / `"passive"` actionTypes, `getReactionFeaturesByTrigger()` |
 | [`formatters.test.ts`](src/tests/formatters.test.ts) | All i18n formatting and game-math utilities — `computeAbilityModifier()`, `computeIntelligentItemEgo()`, `computeCoinWeight()`, `computeWealthInGP()`, `previewWithTempMod()`, `computeBaseSave()`, `toDisplayPct()`, `getCharacterLevel()`, distance/weight per unit system (imperial & metric), modifier sign, currency, dice, situational labels |
 | [`sessionContext.test.ts`](src/tests/sessionContext.test.ts) | GM / player profile switching, active campaign context |
-| [`storageManager.test.ts`](src/tests/storageManager.test.ts) | localStorage CRUD, polling, async API methods, LinkedEntity depth guard |
+| [`storageManager.test.ts`](src/tests/storageManager.test.ts) | localStorage preferences (settings, language, active char ID), CSRF utilities, `ApiError` class, async API write/read methods |
 | [`contextKeyFix.test.ts`](src/tests/contextKeyFix.test.ts) | **Regression** — `@combatStats.base_attack_bonus.totalValue` prerequisite paths resolve correctly |
 | [`edgeCases.test.ts`](src/tests/edgeCases.test.ts) | Multiplier modifiers, `not_includes`/`missing_tag` operators, division by zero, `@constant` paths |
 | [`coverageCompletion.test.ts`](src/tests/coverageCompletion.test.ts) | Non-stacking penalties, `has_tag` on non-array, pure constant dice formula, V/WP routing |
@@ -246,13 +246,13 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 | [`utilsCoverage.test.ts`](src/tests/utilsCoverage.test.ts) | `languageCookie` (read/write, SSR fallback, localStorage legacy), `classProgressionPresets` (BAB/save increment arrays), `constants` barrel, `formatters` barrel, `CharacterFactory.normaliseModifierTargetId` (all prefix branches), `makeSkillPipeline`, `createEmptyCharacter` (all pipeline initialisation paths) |
 | [`augmentationRule.test.ts`](src/tests/augmentationRule.test.ts) | Psionic `AugmentationRule.effectDescription` field — backward compat, mechanical augmentations with description, qualitative augmentations (empty `grantedModifiers`) |
 | [`bannerImageUtils.test.ts`](src/tests/bannerImageUtils.test.ts) | `validateBannerFile()` (MIME + size), `fileToBase64DataUri()`, `isImageDataUri()`, `bannerCache` (get/set/evict) |
-| [`characterFields.test.ts`](src/tests/characterFields.test.ts) | `Character.name`/`playerName` fields, StorageManager round-trip, `canDelete()` vault permission logic |
+| [`characterFields.test.ts`](src/tests/characterFields.test.ts) | `Character.name`/`playerName` fields, JSON serialisation round-trip, `canDelete()` vault permission logic |
 | [`choiceExclusions.test.ts`](src/tests/choiceExclusions.test.ts) | `FeatureChoice.excludedBy` mutual-exclusion mechanism (domain pair exclusion), `getExcludedOptionIds()` helper, language switching |
 | [`conditionNodeBuilder.test.ts`](src/tests/conditionNodeBuilder.test.ts) | ConditionNodeBuilder serialization (single, AND, NOT, deeply nested); mutation helpers `patchCondition`, `handleAndOrChildChanged`, `addConditionToAndOr`, `swapChildren`, `switchAndOr` |
 | [`contentLanguages.test.ts`](src/tests/contentLanguages.test.ts) | `KNOWN_CONTENT_LANGUAGES` integrity (no duplicates, valid BCP-47, sorted), `getContentLangDisplayName()` with regional-variant fallback |
 | [`engineConfigTables.test.ts`](src/tests/engineConfigTables.test.ts) | Data-driven config table reads: `savingThrowConfig` from JSON, `getWeaponDefaults()` ability assignments, `getSpellSaveDC()` casting-ability detection |
 | [`formulaBuilderInput.test.ts`](src/tests/formulaBuilderInput.test.ts) | `validateFormula()` — all result states (`valid`/`invalid`/`partial`/`empty`); `buildInsertSnippet()` — all token classes and pipeline namespaces |
-| [`homebrewStore.test.ts`](src/tests/homebrewStore.test.ts) | `HomebrewStore` CRUD (`add`/`update`/`remove`/`getById`), `toJSON()`, `isDirty`/`isSaving` state, auto-save debounce, campaign vs global scope routing |
+| [`homebrewStore.test.ts`](src/tests/homebrewStore.test.ts) | `HomebrewStore` CRUD (`add`/`update`/`remove`/`getById`), `toJSON()`, `isDirty`/`isSaving` state, explicit `save()` throw-on-error, campaign vs global scope routing |
 | [`localizationHelpers.test.ts`](src/tests/localizationHelpers.test.ts) | `getBaseLang()`, `isRegionalVariant()`, `t()` with 5-step BCP-47 fallback chain, `getUnitSystem()` with regional fallback |
 | [`rawJsonPanel.test.ts`](src/tests/rawJsonPanel.test.ts) | `parseRawJson()` (valid/invalid/non-object roots), `featureToJson()` (prettify/minify modes), two-way sync round-trip |
 | [`uiStrings.test.ts`](src/tests/uiStrings.test.ts) | `SUPPORTED_UI_LANGUAGES`, `LANG_UNIT_SYSTEM`, `registerLangUnitSystem()`, `loadUiLocale()` (fetch mock, cache, error paths), `ui()`/`uiN()` (baseline, override, fallback, plural, missing-key) |
@@ -262,7 +262,9 @@ The VS Code tasks **Test: Coverage report** (default test task, `⌘⇧B`) and *
 
 Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib/engine/**`, `src/lib/i18n/**`, `src/lib/utils/**`, `src/lib/api/**`. Excluded: Svelte components, static JSON data files, `.svelte-kit/` artefacts, and pure type declarations.
 
-**Overall (54 test files, 2193 tests): 94.13% statements · 86.47% branches · 94.53% functions · 95.93% lines**
+**Overall (54 test files, 2209 tests): 89.54% statements · 83.5% branches · 88.63% functions · 91.4% lines**
+
+> The aggregate includes barrel files and two untested API modules (`serverSettingsApi.ts`, `templatesApi.ts`) which lower the total. Per-module coverage for tested code is much higher.
 
 | Module | Stmts | Branch | Notes |
 |---|---|---|---|
@@ -272,7 +274,7 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | `engine/phases/phaseEquipmentSlots.ts` | **100%** | **100%** | Slot count extraction and equipped item counting |
 | `engine/phases/phaseSavingThrows.ts` | **100%** | 67% | Saving throw pipeline helpers |
 | `utils/stackingRules.ts` | **100%** | 97% | D&D 3.5 stacking rules engine |
-| `utils/localizationHelpers.ts` | **100%** | **100%** | All extracted i18n helpers |
+| `utils/localizationHelpers.ts` | 96% | 95% | All extracted i18n helpers |
 | `utils/unitFormatters.ts` | **100%** | **100%** | Distance/weight formatters for both unit systems |
 | `utils/logicEvaluator.ts` | **100%** | **100%** | |
 | `utils/gestaltRules.ts` | **100%** | **100%** | |
@@ -281,23 +283,23 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | `utils/abilityConstants.ts` | **100%** | **100%** | Ability score constants and abbreviation helpers |
 | `utils/itemConstants.ts` | **100%** | **100%** | Item slot constants and item-type helpers |
 | `utils/bannerImageUtils.ts` | **100%** | 88% | Banner image validation, base64 conversion, data URI detection |
-| `api/userApi.ts` | 79% | **100%** | Core paths covered; new display-name/username functions add uncovered error branches |
-| `engine/DataLoader.ts` | 99% | 92% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
+| `api/userApi.ts` | 79% | **100%** | Core paths covered; display-name/username functions include untested error branches |
+| `engine/DataLoader.ts` | 97% | 89% | Async fetch paths, locale discovery, homebrew rule injection — all exercised via fetch mock |
 | `engine/MergeEngine.ts` | 98% | 93% | Data override engine (replace / partial / `-prefix` deletion) |
 | `utils/diceEngine.ts` | 98% | 90% | One defensive edge-case branch |
 | `engine/phases/phase0Modifiers.ts` | 90% | 76% | Feature flattening, forbidden tags, formula values, recursive grants |
 | `engine/phases/phaseFeatSlots.ts` | 97% | 88% | Feat slot computation, granted feat detection, manual feat count |
 | `engine/phases/phaseActionBudget.ts` | 98% | 79% | Action economy budget, XOR rule, blocker labels |
-| `engine/phases/phase4Skills.ts` | 95% | 78% | Skill pipeline resolution, skill points budget, leveling journal, synergy |
+| `engine/phases/phase4Skills.ts` | 95% | 77% | Skill pipeline resolution, skill points budget, leveling journal, synergy |
 | `engine/phases/phase3CombatStats.ts` | 90% | 89% | Combat stats including gestalt max-per-level and Max HP computation |
-| `engine/StorageManager.ts` | 92% | 85% | localStorage CRUD, error catch branches, async API paths |
-| `utils/mathParser.ts` | 89% | 85% | |
+| `engine/StorageManager.ts` | 63% | 60% | localStorage preferences, `ApiError`, async API paths; recent additions pending coverage |
+| `utils/mathParser.ts` | 88% | 82% | |
 | `utils/contentLanguages.ts` | 95% | 92% | BCP-47 content-language registry and display name helpers |
 | `utils/bannerCache.ts` | 95% | **100%** | sessionStorage banner cache (get/set/evict) |
 | `utils/statFormatters.ts` | 96% | 93% | `computeAbilityModifier`, `computeIntelligentItemEgo`, `computeCoinWeight`, `computeWealthInGP`, situational labels |
 | `i18n/ui-strings.ts` | 78% | 70% | English baseline + locale helpers; `loadUiLocaleFromCache` requires browser localStorage |
 
-> **Note on barrel re-export files and zero-coverage utilities:** `utils/constants.ts` and `utils/formatters.ts` are pure `export *` barrel files containing no executable statements — V8 coverage correctly reports 0 executable lines for them. All exported symbols from their sub-modules are fully covered by the test suite. `utils/ruleSourceColors.ts` and `utils/ruleConstants.ts` are UI-colour/constant-only modules used exclusively in Svelte components (excluded from coverage scope); they appear in the covered scope due to `all: true` but have no test-exercised paths.
+> **Note on barrel re-export files and zero-coverage utilities:** `utils/constants.ts` and `utils/formatters.ts` are pure `export *` barrel files with no executable statements — V8 correctly reports 0 executable lines for them. `utils/ruleSourceColors.ts` is a UI-colour module used only in Svelte components. `api/serverSettingsApi.ts` and `api/templatesApi.ts` are API client modules without dedicated test files yet.
 
 ### Backend — PHPUnit
 
@@ -325,7 +327,7 @@ Coverage is measured with `npm run test:coverage` (V8 provider). Scope: `src/lib
 | [`CampaignUsersTest.php`](tests/CampaignUsersTest.php) | Campaign membership: add/remove/list users (incl. suspended); duplicate 409; player 403 |
 | [`DisplayNameTest.php`](tests/DisplayNameTest.php) | Self-service display-name rename (`PUT /api/auth/display-name`); admin username update via `PUT /api/users/{id}`; conflict detection, validation, session refresh |
 
-**Total: 184 PHPUnit tests, 575 assertions.**
+**Total: 210 PHPUnit tests, 714 assertions.**
 
 > `TestCase.php` and `TestPhpInputStream.php` are shared test utilities (base class + PHP stream mock).
 
@@ -355,7 +357,7 @@ VS Code will prompt you to install them automatically via [`.vscode/extensions.j
 |------|---------|-------|
 | **Test: Coverage report** *(default test task)* | `npm test -- --coverage` | Generates `coverage/index.html` |
 | **Test: Run all tests** | `npm test` | Fast — no coverage overhead |
-| **Test: Watch mode** | `npm test -- --watch` | Re-runs on file save; stays alive |
+| **Test: Watch mode** | `npm run test:watch` | Re-runs on file save; stays alive |
 | **Start: Vite dev server** | `npm run dev` | Hot-reload frontend on port 5173 |
 | **Start: PHP dev server** | `scripts/php-dev.sh` | API server on port 8080 |
 | **Run: DB migrations** | `php api/migrate.php` | Create / update the SQLite schema |
@@ -490,14 +492,25 @@ Runs the entire pipeline inside Docker. **No Node.js, PHP, or Composer needed on
 
 ```
 character-vault-<tag>/
-├── build/      # SvelteKit compiled SPA
-├── api/        # PHP backend — zero external dependencies
-├── static/     # Static assets (JSON rule files, etc.)
-├── .htaccess   # Apache routing: /api/* → PHP, everything else → SvelteKit
-└── VERSION     # Version tag string
+├── index.html              # SvelteKit SPA entry point
+├── _app/                   # Versioned SvelteKit assets (long-lived cache)
+├── locales/                # UI translations (served directly to the browser)
+├── rules/                  # SRD rule files (served directly to the browser)
+├── robots.txt
+├── api/                    # PHP backend — zero external dependencies
+│   ├── index.php           # Front-controller / router
+│   ├── migrate.php         # Schema migration runner (also auto-runs on first request)
+│   └── controllers/        # Resource controllers
+├── static/                 # Rule files for the PHP API (file-system access)
+│   └── rules/              # Used by RulesController (not served directly)
+├── .htaccess               # Apache routing, security headers, DB + storage protection
+├── nginx.conf.example      # Nginx + PHP-FPM configuration example
+└── VERSION                 # Version tag string
 ```
 
 > **No `vendor/` in the artifact** — the PHP backend has zero production dependencies. Composer is only used during the build to run PHPUnit.
+>
+> The `storage/` directory (GM-uploaded global rule files) is created automatically by the server on first use — it does not exist in the tarball.
 
 ---
 
@@ -505,7 +518,7 @@ character-vault-<tag>/
 
 ### Locally — PHP built-in server (`run.sh`)
 
-Serves the latest artifact in `dist/` using PHP's built-in server with a custom router. Runs DB migrations automatically on first launch.
+Serves the latest artifact in `dist/` using PHP's built-in server with a custom router. DB migrations run automatically on the first API request (no manual step needed).
 
 ```sh
 ./run.sh                           # Default port 8080
@@ -557,7 +570,7 @@ See [`.env.example`](.env.example) and [`api/config.php`](api/config.php) for th
 
 ### On shared hosting (OVH, etc.)
 
-Place a `.env` file next to `api/` in the extracted artifact directory:
+The app works **without a `.env` file** — the built-in defaults are safe for immediate use. To harden for production or move the database outside the web root, place a `.env` file next to `index.html` in the extracted artifact directory:
 
 ```ini
 APP_ENV=production
@@ -565,34 +578,67 @@ DB_PATH=/home/yourlogin/private/cvault.sqlite
 CORS_ORIGIN=https://yourvtt.example.com
 ```
 
-> The `.env` file is **never included in the build artifact** — it must be created manually on the server to keep secrets out of version control.
+> The `.env` file is **never included in the build artifact** — it must be created manually on the server to keep secrets out of version control. Even without it, the `.htaccess` blocks direct HTTP access to any `.env` file.
 
 ---
 
 ## Production deployment
 
+### Zero-configuration shared hosting (OVH, cPanel, Plesk, etc.)
+
+The artifact is designed to be **immediately usable** — extract it into any PHP-capable web root and browse to it. No build step, no `composer install`, no manual database migration.
+
 ```sh
-# 1. Extract the tarball
+# 1. Extract the tarball into your web root (or a subdirectory)
 tar -xzf character-vault-<tag>.tar.gz
-cd character-vault-<tag>
+# → character-vault-<tag>/ now contains index.html, api/, static/, .htaccess, …
 
-# 2. Create .env with production settings
-nano .env
+# 2. Point your document root at the extracted directory
+#    (OVH: rename to public_html, or set the vhost document root in cPanel)
 
-# 3. Initialise / update the database
-php api/migrate.php
-
-# 4. Configure your web server
-#    - Document root → extracted directory
-#    - AllowOverride All  (so .htaccess is honoured)
-#    - The included .htaccess handles all routing automatically
+# 3. Browse to the site — that's it.
+#    The database is created automatically on the first API request.
 ```
+
+**What happens automatically on first request:**
+- The SQLite database is created as `database.sqlite` in the app directory
+- The schema is migrated (all tables created)
+- The admin bootstrap user prompt appears on the login page
 
 **Server requirements:**
 
 - PHP ≥ 8.1 with `pdo_sqlite` (standard on all shared hosts including OVH)
-- Apache with `mod_rewrite` and `AllowOverride All`
+- Apache with `mod_rewrite` and `AllowOverride All` (default on most shared hosts)
 - **No Composer, no Node.js, no npm** needed on the server
+
+### Hardening for production (optional but recommended)
+
+The `.htaccess` already blocks direct access to `database.sqlite`, `.env`, and `storage/`. For additional security, move the database outside the web root by adding to your `.env` or Apache VirtualHost:
+
+```ini
+# .env (place next to index.html in the app directory)
+APP_ENV=production
+DB_PATH=/home/yourlogin/private/cvault.sqlite
+CORS_ORIGIN=https://yourvtt.example.com
+```
+
+Or via Apache `SetEnv` in the VirtualHost (no `.env` file needed):
+
+```apache
+SetEnv APP_ENV production
+SetEnv DB_PATH /home/yourlogin/private/cvault.sqlite
+```
+
+### nginx + PHP-FPM
+
+Use the included `nginx.conf.example` as a starting point:
+
+```sh
+cp nginx.conf.example /etc/nginx/sites-available/character-vault
+# Edit server_name, root, and fastcgi_pass, then:
+ln -s /etc/nginx/sites-available/character-vault /etc/nginx/sites-enabled/
+nginx -s reload
+```
 
 ---
 

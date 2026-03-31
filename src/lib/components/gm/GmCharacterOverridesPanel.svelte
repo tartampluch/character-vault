@@ -10,7 +10,8 @@
        name       — stub with name, playerName, posterUrl
        name_level — stub + classLevels
        full       — full character data, read-only for player
-     Saved automatically via the engine auto-save effect.
+     Change is applied to the in-memory character; the user must click
+     the Save button in the character sheet header to persist it.
 
   2. PER-CHARACTER GM OVERRIDES (all characters)
      JSON textarea for `gmOverrides` (ActiveFeatureInstance[]).

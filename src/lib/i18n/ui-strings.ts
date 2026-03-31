@@ -367,6 +367,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   // ==========================================================================
   'campaign.not_found':           'Campaign not found',
   'campaign.not_found_desc':      "The campaign with this ID doesn't exist.",
+  /** Error shown when creating a new campaign fails. */
+  'campaign.create_error':        'Failed to create campaign. Please try again.',
+  /** Inline error shown when saving chapter progress fails. */
+  'campaign.chapter_save_error':  'Failed to save progress. Check your connection.',
+  /** Loading state shown while campaign data is being fetched. */
+  'campaign.loading':             'Loading campaign…',
   'campaign.back_to_hub':         'Back to Campaign Hub',
   'campaign.character_vault':     'Vault',
   'campaign.chapters_title':      'Chapters',
@@ -1054,6 +1060,18 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
   'common.saving':                'Saving…',
   'common.saved':                 'Saved',
   'common.save_error':            'Error',
+  /** Shown when a save is rejected because the server has a newer version. */
+  'common.save_conflict':         'Conflict — reload before saving',
+  /** Shown when the server responds with 429 Too Many Requests. */
+  'common.save_rate_limited':     'Too many requests — wait and retry',
+  /** Loading skeleton label shown while a character is being fetched from the server. */
+  'common.loading':               'Loading…',
+  /** Reload button label shown after a 409 Conflict save error. */
+  'common.reload':                'Reload',
+  /** Shown when the character cannot be found on the server. */
+  'character.not_found':          'Character not found',
+  /** Detailed message when the character no longer exists on the server. */
+  'character.not_found_desc':     'This character no longer exists or you do not have access to it.',
   'common.campaign':              'Campaign',
   /** Short label for "Class" (e.g., column header in Leveling Journal overview table). */
   'common.class':                 'Class',
@@ -1244,8 +1262,12 @@ export const UI_STRINGS: Record<string, UiStringValue> = {
    // ==========================================================================
    'settings.save':                'Save Settings',
    'settings.saving':              'Saving…',
-   'settings.saved':               'Settings saved successfully!',
-   'settings.saved_local':         'Saved locally (API unavailable).',
+  'settings.saved':               'Settings saved successfully!',
+  'settings.saved_local':         'Saved locally (API unavailable).',
+  /** Shown when the campaign settings PUT fails. */
+  'settings.save_error':          'Save failed. Check your connection and try again.',
+  /** Shown when GM global overrides save fails while the rest of settings saved OK. */
+  'settings.gm_overrides_save_error': 'Settings saved, but GM overrides failed to save. Please retry.',
    'settings.back_campaign':       'Campaign',
    'settings.gm_view':             'GM View',
    'settings.title':               'Campaign Settings',

@@ -82,6 +82,8 @@
       } else {
         homebrewStore.update(feature.id, structuredClone(feature));
       }
+      // Persist to the server immediately (no auto-save).
+      await homebrewStore.save();
       saveSuccess = true;
       setTimeout(() => { saveSuccess = false; }, 3000);
       onSaved?.(structuredClone(feature));

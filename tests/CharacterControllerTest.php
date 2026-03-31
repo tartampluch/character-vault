@@ -267,6 +267,124 @@ class CharacterControllerTest extends TestCase
     }
 
     // ============================================================
+    // SHOW TESTS — GET /api/characters/{id}
+    // ============================================================
+
+    /**
+     * GET /api/characters/{id} — owner can retrieve their own character.
+     */
+    public function testShowReturnsCharacterForOwner(): void
+    {
+        $this->simulateLogin(self::USER_ID);
+
+        // Create a character first
+        $input = json_encode([
+            'id'         => 'char_show_001',
+            'name'       => 'Legolas',
+            'campaignId' => self::CAMP_ID,
+            'isNPC'      => false,
+            'classLevels' => ['class_ranger' => 3],
+            'activeFeatures' => [],
+        ]);
+        $this->callControllerWithInput(fn() => CharacterController::create(), $input);
+
+        // Fetch it by ID
+        $_GET = [];
+        $response = $this->callControllerWithInput(
+            fn() => CharacterController::show('char_show_001'),
+            ''
+        );
+
+        $this->assertEquals(200, $response['status']);
+        $body = $response['body'];
+        $this->assertEquals('char_show_001', $body['id']);
+        $this->assertEquals('Legolas', $body['name']);
+        $this->assertEquals(['class_ranger' => 3], $body['classLevels']);
+    }
+
+    /**
+     * GET /api/characters/{id} — returns 404 when the character does not exist.
+     */
+    public function testShowReturns404ForMissingCharacter(): void
+    {
+        $this->simulateLogin(self::USER_ID);
+
+        $response = $this->callControllerWithInput(
+            fn() => CharacterController::show('char_nonexistent_xyz'),
+            ''
+        );
+
+        $this->assertEquals(404, $response['status']);
+        $body = $response['body'];
+        $this->assertArrayHasKey('error', $body);
+        $this->assertEquals('NotFound', $body['error']);
+    }
+
+    /**
+     * GET /api/characters/{id} — GM receives the raw gmOverrides field.
+     */
+    public function testShowReturnsGmOverridesForGm(): void
+    {
+        // Create NPC as GM (only GMs can create NPC characters)
+        $this->simulateLogin(self::GM_ID, 'gm');
+        $input = json_encode([
+            'id'         => 'char_show_gm',
+            'name'       => 'NPC Guard',
+            'campaignId' => self::CAMP_ID,
+            'isNPC'      => true,
+            'activeFeatures' => [],
+        ]);
+        $this->callControllerWithInput(fn() => CharacterController::create(), $input);
+
+        // GM fetch
+        $response = $this->callControllerWithInput(
+            fn() => CharacterController::show('char_show_gm'),
+            ''
+        );
+
+        $this->assertEquals(200, $response['status']);
+        $body = $response['body'];
+        $this->assertEquals('char_show_gm', $body['id']);
+        // GM receives gmOverrides (may be empty array) as a separate field
+        $this->assertArrayHasKey('gmOverrides', $body);
+    }
+
+    /**
+     * PUT /api/characters/{id} — returns 409 when client updatedAt is stale.
+     */
+    public function testUpdateReturns409ForStaleTimestamp(): void
+    {
+        $this->simulateLogin(self::USER_ID);
+
+        // Create
+        $input = json_encode([
+            'id'         => 'char_stale_001',
+            'name'       => 'Gimli',
+            'campaignId' => self::CAMP_ID,
+            'isNPC'      => false,
+            'activeFeatures' => [],
+        ]);
+        $this->callControllerWithInput(fn() => CharacterController::create(), $input);
+
+        // Save with an updatedAt in the past (epoch 0 = definitely older than server's updated_at)
+        $updateInput = json_encode([
+            'id'         => 'char_stale_001',
+            'name'       => 'Gimli Updated',
+            'updatedAt'  => 0,
+            'activeFeatures' => [],
+        ]);
+        $response = $this->callControllerWithInput(
+            fn() => CharacterController::update('char_stale_001'),
+            $updateInput
+        );
+
+        $this->assertEquals(409, $response['status']);
+        $body = $response['body'];
+        $this->assertEquals('Conflict', $body['error']);
+        $this->assertArrayHasKey('serverUpdatedAt', $body);
+    }
+
+    // ============================================================
     // HELPER
     // ============================================================
 

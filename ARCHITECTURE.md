@@ -2185,13 +2185,19 @@ A `$effect` watches `character.activeFeatures` and auto-initializes entries in `
 - Item-scoped pools (in `ActiveFeatureInstance.itemResourcePools`) are NOT affected.
 - Respects whatever `resetCondition` the template declares.
 
-### 9.13. Auto-Save Effects
+### 9.13. Explicit Save
 
-Two auto-save `$effect` blocks run whenever `character` changes:
-1. **Local Storage (500ms debounce):** `storageManager.saveCharacter(char)` — always-available local cache.
-2. **PHP API (2000ms debounce):** `storageManager.saveCharacterToApi(char)` — server sync; fails gracefully.
+Characters are saved **only** when the user clicks the Save button in the character sheet header. There is no auto-save.
 
-The 500ms/2000ms split ensures the UI feels responsive while avoiding server spam. A guard prevents saving the default blank character at init: `if (char.id !== 'default' && this.activeCharacterId)`.
+- `handleManualSave()` in `/character/[id]/+page.svelte` calls `storageManager.saveCharacterToApi(char)`.
+- On success: the server returns the new `updatedAt` timestamp, which is stored on the character via `engine.setUpdatedAt(ts)` to enable concurrency detection on the next save.
+- On error: `ApiError` is thrown and the UI displays a specific message:
+  - **409 Conflict** — the server has a newer version; user must reload before saving.
+  - **429 Too Many Requests** — user must wait before retrying.
+  - Other errors — generic "Save failed" message.
+- There is no silent fallback. All server errors are surfaced to the user.
+
+Settings (language, house rules) are still persisted to `localStorage` immediately when changed — they are UI preferences, not game state.
 
 ### 9.14. Vault Visibility Rules (`visibleCharacters`)
 
@@ -3341,7 +3347,7 @@ The client uses `localStorage` or `IndexedDB` to store data between sessions. On
 
 **Notes:**
 - Character sheet tabs use a query parameter `?tab=` rather than sub-routes, to keep the same parent layout and avoid reloading the `GameEngine` on tab change.
-- The `/character/[id]` route loads the character from the `StorageManager` (localStorage in Phase 4, PHP API in Phase 14) and injects it into the `GameEngine`.
+- The `/character/[id]` route fetches the character from `GET /api/characters/{id}` on every page load (server-first). A loading skeleton is shown while the fetch is in flight. The character is injected into the `GameEngine` only after the server confirms it exists.
 - The redirect `/` → `/campaigns` is done via a `+page.server.ts` or a SvelteKit navigation hook.
 - Routes `/campaigns/[id]/settings` and `/campaigns/[id]/gm-dashboard` are only accessible if `SessionContext.isGameMaster` is `true`. A navigation guard redirects non-GMs.
 - Content Editor routes (`/campaigns/[id]/content-editor/**`) are also GM-only (see §21).

@@ -50,7 +50,7 @@ import { applyStackingRules, computeDerivedModifier } from '../utils/stackingRul
 import { computeGestaltBase, isGestaltAffectedPipeline } from '../utils/gestaltRules';
 import { SYNERGY_SOURCE_LABEL_KEY, ALIGNMENTS, MAX_CLASS_LEVEL, MAIN_ABILITY_IDS, getAbilityAbbr, ATTRIBUTE_PIPELINE_NAMESPACE, CONDITION_ENCUMBERED_FEATURE_ID, CONDITION_ENCUMBERED_INSTANCE_ID, WEAPON_CATEGORY_TAG, RANGED_CATEGORY_TAG } from '../utils/constants';
 import { buildLocalizedString, ui, UI_STRINGS } from '../i18n/ui-strings';
-import { storageManager, debounce } from './StorageManager';
+import { storageManager } from './StorageManager';
 import { sessionContext } from './SessionContext.svelte';
 import { MAX_RESOLUTION_DEPTH } from '../types/engine';
 export type { ClassSkillPointsEntry, LevelingJournalClassEntry, LevelingJournal, SkillPointsBudget, SaveConfigEntry, WeaponDefaults, FlatModifierEntry } from '../types/engine';
@@ -460,16 +460,12 @@ export class GameEngine {
    * @param campaignId - The campaign to load characters for.
    */
   loadVaultCharacters(campaignId?: string): void {
-    if (campaignId) {
-      storageManager.loadAllCharactersFromApi(campaignId)
-        .then(chars => { this.allVaultCharacters = chars; })
-        .catch(err => {
-          console.warn('[GameEngine] loadVaultCharacters: API unavailable, falling back to localStorage.', err);
-          this.allVaultCharacters = storageManager.loadAllCharacters();
-        });
-    } else {
-      this.allVaultCharacters = storageManager.loadAllCharacters();
-    }
+    storageManager.loadAllCharactersFromApi(campaignId)
+      .then(chars => { this.allVaultCharacters = chars; })
+      .catch(err => {
+        console.warn('[GameEngine] loadVaultCharacters: API unavailable.', err);
+        this.allVaultCharacters = [];
+      });
   }
 
   /**
@@ -488,30 +484,25 @@ export class GameEngine {
     storageManager.loadAllCharactersFromApi()
       .then(chars => { this.allVaultCharacters = chars; })
       .catch(err => {
-        console.warn('[GameEngine] loadAllVaultCharacters: API unavailable, falling back to localStorage.', err);
-        this.allVaultCharacters = storageManager.loadAllCharacters();
+        console.warn('[GameEngine] loadAllVaultCharacters: API unavailable.', err);
+        this.allVaultCharacters = [];
       });
   }
 
   /**
-   * Adds a character to the vault's in-memory list and persists it.
-   * Called when creating a new character from the Vault page (Phase 7.4).
+   * Adds a character to the vault's in-memory list and persists it via POST.
+   * Called when creating a new character from the Vault page.
    *
-   * PERSISTENCE STRATEGY:
-   *   Uses POST /api/characters (via storageManager.createCharacterOnApi) so the
-   *   new character is immediately visible to the GM and other campaign members
-   *   without waiting for a full vault reload.
-   *
-   *   The subsequent auto-save $effect (debounced PUT) picks up from here; using
-   *   PUT for the very first write would fail with 404 because the record does not
-   *   exist yet in the DB.
+   * The API call is fire-and-forget. If the POST fails the character exists only
+   * in memory; the user will see an error on their first explicit Save, at which
+   * point the save path will attempt a POST again (404 → the record never existed).
    *
    * @param char - The character to add.
    */
   addCharacterToVault(char: Character): void {
-    // Fire-and-forget: POST creates the record in the DB. Errors fall back to
-    // localStorage (storageManager.createCharacterOnApi always saves locally first).
-    storageManager.createCharacterOnApi(char);
+    storageManager.createCharacterOnApi(char).catch(err => {
+      console.error('[GameEngine] addCharacterToVault: POST failed.', err);
+    });
     this.allVaultCharacters.push(char);
   }
 
@@ -565,64 +556,20 @@ export class GameEngine {
     if (index !== -1) {
       this.allVaultCharacters.splice(index, 1);
     }
-    // Delete from localStorage + PHP API (fire-and-forget; localStorage is
-    // synchronous so the local removal is guaranteed even if the API is down).
-    storageManager.deleteCharacterFromApi(characterId);
+    storageManager.deleteCharacterFromApi(characterId).catch(err => {
+      console.error('[GameEngine] removeCharacterFromVault: DELETE failed.', err);
+    });
   }
 
   // ---------------------------------------------------------------------------
-  // AUTO-SAVE $effect — Connect character and settings changes to StorageManager
+  // SETTINGS PERSISTENCE $effect
   // ---------------------------------------------------------------------------
 
   /**
-   * Debounced save to localStorage (500ms — fast local I/O).
-   * Saves immediately to local storage for low-latency offline access.
-   */
-  readonly #debouncedSaveLocalCharacter = debounce((char: Character) => {
-    storageManager.saveCharacter(char);
-  }, 500);
-
-  /**
-   * Debounced save to PHP API (2000ms — avoids spamming the server).
-   * Phase 14.6: fires a PUT /api/characters/{id} request after the user stops typing.
-   * The API call itself is async (fire-and-forget from the component's perspective).
-   * On API failure, the localStorage save (above) ensures data is not lost.
-   */
-  readonly #debouncedSaveApiCharacter = debounce((char: Character) => {
-    // Fire-and-forget: the async method handles its own error handling + localStorage fallback
-    storageManager.saveCharacterToApi(char).catch(() => {
-      // Already handled inside saveCharacterToApi — silently ignore here
-    });
-  }, 2000);
-
-  /**
-   * Auto-save $effect: saves the character whenever it changes.
-   *
-   * Svelte 5's `$effect` tracks all reactive dependencies read inside it.
-   * Reading `this.character` makes the effect reactive to ANY change in the character,
-   * including nested mutations (attribute baseValue, skill ranks, activeFeatures, etc.).
-   *
-   * Uses the debounced save to avoid overwhelming localStorage.
-   */
-  readonly #autoSaveCharacterEffect = $effect.root(() => {
-    $effect(() => {
-      // Reading this.character makes this effect reactive to all character changes
-      const char = this.character;
-      // Tracking activeCharacterId prevents saving the default blank character on init
-      if (char.id !== 'default' && this.activeCharacterId) {
-        // Dual-backend auto-save (Phase 14.6):
-        //   1. localStorage (500ms debounce) — fast, always-available local cache
-        //   2. PHP API (2000ms debounce) — server sync, fails gracefully if unreachable
-        this.#debouncedSaveLocalCharacter(char);
-        this.#debouncedSaveApiCharacter(char);
-      }
-    });
-  });
-
-  /**
-   * Auto-save $effect: saves settings whenever they change.
-   * Settings changes are rare (language toggle, house rule toggle, etc.) —
-   * no debounce needed, save immediately.
+   * Persists settings whenever they change.
+   * Settings are UI preferences (language, house rules, etc.) and are stored
+   * in localStorage only. No server round-trip required.
+   * No debounce needed — settings changes are infrequent.
    */
   readonly #autoSaveSettingsEffect = $effect.root(() => {
     $effect(() => {
@@ -3803,6 +3750,17 @@ export class GameEngine {
   /** Sets the character's in-game name. */
   setCharacterName(name: string): void {
     this.character.name = name;
+  }
+
+  /**
+   * Updates the character's server-assigned `updatedAt` timestamp after a
+   * successful save. This keeps the in-memory character in sync with the server
+   * so the next explicit save passes the concurrency check without a full reload.
+   *
+   * @param ts - Unix timestamp (seconds) returned by PUT /api/characters/{id}.
+   */
+  setUpdatedAt(ts: number): void {
+    (this.character as unknown as Record<string, unknown>)['updatedAt'] = ts;
   }
 
   /**

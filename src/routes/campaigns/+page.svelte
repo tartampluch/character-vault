@@ -31,8 +31,7 @@
   import { sidebarPinsStore } from '$lib/engine/SidebarPinsStore.svelte';
   import PageHeader from '$lib/components/layout/PageHeader.svelte';
 
-  // Load campaigns from the PHP API when the hub mounts.
-  // The store starts with mock data so the UI is never empty during the load.
+  // Always reload campaigns fresh from the server on mount (server-first).
   onMount(() => {
     campaignStore.loadFromApi();
   });
@@ -110,13 +109,23 @@
 
   let showCreateForm   = $state(false);
   let newCampaignTitle = $state('');
+  let createError      = $state('');
+  let isCreating       = $state(false);
 
   async function handleCreateCampaign() {
     if (!newCampaignTitle.trim()) return;
-    const campaign = await campaignStore.createInApi(newCampaignTitle.trim(), sessionContext.currentUserId);
-    newCampaignTitle = '';
-    showCreateForm = false;
-    await goto(`/campaigns/${campaign.id}`);
+    createError = '';
+    isCreating  = true;
+    try {
+      const campaign = await campaignStore.createInApi(newCampaignTitle.trim(), sessionContext.currentUserId);
+      newCampaignTitle = '';
+      showCreateForm   = false;
+      await goto(`/campaigns/${campaign.id}`);
+    } catch (err: unknown) {
+      createError = err instanceof Error ? err.message : ui('campaign.create_error', engine.settings.language);
+    } finally {
+      isCreating = false;
+    }
   }
 
   /**
@@ -190,20 +199,33 @@
           onkeydown={(e) => e.key === 'Enter' && handleCreateCampaign()}
         />
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-wrap items-center">
         <button
           class="btn-primary"
           onclick={handleCreateCampaign}
-          disabled={!newCampaignTitle.trim()}
+          disabled={!newCampaignTitle.trim() || isCreating}
           type="button"
-        >{ui('campaigns.create', engine.settings.language)}</button>
-        <button class="btn-secondary" onclick={() => (showCreateForm = false)} type="button">{ui('common.cancel', engine.settings.language)}</button>
+        >
+          {isCreating ? ui('common.saving', engine.settings.language) : ui('campaigns.create', engine.settings.language)}
+        </button>
+        <button class="btn-secondary" onclick={() => { showCreateForm = false; createError = ''; }} type="button">{ui('common.cancel', engine.settings.language)}</button>
+        {#if createError}
+          <span class="text-sm text-warning" role="alert">{createError}</span>
+        {/if}
       </div>
     </div>
   {/if}
 
   <!-- ── CAMPAIGN GRID or EMPTY STATE ─────────────────────────────────────── -->
-  {#if campaignStore.campaigns.length === 0}
+  {#if campaignStore.isLoading}
+    <div class="flex justify-center py-20 text-text-muted" aria-live="polite">
+      <p class="text-sm">{ui('common.loading', engine.settings.language)}</p>
+    </div>
+  {:else if campaignStore.loadError}
+    <div class="flex flex-col items-center gap-2 py-20 text-center">
+      <p class="font-semibold text-warning">{ui('common.error_unexpected', engine.settings.language)}</p>
+    </div>
+  {:else if campaignStore.campaigns.length === 0}
     <div class="flex flex-col items-center gap-3 py-20 text-center text-text-muted">
       <IconCampaign size={64} class="opacity-20" aria-hidden="true" />
       <h2 class="text-xl font-semibold text-text-secondary">{ui('campaigns.empty_title', engine.settings.language)}</h2>

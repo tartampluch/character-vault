@@ -77,8 +77,8 @@ fi
 
 APP_DIR="$(cd "$APP_DIR" && pwd)"   # resolve to absolute path
 
-[[ -d "${APP_DIR}/api" ]]   || die "Malformed artifact: missing api/ in ${APP_DIR}"
-[[ -d "${APP_DIR}/build" ]] || die "Malformed artifact: missing build/ in ${APP_DIR}"
+[[ -d "${APP_DIR}/api" ]]         || die "Malformed artifact: missing api/ in ${APP_DIR}"
+[[ -f "${APP_DIR}/index.html" ]]  || die "Malformed artifact: missing index.html in ${APP_DIR}  (run scripts/build.sh first)"
 
 # ── Resolve .env file ─────────────────────────────────────────────────────────
 # Priority: --env-file → project-root .env → artifact-root .env (auto-loaded by PHP)
@@ -163,6 +163,9 @@ cat > "$ROUTER" <<'ROUTER_PHP'
 /**
  * PHP built-in server router for Character Vault.
  *
+ * Works with the FLATTENED artifact layout produced by scripts/build.sh:
+ *   index.html, _app/, locales/, rules/ … are at the artifact root (not in build/).
+ *
  * Env: CHARACTER_VAULT_DIR — absolute path to the extracted artifact.
  *
  * Environment variables (APP_ENV, DB_PATH, CORS_ORIGIN, …) are inherited from
@@ -175,10 +178,7 @@ $appDir = rtrim((string)getenv('CHARACTER_VAULT_DIR'), '/');
 $uri    = urldecode((string)parse_url((string)$_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
 // ── 1. PHP API ────────────────────────────────────────────────────────────────
-// Match /api/ (with trailing slash) OR exactly /api, consistent with the
-// Apache .htaccess rule ^api/(.*)$. Using str_starts_with('/api') without the
-// slash would incorrectly dispatch any URI that begins with those four letters
-// (e.g. /apiary, /apidocs) to PHP.
+// Match /api/ (with trailing slash) OR exactly /api.
 if (str_starts_with($uri, '/api/') || $uri === '/api') {
     // Ensure relative requires inside api/ resolve correctly
     chdir($appDir);
@@ -186,18 +186,18 @@ if (str_starts_with($uri, '/api/') || $uri === '/api') {
     return;
 }
 
-// ── 2. Static file from build/ ────────────────────────────────────────────────
-$staticFile = $appDir . '/build' . $uri;
+// ── 2. Static file (flattened layout — served directly from artifact root) ────
 if ($uri !== '/') {
     // Guard against directory traversal: verify the resolved real path lives
-    // inside build/. urldecode() above already canonicalises %2e%2e sequences,
-    // but we double-check here for defence-in-depth.
-    $realStatic = realpath($staticFile);
-    $realBuild  = realpath($appDir . '/build');
+    // inside the artifact root. urldecode() above already canonicalises %2e%2e
+    // sequences, but we double-check here for defence-in-depth.
+    $candidate  = $appDir . $uri;
+    $realStatic = realpath($candidate);
+    $realRoot   = realpath($appDir);
     if (
         $realStatic !== false
-        && $realBuild !== false
-        && str_starts_with($realStatic, $realBuild . DIRECTORY_SEPARATOR)
+        && $realRoot  !== false
+        && str_starts_with($realStatic, $realRoot . DIRECTORY_SEPARATOR)
         && is_file($realStatic)
     ) {
         static $mimes = [
@@ -233,7 +233,7 @@ if ($uri !== '/') {
 }
 
 // ── 3. SvelteKit SPA fallback ─────────────────────────────────────────────────
-$index = $appDir . '/build/index.html';
+$index = $appDir . '/index.html';
 if (is_file($index)) {
     header('Content-Type: text/html; charset=utf-8');
     readfile($index);
@@ -246,15 +246,12 @@ echo "404 – Not Found\n";
 echo "Artifact path: $appDir\n";
 ROUTER_PHP
 
-# ── Auto-migrate (first run) ──────────────────────────────────────────────────
-# Run migrate.php if no database file exists yet (first launch convenience).
-DB_FILE="${DB_PATH:-${APP_DIR}/database.sqlite}"
-if [[ ! -f "$DB_FILE" && -f "${APP_DIR}/api/migrate.php" ]]; then
-    info "Database not found — running migrations…"
-    "$PHP_BIN" "${APP_DIR}/api/migrate.php" \
-        && success "Database initialised: ${DB_FILE}" \
-        || warn "Migration failed — the app will try again on first API request."
-fi
+# ── Auto-migrate note ────────────────────────────────────────────────────────
+# The PHP API now auto-migrates on the first request (api/index.php).
+# No manual migration step is needed here. The note below is kept for context.
+#
+# For manual migrations (optional — e.g., after a schema-changing update):
+#   "$PHP_BIN" "${APP_DIR}/api/migrate.php"
 
 # ── Banner ────────────────────────────────────────────────────────────────────
 APP_VERSION="$(cat "${APP_DIR}/VERSION" 2>/dev/null || echo "dev")"

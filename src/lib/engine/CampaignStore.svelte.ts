@@ -54,6 +54,12 @@ class CampaignStore {
    */
   hasLoaded = $state<boolean>(false);
 
+  /**
+   * True when the last loadFromApi() call failed (non-OK HTTP or network error).
+   * Reset to false on each new loadFromApi() attempt.
+   */
+  loadError = $state<boolean>(false);
+
   // ---------------------------------------------------------------------------
   // API — Phase 14.5
   // ---------------------------------------------------------------------------
@@ -66,14 +72,16 @@ class CampaignStore {
    * will still fire but will simply overwrite with the same data.
    */
   async loadFromApi(): Promise<void> {
-    this.isLoading = true;
+    this.isLoading  = true;
+    this.loadError  = false;
     try {
       const response = await fetch('/api/campaigns', {
-        headers: apiHeaders(),
+        headers:     apiHeaders(),
         credentials: 'include',
       });
       if (!response.ok) {
         console.warn('[CampaignStore] GET /api/campaigns returned HTTP', response.status);
+        this.loadError = true;
         return;
       }
       const data = (await response.json()) as Campaign[];
@@ -83,6 +91,7 @@ class CampaignStore {
       }
     } catch (err) {
       console.warn('[CampaignStore] GET /api/campaigns unavailable:', err);
+      this.loadError = true;
     } finally {
       this.isLoading = false;
     }
@@ -101,34 +110,28 @@ class CampaignStore {
 
   /**
    * Creates a campaign via the PHP API, adds it to the local list, and returns it.
-   * Falls back to local-only creation if the API is unavailable.
+   * Throws on any non-OK response or network error so the caller can display the error.
+   *
+   * There is no local-only fallback: a campaign that doesn't reach the server cannot
+   * be navigated to or shared with players, making the fallback misleading.
    */
   async createInApi(title: string, ownerId: ID): Promise<Campaign> {
-    // Optimistic local entry (used as fallback and as the return value)
-    const local = this.createCampaign(title, ownerId);
-
-    try {
-      const response = await fetch('/api/campaigns', {
-        method: 'POST',
-        headers: apiHeaders(),
-        credentials: 'include',
-        body: JSON.stringify({ title }),
-      });
-      if (!response.ok) {
-        console.warn('[CampaignStore] POST /api/campaigns returned HTTP', response.status);
-        return local;
-      }
-      // Replace the optimistic entry with the server-assigned ID
-      const created = (await response.json()) as { id: string; title: string; ownerId: string };
-      const index = this.campaigns.findIndex(c => c.id === local.id);
-      if (index !== -1) {
-        this.campaigns[index] = { ...local, id: created.id };
-      }
-      return { ...local, id: created.id };
-    } catch (err) {
-      console.warn('[CampaignStore] POST /api/campaigns unavailable, campaign created locally only (will not persist):', err);
-      return local;
+    const response = await fetch('/api/campaigns', {
+      method:      'POST',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify({ title }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
+    // Build a local Campaign object from the server response.
+    const created = (await response.json()) as { id: string; title: string; ownerId: string };
+    const campaign = this.createCampaign(title, ownerId);
+    campaign.id      = created.id;
+    campaign.ownerId = created.ownerId ?? ownerId;
+    this.campaigns.push(campaign);
+    return campaign;
   }
 
   // ---------------------------------------------------------------------------

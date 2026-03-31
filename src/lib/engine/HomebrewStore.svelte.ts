@@ -59,7 +59,7 @@
 import type { Feature } from '../types/feature';
 import type { ID } from '../types/primitives';
 import { sessionContext } from './SessionContext.svelte';
-import { apiHeaders, debounce } from './StorageManager';
+import { apiHeaders } from './StorageManager';
 
 // =============================================================================
 // FILENAME VALIDATION
@@ -128,66 +128,7 @@ export class HomebrewStore {
    */
   isSaving = $state<boolean>(false);
 
-  // ---------------------------------------------------------------------------
-  // PRIVATE — debounced save function
-  // ---------------------------------------------------------------------------
 
-  /**
-   * Debounced version of `#persist()`.
-   * Re-created whenever the class is instantiated so each store instance has
-   * its own independent timer (important for tests that create multiple stores).
-   *
-   * WHY 1 000 ms?
-   *   Fast enough to feel responsive (users see a save within a second of
-   *   stopping edits), slow enough to batch rapid successive changes into
-   *   a single network request.
-   */
-  readonly #debouncedPersist = debounce(() => {
-    this.#persist().catch(err => {
-      console.error('[HomebrewStore] Auto-save failed:', err);
-    });
-  }, 1_000);
-
-  // ---------------------------------------------------------------------------
-  // AUTO-SAVE $effect (debounced 1 s)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Watches the reactive entity list and triggers a debounced save whenever
-   * `isDirty` becomes true.
-   *
-   * WHY $effect.root?
-   *   The store may be instantiated once at module load time (as a singleton),
-   *   outside any Svelte component lifecycle.  `$effect.root()` creates a
-   *   standalone effect scope that is not tied to a component's lifetime, which
-   *   is exactly what module-level Svelte 5 stores use (see GameEngine.svelte.ts
-   *   for the identical `#autoSaveCharacterEffect = $effect.root(...)` pattern).
-   *
-   * DEPENDENCY TRACKING:
-   *   Inside the root, we create a regular `$effect` that reads `this.isDirty`,
-   *   `this.scope`, and `this.filename`.  Svelte 5 tracks all reactive reads
-   *   automatically — any change to these fields re-runs the effect body.
-   *
-   *   We explicitly do NOT track `this._entities` here because the mutations
-   *   (add / update / remove) already set `isDirty = true`, which is sufficient
-   *   to trigger the watch.  Tracking the full entity list would re-run the
-   *   effect on every single entity field change, which is unnecessarily noisy.
-   */
-  readonly #autoSaveEffect = $effect.root(() => {
-    $effect(() => {
-      // Reading these reactive values registers them as dependencies.
-      const dirty    = this.isDirty;
-      const _scope   = this.scope;       // re-save if scope changes while dirty
-      const _file    = this.filename;    // re-save if filename changes while dirty
-
-      if (!dirty) return; // Nothing to save yet.
-
-      // Schedule a debounced save.  If this effect fires multiple times within
-      // 1 s (e.g., three rapid add() calls), the debounce collapses them into
-      // a single persist() call.
-      this.#debouncedPersist();
-    });
-  });
 
   // ---------------------------------------------------------------------------
   // PUBLIC READ API
@@ -383,17 +324,13 @@ export class HomebrewStore {
   // ---------------------------------------------------------------------------
 
   /**
-   * Immediately persists the current entity list to the backend.
+   * Persists the current entity list to the backend.
    *
-   * This is the public counterpart to the private `#persist()` method.
-   * It is intended for use in tests (where the Svelte `$effect` scheduler is not
-   * running) and in imperative "Save Now" button handlers where the caller needs
-   * to await the result of the save.
+   * Called explicitly by Save buttons in the Content Editor.
+   * Throws on any server error so the UI can display the message.
    *
-   * The auto-save path (`isDirty → $effect → debounce → #persist`) is still the
-   * primary save mechanism in production; `save()` is an explicit override.
-   *
-   * @returns A Promise resolving when the save completes (or silently fails).
+   * @returns A Promise resolving when the save completes.
+   * @throws  On any HTTP error from the backend.
    */
   async save(): Promise<void> {
     return this.#persist();
@@ -489,26 +426,18 @@ export class HomebrewStore {
       });
 
       if (!response.ok) {
-        // Log the server's error message if available.
-        let serverMsg = '';
+        let serverMsg = `HTTP ${response.status}`;
         try {
           const errBody = await response.json() as { message?: string };
-          serverMsg = errBody.message ? ` — ${errBody.message}` : '';
-        } catch {
-          /* response body not JSON — ignore */
-        }
-        console.error(
-          `[HomebrewStore] Save failed: HTTP ${response.status} from ${url}${serverMsg}`
-        );
-        // isDirty stays true — the UI can show a retry indicator.
-        return;
+          if (errBody.message) serverMsg = errBody.message;
+        } catch { /* response body not JSON */ }
+        this.isSaving = false;
+        // isDirty stays true — user can retry.
+        throw new Error(serverMsg);
       }
 
       // Save succeeded.
       this.isDirty = false;
-    } catch (err) {
-      console.error('[HomebrewStore] Save network error:', err);
-      // isDirty stays true.
     } finally {
       this.isSaving = false;
     }

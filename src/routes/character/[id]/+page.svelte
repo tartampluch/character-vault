@@ -68,7 +68,8 @@
   import { goto } from '$app/navigation';
   import { engine, createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
   import { sessionContext } from '$lib/engine/SessionContext.svelte';
-  import { storageManager } from '$lib/engine/StorageManager';
+  import { storageManager, ApiError } from '$lib/engine/StorageManager';
+  import type { Character } from '$lib/types/character';
   import { dataLoader } from '$lib/engine/DataLoader';
   import { campaignStore } from '$lib/engine/CampaignStore.svelte';
   import { ui } from '$lib/i18n/ui-strings';
@@ -149,85 +150,81 @@
   );
 
   // ===========================================================================
-  // CHARACTER LOADING
+  // CHARACTER LOADING — Server-first
   // ===========================================================================
 
   /**
-   * Guard flag — plain (non-reactive) boolean so it never creates a reactive
-   * dependency. Prevents getGmGlobalOverrides() from being fired more than once
-   * per page load even if the effect re-runs (e.g. after registerCharacterInVault
-   * mutates allVaultCharacters on the first cold-load path).
+   * Loading state for the character fetch from the server.
+   * 'loading'   — awaiting GET /api/characters/{id}
+   * 'ready'     — character loaded successfully
+   * 'not_found' — server returned 404 / 403
+   * 'error'     — network or unexpected server error
+   */
+  let loadState = $state<'loading' | 'ready' | 'not_found' | 'error'>('loading');
+
+  /**
+   * Guard flag — plain boolean so it never creates a reactive dependency.
+   * Prevents rule sources from being loaded more than once per page visit.
    */
   let rulesLoadInitiated = false;
 
   /**
-   * Loads the character whenever the URL ID changes.
+   * Loads the character from the server whenever the URL ID changes.
    *
-   * Priority:
-   *   1. In-memory vault list (already loaded — zero I/O, fastest path).
-   *   2. StorageManager (localStorage / PHP API fallback).
-   *   3. Blank character (graceful degradation for direct URL access).
-   *
-   * Phase 14.6 integration note: StorageManager already wraps both localStorage
-   * and the PHP API. No changes needed here when switching to PHP.
+   * STRATEGY:
+   *   1. Always fetch fresh data from GET /api/characters/{id}.
+   *      This guarantees the UI shows the authoritative server version on
+   *      every page load or direct URL navigation — no stale localStorage data.
+   *   2. While the fetch is in flight, show a loading skeleton.
+   *   3. On success: engine.loadCharacter(serverChar), then load rule sources.
+   *   4. On 404/403: show a "character not found" message.
+   *   5. On other error: show a generic error message.
    *
    * REACTIVE-CYCLE GUARD:
-   *   engine.loadCharacter() writes engine.character ($state). Reading
-   *   engine.character inside this same effect would register it as a reactive
-   *   dependency, causing the effect to re-run every time loadCharacter is
-   *   called — an infinite loop that triggers effect_update_depth_exceeded and
-   *   spams the server with getGmGlobalOverrides requests (→ HTTP 429).
-   *
-   *   Fix: keep a local `activeChar` reference set from the data we already
-   *   have (fromVault / fromStorage / blank) and use it instead of
-   *   engine.character in the data-loading block below.
+   *   engine.loadCharacter() writes engine.character ($state). We do NOT read
+   *   engine.character inside this effect — doing so would register it as a
+   *   reactive dependency and cause an infinite re-run loop.
    */
   $effect(() => {
     const id = characterId;
     if (!id) return;
 
-    // Resolve and load the character, keeping a local reference so the
-    // data-loading section below never needs to read engine.character.
-    let activeChar: import('$lib/types/character').Character;
+    loadState        = 'loading';
+    rulesLoadInitiated = false; // allow rule sources to reload when ID changes
 
-    const fromVault = engine.allVaultCharacters.find(c => c.id === id);
-    if (fromVault) {
-      engine.loadCharacter(fromVault);
-      activeChar = fromVault;
-    } else {
-      const fromStorage = storageManager.loadCharacter(id);
-      if (fromStorage) {
-        engine.loadCharacter(fromStorage);
-        // Register in vault list without re-saving (character was loaded from storage).
-        // Uses engine method instead of direct array mutation (ARCHITECTURE.md §3).
-        engine.registerCharacterInVault(fromStorage);
-        activeChar = fromStorage;
-      } else {
-        console.warn(`[CharacterSheet] Character "${id}" not found. Creating blank.`);
-        activeChar = createEmptyCharacter(id, ui('character.unknown_name', engine.settings.language));
-        engine.loadCharacter(activeChar);
-      }
-    }
+    storageManager.loadCharacterFromApi(id)
+      .then(serverChar => {
+        if (!serverChar) {
+          // 404 / 403 — character does not exist or is not accessible.
+          loadState = 'not_found';
+          return;
+        }
 
-    // Ensure rule sources are loaded even when navigating directly to a character
-    // (bypassing the vault page that normally triggers the load).
-    // Uses the character's campaign sources if available, or engine settings as fallback.
-    // rulesLoadInitiated is a plain boolean (not $state) so writing it here does
-    // NOT trigger another effect re-run.
-    if (!dataLoader.isLoaded && !rulesLoadInitiated) {
-      rulesLoadInitiated = true;
-      const camp = activeChar.campaignId ? campaignStore.getCampaign(activeChar.campaignId) : undefined;
-      const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
-      // GM global overrides are now server-wide (not per-campaign).
-      // Fetch from GET /api/server-settings/gm-overrides instead of campaign.gmGlobalOverrides.
-      getGmGlobalOverrides()
-        .then(gmOverrides => dataLoader.loadRuleSources(enabledSources, gmOverrides))
-        .then(() => engine.bumpDataLoaderVersion())
-        .catch(err => {
-          console.warn('[CharacterSheet] Failed to load rule sources:', err);
-          rulesLoadInitiated = false; // allow retry on next navigation
-        });
-    }
+        engine.loadCharacter(serverChar);
+        engine.registerCharacterInVault(serverChar);
+        loadState = 'ready';
+
+        // Load rule sources if not already loaded. Uses the character's campaign
+        // sources when available (the campaign may enable extra rule files).
+        if (!dataLoader.isLoaded && !rulesLoadInitiated) {
+          rulesLoadInitiated = true;
+          const camp = serverChar.campaignId
+            ? campaignStore.getCampaign(serverChar.campaignId)
+            : undefined;
+          const enabledSources = camp?.enabledRuleSources ?? engine.settings.enabledRuleSources;
+          getGmGlobalOverrides()
+            .then(gmOverrides => dataLoader.loadRuleSources(enabledSources, gmOverrides))
+            .then(() => engine.bumpDataLoaderVersion())
+            .catch(err => {
+              console.warn('[CharacterSheet] Failed to load rule sources:', err);
+              rulesLoadInitiated = false;
+            });
+        }
+      })
+      .catch(err => {
+        console.error('[CharacterSheet] Failed to load character:', err);
+        loadState = 'error';
+      });
   });
 
   // ===========================================================================
@@ -257,22 +254,66 @@
   const totalLevel = $derived(engine.phase0_characterLevel);
 
   // ===========================================================================
-  // MANUAL SAVE
+  // EXPLICIT SAVE
   // ===========================================================================
 
-  let saveStatus = $state<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  /**
+   * Save status for the Save button.
+   * 'idle'         — waiting for user action
+   * 'saving'       — PUT in flight
+   * 'saved'        — last save succeeded
+   * 'error'        — last save failed (message in saveErrorMessage)
+   * 'conflict'     — server has a newer version (reload required)
+   * 'rate_limited' — too many requests (try again later)
+   */
+  let saveStatus       = $state<'idle' | 'saving' | 'saved' | 'error' | 'conflict' | 'rate_limited'>('idle');
+  let saveErrorMessage = $state('');
 
   async function handleManualSave() {
-    saveStatus = 'saving';
+    saveStatus       = 'saving';
+    saveErrorMessage = '';
+
     try {
-      storageManager.saveCharacter(engine.character);
-      await storageManager.saveCharacterToApi(engine.character);
+      const newUpdatedAt = await storageManager.saveCharacterToApi(engine.character);
+      // Update the in-memory character's updatedAt so the next save passes the
+      // concurrency check without requiring a full reload.
+      engine.setUpdatedAt(newUpdatedAt);
       saveStatus = 'saved';
-    } catch {
-      saveStatus = 'error';
-    } finally {
-      setTimeout(() => { saveStatus = 'idle'; }, 2000);
+      setTimeout(() => { saveStatus = 'idle'; }, 3000);
+    } catch (err: unknown) {
+      if (err instanceof ApiError) {
+        if (err.status === 409) {
+          saveStatus = 'conflict';
+        } else if (err.status === 429) {
+          saveStatus = 'rate_limited';
+          setTimeout(() => { saveStatus = 'idle'; }, 5000);
+        } else {
+          saveStatus       = 'error';
+          saveErrorMessage = err.message;
+          setTimeout(() => { saveStatus = 'idle'; }, 5000);
+        }
+      } else {
+        saveStatus       = 'error';
+        saveErrorMessage = err instanceof Error ? err.message : '';
+        setTimeout(() => { saveStatus = 'idle'; }, 5000);
+      }
     }
+  }
+
+  /** Reloads fresh data from the server. Used after a 409 Conflict. */
+  function handleReload() {
+    loadState  = 'loading';
+    saveStatus = 'idle';
+    const id   = characterId;
+    if (!id) return;
+    storageManager.loadCharacterFromApi(id)
+      .then(char => {
+        if (!char) { loadState = 'not_found'; return; }
+        engine.loadCharacter(char);
+        engine.registerCharacterInVault(char);
+        loadState = 'ready';
+      })
+      .catch(() => { loadState = 'error'; });
   }
 </script>
 
@@ -338,18 +379,34 @@
 
     <!-- Right side: save button + character ID chip -->
     <div class="flex items-start gap-2 shrink-0">
-      <button
-        class="btn-primary text-xs px-3 py-2.5 gap-1 disabled:opacity-50 min-h-[44px]"
-        onclick={handleManualSave}
-        disabled={saveStatus === 'saving'}
-        aria-label={ui('character.save_aria', engine.settings.language)}
-        type="button"
-      >
-        {#if saveStatus === 'saving'}{ui('common.saving', engine.settings.language)}
-        {:else if saveStatus === 'saved'}<IconSuccess size={14} aria-hidden="true" />{ui('common.saved', engine.settings.language)}
-        {:else if saveStatus === 'error'}{ui('common.save_error', engine.settings.language)}
-        {:else}{ui('common.save', engine.settings.language)}{/if}
-      </button>
+      {#if saveStatus === 'conflict'}
+        <!-- Conflict banner: server has newer data — must reload before saving -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-warning font-medium">{ui('common.save_conflict', engine.settings.language)}</span>
+          <button
+            class="btn-secondary text-xs px-3 py-2.5 min-h-[44px]"
+            onclick={handleReload}
+            type="button"
+          >
+            {ui('common.reload', engine.settings.language)}
+          </button>
+        </div>
+      {:else}
+        <button
+          class="btn-primary text-xs px-3 py-2.5 gap-1 disabled:opacity-50 min-h-[44px]"
+          class:btn-danger={saveStatus === 'error' || saveStatus === 'rate_limited'}
+          onclick={handleManualSave}
+          disabled={saveStatus === 'saving' || loadState !== 'ready'}
+          aria-label={ui('character.save_aria', engine.settings.language)}
+          type="button"
+        >
+          {#if saveStatus === 'saving'}{ui('common.saving', engine.settings.language)}
+          {:else if saveStatus === 'saved'}<IconSuccess size={14} aria-hidden="true" />{ui('common.saved', engine.settings.language)}
+          {:else if saveStatus === 'rate_limited'}{ui('common.save_rate_limited', engine.settings.language)}
+          {:else if saveStatus === 'error'}{ui('common.save_error', engine.settings.language)}{#if saveErrorMessage} — {saveErrorMessage}{/if}
+          {:else}{ui('common.save', engine.settings.language)}{/if}
+        </button>
+      {/if}
 
       <!-- Character ID chip (dev utility) -->
       <code
@@ -425,6 +482,9 @@
        `p-4 xl:p-6` — consistent padding; slightly more generous on wide screens.
        On desktop ≥1280px (xl), individual tab layouts use multi-column grids
        within their own components.
+
+       The div is always present. Its contents switch between a loading/error
+       placeholder and the real character sheet depending on `loadState`.
   ========================================================================= -->
   <div
     class="flex-1 overflow-y-auto p-4 xl:p-6"
@@ -432,6 +492,23 @@
     role="tabpanel"
     aria-labelledby="tab-btn-{activeTab}"
   >
+
+    <!-- Loading / not-found / error placeholders -->
+    {#if loadState === 'loading'}
+      <div class="flex items-center justify-center py-20 text-text-muted" aria-live="polite">
+        <p class="text-sm">{ui('common.loading', engine.settings.language)}</p>
+      </div>
+    {:else if loadState === 'not_found'}
+      <div class="flex flex-col items-center justify-center gap-2 py-20 text-center">
+        <p class="font-semibold text-text-primary">{ui('character.not_found', engine.settings.language)}</p>
+        <p class="text-sm text-text-muted">{ui('character.not_found_desc', engine.settings.language)}</p>
+      </div>
+    {:else if loadState === 'error'}
+      <div class="flex flex-col items-center justify-center gap-2 py-20 text-center">
+        <p class="font-semibold text-warning">{ui('common.error_unexpected', engine.settings.language)}</p>
+      </div>
+    {:else}
+    <!-- loadState === 'ready' — show the character sheet tabs -->
 
     <!-- -----------------------------------------------------------------------
          CORE TAB (Phase 8)
@@ -572,6 +649,9 @@
         <GmCharacterOverridesPanel />
       </div>
     {/if}
+
+    {/if}
+    <!-- end loadState === 'ready' -->
 
   </div>
 

@@ -519,7 +519,13 @@
       if (gmOverridesText !== savedGmOverridesText) {
         const overridesOk = await setGmGlobalOverrides(gmOverridesText);
         if (!overridesOk) {
-          console.warn('[Settings] Failed to save GM global overrides');
+          // Campaign saved OK but overrides failed — surface the partial failure to the GM.
+          saveHasError = true;
+          toastVariant = 'warning';
+          toastMessage = ui('settings.gm_overrides_save_error', lang);
+          setTimeout(() => (toastMessage = ''), 6000);
+          isSaving = false;
+          return; // Abort early — don't clear dirty flags so the GM can retry.
         }
       }
 
@@ -588,10 +594,10 @@
       toastMessage = ui('settings.saved', lang);
       setTimeout(() => (toastMessage = ''), 3000);
     } catch (err) {
-      console.warn('[Settings] API unavailable:', err);
+      console.warn('[Settings] Save failed:', err);
       saveHasError = true;
       toastVariant = 'warning';
-      toastMessage = ui('settings.saved_local', lang);
+      toastMessage = ui('settings.save_error', lang);
       setTimeout(() => (toastMessage = ''), 5000);
     } finally {
       isSaving = false;

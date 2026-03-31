@@ -1043,13 +1043,12 @@ describe('HomebrewStore — save() / #persist()', () => {
   });
 
   /**
-   * Test 42: save() with a non-OK response leaves isDirty = true and isSaving = false.
+   * Test 42: save() with a non-OK response throws and leaves isDirty = true.
    *
-   * A server error (e.g., 500) means the save failed — the store must signal that
-   * a retry is needed by keeping isDirty = true.
+   * save() now throws on any server error so the calling UI can display the message.
+   * isDirty stays true — the user can retry after seeing the error.
    */
-  it('non-OK HTTP response keeps isDirty = true and sets isSaving = false', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('non-OK HTTP response throws and keeps isDirty = true, isSaving = false', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -1061,22 +1060,16 @@ describe('HomebrewStore — save() / #persist()', () => {
     store.filename = '50_homebrew.json';
     store.add(makeFeature('feat_save_fail'));
 
-    await store.save();
+    await expect(store.save()).rejects.toThrow('Internal Server Error');
 
     expect(store.isDirty).toBe(true);
     expect(store.isSaving).toBe(false);
-    expect(errorSpy).toHaveBeenCalled();
-    errorSpy.mockRestore();
   });
 
   /**
-   * Test 43: save() with a non-OK response where the body is not JSON.
-   *
-   * When the error body cannot be parsed as JSON, the store must still
-   * log the error (without a server message) and keep isDirty = true.
+   * Test 43: save() with a non-OK response where the body is not JSON — throws with HTTP status.
    */
-  it('non-OK response with non-JSON body is handled gracefully', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('non-OK response with non-JSON body throws with HTTP status message', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,
       status: 422,
@@ -1088,22 +1081,19 @@ describe('HomebrewStore — save() / #persist()', () => {
     store.filename = '50_homebrew.json';
     store.add(makeFeature('feat_non_json_error'));
 
-    await store.save();
+    await expect(store.save()).rejects.toThrow('HTTP 422');
 
     expect(store.isDirty).toBe(true);
     expect(store.isSaving).toBe(false);
-    expect(errorSpy).toHaveBeenCalled();
-    errorSpy.mockRestore();
   });
 
   /**
-   * Test 44: save() network error is caught gracefully; isDirty stays true.
+   * Test 44: save() network error propagates as a rejection; isDirty stays true.
    *
-   * A rejected fetch() promise (e.g., offline) must not propagate as an
-   * unhandled rejection. The store logs the error and leaves isDirty = true.
+   * A rejected fetch() (e.g., offline) is rethrown so the UI can display an error.
+   * isDirty stays true — the user can retry once the connection is restored.
    */
-  it('network error during save() is caught; isDirty stays true and isSaving = false', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('network error during save() propagates as rejection; isDirty stays true and isSaving = false', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network offline')));
 
     const store = new HomebrewStore();
@@ -1111,12 +1101,10 @@ describe('HomebrewStore — save() / #persist()', () => {
     store.filename = '50_homebrew.json';
     store.add(makeFeature('feat_network_save_fail'));
 
-    await expect(store.save()).resolves.toBeUndefined(); // must not throw
+    await expect(store.save()).rejects.toThrow('Network offline');
 
     expect(store.isDirty).toBe(true);
     expect(store.isSaving).toBe(false);
-    expect(errorSpy).toHaveBeenCalled();
-    errorSpy.mockRestore();
   });
 });
 

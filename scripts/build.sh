@@ -35,9 +35,9 @@
 #          character-vault-<tag>.tar.gz  ← compressed tarball for upload
 #
 # PRODUCTION DEPLOYMENT (after uploading and extracting the tarball):
-#   • php api/migrate.php           (creates/updates the SQLite database)
-#   • Set APP_ENV=production in the server environment (or edit api/config.php)
-#   • Point the Apache document root at the extracted directory
+#   • Point the Apache/nginx document root at the extracted directory
+#   • The database is created automatically on the first API request (no manual step)
+#   • Optionally add .env next to index.html for APP_ENV=production + custom DB_PATH
 #   • Verify PHP ≥ 8.1 with pdo_sqlite enabled — NO Composer needed on the server
 #
 # LOCAL TEST RUN (after building):
@@ -323,61 +323,156 @@ step "Assembling deployment artifact → ${STAGE_DIR}"
 [[ "$CLEAN" == true ]] && rm -rf "$STAGE_DIR"
 mkdir -p "$STAGE_DIR"
 
-# SvelteKit compiled output.
-# adapter-static (the only adapter compatible with zero-Node.js shared hosting)
-# always writes to build/. Check build/ first; .svelte-kit/output is only
-# relevant for SSR/Node adapters and is never produced by adapter-static.
+# SvelteKit compiled output — FLATTENED to the artifact root.
+# adapter-static writes to build/; copying its contents (not the directory
+# itself) places index.html, _app/, locales/, rules/ … directly at the
+# artifact root so Apache/nginx can serve them without any sub-path rewriting.
 if [[ -d "${ROOT_DIR}/build" ]]; then
-    cp -r "${ROOT_DIR}/build" "${STAGE_DIR}/build"
-elif [[ -d "${ROOT_DIR}/.svelte-kit/output" ]]; then
-    cp -r "${ROOT_DIR}/.svelte-kit/output" "${STAGE_DIR}/build"
+    cp -r "${ROOT_DIR}/build/." "${STAGE_DIR}/"
 else
-    warn "No SvelteKit build output found — checked 'build/' and '.svelte-kit/output/'"
+    die "SvelteKit build output not found at '${ROOT_DIR}/build/'.  Run 'npm run build' first."
 fi
 
 # PHP backend — no vendor/ directory needed; zero production dependencies
 cp -r "${ROOT_DIR}/api"    "${STAGE_DIR}/api"
 
-# Static assets (game-rule JSON files, robots.txt …)
+# Static assets (game-rule JSON files, robots.txt …) — kept separately for
+# the PHP API (RulesController reads from ../static/rules/ relative to api/).
 cp -r "${ROOT_DIR}/static" "${STAGE_DIR}/static"
 
 # Version tag
 echo "$TAG" > "${STAGE_DIR}/VERSION"
 
 # =============================================================================
-# Step 8 — Generate Apache .htaccess
+# Step 8 — Generate server configuration files
 # =============================================================================
-step "Generating Apache .htaccess"
+step "Generating Apache .htaccess and nginx.conf.example"
+
 cat > "${STAGE_DIR}/.htaccess" <<'HTACCESS'
 # Character Vault — Apache routing
-# Place the contents of the extracted artifact in the web document root.
+# ─────────────────────────────────────────────────────────────────────────────
+# Extract this artifact into any Apache document root and browse to it —
+# no other configuration is required as long as AllowOverride All is set
+# (the default on most shared hosts: OVH, cPanel, Plesk, etc.).
+#
+# REQUIREMENTS:
+#   PHP ≥ 8.1 with pdo_sqlite  (standard on all shared hosting)
+#   Apache mod_rewrite          (enabled by default)
+#   AllowOverride All           (set in the VirtualHost or .htaccess parent)
+#
+# FIRST RUN:
+#   The database (database.sqlite) is created automatically on the first
+#   API request — no manual migration step is needed.
+#
+# PRODUCTION — move the database outside the web root to prevent download:
+#   SetEnv DB_PATH /home/yourlogin/private/cvault.sqlite
+#   SetEnv APP_ENV production
 
 Options -Indexes
 
 # ── Security headers ──────────────────────────────────────────────────────────
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options  "nosniff"
-    Header always set X-Frame-Options         "DENY"
+    Header always set X-Frame-Options         "SAMEORIGIN"
     Header always set X-XSS-Protection        "1; mode=block"
     Header always set Referrer-Policy         "strict-origin-when-cross-origin"
 </IfModule>
 
-# ── Routing ───────────────────────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # /api/* → PHP front-controller
+    # ── Deny access to sensitive runtime files ────────────────────────────────
+    # Dotfiles (.htaccess, .env, .git, …) — config and secret files
+    RewriteRule (^|/)\. - [F,L]
+    # SQLite database — prevent direct download of user data
+    RewriteRule \.sqlite3?$ - [F,L]
+    # storage/ — runtime-writable GM rules directory (PHP-only access)
+    RewriteRule ^storage/ - [F,L]
+
+    # ── Routing ───────────────────────────────────────────────────────────────
+    # /api/* → PHP front-controller (auto-migrates DB on first request)
     RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
-    # Existing files and directories are served as-is
+    # Serve existing static files and directories as-is (_app/, locales/, rules/, …)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     # Everything else → SvelteKit SPA entry point
-    RewriteRule ^(.*)$ build/index.html [QSA,L]
+    RewriteRule ^(.*)$ index.html [QSA,L]
 </IfModule>
 HTACCESS
 
-success ".htaccess generated"
+cat > "${STAGE_DIR}/nginx.conf.example" <<'NGINX'
+# Character Vault — example nginx + php-fpm configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. Copy this file to /etc/nginx/sites-available/character-vault
+# 2. Symlink: ln -s /etc/nginx/sites-available/character-vault /etc/nginx/sites-enabled/
+# 3. Adjust root, server_name and fastcgi_pass below, then: nginx -s reload
+
+server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    # Point root to the extracted artifact directory
+    root /var/www/character-vault;
+    index index.html;
+
+    # PHP-FPM socket — adjust to match your system
+    # Common paths:
+    #   Debian/Ubuntu 8.3:  unix:/run/php/php8.3-fpm.sock
+    #   CentOS/RHEL:        unix:/var/run/php-fpm/php-fpm.sock
+    #   TCP:                127.0.0.1:9000
+    set $phpfpm unix:/run/php/php8.3-fpm.sock;
+
+    # Security headers
+    add_header X-Content-Type-Options  "nosniff"                        always;
+    add_header X-Frame-Options         "SAMEORIGIN"                     always;
+    add_header X-XSS-Protection        "1; mode=block"                  always;
+    add_header Referrer-Policy         "strict-origin-when-cross-origin" always;
+
+    # Deny access to dotfiles (.env, .htaccess, .git, …)
+    location ~ /\. {
+        deny all;
+    }
+
+    # Deny direct access to SQLite database files
+    location ~* \.sqlite3?$ {
+        deny all;
+    }
+
+    # Deny direct access to the storage/ directory (GM rule files — PHP-only)
+    location /storage/ {
+        deny all;
+    }
+
+    # Long-lived cache for versioned SvelteKit assets
+    location ~* ^/_app/immutable/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # PHP API — route all /api/ requests through the PHP front-controller
+    location /api/ {
+        try_files $uri @php_api;
+    }
+    location @php_api {
+        fastcgi_pass   $phpfpm;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME $document_root/api/index.php;
+        include        fastcgi_params;
+
+        # Optional: move the DB outside the web root for production
+        # fastcgi_param  DB_PATH /home/user/private/cvault.sqlite;
+        # fastcgi_param  APP_ENV production;
+    }
+
+    # SPA fallback — serve index.html for all client-side routes
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+NGINX
+
+success "Server config files generated (.htaccess, nginx.conf.example)"
 
 # =============================================================================
 # Step 9 — Create tarball
@@ -401,11 +496,11 @@ echo ""
 echo -e "  ${BOLD}Production deployment${RESET} (shared hosting, OVH, etc.):"
 echo -e "    1. Upload  ${BOLD}${PACKAGE_NAME}.tar.gz${RESET}  to the server"
 echo -e "    2. tar -xzf ${PACKAGE_NAME}.tar.gz"
-echo -e "    3. php api/migrate.php            # create / update the database"
-echo -e "    4. Set APP_ENV=production          # in server env or edit api/config.php"
-echo -e "    5. Point web document root at the extracted directory"
-echo -e "    ${CYAN}→ No Composer, no Node.js, no npm needed on the server.${RESET}"
+echo -e "    3. Point web document root at the extracted directory"
+echo -e "    4. Browse to the site — database is created automatically on first request"
+echo -e "    ${CYAN}→ No Composer, no Node.js, no npm, no manual migration needed on the server.${RESET}"
 echo -e "    ${CYAN}→ Only PHP ≥ 8.1 with pdo_sqlite (standard on all shared hosts).${RESET}"
+echo -e "    ${CYAN}→ Optionally add .env next to index.html for APP_ENV=production + custom DB_PATH.${RESET}"
 echo ""
 echo -e "  ${BOLD}Local test run${RESET}:"
 echo -e "    ./run.sh          # PHP built-in server on http://localhost:8080"

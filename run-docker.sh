@@ -81,8 +81,8 @@ fi
 
 APP_DIR="$(cd "$APP_DIR" && pwd)"   # absolute path (required for Docker bind mount)
 
-[[ -d "${APP_DIR}/api" ]]   || die "Malformed artifact: missing api/ in ${APP_DIR}"
-[[ -d "${APP_DIR}/build" ]] || die "Malformed artifact: missing build/ in ${APP_DIR}"
+[[ -d "${APP_DIR}/api" ]]        || die "Malformed artifact: missing api/ in ${APP_DIR}"
+[[ -f "${APP_DIR}/index.html" ]] || die "Malformed artifact: missing index.html in ${APP_DIR}  (run scripts/build.sh first)"
 
 # ── Build the run image (only if needed or --no-cache) ───────────────────────
 # The image is intentionally minimal: php:8.3-apache + pdo_sqlite + mod_rewrite.

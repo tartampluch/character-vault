@@ -1,42 +1,31 @@
 /**
  * @file StorageManager.ts
- * @description Multi-character persistence layer.
+ * @description Persistence layer for the Character Vault application.
  *
- * ARCHITECTURE — Phase 14.6 Refactoring:
- *   This file replaces the localStorage-only Phase 4.1 implementation with a
- *   dual-backend strategy:
+ * ARCHITECTURE — Server-First Design:
+ *   Characters are the source of truth on the server (PHP/SQLite).
+ *   They are never cached in localStorage; every page load fetches
+ *   fresh data from the API.
  *
- *     1. PRIMARY BACKEND: PHP REST API (async fetch calls to /api/).
- *        Used when the API is reachable and the user is authenticated.
+ *   localStorage is kept only for:
+ *     - UI preferences (language, active character ID, sidebar pins)
+ *     - Campaign settings (house rules, stat generation variant)
+ *     - Rules batch cache (ETag-based, invalidated by server)
  *
- *     2. FALLBACK BACKEND: localStorage (same keys as Phase 4.1).
- *        Used when the API is unreachable (offline mode) or during SSR.
+ * EXPLICIT SAVES:
+ *   All character writes (POST/PUT) are triggered explicitly by the user
+ *   clicking a Save button. There is no auto-save, no debounce, and no
+ *   silent fallback. Any server error is thrown so the UI can display it.
  *
- *   ALL PUBLIC METHODS remain synchronous for localStorage calls (no breaking
- *   changes to the GameEngine $effect integration). Async API calls are fired-and-
- *   forgotten for writes (auto-save doesn't block the UI). For reads, the async
- *   API methods are exposed separately (loadFromApi*, loadAllCharactersFromApi).
- *
- * AUTO-SAVE DEBOUNCE:
- *   The GameEngine uses a 500ms debounce for localStorage writes.
- *   For API writes (PUT /api/characters/{id}), the debounce is 2000ms to avoid
- *   spamming the server on every keystroke.
- *
- * POLLING MECHANISM (ARCHITECTURE.md section 19):
- *   `startPolling(campaignId, onCampaignUpdated, onCharactersUpdated, intervalMs)`
- *   Starts a polling loop that calls GET /api/campaigns/{id}/sync-status every
- *   `intervalMs` milliseconds. Compares timestamps with locally cached values.
- *   Only re-fetches data that has changed.
- *
- * LINKED ENTITY SERIALIZATION GUARD:
- *   Validates LinkedEntity nesting depth before any serialization.
- *   See Phase 4.1 design notes — the guard prevents stack overflows from
- *   accidentally circular structures.
+ * CONCURRENCY PROTECTION:
+ *   PUT /api/characters/{id} accepts an `updatedAt` timestamp from the
+ *   client. If the server's record is newer the server returns 409 Conflict.
+ *   The frontend handles 409 by showing an error message and prompting the
+ *   user to reload before saving.
  *
  * @see src/lib/types/character.ts   for Character, LinkedEntity
  * @see src/lib/types/settings.ts    for CampaignSettings
- * @see src/lib/engine/GameEngine.svelte.ts for the $effect auto-save integration
- * @see ARCHITECTURE.md Phase 14.6 for the full specification.
+ * @see ARCHITECTURE.md §14 for the full specification.
  */
 
 import type { Character } from '../types/character';
@@ -45,46 +34,26 @@ import { createDefaultCampaignSettings } from '../types/settings';
 import type { ID } from '../types/primitives';
 
 // =============================================================================
-// STORAGE KEY CONSTANTS (localStorage fallback)
+// STORAGE KEY CONSTANTS (localStorage — UI preferences only)
 // =============================================================================
 
 const STORAGE_PREFIX = 'cv_';
 
+/**
+ * localStorage keys that survive the server-first refactoring.
+ * Character blobs, the character index, and sync timestamps are intentionally
+ * absent — characters live on the server only.
+ */
 const KEYS = {
-  CHARACTER_INDEX:     `${STORAGE_PREFIX}character_index`,
-  CHARACTER_PREFIX:    `${STORAGE_PREFIX}character_`,
   CAMPAIGN_SETTINGS:   `${STORAGE_PREFIX}campaign_settings`,
   ACTIVE_CHARACTER_ID: `${STORAGE_PREFIX}active_character_id`,
   /**
-   * User-level language preference.
-   * Stored independently of campaign settings so the user's language choice
-   * persists across campaigns and is not overwritten by campaign-level settings.
+   * User-level language preference, persisted independently of campaign
+   * settings so a language switch is not overwritten when campaign settings
+   * are reloaded from the server.
    */
   USER_LANGUAGE:       `${STORAGE_PREFIX}user_language`,
-  /** Cached sync timestamps from the last poll. */
-  SYNC_TIMESTAMPS:     `${STORAGE_PREFIX}sync_timestamps`,
 } as const;
-
-const MAX_LINK_DEPTH = 5;
-
-// =============================================================================
-// SERIALIZATION GUARD
-// =============================================================================
-
-/**
- * Validates LinkedEntity nesting depth to catch circular references before
- * JSON.stringify causes a stack overflow.
- */
-function validateLinkDepth(char: Character, depth = 0): boolean {
-  if (depth > MAX_LINK_DEPTH) {
-    console.warn(`[StorageManager] LinkedEntity nesting exceeds max depth (${MAX_LINK_DEPTH}). Possible circular reference.`);
-    return false;
-  }
-  for (const linked of char.linkedEntities) {
-    if (!validateLinkDepth(linked.characterData, depth + 1)) return false;
-  }
-  return true;
-}
 
 // =============================================================================
 // CSRF TOKEN UTILITY
@@ -92,7 +61,8 @@ function validateLinkDepth(char: Character, depth = 0): boolean {
 
 /**
  * The CSRF token fetched from GET /api/auth/me.
- * Stored in memory (not localStorage — tokens should not survive page reload).
+ * Stored in memory (not localStorage — tokens must not survive a page reload
+ * because the PHP session may have changed).
  */
 let csrfToken: string | null = null;
 
@@ -105,16 +75,13 @@ export function setCsrfToken(token: string): void {
 
 /**
  * Returns true when the CSRF token has been populated from GET /api/auth/me.
- * Used by mutating API methods to skip the request when the token is absent,
- * preventing a guaranteed 403 (and the side-effect of marking the API as unreachable)
- * during the brief window between page load and session bootstrap.
  */
 export function hasCsrfToken(): boolean {
   return csrfToken !== null;
 }
 
 /**
- * Returns headers for API requests, including CSRF and Content-Type.
+ * Returns headers for API requests, including CSRF token and Content-Type.
  * Exported so other stores (e.g. HomebrewStore) can share the same CSRF token
  * without duplicating the token-management logic.
  */
@@ -133,43 +100,41 @@ export function apiHeaders(): Record<string, string> {
 // =============================================================================
 
 /**
- * Dual-backend persistence manager: PHP API (primary) + localStorage (fallback).
+ * STORAGE MANAGER CLASS
  *
- * SYNCHRONOUS METHODS (localStorage):
- *   - `saveCharacter(char)`, `loadCharacter(id)`, `deleteCharacter(id)`
- *   - `loadAllCharacters()`, `listCharacterIds()`
- *   - `saveSettings(settings)`, `loadSettings()`
- *   - `saveActiveCharacterId(id)`, `loadActiveCharacterId()`
+ * PUBLIC INTERFACE SUMMARY:
  *
- * ASYNC API METHODS (fire-and-forget writes):
- *   - `saveCharacterToApi(char)` — PUT /api/characters/{id}
- *   - `deleteCharacterFromApi(id)` — DELETE /api/characters/{id}
- *   - `loadAllCharactersFromApi(campaignId)` — GET /api/characters?campaignId=X
- *   - `saveGmOverridesToApi(charId, overrides)` — PUT /api/characters/{id}/gm-overrides
+ *   localStorage (synchronous):
+ *     - `saveSettings(settings)` / `loadSettings()`
+ *     - `saveUserLanguage(lang)` / `loadUserLanguage()`
+ *     - `saveActiveCharacterId(id)` / `loadActiveCharacterId()`
  *
- * POLLING:
- *   - `startPolling(campaignId, onCampaign, onChars, intervalMs)`
- *   - `stopPolling()`
+ *   API reads (async):
+ *     - `loadCharacterFromApi(id)`         — GET /api/characters/{id}
+ *     - `loadAllCharactersFromApi(cId?)`   — GET /api/characters[?campaignId=X]
+ *     - `loadTemplateFromApi(id)`          — GET /api/templates/{id}
+ *     - `loadTemplatesFromApi(type?)`      — GET /api/templates
+ *
+ *   API writes (async, throw on any error):
+ *     - `createCharacterOnApi(char)`       — POST /api/characters
+ *     - `saveCharacterToApi(char)`         — PUT  /api/characters/{id}
+ *     - `deleteCharacterFromApi(id)`       — DELETE /api/characters/{id}
+ *     - `createTemplateOnApi(tmpl)`        — POST /api/templates
+ *     - `saveTemplateToApi(tmpl)`          — PUT  /api/templates/{id}
+ *     - `deleteTemplateFromApi(id)`        — DELETE /api/templates/{id}
+ *     - `saveGmOverridesToApi(charId, o)`  — PUT  /api/characters/{id}/gm-overrides
  */
 export class StorageManager {
   private readonly isAvailable: boolean;
 
   /**
-   * Whether the PHP API is reachable.
-   * Set to false when a fetch call fails (triggers offline fallback).
-   * Reset to true on next successful API call.
+   * Whether the PHP API was reachable on the last call.
+   * Used by the vault to decide whether to show an offline indicator.
    */
   isApiReachable = false;
 
-  /** Active polling interval handle (setInterval). */
-  private pollingInterval: ReturnType<typeof setInterval> | null = null;
-
-  /** Last known sync timestamps from the API. */
-  private lastSyncTimestamps: Record<string, number> = {};
-
   constructor() {
     this.isAvailable = this.#checkAvailability();
-    this.#loadCachedSyncTimestamps();
   }
 
   // ---------------------------------------------------------------------------
@@ -178,10 +143,6 @@ export class StorageManager {
 
   #checkAvailability(): boolean {
     try {
-      // In Node.js 25+, localStorage is a native global but requires the
-      // --localstorage-file flag to work (and warns without it). Accessing it
-      // in a non-browser environment (SSR, tests) is never useful, so we guard
-      // with a window check first — window is only defined in browsers.
       if (typeof window === 'undefined') return false;
       if (typeof localStorage === 'undefined') return false;
       const testKey = `${STORAGE_PREFIX}_test`;
@@ -193,110 +154,8 @@ export class StorageManager {
     }
   }
 
-  #loadCachedSyncTimestamps(): void {
-    if (!this.isAvailable) return;
-    try {
-      const json = localStorage.getItem(KEYS.SYNC_TIMESTAMPS);
-      if (json) this.lastSyncTimestamps = JSON.parse(json);
-    } catch {
-      // Ignore — timestamps will be re-fetched on next poll
-    }
-  }
-
-  #saveCachedSyncTimestamps(): void {
-    if (!this.isAvailable) return;
-    try {
-      localStorage.setItem(KEYS.SYNC_TIMESTAMPS, JSON.stringify(this.lastSyncTimestamps));
-    } catch {
-      // Non-critical — polling will continue on next interval
-    }
-  }
-
   // ---------------------------------------------------------------------------
-  // CHARACTER CRUD — SYNCHRONOUS (localStorage)
-  // ---------------------------------------------------------------------------
-
-  saveCharacter(char: Character): boolean {
-    if (!this.isAvailable) return false;
-    if (!char.id) {
-      console.warn('[StorageManager] saveCharacter: character has no ID. Skipping.');
-      return false;
-    }
-    if (!validateLinkDepth(char)) {
-      console.warn(`[StorageManager] saveCharacter: character "${char.id}" has excessive nesting. Save aborted.`);
-      return false;
-    }
-
-    try {
-      const json = JSON.stringify(char);
-      localStorage.setItem(`${KEYS.CHARACTER_PREFIX}${char.id}`, json);
-
-      const index = this.listCharacterIds();
-      if (!index.includes(char.id)) {
-        index.push(char.id);
-        localStorage.setItem(KEYS.CHARACTER_INDEX, JSON.stringify(index));
-      }
-
-      return true;
-    } catch (err) {
-      console.warn(`[StorageManager] saveCharacter: failed for "${char.id}":`, err);
-      return false;
-    }
-  }
-
-  loadCharacter(id: ID): Character | null {
-    if (!this.isAvailable) return null;
-    try {
-      const json = localStorage.getItem(`${KEYS.CHARACTER_PREFIX}${id}`);
-      if (!json) return null;
-      return JSON.parse(json) as Character;
-    } catch (err) {
-      console.warn(`[StorageManager] loadCharacter: failed for "${id}":`, err);
-      return null;
-    }
-  }
-
-  deleteCharacter(id: ID): boolean {
-    if (!this.isAvailable) return false;
-    try {
-      const key = `${KEYS.CHARACTER_PREFIX}${id}`;
-      if (!localStorage.getItem(key)) return false;
-      localStorage.removeItem(key);
-      const index = this.listCharacterIds().filter(i => i !== id);
-      localStorage.setItem(KEYS.CHARACTER_INDEX, JSON.stringify(index));
-      return true;
-    } catch (err) {
-      console.warn(`[StorageManager] deleteCharacter: failed for "${id}":`, err);
-      return false;
-    }
-  }
-
-  listCharacterIds(): ID[] {
-    if (!this.isAvailable) return [];
-    try {
-      const json = localStorage.getItem(KEYS.CHARACTER_INDEX);
-      return json ? (JSON.parse(json) as ID[]) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  loadAllCharacters(): Character[] {
-    const ids = this.listCharacterIds();
-    const characters: Character[] = [];
-    for (const id of ids) {
-      const char = this.loadCharacter(id);
-      if (char) {
-        characters.push(char);
-      } else {
-        console.warn(`[StorageManager] loadAllCharacters: skipping "${id}" (failed to load).`);
-      }
-    }
-    return characters;
-  }
-
-  // ---------------------------------------------------------------------------
-  // SETTINGS PERSISTENCE
+  // SETTINGS PERSISTENCE (localStorage)
   // ---------------------------------------------------------------------------
 
   saveSettings(settings: CampaignSettings): boolean {
@@ -322,13 +181,9 @@ export class StorageManager {
   }
 
   /**
-   * Persists the user's preferred UI language at the user level (independent of campaigns).
+   * Persists the user's preferred UI language independently of campaign settings.
    *
-   * This is called whenever `engine.settings.language` changes. Storing the language
-   * separately from `CampaignSettings` ensures the user's choice is remembered across
-   * all campaigns and is not reset when campaign settings are overwritten.
-   *
-   * @param lang - The BCP-47-style language code to save (e.g. `"en"`, `"fr"`, `"es"`).
+   * @param lang - BCP-47-style language code (e.g. `"en"`, `"fr"`).
    */
   saveUserLanguage(lang: string): void {
     if (!this.isAvailable) return;
@@ -340,12 +195,7 @@ export class StorageManager {
   }
 
   /**
-   * Loads the user's preferred UI language.
-   *
-   * Returns the stored language code, or `"en"` as the universal fallback if
-   * no preference has been saved yet.
-   *
-   * @returns The stored language code, defaulting to `"en"`.
+   * Loads the user's preferred UI language, defaulting to `"en"`.
    */
   loadUserLanguage(): string {
     if (!this.isAvailable) return 'en';
@@ -370,249 +220,45 @@ export class StorageManager {
     return localStorage.getItem(KEYS.ACTIVE_CHARACTER_ID);
   }
 
-  clearAll(): void {
-    if (!this.isAvailable) return;
-    for (const id of this.listCharacterIds()) {
-      localStorage.removeItem(`${KEYS.CHARACTER_PREFIX}${id}`);
-    }
-    localStorage.removeItem(KEYS.CHARACTER_INDEX);
-    localStorage.removeItem(KEYS.CAMPAIGN_SETTINGS);
-    localStorage.removeItem(KEYS.ACTIVE_CHARACTER_ID);
-  }
-
   // ---------------------------------------------------------------------------
-  // ASYNC API CALLS — Fire-and-forget writes (2000ms debounce recommended)
+  // ASYNC API — CHARACTER READS
   // ---------------------------------------------------------------------------
 
   /**
-   * Creates a new character on the PHP API via POST /api/characters.
-   * Falls back to localStorage-only if the API is unreachable.
+   * Fetches a single character by ID from the server.
    *
-   * WHY POST AND NOT PUT?
-   *   PUT /api/characters/{id} requires the character to already exist in the DB
-   *   (CharacterController::update() returns 404 if the id is unknown). For new
-   *   characters created from the vault UI, we must POST to create the record first.
-   *   Subsequent auto-saves (debounced) then use PUT via saveCharacterToApi().
+   * Returns `null` when the character does not exist (404) or is not accessible
+   * (403 treated as not-found to avoid information leakage).
+   * Throws for any other non-OK status (network errors, 500, etc.).
    *
-   * @param char - The new character to persist server-side.
+   * @param id - The character ID.
    */
-  async createCharacterOnApi(char: Character): Promise<void> {
-    // Templates are stored in the `templates` table, not `characters`.
-    // Route them to the dedicated templates endpoint.
-    if (char.isTemplate) {
-      return this.createTemplateOnApi(char);
-    }
-
-    // Always persist locally first so the UI is responsive offline.
-    this.saveCharacter(char);
-
-    if (!hasCsrfToken()) return;
-
+  async loadCharacterFromApi(id: ID): Promise<Character | null> {
     try {
-      const response = await fetch('/api/characters', {
-        method: 'POST',
-        headers: apiHeaders(),
+      const response = await fetch(`/api/characters/${id}`, {
+        headers:     apiHeaders(),
         credentials: 'include',
-        body: JSON.stringify(char),
       });
-
+      if (response.status === 404 || response.status === 403) return null;
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this.isApiReachable = true;
+      return (await response.json()) as Character;
     } catch (err) {
       this.isApiReachable = false;
-      console.warn(`[StorageManager] createCharacterOnApi: API unavailable. Using localStorage only. (${err})`);
-    }
-  }
-
-  /**
-   * Creates a new template via POST /api/templates.
-   * Used when the GM creates a new NPC or Monster template from the vault.
-   *
-   * ROUTING: Called by createCharacterOnApi() when char.isTemplate === true.
-   *
-   * @param tmpl - The template Character object (must have isTemplate: true and npcType set).
-   */
-  async createTemplateOnApi(tmpl: Character): Promise<void> {
-    // Persist locally as a regular character entry so the editor works offline.
-    this.saveCharacter(tmpl);
-
-    if (!hasCsrfToken()) return;
-
-    try {
-      const response = await fetch('/api/templates', {
-        method: 'POST',
-        headers: apiHeaders(),
-        credentials: 'include',
-        body: JSON.stringify(tmpl),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      this.isApiReachable = true;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] createTemplateOnApi: API unavailable. Using localStorage only. (${err})`);
-    }
-  }
-
-  /**
-   * Saves a character to the PHP API via PUT /api/characters/{id}.
-   * Falls back to localStorage if the API is unreachable.
-   *
-   * DEBOUNCE: The caller should debounce this with 2000ms to avoid spamming.
-   * (The GameEngine's #debouncedSaveCharacter uses 500ms; for API calls, override to 2000ms.)
-   */
-  async saveCharacterToApi(char: Character): Promise<void> {
-    // Templates are stored in the `templates` table — route to templates endpoint.
-    if (char.isTemplate) {
-      return this.saveTemplateToApi(char);
-    }
-
-    // Always save to localStorage as a local cache (offline fallback)
-    this.saveCharacter(char);
-
-    // Skip the API call if the CSRF token has not been populated yet.
-    // This prevents a guaranteed 403 (and isApiReachable = false) during the
-    // brief window between page load and GET /api/auth/me completing.
-    // The character is already persisted locally above; the next auto-save
-    // triggered after the token is set will sync the data to the server.
-    if (!hasCsrfToken()) return;
-
-    try {
-      const response = await fetch(`/api/characters/${char.id}`, {
-        method: 'PUT',
-        headers: apiHeaders(),
-        credentials: 'include',
-        body: JSON.stringify(char),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      this.isApiReachable = true;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] saveCharacterToApi: API unavailable. Using localStorage only. (${err})`);
-    }
-  }
-
-  /**
-   * Saves a template via PUT /api/templates/{id}.
-   * Called automatically by saveCharacterToApi() when char.isTemplate === true,
-   * so the character sheet auto-save pipeline works transparently for templates.
-   *
-   * @param tmpl - The template Character object.
-   */
-  async saveTemplateToApi(tmpl: Character): Promise<void> {
-    this.saveCharacter(tmpl);
-
-    if (!hasCsrfToken()) return;
-
-    try {
-      const response = await fetch(`/api/templates/${tmpl.id}`, {
-        method: 'PUT',
-        headers: apiHeaders(),
-        credentials: 'include',
-        body: JSON.stringify(tmpl),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      this.isApiReachable = true;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] saveTemplateToApi: API unavailable. Using localStorage only. (${err})`);
-    }
-  }
-
-  /**
-   * Loads a single template by ID via GET /api/templates/{id}.
-   * Falls back to localStorage if the API is unreachable.
-   *
-   * @param id  Template ID (should begin with 'tmpl_').
-   * @returns   The template as a Character object, or null if not found.
-   */
-  async loadTemplateFromApi(id: string): Promise<Character | null> {
-    try {
-      const response = await fetch(`/api/templates/${id}`, {
-        headers: apiHeaders(),
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        if (response.status === 404) return null;
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const tmpl = (await response.json()) as Character;
-      this.isApiReachable = true;
-      this.saveCharacter(tmpl); // Cache locally
-      return tmpl;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] loadTemplateFromApi: API unavailable. Trying localStorage. (${err})`);
-      return this.loadCharacter(id);
-    }
-  }
-
-  /**
-   * Loads all templates from GET /api/templates (GM only).
-   * Returns NPC and Monster templates as Character objects (with isTemplate: true).
-   *
-   * @param type - Optional filter: 'npc' | 'monster'. Omit for all templates.
-   * @returns Array of template Character objects, or empty array on failure.
-   */
-  async loadTemplatesFromApi(type?: 'npc' | 'monster'): Promise<Character[]> {
-    try {
-      const url = type ? `/api/templates?type=${type}` : '/api/templates';
-      const response = await fetch(url, {
-        headers: apiHeaders(),
-        credentials: 'include',
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const tmpls = (await response.json()) as Character[];
-      this.isApiReachable = true;
-      // Cache each template locally for offline access.
-      for (const tmpl of tmpls) {
-        this.saveCharacter(tmpl);
-      }
-      return tmpls;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] loadTemplatesFromApi: API unavailable. (${err})`);
-      return [];
-    }
-  }
-
-  /**
-   * Deletes a template via DELETE /api/templates/{id} (GM only).
-   *
-   * @param id - Template ID (should begin with 'tmpl_').
-   */
-  async deleteTemplateFromApi(id: string): Promise<void> {
-    this.deleteCharacter(id); // Remove from localStorage cache.
-    try {
-      await fetch(`/api/templates/${id}`, {
-        method: 'DELETE',
-        headers: apiHeaders(),
-        credentials: 'include',
-      });
-      this.isApiReachable = true;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] deleteTemplateFromApi: API unavailable. (${err})`);
+      throw err;
     }
   }
 
   /**
    * Loads characters from the PHP API.
    *
-   * When `campaignId` is provided (campaign-scoped vault): returns characters for
-   * that campaign, applying server-side visibility rules (GMs see all, players see
-   * their own).
+   * - With `campaignId`: returns characters for that campaign (visibility rules applied).
+   * - Without `campaignId`: returns all characters the caller is allowed to see.
    *
-   * When `campaignId` is omitted (global vault `/vault`): returns all characters the
-   * caller is allowed to see — all characters for GMs, own characters for players.
+   * Returns `[]` on any API failure (the caller shows an empty list rather than
+   * crashing; the vault page shows an error indicator via `isApiReachable`).
    *
-   * Caches each character in localStorage for offline access.
-   *
-   * @param campaignId - Optional. If provided, filters results to this campaign.
-   * @returns Array of characters from the API, or from localStorage if API is down.
+   * @param campaignId - Optional campaign scope.
    */
   async loadAllCharactersFromApi(campaignId?: ID): Promise<Character[]> {
     try {
@@ -620,187 +266,251 @@ export class StorageManager {
         ? `/api/characters?campaignId=${encodeURIComponent(campaignId)}`
         : '/api/characters';
       const response = await fetch(url, {
-        headers: apiHeaders(),
+        headers:     apiHeaders(),
         credentials: 'include',
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const chars = (await response.json()) as Character[];
       this.isApiReachable = true;
-
-      // Update localStorage cache
-      for (const char of chars) {
-        this.saveCharacter(char);
-      }
-
-      return chars;
+      return (await response.json()) as Character[];
     } catch (err) {
       this.isApiReachable = false;
-      console.warn(`[StorageManager] loadAllCharactersFromApi: API unavailable. Using localStorage. (${err})`);
-      return this.loadAllCharacters();
+      console.warn(`[StorageManager] loadAllCharactersFromApi: failed. (${err})`);
+      return [];
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // ASYNC API — CHARACTER WRITES (throw on any error)
+  // ---------------------------------------------------------------------------
+
   /**
-   * Deletes a character via DELETE /api/characters/{id}.
+   * Creates a new character on the server via POST /api/characters.
+   * Throws on any non-OK response so the UI can display the error.
+   *
+   * WHY POST AND NOT PUT?
+   *   PUT /api/characters/{id} requires the record to already exist in the DB.
+   *   For brand-new characters, POST creates the record first.
+   *
+   * @param char - The new character to persist.
+   */
+  async createCharacterOnApi(char: Character): Promise<void> {
+    if (char.isTemplate) {
+      return this.createTemplateOnApi(char);
+    }
+
+    const response = await fetch('/api/characters', {
+      method:      'POST',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify(char),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
+    }
+    this.isApiReachable = true;
+  }
+
+  /**
+   * Saves a character to the server via PUT /api/characters/{id}.
+   * Throws on any non-OK response — including 409 Conflict (stale save).
+   *
+   * Returns the server's new `updatedAt` timestamp on success so the caller
+   * can update the in-memory character before the next save.
+   *
+   * Callers should catch `ApiError` and inspect `.status`:
+   *   - 409 → "Character modified elsewhere, reload before saving."
+   *   - 429 → "Too many requests, wait and try again."
+   *   - others → generic save error.
+   *
+   * @param char - The character to save (should include `updatedAt` for concurrency check).
+   * @returns The server-assigned `updatedAt` timestamp.
+   */
+  async saveCharacterToApi(char: Character): Promise<number> {
+    if (char.isTemplate) {
+      await this.saveTemplateToApi(char);
+      return Date.now() / 1000 | 0;
+    }
+
+    const response = await fetch(`/api/characters/${char.id}`, {
+      method:      'PUT',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify(char),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(
+        response.status,
+        body['message'] as string | undefined,
+        body['serverUpdatedAt'] as number | undefined,
+      );
+    }
+    this.isApiReachable = true;
+    const result = (await response.json().catch(() => ({}))) as { updatedAt?: number };
+    return result.updatedAt ?? (Date.now() / 1000 | 0);
+  }
+
+  /**
+   * Deletes a character from the server. Throws on any non-OK response.
    */
   async deleteCharacterFromApi(id: ID): Promise<void> {
-    this.deleteCharacter(id);
-
-    try {
-      await fetch(`/api/characters/${id}`, {
-        method: 'DELETE',
-        headers: apiHeaders(),
-        credentials: 'include',
-      });
-      this.isApiReachable = true;
-    } catch (err) {
-      this.isApiReachable = false;
-      console.warn(`[StorageManager] deleteCharacterFromApi: API unavailable. (${err})`);
+    const response = await fetch(`/api/characters/${id}`, {
+      method:      'DELETE',
+      headers:     apiHeaders(),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
     }
+    this.isApiReachable = true;
   }
 
   /**
    * Saves GM per-character overrides via PUT /api/characters/{id}/gm-overrides.
-   * GM-only endpoint — the frontend should only call this when isGameMaster is true.
+   * Throws on any non-OK response.
    */
   async saveGmOverridesToApi(charId: ID, overrides: unknown[]): Promise<void> {
+    const response = await fetch(`/api/characters/${charId}/gm-overrides`, {
+      method:      'PUT',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify({ gmOverrides: overrides }),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
+    }
+    this.isApiReachable = true;
+  }
+
+  // ---------------------------------------------------------------------------
+  // ASYNC API — TEMPLATE READS
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Loads a single template by ID. Returns `null` on 404/403.
+   */
+  async loadTemplateFromApi(id: string): Promise<Character | null> {
     try {
-      await fetch(`/api/characters/${charId}/gm-overrides`, {
-        method: 'PUT',
-        headers: apiHeaders(),
+      const response = await fetch(`/api/templates/${id}`, {
+        headers:     apiHeaders(),
         credentials: 'include',
-        body: JSON.stringify({ gmOverrides: overrides }),
       });
+      if (response.status === 404 || response.status === 403) return null;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       this.isApiReachable = true;
+      return (await response.json()) as Character;
     } catch (err) {
       this.isApiReachable = false;
-      console.warn(`[StorageManager] saveGmOverridesToApi: API unavailable. (${err})`);
+      console.warn(`[StorageManager] loadTemplateFromApi: failed. (${err})`);
+      return null;
+    }
+  }
+
+  /**
+   * Loads all templates from GET /api/templates (GM only).
+   * Returns `[]` on API failure.
+   *
+   * @param type - Optional filter: `'npc'` | `'monster'`.
+   */
+  async loadTemplatesFromApi(type?: 'npc' | 'monster'): Promise<Character[]> {
+    try {
+      const url = type ? `/api/templates?type=${type}` : '/api/templates';
+      const response = await fetch(url, {
+        headers:     apiHeaders(),
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      this.isApiReachable = true;
+      return (await response.json()) as Character[];
+    } catch (err) {
+      this.isApiReachable = false;
+      console.warn(`[StorageManager] loadTemplatesFromApi: failed. (${err})`);
+      return [];
     }
   }
 
   // ---------------------------------------------------------------------------
-  // POLLING MECHANISM (ARCHITECTURE.md section 19)
+  // ASYNC API — TEMPLATE WRITES (throw on any error)
   // ---------------------------------------------------------------------------
 
   /**
-   * Starts the sync polling loop.
-   *
-   * HOW POLLING WORKS:
-   *   1. Every `intervalMs` milliseconds, call GET /api/campaigns/{id}/sync-status.
-   *   2. Compare returned timestamps with `this.lastSyncTimestamps`.
-   *   3. If `campaignUpdatedAt` changed → call `onCampaignUpdated()`.
-   *   4. For each changed character timestamp → collect IDs for re-fetch.
-   *   5. Call `onCharactersUpdated(changedCharacterIds)` with the list.
-   *   6. If `rulesHash` changed → clear the localStorage batch cache and call
-   *      `onRulesUpdated()` so the caller can re-invoke `loadRuleSources()`.
-   *   7. Update `this.lastSyncTimestamps` and persist to localStorage.
-   *
-   * GRACEFUL DEGRADATION:
-   *   If the API is unreachable (fetch throws), the interval continues.
-   *   The next tick will try again. No error is shown to the user for polling failures
-   *   (they will just not see live updates from other players).
-   *
-   * @param campaignId          - The campaign to poll for.
-   * @param onCampaignUpdated   - Called when the campaign itself changed.
-   * @param onCharactersUpdated - Called with an array of character IDs that changed.
-   * @param onRulesUpdated      - Optional. Called when the server-side rules hash
-   *                              changes (GM uploaded/deleted a rule file). The
-   *                              localStorage batch cache is cleared automatically
-   *                              before this callback fires; the caller should
-   *                              re-invoke `dataLoader.loadRuleSources()`.
-   * @param intervalMs          - Polling interval in milliseconds (default: 7000).
+   * Creates a new template via POST /api/templates. Throws on any non-OK response.
    */
-  startPolling(
-    campaignId: ID,
-    onCampaignUpdated: () => void,
-    onCharactersUpdated: (changedIds: ID[]) => void,
-    onRulesUpdated?: () => void,
-    intervalMs = 7000
-  ): void {
-    this.stopPolling(); // Clear any existing interval
-
-    const poll = async () => {
-      try {
-        const response = await fetch(`/api/campaigns/${campaignId}/sync-status`, {
-          headers: apiHeaders(),
-          credentials: 'include',
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const status = (await response.json()) as {
-          campaignUpdatedAt: number;
-          characterTimestamps: Record<ID, number>;
-          rulesHash?: string;
-        };
-
-        this.isApiReachable = true;
-
-        // Check campaign-level changes
-        const lastCampaignTs = this.lastSyncTimestamps['__campaign__'] ?? 0;
-        if (status.campaignUpdatedAt > lastCampaignTs) {
-          this.lastSyncTimestamps['__campaign__'] = status.campaignUpdatedAt;
-          onCampaignUpdated();
-        }
-
-        // Check per-character changes
-        const changedCharacterIds: ID[] = [];
-        for (const [charId, ts] of Object.entries(status.characterTimestamps)) {
-          const lastCharTs = this.lastSyncTimestamps[charId] ?? 0;
-          if (ts > lastCharTs) {
-            this.lastSyncTimestamps[charId] = ts;
-            changedCharacterIds.push(charId);
-          }
-        }
-
-        if (changedCharacterIds.length > 0) {
-          onCharactersUpdated(changedCharacterIds);
-        }
-
-        // Check rules hash — clear localStorage cache and notify caller when it changes.
-        // This fires when a GM uploads, modifies, or deletes a rule file in storage/rules/
-        // or static/rules/, ensuring players pick up the changes within one polling cycle.
-        if (status.rulesHash !== undefined) {
-          const lastRulesHash = this.lastSyncTimestamps['__rules_hash__'] as unknown as string | undefined;
-          if (lastRulesHash !== undefined && lastRulesHash !== status.rulesHash) {
-            // Clear the localStorage batch cache so the next loadRuleSources() fetches fresh data.
-            if (typeof localStorage !== 'undefined') {
-              try {
-                localStorage.removeItem('cv_rules_batch_v1');
-                localStorage.removeItem('cv_rules_etag_v1');
-              } catch { /* localStorage unavailable */ }
-            }
-            onRulesUpdated?.();
-          }
-          // Store the hash as a string in the numeric timestamps map.
-          // TypeScript is satisfied because Record<string, number> is widened here;
-          // the __rules_hash__ key is only ever compared as a string.
-          (this.lastSyncTimestamps as Record<string, unknown>)['__rules_hash__'] = status.rulesHash;
-        }
-
-        // Persist timestamps so they survive page reload
-        this.#saveCachedSyncTimestamps();
-      } catch {
-        this.isApiReachable = false;
-        // Silently ignore polling failures (offline mode — no log spam)
-      }
-    };
-
-    this.pollingInterval = setInterval(poll, intervalMs);
-    // Run immediately on start too
-    poll();
+  async createTemplateOnApi(tmpl: Character): Promise<void> {
+    const response = await fetch('/api/templates', {
+      method:      'POST',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify(tmpl),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
+    }
+    this.isApiReachable = true;
   }
 
   /**
-   * Stops the polling loop.
+   * Saves a template via PUT /api/templates/{id}. Throws on any non-OK response.
    */
-  stopPolling(): void {
-    if (this.pollingInterval !== null) {
-      clearInterval(this.pollingInterval);
-      this.pollingInterval = null;
+  async saveTemplateToApi(tmpl: Character): Promise<void> {
+    const response = await fetch(`/api/templates/${tmpl.id}`, {
+      method:      'PUT',
+      headers:     apiHeaders(),
+      credentials: 'include',
+      body:        JSON.stringify(tmpl),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
     }
+    this.isApiReachable = true;
+  }
+
+  /**
+   * Deletes a template via DELETE /api/templates/{id}. Throws on any non-OK response.
+   */
+  async deleteTemplateFromApi(id: string): Promise<void> {
+    const response = await fetch(`/api/templates/${id}`, {
+      method:      'DELETE',
+      headers:     apiHeaders(),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+      throw new ApiError(response.status, body['message'] as string | undefined);
+    }
+    this.isApiReachable = true;
+  }
+}
+
+// =============================================================================
+// API ERROR CLASS
+// =============================================================================
+
+/**
+ * Thrown by all StorageManager API write methods when the server returns a
+ * non-OK response.
+ *
+ * Callers should inspect `.status` to decide how to present the error:
+ *   - 409  → stale save conflict  (`serverUpdatedAt` contains the server's timestamp)
+ *   - 429  → rate limited
+ *   - 403  → access denied
+ *   - 404  → character not found (e.g. deleted by GM)
+ *   - 5xx  → server error
+ */
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    message?: string,
+    /** Only set on 409 Conflict — the server's current `updated_at` value. */
+    public readonly serverUpdatedAt?: number,
+  ) {
+    super(message ?? `HTTP ${status}`);
+    this.name = 'ApiError';
   }
 }
 
@@ -812,9 +522,7 @@ export class StorageManager {
  * Creates a debounced function that delays execution until `delayMs` ms have
  * passed without another call.
  *
- * WHY TWO DELAY VALUES?
- *   - localStorage writes: 500ms (fast, local I/O)
- *   - API writes (PUT /api/characters/{id}): 2000ms (avoid spamming the server)
+ * Used by HomebrewStore for its explicit-save debounce.
  *
  * @param fn      - The function to debounce.
  * @param delayMs - Milliseconds to wait after the last call.
@@ -841,15 +549,12 @@ export function debounce<T extends unknown[]>(
 /**
  * The single shared `StorageManager` instance used across the entire application.
  *
- * Provides CRUD operations for `Character` objects and `CampaignSettings` via the
- * PHP/SQLite backend API. Also manages CSRF tokens, user language preferences, and
- * the server-poll mechanism that keeps campaign data in sync across players.
+ * Provides localStorage persistence for UI preferences and settings, plus async
+ * API methods to read/write characters and templates on the PHP backend.
  *
- * Import pattern in Svelte components and the GameEngine:
+ * Import pattern:
  *   ```typescript
  *   import { storageManager } from '$lib/engine/StorageManager';
  *   ```
- *
- * @see StorageManager — the class definition above for method documentation.
  */
 export const storageManager = new StorageManager();

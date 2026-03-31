@@ -30,12 +30,13 @@
  *     DELETE /api/campaigns/{id}/characters/{charId}     → CampaignController::removeCharacter($id, $charId)
  *
  *   Characters:
- *     GET    /api/characters              → CharacterController::index()  (global: all/own)
- *     GET    /api/characters?campaignId=X → CharacterController::index()  (campaign-scoped)
- *     POST   /api/characters              → CharacterController::create()
- *     PUT    /api/characters/{id}         → CharacterController::update($id)
- *     PUT    /api/characters/{id}/gm-overrides → CharacterController::updateGmOverrides($id)
- *     DELETE /api/characters/{id}         → CharacterController::delete($id)
+     *     GET    /api/characters              → CharacterController::index()  (global: all/own)
+     *     GET    /api/characters?campaignId=X → CharacterController::index()  (campaign-scoped)
+     *     POST   /api/characters              → CharacterController::create()
+     *     GET    /api/characters/{id}         → CharacterController::show($id)
+     *     PUT    /api/characters/{id}         → CharacterController::update($id)
+     *     PUT    /api/characters/{id}/gm-overrides → CharacterController::updateGmOverrides($id)
+     *     DELETE /api/characters/{id}         → CharacterController::delete($id)
  *
    *   Rules:
  *     GET    /api/rules/batch                   → RulesController::batch() (all files + ETag, single request)
@@ -101,6 +102,33 @@ require_once __DIR__ . '/controllers/ServerSettingsController.php';
 require_once __DIR__ . '/controllers/UiLocalesController.php';
 require_once __DIR__ . '/controllers/UserController.php';
 require_once __DIR__ . '/controllers/TemplateController.php';
+
+// ============================================================
+// FIRST-RUN AUTO-MIGRATION
+// ============================================================
+
+// Create / update the database schema automatically if the database file does
+// not exist yet.  This makes "drop the folder on a PHP server and browse to it"
+// work without any manual step.
+//
+// WHEN IT FIRES:
+//   - First request after a fresh deployment (DB file absent).
+//   - After a server migration where the DB path was changed.
+//
+// WHEN IT DOES NOT FIRE:
+//   - APP_TESTING=1 (PHPUnit uses sqlite::memory: which does not need a file).
+//   - DB file already exists (normal operation).
+//
+// IDEMPOTENCY:
+//   migrate() uses CREATE TABLE IF NOT EXISTS / ADD COLUMN IF NOT EXISTS, so
+//   running it again on an existing database is safe (no data loss).
+if (!APP_TESTING && !file_exists(DB_PATH)) {
+    require_once __DIR__ . '/migrate.php';
+    migrate(Database::getInstance());
+    Logger::info('DB', 'Auto-migration: database initialised on first request', [
+        'path' => DB_PATH,
+    ]);
+}
 
 // ============================================================
 // GLOBAL MIDDLEWARE
@@ -248,6 +276,9 @@ try {
     } elseif ($path === '/characters' && $method === 'POST') {
         verifyCsrfToken();
         CharacterController::create();
+
+    } elseif (preg_match('#^/characters/([^/]+)$#', $path, $m) && $method === 'GET') {
+        CharacterController::show($m[1]);
 
     } elseif (preg_match('#^/characters/([^/]+)$#', $path, $m) && $method === 'PUT') {
         verifyCsrfToken();

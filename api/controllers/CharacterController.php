@@ -224,6 +224,130 @@ class CharacterController
     }
 
     // ============================================================
+    // GET /api/characters/{id}
+    // ============================================================
+
+    /**
+     * Returns a single character by ID.
+     *
+     * VISIBILITY RULES (mirrors index()):
+     *   - Owner or GM: full character data + raw gmOverrides (GM only).
+     *   - Player accessing an NPC they do not own: applies playerVisibility rules.
+     *   - No access: 404 (same response as not found — no information leakage).
+     */
+    public static function show(string $id): void
+    {
+        $user = requireAuth();
+        $db   = Database::getInstance();
+
+        $stmt = $db->prepare('SELECT id, campaign_id, owner_id, name, is_npc, npc_type, character_json, gm_overrides_json, updated_at FROM characters WHERE id = ?');
+        $stmt->execute([$id]);
+        $c = $stmt->fetch();
+
+        if (!$c) {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Character '{$id}' not found."]);
+            return;
+        }
+
+        $isOwner = ($c['owner_id'] === $user['id']);
+        $isGm    = (bool)$user['is_game_master'];
+
+        if ($isOwner || $isGm) {
+            // Full data path — same logic as index() for own characters.
+            $char = json_decode($c['character_json'], true) ?? [];
+            $char['id']        = $c['id'];
+            $char['campaignId'] = $c['campaign_id'];
+            $char['ownerId']   = $c['owner_id'];
+            $char['name']      = $c['name'];
+            $char['isNPC']     = (bool)$c['is_npc'];
+            $char['npcType']   = $c['npc_type'];
+            $char['updatedAt'] = (int)$c['updated_at'];
+
+            if ($isGm) {
+                // GMs receive raw gmOverrides as a separate field.
+                $char['gmOverrides'] = json_decode($c['gm_overrides_json'], true) ?? [];
+            } else {
+                // Player sees own character with GM overrides merged invisibly.
+                $gmOverrides = json_decode($c['gm_overrides_json'] ?? '[]', true) ?? [];
+                if (!empty($gmOverrides) && is_array($gmOverrides)) {
+                    if (!isset($char['activeFeatures']) || !is_array($char['activeFeatures'])) {
+                        $char['activeFeatures'] = [];
+                    }
+                    foreach ($gmOverrides as $override) {
+                        if (!is_array($override) || empty($override['featureId'])) continue;
+                        $sanitized = $override;
+                        if (isset($sanitized['instanceId'])) {
+                            $sanitized['instanceId'] = 'afi_injected_' . md5($override['instanceId']);
+                        }
+                        $char['activeFeatures'][] = $sanitized;
+                    }
+                }
+                unset($char['gmOverrides']);
+            }
+
+            Logger::info('Char', 'Show', ['id' => $id]);
+            http_response_code(200);
+            echo json_encode($char);
+            return;
+        }
+
+        // Player accessing a character they don't own — apply NPC visibility rules.
+        if (!(bool)$c['is_npc']) {
+            // Players cannot see other players' characters.
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Character '{$id}' not found."]);
+            return;
+        }
+
+        $rawData    = json_decode($c['character_json'], true) ?? [];
+        $visibility = $rawData['playerVisibility'] ?? 'hidden';
+
+        if ($visibility === 'hidden') {
+            http_response_code(404);
+            echo json_encode(['error' => 'NotFound', 'message' => "Character '{$id}' not found."]);
+            return;
+        }
+
+        $base = [
+            'id'                => $c['id'],
+            'campaignId'        => $c['campaign_id'],
+            'ownerId'           => $c['owner_id'],
+            'name'              => $c['name'],
+            'isNPC'             => true,
+            'npcType'           => $c['npc_type'],
+            'posterUrl'         => $rawData['posterUrl']  ?? null,
+            'playerName'        => $rawData['playerName'] ?? null,
+            'updatedAt'         => (int)$c['updated_at'],
+            '_playerVisibility' => $visibility,
+            '_playerRestricted' => true,
+        ];
+
+        if ($visibility === 'name') {
+            $result = $base;
+        } elseif ($visibility === 'name_level') {
+            $base['classLevels'] = $rawData['classLevels'] ?? [];
+            $result = $base;
+        } else { // 'full'
+            $result                      = $rawData;
+            $result['id']                = $c['id'];
+            $result['campaignId']        = $c['campaign_id'];
+            $result['ownerId']           = $c['owner_id'];
+            $result['name']              = $c['name'];
+            $result['isNPC']             = true;
+            $result['npcType']           = $c['npc_type'];
+            $result['updatedAt']         = (int)$c['updated_at'];
+            $result['_playerVisibility'] = 'full';
+            $result['_playerRestricted'] = true;
+            unset($result['gmOverrides']);
+        }
+
+        Logger::info('Char', 'Show', ['id' => $id]);
+        http_response_code(200);
+        echo json_encode($result);
+    }
+
+    // ============================================================
     // POST /api/characters
     // ============================================================
 
@@ -300,14 +424,22 @@ class CharacterController
      * Saves the character sheet state.
      *
      * OWNERSHIP VERIFICATION: requires ownerId === userId OR GM.
-     * Updates `updated_at` timestamp (triggers sync polling on other clients).
+     * Updates `updated_at` timestamp.
+     *
+     * CONCURRENCY PROTECTION:
+     *   If the request body includes `updatedAt` (the client's last-known server
+     *   timestamp), the server compares it against the DB row's `updated_at`.
+     *   If the client's value is older, the server returns 409 Conflict so the
+     *   frontend can alert the user instead of silently overwriting newer data.
+     *   Clients that omit `updatedAt` (e.g. first save of a new character) bypass
+     *   the check and always succeed.
      */
     public static function update(string $id): void
     {
         $user = requireAuth();
         $db = Database::getInstance();
 
-        $stmt = $db->prepare('SELECT owner_id FROM characters WHERE id = ?');
+        $stmt = $db->prepare('SELECT owner_id, updated_at FROM characters WHERE id = ?');
         $stmt->execute([$id]);
         $char = $stmt->fetch();
 
@@ -325,6 +457,24 @@ class CharacterController
 
         $body = json_decode(file_get_contents('php://input'), true) ?? [];
         $now  = time();
+
+        // Concurrency check: reject stale saves to prevent data loss.
+        // The client sends `updatedAt` from the character it loaded; if the DB
+        // row has been updated since then by another session, return 409 Conflict.
+        if (isset($body['updatedAt']) && (int)$body['updatedAt'] < (int)$char['updated_at']) {
+            Logger::warn('Char', '409 Conflict — stale save rejected', [
+                'id'            => $id,
+                'clientTs'      => $body['updatedAt'],
+                'serverTs'      => $char['updated_at'],
+            ]);
+            http_response_code(409);
+            echo json_encode([
+                'error'         => 'Conflict',
+                'message'       => 'This character was modified by another session. Reload to get the latest version before saving.',
+                'serverUpdatedAt' => (int)$char['updated_at'],
+            ]);
+            return;
+        }
 
         $name   = $body['name'] ?? null;
         $isNPC  = isset($body['isNPC']) ? ((bool)$body['isNPC'] ? 1 : 0) : null;

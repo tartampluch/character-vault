@@ -7,52 +7,33 @@
  *   - `Character.playerName`       — optional player name / nickname, PCs only.
  *   - `Character.isNPC`            — discriminator between PCs and NPCs.
  *   - `Character.playerVisibility` — GM-controlled NPC visibility level.
- *   - `StorageManager` round-trip  — all fields survive save → load.
+ *   - JSON serialisation round-trip — all fields survive JSON.stringify → JSON.parse
+ *     (the path taken when data is sent to and received from the server).
  *   - `canDelete` permission logic — extracted as a pure helper and tested in
  *     isolation (the same logic used in the vault page).
  *
  * WHAT IS NOT TESTED HERE:
  *   - The Svelte UI rendering (no jsdom in this test environment).
  *   - `GameEngine.setPlayerVisibility()` / `GameEngine.removeCharacterFromVault()`
- *     — require Svelte rune context.  The underlying character mutation and the
- *     StorageManager.deleteCharacterFromApi() path are covered by other test files.
+ *     — require Svelte rune context.
  *
  * @see src/lib/components/core/BasicInfo.svelte             — name / playerName inputs
  * @see src/lib/components/gm/GmCharacterOverridesPanel.svelte — playerVisibility selector
  * @see src/lib/types/character.ts                            — Character type definition
- * @see src/lib/engine/StorageManager.ts                      — persistence layer
  * @see src/lib/components/vault/CharacterCard.svelte         — subtitle display logic
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createEmptyCharacter } from '$lib/engine/GameEngine.svelte';
-import { StorageManager } from '$lib/engine/StorageManager';
 import type { Character } from '$lib/types/character';
 
 // =============================================================================
-// MOCK localStorage
+// HELPER — JSON round-trip (mirrors the PUT body → server → GET response path)
 // =============================================================================
 
-function createLocalStorageMock() {
-  const store = new Map<string, string>();
-  return {
-    getItem:    (key: string) => store.get(key) ?? null,
-    setItem:    (key: string, value: string) => { store.set(key, value); },
-    removeItem: (key: string) => { store.delete(key); },
-    clear:      () => { store.clear(); },
-    key:        (index: number) => Array.from(store.keys())[index] ?? null,
-    get length() { return store.size; },
-  };
+function jsonRoundTrip(char: Character): Character {
+  return JSON.parse(JSON.stringify(char)) as Character;
 }
-
-beforeEach(() => {
-  vi.stubGlobal('window', {});
-  vi.stubGlobal('localStorage', createLocalStorageMock());
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
 
 // =============================================================================
 // HELPERS
@@ -171,69 +152,43 @@ describe('Character.isNPC — PC vs NPC discriminator', () => {
 });
 
 // =============================================================================
-// 4. StorageManager round-trip — name and playerName survive save/load
+// 4. JSON round-trip — name and playerName survive serialisation
 // =============================================================================
 
-describe('StorageManager — name and playerName round-trip', () => {
-  it('persists character name and retrieves it intact', () => {
-    const sm   = new StorageManager();
+describe('JSON serialisation — name and playerName round-trip', () => {
+  it('character name survives JSON.stringify → JSON.parse', () => {
     const char = makePC('char_030', 'Selûne Dawnbringer');
-    sm.saveCharacter(char);
-
-    const loaded = sm.loadCharacter('char_030');
-    expect(loaded?.name).toBe('Selûne Dawnbringer');
+    expect(jsonRoundTrip(char).name).toBe('Selûne Dawnbringer');
   });
 
-  it('persists playerName and retrieves it intact', () => {
-    const sm   = new StorageManager();
+  it('playerName survives JSON round-trip', () => {
     const char = makePC('char_031');
     char.playerName = 'Martin';
-    sm.saveCharacter(char);
-
-    const loaded = sm.loadCharacter('char_031');
-    expect(loaded?.playerName).toBe('Martin');
+    expect(jsonRoundTrip(char).playerName).toBe('Martin');
   });
 
   it('loaded character has playerName = undefined when none was set', () => {
-    const sm   = new StorageManager();
     const char = makePC('char_032');
-    // No playerName set
-    sm.saveCharacter(char);
-
-    const loaded = sm.loadCharacter('char_032');
-    expect(loaded?.playerName).toBeUndefined();
+    // JSON.parse returns undefined for absent keys
+    expect(jsonRoundTrip(char).playerName).toBeUndefined();
   });
 
-  it('persists isNPC flag as true for NPCs', () => {
-    const sm  = new StorageManager();
+  it('isNPC flag survives JSON round-trip for NPCs', () => {
     const npc = makeNPC('npc_033', 'Orc Warlord');
-    sm.saveCharacter(npc);
-
-    const loaded = sm.loadCharacter('npc_033');
-    expect(loaded?.isNPC).toBe(true);
+    expect(jsonRoundTrip(npc).isNPC).toBe(true);
   });
 
-  it('overwriting a character with a new name updates the stored value', () => {
-    const sm   = new StorageManager();
+  it('updated name survives JSON round-trip after mutation', () => {
     const char = makePC('char_034', 'Old Name');
-    sm.saveCharacter(char);
-
     char.name = 'New Name';
-    sm.saveCharacter(char);
-
-    expect(sm.loadCharacter('char_034')?.name).toBe('New Name');
+    expect(jsonRoundTrip(char).name).toBe('New Name');
   });
 
-  it('overwriting playerName to undefined removes it from stored data', () => {
-    const sm   = new StorageManager();
+  it('clearing playerName to undefined survives JSON round-trip', () => {
     const char = makePC('char_035');
     char.playerName = 'Bob';
-    sm.saveCharacter(char);
-
     char.playerName = undefined;
-    sm.saveCharacter(char);
-
-    expect(sm.loadCharacter('char_035')?.playerName).toBeUndefined();
+    expect(jsonRoundTrip(char).playerName).toBeUndefined();
   });
 });
 
@@ -350,58 +305,42 @@ describe('Character.playerVisibility — GM-controlled visibility level', () => 
 });
 
 // =============================================================================
-// 7. StorageManager round-trip — playerVisibility survives save / load
+// 7. JSON round-trip — playerVisibility survives serialisation
 // =============================================================================
 
-describe('StorageManager — playerVisibility round-trip', () => {
-  it('persists playerVisibility and retrieves it intact', () => {
-    const sm  = new StorageManager();
+describe('JSON serialisation — playerVisibility round-trip', () => {
+  it('playerVisibility survives JSON round-trip', () => {
     const npc = makeNPC('npc_060');
     npc.playerVisibility = 'name_level';
-    sm.saveCharacter(npc);
-    expect(sm.loadCharacter('npc_060')?.playerVisibility).toBe('name_level');
+    expect(jsonRoundTrip(npc).playerVisibility).toBe('name_level');
   });
 
-  it('loaded NPC has playerVisibility = undefined when none was set', () => {
-    const sm  = new StorageManager();
+  it('NPC has playerVisibility = undefined when none was set', () => {
     const npc = makeNPC('npc_061');
-    sm.saveCharacter(npc);
-    expect(sm.loadCharacter('npc_061')?.playerVisibility).toBeUndefined();
+    expect(jsonRoundTrip(npc).playerVisibility).toBeUndefined();
   });
 
   // All four valid values survive the round-trip.
   const ALL_LEVELS = ['hidden', 'name', 'name_level', 'full'] as const;
   for (const level of ALL_LEVELS) {
-    it(`playerVisibility="${level}" survives save → load`, () => {
-      const sm  = new StorageManager();
+    it(`playerVisibility="${level}" survives JSON round-trip`, () => {
       const npc = makeNPC(`npc_062_${level}`);
       npc.playerVisibility = level;
-      sm.saveCharacter(npc);
-      expect(sm.loadCharacter(`npc_062_${level}`)?.playerVisibility).toBe(level);
+      expect(jsonRoundTrip(npc).playerVisibility).toBe(level);
     });
   }
 
-  it('overwriting visibility with a new level updates the stored value', () => {
-    const sm  = new StorageManager();
+  it('updated visibility value survives JSON round-trip after mutation', () => {
     const npc = makeNPC('npc_063');
     npc.playerVisibility = 'name';
-    sm.saveCharacter(npc);
-
     npc.playerVisibility = 'full';
-    sm.saveCharacter(npc);
-
-    expect(sm.loadCharacter('npc_063')?.playerVisibility).toBe('full');
+    expect(jsonRoundTrip(npc).playerVisibility).toBe('full');
   });
 
-  it('overwriting visibility to undefined removes it from stored data', () => {
-    const sm  = new StorageManager();
+  it('clearing visibility to undefined survives JSON round-trip', () => {
     const npc = makeNPC('npc_064');
     npc.playerVisibility = 'name_level';
-    sm.saveCharacter(npc);
-
     npc.playerVisibility = undefined;
-    sm.saveCharacter(npc);
-
-    expect(sm.loadCharacter('npc_064')?.playerVisibility).toBeUndefined();
+    expect(jsonRoundTrip(npc).playerVisibility).toBeUndefined();
   });
 });
